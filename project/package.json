@@ -1,0 +1,10 @@
+{
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-karma": "~0.9.0",
+        "karma": "~0.12",
+        "karma-chrome-launcher": "^0.1.5",
+        "karma-ie-launcher": "^0.1.5",
+        "karma-jasmine": "^0.2.2"
+    }
+}
