@@ -34,11 +34,17 @@ $(function(){
     prg = initShaders("vs", "fs");
 
     var vertices = new Float32Array([
+        //蓝色三角形在前面
+        -0.2, 0.0, -0.5, 0.4, 0.4, 1.0,
+        0.8, 0.0, -0.5,  0.4, 0.4, 1.0,
+        0.3, 1.0, -0.5,  0.4, 0.4, 1.0,
+
+        //彩色三角形在后面
         -0.5, 0.0, -1.0, 1.0, 0.0, 0.0,
         0.5, 0.0, -1.0, 0.0, 1.0, 0.0,
         0.0, 1.0, -1.0, 0.0, 0.0, 1.0
     ]);
-    vertices_num = 3;
+    vertices_num = 6;
     var size = 3;
     var FSize = vertices.BYTES_PER_ELEMENT;
     var stride = FSize * 6;
@@ -78,6 +84,9 @@ $(function(){
 
     gl.clearColor(0, 0, 0, 1);
 
+    gl.enable(gl.DEPTH_TEST);
+    //gl.depthFunc(gl.LEQUAL);
+
     draw(vertices_num);
 
     bindEvent();
@@ -85,7 +94,7 @@ $(function(){
 
 
     function draw(vertices_num){
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawArrays(gl.TRIANGLES, 0, vertices_num);
     }
