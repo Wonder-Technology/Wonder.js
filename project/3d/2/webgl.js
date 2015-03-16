@@ -34,15 +34,27 @@ $(function(){
     prg = initShaders("vs", "fs");
 
     var vertices = new Float32Array([
-        //蓝色三角形在前面
-        -0.2, 0.0, -0.5, 0.4, 0.4, 1.0,
-        0.8, 0.0, -0.5,  0.4, 0.4, 1.0,
-        0.3, 1.0, -0.5,  0.4, 0.4, 1.0,
+        ////彩色三角形在后面
+        //-0.5, 0.0, -1.0, 1.0, 0.0, 0.0,
+        //0.5, 0.0, -1.0, 0.0, 1.0, 0.0,
+        //0.0, 1.0, -1.0, 0.0, 0.0, 1.0,
+        //
+        ////蓝色三角形在前面
+        //-0.2, 0.0, -1.0, 0.4, 0.4, 1.0,
+        //0.8, 0.0, -1.0,  0.4, 0.4, 1.0,
+        //0.3, 1.0, -1.0,  0.4, 0.4, 1.0
 
-        //彩色三角形在后面
-        -0.5, 0.0, -1.0, 1.0, 0.0, 0.0,
-        0.5, 0.0, -1.0, 0.0, 1.0, 0.0,
-        0.0, 1.0, -1.0, 0.0, 0.0, 1.0
+
+        // Vertex coordinates and color
+        // The green triangle
+        0.0,  2.5,  -5.0,  0.4,  1.0,  0.4,
+        -2.5, -2.5,  -5.0,  0.4,  1.0,  0.4,
+        2.5, -2.5,  -5.0,  1.0,  0.4,  0.4,
+
+        // The yellow triagle
+        0.0,  3.0,  -5.0,  1.0,  0.4,  0.4,
+        -3.0, -3.0, -5.0,  1.0,  1.0,  0.4,
+        3.0, -3.0,  -5.0,  1.0,  1.0,  0.4
     ]);
     vertices_num = 6;
     var size = 3;
@@ -75,6 +87,8 @@ $(function(){
 
 
     mMatrix.setIdentity();
+    setLookAt();
+    setPerspective();
     mvpMatrix = computeMvpMatrix(pMatrix.values, vMatrix.values, mMatrix.values);
 
     var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
@@ -87,6 +101,7 @@ $(function(){
     gl.enable(gl.DEPTH_TEST);
     //gl.depthFunc(gl.LEQUAL);
 
+
     draw(vertices_num);
 
     bindEvent();
@@ -96,24 +111,51 @@ $(function(){
     function draw(vertices_num){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        gl.drawArrays(gl.TRIANGLES, 0, vertices_num);
+        gl.enable(gl.POLYGON_OFFSET_FILL);
+
+        //green
+        gl.drawArrays(gl.TRIANGLES, 0, vertices_num / 2);
+
+
+        //偏移值是在z值计算后、深度检测之前加上的，此时坐标已经被映射到Normalized Device Coordinates中了，
+        //而此时的z轴是向内的（opengl的z轴是向外的），因此多边形偏移量为正值的话，意味着往远处移动，否则往近处移动。
+        //可参考下面的说明：
+        //The results are summed to produce the depth offset. This offset is applied in screen space, typically with positive Z pointing into the screen.
+        //the offset is calculated after the normal Z calculations, but applied before the depth test and before being written to the depth buffer.
+        gl.polygonOffset(1.0, 1.0); //设置多边形偏移
+        //yellow
+        gl.drawArrays(gl.TRIANGLES, vertices_num / 2, vertices_num / 2);
+
+        gl.polygonOffset(0.0, 0.0); //设置多边形偏移
+        gl.disable(gl.POLYGON_OFFSET_FILL);
     }
 
+    function setLookAt(){
+        var eyeX = Number($("#lookAt_eye").nextAll("input").eq(0).val()),
+            eyeY = Number($("#lookAt_eye").nextAll("input").eq(1).val()),
+            eyeZ = Number($("#lookAt_eye").nextAll("input").eq(2).val());
+        var centerX = Number($("#lookAt_center").nextAll("input").eq(0).val()),
+            centerY = Number($("#lookAt_center").nextAll("input").eq(1).val()),
+            centerZ = Number($("#lookAt_center").nextAll("input").eq(2).val());
+        var upX = Number($("#lookAt_up").nextAll("input").eq(0).val()),
+            upY = Number($("#lookAt_up").nextAll("input").eq(1).val()),
+            upZ = Number($("#lookAt_up").nextAll("input").eq(2).val());
+
+        vMatrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    }
+
+    function setPerspective(){
+        var near = Number($("#perspective_near").nextAll("input").eq(0).val()),
+            far = Number($("#perspective_far").nextAll("input").eq(0).val()),
+            angle = Number($("#perspective_angle").nextAll("input").eq(0).val());
+        var aspect = c.width / c.height;
+
+        pMatrix.setPerspective(angle, aspect, near, far);
+    }
 
     function bindEvent(){
         $("#lookAt").on("click", function(){
-            var eyeX = Number($("#lookAt_eye").nextAll("input").eq(0).val()),
-            eyeY = Number($("#lookAt_eye").nextAll("input").eq(1).val()),
-                eyeZ = Number($("#lookAt_eye").nextAll("input").eq(2).val());
-            var centerX = Number($("#lookAt_center").nextAll("input").eq(0).val()),
-            centerY = Number($("#lookAt_center").nextAll("input").eq(1).val()),
-                centerZ = Number($("#lookAt_center").nextAll("input").eq(2).val());
-            var upX = Number($("#lookAt_up").nextAll("input").eq(0).val()),
-            upY = Number($("#lookAt_up").nextAll("input").eq(1).val()),
-                upZ = Number($("#lookAt_up").nextAll("input").eq(2).val());
-
-            vMatrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-
+            setLookAt();
             mvpMatrix = computeMvpMatrix(pMatrix.values, vMatrix.values, mMatrix.values);
             //mvpMatrix = Math3D.MatrixTool.multiply(vMatrix.values, mMatrix.values);
 
@@ -126,7 +168,7 @@ $(function(){
 
         $("#ortho").on("click", function(){
             var near = Number($("#ortho_near").nextAll("input").eq(0).val()),
-            far = Number($("#ortho_far").nextAll("input").eq(0).val());
+                far = Number($("#ortho_far").nextAll("input").eq(0).val());
 
             pMatrix.setOrtho(near, far);
 
@@ -140,13 +182,7 @@ $(function(){
         });
 
         $("#perspective").on("click", function(){
-            var near = Number($("#perspective_near").nextAll("input").eq(0).val()),
-                far = Number($("#perspective_far").nextAll("input").eq(0).val()),
-                angle = Number($("#perspective_angle").nextAll("input").eq(0).val());
-            var aspect = c.width / c.height;
-
-            pMatrix.setPerspective(angle, aspect, near, far);
-
+            setPerspective();
             mvpMatrix = computeMvpMatrix(pMatrix.values, vMatrix.values, mMatrix.values);
 
             var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
@@ -193,7 +229,7 @@ $(function(){
 
         $("#rotate").on("click", function(e){
             var angle = Number($("#rotate_angle").val()),
-             x = Number($("#rotate_x").val()),
+                x = Number($("#rotate_x").val()),
                 y = Number($("#rotate_y").val()),
                 z = Number($("#rotate_z").val());
 
@@ -314,3 +350,4 @@ $(function(){
 
 window.onload = function(){
 };
+

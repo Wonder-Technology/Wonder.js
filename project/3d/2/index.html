@@ -16,23 +16,23 @@
     <p>初始顶点坐标：[-0.5, 0, -1], [0.5, 0, -1], [0, 1, -1]</p>
 </div>
 <p>
-    <h2>视图数据</h2>
+<h2>视图数据</h2>
 <button id="lookAt">设置视图矩阵</button>
 
-    <span id="lookAt_eye">视点：</span>
-    <span>x:</span><input value="0" />
-    <span>y:</span><input value="0" />
-    <span>z:</span><input value="0"/>
+<span id="lookAt_eye">视点：</span>
+<span>x:</span><input value="0" />
+<span>y:</span><input value="0" />
+<span>z:</span><input value="0"/>
 <br/>
-    <span id="lookAt_center">目标点：</span>
-    <span>x:</span><input value="0" />
-    <span>y:</span><input value="0" />
-    <span>z:</span><input value="0"/>
+<span id="lookAt_center">目标点：</span>
+<span>x:</span><input value="0" />
+<span>y:</span><input value="0" />
+<span>z:</span><input value="-1"/>
 <br/>
-    <span id="lookAt_up">上方向：</span>
-    <span>x:</span><input value="0" />
-    <span>y:</span><input value="0" />
-    <span>z:</span><input value="0"/>
+<span id="lookAt_up">上方向：</span>
+<span>x:</span><input value="0" />
+<span>y:</span><input value="1" />
+<span>z:</span><input value="0"/>
 </p>
 <p>
 <h2>正交投影数据</h2>
@@ -48,20 +48,20 @@
 <h2>透视投影数据</h2>
 <button id="perspective">设置投影矩阵</button>
 <span id="perspective_angle">垂直视角：</span>
-<input value="0" />
+<input value="60" />
 <br/>
 <span id="perspective_near">近裁剪面距离：</span>
-<input value="0" />
+<input value="0.1" />
 <br/>
 <span id="perspective_far">远裁剪面距离：</span>
-<input value="0" />
+<input value="10" />
 </p>
 <p>
     <button id="translate" type="button" value="平移">平移</button>
     <span>x:</span><input id="translate_x" value="0" />
     <span>y:</span><input id="translate_y" value="0" />
     <span>z:</span><input id="translate_z" value="0"/>
-    </p>
+</p>
 <p>
     <button id="scale" type="button" value="缩放">缩放</button>
     <span>x:</span><input id="scale_x" value="1"/>
