@@ -457,10 +457,22 @@ module Math3D{
             var a = this.values,
                 b = other.values;
 
-            //顺序为other * this，保证先进行this的变换，再进行other的变换
-            this.values = MatrixTool.multiply(b, a);
+            this.values = MatrixTool.multiply(a, b);
 
             return this;
+        }
+
+        copy(): Matrix{
+            var result = Matrix.create(),
+                i = 0,
+                len = this.values.length;
+
+            for(i = 0; i < len; i++){
+                result.values[i] = this.values[i];
+            }
+
+
+            return result;
         }
 
         //用于测试
