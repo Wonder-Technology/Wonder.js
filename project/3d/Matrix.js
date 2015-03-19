@@ -486,24 +486,6 @@ var Math3D;
             }
             return result;
         };
-        Matrix.prototype.getValues_forTest = function () {
-            var values = null, len = 0, i = 0, result = [];
-            if (arguments[0]) {
-                values = arguments[0];
-            }
-            else {
-                values = this.values;
-            }
-            len = values.length;
-            for (i = 0; i < len; i++) {
-                if (values[i] === -0) {
-                    result[i] = 0;
-                    continue;
-                }
-                result[i] = YYC.Tool.math.toFixed(values[i], 7);
-            }
-            return result;
-        };
         return Matrix;
     })();
     Math3D.Matrix = Matrix;

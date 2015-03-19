@@ -27,7 +27,7 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
         '3d/temp.js',
-        '**/*.map'
+        '**/*.js.map'
     ],
 
 

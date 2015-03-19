@@ -33,9 +33,9 @@ export class Sphere{
 
             var j = 0;
             var len = originVertices.length;
-            //for(j = 0; j < len; j ++){
-            //    this._vertices = this._vertices.concat(originVertices[j]);
-            //}
+            for(j = 0; j < len; j ++){
+                this._vertices = this._vertices.concat(originVertices[j]);
+            }
 
             var j = 0,
                 len = originIndices.length;  //8面体
@@ -77,7 +77,6 @@ export class Sphere{
             ////indices = indices.concat(indi);
             //indices = indices.concat(in1, in2, in3, in4);
             this._indices = this._indices.concat(ind);
-            this._vertices = this._vertices.concat(v1, v2, v3);
 
             return;
         }
@@ -107,7 +106,7 @@ export class Sphere{
 
 
 
-        //this._vertices = this._vertices.concat(v12, v23, v31);
+        this._vertices = this._vertices.concat(v12, v23, v31);
 
         var iV1 = ind[0],
             iV2 = ind[1],
@@ -169,4 +168,3 @@ export class Sphere{
     }
 }
 }
-

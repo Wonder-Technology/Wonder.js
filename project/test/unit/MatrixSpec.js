@@ -6,9 +6,9 @@ describe("matrix", function(){
     }
     function getValues(values){
         if(values){
-            return matrix.getValues_forTest(values);
+            return Helper.Tool.getValues_forTest(values);
         }
-        return matrix.getValues_forTest();
+        return Helper.Tool.getValues_forTest(matrix.values);
     }
 
     function toFixed(num){
@@ -172,13 +172,13 @@ describe("matrix", function(){
             var result3 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0, 1, -1, 1));
 
             expect(getValues(result1.values)).toEqual(
-                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1, -2, -1, 1 ]
+                [ -0.9330127, 0, 0.8181819, 1 ]
             );
             expect(getValues(result2.values)).toEqual(
-                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1, -2, -1, 1 ]
+                [ 0.9330127, 0, 0.8181819, 1 ]
             );
             expect(getValues(result3.values)).toEqual(
-                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1, -2, -1, 1 ]
+                [ 0, 3.7320509, 0.8181819, 1 ]
             );
         });
     });

@@ -356,7 +356,7 @@ module Math3D{
          * @param upX, upY, upZ The direction of the up vector.
          * @return this
          */
-        lookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ) {
+        lookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
             this.concat(Matrix.create().setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ));
 
             return this;
@@ -475,35 +475,6 @@ module Math3D{
             return result;
         }
 
-        //用于测试
-        getValues_forTest():number[];
-        getValues_forTest(values:Float32Array):number[];
-
-
-        getValues_forTest(): number[]{
-            var values = null,
-                len = 0,
-                i = 0,
-                result = [];
-
-            if(arguments[0]){
-                values = arguments[0];
-            }
-            else{
-                values = this.values;
-            }
-
-            len = values.length;
-
-            for(i = 0; i < len; i ++){
-                if(values[i] === -0){
-                    result[i] = 0;
-                    continue;
-                }
-                result[i] = YYC.Tool.math.toFixed(values[i], 7);
-            }
-            return result;
-        }
     }
 
     export class Vector4{

@@ -88,106 +88,36 @@ $(function(){
 
 
 
-    //球心坐标
+    ////球心坐标
+    //var pointX = 0.6,
+    //    pointY = 0.2,
+    //    pointZ = -0.1;
+    //
+    //var latitudeBands = 10;
+    //var longitudeBands = 10;
+    //var radius = 0.5;
+    //
+    //
+    //
+    //
+    //var data = getSphereDataByLatitudeLongtitude(pointX, pointY, pointZ, latitudeBands, longitudeBands, radius);
+    //var vertices = data.vertices;
+    //var indices = data.indices;
+    //
+
+
     var pointX = 0.6,
         pointY = 0.2,
         pointZ = -0.1;
 
-    var latitudeBands = 10;
-    var longitudeBands = 10;
-    var radius = 0.5;
+    var radius = 1.0;
+    var count = 2;
 
+    var sphere = Cubic.Sphere.create();
 
-
-
-    var data = getSphereDataByLatitudeLongtitude(pointX, pointY, pointZ, latitudeBands, longitudeBands, radius);
+    var data = sphere.getSphereDataByDecomposition(pointX, pointY, pointZ, count, radius);
     var vertices = data.vertices;
     var indices = data.indices;
-
-    function getSphereDataByLatitudeLongtitude(pointX, pointY, pointZ, latitudeBands, longitudeBands, radius){
-        var vertices = [];
-        //var normalData = [];
-        //var textureCoordData = [];
-        for (var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
-            var theta = latNumber * Math.PI / latitudeBands;
-            var sinTheta = Math.sin(theta);
-            var cosTheta = Math.cos(theta);
-
-            for (var longNumber = 0; longNumber <= longitudeBands; longNumber++) {
-                var phi = longNumber * 2 * Math.PI / longitudeBands;
-                var sinPhi = Math.sin(phi);
-                var cosPhi = Math.cos(phi);
-
-                var x = radius * cosPhi * sinTheta + pointX;
-                var y = radius *cosTheta + pointY;
-                var z = radius *sinPhi * sinTheta + pointZ;
-                //var u = 1 - (longNumber / longitudeBands);
-                //var v = 1 - (latNumber / latitudeBands);
-                //
-                //normalData.push(x);
-                //normalData.push(y);
-                //normalData.push(z);
-                //textureCoordData.push(u);
-                //textureCoordData.push(v);
-                vertices.push(x);
-                vertices.push(y);
-                vertices.push(z);
-            }
-        }
-
-
-
-        var indices = [];
-        //一圈有经度点longitudeBands个
-        for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
-            for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
-                var first = latNumber * (longitudeBands + 1) + longNumber;
-                var second = first + longitudeBands + 1;
-                indices.push(first);
-                indices.push(second);
-                indices.push(first + 1);
-
-                indices.push(second);
-                indices.push(second + 1);
-                indices.push(first + 1);
-            }
-        }
-
-
-        //vertices =[0, 0.5, 0, -0, 0.5, 0, 0, 0.5, -0, 0.5, 3.0616171314629196e-17, 0, -0.5, 3.0616171314629196e-17, 6.123234262925839e-17, 0.5, 3.0616171314629196e-17, -1.2246468525851679e-16, 6.123234262925839e-17, -0.5, 0, -6.123234262925839e-17, -0.5, 7.498798786105971e-33, 6.123234262925839e-17, -0.5, -1.4997597572211942e-32] ;
-        //vertices = [
-        //    1.0,  1.0,  1.0,
-        //    -1.0,  1.0,  1.0,
-        //    -1.0, -1.0,  1.0,
-        //    1.0, -1.0,  1.0,
-        //    1.0, -1.0, -1.0,
-        //    1.0,  1.0, -1.0,
-        //    -1.0,  1.0, -1.0,
-        //    -1.0, -1.0, -1.0,
-        //    1.0,1.0,1.0
-        //
-        //
-        //
-        //
-        //
-        //];
-        ////indices = [0, 3, 1, 3, 4, 1, 1, 4, 2, 4, 5, 2, 3, 6, 4, 6, 7, 4, 4, 7, 5, 7, 8, 5];
-        vertices = new Float32Array(vertices);
-        indices = new Uint8Array(indices);
-
-
-        return {
-            vertices: vertices,
-            indices: indices
-        }
-    }
-
-
-
-
-
-
-
     vertices_num = indices.length;
     //var FSize = vertices.BYTES_PER_ELEMENT;
     //var stride = FSize * 6;
@@ -304,6 +234,9 @@ $(function(){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawElements(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+        //gl.drawArrays(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+
+        //gl.drawArrays(gl.TRIANGLES, 0, vertices_num);
 
         mMatrix.setIdentity();
     }
