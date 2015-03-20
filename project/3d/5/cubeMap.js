@@ -38,52 +38,13 @@ $(function(){
 
     prg = initShaders("vs", "fs");
 
-    //var vertices = new Float32Array([
-    //    // Vertex coordinates, texture coordinate
-    //    //-0.5,  0.5, -1.0,  0.0, 0.9,
-    //    //-0.5, -0.5,  -1.0, 0.0, -0.1,
-    //    //0.5,  0.5,   -1.0, 0.9, 0.9,
-    //    //0.5, -0.5,  -1.0,  0.9, -0.1
-    //    -0.5,  0.5, -1.0,  0.0, 1.0,
-    //    -0.5, -0.5,  -1.0, 0.0, 0.0,
-    //    0.5,  0.5,   -1.0, 1.0, 1.0,
-    //    0.5, -0.5,  -1.0,  1.0, 0.0
-    //]);
-    // Create a cube
-    //    v6----- v5
-    //   /|      /|
-    //  v1------v0|
-    //  | |     | |
-    //  | |v7---|-|v4
-    //  |/      |/
-    //  v2------v3
-    var vertices = new Float32Array([   // Vertex coordinates
-        1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0,    // v0-v1-v2-v3 front
-        1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0,    // v0-v3-v4-v5 right
-        1.0, 1.0, 1.0,   1.0, 1.0,-1.0,  -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0,    // v0-v5-v6-v1 up
-        -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0,    // v1-v6-v7-v2 left
-        -1.0,-1.0,-1.0,   1.0,-1.0,-1.0,   1.0,-1.0, 1.0,  -1.0,-1.0, 1.0,    // v7-v4-v3-v2 down
-        1.0,-1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,   1.0, 1.0,-1.0     // v4-v7-v6-v5 back
-    ]);
 
-    var texCoords = new Float32Array([   // Texture coordinates
-        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0,    // v0-v1-v2-v3 fron
-        0.0, 1.0,   0.0, 0.0,   1.0, 0.0,   1.0, 1.0,    // v0-v3-v4-v5 right
-        1.0, 0.0,   1.0, 1.0,   0.0, 1.0,   0.0, 0.0,    // v0-v5-v6-v1 up
-        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0,    // v1-v6-v7-v2 left
-        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0,    // v7-v4-v3-v2 down
-        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0     // v4-v7-v6-v5 back
-    ]);
+   var cubic = Cubic.Cubic.create();
 
-    // Indices of the vertices
-    var indices = new Uint8Array([
-        0, 1, 2,   0, 2, 3,    // front
-        4, 5, 6,   4, 6, 7,    // right
-        8, 9,10,   8,10,11,    // up
-        12,13,14,  12,14,15,    // left
-        16,17,18,  16,18,19,    // down
-        20,21,22,  20,22,23     // back
-    ]);
+    var data = cubic.getCubicData();
+
+    var vertices = data.vertices;
+    var indices = data.indices;
     vertices_num = indices.length;
     //var FSize = vertices.BYTES_PER_ELEMENT;
     //var stride = FSize * 6;
@@ -110,18 +71,25 @@ $(function(){
     //gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, stride, FSize * 3);
     //gl.enableVertexAttribArray(a_color);
     //
-    var texVbo = createVBO(texCoords);
+    //var texVbo = createVBO(texCoords);
+    //
+    //var a_texCoord = gl.getAttribLocation(prg, "a_texCoord");
+    //if (a_texCoord < 0) {
+    //    console.log('Failed to get the storage location of a_texCoord');
+    //    return -1;
+    //}
+    //
+    //gl.vertexAttribPointer(a_texCoord, 2, gl.FLOAT, false, 0, 0);
+    //gl.enableVertexAttribArray(a_texCoord);
 
-    var a_texCoord = gl.getAttribLocation(prg, "a_texCoord");
-    if (a_texCoord < 0) {
-        console.log('Failed to get the storage location of a_texCoord');
-        return -1;
-    }
 
-    gl.vertexAttribPointer(a_texCoord, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(a_texCoord);
+    //指定立方体中心点位置
+    var u_cubicCenter = gl.getUniformLocation(prg, 'u_cubicCenter');
 
-
+    var cubicCenter = new Float32Array([
+        0.5,0.0,0.0
+    ]);
+    gl.uniform3fv(u_cubicCenter, cubicCenter);
 
     var ibo = createIBO(indices);
 
@@ -138,6 +106,7 @@ $(function(){
 
 
     mMatrix.setIdentity();
+
     setLookAt();
     setPerspective();
 
@@ -185,6 +154,7 @@ $(function(){
     }
 
     function draw(vertices_num){
+        //todo 需要修改（绕着圆心转）
         mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
         mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
 
@@ -198,6 +168,9 @@ $(function(){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawElements(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+        //gl.drawArrays(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+
+        //gl.drawArrays(gl.TRIANGLES, 0, vertices_num);
 
         mMatrix.setIdentity();
     }
@@ -207,27 +180,77 @@ $(function(){
         var image = new Image();
 
         image.onload = function(){
-            //image = convertImageSize(this);
-           var texture = gl.createTexture();
-           var u_sampler = gl.getUniformLocation(prg, "u_sampler");
-
-           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-           gl.activeTexture(gl.TEXTURE0);
-           gl.bindTexture(gl.TEXTURE_2D, texture);
-            //缩小方法采用默认的mip map
-           //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-            //生成所有的mip层
-            gl.generateMipmap(gl.TEXTURE_2D);
-           gl.uniform1i(u_sampler, 0);
-
-           // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-           //
-           //gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices_num);
         };
 
         image.src = "../content/1.jpg";
+
+
+        var image2 = new Image();
+        image2.src = "../content/2.jpg";
+
+        var image3 = new Image();
+        image3.src = "../content/3.jpg";
+
+        var image4 = new Image();
+        image4.src = "../content/4.jpg";
+
+        var image5 = new Image();
+        image5.src = "../content/5.jpg";
+
+        var image6 = new Image();
+        image6.src = "../content/6.jpg";
+
+
+        setTimeout(function(){
+            ////image = convertImageSize(this);
+            //var texture = gl.createTexture();
+            //var u_sampler = gl.getUniformLocation(prg, "u_sampler");
+            //
+            //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+            //gl.activeTexture(gl.TEXTURE0);
+            //gl.bindTexture(gl.TEXTURE, texture);
+            ////缩小方法采用默认的mip map
+            ////gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            //
+            //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+            ////生成所有的mip层
+            //gl.generateMipmap(gl.TEXTURE_2D);
+            //gl.uniform1i(u_sampler, 0);
+
+
+
+            var texture = gl.createTexture();
+            var u_sampler = gl.getUniformLocation(prg, "u_sampler");
+
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+
+            //立方图纹理需要设置六个方位上的纹理，为了方便区分，我设置了六个不同的纹理图像
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image2);
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image3);
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image4);
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image5);
+            gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image6);
+
+            //生成所有的mip层
+            gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+
+
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.uniform1i(u_sampler, 0);
+
+            ////这些内容，也要针对立方图纹理进行设置
+            //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+
+
+
+        }, 1000);
     }
     function convertImageSize(image) {
         //var texture = gl.createTexture();
@@ -300,7 +323,7 @@ $(function(){
 
         $("#ortho").on("click", function(){
             var near = Number($("#ortho_near").nextAll("input").eq(0).val()),
-            far = Number($("#ortho_far").nextAll("input").eq(0).val());
+                far = Number($("#ortho_far").nextAll("input").eq(0).val());
 
             pMatrix.setOrtho(near, far);
 
@@ -361,7 +384,7 @@ $(function(){
 
         $("#rotate").on("click", function(e){
             var angle = Number($("#rotate_angle").val()),
-             x = Number($("#rotate_x").val()),
+                x = Number($("#rotate_x").val()),
                 y = Number($("#rotate_y").val()),
                 z = Number($("#rotate_z").val());
 
@@ -492,3 +515,4 @@ $(function(){
     }
 
 });
+

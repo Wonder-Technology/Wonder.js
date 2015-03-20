@@ -260,5 +260,43 @@ module Cubic {
             return cubic;
         }
     }
+
+    export class Cubic{
+        constructor(){}
+
+        getCubicData(){
+            var vertices = new Float32Array([
+                1.0,  1.0,  1.0,
+                -1.0,  1.0,  1.0,
+                -1.0, -1.0,  1.0,
+                1.0, -1.0,  1.0,
+                1.0, -1.0, -1.0,
+                1.0,  1.0, -1.0,
+                -1.0,  1.0, -1.0,
+                -1.0, -1.0, -1.0,
+            ]);
+
+            // Indices of the vertices
+            var indices = new Uint8Array([
+                0, 1, 2,   0, 2, 3,    // front
+                0, 3, 4,   0, 4, 5,    // right
+                0, 5, 6,   0, 6, 1,    // up
+                1, 6, 7,   1, 7, 2,    // left
+                7, 4, 3,   7, 3, 2,    // down
+                4, 7, 6,   4, 6, 5     // back
+            ]);
+
+            return {
+                vertices: vertices,
+                indices: indices
+            }
+        }
+
+        public static create():Cubic {
+            var cubic = new Cubic();
+
+            return cubic;
+        }
+    }
 }
 

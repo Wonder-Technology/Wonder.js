@@ -6,7 +6,7 @@
  * 博客：http://www.cnblogs.com/chaogex/
  */
 var Cubic;
-(function (Cubic) {
+(function (_Cubic) {
     var Sphere = (function () {
         function Sphere() {
             this._vertices = [];
@@ -200,6 +200,87 @@ var Cubic;
         };
         return Sphere;
     })();
-    Cubic.Sphere = Sphere;
+    _Cubic.Sphere = Sphere;
+    var Cubic = (function () {
+        function Cubic() {
+        }
+        Cubic.prototype.getCubicData = function () {
+            var vertices = new Float32Array([
+                1.0,
+                1.0,
+                1.0,
+                -1.0,
+                1.0,
+                1.0,
+                -1.0,
+                -1.0,
+                1.0,
+                1.0,
+                -1.0,
+                1.0,
+                1.0,
+                -1.0,
+                -1.0,
+                1.0,
+                1.0,
+                -1.0,
+                -1.0,
+                1.0,
+                -1.0,
+                -1.0,
+                -1.0,
+                -1.0,
+            ]);
+            // Indices of the vertices
+            var indices = new Uint8Array([
+                0,
+                1,
+                2,
+                0,
+                2,
+                3,
+                0,
+                3,
+                4,
+                0,
+                4,
+                5,
+                0,
+                5,
+                6,
+                0,
+                6,
+                1,
+                1,
+                6,
+                7,
+                1,
+                7,
+                2,
+                7,
+                4,
+                3,
+                7,
+                3,
+                2,
+                4,
+                7,
+                6,
+                4,
+                6,
+                5
+            ]);
+            return {
+                vertices: vertices,
+                indices: indices
+            };
+        };
+        Cubic.create = function () {
+            var cubic = new Cubic();
+            return cubic;
+        };
+        return Cubic;
+    })();
+    _Cubic.Cubic = Cubic;
 })(Cubic || (Cubic = {}));
 //# sourceMappingURL=Cubic.js.map
