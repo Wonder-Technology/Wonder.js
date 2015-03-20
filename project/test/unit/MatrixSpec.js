@@ -35,6 +35,41 @@ describe("matrix", function(){
         });
     });
 
+    describe("setInverseOf", function(){
+        it("设置为逆矩阵", function(){
+            var mat = Math3D.Matrix.create();
+            mat.values = new Float32Array([
+                0, 0, 1, 1,
+                0, 0, -2, 1,
+                5, 2, 0, 0,
+                2, 1, 0, 0
+            ]);
+
+            matrix.setInverseOf(mat);
+
+            expect(getValues()).toEqual(
+                [0, 0, 1, -2, 0, 0, -2, 5, 0.3333333, -0.3333333, 0, 0, 0.6666667, 0.3333333, 0, 0 ]
+            )
+        });
+    });
+
+    describe("transpose", function(){
+        it("对自身进行转置", function(){
+            matrix.values = new Float32Array([
+                1,1,1,1,
+                2, 3, 4, 5,
+                0, 1, 1, 2,
+                0, 3, 4, 4
+            ]);
+
+            matrix.transpose();
+
+            expect(getValues()).toEqual(
+                [1,2,0,0, 1,3,1,3, 1,4,1,4, 1,5,2,4]
+            );
+        });
+    });
+
     describe("setTranslate", function(){
         it("设置平移矩阵", function(){
             matrix.setTranslate(10, 20, 30);
