@@ -1,0 +1,1051 @@
+//应该先加载资源（如加载纹理、模型数据），然后再开始逻辑
+
+//绘制1个立方体和1个球体（有纹理）
+
+
+
+var vertices_num = null;
+
+var mMatrix = Math3D.Matrix.create();
+var mvpMatrix = null;
+var vMatrix = Math3D.Matrix.create();
+var pMatrix = Math3D.Matrix.create();
+
+// canvas对象获取
+var c = null;
+
+// webgl的context获取
+var gl = null;
+
+// Size of off screen
+var OFFSCREEN_WIDTH = 256;
+var OFFSCREEN_HEIGHT = 256;
+//var OFFSCREEN_WIDTH = 512;
+//var OFFSCREEN_HEIGHT = 512;
+
+var pMatrixFBO = Math3D.Matrix.create();
+
+function computeMvpMatrix(pMatrix, vMatrix, mMatrix){
+    var matrix = pMatrix.copy();
+
+    matrix.concat(vMatrix);
+    matrix.concat(mMatrix);
+
+    return matrix;
+    //return Math3D.MatrixTool.multiply(Math3D.MatrixTool.multiply(pMatrix, vMatrix), mMatrix);
+}
+
+$(function(){
+// canvas对象获取
+    c = document.getElementById('canvas');
+
+    // Register the event handler
+    // Current rotation angle ([y-axis, x-axis] degrees)
+    var currentAngle = [0.0, 0.0];
+    bindCanvasEvent(c);
+
+// webgl的context获取
+    gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+
+
+
+
+
+   var sphere = Cubic.Sphere.create();
+
+
+    var pointX = 0.6,
+        pointY = 0.2,
+        pointZ = -0.1;
+    //var pointX = 0,
+    //    pointY = 0,
+    //    pointZ = 0;
+
+    var radius = 1.0;
+
+var latitudeBands = 10;
+    var longitudeBands = 10;
+
+    var data = sphere.getSphereDataByLatitudeLongtitude(pointX, pointY, pointZ, latitudeBands, longitudeBands, radius);
+
+
+    //var cubicInstance = Cubic.Cubic.create();
+    //var cubicData = cubicInstance.getCubicData();
+
+    //var vertices = data.vertices;
+    //var indices = data.indices;
+    ////var normals = data.normals;
+    //
+    //
+    //var texCoords = data.texCoords;
+    //
+    //vertices_num = indices.length;
+    //var FSize = vertices.BYTES_PER_ELEMENT;
+    //var stride = FSize * 6;
+
+
+
+
+
+
+
+    var prg = initShaders("vs", "fs");
+
+
+
+
+    prg.a_position = gl.getAttribLocation(prg, "a_position");
+    prg.a_texCoord = gl.getAttribLocation(prg, "a_texCoord");
+    prg.u_mvpMatrix = gl.getUniformLocation(prg, 'u_mvpMatrix');
+    prg.u_sampler = gl.getUniformLocation(prg, 'u_sampler');
+
+    var plane = initVertexBuffersForPlane(gl);
+    var sphereModel = initVertexBuffers(gl, data);
+
+    var texture = initTextures(gl, prg);
+
+    // Initialize framebuffer object (FBO)
+    var fbo = initFramebufferObject(gl);
+
+
+
+    function initVertexBuffersForPlane(gl) {
+        // Create face
+        //  v1------v0
+        //  |        |
+        //  |        |
+        //  |        |
+        //  v2------v3
+
+        // Vertex coordinates
+        var vertices = new Float32Array([
+            1.0, 1.0, 0.0,  -1.0, 1.0, 0.0,  -1.0,-1.0, 0.0,   1.0,-1.0, 0.0    // v0-v1-v2-v3
+        ]);
+
+        // Texture coordinates
+        var texCoords = new Float32Array([1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0]);
+
+        // Indices of the vertices
+        var indices = new Uint8Array([0, 1, 2,   0, 2, 3]);
+
+        var o = new Object(); // Create the "Object" object to return multiple objects.
+
+        // Write vertex information to buffer object
+        o.vertexBuffer = initArrayBufferForLaterUse(gl, vertices, 3, gl.FLOAT);
+        o.texCoordBuffer = initArrayBufferForLaterUse(gl, texCoords, 2, gl.FLOAT);
+        o.indexBuffer = initElementArrayBufferForLaterUse(gl, indices, gl.UNSIGNED_BYTE);
+        if (!o.vertexBuffer || !o.texCoordBuffer || !o.indexBuffer) return null;
+
+        o.numIndices = indices.length;
+
+        // Unbind the buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+        return o;
+    }
+    function initVertexBuffers(gl, data) {
+        var vertices = data.vertices;
+
+        var normals = data.normals;
+
+        var texCoords = data.texCoords;
+
+        var indices = data.indices;
+
+        //todo Model类
+        var o = new Object(); // Utilize Object to to return multiple buffer objects together
+
+        // Write vertex information to buffer object
+        o.vertexBuffer = initArrayBufferForLaterUse(gl, vertices, 3, gl.FLOAT);
+        o.normalBuffer = initArrayBufferForLaterUse(gl, normals, 3, gl.FLOAT);
+        o.texCoordBuffer = initArrayBufferForLaterUse(gl, texCoords, 2, gl.FLOAT);
+        o.indexBuffer = initElementArrayBufferForLaterUse(gl, indices, gl.UNSIGNED_BYTE);
+        //if (!o.vertexBuffer || !o.normalBuffer || !o.texCoordBuffer || !o.indexBuffer) return null;
+
+        o.numIndices = indices.length;
+
+        // Unbind the buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+        return o;
+    }
+    function initArrayBufferForLaterUse(gl, data, num, type) {
+        if(!data){
+            return null;
+        }
+
+        //todo Buffer类
+        var buffer = gl.createBuffer();   // Create a buffer object
+        if (!buffer) {
+            console.log('Failed to create the buffer object');
+            return null;
+        }
+        // Write date into the buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+        // Keep the information necessary to assign to the attribute variable later
+        buffer.num = num;
+        buffer.type = type;
+
+        return buffer;
+    }
+
+    function initElementArrayBufferForLaterUse(gl, data, type) {
+        var buffer = gl.createBuffer();  // Create a buffer object
+        if (!buffer) {
+            console.log('Failed to create the buffer object');
+            return null;
+        }
+        // Write date into the buffer object
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+        buffer.type = type;
+
+        return buffer;
+    }
+
+
+
+
+
+    //todo 要先加载纹理，然后才进入游戏！
+    function initTextures(gl, program) {
+        var texture = gl.createTexture();   // Create a texture object
+        if (!texture) {
+            console.log('Failed to create the texture object');
+            return null;
+        }
+        // Get storage location of u_Sampler
+        //if (!u_sampler) {
+        //    console.log('Failed to get the storage location of u_sampler');
+        //    return null;
+        //}
+
+        var image = new Image();  // Create a image object
+        if (!image) {
+            console.log('Failed to create the image object');
+            return null;
+        }
+        // Register the event handler to be called when image loading is completed
+        image.onload = function() {
+            // Write the image data to texture object
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);  // Flip the image Y coordinate
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+            // Pass the texure unit 0 to u_Sampler
+            gl.useProgram(program);
+            gl.uniform1i(program.u_sampler, 0);
+
+            gl.bindTexture(gl.TEXTURE_2D, null); // Unbind texture
+        };
+
+        // Tell the browser to load an Image
+        image.src = '../content/1.jpg';
+
+        return texture;
+    }
+    function initFramebufferObject(gl) {
+        var framebuffer, texture, depthBuffer;
+
+        // Define the error handling function
+        var error = function() {
+            if (framebuffer) gl.deleteFramebuffer(framebuffer);
+            if (texture) gl.deleteTexture(texture);
+            if (depthBuffer) gl.deleteRenderbuffer(depthBuffer);
+            return null;
+        }
+
+        // Create a frame buffer object (FBO)
+        framebuffer = gl.createFramebuffer();
+        if (!framebuffer) {
+            console.log('Failed to create frame buffer object');
+            return error();
+        }
+
+        // Create a texture object and set its size and parameters
+        texture = gl.createTexture(); // Create a texture object
+        if (!texture) {
+            console.log('Failed to create texture object');
+            return error();
+        }
+        gl.bindTexture(gl.TEXTURE_2D, texture); // Bind the object to target
+        //内容为null，表明创建空的纹理区域
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        framebuffer.texture = texture; // Store the texture object
+
+        // Create a renderbuffer object and Set its size and parameters
+        depthBuffer = gl.createRenderbuffer(); // Create a renderbuffer object
+        if (!depthBuffer) {
+            console.log('Failed to create renderbuffer object');
+            return error();
+        }
+        gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer); // Bind the object to target
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+        // Attach the texture and the renderbuffer object to the FBO
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+
+        // Check if FBO is configured correctly
+        var e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if (gl.FRAMEBUFFER_COMPLETE !== e) {
+            console.log('Frame buffer object is incomplete: ' + e.toString());
+            return error();
+        }
+
+        // Unbind the buffer object
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+
+        return framebuffer;
+    }
+    //function initTexture(){
+    //    var image = new Image();
+    //
+    //    image.onload = function(){
+    //        //image = convertImageSize(this);
+    //        var texture = gl.createTexture();
+    //        var u_sampler = gl.getUniformLocation(prg, "u_sampler");
+    //
+    //        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    //        gl.activeTexture(gl.TEXTURE0);
+    //        gl.bindTexture(gl.TEXTURE_2D, texture);
+    //        //缩小方法采用默认的mip map
+    //        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    //
+    //        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    //        //生成所有的mip层
+    //        gl.generateMipmap(gl.TEXTURE_2D);
+    //        gl.uniform1i(u_sampler, 0);
+    //
+    //        //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    //
+    //        //gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices_num);
+    //    };
+    //
+    //    image.src = "../content/1.jpg";
+    //    //var image = new Image();
+    //    //
+    //    //image.onload = function(){
+    //    //};
+    //    //
+    //    //image.src = "../content/1.jpg";
+    //    //
+    //    //
+    //    //var image2 = new Image();
+    //    //image2.src = "../content/2.jpg";
+    //    //
+    //    //var image3 = new Image();
+    //    //image3.src = "../content/3.jpg";
+    //    //
+    //    //var image4 = new Image();
+    //    //image4.src = "../content/4.jpg";
+    //    //
+    //    //var image5 = new Image();
+    //    //image5.src = "../content/5.jpg";
+    //    //
+    //    //var image6 = new Image();
+    //    //image6.src = "../content/6.jpg";
+    //    //
+    //    //
+    //    //setTimeout(function(){
+    //    //    ////image = convertImageSize(this);
+    //    //    //var texture = gl.createTexture();
+    //    //    //var u_sampler = gl.getUniformLocation(prg, "u_sampler");
+    //    //    //
+    //    //    //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    //    //    //gl.activeTexture(gl.TEXTURE0);
+    //    //    //gl.bindTexture(gl.TEXTURE, texture);
+    //    //    ////缩小方法采用默认的mip map
+    //    //    ////gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    //    //    //
+    //    //    //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    //    //    ////生成所有的mip层
+    //    //    //gl.generateMipmap(gl.TEXTURE_2D);
+    //    //    //gl.uniform1i(u_sampler, 0);
+    //    //
+    //    //
+    //    //
+    //    //    var texture = gl.createTexture();
+    //    //    var u_sampler = gl.getUniformLocation(prg, "u_sampler");
+    //    //
+    //    //    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+    //    //
+    //    //
+    //    //    //立方图纹理需要设置六个方位上的纹理，为了方便区分，我设置了六个不同的纹理图像
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image2);
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image3);
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image4);
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image5);
+    //    //    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image6);
+    //    //
+    //    //    //生成所有的mip层
+    //    //    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    //    //
+    //    //
+    //    //    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+    //    //    gl.activeTexture(gl.TEXTURE0);
+    //    //    gl.uniform1i(u_sampler, 0);
+    //    //
+    //    //    ////这些内容，也要针对立方图纹理进行设置
+    //    //    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    //    //    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    //    //    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    //    //    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    //    //
+    //    //
+    //    //
+    //    //
+    //    //}, 1000);
+    //}
+
+
+
+
+    //if (a_position < 0) {
+    //    console.log('Failed to get the storage location of a_position');
+    //    return -1;
+    //}
+
+    //gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, 0, 0);
+    //gl.enableVertexAttribArray(a_position);
+
+
+    //var a_color = gl.getAttribLocation(prg, "a_color");
+    //if (a_color < 0) {
+    //    console.log('Failed to get the storage location of a_color');
+    //    return -1;
+    //}
+    //
+    //gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, stride, FSize * 3);
+    //gl.enableVertexAttribArray(a_color);
+    //
+    //var texVbo = createVBO(texCoords);
+    //
+    //var a_texCoord = gl.getAttribLocation(prg, "a_texCoord");
+    //if (a_texCoord < 0) {
+    //    console.log('Failed to get the storage location of a_texCoord');
+    //    return -1;
+    //}
+    //
+    //gl.vertexAttribPointer(a_texCoord, 2, gl.FLOAT, false, 0, 0);
+    //gl.enableVertexAttribArray(a_texCoord);
+
+
+    ////指定立方体中心点位置
+    //var u_cubicCenter = gl.getUniformLocation(prg, 'u_cubicCenter');
+    //
+    //var cubicCenter = new Float32Array([
+    //    0.5,0.0,0.0
+    //]);
+    //gl.uniform3fv(u_cubicCenter, cubicCenter);
+
+    //var normalVBO = createVBO(normals);
+    //
+    //var a_normal = gl.getAttribLocation(prg, "a_normal");
+    //if (a_normal < 0) {
+    //    console.log('Failed to get the storage location of a_normal');
+    //    return -1;
+    //}
+    //
+    //gl.vertexAttribPointer(a_normal, 3, gl.FLOAT, false, 0, 0);
+    //gl.enableVertexAttribArray(a_normal);
+
+
+
+
+    //var ibo = createIBO(indices);
+
+    //initTexture();
+
+    gl.clearColor(0, 0, 0, 1);
+
+    gl.enable(gl.DEPTH_TEST);
+    //gl.depthFunc(gl.LEQUAL);
+
+    //gl.enable(gl.POLYGON_OFFSET_FILL);
+
+    //draw(vertices_num);
+
+
+    //mMatrix.setIdentity();
+    //
+    //setLookAt();
+    //setPerspective();
+
+    // Calculate the view projection matrix
+    setLookAt();
+
+    setPerspective();
+
+
+
+    //设置帧缓冲区的投影矩阵
+
+    setPerspective(OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, pMatrixFBO);
+
+
+    var eyeX = Number($("#lookAt_eye").nextAll("input").eq(0).val()),
+        eyeY = Number($("#lookAt_eye").nextAll("input").eq(1).val()),
+        eyeZ = Number($("#lookAt_eye").nextAll("input").eq(2).val());
+    var centerX = Number($("#lookAt_center").nextAll("input").eq(0).val()),
+        centerY = Number($("#lookAt_center").nextAll("input").eq(1).val()),
+        centerZ = Number($("#lookAt_center").nextAll("input").eq(2).val());
+    var upX = Number($("#lookAt_up").nextAll("input").eq(0).val()),
+        upY = Number($("#lookAt_up").nextAll("input").eq(1).val()),
+        upZ = Number($("#lookAt_up").nextAll("input").eq(2).val());
+
+
+    pMatrixFBO.lookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+
+    //// Calculate the view projection matrix
+    //var viewProjMatrix = new Matrix4();
+    //viewProjMatrix.setPerspective(30.0, canvas.width/canvas.height, 1.0, 100.0);
+    //viewProjMatrix.lookAt(0.0, 0.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+
+    var tick = function() {   // Start drawing
+        //draw(gl, n, viewProjMatrix, u_MvpMatrix, currentAngle);
+        //draw(vertices_num);
+
+
+        //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+        //// Draw a cube in single color
+        //drawSolidCube(gl, cubicPrg, cubicModel, vMatrix);
+
+
+        draw(gl, fbo, plane, sphereModel, texture, vMatrix, pMatrixFBO);
+
+        // Draw a cube with texture
+        //drawTexCube(gl, prg, sphereModel, texture, vMatrix);
+
+        requestAnimationFrame(tick);
+    };
+    setTimeout(function(){
+        tick();
+    }, 1000);
+
+    bindEvent();
+
+
+    function bindCanvasEvent(canvas) {
+        var dragging = false;         // Dragging or not
+        var lastX = -1, lastY = -1;   // Last position of the mouse
+
+        canvas.onmousedown = function(ev) {   // Mouse is pressed
+            var x = ev.clientX, y = ev.clientY;
+            // Start dragging if a moue is in <canvas>
+            var rect = ev.target.getBoundingClientRect();
+            if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
+                lastX = x; lastY = y;
+                dragging = true;
+            }
+        };
+
+        canvas.onmouseup = function(ev) { dragging = false;  }; // Mouse is released
+
+        canvas.onmousemove = function(ev) { // Mouse is moved
+            var x = ev.clientX, y = ev.clientY;
+            if (dragging) {
+                var factor = 100/canvas.height; // The rotation ratio
+                var dx = factor * (x - lastX);
+                var dy = factor * (y - lastY);
+                // Limit x-axis rotation angle to -90 to 90 degrees
+                currentAngle[0] = currentAngle[0] + dx;
+                currentAngle[1] = Math.max(Math.min(currentAngle[1] + dy, 90.0), -90.0);
+            }
+            lastX = x;
+            lastY = y;
+        };
+    }
+
+
+    function draw(gl, fbo, plane, cube, texture, viewProjMatrix, viewProjMatrixFBO) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);              // Change the drawing destination to FBO
+        gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
+
+        gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear FBO
+
+        drawTexCube(gl, prg, cube, texture, viewProjMatrixFBO);   // Draw the cube
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);        // Change the drawing destination to color buffer
+        gl.viewport(0, 0, c.width, c.height);  // Set the size of viewport back to that of <canvas>
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+
+        drawTexturedPlane(gl, prg, plane, fbo.texture, viewProjMatrix);  // Draw the plane
+        //drawTexturedPlane(gl, prg, plane, texture, viewProjMatrix);  // Draw the plane
+    }
+
+    //function drawSolidCube(gl, program, o, viewProjMatrix) {
+    //    gl.useProgram(program);   // Tell that this program object is used
+    //
+    //    // Assign the buffer objects and enable the assignment
+    //    initAttributeVariable(gl, program.a_position, o.vertexBuffer); // Vertex coordinates
+    //    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.indexBuffer);  // Bind indices
+    //
+    //    drawCube(gl, program, o, viewProjMatrix);   // Draw
+    //}
+
+    function drawTexCube(gl, program, o, texture, viewProjMatrixFBO) {
+        gl.useProgram(program);   // Tell that this program object is used
+
+        mMatrix.setIdentity();
+
+        //setLookAt();
+        //setPerspective();
+        //// Calculate a model matrix
+        //g_modelMatrix.setTranslate(x, 0.0, 0.0);
+        //g_modelMatrix.rotate(20.0, 1.0, 0.0, 0.0);
+        //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+        //
+        //// Calculate transformation matrix for normals and pass it to u_NormalMatrix
+        //g_normalMatrix.setInverseOf(g_modelMatrix);
+        //g_normalMatrix.transpose();
+        //gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+        //
+        //// Calculate model view projection matrix and pass it to u_MvpMatrix
+        //g_mvpMatrix.set(viewProjMatrix);
+        //g_mvpMatrix.multiply(g_modelMatrix);
+        //gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+
+        //todo 需要修改（绕着圆心转）
+        mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
+        mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
+
+        //mvpMatrix = computeMvpMatrix(pMatrix, viewProjMatrix, mMatrix);
+       var viewProjMatrixFBO = viewProjMatrixFBO.copy();
+        viewProjMatrixFBO.concat(mMatrix);
+
+        gl.uniformMatrix4fv(program.u_mvpMatrix, false, viewProjMatrixFBO.values);
+
+        drawTexturedObject(gl, program, o, texture);
+
+
+        //
+        //// Assign the buffer objects and enable the assignment
+        //initAttributeVariable(gl, program.a_position, o.vertexBuffer);  // Vertex coordinates
+        ////initAttributeVariable(gl, program.a_normal, o.normalBuffer);    // Normal
+        //initAttributeVariable(gl, program.a_texCoord, o.texCoordBuffer);// Texture coordinates
+        //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.indexBuffer); // Bind indices
+        //
+        //// Bind texture object to texture unit 0
+        //gl.activeTexture(gl.TEXTURE0);
+        //gl.bindTexture(gl.TEXTURE_2D, texture);
+        //
+        //drawCube(gl, program, o, viewProjMatrix); // Draw
+    }
+
+
+    function drawTexturedPlane(gl, program, o, texture, viewProjMatrix) {
+        gl.useProgram(program);   // Tell that this program object is used
+
+        mMatrix.setIdentity();
+
+        //todo 需要修改（绕着圆心转）
+        mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
+        mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
+
+        mvpMatrix = computeMvpMatrix(pMatrix, viewProjMatrix, mMatrix);
+
+        gl.uniformMatrix4fv(program.u_mvpMatrix, false, mvpMatrix.values);
+
+        drawTexturedObject(gl, program, o, texture);
+        //
+        //gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
+        //// Calculate a model matrix
+        //g_modelMatrix.setTranslate(0, 0, 1);
+        //g_modelMatrix.rotate(20.0, 1.0, 0.0, 0.0);
+        //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+        //
+        //// Calculate the model view project matrix and pass it to u_MvpMatrix
+        //g_mvpMatrix.set(viewProjMatrix);
+        //g_mvpMatrix.multiply(g_modelMatrix);
+        //gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+        //
+        //drawTexturedObject(gl, program, o, texture);
+    }
+
+    function drawTexturedObject(gl, program, o, texture) {
+        // Assign the buffer objects and enable the assignment
+        initAttributeVariable(gl, program.a_position, o.vertexBuffer);    // Vertex coordinates
+        initAttributeVariable(gl, program.a_texCoord, o.texCoordBuffer);  // Texture coordinates
+
+        // Bind the texture object to the target
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        // Draw
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.indexBuffer);
+        gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);
+    }
+// Assign the buffer objects and enable the assignment
+    function initAttributeVariable(gl, a_attribute, buffer) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.vertexAttribPointer(a_attribute, buffer.num, buffer.type, false, 0, 0);
+        gl.enableVertexAttribArray(a_attribute);
+    }
+
+// Coordinate transformation matrix
+//    var g_modelMatrix = new Matrix4();
+//    var g_mvpMatrix = new Matrix4();
+//    var g_normalMatrix = new Matrix4();
+
+    //function drawCube(gl, program, o, viewProjMatrix) {
+    //    mMatrix.setIdentity();
+    //
+    //    //setLookAt();
+    //    //setPerspective();
+    //    //// Calculate a model matrix
+    //    //g_modelMatrix.setTranslate(x, 0.0, 0.0);
+    //    //g_modelMatrix.rotate(20.0, 1.0, 0.0, 0.0);
+    //    //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+    //    //
+    //    //// Calculate transformation matrix for normals and pass it to u_NormalMatrix
+    //    //g_normalMatrix.setInverseOf(g_modelMatrix);
+    //    //g_normalMatrix.transpose();
+    //    //gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+    //    //
+    //    //// Calculate model view projection matrix and pass it to u_MvpMatrix
+    //    //g_mvpMatrix.set(viewProjMatrix);
+    //    //g_mvpMatrix.multiply(g_modelMatrix);
+    //    //gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+    //
+    //    //todo 需要修改（绕着圆心转）
+    //    mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
+    //    mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
+    //
+    //    mvpMatrix = computeMvpMatrix(pMatrix, viewProjMatrix, mMatrix);
+    //
+    //    gl.uniformMatrix4fv(program.u_mvpMatrix, false, mvpMatrix.values);
+    //
+    //
+    //    gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
+    //}
+    //function draw(vertices_num){
+    //    //todo 需要修改（绕着圆心转）
+    //    mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
+    //    mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
+    //
+    //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+    //
+    //    //var u_mvpMatrix = gl.getUniformLocation(prg, 'u_mvpMatrix');
+    //
+    //    //gl.uniformMatrix4fv(u_mvpMatrix, false, mvpMatrix.values);
+    //
+    //    //
+    //    //var mvMatrix = vMatrix.copy();
+    //    //mvMatrix.concat(mMatrix);
+    //    //
+    //    //var u_mvMatrix = gl.getUniformLocation(prg, 'u_mvMatrix');
+    //    //
+    //    //gl.uniformMatrix4fv(u_mvMatrix, false, mvMatrix.values);
+    //    //
+    //    //
+    //    //
+    //    //
+    //    //
+    //    //var normalMatrix = Math3D.Matrix.create();
+    //    //normalMatrix.setInverseOf(mMatrix);
+    //    //
+    //    //var u_normalMatrix = gl.getUniformLocation(prg, 'u_normalMatrix');
+    //    //
+    //    //gl.uniformMatrix4fv(u_normalMatrix, false, normalMatrix.values);
+    //
+    //
+    //
+    //
+    //
+    //
+    //    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    //
+    //    gl.drawElements(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+    //    //gl.drawArrays(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
+    //
+    //    //gl.drawArrays(gl.TRIANGLES, 0, vertices_num);
+    //
+    //    mMatrix.setIdentity();
+    //}
+
+    function convertImageSize(image) {
+        //var texture = gl.createTexture();
+        //gl.bindTexture(gl.TEXTURE_2D, texture);
+        if (!isPowerOfTwo(image.width) || !isPowerOfTwo(image.height)) {
+            // Scale up the texture to the next highest power of two dimensions.
+            var canvas = document.createElement("canvas");
+            canvas.width = nextHighestPowerOfTwo(image.width);
+            canvas.height = nextHighestPowerOfTwo(image.height);
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0, image.width, image.height);
+            image = canvas;
+        }
+        //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        //gl.generateMipmap(gl.TEXTURE_2D);
+        //gl.bindTexture(gl.TEXTURE_2D, null);
+        //return texture;
+        return image;
+    }
+
+    function isPowerOfTwo(x) {
+        return (x & (x - 1)) == 0;
+    }
+
+    function nextHighestPowerOfTwo(x) {
+        --x;
+        for (var i = 1; i < 32; i <<= 1) {
+            x = x | x >> i;
+        }
+        return x + 1;
+    }
+
+    function setLookAt(matrix){
+        var eyeX = Number($("#lookAt_eye").nextAll("input").eq(0).val()),
+            eyeY = Number($("#lookAt_eye").nextAll("input").eq(1).val()),
+            eyeZ = Number($("#lookAt_eye").nextAll("input").eq(2).val());
+        var centerX = Number($("#lookAt_center").nextAll("input").eq(0).val()),
+            centerY = Number($("#lookAt_center").nextAll("input").eq(1).val()),
+            centerZ = Number($("#lookAt_center").nextAll("input").eq(2).val());
+        var upX = Number($("#lookAt_up").nextAll("input").eq(0).val()),
+            upY = Number($("#lookAt_up").nextAll("input").eq(1).val()),
+            upZ = Number($("#lookAt_up").nextAll("input").eq(2).val());
+
+        var matrix = matrix || vMatrix;
+
+        matrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+        //vMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0);
+        //vMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0);
+    }
+
+    function setPerspective(aspect, matrix){
+        var near = Number($("#perspective_near").nextAll("input").eq(0).val()),
+            far = Number($("#perspective_far").nextAll("input").eq(0).val()),
+            angle = Number($("#perspective_angle").nextAll("input").eq(0).val());
+        var aspect = aspect || c.width / c.height;
+        var matrix = matrix || pMatrix;
+
+        matrix.setPerspective(angle, aspect, near, far);
+    }
+
+    function bindEvent(){
+        //$("#lookAt").on("click", function(){
+        //    setLookAt();
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //    //mvpMatrix = Math3D.MatrixTool.multiply(vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
+        //
+        //    draw(vertices_num);
+        //});
+        //
+        //$("#ortho").on("click", function(){
+        //    var near = Number($("#ortho_near").nextAll("input").eq(0).val()),
+        //        far = Number($("#ortho_far").nextAll("input").eq(0).val());
+        //
+        //    pMatrix.setOrtho(near, far);
+        //
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
+        //
+        //    draw(vertices_num);
+        //});
+        //
+        //$("#perspective").on("click", function(){
+        //    setPerspective();
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
+        //
+        //    draw(vertices_num);
+        //});
+        //
+        //
+        //
+        //$("#translate").on("click", function(e){
+        //    var x = Number($("#translate_x").val()),
+        //        y = Number($("#translate_y").val()),
+        //        z = Number($("#translate_z").val());
+        //
+        //
+        //    mMatrix.translate(x, y, z);
+        //    //mvpMatrix = mMatrix.values;
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
+        //
+        //    draw(vertices_num);
+        //});
+        //$("#scale").on("click", function(e){
+        //    var x = Number($("#scale_x").val()),
+        //        y = Number($("#scale_y").val()),
+        //        z = Number($("#scale_z").val());
+        //
+        //
+        //    mMatrix.scale(x, y, z);
+        //    //mvpMatrix = mMatrix.values;
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
+        //
+        //    draw(vertices_num);
+        //});
+        //
+        //$("#rotate").on("click", function(e){
+        //    var angle = Number($("#rotate_angle").val()),
+        //        x = Number($("#rotate_x").val()),
+        //        y = Number($("#rotate_y").val()),
+        //        z = Number($("#rotate_z").val());
+        //
+        //
+        //    mMatrix.rotate(angle, x, y, z);
+        //    mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+        //
+        //    var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        //
+        //    gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
+        //
+        //    draw(vertices_num);
+        //});
+    }
+
+
+
+
+
+
+
+
+    function initShaders(vsId, fsId){
+        var vs = createShader(vsId),
+            fs = createShader(fsId);
+
+        return createProgram(vs, fs);
+    }
+
+// 生成着色器的函数
+    function createShader(id){
+        // 用来保存着色器的变量
+        var shader;
+
+        // 根据id从HTML中获取指定的script标签
+        var scriptElement = document.getElementById(id);
+
+        // 如果指定的script标签不存在，则返回
+        if(!scriptElement){return;}
+
+        // 判断script标签的type属性
+        switch(scriptElement.type){
+
+            // 顶点着色器的时候
+            case 'x-shader/x-vertex':
+                shader = gl.createShader(gl.VERTEX_SHADER);
+                break;
+
+            // 片段着色器的时候
+            case 'x-shader/x-fragment':
+                shader = gl.createShader(gl.FRAGMENT_SHADER);
+                break;
+            default :
+                return;
+        }
+
+        // 将标签中的代码分配给生成的着色器
+        gl.shaderSource(shader, scriptElement.text);
+
+        // 编译着色器
+        gl.compileShader(shader);
+
+        // 判断一下着色器是否编译成功
+        if(gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
+
+            // 编译成功，则返回着色器
+            return shader;
+        }else{
+
+            // 编译失败，弹出错误消息
+            alert(gl.getShaderInfoLog(shader));
+        }
+    }
+
+// 程序对象的生成和着色器连接的函数
+    function createProgram(vs, fs){
+        // 程序对象的生成
+        var program = gl.createProgram();
+
+        // 向程序对象里分配着色器
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+
+        // 将着色器连接
+        gl.linkProgram(program);
+
+        // 判断着色器的连接是否成功
+        if(gl.getProgramParameter(program, gl.LINK_STATUS)){
+
+            // 返回程序对象
+            return program;
+        }else{
+
+            // 如果失败，弹出错误信息
+            alert(gl.getProgramInfoLog(program));
+
+            return null;
+        }
+    }
+
+    function createVBO(data){
+        var buffer = gl.createBuffer();
+
+        if (!buffer) {
+            console.log('Failed to create the buffer object');
+            return -1;
+        }
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+        return buffer;
+    }
+
+    function createIBO(data){
+        var buffer = gl.createBuffer();
+
+        if (!buffer) {
+            console.log('Failed to create the buffer object');
+            return -1;
+        }
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+        return buffer;
+    }
+
+});
+
