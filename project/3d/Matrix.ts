@@ -558,6 +558,64 @@ module Math3D{
 
     }
 
+    export class Vector3{
+        constructor(x, y, z);
+        constructor();
+
+        constructor(){
+            this.values = new Float32Array(3);
+            if(arguments.length > 0){
+                this.values[0] = arguments[0];
+                this.values[1] = arguments[1];
+                this.values[2] =arguments[2];
+            }
+        }
+
+        normalize(): Float32Array{
+            var v = this.values;
+            var d = Math.sqrt(
+                v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
+            );
+
+            if(d === 0){
+                return new Float32Array([0, 0, 0]);
+            }
+
+            v[0] = v[0] / d;
+            v[1] = v[1] / d;
+            v[2] = v[2] / d;
+
+            return v;
+        }
+
+        public static create(x, y, z):Vector3 ;
+        public static create():Vector3 ;
+
+        public static create():Vector3 {
+            var m = null;
+
+            if(arguments.length === 0){
+                m = new this();
+            }
+            else{
+                m = new this(arguments[0], arguments[1], arguments[2]);
+            }
+
+            m.initWhenCreate();
+
+            return m;
+        }
+
+        initWhenCreate(){
+        }
+
+        private _values: Float32Array;
+
+        get values():Float32Array { return this._values; }
+        set values(values: Float32Array) {
+            this._values = values;
+        }
+    }
     export class Vector4{
         constructor(x, y, z, w);
         constructor();

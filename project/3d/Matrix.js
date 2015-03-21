@@ -552,6 +552,52 @@ var Math3D;
         return Matrix;
     })();
     Math3D.Matrix = Matrix;
+    var Vector3 = (function () {
+        function Vector3() {
+            this.values = new Float32Array(3);
+            if (arguments.length > 0) {
+                this.values[0] = arguments[0];
+                this.values[1] = arguments[1];
+                this.values[2] = arguments[2];
+            }
+        }
+        Vector3.prototype.normalize = function () {
+            var v = this.values;
+            var d = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+            if (d === 0) {
+                return new Float32Array([0, 0, 0]);
+            }
+            v[0] = v[0] / d;
+            v[1] = v[1] / d;
+            v[2] = v[2] / d;
+            return v;
+        };
+        Vector3.create = function () {
+            var m = null;
+            if (arguments.length === 0) {
+                m = new this();
+            }
+            else {
+                m = new this(arguments[0], arguments[1], arguments[2]);
+            }
+            m.initWhenCreate();
+            return m;
+        };
+        Vector3.prototype.initWhenCreate = function () {
+        };
+        Object.defineProperty(Vector3.prototype, "values", {
+            get: function () {
+                return this._values;
+            },
+            set: function (values) {
+                this._values = values;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Vector3;
+    })();
+    Math3D.Vector3 = Vector3;
     var Vector4 = (function () {
         function Vector4() {
             this.values = new Float32Array(4);
