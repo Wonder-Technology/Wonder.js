@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>3d学习</title>
+    <script src="../../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="../Matrix.js" type="text/javascript"></script>
+    <script src="../Cubic.js" type="text/javascript"></script>
+    <script src="sphereTexture.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+
+<!--<div style="position:absolute;top:0;left:700px;">-->
+    <!--<h1>信息</h1>-->
+    <!--<p>初始顶点坐标：[-0.5, 0, -1], [0.5, 0, -1], [0, 1, -1]</p>-->
+<!--</div>-->
+<p>
+    <h2>视图数据</h2>
+<button id="lookAt">设置视图矩阵</button>
+
+    <span id="lookAt_eye">视点：</span>
+    <span>x:</span><input value="0" />
+    <span>y:</span><input value="0" />
+    <span>z:</span><input value="4"/>
+<br/>
+    <span id="lookAt_center">目标点：</span>
+    <span>x:</span><input value="0" />
+    <span>y:</span><input value="0" />
+    <span>z:</span><input value="-1"/>
+<br/>
+    <span id="lookAt_up">上方向：</span>
+    <span>x:</span><input value="0" />
+    <span>y:</span><input value="1" />
+    <span>z:</span><input value="0"/>
+</p>
+<p>
+<h2>正交投影数据</h2>
+<button id="ortho">设置投影矩阵</button>
+
+<span id="ortho_near">近裁剪面距离：</span>
+<input value="0" />
+<br/>
+<span id="ortho_far">远裁剪面距离：</span>
+<input value="0" />
+</p>
+<p>
+<h2>透视投影数据</h2>
+<button id="perspective">设置投影矩阵</button>
+<span id="perspective_angle">垂直视角：</span>
+<input value="60" />
+<br/>
+<span id="perspective_near">近裁剪面距离：</span>
+<input value="0.1" />
+<br/>
+<span id="perspective_far">远裁剪面距离：</span>
+<input value="10" />
+</p>
+<p>
+    <button id="translate" type="button" value="平移">平移</button>
+    <span>x:</span><input id="translate_x" value="0" />
+    <span>y:</span><input id="translate_y" value="0" />
+    <span>z:</span><input id="translate_z" value="0"/>
+    </p>
+<p>
+    <button id="scale" type="button" value="缩放">缩放</button>
+    <span>x:</span><input id="scale_x" value="1"/>
+    <span>y:</span><input id="scale_y" value="1"/>
+    <span>z:</span><input id="scale_z" value="1"/>
+</p>
+<p>
+    <button id="rotate" type="button" value="旋转">旋转</button>
+    <span>angle:</span><input id="rotate_angle" value="0"/>
+    <span>x:</span><input id="rotate_x" value="0"/>
+    <span>y:</span><input id="rotate_y" value="0"/>
+    <span>z:</span><input id="rotate_z" value="0"/>
+</p>
+
+<script id="vs" type="x-shader/x-vertex">
+attribute vec4 a_position;
+uniform mat4 u_mvpMatrix;
+attribute vec2 a_texCoord;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_Position = u_mvpMatrix * a_position;
+    v_texCoord = a_texCoord;
+}
+        </script>
+
+<script id="fs" type="x-shader/x-fragment">
+precision mediump float;
+uniform sampler2D u_sampler;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_FragColor = texture2D(u_sampler, v_texCoord);
+}
+</script>
+</body>
+</html>

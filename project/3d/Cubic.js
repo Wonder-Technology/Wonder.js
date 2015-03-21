@@ -11,6 +11,8 @@ var Cubic;
         function Sphere() {
             this._vertices = [];
             this._indices = [];
+            this._normals = [];
+            this._texCoords = [];
             this._vLen = null;
         }
         Sphere.prototype.getSphereDataByLatitudeLongtitude = function (pointX, pointY, pointZ, latitudeBands, longitudeBands, radius) {
@@ -25,14 +27,13 @@ var Cubic;
                     var x = radius * cosPhi * sinTheta + pointX;
                     var y = radius * cosTheta + pointY;
                     var z = radius * sinPhi * sinTheta + pointZ;
-                    //var u = 1 - (longNumber / longitudeBands);
-                    //var v = 1 - (latNumber / latitudeBands);
-                    //
-                    //normalData.push(x);
-                    //normalData.push(y);
-                    //normalData.push(z);
-                    //textureCoordData.push(u);
-                    //textureCoordData.push(v);
+                    var u = 1 - (longNumber / longitudeBands);
+                    var v = 1 - (latNumber / latitudeBands);
+                    this._normals.push(x);
+                    this._normals.push(y);
+                    this._normals.push(z);
+                    this._texCoords.push(u);
+                    this._texCoords.push(v);
                     this._vertices.push(x);
                     this._vertices.push(y);
                     this._vertices.push(z);
@@ -56,7 +57,9 @@ var Cubic;
                 vertices: new Float32Array(vertices),
                 //todo 照理说webgl应该支持Uint16Array的！但是此处就是不支持！！？？
                 //因此现在count不能超过2，否则会这样导致indices值可能超过256！
-                indices: new Uint8Array(indices)
+                indices: new Uint8Array(indices),
+                normals: new Float32Array(this._normals),
+                texCoords: new Float32Array(this._texCoords)
             };
         };
         //todo 设置球心坐标

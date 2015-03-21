@@ -11,16 +11,20 @@ module Cubic {
 
         private _vertices:number[] = [];
         private _indices:number[] = [];
+        private _normals:number[] = [];
+        private _texCoords:number[] = [];
+
         private _vLen:number = null;
 
          getSphereDataByLatitudeLongtitude(pointX, pointY, pointZ, latitudeBands, longitudeBands, radius){
             //var normalData = [];
-            //var textureCoordData = [];
+            //维度
             for (var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
                 var theta = latNumber * Math.PI / latitudeBands;
                 var sinTheta = Math.sin(theta);
                 var cosTheta = Math.cos(theta);
 
+                //经度
                 for (var longNumber = 0; longNumber <= longitudeBands; longNumber++) {
                     var phi = longNumber * 2 * Math.PI / longitudeBands;
                     var sinPhi = Math.sin(phi);
@@ -29,14 +33,14 @@ module Cubic {
                     var x = radius * cosPhi * sinTheta + pointX;
                     var y = radius *cosTheta + pointY;
                     var z = radius *sinPhi * sinTheta + pointZ;
-                    //var u = 1 - (longNumber / longitudeBands);
-                    //var v = 1 - (latNumber / latitudeBands);
-                    //
-                    //normalData.push(x);
-                    //normalData.push(y);
-                    //normalData.push(z);
-                    //textureCoordData.push(u);
-                    //textureCoordData.push(v);
+                    var u = 1 - (longNumber / longitudeBands);
+                    var v = 1 - (latNumber / latitudeBands);
+
+                    this._normals.push(x);
+                    this._normals.push(y);
+                    this._normals.push(z);
+                    this._texCoords.push(u);
+                    this._texCoords.push(v);
                     this._vertices.push(x);
                     this._vertices.push(y);
                     this._vertices.push(z);
@@ -68,7 +72,9 @@ module Cubic {
                  vertices: new Float32Array(vertices),
                  //todo 照理说webgl应该支持Uint16Array的！但是此处就是不支持！！？？
                  //因此现在count不能超过2，否则会这样导致indices值可能超过256！
-                 indices: new Uint8Array(indices)
+                 indices: new Uint8Array(indices),
+                 normals: new Float32Array(this._normals),
+                 texCoords: new Float32Array(this._texCoords)
              }
         }
 
