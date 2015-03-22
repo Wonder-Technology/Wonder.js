@@ -99,6 +99,7 @@ var latitudeBands = 10;
     spherePrg.a_position = gl.getAttribLocation(spherePrg, "a_position");
     spherePrg.a_texCoord = gl.getAttribLocation(spherePrg, "a_texCoord");
     spherePrg.u_mvpMatrix = gl.getUniformLocation(spherePrg, 'u_mvpMatrix');
+    spherePrg.u_sampler = gl.getUniformLocation(spherePrg, 'u_sampler');
 
     var cubicModel = initVertexBuffers(gl, cubicData);
     var sphereModel = initVertexBuffers(gl, data);
@@ -197,7 +198,7 @@ var latitudeBands = 10;
 
             // Pass the texure unit 0 to u_Sampler
             gl.useProgram(program);
-            gl.uniform1i(program.u_Sampler, 0);
+            gl.uniform1i(program.u_sampler, 0);
 
             gl.bindTexture(gl.TEXTURE_2D, null); // Unbind texture
         };
