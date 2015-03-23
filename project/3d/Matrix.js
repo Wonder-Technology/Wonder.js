@@ -12,7 +12,7 @@ var Math3D;
      */
     var Matrix = (function () {
         function Matrix() {
-            this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+            this._values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         }
         Matrix.create = function () {
             var m = new this();
@@ -32,11 +32,11 @@ var Math3D;
             configurable: true
         });
         //createMatrix(): Float32Array{
-        //    this.values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+        //    this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         //    return new Float32Array(16);
         //}
         Matrix.prototype.setIdentity = function () {
-            var e = this.values;
+            var e = this._values;
             e[0] = 1;
             e[4] = 0;
             e[8] = 0;
@@ -72,7 +72,7 @@ var Math3D;
             var i, s, d, inv, det;
             s = other.values;
             inv = new Float32Array(16);
-            d = this.values;
+            d = this._values;
             inv[0] = s[5] * s[10] * s[15] - s[5] * s[11] * s[14] - s[9] * s[6] * s[15] + s[9] * s[7] * s[14] + s[13] * s[6] * s[11] - s[13] * s[7] * s[10];
             inv[4] = -s[4] * s[10] * s[15] + s[4] * s[11] * s[14] + s[8] * s[6] * s[15] - s[8] * s[7] * s[14] - s[12] * s[6] * s[11] + s[12] * s[7] * s[10];
             inv[8] = s[4] * s[9] * s[15] - s[4] * s[11] * s[13] - s[8] * s[5] * s[15] + s[8] * s[7] * s[13] + s[12] * s[5] * s[11] - s[12] * s[7] * s[9];
@@ -105,7 +105,7 @@ var Math3D;
          */
         Matrix.prototype.transpose = function () {
             var e, t;
-            e = this.values;
+            e = this._values;
             t = e[1];
             e[1] = e[4];
             e[4] = t;
@@ -134,7 +134,7 @@ var Math3D;
          * @return this
          */
         Matrix.prototype.setTranslate = function (x, y, z) {
-            var e = this.values;
+            var e = this._values;
             e[0] = 1;
             e[4] = 0;
             e[8] = 0;
@@ -161,7 +161,7 @@ var Math3D;
          * @return this
          */
         Matrix.prototype.translate = function (x, y, z) {
-            var e = this.values;
+            var e = this._values;
             e[12] += e[0] * x + e[4] * y + e[8] * z;
             e[13] += e[1] * x + e[5] * y + e[9] * z;
             e[14] += e[2] * x + e[6] * y + e[10] * z;
@@ -180,7 +180,7 @@ var Math3D;
         Matrix.prototype.setRotate = function (angle, x, y, z) {
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
             var angle = Math.PI * angle / 180;
-            e = this.values;
+            e = this._values;
             s = Math.sin(angle);
             c = Math.cos(angle);
             if (0 !== x && 0 === y && 0 === z) {
@@ -306,7 +306,7 @@ var Math3D;
          * @return this
          */
         Matrix.prototype.setScale = function (x, y, z) {
-            var e = this.values;
+            var e = this._values;
             e[0] = x;
             e[4] = 0;
             e[8] = 0;
@@ -432,7 +432,7 @@ var Math3D;
             uy = sz * fx - sx * fz;
             uz = sx * fy - sy * fx;
             // Set to this.
-            e = this.values;
+            e = this._values;
             e[0] = sx;
             e[1] = ux;
             e[2] = -fx;
@@ -465,7 +465,7 @@ var Math3D;
             return this;
         };
         Matrix.prototype.setOrtho = function (near, far) {
-            var e = this.values;
+            var e = this._values;
             e[0] = 1;
             e[1] = 0;
             e[2] = 0;
@@ -514,7 +514,7 @@ var Math3D;
             }
             rd = 1 / (far - near);
             ct = Math.cos(fovy) / s;
-            e = this.values;
+            e = this._values;
             e[0] = ct / aspect;
             e[1] = 0;
             e[2] = 0;
@@ -538,14 +538,14 @@ var Math3D;
             return this;
         };
         Matrix.prototype.concat = function (other) {
-            var a = this.values, b = other.values;
-            this.values = MatrixTool.multiply(a, b);
+            var a = this._values, b = other.values;
+            this._values = MatrixTool.multiply(a, b);
             return this;
         };
         Matrix.prototype.copy = function () {
-            var result = Matrix.create(), i = 0, len = this.values.length;
+            var result = Matrix.create(), i = 0, len = this._values.length;
             for (i = 0; i < len; i++) {
-                result.values[i] = this.values[i];
+                result.values[i] = this._values[i];
             }
             return result;
         };
@@ -554,15 +554,15 @@ var Math3D;
     Math3D.Matrix = Matrix;
     var Vector3 = (function () {
         function Vector3() {
-            this.values = new Float32Array(3);
+            this._values = new Float32Array(3);
             if (arguments.length > 0) {
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] = arguments[2];
+                this._values[0] = arguments[0];
+                this._values[1] = arguments[1];
+                this._values[2] = arguments[2];
             }
         }
         Vector3.prototype.normalize = function () {
-            var v = this.values;
+            var v = this._values;
             var d = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
             if (d === 0) {
                 return new Float32Array([0, 0, 0]);
@@ -600,12 +600,12 @@ var Math3D;
     Math3D.Vector3 = Vector3;
     var Vector4 = (function () {
         function Vector4() {
-            this.values = new Float32Array(4);
+            this._values = new Float32Array(4);
             if (arguments.length > 0) {
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] = arguments[2];
-                this.values[3] = arguments[3];
+                this._values[0] = arguments[0];
+                this._values[1] = arguments[1];
+                this._values[2] = arguments[2];
+                this._values[3] = arguments[3];
             }
         }
         Vector4.create = function () {

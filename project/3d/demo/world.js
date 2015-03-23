@@ -3,6 +3,11 @@ var mvpMatrix = null;
 var vMatrix = Math3D.Matrix.create();
 var pMatrix = Math3D.Matrix.create();
 
+
+
+var keyState = {};
+
+
 function computeMvpMatrix(pMatrix, vMatrix, mMatrix){
     var matrix = pMatrix.copy();
 
@@ -19,6 +24,8 @@ $(function(){
 
     // Current rotation angle ([y-axis, x-axis] degrees)
     var currentAngle = [0.0, 0.0];
+    var moveX = 0,
+        moveZ = 0;
     bindCanvasEvent(c);
 
     var loader = Engine3D.Loader.create();
@@ -55,17 +62,162 @@ $(function(){
     }]);
 
 
+    var skyBox = null;
 
 
     var onload = function(){
-        var vs = Engine3D.Shader.create();
-        var fs = Engine3D.Shader.create();
+        var angle = 60,
+            aspect = c.width / c.height,
+            near = 0.1,
+            far = 10;
 
-        var prg = Engine3D.Program.create(vs.createShader("vs"), fs.createShader("fs"));
 
-        var skyBox = createSkyBox();
+        init();
 
-        skyBox.program = prg;
+
+        loop();
+
+
+        function init(){
+            var vs = Engine3D.Shader.create();
+            var fs = Engine3D.Shader.create();
+
+            var prg = Engine3D.Program.create(vs.createShader("vs"), fs.createShader("fs"));
+
+            skyBox = createSkyBox();
+
+            skyBox.program = prg;
+
+
+            gl.clearColor(0, 0, 0, 1);
+
+            gl.enable(gl.DEPTH_TEST);
+
+
+
+            //init Matrix
+
+            mMatrix.setIdentity();
+
+
+            var eyeX = 0,
+                eyeY = 0,
+                eyeZ = 0;
+            var upX = 0,
+                upY = 1,
+                upZ = 0;
+            var centerX = 0,
+                centerY = 0,
+                centerZ = -1;
+
+            vMatrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+
+
+
+            pMatrix.setPerspective(angle, aspect, near, far);
+
+            //// Calculate the view projection matrix
+            //setLookAt();
+            //
+            //setPerspective();
+        }
+
+
+        function loop(){
+                gl.clearColor(0.0, 0.0, 0.0, 1.0);
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+
+
+                var o = skyBox;
+                o.program.use();
+
+
+
+
+
+            vMatrix.setIdentity();
+
+            move();
+            vMatrix.translate(moveX, 0, moveZ);
+
+            //todo 用欧拉角或四元数来表示方向
+            vMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
+            vMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
+
+            zoom();
+
+            setAllFalse();
+
+            mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+
+
+
+                var dataArr = [{
+                    name: "a_position",
+                    buffer: o.buffers.vertexBuffer  ,
+                    category: "attribute"
+                },
+                    {
+                        name: "a_texCoord",
+                        buffer: o.buffers.texCoordBuffer  ,
+                        category: "attribute"
+                    },
+                    {
+                        name:"u_sampler",
+                        type:  Engine3D.DataType.SAMPLER_CUBE,
+                        val: 0,
+                        category: "uniform"
+                    },
+                    {
+                        name:"u_mvpMatrix",
+                        type: Engine3D.DataType.FLOAT_MAT4,
+                        val: mvpMatrix.values,
+                        category: "uniform"
+                    }];
+
+                o.texture.bindToUnit(0);
+
+                o.draw(dataArr);
+
+                requestAnimationFrame(loop);
+        }
+
+        function move(){
+            var speed = 0.05,
+                x = 0,
+                z = 0;
+
+
+            if(keyState["a"]){
+                x = speed;
+            }
+            else if(keyState["d"]){
+                x = -speed;
+            }
+            else if(keyState["w"]){
+                z = speed;
+            }
+            else if(keyState["s"]){
+                z = -speed;
+            }
+
+            moveX = moveX + x;
+            moveZ = moveZ + z;
+
+        }
+
+        function zoom(){
+            var speed = 10;
+
+            if(keyState["g"]){
+                angle = Math.min(angle + speed, 179);
+            }
+            else if(keyState["h"]){
+                angle = Math.max(angle - speed, 1);
+            }
+
+            pMatrix.setPerspective(angle, aspect, near, far);
+        }
 
         function createSkyBox() {
             var vertices = new Float32Array([
@@ -129,68 +281,6 @@ $(function(){
             return o;
         }
 
-        gl.clearColor(0, 0, 0, 1);
-
-        gl.enable(gl.DEPTH_TEST);
-
-
-
-        // Calculate the view projection matrix
-        setLookAt();
-
-        setPerspective();
-
-
-
-        var tick = function() {   // Start drawing
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
-
-
-            var o = skyBox;
-            o.program.use();
-
-            mMatrix.setIdentity();
-
-            //todo 需要修改（绕着圆心转）
-            mMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
-            mMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
-
-            mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
-
-
-
-            var dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name:"u_sampler",
-                    type:  Engine3D.DataType.SAMPLER_CUBE,
-                    val: 0,
-                    category: "uniform"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-
-            o.texture.bindToUnit(0);
-
-            o.draw(dataArr);
-
-            requestAnimationFrame(tick);
-        };
-        tick();
-
         //bindEvent();
     };
 
@@ -199,6 +289,15 @@ $(function(){
     loader.onload = onload;
 
 
+    function setAllFalse(){
+        var i = null;
+
+        for(i in keyState){
+            if(keyState.hasOwnProperty(i)){
+                keyState[i] = false;
+            }
+        }
+    }
     function bindCanvasEvent(canvas) {
         var dragging = false;         // Dragging or not
         var lastX = -1, lastY = -1;   // Last position of the mouse
@@ -221,13 +320,32 @@ $(function(){
                 var factor = 100/canvas.height; // The rotation ratio
                 var dx = factor * (x - lastX);
                 var dy = factor * (y - lastY);
-                // Limit x-axis rotation angle to -90 to 90 degrees
+                //Limit x-axis rotation angle to -90 to 90 degrees
                 currentAngle[0] = currentAngle[0] + dx;
                 currentAngle[1] = Math.max(Math.min(currentAngle[1] + dy, 90.0), -90.0);
+                //currentAngle[0] =  dx;
+                //currentAngle[1] = Math.max(Math.min(dy, 90.0), -90.0);
             }
             lastX = x;
             lastY = y;
         };
+
+        //todo 使用引擎的key模块来重构
+
+        $("body").on("keydown", function(event){
+            var keyCode = {
+                65: "a",
+                87: "w",
+                83: "s",
+                68: "d",
+                    71: "g",
+                72: "h"
+            };
+
+            setAllFalse();
+
+            keyState[keyCode[event.keyCode]] = true;
+        });
     }
 
 
@@ -258,6 +376,7 @@ $(function(){
         var aspect = aspect || c.width / c.height;
         var matrix = matrix || pMatrix;
 
+        matrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
         matrix.setPerspective(angle, aspect, near, far);
     }
 });

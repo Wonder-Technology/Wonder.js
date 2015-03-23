@@ -14,7 +14,7 @@ module Math3D{
      */
     export class Matrix{
         constructor(){
-            this.values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+            this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         }
         public static create():Matrix {
             var m = new this();
@@ -35,12 +35,12 @@ module Math3D{
         }
 
         //createMatrix(): Float32Array{
-        //    this.values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+        //    this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         //    return new Float32Array(16);
         //}
 
         setIdentity (): Matrix {
-            var e = this.values;
+            var e = this._values;
             e[0] = 1;   e[4] = 0;   e[8]  = 0;   e[12] = 0;
             e[1] = 0;   e[5] = 1;   e[9]  = 0;   e[13] = 0;
             e[2] = 0;   e[6] = 0;   e[10] = 1;   e[14] = 0;
@@ -67,7 +67,7 @@ module Math3D{
 
             s = other.values;
             inv = new Float32Array(16);
-            d = this.values;
+            d = this._values;
 
             inv[0]  =   s[5]*s[10]*s[15] - s[5] *s[11]*s[14] - s[9] *s[6]*s[15]
             + s[9]*s[7] *s[14] + s[13]*s[6] *s[11] - s[13]*s[7]*s[10];
@@ -126,7 +126,7 @@ module Math3D{
         transpose ():Matrix {
         var e, t;
 
-        e = this.values;
+        e = this._values;
 
         t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
         t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
@@ -146,7 +146,7 @@ module Math3D{
          * @return this
          */
         setTranslate (x, y, z): Matrix {
-            var e = this.values;
+            var e = this._values;
             e[0] = 1;  e[4] = 0;  e[8]  = 0;  e[12] = x;
             e[1] = 0;  e[5] = 1;  e[9]  = 0;  e[13] = y;
             e[2] = 0;  e[6] = 0;  e[10] = 1;  e[14] = z;
@@ -162,7 +162,7 @@ module Math3D{
          * @return this
          */
         translate (x, y, z): Matrix {
-            var e = this.values;
+            var e = this._values;
             e[12] += e[0] * x + e[4] * y + e[8]  * z;
             e[13] += e[1] * x + e[5] * y + e[9]  * z;
             e[14] += e[2] * x + e[6] * y + e[10] * z;
@@ -183,7 +183,7 @@ module Math3D{
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
             var angle = Math.PI * angle / 180;
-            e = this.values;
+            e = this._values;
 
             s = Math.sin(angle);
             c = Math.cos(angle);
@@ -281,7 +281,7 @@ module Math3D{
          * @return this
          */
         setScale (x, y, z):Matrix {
-            var e = this.values;
+            var e = this._values;
             e[0] = x;  e[4] = 0;  e[8]  = 0;  e[12] = 0;
             e[1] = 0;  e[5] = y;  e[9]  = 0;  e[13] = 0;
             e[2] = 0;  e[6] = 0;  e[10] = z;  e[14] = 0;
@@ -403,7 +403,7 @@ module Math3D{
             uz = sx * fy - sy * fx;
 
             // Set to this.
-            e = this.values;
+            e = this._values;
             e[0] = sx;
             e[1] = ux;
             e[2] = -fx;
@@ -445,7 +445,7 @@ module Math3D{
 
 
         setOrtho (near, far):Matrix {
-            var e = this.values;
+            var e = this._values;
 
             e[0] = 1;
             e[1] = 0;
@@ -503,7 +503,7 @@ module Math3D{
             rd = 1 / (far - near);
             ct = Math.cos(fovy) / s;
 
-            e = this.values;
+            e = this._values;
 
             e[0]  = ct / aspect;
             e[1]  = 0;
@@ -535,10 +535,10 @@ module Math3D{
         }
 
         concat (other:Matrix):Matrix{
-            var a = this.values,
+            var a = this._values,
                 b = other.values;
 
-            this.values = MatrixTool.multiply(a, b);
+            this._values = MatrixTool.multiply(a, b);
 
             return this;
         }
@@ -546,10 +546,10 @@ module Math3D{
         copy(): Matrix{
             var result = Matrix.create(),
                 i = 0,
-                len = this.values.length;
+                len = this._values.length;
 
             for(i = 0; i < len; i++){
-                result.values[i] = this.values[i];
+                result.values[i] = this._values[i];
             }
 
 
@@ -563,16 +563,16 @@ module Math3D{
         constructor();
 
         constructor(){
-            this.values = new Float32Array(3);
+            this._values = new Float32Array(3);
             if(arguments.length > 0){
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] =arguments[2];
+                this._values[0] = arguments[0];
+                this._values[1] = arguments[1];
+                this._values[2] =arguments[2];
             }
         }
 
         normalize(): Float32Array{
-            var v = this.values;
+            var v = this._values;
             var d = Math.sqrt(
                 v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
             );
@@ -621,12 +621,12 @@ module Math3D{
         constructor();
 
         constructor(){
-            this.values = new Float32Array(4);
+            this._values = new Float32Array(4);
             if(arguments.length > 0){
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] =arguments[2];
-                this.values[3] =arguments[3];
+                this._values[0] = arguments[0];
+                this._values[1] = arguments[1];
+                this._values[2] =arguments[2];
+                this._values[3] =arguments[3];
             }
         }
 
