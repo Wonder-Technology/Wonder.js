@@ -1,31 +1,16 @@
 var mMatrix = Math3D.Matrix.create();
 var mvpMatrix = null;
-var vMatrix = Math3D.Matrix.create();
-var pMatrix = Math3D.Matrix.create();
 
 
 
 var keyState = {};
-
-
-function computeMvpMatrix(pMatrix, vMatrix, mMatrix){
-    var matrix = pMatrix.copy();
-
-    matrix.concat(vMatrix);
-    matrix.concat(mMatrix);
-
-    return matrix;
-}
+var isRotate = false;
 
 $(function(){
     var webgl = Engine3D.Webgl.create();
 
     webgl.init();
 
-    // Current rotation angle ([y-axis, x-axis] degrees)
-    var currentAngle = [0.0, 0.0];
-    var moveX = 0,
-        moveZ = 0;
     bindCanvasEvent(c);
 
     var loader = Engine3D.Loader.create();
@@ -65,15 +50,27 @@ $(function(){
     var skyBox = null;
 
 
+    var camera = Engine3D.Camera.create({
+       eyeX: 0,
+            eyeY: 0,
+            eyeZ:0,
+            centerX:0,
+            centerY:0,
+            centerZ: -1,
+            upX:0,
+            upY: 1,
+            upZ: 0
+    },
+        {
+            angle: 60,
+            aspect : c.width / c.height,
+            near : 0.1,
+            far : 10
+        });
+
+
     var onload = function(){
-        var angle = 60,
-            aspect = c.width / c.height,
-            near = 0.1,
-            far = 10;
-
-
         init();
-
 
         loop();
 
@@ -100,26 +97,7 @@ $(function(){
             mMatrix.setIdentity();
 
 
-            var eyeX = 0,
-                eyeY = 0,
-                eyeZ = 0;
-            var upX = 0,
-                upY = 1,
-                upZ = 0;
-            var centerX = 0,
-                centerY = 0,
-                centerZ = -1;
-
-            vMatrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-
-
-
-            pMatrix.setPerspective(angle, aspect, near, far);
-
-            //// Calculate the view projection matrix
-            //setLookAt();
-            //
-            //setPerspective();
+            camera.init();
         }
 
 
@@ -132,23 +110,19 @@ $(function(){
                 o.program.use();
 
 
-
-
-
-            vMatrix.setIdentity();
+            camera.onStartLoop();
 
             move();
-            vMatrix.translate(moveX, 0, moveZ);
-
-            //todo 用欧拉角或四元数来表示方向
-            vMatrix.rotate(currentAngle[1], 1.0, 0.0, 0.0);
-            vMatrix.rotate(currentAngle[0], 0.0, 1.0, 0.0);
-
+            if(isRotate){
+                camera.rotate();
+            }
             zoom();
 
-            setAllFalse();
 
-            mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
+            camera.run();
+
+
+            mvpMatrix = camera.computeMvpMatrix(mMatrix);
 
 
 
@@ -179,44 +153,41 @@ $(function(){
 
                 o.draw(dataArr);
 
-                requestAnimationFrame(loop);
+
+
+
+            setAllFalse();
+            isRotate = false;
+
+
+
+            requestAnimationFrame(loop);
         }
 
         function move(){
-            var speed = 0.05,
-                x = 0,
-                z = 0;
-
-
             if(keyState["a"]){
-                x = speed;
+                camera.moveLeft();
             }
             else if(keyState["d"]){
-                x = -speed;
+                camera.moveRight();
             }
             else if(keyState["w"]){
-                z = speed;
+                camera.moveBack();
             }
             else if(keyState["s"]){
-                z = -speed;
+                camera.moveFront();
             }
-
-            moveX = moveX + x;
-            moveZ = moveZ + z;
-
         }
 
         function zoom(){
             var speed = 10;
 
             if(keyState["g"]){
-                angle = Math.min(angle + speed, 179);
+                camera.zoomOut();
             }
             else if(keyState["h"]){
-                angle = Math.max(angle - speed, 1);
+                camera.zoomIn();
             }
-
-            pMatrix.setPerspective(angle, aspect, near, far);
         }
 
         function createSkyBox() {
@@ -320,11 +291,12 @@ $(function(){
                 var factor = 100/canvas.height; // The rotation ratio
                 var dx = factor * (x - lastX);
                 var dy = factor * (y - lastY);
-                //Limit x-axis rotation angle to -90 to 90 degrees
-                currentAngle[0] = currentAngle[0] + dx;
-                currentAngle[1] = Math.max(Math.min(currentAngle[1] + dy, 90.0), -90.0);
-                //currentAngle[0] =  dx;
-                //currentAngle[1] = Math.max(Math.min(dy, 90.0), -90.0);
+
+                camera.rotateSpeedX = dx;
+                camera.rotateSpeedY = dy;
+
+
+                isRotate = true;
             }
             lastX = x;
             lastY = y;
@@ -346,38 +318,6 @@ $(function(){
 
             keyState[keyCode[event.keyCode]] = true;
         });
-    }
-
-
-
-
-    function setLookAt(matrix){
-        var eyeX = Number($("#lookAt_eye").nextAll("input").eq(0).val()),
-            eyeY = Number($("#lookAt_eye").nextAll("input").eq(1).val()),
-            eyeZ = Number($("#lookAt_eye").nextAll("input").eq(2).val());
-        var centerX = Number($("#lookAt_center").nextAll("input").eq(0).val()),
-            centerY = Number($("#lookAt_center").nextAll("input").eq(1).val()),
-            centerZ = Number($("#lookAt_center").nextAll("input").eq(2).val());
-        var upX = Number($("#lookAt_up").nextAll("input").eq(0).val()),
-            upY = Number($("#lookAt_up").nextAll("input").eq(1).val()),
-            upZ = Number($("#lookAt_up").nextAll("input").eq(2).val());
-
-        var matrix = matrix || vMatrix;
-
-        matrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-        //vMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0);
-        //vMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0);
-    }
-
-    function setPerspective(aspect, matrix){
-        var near = Number($("#perspective_near").nextAll("input").eq(0).val()),
-            far = Number($("#perspective_far").nextAll("input").eq(0).val()),
-            angle = Number($("#perspective_angle").nextAll("input").eq(0).val());
-        var aspect = aspect || c.width / c.height;
-        var matrix = matrix || pMatrix;
-
-        matrix.setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-        matrix.setPerspective(angle, aspect, near, far);
     }
 });
 
