@@ -1,5 +1,6 @@
 var Engine3D;
 (function (Engine3D) {
+    //todo 支持mip map
     var Texture2D = (function () {
         function Texture2D(params, flipY) {
             this._texture = null;
@@ -51,8 +52,65 @@ var Engine3D;
         return Texture2D;
     })();
     Engine3D.Texture2D = Texture2D;
+    var TextureCubeMap = (function () {
+        function TextureCubeMap(params) {
+            this._texture = null;
+            this._params = null;
+            this._texture = gl.createTexture();
+            this._params = params;
+            //this._flipY = flipY || false;
+        }
+        Object.defineProperty(TextureCubeMap.prototype, "texture", {
+            //private _flipY:boolean = null;
+            get: function () {
+                return this._texture;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        TextureCubeMap.prototype.createTextureArea = function (imageArr, width, height) {
+            var i = 0, len = 6;
+            //立方图纹理需要设置六个方位上的纹理，为了方便区分，我设置了六个不同的纹理图像
+            if (width && height) {
+                for (i = 0; i < len; i++) {
+                    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, imageArr[i]);
+                }
+            }
+            else {
+                for (i = 0; i < len; i++) {
+                    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageArr[i]);
+                }
+            }
+        };
+        TextureCubeMap.prototype.bindToUnit = function (unit) {
+            gl.activeTexture(gl["TEXTURE" + String(unit)]);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._texture);
+        };
+        TextureCubeMap.prototype.unBind = function () {
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+        };
+        TextureCubeMap.prototype.initWhenCreate = function () {
+            var i = null;
+            //if(this._flipY){
+            //    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);  // Flip the image Y coordinate
+            //}
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._texture); // Bind the object to target
+            for (i in this._params) {
+                if (this._params.hasOwnProperty(i)) {
+                    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl[i], gl[this._params[i]]);
+                }
+            }
+        };
+        TextureCubeMap.create = function (params) {
+            var obj = new this(params);
+            obj.initWhenCreate();
+            return obj;
+        };
+        return TextureCubeMap;
+    })();
+    Engine3D.TextureCubeMap = TextureCubeMap;
 })(Engine3D || (Engine3D = {}));
-//function convertImageSize(image) {
+//function convertImageSize(image
 //    //var texture = gl.createTexture();
 //    //gl.bindTexture(gl.TEXTURE_2D, texture);
 //    if (!isPowerOfTwo(image.width) || !isPowerOfTwo(image.height)) {

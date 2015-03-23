@@ -29,8 +29,8 @@ module Engine3D{
                 }
 
                 console.log("资源未加载完");
-            //}, 2000);
-        }, 100);
+            }, 2000);
+        //}, 100);
         }
 
         getResource(id){

@@ -28,8 +28,8 @@ var Engine3D;
                     return;
                 }
                 console.log("资源未加载完");
-                //}, 2000);
-            }, 100);
+            }, 2000);
+            //}, 100);
         };
         Loader.prototype.getResource = function (id) {
             return this._resourceContainer[id];

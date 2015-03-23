@@ -165,6 +165,7 @@ $(function(){
         gl.uniformMatrix4fv(uniLocation, false, mvpMatrix.values);
 
 
+        gl.viewport(0, 0, c.width, c.height);  // Set the size of viewport back to that of <canvas>
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawElements(gl.TRIANGLES, vertices_num, gl.UNSIGNED_BYTE, 0);
