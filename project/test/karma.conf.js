@@ -15,10 +15,13 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         'bower_components/jquery/dist/jquery.js',
+        '3d/yTool.js',
         'test/hepler/**',
 
-        '3d/*.js',
-        '3d/**/*js',
+        '3d/Helper.js',
+        '3d/Matrix.js',
+        '3d/Cubic.js',
+        '3d/Camera.js',
 
         'test/unit/**'
     ],

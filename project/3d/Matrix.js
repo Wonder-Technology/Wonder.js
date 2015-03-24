@@ -12,6 +12,9 @@ var Math3D;
      */
     var Matrix = (function () {
         function Matrix() {
+            this._matrixArr = null;
+            this._values = null;
+            this._matrixArr = [];
             this._values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         }
         Matrix.create = function () {
@@ -35,6 +38,12 @@ var Math3D;
         //    this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         //    return new Float32Array(16);
         //}
+        Matrix.prototype.push = function () {
+            this._matrixArr.push(this._values);
+        };
+        Matrix.prototype.pop = function () {
+            this._values = this._matrixArr.pop();
+        };
         Matrix.prototype.setIdentity = function () {
             var e = this._values;
             e[0] = 1;
@@ -161,11 +170,7 @@ var Math3D;
          * @return this
          */
         Matrix.prototype.translate = function (x, y, z) {
-            var e = this._values;
-            e[12] += e[0] * x + e[4] * y + e[8] * z;
-            e[13] += e[1] * x + e[5] * y + e[9] * z;
-            e[14] += e[2] * x + e[6] * y + e[10] * z;
-            e[15] += e[3] * x + e[7] * y + e[11] * z;
+            this.concat(Matrix.create().setTranslate(x, y, z));
             return this;
         };
         /**
@@ -449,9 +454,21 @@ var Math3D;
             e[13] = 0;
             e[14] = 0;
             e[15] = 1;
-            // Translate.
-            this.translate(-eyeX, -eyeY, -eyeZ);
+            //Translate.
+            //this.translate(-eyeX, -eyeY, -eyeZ);
+            this.values = MatrixTool.multiply(this.values, Matrix.create().setTranslate(-eyeX, -eyeY, -eyeZ).values);
             return this;
+            //var other = Math3D.Matrix.create();
+            //other.setTranslate(-eyeX, -eyeY, -eyeZ);
+            //var a = this._values,
+            //    b = other.values;
+            //
+            ////b*a，而不是a*b
+            ////这是因为在webgl中，向量是右乘的，
+            ////此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+            //this._values = MatrixTool.multiply(a, b);
+            //
+            //return this;
         };
         /**
          * Multiply the viewing matrix from the right.
@@ -539,7 +556,11 @@ var Math3D;
         };
         Matrix.prototype.concat = function (other) {
             var a = this._values, b = other.values;
-            this._values = MatrixTool.multiply(a, b);
+            //this._values = MatrixTool.multiply(a, b);
+            //b*a，而不是a*b
+            //这是因为在webgl中，向量是右乘的，
+            //此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+            this._values = MatrixTool.multiply(b, a);
             return this;
         };
         Matrix.prototype.copy = function () {

@@ -1,9 +1,6 @@
 describe("matrix", function(){
     var matrix = null;
 
-    function createIdentityMat(){
-        //return matrix.setIdentity([]);
-    }
     function getValues(values){
         if(values){
             return Helper.Tool.getValues_forTest(values);
@@ -19,16 +16,35 @@ describe("matrix", function(){
         matrix = Math3D.Matrix.create();
     });
 
-    //describe("createMatrix", function(){
-    //    it("创建Float32Array数组", function(){
-    //        expect(matrix.createMatrix()).toBeInstanceOf(Float32Array);
-    //        expect(matrix.createMatrix().length).toEqual(16);
-    //    });
-    //});
+    describe("push", function(){
+        it("保存当前值到队列中", function(){
+            matrix.translate(1,2,3);
 
+            matrix.push(matrix.values);
+
+            expect(matrix._matrixArr.length).toEqual(1);
+            expect(getValues(matrix._matrixArr[0])).toEqual(
+                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]
+            )
+        })
+    });
+
+    describe("pop", function(){
+        it("从队列中取出第一个，设置为当前值", function(){
+            matrix.translate(1,2,3);
+            matrix.push(matrix.values);
+            matrix.translate(1,0,0);
+
+            matrix.pop();
+
+            expect(matrix._matrixArr.length).toEqual(0);
+            expect(getValues()).toEqual(
+                [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]
+            )
+        })
+    });
     describe("setIdentity", function(){
         it("设置为单元矩阵", function(){
-            //var mat = createIdentityMat();
             matrix.setIdentity();
 
             expect(getValues()).toEqual( [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]);
@@ -167,9 +183,8 @@ describe("matrix", function(){
             var eye = [1, 2, 1],
                 center = [1, 2, -1],
                 up = [0, 1, 0];
-            var dest = createIdentityMat();
 
-            matrix.setLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2], dest);
+            matrix.setLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
 
             expect(getValues()).toEqual(
                 [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1, -2, -1, 1 ]
@@ -223,9 +238,9 @@ describe("matrix", function(){
         it("平移->缩放->绕y轴旋转坐标", function(){
             var v =Math3D.Vector4.create(0, 0, 0, 1);
 
-            matrix.setRotate(45, 0, 1, 0);
-            matrix.scale(2,2,2);
             matrix.translate(1, 1, 1);
+            matrix.scale(2,2,2);
+            matrix.rotate(45, 0, 1, 0);
             var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
 
             expect(getValues(result.values)).toEqual(
@@ -235,19 +250,30 @@ describe("matrix", function(){
         it("测试视图矩阵", function(){
             var v =Math3D.Vector4.create(1, 1, 1, 1);
 
-            matrix.lookAt(-1, 0, 1, 0, 0, 1, 0, 1, 0);
+           matrix.lookAt(1, 2, 1, 1, 2, -1, 0, 1, 0);
             var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
 
             expect(getValues(result.values)).toEqual(
-                [ 0, 1, -2, 1 ]
+                [ 0, -1, 0, 1 ]
             );
         });
-        it("平移->视图变换->正交投影变换", function(){
+        it("旋转视图矩阵", function(){
+            var v =Math3D.Vector4.create(1, 1, 1, 1);
+
+            matrix.lookAt(0, 0, 5, 0, 0, -1, 0, 1, 0);
+            matrix.rotate(90, 0, 1, 0);
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
+
+            expect(getValues(result.values)).toEqual(
+                [-4, 1, -1, 1]
+            );
+        });
+        it("视图变换->正交投影变换", function(){
             var v1 =Math3D.Vector4.create(1, 1, 1, 1);
             var v2 =Math3D.Vector4.create(1, 1, -5, 1);
 
-            matrix.setOrtho(0.1,10);
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
+            matrix.ortho(0.1,10);
             var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1);
             var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2);
 
@@ -259,13 +285,13 @@ describe("matrix", function(){
                 [ 1, 1, -0.0101011, 1 ]
             );
         });
-        it("平移->视图变换->透视投影变换", function(){
+        it("视图变换->透视投影变换", function(){
             var v1 =Math3D.Vector4.create(1, 1, 1, 1);
             var v2 =Math3D.Vector4.create(1, 1, -5, 1);
 
-            matrix.setPerspective(30, 1, 0.1,10);
             //matrix.lookAt(-1, 0, 1, 0, 0, 1, 0, 1, 0);
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
+            matrix.setPerspective(30, 1, 0.1,10);
             var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1);
             var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2);
 

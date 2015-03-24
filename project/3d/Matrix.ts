@@ -14,6 +14,7 @@ module Math3D{
      */
     export class Matrix{
         constructor(){
+            this._matrixArr = [];
             this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         }
         public static create():Matrix {
@@ -27,7 +28,8 @@ module Math3D{
         initWhenCreate(){
         }
 
-        private _values: Float32Array;
+        private _matrixArr = null;
+        private _values: Float32Array = null;
 
         get values():Float32Array { return this._values; }
         set values(values: Float32Array) {
@@ -38,6 +40,14 @@ module Math3D{
         //    this._values = new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
         //    return new Float32Array(16);
         //}
+
+        push(){
+            this._matrixArr.push(this._values);
+        }
+
+        pop(){
+            this._values = this._matrixArr.pop();
+        }
 
         setIdentity (): Matrix {
             var e = this._values;
@@ -162,11 +172,8 @@ module Math3D{
          * @return this
          */
         translate (x, y, z): Matrix {
-            var e = this._values;
-            e[12] += e[0] * x + e[4] * y + e[8]  * z;
-            e[13] += e[1] * x + e[5] * y + e[9]  * z;
-            e[14] += e[2] * x + e[6] * y + e[10] * z;
-            e[15] += e[3] * x + e[7] * y + e[11] * z;
+            this.concat(Matrix.create().setTranslate(x, y, z));
+
             return this;
         }
 
@@ -424,10 +431,25 @@ module Math3D{
             e[14] = 0;
             e[15] = 1;
 
-            // Translate.
-            this.translate(-eyeX, -eyeY, -eyeZ);
+            //Translate.
+            //this.translate(-eyeX, -eyeY, -eyeZ);
+            this.values = MatrixTool.multiply(this.values, Matrix.create().setTranslate(-eyeX, -eyeY, -eyeZ).values);
+
+
 
             return this;
+
+            //var other = Math3D.Matrix.create();
+            //other.setTranslate(-eyeX, -eyeY, -eyeZ);
+            //var a = this._values,
+            //    b = other.values;
+            //
+            ////b*a，而不是a*b
+            ////这是因为在webgl中，向量是右乘的，
+            ////此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+            //this._values = MatrixTool.multiply(a, b);
+            //
+            //return this;
         }
 
         /**
@@ -538,7 +560,11 @@ module Math3D{
             var a = this._values,
                 b = other.values;
 
-            this._values = MatrixTool.multiply(a, b);
+            //this._values = MatrixTool.multiply(a, b);
+                //b*a，而不是a*b
+                //这是因为在webgl中，向量是右乘的，
+                //此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+                this._values = MatrixTool.multiply(b, a);
 
             return this;
         }

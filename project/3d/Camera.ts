@@ -1,23 +1,25 @@
 /// <reference path="Matrix.ts"/>
 module Engine3D{
+    //todo 优化，减少计算
     export class Camera{
         constructor(lookAtOpt, perspectiveOpt){
             this._eyeX = lookAtOpt.eyeX;
-                this._eyeY = lookAtOpt.eyeY;
-                this._eyeZ = lookAtOpt.eyeZ;
+            this._eyeY = lookAtOpt.eyeY;
+            this._eyeZ = lookAtOpt.eyeZ;
             this._upX = lookAtOpt.upX;
-                this._upY = lookAtOpt.upY;
-                this._upZ = lookAtOpt.upZ;
+            this._upY = lookAtOpt.upY;
+            this._upZ = lookAtOpt.upZ;
             this._centerX = lookAtOpt.centerX;
-                this._centerY = lookAtOpt.centerY;
-                this._centerZ = lookAtOpt.centerZ;
+            this._centerY = lookAtOpt.centerY;
+            this._centerZ = lookAtOpt.centerZ;
 
             this._zoomAngle= perspectiveOpt.angle;
-                this._aspect = perspectiveOpt.aspect;
-                this._near = perspectiveOpt.near;
-                this._far = perspectiveOpt.far;
+            this._aspect = perspectiveOpt.aspect;
+            this._near = perspectiveOpt.near;
+            this._far = perspectiveOpt.far;
 
             this._moveX = 0;
+            this._moveY = 0;
             this._moveZ = 0;
             this._rotateAngleX = 0;
             this._rotateAngleY = 0;
@@ -42,6 +44,7 @@ module Engine3D{
         private _near = null;
         private _far = null;
         private _moveX = null;
+        private _moveY = null;
         private _moveZ = null;
         private _rotateAngleX = null;
         private _rotateAngleY = null;
@@ -57,26 +60,66 @@ module Engine3D{
 
 
         onStartLoop(){
-            this._vMatrix.setIdentity();
+            this._vMatrix.push();
+        }
+        onEndLoop(){
+            this._vMatrix.pop();
         }
 
         moveLeft(){
-            this._moveX = this._moveX + this.moveSpeed;
+            this._computeMoveDistance(Math3D.Vector4.create(-this.moveSpeed, 0, 0, 1));
+
+
+            //绕x轴旋转时，投影xy平面为垂直方向，而Left和Right移动投影到xy平面为水平方向，因此绕x轴旋转不会影响Left和Right移动
+            //this._moveX = this._moveX + Math.cos(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ + Math.sin(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
         }
         moveRight(){
-            this._moveX = this._moveX - this.moveSpeed;
+            this._computeMoveDistance(Math3D.Vector4.create(this.moveSpeed, 0, 0, 1));
+
+            //this._moveX = this._moveX - Math.cos(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ - Math.sin(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
         }
+
+
         moveBack(){
-            this._moveZ = this._moveZ + this.moveSpeed;
+            this._computeMoveDistance(Math3D.Vector4.create(0, 0, this.moveSpeed, 1));
+
+            //this._moveY = this._moveY - Math.sin(this._rotateAngleX * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleX* Math.PI / 180) *this.moveSpeed;
+
+            //this._moveX = this._moveX + Math.sin(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
         }
         moveFront(){
-            this._moveZ = this._moveZ - this.moveSpeed;
+            this._computeMoveDistance(Math3D.Vector4.create(0, 0, -this.moveSpeed, 1));
+
+            //this._moveY = this._moveY + Math.sin(this._rotateAngleX * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleX* Math.PI / 180) *this.moveSpeed;
+
+            //this._moveX = this._moveX - Math.sin(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
+            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
+        }
+
+        private _computeMoveDistance(speedVec4){
+            /*!
+             此处移动距离是针对视图坐标系的（先旋转，然后平移），因此需要计算视图坐标系旋转后移动的距离。
+             */
+            var matrix = Math3D.Matrix.create();
+            matrix.setRotate(this._rotateAngleX, 1.0, 0.0, 0.0);
+            matrix.rotate(this._rotateAngleY, 0.0, 1.0, 0.0);
+
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values, speedVec4);
+
+            this._moveX += result.values[0];
+            this._moveY += result.values[1];
+            this._moveZ += result.values[2];
         }
 
         //todo 用欧拉角或四元数来表示方向
         rotate(){
-            this._rotateAngleX = this._rotateAngleX + this.rotateSpeedX;
-            this._rotateAngleY = Math.max(Math.min(this._rotateAngleY + this.rotateSpeedY, 90.0), -90.0);
+            this._rotateAngleY = this._rotateAngleY + this.rotateSpeedY;
+            this._rotateAngleX = Math.max(Math.min(this._rotateAngleX + this.rotateSpeedX, 90.0), -90.0);
         }
 
         zoomIn(){
@@ -87,28 +130,38 @@ module Engine3D{
         }
 
         run(){
-            this._vMatrix.rotate(this._rotateAngleY, 1.0, 0.0, 0.0);
-            this._vMatrix.rotate(this._rotateAngleX, 0.0, 1.0, 0.0);
-            this._vMatrix.translate(this._moveX, 0, this._moveZ);
+            /*!
+            需要对视图坐标系进行变换，先进行旋转变换R，再进行平移变换T，即M=T*R
+            因此相当于对视图坐标进行M的逆变换，即M-1=R-1 * T-1，即X'=(R-1 * T-1) * X（X为视图坐标，X'为变换后的坐标）
 
+            而此处是对视图坐标进行变换，因此要进行M的逆变换。
+
+            注意：旋转角rotateAngle和移动距离都是针对视图坐标系的！
+          */
+            this._vMatrix.translate(-this._moveX, -this._moveY, -this._moveZ);
+
+            this._vMatrix.rotate(-this._rotateAngleY, 0.0, 1.0, 0.0);
+            this._vMatrix.rotate(-this._rotateAngleX, 1.0, 0.0, 0.0);
+
+
+            //this._vMatrix.translate(this._moveX, this._moveY, this._moveZ);
 
             this._pMatrix.setPerspective(this._zoomAngle, this._aspect, this._near, this._far);
         }
 
         computeMvpMatrix(mMatrix){
-        var matrix = this._pMatrix.copy();
+            var matrix = Math3D.Matrix.create();
+            matrix.concat(mMatrix);
+            matrix.concat(this._vMatrix);
+            matrix.concat(this._pMatrix);
 
-        matrix.concat(this._vMatrix);
-        matrix.concat(mMatrix);
-
-        return matrix;
-    }
+            return matrix;
+        }
 
         init(){
             this._vMatrix.setLookAt(this._eyeX, this._eyeY, this._eyeZ, this._centerX, this._centerY, this._centerZ, this._upX, this._upY, this._upZ);
             this._pMatrix.setPerspective(this._zoomAngle, this._aspect, this._near, this._far);
         }
-
 
         initWhenCreate(){
         }

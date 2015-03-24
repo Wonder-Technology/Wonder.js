@@ -51,8 +51,8 @@ $(function(){
 
     var camera = Engine3D.Camera.create({
        eyeX: 0,
-            eyeY: 0,
-            eyeZ:0,
+            eyeY: 0.0,
+            eyeZ:0.0 ,
             centerX:0,
             centerY:0,
             centerZ: -1,
@@ -60,6 +60,16 @@ $(function(){
             upY: 1,
             upZ: 0
     },
+    //    eyeX: -0.5,
+    //        eyeY: -0.5,
+    //        eyeZ:-0.5 ,
+    //        centerX:-0.5,
+    //        centerY:-0.5,
+    //        centerZ: -1,
+    //        upX:0,
+    //        upY: 1,
+    //        upZ: 0
+    //},
         {
             angle: 60,
             aspect : c.width / c.height,
@@ -130,6 +140,11 @@ $(function(){
 
 
             drawSprites();
+
+
+
+
+            camera.onEndLoop();
 
             setAllFalse();
             isRotate = false;
@@ -219,16 +234,14 @@ $(function(){
                 camera.moveRight();
             }
             else if(keyState["w"]){
-                camera.moveBack();
+                camera.moveFront();
             }
             else if(keyState["s"]){
-                camera.moveFront();
+                camera.moveBack();
             }
         }
 
         function zoom(){
-            var speed = 10;
-
             if(keyState["g"]){
                 camera.zoomOut();
             }
@@ -391,8 +404,9 @@ $(function(){
                 var dx = factor * (x - lastX);
                 var dy = factor * (y - lastY);
 
-                camera.rotateSpeedX = dx;
-                camera.rotateSpeedY = dy;
+                //此处为针对视图坐标系的角度变换！
+                camera.rotateSpeedY = -dx;
+                camera.rotateSpeedX = -dy;
 
 
                 isRotate = true;
