@@ -28,7 +28,7 @@ module Math3D{
         initWhenCreate(){
         }
 
-        private _matrixArr = null;
+        private _matrixArr:Array<Float32Array> = null;
         private _values: Float32Array = null;
 
         get values():Float32Array { return this._values; }
