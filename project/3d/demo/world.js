@@ -47,7 +47,6 @@ $(function(){
     }]);
 
 
-    var skyBox = null;
 
 
     var camera = Engine3D.Camera.create({
@@ -70,6 +69,11 @@ $(function(){
 
 
     var onload = function(){
+        var skyBox = null;
+        var rectangle = null;
+
+
+
         init();
 
         loop();
@@ -79,11 +83,18 @@ $(function(){
             var vs = Engine3D.Shader.create();
             var fs = Engine3D.Shader.create();
 
-            var prg = Engine3D.Program.create(vs.createShader("vs"), fs.createShader("fs"));
+            var skyBoxPrg = Engine3D.Program.create(vs.createShader("skyBox-vs"), fs.createShader("skyBox-fs"));
 
             skyBox = createSkyBox();
 
-            skyBox.program = prg;
+            skyBox.program = skyBoxPrg;
+
+            var rectanglePrg  = Engine3D.Program.create(vs.createShader("rectangle-vs"), fs.createShader("rectangle-fs"));
+
+            rectangle = createRectangle();
+            rectangle.program = rectanglePrg;
+
+
 
 
             gl.clearColor(0, 0, 0, 1);
@@ -102,12 +113,7 @@ $(function(){
 
 
         function loop(){
-                gl.clearColor(0.0, 0.0, 0.0, 1.0);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
-
-
-                var o = skyBox;
-                o.program.use();
 
 
             camera.onStartLoop();
@@ -122,39 +128,8 @@ $(function(){
             camera.run();
 
 
-            mvpMatrix = camera.computeMvpMatrix(mMatrix);
 
-
-
-                var dataArr = [{
-                    name: "a_position",
-                    buffer: o.buffers.vertexBuffer  ,
-                    category: "attribute"
-                },
-                    {
-                        name: "a_texCoord",
-                        buffer: o.buffers.texCoordBuffer  ,
-                        category: "attribute"
-                    },
-                    {
-                        name:"u_sampler",
-                        type:  Engine3D.DataType.SAMPLER_CUBE,
-                        val: 0,
-                        category: "uniform"
-                    },
-                    {
-                        name:"u_mvpMatrix",
-                        type: Engine3D.DataType.FLOAT_MAT4,
-                        val: mvpMatrix.values,
-                        category: "uniform"
-                    }];
-
-                o.texture.bindToUnit(0);
-
-                o.draw(dataArr);
-
-
-
+            drawSprites();
 
             setAllFalse();
             isRotate = false;
@@ -162,6 +137,78 @@ $(function(){
 
 
             requestAnimationFrame(loop);
+        }
+
+
+        function drawSprites(){
+            var o = skyBox;
+            o.program.use();
+
+
+            mvpMatrix = camera.computeMvpMatrix(mMatrix);
+
+            var dataArr = [{
+                name: "a_position",
+                buffer: o.buffers.vertexBuffer  ,
+                category: "attribute"
+            },
+                {
+                    name: "a_texCoord",
+                    buffer: o.buffers.texCoordBuffer  ,
+                    category: "attribute"
+                },
+                {
+                    name:"u_sampler",
+                    type:  Engine3D.DataType.SAMPLER_CUBE,
+                    val: 0,
+                    category: "uniform"
+                },
+                {
+                    name:"u_mvpMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: mvpMatrix.values,
+                    category: "uniform"
+                }];
+
+            o.texture.bindToUnit(0);
+
+            o.draw(dataArr);
+
+
+
+
+           o = rectangle;
+            o.program.use();
+
+
+            mvpMatrix = camera.computeMvpMatrix(mMatrix);
+
+            dataArr = [{
+                name: "a_position",
+                buffer: o.buffers.vertexBuffer  ,
+                category: "attribute"
+            },
+                {
+                    name: "a_texCoord",
+                    buffer: o.buffers.texCoordBuffer  ,
+                    category: "attribute"
+                },
+                {
+                    name:"u_sampler",
+                    type:  Engine3D.DataType.SAMPLER_2D,
+                    val: 0,
+                    category: "uniform"
+                },
+                {
+                    name:"u_mvpMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: mvpMatrix.values,
+                    category: "uniform"
+                }];
+
+            o.texture.bindToUnit(0);
+
+            o.draw(dataArr);
         }
 
         function move(){
@@ -252,6 +299,58 @@ $(function(){
             return o;
         }
 
+        function createRectangle() {
+            var vertices = new Float32Array([
+                0.5, 0.5, 0.5,
+                -0.5, 0.5, 0.5,
+                -0.5, -0.5, 0.5,
+                0.5, -0.5, 0.5
+            ]);
+
+            // Indices of the vertices
+            var indices = new Uint8Array([
+                0, 1, 2,   0, 2, 3
+            ]);
+
+            var texCoords = new Float32Array([
+                1.0, 1.0,
+                0.0, 1.0,
+                0.0, 0.0,
+                1.0, 0.0
+            ]);
+
+
+            var o = Engine3D.Sprite.create("TRIANGLES");
+
+            o.setBuffers({
+                vertexBuffer:Engine3D.ArrayBuffer.create(vertices, 3, gl.FLOAT),
+                texCoordBuffer: Engine3D.ArrayBuffer.create(texCoords, 2, gl.FLOAT),
+                indexBuffer: Engine3D.ElementBuffer.create(indices, gl.UNSIGNED_BYTE)
+            });
+
+
+
+
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            var texture = Engine3D.Texture2D.create({
+                "TEXTURE_MIN_FILTER":"LINEAR"
+            });
+            if (!texture) {
+                console.log('Failed to create the texture object');
+                return null;
+            }
+            texture.bindToUnit(0);
+            texture.createTextureArea(
+                loader.getResource("1")
+            );
+
+            texture.unBind();
+
+
+            o.texture = texture;
+
+            return o;
+        }
         //bindEvent();
     };
 

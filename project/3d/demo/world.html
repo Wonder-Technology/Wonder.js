@@ -20,7 +20,30 @@
 <body>
 <canvas id="canvas" width="600" height="400"></canvas>
 
-<script id="vs" type="x-shader/x-vertex">
+<script id="rectangle-vs" type="x-shader/x-vertex">
+attribute vec4 a_position;
+uniform mat4 u_mvpMatrix;
+attribute vec2 a_texCoord;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_Position = u_mvpMatrix * a_position;
+    v_texCoord = a_texCoord;
+}
+        </script>
+
+<script id="rectangle-fs" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform sampler2D u_sampler;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_FragColor = texture2D(u_sampler, v_texCoord);
+}
+</script>
+
+<script id="skyBox-vs" type="x-shader/x-vertex">
 attribute vec4 a_position;
 uniform mat4 u_mvpMatrix;
 attribute vec3 a_texCoord;
@@ -32,7 +55,7 @@ void main(void){
 }
         </script>
 
-<script id="fs" type="x-shader/x-fragment">
+<script id="skyBox-fs" type="x-shader/x-fragment">
 precision mediump float;
 
 uniform samplerCube u_sampler;
