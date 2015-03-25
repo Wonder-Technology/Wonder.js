@@ -5,7 +5,7 @@
  * QQ: 395976266
  * 博客：http://www.cnblogs.com/chaogex/
  */
-module Cubic {
+module Engine3D.Cubic {
     export class Sphere{
         constructor(){}
 
@@ -267,69 +267,77 @@ module Cubic {
         }
     }
 
-    export class Cubic{
+    export class Cube{
         constructor(){}
 
-        getCubicData(){
-            var vertices = new Float32Array([
-                1.0,  1.0,  1.0,
-                -1.0,  1.0,  1.0,
-                -1.0, -1.0,  1.0,
-                1.0, -1.0,  1.0,
-                1.0, -1.0, -1.0,
-                1.0,  1.0, -1.0,
-                -1.0,  1.0, -1.0,
-                -1.0, -1.0, -1.0,
+        //getCubicData(pointX, pointY, pointZ, length){
+        //    var vertices = new Float32Array([
+        //
+        //        1.0,  1.0,  1.0,
+        //        -1.0,  1.0,  1.0,
+        //        -1.0, -1.0,  1.0,
+        //        1.0, -1.0,  1.0,
+        //        1.0, -1.0, -1.0,
+        //        1.0,  1.0, -1.0,
+        //        -1.0,  1.0, -1.0,
+        //        -1.0, -1.0, -1.0,
+        //    ]);
+        //
+        //    // Indices of the vertices
+        //    var indices = new Uint8Array([
+        //        0, 1, 2,   0, 2, 3,    // front
+        //        0, 3, 4,   0, 4, 5,    // right
+        //        0, 5, 6,   0, 6, 1,    // up
+        //        1, 6, 7,   1, 7, 2,    // left
+        //        7, 4, 3,   7, 3, 2,    // down
+        //        4, 7, 6,   4, 6, 5     // back
+        //    ]);
+        //
+        //    return {
+        //        vertices: vertices,
+        //        indices: indices
+        //    }
+        //}
+
+        //todo 可指定中心点和边长
+        getCubeData(pointX, pointY, pointZ, length): {}{
+            // Create a cube
+            //    v6----- v5
+            //   /|      /|
+            //  v1------v0|
+            //  | |     | |
+            //  | |v7---|-|v4
+            //  |/      |/
+            //  v2------v3
+
+            var vertices = new Float32Array([   // Vertex coordinates
+                0.2, 0.2, 0.2,  -0.2, 0.2, 0.2,  -0.2,-0.2, 0.2,   0.2,-0.2, 0.2,    // v0-v1-v2-v3 front
+                0.2, 0.2, 0.2,   0.2,-0.2, 0.2,   0.2,-0.2,-0.2,   0.2, 0.2,-0.2,    // v0-v3-v4-v5 right
+                0.2, 0.2, 0.2,   0.2, 0.2,-0.2,  -0.2, 0.2,-0.2,  -0.2, 0.2, 0.2,    // v0-v5-v6-v1 up
+                -0.2, 0.2, 0.2,  -0.2, 0.2,-0.2,  -0.2,-0.2,-0.2,  -0.2,-0.2, 0.2,    // v1-v6-v7-v2 left
+                -0.2,-0.2,-0.2,   0.2,-0.2,-0.2,   0.2,-0.2, 0.2,  -0.2,-0.2, 0.2,    // v7-v4-v3-v2 down
+                0.2,-0.2,-0.2,  -0.2,-0.2,-0.2,  -0.2, 0.2,-0.2,   0.2, 0.2,-0.2     // v4-v7-v6-v5 back
             ]);
 
-            // Indices of the vertices
-            var indices = new Uint8Array([
-                0, 1, 2,   0, 2, 3,    // front
-                0, 3, 4,   0, 4, 5,    // right
-                0, 5, 6,   0, 6, 1,    // up
-                1, 6, 7,   1, 7, 2,    // left
-                7, 4, 3,   7, 3, 2,    // down
-                4, 7, 6,   4, 6, 5     // back
+            var normals = new Float32Array([   // Normal
+                0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,     // v0-v1-v2-v3 front
+                1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,     // v0-v3-v4-v5 right
+                0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,     // v0-v5-v6-v1 up
+                -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,     // v1-v6-v7-v2 left
+                0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,     // v7-v4-v3-v2 down
+                0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0      // v4-v7-v6-v5 back
             ]);
 
-            return {
-                vertices: vertices,
-                indices: indices
-            }
-        }
-        getCubicDataWithNormal(){
-            var vertices = new Float32Array([   // Coordinates
-                1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0, // v0-v1-v2-v3 front
-                1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0, // v0-v3-v4-v5 right
-                1.0, 1.0, 1.0,   1.0, 1.0,-1.0,  -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
-                -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0, // v1-v6-v7-v2 left
-                -1.0,-1.0,-1.0,   1.0,-1.0,-1.0,   1.0,-1.0, 1.0,  -1.0,-1.0, 1.0, // v7-v4-v3-v2 down
-                1.0,-1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,   1.0, 1.0,-1.0  // v4-v7-v6-v5 back
+            var texCoords = new Float32Array([   // Texture coordinates
+                1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0,    // v0-v1-v2-v3 front
+                0.0, 1.0,   0.0, 0.0,   1.0, 0.0,   1.0, 1.0,    // v0-v3-v4-v5 right
+                1.0, 0.0,   1.0, 1.0,   0.0, 1.0,   0.0, 0.0,    // v0-v5-v6-v1 up
+                1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0,    // v1-v6-v7-v2 left
+                0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0,    // v7-v4-v3-v2 down
+                0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0     // v4-v7-v6-v5 back
             ]);
 
-
-        //    var colors = new Float32Array([    // Colors
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
-        //        1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0　    // v4-v7-v6-v5 back
-        //]);
-
-
-            var normals = new Float32Array([    // Normal
-                0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,  // v0-v1-v2-v3 front
-                1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,  // v0-v3-v4-v5 right
-                0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,  // v0-v5-v6-v1 up
-                -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  // v1-v6-v7-v2 left
-                0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,  // v7-v4-v3-v2 down
-                0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0   // v4-v7-v6-v5 back
-            ]);
-
-
-            // Indices of the vertices
-            var indices = new Uint8Array([
+            var indices = new Uint8Array([        // Indices of the vertices
                 0, 1, 2,   0, 2, 3,    // front
                 4, 5, 6,   4, 6, 7,    // right
                 8, 9,10,   8,10,11,    // up
@@ -340,13 +348,14 @@ module Cubic {
 
             return {
                 vertices: vertices,
+                texCoords: texCoords,
                 indices: indices,
                 normals: normals
             }
         }
 
-        public static create():Cubic {
-            var cubic = new Cubic();
+        public static create():Cube {
+            var cubic = new this();
 
             return cubic;
         }

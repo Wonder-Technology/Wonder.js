@@ -9,13 +9,17 @@ module Engine3D{
             this._flipY = flipY || false;
         }
 
-        private _texture = null;
         private _params:{} = null;
         private _flipY:boolean = null;
 
+        private _texture:any = null;
         get texture(){
             return this._texture;
         }
+        set texture(texture:any){
+             this._texture = texture;
+        }
+
 
         createTextureArea(image, width, height):void{
             if(width && height){

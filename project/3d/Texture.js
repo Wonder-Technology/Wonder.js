@@ -3,9 +3,9 @@ var Engine3D;
     //todo 支持mip map
     var Texture2D = (function () {
         function Texture2D(params, flipY) {
-            this._texture = null;
             this._params = null;
             this._flipY = null;
+            this._texture = null;
             this._texture = gl.createTexture();
             this._params = params;
             this._flipY = flipY || false;
@@ -13,6 +13,9 @@ var Engine3D;
         Object.defineProperty(Texture2D.prototype, "texture", {
             get: function () {
                 return this._texture;
+            },
+            set: function (texture) {
+                this._texture = texture;
             },
             enumerable: true,
             configurable: true

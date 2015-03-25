@@ -68,6 +68,7 @@ var Engine3D;
             this._buffer = null;
             this._type = null;
             this._num = null;
+            this._typeSize = null;
         }
         Object.defineProperty(ElementBuffer.prototype, "buffer", {
             get: function () {
@@ -96,10 +97,21 @@ var Engine3D;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(ElementBuffer.prototype, "typeSize", {
+            get: function () {
+                return this._typeSize;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        //set typeSize(typeSize:number) {
+        //    this._typeSize = typeSize;
+        //}
         ElementBuffer.prototype.initWhenCreate = function (data, type) {
             if (!data) {
                 return null;
             }
+            this._checkDataType(data, type);
             this._buffer = gl.createBuffer(); // Create a buffer object
             if (!this._buffer) {
                 console.log('Failed to create the this._buffer object');
@@ -112,7 +124,57 @@ var Engine3D;
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
             this._type = type;
             this._num = data.length;
+            this._typeSize = this._getInfo(type).size;
             return this._buffer;
+        };
+        ElementBuffer.prototype._checkDataType = function (data, type) {
+            var info = this._getInfo(type);
+            return data instanceof info.typeClass;
+        };
+        ElementBuffer.prototype._getInfo = function (type) {
+            var info = null;
+            switch (type) {
+                case gl.UNSIGNED_BYTE:
+                    info = {
+                        typeClass: Uint8Array,
+                        size: 1
+                    };
+                    break;
+                case gl.SHORT:
+                    info = {
+                        typeClass: Int16Array,
+                        size: 2
+                    };
+                    break;
+                case gl.UNSIGNED_SHORT:
+                    info = {
+                        typeClass: Uint16Array,
+                        size: 2
+                    };
+                    break;
+                case gl.INT:
+                    info = {
+                        typeClass: Int32Array,
+                        size: 4
+                    };
+                    break;
+                case gl.UNSIGNED_INT:
+                    info = {
+                        typeClass: Uint32Array,
+                        size: 4
+                    };
+                    break;
+                case gl.FLOAT:
+                    info = {
+                        typeClass: Float32Array,
+                        size: 4
+                    };
+                    break;
+                default:
+                    throw new Error("无效的类型");
+                    break;
+            }
+            return info;
         };
         ElementBuffer.create = function (data, type) {
             var obj = new ElementBuffer();

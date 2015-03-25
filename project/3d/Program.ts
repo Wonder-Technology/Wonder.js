@@ -5,8 +5,9 @@ module Engine3D{
     export enum DataType{
         FLOAT_VEC4,
             FLOAT_MAT4,
-        SAMPLER_2D,
-        SAMPLER_CUBE
+            TEXTURE_2D,
+            TEXTURE_CUBE,
+        TEXTURE_ARR
     }
 
     export class Program{
@@ -34,8 +35,9 @@ module Engine3D{
                 case DataType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data);
                     break;
-                case DataType.SAMPLER_2D:
-                    case DataType.SAMPLER_CUBE:
+                case DataType.TEXTURE_2D:
+                case DataType.TEXTURE_CUBE:
+                case DataType.TEXTURE_ARR:
                         gl.uniform1i(pos, data);
                     break;
                 default :

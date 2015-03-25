@@ -4,8 +4,9 @@ var Engine3D;
     (function (DataType) {
         DataType[DataType["FLOAT_VEC4"] = 0] = "FLOAT_VEC4";
         DataType[DataType["FLOAT_MAT4"] = 1] = "FLOAT_MAT4";
-        DataType[DataType["SAMPLER_2D"] = 2] = "SAMPLER_2D";
-        DataType[DataType["SAMPLER_CUBE"] = 3] = "SAMPLER_CUBE";
+        DataType[DataType["TEXTURE_2D"] = 2] = "TEXTURE_2D";
+        DataType[DataType["TEXTURE_CUBE"] = 3] = "TEXTURE_CUBE";
+        DataType[DataType["TEXTURE_ARR"] = 4] = "TEXTURE_ARR";
     })(Engine3D.DataType || (Engine3D.DataType = {}));
     var DataType = Engine3D.DataType;
     var Program = (function () {
@@ -29,8 +30,9 @@ var Engine3D;
                 case 1 /* FLOAT_MAT4 */:
                     gl.uniformMatrix4fv(pos, false, data);
                     break;
-                case 2 /* SAMPLER_2D */:
-                case 3 /* SAMPLER_CUBE */:
+                case 2 /* TEXTURE_2D */:
+                case 3 /* TEXTURE_CUBE */:
+                case 4 /* TEXTURE_ARR */:
                     gl.uniform1i(pos, data);
                     break;
                 default:
