@@ -164,7 +164,12 @@ $(function(){
             o.program.use();
 
 
-            mvpMatrix = camera.computeMvpMatrix(mMatrix);
+            o.onStartLoop();
+
+
+            o.update();
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
 
             var dataArr = [{
                 name: "a_position",
@@ -194,13 +199,22 @@ $(function(){
             o.draw(dataArr);
 
 
+            o.onEndLoop();
+
+
+
 
 
            o = rectangle;
             o.program.use();
 
+            o.onStartLoop();
 
-            mvpMatrix = camera.computeMvpMatrix(mMatrix);
+
+            o.update();
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
+
 
             dataArr = [{
                 name: "a_position",
@@ -229,6 +243,7 @@ $(function(){
 
             o.draw(dataArr);
 
+            o.onEndLoop();
 
 
 
@@ -238,7 +253,12 @@ $(function(){
             o.program.use();
 
 
-            mvpMatrix = camera.computeMvpMatrix(mMatrix);
+            o.onStartLoop();
+
+
+            o.update();
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
 
 
 
@@ -272,7 +292,13 @@ $(function(){
 
                 o.draw(dataArr);
 
+
+
             //}
+
+
+
+            o.onEndLoop();
 
         }
 
@@ -327,11 +353,11 @@ $(function(){
 
             var o = Engine3D.Sprite.create("TRIANGLES");
 
-            o.setBuffers({
+            o.buffers = {
                 vertexBuffer:Engine3D.ArrayBuffer.create(vertices, 3, gl.FLOAT),
                 texCoordBuffer: Engine3D.ArrayBuffer.create(texCoords, 3, gl.FLOAT),
                 indexBuffer: Engine3D.ElementBuffer.create(indices, gl.UNSIGNED_BYTE)
-            });
+            };
 
 
 
@@ -358,6 +384,7 @@ $(function(){
 
 
             o.texture = texture;
+            o.init();
 
             return o;
         }
@@ -385,11 +412,11 @@ $(function(){
 
             var o = Engine3D.Sprite.create("TRIANGLES");
 
-            o.setBuffers({
+            o.buffers = {
                 vertexBuffer:Engine3D.ArrayBuffer.create(vertices, 3, gl.FLOAT),
                 texCoordBuffer: Engine3D.ArrayBuffer.create(texCoords, 2, gl.FLOAT),
                 indexBuffer: Engine3D.ElementBuffer.create(indices, gl.UNSIGNED_BYTE)
-            });
+            };
 
 
 
@@ -409,6 +436,7 @@ $(function(){
 
 
             o.texture = texture;
+            o.init();
 
             return o;
         }
@@ -425,12 +453,27 @@ $(function(){
             var data = Engine3D.Cubic.Cube.create().getCubeData();
             var o = Engine3D.Sprite.create("TRIANGLES");
 
-            //todo indexBuffer judge size in ElementBuffer
-            o.setBuffers({
+            o.buffers = {
                 vertexBuffer:Engine3D.ArrayBuffer.create(data.vertices, 3, gl.FLOAT),
                 texCoordBuffer: Engine3D.ArrayBuffer.create(data.texCoords, 2, gl.FLOAT),
                 indexBuffer: Engine3D.ElementBuffer.create(data.indices, gl.UNSIGNED_BYTE)
-            });
+            };
+
+            //todo 按2d引擎思路，重构出action和animation？
+            //o.actionData = {
+            //    "rotate": {
+            //        axis: [0, 1, 0],
+            //        speed:10
+            //    }
+            //};
+            //
+            //o.addActions(
+            //    {"rotate":Engine3D.Action.Rotate.create(
+            //        {axis: [0, 1, 0], speed:10}
+            //    )
+            //    }
+            //);
+
 
             var i = 0;
             var arr = [];
@@ -444,6 +487,14 @@ $(function(){
             }
 
             o.textureArr = arr;
+
+
+            o.initData = function(){
+                //this.runAnim("rotate");
+                this.runRotateAction();
+            };
+
+            o.init();
 
             return o;
         }

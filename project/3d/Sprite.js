@@ -1,4 +1,5 @@
 /// <reference path="Program.ts"/>
+/// <reference path="Matrix.ts"/>
 //todo type/mode直接改为gl.xxx
 //todo 重构texture和textureArr属性
 var Engine3D;
@@ -6,17 +7,32 @@ var Engine3D;
     var Sprite = (function () {
         function Sprite(drawMode) {
             this._drawMode = null;
-            this._program = null;
             //private _vertices = null;
             //private _normals = null;
             //private _texCoords = null;
             //private _indices = null;
-            this._buffers = null;
             this._drawFunc = null;
+            //private _action:{} = null;
+            this._actionContainer = null;
+            this._matrix = null;
+            this._program = null;
+            this._buffers = null;
             this._textureArr = null;
-            //this._buffer = [];
             this._drawMode = drawMode;
+            //this._action = {};
+            this._actionContainer = [];
+            this._matrix = Math3D.Matrix.create();
         }
+        Object.defineProperty(Sprite.prototype, "matrix", {
+            get: function () {
+                return this._matrix;
+            },
+            set: function (matrix) {
+                this._matrix = matrix;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Sprite.prototype, "program", {
             get: function () {
                 return this._program;
@@ -51,35 +67,6 @@ var Engine3D;
             enumerable: true,
             configurable: true
         });
-        //get buffers() { return this._buffers; }
-        //setVertices(){
-        //
-        //}
-        //
-        //setNormals(){
-        //
-        //}
-        Sprite.prototype.setBuffers = function (buffers) {
-            var self = this;
-            this._buffers = buffers;
-            if (this._buffers.indexBuffer) {
-                //this.baseBuffer = this.buffers.indices;
-                this._drawFunc = function (totalComponents, startOffset) {
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, self._buffers.indexBuffer.buffer);
-                    gl.drawElements(gl[self._drawMode], totalComponents, self._buffers.indexBuffer.type, self.buffers.indexBuffer.typeSize * startOffset);
-                };
-            }
-            else {
-                //for (var key in this.buffers) {
-                //    this.baseBuffer = this.buffers[key];
-                //    break;
-                //}
-                //todo 待验证
-                this._drawFunc = function (totalComponents, startOffset) {
-                    gl.drawArrays(gl[self._drawMode], startOffset, totalComponents);
-                };
-            }
-        };
         Sprite.prototype.draw = function (dataArr) {
             var self = this;
             var uniformDataForTextureArr = null;
@@ -110,15 +97,93 @@ var Engine3D;
                     data.texture.bindToUnit(index);
                     self._drawFunc(data.indexCount, data.indexOffset);
                 });
-                return;
             }
-            var totalComponents = this._buffers.indexBuffer.num;
-            var startOffset = 0;
-            this._drawFunc(totalComponents, startOffset);
+            else {
+                var totalComponents = this._buffers.indexBuffer.num;
+                var startOffset = 0;
+                this._drawFunc(totalComponents, startOffset);
+            }
+        };
+        Sprite.prototype.init = function () {
+            var self = this;
+            if (this._buffers.indexBuffer) {
+                //this.baseBuffer = this.buffers.indices;
+                this._drawFunc = function (totalComponents, startOffset) {
+                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, self._buffers.indexBuffer.buffer);
+                    gl.drawElements(gl[self._drawMode], totalComponents, self._buffers.indexBuffer.type, self.buffers.indexBuffer.typeSize * startOffset);
+                };
+            }
+            else {
+                //for (var key in this.buffers) {
+                //    this.baseBuffer = this.buffers[key];
+                //    break;
+                //}
+                //todo 待验证
+                this._drawFunc = function (totalComponents, startOffset) {
+                    gl.drawArrays(gl[self._drawMode], startOffset, totalComponents);
+                };
+            }
+            //o.actionData = {
+            //    "rotate": {
+            //        action: "rotate",
+            //        axis: [0, 1, 0],
+            //        speed:10
+            //    }
+            //};
+            //this._initAction();
+            this.initData();
+        };
+        //
+        //addActions(actionData){
+        //    this._action = actionData;
+        //}
+        //private _initAction(){
+        //    if(!this._actionData){
+        //        return;
+        //    }
+        //
+        //    var i = null;
+        //
+        //    for(i in this._actionData){
+        //        if(this._actionData.hasOwnProperty(i)){
+        //            this._action[i] =
+        //        }
+        //    }
+        //    this._angle = 0;
+        //    //switch (this._actionData.action){
+        //    //    case "rotate":
+        //    //        this._matrix.rotate(this.
+        //    //}
+        //}
+        Sprite.prototype.runAction = function (action) {
+            //todo 判断是否已有重复的
+            this._actionContainer.push(action);
+        };
+        Sprite.prototype.runOnlyOneAction = function (action) {
+            this._actionContainer = [action];
+        };
+        Sprite.prototype.update = function () {
+            this._actionContainer.map("update");
+            this._actionContainer.map("run");
+        };
+        Sprite.prototype.runRotateAction = function () {
+            this.runOnlyOneAction(Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 }));
+            //this._action["rotate"] = Engine3D.Action.Rotate.create(
+            //    this._matrix, {axis: [0, 1, 0], speed:10}
+            //);
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
             return obj;
+        };
+        Sprite.prototype.onStartLoop = function () {
+            this._matrix.push();
+        };
+        Sprite.prototype.onEndLoop = function () {
+            this._matrix.pop();
+        };
+        //*钩子
+        Sprite.prototype.initData = function () {
         };
         return Sprite;
     })();
