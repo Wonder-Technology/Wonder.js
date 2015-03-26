@@ -2,11 +2,13 @@
 var Engine3D;
 (function (Engine3D) {
     (function (DataType) {
-        DataType[DataType["FLOAT_VEC4"] = 0] = "FLOAT_VEC4";
-        DataType[DataType["FLOAT_MAT4"] = 1] = "FLOAT_MAT4";
-        DataType[DataType["TEXTURE_2D"] = 2] = "TEXTURE_2D";
-        DataType[DataType["TEXTURE_CUBE"] = 3] = "TEXTURE_CUBE";
-        DataType[DataType["TEXTURE_ARR"] = 4] = "TEXTURE_ARR";
+        DataType[DataType["FLOAT_VEC3"] = 0] = "FLOAT_VEC3";
+        DataType[DataType["FLOAT"] = 1] = "FLOAT";
+        DataType[DataType["FLOAT_3"] = 2] = "FLOAT_3";
+        DataType[DataType["FLOAT_MAT4"] = 3] = "FLOAT_MAT4";
+        DataType[DataType["TEXTURE_2D"] = 4] = "TEXTURE_2D";
+        DataType[DataType["TEXTURE_CUBE"] = 5] = "TEXTURE_CUBE";
+        DataType[DataType["TEXTURE_ARR"] = 6] = "TEXTURE_ARR";
     })(Engine3D.DataType || (Engine3D.DataType = {}));
     var DataType = Engine3D.DataType;
     var Program = (function () {
@@ -24,15 +26,28 @@ var Engine3D;
         Program.prototype.setUniformData = function (name, type, data) {
             var pos = gl.getUniformLocation(this._program, name);
             switch (type) {
-                case 0 /* FLOAT_VEC4 */:
+                case 0 /* FLOAT_VEC3 */:
+                    //todo 验证data，必须为Float32Array数组
+                    //gl.uniform3f.apply(gl, [pos].concat(data));
+                    //    gl.uniform3f(pos, data[0], data[1], data[2]);
                     gl.uniform3fv(pos, data);
                     break;
-                case 1 /* FLOAT_MAT4 */:
+                case 1 /* FLOAT */:
+                    //if(data == 32){
+                    //    gl.uniform1f(pos, 32.0);
+                    //    return;
+                    //}
+                    gl.uniform1f(pos, data);
+                    break;
+                case 2 /* FLOAT_3 */:
+                    gl.uniform3f(pos, data[0], data[1], data[2]);
+                    break;
+                case 3 /* FLOAT_MAT4 */:
                     gl.uniformMatrix4fv(pos, false, data);
                     break;
-                case 2 /* TEXTURE_2D */:
-                case 3 /* TEXTURE_CUBE */:
-                case 4 /* TEXTURE_ARR */:
+                case 4 /* TEXTURE_2D */:
+                case 5 /* TEXTURE_CUBE */:
+                case 6 /* TEXTURE_ARR */:
                     gl.uniform1i(pos, data);
                     break;
                 default:

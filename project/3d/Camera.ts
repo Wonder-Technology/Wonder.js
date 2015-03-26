@@ -30,9 +30,6 @@ module Engine3D{
             this._vMatrix = Math3D.Matrix.create();
         }
 
-        private _eyeX = null;
-        private _eyeY = null;
-        private _eyeZ = null;
         private _upX = null;
         private _upY = null;
         private _upZ = null;
@@ -53,10 +50,67 @@ module Engine3D{
         private _pMatrix:Math3D.Matrix = null;
         private _vMatrix:Math3D.Matrix = null;
 
-        public moveSpeed = 0.05;
-        public rotateSpeedX = 0.1;
-        public rotateSpeedY = 0.1;
-        public zoomSpeed = 10;
+
+
+        private _eyeX:number = null;
+        get eyeX(){
+            return this._eyeX;
+        }
+        set eyeX(eyeX:number){
+            this._eyeX = eyeX;
+        }
+
+        private _eyeY:number = null;
+        get eyeY(){
+            return this._eyeY;
+        }
+        set eyeY(eyeY:number){
+            this._eyeY = eyeY;
+        }
+
+        private _eyeZ:number = null;
+        get eyeZ(){
+            return this._eyeZ;
+        }
+        set eyeZ(eyeZ:number){
+            this._eyeZ = eyeZ;
+        }
+
+
+
+        private _moveSpeed:number = 0.05;
+        get moveSpeed(){
+            return this._moveSpeed;
+        }
+        set moveSpeed(moveSpeed:number){
+            this._moveSpeed = moveSpeed;
+        }
+
+        private _rotateSpeedX:number = 0.1;
+        get rotateSpeedX(){
+            return this._rotateSpeedX;
+        }
+        set rotateSpeedX(_rotateSpeedX:number){
+            this._rotateSpeedX = _rotateSpeedX;
+        }
+
+        private _rotateSpeedY:number = 0.1;
+        get rotateSpeedY(){
+            return this._rotateSpeedY;
+        }
+        set rotateSpeedY(rotateSpeedY:number){
+            this._rotateSpeedY = rotateSpeedY;
+        }
+
+        private _zoomSpeed:number = 10;
+        get zoomSpeed(){
+            return this._zoomSpeed;
+        }
+        set zoomSpeed(zoomSpeed:number){
+            this._zoomSpeed = zoomSpeed;
+        }
+
+
 
 
         onStartLoop(){
@@ -67,38 +121,38 @@ module Engine3D{
         }
 
         moveLeft(){
-            this._computeMoveDistance(Math3D.Vector4.create(-this.moveSpeed, 0, 0, 1));
+            this._computeMoveDistance(Math3D.Vector4.create(-this._moveSpeed, 0, 0, 1));
 
 
             //绕x轴旋转时，投影xy平面为垂直方向，而Left和Right移动投影到xy平面为水平方向，因此绕x轴旋转不会影响Left和Right移动
-            //this._moveX = this._moveX + Math.cos(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ + Math.sin(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
+            //this._moveX = this._moveX + Math.cos(this._rotateAngleY * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ + Math.sin(this._rotateAngleY* Math.PI / 180) *this._moveSpeed;
         }
         moveRight(){
-            this._computeMoveDistance(Math3D.Vector4.create(this.moveSpeed, 0, 0, 1));
+            this._computeMoveDistance(Math3D.Vector4.create(this._moveSpeed, 0, 0, 1));
 
-            //this._moveX = this._moveX - Math.cos(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ - Math.sin(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
+            //this._moveX = this._moveX - Math.cos(this._rotateAngleY * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ - Math.sin(this._rotateAngleY* Math.PI / 180) *this._moveSpeed;
         }
 
 
         moveBack(){
-            this._computeMoveDistance(Math3D.Vector4.create(0, 0, this.moveSpeed, 1));
+            this._computeMoveDistance(Math3D.Vector4.create(0, 0, this._moveSpeed, 1));
 
-            //this._moveY = this._moveY - Math.sin(this._rotateAngleX * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleX* Math.PI / 180) *this.moveSpeed;
+            //this._moveY = this._moveY - Math.sin(this._rotateAngleX * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleX* Math.PI / 180) *this._moveSpeed;
 
-            //this._moveX = this._moveX + Math.sin(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
+            //this._moveX = this._moveX + Math.sin(this._rotateAngleY * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleY* Math.PI / 180) *this._moveSpeed;
         }
         moveFront(){
-            this._computeMoveDistance(Math3D.Vector4.create(0, 0, -this.moveSpeed, 1));
+            this._computeMoveDistance(Math3D.Vector4.create(0, 0, -this._moveSpeed, 1));
 
-            //this._moveY = this._moveY + Math.sin(this._rotateAngleX * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleX* Math.PI / 180) *this.moveSpeed;
+            //this._moveY = this._moveY + Math.sin(this._rotateAngleX * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ - Math.cos(this._rotateAngleX* Math.PI / 180) *this._moveSpeed;
 
-            //this._moveX = this._moveX - Math.sin(this._rotateAngleY * Math.PI / 180) * this.moveSpeed;
-            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleY* Math.PI / 180) *this.moveSpeed;
+            //this._moveX = this._moveX - Math.sin(this._rotateAngleY * Math.PI / 180) * this._moveSpeed;
+            //this._moveZ = this._moveZ + Math.cos(this._rotateAngleY* Math.PI / 180) *this._moveSpeed;
         }
 
         private _computeMoveDistance(speedVec4){
@@ -118,15 +172,15 @@ module Engine3D{
 
         //todo 用欧拉角或四元数来表示方向
         rotate(){
-            this._rotateAngleY = this._rotateAngleY + this.rotateSpeedY;
-            this._rotateAngleX = Math.max(Math.min(this._rotateAngleX + this.rotateSpeedX, 90.0), -90.0);
+            this._rotateAngleY = this._rotateAngleY + this._rotateSpeedY;
+            this._rotateAngleX = Math.max(Math.min(this._rotateAngleX + this._rotateSpeedX, 90.0), -90.0);
         }
 
         zoomIn(){
-            this._zoomAngle = Math.min(this._zoomAngle + this.zoomSpeed, 179);
+            this._zoomAngle = Math.min(this._zoomAngle + this._zoomSpeed, 179);
         }
         zoomOut(){
-            this._zoomAngle = Math.max(this._zoomAngle - this.zoomSpeed, 1);
+            this._zoomAngle = Math.max(this._zoomAngle - this._zoomSpeed, 1);
         }
 
         run(){

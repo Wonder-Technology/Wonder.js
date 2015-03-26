@@ -3,7 +3,9 @@ module Engine3D{
     declare var gl:any;
 
     export enum DataType{
-        FLOAT_VEC4,
+        FLOAT_VEC3,
+        FLOAT,
+            FLOAT_3,
             FLOAT_MAT4,
             TEXTURE_2D,
             TEXTURE_CUBE,
@@ -29,8 +31,21 @@ module Engine3D{
             var pos= gl.getUniformLocation(this._program, name);
 
             switch (type){
-                case DataType.FLOAT_VEC4:
+                case DataType.FLOAT_VEC3:
+                //todo 验证data，必须为Float32Array数组
+                //gl.uniform3f.apply(gl, [pos].concat(data));
+                //    gl.uniform3f(pos, data[0], data[1], data[2]);
                     gl.uniform3fv(pos, data);
+                    break;
+                case DataType.FLOAT:
+                    //if(data == 32){
+                    //    gl.uniform1f(pos, 32.0);
+                    //    return;
+                    //}
+                    gl.uniform1f(pos, data);
+                    break;
+                case DataType.FLOAT_3:
+                    gl.uniform3f(pos, data[0], data[1], data[2]);
                     break;
                 case DataType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data);

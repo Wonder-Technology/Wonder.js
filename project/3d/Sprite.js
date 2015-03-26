@@ -77,7 +77,7 @@ var Engine3D;
                             self._program.setAttributeData(dataObj.name, dataObj.buffer);
                             break;
                         case "uniform":
-                            if (dataObj.type === 4 /* TEXTURE_ARR */) {
+                            if (dataObj.type === 6 /* TEXTURE_ARR */) {
                                 uniformDataForTextureArr = dataObj;
                                 return;
                             }
@@ -109,6 +109,7 @@ var Engine3D;
             if (this._buffers.indexBuffer) {
                 //this.baseBuffer = this.buffers.indices;
                 this._drawFunc = function (totalComponents, startOffset) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, self._buffers.vertexBuffer.buffer);
                     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, self._buffers.indexBuffer.buffer);
                     gl.drawElements(gl[self._drawMode], totalComponents, self._buffers.indexBuffer.type, self.buffers.indexBuffer.typeSize * startOffset);
                 };
@@ -168,9 +169,6 @@ var Engine3D;
         };
         Sprite.prototype.runRotateAction = function () {
             this.runOnlyOneAction(Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 }));
-            //this._action["rotate"] = Engine3D.Action.Rotate.create(
-            //    this._matrix, {axis: [0, 1, 0], speed:10}
-            //);
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
