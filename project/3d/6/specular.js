@@ -183,8 +183,17 @@ $(function(){
                 lightColor,
                 specularStrength
             );
-            //var pointLight = Engine3D.Light.PointLight.create();
 
+            var pointLightPos = [0.5,0.5,-0.5];
+            var pointColor = [0.4, 1.0, 0.5];
+            var pointIntensity = 0.8;
+
+
+            var pointLight = Engine3D.Light.PointLight.create(
+                pointLightPos,
+                pointColor,
+                pointIntensity
+            );
 
 
             var ambientLightColor = [0.2, 0.2, 0.2];
@@ -252,6 +261,19 @@ $(function(){
                             ["FLOAT", "intensity"]
                         ],
                         val:directionLight
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_pointLight",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"]
+                        ],
+                        val:pointLight
                     },
                     category: "uniform"
                 },
