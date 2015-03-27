@@ -5,11 +5,13 @@ module Engine3D{
     export enum DataType{
         FLOAT_VEC3,
         FLOAT,
-            FLOAT_3,
-            FLOAT_MAT4,
-            TEXTURE_2D,
-            TEXTURE_CUBE,
-        TEXTURE_ARR
+        FLOAT_3,
+        FLOAT_MAT4,
+            INT,
+        TEXTURE_2D,
+        TEXTURE_CUBE,
+        TEXTURE_ARR,
+        STRUCT
     }
 
     export class Program{
@@ -28,7 +30,12 @@ module Engine3D{
         }
 
         setUniformData(name, type, data){
-            var pos= gl.getUniformLocation(this._program, name);
+            var pos = null;
+
+            //todo bad smell
+            if(type !== DataType.STRUCT){
+                pos= gl.getUniformLocation(this._program, name);
+            }
 
             switch (type){
                 case DataType.FLOAT_VEC3:
@@ -38,10 +45,6 @@ module Engine3D{
                     gl.uniform3fv(pos, data);
                     break;
                 case DataType.FLOAT:
-                    //if(data == 32){
-                    //    gl.uniform1f(pos, 32.0);
-                    //    return;
-                    //}
                     gl.uniform1f(pos, data);
                     break;
                 case DataType.FLOAT_3:
@@ -50,10 +53,31 @@ module Engine3D{
                 case DataType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data);
                     break;
+                case DataType.INT:
+                    gl.uniform1i(pos, data);
+                    break;
                 case DataType.TEXTURE_2D:
                 case DataType.TEXTURE_CUBE:
                 case DataType.TEXTURE_ARR:
                         gl.uniform1i(pos, data);
+                    break;
+                case DataType.STRUCT:
+                    //var i = null;
+                    //var attrName = null;
+
+
+                    var self = this;
+
+                    data.member.forEach(function(arr){
+                        self.setUniformData(name + "." + arr[1], DataType[arr[0]],  data.val[arr[1]]);
+                    });
+                    //for(i in data.member){
+                    //    if(data.member.hasOwnProperty(i)){
+                    //        attrName = data.member[i];
+                    //        this.setUniformData(name + "." + attrName, DataType[i],  data.val[attrName]);
+                    //    }
+                    //}
+
                     break;
                 default :
                     throw new Error("数据类型错误");

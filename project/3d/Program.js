@@ -6,9 +6,11 @@ var Engine3D;
         DataType[DataType["FLOAT"] = 1] = "FLOAT";
         DataType[DataType["FLOAT_3"] = 2] = "FLOAT_3";
         DataType[DataType["FLOAT_MAT4"] = 3] = "FLOAT_MAT4";
-        DataType[DataType["TEXTURE_2D"] = 4] = "TEXTURE_2D";
-        DataType[DataType["TEXTURE_CUBE"] = 5] = "TEXTURE_CUBE";
-        DataType[DataType["TEXTURE_ARR"] = 6] = "TEXTURE_ARR";
+        DataType[DataType["INT"] = 4] = "INT";
+        DataType[DataType["TEXTURE_2D"] = 5] = "TEXTURE_2D";
+        DataType[DataType["TEXTURE_CUBE"] = 6] = "TEXTURE_CUBE";
+        DataType[DataType["TEXTURE_ARR"] = 7] = "TEXTURE_ARR";
+        DataType[DataType["STRUCT"] = 8] = "STRUCT";
     })(Engine3D.DataType || (Engine3D.DataType = {}));
     var DataType = Engine3D.DataType;
     var Program = (function () {
@@ -24,7 +26,11 @@ var Engine3D;
             gl.useProgram(this._program);
         };
         Program.prototype.setUniformData = function (name, type, data) {
-            var pos = gl.getUniformLocation(this._program, name);
+            var pos = null;
+            //todo bad smell
+            if (type !== 8 /* STRUCT */) {
+                pos = gl.getUniformLocation(this._program, name);
+            }
             switch (type) {
                 case 0 /* FLOAT_VEC3 */:
                     //todo 验证data，必须为Float32Array数组
@@ -33,10 +39,6 @@ var Engine3D;
                     gl.uniform3fv(pos, data);
                     break;
                 case 1 /* FLOAT */:
-                    //if(data == 32){
-                    //    gl.uniform1f(pos, 32.0);
-                    //    return;
-                    //}
                     gl.uniform1f(pos, data);
                     break;
                 case 2 /* FLOAT_3 */:
@@ -45,10 +47,21 @@ var Engine3D;
                 case 3 /* FLOAT_MAT4 */:
                     gl.uniformMatrix4fv(pos, false, data);
                     break;
-                case 4 /* TEXTURE_2D */:
-                case 5 /* TEXTURE_CUBE */:
-                case 6 /* TEXTURE_ARR */:
+                case 4 /* INT */:
                     gl.uniform1i(pos, data);
+                    break;
+                case 5 /* TEXTURE_2D */:
+                case 6 /* TEXTURE_CUBE */:
+                case 7 /* TEXTURE_ARR */:
+                    gl.uniform1i(pos, data);
+                    break;
+                case 8 /* STRUCT */:
+                    //var i = null;
+                    //var attrName = null;
+                    var self = this;
+                    data.member.forEach(function (arr) {
+                        self.setUniformData(name + "." + arr[1], DataType[arr[0]], data.val[arr[1]]);
+                    });
                     break;
                 default:
                     throw new Error("数据类型错误");

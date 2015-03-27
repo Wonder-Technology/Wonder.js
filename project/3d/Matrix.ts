@@ -117,7 +117,7 @@ module Math3D{
 
             det = s[0]*inv[0] + s[1]*inv[4] + s[2]*inv[8] + s[3]*inv[12];
             if (det === 0) {
-                return d;
+                return this;
             }
 
             det = 1 / det;
@@ -125,9 +125,17 @@ module Math3D{
                 d[i] = inv[i] * det;
             }
 
-            return d;
+            return this;
         }
 
+        /**
+         * Calculate the inverse matrix of specified matrix, and set to this.
+         * @param other The source matrix
+         * @return this
+         */
+        inverseOf ():Matrix {
+            return this.setInverseOf(this);
+        }
 
         /**
          * Transpose the matrix.
@@ -723,18 +731,15 @@ module Math3D{
          * @param pos  The multiply vector
          * @return The result of multiplication(Float32Array)
          */
-        public static multiplyVector4 (values:Float32Array, pos:Vector4): Vector4 {
-            var e = values;
-            var p = pos.values;
-            var v = Vector4.create();
-            var result = v.values;
+        public static multiplyVector4 (mat1:Float32Array, vec4:number[]): number[] {
+            var result = [];
 
-            result[0] = p[0] * e[0] + p[1] * e[4] + p[2] * e[ 8] + p[3] * e[12];
-            result[1] = p[0] * e[1] + p[1] * e[5] + p[2] * e[ 9] + p[3] * e[13];
-            result[2] = p[0] * e[2] + p[1] * e[6] + p[2] * e[10] + p[3] * e[14];
-            result[3] = p[0] * e[3] + p[1] * e[7] + p[2] * e[11] + p[3] * e[15];
+            result[0] = vec4[0] * mat1[0] + vec4[1] * mat1[4] + vec4[2] * mat1[ 8] + vec4[3] * mat1[12];
+            result[1] = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[ 9] + vec4[3] * mat1[13];
+            result[2] = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
+            result[3] = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
 
-            return v;
+            return result;
         }
 
     }

@@ -137,17 +137,33 @@
          * 返回满足条件的元素的位置。
          * 如果找不到满足条件的元素，则返回-1。
          */
-        Array.prototype.indexOf = function (iterator) {
+        Array.prototype.indexOf = function (arg) {
             var result = -1,
-                isFind = null;
+                isFind = null,
+                iterator = null,
+                data = null;
 
-            this.forEach(function (value, index) {
-                isFind = iterator.call(null, value, index);
-                if (isFind) {
-                    result = index;
-                    return $break;
-                }
-            });
+            if(_isFunction(arg)){
+                iterator = arg;
+                this.forEach(function (value, index) {
+                    isFind = iterator.call(null, value, index);
+                    if (isFind) {
+                        result = index;
+                        return $break;
+                    }
+                });
+            }
+            else{
+                data = arg;
+                this.forEach(function (value, index) {
+                    isFind = value === data;
+                    if (isFind) {
+                        result = index;
+                        return $break;
+                    }
+                });
+
+            }
 
             return result;
         };

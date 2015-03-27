@@ -77,7 +77,7 @@ var Engine3D;
                             self._program.setAttributeData(dataObj.name, dataObj.buffer);
                             break;
                         case "uniform":
-                            if (dataObj.type === 6 /* TEXTURE_ARR */) {
+                            if (dataObj.type === 7 /* TEXTURE_ARR */) {
                                 uniformDataForTextureArr = dataObj;
                                 return;
                             }
@@ -93,8 +93,23 @@ var Engine3D;
                     throw new Error("对于纹理数组，需要设置片段着色器的sampler2D变量");
                 }
                 this._textureArr.forEach(function (data, index) {
-                    self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type, index);
-                    data.texture.bindToUnit(index);
+                    //self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type,index);
+                    data.material.texture.bindToUnit(index);
+                    ////todo 不应该放在这里
+                    ////todo optimize data structure
+                    var i = null;
+                    var val = null;
+                    for (i in data.uniformData) {
+                        if (data.uniformData.hasOwnProperty(i)) {
+                            val = data.uniformData[i];
+                            self._program.setUniformData(i, Engine3D.DataType[val[0]], data.material[val[1]]);
+                        }
+                    }
+                    //data.uniformData.forEach(function)
+                    //self._program.setUniformData(data.uniformName, Engine3D.DataType.STRUCT, {
+                    //    val: data.material,
+                    //    member: data.member
+                    //});
                     self._drawFunc(data.indexCount, data.indexOffset);
                 });
             }
@@ -103,6 +118,7 @@ var Engine3D;
                 var startOffset = 0;
                 this._drawFunc(totalComponents, startOffset);
             }
+            //todo 单个纹理，material如何处理
         };
         Sprite.prototype.init = function () {
             var self = this;

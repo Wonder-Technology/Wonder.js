@@ -50,19 +50,11 @@ module Engine3D{
             this._buffers = buffers;
         }
 
-        private _textureArr:Array<{
-            texture:any
-            indexOffset:number
-            indexCount:number
-        }> = null;
+        private _textureArr:any = null;
         get textureArr(){
             return this._textureArr;
         }
-        set textureArr(textureArr:Array<{
-            texture:any
-            indexOffset:number
-            indexCount:number
-        }>){
+        set textureArr(textureArr:any){
             if(textureArr.length > 8){
                 //todo query the supported max num
                 console.log("纹理数超过了8个");
@@ -107,8 +99,24 @@ module Engine3D{
                 }
 
                 this._textureArr.forEach(function(data, index){
-                    self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type,index);
-                    data.texture.bindToUnit(index);
+                    //self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type,index);
+                    data.material.texture.bindToUnit(index);
+                    ////todo 不应该放在这里
+                    ////todo optimize data structure
+                    var i = null;
+                    var val = null;
+                    for(i in data.uniformData){
+                        if(data.uniformData.hasOwnProperty(i)){
+                            val = data.uniformData[i];
+                            self._program.setUniformData(i, DataType[val[0]],data.material[val[1]]);
+                        }
+                    }
+                    //data.uniformData.forEach(function)
+                    //self._program.setUniformData(data.uniformName, Engine3D.DataType.STRUCT, {
+                    //    val: data.material,
+                    //    member: data.member
+                    //});
+
                     self._drawFunc(data.indexCount, data.indexOffset);
                 });
             }
@@ -121,6 +129,7 @@ module Engine3D{
 
 
 
+            //todo 单个纹理，material如何处理
 
 
 

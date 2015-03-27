@@ -163,11 +163,11 @@ module Engine3D{
             matrix.setRotate(this._rotateAngleX, 1.0, 0.0, 0.0);
             matrix.rotate(this._rotateAngleY, 0.0, 1.0, 0.0);
 
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values, speedVec4);
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values, speedVec4.values);
 
-            this._moveX += result.values[0];
-            this._moveY += result.values[1];
-            this._moveZ += result.values[2];
+            this._moveX += result[0];
+            this._moveY += result[1];
+            this._moveZ += result[2];
         }
 
         //todo 用欧拉角或四元数来表示方向
@@ -197,6 +197,11 @@ module Engine3D{
             this._vMatrix.rotate(-this._rotateAngleY, 0.0, 1.0, 0.0);
             this._vMatrix.rotate(-this._rotateAngleX, 1.0, 0.0, 0.0);
 
+            //var vec4 = Math3D.MatrixTool.multiplyVector4(this._vMatrix.values, [this._eyeX, this._eyeY, this._eyeZ, 1]);
+            //this._eyeX = vec4[0];
+            //this._eyeY = vec4[1];
+            //this._eyeZ = vec4[2];
+
 
             //this._vMatrix.translate(this._moveX, this._moveY, this._moveZ);
 
@@ -210,6 +215,10 @@ module Engine3D{
             matrix.concat(this._pMatrix);
 
             return matrix;
+        }
+
+        computeViewPosInWorldCoordinate(){
+            return Math3D.MatrixTool.multiplyVector4(this._vMatrix.inverseOf().values, [0, 0, 0, 1]);
         }
 
         init(){

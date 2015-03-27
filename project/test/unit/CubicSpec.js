@@ -10,7 +10,7 @@ describe("Cubic", function(){
     var sandbox = null;
 
     beforeEach(function(){
-        cubic = new Cubic.Sphere();
+        cubic = new Engine3D.Cubic.Sphere();
         sandbox = sinon.sandbox.create();
     });
     afterEach(function(){

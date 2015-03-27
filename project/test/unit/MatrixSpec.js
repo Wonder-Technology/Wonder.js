@@ -217,18 +217,18 @@ describe("matrix", function(){
             var aspect = 100 / 50;  //宽/高
 
             matrix.setPerspective(fovy_angle, aspect, near, far);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(-0.5, 0, -1, 1));
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0.5, 0, -1, 1));
-            var result3 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0, 1, -1, 1));
+            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(-0.5, 0, -1, 1).values);
+            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0.5, 0, -1, 1).values);
+            var result3 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0, 1, -1, 1).values);
 
-            expect(getValues(result1.values)).toEqual(
-                [ -0.9330127, 0, 0.8181819, 1 ]
+            expect(getValues(result1)).toEqual(
+                [ -0.9330127, 0, 0.8181818, 1 ]
             );
-            expect(getValues(result2.values)).toEqual(
-                [ 0.9330127, 0, 0.8181819, 1 ]
+            expect(getValues(result2)).toEqual(
+                [ 0.9330127, 0, 0.8181818, 1 ]
             );
-            expect(getValues(result3.values)).toEqual(
-                [ 0, 3.7320509, 0.8181819, 1 ]
+            expect(getValues(result3)).toEqual(
+                [ 0, 3.7320509, 0.8181818, 1 ]
             );
         });
     });
@@ -241,9 +241,9 @@ describe("matrix", function(){
             matrix.translate(1, 1, 1);
             matrix.scale(2,2,2);
             matrix.rotate(45, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
 
-            expect(getValues(result.values)).toEqual(
+            expect(getValues(result)).toEqual(
                 [ 2.8284271, 2, 0, 1 ]
             );
         });
@@ -251,9 +251,9 @@ describe("matrix", function(){
             var v =Math3D.Vector4.create(1, 1, 1, 1);
 
            matrix.lookAt(1, 2, 1, 1, 2, -1, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
 
-            expect(getValues(result.values)).toEqual(
+            expect(getValues(result)).toEqual(
                 [ 0, -1, 0, 1 ]
             );
         });
@@ -262,9 +262,9 @@ describe("matrix", function(){
 
             matrix.lookAt(0, 0, 5, 0, 0, -1, 0, 1, 0);
             matrix.rotate(90, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v);
+            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
 
-            expect(getValues(result.values)).toEqual(
+            expect(getValues(result)).toEqual(
                 [-4, 1, -1, 1]
             );
         });
@@ -274,14 +274,14 @@ describe("matrix", function(){
 
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.ortho(0.1,10);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1);
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2);
+            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1.values);
+            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2.values);
 
             //v2不在cvv中，而v1在cvv中
-            expect(getValues(result1.values)).toEqual(
+            expect(getValues(result1)).toEqual(
                 [ 1, 1, -1.2222222, 1 ]
             );
-            expect(getValues(result2.values)).toEqual(
+            expect(getValues(result2)).toEqual(
                 [ 1, 1, -0.0101011, 1 ]
             );
         });
@@ -292,15 +292,15 @@ describe("matrix", function(){
             //matrix.lookAt(-1, 0, 1, 0, 0, 1, 0, 1, 0);
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.setPerspective(30, 1, 0.1,10);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1);
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2);
+            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1.values);
+            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2.values);
 
             //v2不在cvv中，而v1在cvv中
-            expect(getValues(result1.values)).toEqual(
+            expect(getValues(result1)).toEqual(
                 [ 3.7320509, 3.7320509, -1.2222222, -1 ]
             );
-            expect(getValues(result2.values)).toEqual(
-                [ 3.7320509, 3.7320509, 4.8989902, 5 ]
+            expect(getValues(result2)).toEqual(
+                [ 3.7320509, 3.7320509, 4.89899, 5]
             );
         });
     });
