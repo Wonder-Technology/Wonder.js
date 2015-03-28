@@ -723,7 +723,8 @@ $(function(){
 
 
             o.initData = function(){
-                this.runRotateAction();
+                this.runAction(this.getRotateAction());
+                this.runAction(this.getTranslateAction());
             };
 
             o.init();

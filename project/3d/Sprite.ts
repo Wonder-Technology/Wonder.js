@@ -201,12 +201,18 @@ module Engine3D{
         }
 
 
-        runRotateAction(){
-            this.runOnlyOneAction(Engine3D.Action.Rotate.create(
+        getRotateAction(){
+            return Engine3D.Action.Rotate.create(
                 this._matrix, {axis: [0, 1, 0], speed:1}
-            ));
+            );
         }
 
+        getTranslateAction(){
+            //todo refactor to be common
+            return Engine3D.Action.Translate.create(
+                this._matrix, {rangeZ:[0.08, -0.08], speed:0.002}
+            );
+        }
 
         public static create(drawMode):Sprite {
             var obj = new this(drawMode);

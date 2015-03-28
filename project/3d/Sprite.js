@@ -173,8 +173,12 @@ var Engine3D;
             this._actionContainer.map("update");
             this._actionContainer.map("run");
         };
-        Sprite.prototype.runRotateAction = function () {
-            this.runOnlyOneAction(Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 }));
+        Sprite.prototype.getRotateAction = function () {
+            return Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 });
+        };
+        Sprite.prototype.getTranslateAction = function () {
+            //todo refactor to be common
+            return Engine3D.Action.Translate.create(this._matrix, { rangeZ: [0.08, -0.08], speed: 0.002 });
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
