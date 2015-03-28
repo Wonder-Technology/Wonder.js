@@ -90,11 +90,12 @@ struct DirectionLight {
 
 
 
+#define NR_POINT_LIGHTS 2
+
 
 uniform vec3 u_ambient;
 uniform DirectionLight u_directionLight;
-uniform PointLight u_pointLight;
-
+uniform PointLight u_pointLights[NR_POINT_LIGHTS];
 
 
 varying vec2 v_texCoord;
@@ -167,7 +168,11 @@ void main(void){
     vec3 norm = normalize(v_normal);
     vec3 viewDir = normalize(u_viewPos - v_position);
     vec3 totalLight = calcDirectionLight(u_directionLight, norm, viewDir);
-    totalLight = totalLight + calcPointLight(u_pointLight, norm, viewDir);
+
+   for(int i = 0; i < NR_POINT_LIGHTS; i++){
+        totalLight += calcPointLight(u_pointLights[i], norm, viewDir);
+   }
+
     gl_FragColor = vec4(totalLight, 1.0);
 }
 </script>

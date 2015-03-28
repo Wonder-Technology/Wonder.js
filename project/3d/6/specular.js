@@ -185,18 +185,41 @@ $(function(){
             );
 
 
+
+
+            var pointLightArr = [
+            ];
+
+
             var pointLightPos = [0.0, 0.0, -5];
             var pointColor = [0.4, 1.0, 0.5];
             var pointIntensity = 0.8;
 
 
             var attenuation = Engine3D.Light.Attenuation.create(4);
-            var pointLight = Engine3D.Light.PointLight.create(
+
+            pointLightArr.push(Engine3D.Light.PointLight.create(
                 pointLightPos,
                 pointColor,
                 pointIntensity,
                 attenuation
-            );
+            ));
+
+            pointLightPos = [1.0, 0.0, 0.0];
+            pointColor = [0.8, 0.5, 0.5];
+            pointIntensity = 1.0;
+
+
+            attenuation = Engine3D.Light.Attenuation.create(4);
+
+            pointLightArr.push(Engine3D.Light.PointLight.create(
+                pointLightPos,
+                pointColor,
+                pointIntensity,
+                attenuation
+            ));
+
+
 
 
             var ambientLightColor = [0.2, 0.2, 0.2];
@@ -268,7 +291,7 @@ $(function(){
                     category: "uniform"
                 },
                 {
-                    name:"u_pointLight",
+                    name:"u_pointLights[0]",
                     type: Engine3D.DataType.STRUCT,
                     val: {
                         member: [
@@ -280,7 +303,24 @@ $(function(){
                             ["FLOAT", "linear"],
                             ["FLOAT", "quadratic"]
                         ],
-                        val:pointLight
+                        val:pointLightArr[0]
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_pointLights[1]",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
+                        ],
+                        val:pointLightArr[1]
                     },
                     category: "uniform"
                 },
