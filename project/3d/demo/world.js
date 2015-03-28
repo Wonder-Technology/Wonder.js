@@ -204,8 +204,12 @@ $(function(){
             o.onEndLoop();
 
 
+            //实验双面纹理
 
+            gl.enable(gl.CULL_FACE);
 
+            //gl.frontFace(gl.CW);
+           //gl.frontFace(gl.CCW);
 
             o = rectangle;
             o.program.use();
@@ -240,6 +244,10 @@ $(function(){
             o.draw(dataArr);
 
             o.onEndLoop();
+
+
+
+            gl.disable(gl.CULL_FACE);
 
 
 
@@ -291,6 +299,12 @@ $(function(){
 
 
             //draw cube
+
+            //实验双面纹理
+
+            gl.enable(gl.CULL_FACE);
+
+            gl.frontFace(gl.CW);
 
             o = cube;
             o.program.use();
@@ -413,6 +427,12 @@ $(function(){
 
             o.onEndLoop();
 
+
+
+
+            //恢复
+            gl.disable(gl.CULL_FACE);
+            gl.frontFace(gl.CCW);
 
 
 
@@ -664,15 +684,26 @@ $(function(){
                 0.3, 0.3, 0.3,
                 -0.3, 0.3, 0.3,
                 -0.3, -0.3, 0.3,
+                0.3, -0.3, 0.3,
+
+                0.3, 0.3, 0.3,
+                -0.3, 0.3, 0.3,
+                -0.3, -0.3, 0.3,
                 0.3, -0.3, 0.3
             ]);
 
             // Indices of the vertices
             var indices = new Uint8Array([
-                0, 1, 2,   0, 2, 3
+                0, 1, 2,   0, 2, 3,
+                4, 6, 5,  4, 7, 6
             ]);
 
             var texCoords = new Float32Array([
+                1.0, 1.0,
+                0.0, 1.0,
+                0.0, 0.0,
+                1.0, 0.0,
+
                 1.0, 1.0,
                 0.0, 1.0,
                 0.0, 0.0,
@@ -696,7 +727,7 @@ $(function(){
 
 
             var i = 0,
-                len = 1;
+                len = 2;
             var arr = [];
 
             for(i = 0;i < len; i++){
@@ -705,7 +736,9 @@ $(function(){
                     uniformData:{
                         //todo for no light map object,it should refactor Material,now just set diffuse to pass.
                         "u_sampler":["TEXTURE_2D", "diffuse"]
-                    }
+                    },
+                    indexCount: 6,
+                    indexOffset: i * 6
                 });
             }
 
@@ -772,7 +805,17 @@ $(function(){
                         "u_shininess":["FLOAT", "shininess"]
                     },
                     indexCount: 6,
-                    indexOffset: i * 6
+                    indexOffset: (2 * i) * 6
+                });
+                arr.push({
+                    material:createMaterial(i, createTexture(i)),
+                    uniformData:{
+                        "u_diffuseSampler":["INT", "diffuse"],
+                        "u_specularSampler":["INT", "specular"],
+                        "u_shininess":["FLOAT", "shininess"]
+                    },
+                    indexCount: 6,
+                    indexOffset: (2 * i + 1) * 6
                 });
             }
 
