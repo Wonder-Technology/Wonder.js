@@ -99,7 +99,7 @@ var Engine3D;
                         }
                     }
                     var totalComponents = data.indexCount || self._buffers.indexBuffer.num;
-                    var startOffset = 0 || data.indexOffset;
+                    var startOffset = data.indexOffset || 0;
                     self._drawFunc(totalComponents, startOffset);
                 });
             }

@@ -82,6 +82,7 @@ $(function(){
         var skyBox = null;
         var rectangle = null;
         var cube = null;
+        var sphere = null;
 
 
 
@@ -109,6 +110,12 @@ $(function(){
 
             cube = createCube();
             cube.program = texture2DPrg;
+
+
+            var spherePrg  = Engine3D.Program.create(vs.createShader("sphere-vs"), fs.createShader("sphere-fs"));
+
+            sphere = createSphere();
+            sphere.program = spherePrg;
 
 
             gl.clearColor(0, 0, 0, 1);
@@ -270,9 +277,199 @@ $(function(){
                 o.draw(dataArr);
 
 
+            o.onEndLoop();
 
 
 
+
+
+
+
+
+            //draw sphere
+            o = sphere;
+            o.program.use();
+
+
+            o.onStartLoop();
+
+
+            o.update();
+
+
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
+            var normalMatrix = Math3D.Matrix.create();
+
+            normalMatrix.setInverseOf(o.matrix);
+            normalMatrix.transpose();
+
+
+            //var lightColor = [1.0, 1.0, 1.0];
+            //
+            //var lightDirection  = Math3D.Vector3.create(0.0, 0.0,0.15);
+            //lightDirection.normalize();
+            //
+            //
+            //
+            //var specularStrength = 1.0;
+            //
+            //
+            //var directionLight = Engine3D.Light.DirectionLight.create(
+            //    lightDirection.values,
+            //    lightColor,
+            //    specularStrength
+            //);
+
+
+
+
+            var pointLightArr = [
+            ];
+
+
+            var pointLightPos = [0.0, 0.0, 0.15];
+            var pointColor = [1.0, 1.0, 0.0];
+            var pointIntensity = 0.8;
+
+
+            var attenuation = Engine3D.Light.Attenuation.create(4);
+
+            pointLightArr.push(Engine3D.Light.PointLight.create(
+                pointLightPos,
+                pointColor,
+                pointIntensity,
+                attenuation
+            ));
+
+            pointLightPos = [0.15, 0.0, 0.0];
+            pointColor = [0.0, 1.0, 0.0];
+            pointIntensity = 1.0;
+
+
+            attenuation = Engine3D.Light.Attenuation.create(4);
+
+            pointLightArr.push(Engine3D.Light.PointLight.create(
+                pointLightPos,
+                pointColor,
+                pointIntensity,
+                attenuation
+            ));
+
+
+
+
+            var ambientLightColor = [0.2, 0.2, 0.2];
+
+
+
+
+            var viewPos = camera.computeViewPosInWorldCoordinate();
+
+
+            dataArr = [{
+                name: "a_position",
+                buffer: o.buffers.vertexBuffer  ,
+                category: "attribute"
+            },
+                {
+                    name: "a_normal",
+                    buffer: o.buffers.normalBuffer  ,
+                    category: "attribute"
+                },
+                {
+                    name: "a_texCoord",
+                    buffer: o.buffers.texCoordBuffer  ,
+                    category: "attribute"
+                },
+                //{
+                //    name:"u_sampler",
+                //    type:  Engine3D.DataType.TEXTURE_ARR,
+                //    //val: 0,
+                //    category: "uniform"
+                //},
+                {
+                    name:"u_normalMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: normalMatrix.values,
+                    category: "uniform"
+                },
+                {
+                    name:"u_mMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: o.matrix.values,
+                    category: "uniform"
+                },
+                {
+                    name:"u_ambient",
+                    type: Engine3D.DataType.FLOAT_3,
+                    val: ambientLightColor,
+                    category: "uniform"
+                },
+                {
+                    name:"u_viewPos",
+                    type: Engine3D.DataType.FLOAT_3,
+                    val: viewPos,
+                    category: "uniform"
+                },
+
+                //todo 数据结构待优化
+                //{
+                //    name:"u_directionLight",
+                //    type: Engine3D.DataType.STRUCT,
+                //    val: {
+                //        member: [
+                //            ["FLOAT_3", "direction"],
+                //            ["FLOAT_3", "color"],
+                //            ["FLOAT", "intensity"]
+                //        ],
+                //        val:directionLight
+                //    },
+                //    category: "uniform"
+                //},
+                {
+                    name:"u_pointLights[0]",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
+                        ],
+                        val:pointLightArr[0]
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_pointLights[1]",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
+                        ],
+                        val:pointLightArr[1]
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_mvpMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: mvpMatrix.values,
+                    category: "uniform"
+                }];
+
+
+            o.draw(dataArr);
 
             o.onEndLoop();
 
@@ -483,8 +680,49 @@ $(function(){
             o.textureArr = arr;
 
 
+            //o.initData = function(){
+            //    this.runRotateAction();
+            //};
+
+            o.init();
+
+            return o;
+        }
+
+        function createSphere(){
+            var data = Engine3D.Cubic.Sphere.create().getSphereDataByLatitudeLongtitude(
+                0, 0, 0, 30, 30, 0.1
+            );
+            var o = Engine3D.Sprite.create("TRIANGLES");
+
+            o.buffers = {
+                vertexBuffer:Engine3D.ArrayBuffer.create(data.vertices, 3, gl.FLOAT),
+                texCoordBuffer: Engine3D.ArrayBuffer.create(data.texCoords, 2, gl.FLOAT),
+                normalBuffer: Engine3D.ArrayBuffer.create(data.normals, 3, gl.FLOAT),
+                indexBuffer: Engine3D.ElementBuffer.create(data.indices, gl.UNSIGNED_SHORT)
+            };
+
+
+
+            var i = 0;
+            var arr = [];
+            var len = 1;
+
+            for(i = 0;i < len; i++){
+                arr.push({
+                    material:createMaterial(i, createTexture(i)),
+                    uniformData:{
+                        "u_diffuseSampler":["INT", "diffuse"],
+                        "u_specularSampler":["INT", "specular"],
+                        "u_shininess":["FLOAT", "shininess"]
+                    }
+                });
+            }
+
+            o.textureArr = arr;
+
+
             o.initData = function(){
-                //this.runAnim("rotate");
                 this.runRotateAction();
             };
 
@@ -492,7 +730,6 @@ $(function(){
 
             return o;
         }
-
         function createMaterial(index, texture){
             var material = Engine3D.Material.create(
                 index,

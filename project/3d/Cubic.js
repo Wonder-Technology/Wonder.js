@@ -57,9 +57,13 @@ var Engine3D;
                 var indices = this._indices;
                 return {
                     vertices: new Float32Array(vertices),
-                    //todo 照理说webgl应该支持Uint16Array的！但是此处就是不支持！！？？
-                    //因此现在count不能超过2，否则会这样导致indices值可能超过256！
-                    indices: new Uint8Array(indices),
+                    /*!
+                    indices类型改为UNSIGHED_SHORT，即可支持Uint16Array
+   
+                     //照理说webgl应该支持Uint16Array的！但是此处就是不支持！！？？
+                     //因此现在count不能超过2，否则会这样导致indices值可能超过256！
+                     */
+                    indices: new Uint16Array(indices),
                     normals: new Float32Array(this._normals),
                     texCoords: new Float32Array(this._texCoords)
                 };
@@ -136,9 +140,7 @@ var Engine3D;
                 var indices = this._indices;
                 return {
                     vertices: new Float32Array(vertices),
-                    //todo 照理说webgl应该支持Uint16Array的！但是此处就是不支持！！？？
-                    //因此现在count不能超过2，否则会这样导致indices值可能超过256！
-                    indices: new Uint8Array(indices)
+                    indices: new Uint16Array(indices)
                 };
             };
             Sphere.prototype._subDivide = function (v1, v2, v3, ind, count, radius) {
