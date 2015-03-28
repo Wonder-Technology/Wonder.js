@@ -66,9 +66,6 @@ module Engine3D{
 
         draw(dataArr){
             var self = this;
-            var uniformDataForTextureArr = null;
-
-
 
 
 
@@ -80,10 +77,6 @@ module Engine3D{
                             self._program.setAttributeData(dataObj.name, dataObj.buffer);
                             break;
                         case "uniform":
-                            if(dataObj.type === Engine3D.DataType.TEXTURE_ARR){
-                                uniformDataForTextureArr = dataObj;
-                                return;
-                            }
                             self._program.setUniformData(dataObj.name, dataObj.type,dataObj.val);
                             break;
                         default:
@@ -94,30 +87,27 @@ module Engine3D{
 
 
             if(this._textureArr){
-                if(!uniformDataForTextureArr){
-                    throw new Error("对于纹理数组，需要设置片段着色器的sampler2D变量");
-                }
-
                 this._textureArr.forEach(function(data, index){
                     //self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type,index);
                     data.material.texture.bindToUnit(index);
-                    ////todo 不应该放在这里
-                    ////todo optimize data structure
-                    var i = null;
-                    var val = null;
-                    for(i in data.uniformData){
-                        if(data.uniformData.hasOwnProperty(i)){
-                            val = data.uniformData[i];
-                            self._program.setUniformData(i, DataType[val[0]],data.material[val[1]]);
+
+
+                    if(data.uniformData){
+                        ////todo optimize data structure
+                        var i = null;
+                        var val = null;
+                        for(i in data.uniformData){
+                            if(data.uniformData.hasOwnProperty(i)){
+                                val = data.uniformData[i];
+                                self._program.setUniformData(i, DataType[val[0]],data.material[val[1]]);
+                            }
                         }
                     }
-                    //data.uniformData.forEach(function)
-                    //self._program.setUniformData(data.uniformName, Engine3D.DataType.STRUCT, {
-                    //    val: data.material,
-                    //    member: data.member
-                    //});
 
-                    self._drawFunc(data.indexCount, data.indexOffset);
+                    var totalComponents = data.indexCount || self._buffers.indexBuffer.num;
+                    var startOffset = 0 || data.indexOffset;
+
+                    self._drawFunc(totalComponents, startOffset);
                 });
             }
             else{

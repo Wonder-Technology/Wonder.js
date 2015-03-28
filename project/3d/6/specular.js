@@ -245,12 +245,12 @@ $(function(){
                     buffer: o.buffers.texCoordBuffer  ,
                     category: "attribute"
                 },
-                {
-                    name:"u_sampler",
-                    type:  Engine3D.DataType.TEXTURE_ARR,
-                    //val: 0,
-                    category: "uniform"
-                },
+                //{
+                //    name:"u_sampler",
+                //    type:  Engine3D.DataType.TEXTURE_ARR,
+                //    //val: 0,
+                //    category: "uniform"
+                //},
                 {
                     name:"u_normalMatrix",
                     type: Engine3D.DataType.FLOAT_MAT4,

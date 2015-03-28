@@ -182,19 +182,13 @@ $(function(){
                     category: "attribute"
                 },
                 {
-                    name:"u_sampler",
-                    type:  Engine3D.DataType.TEXTURE_CUBE,
-                    val: 0,
-                    category: "uniform"
-                },
-                {
                     name:"u_mvpMatrix",
                     type: Engine3D.DataType.FLOAT_MAT4,
                     val: mvpMatrix.values,
                     category: "uniform"
                 }];
 
-            o.texture.bindToUnit(0);
+            //o.texture.bindToUnit(0);
 
             o.draw(dataArr);
 
@@ -227,19 +221,13 @@ $(function(){
                     category: "attribute"
                 },
                 {
-                    name:"u_sampler",
-                    type:  Engine3D.DataType.TEXTURE_2D,
-                    val: 0,
-                    category: "uniform"
-                },
-                {
                     name:"u_mvpMatrix",
                     type: Engine3D.DataType.FLOAT_MAT4,
                     val: mvpMatrix.values,
                     category: "uniform"
                 }];
 
-            o.texture.bindToUnit(0);
+            //o.texture.bindToUnit(0);
 
             o.draw(dataArr);
 
@@ -273,28 +261,16 @@ $(function(){
                     category: "attribute"
                 },
                 {
-                    name:"u_sampler",
-                    type:  Engine3D.DataType.TEXTURE_ARR,
-                    //val: 0,
-                    category: "uniform"
-                },
-                {
                     name:"u_mvpMatrix",
                     type: Engine3D.DataType.FLOAT_MAT4,
                     val: mvpMatrix.values,
                     category: "uniform"
                 }];
-            //var i = 0;
-
-            //for(i = 0;i < 6; i++){
-
-                //o.texture.bindToUnit(0);
 
                 o.draw(dataArr);
 
 
 
-            //}
 
 
 
@@ -362,32 +338,36 @@ $(function(){
 
 
 
-            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            var texture = Engine3D.TextureCubeMap.create({
-                "TEXTURE_MIN_FILTER":"LINEAR"
-            });
-            if (!texture) {
-                console.log('Failed to create the texture object');
-                return null;
+
+
+            var i = 0,
+                len = 1;
+            var arr = [];
+
+            for(i = 0;i < len; i++){
+                arr.push({
+                    material: createMaterial(i, createTextureSkyBox(i)),
+                    ////todo optimize data structure
+                    //todo type should be DataType instead of string
+                    uniformData:{
+                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                    }
+                    //indexCount: 6,
+                    //indexOffset: i * 6
+                });
             }
-            texture.bindToUnit(0);
-            texture.createTextureArea([
-                loader.getResource("1"),
-                loader.getResource("2"),
-                loader.getResource("3"),
-                loader.getResource("4"),
-                loader.getResource("5"),
-                loader.getResource("6")
-            ]);
 
-            texture.unBind();
+            o.textureArr = arr;
 
 
-            o.texture = texture;
+
             o.init();
 
             return o;
         }
+
+
 
         function createRectangle() {
             var vertices = new Float32Array([
@@ -420,26 +400,35 @@ $(function(){
 
 
 
-            var texture = Engine3D.Texture2D.create({
-                "TEXTURE_MIN_FILTER":"LINEAR"
-            }, true);
-            if (!texture) {
-                console.log('Failed to create the texture object');
-                return null;
+
+
+
+
+
+            var i = 0,
+                len = 1;
+            var arr = [];
+
+            for(i = 0;i < len; i++){
+                arr.push({
+                    material: createMaterial(i, createTexture(i)),
+                    uniformData:{
+                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                        "u_sampler":["TEXTURE_2D", "diffuse"]
+                    }
+                });
             }
-            texture.bindToUnit(0);
-            texture.createTextureArea(
-                loader.getResource("1")
-            );
 
-            texture.unBind();
+            o.textureArr = arr;
 
 
-            o.texture = texture;
+
             o.init();
 
             return o;
         }
+
+
 
         /*!
         实现正方体每个面不同纹理的方法：
@@ -480,7 +469,12 @@ $(function(){
 
             for(i = 0;i < 6; i++){
                 arr.push({
-                    texture:createTexture(i),
+                    material:createMaterial(i, createTexture(i)),
+                    uniformData:{
+                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                        //add light map?
+                        "u_sampler":["TEXTURE_2D", "diffuse"]
+                    },
                     indexCount: 6,
                     indexOffset: i * 6
                 });
@@ -499,6 +493,41 @@ $(function(){
             return o;
         }
 
+        function createMaterial(index, texture){
+            var material = Engine3D.Material.create(
+                index,
+                index,
+                64
+            );
+
+            material.texture = texture;
+
+            return material;
+        }
+
+        function createTextureSkyBox(index){
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            var texture = Engine3D.TextureCubeMap.create({
+                "TEXTURE_MIN_FILTER":"LINEAR"
+            });
+            if (!texture) {
+                console.log('Failed to create the texture object');
+                return null;
+            }
+            texture.bindToUnit(index);
+            texture.createTextureArea([
+                loader.getResource("1"),
+                loader.getResource("2"),
+                loader.getResource("3"),
+                loader.getResource("4"),
+                loader.getResource("5"),
+                loader.getResource("6")
+            ]);
+
+            texture.unBind();
+
+            return texture;
+        }
         function createTexture(index){
             var texture = Engine3D.Texture2D.create({
                 "TEXTURE_MIN_FILTER":"LINEAR"
