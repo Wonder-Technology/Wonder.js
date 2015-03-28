@@ -20,37 +20,37 @@ $(function(){
         id: "1"
         //type: "texture"
     },
-    {
-        src: "../content/2.jpg",
-        id: "2"
-        //type: "texture"
-    },
-    {
-        src: "../content/3.jpg",
-        id: "3"
-        //type: "texture"
-    },
-    {
-        src: "../content/4.jpg",
-        id: "4"
-        //type: "texture"
-    },
-    {
-        src: "../content/5.jpg",
-        id: "5"
-        //type: "texture"
-    },
-    {
-        src: "../content/6.jpg",
-        id: "6"
-        //type: "texture"
-    }]);
+        {
+            src: "../content/2.jpg",
+            id: "2"
+            //type: "texture"
+        },
+        {
+            src: "../content/3.jpg",
+            id: "3"
+            //type: "texture"
+        },
+        {
+            src: "../content/4.jpg",
+            id: "4"
+            //type: "texture"
+        },
+        {
+            src: "../content/5.jpg",
+            id: "5"
+            //type: "texture"
+        },
+        {
+            src: "../content/6.jpg",
+            id: "6"
+            //type: "texture"
+        }]);
 
 
 
 
     var camera = Engine3D.Camera.create({
-       eyeX: 0,
+            eyeX: 0,
             eyeY: 0.0,
             eyeZ: 1.0,
             centerX:0,
@@ -59,17 +59,17 @@ $(function(){
             upX:0,
             upY: 1,
             upZ: 0
-    },
-    //    eyeX: -0.5,
-    //        eyeY: -0.5,
-    //        eyeZ:-0.5 ,
-    //        centerX:-0.5,
-    //        centerY:-0.5,
-    //        centerZ: -1,
-    //        upX:0,
-    //        upY: 1,
-    //        upZ: 0
-    //},
+        },
+        //    eyeX: -0.5,
+        //        eyeY: -0.5,
+        //        eyeZ:-0.5 ,
+        //        centerX:-0.5,
+        //        centerY:-0.5,
+        //        centerZ: -1,
+        //        upX:0,
+        //        upY: 1,
+        //        upZ: 0
+        //},
         {
             angle: 60,
             aspect : c.width / c.height,
@@ -108,14 +108,15 @@ $(function(){
 
 
 
+
+            var lightPrg  = Engine3D.Program.create(vs.createShader("sphere-vs"), fs.createShader("sphere-fs"));
+
             cube = createCube();
-            cube.program = texture2DPrg;
+            cube.program = lightPrg;
 
-
-            var spherePrg  = Engine3D.Program.create(vs.createShader("sphere-vs"), fs.createShader("sphere-fs"));
 
             sphere = createSphere();
-            sphere.program = spherePrg;
+            sphere.program = lightPrg;
 
 
             gl.clearColor(0, 0, 0, 1);
@@ -134,7 +135,7 @@ $(function(){
 
 
         function loop(){
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
 
 
             camera.onStartLoop();
@@ -206,7 +207,7 @@ $(function(){
 
 
 
-           o = rectangle;
+            o = rectangle;
             o.program.use();
 
             o.onStartLoop();
@@ -244,86 +245,7 @@ $(function(){
 
 
 
-            o = cube;
-            o.program.use();
-
-
-            o.onStartLoop();
-
-
-            o.update();
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-
-
-
-            dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-
-                o.draw(dataArr);
-
-
-            o.onEndLoop();
-
-
-
-
-
-
-
-
-            //draw sphere
-            o = sphere;
-            o.program.use();
-
-
-            o.onStartLoop();
-
-
-            o.update();
-
-
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-            var normalMatrix = Math3D.Matrix.create();
-
-            normalMatrix.setInverseOf(o.matrix);
-            normalMatrix.transpose();
-
-
-            //var lightColor = [1.0, 1.0, 1.0];
-            //
-            //var lightDirection  = Math3D.Vector3.create(0.0, 0.0,0.15);
-            //lightDirection.normalize();
-            //
-            //
-            //
-            //var specularStrength = 1.0;
-            //
-            //
-            //var directionLight = Engine3D.Light.DirectionLight.create(
-            //    lightDirection.values,
-            //    lightColor,
-            //    specularStrength
-            //);
-
-
-
-
+            //light
             var pointLightArr = [
             ];
 
@@ -365,6 +287,177 @@ $(function(){
 
 
             var viewPos = camera.computeViewPosInWorldCoordinate();
+
+
+
+            //draw cube
+
+            o = cube;
+            o.program.use();
+
+
+            o.onStartLoop();
+
+
+            o.update();
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
+
+            var normalMatrix = Math3D.Matrix.create();
+
+            normalMatrix.setInverseOf(o.matrix);
+            normalMatrix.transpose();
+
+
+
+            //dataArr = [{
+            //    name: "a_position",
+            //    buffer: o.buffers.vertexBuffer  ,
+            //    category: "attribute"
+            //},
+            //    {
+            //        name: "a_texCoord",
+            //        buffer: o.buffers.texCoordBuffer  ,
+            //        category: "attribute"
+            //    },
+            //    {
+            //        name:"u_mvpMatrix",
+            //        type: Engine3D.DataType.FLOAT_MAT4,
+            //        val: mvpMatrix.values,
+            //        category: "uniform"
+            //    }];
+
+
+            dataArr = [{
+                name: "a_position",
+                buffer: o.buffers.vertexBuffer  ,
+                category: "attribute"
+            },
+                {
+                    name: "a_normal",
+                    buffer: o.buffers.normalBuffer  ,
+                    category: "attribute"
+                },
+                {
+                    name: "a_texCoord",
+                    buffer: o.buffers.texCoordBuffer  ,
+                    category: "attribute"
+                },
+                {
+                    name:"u_normalMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: normalMatrix.values,
+                    category: "uniform"
+                },
+                {
+                    name:"u_mMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: o.matrix.values,
+                    category: "uniform"
+                },
+                {
+                    name:"u_ambient",
+                    type: Engine3D.DataType.FLOAT_3,
+                    val: ambientLightColor,
+                    category: "uniform"
+                },
+                {
+                    name:"u_viewPos",
+                    type: Engine3D.DataType.FLOAT_3,
+                    val: viewPos,
+                    category: "uniform"
+                },
+
+                {
+                    name:"u_pointLights[0]",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
+                        ],
+                        val:pointLightArr[0]
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_pointLights[1]",
+                    type: Engine3D.DataType.STRUCT,
+                    val: {
+                        member: [
+                            ["FLOAT_3", "position"],
+                            ["FLOAT_3", "color"],
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
+                        ],
+                        val:pointLightArr[1]
+                    },
+                    category: "uniform"
+                },
+                {
+                    name:"u_mvpMatrix",
+                    type: Engine3D.DataType.FLOAT_MAT4,
+                    val: mvpMatrix.values,
+                    category: "uniform"
+                }];
+                o.draw(dataArr);
+
+
+            o.onEndLoop();
+
+
+
+
+
+
+
+
+            //draw sphere
+            o = sphere;
+            o.program.use();
+
+
+            o.onStartLoop();
+
+
+            o.update();
+
+
+
+            mvpMatrix = camera.computeMvpMatrix(o.matrix);
+            normalMatrix = Math3D.Matrix.create();
+
+            normalMatrix.setInverseOf(o.matrix);
+            normalMatrix.transpose();
+
+
+            //var lightColor = [1.0, 1.0, 1.0];
+            //
+            //var lightDirection  = Math3D.Vector3.create(0.0, 0.0,0.15);
+            //lightDirection.normalize();
+            //
+            //
+            //
+            //var specularStrength = 1.0;
+            //
+            //
+            //var directionLight = Engine3D.Light.DirectionLight.create(
+            //    lightDirection.values,
+            //    lightColor,
+            //    specularStrength
+            //);
+
+
+
+
 
 
             dataArr = [{
@@ -628,12 +721,12 @@ $(function(){
 
 
         /*!
-        实现正方体每个面不同纹理的方法：
-        1、将6个面的纹理压缩到一张图片上，通过uv map
-        2、绘制6次，每次画一个面
-        3、使用cube map
+         实现正方体每个面不同纹理的方法：
+         1、将6个面的纹理压缩到一张图片上，通过uv map
+         2、绘制6次，每次画一个面
+         3、使用cube map
 
-        此处使用第2个方法
+         此处使用第2个方法
          */
         function createCube(){
             var data = Engine3D.Cubic.Cube.create().getCubeData();
@@ -642,6 +735,7 @@ $(function(){
             o.buffers = {
                 vertexBuffer:Engine3D.ArrayBuffer.create(data.vertices, 3, gl.FLOAT),
                 texCoordBuffer: Engine3D.ArrayBuffer.create(data.texCoords, 2, gl.FLOAT),
+                normalBuffer: Engine3D.ArrayBuffer.create(data.normals, 3, gl.FLOAT),
                 indexBuffer: Engine3D.ElementBuffer.create(data.indices, gl.UNSIGNED_BYTE)
             };
 
@@ -667,10 +761,15 @@ $(function(){
             for(i = 0;i < 6; i++){
                 arr.push({
                     material:createMaterial(i, createTexture(i)),
+                    //uniformData:{
+                    //    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                    //    //add light map?
+                    //    "u_sampler":["TEXTURE_2D", "diffuse"]
+                    //},
                     uniformData:{
-                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-                        //add light map?
-                        "u_sampler":["TEXTURE_2D", "diffuse"]
+                        "u_diffuseSampler":["INT", "diffuse"],
+                        "u_specularSampler":["INT", "specular"],
+                        "u_shininess":["FLOAT", "shininess"]
                     },
                     indexCount: 6,
                     indexOffset: i * 6
@@ -841,7 +940,7 @@ $(function(){
                 87: "w",
                 83: "s",
                 68: "d",
-                    71: "g",
+                71: "g",
                 72: "h"
             };
 

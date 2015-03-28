@@ -204,7 +204,8 @@ var Engine3D;
             return matrix;
         };
         Camera.prototype.computeViewPosInWorldCoordinate = function () {
-            return Math3D.MatrixTool.multiplyVector4(this._vMatrix.inverseOf().values, [0, 0, 0, 1]);
+            //todo not copy and make sure that not change vMatrix
+            return Math3D.MatrixTool.multiplyVector4(this._vMatrix.copy().inverseOf().values, [0, 0, 0, 1]);
         };
         Camera.prototype.init = function () {
             this._vMatrix.setLookAt(this._eyeX, this._eyeY, this._eyeZ, this._centerX, this._centerY, this._centerZ, this._upX, this._upY, this._upZ);
