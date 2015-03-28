@@ -184,15 +184,18 @@ $(function(){
                 specularStrength
             );
 
-            var pointLightPos = [0.5,0.5,-0.5];
+
+            var pointLightPos = [0.0, 0.0, -5];
             var pointColor = [0.4, 1.0, 0.5];
             var pointIntensity = 0.8;
 
 
+            var attenuation = Engine3D.Light.Attenuation.create(4);
             var pointLight = Engine3D.Light.PointLight.create(
                 pointLightPos,
                 pointColor,
-                pointIntensity
+                pointIntensity,
+                attenuation
             );
 
 
@@ -271,7 +274,11 @@ $(function(){
                         member: [
                             ["FLOAT_3", "position"],
                             ["FLOAT_3", "color"],
-                            ["FLOAT", "intensity"]
+                            ["FLOAT", "intensity"],
+                            ["FLOAT", "range"],
+                            ["FLOAT", "constant"],
+                            ["FLOAT", "linear"],
+                            ["FLOAT", "quadratic"]
                         ],
                         val:pointLight
                     },

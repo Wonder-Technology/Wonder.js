@@ -53,9 +53,20 @@ void main(void){
 <script id="fs" type="x-shader/x-fragment">
 precision mediump float;
 
+//环境光属于场景属性，不属于Light类的属性，而且也不会衰减
+
+//平行光不衰减，只有点光源要衰减
+
+
 struct PointLight {
     vec3 position;
     vec3 color;
+
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+
     float intensity;
 };
 struct DirectionLight {
@@ -98,48 +109,62 @@ uniform vec3 u_viewPos;
 varying vec3 v_position;
 varying vec3 v_normal;
 
-// Calculates the color when using a directional light.
-vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
+
+vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(light.direction);
-    //vec3 lightDir = vec3(0.0, 0.0, 1.0);
-    float dotResultBetwwenNormAndLight = dot(normal, lightDir);
+    float dotResultBetweenNormAndLight = dot(normal, lightDir);
     // Diffuse shading
-    float diff = max(dotResultBetwwenNormAndLight, 0.0)* light.intensity;;
+    float diff = max(dotResultBetweenNormAndLight, 0.0)* intensity;;
+
     // Specular shading
     float spec = 0.0;
     //背面（指立方体中与当前面对应的背面，而不是当前面的反面）没有当前面反射光
-    if(dotResultBetwwenNormAndLight < 0.0){
+    if(dotResultBetweenNormAndLight < 0.0){
         spec = 0.0;
     }
     else{
         vec3 reflectDir = reflect(-lightDir, normal);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess) * light.intensity;
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess) * intensity;
     }
+
     // Combine results
-    vec3 ambient = u_ambient * vec3(texture2D(u_diffuseSampler, v_texCoord));
-    vec3 diffuse = light.color * diff * vec3(texture2D(u_diffuseSampler, v_texCoord));
-    vec3 specular = light.color * spec * vec3(texture2D(u_specularSampler, v_texCoord));
-    return (ambient + diffuse + specular);
+    vec3 ambientColor = u_ambient * vec3(texture2D(u_diffuseSampler, v_texCoord));
+    vec3 diffuseColor = color * diff * vec3(texture2D(u_diffuseSampler, v_texCoord));
+    vec3 specularColor = color * spec * vec3(texture2D(u_specularSampler, v_texCoord));
+
+    return ambientColor + attenuation * (diffuseColor + specularColor);
+    //return vec3(distance/ 256.0, ambientColor, 0.0);
 }
+
+// Calculates the color when using a directional light.
+vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(light.direction);
+    float attenuation = 1.0;
+
+    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
+}
+
+// Calculates the color when using a point light.
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - v_position);
-    // Diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0)* light.intensity;;
-    // Specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess) * light.intensity;
-    // Combine results
-    vec3 ambient = u_ambient * vec3(texture2D(u_diffuseSampler, v_texCoord));
-    vec3 diffuse = light.color * diff * vec3(texture2D(u_diffuseSampler, v_texCoord));
-    vec3 specular = light.color * spec * vec3(texture2D(u_specularSampler, v_texCoord));
-    return (ambient + diffuse + specular);
-    //return vec3(0.0, 0.0, 0.0);
+
+    // Attenuation
+    float distance = length(light.position - v_position);
+
+    float attenuation = 0.0;
+    if(distance < light.range)
+    {
+        attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    }
+
+    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }
+
+
 void main(void){
     vec3 norm = normalize(v_normal);
-    //vec3 norm = vec3(0.0, 0.0, 1.0);
     vec3 viewDir = normalize(u_viewPos - v_position);
     vec3 totalLight = calcDirectionLight(u_directionLight, norm, viewDir);
     totalLight = totalLight + calcPointLight(u_pointLight, norm, viewDir);
