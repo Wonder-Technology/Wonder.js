@@ -208,9 +208,8 @@ module Engine3D{
             this._pMatrix.setPerspective(this._zoomAngle, this._aspect, this._near, this._far);
         }
 
-        computeMvpMatrix(mMatrix){
+        computeVpMatrix(){
             var matrix = Math3D.Matrix.create();
-            matrix.concat(mMatrix);
             matrix.concat(this._vMatrix);
             matrix.concat(this._pMatrix);
 

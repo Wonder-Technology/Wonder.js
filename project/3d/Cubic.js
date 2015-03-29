@@ -69,6 +69,7 @@ var Engine3D;
                 };
             };
             //todo 设置球心坐标
+            //todo add texCoords
             Sphere.prototype.getSphereDataByDecomposition = function (pointX, pointY, pointZ, count, radius) {
                 //var originVertices = [
                 //    [0,1,0],

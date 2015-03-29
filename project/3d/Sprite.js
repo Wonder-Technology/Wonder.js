@@ -1,5 +1,8 @@
 /// <reference path="Program.ts"/>
 /// <reference path="Matrix.ts"/>
+/// <reference path="Buffer.ts"/>
+/// <reference path="Rotate.ts"/>
+/// <reference path="Translate.ts"/>
 //todo type/mode直接改为gl.xxx
 //todo 重构texture和textureArr属性
 var Engine3D;
@@ -14,6 +17,8 @@ var Engine3D;
             this._drawFunc = null;
             //private _action:{} = null;
             this._actionContainer = null;
+            this._enableCULLFACE = null;
+            this._face = null;
             this._matrix = null;
             this._program = null;
             this._buffers = null;
@@ -67,21 +72,11 @@ var Engine3D;
             enumerable: true,
             configurable: true
         });
-        Sprite.prototype.draw = function (dataArr) {
+        Sprite.prototype.draw = function (program) {
             var self = this;
-            if (dataArr) {
-                dataArr.forEach(function (dataObj) {
-                    switch (dataObj.category) {
-                        case "attribute":
-                            self._program.setAttributeData(dataObj.name, dataObj.buffer);
-                            break;
-                        case "uniform":
-                            self._program.setUniformData(dataObj.name, dataObj.type, dataObj.val);
-                            break;
-                        default:
-                            break;
-                    }
-                });
+            if (this._enableCULLFACE) {
+                gl.enable(gl.CULL_FACE);
+                gl.frontFace(this._face);
             }
             if (this._textureArr) {
                 this._textureArr.forEach(function (data, index) {
@@ -94,7 +89,7 @@ var Engine3D;
                         for (i in data.uniformData) {
                             if (data.uniformData.hasOwnProperty(i)) {
                                 val = data.uniformData[i];
-                                self._program.setUniformData(i, Engine3D.DataType[val[0]], data.material[val[1]]);
+                                program.setUniformData(i, Engine3D.DataType[val[0]], data.material[val[1]]);
                             }
                         }
                     }
@@ -109,6 +104,14 @@ var Engine3D;
                 this._drawFunc(totalComponents, startOffset);
             }
             //todo 单个纹理，material如何处理
+            if (this._enableCULLFACE) {
+                gl.disable(gl.CULL_FACE);
+                gl.frontFace(gl.CCW);
+            }
+        };
+        Sprite.prototype.setCULLFACE = function (face) {
+            this._enableCULLFACE = true;
+            this._face = face || gl.CCW;
         };
         Sprite.prototype.init = function () {
             var self = this;
@@ -170,8 +173,9 @@ var Engine3D;
             this._actionContainer = [action];
         };
         Sprite.prototype.update = function () {
-            this._actionContainer.map("update");
-            this._actionContainer.map("run");
+            //todo only update action
+            this._actionContainer.forEach(function (x) { return x.update(); });
+            this._actionContainer.forEach(function (x) { return x.run(); });
         };
         Sprite.prototype.getRotateAction = function () {
             return Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 });
@@ -180,8 +184,12 @@ var Engine3D;
             //todo refactor to be common
             return Engine3D.Action.Translate.create(this._matrix, { rangeZ: [0.08, -0.08], speed: 0.002 });
         };
+        Sprite.prototype.initWhenCreate = function () {
+            this._enableCULLFACE = false;
+        };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
+            obj.initWhenCreate();
             return obj;
         };
         Sprite.prototype.onStartLoop = function () {

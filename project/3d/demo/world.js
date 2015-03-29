@@ -6,6 +6,8 @@ var mvpMatrix = null;
 var keyState = {};
 var isRotate = false;
 
+var camera = null;
+
 $(function(){
     var webgl = Engine3D.Webgl.create();
 
@@ -49,33 +51,6 @@ $(function(){
 
 
 
-    var camera = Engine3D.Camera.create({
-            eyeX: 0,
-            eyeY: 0.0,
-            eyeZ: 1.0,
-            centerX:0,
-            centerY:0,
-            centerZ: -1,
-            upX:0,
-            upY: 1,
-            upZ: 0
-        },
-        //    eyeX: -0.5,
-        //        eyeY: -0.5,
-        //        eyeZ:-0.5 ,
-        //        centerX:-0.5,
-        //        centerY:-0.5,
-        //        centerZ: -1,
-        //        upX:0,
-        //        upY: 1,
-        //        upZ: 0
-        //},
-        {
-            angle: 60,
-            aspect : c.width / c.height,
-            near : 0.1,
-            far : 10
-        });
 
 
     var onload = function(){
@@ -85,6 +60,37 @@ $(function(){
         var sphere = null;
 
 
+        var scene1 = null;
+        var scene2 = null;
+        var scene3 = null;
+
+        camera = Engine3D.Camera.create({
+                eyeX: 0,
+                eyeY: 0.0,
+                eyeZ: 1.0,
+                centerX:0,
+                centerY:0,
+                centerZ: -1,
+                upX:0,
+                upY: 1,
+                upZ: 0
+            },
+            //    eyeX: -0.5,
+            //        eyeY: -0.5,
+            //        eyeZ:-0.5 ,
+            //        centerX:-0.5,
+            //        centerY:-0.5,
+            //        centerZ: -1,
+            //        upX:0,
+            //        upY: 1,
+            //        upZ: 0
+            //},
+            {
+                angle: 60,
+                aspect : c.width / c.height,
+                near : 0.1,
+                far : 10
+            });
 
         init();
 
@@ -92,31 +98,10 @@ $(function(){
 
 
         function init(){
-            var vs = Engine3D.Shader.create();
-            var fs = Engine3D.Shader.create();
-
-            var skyBoxPrg = Engine3D.Program.create(vs.createShader("skyBox-vs"), fs.createShader("skyBox-fs"));
-
-            skyBox = createSkyBox();
-
-            skyBox.program = skyBoxPrg;
-
-            var texture2DPrg  = Engine3D.Program.create(vs.createShader("rectangle-vs"), fs.createShader("rectangle-fs"));
-
-            rectangle = createRectangle();
-            rectangle.program = texture2DPrg;
+            _initScene();
 
 
 
-
-            var lightPrg  = Engine3D.Program.create(vs.createShader("sphere-vs"), fs.createShader("sphere-fs"));
-
-            cube = createCube();
-            cube.program = lightPrg;
-
-
-            sphere = createSphere();
-            sphere.program = lightPrg;
 
 
             gl.clearColor(0, 0, 0, 1);
@@ -133,126 +118,7 @@ $(function(){
             camera.init();
         }
 
-
-        function loop(){
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
-
-
-            camera.onStartLoop();
-
-            move();
-            if(isRotate){
-                camera.rotate();
-            }
-            zoom();
-
-
-            camera.run();
-
-
-
-            drawSprites();
-
-
-
-
-            camera.onEndLoop();
-
-            setAllFalse();
-            isRotate = false;
-
-
-
-            requestAnimationFrame(loop);
-        }
-
-
-        function drawSprites(){
-            var o = skyBox;
-            o.program.use();
-
-
-            o.onStartLoop();
-
-
-            o.update();
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-
-            var dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-
-            //o.texture.bindToUnit(0);
-
-            o.draw(dataArr);
-
-
-            o.onEndLoop();
-
-
-            //实验双面纹理
-
-            gl.enable(gl.CULL_FACE);
-
-            //gl.frontFace(gl.CW);
-           //gl.frontFace(gl.CCW);
-
-            o = rectangle;
-            o.program.use();
-
-            o.onStartLoop();
-
-
-            o.update();
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-
-
-            dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-
-            //o.texture.bindToUnit(0);
-
-            o.draw(dataArr);
-
-            o.onEndLoop();
-
-
-
-            gl.disable(gl.CULL_FACE);
-
-
-
-
-
+        function _initScene(){
             //light
             var pointLightArr = [
             ];
@@ -294,299 +160,101 @@ $(function(){
 
 
 
-            var viewPos = camera.computeViewPosInWorldCoordinate();
+
+
+            scene1 = Engine3D.Scene.create(camera);
+            scene2 = Engine3D.Scene.create(camera);
+            scene3 = Engine3D.Scene.create(camera);
 
 
 
-            //draw cube
+            //set shader
+            var vs = Engine3D.Shader.create();
+            var fs = Engine3D.Shader.create();
 
-            //实验双面纹理
+            var skyBoxPrg = Engine3D.Program.create(vs.createShader("skyBox-vs"), fs.createShader("skyBox-fs"));
 
-            gl.enable(gl.CULL_FACE);
-
-            gl.frontFace(gl.CW);
-
-            o = cube;
-            o.program.use();
+            scene1.program = skyBoxPrg;
 
 
-            o.onStartLoop();
+            var texture2DPrg  = Engine3D.Program.create(vs.createShader("texture2D-vs"), fs.createShader("texture2D-fs"));
 
-
-            o.update();
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-
-            var normalMatrix = Math3D.Matrix.create();
-
-            normalMatrix.setInverseOf(o.matrix);
-            normalMatrix.transpose();
-
-
-
-            //dataArr = [{
-            //    name: "a_position",
-            //    buffer: o.buffers.vertexBuffer  ,
-            //    category: "attribute"
-            //},
-            //    {
-            //        name: "a_texCoord",
-            //        buffer: o.buffers.texCoordBuffer  ,
-            //        category: "attribute"
-            //    },
-            //    {
-            //        name:"u_mvpMatrix",
-            //        type: Engine3D.DataType.FLOAT_MAT4,
-            //        val: mvpMatrix.values,
-            //        category: "uniform"
-            //    }];
-
-
-            dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_normal",
-                    buffer: o.buffers.normalBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name:"u_normalMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: normalMatrix.values,
-                    category: "uniform"
-                },
-                {
-                    name:"u_mMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: o.matrix.values,
-                    category: "uniform"
-                },
-                {
-                    name:"u_ambient",
-                    type: Engine3D.DataType.FLOAT_3,
-                    val: ambientLightColor,
-                    category: "uniform"
-                },
-                {
-                    name:"u_viewPos",
-                    type: Engine3D.DataType.FLOAT_3,
-                    val: viewPos,
-                    category: "uniform"
-                },
-
-                {
-                    name:"u_pointLights[0]",
-                    type: Engine3D.DataType.STRUCT,
-                    val: {
-                        member: [
-                            ["FLOAT_3", "position"],
-                            ["FLOAT_3", "color"],
-                            ["FLOAT", "intensity"],
-                            ["FLOAT", "range"],
-                            ["FLOAT", "constant"],
-                            ["FLOAT", "linear"],
-                            ["FLOAT", "quadratic"]
-                        ],
-                        val:pointLightArr[0]
-                    },
-                    category: "uniform"
-                },
-                {
-                    name:"u_pointLights[1]",
-                    type: Engine3D.DataType.STRUCT,
-                    val: {
-                        member: [
-                            ["FLOAT_3", "position"],
-                            ["FLOAT_3", "color"],
-                            ["FLOAT", "intensity"],
-                            ["FLOAT", "range"],
-                            ["FLOAT", "constant"],
-                            ["FLOAT", "linear"],
-                            ["FLOAT", "quadratic"]
-                        ],
-                        val:pointLightArr[1]
-                    },
-                    category: "uniform"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-                o.draw(dataArr);
-
-
-            o.onEndLoop();
+            scene2.program = texture2DPrg;
 
 
 
 
-            //恢复
-            gl.disable(gl.CULL_FACE);
-            gl.frontFace(gl.CCW);
+            var lightPrg  = Engine3D.Program.create(vs.createShader("texture2D-light-vs"), fs.createShader("texture2D-light-fs"));
+
+            scene3.program = lightPrg;
 
 
 
 
-
-
-
-            //draw sphere
-            o = sphere;
-            o.program.use();
-
-
-            o.onStartLoop();
-
-
-            o.update();
-
-
-
-            mvpMatrix = camera.computeMvpMatrix(o.matrix);
-            normalMatrix = Math3D.Matrix.create();
-
-            normalMatrix.setInverseOf(o.matrix);
-            normalMatrix.transpose();
-
-
-            //var lightColor = [1.0, 1.0, 1.0];
-            //
-            //var lightDirection  = Math3D.Vector3.create(0.0, 0.0,0.15);
-            //lightDirection.normalize();
-            //
-            //
-            //
-            //var specularStrength = 1.0;
-            //
-            //
-            //var directionLight = Engine3D.Light.DirectionLight.create(
-            //    lightDirection.values,
-            //    lightColor,
-            //    specularStrength
-            //);
+            //add sprites
+            skyBox = createSkyBox();
+            rectangle = createRectangle();
+            cube = createCube();
+            sphere = createSphere();
+            scene1.addSprites([skyBox]);
+            scene2.addSprites([rectangle]);
+            scene3.addSprites([cube, sphere]);
 
 
 
 
-
-
-            dataArr = [{
-                name: "a_position",
-                buffer: o.buffers.vertexBuffer  ,
-                category: "attribute"
-            },
-                {
-                    name: "a_normal",
-                    buffer: o.buffers.normalBuffer  ,
-                    category: "attribute"
-                },
-                {
-                    name: "a_texCoord",
-                    buffer: o.buffers.texCoordBuffer  ,
-                    category: "attribute"
-                },
-                //{
-                //    name:"u_sampler",
-                //    type:  Engine3D.DataType.TEXTURE_ARR,
-                //    //val: 0,
-                //    category: "uniform"
-                //},
-                {
-                    name:"u_normalMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: normalMatrix.values,
-                    category: "uniform"
-                },
-                {
-                    name:"u_mMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: o.matrix.values,
-                    category: "uniform"
-                },
-                {
-                    name:"u_ambient",
-                    type: Engine3D.DataType.FLOAT_3,
-                    val: ambientLightColor,
-                    category: "uniform"
-                },
-                {
-                    name:"u_viewPos",
-                    type: Engine3D.DataType.FLOAT_3,
-                    val: viewPos,
-                    category: "uniform"
-                },
-
-                //todo 数据结构待优化
-                //{
-                //    name:"u_directionLight",
-                //    type: Engine3D.DataType.STRUCT,
-                //    val: {
-                //        member: [
-                //            ["FLOAT_3", "direction"],
-                //            ["FLOAT_3", "color"],
-                //            ["FLOAT", "intensity"]
-                //        ],
-                //        val:directionLight
-                //    },
-                //    category: "uniform"
-                //},
-                {
-                    name:"u_pointLights[0]",
-                    type: Engine3D.DataType.STRUCT,
-                    val: {
-                        member: [
-                            ["FLOAT_3", "position"],
-                            ["FLOAT_3", "color"],
-                            ["FLOAT", "intensity"],
-                            ["FLOAT", "range"],
-                            ["FLOAT", "constant"],
-                            ["FLOAT", "linear"],
-                            ["FLOAT", "quadratic"]
-                        ],
-                        val:pointLightArr[0]
-                    },
-                    category: "uniform"
-                },
-                {
-                    name:"u_pointLights[1]",
-                    type: Engine3D.DataType.STRUCT,
-                    val: {
-                        member: [
-                            ["FLOAT_3", "position"],
-                            ["FLOAT_3", "color"],
-                            ["FLOAT", "intensity"],
-                            ["FLOAT", "range"],
-                            ["FLOAT", "constant"],
-                            ["FLOAT", "linear"],
-                            ["FLOAT", "quadratic"]
-                        ],
-                        val:pointLightArr[1]
-                    },
-                    category: "uniform"
-                },
-                {
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                }];
-
-
-            o.draw(dataArr);
-
-            o.onEndLoop();
+            //add light
+            scene3.ambientColor = ambientLightColor;
+            scene3.addLight(pointLightArr);
 
         }
+
+
+        function loop(){
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+
+
+            camera.onStartLoop();
+
+            move();
+            if(isRotate){
+                camera.rotate();
+            }
+            zoom();
+
+
+            camera.run();
+
+
+
+            scene1.onStartLoop();
+            scene2.onStartLoop();
+            scene3.onStartLoop();
+
+
+            scene1.run();
+            scene2.run();
+            scene3.run();
+
+
+
+
+
+            scene1.onEndLoop();
+            scene2.onEndLoop();
+            scene3.onEndLoop();
+
+
+            camera.onEndLoop();
+
+            setAllFalse();
+            isRotate = false;
+
+
+
+            requestAnimationFrame(loop);
+        }
+
 
         function move(){
             if(keyState["a"]){
@@ -744,6 +412,7 @@ $(function(){
 
             o.textureArr = arr;
 
+            o.setCULLFACE();
 
 
             o.init();
@@ -822,9 +491,7 @@ $(function(){
             o.textureArr = arr;
 
 
-            //o.initData = function(){
-            //    this.runRotateAction();
-            //};
+            o.setCULLFACE(gl.CW);
 
             o.init();
 

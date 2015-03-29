@@ -1,5 +1,8 @@
 /// <reference path="Program.ts"/>
 /// <reference path="Matrix.ts"/>
+/// <reference path="Buffer.ts"/>
+/// <reference path="Rotate.ts"/>
+/// <reference path="Translate.ts"/>
 
 //todo type/mode直接改为gl.xxx
 //todo 重构texture和textureArr属性
@@ -24,6 +27,8 @@ module Engine3D{
         private _drawFunc = null;
         //private _action:{} = null;
         private _actionContainer = null;
+        private _enableCULLFACE:boolean = null;
+        private _face = null;
 
 
         private _matrix:Math3D.Matrix = null;
@@ -64,27 +69,13 @@ module Engine3D{
         }
 
 
-        draw(dataArr){
+        draw(program){
             var self = this;
 
-
-
-
-            if(dataArr){
-                dataArr.forEach(function(dataObj){
-                    switch (dataObj.category){
-                        case "attribute":
-                            self._program.setAttributeData(dataObj.name, dataObj.buffer);
-                            break;
-                        case "uniform":
-                            self._program.setUniformData(dataObj.name, dataObj.type,dataObj.val);
-                            break;
-                        default:
-                            break;
-                    }
-                });
+            if(this._enableCULLFACE){
+                gl.enable(gl.CULL_FACE);
+                gl.frontFace(this._face);
             }
-
 
             if(this._textureArr){
                 this._textureArr.forEach(function(data, index){
@@ -99,7 +90,7 @@ module Engine3D{
                         for(i in data.uniformData){
                             if(data.uniformData.hasOwnProperty(i)){
                                 val = data.uniformData[i];
-                                self._program.setUniformData(i, DataType[val[0]],data.material[val[1]]);
+                                program.setUniformData(i, DataType[val[0]],data.material[val[1]]);
                             }
                         }
                     }
@@ -123,10 +114,18 @@ module Engine3D{
 
 
 
+            if(this._enableCULLFACE){
+                gl.disable(gl.CULL_FACE);
+                gl.frontFace(gl.CCW);
+            }
 
 
         }
 
+        setCULLFACE(face){
+            this._enableCULLFACE = true;
+            this._face = face || gl.CCW;
+        }
 
         init(){
             var self = this;
@@ -196,8 +195,9 @@ module Engine3D{
         }
 
         update(){
-            this._actionContainer.map("update");
-            this._actionContainer.map("run");
+            //todo only update action
+            this._actionContainer.forEach(x => x.update());
+            this._actionContainer.forEach(x => x.run());
         }
 
 
@@ -214,8 +214,15 @@ module Engine3D{
             );
         }
 
+
+        initWhenCreate(){
+            this._enableCULLFACE = false;
+        }
+
         public static create(drawMode):Sprite {
             var obj = new this(drawMode);
+
+            obj.initWhenCreate();
 
             return obj;
         }

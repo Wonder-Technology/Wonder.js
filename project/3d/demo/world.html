@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>3d学习</title>
     <script src="../../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
-    <script src="../jsExtend.js" type="text/javascript"></script>
+    <!--<script src="../jsExtend.js" type="text/javascript"></script>-->
+    <script src="../Scene.js" type="text/javascript"></script>
     <script src="../Matrix.js" type="text/javascript"></script>
     <script src="../Cubic.js" type="text/javascript"></script>
     <script src="../Sprite.js" type="text/javascript"></script>
@@ -25,7 +26,7 @@
 <body>
 <canvas id="canvas" width="600" height="400"></canvas>
 
-<script id="sphere-vs" type="x-shader/x-vertex">
+<script id="texture2D-light-vs" type="x-shader/x-vertex">
 attribute vec4 a_position;
 attribute vec3 a_normal;
 
@@ -49,7 +50,7 @@ void main(void){
 }
         </script>
 
-<script id="sphere-fs" type="x-shader/x-fragment">
+<script id="texture2D-light-fs" type="x-shader/x-fragment">
 precision mediump float;
 
 ////环境光属于场景属性，不属于Light类的属性，而且也不会衰减
@@ -181,7 +182,7 @@ void main(void){
 
 
 
-<script id="rectangle-vs" type="x-shader/x-vertex">
+<script id="texture2D-vs" type="x-shader/x-vertex">
 attribute vec4 a_position;
 uniform mat4 u_mvpMatrix;
 attribute vec2 a_texCoord;
@@ -193,7 +194,7 @@ void main(void){
 }
         </script>
 
-<script id="rectangle-fs" type="x-shader/x-fragment">
+<script id="texture2D-fs" type="x-shader/x-fragment">
 precision mediump float;
 
 uniform sampler2D u_sampler;

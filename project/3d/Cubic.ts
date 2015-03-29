@@ -83,6 +83,7 @@ module Engine3D.Cubic {
         }
 
         //todo 设置球心坐标
+        //todo add texCoords
         getSphereDataByDecomposition(pointX, pointY, pointZ, count, radius): {
             vertices: Float32Array
             indices: Uint16Array

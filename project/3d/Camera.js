@@ -196,9 +196,8 @@ var Engine3D;
             //this._vMatrix.translate(this._moveX, this._moveY, this._moveZ);
             this._pMatrix.setPerspective(this._zoomAngle, this._aspect, this._near, this._far);
         };
-        Camera.prototype.computeMvpMatrix = function (mMatrix) {
+        Camera.prototype.computeVpMatrix = function () {
             var matrix = Math3D.Matrix.create();
-            matrix.concat(mMatrix);
             matrix.concat(this._vMatrix);
             matrix.concat(this._pMatrix);
             return matrix;
