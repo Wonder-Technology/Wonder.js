@@ -82,7 +82,6 @@ module Engine3D{
                     //self._program.setUniformData(uniformDataForTextureArr.name, uniformDataForTextureArr.type,index);
                     data.material.texture.bindToUnit(index);
 
-
                     if(data.uniformData){
                         ////todo optimize data structure
                         var i = null;

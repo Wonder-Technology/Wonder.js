@@ -21,8 +21,6 @@ var Engine3D;
             this._rotateAngleY = null;
             this._zoomInAngle = null;
             this._zoomOutAngle = null;
-            this._pMatrix = null;
-            this._vMatrix = null;
             this._eyeX = null;
             this._eyeY = null;
             this._eyeZ = null;
@@ -30,6 +28,8 @@ var Engine3D;
             this._rotateSpeedX = 0.1;
             this._rotateSpeedY = 0.1;
             this._zoomSpeed = 10;
+            this._pMatrix = null;
+            this._vMatrix = null;
             this._eyeX = lookAtOpt.eyeX;
             this._eyeY = lookAtOpt.eyeY;
             this._eyeZ = lookAtOpt.eyeZ;
@@ -119,6 +119,26 @@ var Engine3D;
             },
             set: function (zoomSpeed) {
                 this._zoomSpeed = zoomSpeed;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Camera.prototype, "pMatrix", {
+            get: function () {
+                return this._pMatrix;
+            },
+            set: function (pMatrix) {
+                this._pMatrix = pMatrix;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Camera.prototype, "vMatrix", {
+            get: function () {
+                return this._vMatrix;
+            },
+            set: function (vMatrix) {
+                this._vMatrix = vMatrix;
             },
             enumerable: true,
             configurable: true

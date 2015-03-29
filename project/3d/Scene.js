@@ -6,13 +6,23 @@ var Engine3D;
 (function (Engine3D) {
     var Scene = (function () {
         function Scene(camera) {
-            this._camera = null;
             this._sprites = null;
             this._pointLightArr = null;
+            this._camera = null;
             this._program = null;
             this._ambientColor = null;
             this._camera = camera;
         }
+        Object.defineProperty(Scene.prototype, "camera", {
+            get: function () {
+                return this._camera;
+            },
+            set: function (camera) {
+                this._camera = camera;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Scene.prototype, "program", {
             get: function () {
                 return this._program;
@@ -57,6 +67,7 @@ var Engine3D;
         Scene.prototype._setData = function (sprite) {
             var dataArr = [];
             var self = this;
+            this.onSetData(sprite, this._program);
             if (sprite.buffers.vertexBuffer) {
                 dataArr.push({
                     name: "a_position",
@@ -157,6 +168,9 @@ var Engine3D;
             var obj = new this(camera);
             obj.initWhenCreate();
             return obj;
+        };
+        //hook
+        Scene.prototype.onSetData = function (sprite, program) {
         };
         return Scene;
     })();

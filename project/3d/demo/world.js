@@ -58,14 +58,15 @@ $(function(){
         var rectangle = null;
         var cube = null;
         var sphere = null;
-
+        var reflectedSphere = null;
 
         var scene1 = null;
         var scene2 = null;
         var scene3 = null;
+        var scene4 = null;
 
         camera = Engine3D.Camera.create({
-                eyeX: 0,
+                eyeX: 1.0,
                 eyeY: 0.0,
                 eyeZ: 1.0,
                 centerX:0,
@@ -97,6 +98,7 @@ $(function(){
         loop();
 
 
+        //todo extract Director class
         function init(){
             _initScene();
 
@@ -165,6 +167,7 @@ $(function(){
             scene1 = Engine3D.Scene.create(camera);
             scene2 = Engine3D.Scene.create(camera);
             scene3 = Engine3D.Scene.create(camera);
+            scene4 = Engine3D.Scene.create(camera);
 
 
 
@@ -189,6 +192,9 @@ $(function(){
             scene3.program = lightPrg;
 
 
+            var reflectPrg  = Engine3D.Program.create(vs.createShader("reflect-vs"), fs.createShader("reflect-fs"));
+
+            scene4.program = reflectPrg;
 
 
             //add sprites
@@ -196,17 +202,49 @@ $(function(){
             rectangle = createRectangle();
             cube = createCube();
             sphere = createSphere();
+            reflectedSphere = createReflectedCubeMap();
+
             scene1.addSprites([skyBox]);
             scene2.addSprites([rectangle]);
             scene3.addSprites([cube, sphere]);
-
-
+            scene4.addSprites([reflectedSphere]);
 
 
             //add light
             scene3.ambientColor = ambientLightColor;
             scene3.addLight(pointLightArr);
 
+
+
+            //overwrite hook
+
+            //todo refactor
+            scene4.onSetData = function(sprite, program){
+                var mMatrix = sprite.matrix;
+
+
+                var mvMatrix = mMatrix.copy();
+                mvMatrix.concat(this.camera.vMatrix);
+
+
+                program.setUniformData("u_mvMatrix", Engine3D.DataType.FLOAT_MAT4, mvMatrix.values);
+
+
+
+                //no need to copy
+                var mInverseCamera = this.camera.vMatrix.copy().inverseOf();
+
+                program.setUniformData("u_mInverseCamera", Engine3D.DataType.FLOAT_MAT4, mInverseCamera.values);
+
+
+                var normalMatrix = Math3D.Matrix.create();
+                normalMatrix.setInverseOf(mMatrix);
+
+                //var u_normalMatrix = gl.getUniformLocation(prg, 'u_normalMatrix');
+                //
+                //gl.uniformMatrix4fv(u_normalMatrix, false, normalMatrix.values);
+                program.setUniformData("u_normalMatrix", Engine3D.DataType.FLOAT_MAT4, normalMatrix.values);
+            }
         }
 
 
@@ -230,11 +268,13 @@ $(function(){
             scene1.onStartLoop();
             scene2.onStartLoop();
             scene3.onStartLoop();
+            scene4.onStartLoop();
 
 
             scene1.run();
             scene2.run();
             scene3.run();
+            scene4.run();
 
 
 
@@ -243,6 +283,7 @@ $(function(){
             scene1.onEndLoop();
             scene2.onEndLoop();
             scene3.onEndLoop();
+            scene4.onEndLoop();
 
 
             camera.onEndLoop();
@@ -321,8 +362,8 @@ $(function(){
             var i = 0,
                 len = 1;
             var arr = [];
-
-            for(i = 0;i < len; i++){
+            //
+            //for(i = 0;i < len; i++){
                 arr.push({
                     material: createMaterial(i, createTextureSkyBox(i)),
                     ////todo optimize data structure
@@ -334,7 +375,7 @@ $(function(){
                     //indexCount: 6,
                     //indexOffset: i * 6
                 });
-            }
+            //}
 
             o.textureArr = arr;
 
@@ -540,6 +581,52 @@ $(function(){
 
             return o;
         }
+
+
+        function createReflectedCubeMap(){
+            var data = Engine3D.Cubic.Sphere.create().getSphereDataByLatitudeLongtitude(
+                0, 0, 0.85, 30, 30, 0.1
+            //0, 0, 0, 30, 30, 0.1
+            );
+            var o = Engine3D.Sprite.create("TRIANGLES");
+
+            o.buffers = {
+                vertexBuffer:Engine3D.ArrayBuffer.create(data.vertices, 3, gl.FLOAT),
+                //texCoordBuffer: Engine3D.ArrayBuffer.create(data.texCoords, 2, gl.FLOAT),
+                normalBuffer: Engine3D.ArrayBuffer.create(data.normals, 3, gl.FLOAT),
+                indexBuffer: Engine3D.ElementBuffer.create(data.indices, gl.UNSIGNED_SHORT)
+            };
+
+
+
+            var i = 0,
+                len = 1;
+            var arr = [];
+
+            //for(i = 0;i < len; i++){
+                arr.push({
+                    material: createMaterial(i, createTextureSkyBox(i)),
+                    //todo type should be DataType instead of string
+                    uniformData:{
+                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                    }
+                });
+            //}
+
+            o.textureArr = arr;
+
+
+
+            //o.initData = function(){
+            //};
+
+            o.init();
+
+            return o;
+        }
+
+
         function createMaterial(index, texture){
             var material = Engine3D.Material.create(
                 index,

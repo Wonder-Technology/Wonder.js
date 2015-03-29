@@ -8,9 +8,18 @@ module Engine3D {
             this._camera = camera;
         }
 
-        private _camera:Camera = null;
         private _sprites:Sprite[] = null;
         private _pointLightArr:Light.PointLight[] = null;
+
+
+
+        private _camera:Camera = null;
+        get camera(){
+            return this._camera;
+        }
+        set camera(camera:Camera){
+            this._camera = camera;
+        }
 
         private _program:Program = null;
         get program(){
@@ -62,6 +71,7 @@ module Engine3D {
             var dataArr = [];
             var self = this;
 
+            this.onSetData(sprite, this._program);
 
             if(sprite.buffers.vertexBuffer){
                 dataArr.push({
@@ -175,6 +185,7 @@ module Engine3D {
             return !!(this._pointLightArr && this._pointLightArr.length > 0);
         }
 
+
         initWhenCreate() {
             this._sprites = [];
         }
@@ -185,6 +196,11 @@ module Engine3D {
             obj.initWhenCreate();
 
             return obj;
+        }
+
+
+        //hook
+        onSetData(sprite, program){
         }
     }
 }

@@ -47,8 +47,6 @@ module Engine3D{
         private _rotateAngleY = null;
         private _zoomInAngle = null;
         private _zoomOutAngle = null;
-        private _pMatrix:Math3D.Matrix = null;
-        private _vMatrix:Math3D.Matrix = null;
 
 
 
@@ -111,6 +109,21 @@ module Engine3D{
         }
 
 
+        private _pMatrix:Math3D.Matrix = null;
+        get pMatrix(){
+            return this._pMatrix;
+        }
+        set pMatrix(pMatrix:Math3D.Matrix){
+            this._pMatrix = pMatrix;
+        }
+        
+        private _vMatrix:Math3D.Matrix = null;
+        get vMatrix(){
+            return this._vMatrix;
+        }
+        set vMatrix(vMatrix:Math3D.Matrix){
+            this._vMatrix = vMatrix;
+        }
 
 
         onStartLoop(){
