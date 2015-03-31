@@ -13,7 +13,7 @@
 
 完成事项
 
-//熟悉macbook，搭建开发环境
+熟悉macbook，搭建开发环境
 安装git
 webstorm
 //office
@@ -30,12 +30,12 @@ qq
 
 
 
-//配置webstorm
+配置webstorm
 安装ideavimrc，并设置
 设置皮肤，字体大小
 安装typescrip
 关联grunt
-关联node
+//关联node
 
 
 
@@ -44,33 +44,63 @@ qq
 
 熟悉基本操作
 进行基本配置
-//熟悉基本的linux 命名
-//熟悉mac快捷键
-
-
-
-//使用pages打开和编辑word
-
-
-
-
-
-//解决多人协作 github问题：
-//切换多账号
-//fork模式
-//使用yyc-git账号，进行ssh clone
-
-
-
-
-
-//看引擎代码，熟悉roadmap
+熟悉基本的linux 命名
+熟悉mac快捷键
 
 
 
 
 
 明日计划
+
+
+继续完成demo：
+
+重构：
+index自动生成：
+
+        _initBuffers() {
+            var i, j;
+            var gl = this._gl;
+            var numVerts = this._size * 4 *  6;
+            var numIndices = this._size * 6;
+
+            this._vertices = new Float32Array(numVerts);
+            this._indices = new Uint16Array(numIndices);
+
+            for (i=0, j=0; i < numIndices; i += 6, j += 4) {
+                this._indices[i    ] = j;
+                this._indices[i + 1] = j + 1;
+                this._indices[i + 2] = j + 2;
+                this._indices[i + 3] = j;
+                this._indices[i + 4] = j + 2;
+                this._indices[i + 5] = j + 3;
+            }
+
+            // create a couple of buffers
+            this._vertexBuffer = gl.createBuffer();
+            this._indexBuffer = gl.createBuffer();
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indices, gl.STATIC_DRAW);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this._vertexBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this._vertices, gl.DYNAMIC_DRAW);
+        }
+
+
+
+优化：
+纹理压缩
+对于要修改顶点的情况，可以将bindBufferData的第三个参数改为DYNAMIC_DRAW，同时使用bindSubBuuferData，从而直接替换原有buffer的顶点数据（不过貌似也会有问题：Using fewer draw calls by changing buffer data with something like glBufferSubData may actually hurt your performance more than help because GL is not allowed to make changes to your data before previous draw calls finish (and remember that the CPU and GPU run asynchronously). So you either force GL to stall and finish previous draw calls, or make a copy of your buffer so you can change it without affecting previous calls） 
+
+use dirty flag, only draw if dirty
+
+
+
+
+
+
 
 
 
