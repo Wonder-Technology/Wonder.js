@@ -1,8 +1,3 @@
-var mMatrix = Math3D.Matrix.create();
-var mvpMatrix = null;
-
-
-
 var keyState = {};
 var isRotate = false;
 
@@ -64,6 +59,8 @@ $(function(){
         var scene2 = null;
         var scene3 = null;
         var scene4 = null;
+        var sceneReflectBackground1 = null;
+        var sceneReflectBackground2 = null;
 
         camera = Engine3D.Camera.create({
                 eyeX: 1.0,
@@ -111,10 +108,6 @@ $(function(){
             gl.enable(gl.DEPTH_TEST);
 
 
-
-            //init Matrix
-
-            mMatrix.setIdentity();
 
 
             camera.init();
@@ -168,6 +161,8 @@ $(function(){
             scene2 = Engine3D.Scene.create(camera);
             scene3 = Engine3D.Scene.create(camera);
             scene4 = Engine3D.Scene.create(camera);
+            sceneReflectBackground1 = Engine3D.Scene.create(camera);
+            sceneReflectBackground2 = Engine3D.Scene.create(camera);
 
 
 
@@ -179,12 +174,15 @@ $(function(){
 
             scene1.program = skyBoxPrg;
 
+            sceneReflectBackground1.program = skyBoxPrg;
+
 
             var texture2DPrg  = Engine3D.Program.create(vs.createShader("texture2D-vs"), fs.createShader("texture2D-fs"));
 
             scene2.program = texture2DPrg;
 
 
+            sceneReflectBackground2.program = texture2DPrg;
 
 
             var lightPrg  = Engine3D.Program.create(vs.createShader("texture2D-light-vs"), fs.createShader("texture2D-light-fs"));
@@ -202,12 +200,73 @@ $(function(){
             rectangle = createRectangle();
             cube = createCube();
             sphere = createSphere();
-            reflectedSphere = createReflectedCubeMap();
+
 
             scene1.addSprites([skyBox]);
             scene2.addSprites([rectangle]);
             scene3.addSprites([cube, sphere]);
+
+
+
+
+            sceneReflectBackground1.addSprites([skyBox]);
+            sceneReflectBackground2.addSprites([rectangle]);
+
+
+
+
+// Size of off screen
+            var OFFSCREEN_WIDTH = 256;
+            var OFFSCREEN_HEIGHT = 256;
+
+            //var pMatrixFBO = Math3D.Matrix.create();
+
+            // Initialize framebuffer object (FBO)
+            var fbo = initFramebufferObject(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+            //setPerspective(OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, pMatrixFBO);
+            //
+            //pMatrixFBO.concat(vMatrix);
+
+
+            var vpMatrix = Math3D.Matrix.create();
+
+            //todo shoude be dynamic by reflect object(sphere)
+            //eye is in center point of sphere, center(target) is towards -z axis
+            vpMatrix.lookAt(
+                0.0, 0.0, 8.5,
+                0, 0, -1,
+                0, 1, 0
+            );
+            //todo vpMatrix should be dynamic,not fixed!
+            vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
+                0.1, 10);
+            //{
+            //    angle: 60,
+            //        aspect : c.width / c.height,
+            //    near : 0.1,
+            //    far : 10
+            //});
+
+            //todo vpMatrix should be decided by reflectObj
+            //todo vpMatrix should be placed in Scene!
+            scene4.setFrameData(fbo,
+                {
+                    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+                    vpMatrix: vpMatrix
+                }
+            );
+
+
+
+            reflectedSphere = createReflectedCubeMap(fbo.texture);
+
             scene4.addSprites([reflectedSphere]);
+
+
+
+
+
 
 
             //add light
@@ -274,6 +333,35 @@ $(function(){
             scene1.run();
             scene2.run();
             scene3.run();
+
+
+
+
+            scene4.drawScenesInFrameBuffer();
+
+
+
+
+            //todo should do this in Scene
+            //todo invoke sprite's method to add frame texture
+            var i = 0;
+            var arr = [];
+
+            arr.push({
+                material: createMaterial(i, createReflectTexture(scene4._frameBuffer.texture, i)),
+                //todo type should be DataType instead of string
+                uniformData:{
+                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                    "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                }
+            });
+
+            reflectedSphere.textureArr = arr;
+
+
+
+
+            //draw in frameBuffer shoule before draw in canvas
             scene4.run();
 
 
@@ -364,17 +452,17 @@ $(function(){
             var arr = [];
             //
             //for(i = 0;i < len; i++){
-                arr.push({
-                    material: createMaterial(i, createTextureSkyBox(i)),
-                    ////todo optimize data structure
-                    //todo type should be DataType instead of string
-                    uniformData:{
-                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-                        "u_sampler":["TEXTURE_CUBE", "diffuse"]
-                    }
-                    //indexCount: 6,
-                    //indexOffset: i * 6
-                });
+            arr.push({
+                material: createMaterial(i, createTextureSkyBox(i)),
+                ////todo optimize data structure
+                //todo type should be DataType instead of string
+                uniformData:{
+                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                    "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                }
+                //indexCount: 6,
+                //indexOffset: i * 6
+            });
             //}
 
             o.textureArr = arr;
@@ -583,10 +671,10 @@ $(function(){
         }
 
 
-        function createReflectedCubeMap(){
+        function createReflectedCubeMap(fboTexture){
             var data = Engine3D.Cubic.Sphere.create().getSphereDataByLatitudeLongtitude(
                 0, 0, 0.85, 30, 30, 0.1
-            //0, 0, 0, 30, 30, 0.1
+                //0, 0, 0, 30, 30, 0.1
             );
             var o = Engine3D.Sprite.create("TRIANGLES");
 
@@ -599,22 +687,22 @@ $(function(){
 
 
 
-            var i = 0,
-                len = 1;
-            var arr = [];
-
-            //for(i = 0;i < len; i++){
-                arr.push({
-                    material: createMaterial(i, createTextureSkyBox(i)),
-                    //todo type should be DataType instead of string
-                    uniformData:{
-                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-                        "u_sampler":["TEXTURE_CUBE", "diffuse"]
-                    }
-                });
-            //}
-
-            o.textureArr = arr;
+            //var i = 0,
+            //    len = 1;
+            //var arr = [];
+            //
+            ////for(i = 0;i < len; i++){
+            //    arr.push({
+            //        material: createMaterial(i, createReflectTexture(fboTexture, i)),
+            //        //todo type should be DataType instead of string
+            //        uniformData:{
+            //            //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+            //            "u_sampler":["TEXTURE_CUBE", "diffuse"]
+            //        }
+            //    });
+            ////}
+            //
+            //o.textureArr = arr;
 
 
 
@@ -626,6 +714,79 @@ $(function(){
             return o;
         }
 
+        function initFramebufferObject(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT) {
+            var framebuffer, texture, depthBuffer;
+
+            //// Define the error handling function
+            //var error = function() {
+            //    if (framebuffer) gl.deleteFramebuffer(framebuffer);
+            //    if (texture) gl.deleteTexture(texture);
+            //    if (depthBuffer) gl.deleteRenderbuffer(depthBuffer);
+            //    return null;
+            //}
+
+            // Create a frame buffer object (FBO)
+            ////framebuffer = Engine3D.FrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+            //framebuffer = Engine3D.CubeMapFrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+            //if (!framebuffer) {
+            //    console.log('Failed to create frame buffer object');
+            //    return error();
+            //}
+            //
+            //texture = Engine3D.Texture2D.create({
+            //    "TEXTURE_MIN_FILTER": "LINEAR"
+            //}, false);
+            //texture.createTextureArea(null, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+            //framebuffer.texture = texture; // Store the texture object
+
+
+            //    gl.texImage2D(tdl.textures.CubeMap.faceTargets[ff],
+            //        0,                 // level
+            //        gl.RGBA,           // internalFormat
+            //        this.size,         // width
+            //        this.size,         // height
+            //        0,                 // border
+            //        gl.RGBA,           // format
+            //        gl.UNSIGNED_BYTE,  // type
+            //        null);             // data
+            //}
+
+            var i = 0,
+                len = 1;
+            var arr = [];
+
+            //for(i = 0;i < len; i++){
+            arr.push({
+                material: createMaterial(i, createReflectTexture(fboTexture, i)),
+                //todo type should be DataType instead of string
+                uniformData:{
+                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                    "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                }
+            });
+            //}
+
+            framebuffer.texture = arr;
+
+
+            framebuffer.createTexture();
+
+
+
+            depthBuffer = framebuffer.createRenderBuffer("DEPTH_COMPONENT16", OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+
+            framebuffer.attachTexture2D("COLOR_ATTACHMENT0", texture.texture);
+            framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
+
+
+            framebuffer.check();
+
+            framebuffer.unBind();
+
+
+            return framebuffer;
+        }
 
         function createMaterial(index, texture){
             var material = Engine3D.Material.create(
@@ -639,6 +800,35 @@ $(function(){
             return material;
         }
 
+        function createReflectTexture(fboTexture, index){
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            var texture = Engine3D.TextureCubeMap.create({
+                "TEXTURE_MIN_FILTER":"LINEAR"
+            });
+            if (!texture) {
+                console.log('Failed to create the texture object');
+                return null;
+            }
+            texture.bindToUnit(index);
+
+
+
+
+
+            texture.createTextureArea([
+                loader.getResource("1"),
+                loader.getResource("2"),
+                loader.getResource("3"),
+                loader.getResource("4"),
+                loader.getResource("5"),
+                fboTexture     //-z axis
+            ]);
+
+
+            texture.unBind();
+
+            return texture;
+        }
         function createTextureSkyBox(index){
             //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
             var texture = Engine3D.TextureCubeMap.create({

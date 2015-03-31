@@ -3,6 +3,7 @@
 /// <reference path="Buffer.ts"/>
 /// <reference path="Rotate.ts"/>
 /// <reference path="Translate.ts"/>
+/// <reference path="FrameBuffer.ts"/>
 
 //todo type/mode直接改为gl.xxx
 //todo 重构texture和textureArr属性
@@ -69,13 +70,35 @@ module Engine3D{
         }
 
 
+
+
+
         draw(program){
             var self = this;
+
+
+
+            //fbo.bind();
+            //
+            //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
+            //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear FBO
+            //
+            //drawTexCube(cube, viewProjMatrixFBO);   // Draw the cube
+            //
+            //fbo.unBind();
+            //
+            //gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+
+
+
+
 
             if(this._enableCULLFACE){
                 gl.enable(gl.CULL_FACE);
                 gl.frontFace(this._face);
             }
+
 
             if(this._textureArr){
                 this._textureArr.forEach(function(data, index){

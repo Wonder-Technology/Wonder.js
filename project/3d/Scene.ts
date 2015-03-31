@@ -3,6 +3,8 @@
 /// <reference path="Light.ts"/>
 /// <reference path="Program.ts"/>
 module Engine3D {
+    declare var gl:any;
+
     export class Scene {
         constructor(camera) {
             this._camera = camera;
@@ -10,8 +12,18 @@ module Engine3D {
 
         private _sprites:Sprite[] = null;
         private _pointLightArr:Light.PointLight[] = null;
+        private _frameBuffer = null;
+        //todo refactor, should be dynamic,not get here
+        private _vpMatrix = null;
 
 
+        private _scenesInFrameBuffer:Scene[] = null;
+        get scenesInFrameBuffer(){
+            return this._scenesInFrameBuffer;
+        }
+        set scenesInFrameBuffer(scenesInFrameBuffer:Scene[]){
+            this._scenesInFrameBuffer = scenesInFrameBuffer;
+        }
 
         private _camera:Camera = null;
         get camera(){
@@ -59,13 +71,70 @@ module Engine3D {
             this._program.use();
 
             this._sprites.forEach((sprite)=> {
-                sprite.update();
+                //draw in frameBuffer is before this draw
+                //and already update in that draw!
+                //todo refactor
+                if(!self._frameBuffer){
+                    sprite.update();
+                }
 
                 self._setData(sprite);
 
                 sprite.draw(self._program);
             });
         }
+
+    //{
+    //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+    //    vpMatrix: vpMatrix
+    //}
+        setFrameData(frameBuffer, data){
+            this._frameBuffer = frameBuffer;
+            this._scenesInFrameBuffer = data.sceneArr;
+            //todo refactor, should be dynamic,not get here
+            this._vpMatrix = data.vpMatrix;
+        }
+    //    scene4.setFrameData(fbo, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT,
+    //{
+    //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+    //        vpMatrix: vpMatrix
+    //}
+    //);
+drawScenesInFrameBuffer(){
+    this._frameBuffer.bind();
+    //gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
+
+    //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear FBO
+
+
+
+    this._scenesInFrameBuffer.forEach(function(scene){
+        scene.drawInFrameBuffer();
+    });
+
+
+    this._frameBuffer.unBind();
+
+
+}
+        drawInFrameBuffer(){
+            var self = this;
+
+            this._program.use();
+
+
+
+            this._sprites.forEach((sprite)=> {
+                sprite.update();
+
+                self._setData(sprite);
+
+                sprite.draw(self._program);
+            });
+
+        }
+
 
         private _setData(sprite){
             var dataArr = [];
