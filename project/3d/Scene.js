@@ -8,11 +8,25 @@ var Engine3D;
         function Scene(camera) {
             this._sprites = null;
             this._pointLightArr = null;
+            this._frameBuffer = null;
+            //todo refactor, should be dynamic,not get here
+            this._vpMatrix = null;
+            this._scenesInFrameBuffer = null;
             this._camera = null;
             this._program = null;
             this._ambientColor = null;
             this._camera = camera;
         }
+        Object.defineProperty(Scene.prototype, "scenesInFrameBuffer", {
+            get: function () {
+                return this._scenesInFrameBuffer;
+            },
+            set: function (scenesInFrameBuffer) {
+                this._scenesInFrameBuffer = scenesInFrameBuffer;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Scene.prototype, "camera", {
             get: function () {
                 return this._camera;
@@ -56,6 +70,46 @@ var Engine3D;
             this._sprites.forEach(function (x) { return x.onEndLoop(); });
         };
         Scene.prototype.run = function () {
+            var self = this;
+            this._program.use();
+            this._sprites.forEach(function (sprite) {
+                //draw in frameBuffer is before this draw
+                //and already update in that draw!
+                //todo refactor
+                if (!self._frameBuffer) {
+                    sprite.update();
+                }
+                self._setData(sprite);
+                sprite.draw(self._program);
+            });
+        };
+        //{
+        //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+        //    vpMatrix: vpMatrix
+        //}
+        Scene.prototype.setFrameData = function (frameBuffer, data) {
+            this._frameBuffer = frameBuffer;
+            this._scenesInFrameBuffer = data.sceneArr;
+            //todo refactor, should be dynamic,not get here
+            this._vpMatrix = data.vpMatrix;
+        };
+        //    scene4.setFrameData(fbo, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT,
+        //{
+        //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+        //        vpMatrix: vpMatrix
+        //}
+        //);
+        Scene.prototype.drawScenesInFrameBuffer = function () {
+            this._frameBuffer.bind();
+            //gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
+            //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear FBO
+            this._scenesInFrameBuffer.forEach(function (scene) {
+                scene.drawInFrameBuffer();
+            });
+            this._frameBuffer.unBind();
+        };
+        Scene.prototype.drawInFrameBuffer = function () {
             var self = this;
             this._program.use();
             this._sprites.forEach(function (sprite) {
