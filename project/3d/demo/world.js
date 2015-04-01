@@ -161,6 +161,7 @@ $(function(){
             scene2 = Engine3D.Scene.create(camera);
             scene3 = Engine3D.Scene.create(camera);
             scene4 = Engine3D.Scene.create(camera);
+            //todo should add all objects that need to be real-rendered into one scene
             sceneReflectBackground1 = Engine3D.Scene.create(camera);
             sceneReflectBackground2 = Engine3D.Scene.create(camera);
 
@@ -213,50 +214,16 @@ $(function(){
             sceneReflectBackground2.addSprites([rectangle]);
 
 
-
-
-// Size of off screen
+            //Initialize framebuffer object (FBO)
+            //todo dry
             var OFFSCREEN_WIDTH = 256;
             var OFFSCREEN_HEIGHT = 256;
 
-            //var pMatrixFBO = Math3D.Matrix.create();
-
-            // Initialize framebuffer object (FBO)
             var fbo = initFramebufferObject(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
 
-            //setPerspective(OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, pMatrixFBO);
-            //
-            //pMatrixFBO.concat(vMatrix);
-
-
-            var vpMatrix = Math3D.Matrix.create();
-
-            //todo shoude be dynamic by reflect object(sphere)
-            //eye is in center point of sphere, center(target) is towards -z axis
-            vpMatrix.lookAt(
-                0.0, 0.0, 8.5,
-                0, 0, -1,
-                0, 1, 0
-            );
-            //todo vpMatrix should be dynamic,not fixed!
-            vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
-                0.1, 10);
-            //{
-            //    angle: 60,
-            //        aspect : c.width / c.height,
-            //    near : 0.1,
-            //    far : 10
-            //});
-
-            //todo vpMatrix should be decided by reflectObj
-            //todo vpMatrix should be placed in Scene!
             scene4.setFrameData(fbo,
-                {
-                    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
-                    vpMatrix: vpMatrix
-                }
+                [sceneReflectBackground1, sceneReflectBackground2]
             );
-
 
 
             reflectedSphere = createReflectedCubeMap(fbo.texture);
@@ -341,22 +308,22 @@ $(function(){
 
 
 
-
-            //todo should do this in Scene
-            //todo invoke sprite's method to add frame texture
-            var i = 0;
-            var arr = [];
-
-            arr.push({
-                material: createMaterial(i, createReflectTexture(scene4._frameBuffer.texture, i)),
-                //todo type should be DataType instead of string
-                uniformData:{
-                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-                    "u_sampler":["TEXTURE_CUBE", "diffuse"]
-                }
-            });
-
-            reflectedSphere.textureArr = arr;
+            //
+            ////todo should do this in Scene
+            ////todo invoke sprite's method to add frame texture
+            //var i = 0;
+            //var arr = [];
+            //
+            //arr.push({
+            //    material: createMaterial(i, createReflectTexture(scene4._frameBuffer.texture, i)),
+            //    //todo type should be DataType instead of string
+            //    uniformData:{
+            //        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+            //        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+            //    }
+            //});
+            //
+            //reflectedSphere.textureArr = arr;
 
 
 
@@ -605,16 +572,16 @@ $(function(){
                     indexCount: 6,
                     indexOffset: (2 * i) * 6
                 });
-                arr.push({
-                    material:createMaterial(i, createTexture(i)),
-                    uniformData:{
-                        "u_diffuseSampler":["INT", "diffuse"],
-                        "u_specularSampler":["INT", "specular"],
-                        "u_shininess":["FLOAT", "shininess"]
-                    },
-                    indexCount: 6,
-                    indexOffset: (2 * i + 1) * 6
-                });
+                //arr.push({
+                //    material:createMaterial(i, createTexture(i)),
+                //    uniformData:{
+                //        "u_diffuseSampler":["INT", "diffuse"],
+                //        "u_specularSampler":["INT", "specular"],
+                //        "u_shininess":["FLOAT", "shininess"]
+                //    },
+                //    indexCount: 6,
+                //    indexOffset: (2 * i + 1) * 6
+                //});
             }
 
             o.textureArr = arr;
@@ -671,7 +638,7 @@ $(function(){
         }
 
 
-        function createReflectedCubeMap(fboTexture){
+        function createReflectedCubeMap(texture){
             var data = Engine3D.Cubic.Sphere.create().getSphereDataByLatitudeLongtitude(
                 0, 0, 0.85, 30, 30, 0.1
                 //0, 0, 0, 30, 30, 0.1
@@ -687,22 +654,68 @@ $(function(){
 
 
 
-            //var i = 0,
-            //    len = 1;
-            //var arr = [];
+
+
+
+
+// Size of off screen
+            var OFFSCREEN_WIDTH = 256;
+            var OFFSCREEN_HEIGHT = 256;
+
+            //var pMatrixFBO = Math3D.Matrix.create();
+
             //
-            ////for(i = 0;i < len; i++){
-            //    arr.push({
-            //        material: createMaterial(i, createReflectTexture(fboTexture, i)),
-            //        //todo type should be DataType instead of string
-            //        uniformData:{
-            //            //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-            //            "u_sampler":["TEXTURE_CUBE", "diffuse"]
-            //        }
-            //    });
-            ////}
+            ////setPerspective(OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, pMatrixFBO);
+            ////
+            ////pMatrixFBO.concat(vMatrix);
             //
-            //o.textureArr = arr;
+            ////
+            ////var vpMatrix = Math3D.Matrix.create();
+            ////
+            //////todo shoude be dynamic by reflect object(sphere)
+            //////eye is in center point of sphere, center(target) is towards -z axis
+            ////vpMatrix.lookAt(
+            ////    0.0, 0.0, 8.5,
+            ////    0, 0, -1,
+            ////    0, 1, 0
+            ////);
+            //////todo vpMatrix should be dynamic,not fixed!
+            ////vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
+            ////    0.1, 10);
+            //
+            //
+            //
+            ////todo vpMatrix should be decided by reflectObj
+            ////todo vpMatrix should be placed in Scene!
+            //o.setFrameData(fbo,
+            //    //{
+            //    //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
+            //    //    vpMatrix: vpMatrix
+            //    //}
+            //    [sceneReflectBackground1, sceneReflectBackground2]
+            //);
+
+
+
+
+
+
+            var arr = [];
+            var i = 0,
+                len = 1;
+
+            //for(i = 0;i < len; i++){
+                arr.push({
+                    material: createMaterial(i, texture),
+                    //todo type should be DataType instead of string
+                    uniformData:{
+                        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+                    }
+                });
+            //}
+            //
+            o.textureArr = arr;
 
 
 
@@ -710,6 +723,12 @@ $(function(){
             //};
 
             o.init();
+
+
+
+            o.initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+
 
             return o;
         }
@@ -727,7 +746,9 @@ $(function(){
 
             // Create a frame buffer object (FBO)
             ////framebuffer = Engine3D.FrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-            //framebuffer = Engine3D.CubeMapFrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+            framebuffer = Engine3D.CubeMapFrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
             //if (!framebuffer) {
             //    console.log('Failed to create frame buffer object');
             //    return error();
@@ -751,22 +772,22 @@ $(function(){
             //        null);             // data
             //}
 
-            var i = 0,
-                len = 1;
-            var arr = [];
-
-            //for(i = 0;i < len; i++){
-            arr.push({
-                material: createMaterial(i, createReflectTexture(fboTexture, i)),
-                //todo type should be DataType instead of string
-                uniformData:{
-                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-                    "u_sampler":["TEXTURE_CUBE", "diffuse"]
-                }
-            });
-            //}
-
-            framebuffer.texture = arr;
+            //var i = 0,
+            //    len = 1;
+            //var arr = [];
+            //
+            ////for(i = 0;i < len; i++){
+            //arr.push({
+            //    material: createMaterial(i, createReflectTexture(fboTexture, i)),
+            //    //todo type should be DataType instead of string
+            //    uniformData:{
+            //        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+            //        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+            //    }
+            //});
+            ////}
+            //
+            //framebuffer.texture = arr;
 
 
             framebuffer.createTexture();
@@ -776,7 +797,7 @@ $(function(){
             depthBuffer = framebuffer.createRenderBuffer("DEPTH_COMPONENT16", OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
 
 
-            framebuffer.attachTexture2D("COLOR_ATTACHMENT0", texture.texture);
+            framebuffer.attachTexture();
             framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
 
 

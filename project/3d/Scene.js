@@ -10,7 +10,8 @@ var Engine3D;
             this._pointLightArr = null;
             this._frameBuffer = null;
             //todo refactor, should be dynamic,not get here
-            this._vpMatrix = null;
+            //private _vpMatrix = null;
+            this._vpMatrixArr = null;
             this._scenesInFrameBuffer = null;
             this._camera = null;
             this._program = null;
@@ -89,9 +90,35 @@ var Engine3D;
         //}
         Scene.prototype.setFrameData = function (frameBuffer, data) {
             this._frameBuffer = frameBuffer;
-            this._scenesInFrameBuffer = data.sceneArr;
+            this._scenesInFrameBuffer = data;
             //todo refactor, should be dynamic,not get here
-            this._vpMatrix = data.vpMatrix;
+            //this._vpMatrix = data.vpMatrix;
+            this._setVPMatrix(frameBuffer.width, frameBuffer.height);
+        };
+        Scene.prototype._setVPMatrix = function (OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT) {
+            //this._frameBuffer = frameBuffer;
+            //
+            //this._scenesInFrameBuffer = data;
+            var arr = [], i = 0, len = 6, centerData = [
+                [1, 0, 0],
+                [-1, 0, 0],
+                [0, 1, 0],
+                [0, -1, 0],
+                [0, 0, 1],
+                [0, 0, -1]
+            ];
+            //todo how to decide eye?eye should be dynamic
+            //eye is in center point of sphere, center(target) is towards -z axis
+            var eyeX = 0, eyeY = 0, eyeZ = 0.85;
+            for (i = 0; i < len; i++) {
+                var vpMatrix = Math3D.Matrix.create();
+                var center = centerData[i];
+                vpMatrix.lookAt(eyeX, eyeY, eyeZ, center[0], center[1], center[2], 0, 1, 0);
+                //todo vpMatrix should be dynamic,not fixed!
+                vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, 0.1, 10);
+            }
+            ////todo refactor, should be dynamic,not get here
+            this._vpMatrixArr = arr;
         };
         //    scene4.setFrameData(fbo, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT,
         //{
@@ -104,21 +131,26 @@ var Engine3D;
             //gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
             //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear FBO
-            this._scenesInFrameBuffer.forEach(function (scene) {
-                scene.drawInFrameBuffer();
-            });
+            //draw 6 face
+            //todo if not all faces be real-render?
+            var i = 0, len = Engine3D.TextureCubeMap.faceTargets.length;
+            for (i = 0; i < len; i++) {
+                this._scenesInFrameBuffer.forEach(function (scene, index) {
+                    scene.drawInFrameBuffer(index);
+                });
+            }
             this._frameBuffer.unBind();
         };
-        Scene.prototype.drawInFrameBuffer = function () {
+        Scene.prototype.drawInFrameBuffer = function (index) {
             var self = this;
             this._program.use();
             this._sprites.forEach(function (sprite) {
                 sprite.update();
-                self._setData(sprite);
+                self._setData(sprite, index);
                 sprite.draw(self._program);
             });
         };
-        Scene.prototype._setData = function (sprite) {
+        Scene.prototype._setData = function (sprite, index) {
             var dataArr = [];
             var self = this;
             this.onSetData(sprite, this._program);
@@ -189,13 +221,17 @@ var Engine3D;
                     });
                 });
             }
-            var mvpMatrix = this._computeMvpMatrix(sprite);
+            ////todo refactor
+            ////todo make it public?
+            //if(!sprite._vpMatrixArr){
+            var mvpMatrix = this._computeMvpMatrix(sprite, index);
             dataArr.push({
                 name: "u_mvpMatrix",
                 type: 3 /* FLOAT_MAT4 */,
                 val: mvpMatrix.values,
                 category: "uniform"
             });
+            //}
             dataArr.forEach(function (dataObj) {
                 switch (dataObj.category) {
                     case "attribute":
@@ -209,7 +245,14 @@ var Engine3D;
                 }
             });
         };
-        Scene.prototype._computeMvpMatrix = function (sprite) {
+        Scene.prototype._computeMvpMatrix = function (sprite, index) {
+            //todo order should be same with draw
+            if (index && this._vpMatrixArr && this._vpMatrixArr.length > 0) {
+                var vp = this._vpMatrixArr[index];
+                var mvpMatrix = sprite.matrix.copy().concat(vp);
+                this._program.setUniformData("u_mvpMatrix", 3 /* FLOAT_MAT4 */, mvpMatrix.values);
+                return;
+            }
             return sprite.matrix.copy().concat(this._camera.computeVpMatrix());
         };
         Scene.prototype._hasLight = function () {

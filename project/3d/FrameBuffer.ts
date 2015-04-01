@@ -1,9 +1,11 @@
+/// <reference path="Texture.ts"/>
 module Engine3D{
     declare var gl:any;
 
 
+    //todo add FrameBuffer class
     //todo 增加renderBuffer状态，并管理
-    export class FrameBuffer{
+    export class CubeMapFrameBuffer{
         constructor(width, height){
             this._buffer = gl.createFramebuffer();
             this._width = width;
@@ -13,11 +15,10 @@ module Engine3D{
         private _buffer = null;
         private _width = null;
         private _height = null;
-        //Texture2D或CubeMap（应该提出两者的基类）
-        private _texture:any = null;
+        private _texture:TextureCubeMap = null;
 
         get texture(){return this._texture;}
-        set texture(texture:any){
+        set texture(texture:TextureCubeMap){
             this._texture = texture;
         }
 
@@ -36,9 +37,20 @@ module Engine3D{
         }
 
 
-        attachTexture2D(type:string, texture){
+        attachTexture(){
+            var ff = 0;
+
             gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
-            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl[type], gl.TEXTURE_2D, texture, 0);
+
+            for (ff = 0; ff < 6; ++ff) {
+                gl.framebufferTexture2D(
+                    gl.FRAMEBUFFER,
+                    gl.COLOR_ATTACHMENT0,
+                    TextureCubeMap.faceTargets[ff],
+                    this._texture.texture,
+                    0);
+            }
+            //gl.framebufferTexture2D(gl.FRAMEBUFFER, "COLOR_ATTACHMENT0", gl.TEXTURE_2D, texture, 0);
         }
         attachRenderBuffer(type:string, renderBuffer){
             gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
@@ -70,12 +82,75 @@ module Engine3D{
                 //gl.drawingBufferWidth || gl.canvas.width,
                 //gl.drawingBufferHeight || gl.canvas.height);
 
-            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         }
 
-        public static create(width, height):FrameBuffer {
-            var obj = new FrameBuffer(width, height);
+        createTexture(){
+            //var i = 0,
+            //    len = 1;
+            //var arr = [];
+            //
+            ////for(i = 0;i < len; i++){
+            //arr.push({
+            //    material: createMaterial(i, createReflectTexture(fboTexture, i)),
+            //    //todo type should be DataType instead of string
+            //    uniformData:{
+            //        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+            //        "u_sampler":["TEXTURE_CUBE", "diffuse"]
+            //    }
+            //});
+            ////}
+            //
+            //framebuffer.texture = arr;
+            //
+            //
+
+
+
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+            //todo set more
+            //tex.setParameter(gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            //tex.setParameter(gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            //tex.setParameter(gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            //tex.setParameter(gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            var texture = TextureCubeMap.create({
+                "TEXTURE_MIN_FILTER":"LINEAR"
+            });
+
+            var index = 0;
+
+
+            if (!texture) {
+                console.log('Failed to create the texture object');
+                return null;
+            }
+            texture.bindToUnit(index);
+
+
+
+
+            //todo refactor?
+            var arr = [];
+            var len = TextureCubeMap.faceTargets.length;
+            var i = 0;
+
+            for(;i < len; i ++){
+                arr.push(null);
+            }
+
+            texture.createTextureArea(arr, this._width, this._height);
+
+
+            texture.unBind();
+
+
+            this._texture = texture;
+        }
+
+        public static create(width, height){
+            var obj = new this(width, height);
 
             return obj;
         }

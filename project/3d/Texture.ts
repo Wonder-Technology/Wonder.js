@@ -79,32 +79,37 @@ module Engine3D{
             return this._texture;
         }
 
-        createTextureArea(imageArr, width, height):void{
+
+        createTextureArea(imageArr, width?, height?):void{
             var i = 0,
-                len = 6,
+                //todo should be 6
+                len = TextureCubeMap.faceTargets.length,
                 image = null;
+
 
             //立方图纹理需要设置六个方位上的纹理，为了方便区分，我设置了六个不同的纹理图像
             if(width && height){
                 //todo be dry!
                 for(i = 0; i < len; i++){
-                    if(imageArr[i] instanceof Texture2D){
-                        image = null;
-                    }
-                    else{
-                        image = imageArr[i];
-                    }
+                    image = imageArr[i];
+                    //if(imageArr[i] instanceof Texture2D){
+                    //    image = null;
+                    //}
+                    //else{
+                    //    image = imageArr[i];
+                    //}
                     gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
                 }
             }
             else{
                 for(i = 0; i < len; i++){
-                    if(imageArr[i] instanceof Texture2D){
-                        image = null;
-                    }
-                    else{
-                        image = imageArr[i];
-                    }
+                    image = imageArr[i];
+                    //if(imageArr[i] instanceof Texture2D){
+                    //    image = null;
+                    //}
+                    //else{
+                    //    image = imageArr[i];
+                    //}
                     gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
                     //gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, {
                     //    width:0,
@@ -138,6 +143,20 @@ module Engine3D{
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl[i], gl[this._params[i]]);
                 }
             }
+        }
+
+
+
+        //private _faceTargets:number[] = null;
+        static get faceTargets(){
+            var i = 0,
+                len = 6,
+                arr = [];
+
+            for(i = 0; i < len; i++){
+                arr.push(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i);
+            }
+            return arr;
         }
 
         public static create(params):TextureCubeMap {
