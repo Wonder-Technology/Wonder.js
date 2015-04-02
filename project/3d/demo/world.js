@@ -275,7 +275,6 @@ $(function(){
 
 
         function loop(){
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
 
 
             camera.onStartLoop();
@@ -297,14 +296,22 @@ $(function(){
             scene4.onStartLoop();
 
 
+
+            //draw in frameBuffer shoule before draw in canvas
+            scene4.drawScenesInFrameBuffer();
+
+
+
+
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+
+
             scene1.run();
             scene2.run();
             scene3.run();
 
+            scene4.run();
 
-
-
-            scene4.drawScenesInFrameBuffer();
 
 
 
@@ -328,8 +335,6 @@ $(function(){
 
 
 
-            //draw in frameBuffer shoule before draw in canvas
-            scene4.run();
 
 
 
@@ -726,7 +731,7 @@ $(function(){
 
 
 
-            o.initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+            //o.initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
 
 
 
@@ -790,20 +795,22 @@ $(function(){
             //framebuffer.texture = arr;
 
 
-            framebuffer.createTexture();
+            //framebuffer.createTexture();
+            //
+            //
+            //
+            //depthBuffer = framebuffer.createRenderBuffer("DEPTH_COMPONENT16", OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+            //
+            //
+            //framebuffer.attachTexture();
+            //framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
+            //
+            //
+            //framebuffer.check();
+            //
+            //framebuffer.unBind();
 
-
-
-            depthBuffer = framebuffer.createRenderBuffer("DEPTH_COMPONENT16", OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-
-
-            framebuffer.attachTexture();
-            framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
-
-
-            framebuffer.check();
-
-            framebuffer.unBind();
+            framebuffer.init();
 
 
             return framebuffer;

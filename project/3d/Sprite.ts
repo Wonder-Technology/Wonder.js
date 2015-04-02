@@ -240,59 +240,59 @@ module Engine3D{
             );
         }
 
-
-        initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT){
-            //this._frameBuffer = frameBuffer;
-            //
-            //this._scenesInFrameBuffer = data;
-
-
-
-
-            var arr = [],
-                i = 0,
-                len = 6,
-                centerData = [
-                    [1,0,0],
-                    [-1,0,0],
-                    [0,1,0],
-                    [0,-1,0],
-                    [0,0,1],
-                    [0,0,-1]
-                ];
-
-            //todo how to decide eye?eye should be dynamic
-            //eye is in center point of sphere, center(target) is towards -z axis
-            var eyeX = 0,
-                eyeY = 0,
-                eyeZ = 0.85;
-
-
-            for(i = 0; i < len; i++){
-                var vpMatrix = Math3D.Matrix.create();
-                var center = centerData[i];
-
-
-
-
-                vpMatrix.lookAt(
-                    eyeX, eyeY, eyeZ,
-                    center[0], center[1], center[2],
-                    0, 1, 0
-                );
-                //todo vpMatrix should be dynamic,not fixed!
-                vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
-                    0.1, 10);
-
-
-
-            }
-            ////todo refactor, should be dynamic,not get here
-            this._vpMatrixArr = arr;
-        }
-
-
-        private _vpMatrixArr = null;
+        //
+        //initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT){
+        //    //this._frameBuffer = frameBuffer;
+        //    //
+        //    //this._scenesInFrameBuffer = data;
+        //
+        //
+        //
+        //
+        //    var arr = [],
+        //        i = 0,
+        //        len = 6,
+        //        centerData = [
+        //            [1,0,0],
+        //            [-1,0,0],
+        //            [0,1,0],
+        //            [0,-1,0],
+        //            [0,0,1],
+        //            [0,0,-1]
+        //        ];
+        //
+        //    //todo how to decide eye?eye should be dynamic
+        //    //eye is in center point of sphere, center(target) is towards -z axis
+        //    var eyeX = 0,
+        //        eyeY = 0,
+        //        eyeZ = 0.85;
+        //
+        //
+        //    for(i = 0; i < len; i++){
+        //        var vpMatrix = Math3D.Matrix.create();
+        //        var center = centerData[i];
+        //
+        //
+        //
+        //
+        //        vpMatrix.lookAt(
+        //            eyeX, eyeY, eyeZ,
+        //            center[0], center[1], center[2],
+        //            0, 1, 0
+        //        );
+        //        //todo vpMatrix should be dynamic,not fixed!
+        //        vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
+        //            0.1, 10);
+        //
+        //
+        //
+        //    }
+        //    ////todo refactor, should be dynamic,not get here
+        //    this._vpMatrixArr = arr;
+        //}
+        //
+        //
+        //private _vpMatrixArr = null;
 
 
 

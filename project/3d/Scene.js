@@ -73,6 +73,8 @@ var Engine3D;
         Scene.prototype.run = function () {
             var self = this;
             this._program.use();
+            //todo move to framebuffer situation
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); // Set a viewport for FBO
             this._sprites.forEach(function (sprite) {
                 //draw in frameBuffer is before this draw
                 //and already update in that draw!
@@ -127,14 +129,14 @@ var Engine3D;
         //}
         //);
         Scene.prototype.drawScenesInFrameBuffer = function () {
-            this._frameBuffer.bind();
-            //gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
+            //gl.viewport(0, 0, this._frameBuffer.width, this._frameBuffer.height); // Set a viewport for FBO
             //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear FBO
             //draw 6 face
             //todo if not all faces be real-render?
             var i = 0, len = Engine3D.TextureCubeMap.faceTargets.length;
             for (i = 0; i < len; i++) {
+                this._frameBuffer.bind(i);
                 this._scenesInFrameBuffer.forEach(function (scene, index) {
                     scene.drawInFrameBuffer(index);
                 });

@@ -7,19 +7,33 @@ module Engine3D{
     //todo 增加renderBuffer状态，并管理
     export class CubeMapFrameBuffer{
         constructor(width, height){
-            this._buffer = gl.createFramebuffer();
             this._width = width;
             this._height = height;
         }
 
-        private _buffer = null;
-        private _width = null;
-        private _height = null;
+        private _buffers = null;
         private _texture:TextureCubeMap = null;
 
         get texture(){return this._texture;}
         set texture(texture:TextureCubeMap){
             this._texture = texture;
+        }
+
+        //todo private?
+        private _width:number = null;
+        get width(){
+            return this._width;
+        }
+        set width(width:number){
+            this._width = width;
+        }
+
+        private _height:number = null;
+        get height(){
+            return this._height;
+        }
+        set height(height:number){
+            this._height = height;
         }
 
         createRenderBuffer(type){
@@ -40,7 +54,7 @@ module Engine3D{
         attachTexture(){
             var ff = 0;
 
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers);
 
             for (ff = 0; ff < 6; ++ff) {
                 gl.framebufferTexture2D(
@@ -53,7 +67,7 @@ module Engine3D{
             //gl.framebufferTexture2D(gl.FRAMEBUFFER, "COLOR_ATTACHMENT0", gl.TEXTURE_2D, texture, 0);
         }
         attachRenderBuffer(type:string, renderBuffer){
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
         }
 
@@ -66,9 +80,9 @@ module Engine3D{
             }
         }
 
-        bind(){
-            if(this._buffer){
-                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+        bind(index){
+            if(this._buffers){
+                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers[index]);
                 gl.viewport(0, 0, this._width, this._height);
             }
         }
@@ -85,6 +99,72 @@ module Engine3D{
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         }
+
+        init(){
+            this.createTexture();
+
+
+
+            var depthBuffer = this.createRenderBuffer("DEPTH_COMPONENT16");
+
+
+
+            var len = TextureCubeMap.faceTargets.length;
+            for (var ff = 0; ff < len; ++ff) {
+                var fb = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+
+
+
+                    gl.framebufferTexture2D(
+                        gl.FRAMEBUFFER,
+                        gl.COLOR_ATTACHMENT0,
+                        TextureCubeMap.faceTargets[ff],
+                        this._texture.texture,
+                        0);
+
+
+                //
+                //gl.framebufferTexture2D(
+                //    gl.FRAMEBUFFER,
+                //    gl.COLOR_ATTACHMENT0,
+                //    tdl.textures.CubeMap.faceTargets[ff],
+                //    tex.texture,
+                //    0);
+                //if (this.depth) {
+                    gl.framebufferRenderbuffer(
+                        gl.FRAMEBUFFER,
+                        gl.DEPTH_ATTACHMENT,
+                        gl.RENDERBUFFER,
+                        depthBuffer);
+                //}
+
+
+                //gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers);
+                //gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
+
+
+                //var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+                //if (status != gl.FRAMEBUFFER_COMPLETE) {
+                //    throw("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
+                //}
+                this.check();
+
+                this._buffers.push(fb);
+            }
+            //
+            //
+            //framebuffer.attachTexture();
+            //framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
+            //
+            //
+            //framebuffer.check();
+
+            this.unBind();
+        }
+
+
+
 
         createTexture(){
             //var i = 0,
@@ -149,8 +229,14 @@ module Engine3D{
             this._texture = texture;
         }
 
+        initWhenCreate(){
+            this._buffers = [];
+        }
+
         public static create(width, height){
             var obj = new this(width, height);
+
+            obj.initWhenCreate();
 
             return obj;
         }

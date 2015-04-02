@@ -71,6 +71,12 @@ module Engine3D {
 
             this._program.use();
 
+
+            //todo move to framebuffer situation
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); // Set a viewport for FBO
+
+
+
             this._sprites.forEach((sprite)=> {
                 //draw in frameBuffer is before this draw
                 //and already update in that draw!
@@ -157,8 +163,7 @@ module Engine3D {
         //}
         //);
         drawScenesInFrameBuffer(){
-            this._frameBuffer.bind();
-            //gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
+            //gl.viewport(0, 0, this._frameBuffer.width, this._frameBuffer.height); // Set a viewport for FBO
 
             //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear FBO
@@ -170,6 +175,8 @@ module Engine3D {
                 len = TextureCubeMap.faceTargets.length;
 
             for(i = 0; i < len; i++){
+                this._frameBuffer.bind(i);
+
                 this._scenesInFrameBuffer.forEach(function(scene, index){
                     scene.drawInFrameBuffer(index);
                 });
@@ -313,8 +320,6 @@ module Engine3D {
             });
         }
 
-
-        通过了运行测试，但是球体为白色？立方体也有问题！
 
 
         private _computeMvpMatrix(sprite, index){

@@ -5,11 +5,11 @@ var Engine3D;
     //todo 增加renderBuffer状态，并管理
     var CubeMapFrameBuffer = (function () {
         function CubeMapFrameBuffer(width, height) {
-            this._buffer = null;
+            this._buffers = null;
+            this._texture = null;
+            //todo private?
             this._width = null;
             this._height = null;
-            this._texture = null;
-            this._buffer = gl.createFramebuffer();
             this._width = width;
             this._height = height;
         }
@@ -19,6 +19,26 @@ var Engine3D;
             },
             set: function (texture) {
                 this._texture = texture;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeMapFrameBuffer.prototype, "width", {
+            get: function () {
+                return this._width;
+            },
+            set: function (width) {
+                this._width = width;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CubeMapFrameBuffer.prototype, "height", {
+            get: function () {
+                return this._height;
+            },
+            set: function (height) {
+                this._height = height;
             },
             enumerable: true,
             configurable: true
@@ -37,14 +57,14 @@ var Engine3D;
         };
         CubeMapFrameBuffer.prototype.attachTexture = function () {
             var ff = 0;
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers);
             for (ff = 0; ff < 6; ++ff) {
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, Engine3D.TextureCubeMap.faceTargets[ff], this._texture.texture, 0);
             }
             //gl.framebufferTexture2D(gl.FRAMEBUFFER, "COLOR_ATTACHMENT0", gl.TEXTURE_2D, texture, 0);
         };
         CubeMapFrameBuffer.prototype.attachRenderBuffer = function (type, renderBuffer) {
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
         };
         CubeMapFrameBuffer.prototype.check = function () {
@@ -54,9 +74,9 @@ var Engine3D;
                 console.log('Frame buffer object is incomplete: ' + e.toString());
             }
         };
-        CubeMapFrameBuffer.prototype.bind = function () {
-            if (this._buffer) {
-                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+        CubeMapFrameBuffer.prototype.bind = function (index) {
+            if (this._buffers) {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffers[index]);
                 gl.viewport(0, 0, this._width, this._height);
             }
         };
@@ -68,6 +88,42 @@ var Engine3D;
             //gl.drawingBufferHeight || gl.canvas.height);
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        };
+        CubeMapFrameBuffer.prototype.init = function () {
+            this.createTexture();
+            var depthBuffer = this.createRenderBuffer("DEPTH_COMPONENT16");
+            var len = Engine3D.TextureCubeMap.faceTargets.length;
+            for (var ff = 0; ff < len; ++ff) {
+                var fb = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, Engine3D.TextureCubeMap.faceTargets[ff], this._texture.texture, 0);
+                //
+                //gl.framebufferTexture2D(
+                //    gl.FRAMEBUFFER,
+                //    gl.COLOR_ATTACHMENT0,
+                //    tdl.textures.CubeMap.faceTargets[ff],
+                //    tex.texture,
+                //    0);
+                //if (this.depth) {
+                gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+                //}
+                //gl.bindFramebuffer(gl.FRAMEBUFFER, this.buffers);
+                //gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
+                //var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+                //if (status != gl.FRAMEBUFFER_COMPLETE) {
+                //    throw("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
+                //}
+                this.check();
+                this._buffers.push(fb);
+            }
+            //
+            //
+            //framebuffer.attachTexture();
+            //framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
+            //
+            //
+            //framebuffer.check();
+            this.unBind();
         };
         CubeMapFrameBuffer.prototype.createTexture = function () {
             //var i = 0,
@@ -114,8 +170,12 @@ var Engine3D;
             texture.unBind();
             this._texture = texture;
         };
+        CubeMapFrameBuffer.prototype.initWhenCreate = function () {
+            this._buffers = [];
+        };
         CubeMapFrameBuffer.create = function (width, height) {
             var obj = new this(width, height);
+            obj.initWhenCreate();
             return obj;
         };
         return CubeMapFrameBuffer;
