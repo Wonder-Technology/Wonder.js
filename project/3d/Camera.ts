@@ -128,9 +128,11 @@ module Engine3D{
 
         onStartLoop(){
             this._vMatrix.push();
+            this._pMatrix.push();
         }
         onEndLoop(){
             this._vMatrix.pop();
+            this._pMatrix.pop();
         }
 
         moveLeft(){

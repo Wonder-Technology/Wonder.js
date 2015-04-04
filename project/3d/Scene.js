@@ -119,7 +119,8 @@ var Engine3D;
             var center = faceViews[index].target;
             var up = faceViews[index].up;
             vpMatrix.lookAt(eyeX, eyeY, eyeZ, center[0], center[1], center[2], up[0], up[1], up[2]);
-            vpMatrix.perspective(60, this._frameBuffer.width / this._frameBuffer.height, 0.1, 10);
+            //角度应该为90度，从而能获得完整的面
+            vpMatrix.perspective(90, this._frameBuffer.width / this._frameBuffer.height, 0.1, 10);
             return vpMatrix;
         };
         Scene.prototype.drawInFrameBuffer = function (vpMatrix) {

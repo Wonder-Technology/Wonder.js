@@ -39,9 +39,9 @@ $(function(){
     prg = initShaders("vs", "fs");
 
 
-   var cubic = Cubic.Cubic.create();
+   var cubic = Engine3D.Cubic.Cube.create();
 
-    var data = cubic.getCubicDataWithNormal();
+    var data = cubic.getCubeData();
 
     var vertices = data.vertices;
     var indices = data.indices;

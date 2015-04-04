@@ -145,9 +145,11 @@ var Engine3D;
         });
         Camera.prototype.onStartLoop = function () {
             this._vMatrix.push();
+            this._pMatrix.push();
         };
         Camera.prototype.onEndLoop = function () {
             this._vMatrix.pop();
+            this._pMatrix.pop();
         };
         Camera.prototype.moveLeft = function () {
             this._computeMoveDistance(Math3D.Vector4.create(-this._moveSpeed, 0, 0, 1));

@@ -27,41 +27,33 @@
 <canvas id="canvas" width="600" height="400"></canvas>
 
 <script id="reflect-vs" type="x-shader/x-vertex">
+
+//todo 反射向量的计算到底是放在vs还是fs？
+
 //todo 统一这个shader和light shader，要么都在世界坐标系中，要么都在视图坐标系中！
 
-attribute vec3 a_position;
-attribute vec3 a_normal;
+attribute vec4 a_position;
+attribute vec4 a_normal;
 
 uniform mat4   u_mvpMatrix;
-uniform mat4   u_mvMatrix;
+uniform mat4   u_mMatrix;
+//uniform mat4   u_mvMatrix;
 uniform mat4   u_normalMatrix;
-uniform mat4   u_mInverseCamera;
+//uniform mat4   u_mInverseCamera;
 
 // Texture coordinate to fragment program
 //smooth out vec3 vVaryingTexCoord;
-varying vec3 v_texCoord;
+//varying vec3 v_texCoord;
+varying vec4 v_position;
+varying vec3 normalAfterModelTransform;
 
 void main(void)
 {
-// Normal in Eye Space
-vec4 vEyeNormal = u_normalMatrix * vec4(a_normal, 1.0);
+normalAfterModelTransform = vec3(u_normalMatrix * a_normal);
 
-// Vertex position in Eye Space
-vec4 vPos = vec4(a_position, 1.0);
-vec4 vEyePos = normalize(u_mvMatrix * vPos);
+v_position = u_mMatrix * a_position;
 
-// Get reflected vector
-vec4 vCoords = reflect(-vEyePos, vEyeNormal);
-
-// Rotate by flipped camera
-//convert vCoords from eye coordinate to world coordinate
-vCoords = u_mInverseCamera * vCoords;
-
-
-v_texCoord= normalize(vCoords.xyz);
-
-// Don't forget to transform the geometry!
-gl_Position = u_mvpMatrix * vPos;
+gl_Position = u_mvpMatrix * a_position;
 }
 </script>
 
@@ -69,10 +61,23 @@ gl_Position = u_mvpMatrix * vPos;
 <script id="reflect-fs" type="x-shader/x-fragment">
 precision mediump float;
 uniform samplerCube u_sampler;
-varying vec3 v_texCoord;
+uniform vec3 u_viewPos;
+
+varying vec4 v_position;
+varying vec3 normalAfterModelTransform;
 
 void main(void){
-    gl_FragColor = textureCube(u_sampler, v_texCoord);
+
+vec3 eyeToVertex = vec3(normalize(v_position)) - u_viewPos;
+
+// Get reflected vector
+vec3 vCoords = reflect(eyeToVertex, normalAfterModelTransform);
+
+// Rotate by flipped camera
+//convert vCoords from eye coordinate to world coordinate
+//vCoords = u_mInverseCamera * vCoords;
+
+    gl_FragColor = textureCube(u_sampler, vCoords);
 }
 </script>
 

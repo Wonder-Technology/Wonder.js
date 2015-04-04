@@ -109,49 +109,6 @@ $(function(){
         }
 
         function _initScene(){
-            //light
-            //var pointLightArr = [
-            //];
-            //
-            //
-            //var pointLightPos = [0.0, 0.0, 0.15];
-            //var pointColor = [1.0, 1.0, 0.0];
-            //var pointIntensity = 0.8;
-            //
-            //
-            //var attenuation = Engine3D.Light.Attenuation.create(4);
-            //
-            //pointLightArr.push(Engine3D.Light.PointLight.create(
-            //    pointLightPos,
-            //    pointColor,
-            //    pointIntensity,
-            //    attenuation
-            //));
-            //
-            //pointLightPos = [0.15, 0.0, 0.0];
-            //pointColor = [0.0, 1.0, 0.0];
-            //pointIntensity = 1.0;
-            //
-            //
-            //attenuation = Engine3D.Light.Attenuation.create(4);
-            //
-            //pointLightArr.push(Engine3D.Light.PointLight.create(
-            //    pointLightPos,
-            //    pointColor,
-            //    pointIntensity,
-            //    attenuation
-            //));
-            //
-            //
-            //
-            //
-            //var ambientLightColor = [0.2, 0.2, 0.2];
-
-
-
-
-
-
             scene1 = Engine3D.Scene.create(camera);
             scene4 = Engine3D.Scene.create(camera);
             //todo should add all objects that need to be real-rendered into one scene
@@ -169,12 +126,12 @@ $(function(){
 
             sceneReflectBackground1.program = skyBoxPrg;
 
-            scene4.program = skyBoxPrg;
+            //scene4.program = skyBoxPrg;
 
 
-            //var reflectPrg  = Engine3D.Program.create(vs.createShader("reflect-vs"), fs.createShader("reflect-fs"));
+            var reflectPrg  = Engine3D.Program.create(vs.createShader("reflect-vs"), fs.createShader("reflect-fs"));
 
-            //scene4.program = reflectPrg;
+            scene4.program = reflectPrg;
 
 
             //add sprites
@@ -202,7 +159,7 @@ $(function(){
             );
 
 
-            reflectedSphere = createReflectedCubeMap(fbo.texture);
+            //reflectedSphere = createReflectedCubeMap(fbo.texture);
 
             var cube = createCube(fbo.texture);
 
@@ -229,25 +186,31 @@ $(function(){
 
             //todo refactor
             scene4.onSetData = function(sprite, program){
-                var mMatrix = sprite.matrix;
+                var mMatrix = sprite.matrix.copy();
 
 
-                var mvMatrix = mMatrix.copy();
-                mvMatrix.concat(this.camera.vMatrix);
+                //var mvMatrix = mMatrix.copy();
+                var vMatrix = this.camera.vMatrix.copy();
+                //mvMatrix.concat(vMatrix);
 
 
-                program.setUniformData("u_mvMatrix", Engine3D.DataType.FLOAT_MAT4, mvMatrix.values);
+                program.setUniformData("u_mMatrix", Engine3D.DataType.FLOAT_MAT4, mMatrix.values);
+                //program.setUniformData("u_mvMatrix", Engine3D.DataType.FLOAT_MAT4, mvMatrix.values);
 
 
+                var viewPos = this._camera.computeViewPosInWorldCoordinate();
+                //vec4转换为vec3
+                program.setUniformData("u_viewPos", Engine3D.DataType.FLOAT_3, viewPos);
 
                 //no need to copy
-                var mInverseCamera = this.camera.vMatrix.copy().inverseOf();
+                //var mInverseCamera = vMatrix.copy().inverseOf();
 
-                program.setUniformData("u_mInverseCamera", Engine3D.DataType.FLOAT_MAT4, mInverseCamera.values);
+                //program.setUniformData("u_mInverseCamera", Engine3D.DataType.FLOAT_MAT4, mInverseCamera.values);
 
 
                 var normalMatrix = Math3D.Matrix.create();
                 normalMatrix.setInverseOf(mMatrix);
+                normalMatrix.transpose();
 
                 //var u_normalMatrix = gl.getUniformLocation(prg, 'u_normalMatrix');
                 //
@@ -384,8 +347,7 @@ $(function(){
             var i = 0,
                 len = 1;
             var arr = [];
-            //
-            //for(i = 0;i < len; i++){
+
             arr.push({
                 material: createMaterial(i, createTextureSkyBox(i)),
                 ////todo optimize data structure
@@ -394,10 +356,7 @@ $(function(){
                     //todo for no light map object,it should refactor Material,now just set diffuse to pass.
                     "u_sampler":["TEXTURE_CUBE", "diffuse"]
                 }
-                //indexCount: 6,
-                //indexOffset: i * 6
             });
-            //}
 
             o.textureArr = arr;
 
@@ -472,53 +431,10 @@ $(function(){
 
 
 
-// Size of off screen
-            var OFFSCREEN_WIDTH = 256;
-            var OFFSCREEN_HEIGHT = 256;
-
-            //var pMatrixFBO = Math3D.Matrix.create();
-
-            //
-            ////setPerspective(OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, pMatrixFBO);
-            ////
-            ////pMatrixFBO.concat(vMatrix);
-            //
-            ////
-            ////var vpMatrix = Math3D.Matrix.create();
-            ////
-            //////todo shoude be dynamic by reflect object(sphere)
-            //////eye is in center point of sphere, center(target) is towards -z axis
-            ////vpMatrix.lookAt(
-            ////    0.0, 0.0, 8.5,
-            ////    0, 0, -1,
-            ////    0, 1, 0
-            ////);
-            //////todo vpMatrix should be dynamic,not fixed!
-            ////vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
-            ////    0.1, 10);
-            //
-            //
-            //
-            ////todo vpMatrix should be decided by reflectObj
-            ////todo vpMatrix should be placed in Scene!
-            //o.setFrameData(fbo,
-            //    //{
-            //    //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
-            //    //    vpMatrix: vpMatrix
-            //    //}
-            //    [sceneReflectBackground1, sceneReflectBackground2]
-            //);
-
-
-
-
-
-
             var arr = [];
             var i = 0,
                 len = 1;
 
-            //for(i = 0;i < len; i++){
                 arr.push({
                     material: createMaterial(i, texture),
                     //todo type should be DataType instead of string
@@ -527,57 +443,51 @@ $(function(){
                         "u_sampler":["TEXTURE_CUBE", "diffuse"]
                     }
                 });
-            //}
-            //
+
             o.textureArr = arr;
 
 
 
-            //o.initData = function(){
-            //};
-
             o.init();
-
-
-
-            //o.initFrameBuffer(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-
-
 
             return o;
         }
 
 
         function createCube(textureCubeMap){
-            var vertices = new Float32Array([
-                0.5,  0.5,  0.5,
-                -0.5,  0.5,  0.5,
-                -0.5, -0.5,  0.5,
-                0.5, -0.5,  0.5,
-                0.5, -0.5, -0.5,
-                0.5,  0.5, -0.5,
-                -0.5,  0.5, -0.5,
-                -0.5, -0.5, -0.5
+            var vertices = new Float32Array([   // Vertex coordinates
+                0.2, 0.2, 0.2,  -0.2, 0.2, 0.2,  -0.2,-0.2, 0.2,   0.2,-0.2, 0.2,    // v0-v1-v2-v3 front
+                0.2, 0.2, 0.2,   0.2,-0.2, 0.2,   0.2,-0.2,-0.2,   0.2, 0.2,-0.2,    // v0-v3-v4-v5 right
+                0.2, 0.2, 0.2,   0.2, 0.2,-0.2,  -0.2, 0.2,-0.2,  -0.2, 0.2, 0.2,    // v0-v5-v6-v1 up
+                -0.2, 0.2, 0.2,  -0.2, 0.2,-0.2,  -0.2,-0.2,-0.2,  -0.2,-0.2, 0.2,    // v1-v6-v7-v2 left
+                -0.2,-0.2,-0.2,   0.2,-0.2,-0.2,   0.2,-0.2, 0.2,  -0.2,-0.2, 0.2,    // v7-v4-v3-v2 down
+                0.2,-0.2,-0.2,  -0.2,-0.2,-0.2,  -0.2, 0.2,-0.2,   0.2, 0.2,-0.2     // v4-v7-v6-v5 back
             ]);
 
-            // Indices of the vertices
-            var indices = new Uint8Array([
+            var normals = new Float32Array([   // Normal
+                0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,     // v0-v1-v2-v3 front
+                1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,     // v0-v3-v4-v5 right
+                0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,     // v0-v5-v6-v1 up
+                -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,     // v1-v6-v7-v2 left
+                0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,     // v7-v4-v3-v2 down
+                0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0      // v4-v7-v6-v5 back
+            ]);
+
+            var indices = new Uint8Array([        // Indices of the vertices
                 0, 1, 2,   0, 2, 3,    // front
-                0, 3, 4,   0, 4, 5,    // right
-                0, 5, 6,   0, 6, 1,    // up
-                1, 6, 7,   1, 7, 2,    // left
-                7, 4, 3,   7, 3, 2,    // down
-                4, 7, 6,   4, 6, 5     // back
+                4, 5, 6,   4, 6, 7,    // right
+                8, 9,10,   8,10,11,    // up
+                12,13,14,  12,14,15,    // left
+                16,17,18,  16,18,19,    // down
+                20,21,22,  20,22,23     // back
             ]);
-
-            var texCoords = vertices;
 
 
             var o = Engine3D.Sprite.create("TRIANGLES");
 
             o.buffers = {
                 vertexBuffer:Engine3D.ArrayBuffer.create(vertices, 3, gl.FLOAT),
-                texCoordBuffer: Engine3D.ArrayBuffer.create(texCoords, 3, gl.FLOAT),
+                normalBuffer: Engine3D.ArrayBuffer.create(normals, 3, gl.FLOAT),
                 indexBuffer: Engine3D.ElementBuffer.create(indices, gl.UNSIGNED_BYTE)
             };
 
@@ -589,8 +499,7 @@ $(function(){
             var i = 0,
                 len = 1;
             var arr = [];
-            //
-            //for(i = 0;i < len; i++){
+
             arr.push({
                 material: createMaterial(i, textureCubeMap),
                 ////todo optimize data structure
@@ -599,13 +508,9 @@ $(function(){
                     //todo for no light map object,it should refactor Material,now just set diffuse to pass.
                     "u_sampler":["TEXTURE_CUBE", "diffuse"]
                 }
-                //indexCount: 6,
-                //indexOffset: i * 6
             });
-            //}
 
             o.textureArr = arr;
-
 
 
             o.init();
@@ -617,74 +522,8 @@ $(function(){
         function initFramebufferObject(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT) {
             var framebuffer, texture, depthBuffer;
 
-            //// Define the error handling function
-            //var error = function() {
-            //    if (framebuffer) gl.deleteFramebuffer(framebuffer);
-            //    if (texture) gl.deleteTexture(texture);
-            //    if (depthBuffer) gl.deleteRenderbuffer(depthBuffer);
-            //    return null;
-            //}
-
-            // Create a frame buffer object (FBO)
-            ////framebuffer = Engine3D.FrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-
             framebuffer = Engine3D.CubeMapFrameBuffer.create(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
 
-            //if (!framebuffer) {
-            //    console.log('Failed to create frame buffer object');
-            //    return error();
-            //}
-            //
-            //texture = Engine3D.Texture2D.create({
-            //    "TEXTURE_MIN_FILTER": "LINEAR"
-            //}, false);
-            //texture.createTextureArea(null, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-            //framebuffer.texture = texture; // Store the texture object
-
-
-            //    gl.texImage2D(tdl.textures.CubeMap.faceTargets[ff],
-            //        0,                 // level
-            //        gl.RGBA,           // internalFormat
-            //        this.size,         // width
-            //        this.size,         // height
-            //        0,                 // border
-            //        gl.RGBA,           // format
-            //        gl.UNSIGNED_BYTE,  // type
-            //        null);             // data
-            //}
-
-            //var i = 0,
-            //    len = 1;
-            //var arr = [];
-            //
-            ////for(i = 0;i < len; i++){
-            //arr.push({
-            //    material: createMaterial(i, createReflectTexture(fboTexture, i)),
-            //    //todo type should be DataType instead of string
-            //    uniformData:{
-            //        //todo for no light map object,it should refactor Material,now just set diffuse to pass.
-            //        "u_sampler":["TEXTURE_CUBE", "diffuse"]
-            //    }
-            //});
-            ////}
-            //
-            //framebuffer.texture = arr;
-
-
-            //framebuffer.createTexture();
-            //
-            //
-            //
-            //depthBuffer = framebuffer.createRenderBuffer("DEPTH_COMPONENT16", OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-            //
-            //
-            //framebuffer.attachTexture();
-            //framebuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
-            //
-            //
-            //framebuffer.check();
-            //
-            //framebuffer.unBind();
 
             framebuffer.init();
 
