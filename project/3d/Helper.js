@@ -1,8 +1,20 @@
-var Helper;
-(function (Helper) {
+var Engine3D;
+(function (Engine3D) {
     var Tool = (function () {
         function Tool() {
         }
+        /**
+         * 判断是否为对象字面量（{}）
+         */
+        Tool.isDirectObject = function (obj) {
+            if (Object.prototype.toString.call(obj) === "[object Object]") {
+                return true;
+            }
+            return false;
+        };
+        Tool.isNumber = function (obj) {
+            return Object.prototype.toString.call(obj) === "[object Number]";
+        };
         //用于测试
         //public static getValues_forTest():number[];
         Tool.getValues_forTest = function (values) {
@@ -27,6 +39,6 @@ var Helper;
         };
         return Tool;
     })();
-    Helper.Tool = Tool;
-})(Helper || (Helper = {}));
+    Engine3D.Tool = Tool;
+})(Engine3D || (Engine3D = {}));
 //# sourceMappingURL=Helper.js.map

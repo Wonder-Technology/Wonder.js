@@ -1,13 +1,28 @@
-module Helper{
+module Engine3D {
     declare var YYC:any;
 
-    export class Tool{
+    export class Tool {
+        /**
+         * 判断是否为对象字面量（{}）
+         */
+        public static isDirectObject(obj) {
+            if (Object.prototype.toString.call(obj) === "[object Object]") {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static isNumber(obj) {
+            return Object.prototype.toString.call(obj) === "[object Number]";
+        }
+
         //用于测试
         //public static getValues_forTest():number[];
-        public static getValues_forTest(values:Float32Array):number[]{
+        public static getValues_forTest(values:Float32Array):number[] {
 
-        //public static getValues_forTest(): number[]{
-        //    var values = null,
+            //public static getValues_forTest(): number[]{
+            //    var values = null,
             var len = 0,
                 i = 0,
                 result = [];
@@ -21,8 +36,8 @@ module Helper{
 
             len = values.length;
 
-            for(i = 0; i < len; i ++){
-                if(values[i] === -0){
+            for (i = 0; i < len; i++) {
+                if (values[i] === -0) {
                     result[i] = 0;
                     continue;
                 }
@@ -30,5 +45,7 @@ module Helper{
             }
             return result;
         }
+
+
     }
 }

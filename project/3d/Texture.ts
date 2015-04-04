@@ -3,7 +3,7 @@ module Engine3D{
 
     //todo 支持mip map
     export class Texture2D{
-        constructor(params, flipY){
+        constructor(params, flipY?: boolean){
             this._texture = gl.createTexture();
             this._params = params;
             this._flipY = flipY || false;
@@ -55,7 +55,7 @@ module Engine3D{
             }
         }
 
-        public static create(params, flipY):Texture2D {
+        public static create(params, flipY?:boolean):Texture2D {
             var obj = new Texture2D(params, flipY);
 
             obj.initWhenCreate();

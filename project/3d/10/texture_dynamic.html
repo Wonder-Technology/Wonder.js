@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>3d学习</title>
+    <script src="../../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <!--<script src="../jsExtend.js" type="text/javascript"></script>-->
+    <script src="../Helper.js" type="text/javascript"></script>
+
+    <script src="../Scene.js" type="text/javascript"></script>
+    <script src="../Matrix.js" type="text/javascript"></script>
+    <script src="../Cubic.js" type="text/javascript"></script>
+    <script src="../Sprite.js" type="text/javascript"></script>
+    <script src="../Buffer.js" type="text/javascript"></script>
+    <script src="../FrameBuffer.js" type="text/javascript"></script>
+    <script src="../Loader.js" type="text/javascript"></script>
+    <script src="../Program.js" type="text/javascript"></script>
+    <script src="../Shader.js" type="text/javascript"></script>
+    <script src="../Webgl.js" type="text/javascript"></script>
+    <script src="../Texture.js" type="text/javascript"></script>
+    <script src="../Camera.js" type="text/javascript"></script>
+    <script src="../Rotate.js" type="text/javascript"></script>
+    <script src="../Translate.js" type="text/javascript"></script>
+    <script src="../Light.js" type="text/javascript"></script>
+    <script src="../Material.js" type="text/javascript"></script>
+    <script src="texture_dynamic.js" type="text/javascript"></script>
+
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script id="texture2D-vs" type="x-shader/x-vertex">
+attribute vec4 a_position;
+uniform mat4 u_mvpMatrix;
+attribute vec2 a_texCoord;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_Position = u_mvpMatrix * a_position;
+    v_texCoord = a_texCoord;
+}
+        </script>
+
+<script id="texture2D-fs" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform sampler2D u_sampler;
+varying vec2 v_texCoord;
+
+void main(void){
+    gl_FragColor = texture2D(u_sampler, v_texCoord);
+}
+</script>
+
+<script id="skyBox-vs" type="x-shader/x-vertex">
+attribute vec4 a_position;
+uniform mat4 u_mvpMatrix;
+attribute vec3 a_texCoord;
+varying vec3 v_texCoord;
+
+void main(void){
+    gl_Position = u_mvpMatrix * a_position;
+    v_texCoord = a_texCoord;
+}
+        </script>
+
+<script id="skyBox-fs" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform samplerCube u_sampler;
+varying vec3 v_texCoord;
+
+void main(void){
+    gl_FragColor = textureCube(u_sampler, v_texCoord);
+}
+</script>
+</body>
+</html>

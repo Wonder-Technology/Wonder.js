@@ -2,6 +2,7 @@
 /// <reference path="Sprite.ts"/>
 /// <reference path="Light.ts"/>
 /// <reference path="Program.ts"/>
+/// <reference path="Helper.ts"/>
 var Engine3D;
 (function (Engine3D) {
     var Scene = (function () {
@@ -86,7 +87,7 @@ var Engine3D;
             this._frameBuffer = frameBuffer;
             this._scenesInFrameBuffer = data;
         };
-        Scene.prototype.drawScenesInFrameBuffer = function () {
+        Scene.prototype.drawScenesInCubeMapFrameBuffer = function () {
             //draw 6 face
             //todo if not all faces be real-render?
             var i = 0, len = Engine3D.TextureCubeMap.faceTargets.length;
@@ -103,22 +104,39 @@ var Engine3D;
             }
             this._frameBuffer.unBind();
         };
-        Scene.prototype.getVPMatrix = function (index) {
-            var faceViews = [
-                { target: [1, 0, 0], up: [0, -1, 0] },
-                { target: [-1, 0, 0], up: [0, -1, 0] },
-                { target: [0, 1, 0], up: [0, 0, 1] },
-                { target: [0, -1, 0], up: [0, 0, -1] },
-                { target: [0, 0, 1], up: [0, -1, 0] },
-                { target: [0, 0, -1], up: [0, -1, 0] },
-            ];
-            //todo how to decide eye?eye should be dynamic
-            //eye is in center point of sphere, center(target) is towards -z axis
-            var eyeX = 0, eyeY = 0, eyeZ = 0;
+        Scene.prototype.drawScenesInTexture2DFrameBuffer = function (eyeData) {
+            this._frameBuffer.bind();
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+            var vpMatrix = this.getVPMatrix(eyeData);
+            this._scenesInFrameBuffer.forEach(function (scene) {
+                scene.drawInFrameBuffer(vpMatrix);
+            });
+            this._frameBuffer.unBind();
+        };
+        Scene.prototype.getVPMatrix = function (arg) {
             var vpMatrix = Math3D.Matrix.create();
-            var center = faceViews[index].target;
-            var up = faceViews[index].up;
-            vpMatrix.lookAt(eyeX, eyeY, eyeZ, center[0], center[1], center[2], up[0], up[1], up[2]);
+            if (Engine3D.Tool.isNumber(arguments[0])) {
+                var index = arguments[0];
+                var faceViews = [
+                    { target: [1, 0, 0], up: [0, -1, 0] },
+                    { target: [-1, 0, 0], up: [0, -1, 0] },
+                    { target: [0, 1, 0], up: [0, 0, 1] },
+                    { target: [0, -1, 0], up: [0, 0, -1] },
+                    { target: [0, 0, 1], up: [0, -1, 0] },
+                    { target: [0, 0, -1], up: [0, -1, 0] },
+                ];
+                //todo how to decide eye?eye should be dynamic
+                //eye is in center point of sphere, center(target) is towards -z axis
+                var eyeX = 0, eyeY = 0, eyeZ = 0;
+                var center = faceViews[index].target;
+                var up = faceViews[index].up;
+                vpMatrix.lookAt(eyeX, eyeY, eyeZ, center[0], center[1], center[2], up[0], up[1], up[2]);
+            }
+            else {
+                var eyeData = arguments[0];
+                var eye = [0, 0, 0], center = eyeData.center, up = eyeData.up;
+                vpMatrix.lookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
+            }
             //角度应该为90度，从而能获得完整的面
             vpMatrix.perspective(90, this._frameBuffer.width / this._frameBuffer.height, 0.1, 10);
             return vpMatrix;
