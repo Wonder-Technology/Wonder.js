@@ -13,67 +13,66 @@ module Engine3D {
         private _sprites:Sprite[] = null;
         private _pointLightArr:Light.PointLight[] = null;
         private _frameBuffer = null;
-        //todo refactor, should be dynamic,not get here
-        //private _vpMatrix = null;
-        private _vpMatrixArr = null;
+        private _isDrawInFrameBuffer:boolean = null;
 
 
         private _scenesInFrameBuffer:Scene[] = null;
-        get scenesInFrameBuffer(){
+        get scenesInFrameBuffer() {
             return this._scenesInFrameBuffer;
         }
-        set scenesInFrameBuffer(scenesInFrameBuffer:Scene[]){
+
+        set scenesInFrameBuffer(scenesInFrameBuffer:Scene[]) {
             this._scenesInFrameBuffer = scenesInFrameBuffer;
         }
 
         private _camera:Camera = null;
-        get camera(){
+        get camera() {
             return this._camera;
         }
-        set camera(camera:Camera){
+
+        set camera(camera:Camera) {
             this._camera = camera;
         }
 
         private _program:Program = null;
-        get program(){
+        get program() {
             return this._program;
         }
-        set program(program:Program){
+
+        set program(program:Program) {
             this._program = program;
         }
 
         private _ambientColor:number[] = null;
-        get ambientColor(){
+        get ambientColor() {
             return this._ambientColor;
         }
-        set ambientColor(ambientColor:number[]){
+
+        set ambientColor(ambientColor:number[]) {
             this._ambientColor = ambientColor;
         }
 
 
-        addSprites(spriteArr){
+        addSprites(spriteArr) {
             this._sprites = this._sprites.concat(spriteArr);
         }
 
-        addLight(pointLightArr){
+        addLight(pointLightArr) {
             this._pointLightArr = pointLightArr;
         }
 
-        onStartLoop(){
+        onStartLoop() {
             this._sprites.forEach(x => x.onStartLoop());
         }
-        onEndLoop(){
+
+        onEndLoop() {
             this._sprites.forEach(x => x.onEndLoop());
         }
 
-        run(){
+        run() {
             var self = this;
 
             this._program.use();
-
-
-            //todo move to framebuffer situation
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); // Set a viewport for FBO
 
 
 
@@ -81,7 +80,7 @@ module Engine3D {
                 //draw in frameBuffer is before this draw
                 //and already update in that draw!
                 //todo refactor
-                if(!self._frameBuffer){
+                if (!self._isDrawInFrameBuffer) {
                     sprite.update();
                 }
 
@@ -91,94 +90,33 @@ module Engine3D {
             });
         }
 
-        //{
-        //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
-        //    vpMatrix: vpMatrix
-        //}
         setFrameData(frameBuffer, data){
             this._frameBuffer = frameBuffer;
             this._scenesInFrameBuffer = data;
-            //todo refactor, should be dynamic,not get here
-            //this._vpMatrix = data.vpMatrix;
-
-            this._setVPMatrix(frameBuffer.width, frameBuffer.height);
         }
 
 
-        private _setVPMatrix(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT){
-            //this._frameBuffer = frameBuffer;
-            //
-            //this._scenesInFrameBuffer = data;
-
-
-
-
-            var arr = [],
-                i = 0,
-                len = 6,
-                centerData = [
-                    [1,0,0],
-                    [-1,0,0],
-                    [0,1,0],
-                    [0,-1,0],
-                    [0,0,1],
-                    [0,0,-1]
-                ];
-
-            //todo how to decide eye?eye should be dynamic
-            //eye is in center point of sphere, center(target) is towards -z axis
-            var eyeX = 0,
-                eyeY = 0,
-                eyeZ = 0.85;
-
-
-            for(i = 0; i < len; i++){
-                var vpMatrix = Math3D.Matrix.create();
-                var center = centerData[i];
-
-
-
-
-                vpMatrix.lookAt(
-                    eyeX, eyeY, eyeZ,
-                    center[0], center[1], center[2],
-                    0, 1, 0
-                );
-                //todo vpMatrix should be dynamic,not fixed!
-                vpMatrix.perspective(60, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT,
-                    0.1, 10);
-
-
-
-            }
-            ////todo refactor, should be dynamic,not get here
-            this._vpMatrixArr = arr;
-        }
-
-
-        //    scene4.setFrameData(fbo, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT,
-        //{
-        //    sceneArr: [sceneReflectBackground1, sceneReflectBackground2],
-        //        vpMatrix: vpMatrix
-        //}
-        //);
         drawScenesInFrameBuffer(){
-            //gl.viewport(0, 0, this._frameBuffer.width, this._frameBuffer.height); // Set a viewport for FBO
-
-            //gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear FBO
-
-
             //draw 6 face
             //todo if not all faces be real-render?
             var i = 0,
                 len = TextureCubeMap.faceTargets.length;
 
+            var self = this;
+
             for(i = 0; i < len; i++){
                 this._frameBuffer.bind(i);
 
-                this._scenesInFrameBuffer.forEach(function(scene, index){
-                    scene.drawInFrameBuffer(index);
+                //gl.clearColor(0,0,1,0);
+                //gl.clearDepth(1);
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+
+
+                var vpMatrix = self.getVPMatrix(i);
+
+                this._scenesInFrameBuffer.forEach(function(scene){
+                    scene.drawInFrameBuffer(vpMatrix);
                 });
             }
 
@@ -188,17 +126,57 @@ module Engine3D {
 
 
         }
-        drawInFrameBuffer(index){
+
+        getVPMatrix(index){
+            var faceViews = [
+                { target: [ 1, 0, 0], up: [0,-1, 0]},
+                { target: [-1, 0, 0], up: [0,-1, 0]},
+                { target: [ 0, 1, 0], up: [0, 0, 1]},
+                { target: [ 0,-1, 0], up: [0, 0,-1]},
+                { target: [ 0, 0, 1], up: [0,-1, 0]},
+                { target: [ 0, 0,-1], up: [0,-1, 0]},
+            ];
+
+            //todo how to decide eye?eye should be dynamic
+            //eye is in center point of sphere, center(target) is towards -z axis
+            var eyeX = 0,
+                eyeY = 0,
+                eyeZ = 0;
+
+
+            var vpMatrix = Math3D.Matrix.create();
+            var center = faceViews[index].target;
+            var up = faceViews[index].up;
+
+
+
+
+                vpMatrix.lookAt(
+                    eyeX, eyeY, eyeZ,
+                    center[0], center[1], center[2],
+                    up[0], up[1], up[2]);
+
+                vpMatrix.perspective(60, this._frameBuffer.width / this._frameBuffer.height,
+                    0.1, 10);
+
+
+
+            return vpMatrix;
+        }
+
+        drawInFrameBuffer(vpMatrix){
             var self = this;
 
             this._program.use();
+
+            this._isDrawInFrameBuffer = true;
 
 
 
             this._sprites.forEach((sprite)=> {
                 sprite.update();
 
-                self._setData(sprite, index);
+                self._setData(sprite, vpMatrix);
 
                 sprite.draw(self._program);
             });
@@ -206,7 +184,7 @@ module Engine3D {
         }
 
 
-        private _setData(sprite, index?){
+        private _setData(sprite, vpMatrix?){
             var dataArr = [];
             var self = this;
 
@@ -292,16 +270,14 @@ module Engine3D {
 
             ////todo refactor
             ////todo make it public?
-            //if(!sprite._vpMatrixArr){
-                var mvpMatrix = this._computeMvpMatrix(sprite, index);
+            var mvpMatrix = this._computeMvpMatrix(sprite, vpMatrix);
 
-                dataArr.push({
-                    name:"u_mvpMatrix",
-                    type: Engine3D.DataType.FLOAT_MAT4,
-                    val: mvpMatrix.values,
-                    category: "uniform"
-                });
-            //}
+            dataArr.push({
+                name:"u_mvpMatrix",
+                type: Engine3D.DataType.FLOAT_MAT4,
+                val: mvpMatrix.values,
+                category: "uniform"
+            });
 
 
 
@@ -322,16 +298,12 @@ module Engine3D {
 
 
 
-        private _computeMvpMatrix(sprite, index){
-                //todo order should be same with draw
-                if(index && this._vpMatrixArr && this._vpMatrixArr.length > 0) {
-                    var vp = this._vpMatrixArr[index];
+        private _computeMvpMatrix(sprite, vpMatrix){
+                if(vpMatrix) {
+                    var vp = vpMatrix;
                     var mvpMatrix = sprite.matrix.copy().concat(vp);
 
-                    this._program.setUniformData("u_mvpMatrix", Engine3D.DataType.FLOAT_MAT4,
-                        mvpMatrix.values);
-
-                    return;
+                    return mvpMatrix;
                 }
 
             return sprite.matrix.copy().concat(this._camera.computeVpMatrix());
@@ -344,6 +316,7 @@ module Engine3D {
 
         initWhenCreate() {
             this._sprites = [];
+            this._isDrawInFrameBuffer = false;
         }
 
         public static create(camera) {
