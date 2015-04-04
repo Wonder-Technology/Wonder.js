@@ -356,15 +356,27 @@ $(function(){
                 0.3, 0.3, 0.3,
                 -0.3, 0.3, 0.3,
                 -0.3, -0.3, 0.3,
+                0.3, -0.3, 0.3,
+
+                0.3, 0.3, 0.3,
+                -0.3, 0.3, 0.3,
+                -0.3, -0.3, 0.3,
                 0.3, -0.3, 0.3
             ]);
 
             // Indices of the vertices
             var indices = new Uint8Array([
-                0, 1, 2,   0, 2, 3
+                0, 1, 2,   0, 2, 3,
+                4, 6, 5,  4, 7, 6
             ]);
 
             var texCoords = new Float32Array([
+                1.0, 1.0,
+                0.0, 1.0,
+                0.0, 0.0,
+                1.0, 0.0,
+
+                //第二面为实时渲染
                 1.0, 1.0,
                 0.0, 1.0,
                 0.0, 0.0,
@@ -396,11 +408,27 @@ $(function(){
                 uniformData:{
                     //todo for no light map object,it should refactor Material,now just set diffuse to pass.
                     "u_sampler":["TEXTURE_2D", "diffuse"]
-                }
+                },
+                indexCount: 6,
+                indexOffset: i * 6
+            });
+
+
+            i = 1;
+
+            arr.push({
+                material: createMaterial(i, createTexture(i)),
+                uniformData:{
+                    //todo for no light map object,it should refactor Material,now just set diffuse to pass.
+                    "u_sampler":["TEXTURE_2D", "diffuse"]
+                },
+                indexCount: 6,
+                indexOffset: i * 6
             });
 
             o.textureArr = arr;
 
+            o.setCULLFACE();
 
             o.init();
 
