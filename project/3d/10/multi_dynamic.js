@@ -176,16 +176,15 @@ $(function(){
             scene4.setFrameData(fbo1,
                 [sceneReflectBackground1, sceneReflectBackground3]
             );
-            //scene5.setFrameData(fbo2,
-            //    [sceneReflectBackground1, sceneReflectBackground2]
-            //        //[sceneReflectBackground1]
-            //);
+            scene5.setFrameData(fbo2,
+                [sceneReflectBackground1, sceneReflectBackground2]
+            );
 
 
 
 
             scene4.addSprites([rect]);
-            //scene5.addSprites([cube]);
+            scene5.addSprites([cube]);
 
 
 
@@ -265,14 +264,12 @@ $(function(){
             scene5.onStartLoop();
 
 
+            //todo should only update each sprite once
+            //so maybe should update sprites in startLoop?
 
             //draw in frameBuffer shoule before draw in canvas
-            //todo center,up shoule be decide by sprite
-            scene4.drawScenesInTexture2DFrameBuffer({
-                center:[0,0,1],
-                up:[0,1,0]
-            });
-            //scene5.drawScenesInCubeMapFrameBuffer();
+            scene4.drawScenesInTexture2DFrameBuffer();
+            scene5.drawScenesInCubeMapFrameBuffer();
 
 
 
@@ -283,7 +280,7 @@ $(function(){
 
             scene1.run();
             scene4.run();
-            //scene5.run();
+            scene5.run();
 
 
 
@@ -410,15 +407,15 @@ $(function(){
 
         function createRectangle(fboTexture) {
             var vertices = new Float32Array([
-                0.3, 0.3, 0.2,
-                -0.3, 0.3, 0.2,
-                -0.3, -0.3, 0.2,
-                0.3, -0.3, 0.2,
+                0.3, 0.3, 0.5,
+                -0.3, 0.3, 0.5,
+                -0.3, -0.3, 0.5,
+                0.3, -0.3, 0.5,
 
-                0.3, 0.3, 0.2,
-                -0.3, 0.3, 0.2,
-                -0.3, -0.3, 0.2,
-                0.3, -0.3, 0.2
+                0.3, 0.3, 0.5,
+                -0.3, 0.3, 0.5,
+                -0.3, -0.3, 0.5,
+                0.3, -0.3, 0.5
             ]);
 
             // Indices of the vertices
@@ -510,7 +507,7 @@ $(function(){
                 this.runAction(Engine3D.Action.Rotate.create(
                     //todo vector should all use Vector3/4 class! eg:center: Vector3.create(0, 0, 1);
                     //todo Vector3 should add static vec4 method to convert vec3 to vec4
-                    this._matrix, {axis: [0, 1, 0], speed:0.1}
+                    this._matrix, {axis: [0, 1, 0], speed:0.2}
                 ));
             };
             o.init();
@@ -585,6 +582,15 @@ $(function(){
 
             o.textureArr = arr;
 
+
+            o.initData = function(){
+                //todo add Sequence Action, realize rotate by self(t->r->t-1)
+                this.runAction(Engine3D.Action.Rotate.create(
+                    //todo vector should all use Vector3/4 class! eg:center: Vector3.create(0, 0, 1);
+                    //todo Vector3 should add static vec4 method to convert vec3 to vec4
+                    this._matrix, {axis: [0, 1, 0], speed:-0.2}
+                ));
+            };
 
             o.init();
 

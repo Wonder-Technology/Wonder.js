@@ -16,7 +16,7 @@ module Engine3D {
         private _sprites:Sprite[] = null;
         private _pointLightArr:Light.PointLight[] = null;
         private _frameBuffer = null;
-        private _isDrawInFrameBuffer:boolean = null;
+        //private _isDrawInFrameBuffer:boolean = null;
         private _pMatrixForFrameBuffer:Math3D.Matrix = null;
 
 
@@ -66,11 +66,14 @@ module Engine3D {
         }
 
         onStartLoop() {
-            this._sprites.forEach(x => x.onStartLoop());
+            this._sprites.forEach(sprite => {
+                sprite.onStartLoop();
+                sprite.update();
+            });
         }
 
         onEndLoop() {
-            this._sprites.forEach(x => x.onEndLoop());
+            this._sprites.forEach(sprite => sprite.onEndLoop());
         }
 
         run() {
@@ -81,13 +84,6 @@ module Engine3D {
 
 
             this._sprites.forEach((sprite)=> {
-                //draw in frameBuffer is before this draw
-                //and already update in that draw!
-                //todo refactor
-                if (!self._isDrawInFrameBuffer) {
-                    sprite.update();
-                }
-
                 self._setData(sprite);
 
                 sprite.draw(self._program);
@@ -240,12 +236,12 @@ module Engine3D {
 
             this._program.use();
 
-            this._isDrawInFrameBuffer = true;
+            //this._isDrawInFrameBuffer = true;
 
 
 
             this._sprites.forEach((sprite)=> {
-                sprite.update();
+                //sprite.update();
 
                 self._setData(sprite, data);
 
@@ -389,7 +385,7 @@ module Engine3D {
 
         initWhenCreate() {
             this._sprites = [];
-            this._isDrawInFrameBuffer = false;
+            //this._isDrawInFrameBuffer = false;
         }
 
         public static create(camera) {

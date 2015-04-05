@@ -12,7 +12,7 @@ var Engine3D;
             this._sprites = null;
             this._pointLightArr = null;
             this._frameBuffer = null;
-            this._isDrawInFrameBuffer = null;
+            //private _isDrawInFrameBuffer:boolean = null;
             this._pMatrixForFrameBuffer = null;
             this._scenesInFrameBuffer = null;
             this._camera = null;
@@ -67,21 +67,18 @@ var Engine3D;
             this._pointLightArr = pointLightArr;
         };
         Scene.prototype.onStartLoop = function () {
-            this._sprites.forEach(function (x) { return x.onStartLoop(); });
+            this._sprites.forEach(function (sprite) {
+                sprite.onStartLoop();
+                sprite.update();
+            });
         };
         Scene.prototype.onEndLoop = function () {
-            this._sprites.forEach(function (x) { return x.onEndLoop(); });
+            this._sprites.forEach(function (sprite) { return sprite.onEndLoop(); });
         };
         Scene.prototype.run = function () {
             var self = this;
             this._program.use();
             this._sprites.forEach(function (sprite) {
-                //draw in frameBuffer is before this draw
-                //and already update in that draw!
-                //todo refactor
-                if (!self._isDrawInFrameBuffer) {
-                    sprite.update();
-                }
                 self._setData(sprite);
                 sprite.draw(self._program);
             });
@@ -175,9 +172,9 @@ var Engine3D;
         Scene.prototype.drawInFrameBuffer = function (data) {
             var self = this;
             this._program.use();
-            this._isDrawInFrameBuffer = true;
+            //this._isDrawInFrameBuffer = true;
             this._sprites.forEach(function (sprite) {
-                sprite.update();
+                //sprite.update();
                 self._setData(sprite, data);
                 sprite.draw(self._program);
             });
@@ -290,7 +287,7 @@ var Engine3D;
         };
         Scene.prototype.initWhenCreate = function () {
             this._sprites = [];
-            this._isDrawInFrameBuffer = false;
+            //this._isDrawInFrameBuffer = false;
         };
         Scene.create = function (camera) {
             var obj = new this(camera);
