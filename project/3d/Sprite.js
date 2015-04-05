@@ -20,6 +20,9 @@ var Engine3D;
             this._actionContainer = null;
             this._enableCULLFACE = null;
             this._face = null;
+            //position in world coordinate
+            this._position = null;
+            this._z = null;
             this._matrix = null;
             this._program = null;
             this._buffers = null;
@@ -29,6 +32,26 @@ var Engine3D;
             this._actionContainer = [];
             this._matrix = Math3D.Matrix.create();
         }
+        Object.defineProperty(Sprite.prototype, "position", {
+            get: function () {
+                return this._position;
+            },
+            set: function (position) {
+                this._position = position;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Sprite.prototype, "z", {
+            get: function () {
+                return this._z;
+            },
+            set: function (z) {
+                this._z = z;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Sprite.prototype, "matrix", {
             get: function () {
                 return this._matrix;
@@ -188,6 +211,13 @@ var Engine3D;
             //todo only update action
             this._actionContainer.forEach(function (x) { return x.update(); });
             this._actionContainer.forEach(function (x) { return x.run(); });
+            //update position
+            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [this._position.x, this._position.y, this._position.z, 1.0]);
+            this._position = {
+                x: pos[0],
+                y: pos[1],
+                z: pos[2]
+            };
         };
         Sprite.prototype.getRotateAction = function () {
             return Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 });
@@ -251,6 +281,7 @@ var Engine3D;
         //private _vpMatrixArr = null;
         Sprite.prototype.initWhenCreate = function () {
             this._enableCULLFACE = false;
+            this._position = { x: 0, y: 0, z: 0 };
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);

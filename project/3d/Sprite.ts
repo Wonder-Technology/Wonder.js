@@ -31,6 +31,26 @@ module Engine3D{
         private _enableCULLFACE:boolean = null;
         private _face = null;
 
+        //position in world coordinate
+        private _position:{x:number; y:number; z:number} = null;
+        get position(){
+            return this._position;
+        }
+        set position(position:{x:number; y:number; z:number}){
+            this._position = position;
+        }
+
+        private _z:number = null;
+        get z(){
+            return this._z;
+        }
+        set z(z:number){
+            this._z = z;
+        }
+
+
+
+
 
         private _matrix:Math3D.Matrix = null;
         get matrix() { return this._matrix; }
@@ -224,6 +244,15 @@ module Engine3D{
             //todo only update action
             this._actionContainer.forEach(x => x.update());
             this._actionContainer.forEach(x => x.run());
+
+            //update position
+            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [this._position.x, this._position.y, this._position.z, 1.0]);
+
+            this._position = {
+                x:pos[0],
+                y:pos[1],
+                z:pos[2]
+            };
         }
 
 
@@ -301,6 +330,7 @@ module Engine3D{
 
         initWhenCreate(){
             this._enableCULLFACE = false;
+            this._position = {x:0,y:0,z:0};
         }
 
         public static create(drawMode):Sprite {

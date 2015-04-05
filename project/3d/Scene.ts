@@ -6,6 +6,8 @@
 module Engine3D {
     declare var gl:any;
 
+    //todo one Scene multi Program?
+    //should refact like three.js
     export class Scene {
         constructor(camera) {
             this._camera = camera;
@@ -15,6 +17,7 @@ module Engine3D {
         private _pointLightArr:Light.PointLight[] = null;
         private _frameBuffer = null;
         private _isDrawInFrameBuffer:boolean = null;
+        private _pMatrixForFrameBuffer:Math3D.Matrix = null;
 
 
         private _scenesInFrameBuffer:Scene[] = null;
@@ -94,6 +97,12 @@ module Engine3D {
         setFrameData(frameBuffer, data){
             this._frameBuffer = frameBuffer;
             this._scenesInFrameBuffer = data;
+
+            //角度应该为90度，从而能获得完整的面
+            this._pMatrixForFrameBuffer = Math3D.Matrix.create().perspective(
+                90,
+                this._frameBuffer.width / this._frameBuffer.height,
+                0.1, 10);
         }
 
 
@@ -105,20 +114,31 @@ module Engine3D {
 
             var self = this;
 
-            for(i = 0; i < len; i++){
-                this._frameBuffer.bind(i);
 
-                //gl.clearColor(0,0,1,0);
-                //gl.clearDepth(1);
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+            this._sprites.forEach(sprite =>{
+                //因为实时渲染是在世界坐标系中（而不是视图坐标系），因此视点坐标为世界坐标系的坐标
+                var eye = [sprite.position.x, sprite.position.y, sprite.position.z];
+
+                for(i = 0; i < len; i++){
+                    self._frameBuffer.bind(i);
+
+                    //gl.clearColor(0,0,1,0);
+                    //gl.clearDepth(1);
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
 
-                var vpMatrix = self.getVPMatrix(i);
 
-                this._scenesInFrameBuffer.forEach(function(scene){
-                    scene.drawInFrameBuffer(vpMatrix);
-                });
-            }
+                    self._scenesInFrameBuffer.forEach(function(scene){
+                        scene.drawInFrameBuffer({
+                            index: i,
+                            eye:eye,
+                            pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
+                        });
+                    });
+                }
+
+
+            })
 
 
 
@@ -127,25 +147,43 @@ module Engine3D {
 
         }
         drawScenesInTexture2DFrameBuffer(eyeData){
-            this._frameBuffer.bind();
-
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+            var self = this;
 
 
-            var vpMatrix = this.getVPMatrix(eyeData);
 
-            this._scenesInFrameBuffer.forEach(function(scene){
-                scene.drawInFrameBuffer(vpMatrix);
+            this._sprites.forEach(sprite => {
+                //因为实时渲染是在世界坐标系中（而不是视图坐标系），因此视点坐标为世界坐标系的坐标
+                var eye = [sprite.position.x, sprite.position.y, sprite.position.z];
+
+
+                self._frameBuffer.bind();
+
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+
+                self._scenesInFrameBuffer.forEach(function(scene){
+                    scene.drawInFrameBuffer({
+                      eye:eye,
+                        eyeData:eyeData,
+                        pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
+                    });
+                });
             });
 
             this._frameBuffer.unBind();
         }
 
-        getVPMatrix(arg:any){
+        getVPMatrix(data:any){
             var vpMatrix = Math3D.Matrix.create();
+            var pMatrix = data.pMatrixForFrameBuffer;
 
-            if(Engine3D.Tool.isNumber(arguments[0])){
-                var index = arguments[0];
+            //todo how to decide eye?eye should be dynamic
+            //eye is in center point of sphere, center(target) is towards -z axis
+            var eye = data.eye;
+
+            //todo refactor
+            if(Engine3D.Tool.isNumber(data.index)){
+                var index = data.index;
                 var faceViews = [
                     { target: [ 1, 0, 0], up: [0,-1, 0]},
                     { target: [-1, 0, 0], up: [0,-1, 0]},
@@ -155,12 +193,6 @@ module Engine3D {
                     { target: [ 0, 0,-1], up: [0,-1, 0]},
                 ];
 
-                //todo how to decide eye?eye should be dynamic
-                //eye is in center point of sphere, center(target) is towards -z axis
-                var eyeX = 0,
-                    eyeY = 0,
-                    eyeZ = 0;
-
 
                 var center = faceViews[index].target;
                 var up = faceViews[index].up;
@@ -169,34 +201,29 @@ module Engine3D {
 
 
                 vpMatrix.lookAt(
-                    eyeX, eyeY, eyeZ,
+                    eye[0],eye[1],eye[2],
                     center[0], center[1], center[2],
                     up[0], up[1], up[2]);
             }
             else{
-                var eyeData = arguments[0];
-                var eye = [0,0,0], //todo be dynamic
-                    center:number[] = eyeData.center,
+                var eyeData = data.eyeData;
+                    var center:number[] = eyeData.center,
                     up:number[] = eyeData.up;
 
 
 
                 vpMatrix.lookAt(
-                    eye[0], eye[1], eye[2],
+                    eye[0],eye[1],eye[2],
                     center[0], center[1], center[2],
                     up[0], up[1], up[2]);
             }
 
-                //角度应该为90度，从而能获得完整的面
-                vpMatrix.perspective(
-                    90,
-                    this._frameBuffer.width / this._frameBuffer.height,
-                    0.1, 10);
+            vpMatrix.concat(pMatrix);
 
             return vpMatrix;
         }
 
-        drawInFrameBuffer(vpMatrix){
+        drawInFrameBuffer(data){
             var self = this;
 
             this._program.use();
@@ -208,7 +235,7 @@ module Engine3D {
             this._sprites.forEach((sprite)=> {
                 sprite.update();
 
-                self._setData(sprite, vpMatrix);
+                self._setData(sprite, data);
 
                 sprite.draw(self._program);
             });
@@ -216,7 +243,7 @@ module Engine3D {
         }
 
 
-        private _setData(sprite, vpMatrix?){
+        private _setData(sprite, data?){
             var dataArr = [];
             var self = this;
 
@@ -302,7 +329,7 @@ module Engine3D {
 
             ////todo refactor
             ////todo make it public?
-            var mvpMatrix = this._computeMvpMatrix(sprite, vpMatrix);
+            var mvpMatrix = this._computeMvpMatrix(sprite, data);
 
             dataArr.push({
                 name:"u_mvpMatrix",
@@ -330,8 +357,9 @@ module Engine3D {
 
 
 
-        private _computeMvpMatrix(sprite, vpMatrix){
-                if(vpMatrix) {
+        private _computeMvpMatrix(sprite, data){
+                if(data) {
+                    var vpMatrix = this.getVPMatrix(data);
                     var vp = vpMatrix;
                     var mvpMatrix = sprite.matrix.copy().concat(vp);
 
