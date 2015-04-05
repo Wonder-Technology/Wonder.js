@@ -31,15 +31,19 @@ module Engine3D{
         private _enableCULLFACE:boolean = null;
         private _face = null;
 
-        _lastMatrix  = null;
+        private _positionBackup = null;
+        private _frameBufferDataBackup = null;
 
         //position in world coordinate
+
+        //user should use:sprite.position = {..} to set position,not simply set sprite.position.x/y = ...
         private _position:{x:number; y:number; z:number} = null;
         get position(){
             return this._position;
         }
         set position(position:{x:number; y:number; z:number}){
             this._position = position;
+            this._positionBackup = Tool.extendDeep(position);
         }
 
         private _z:number = null;
@@ -50,6 +54,16 @@ module Engine3D{
             this._z = z;
         }
 
+
+        //user should use:sprite.frameBufferData = {..} to set position,not simply set sprite.frameBufferData.center/up = ...
+        private _frameBufferData:any = null;
+        get frameBufferData(){
+            return this._frameBufferData;
+        }
+        set frameBufferData(frameBufferData:any){
+            this._frameBufferData = frameBufferData;
+            this._frameBufferDataBackup = Tool.extendDeep(frameBufferData);
+        }
 
 
 
@@ -247,14 +261,30 @@ module Engine3D{
             this._actionContainer.forEach(x => x.update());
             this._actionContainer.forEach(x => x.run());
 
+
+
             //update position
-            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [this._position.x, this._position.y, this._position.z, 1.0]);
+            var position = this._positionBackup;
+            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [position.x, position.y, position.z, 1.0]);
 
             this._position = {
                 x:pos[0],
                 y:pos[1],
                 z:pos[2]
             };
+
+
+            //update frameBufferData
+            var frameBufferData = this._frameBufferDataBackup;
+            var center = null,
+                up = null;
+
+            if(frameBufferData){
+                center = Math3D.MatrixTool.multiplyVector4(this._matrix.values, frameBufferData.center.toVec4().values);
+                up = Math3D.MatrixTool.multiplyVector4(this._matrix.values, frameBufferData.up.toVec4().values);
+                this._frameBufferData.center = Math3D.Vector3.create(center[0], center[1], center[2]);
+                this._frameBufferData.up = Math3D.Vector3.create(up[0], up[1], up[2]);
+            }
         }
 
 
@@ -332,8 +362,8 @@ module Engine3D{
 
         initWhenCreate(){
             this._enableCULLFACE = false;
-            this._position = {x:0,y:0,z:0};
-            this._lastMatrix = this._matrix.copy();
+            //this._position = {x:0,y:0,z:0};
+            //this._lastMatrix = this._matrix.copy();
         }
 
         public static create(drawMode):Sprite {
@@ -351,7 +381,7 @@ module Engine3D{
 
         onEndLoop(){
             //todo
-            this._lastMatrix = this._matrix.copy();
+            //this._lastMatrix = this._matrix.copy();
             this._matrix.pop();
 
         }

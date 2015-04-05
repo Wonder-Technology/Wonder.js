@@ -371,10 +371,16 @@ $(function(){
 
 
             //todo be infinite
-            o.position.x = 100;
-            o.position.y = 100;
-            o.position.z = 100;
+            //o.position.x = 100;
+            //o.position.y = 100;
+            //o.position.z = 100;
 
+
+            o.position = {
+                x:100,
+                y:100,
+                z:100
+            };
 
 
             var i = 0,
@@ -446,11 +452,16 @@ $(function(){
             };
 
 
-            o.position.x = 0;
-            o.position.y = 0;
-            o.position.z = 0.2;
+            //o.position.x = 0;
+            //o.position.y = 0;
+            //o.position.z = 0.2;
 
 
+            o.position = {
+                x:0,
+                y:0,
+                z:0.2
+            };
 
 
 
@@ -483,12 +494,23 @@ $(function(){
 
             o.textureArr = arr;
 
+
+
+            o.frameBufferData = {
+                center:Math3D.Vector3.create(0, 0, 1),
+                up:Math3D.Vector3.create(0, 1, 0)
+            };
+
+
             o.setCULLFACE();
 
 
             o.initData = function(){
+                //todo add Sequence Action, realize rotate by self(t->r->t-1)
                 this.runAction(Engine3D.Action.Rotate.create(
-                    this._matrix, {axis: [o.position.x, o.position.y, o.position.z], speed:0.1}
+                    //todo vector should all use Vector3/4 class! eg:center: Vector3.create(0, 0, 1);
+                    //todo Vector3 should add static vec4 method to convert vec3 to vec4
+                    this._matrix, {axis: [0, 1, 0], speed:0.1}
                 ));
             };
             o.init();
@@ -535,10 +557,15 @@ $(function(){
             };
 
 
-            o.position.x = 0;
-            o.position.y = 0;
-            o.position.z = 0;
+            //o.position.x = 0;
+            //o.position.y = 0;
+            //o.position.z = 0;
 
+            o.position = {
+                x:0,
+                y:0,
+                z:0
+            };
 
 
 

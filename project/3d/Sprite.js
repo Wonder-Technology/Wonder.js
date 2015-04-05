@@ -20,10 +20,14 @@ var Engine3D;
             this._actionContainer = null;
             this._enableCULLFACE = null;
             this._face = null;
-            this._lastMatrix = null;
+            this._positionBackup = null;
+            this._frameBufferDataBackup = null;
             //position in world coordinate
+            //user should use:sprite.position = {..} to set position,not simply set sprite.position.x/y = ...
             this._position = null;
             this._z = null;
+            //user should use:sprite.frameBufferData = {..} to set position,not simply set sprite.frameBufferData.center/up = ...
+            this._frameBufferData = null;
             this._matrix = null;
             this._program = null;
             this._buffers = null;
@@ -39,6 +43,7 @@ var Engine3D;
             },
             set: function (position) {
                 this._position = position;
+                this._positionBackup = Engine3D.Tool.extendDeep(position);
             },
             enumerable: true,
             configurable: true
@@ -49,6 +54,17 @@ var Engine3D;
             },
             set: function (z) {
                 this._z = z;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Sprite.prototype, "frameBufferData", {
+            get: function () {
+                return this._frameBufferData;
+            },
+            set: function (frameBufferData) {
+                this._frameBufferData = frameBufferData;
+                this._frameBufferDataBackup = Engine3D.Tool.extendDeep(frameBufferData);
             },
             enumerable: true,
             configurable: true
@@ -213,12 +229,22 @@ var Engine3D;
             this._actionContainer.forEach(function (x) { return x.update(); });
             this._actionContainer.forEach(function (x) { return x.run(); });
             //update position
-            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [this._position.x, this._position.y, this._position.z, 1.0]);
+            var position = this._positionBackup;
+            var pos = Math3D.MatrixTool.multiplyVector4(this._matrix.values, [position.x, position.y, position.z, 1.0]);
             this._position = {
                 x: pos[0],
                 y: pos[1],
                 z: pos[2]
             };
+            //update frameBufferData
+            var frameBufferData = this._frameBufferDataBackup;
+            var center = null, up = null;
+            if (frameBufferData) {
+                center = Math3D.MatrixTool.multiplyVector4(this._matrix.values, frameBufferData.center.toVec4().values);
+                up = Math3D.MatrixTool.multiplyVector4(this._matrix.values, frameBufferData.up.toVec4().values);
+                this._frameBufferData.center = Math3D.Vector3.create(center[0], center[1], center[2]);
+                this._frameBufferData.up = Math3D.Vector3.create(up[0], up[1], up[2]);
+            }
         };
         Sprite.prototype.getRotateAction = function () {
             return Engine3D.Action.Rotate.create(this._matrix, { axis: [0, 1, 0], speed: 1 });
@@ -282,8 +308,8 @@ var Engine3D;
         //private _vpMatrixArr = null;
         Sprite.prototype.initWhenCreate = function () {
             this._enableCULLFACE = false;
-            this._position = { x: 0, y: 0, z: 0 };
-            this._lastMatrix = this._matrix.copy();
+            //this._position = {x:0,y:0,z:0};
+            //this._lastMatrix = this._matrix.copy();
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
@@ -295,7 +321,7 @@ var Engine3D;
         };
         Sprite.prototype.onEndLoop = function () {
             //todo
-            this._lastMatrix = this._matrix.copy();
+            //this._lastMatrix = this._matrix.copy();
             this._matrix.pop();
         };
         //*钩子

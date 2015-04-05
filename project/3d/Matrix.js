@@ -601,6 +601,9 @@ var Math3D;
             v[2] = v[2] / d;
             return v;
         };
+        Vector3.prototype.toVec4 = function () {
+            return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
+        };
         Vector3.create = function () {
             var m = null;
             if (arguments.length === 0) {
@@ -637,6 +640,9 @@ var Math3D;
                 this._values[3] = arguments[3];
             }
         }
+        Vector4.prototype.toVec3 = function () {
+            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+        };
         Vector4.create = function () {
             var m = null;
             if (arguments.length === 0) {
@@ -667,6 +673,7 @@ var Math3D;
         function MatrixTool() {
         }
         //constructor(){}
+        //todo return Matrix
         MatrixTool.multiply = function (mat1, mat2) {
             var a = mat1[0], b = mat1[1], c = mat1[2], d = mat1[3], e = mat1[4], f = mat1[5], g = mat1[6], h = mat1[7], i = mat1[8], j = mat1[9], k = mat1[10], l = mat1[11], m = mat1[12], n = mat1[13], o = mat1[14], p = mat1[15], A = mat2[0], B = mat2[1], C = mat2[2], D = mat2[3], E = mat2[4], F = mat2[5], G = mat2[6], H = mat2[7], I = mat2[8], J = mat2[9], K = mat2[10], L = mat2[11], M = mat2[12], N = mat2[13], O = mat2[14], P = mat2[15];
             var dest = new Float32Array(16);
@@ -688,6 +695,7 @@ var Math3D;
             dest[15] = M * d + N * h + O * l + P * p;
             return dest;
         };
+        //todo return Vector4
         /**
          * Multiply the four-dimensional vector.
          * @param pos  The multiply vector

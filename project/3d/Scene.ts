@@ -146,7 +146,7 @@ module Engine3D {
 
 
         }
-        drawScenesInTexture2DFrameBuffer(eyeData){
+        drawScenesInTexture2DFrameBuffer(){
             var self = this;
 
 
@@ -154,6 +154,9 @@ module Engine3D {
             this._sprites.forEach(sprite => {
                 //因为实时渲染是在世界坐标系中（而不是视图坐标系），因此视点坐标为世界坐标系的坐标
                 var eye = [sprite.position.x, sprite.position.y, sprite.position.z];
+
+                //todo rename?
+                var eyeData = sprite.frameBufferData;
 
 
                 self._frameBuffer.bind();
@@ -164,9 +167,9 @@ module Engine3D {
                 self._scenesInFrameBuffer.forEach(function(scene){
                     scene.drawInFrameBuffer({
                       eye:eye,
-                        eyeData:eyeData,
+                        eyeData: eyeData,
                         //todo first update sprite?so that i can get sprite.matrix
-                        mMatrix: sprite._lastMatrix,
+                        //mMatrix: sprite._lastMatrix,
                         pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
                     });
                 });
@@ -175,6 +178,7 @@ module Engine3D {
             this._frameBuffer.unBind();
         }
 
+        //todo refact frameBufferData
         getVPMatrix(data:any){
             var vpMatrix = Math3D.Matrix.create();
             var pMatrix = data.pMatrixForFrameBuffer;
@@ -209,16 +213,15 @@ module Engine3D {
             }
             else{
                 var eyeData = data.eyeData;
-                    var center:number[] = eyeData.center,
-                    up:number[] = eyeData.up;
+                    var center:number[] = eyeData.center.values,
+                    up:number[] = eyeData.up.values;
 
-                center[3] = 1.0;
-                up[3] = 1.0;
+                //center[3] = 1.0;
+                //up[3] = 1.0;
 
-                //todo eye,center,up should change together
-                var mMatrix = data.mMatrix;
-                center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
-                up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
+                //var mMatrix = data.mMatrix;
+                //center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
+                //up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
 
 
                 vpMatrix.lookAt(
@@ -366,9 +369,10 @@ module Engine3D {
 
 
 
+        //todo not distinguish by data
         private _computeMvpMatrix(sprite, data){
                 if(data) {
-                    var vpMatrix = this.getVPMatrix( data);
+                    var vpMatrix = this.getVPMatrix(data);
                     var vp = vpMatrix;
                     var mvpMatrix = sprite.matrix.copy().concat(vp);
 

@@ -622,6 +622,10 @@ module Math3D{
             return v;
         }
 
+        public toVec4(): Vector4{
+            return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
+        }
+
         public static create(x, y, z):Vector3 ;
         public static create():Vector3 ;
 
@@ -664,6 +668,12 @@ module Math3D{
             }
         }
 
+
+
+        public toVec3(): Vector3{
+            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+        }
+
         public static create(x, y, z, w):Vector4 ;
         public static create():Vector4 ;
 
@@ -696,6 +706,7 @@ module Math3D{
     export class MatrixTool{
         //constructor(){}
 
+        //todo return Matrix
         public static multiply(mat1: Float32Array, mat2: Float32Array): Float32Array{
             var a = mat1[0],  b = mat1[1],  c = mat1[2],  d = mat1[3],
                 e = mat1[4],  f = mat1[5],  g = mat1[6],  h = mat1[7],
@@ -726,6 +737,8 @@ module Math3D{
 
             return dest;
         }
+
+        //todo return Vector4
         /**
          * Multiply the four-dimensional vector.
          * @param pos  The multiply vector

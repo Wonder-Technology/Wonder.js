@@ -116,11 +116,13 @@ var Engine3D;
             });
             this._frameBuffer.unBind();
         };
-        Scene.prototype.drawScenesInTexture2DFrameBuffer = function (eyeData) {
+        Scene.prototype.drawScenesInTexture2DFrameBuffer = function () {
             var self = this;
             this._sprites.forEach(function (sprite) {
                 //因为实时渲染是在世界坐标系中（而不是视图坐标系），因此视点坐标为世界坐标系的坐标
                 var eye = [sprite.position.x, sprite.position.y, sprite.position.z];
+                //todo rename?
+                var eyeData = sprite.frameBufferData;
                 self._frameBuffer.bind();
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
                 self._scenesInFrameBuffer.forEach(function (scene) {
@@ -128,13 +130,14 @@ var Engine3D;
                         eye: eye,
                         eyeData: eyeData,
                         //todo first update sprite?so that i can get sprite.matrix
-                        mMatrix: sprite._lastMatrix,
+                        //mMatrix: sprite._lastMatrix,
                         pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
                     });
                 });
             });
             this._frameBuffer.unBind();
         };
+        //todo refact frameBufferData
         Scene.prototype.getVPMatrix = function (data) {
             var vpMatrix = Math3D.Matrix.create();
             var pMatrix = data.pMatrixForFrameBuffer;
@@ -158,13 +161,12 @@ var Engine3D;
             }
             else {
                 var eyeData = data.eyeData;
-                var center = eyeData.center, up = eyeData.up;
-                center[3] = 1.0;
-                up[3] = 1.0;
-                //todo eye,center,up should change together
-                var mMatrix = data.mMatrix;
-                center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
-                up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
+                var center = eyeData.center.values, up = eyeData.up.values;
+                //center[3] = 1.0;
+                //up[3] = 1.0;
+                //var mMatrix = data.mMatrix;
+                //center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
+                //up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
                 vpMatrix.lookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
             }
             vpMatrix.concat(pMatrix);
@@ -273,6 +275,7 @@ var Engine3D;
                 }
             });
         };
+        //todo not distinguish by data
         Scene.prototype._computeMvpMatrix = function (sprite, data) {
             if (data) {
                 var vpMatrix = this.getVPMatrix(data);
