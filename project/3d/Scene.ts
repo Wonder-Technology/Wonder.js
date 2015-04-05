@@ -138,7 +138,7 @@ module Engine3D {
                 }
 
 
-            })
+            });
 
 
 
@@ -165,6 +165,8 @@ module Engine3D {
                     scene.drawInFrameBuffer({
                       eye:eye,
                         eyeData:eyeData,
+                        //todo first update sprite?so that i can get sprite.matrix
+                        mMatrix: sprite._lastMatrix,
                         pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
                     });
                 });
@@ -210,6 +212,13 @@ module Engine3D {
                     var center:number[] = eyeData.center,
                     up:number[] = eyeData.up;
 
+                center[3] = 1.0;
+                up[3] = 1.0;
+
+                //todo eye,center,up should change together
+                var mMatrix = data.mMatrix;
+                center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
+                up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
 
 
                 vpMatrix.lookAt(
@@ -359,7 +368,7 @@ module Engine3D {
 
         private _computeMvpMatrix(sprite, data){
                 if(data) {
-                    var vpMatrix = this.getVPMatrix(data);
+                    var vpMatrix = this.getVPMatrix( data);
                     var vp = vpMatrix;
                     var mvpMatrix = sprite.matrix.copy().concat(vp);
 

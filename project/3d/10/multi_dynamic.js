@@ -171,20 +171,21 @@ $(function(){
             sceneReflectBackground3.addSprites([cube]);
 
 
+            //todo optimize:only draw objects in view
             //can't contain self
             scene4.setFrameData(fbo1,
                 [sceneReflectBackground1, sceneReflectBackground3]
             );
-            scene5.setFrameData(fbo2,
-                [sceneReflectBackground1, sceneReflectBackground2]
-                    //[sceneReflectBackground1]
-            );
+            //scene5.setFrameData(fbo2,
+            //    [sceneReflectBackground1, sceneReflectBackground2]
+            //        //[sceneReflectBackground1]
+            //);
 
 
 
 
             scene4.addSprites([rect]);
-            scene5.addSprites([cube]);
+            //scene5.addSprites([cube]);
 
 
 
@@ -266,11 +267,12 @@ $(function(){
 
 
             //draw in frameBuffer shoule before draw in canvas
+            //todo center,up shoule be decide by sprite
             scene4.drawScenesInTexture2DFrameBuffer({
                 center:[0,0,1],
-                up:[1,0,0]
+                up:[0,1,0]
             });
-            scene5.drawScenesInCubeMapFrameBuffer();
+            //scene5.drawScenesInCubeMapFrameBuffer();
 
 
 
@@ -281,7 +283,7 @@ $(function(){
 
             scene1.run();
             scene4.run();
-            scene5.run();
+            //scene5.run();
 
 
 
@@ -402,15 +404,15 @@ $(function(){
 
         function createRectangle(fboTexture) {
             var vertices = new Float32Array([
-                0.3, 0.3, 0.8,
-                -0.3, 0.3, 0.8,
-                -0.3, -0.3, 0.8,
-                0.3, -0.3, 0.8,
+                0.3, 0.3, 0.2,
+                -0.3, 0.3, 0.2,
+                -0.3, -0.3, 0.2,
+                0.3, -0.3, 0.2,
 
-                0.3, 0.3, 0.8,
-                -0.3, 0.3, 0.8,
-                -0.3, -0.3, 0.8,
-                0.3, -0.3, 0.8
+                0.3, 0.3, 0.2,
+                -0.3, 0.3, 0.2,
+                -0.3, -0.3, 0.2,
+                0.3, -0.3, 0.2
             ]);
 
             // Indices of the vertices
@@ -420,12 +422,14 @@ $(function(){
             ]);
 
             var texCoords = new Float32Array([
-                1.0, 1.0,
+                //第一面为实时渲染,should be flipX(because it's mirror render)
                 0.0, 1.0,
-                0.0, 0.0,
+                1.0, 1.0,
                 1.0, 0.0,
+                0.0, 0.0,
 
-                //第二面为实时渲染
+
+
                 1.0, 1.0,
                 0.0, 1.0,
                 0.0, 0.0,
@@ -444,7 +448,7 @@ $(function(){
 
             o.position.x = 0;
             o.position.y = 0;
-            o.position.z = 0.5;
+            o.position.z = 0.2;
 
 
 
@@ -482,6 +486,11 @@ $(function(){
             o.setCULLFACE();
 
 
+            o.initData = function(){
+                this.runAction(Engine3D.Action.Rotate.create(
+                    this._matrix, {axis: [o.position.x, o.position.y, o.position.z], speed:0.1}
+                ));
+            };
             o.init();
 
 

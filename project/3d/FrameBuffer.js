@@ -118,7 +118,7 @@ var Engine3D;
                 "TEXTURE_MAG_FILTER": "LINEAR",
                 "TEXTURE_WRAP_S": "CLAMP_TO_EDGE",
                 "TEXTURE_WRAP_T": "CLAMP_TO_EDGE"
-            }, true);
+            }, false); //todo why not flipY?
             var index = 0;
             if (!texture) {
                 console.log('Failed to create the texture object');

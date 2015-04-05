@@ -20,6 +20,7 @@ var Engine3D;
             this._actionContainer = null;
             this._enableCULLFACE = null;
             this._face = null;
+            this._lastMatrix = null;
             //position in world coordinate
             this._position = null;
             this._z = null;
@@ -282,6 +283,7 @@ var Engine3D;
         Sprite.prototype.initWhenCreate = function () {
             this._enableCULLFACE = false;
             this._position = { x: 0, y: 0, z: 0 };
+            this._lastMatrix = this._matrix.copy();
         };
         Sprite.create = function (drawMode) {
             var obj = new this(drawMode);
@@ -292,6 +294,8 @@ var Engine3D;
             this._matrix.push();
         };
         Sprite.prototype.onEndLoop = function () {
+            //todo
+            this._lastMatrix = this._matrix.copy();
             this._matrix.pop();
         };
         //*钩子

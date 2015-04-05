@@ -31,6 +31,8 @@ module Engine3D{
         private _enableCULLFACE:boolean = null;
         private _face = null;
 
+        _lastMatrix  = null;
+
         //position in world coordinate
         private _position:{x:number; y:number; z:number} = null;
         get position(){
@@ -331,6 +333,7 @@ module Engine3D{
         initWhenCreate(){
             this._enableCULLFACE = false;
             this._position = {x:0,y:0,z:0};
+            this._lastMatrix = this._matrix.copy();
         }
 
         public static create(drawMode):Sprite {
@@ -347,7 +350,10 @@ module Engine3D{
         }
 
         onEndLoop(){
+            //todo
+            this._lastMatrix = this._matrix.copy();
             this._matrix.pop();
+
         }
         //*钩子
 

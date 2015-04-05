@@ -127,6 +127,8 @@ var Engine3D;
                     scene.drawInFrameBuffer({
                         eye: eye,
                         eyeData: eyeData,
+                        //todo first update sprite?so that i can get sprite.matrix
+                        mMatrix: sprite._lastMatrix,
                         pMatrixForFrameBuffer: self._pMatrixForFrameBuffer
                     });
                 });
@@ -157,6 +159,12 @@ var Engine3D;
             else {
                 var eyeData = data.eyeData;
                 var center = eyeData.center, up = eyeData.up;
+                center[3] = 1.0;
+                up[3] = 1.0;
+                //todo eye,center,up should change together
+                var mMatrix = data.mMatrix;
+                center = Math3D.MatrixTool.multiplyVector4(mMatrix.values, center);
+                up = Math3D.MatrixTool.multiplyVector4(mMatrix.values, up);
                 vpMatrix.lookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
             }
             vpMatrix.concat(pMatrix);
