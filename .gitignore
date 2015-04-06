@@ -4,4 +4,5 @@ project/reference/
 project/node_modules/
 project/mine/
 .idea
-.js.map
+project/engine/*.js.map
+project/engine/*.js
