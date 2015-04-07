@@ -6,3 +6,5 @@ project/mine/
 .idea
 project/engine/*.js.map
 project/engine/*.js
+project/engine/**/*.js.map
+project/engine/**/*.js
