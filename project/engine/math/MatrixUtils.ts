@@ -1,7 +1,7 @@
 /// <reference path="Matrix.ts"/>
 /// <reference path="Vector4.ts"/>
 module Engine3D.Math{
-    export class MatrixTool {
+    export class MatrixUtils {
         public static multiply(matrix1:Matrix, matrix2:Matrix):Matrix {
             var mat1 = matrix1.values,
                 mat2 = matrix2.values;

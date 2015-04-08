@@ -1,4 +1,4 @@
-/// <reference path="MatrixTool.ts"/>
+/// <reference path="MatrixUtils.ts"/>
 module Engine3D.Math{
     declare var window:any;
     /*!
@@ -20,8 +20,8 @@ module Engine3D.Math{
         }
 
         private _matrixArr:Array<Float32Array> = null;
-        private _values: Float32Array = null;
 
+        private _values: Float32Array = null;
         get values():Float32Array { return this._values; }
         set values(values: Float32Array) {
             this._values = values;
@@ -348,7 +348,7 @@ module Engine3D.Math{
 
             //Translate.
             //this.translate(-eyeX, -eyeY, -eyeZ);
-            this.values = MatrixTool.multiply(this, Matrix.create().setTranslate(-eyeX, -eyeY, -eyeZ)).values;
+            this.values = MatrixUtils.multiply(this, Matrix.create().setTranslate(-eyeX, -eyeY, -eyeZ)).values;
 
             return this;
         }
@@ -461,11 +461,11 @@ module Engine3D.Math{
             var a = this,
                 b = other;
 
-            //this._values = MatrixTool.multiply(a, b);
+            //this._values = MatrixUtils.multiply(a, b);
                 //b*a，而不是a*b
                 //这是因为在webgl中，向量是右乘的，
                 //此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
-                this._values = MatrixTool.multiply(b, a).values;
+                this._values = MatrixUtils.multiply(b, a).values;
 
             return this;
         }
@@ -483,9 +483,6 @@ module Engine3D.Math{
             return result;
         }
 
-        initWhenCreate(){
-        }
-
         public static create(mat:Float32Array):Matrix ;
         public static create():Matrix ;
 
@@ -498,8 +495,6 @@ module Engine3D.Math{
             else{
                 m = new this(arguments[0]);
             }
-
-            m.initWhenCreate();
 
             return m;
         }

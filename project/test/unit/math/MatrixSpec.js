@@ -1,19 +1,24 @@
 describe("matrix", function(){
     var matrix = null;
+    var Matrix = Engine3D.Math.Matrix;
+    var MatrixUtils = Engine3D.Math.MatrixUtils;
+    var Vector4 = Engine3D.Math.Vector4;
 
     function getValues(values){
         if(values){
-            return Helper.Tool.getValues_forTest(values);
+            if(mathMatcher.isFloat32Array(values)){
+                return mathMatcher.getValues(values);
+            }
+            else{
+                return mathMatcher.getValues(values.values);
+            }
         }
-        return Helper.Tool.getValues_forTest(matrix.values);
-    }
 
-    function toFixed(num){
-        return YYC.Tool.math.toFixed(num, 7);
+        return mathMatcher.getValues(matrix.values);
     }
 
     beforeEach(function(){
-        matrix = Math3D.Matrix.create();
+        matrix = new Matrix();
     });
 
     describe("push", function(){
@@ -53,7 +58,7 @@ describe("matrix", function(){
 
     describe("setInverseOf", function(){
         it("设置为逆矩阵", function(){
-            var mat = Math3D.Matrix.create();
+            var mat = Matrix.create();
             mat.values = new Float32Array([
                 0, 0, 1, 1,
                 0, 0, -2, 1,
@@ -96,18 +101,6 @@ describe("matrix", function(){
         });
     });
 
-    //describe("translate", function(){
-    //    it("平移 ", function(){
-    //        matrix.setIdentity();
-    //
-    //        matrix.translate(10, 20, 30);
-    //
-    //        expect(getValues()).toEqual(
-    //            [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 30, 1 ]
-    //        );
-    //    });
-    //});
-
     describe("setScale", function(){
         it("设置缩放矩阵", function(){
             matrix.setScale(10, 20, 30);
@@ -124,8 +117,8 @@ describe("matrix", function(){
             angle = 45;
 
         beforeEach(function(){
-            cos = toFixed(Math.cos(Math.PI / 4));
-            sin = toFixed(Math.sin(Math.PI / 4));
+            cos = mathMatcher.toFixed(Math.cos(Math.PI / 4));
+            sin = mathMatcher.toFixed(Math.sin(Math.PI / 4));
         });
 
         describe("绕坐标轴旋转", function(){
@@ -202,8 +195,8 @@ describe("matrix", function(){
             expect(getValues()).toEqual(
                 [1, 0, 0, 0,
                 0, 1, 0, 0,
-                0, 0, toFixed(2 / (n - f)), 0,
-                0, 0, toFixed((n + f) / (n - f)), 1]
+                0, 0, mathMatcher.toFixed(2 / (n - f)), 0,
+                0, 0, mathMatcher.toFixed((n + f) / (n - f)), 1]
             )
         })
 
@@ -217,65 +210,89 @@ describe("matrix", function(){
             var aspect = 100 / 50;  //宽/高
 
             matrix.setPerspective(fovy_angle, aspect, near, far);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(-0.5, 0, -1, 1).values);
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0.5, 0, -1, 1).values);
-            var result3 = Math3D.MatrixTool.multiplyVector4(matrix.values, Math3D.Vector4.create(0, 1, -1, 1).values);
+            var result1 = MatrixUtils.multiplyVector4(matrix, Vector4.create(-0.5, 0, -1, 1));
+            var result2 = MatrixUtils.multiplyVector4(matrix, Vector4.create(0.5, 0, -1, 1));
+            var result3 = MatrixUtils.multiplyVector4(matrix, Vector4.create(0, 1, -1, 1));
 
             expect(getValues(result1)).toEqual(
-                [ -0.9330127, 0, 0.8181818, 1 ]
+                [-0.9330127, 0, 0.8181819, 1]
             );
             expect(getValues(result2)).toEqual(
-                [ 0.9330127, 0, 0.8181818, 1 ]
+                [ 0.9330127, 0, 0.8181819, 1 ]
             );
             expect(getValues(result3)).toEqual(
-                [ 0, 3.7320509, 0.8181818, 1 ]
+                [ 0, 3.7320509, 0.8181819, 1 ]
             );
         });
     });
 
+    describe("applyMatrix", function(){
+       it("应用矩阵变化。" +
+       "b*a，而不是a*b.此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec", function(){
+            var mat = Matrix.create();
+           mat.setTranslate(1,2,3);
+           matrix.setTranslate(10,11,12);
+           var matrixCopy = matrix.copy();
 
-    describe("集成测试", function(){
+           var result = matrix.applyMatrix(mat);
+
+           mathMatcher.isMatrixEqual(result, MatrixUtils.multiply(mat, matrixCopy));
+       });
+    });
+
+    describe("copy", function(){
+       it("return matrix copy", function(){
+           var copy = matrix.copy();
+
+           matrix.translate(10,11,12);
+
+           mathMatcher.isMatrixEqual(copy, Matrix.create());
+       });
+    });
+
+
+    describe("integration test", function(){
         it("平移->缩放->绕y轴旋转坐标", function(){
-            var v =Math3D.Vector4.create(0, 0, 0, 1);
+            var v =Vector4.create(0, 0, 0, 1);
 
             matrix.translate(1, 1, 1);
             matrix.scale(2,2,2);
             matrix.rotate(45, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
+            var result = MatrixUtils.multiplyVector4(matrix,v);
 
             expect(getValues(result)).toEqual(
                 [ 2.8284271, 2, 0, 1 ]
             );
         });
         it("测试视图矩阵", function(){
-            var v =Math3D.Vector4.create(1, 1, 1, 1);
+            var v =Vector4.create(1, 1, 1, 1);
 
            matrix.lookAt(1, 2, 1, 1, 2, -1, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
+            var result = MatrixUtils.multiplyVector4(matrix,v);
 
             expect(getValues(result)).toEqual(
                 [ 0, -1, 0, 1 ]
             );
         });
         it("旋转视图矩阵", function(){
-            var v =Math3D.Vector4.create(1, 1, 1, 1);
+            var v =Vector4.create(1, 1, 1, 1);
 
             matrix.lookAt(0, 0, 5, 0, 0, -1, 0, 1, 0);
             matrix.rotate(90, 0, 1, 0);
-            var result = Math3D.MatrixTool.multiplyVector4(matrix.values,v.values);
+            var result = MatrixUtils.multiplyVector4(matrix,v);
 
             expect(getValues(result)).toEqual(
                 [-4, 1, -1, 1]
             );
         });
         it("视图变换->正交投影变换", function(){
-            var v1 =Math3D.Vector4.create(1, 1, 1, 1);
-            var v2 =Math3D.Vector4.create(1, 1, -5, 1);
+            var v1 =Vector4.create(1, 1, 1, 1);
+            var v2 =Vector4.create(1, 1, -5, 1);
 
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.ortho(0.1,10);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1.values);
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2.values);
+            var result1 = MatrixUtils.multiplyVector4(matrix, v1);
+            var result2 = MatrixUtils.multiplyVector4(matrix, v2);
 
             //v2不在cvv中，而v1在cvv中
             expect(getValues(result1)).toEqual(
@@ -286,21 +303,21 @@ describe("matrix", function(){
             );
         });
         it("视图变换->透视投影变换", function(){
-            var v1 =Math3D.Vector4.create(1, 1, 1, 1);
-            var v2 =Math3D.Vector4.create(1, 1, -5, 1);
+            var v1 =Vector4.create(1, 1, 1, 1);
+            var v2 =Vector4.create(1, 1, -5, 1);
 
             //matrix.lookAt(-1, 0, 1, 0, 0, 1, 0, 1, 0);
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.setPerspective(30, 1, 0.1,10);
-            var result1 = Math3D.MatrixTool.multiplyVector4(matrix.values, v1.values);
-            var result2 = Math3D.MatrixTool.multiplyVector4(matrix.values, v2.values);
+            var result1 = MatrixUtils.multiplyVector4(matrix, v1);
+            var result2 = MatrixUtils.multiplyVector4(matrix, v2);
 
             //v2不在cvv中，而v1在cvv中
             expect(getValues(result1)).toEqual(
                 [ 3.7320509, 3.7320509, -1.2222222, -1 ]
             );
             expect(getValues(result2)).toEqual(
-                [ 3.7320509, 3.7320509, 4.89899, 5]
+                [3.7320509, 3.7320509, 4.8989902, 5 ]
             );
         });
     });

@@ -129,8 +129,7 @@ var testTool = (function () {
                 _returnValue = null;
 
             if (arguments.length === 2) {
-                obj = {
-                };
+                obj = {};
                 _funcName = arguments[0];
                 _returnValue = arguments[1];
             }

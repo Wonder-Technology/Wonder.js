@@ -8,11 +8,18 @@ module Engine3D.Math{
 
         constructor(){
             this._values = new Float32Array(3);
+
             if(arguments.length > 0){
                 this._values[0] = arguments[0];
                 this._values[1] = arguments[1];
                 this._values[2] =arguments[2];
             }
+        }
+
+        private _values: Float32Array;
+        get values():Float32Array { return this._values; }
+        set values(values: Float32Array) {
+            this._values = values;
         }
 
         normalize(): Vector3{
@@ -32,6 +39,7 @@ module Engine3D.Math{
             return this;
         }
 
+
         public toVec4(): Vector4{
             return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
         }
@@ -49,19 +57,7 @@ module Engine3D.Math{
                 m = new this(arguments[0], arguments[1], arguments[2]);
             }
 
-            m.initWhenCreate();
-
             return m;
-        }
-
-        initWhenCreate(){
-        }
-
-        private _values: Float32Array;
-
-        get values():Float32Array { return this._values; }
-        set values(values: Float32Array) {
-            this._values = values;
         }
     }
 }

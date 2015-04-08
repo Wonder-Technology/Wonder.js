@@ -14,23 +14,24 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'bower_components/jquery/dist/jquery.js',
-        '3d/yTool.js',
-        'test/hepler/**',
+        'bower_components/yyctoolbox/tool/yTool.js',
+        'engine/jsExtend.js',
 
-        '3d/Helper.js',
-        '3d/Matrix.js',
-        '3d/Cubic.js',
-        '3d/Camera.js',
+        'engine/math/*.js',
 
-        'test/unit/**'
+        'test/hepler/jasmine/**',
+        'test/hepler/sinonJs/*.js',
+
+        'test/unit/math/*.js',
+
+        {pattern: 'engine/**/*.js.map', watched: false, included: false, served: true},
+        {pattern: 'engine/**/*.ts', watched: false, included: false, served: true}
     ],
 
 
     // list of files to exclude
     exclude: [
-        '3d/temp.js',
-        '**/*.js.map'
+        '**/temp/*'
     ],
 
 
