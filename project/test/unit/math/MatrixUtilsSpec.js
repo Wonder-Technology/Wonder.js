@@ -1,7 +1,7 @@
 describe("MatrixUtils", function(){
-    var MatrixUtils = Engine3D.Math.MatrixUtils;
-    var Matrix= Engine3D.Math.Matrix;
-    var Vector4= Engine3D.Math.Vector4;
+    var MatrixUtils = Engine3D.MatrixUtils;
+    var Matrix= Engine3D.Matrix;
+    var Vector4= Engine3D.Vector4;
 
     beforeEach(function(){
     });

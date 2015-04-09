@@ -1,13 +1,34 @@
 /// <reference path="MatrixUtils.ts"/>
-module Engine3D.Math{
-    declare var window:any;
+module Engine3D{
     /*!
      注意：矩阵元素是按列主序存储在数组中的。
      */
     export class Matrix{
+        public static create(mat:Float32Array):Matrix;
+        public static create():Matrix;
+        public static create():Matrix {
+            var m = null;
+
+            if(arguments.length === 0){
+                m = new this();
+            }
+            else{
+                m = new this(arguments[0]);
+            }
+
+            return m;
+        }
+
+        private _values: Float32Array = null;
+        get values():Float32Array { return this._values; }
+        set values(values: Float32Array) {
+            this._values = values;
+        }
+
+        private _matrixArr:Array<Float32Array> = null;
+
         constructor(mat:Float32Array);
         constructor();
-
         constructor() {
             if (arguments.length === 1) {
                 this._values = arguments[0];
@@ -19,24 +40,17 @@ module Engine3D.Math{
             this._matrixArr = [];
         }
 
-        private _matrixArr:Array<Float32Array> = null;
-
-        private _values: Float32Array = null;
-        get values():Float32Array { return this._values; }
-        set values(values: Float32Array) {
-            this._values = values;
-        }
 
 
-        push(){
+        public push(){
             this._matrixArr.push(this._values);
         }
 
-        pop(){
+        public pop(){
             this._values = this._matrixArr.pop();
         }
 
-        setIdentity (): Matrix {
+        public setIdentity (): Matrix {
             var e = this._values;
             e[0] = 1;   e[4] = 0;   e[8]  = 0;   e[12] = 0;
             e[1] = 0;   e[5] = 1;   e[9]  = 0;   e[13] = 0;
@@ -50,7 +64,7 @@ module Engine3D.Math{
          * @param other The source matrix
          * @return this
          */
-        setInverseOf (other:Matrix):Matrix {
+        public setInverseOf (other:Matrix):Matrix {
             var i, s, d, inv, det;
 
             s = other.values;
@@ -111,7 +125,7 @@ module Engine3D.Math{
          * @param other The source matrix
          * @return this
          */
-        inverseOf ():Matrix {
+        public inverseOf ():Matrix {
             return this.setInverseOf(this);
         }
 
@@ -119,20 +133,20 @@ module Engine3D.Math{
          * Transpose the matrix.
          * @return this
          */
-        transpose ():Matrix {
-        var e, t;
+        public transpose ():Matrix {
+            var e, t;
 
-        e = this._values;
+            e = this._values;
 
-        t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
-        t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
-        t = e[ 3];  e[ 3] = e[12];  e[12] = t;
-        t = e[ 6];  e[ 6] = e[ 9];  e[ 9] = t;
-        t = e[ 7];  e[ 7] = e[13];  e[13] = t;
-        t = e[11];  e[11] = e[14];  e[14] = t;
+            t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
+            t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
+            t = e[ 3];  e[ 3] = e[12];  e[12] = t;
+            t = e[ 6];  e[ 6] = e[ 9];  e[ 9] = t;
+            t = e[ 7];  e[ 7] = e[13];  e[13] = t;
+            t = e[11];  e[11] = e[14];  e[14] = t;
 
-        return this;
-    }
+            return this;
+        }
 
         /**
          * Set the matrix for translation.
@@ -141,7 +155,7 @@ module Engine3D.Math{
          * @param z The Z value of a translation.
          * @return this
          */
-        setTranslate (x, y, z): Matrix {
+        public setTranslate (x, y, z): Matrix {
             var e = this._values;
             e[0] = 1;  e[4] = 0;  e[8]  = 0;  e[12] = x;
             e[1] = 0;  e[5] = 1;  e[9]  = 0;  e[13] = y;
@@ -157,7 +171,7 @@ module Engine3D.Math{
          * @param z The Z value of a translation.
          * @return this
          */
-        translate (x, y, z): Matrix {
+        public translate (x, y, z): Matrix {
             this.applyMatrix(Matrix.create().setTranslate(x, y, z));
 
             return this;
@@ -172,7 +186,7 @@ module Engine3D.Math{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        setRotate (angle: number, x: number, y: number, z:number): Matrix {
+        public setRotate (angle: number, x: number, y: number, z:number): Matrix {
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
             var angle = window.Math.PI * angle / 180;
@@ -260,7 +274,7 @@ module Engine3D.Math{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        rotate (angle, x, y, z): Matrix {
+        public rotate (angle, x, y, z): Matrix {
             this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
 
             return this;
@@ -273,7 +287,7 @@ module Engine3D.Math{
          * @param z The scale factor along the Z axis
          * @return this
          */
-        setScale (x, y, z):Matrix {
+        public setScale (x, y, z):Matrix {
             var e = this._values;
             e[0] = x;  e[4] = 0;  e[8]  = 0;  e[12] = 0;
             e[1] = 0;  e[5] = y;  e[9]  = 0;  e[13] = 0;
@@ -289,13 +303,13 @@ module Engine3D.Math{
          * @param z The scale factor along the Z axis
          * @return this
          */
-        scale (x, y, z):Matrix {
+        public scale (x, y, z):Matrix {
             this.applyMatrix(Matrix.create().setScale(x, y, z));
 
             return this;
         }
 
-        setLookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
+        public setLookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
             var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
 
             fx = centerX - eyeX;
@@ -360,14 +374,14 @@ module Engine3D.Math{
          * @param upX, upY, upZ The direction of the up vector.
          * @return this
          */
-        lookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
+        public lookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
             this.applyMatrix(Matrix.create().setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ));
 
             return this;
         }
 
 
-        setOrtho (near, far):Matrix {
+        public setOrtho (near, far):Matrix {
             var e = this._values;
 
             e[0] = 1;
@@ -390,7 +404,7 @@ module Engine3D.Math{
             return this;
         }
 
-        ortho (n, f):Matrix{
+        public ortho (n, f):Matrix{
             this.applyMatrix(Matrix.create().setOrtho(n, f));
 
             return this;
@@ -404,7 +418,7 @@ module Engine3D.Math{
          * @param far The distances to the farther depth clipping plane. This value must be plus value.
          * @return this
          */
-        setPerspective (fovy: number, aspect, near, far):Matrix {
+        public setPerspective (fovy: number, aspect, near, far):Matrix {
             var e, rd, s, ct;
 
             if (near === far || aspect === 0) {
@@ -451,13 +465,13 @@ module Engine3D.Math{
             return this;
         }
 
-        perspective (fovy, aspect, near, far):Matrix{
+        public perspective (fovy, aspect, near, far):Matrix{
             this.applyMatrix(Matrix.create().setPerspective(fovy, aspect, near, far));
 
             return this;
         }
 
-        applyMatrix (other:Matrix):Matrix{
+        public applyMatrix (other:Matrix):Matrix{
             var a = this,
                 b = other;
 
@@ -470,7 +484,7 @@ module Engine3D.Math{
             return this;
         }
 
-        copy(): Matrix{
+        public copy(): Matrix{
             var result = Matrix.create(),
                 i = 0,
                 len = this._values.length;
@@ -481,22 +495,6 @@ module Engine3D.Math{
 
 
             return result;
-        }
-
-        public static create(mat:Float32Array):Matrix ;
-        public static create():Matrix ;
-
-        public static create():Matrix {
-            var m = null;
-
-            if(arguments.length === 0){
-                m = new this();
-            }
-            else{
-                m = new this(arguments[0]);
-            }
-
-            return m;
         }
     }
 }

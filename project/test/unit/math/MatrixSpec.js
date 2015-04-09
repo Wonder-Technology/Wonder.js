@@ -1,8 +1,8 @@
 describe("matrix", function(){
     var matrix = null;
-    var Matrix = Engine3D.Math.Matrix;
-    var MatrixUtils = Engine3D.Math.MatrixUtils;
-    var Vector4 = Engine3D.Math.Vector4;
+    var Matrix = Engine3D.Matrix;
+    var MatrixUtils = Engine3D.MatrixUtils;
+    var Vector4 = Engine3D.Vector4;
 
     function getValues(values){
         if(values){
