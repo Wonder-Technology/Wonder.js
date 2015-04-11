@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>绘制彩色矩形</title>
+
+    <script src="../../../engine/math/Matrix.js" type="text/javascript"></script>
+    <script src="../../../engine/math/MatrixUtils.js" type="text/javascript"></script>
+    <script src="../../../engine/math/Vector3.js" type="text/javascript"></script>
+    <script src="../../../engine/math/Vector4.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function(){
+        var loader = Engine3D.GLSLLoader.create();
+        var camera = null,
+                scene = null;
+
+        loader.load([
+            {src:"./rect_vertex.glsl", id:"vs"},
+            {src:"./rect_fragment.glsl", id:"fs"}
+        ]);
+
+        function init(){
+            _initContext();
+            _initScene();
+
+        }
+
+        function loop(){
+            scene.run();
+
+            requestAnimationFrame(loop);
+        }
+
+        function _initContext(){
+            Engine3D.WebGLContext.createGL("canvas");
+        }
+
+        function _initScene(){
+            var prg = null;
+            var rect = null;
+
+            camera = Engine3D.Camera.create({
+                        eyeX: 0.0,
+                        eyeY: 0.0,
+                        eyeZ: 1.0,
+                        centerX:0,
+                        centerY:0,
+                        centerZ: -1,
+                        upX:0,
+                        upY: 1,
+                        upZ: 0
+                    },
+                    {
+                        angle: 60,
+                        aspect : canvas.width / canvas.height,
+                        near : 0.1,
+                        far : 10
+                    });
+
+            //todo encapsulate prg into scene
+            scene = Engine3D.Scene.create(camera);
+            prg = Engine3D.Render.Program.create(
+                    Engine3D.Render.Shader.createShader("vs"),
+                    Engine3D.Render.Shader.createShader("fs")
+            );
+
+            scene.program = prg;
+
+
+            rect = Engine3D.RectGeometry.create();
+            var material = Engine3D.Material.MeshMaterial.create( { color: 0xffffff} );
+
+            var mesh = Engine3D.Mesh.create(rect, material );
+
+            /*            var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+
+             var texture = THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
+             texture.anisotropy = renderer.getMaxAnisotropy();
+
+             var material = new THREE.MeshBasicMaterial( { map: texture } );
+
+             mesh = new THREE.Mesh( geometry, material );*/
+
+
+            scene.add(mesh);
+
+
+            scene.init();
+        }
+
+        loader.onload = function(){
+            init();
+            loop();
+        };
+    };
+</script>
+</body>
+</html>
