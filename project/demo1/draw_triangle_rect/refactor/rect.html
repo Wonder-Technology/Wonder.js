@@ -14,13 +14,12 @@
 
 <script>
     window.onload = function(){
-        var loader = Engine3D.GLSLLoader.create();
         var camera = null,
                 scene = null;
 
-        loader.load([
-            {src:"./rect_vertex.glsl", id:"vs"},
-            {src:"./rect_fragment.glsl", id:"fs"}
+        Engine3D.LoaderManager.getInstance().load([
+            {url:"./rect_vertex.glsl", id:"vs"},
+            {url:"./rect_fragment.glsl", id:"fs"}
         ]);
 
         function init(){
@@ -92,7 +91,7 @@
             scene.init();
         }
 
-        loader.onload = function(){
+        Engine3D.LoaderManager.getInstance().onload = function(){
             init();
             loop();
         };
