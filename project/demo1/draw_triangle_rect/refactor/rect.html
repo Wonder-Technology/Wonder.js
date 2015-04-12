@@ -25,15 +25,6 @@
 
         }
 
-        function loop(){
-            var gl = Engine3D.WebGLContext.gl;
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-            scene.run();
-
-            requestAnimationFrame(loop);
-        }
-
         function _initContext(){
             Engine3D.WebGLContext.createGL("canvas");
         }
@@ -81,12 +72,12 @@
 
             scene.add(mesh);
 
-            scene.init();
+
+           Engine3D.Director.getInstance().runWithScene(scene);
         }
 
         Engine3D.LoaderManager.getInstance().onload = function(){
             init();
-            loop();
         };
     };
 </script>
