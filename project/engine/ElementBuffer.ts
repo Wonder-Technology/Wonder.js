@@ -1,7 +1,9 @@
+/// <reference path="BufferType.ts"/>
+/// <reference path="WebGLContext.ts"/>
 module Engine3D{
     export class ElementBuffer{
         public static create(data, type:BufferType):ElementBuffer {
-            var obj = new ElementBuffer();
+            var obj = new this();
 
             obj.initWhenCreate(data, type);
 
@@ -17,7 +19,6 @@ module Engine3D{
             this._type = type;
         }
 
-
         private _num:number = null;
         get num() { return this._num; }
         set num(num:number) {
@@ -27,24 +28,21 @@ module Engine3D{
         private _typeSize:number = null;
         get typeSize() { return this._typeSize; }
 
-        initWhenCreate(data, type:BufferType) {
-            if(!data
-            || this._checkDataType(data, type)){
+        public initWhenCreate(data, type:BufferType) {
+            var gl = WebGLContext.gl;
+
+            if(!data || !this._checkDataType(data, type)){
                 return null;
             }
-
-
 
             this._buffer = gl.createBuffer();   // Create a buffer object
             if (!this._buffer) {
                 console.log('Failed to create the this._buffer object');
                 return null;
             }
-            // Write date into the this._buffer object
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
-            // Unbind the buffer object
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
             this._type = gl[type];
@@ -77,25 +75,25 @@ module Engine3D{
                         size: 2
                     };
                     break;
-                case BufferTyepe.UNSIGNED_SHORT:
+                case BufferType.UNSIGNED_SHORT:
                     info = {
                         typeClass: Uint16Array,
                         size: 2
                     };
                     break;
-                case BufferTyepe.INT:
+                case BufferType.INT:
                     info = {
                         typeClass: Int32Array,
                         size: 4
                     };
                     break;
-                case BufferTyepe.UNSIGNED_INT:
+                case BufferType.UNSIGNED_INT:
                     info = {
                         typeClass: Uint32Array,
                         size: 4
                     };
                     break;
-                case BufferTyepe.FLOAT:
+                case BufferType.FLOAT:
                     info = {
                         typeClass: Float32Array,
                         size: 4

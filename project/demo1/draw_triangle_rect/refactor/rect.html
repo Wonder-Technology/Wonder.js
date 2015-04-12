@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <title>绘制彩色矩形</title>
 
-    <script src="../../../engine/math/Matrix.js" type="text/javascript"></script>
-    <script src="../../../engine/math/MatrixUtils.js" type="text/javascript"></script>
-    <script src="../../../engine/math/Vector3.js" type="text/javascript"></script>
-    <script src="../../../engine/math/Vector4.js" type="text/javascript"></script>
+    <script src="/project/dist/Engine.js" type="text/javascript"></script>
 </head>
 <body>
 <canvas id="canvas" width="600" height="400"></canvas>
@@ -29,6 +26,9 @@
         }
 
         function loop(){
+            var gl = Engine3D.WebGLContext.gl;
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
             scene.run();
 
             requestAnimationFrame(loop);
@@ -39,7 +39,6 @@
         }
 
         function _initScene(){
-            var prg = null;
             var rect = null;
 
             camera = Engine3D.Camera.create({
@@ -60,18 +59,13 @@
                         far : 10
                     });
 
-            //todo encapsulate prg into scene
-            scene = Engine3D.Scene.create(camera);
-            prg = Engine3D.Render.Program.create(
-                    Engine3D.Render.Shader.createShader("vs"),
-                    Engine3D.Render.Shader.createShader("fs")
-            );
-
-            scene.program = prg;
+            scene = Engine3D.Scene.create(camera,
+                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
+                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
 
 
-            rect = Engine3D.RectGeometry.create();
-            var material = Engine3D.Material.MeshMaterial.create( { color: 0xffffff} );
+            rect = Engine3D.RectGeometry.create(5, 5, -5.0);
+            var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
 
             var mesh = Engine3D.Mesh.create(rect, material );
 
@@ -86,7 +80,6 @@
 
 
             scene.add(mesh);
-
 
             scene.init();
         }

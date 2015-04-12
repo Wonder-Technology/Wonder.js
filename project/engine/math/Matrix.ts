@@ -189,11 +189,11 @@ module Engine3D{
         public setRotate (angle: number, x: number, y: number, z:number): Matrix {
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
-            var angle = window.Math.PI * angle / 180;
+            var angle = Math.PI * angle / 180;
             e = this._values;
 
-            s = window.Math.sin(angle);
-            c = window.Math.cos(angle);
+            s = Math.sin(angle);
+            c = Math.cos(angle);
 
             if (0 !== x && 0 === y && 0 === z) {
                 // Rotation around X axis
@@ -224,7 +224,7 @@ module Engine3D{
                 e[3] = 0;  e[7] = 0;  e[11] = 0;  e[15] = 1;
             } else {
                 // Rotation around another axis
-                len = window.Math.sqrt(x*x + y*y + z*z);
+                len = Math.sqrt(x*x + y*y + z*z);
                 if (len !== 1) {
                     //转换为单位向量
                     rlen = 1 / len;
@@ -317,7 +317,7 @@ module Engine3D{
             fz = centerZ - eyeZ;
 
             // Normalize f.
-            rlf = 1 / window.Math.sqrt(fx*fx + fy*fy + fz*fz);
+            rlf = 1 / Math.sqrt(fx*fx + fy*fy + fz*fz);
             fx *= rlf;
             fy *= rlf;
             fz *= rlf;
@@ -328,7 +328,7 @@ module Engine3D{
             sz = fx * upY - fy * upX;
 
             // Normalize s.
-            rls = 1 / window.Math.sqrt(sx*sx + sy*sy + sz*sz);
+            rls = 1 / Math.sqrt(sx*sx + sy*sy + sz*sz);
             sx *= rls;
             sy *= rls;
             sz *= rls;
@@ -431,14 +431,14 @@ module Engine3D{
                 throw 'far <= 0';
             }
 
-            var fovy = window.Math.PI * fovy / 180 / 2;
-            s = window.Math.sin(fovy);
+            var fovy = Math.PI * fovy / 180 / 2;
+            s = Math.sin(fovy);
             if (s === 0) {
                 throw 'null frustum';
             }
 
             rd = 1 / (far - near);
-            ct = window.Math.cos(fovy) / s;
+            ct = Math.cos(fovy) / s;
 
             e = this._values;
 

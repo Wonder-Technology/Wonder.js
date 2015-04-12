@@ -14,12 +14,12 @@
 
 <script id="vs" type="x-shader/x-vertex">
 attribute vec4 a_position;
-uniform mat4 mvpMatrix;
+uniform mat4 u_mvpMatrix;
 attribute vec4 a_color;
 varying vec4 v_color;
 
 void main(void){
-    gl_Position = mvpMatrix * a_position;
+    gl_Position = u_mvpMatrix * a_position;
     v_color = a_color;
 }
         </script>
@@ -42,9 +42,9 @@ void main(void){
         var c = null;
         var gl = null;
 
-        var mMatrix = Engine3D.Math.Matrix.create();
-        var vMatrix = Engine3D.Math.Matrix.create();
-        var pMatrix = Engine3D.Math.Matrix.create();
+        var mMatrix = Engine3D.Matrix.create();
+        var vMatrix = Engine3D.Matrix.create();
+        var pMatrix = Engine3D.Matrix.create();
         var mvpMatrix = null;
 
 
@@ -98,17 +98,24 @@ void main(void){
         setPerspective();
         mvpMatrix = computeMvpMatrix(pMatrix, vMatrix, mMatrix);
 
-        var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
+        var uniLocation = gl.getUniformLocation(prg, 'u_mvpMatrix');
 
         gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
 
 
 
+        function loop(){
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            draw(vertices_num);
+
+            requestAnimationFrame(loop);
+        }
 
         gl.clearColor(0, 0, 0, 1);
 
-        draw(vertices_num);
 
+        loop();
 
 
 

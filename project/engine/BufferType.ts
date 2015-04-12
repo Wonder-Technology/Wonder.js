@@ -1,10 +1,10 @@
 module Engine3D {
     export enum BufferType{
-        UNSINGED_BYTE,
-        SHORT,
-        UNSIGNED_SHORT,
-        INT,
-        UNSIGNED_INT,
-        FLOAT
+        UNSIGNED_BYTE = <any>"UNSIGNED_BYTE",
+        SHORT = <any>"SHORT",
+        UNSIGNED_SHORT = <any>"UNSIGNED_SHORT",
+        INT = <any>"INT",
+        UNSIGNED_INT = <any>"UNSIGNED_INT",
+        FLOAT = <any>"FLOAT"
     }
 }

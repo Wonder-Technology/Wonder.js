@@ -65,7 +65,7 @@ module Engine3D{
         }
 
         public computeVpMatrix(){
-            var matrix = Math3D.Matrix.create();
+            var matrix = Matrix.create();
 
             matrix.applyMatrix(this._vMatrix);
             matrix.applyMatrix(this._pMatrix);

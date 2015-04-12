@@ -1,5 +1,6 @@
+/// <reference path="../Color.ts"/>
 module Engine3D {
-    export class Material {
+    export class MeshMaterial {
         public static create(params) {
             var obj = new this(params);
 

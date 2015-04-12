@@ -48,32 +48,36 @@ module Engine3D{
 
         public initWhenCreate(width, height, depth){
             this._vertices = this._computeVertices(width, height, depth);
-            this._indices = this._computeIndices(width, height, depth);
-            this._normals = this._computeNormals(width, height, depth);
-            this._texCoords = this._computeTexCoords(width, height, depth);
+            this._indices = this._computeIndices();
+            this._normals = this._computeNormals();
+            this._texCoords = this._computeTexCoords();
         }
 
-        //todo compute dynamic
         private _computeVertices(width, height, depth){
+            var left = -width / 2,
+                right = width / 2,
+                up = height / 2,
+                down = -height / 2;
+
             return new Float32Array([
-                2.5, 2.5, -5.0,
-                -2.5, 2.5, -5.0,
-                -2.5, -2.5,  -5.0,
-                2.5, -2.5,  -5.0
+                right, up, depth,
+                left, up, depth,
+                left, down, depth,
+                right, down, depth
             ]);
         }
-        //todo compute dynamic
-        private _computeIndices(width, height, depth){
+
+        private _computeIndices(){
             return new Uint16Array([
                 0, 1, 2,   0, 2, 3
             ]);
         }
         //todo set data
-        private _computeNormals(width, height, depth){
+        private _computeNormals(){
             return null;
         }
         //todo set data
-        private _computeTexCoords(width, height, depth){
+        private _computeTexCoords(){
             return null;
         }
     }

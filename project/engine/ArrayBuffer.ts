@@ -1,7 +1,9 @@
+/// <reference path="BufferType.ts"/>
+/// <reference path="WebGLContext.ts"/>
 module Engine3D{
     export class ArrayBuffer{
         public static create(data, num, type:BufferType):ArrayBuffer {
-            var obj = new ArrayBuffer();
+            var obj = new this();
 
             obj.initWhenCreate(data, num, type);
 
@@ -23,7 +25,7 @@ module Engine3D{
             this._type = type;
         }
 
-        initWhenCreate(data, num, type:BufferType) {
+        public initWhenCreate(data, num, type:BufferType) {
             var gl = WebGLContext.gl;
 
             if(!data){
@@ -32,17 +34,14 @@ module Engine3D{
 
             this._buffer = gl.createBuffer();   // Create a buffer object
             if (!this._buffer) {
-                console.log('Failed to create the this._buffer object');
+                Log.log('Failed to create the this._buffer object');
                 return null;
             }
-            // Write date into the this._buffer object
             gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer);
             gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
-            // Unbind the buffer object
             gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-            // Keep the information necessary to assign to the attribute variable later
             this._num = num;
             this._type = gl[type];
 

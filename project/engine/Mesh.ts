@@ -1,9 +1,10 @@
+/// <reference path="geometry/RectGeometry.ts"/>
+/// <reference path="material/MeshMaterial.ts"/>
+/// <reference path="ArrayBuffer.ts"/>
+/// <reference path="ElementBuffer.ts"/>
+/// <reference path="math/Matrix.ts"/>
+/// <reference path="DrawMode.ts"/>
 module Engine3D{
-    export enum DrawMode{
-        TRIANGLES
-    }
-
-
     export class Mesh{
         //todo be Geometry,Material(add baseClass Geometry,Material)
         public static create(gemo:RectGeometry, material: MeshMaterial):Mesh {
@@ -12,10 +13,6 @@ module Engine3D{
             obj.initWhenCreate(gemo);
 
             return obj;
-        }
-
-        constructor(material:MeshMateria){
-            this._material = material;
         }
 
         private _matrix:Matrix = null;
@@ -41,13 +38,28 @@ module Engine3D{
             indexBuffer?: ElementBuffer
         }= null;
 
+        private _drawMode:DrawMode = DrawMode.TRIANGLES;
+        get drawMode(){
+            return this._drawMode;
+        }
+        set drawMode(drawMode:DrawMode){
+            this._drawMode = drawMode;
+        }
+
         constructor(material:MeshMaterial){
             this._material = material;
-            this._matrix = Math3D.Matrix.create();
+            this._matrix = Matrix.create();
         }
 
         public initWhenCreate(gemo:RectGeometry){
-           this._initBuffer(gemo);
+            this._initBuffer(gemo);
+        }
+
+        //todo extract render
+        public draw(program){
+            this._sendData(program);
+
+            this._draw();
         }
 
         private _initBuffer(gemo:RectGeometry){
@@ -59,22 +71,16 @@ module Engine3D{
             };
         }
 
-        //todo extract render
-        public draw(program){
-            this._sendData(program);
-
-            this._draw();
-        }
         private _sendData(program){
             if(this._buffers.vertexBuffer){
-                program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.vertexBuffer.buffer);
+                program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.vertexBuffer);
             }
             else{
                 throw new Error("must has vertexBuffer");
             }
 
             if(this._material.color){
-                program.setAttributeData("a_color", AttributeDataType.FLOAT_4, [this._material.color.r, this._material.color.g, this._material.color.g, 1.0]);
+                program.setAttributeData("a_color", AttributeDataType.FLOAT_4, [this._material.color.r, this._material.color.g, this._material.color.b, 1.0]);
             }
         }
 
@@ -87,18 +93,10 @@ module Engine3D{
                 totalNum = this._buffers.indexBuffer.num;
                 gl.bindBuffer(gl.ARRAY_BUFFER, this._buffers.vertexBuffer.buffer);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer.buffer);
-                gl.drawElements(gl[this._drawMode], totalNum, this._buffers.indexBuffer.type, this.buffers.indexBuffer.typeSize * startOffset);
+                gl.drawElements(gl[this._drawMode], totalNum, this._buffers.indexBuffer.type, this._buffers.indexBuffer.typeSize * startOffset);
             } else {
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
         }
-
-private _drawMode:DrawMode = null;
-get drawMode(){
-    return this._drawMode || DrawMode.TRIANGLES;
-}
-set drawMode(drawMode:DrawMode){
-    this._drawMode = drawMode;
-}
     }
 }

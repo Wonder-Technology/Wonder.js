@@ -27,8 +27,11 @@ module Engine3D{
         }
 
         public load(resourcesArr:Array<{url:string; id:string}>) {
+            var self = this;
+
             resourcesArr.forEach((res) => {
                 GLSLLoader.getInstance().load(res.url, res.id);
+                self._resCount += 1;
             });
 
             this._isFinishLoad();

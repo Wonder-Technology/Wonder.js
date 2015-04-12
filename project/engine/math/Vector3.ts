@@ -36,7 +36,7 @@ module Engine3D{
 
         public normalize(): Vector3{
             var v = this._values;
-            var d = window.Math.sqrt(
+            var d = Math.sqrt(
                 v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
             );
 

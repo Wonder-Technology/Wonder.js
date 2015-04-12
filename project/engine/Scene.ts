@@ -1,10 +1,13 @@
 /// <reference path="Camera.ts"/>
 /// <reference path="Mesh.ts"/>
 /// <reference path="Program.ts"/>
+/// <reference path="math/Matrix.ts"/>
 module Engine3D {
     export class Scene {
-        public static create(camera) {
+        public static create(camera:Camera, vsSource:string, fsSource:string) {
             var obj = new this(camera);
+
+            obj.initWhenCreate(vsSource, fsSource);
 
             return obj;
         }
@@ -29,6 +32,10 @@ module Engine3D {
 
         constructor(camera) {
             this._camera = camera;
+        }
+
+        public initWhenCreate(vsSource:string, fsSource:string){
+            this._program = Program.create(vsSource, fsSource)
         }
 
         public add(meshesArr:Mesh[]) {
@@ -56,7 +63,7 @@ module Engine3D {
             this._program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._computeMvpMatrix(mesh));
         }
 
-        private _computeMvpMatrix(mesh){
+        private _computeMvpMatrix(mesh):Matrix{
             return mesh.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
         }
     }

@@ -11,12 +11,12 @@ module Engine3D{
             return this._instance;
         }
 
-        private _cache:any = {};
+        private _container:any = {};
 
-        public load(url, id){
+        public load(url:string, id:string){
             var self = this;
 
-            if(this._cache[id]){
+            if(this._container[id]){
                 LoaderManager.getInstance().onResLoaded();
                 return;
             }
@@ -28,13 +28,15 @@ module Engine3D{
                 }
 
                 LoaderManager.getInstance().onResLoaded();
-                self._cache[id] = data;
+                self._container[id] = data;
             });
         }
 
-        private _loadText(url, callback) {
-            var self = this;
+        public getGLSL(id:string):string{
+           return this._container[id];
+        }
 
+        private _loadText(url, callback) {
             YEQuery.ajax({
                 type: "get",
                 //async: true,
