@@ -1,7 +1,6 @@
-//has geometry vertices,indices,texCoords,normals data
 module Engine3D{
-    export class RectGeometry{
-        public static create(width, height, depth):RectGeometry {
+    export class TriangleGeometry{
+        public static create(width, height, depth):TriangleGeometry {
             var geom = new this();
 
             geom.initWhenCreate(width, height, depth);
@@ -15,14 +14,6 @@ module Engine3D{
         }
         set vertices(vertices:Float32Array){
             this._vertices = vertices;
-        }
-        
-        private _indices:Uint16Array = null;
-        get indices(){
-            return this._indices;
-        }
-        set indices(indices:Uint16Array){
-            this._indices = indices;
         }
         
         private _normals:Float32Array = null;
@@ -46,7 +37,6 @@ module Engine3D{
 
         public initWhenCreate(width, height, depth){
             this._vertices = this._computeVertices(width, height, depth);
-            this._indices = this._computeIndices();
             this._normals = this._computeNormals();
             this._texCoords = this._computeTexCoords();
         }
@@ -58,18 +48,12 @@ module Engine3D{
                 down = -height / 2;
 
             return new Float32Array([
-                right, up, depth,
-                left, up, depth,
+                0.0, up, depth,
                 left, down, depth,
                 right, down, depth
             ]);
         }
 
-        private _computeIndices(){
-            return new Uint16Array([
-                0, 1, 2,   0, 2, 3
-            ]);
-        }
         //todo set data
         private _computeNormals(){
             return null;

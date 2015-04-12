@@ -64,10 +64,10 @@ module Engine3D{
 
         private _initBuffer(gemo:RectGeometry){
             this._buffers = {
-                vertexBuffer:ArrayBuffer.create(gemo.vertices, 3, BufferType.FLOAT),
-                texCoordBuffer: ArrayBuffer.create(gemo.texCoords, 2, BufferType.FLOAT),
-                normalBuffer: ArrayBuffer.create(gemo.normals, 3, BufferType.FLOAT),
-                indexBuffer: ElementBuffer.create(gemo.indices, BufferType.UNSIGNED_SHORT)
+                vertexBuffer:gemo.vertices? ArrayBuffer.create(gemo.vertices, 3, BufferType.FLOAT) : null,
+                texCoordBuffer: gemo.texCoords? ArrayBuffer.create(gemo.texCoords, 2, BufferType.FLOAT) : null,
+                normalBuffer: gemo.normals? ArrayBuffer.create(gemo.normals, 3, BufferType.FLOAT) : null,
+                indexBuffer: gemo.indices? ElementBuffer.create(gemo.indices, BufferType.UNSIGNED_SHORT) : null
             };
         }
 
@@ -80,6 +80,9 @@ module Engine3D{
             }
 
             if(this._material.color){
+                //this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
+                //because a_color'pos is 0, and it should be array data(like Float32Array)
+                //refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
                 program.setAttributeData("a_color", AttributeDataType.FLOAT_4, [this._material.color.r, this._material.color.g, this._material.color.b, 1.0]);
             }
         }
@@ -95,6 +98,7 @@ module Engine3D{
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer.buffer);
                 gl.drawElements(gl[this._drawMode], totalNum, this._buffers.indexBuffer.type, this._buffers.indexBuffer.typeSize * startOffset);
             } else {
+                totalNum = this._buffers.vertexBuffer.num;
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
         }
