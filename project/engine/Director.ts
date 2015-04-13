@@ -1,5 +1,6 @@
 /// <reference path="Scene.ts"/>
 /// <reference path="WebGLContext.ts"/>
+/// <reference path="render/WebGLRenderer.ts"/>
 module Engine3D{
     declare var window:any;
     /**
@@ -107,16 +108,31 @@ module Engine3D{
         public static getInstance() {
             if (this._instance === null) {
                 this._instance = new this();
+                this._instance.initWhenCreate();
             }
             return this._instance;
+        }
+
+        //todo :Renderer
+        private _renderer:WebGLRenderer = null;
+        get renderer(){
+            return this._renderer;
+        }
+        set renderer(renderer:WebGLRenderer){
+            this._renderer = renderer;
         }
 
         private _scene:Scene = null;
         private _loopId:string = null;
 
+        public initWhenCreate(){
+            //todo detect to decide using which renderer
+            this._renderer = WebGLRenderer.create();
+        }
+
         public runWithScene(scene:Scene) {
+            scene.init();
             this._scene = scene;
-            this._scene.init();
 
             this._startLoop();
         }
@@ -138,6 +154,8 @@ module Engine3D{
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             this._scene.run();
+
+            this._renderer.render(this._scene);
         }
     }
 }
