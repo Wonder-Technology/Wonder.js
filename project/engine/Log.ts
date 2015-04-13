@@ -54,5 +54,10 @@ module Engine3D{
                 }
             }
         }
+        public static error(cond, message) {
+            if (cond) {
+                throw new Error(message);
+            }
+        }
     }
 }

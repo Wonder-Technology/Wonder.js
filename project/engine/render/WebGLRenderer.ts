@@ -1,6 +1,7 @@
 /// <reference path="QuadCommand.ts"/>
 /// <reference path="../utils/Color.ts"/>
 /// <reference path="../core/Scene.ts"/>
+/// <reference path="../structure/Collection.ts"/>
 module Engine3D{
     export class WebGLRenderer{
         public static create():WebGLRenderer {
@@ -9,7 +10,7 @@ module Engine3D{
             return obj;
         }
 
-        private _commandQueue:any = [];
+        private _commandQueue:Collection = Collection.create();
         private _clearColor:Color = Color.create("#000000");
         private _clearAlpha:number = 1.0;
 
@@ -18,13 +19,12 @@ module Engine3D{
         }
 
         public addCommand(command:QuadCommand){
-            //todo extract Collection class
-            if(this._hasChild(command)){
+            if(this._commandQueue.hasChild(command)){
                 return;
             }
 
             command.init();
-            this._commandQueue.push(command);
+            this._commandQueue.addChild(command);
         }
 
         public render(scene:Scene){
@@ -41,11 +41,6 @@ module Engine3D{
             this._clearColor = color;
             this._clearAlpha = alpha;
             WebGLContext.gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
-        }
-
-        private _hasChild(obj){
-            //todo edit
-            return false;
         }
     }
 }

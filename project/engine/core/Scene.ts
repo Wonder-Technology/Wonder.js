@@ -1,4 +1,5 @@
 /// <reference path="../Camera.ts"/>
+/// <reference path="../structure/Collection.ts"/>
 /// <reference path="Mesh.ts"/>
 /// <reference path="../render/Program.ts"/>
 /// <reference path="../math/Matrix.ts"/>
@@ -12,7 +13,7 @@ module Engine3D {
             return obj;
         }
 
-        private _meshes:Mesh[] = [];
+        private _meshes:Collection = Collection.create();
 
         private _camera:Camera = null;
         get camera() {
@@ -39,7 +40,7 @@ module Engine3D {
         }
 
         public add(meshesArr:Mesh[]) {
-            this._meshes = this._meshes.concat(meshesArr);
+            this._meshes.addChilds(meshesArr);
         }
 
         public run() {
