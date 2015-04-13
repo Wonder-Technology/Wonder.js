@@ -1,6 +1,6 @@
-/// <reference path="geometry/RectGeometry.ts"/>
-/// <reference path="material/MeshMaterial.ts"/>
-/// <reference path="math/Matrix.ts"/>
+/// <reference path="../geometry/RectGeometry.ts"/>
+/// <reference path="../material/MeshMaterial.ts"/>
+/// <reference path="../math/Matrix.ts"/>
 module Engine3D{
     export class Mesh{
         //todo be Geometry,Material(add baseClass Geometry,Material)
@@ -28,10 +28,10 @@ module Engine3D{
         }
 
         public draw(){
-            this._createDrawCommand();
+            this._addDrawCommand();
         }
 
-        private _createDrawCommand(){
+        private _addDrawCommand(){
             var renderer = Director.getInstance().renderer,
                 quadCmd = renderer.createQuadCommand();
 
@@ -41,7 +41,7 @@ module Engine3D{
                 normals: this._gemo.normals,
                 indices: this._gemo.indices
             };
-            quadCmd.color = this._matrix.color;
+            quadCmd.color = this._material.color;
 
             renderer.addCommand(quadCmd);
         }

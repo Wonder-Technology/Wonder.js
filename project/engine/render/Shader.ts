@@ -1,6 +1,6 @@
-/// <reference path="WebGLContext.ts"/>
+/// <reference path="../WebGLContext.ts"/>
 /// <reference path="ShaderType.ts"/>
-/// <reference path="Log.ts"/>
+/// <reference path="../Log.ts"/>
 module Engine3D{
     declare var document:any;
 

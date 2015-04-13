@@ -1,6 +1,6 @@
 /// <reference path="Scene.ts"/>
-/// <reference path="WebGLContext.ts"/>
-/// <reference path="render/WebGLRenderer.ts"/>
+/// <reference path="../WebGLContext.ts"/>
+/// <reference path="../render/WebGLRenderer.ts"/>
 module Engine3D{
     declare var window:any;
     /**
@@ -134,6 +134,9 @@ module Engine3D{
             scene.init();
             this._scene = scene;
 
+            //todo not put here?
+            this._renderer.init();
+
             this._startLoop();
         }
 
@@ -149,6 +152,7 @@ module Engine3D{
             this._loopId = requestNextAnimationFrame(mainLoop);
         }
 
+        //todo add tick mechanism
         private _loopBody(time) {
             var gl = WebGLContext.gl;
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

@@ -1,5 +1,6 @@
 /// <reference path="BufferType.ts"/>
-/// <reference path="WebGLContext.ts"/>
+/// <reference path="../Log.ts"/>
+/// <reference path="../WebGLContext.ts"/>
 module Engine3D{
     export class ArrayBuffer{
         public static create(data, num, type:BufferType):ArrayBuffer {

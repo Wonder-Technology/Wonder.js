@@ -1,3 +1,7 @@
+/// <reference path="DrawMode.ts"/>
+/// <reference path="ArrayBuffer.ts"/>
+/// <reference path="ElementBuffer.ts"/>
+/// <reference path="Program.ts"/>
 module Engine3D{
     export class QuadCommand{
         public static create():QuadCommand {

@@ -1,7 +1,7 @@
-/// <reference path="Camera.ts"/>
+/// <reference path="../Camera.ts"/>
 /// <reference path="Mesh.ts"/>
-/// <reference path="Program.ts"/>
-/// <reference path="math/Matrix.ts"/>
+/// <reference path="../render/Program.ts"/>
+/// <reference path="../math/Matrix.ts"/>
 module Engine3D {
     export class Scene {
         public static create(camera:Camera, vsSource:string, fsSource:string) {
@@ -50,13 +50,11 @@ module Engine3D {
             this._meshes.forEach((mesh)=> {
                 self._setData(mesh);
 
-                mesh.draw(self._program);
+                mesh.draw();
             });
         }
 
         public init(){
-            //todo move to render
-            WebGLContext.gl.clearColor(0, 0, 0, 1);
         }
 
         private _setData(mesh){

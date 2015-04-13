@@ -1,9 +1,9 @@
-/// <reference path="WebGLContext.ts"/>
+/// <reference path="../WebGLContext.ts"/>
 /// <reference path="Shader.ts"/>
 /// <reference path="ShaderType.ts"/>
 /// <reference path="UniformDataType.ts"/>
 /// <reference path="AttributeDataType.ts"/>
-/// <reference path="math/Matrix.ts"/>
+/// <reference path="../math/Matrix.ts"/>
 module Engine3D{
     export class Program{
         public static create(vsSource:string, fsSource:string):Program {
