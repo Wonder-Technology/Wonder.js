@@ -2,6 +2,7 @@
 /// <reference path="ArrayBuffer.ts"/>
 /// <reference path="ElementBuffer.ts"/>
 /// <reference path="Program.ts"/>
+/// <reference path="../structure/Hash.ts"/>
 module Engine3D{
     export class QuadCommand{
         public static create():QuadCommand {
@@ -35,12 +36,7 @@ module Engine3D{
             this._drawMode = drawMode;
         }
 
-        private _buffers:{
-            vertexBuffer:ArrayBuffer
-            texCoordBuffer?: ArrayBuffer
-            normalBuffer?:ArrayBuffer
-            indexBuffer?: ElementBuffer
-        }= null;
+        private _buffers:Hash = Hash.create();
 
         public execute(scene:Scene){
             this._sendData(scene.program);
@@ -53,17 +49,23 @@ module Engine3D{
         }
 
         private _initBuffer(){
-            this._buffers = {
-                vertexBuffer:this._bufferData.vertices? ArrayBuffer.create(this._bufferData.vertices, 3, BufferType.FLOAT) : null,
-                texCoordBuffer: this._bufferData.texCoords? ArrayBuffer.create(this._bufferData.texCoords, 2, BufferType.FLOAT) : null,
-                normalBuffer: this._bufferData.normals? ArrayBuffer.create(this._bufferData.normals, 3, BufferType.FLOAT) : null,
-                indexBuffer: this._bufferData.indices? ElementBuffer.create(this._bufferData.indices, BufferType.UNSIGNED_SHORT) : null
-            };
+            this._buffers.addChild("vertexBuffer",
+                this._bufferData.vertices? ArrayBuffer.create(this._bufferData.vertices, 3, BufferType.FLOAT) : null
+            );
+            this._buffers.addChild("texCoordBuffer",
+                this._bufferData.texCoords? ArrayBuffer.create(this._bufferData.texCoords, 2, BufferType.FLOAT) : null
+            );
+            this._buffers.addChild("normalBuffer",
+                this._bufferData.normals? ArrayBuffer.create(this._bufferData.normals, 3, BufferType.FLOAT) : null
+            );
+            this._buffers.addChild("indexBuffer",
+                this._bufferData.indices? ElementBuffer.create(this._bufferData.indices, BufferType.UNSIGNED_SHORT) : null
+            );
         }
 
         private _sendData(program:Program){
-            if(this._buffers.vertexBuffer){
-                program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.vertexBuffer);
+            if(this._buffers.hasChild("vertexBuffer")){
+                program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.getChild("vertexBuffer"));
             }
             else{
                 throw new Error("must has vertexBuffer");
@@ -82,16 +84,19 @@ module Engine3D{
         private _draw(){
             var totalNum = 0,
                 startOffset = 0,
+                vertexBuffer = this._buffers.getChild("vertexBuffer"),
                 gl = WebGLContext.gl;
 
 
-            if (this._buffers.indexBuffer) {
-                totalNum = this._buffers.indexBuffer.num;
-                gl.bindBuffer(gl.ARRAY_BUFFER, this._buffers.vertexBuffer.buffer);
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer.buffer);
-                gl.drawElements(gl[this._drawMode], totalNum, this._buffers.indexBuffer.type, this._buffers.indexBuffer.typeSize * startOffset);
+            if (this._buffers.hasChild("indexBuffer")) {
+                let indexBuffer = this._buffers.getChild("indexBuffer");
+                totalNum = indexBuffer.num;
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+                gl.drawElements(gl[this._drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             } else {
-                totalNum = this._buffers.vertexBuffer.num;
+                totalNum = vertexBuffer.num;
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
         }

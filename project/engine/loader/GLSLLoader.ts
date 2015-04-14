@@ -1,5 +1,6 @@
 /// <reference path="LoaderManager.ts"/>
 /// <reference path="../import/YEQuery.ts"/>
+/// <reference path="../structure/Hash.ts"/>
 module Engine3D{
     export class GLSLLoader{
         private static _instance:GLSLLoader = null;
@@ -11,12 +12,12 @@ module Engine3D{
             return this._instance;
         }
 
-        private _container:any = {};
+        private _container:Hash = Hash.create();
 
         public load(url:string, id:string){
             var self = this;
 
-            if(this._container[id]){
+            if(this._container.getChild(id)){
                 LoaderManager.getInstance().onResLoaded();
                 return;
             }
@@ -28,12 +29,12 @@ module Engine3D{
                 }
 
                 LoaderManager.getInstance().onResLoaded();
-                self._container[id] = data;
+                self._container.addChild(id, data);
             });
         }
 
         public getGLSL(id:string):string{
-           return this._container[id];
+           return this._container.getChild(id);
         }
 
         private _loadText(url, callback) {
