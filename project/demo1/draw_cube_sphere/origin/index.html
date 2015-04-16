@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>绘制彩色立方体</title>
+
+    <script src="/project/dist/Engine.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function(){
+        var camera = null,
+                scene = null;
+
+        Engine3D.LoaderManager.getInstance().load([
+            {url:"../vertex.glsl", id:"vs"},
+            {url:"../fragment.glsl", id:"fs"}
+        ]);
+
+        function init(){
+            _initContext();
+            _initScene();
+
+        }
+
+        function _initContext(){
+            Engine3D.WebGLContext.createGL("canvas");
+        }
+
+        function _initScene(){
+            var geometry = null;
+
+            camera = Engine3D.Camera.create({
+                        eyeX: 0.0,
+                        eyeY: 0.0,
+                        eyeZ: 10.0,
+                        centerX:0,
+                        centerY:0,
+                        centerZ: -1,
+                        upX:0,
+                        upY: 1,
+                        upZ: 0
+                    },
+                    {
+                        angle: 60,
+                        aspect : canvas.width / canvas.height,
+                        near : 0.1,
+                        far : 10
+                    });
+
+            scene = Engine3D.Scene.create(camera,
+                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
+                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
+
+
+            var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
+            geometry = Engine3D.BoxGeometry.create(5, 5, 10, material);
+
+            var mesh = Engine3D.Mesh.create(geometry);
+
+
+            scene.add(mesh);
+
+
+            var director = Engine3D.Director.getInstance();
+
+            //can set renderer
+//            digeometryor.renderer
+
+            director.runWithScene(scene);
+        }
+
+        Engine3D.LoaderManager.getInstance().onload = function(){
+            init();
+        };
+    };
+</script>
+</body>
+</html>
