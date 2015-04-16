@@ -76,9 +76,9 @@ module Engine3D{
             return this;
         }
         //
-        //public removeAllChilds () {
-        //    this._childs = [];
-        //}
+        public removeAllChilds () {
+            this._childs = [];
+        }
 
         public forEach (fn:Function, context?:any) {
             this._forEach(this._childs, fn, context);

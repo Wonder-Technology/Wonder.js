@@ -31,6 +31,8 @@ module Engine3D{
             this._commandQueue.forEach((command) => {
                 command.execute(scene);
             });
+
+            this._clearCommand();
         }
 
         public init(){
@@ -41,6 +43,10 @@ module Engine3D{
             this._clearColor = color;
             this._clearAlpha = alpha;
             WebGLContext.gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
+        }
+
+        private _clearCommand(){
+            this._commandQueue.removeAllChilds();
         }
     }
 }
