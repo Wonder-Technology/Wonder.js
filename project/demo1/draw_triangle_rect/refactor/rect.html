@@ -55,10 +55,10 @@
                     Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
 
 
-            rect = Engine3D.RectGeometry.create(5, 5, -5.0);
             var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
+            rect = Engine3D.RectGeometry.create(5, 5, -5.0, material);
 
-            var mesh = Engine3D.Mesh.create(rect, material );
+            var mesh = Engine3D.Mesh.create(rect);
 
             /*            var geometry = new THREE.BoxGeometry( 200, 200, 200 );
 

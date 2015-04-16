@@ -41,10 +41,6 @@ module Engine3D{
             var gl = WebGLContext.gl,
                 pos = gl.getAttribLocation(this._program, name);
 
-            if(pos === 0){
-                gl.bindAttribLocation( this._program, 0, name);
-            }
-
             switch (type){
                 case AttributeDataType.FLOAT_4:
                     let dataArr:number[] = <Array<number>>data;
@@ -98,6 +94,7 @@ module Engine3D{
 
              https://github.com/mrdoob/three.js/issues/3896
              */
+
 
             // 将着色器连接
             gl.linkProgram(this._program);
