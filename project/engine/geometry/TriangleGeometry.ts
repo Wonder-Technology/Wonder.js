@@ -2,10 +2,10 @@
 /// <reference path="../material/MeshMaterial.ts"/>
 module Engine3D{
     export class TriangleGeometry{
-        public static create(width, height, depth, material:MeshMaterial):TriangleGeometry {
+        public static create(width, height, material:MeshMaterial):TriangleGeometry {
             var geom = new this();
 
-            geom.initWhenCreate(width, height, depth, material);
+            geom.initWhenCreate(width, height, material);
 
             return geom;
         }
@@ -29,23 +29,23 @@ module Engine3D{
         constructor(){
         }
 
-        public initWhenCreate(width, height, depth, material){
-            this._vertices = this._computeVerticesBuffer(width, height, depth);
+        public initWhenCreate(width, height, material){
+            this._vertices = this._computeVerticesBuffer(width, height);
             //this._normals = this._computeNormals();
             //this._texCoords = this._computeTexCoords();
             this._colors = this._computeColorsBuffer(material);
         }
 
-        private _computeVerticesBuffer(width, height, depth){
+        private _computeVerticesBuffer(width, height){
             var left = -width / 2,
                 right = width / 2,
                 up = height / 2,
                 down = -height / 2;
 
             return ArrayBuffer.create(new Float32Array([
-                    0.0, up, depth,
-                    left, down, depth,
-                    right, down, depth
+                    0.0, up, 0,
+                    left, down, 0,
+                    right, down, 0
                 ]),
                 3, BufferType.FLOAT)
         }

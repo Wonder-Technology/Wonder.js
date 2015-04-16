@@ -31,12 +31,12 @@
         }
 
         function _initScene(){
-            var triangle = null;
+            var geometry = null;
 
             camera = Engine3D.Camera.create({
                         eyeX: 0.0,
                         eyeY: 0.0,
-                        eyeZ: 1.0,
+                        eyeZ: 5.0,
                         centerX:0,
                         centerY:0,
                         centerZ: -1,
@@ -56,13 +56,13 @@
                     Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
 
 
-//            triangle = Engine3D.TriangleGeometry.create(5, 5, -5.0);
+//            geometry = Engine3D.TriangleGeometry.create(5, 5, -5.0);
 //            var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
 
             var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
-            triangle = Engine3D.TriangleGeometry.create(5, 5, -5.0, material);
+            geometry = Engine3D.TriangleGeometry.create(5, 5, material);
 
-            var mesh = Engine3D.Mesh.create(triangle);
+            var mesh = Engine3D.Mesh.create(geometry);
 
             /*            var geometry = new THREE.BoxGeometry( 200, 200, 200 );
 
@@ -76,7 +76,9 @@
 
             scene.add(mesh);
 
-            Engine3D.Director.getInstance().runWithScene(scene);
+            var director = Engine3D.Director.getInstance();
+
+            director.runWithScene(scene);
         }
 
         Engine3D.LoaderManager.getInstance().onload = function(){
