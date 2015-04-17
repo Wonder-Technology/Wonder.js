@@ -25,6 +25,14 @@ module Engine3D{
         set type(type:string) {
             this._type = type;
         }
+        
+        private _count:number = null;
+        get count(){
+            return this._count;
+        }
+        set count(count:number){
+            this._count = count;
+        }
 
         public initWhenCreate(data, num, type:BufferType) {
             var gl = WebGLContext.gl;
@@ -45,6 +53,7 @@ module Engine3D{
 
             this._num = num;
             this._type = gl[type];
+            this._count = data.length / num;
 
             return this._buffer;
         }

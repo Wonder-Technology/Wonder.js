@@ -82,8 +82,7 @@ module Engine3D{
             var arr = [],
                 color = material.color,
                 i = 0,
-                //todo judge by vertex?
-                len = 4;
+                len = this._vertices.count;
 
             for(i = 0; i < len; i++){
                 arr.push( color.r, color.g, color.b, 1.0);

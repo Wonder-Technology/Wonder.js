@@ -56,7 +56,8 @@
 
 
             var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
-            geometry = Engine3D.BoxGeometry.create(5, 5, 10, material);
+//            geometry = Engine3D.BoxGeometry.create(5, 5, 10, material);
+            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
 
             var mesh = Engine3D.Mesh.create(geometry);
 
