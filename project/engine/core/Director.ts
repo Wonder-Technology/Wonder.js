@@ -5,8 +5,9 @@ module Engine3D{
     declare var window:any;
     /**
      * 来自《HTML5 Canvas 核心技术》
+     * 不能写到global中，否则会报错“illegal invocation”！
      */
-    var requestNextAnimationFrame = (function () {
+    window.requestNextAnimationFrame = (function () {
         var originalRequestAnimationFrame = undefined,
             wrapper = undefined,
             callback = undefined,
@@ -19,6 +20,34 @@ module Engine3D{
             time = +new Date();
             self.callback(time);
         };
+
+        /*!
+         bug!
+         below code:
+         when invoke b after 1s, will only invoke b, not invoke a!
+
+         function a(time){
+         console.log("a", time);
+         webkitRequestAnimationFrame(a);
+         }
+
+         function b(time){
+         console.log("b", time);
+         webkitRequestAnimationFrame(b);
+         }
+
+         a();
+
+         setTimeout(b, 1000);
+
+
+
+         so use requestAnimationFrame priority!
+         */
+        if(window.requestAnimationFrame) {
+            return requestAnimationFrame;
+        }
+
 
         // Workaround for Chrome 10 bug where Chrome
         // does not pass the time to the animation function
@@ -94,7 +123,7 @@ module Engine3D{
             };
     }());
 
-    var cancelNextRequestAnimationFrame = window.cancelRequestAnimationFrame
+    window.cancelNextRequestAnimationFrame = window.cancelRequestAnimationFrame
     || window.webkitCancelAnimationFrame
     || window.webkitCancelRequestAnimationFrame
     || window.mozCancelRequestAnimationFrame
@@ -147,9 +176,9 @@ module Engine3D{
             mainLoop = (time) => {
                 self._loopBody(time);
 
-                self._loopId = requestNextAnimationFrame(mainLoop);
+                self._loopId = window.requestNextAnimationFrame(mainLoop);
             };
-            this._loopId = requestNextAnimationFrame(mainLoop);
+            this._loopId = window.requestNextAnimationFrame(mainLoop);
         }
 
         //todo add tick mechanism
