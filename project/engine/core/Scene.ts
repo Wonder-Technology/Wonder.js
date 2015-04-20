@@ -51,6 +51,8 @@ module Engine3D {
             this._meshes.forEach((mesh)=> {
                 self._setData(mesh);
 
+                mesh.update();
+
                 mesh.draw();
             });
         }

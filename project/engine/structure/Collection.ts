@@ -85,8 +85,8 @@ module Engine3D{
             //this._childs.forEach.apply(this._childs, arguments);
         }
 
-        //public map (handlerName, argArr?) {
-        //    this._childs.map.apply(this._childs, arguments);
+        //public map (handlerName:string, argArr?:any[], context?:any) {
+        //    this._map(this._childs, handlerName, argArr, context);
         //}
 
         //public filter (func) {
@@ -107,32 +107,33 @@ module Engine3D{
         //    this._childs.reverse();
         //}
 
-        //public removeChild (obj, target) {
-        //    if (JudgeUtils.isFunction(obj)) {
-        //        return this._childs.removeChild(obj, target);
-        //    }
-        //    //else if (obj.isInstanceOf
-        //    //    && obj.isInstanceOf(YE.Entity)) {
-        //    //    return this._childs.removeChild(function (e) {
-        //    //        return e.getUid() === obj.getUid();
-        //    //    });
-        //    //}
-        //    else {
-        //        return this._childs.removeChild(function (e) {
-        //            return e === obj;
-        //        });
-        //    }
-        //}
+        public removeChild (obj) {
+            if (JudgeUtils.isFunction(obj)) {
+                return this._removeChild(this._childs, obj);
+            }
+            //todo judge uid
+            //else if (obj.isInstanceOf
+            //    && obj.isInstanceOf(YE.Entity)) {
+            //    return this._childs.removeChild(function (e) {
+            //        return e.getUid() === obj.getUid();
+            //    });
+            //}
+            else {
+                return this._removeChild(this._childs, function (e) {
+                    return e === obj;
+                });
+            }
+        }
 
-        private _contain(arr:any[], arg){
-            var result = false;
+        private _indexOf(arr:any[], arg:any){
+            var result = -1;
 
             if (JudgeUtils.isFunction(arg)) {
                 let func:Function = <Function>arg;
 
                 this._forEach(arr, function (value, index) {
                     if (!!func.call(null, value, index)) {
-                        result = true;
+                        result = index;
                         return $BREAK;   //如果包含，则置返回值为true,跳出循环
                     }
                 });
@@ -144,13 +145,17 @@ module Engine3D{
                     if (val === value
                         || (value.contain && value.contain(val))
                     || (value.indexOf && value.indexOf(val) > -1)) {
-                        result = true;
+                        result = index;
                         return $BREAK;   //如果包含，则置返回值为true,跳出循环
                     }
                 });
             }
 
             return result;
+        }
+
+        private _contain(arr:any[], arg:any){
+            return this._indexOf(arr, arg) > -1;
         }
 
         private _forEach(arr:any[], fn:Function, context?:any){
@@ -162,5 +167,33 @@ module Engine3D{
                 }
             }
         }
+
+        //private _map(arr:any[], handlerName:string, valueArr?:any[], context?:any) {
+        //    if (valueArr && !JudgeUtils.isArray(valueArr)) {
+        //        Log.error(valueArr && !JudgeUtils.isArray(valueArr), "参数必须为数组");
+        //        return;
+        //    }
+        //
+        //    this._forEach(arr, function (e) {
+        //        e && e[handlerName] && e[handlerName].apply(context || e, valueArr);
+        //    })
+        //}
+
+        private _removeChild(arr:any[], func:Function) {
+        var self = this,
+            index = null;
+
+        index = this._indexOf(arr, function (e, index) {
+            return !!func.call(self, e);
+        });
+
+        //if (index !== null && index !== -1) {
+            if (index !== -1) {
+            arr.splice(index, 1);
+            //return true;
+        }
+        //return false;
+            return arr;
+    }
     }
 }

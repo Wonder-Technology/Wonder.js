@@ -9,7 +9,7 @@ module Engine3D{
             return obj;
         }
 
-        private _matrix:Matrix = null;
+        private _matrix:Matrix = Matrix.create();
         get matrix(){
             return this._matrix;
         }
@@ -18,10 +18,43 @@ module Engine3D{
         }
 
         private _gemo:RectGeometry = null;
+        private _actionManager:Collection = Collection.create();
 
         constructor(gemo:RectGeometry){
             this._gemo = gemo;
-            this._matrix = Matrix.create();
+        }
+
+        public runAction(action:Translate){
+            //todo 判断是否已有重复的
+           this._actionManager.addChild(action);
+        }
+
+        public update(){
+            var self = this,
+                removeQueue = [];
+                //time = null;
+
+            this._actionManager.forEach(function(child){
+                //修复“如果遍历的动作删除了动作序列中某个动作，则在后面的遍历中会报错”的bug
+                if (!child) {
+                    return;
+                }
+
+                if (child.isFinish) {
+                    removeQueue.push(child);
+                    return;
+                }
+                //if (child.isStop()) {
+                //    return;
+                //}
+
+                //child.update(time);
+                child.update();
+            });
+
+            removeQueue.forEach(function (child) {
+                self._actionManager.removeChild(child);
+            });
         }
 
         public draw(){
