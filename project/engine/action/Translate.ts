@@ -7,14 +7,14 @@ module Engine3D{
             return obj;
         }
 
-        constructor(matrix:Matrix, posData:{x;y;z}){
+        constructor(matrix:Matrix, posData:{x:number;y:number;z:number}){
             this._matrix = matrix;
             this._x = posData.x;
             this._y = posData.y;
             this._z = posData.z;
         }
 
-        private _isFinish:boolean = null;
+        private _isFinish:boolean = false;
         get isFinish(){
             return this._isFinish;
         }
