@@ -15,10 +15,10 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         'bower_components/yyctoolbox/tool/yTool.js',
-        'engine/jsExtend.js',
 
         'engine/math/*.js',
 
+        'test/hepler/jsExtend.js',
         'test/hepler/jasmine/**',
         'test/hepler/sinonJs/*.js',
 

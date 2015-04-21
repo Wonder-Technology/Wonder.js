@@ -12,7 +12,7 @@ describe("Vector3", function(){
         it("normalize values", function(){
             vec.normalize();
 
-            expect(mathMatcher.getValues(vec.values)).toEqual(
+            expect(mathTestUtils.getValues(vec.values)).toEqual(
                 [0.2672612, 0.5345225, 0.8017837]
             );
         });
@@ -22,7 +22,7 @@ describe("Vector3", function(){
         it("convert to vector4", function(){
             var result = vec.toVec4();
 
-            expect(mathMatcher.getValues(result.values)).toEqual(
+            expect(mathTestUtils.getValues(result.values)).toEqual(
                 [1, 2, 3, 1 ]
             );
         });

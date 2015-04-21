@@ -1,20 +1,19 @@
 describe("matrix", function(){
-    var matrix = null;
     var Matrix = Engine3D.Matrix;
-    var MatrixUtils = Engine3D.MatrixUtils;
+    var matrix = Engine3D.matrix;
     var Vector4 = Engine3D.Vector4;
 
     function getValues(values){
         if(values){
-            if(mathMatcher.isFloat32Array(values)){
-                return mathMatcher.getValues(values);
+            if(mathTestUtils.isFloat32Array(values)){
+                return mathTestUtils.getValues(values);
             }
             else{
-                return mathMatcher.getValues(values.values);
+                return mathTestUtils.getValues(values.values);
             }
         }
 
-        return mathMatcher.getValues(matrix.values);
+        return mathTestUtils.getValues(matrix.values);
     }
 
     beforeEach(function(){
@@ -117,8 +116,8 @@ describe("matrix", function(){
             angle = 45;
 
         beforeEach(function(){
-            cos = mathMatcher.toFixed(Math.cos(Math.PI / 4));
-            sin = mathMatcher.toFixed(Math.sin(Math.PI / 4));
+            cos = mathTestUtils.toFixed(Math.cos(Math.PI / 4));
+            sin = mathTestUtils.toFixed(Math.sin(Math.PI / 4));
         });
 
         describe("绕坐标轴旋转", function(){
@@ -195,8 +194,8 @@ describe("matrix", function(){
             expect(getValues()).toEqual(
                 [1, 0, 0, 0,
                 0, 1, 0, 0,
-                0, 0, mathMatcher.toFixed(2 / (n - f)), 0,
-                0, 0, mathMatcher.toFixed((n + f) / (n - f)), 1]
+                0, 0, mathTestUtils.toFixed(2 / (n - f)), 0,
+                0, 0, mathTestUtils.toFixed((n + f) / (n - f)), 1]
             )
         })
 
@@ -210,9 +209,9 @@ describe("matrix", function(){
             var aspect = 100 / 50;  //宽/高
 
             matrix.setPerspective(fovy_angle, aspect, near, far);
-            var result1 = MatrixUtils.multiplyVector4(matrix, Vector4.create(-0.5, 0, -1, 1));
-            var result2 = MatrixUtils.multiplyVector4(matrix, Vector4.create(0.5, 0, -1, 1));
-            var result3 = MatrixUtils.multiplyVector4(matrix, Vector4.create(0, 1, -1, 1));
+            var result1 = matrix.multiplyVector4(Vector4.create(-0.5, 0, -1, 1));
+            var result2 = matrix.multiplyVector4(Vector4.create(0.5, 0, -1, 1));
+            var result3 = matrix.multiplyVector4(Vector4.create(0, 1, -1, 1));
 
             expect(getValues(result1)).toEqual(
                 [-0.9330127, 0, 0.8181819, 1]
@@ -236,8 +235,37 @@ describe("matrix", function(){
 
            var result = matrix.applyMatrix(mat);
 
-           mathMatcher.isMatrixEqual(result, MatrixUtils.multiply(mat, matrixCopy));
+           mathTestUtils.isMatrixEqual(result, mat.multiply(matrixCopy));
        });
+    });
+
+    describe("multiply", function(){
+        it("matrix * matrix", function(){
+            var mat1 = Matrix.create();
+            var mat2 = Matrix.create();
+            mat1.setTranslate(1,2,3);
+            mat2.setTranslate(2,3,4);
+
+            var result = mat1.multiply(mat2);
+
+            mathTestUtils.isMatrixEqual(result, Matrix.create(new Float32Array([
+                1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 5, 7, 1
+            ])));
+        });
+    });
+
+    describe("multiplyVector4", function(){
+        it("matrix * vector4", function(){
+            var mat1 = Matrix.create();
+            var vec = Vector4.create(2,3,4, 5);
+            mat1.setTranslate(1,2,3);
+
+            var result = mat1.multiplyVector4(vec);
+
+            mathTestUtils.isMatrixEqual(result, Matrix.create(new Float32Array([
+                7, 13, 19, 5
+            ])));
+        });
     });
 
     describe("copy", function(){
@@ -246,7 +274,7 @@ describe("matrix", function(){
 
            matrix.translate(10,11,12);
 
-           mathMatcher.isMatrixEqual(copy, Matrix.create());
+           mathTestUtils.isMatrixEqual(copy, Matrix.create());
        });
     });
 
@@ -258,7 +286,7 @@ describe("matrix", function(){
             matrix.translate(1, 1, 1);
             matrix.scale(2,2,2);
             matrix.rotate(45, 0, 1, 0);
-            var result = MatrixUtils.multiplyVector4(matrix,v);
+            var result = matrix.multiplyVector4(v);
 
             expect(getValues(result)).toEqual(
                 [ 2.8284271, 2, 0, 1 ]
@@ -268,7 +296,7 @@ describe("matrix", function(){
             var v =Vector4.create(1, 1, 1, 1);
 
            matrix.lookAt(1, 2, 1, 1, 2, -1, 0, 1, 0);
-            var result = MatrixUtils.multiplyVector4(matrix,v);
+            var result = matrix.multiplyVector4(v);
 
             expect(getValues(result)).toEqual(
                 [ 0, -1, 0, 1 ]
@@ -279,7 +307,7 @@ describe("matrix", function(){
 
             matrix.lookAt(0, 0, 5, 0, 0, -1, 0, 1, 0);
             matrix.rotate(90, 0, 1, 0);
-            var result = MatrixUtils.multiplyVector4(matrix,v);
+            var result = matrix.multiplyVector4(v);
 
             expect(getValues(result)).toEqual(
                 [-4, 1, -1, 1]
@@ -291,8 +319,8 @@ describe("matrix", function(){
 
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.ortho(0.1,10);
-            var result1 = MatrixUtils.multiplyVector4(matrix, v1);
-            var result2 = MatrixUtils.multiplyVector4(matrix, v2);
+            var result1 = matrix.multiplyVector4(v1);
+            var result2 = matrix.multiplyVector4(v2);
 
             //v2不在cvv中，而v1在cvv中
             expect(getValues(result1)).toEqual(
@@ -309,8 +337,8 @@ describe("matrix", function(){
             //matrix.lookAt(-1, 0, 1, 0, 0, 1, 0, 1, 0);
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
             matrix.setPerspective(30, 1, 0.1,10);
-            var result1 = MatrixUtils.multiplyVector4(matrix, v1);
-            var result2 = MatrixUtils.multiplyVector4(matrix, v2);
+            var result1 = matrix.multiplyVector4(v1);
+            var result2 = matrix.multiplyVector4(v2);
 
             //v2不在cvv中，而v1在cvv中
             expect(getValues(result1)).toEqual(

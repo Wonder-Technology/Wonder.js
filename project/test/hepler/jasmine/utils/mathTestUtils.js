@@ -1,5 +1,5 @@
-var mathMatcher = (function () {
-    var Matrix = Engine3D.Math.Matrix;
+var mathTestUtils = (function () {
+    var Matrix = Engine3D.Matrix;
 
     return {
         getValues: function (values) {

@@ -51,6 +51,14 @@ module Engine3D{
             return this;
         }
 
+        public sub(v:Vector3):Vector3 {
+            return Vector3.create(
+                this._values[0] - v.values[0],
+                this._values[1] - v.values[1],
+                this._values[2] - v.values[2]
+            )
+        }
+
 
         public toVec4(): Vector4{
             return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
