@@ -47,7 +47,7 @@
                         angle: 60,
                         aspect : canvas.width / canvas.height,
                         near : 0.1,
-                        far : 10
+                        far : 100
                     });
 
             scene = Engine3D.Scene.create(camera,
@@ -56,7 +56,9 @@
 
 
             var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
-            geometry = Engine3D.BoxGeometry.create(5, 5, 10, material);
+//            geometry = Engine3D.BoxGeometry.create(5, 5, 1, material);
+            geometry = Engine3D.TriangleGeometry.create(5, 5, material);
+//            geometry = Engine3D.RectGeometry.create(5, 5, material);
 //            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
 
             var mesh = Engine3D.Mesh.create(geometry);
@@ -73,20 +75,38 @@
 //                            Engine3D.Vector3.create(2, 1, 0)]
 //                    }
 //            ));
+            var rotateAction = Engine3D.Rotate.create(
+                    mesh.matrix, {
+                        speed: 0.5,
+                        axis: [Engine3D.Vector3.create(0, 1, 0)]
+                    }
+            );
+            var scaleAction = Engine3D.Scale.create(
+                    mesh.matrix, {
+                        x: 2,
+                        y:1,
+                        z:1
+                    }
+            );
+
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+            mesh.runAction(rotateAction);
+
+            mesh.runAction(scaleAction);
 //            mesh.runAction(Engine3D.Rotate.create(
-//                    mesh.matrix, {
-//                        speed: 0.5,
-//                        axis: [Engine3D.Vector3.create(0, 1, 0)]
+//               mesh.matrix, {
+//                        speed: 0.4,
+//                        axis: [Engine3D.Vector3.create(2, 0, 0),
+//                            Engine3D.Vector3.create(2, 1, 0)]
 //                    }
 //            ));
-
-            mesh.runAction(Engine3D.Scale.create(
-                    mesh.matrix, {
-                        x: 1.5,
-                        y:0.5,
-                        z:1.2
-                    }
-            ));
 
             scene.add(mesh);
 

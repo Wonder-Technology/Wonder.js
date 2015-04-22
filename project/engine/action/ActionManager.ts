@@ -14,7 +14,15 @@ module Engine3D{
         }
 
         public addChild(action:Action){
+            if(this.hasChild(action)){
+                return;
+            }
+
             this._childs.addChild(action);
+        }
+
+        public hasChild(action:Action){
+            return this._childs.hasChild(action);
         }
 
         public update(){

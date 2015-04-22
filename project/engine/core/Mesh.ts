@@ -31,7 +31,6 @@ module Engine3D{
         }
 
         public runAction(action:Action){
-            //todo 判断是否已有重复的
            this._actionManager.addChild(action);
         }
 
