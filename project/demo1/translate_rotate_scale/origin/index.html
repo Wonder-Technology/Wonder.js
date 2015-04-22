@@ -66,19 +66,27 @@
 //                        x: 1, y: 2, z: 3
 //                    }
 //            ));
-            mesh.runAction(Engine3D.Rotate.create(
-               mesh.matrix, {
-                        speed: 0.4,
-                        axis: [Engine3D.Vector3.create(2, 0, 0),
-                            Engine3D.Vector3.create(2, 1, 0)]
-                    }
-            ));
+//            mesh.runAction(Engine3D.Rotate.create(
+//               mesh.matrix, {
+//                        speed: 0.4,
+//                        axis: [Engine3D.Vector3.create(2, 0, 0),
+//                            Engine3D.Vector3.create(2, 1, 0)]
+//                    }
+//            ));
 //            mesh.runAction(Engine3D.Rotate.create(
 //                    mesh.matrix, {
 //                        speed: 0.5,
 //                        axis: [Engine3D.Vector3.create(0, 1, 0)]
 //                    }
 //            ));
+
+            mesh.runAction(Engine3D.Scale.create(
+                    mesh.matrix, {
+                        x: 1.5,
+                        y:0.5,
+                        z:1.2
+                    }
+            ));
 
             scene.add(mesh);
 
