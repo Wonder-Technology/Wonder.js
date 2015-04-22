@@ -59,6 +59,25 @@ module Engine3D{
             )
         }
 
+        public reverse():Vector3{
+            this._values[0] = -this._values[0];
+            this._values[1] = -this._values[1];
+            this._values[2] = -this._values[2];
+
+            return this;
+        }
+
+        public copy(): Vector3{
+            var result = Vector3.create(),
+                i = 0,
+                len = this._values.length;
+
+            for(i = 0; i < len; i++){
+                result.values[i] = this._values[i];
+            }
+
+            return result;
+        }
 
         public toVec4(): Vector4{
             return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);

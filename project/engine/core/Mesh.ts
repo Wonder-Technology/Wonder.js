@@ -1,7 +1,11 @@
 /// <reference path="../geometry/RectGeometry.ts"/>
 /// <reference path="../math/Matrix.ts"/>
+/// <reference path="../math/Vector3.ts"/>
 module Engine3D{
     export class Mesh{
+        //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
+        //when need push,pop matrix?
+
         //todo be Geometry,Material(add baseClass Geometry,Material)
         public static create(gemo:RectGeometry):Mesh {
             var obj = new this(gemo);
