@@ -1,3 +1,4 @@
+/// <reference path="../action/ActionManager"/>
 /// <reference path="../action/Action"/>
 /// <reference path="../math/Vector3.ts"/>
 /// <reference path="../math/Matrix.ts"/>
@@ -23,7 +24,7 @@ module Engine3D{
         }
 
         private _gemo:RectGeometry = null;
-        private _actionManager:Collection = Collection.create();
+        private _actionManager:ActionManager = ActionManager.create();
 
         constructor(gemo:RectGeometry){
             this._gemo = gemo;
@@ -35,31 +36,7 @@ module Engine3D{
         }
 
         public update(){
-            var self = this,
-                removeQueue = [];
-                //time = null;
-
-            this._actionManager.forEach(function(child){
-                //修复“如果遍历的动作删除了动作序列中某个动作，则在后面的遍历中会报错”的bug
-                if (!child) {
-                    return;
-                }
-
-                if (child.isFinish) {
-                    removeQueue.push(child);
-                    return;
-                }
-                //if (child.isStop()) {
-                //    return;
-                //}
-
-                //child.update(time);
-                child.update();
-            });
-
-            removeQueue.forEach(function (child) {
-                self._actionManager.removeChild(child);
-            });
+            this._actionManager.update();
         }
 
         public draw(){
