@@ -1,5 +1,7 @@
 /// <reference path="Geometry.ts"/>
 /// <reference path="../render/ArrayBuffer.ts"/>
+/// <reference path="../render/ElementBuffer.ts"/>
+/// <reference path="../render/BufferType.ts"/>
 /// <reference path="../material/MeshMaterial.ts"/>
 module Engine3D{
     export class TriangleGeometry extends Geometry{
@@ -35,6 +37,12 @@ module Engine3D{
                     right, down, 0
                 ]),
                 3, BufferType.FLOAT)
+        }
+
+        protected computeIndicesBuffer(){
+            return ElementBuffer.create(new Uint8Array([
+                0, 1, 2
+            ]), BufferType.UNSIGNED_BYTE)
         }
     }
 }

@@ -1,3 +1,4 @@
+/// <reference path="Vector4.ts"/>
 module Engine3D{
     /*!
      注意：矩阵元素是按列主序存储在数组中的。

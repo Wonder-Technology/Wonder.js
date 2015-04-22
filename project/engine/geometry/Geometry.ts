@@ -1,4 +1,5 @@
 /// <reference path="../render/ArrayBuffer.ts"/>
+/// <reference path="../render/ElementBuffer.ts"/>
 /// <reference path="../material/MeshMaterial.ts"/>
 module Engine3D{
     export class Geometry{
@@ -8,6 +9,14 @@ module Engine3D{
         }
         set vertices(vertices:ArrayBuffer){
             this._vertices = vertices;
+        }
+
+        private _indices:ElementBuffer = null;
+        get indices(){
+            return this._indices;
+        }
+        set indices(indices:ElementBuffer){
+            this._indices = indices;
         }
 
         private _colors:ArrayBuffer = null;
@@ -26,12 +35,17 @@ module Engine3D{
 
         public initWhenCreate(){
             this._vertices = this.computeVerticesBuffer();
+            this._indices = this.computeIndicesBuffer();
             //this._normals = this._computeNormals();
             //this._texCoords = this._computeTexCoords();
             this._colors = this._computeColorsBuffer(this.material);
         }
 
         protected computeVerticesBuffer():ArrayBuffer{
+            throw new Error("abstract method need override");
+        }
+
+        protected computeIndicesBuffer():ElementBuffer{
             throw new Error("abstract method need override");
         }
 

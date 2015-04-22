@@ -102,7 +102,8 @@ module Engine3D{
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 gl.drawElements(gl[this._drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
-            } else {
+            }
+            else {
                 totalNum = vertexBuffer.num;
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
