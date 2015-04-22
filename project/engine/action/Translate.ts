@@ -1,39 +1,28 @@
+/// <reference path="Action.ts"/>
 /// <reference path="../math/Matrix.ts"/>
 module Engine3D{
-    export class Translate{
-        public static create(matrix, posData) {
+    export class Translate extends Action{
+        public static create(matrix, posData):Translate {
             var obj = new this(matrix, posData);
 
             return obj;
         }
 
+        private _x:number = 0;
+        private _y:number = 0;
+        private _z:number = 0;
+
         constructor(matrix:Matrix, posData:{x:number;y:number;z:number}){
-            this._matrix = matrix;
+            super(matrix);
+
             this._x = posData.x;
             this._y = posData.y;
             this._z = posData.z;
         }
 
-        private _isFinish:boolean = false;
-        get isFinish(){
-            return this._isFinish;
-        }
-        set isFinish(isFinish:boolean){
-            this._isFinish = isFinish;
-        }
-
-        private _matrix:Matrix = null;
-        private _x:number = 0;
-        private _y:number = 0;
-        private _z:number = 0;
-
         public update(){
-            this._matrix.translate(this._x, this._y, this._z);
-            this._finish();
-        }
-
-        private _finish(){
-            this._isFinish = true;
+            this.matrix.translate(this._x, this._y, this._z);
+            this.finish();
         }
     }
 }

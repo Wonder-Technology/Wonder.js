@@ -1,4 +1,5 @@
-/// <reference path="../geometry/RectGeometry.ts"/>
+/// <reference path="../action/Action"/>
+/// <reference path="../math/Vector3.ts"/>
 /// <reference path="../math/Matrix.ts"/>
 /// <reference path="../math/Vector3.ts"/>
 module Engine3D{
@@ -28,7 +29,7 @@ module Engine3D{
             this._gemo = gemo;
         }
 
-        public runAction(action:Translate){
+        public runAction(action:Action){
             //todo 判断是否已有重复的
            this._actionManager.addChild(action);
         }
