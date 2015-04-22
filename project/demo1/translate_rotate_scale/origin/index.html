@@ -47,7 +47,7 @@
                         angle: 60,
                         aspect : canvas.width / canvas.height,
                         near : 0.1,
-                        far : 100
+                        far : 10
                     });
 
             scene = Engine3D.Scene.create(camera,
@@ -69,8 +69,8 @@
             mesh.runAction(Engine3D.Rotate.create(
                mesh.matrix, {
                         speed: 0.4,
-                        axis: [Engine3D.Vector3.create(6, 0, 0),
-                            Engine3D.Vector3.create(6, 1, 0)]
+                        axis: [Engine3D.Vector3.create(2, 0, 0),
+                            Engine3D.Vector3.create(2, 1, 0)]
                     }
             ));
 //            mesh.runAction(Engine3D.Rotate.create(

@@ -1,55 +1,31 @@
-//has geometry vertices,indices,texCoords,normals data
+/// <reference path="IndexGeometry.ts"/>
 /// <reference path="../render/ArrayBuffer.ts"/>
 /// <reference path="../render/ElementBuffer.ts"/>
 /// <reference path="../material/MeshMaterial.ts"/>
 module Engine3D{
-    export class RectGeometry{
-        public static create(width, height, material:MeshMaterial):RectGeometry {
-            var geom = new this();
+    export class RectGeometry extends IndexGeometry{
+        public static create(width:number, height:number, material:MeshMaterial):RectGeometry {
+            var geom = new this(width, height, material);
 
-            geom.initWhenCreate(width, height, material);
+            geom.initWhenCreate();
 
             return geom;
         }
 
-        private _vertices:ArrayBuffer = null;
-        get vertices(){
-            return this._vertices;
-        }
-        set vertices(vertices:ArrayBuffer){
-            this._vertices = vertices;
-        }
-        
-        private _indices:ElementBuffer = null;
-        get indices(){
-            return this._indices;
-        }
-        set indices(indices:ElementBuffer){
-            this._indices = indices;
+        private _width:number = null;
+        private _height:number = null;
+
+        constructor(width, height, material){
+            super(material);
+
+            this._width = width;
+            this._height = height;
         }
 
-
-        private _colors:ArrayBuffer = null;
-        get colors(){
-            return this._colors;
-        }
-        set colors(colors:ArrayBuffer){
-            this._colors = colors;
-        }
-
-        constructor(){
-        }
-
-        public initWhenCreate(width, height, material){
-            this._vertices = this._computeVerticesBuffer(width, height);
-            this._indices = this._computeIndicesBuffer();
-            //this._normals = this._computeNormals();
-            //this._texCoords = this._computeTexCoords();
-            this._colors = this._computeColorsBuffer(material);
-        }
-
-        private _computeVerticesBuffer(width, height){
-            var left = -width / 2,
+        protected computeVerticesBuffer(){
+            var width = this._width,
+                height = this._height,
+            left = -width / 2,
                 right = width / 2,
                 up = height / 2,
                 down = -height / 2;
@@ -63,32 +39,10 @@ module Engine3D{
                 3, BufferType.FLOAT)
         }
 
-        private _computeIndicesBuffer(){
+        protected computeIndicesBuffer(){
             return ElementBuffer.create(new Uint16Array([
                 0, 1, 2,   0, 2, 3
             ]), BufferType.UNSIGNED_SHORT)
-        }
-
-        ////todo set data
-        //private _computeNormals(){
-        //    return null;
-        //}
-        ////todo set data
-        //private _computeTexCoords(){
-        //    return null;
-        //}
-
-        private _computeColorsBuffer(material:MeshMaterial){
-            var arr = [],
-                color = material.color,
-                i = 0,
-                len = this._vertices.count;
-
-            for(i = 0; i < len; i++){
-                arr.push( color.r, color.g, color.b, 1.0);
-            }
-
-            return ArrayBuffer.create(new Float32Array(arr), 4, BufferType.FLOAT);
         }
     }
 }

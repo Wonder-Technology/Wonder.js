@@ -1,51 +1,46 @@
+/// <reference path="IndexGeometry.ts"/>
 /// <reference path="SphereDrawMode.ts"/>
 /// <reference path="../render/ArrayBuffer.ts"/>
 /// <reference path="../render/ElementBuffer.ts"/>
 /// <reference path="../material/MeshMaterial.ts"/>
 module Engine3D{
-    export class SphereGeometry{
-        public static create(radius, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial):SphereGeometry {
-            var geom = new this();
+    export class SphereGeometry extends IndexGeometry{
+        public static create(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial):SphereGeometry {
+            var geom = new this(radius, drawMode, segments, material);
 
-            geom.initWhenCreate(radius, drawMode, segments, material);
+            geom.initWhenCreate();
 
             return geom;
         }
 
-        private _vertices:ArrayBuffer = null;
-        get vertices(){
-            return this._vertices;
-        }
-        set vertices(vertices:ArrayBuffer){
-            this._vertices = vertices;
+        private _radius:number = null;
+        private _drawMode:SphereDrawMode = null;
+        private _segments:number = null;
+        private _data:{
+            vertices;
+            indices
+        } = null;
+
+        constructor(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial){
+            super(material);
+
+            this._radius = radius;
+            this._drawMode = drawMode;
+            this._segments = segments;
         }
 
-        private _indices:ElementBuffer = null;
-        get indices(){
-            return this._indices;
-        }
-        set indices(indices:ElementBuffer){
-            this._indices = indices;
+        public initWhenCreate(){
+            this._data = this._computeData(this._radius, this._drawMode, this._segments);
+
+            super.initWhenCreate();
         }
 
-        private _colors:ArrayBuffer = null;
-        get colors(){
-            return this._colors;
-        }
-        set colors(colors:ArrayBuffer){
-            this._colors = colors;
+        protected computeVerticesBuffer(){
+            return this._data.vertices;
         }
 
-        constructor(){
-        }
-
-        public initWhenCreate(radius, drawMode, segments, material){
-            var data = this._computeData(radius, drawMode, segments);
-
-            this._vertices = data.vertices;
-            this._indices = data.indices;
-
-            this._colors = this._computeColorsBuffer(material);
+        protected computeIndicesBuffer(){
+            return this._data.indices;
         }
 
         private _computeData(radius:number, drawMode:SphereDrawMode, segments:number){
@@ -59,20 +54,6 @@ module Engine3D{
             }
 
             return data;
-        }
-
-
-        private _computeColorsBuffer(material:MeshMaterial){
-            var arr = [],
-                color = material.color,
-                i = 0,
-                len = this._vertices.count;
-
-            for(i = 0; i < len; i++){
-                arr.push( color.r, color.g, color.b, 1.0);
-            }
-
-            return ArrayBuffer.create(new Float32Array(arr), 4, BufferType.FLOAT);
         }
     }
 
