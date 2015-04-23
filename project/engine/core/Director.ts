@@ -161,6 +161,7 @@ module Engine3D{
 
         public runWithScene(scene:Scene) {
             scene.init();
+            scene.onEnter();
             this._scene = scene;
 
             //todo not put here?
@@ -186,9 +187,13 @@ module Engine3D{
             var gl = WebGLContext.gl;
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+            this._scene.onStartLoop();
+
             this._scene.run();
 
             this._renderer.render(this._scene);
+
+            this._scene.onEndLoop();
         }
     }
 }

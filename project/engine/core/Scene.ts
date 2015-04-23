@@ -46,6 +46,11 @@ module Engine3D {
         public run() {
             var self = this;
 
+            this._camera.pushMatrix();
+            this._camera.onStartLoop();
+
+            this._camera.run();
+
             this._program.use();
 
             this._meshes.forEach((mesh)=> {
@@ -55,9 +60,25 @@ module Engine3D {
 
                 mesh.draw();
             });
+
+
+            this._camera.onEndLoop();
+            this._camera.popMatrix();
         }
 
         public init(){
+        }
+
+        /*!
+        hook method
+         */
+        public onEnter(){
+        }
+        
+        public onStartLoop(){
+        }
+
+        public onEndLoop(){
         }
 
         private _setData(mesh){
