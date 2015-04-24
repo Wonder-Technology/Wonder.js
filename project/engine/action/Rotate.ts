@@ -33,11 +33,14 @@ module Engine3D{
         }
 
         public update(){
+            var movePoint = null,
+                backPoint = null;
+
             this._angle = this._speed;
 
             if(this._isNotRotateAroundOriginPoint()){
-                var movePoint = this._point.copy().reverse().values,
-                    backPoint = this._point.values;
+                movePoint = this._point.copy().reverse().values;
+                backPoint = this._point.values;
 
                 this.matrix.translate(movePoint[0], movePoint[1], movePoint[2]);
                 this.matrix.rotate(this._angle, this._axis.values[0], this._axis.values[1], this._axis.values[2]);
