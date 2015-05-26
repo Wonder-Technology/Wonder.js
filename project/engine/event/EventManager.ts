@@ -134,7 +134,7 @@
 //    }
 //}
 
-module Engine3D{
+module Engine3D {
 //    /*!
 //     it is designed as singleton, not static class, because it need maintain state(_instance attri).
 //
@@ -158,27 +158,57 @@ module Engine3D{
 //     */
 //
 
+    ////singleton class
     //static class
 
-    export class EventManager{
-        public static on(){
+    export class EventManager {
+        //private static static _instance:EventManager = null;
+        //
+        //public static static getInstance() {
+        //    if (this._instance === null) {
+        //        this._instance = new this();
+        //        //this._instance.initWhenCreate();
+        //    }
+        //    return this._instance;
+        //}
 
+        private static _eventRegister:EventRegister = EventRegister.create();
+        private static _eventBinder:EventBinder = EventBinder.create(this._eventRegister);
+        private static _eventDispatcher:EventDispatcher = EventDispatcher.create(this._eventRegister);
+
+        public static on(target:GameObject, listener:{}|EventListener) {
+            this._eventBinder.on(target, listener);
         }
-        public static off(){
 
-        }
-        public static trigger(){
-
-        }
-        public static broadcast(){
-
-        }
-        public static emit(){
-
+        public static off(target:GameObject, eventName?:EventName) {
+            this._eventBinder.off(target, eventName)
+            //    .apply(
+            //    this._eventBinder,
+            //    Array.prototype.slice.call(arguments, 0)
+            //);
         }
 
-        public static setParent(){
-
+        public static trigger(target:GameObject, evenType:number) {
+            this._eventDispatcher.trigger(target, Type);
         }
+
+        public static broadcast(target:GameObject, evenType:number) {
+            this._eventDispatcher.broadcast(target, Type);
+        }
+
+        public static emit(target:GameObject, evenType:number) {
+            this._eventDispatcher.emit(target, Type);
+        }
+
+        public static setBubbleParent(target:GameObject, parent:any) {
+            this._eventRegister.setBubbleParent(target, parent);
+            //this._eventDispatcher.setBubbleParent(target, parent);
+        }
+
+        public static remove(target:GameObject) {
+            this._eventBinder.remove(target);
+        }
+
+        //todo add getListenerCount(target, type) method
     }
 }

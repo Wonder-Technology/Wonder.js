@@ -1,10 +1,10 @@
 /// <reference path="../utils/JudgeUtils.ts"/>
 /// <reference path="../utils/ExtendUtils.ts"/>
-/// <reference path="../Log.ts"/>
-module Engine3D{
+/// <reference path="../log/Log.ts"/>
+module Engine3D {
     const $BREAK = 1;
 
-    export class Collection{
+    export class Collection {
         public static create():Collection {
             var obj = new this();
 
@@ -15,7 +15,7 @@ module Engine3D{
         //here should define type "any",not "any[]"
         private _childs:any = [];
 
-        public getCount () {
+        public getCount():number {
             return this._childs.length;
         }
 
@@ -23,20 +23,20 @@ module Engine3D{
         //    this._childs.sort(func);
         //}
 
-        public hasChild (arg) {
+        public hasChild(arg):boolean {
             if (JudgeUtils.isFunction(arguments[0])) {
-                let func:Function = <Function>arguments[0];
+                let func = <Function>arguments[0];
 
                 return this._contain(this._childs, function (c, i) {
                     return func(c, i);
                 });
             }
 
-            let child:any = <any>arguments[0];
+            let child = <any>arguments[0];
 
             return this._contain(this._childs, function (c, i) {
-                if (c === child){
-                    //|| (c.getUid && child.getUid && c.getUid() === child.getUid())) {
+                if (c === child
+                    || (c.uid && child.uid && c.uid === child.uid)) {
                     return true;
                 }
                 else {
@@ -53,20 +53,24 @@ module Engine3D{
         //    return this._childs[index];
         //}
 
-        public addChild (child) {
+        public addChild(child):Collection {
             this._childs.push(child);
 
             return this;
         }
 
-        public addChilds (childs:any[]|any) {
+        public addChilds(arg:any[]|any):Collection {
             var i = 0,
                 len = 0;
 
-            if (!JudgeUtils.isArray(childs)) {
-                this.addChild(childs);
+            if (!JudgeUtils.isArray(arg)) {
+                let child = <any>arg;
+
+                this.addChild(child);
             }
             else {
+                let childs = <any[]>arg;
+
                 this._childs = this._childs.concat(childs);
                 //for (i = 0, len = childs.length; i < len; i++) {
                 //    this.addChild(childs[i]);
@@ -75,23 +79,30 @@ module Engine3D{
 
             return this;
         }
+
         //
-        public removeAllChilds () {
+        public removeAllChilds():Collection {
             this._childs = [];
+
+            return this;
         }
 
-        public forEach (fn:Function, context?:any) {
-            this._forEach(this._childs, fn, context);
+        public forEach(func:Function, context?:any):Collection {
+            this._forEach(this._childs, func, context);
             //this._childs.forEach.apply(this._childs, arguments);
+
+            return this;
         }
 
         //public map (handlerName:string, argArr?:any[], context?:any) {
         //    this._map(this._childs, handlerName, argArr, context);
         //}
 
-        //public filter (func) {
-        //    return this._childs.filter(func, this._childs);
-        //}
+        public filter(func):Collection {
+            this._filter(this._childs, func, this._childs);
+
+            return this;
+        }
 
         //public removeChildAt (index) {
         //    Log.error(index < 0, "序号必须大于等于0");
@@ -107,29 +118,40 @@ module Engine3D{
         //    this._childs.reverse();
         //}
 
-        public removeChild (obj) {
-            if (JudgeUtils.isFunction(obj)) {
-                return this._removeChild(this._childs, obj);
+        public removeChild(arg:any):Collection {
+            if (JudgeUtils.isFunction(arg)) {
+                let func = <Function>arg;
+
+                this._removeChild(this._childs, func);
             }
-            //todo judge uid
-            //else if (obj.isInstanceOf
-            //    && obj.isInstanceOf(YE.Entity)) {
-            //    return this._childs.removeChild(function (e) {
-            //        return e.getUid() === obj.getUid();
-            //    });
-            //}
-            else {
-                return this._removeChild(this._childs, function (e) {
-                    return e === obj;
+            else if (arg.uid) {
+                this._removeChild(this._childs, function (e) {
+                    if (!e.uid) {
+                        return false;
+                    }
+                    return e.uid === arg.uid;
                 });
             }
+            else {
+                this._removeChild(this._childs, function (e) {
+                    return e === arg;
+                });
+            }
+
+            return this;
         }
 
-        private _indexOf(arr:any[], arg:any){
+        public sort(func:Function):Collection {
+            this._childs.sort(func);
+
+            return this;
+        }
+
+        private _indexOf(arr:any[], arg:any) {
             var result = -1;
 
             if (JudgeUtils.isFunction(arg)) {
-                let func:Function = <Function>arg;
+                let func = <Function>arg;
 
                 this._forEach(arr, function (value, index) {
                     if (!!func.call(null, value, index)) {
@@ -139,12 +161,12 @@ module Engine3D{
                 });
             }
             else {
-                let val:any = <any>arg;
+                let val = <any>arg;
 
                 this._forEach(arr, function (value, index) {
                     if (val === value
                         || (value.contain && value.contain(val))
-                    || (value.indexOf && value.indexOf(val) > -1)) {
+                        || (value.indexOf && value.indexOf(val) > -1)) {
                         result = index;
                         return $BREAK;   //如果包含，则置返回值为true,跳出循环
                     }
@@ -154,15 +176,15 @@ module Engine3D{
             return result;
         }
 
-        private _contain(arr:any[], arg:any){
+        private _contain(arr:any[], arg:any) {
             return this._indexOf(arr, arg) > -1;
         }
 
-        private _forEach(arr:any[], fn:Function, context?:any){
-            var scope = context || null;
+        private _forEach(arr:any[], func:Function, context?:any) {
+            var scope = context || window;
 
             for (var i = 0, j = arr.length; i < j; ++i) {
-                if (fn.call(scope, arr[i], i) === $BREAK) {
+                if (func.call(scope, arr[i], i) === $BREAK) {
                     break;
                 }
             }
@@ -180,20 +202,35 @@ module Engine3D{
         //}
 
         private _removeChild(arr:any[], func:Function) {
-        var self = this,
-            index = null;
+            var self = this,
+                index = null;
 
-        index = this._indexOf(arr, function (e, index) {
-            return !!func.call(self, e);
-        });
+            index = this._indexOf(arr, function (e, index) {
+                return !!func.call(self, e);
+            });
 
-        //if (index !== null && index !== -1) {
+            //if (index !== null && index !== -1) {
             if (index !== -1) {
-            arr.splice(index, 1);
-            //return true;
-        }
-        //return false;
+                arr.splice(index, 1);
+                //return true;
+            }
+            //return false;
             return arr;
-    }
+        }
+
+        private _filter = function (arr, func, context) {
+            var scope = context || window,
+                //self = this,
+                a = Collection.create();
+
+            this._forEach(arr, function (value, index) {
+                if (!func.call(scope, value, index)) {
+                    return;
+                }
+                a.addChild(value);
+            });
+
+            return a;
+        };
     }
 }

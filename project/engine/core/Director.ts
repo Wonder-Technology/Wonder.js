@@ -170,6 +170,19 @@ module Engine3D{
             this._startLoop();
         }
 
+        public getView():IView{
+            //todo move it to Director
+            return WebGLContext.view;
+        }
+
+        public getTopChildUnderPoint(point:Point):GameObject{
+            if(!this._scene){
+                return null;
+            }
+
+            return this._scene.getTopGameObjectUnderPoint(point);
+        }
+
         private _startLoop() {
             var self = this,
                 mainLoop = null;

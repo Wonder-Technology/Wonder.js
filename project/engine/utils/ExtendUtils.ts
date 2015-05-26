@@ -33,7 +33,7 @@ module Engine3D {
          * @param child
          * @returns
          */
-        public static extendDeep(parent, child?) {
+        public static extendDeep(parent, child?,filter?=function(){return true;}) {
             var i = null,
                 len = 0,
                 toStr = Object.prototype.toString,
@@ -47,6 +47,10 @@ module Engine3D {
                 _child = child || [];
 
                 for (i = 0, len = parent.length; i < len; i++) {
+                    if(!filter(parent[i], i)){
+                        continue;
+                    }
+
                     type = toStr.call(parent[i]);
                     if (type === sArr || type === sOb) {    //如果为数组或object对象
                         _child[i] = type === sArr ? [] : {};
@@ -62,6 +66,10 @@ module Engine3D {
                 _child = child || {};
 
                 for (i in parent) {
+                    if(!filter(parent[i], i)){
+                        continue;
+                    }
+
                     type = toStr.call(parent[i]);
                     if (type === sArr || type === sOb) {    //如果为数组或object对象
                         _child[i] = type === sArr ? [] : {};
@@ -87,6 +95,18 @@ module Engine3D {
             for (property in source) {
                 destination[property] = source[property];
             }
+            return destination;
+        }
+
+        public static copyPublicAttri(source:any){
+            var property = null,
+                destination = {};
+
+            this.extendDeep(source, destination, function(item, property){
+                return property.slice(0, 1) !== "_"
+                    && !JudgeUtils.isFunction(item);
+            });
+
             return destination;
         }
     }

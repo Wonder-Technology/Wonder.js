@@ -1,5 +1,30 @@
-module Engine3D{
-    export class Log{
+module Engine3D {
+    export class Log {
+        public static info = {
+            INVALID_PARAM: "invalid parameter",
+            ABSTRACT_ATTRIBUTE: "abstract attribute need override",
+            ABSTRACT_METHOD: "abstract method need override",
+
+            helperFunc: function(msg, value){
+                return msg + " " + String(value);
+            },
+            FUNC_INVALID: function (value) {
+                return this.helperFunc("invalid", value);
+            },
+            FUNC_MUST_BE: function (value) {
+                return this.helperFunc("must be", value);
+            },
+            FUNC_NOT_SUPPORT: function(value){
+                return this.helperFunc("not support", value);
+            },
+            FUNC_MUST_DEFINE: function(value){
+                return this.helperFunc("must define", value);
+            },
+            FUNC_UNKNOW: function(value){
+                return this.helperFunc("unknow", value);
+            }
+        }
+
         /**
          * Output Debug message.
          * @function
@@ -54,6 +79,7 @@ module Engine3D{
                 }
             }
         }
+
         public static error(cond, message) {
             if (cond) {
                 throw new Error(message);

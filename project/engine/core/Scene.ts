@@ -1,10 +1,11 @@
 /// <reference path="../Camera.ts"/>
 /// <reference path="../structure/Collection.ts"/>
 /// <reference path="Mesh.ts"/>
+/// <reference path="GameObject"/>
 /// <reference path="../render/Program.ts"/>
 /// <reference path="../math/Matrix.ts"/>
 module Engine3D {
-    export class Scene {
+    export class Scene extends GameObject{
         public static create(camera:Camera, vsSource:string, fsSource:string) {
             var obj = new this(camera);
 
@@ -32,6 +33,8 @@ module Engine3D {
         }
 
         constructor(camera) {
+            super();
+
             this._camera = camera;
         }
 
@@ -69,17 +72,6 @@ module Engine3D {
         public init(){
         }
 
-        /*!
-        hook method
-         */
-        public onEnter(){
-        }
-        
-        public onStartLoop(){
-        }
-
-        public onEndLoop(){
-        }
 
         private _setData(mesh){
             this._program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._computeMvpMatrix(mesh));

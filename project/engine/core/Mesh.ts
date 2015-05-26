@@ -3,8 +3,9 @@
 /// <reference path="../action/Action"/>
 /// <reference path="../math/Vector3"/>
 /// <reference path="../math/Matrix"/>
+/// <reference path="GameObject"/>
 module Engine3D{
-    export class Mesh{
+    export class Mesh extends GameObject{
         //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
         //when need push,pop matrix?
 
@@ -27,6 +28,8 @@ module Engine3D{
         private _actionManager:ActionManager = ActionManager.create();
 
         constructor(gemo:Geometry){
+            super();
+
             this._gemo = gemo;
         }
 

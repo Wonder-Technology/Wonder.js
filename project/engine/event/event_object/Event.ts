@@ -116,6 +116,7 @@
 //}
 
 
+//rich domain model
 
 //event info:
 //control info(stop bubble...)
@@ -123,3 +124,17 @@
 //event context(target, currentTarget...)
 //user data(custom event)
 //event type
+
+
+module Engine3D{
+    export class Event{
+        //abstact attri
+        protected _type:EventType = null;
+
+        get type(){
+            Log.error(this._type === null, Log.info.ABSTRACT_ATTRIBUTE);
+
+            return this._type;
+        }
+    }
+}

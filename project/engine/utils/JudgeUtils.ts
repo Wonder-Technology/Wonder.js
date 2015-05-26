@@ -16,6 +16,14 @@ module Engine3D {
             return Object.prototype.toString.call(obj) === "[object Number]";
         }
 
+        public static isView(obj) {
+            return obj instanceof IView;
+        }
+
+        public static isString(str) {
+            return Object.prototype.toString.call(str) === "[object String]";
+        }
+
         /**
          * 判断是否为jQuery对象
          */
@@ -57,6 +65,10 @@ module Engine3D {
             return type === "function" ||
                 (type === "object" && !!object[property]) ||
                 type === "unknown";
+        }
+
+        public static isEqual(target1:GameObject, target2:GameObject) {
+            return target1.uid === target2.uid;
         }
     }
 }
