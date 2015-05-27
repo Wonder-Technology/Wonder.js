@@ -1,25 +1,35 @@
+/// <reference path="EventRegister"/>
+/// <reference path="../listener/EventListener"/>
+/// <reference path="../factory/FactoryEventHandler"/>
+/// <reference path="../object/EventTable"/>
 module Engine3D {
     //responsibilty:on, off event(manage list)
 
     export class EventBinder {
-        //private _listenerList:EventListener = EventListener.create();
-        private _eventRegister:EventRegister = null;
+        public static create() {
+            var obj = new this();
 
-        constructor(eventRegister:EventRegister) {
-            this._eventRegister = eventRegister;
+            return obj;
         }
 
-        //todo target type should be GameObject(target:GameObject)
-        public on(target:GameObject, listener:{}|EventListener) {
-            if (!target instanceof GameObject) {
+        //private _listenerList:EventListener = EventListener.create();
+        //private _eventRegister:EventRegister = null;
+
+        constructor() {
+            //EventRegister.getInstance() = eventRegister;
+        }
+
+        public on(target:GameObject, arg:EventListener|{}) {
+            var listener:EventListener = null;
+
+            if (!(target instanceof GameObject)) {
                 return;
             }
 
-            Log.assert(target && listener, Log.info.invalid_param);
-            if (!listener instanceof EventListener) {
-                listener = EventListener.create(listener);
-            }
-            //this._eventRegister.register(target, listener);
+            Log.assert(target && arg, Log.info.INVALID_PARAM);
+
+            listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
+            //EventRegister.getInstance().register(target, listener);
 
             //Log.assert(target && listener, Log.info.invalid_param);
             //if(!listener instanceof EventListener){
@@ -40,11 +50,11 @@ module Engine3D {
             //bind event to view dom
 
 
-            //var listenerList = this._eventRegister.getListenerList(target, listener.eventType);
+            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
 
             var view = this._getView();
 
-            var handler = FactoryEventHandler.create(listener.eventType, this._eventRegister);
+            var handler = FactoryEventHandler.createEventHandler(listener.eventType);
 
             var self = this;
 
@@ -52,7 +62,7 @@ module Engine3D {
             listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                 //var wrapHandler = handler.wrapHandler(handlerData.handler);
 
-                self._eventRegister.register(
+                EventRegister.getInstance().register(
                     target,
                     handlerData.eventName,
                     //wrapHandler,
@@ -61,21 +71,17 @@ module Engine3D {
                     listener.priority
                 );
 
-                if (!self._eventRegister.isBindEventOnView(handlerData.eventName)) {
+                if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventName)) {
                     //handler.on(view, handlerData.eventName, wrapHandler);
                     handler.on(view, handlerData.eventName, target);
                 }
             });
-
-            //FactoryEventHandler.create(this._eventRegister, listener).on(view, target, listener);
-            //FactoryEventHandler.create(listener).on(view, target, listener);
-            //FactoryEventHandler.create(listener.eventType).on(view, target, listener.handlerDataList);
         }
 
         public off(target:GameObject, eventName?:EventName) {
-            var handler = FactoryEventHandler.create(EventTable.getEventType(eventName), this._eventRegister);
+            var handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName));
 
-            this._eventRegister.remove(target);
+            EventRegister.getInstance().remove(target);
 
             handler.off.apply(
                 handler,
@@ -84,12 +90,12 @@ module Engine3D {
         }
 
         //public remove(target:GameObject) {
-        //    this._eventRegister.remove(target);
+        //    EventRegister.getInstance().remove(target);
         //    this.off(target);
         //}
 
-        public getListenerList(target:GameObject, eventName:EventName) {
-            return this._eventRegister.getListenerList(target, eventName);
+        public getListenerDataList(target:GameObject, eventName:EventName) {
+            return EventRegister.getInstance().getListenerDataList(target, eventName);
         }
 
         private _getView() {

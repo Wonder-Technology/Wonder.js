@@ -2,28 +2,28 @@
 //judge is under point
 //wrap event object
 module Engine3D {
-    export class EventMouseHandler extends Event {
+    export class EventMouseHandler{
         private static _instance:EventMouseHandler = null;
 
-        public static getInstance(register:EventRegister) {
+        public static getInstance() {
             if (this._instance === null) {
-                this._instance = new this(register);
+                this._instance = new this();
                 //this._instance.initWhenCreate();
             }
             return this._instance;
         }
 
-        constructor(register:EventRegister) {
+        constructor() {
             //constructor() {
-            this._eventRegister = register;
+            //EventRegister.getInstance() = register;
         }
 
-        private _eventRegister:EventRegister = null;
+        //private _eventRegister:EventRegister = null;
 
         public on(view:HTMLCanvasElement, eventName:EventName, target:GameObject) {
             var self = this,
                 context = window;
-            //var listenerList = this._eventRegister.getListenerList(target, listener.eventType);
+            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
 
             //handlerDataList.forEach(function (handlerData) {
             EventUtils.addEvent(
@@ -59,7 +59,7 @@ module Engine3D {
 
         public off(view: IView, target:GameObject, eventName?:EventName) {
             if (arguments.length === 2) {
-                this._eventRegister
+                EventRegister.getInstance()
                     .filter(function (data:IEventRegisterData, eventName:EventName) {
                         return JudgeUtils.isEqual(target, data.target)
                             && EventTable.isEventOnView(eventName)
@@ -68,7 +68,7 @@ module Engine3D {
                         EventUtils.removeEvent(view, eventName, data.handler);
                     });
             }
-            //todo
+            //todo off specify event
             //else if (arguments.length === 3) {
             //
             //}

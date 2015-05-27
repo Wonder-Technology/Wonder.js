@@ -1,22 +1,30 @@
+/// <reference path="../object/Event"/>
 module Engine3D {
     export class EventDispatcher {
-        //private _eventBinder: EventBinder = null;
-        private _eventRegister:EventRegister = null;
+        public static create() {
+            var obj = new this();
 
-        constructor(register:EventRegister) {
+            return obj;
+        }
+
+        //private _eventBinder: EventBinder = null;
+        //private _eventRegister:EventRegister = null;
+
+        constructor() {
             //this._eventBinder = binder;
-            this._eventRegister = register;
+            //EventRegister.getInstance() = register;
         }
 
         //dispatch in eventBinder->eventList
 
 
         //public setBubbleParent(target:GameObject, parent:any) {
-        //    this._eventRegister.setBubbleParent(target, parent);
+        //    EventRegister.getInstance().setBubbleParent(target, parent);
         //}
 
         public trigger(target:GameObject, eventObject:Event) {
-            if (!target instanceof GameObject) {
+            if (!(target instanceof GameObject)) {
+                Log.log("target is not GameObject, can't trigger event");
                 return;
             }
 
@@ -30,7 +38,7 @@ module Engine3D {
 
             //todo move to eventbinder?
             //may bind multi listener on eventName(based on priority)
-            var listenerDataList = this._eventRegister.getListenerDataList(target, eventName);
+            var listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventName);
 
             if (listenerDataList.length === 0) {
                 return;
@@ -39,7 +47,7 @@ module Engine3D {
 
             listenerDataList.forEach(function (listenerData) {
                 //FactoryEventHandler.createEventHandler(eventType).trigger(target, listener.handlerDataList, eventName);
-                FactoryEventHandler.createEventHandler(eventType, self._eventRegister).trigger(
+                FactoryEventHandler.createEventHandler(eventType).trigger(
                     target,
                     eventObject.copy(),
                     //FactoryEventHandler.createEvent(eventType, eventName, EventPhase.EMIT),
@@ -48,7 +56,7 @@ module Engine3D {
             });
         }
 
-        public broadcast(target:GameObject,eventObject:Event) {
+        public broadcast(target:GameObject, eventObject:Event) {
             var parent = this._getParent(target);
 
             this.trigger(target, eventObject);
@@ -64,7 +72,7 @@ module Engine3D {
         }
 
         private _getParent(target) {
-            var parent = this._eventRegister.getBubbleParent(target);
+            var parent = EventRegister.getInstance().getBubbleParent(target);
 
             //try to get from register first
             return parent ? parent : target.parent;

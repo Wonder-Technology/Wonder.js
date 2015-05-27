@@ -1,21 +1,34 @@
+/// <reference path="../object/EventName"/>
 module Engine3D {
-    export interface IEventRegisterData{
+    export interface IEventRegisterData {
         target:GameObject,
         handler:Function,
         priority:number
     }
 
     export class EventRegister {
+        private static _instance:EventRegister = null;
+
+        public static getInstance() {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        }
+
+
         //private _listenerMap:EventListenerMap = EventListenerMap.create();
         private _listenerMap:Hash = Hash.create();
 
-        public register(target:GameObject, eventName: EventName, handler:Function, priority:number) {
+        public register(target:GameObject, eventName:EventName, handler:Function, priority:number) {
             //var isBindEventOnView = false,
-                var data = <IEventRegisterData>{
-                    target: target,
-                    handler: handler,
-                    priority: priority
-                };
+            var data = <IEventRegisterData>{
+                target: target,
+                handler: handler,
+                priority: priority
+            };
+
+            //eventName = <string>eventName;
             ////priority set in listener, not in this(binder)!
             //if(priority){
             //    listener.setPriority(priority);
@@ -31,7 +44,7 @@ module Engine3D {
             //    //this._listenerMap.addChild(eventName, data);
             //}
 
-            this._listenerMap.appendChild(eventName, data);
+            this._listenerMap.appendChild(<string>eventName, data);
 
 
             //this._listenerList.addChild(listener.eventType,  {
@@ -48,7 +61,12 @@ module Engine3D {
             this._removeFromMap(target);
         }
 
-        public getListenerDataList(target:GameObject, eventName: EventName):[{}] {
+        public getListenerDataList(target:GameObject, eventName:EventName):[{}] {
+            solve  Argument of type 'EventName' is not assignable to parameter of type 'string'.
+            refer to https://github.com/Microsoft/TypeScript/issues/1206
+
+
+
             return this._listenerMap.getChild(eventName)
                 .filter(function (data) {
                     return JudgeUtils.isEqual(data.target, target);
@@ -59,29 +77,29 @@ module Engine3D {
                 });
         }
 
-        public setBubbleParent(target:GameObject, parent:any) {
-            target.__event_bubbleParent = parent;
+        public setBubbleParent(target:GameObject, parent:GameObject) {
+            target.bubbleParent = parent;
         }
 
         public getBubbleParent(target:GameObject):GameObject {
-            return target.__event_bubbleParent;
+            return target.bubbleParent;
         }
 
-        public isBindEventOnView(eventName){
+        public isBindEventOnView(eventName) {
             return this._listenerMap.hasChild(eventName)
                 && EventTable.isEventOnView(eventName);
         }
 
-        public filter(func:Functon){
+        public filter(func:Function) {
             return this._listenerMap.filter(func);
         }
 
-        public forEach(func:Function){
+        public forEach(func:Function) {
             return this._listenerMap.forEach(func);
         }
 
-        private _removeFromMap(target){
-            this._listenerMap.removeChild(function(data, eventName){
+        private _removeFromMap(target) {
+            this._listenerMap.removeChild(function (data, eventName) {
                 return target.uid === data.target.uid;
             });
         }

@@ -1,6 +1,6 @@
+/// <reference path="MouseButton"/>
 module Engine3D {
-    export class EventMouse {
-        ////todo set const when namescript support!
+    export class EventMouse extends Event{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";
         //public static MOUSEOUT:string = "mouseout";
@@ -12,11 +12,11 @@ module Engine3D {
             return obj;
         }
 
-        constructor(eventName:EventName) {
-            this._name = eventName;
-        }
+        /*!
+        implement abstract attri
+         */
+        public type:EventType = EventType.MOUSE;
 
-        //todo can set
 
         private _location:Point = null;
         //Get cursor location(related to document)
@@ -71,10 +71,10 @@ module Engine3D {
             this._locationInView = locationInView;
         }
 
-        private _button:MouseButton = null;
+        private _button:number = null;
         get button() {
             var e = this._event,
-                mouseButton = null;
+                mouseButton:number = null;
 
             if (this._button) {
                 return this._button;
@@ -117,79 +117,15 @@ module Engine3D {
 
             return mouseButton;
         }
-
-        set button(button:MouseButton) {
+        set button(button:number) {
             this._button = button;
         }
 
-        private _target:GameObject = null;
-        get target() {
-            Log.error(!this._target, Log.info.FUNC_MUST_DEFINE("target"));
-
-            return this._target;
-            //return this._target;
-            //return this._event.srcElement || this._event.target;
-        }
-
-        set target(target:GameObject) {
-            this._target = target;
-        }
-
-        private _currentTarget:IView = null;
-        get currentTarget() {
-            return this._currentTarget;
-        }
-
-        set currentTarget(currentTarget:IView) {
-            this._currentTarget = currentTarget;
-        }
-
-        private _isStopPropagation:boolean = false;
-        get isStopPropagation() {
-            return this._isStopPropagation;
-        }
-
-        set isStopPropagation(isStopPropagation:boolean) {
-            this._isStopPropagation = isStopPropagation;
-        }
-
-        private _phase:EventPhase = null;
-        get phase() {
-            return this._phase;
-        }
-
-        set phase(phase:EventPhase) {
-            this._phase = phase;
-        }
-
-        private _event:any = null;
-        get event() {
-            return this._event;
-        }
-
-        set event(event:any) {
-            this._event = event || window.event;
-        }
-
-        private _name:EventName = null;
-        get name() {
-            return this._name;
-        }
-
-        set name(name:EventName) {
-            this._name = name;
-        }
-
-
-        public stopPropagation() {
-            this._isStopPropagation = true;
-        }
 
         public copy():EventMouse {
             return ExtendUtils.copyPublicAttri(this);
         }
 
-        protected _type:EventType = EventType.MOUSE;
 
         //private _getCanvasOffset(view:IView) {
         //    return view.getOffset();

@@ -129,12 +129,76 @@
 module Engine3D{
     export class Event{
         //abstact attri
-        protected _type:EventType = null;
+        public type:EventType = null;
+        //get type(){
+        //    Log.error(this._type === null, Log.info.ABSTRACT_ATTRIBUTE);
+        //
+        //    return this._type;
+        //}
 
-        get type(){
-            Log.error(this._type === null, Log.info.ABSTRACT_ATTRIBUTE);
+        private _name:string = null;
+        get name() {
+            return this._name;
+        }
+        set name(name:string) {
+            this._name = name;
+        }
 
-            return this._type;
+        constructor(eventName:EventName) {
+            this._name = eventName;
+        }
+
+        private _target:GameObject = null;
+        get target() {
+            Log.error(!this._target, Log.info.FUNC_MUST_DEFINE("target"));
+
+            return this._target;
+            //return this._target;
+            //return this._event.srcElement || this._event.target;
+        }
+        set target(target:GameObject) {
+            this._target = target;
+        }
+
+        private _currentTarget:IView = null;
+        get currentTarget() {
+            return this._currentTarget;
+        }
+        set currentTarget(currentTarget:IView) {
+            this._currentTarget = currentTarget;
+        }
+
+        private _isStopPropagation:boolean = false;
+        get isStopPropagation() {
+            return this._isStopPropagation;
+        }
+
+        set isStopPropagation(isStopPropagation:boolean) {
+            this._isStopPropagation = isStopPropagation;
+        }
+
+        private _phase:EventPhase = null;
+        get phase() {
+            return this._phase;
+        }
+
+        set phase(phase:EventPhase) {
+            this._phase = phase;
+        }
+
+        private _event:any = null;
+        get event() {
+            return this._event;
+        }
+
+        set event(event:any) {
+            this._event = event || window.event;
+        }
+
+
+
+        public stopPropagation() {
+            this._isStopPropagation = true;
         }
     }
 }
