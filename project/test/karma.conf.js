@@ -14,20 +14,20 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'test/bower_components/jquery/dist/jquery.js',
-        'test/bower_components/yyctoolbox/tool/yTool.js',
+        'bower_components/jquery/dist/jquery.js',
+        'bower_components/yyctoolbox/tool/yTool.js',
 
         //'engine/math/*.js',
         'dist/Engine.js',
 
-        'test/hepler/jsExtend.js',
-        'test/hepler/jasmine/**',
-        'test/hepler/sinonJs/*.js',
+        'test/helper/jsExtend.js',
+        'test/helper/jasmine/**',
+        'test/helper/sinonJs/*.js',
 
         'test/unit/math/*.js',
         //'test/unit/event/*.js',
-        'test/unit/utils/browserDetector/useragents.js',
-        'test/unit/utils/**/*.js',
+        //'test/unit/utils/browserDetector/useragents.js',
+        //'test/unit/utils/**/*.js',
 
         {pattern: 'engine/**/*.js.map', watched: false, included: false, served: true},
         {pattern: 'engine/**/*.ts', watched: false, included: false, served: true}

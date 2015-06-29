@@ -1,0 +1,18 @@
+{
+  "name": "engine3d",
+  "version": "0.0.1",
+  "homepage": "https://github.com/yyc-git/WebGL",
+  "authors": [
+    "yyc <395976266@qq.com>"
+  ],
+  "description": "3d engine",
+  "keywords": [
+    "3d",
+    "engine"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jquery": "~2.1.3",
+    "yyctoolbox": "~1.0.1"
+  }
+}

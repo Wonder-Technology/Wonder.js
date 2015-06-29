@@ -1,3 +1,8 @@
-3d/*
-dist/*
+3d/
+dist/
 .DS*
+.idea
+node_modules/
+bower_modules/
+mine/
+reference/
