@@ -1,4 +1,5 @@
 /// <reference path="MouseButton"/>
+/// <reference path="../../lib/inner/bowser/bower.d.ts"/>
 module Engine3D {
     export class EventMouse extends Event{
         //public static CLICK:string = "click";
@@ -30,7 +31,7 @@ module Engine3D {
 
             point = Point.create();
 
-            if (BrowserDetector.msie) {
+            if (bowser.msie) {
                 point.x = e.clientX + document.body.scrollLeft || document.documentElement.scrollLeft;
                 point.y = e.clientY + document.body.scrollTop || document.documentElement.scrollTop;
             }
@@ -80,7 +81,7 @@ module Engine3D {
                 return this._button;
             }
 
-            if (BrowserDetector.msie) {
+            if (bowser.msie) {
                 switch (e.button) {
                     case 1:
                         mouseButton = MouseButton.LEFT;
