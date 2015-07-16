@@ -6,10 +6,11 @@ var merge = require("merge2");
 
 
 var tsFilePaths = [
-    "engine/*.ts",
-    "engine/**/*.ts"
+    //"engine/*.ts",
+    //"engine/**/*.ts"
     //"engine/Camera.ts",
     //"engine/math/*.ts"
+    "engine/structure/Point.ts"
 ];
 
 //todo remove "///reference" of d.ts file?
