@@ -1,6 +1,4 @@
-/// <reference path="../render/ArrayBuffer.ts"/>
-/// <reference path="../render/ElementBuffer.ts"/>
-/// <reference path="../material/MeshMaterial.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Geometry{
         private _vertices:ArrayBuffer = null;

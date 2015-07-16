@@ -1,3 +1,4 @@
+/// <reference path="../definitions.d.ts"/>
 module Engine3D {
     export class GameObject {
         private static _count:number = 1;
@@ -30,7 +31,7 @@ module Engine3D {
             this._parent = parent;
         }
 
-        private _childs:Collection = Collection.create();
+        private _childs:dyCb.Collection = dyCb.Collection.create();
 
         constructor() {
             this._uid = GameObject._count;
@@ -38,7 +39,7 @@ module Engine3D {
         }
 
         public init() {
-            Log.error(true, Log.info.ABSTRACT_METHOD);
+            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         /*!

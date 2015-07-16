@@ -1,6 +1,7 @@
+/// <reference path="../../definitions.d.ts"/>
 //todo complete it(add more event type)
 module Engine3D {
-    private const _table = Hash.create();
+    private const _table = dyCb.Hash.create();
 
     _table.addChild(EventName.CLICK, EventType.MOUSE);
     _table.addChild(EventName.MOUSEOVER, EventType.MOUSE);
@@ -22,7 +23,7 @@ module Engine3D {
                     result = true;
                     break;
                 default:
-                    Log.assert(false, Log.info.FUNC_UNKNOW("eventName"));
+                    dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
                     result = false;
                     break;
             }

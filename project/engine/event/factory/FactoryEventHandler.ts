@@ -1,3 +1,4 @@
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D{
     export class FactoryEventHandler{
         public static createEventHandler(eventType:EventType, eventRegister:EventRegister):EventHandler{
@@ -9,7 +10,7 @@ module Engine3D{
                     break;
                 //todo more type
                 default :
-                    Log.error(true, Log.info.FUNC_INVALID("eventType"));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
                     break;
             }
 
@@ -25,7 +26,7 @@ module Engine3D{
                     break;
                 //todo more type
                 default :
-                    Log.error(true, Log.info.FUNC_INVALID("eventType"));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
                     break;
             }
 

@@ -1,4 +1,4 @@
-/// <reference path="Vector4.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Vector3{
         public static create(x, y, z):Vector3 ;

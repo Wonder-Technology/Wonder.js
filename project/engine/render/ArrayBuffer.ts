@@ -1,6 +1,4 @@
-/// <reference path="BufferType.ts"/>
-/// <reference path="../Log.ts"/>
-/// <reference path="../WebGLContext.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class ArrayBuffer{
         public static create(data, num, type:BufferType):ArrayBuffer {
@@ -43,7 +41,7 @@ module Engine3D{
 
             this._buffer = gl.createBuffer();   // Create a buffer object
             if (!this._buffer) {
-                Log.log('Failed to create the this._buffer object');
+                dyCb.Log.log('Failed to create the this._buffer object');
                 return null;
             }
             gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer);

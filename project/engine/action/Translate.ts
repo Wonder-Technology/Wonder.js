@@ -1,5 +1,4 @@
-/// <reference path="Action.ts"/>
-/// <reference path="../math/Matrix.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Translate extends Action{
         public static create(matrix, posData):Translate {

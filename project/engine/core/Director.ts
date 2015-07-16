@@ -1,6 +1,4 @@
-/// <reference path="Scene.ts"/>
-/// <reference path="../WebGLContext.ts"/>
-/// <reference path="../render/WebGLRenderer.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     declare var window:any;
     /**

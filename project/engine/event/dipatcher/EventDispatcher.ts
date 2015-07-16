@@ -1,4 +1,4 @@
-/// <reference path="../object/Event"/>
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export class EventDispatcher {
         public static create() {
@@ -24,7 +24,7 @@ module Engine3D {
 
         public trigger(target:GameObject, eventObject:Event) {
             if (!(target instanceof GameObject)) {
-                Log.log("target is not GameObject, can't trigger event");
+                dyCb.Log.log("target is not GameObject, can't trigger event");
                 return;
             }
 

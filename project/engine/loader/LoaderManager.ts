@@ -1,5 +1,4 @@
-/// <reference path="GLSLLoader.ts"/>
-/// <reference path="../Log.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class LoaderManager{
         private static _instance:LoaderManager = null;
@@ -47,9 +46,9 @@ module Engine3D{
         }
 
         public onResError(path, err) {
-            Log.log("加载" + path + "资源失败");
+            dyCb.Log.log("加载" + path + "资源失败");
             if(err){
-                Log.log(err);
+                dyCb.Log.log(err);
             }
         }
 
@@ -61,7 +60,7 @@ module Engine3D{
                     this.onload();
                 }
                 else {
-                    Log.assert(false, "没有定义onload");
+                    dyCb.Log.assert(false, "没有定义onload");
                 }
             }
             else {

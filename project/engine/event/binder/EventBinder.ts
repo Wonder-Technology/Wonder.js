@@ -1,7 +1,4 @@
-/// <reference path="EventRegister"/>
-/// <reference path="../listener/EventListener"/>
-/// <reference path="../factory/FactoryEventHandler"/>
-/// <reference path="../object/EventTable"/>
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     //responsibilty:on, off event(manage list)
 
@@ -26,12 +23,12 @@ module Engine3D {
                 return;
             }
 
-            Log.assert(target && arg, Log.info.INVALID_PARAM);
+            dyCb.Log.assert(target && arg, dyCb.Log.info.INVALID_PARAM);
 
             listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
             //EventRegister.getInstance().register(target, listener);
 
-            //Log.assert(target && listener, Log.info.invalid_param);
+            //dyCb.Log.assert(target && listener, dyCb.Log.info.invalid_param);
             //if(!listener instanceof EventListener){
             //    listener = EventListener.create(listener);
             //}

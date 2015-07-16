@@ -116,6 +116,9 @@
 //}
 
 
+
+/// <reference path="../../definitions.d.ts"/>
+
 //rich domain model
 
 //event info:
@@ -131,7 +134,7 @@ module Engine3D{
         //abstact attri
         public type:EventType = null;
         //get type(){
-        //    Log.error(this._type === null, Log.info.ABSTRACT_ATTRIBUTE);
+        //    dyCb.Log.error(this._type === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
         //
         //    return this._type;
         //}
@@ -150,7 +153,7 @@ module Engine3D{
 
         private _target:GameObject = null;
         get target() {
-            Log.error(!this._target, Log.info.FUNC_MUST_DEFINE("target"));
+            dyCb.Log.error(!this._target, dyCb.Log.info.FUNC_MUST_DEFINE("target"));
 
             return this._target;
             //return this._target;

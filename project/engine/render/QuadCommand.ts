@@ -1,6 +1,4 @@
-/// <reference path="DrawMode.ts"/>
-/// <reference path="Program.ts"/>
-/// <reference path="../structure/Hash.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class QuadCommand{
         public static create():QuadCommand {
@@ -9,7 +7,7 @@ module Engine3D{
             return obj;
         }
 
-        private _buffers:Hash = Hash.create();
+        private _buffers:dyCb.Hash = dyCb.Hash.create();
         get buffers(){
             return this._buffers;
         }

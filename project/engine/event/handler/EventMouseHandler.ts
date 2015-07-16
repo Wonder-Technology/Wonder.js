@@ -1,3 +1,5 @@
+/// <reference path="../../definitions.d.ts"/>
+
 //responsiblity:handle logic with specify event category
 //judge is under point
 //wrap event object
@@ -26,11 +28,11 @@ module Engine3D {
             //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
 
             //handlerDataList.forEach(function (handlerData) {
-            EventUtils.addEvent(
+            dyCb.EventUtils.addEvent(
                 view,
                 eventName,
-                //EventUtils.bindEvent(context, function (eventObject:EventMouse) {
-                EventUtils.bindEvent(context, function (event) {
+                //dyCb.EventUtils.bindEvent(context, function (eventObject:EventMouse) {
+                dyCb.EventUtils.bindEvent(context, function (event) {
                     var eventObject = self._createEventObject(event, target),
                     //should invoking eventRegister read newest register data when trigger event,
                     //so the class need retain eventRegister's reference
@@ -65,7 +67,7 @@ module Engine3D {
                             && EventTable.isEventOnView(eventName)
                     })
                     .forEach(function (data:IEventRegisterData, eventName:EventName) {
-                        EventUtils.removeEvent(view, eventName, data.handler);
+                        dyCb.EventUtils.removeEvent(view, eventName, data.handler);
                     });
             }
             //todo off specify event

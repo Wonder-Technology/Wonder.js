@@ -1,7 +1,4 @@
-/// <reference path="Action.ts"/>
-/// <reference path="../math/Matrix.ts"/>
-/// <reference path="../math/Vector3.ts"/>
-/// <reference path="../Log.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Rotate extends Action{
         public static create(matrix, actionData):Rotate {
@@ -28,7 +25,7 @@ module Engine3D{
                 this._point = Vector3.create(0, 0, 0);
             }
             else{
-                Log.error(true, "axis's length should be 1 or 2");
+                dyCb.Log.error(true, "axis's length should be 1 or 2");
             }
         }
 

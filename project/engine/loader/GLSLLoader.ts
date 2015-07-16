@@ -1,6 +1,4 @@
-/// <reference path="LoaderManager.ts"/>
-/// <reference path="../import/YEQuery.ts"/>
-/// <reference path="../structure/Hash.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class GLSLLoader{
         private static _instance:GLSLLoader = null;
@@ -12,7 +10,7 @@ module Engine3D{
             return this._instance;
         }
 
-        private _container:Hash = Hash.create();
+        private _container:dyCb.Hash = dyCb.Hash.create();
 
         public load(url:string, id:string){
             var self = this;
@@ -38,7 +36,7 @@ module Engine3D{
         }
 
         private _loadText(url, callback) {
-            YEQuery.ajax({
+            dyCb.AjaxUtils.ajax({
                 type: "get",
                 //async: true,
                 url: url,

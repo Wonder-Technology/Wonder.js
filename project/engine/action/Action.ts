@@ -1,4 +1,4 @@
-/// <reference path="../math/Matrix.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Action{
         private _isFinish:boolean = false;

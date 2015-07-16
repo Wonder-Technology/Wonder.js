@@ -1,3 +1,6 @@
-[submodule "project/DYReactive"]
-	path = project/DYReactive
-	url = git@github.com:DongYouFamily/DYReactive.git
+[submodule "project/lib/inner/DYCommonLib"]
+	path = project/lib/inner/DYCommonLib
+	url = git@github.com:yyc-git/DYCommonLib.git
+[submodule "project/lib/inner/DYReactive"]
+	path = project/lib/inner/DYReactive
+	url = git@github.com:yyc-git/DYReactive.git

@@ -1,8 +1,4 @@
-/// <reference path="Geometry.ts"/>
-/// <reference path="../render/ArrayBuffer.ts"/>
-/// <reference path="../render/ElementBuffer.ts"/>
-/// <reference path="../render/BufferType.ts"/>
-/// <reference path="../material/MeshMaterial.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class BoxGeometry extends Geometry{
         public static create(width:number, height:number, depth:number, material:MeshMaterial):BoxGeometry {

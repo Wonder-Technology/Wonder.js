@@ -1,9 +1,4 @@
-/// <reference path="../geometry/Geometry"/>
-/// <reference path="../action/ActionManager"/>
-/// <reference path="../action/Action"/>
-/// <reference path="../math/Vector3"/>
-/// <reference path="../math/Matrix"/>
-/// <reference path="GameObject"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class Mesh extends GameObject{
         //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
