@@ -1,3 +1,4 @@
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventHandlerData{
         eventName:EventName;
@@ -29,11 +30,11 @@ module Engine3D {
             this._priority = priority;
         }
 
-        private _handlerDataList:Collection = Collection.create();
+        private _handlerDataList:dyCb.Collection = dyCb.Collection.create();
         get handlerDataList(){
             return this._handlerDataList;
         }
-        set handlerDataList(handlerDataList:Collection){
+        set handlerDataList(handlerDataList:dyCb.Collection){
             this._handlerDataList = handlerDataList;
         }
 

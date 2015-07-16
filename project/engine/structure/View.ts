@@ -1,3 +1,4 @@
+/// <reference path="../definitions.d.ts"/>
 module Engine3D {
     export interface IView {
         offset:{x:number, y:number};

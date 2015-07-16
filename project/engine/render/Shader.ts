@@ -1,6 +1,4 @@
-/// <reference path="../WebGLContext.ts"/>
-/// <reference path="ShaderType.ts"/>
-/// <reference path="../Log.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     declare var document:any;
 
@@ -29,7 +27,7 @@ module Engine3D{
                 return shader;
             }
             else{
-                Log.log(gl.getShaderInfoLog(shader));
+                dyCb.Log.log(gl.getShaderInfoLog(shader));
             }
         }
     }

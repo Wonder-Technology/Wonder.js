@@ -1,4 +1,4 @@
-/// <reference path="../utils/Color.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D {
     export class MeshMaterial {
         public static create(params) {

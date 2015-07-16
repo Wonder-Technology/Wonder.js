@@ -1,9 +1,4 @@
-/// <reference path="../Camera.ts"/>
-/// <reference path="../structure/Collection.ts"/>
-/// <reference path="Mesh.ts"/>
-/// <reference path="GameObject"/>
-/// <reference path="../render/Program.ts"/>
-/// <reference path="../math/Matrix.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D {
     export class Scene extends GameObject{
         public static create(camera:Camera, vsSource:string, fsSource:string) {
@@ -14,7 +9,7 @@ module Engine3D {
             return obj;
         }
 
-        private _meshes:Collection = Collection.create();
+        private _meshes:dyCb.Collection = dyCb.Collection.create();
 
         private _camera:Camera = null;
         get camera() {

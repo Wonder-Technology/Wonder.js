@@ -1,5 +1,4 @@
-/// <reference path="math/Matrix.ts"/>
-/// <reference path="math/Vector4.ts"/>
+/// <reference path="definitions.d.ts"/>
 module Engine3D{
     //todo can set perspectiveParams, add updateProjectMatrix method
     //todo optimize to reduce compute

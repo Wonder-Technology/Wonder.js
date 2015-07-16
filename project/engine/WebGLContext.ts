@@ -1,3 +1,4 @@
+/// <reference path="definitions.d.ts"/>
 module Engine3D{
     export class WebGLContext{
         public static view:IView = null;

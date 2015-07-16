@@ -1,7 +1,4 @@
-/// <reference path="QuadCommand.ts"/>
-/// <reference path="../utils/Color.ts"/>
-/// <reference path="../core/Scene.ts"/>
-/// <reference path="../structure/Collection.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class WebGLRenderer{
         public static create():WebGLRenderer {
@@ -10,7 +7,7 @@ module Engine3D{
             return obj;
         }
 
-        private _commandQueue:Collection = Collection.create();
+        private _commandQueue:dyCb.Collection = dyCb.Collection.create();
         private _clearColor:Color = Color.create("#000000");
         private _clearAlpha:number = 1.0;
 

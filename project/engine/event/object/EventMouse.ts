@@ -1,5 +1,4 @@
-/// <reference path="MouseButton"/>
-/// <reference path="../../lib/inner/bowser/bower.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export class EventMouse extends Event{
         //public static CLICK:string = "click";
@@ -60,7 +59,7 @@ module Engine3D {
 
             point = this.location;
 
-            Log.error(!JudgeUtils.isView(this._event.currentTarget), Log.info.FUNC_MUST_BE("canvas"));
+            dyCb.Log.error(!JudgeUtils.isView(this._event.currentTarget), dyCb.Log.info.FUNC_MUST_BE("canvas"));
 
             //canvasOffset = this._getCanvasOffset(this._event.currentTarget);
             viewOffset = this._event.currentTarget.offset;
@@ -93,7 +92,7 @@ module Engine3D {
                         mouseButton = MouseButton.CENTER;
                         break;
                     default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
+                        dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
                         //mouseButton = e.button;
                         break;
                 }
@@ -110,7 +109,7 @@ module Engine3D {
                         mouseButton = MouseButton.CENTER;
                         break;
                     default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
+                        dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
                         //mouseButton = e.button;
                         break;
                 }
@@ -124,7 +123,7 @@ module Engine3D {
 
 
         public copy():EventMouse {
-            return ExtendUtils.copyPublicAttri(this);
+            return dyCb.ExtendUtils.copyPublicAttri(this);
         }
 
 

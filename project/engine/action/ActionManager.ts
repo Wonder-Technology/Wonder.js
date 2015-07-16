@@ -1,5 +1,4 @@
-/// <reference path="Action.ts"/>
-/// <reference path="../structure/Collection.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class ActionManager{
         public static create():ActionManager {
@@ -8,7 +7,7 @@ module Engine3D{
             return obj;
         }
 
-        private _childs:Collection = Collection.create();
+        private _childs:dyCb.Collection = dyCb.Collection.create();
 
         constructor(){
         }

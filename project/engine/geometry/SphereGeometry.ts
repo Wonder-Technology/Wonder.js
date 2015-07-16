@@ -1,9 +1,4 @@
-/// <reference path="Geometry.ts"/>
-/// <reference path="SphereDrawMode.ts"/>
-/// <reference path="../render/ArrayBuffer.ts"/>
-/// <reference path="../render/ElementBuffer.ts"/>
-/// <reference path="../render/BufferType.ts"/>
-/// <reference path="../material/MeshMaterial.ts"/>
+/// <reference path="../definitions.d.ts"/>
 module Engine3D{
     export class SphereGeometry extends Geometry{
         public static create(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial):SphereGeometry {

@@ -1,4 +1,4 @@
-/// <reference path="../object/EventName"/>
+/// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventRegisterData {
         target:GameObject,
@@ -18,7 +18,7 @@ module Engine3D {
 
 
         //private _listenerMap:EventListenerMap = EventListenerMap.create();
-        private _listenerMap:Hash = Hash.create();
+        private _listenerMap:dyCb.Hash = dyCb.Hash.create();
 
         public register(target:GameObject, eventName:EventName, handler:Function, priority:number) {
             //var isBindEventOnView = false,
