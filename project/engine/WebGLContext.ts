@@ -5,7 +5,7 @@ module Engine3D{
         public static gl:any = null;
 
         public static createGL(canvasId:string){
-            this.view = ViewWebGL.create(document.getElementById(canvasId));
+            this.view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
             this.gl = this.view.getContext();
         }
     }

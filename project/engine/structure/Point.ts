@@ -3,12 +3,12 @@ module Engine3D {
         public x:number = null;
         public y:number = null;
 
-        constructor(x:number, y:number) {
+        constructor(x:number = null, y:number = null) {
             this.x = x;
             this.y = y;
         }
 
-        public static create(x:number, y:number) {
+        public static create(x?:number, y?:number) {
             var obj = new this(x, y);
 
             return obj;

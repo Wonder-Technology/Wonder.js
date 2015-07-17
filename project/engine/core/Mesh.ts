@@ -40,6 +40,10 @@ module Engine3D{
             this._addDrawCommand();
         }
 
+        public init(){
+            this.position = Position.create(0, 0, 0);
+        }
+
         private _addDrawCommand(){
             var renderer = Director.getInstance().renderer,
                 quadCmd = renderer.createQuadCommand();

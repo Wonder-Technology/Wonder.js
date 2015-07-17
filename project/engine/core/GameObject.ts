@@ -30,6 +30,14 @@ module Engine3D {
         set parent(parent:GameObject) {
             this._parent = parent;
         }
+        
+        private _bubbleParent:GameObject = null;
+        get bubbleParent(){
+            return this._bubbleParent;
+        }
+        set bubbleParent(bubbleParent:GameObject){
+            this._bubbleParent = bubbleParent;
+        }
 
         private _childs:dyCb.Collection = dyCb.Collection.create();
 
@@ -193,15 +201,17 @@ module Engine3D {
             //return null;
 
             var result = null,
-                i = null;
+                i = null,
+                childs:dyCb.Collection = null,
+                len = this._childs.getCount();
 
-            childrenArr = this._childs;
-            if(childrenArr.length > 0) {
-                for(i=childrenArr.length-1; i>=0; i--) {
-                    let child = childrenArr[i];
+            childs = this._childs;
+            if(len > 0) {
+                for (i = len - 1; i >= 0; i--) {
+                    let child = childs.getChild(i);
 
-                    result = child.getTopChildUnderPoint(x, y);
-                    if(result) {
+                    result = child.getTopChildUnderPoint(point);
+                    if (result) {
                         return result;
                     }
                 }

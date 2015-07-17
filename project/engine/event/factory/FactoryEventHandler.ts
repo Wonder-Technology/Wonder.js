@@ -1,12 +1,12 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D{
     export class FactoryEventHandler{
-        public static createEventHandler(eventType:EventType, eventRegister:EventRegister):EventHandler{
+        public static createEventHandler(eventType:EventType):EventHandler{
             var handler = null;
 
             switch (eventType){
                 case EventType.MOUSE:
-                    handler = EventMouseHandler.getInstance(eventRegister);
+                    handler = EventMouseHandler.getInstance();
                     break;
                 //todo more type
                 default :
@@ -17,7 +17,7 @@ module Engine3D{
             return handler;
         }
 
-        public static createEvent(eventType:EventType, eventName: EventName, phase:EventPhase=EventPhase.EMIT){
+        public static createEvent(eventType:EventType, eventName:EventName, phase:EventPhase=EventPhase.EMIT){
             var eventObj = null;
 
             switch (eventType){

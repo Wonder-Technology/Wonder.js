@@ -31,8 +31,8 @@ module Engine3D {
             var self = this;
             //var eventType = this._eventBinder.getEventType(eventName);
             //var eventType = EventTable.getEventType(eventName);
-            var eventType = eventObject.type,
-                eventName = eventObject.name;
+            var eventType= eventObject.type,
+                eventName= eventObject.name;
 
             eventObject.stopPropagation();
 
@@ -45,13 +45,13 @@ module Engine3D {
             }
 
 
-            listenerDataList.forEach(function (listenerData) {
+            listenerDataList.forEach((listenerData) => {
                 //FactoryEventHandler.createEventHandler(eventType).trigger(target, listener.handlerDataList, eventName);
                 FactoryEventHandler.createEventHandler(eventType).trigger(
                     target,
                     eventObject.copy(),
                     //FactoryEventHandler.createEvent(eventType, eventName, EventPhase.EMIT),
-                    listenerData.handlelr
+                    listenerData.handler
                 );
             });
         }

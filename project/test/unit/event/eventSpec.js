@@ -1,5 +1,5 @@
 describe("event", function () {
-    var Manager = null;
+    var manager = null;
     var Listener = null;
     var sandbox = null;
     var dom = null;
@@ -17,7 +17,7 @@ describe("event", function () {
         sandbox = sinon.sandbox.create();
         insertDom();
         dom = $("#event-test");
-        Manager = Engine3D.EventManager;
+        manager = Engine3D.Eventmanager.getInstance();
         Listener = Engine3D.EventListener;
     });
     afterEach(function () {
@@ -25,7 +25,56 @@ describe("event", function () {
         sandbox.restore();
     });
 
-    //todo supply test case
+
+    //both can dispatch in event flow
+
+    describe("system event", function(){
+        beforeEach(function(){
+
+        });
+
+        //should test in real environment(pc, mobile)
+
+        //write gulp task to sync to server for testing in mobile
+        it("", function(){
+
+        });
+
+        //manager.on(scene,
+        //    {
+        //        eventType: EventType.MOUSE,
+
+        //        onClick: function (e) {
+        //            expect(e instanceof Engine3D.Event).toBeTruthy();
+        //            expect(e.target.id).toEqual("event-test");
+        //            expect(e.mouseButton).toEqual(0);
+        //            expect(e.type).toEqual(MouseEvent.CLICK);
+        //        }
+        //    });
+        //
+        //manager.trigger(dom, MouseEvent.CLICK);
+
+
+        //write unit test to dispatch event
+        it("", function(){
+
+        })
+    });
+
+    describe("custom event", function(){
+        beforeEach(function(){
+
+        });
+
+        //can write unit test
+        it("", function(){
+
+        });
+    });
+
+
+
+
     describe("event test", function () {
         describe("system event", function () {
             describe("pc event", function () {
@@ -34,45 +83,45 @@ describe("event", function () {
                 });
 
                 it("bind event and trigger event", function () {
-                    Manager.on(dom,
-                        {
-                            event: Listener.MOUSE,
-                            onClick: function (e) {
-                                expect(e instanceof Engine3D.Event).toBeTruthy();
-                                expect(e.target.id).toEqual("event-test");
-                                expect(e.mouseButton).toEqual(0);
-                                expect(e.type).toEqual(MouseEvent.CLICK);
-                            }
-                        });
-
-                    Manager.trigger(dom, MouseEvent.CLICK);
+                    //manager.on(dom,
+                    //    {
+                    //        event: Listener.MOUSE,
+                    //        onClick: function (e) {
+                    //            expect(e instanceof Engine3D.Event).toBeTruthy();
+                    //            expect(e.target.id).toEqual("event-test");
+                    //            expect(e.mouseButton).toEqual(0);
+                    //            expect(e.type).toEqual(MouseEvent.CLICK);
+                    //        }
+                    //    });
+                    //
+                    //manager.trigger(dom, MouseEvent.CLICK);
                 });
 
                 //describe("remove event bind", function () {
                 //    var count = 0;
                 //
                 //    beforeEach(function () {
-                //        Manager.on(KeyboardEvent.KEY_DOWN, function (e) {
+                //        manager.on(KeyboardEvent.KEY_DOWN, function (e) {
                 //            count = count + 1;
                 //        });
-                //        Manager.on(MouseEvent.CLICK, function (e) {
+                //        manager.on(MouseEvent.CLICK, function (e) {
                 //            count = count + 10;
                 //        });
                 //    });
                 //
                 //    it("remove specific event", function () {
-                //        Manager.off(MouseEvent.CLICK);
+                //        manager.off(MouseEvent.CLICK);
                 //
-                //        Manager.trigger(MouseEvent.KEY_DOWN);
-                //        Manager.trigger(MouseEvent.CLICK);
+                //        manager.trigger(MouseEvent.KEY_DOWN);
+                //        manager.trigger(MouseEvent.CLICK);
                 //
                 //        expect(count).toEqual(10);
                 //    });
                 //    it("remove all event", function () {
-                //        Manager.off();
+                //        manager.off();
                 //
-                //        Manager.trigger(MouseEvent.KEY_DOWN);
-                //        Manager.trigger(MouseEvent.CLICK);
+                //        manager.trigger(MouseEvent.KEY_DOWN);
+                //        manager.trigger(MouseEvent.CLICK);
                 //
                 //        expect(count).toEqual(0);
                 //    });
@@ -90,32 +139,63 @@ describe("event", function () {
         });
     });
 
-    describe("transfer in tree", function () {
+    describe("add listener", function () {
+        //it("way1", function () {
+        //    manager.on(dom,
+        //        {
+        //            event: Listener.MOUSE,
+        //            onClick: function (e) {
+        //                expect(e instanceof Engine3D.Event).toBeTruthy();
+        //                expect(e.target.id).toEqual("event-test");
+        //                expect(e.mouseButton).toEqual(0);
+        //                expect(e.type).toEqual(MouseEvent.CLICK);
+        //            }
+        //        });
+        //
+        //    manager.trigger(dom, MouseEvent.CLICK);
+        //});
+        //it("way2", function () {
+        //    var listener = EventListener.create({
+        //        event: Listener.MOUSE,
+        //        onClick: function (e) {
+        //            expect(e instanceof Engine3D.Event).toBeTruthy();
+        //            expect(e.target.id).toEqual("event-test");
+        //            expect(e.mouseButton).toEqual(0);
+        //            expect(e.type).toEqual(MouseEvent.CLICK);
+        //        }
+        //    });
+        //    manager.on(dom, listener);
+        //
+        //    manager.trigger(dom, MouseEvent.CLICK);
+        //});
+    });
+
+    describe("dispatch in event flow", function () {
         //var count = null,
         //    director = null,
         //    scene = null,
         //    mesh = null;
         //
         //function bindEventWithNoData() {
-        //    Manager.on(director, TouchEvent.TOUCH_START, function (data) {
+        //    manager.on(director, TouchEvent.TOUCH_START, function (data) {
         //        count = count + data;
         //    });
-        //    Manager.on(scene, TouchEvent.TOUCH_START, function (data) {
+        //    manager.on(scene, TouchEvent.TOUCH_START, function (data) {
         //        count = count + 10 + data;
         //    });
-        //    Manager.on(mesh, TouchEvent.TOUCH_START, function (data) {
+        //    manager.on(mesh, TouchEvent.TOUCH_START, function (data) {
         //        count = count + 100 + data;
         //    });
         //}
         //
         //function bindEventWithData() {
-        //    Manager.on(director, CustomEvent.CUSTOM_EVENT, function (data) {
+        //    manager.on(director, CustomEvent.CUSTOM_EVENT, function (data) {
         //        count = count + 1;
         //    });
-        //    Manager.on(scene, CustomEvent.CUSTOM_EVENT, function (data) {
+        //    manager.on(scene, CustomEvent.CUSTOM_EVENT, function (data) {
         //        count = count + 10;
         //    });
-        //    Manager.on(mesh, CustomEvent.CUSTOM_EVENT, function (data) {
+        //    manager.on(mesh, CustomEvent.CUSTOM_EVENT, function (data) {
         //        count = count + 100;
         //    });
         //}
@@ -133,7 +213,7 @@ describe("event", function () {
             //director._scene = scene;
         });
 
-        describe("build tree", function () {
+        describe("build flow relation", function () {
             it("can be hierarchy relation of node", function () {
 
             });
@@ -147,11 +227,11 @@ describe("event", function () {
         });
 
 
-        describe("broadcast (down in tree)", function () {
+        describe("broadcast (down in flow)", function () {
             it("broadcast system event", function () {
                 //bindEventWithNoData();
                 //
-                //Manager.broadcast(CustomEvent.create(scene, CustomEvent.CUSTOM_EVENT));
+                //manager.broadcast(CustomEvent.create(scene, CustomEvent.CUSTOM_EVENT));
                 //
                 //expect(count).toEqual(110);
             });
@@ -174,7 +254,7 @@ describe("event", function () {
                 //});
             });
         });
-        it("emit (up in tree)", function () {
+        it("emit (up in flow)", function () {
             it("emit dom event", function () {
                 //bindEventWithNoData();
                 //

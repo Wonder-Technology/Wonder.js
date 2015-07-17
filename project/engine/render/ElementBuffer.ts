@@ -58,7 +58,7 @@ module Engine3D{
             return data instanceof info.typeClass;
         }
 
-        private _getInfo(type:BufferType){
+        private _getInfo(type:BufferType):{typeClass:any,size:number}{
             var info = null;
 
             switch (type){

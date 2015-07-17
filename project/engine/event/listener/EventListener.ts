@@ -38,7 +38,7 @@ module Engine3D {
             this._handlerDataList = handlerDataList;
         }
 
-        constructor(option:{any}){
+        constructor(option:any){
             this._eventType = option.eventType;
             this._priority = option.priority || 1;
         }
@@ -54,7 +54,7 @@ module Engine3D {
             for(i in option){
                 if(option.hasOwnProperty(i)){
                     if(REGEX_HANDER.test(i)){
-                        this._handlerDataList.addChild(<IEventHandlerData>{
+                        this._handlerDataList.addChild({
                             eventName: this._parseEventName(i),
                             hander: option[i]
                         });

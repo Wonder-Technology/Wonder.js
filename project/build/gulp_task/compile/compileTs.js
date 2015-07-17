@@ -6,11 +6,11 @@ var merge = require("merge2");
 
 
 var tsFilePaths = [
-    //"engine/*.ts",
-    //"engine/**/*.ts"
+    "engine/*.ts",
+    "engine/**/*.ts"
     //"engine/Camera.ts",
     //"engine/math/*.ts"
-    "engine/structure/Point.ts"
+    //"engine/structure/Point.ts"
 ];
 
 //todo remove "///reference" of d.ts file?
@@ -21,10 +21,10 @@ gulp.task("compileTs", function() {
             declarationFiles: true,
             target: "ES5",
             sortOutput:true,
-            noEmitOnError: true
+            noEmitOnError: true,
             //noExternalResolve: true
             //out: "dyR.js"
-            //typescript: require("typescript")
+            typescript: require("typescript")
         }));
 
 

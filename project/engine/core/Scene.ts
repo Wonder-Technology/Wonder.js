@@ -37,9 +37,9 @@ module Engine3D {
             this._program = Program.create(vsSource, fsSource)
         }
 
-        public add(meshesArr:Mesh[]) {
-            this._meshes.addChilds(meshesArr);
-        }
+        //public add(meshesArr:Mesh[]) {
+        //    this._meshes.addChilds(meshesArr);
+        //}
 
         public run() {
             var self = this;
@@ -65,6 +65,7 @@ module Engine3D {
         }
 
         public init(){
+            this.position = Position.create(0, 0, 0);
         }
 
 

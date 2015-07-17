@@ -4,7 +4,7 @@
 //judge is under point
 //wrap event object
 module Engine3D {
-    export class EventMouseHandler{
+    export class EventMouseHandler extends EventHandler{
         private static _instance:EventMouseHandler = null;
 
         public static getInstance() {
@@ -15,14 +15,14 @@ module Engine3D {
             return this._instance;
         }
 
-        constructor() {
-            //constructor() {
-            //EventRegister.getInstance() = register;
-        }
+        //constructor() {
+        //    //constructor() {
+        //    //EventRegister.getInstance() = register;
+        //}
 
         //private _eventRegister:EventRegister = null;
 
-        public on(view:HTMLCanvasElement, eventName:EventName, target:GameObject) {
+        public on(view:IView, eventName:EventName, target:GameObject) {
             var self = this,
                 context = window;
             //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
@@ -38,7 +38,7 @@ module Engine3D {
                     //so the class need retain eventRegister's reference
                         targetDataArr = self._getTopTriggerDataArrUnderPoint(eventObject);
 
-                    targetDataArr.forEach(function (targetData) {
+                    targetDataArr.forEach((targetData:IEventHandlerData)=>{
                         self.trigger(
                             target,
                             eventObject,
@@ -62,11 +62,11 @@ module Engine3D {
         public off(view: IView, target:GameObject, eventName?:EventName) {
             if (arguments.length === 2) {
                 EventRegister.getInstance()
-                    .filter(function (data:IEventRegisterData, eventName:EventName) {
+                    .filter((data:IEventRegisterData, eventName:EventName) => {
                         return JudgeUtils.isEqual(target, data.target)
                             && EventTable.isEventOnView(eventName)
                     })
-                    .forEach(function (data:IEventRegisterData, eventName:EventName) {
+                    .forEach((data:IEventRegisterData, eventName:EventName) => {
                         dyCb.EventUtils.removeEvent(view, eventName, data.handler);
                     });
             }
@@ -76,7 +76,7 @@ module Engine3D {
             //}
         }
 
-        public trigger(target:GameObject, eventObject:EventMouse, hander:Function) {
+        public trigger(target:GameObject, eventObject:Event, hander:Function) {
             eventObject.target = target;
 
             hander(eventObject);
@@ -121,17 +121,17 @@ module Engine3D {
         //    }
         //}
 
-        private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse):[{}] {
+        private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse):Array<IEventHandlerData>{
             var result = null,
                 self = this,
-                locationInView = eventObject.locationInView,
+                locationInView:Point = eventObject.locationInView,
                 name = eventObject.name;
 
             //while ()
             //    Director.getTopChildUnderPoint();
 
             function getUnderPoint(target) {
-                result = self._eventRegister.getListenerDataList(target, name);
+                result = EventRegister.getInstance().getListenerDataList(target, name);
 
                 if (result.length > 0) {
                     return result;
@@ -140,13 +140,13 @@ module Engine3D {
                 target = target.getTopChildUnderPoint()
             }
 
-            return getUnderPoint(Director.getTopChildUnderPoint());
+            return getUnderPoint(Director.getInstance().getTopChildUnderPoint(locationInView));
         }
 
-        private _createEventObject(event:any, target:GameObject) {
+        private _createEventObject(event:any, view:GameObject) {
             var obj = EventMouse.create(event ? event : window.event);
 
-            obj.currentTarget = target;
+            obj.currentTarget = view;
 
             return obj;
         }

@@ -3,6 +3,10 @@ dist/
 .DS*
 .idea
 node_modules/
-bower_modules/
+bower_components/
 mine/
 reference/
+engine/**/*.js
+engine/**/*.map
+engine/*.js
+engine/*.map

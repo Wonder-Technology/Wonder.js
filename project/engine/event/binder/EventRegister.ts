@@ -44,7 +44,8 @@ module Engine3D {
             //    //this._listenerMap.addChild(eventName, data);
             //}
 
-            this._listenerMap.appendChild(<string>eventName, data);
+
+            this._listenerMap.appendChild(<any>eventName, data);
 
 
             //this._listenerList.addChild(listener.eventType,  {
@@ -61,13 +62,8 @@ module Engine3D {
             this._removeFromMap(target);
         }
 
-        public getListenerDataList(target:GameObject, eventName:EventName):[{}] {
-            solve  Argument of type 'EventName' is not assignable to parameter of type 'string'.
-            refer to https://github.com/Microsoft/TypeScript/issues/1206
-
-
-
-            return this._listenerMap.getChild(eventName)
+        public getListenerDataList(target:GameObject, eventName:EventName): Array<IEventHandlerData>{
+            return this._listenerMap.getChild(<any>eventName)
                 .filter(function (data) {
                     return JudgeUtils.isEqual(data.target, target);
                     //return listener.hasHandler(eventName);

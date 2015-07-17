@@ -178,7 +178,7 @@ module Engine3D{
                 return null;
             }
 
-            return this._scene.getTopGameObjectUnderPoint(point);
+            return this._scene.getTopChildUnderPoint(point);
         }
 
         private _startLoop() {

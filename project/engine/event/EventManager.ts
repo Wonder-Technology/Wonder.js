@@ -37,42 +37,40 @@ module Engine3D {
         //    return this._instance;
         //}
 
-        private static _eventRegister:EventRegister = EventRegister.create();
-        private static _eventBinder:EventBinder = EventBinder.create(this._eventRegister);
-        private static _eventDispatcher:EventDispatcher = EventDispatcher.create(this._eventRegister);
+        private static _eventBinder:EventBinder = EventBinder.create();
+        private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
         public static on(target:GameObject, listener:{}|EventListener) {
             this._eventBinder.on(target, listener);
         }
 
         public static off(target:GameObject, eventName?:EventName) {
-            this._eventBinder.off(target, eventName)
-            //    .apply(
-            //    this._eventBinder,
-            //    Array.prototype.slice.call(arguments, 0)
-            //);
+            this._eventBinder.off.apply(
+                this._eventBinder,
+                Array.prototype.slice.call(arguments, 0)
+            );
         }
 
-        public static trigger(target:GameObject, evenType:number) {
-            this._eventDispatcher.trigger(target, Type);
+        public static trigger(target:GameObject, event:Event) {
+            this._eventDispatcher.trigger(target, event);
         }
 
-        public static broadcast(target:GameObject, evenType:number) {
-            this._eventDispatcher.broadcast(target, Type);
+        public static broadcast(target:GameObject, event:Event) {
+            this._eventDispatcher.broadcast(target, event);
         }
 
-        public static emit(target:GameObject, evenType:number) {
-            this._eventDispatcher.emit(target, Type);
+        public static emit(target:GameObject, event:Event) {
+            this._eventDispatcher.emit(target, event);
         }
 
         public static setBubbleParent(target:GameObject, parent:any) {
-            this._eventRegister.setBubbleParent(target, parent);
+            EventRegister.getInstance().setBubbleParent(target, parent);
             //this._eventDispatcher.setBubbleParent(target, parent);
         }
 
-        public static remove(target:GameObject) {
-            this._eventBinder.remove(target);
-        }
+        //public static remove(target:GameObject) {
+        //    this._eventBinder.remove(target);
+        //}
 
         //todo add getListenerCount(target, type) method
     }

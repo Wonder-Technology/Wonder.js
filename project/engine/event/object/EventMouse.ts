@@ -21,8 +21,8 @@ module Engine3D {
         private _location:Point = null;
         //Get cursor location(related to document)
         get location():Point {
-            var point = null,
-                e = this._event;
+            var point:Point = null,
+                e = this.event;
 
             if (this._location) {
                 return this._location;
@@ -50,8 +50,8 @@ module Engine3D {
         //Returns the current cursor location in screen coordinates(related to canvas)
         get locationInView():Point {
             //return this._locationInView;
-            var point = null,
-                viewOffset = null;
+            var point:Point = null,
+                viewOffset:any = null;
 
             if (this._locationInView) {
                 return this._locationInView;
@@ -59,10 +59,10 @@ module Engine3D {
 
             point = this.location;
 
-            dyCb.Log.error(!JudgeUtils.isView(this._event.currentTarget), dyCb.Log.info.FUNC_MUST_BE("canvas"));
+            dyCb.Log.error(!JudgeUtils.isView(this.event.currentTarget), dyCb.Log.info.FUNC_MUST_BE("canvas"));
 
-            //canvasOffset = this._getCanvasOffset(this._event.currentTarget);
-            viewOffset = this._event.currentTarget.offset;
+            //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
+            viewOffset = this.event.currentTarget.offset;
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
         }
@@ -73,7 +73,7 @@ module Engine3D {
 
         private _button:number = null;
         get button() {
-            var e = this._event,
+            var e = this.event,
                 mouseButton:number = null;
 
             if (this._button) {
@@ -122,9 +122,9 @@ module Engine3D {
         }
 
 
-        public copy():EventMouse {
-            return dyCb.ExtendUtils.copyPublicAttri(this);
-        }
+        //public copy():EventMouse {
+        //    return dyCb.ExtendUtils.copyPublicAttri(this);
+        //}
 
 
         //private _getCanvasOffset(view:IView) {

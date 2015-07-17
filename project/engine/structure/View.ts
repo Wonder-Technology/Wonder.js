@@ -2,6 +2,9 @@
 module Engine3D {
     export interface IView {
         offset:{x:number, y:number};
+        width:number;
+        height:number;
+
         getContext():any;
     }
 
@@ -24,13 +27,22 @@ module Engine3D {
             return offset;
         }
 
-        private _view:IView = null;
+        private _view:any = null;
+
+        //private _width:number = null;
+        get width(){
+            return this._view.width;
+        }
+
+        get height(){
+            return this._view.height;
+        }
 
         constructor(view:IView){
             this._view = view;
         }
 
-        public getContext(){
+        public getContext():any{
             return this._view.getContext("webgl") || this._view.getContext("experimental-webgl");
         }
     }
