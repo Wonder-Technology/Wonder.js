@@ -47,7 +47,6 @@
 /// <reference path="geometry/TriangleGeometry"/>
 
 /// <reference path="event/KeyCodeMap"/>
-/// <reference path="event/EventManager"/>
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventName"/>
 /// <reference path="event/object/EventPhase"/>
@@ -62,6 +61,7 @@
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/EventBinder"/>
 /// <reference path="event/factory/FactoryEventHandler"/>
+/// <reference path="event/EventManager"/>
 
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Mesh"/>

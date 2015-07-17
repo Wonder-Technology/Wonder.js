@@ -28,10 +28,12 @@ module Engine3D{
             this._name = name;
         }
 
-        constructor(eventName:EventName) {
+        constructor(event:any, eventName:EventName) {
+            this._event = event;
             this._name = eventName;
         }
 
+        //target is the actual target that received the event.
         private _target:GameObject = null;
         get target() {
             dyCb.Log.error(!this._target, dyCb.Log.info.FUNC_MUST_DEFINE("target"));
@@ -44,7 +46,7 @@ module Engine3D{
             this._target = target;
         }
 
-        //todo _currentTarget is IView or GameObject?
+        //currentTarget is always the object listening for the event
         private _currentTarget:GameObject = null;
         get currentTarget() {
             return this._currentTarget;

@@ -56,7 +56,7 @@ module Engine3D {
                     if(REGEX_HANDER.test(i)){
                         this._handlerDataList.addChild({
                             eventName: this._parseEventName(i),
-                            hander: option[i]
+                            handler: option[i]
                         });
                     }
                 }

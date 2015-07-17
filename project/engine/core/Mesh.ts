@@ -4,6 +4,8 @@ module Engine3D{
         //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
         //when need push,pop matrix?
 
+        //todo use component architecture, delete Mesh, make Geometry,Material to be component
+
         //todo be Material(add baseClass Material)
         public static create(gemo:Geometry):Mesh {
             var obj = new this(gemo);

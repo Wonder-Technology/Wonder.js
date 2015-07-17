@@ -8,6 +8,8 @@ module Engine3D {
     _table.addChild(<any>EventName.MOUSEOVER, EventType.MOUSE);
     _table.addChild(<any>EventName.MOUSEOUT, EventType.MOUSE);
     _table.addChild(<any>EventName.MOUSEMOVE, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEDOWN, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEUP, EventType.MOUSE);
 
     export class EventTable {
         //getEventType should put here,

@@ -9,7 +9,7 @@ module Engine3D {
             return obj;
         }
 
-        private _meshes:dyCb.Collection = dyCb.Collection.create();
+        //private _meshes:dyCb.Collection = dyCb.Collection.create();
 
         private _camera:Camera = null;
         get camera() {
@@ -51,7 +51,7 @@ module Engine3D {
 
             this._program.use();
 
-            this._meshes.forEach((mesh)=> {
+            this.forEach((mesh)=> {
                 self._setData(mesh);
 
                 mesh.update();

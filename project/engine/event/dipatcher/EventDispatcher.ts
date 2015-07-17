@@ -57,25 +57,18 @@ module Engine3D {
         }
 
         public broadcast(target:GameObject, eventObject:Event) {
-            var parent = this._getParent(target);
+            var eventRegister:EventRegister = EventRegister.getInstance(),
+                parent = eventRegister.getParent(target);
 
             this.trigger(target, eventObject);
 
             while (parent) {
                 this.trigger(target, eventObject);
-                parent = this._getParent(parent.parent);
+                parent = eventRegister.getParent(parent.parent);
             }
         }
 
         public emit(target:GameObject, eventObject:Event) {
-
-        }
-
-        private _getParent(target) {
-            var parent = EventRegister.getInstance().getBubbleParent(target);
-
-            //try to get from register first
-            return parent ? parent : target.parent;
         }
     }
 }

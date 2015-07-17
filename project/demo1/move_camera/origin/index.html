@@ -192,9 +192,11 @@
 //                                lastY = y;
 //                                dragging = true;
 //                            }
+                            console.log("mousedown");
                         },
                         onMouseUp: function(e){
                             dragging = false;
+                            console.log("mouseup");
                         },
                         onMouseMove: function(e){
 //                            var x = ev.clientX, y = ev.clientY;
@@ -214,10 +216,25 @@
                             }
                             lastX = x;
                             lastY = y;
+
+                            console.log("mousemove");
                         },
                         onClick: function(e){
                         }
                     });
+
+
+//            setTimeout(function(){
+//                console.log("off mousemove");
+//                Engine3D.EventManager.off(scene, Engine3D.EventName.MOUSEMOVE);
+//            }, 1000);
+//
+//            setTimeout(function(){
+//                console.log("off all mouse event on scene");
+//                Engine3D.EventManager.off(scene);
+//            }, 2000);
+
+
 //            c.on("mousedown", function (ev) {
 //                var x = ev.clientX, y = ev.clientY;
 //                // Start dragging if a moue is in <canvas>
@@ -260,13 +277,16 @@
 //            var body = Engine3D.EventManager.create(document.querySelector("body"));
 
 //            document.querySelector("body").on("keydown", function (ev) {
+//            $(canvas.dom).on("mousemove", function(e){
+//                console.log(move);
+//            })
             $("body").on("keydown", function(ev){
 
                 setAllFalse();
 
 //             Engine3D.EventManager.create().trigger("custom");
 
-                keyState[Engine3D.KeyCodeMap[ev.keyCode]] = true;
+                keyState[ev.keyCode] = true;
             })
 //            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
 

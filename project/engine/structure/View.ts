@@ -4,7 +4,7 @@ module Engine3D {
         offset:{x:number, y:number};
         width:number;
         height:number;
-
+        dom:any;
         getContext():any;
     }
 
@@ -16,7 +16,7 @@ module Engine3D {
         }
 
         get offset() {
-            var view = this._view,
+            var view = this._dom,
                 offset = {x: view.offsetLeft, y: view.offsetTop};
 
             while (view = view.offsetParent) {
@@ -27,23 +27,26 @@ module Engine3D {
             return offset;
         }
 
-        private _view:any = null;
+        private _dom:any = null;
+        get dom(){
+            return this._dom;
+        }
 
         //private _width:number = null;
         get width(){
-            return this._view.width;
+            return this._dom.width;
         }
 
         get height(){
-            return this._view.height;
+            return this._dom.height;
         }
 
-        constructor(view:IView){
-            this._view = view;
+        constructor(dom:any){
+            this._dom = dom;
         }
 
         public getContext():any{
-            return this._view.getContext("webgl") || this._view.getContext("experimental-webgl");
+            return this._dom.getContext("webgl") || this._dom.getContext("experimental-webgl");
         }
     }
 }

@@ -9,7 +9,7 @@ module Engine3D {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public trigger(target:GameObject, eventObject:Event, hander:Function) {
+        public trigger(target:GameObject, eventObject:Event, handler:Function) {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
     }

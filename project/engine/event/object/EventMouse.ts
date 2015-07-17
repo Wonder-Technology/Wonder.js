@@ -6,8 +6,13 @@ module Engine3D {
         //public static MOUSEOUT:string = "mouseout";
         //public static MOUSEMOVE:string = "mousemove";
 
-        public static create(eventName:EventName) {
-            var obj = new this(eventName);
+        //public static create(eventName:EventName) {
+        //    var obj = new this(eventName);
+        //
+        //    return obj;
+        //}
+        public static create(event:any, eventName:EventName) {
+            var obj = new this(event, eventName);
 
             return obj;
         }
@@ -59,10 +64,9 @@ module Engine3D {
 
             point = this.location;
 
-            dyCb.Log.error(!JudgeUtils.isView(this.event.currentTarget), dyCb.Log.info.FUNC_MUST_BE("canvas"));
 
             //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
-            viewOffset = this.event.currentTarget.offset;
+            viewOffset = Director.getInstance().getView().offset;
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
         }

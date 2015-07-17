@@ -173,12 +173,12 @@ module Engine3D{
             return WebGLContext.view;
         }
 
-        public getTopChildUnderPoint(point:Point):GameObject{
+        public getTopUnderPoint(point:Point):GameObject{
             if(!this._scene){
                 return null;
             }
 
-            return this._scene.getTopChildUnderPoint(point);
+            return this._scene.getTopUnderPoint(point);
         }
 
         private _startLoop() {

@@ -12,7 +12,7 @@ module Engine3D {
             this._uid = uid;
         }
 
-        //todo add mesh,scene position
+        //todo add mesh,scene position 研究threejs->dynamic，看如何表示position
         private _position:Position = null;
         get position() {
             return this._position;
@@ -125,12 +125,14 @@ module Engine3D {
 
         public sort(){
             this._childs.sort(this._ascendZ);
+
+            return this;
         }
 
-        private _ascendZ(a:GameObject, b:GameObject){
-            return function(a, b) {
-                return a.position.z - b.position.z;
-            }
+        public forEach(func:Function){
+            this._childs.forEach(func);
+
+            return this;
         }
 
         public removeChild(child:GameObject):GameObject {
@@ -169,7 +171,7 @@ module Engine3D {
             return this;
         }
 
-        public getTopChildUnderPoint(point:Point):GameObject {
+        public getTopUnderPoint(point:Point):GameObject {
             //var found, localP, child;
             //var childrenArr;
             //if(!this._active || !this._visible) return null;
@@ -210,7 +212,7 @@ module Engine3D {
                 for (i = len - 1; i >= 0; i--) {
                     let child = childs.getChild(i);
 
-                    result = child.getTopChildUnderPoint(point);
+                    result = child.getTopUnderPoint(point);
                     if (result) {
                         return result;
                     }
@@ -224,16 +226,31 @@ module Engine3D {
             return null;
         }
 
-        public isHit(point:Point):boolean {
+        public isHit(locationInView:Point):boolean {
             //todo extract collider?
             //var collider:Collider = this._collider;
             //return collider && collider.collideXY(localX, localY);
 
 
-            var RANGE = 10;
+            //var RANGE = 10;
+            //
+            //return Math.abs(this._position.x - locationInView.x) < RANGE
+            //&& Math.abs(this._position.y - locationInView.y) < RANGE;
 
-            return Math.abs(this._position.x - point.x) < RANGE
-            && Math.abs(this._position.y - point.y) < RANGE;
+
+            //todo complete this after adding position
+            if(locationInView){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        private _ascendZ(a:GameObject, b:GameObject){
+            return function(a, b) {
+                return a.position.z - b.position.z;
+            }
         }
     }
 }

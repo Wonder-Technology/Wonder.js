@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventRegisterData {
-        target:GameObject,
+        currentTarget:GameObject,
         handler:Function,
         priority:number
     }
@@ -18,12 +18,13 @@ module Engine3D {
 
 
         //private _listenerMap:EventListenerMap = EventListenerMap.create();
+        //todo refactor structure to {"targetUid_eventName": target.handler} ?
         private _listenerMap:dyCb.Hash = dyCb.Hash.create();
 
         public register(target:GameObject, eventName:EventName, handler:Function, priority:number) {
             //var isBindEventOnView = false,
             var data = <IEventRegisterData>{
-                target: target,
+                currentTarget: target,
                 handler: handler,
                 priority: priority
             };
@@ -56,18 +57,22 @@ module Engine3D {
             //return isBindEventOnView;
         }
 
-        public remove(target:GameObject) {
-            this.setBubbleParent(target, null);
-
-            this._removeFromMap(target);
+        public remove(target:GameObject, eventName:EventName) {
+            this._removeFromMap(target, eventName);
         }
 
-        public getListenerDataList(target:GameObject, eventName:EventName): Array<IEventHandlerData>{
-            return this._listenerMap.getChild(<any>eventName)
-                .filter(function (data) {
-                    return JudgeUtils.isEqual(data.target, target);
-                    //return listener.hasHandler(eventName);
-                })
+        public getListenerDataList(currentTarget:GameObject, eventName:EventName){
+            var result = this._listenerMap.getChild(<any>eventName),
+                self = this;
+
+            if(!result || !currentTarget){
+                return null;
+            }
+
+            return result.filter(function (data) {
+                return JudgeUtils.isEqual(data.currentTarget, currentTarget)
+                || self._isContain(data.currentTarget, currentTarget);
+            })
                 .sort(function (dataA, dataB) {
                     return dataB.priority - dataA.priority;
                 });
@@ -77,8 +82,10 @@ module Engine3D {
             target.bubbleParent = parent;
         }
 
-        public getBubbleParent(target:GameObject):GameObject {
-            return target.bubbleParent;
+        public getParent(target:GameObject):GameObject {
+            var parent = target.bubbleParent;
+
+            return parent ? parent : target.parent;
         }
 
         public isBindEventOnView(eventName) {
@@ -94,10 +101,50 @@ module Engine3D {
             return this._listenerMap.forEach(func);
         }
 
-        private _removeFromMap(target) {
-            this._listenerMap.removeChild(function (data, eventName) {
-                return target.uid === data.target.uid;
+        private _isContain(parentTarget:GameObject, childTarget:GameObject){
+            var parent = null;
+
+            parent = childTarget.parent;
+
+            while(parent){
+                if(JudgeUtils.isEqual(parent, parentTarget)){
+                    return true;
+                }
+
+                parent = childTarget.parent;
+            }
+
+            return false;
+        }
+
+
+        private _removeFromMap(target:GameObject, eventName:EventName) {
+            var self = this,
+                result = this._listenerMap;
+
+            if(eventName){
+                result = this._listenerMap.filter((list:dyCb.Collection, name:EventName) => {
+                    return name === eventName;
+                });
+            }
+
+            result.forEach((list:dyCb.Collection, eventName:EventName) => {
+                var listResult = list.filter((data:IEventRegisterData) => {
+                    return target.uid !== data.currentTarget.uid;
+                });
+
+                if(listResult.getCount() > 0){
+                    //todo no <any>
+                    self._listenerMap.addChild(<any>eventName, listResult);
+                }
+                else{
+                    self.setBubbleParent(target, null);
+                    self._listenerMap.removeChild(eventName);
+                }
             });
+            //this._listenerMap.removeChild(function (data:IEventRegisterData, eventName) {
+            //    return target.uid === data.currentTarget.uid;
+            //});
         }
 
 

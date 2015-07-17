@@ -29,16 +29,16 @@ module Engine3D {
 
             //handlerDataList.forEach(function (handlerData) {
             dyCb.EventUtils.addEvent(
-                view,
+                view.dom,
                 eventName,
                 //dyCb.EventUtils.bindEvent(context, function (eventObject:EventMouse) {
                 dyCb.EventUtils.bindEvent(context, function (event) {
-                    var eventObject = self._createEventObject(event, target),
+                    var eventObject = self._createEventObject(event, eventName, target),
                     //should invoking eventRegister read newest register data when trigger event,
                     //so the class need retain eventRegister's reference
-                        targetDataArr = self._getTopTriggerDataArrUnderPoint(eventObject);
+                        targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
 
-                    targetDataArr.forEach((targetData:IEventHandlerData)=>{
+                    targetDataArr && targetDataArr.forEach((targetData:IEventRegisterData)=>{
                         self.trigger(
                             target,
                             eventObject,
@@ -63,23 +63,21 @@ module Engine3D {
             if (arguments.length === 2) {
                 EventRegister.getInstance()
                     .filter((data:IEventRegisterData, eventName:EventName) => {
-                        return JudgeUtils.isEqual(target, data.target)
+                        return JudgeUtils.isEqual(target, data.currentTarget)
                             && EventTable.isEventOnView(eventName)
                     })
                     .forEach((data:IEventRegisterData, eventName:EventName) => {
-                        dyCb.EventUtils.removeEvent(view, eventName, data.handler);
+                        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
                     });
             }
-            //todo off specify event
-            //else if (arguments.length === 3) {
-            //
-            //}
+            else if (arguments.length === 3) {
+            }
         }
 
-        public trigger(target:GameObject, eventObject:Event, hander:Function) {
+        public trigger(target:GameObject, eventObject:Event, handler:Function) {
             eventObject.target = target;
 
-            hander(eventObject);
+            handler(eventObject);
 
             if (eventObject.isStopPropagation) {
                 return;
@@ -121,32 +119,41 @@ module Engine3D {
         //    }
         //}
 
-        private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse):Array<IEventHandlerData>{
-            var result = null,
-                self = this,
+        private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse){
+            var self = this,
                 locationInView:Point = eventObject.locationInView,
                 name = eventObject.name;
 
-            //while ()
-            //    Director.getTopChildUnderPoint();
-
             function getUnderPoint(target) {
-                result = EventRegister.getInstance().getListenerDataList(target, name);
+                var result:dyCb.Collection = null,
+                    top = null;
 
-                if (result.length > 0) {
+                result= EventRegister.getInstance().getListenerDataList(target, name);
+
+                if(self._isTrigger(result)){
                     return result;
                 }
 
-                target = target.getTopChildUnderPoint()
+                top = target.getTopUnderPoint(locationInView);
+
+                if(JudgeUtils.isEqual(top, target)){
+                    return null;
+                }
+
+                return arguments.callee(top);
             }
 
-            return getUnderPoint(Director.getInstance().getTopChildUnderPoint(locationInView));
+            return getUnderPoint(Director.getInstance().getTopUnderPoint(locationInView));
         }
 
-        private _createEventObject(event:any, view:GameObject) {
-            var obj = EventMouse.create(event ? event : window.event);
+        private _isTrigger(result){
+            return result && result.getCount() > 0;
+        }
 
-            obj.currentTarget = view;
+        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
+            var obj = EventMouse.create(event ? event : window.event, eventName);
+
+            obj.currentTarget = currentTarget;
 
             return obj;
         }
