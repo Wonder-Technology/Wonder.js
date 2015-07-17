@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>摄像机</title>
 
-    <script src="/project/dist/Engine.js" type="text/javascript"></script>
+    <!--<script src="/project/lib/inner/DYCommonLib/dist/dyCb.js" type="text/javascript"></script>-->
+    <!--<script src="/project/lib/inner/DYReactive/dist/dyRt.core.js" type="text/javascript"></script>-->
+    <!--<script src="/project/lib/inner/bowser/bowser.js" type="text/javascript"></script>-->
+    <script src="/project/dist/Engine.innerLib.js" type="text/javascript"></script>
+    <script src="/project/dist/Engine.debug.js" type="text/javascript"></script>
     <script src="/project/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
 </head>
 <body>
@@ -172,7 +176,7 @@
 
             Engine3D.EventManager.on(scene,
                     {
-                        eventType: EventType.MOUSE,
+                        eventType: Engine3D.EventType.MOUSE,
 
                         onMouseDown: function (e) {
 //                            var x = ev.clientX, y = ev.clientY;
@@ -255,13 +259,15 @@
 
 //            var body = Engine3D.EventManager.create(document.querySelector("body"));
 
-            document.querySelector("body").on("keydown", function (ev) {
+//            document.querySelector("body").on("keydown", function (ev) {
+            $("body").on("keydown", function(ev){
+
                 setAllFalse();
 
 //             Engine3D.EventManager.create().trigger("custom");
 
                 keyState[Engine3D.KeyCodeMap[ev.keyCode]] = true;
-            });
+            })
 //            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
 
 

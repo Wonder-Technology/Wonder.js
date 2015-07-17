@@ -1,7 +1,7 @@
 var gulp = require("gulp");
 var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
-var fs = require("fs");
+var fs = require("fs-extra");
 
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
@@ -51,8 +51,30 @@ gulp.task("combineContent", function(done){
         }
     );
 
+    createInnerLibJs();
+
     done();
 });
+
+function createInnerLibJs(){
+    fs.createFileSync( path.join(distPath, "Engine.innerLib.js") );
+
+    combineInnerLibContent(
+        path.join(distPath, "Engine.innerLib.js"),
+        path.join(process.cwd(), definitionsPath),
+        function(innerLibDtsPath){
+            var result = false;
+
+            combineContentList.forEach(function(dts){
+                if(innerLibDtsPath.indexOf(dts) > -1){
+                    result = true;
+                }
+            })
+
+            return result;
+        }
+    );
+}
 
 function combineInnerLibDTs(mainFilePath, definitionDTsPath, filterFunc){
     getInnerLibDTsPathArr(definitionDTsPath)

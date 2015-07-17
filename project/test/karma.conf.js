@@ -18,19 +18,20 @@ module.exports = function(config) {
         'bower_components/yyctoolbox/tool/yTool.js',
 
         //'engine/math/*.js',
-        'dist/Engine.js',
+        'dist/Engine.innerLib.js',
+        'dist/Engine.debug.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
 
-        'test/unit/math/*.js',
+        'test/unit/math/*.js'
         //'test/unit/event/*.js',
         //'test/unit/utils/browserDetector/useragents.js',
         //'test/unit/utils/**/*.js',
 
-        {pattern: 'engine/**/*.js.map', watched: false, included: false, served: true},
-        {pattern: 'engine/**/*.ts', watched: false, included: false, served: true}
+        //{pattern: 'engine/**/*.js.map', watched: false, included: false, served: true},
+        //{pattern: 'engine/**/*.ts', watched: false, included: false, served: true}
     ],
 
 
