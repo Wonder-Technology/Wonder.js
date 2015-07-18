@@ -1,20 +1,27 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D{
     export class FactoryEventHandler{
-        public static createEventHandler(eventType:EventType):EventHandler{
-            var handler = null;
+        public static createEventHandler(eventType?:EventType){
 
-            switch (eventType){
-                case EventType.MOUSE:
-                    handler = EventMouseHandler.getInstance();
-                    break;
-                //todo more type
-                default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
-                    break;
+            if(arguments.length === 0){
+                return this._createAllEventHandlers();
+            }
+            else if(arguments.length === 1){
+                let handler = null;
+
+                switch (eventType){
+                    case EventType.MOUSE:
+                        handler = EventMouseHandler.getInstance();
+                        break;
+                    //todo more type
+                    default :
+                        dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
+                        break;
+                }
+
+                return handler;
             }
 
-            return handler;
         }
         //
         //public static createEvent(eventType:EventType, eventName:EventName, phase:EventPhase=EventPhase.EMIT){
@@ -34,5 +41,9 @@ module Engine3D{
         //
         //    return eventObj;
         //}
+
+        private static _createAllEventHandlers(){
+             return dyCb.Collection.create([EventMouseHandler.getInstance()]);
+        }
     }
 }

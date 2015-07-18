@@ -78,18 +78,32 @@ module Engine3D {
 
         //todo unify eventName?(all use apply or all not use)
         public off(target:GameObject, eventName?:EventName) {
-            var handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName)),
-                argArr = Array.prototype.slice.call(arguments, 0);
-
+            var eventRegister = EventRegister.getInstance(),
+                argArr = Array.prototype.slice.call(arguments, 0),
+                argArrCopy = argArr.concat();
 
             argArr.unshift(this._getView());
 
-            handler.off.apply(
-                handler,
-                argArr
-            );
+            if(arguments.length === 1){
+                let handlerList:dyCb.Collection = FactoryEventHandler.createEventHandler();
 
-            EventRegister.getInstance().remove(target, eventName);
+                handlerList.forEach((handler:EventHandler) => {
+                    handler.off.apply(
+                        handler,
+                        argArr
+                    );
+                });
+            }
+            else if(arguments.length === 2){
+                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName));
+
+                handler.off.apply(
+                    handler,
+                    argArr
+                );
+            }
+
+            eventRegister.remove.apply(eventRegister, argArrCopy);
         }
 
         //public remove(target:GameObject) {

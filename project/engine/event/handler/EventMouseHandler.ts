@@ -66,22 +66,27 @@ module Engine3D {
         public off(view: IView, target:GameObject, eventName?:EventName) {
             var eventRegister = EventRegister.getInstance();
 
-            if (arguments.length === 2) {
-                //EventRegister.getInstance()
-                //    .filter((data:IEventRegisterData, eventName:EventName) => {
-                //        return JudgeUtils.isEqual(target, data.currentTarget);
-                //            //&& EventTable.isEventOnView(eventName)
-                //    })
-                //    .forEach((data:IEventRegisterData, eventName:EventName) => {
-                //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
-                //    });
-            }
-            else if (arguments.length === 3) {
-                //eventRegister.getChild(target, eventName)
-                //    .forEach((data:IEventRegisterData) => {
-                //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
-                //    });
-            }
+            //if (arguments.length === 2) {
+            //    //EventRegister.getInstance()
+            //    //    .filter((data:IEventRegisterData, eventName:EventName) => {
+            //    //        return JudgeUtils.isEqual(target, data.currentTarget);
+            //    //            //&& EventTable.isEventOnView(eventName)
+            //    //    })
+            //    //    .forEach((data:IEventRegisterData, eventName:EventName) => {
+            //    //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+            //    //    });
+            //    eventRegister.getChild(target)
+            //}
+            //else if (arguments.length === 3) {
+            //    eventRegister.getChild(target, eventName)
+            //        .forEach((data:IEventRegisterData) => {
+            //            dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+            //        });
+            //}
+            eventRegister.getChild.apply(eventRegister, Array.prototype.slice.call(arguments, 1))
+                .forEach((data:IEventRegisterData) => {
+                    dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+                });
         }
 
         public trigger(target:GameObject, eventObject:Event, handler:Function) {

@@ -12,23 +12,38 @@ module Engine3D{
         public appendChild(eventName:EventName, data:IEventRegisterData){
             this._listenerMap.appendChild(
                 //String(data.currentTarget.uid) + "_" + eventName,
-                this.buildKey(data.currentTarget, eventName),
+                this._buildKey(data.currentTarget, eventName),
                 data
             );
         }
 
-        public getChild(currentTarget:GameObject, eventName:EventName){
-            //var self = this;
+        public getChild(currentTarget:GameObject, eventName?:EventName){
+            var self = this;
             //
             //return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
-            //    return key === self.buildKey(currentTarget, eventName);
+            //    return key === self._buildKey(currentTarget, eventName);
             //});
             //
-            return this._listenerMap.getChild(this.buildKey(currentTarget, eventName));
+            if(arguments.length === 1){
+                return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
+                    return self._isTarget(key, currentTarget, list);
+                });
+            }
+            else if(arguments.length === 2){
+                return this._listenerMap.getChild(this._buildKey(currentTarget, eventName));
+            }
         }
 
-        public hasChild(currentTarget:GameObject, eventName:EventName){
-            return this._listenerMap.hasChild(this.buildKey(currentTarget, eventName));
+        public hasChild(...args){
+            if(arguments.length === 1 && JudgeUtils.isFunction(arguments[0])){
+                return this._listenerMap.hasChild(arguments[0]);
+            }
+            else if(arguments.length === 2){
+                let currentTarget = arguments[0],
+                    eventName = arguments[1];
+
+                return this._listenerMap.hasChild(this._buildKey(currentTarget, eventName));
+            }
         }
 
         public filter(func:Function){
@@ -39,8 +54,25 @@ module Engine3D{
             return this._listenerMap.forEach(func);
         }
 
-        public buildKey(currentTarget:GameObject, eventName:EventName){
+        public removeChild(currentTarget:GameObject, eventName?:EventName){
+            var self = this;
+
+            if(arguments.length === 1){
+                return this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
+                    return self._isTarget(key, currentTarget, list);
+                });
+            }
+            else if(arguments.length === 2){
+                return this._listenerMap.removeChild(this._buildKey(currentTarget, eventName));
+            }
+        }
+
+        private _buildKey(currentTarget:GameObject, eventName:EventName){
             return String(currentTarget.uid) + "_" + eventName;
+        }
+
+        private _isTarget(key:string, target:GameObject, list:dyCb.Collection){
+            return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
     }
 }

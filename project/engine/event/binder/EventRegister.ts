@@ -57,8 +57,48 @@ module Engine3D {
             //return isBindEventOnView;
         }
 
-        public remove(target:GameObject, eventName:EventName) {
-            this._removeFromMap(target, eventName);
+        public remove(target:GameObject, eventName?:EventName) {
+            //this._removeFromMap(target, eventName);
+            //var self = this,
+            //    result = this._listenerMap;
+
+            if(arguments.length === 1){
+                this._listenerMap.removeChild(target);
+
+                this._handleAfterAllEventHandlerRemoved(target);
+
+                return;
+            }
+            else if(arguments.length === 2){
+                this._listenerMap.removeChild(target, eventName);
+                if(this._isAllEventHandlerRemoved(target)){
+                    this._handleAfterAllEventHandlerRemoved(target);
+                }
+            }
+            //
+            //if(eventName){
+            //    result = this._listenerMap.filter((list:dyCb.Collection, name:EventName) => {
+            //        return name === eventName;
+            //    });
+            //}
+            //
+            //result.forEach((list:dyCb.Collection, eventName:EventName) => {
+            //    var listResult = list.filter((data:IEventRegisterData) => {
+            //        return target.uid !== data.currentTarget.uid;
+            //    });
+            //
+            //    if(listResult.getCount() > 0){
+            //        //todo no <any>
+            //        self._listenerMap.addChild(<any>eventName, listResult);
+            //    }
+            //    else{
+            //        self.setBubbleParent(target, null);
+            //        self._listenerMap.removeChild(eventName);
+            //    }
+            //});
+            ////this._listenerMap.removeChild(function (data:IEventRegisterData, eventName) {
+            ////    return target.uid === data.currentTarget.uid;
+            ////});
         }
 
         public getListenerDataList(currentTarget:GameObject, eventName:EventName){
@@ -115,8 +155,11 @@ module Engine3D {
             return this._listenerMap.forEach(func);
         }
 
-        public getChild(target:GameObject, eventName:EventName){
-            return this._listenerMap.getChild(target, eventName);
+        public getChild(target:GameObject, eventName?:EventName){
+            return this._listenerMap.getChild.apply(
+                this._listenerMap,
+                Array.prototype.slice.call(arguments, 0)
+            );
         }
 
         //private _isContain(parentTarget:GameObject, childTarget:GameObject){
@@ -136,35 +179,18 @@ module Engine3D {
         //}
 
 
-        private _removeFromMap(target:GameObject, eventName:EventName) {
-            //var self = this,
-            //    result = this._listenerMap;
-            //
-            //if(eventName){
-            //    result = this._listenerMap.filter((list:dyCb.Collection, name:EventName) => {
-            //        return name === eventName;
-            //    });
-            //}
-            //
-            //result.forEach((list:dyCb.Collection, eventName:EventName) => {
-            //    var listResult = list.filter((data:IEventRegisterData) => {
-            //        return target.uid !== data.currentTarget.uid;
-            //    });
-            //
-            //    if(listResult.getCount() > 0){
-            //        //todo no <any>
-            //        self._listenerMap.addChild(<any>eventName, listResult);
-            //    }
-            //    else{
-            //        self.setBubbleParent(target, null);
-            //        self._listenerMap.removeChild(eventName);
-            //    }
-            //});
-            ////this._listenerMap.removeChild(function (data:IEventRegisterData, eventName) {
-            ////    return target.uid === data.currentTarget.uid;
-            ////});
+        //private _removeFromMap(target:GameObject, eventName:EventName) {
+        //}
+
+        private _isAllEventHandlerRemoved(target:GameObject){
+            return !this._listenerMap.hasChild((list:dyCb.Collection, key:string) => {
+                return key.indexOf(String(target.uid)) > -1 && list !== undefined;
+            });
         }
 
+        private _handleAfterAllEventHandlerRemoved(target:GameObject){
+            this.setBubbleParent(target, null);
+        }
 
         //private _buildKey(uid, eventName){
         //    return String(uid) + "_" + eventName;
