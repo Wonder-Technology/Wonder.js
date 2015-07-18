@@ -34,41 +34,58 @@ module Engine3D {
             var eventType= eventObject.type,
                 eventName= eventObject.name;
 
-            eventObject.stopPropagation();
+            //eventObject.stopPropagation();
 
             //todo move to eventbinder?
             //may bind multi listener on eventName(based on priority)
             var listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventName);
 
-            if (listenerDataList.length === 0) {
+            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
                 return;
             }
 
-
-            listenerDataList.forEach((listenerData) => {
+            listenerDataList.forEach((listenerData:IEventRegisterData) => {
                 //FactoryEventHandler.createEventHandler(eventType).trigger(target, listener.handlerDataList, eventName);
                 FactoryEventHandler.createEventHandler(eventType).trigger(
-                    target,
-                    eventObject.copy(),
+                    //target,
+                    listenerData.currentTarget,
+                    //todo need copy?
+                    //eventObject.copy(),
+                    eventObject,
                     //FactoryEventHandler.createEvent(eventType, eventName, EventPhase.EMIT),
                     listenerData.handler
                 );
             });
         }
 
-        public broadcast(target:GameObject, eventObject:Event) {
+        /**
+         * transfer event up
+         * @param target
+         * @param eventObject
+         */
+        public emit(target:GameObject, eventObject:Event) {
             var eventRegister:EventRegister = EventRegister.getInstance(),
-                parent = eventRegister.getParent(target);
+                parent:GameObject = null;
+
+            eventObject.phase = EventPhase.EMIT;
 
             this.trigger(target, eventObject);
 
+            parent = eventRegister.getParent(target);
             while (parent) {
-                this.trigger(target, eventObject);
-                parent = eventRegister.getParent(parent.parent);
+                //this.trigger(target, eventObject);
+                this.trigger(parent, eventObject);
+
+                parent = eventRegister.getParent(parent);
             }
         }
 
-        public emit(target:GameObject, eventObject:Event) {
+        /**
+         * transfer event down
+         * @param target
+         * @param eventObject
+         */
+        public broadcast(target:GameObject, eventObject:Event) {
         }
     }
 }

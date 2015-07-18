@@ -33,18 +33,22 @@ module Engine3D {
                 eventName,
                 //dyCb.EventUtils.bindEvent(context, function (eventObject:EventMouse) {
                 dyCb.EventUtils.bindEvent(context, function (event) {
-                    var eventObject = self._createEventObject(event, eventName, target),
+                    var eventObject:EventMouse = self._createEventObject(event, eventName, target),
                     //should invoking eventRegister read newest register data when trigger event,
                     //so the class need retain eventRegister's reference
-                        targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
+                    //    targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
+                        topTarget = Director.getInstance().getTopUnderPoint(eventObject.locationInView);
 
-                    targetDataArr && targetDataArr.forEach((targetData:IEventRegisterData)=>{
-                        self.trigger(
-                            target,
-                            eventObject,
-                            targetData.handler
-                        );
-                    });
+                    EventManager.emit(topTarget, eventObject);
+
+                    //targetDataArr && targetDataArr.forEach((targetData:IEventRegisterData)=>{
+                    //    EventManager.emit(target, eventObject);
+                    //    //self.trigger(
+                    //    //    target,
+                    //    //    eventObject,
+                    //    //    targetData.handler
+                    //    //);
+                    //});
 
                     //EventManager.trigger(
                     //    self._getTopGameObjectUnderPoint()
@@ -60,17 +64,23 @@ module Engine3D {
         //}
 
         public off(view: IView, target:GameObject, eventName?:EventName) {
+            var eventRegister = EventRegister.getInstance();
+
             if (arguments.length === 2) {
-                EventRegister.getInstance()
-                    .filter((data:IEventRegisterData, eventName:EventName) => {
-                        return JudgeUtils.isEqual(target, data.currentTarget)
-                            && EventTable.isEventOnView(eventName)
-                    })
-                    .forEach((data:IEventRegisterData, eventName:EventName) => {
-                        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
-                    });
+                //EventRegister.getInstance()
+                //    .filter((data:IEventRegisterData, eventName:EventName) => {
+                //        return JudgeUtils.isEqual(target, data.currentTarget);
+                //            //&& EventTable.isEventOnView(eventName)
+                //    })
+                //    .forEach((data:IEventRegisterData, eventName:EventName) => {
+                //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+                //    });
             }
             else if (arguments.length === 3) {
+                //eventRegister.getChild(target, eventName)
+                //    .forEach((data:IEventRegisterData) => {
+                //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+                //    });
             }
         }
 
@@ -79,20 +89,20 @@ module Engine3D {
 
             handler(eventObject);
 
-            if (eventObject.isStopPropagation) {
-                return;
-            }
-
-            if (eventObject.phase === EventPhase.BROADCAST) {
-                EventManager.broadcast(target, eventObject);
-            }
-            else if (eventObject.phase === EventPhase.EMIT) {
-                EventManager.emit(target, eventObject);
-            }
-            //emit default
-            else {
-                EventManager.emit(target, eventObject);
-            }
+            //if (eventObject.isStopPropagation) {
+            //    return;
+            //}
+            //
+            //if (eventObject.phase === EventPhase.BROADCAST) {
+            //    EventManager.broadcast(target, eventObject);
+            //}
+            //else if (eventObject.phase === EventPhase.EMIT) {
+            //    EventManager.emit(target, eventObject);
+            //}
+            ////emit default
+            //else {
+            //    EventManager.emit(target, eventObject);
+            //}
         }
 
         //
@@ -119,32 +129,36 @@ module Engine3D {
         //    }
         //}
 
-        private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse){
-            var self = this,
-                locationInView:Point = eventObject.locationInView,
-                name = eventObject.name;
-
-            function getUnderPoint(target) {
-                var result:dyCb.Collection = null,
-                    top = null;
-
-                result= EventRegister.getInstance().getListenerDataList(target, name);
-
-                if(self._isTrigger(result)){
-                    return result;
-                }
-
-                top = target.getTopUnderPoint(locationInView);
-
-                if(JudgeUtils.isEqual(top, target)){
-                    return null;
-                }
-
-                return arguments.callee(top);
-            }
-
-            return getUnderPoint(Director.getInstance().getTopUnderPoint(locationInView));
-        }
+        //private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse){
+        //    var self = this,
+        //        locationInView:Point = eventObject.locationInView,
+        //        name = eventObject.name;
+        //
+        //    function getUnderPoint(target) {
+        //        var result:dyCb.Collection = null,
+        //            top = null;
+        //
+        //        if(target === null){
+        //            return null;
+        //        }
+        //
+        //        result= EventRegister.getInstance().getListenerDataList(target, name);
+        //
+        //        if(self._isTrigger(result)){
+        //            return result;
+        //        }
+        //
+        //        top = target.getTopUnderPoint(locationInView);
+        //
+        //        if(JudgeUtils.isEqual(top, target)){
+        //            return null;
+        //        }
+        //
+        //        return arguments.callee(top);
+        //    }
+        //
+        //    return getUnderPoint(Director.getInstance().getTopUnderPoint(locationInView));
+        //}
 
         private _isTrigger(result){
             return result && result.getCount() > 0;

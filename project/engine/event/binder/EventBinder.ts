@@ -59,6 +59,12 @@ module Engine3D {
             listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                 //var wrapHandler = handler.wrapHandler(handlerData.handler);
 
+                //if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventName)) {
+                if (!EventRegister.getInstance().isBinded(target, handlerData.eventName)) {
+                    //handler.on(view, handlerData.eventName, wrapHandler);
+                    handler.on(view, handlerData.eventName, target);
+                }
+
                 EventRegister.getInstance().register(
                     target,
                     handlerData.eventName,
@@ -67,23 +73,23 @@ module Engine3D {
                     handlerData.handler,
                     listener.priority
                 );
-
-                if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventName)) {
-                    //handler.on(view, handlerData.eventName, wrapHandler);
-                    handler.on(view, handlerData.eventName, target);
-                }
             });
         }
 
+        //todo unify eventName?(all use apply or all not use)
         public off(target:GameObject, eventName?:EventName) {
-            var handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName));
+            var handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName)),
+                argArr = Array.prototype.slice.call(arguments, 0);
 
-            EventRegister.getInstance().remove(target);
+
+            argArr.unshift(this._getView());
 
             handler.off.apply(
                 handler,
-                Array.prototype.slice.call(arguments, 0).unshift(this._getView())
+                argArr
             );
+
+            EventRegister.getInstance().remove(target, eventName);
         }
 
         //public remove(target:GameObject) {

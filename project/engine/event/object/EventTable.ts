@@ -18,20 +18,20 @@ module Engine3D {
             return _table.getChild(<any>eventName);
         }
 
-        public static isEventOnView(eventName:EventName){
-            var result = false;
-
-            switch(this.getEventType(eventName)){
-                case EventType.MOUSE:
-                    result = true;
-                    break;
-                default:
-                    dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
-                    result = false;
-                    break;
-            }
-
-            return result;
-        }
+        //public static isEventOnView(eventName:EventName){
+        //    var result = false;
+        //
+        //    switch(this.getEventType(eventName)){
+        //        case EventType.MOUSE:
+        //            result = true;
+        //            break;
+        //        default:
+        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
+        //            result = false;
+        //            break;
+        //    }
+        //
+        //    return result;
+        //}
     }
 }
