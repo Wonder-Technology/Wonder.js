@@ -228,6 +228,11 @@
                         }
                     });
 
+            var fakeEvent = {
+                pageX:10,
+                pageY:10
+            };
+            Engine3D.EventManager.trigger(scene, Engine3D.EventMouse.create(fakeEvent, Engine3D.EventName.MOUSEDOWN));
 
 //            setTimeout(function(){
 //                console.log("off mousemove");
