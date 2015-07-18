@@ -17,7 +17,10 @@ module Engine3D {
         }
 
         public on(target:GameObject, arg:EventListener|{}) {
-            var listener:EventListener = null;
+            var listener:EventListener = null,
+                view = null,
+                handler:EventHandler = null,
+                self = this;
 
             if (!(target instanceof GameObject)) {
                 return;
@@ -49,12 +52,9 @@ module Engine3D {
 
             //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
 
-            var view = this._getView();
+            view = this._getView();
 
-            var handler = FactoryEventHandler.createEventHandler(listener.eventType);
-
-            var self = this;
-
+            handler = FactoryEventHandler.createEventHandler(listener.eventType);
 
             listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                 //var wrapHandler = handler.wrapHandler(handlerData.handler);
@@ -76,7 +76,6 @@ module Engine3D {
             });
         }
 
-        //todo unify eventName?(all use apply or all not use)
         public off(target:GameObject, eventName?:EventName) {
             var eventRegister = EventRegister.getInstance(),
                 argArr = Array.prototype.slice.call(arguments, 0),

@@ -17,8 +17,6 @@ module Engine3D {
         }
 
 
-        //private _listenerMap:EventListenerMap = EventListenerMap.create();
-        //todo refactor structure to {"targetUid_eventName": target.handler} ?
         private _listenerMap:EventListernerMap = EventListernerMap.create();
 
         public register(target:GameObject, eventName:EventName, handler:Function, priority:number) {
@@ -131,16 +129,8 @@ module Engine3D {
                 });
         }
 
-        //todo move to eventutils?
         public setBubbleParent(target:GameObject, parent:GameObject) {
             target.bubbleParent = parent;
-        }
-
-        //todo move to eventutils?
-        public getParent(target:GameObject):GameObject {
-            var parent = target.bubbleParent;
-
-            return parent ? parent : target.parent;
         }
 
         public isBinded(target:GameObject, eventName:EventName) {

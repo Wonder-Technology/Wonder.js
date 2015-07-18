@@ -64,19 +64,18 @@ module Engine3D {
          * @param eventObject
          */
         public emit(target:GameObject, eventObject:Event) {
-            var eventRegister:EventRegister = EventRegister.getInstance(),
-                parent:GameObject = null;
+            var parent:GameObject = null;
 
             eventObject.phase = EventPhase.EMIT;
 
             this.trigger(target, eventObject);
 
-            parent = eventRegister.getParent(target);
+            parent = this._getParent(target);
             while (parent) {
                 //this.trigger(target, eventObject);
                 this.trigger(parent, eventObject);
 
-                parent = eventRegister.getParent(parent);
+                parent = this._getParent(parent);
             }
         }
 
@@ -86,6 +85,12 @@ module Engine3D {
          * @param eventObject
          */
         public broadcast(target:GameObject, eventObject:Event) {
+        }
+
+       private _getParent(target:GameObject):GameObject {
+            var parent = target.bubbleParent;
+
+            return parent ? parent : target.parent;
         }
     }
 }
