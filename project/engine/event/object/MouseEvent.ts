@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
-    export class EventMouse extends Event{
+    export class MouseEvent extends Event{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";
         //public static MOUSEOUT:string = "mouseout";
@@ -126,7 +126,7 @@ module Engine3D {
         }
 
 
-        //public copy():EventMouse {
+        //public copy():MouseEvent {
         //    return dyCb.ExtendUtils.copyPublicAttri(this);
         //}
 

@@ -31,9 +31,9 @@ module Engine3D {
             dyCb.EventUtils.addEvent(
                 view.dom,
                 eventType,
-                //dyCb.EventUtils.bindEvent(context, function (eventObject:EventMouse) {
+                //dyCb.EventUtils.bindEvent(context, function (eventObject:MouseEvent) {
                 dyCb.EventUtils.bindEvent(context, function (event) {
-                    var eventObject:EventMouse = self._createEventObject(event, eventType, target),
+                    var eventObject:MouseEvent = self._createEventObject(event, eventType, target),
                     //should invoking eventRegister read newest register data when trigger event,
                     //so the class need retain eventRegister's reference
                     //    targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
@@ -134,7 +134,7 @@ module Engine3D {
         //    }
         //}
 
-        //private _getTopTriggerDataArrUnderPoint(eventObject:EventMouse){
+        //private _getTopTriggerDataArrUnderPoint(eventObject:MouseEvent){
         //    var self = this,
         //        locationInView:Point = eventObject.locationInView,
         //        name = eventObject.name;
@@ -170,7 +170,7 @@ module Engine3D {
         }
 
         private _createEventObject(event:any, eventType:EventType, currentTarget:GameObject) {
-            var obj = EventMouse.create(event ? event : window.event, eventType);
+            var obj = MouseEvent.create(event ? event : window.event, eventType);
 
             obj.currentTarget = currentTarget;
 

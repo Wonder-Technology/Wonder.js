@@ -29,7 +29,7 @@ module Engine3D{
         //
         //    switch (eventCategory){
         //        case EventCategory.MOUSE:
-        //            eventObj = EventMouse.create(null, eventType);
+        //            eventObj = MouseEvent.create(null, eventType);
         //            break;
         //        //todo more type
         //        default :
