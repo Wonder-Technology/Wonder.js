@@ -16,64 +16,56 @@ module Engine3D {
             //EventRegister.getInstance() = eventRegister;
         }
 
-        public on(target:GameObject, arg:EventListener|{}) {
-            var listener:EventListener = null,
-                view = null,
-                handler:EventHandler = null,
-                self = this;
+        public on(target:GameObject, arg:{}|EventListener):void;
+        public on(target:GameObject, eventType:EventType, handler:Function, priority):void;
 
-            if (!(target instanceof GameObject)) {
-                return;
-            }
+        public on(args) {
+            var target = null,
+                view = null;
 
-            dyCb.Log.assert(target && arg, dyCb.Log.info.INVALID_PARAM);
+            target = arguments[0];
 
-            listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
-            //EventRegister.getInstance().register(target, listener);
-
-            //dyCb.Log.assert(target && listener, dyCb.Log.info.invalid_param);
-            //if(!listener instanceof EventListener){
-            //    listener = EventListener.create(listener);
-            //}
-            //
-            //////priority set in listener, not in this(binder)!
-            ////if(priority){
-            ////    listener.setPriority(priority);
-            ////}
-            //
-            //this._listenerList.addChild(target, listener);
-
-            //register
-            //
-            //remove
-
-            //bind event to view dom
-
-
-            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventCategory);
+            dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
 
             view = this._getView();
 
-            handler = FactoryEventHandler.createEventHandler(listener.eventCategory);
+            if(arguments.length === 2){
+                let arg = arguments[1],
+                    listener:EventListener = null,
+                    eventHandler:EventHandler = null,
+                    self = this;
 
-            listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
-                //var wrapHandler = handler.wrapHandler(handlerData.handler);
+                listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
 
-                //if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventType)) {
-                if (!EventRegister.getInstance().isBinded(target, handlerData.eventType)) {
-                    //handler.on(view, handlerData.eventType, wrapHandler);
-                    handler.on(view, handlerData.eventType, target);
-                }
+                eventHandler = FactoryEventHandler.createEventHandler(listener.eventCategory);
 
-                EventRegister.getInstance().register(
-                    target,
-                    handlerData.eventType,
-                    //wrapHandler,
-                    //handler,
-                    handlerData.handler,
-                    listener.priority
+                listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
+                    self._handler(eventHandler, view, target, handlerData.eventType, listener.priority, handlerData.handler);
+                });
+            }
+            else if(arguments.length === 4) {
+                let eventType = arguments[1],
+                    handler = arguments[2],
+                    priority = arguments[3];
+
+                this._handler(
+                    FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType)),
+                    view, target, eventType, priority, handler
                 );
-            });
+            }
+        }
+
+        private _handler(eventHandler, view, target, eventType, priority, handler){
+            if (!EventRegister.getInstance().isBinded(target, eventType)) {
+                eventHandler.on(view, eventType, target);
+            }
+
+            EventRegister.getInstance().register(
+                target,
+                eventType,
+                handler,
+                priority
+            );
         }
 
         public off(target:GameObject, eventType?:EventType) {

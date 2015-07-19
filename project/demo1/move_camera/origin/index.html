@@ -201,7 +201,7 @@
                         },
                         onMouseUp: function(e){
                             dragging = false;
-                            console.log("mouseup");
+                            console.log("mouseup", e);
                         },
                         onMouseMove: function(e){
 //                            var x = ev.clientX, y = ev.clientY;
@@ -223,10 +223,12 @@
                             lastY = y;
 
                             console.log("mousemove");
-                        },
-                        onClick: function(e){
                         }
                     });
+
+            Engine3D.EventManager.on(scene, "click", function(e){
+                console.log("click: ", e);
+            })
 
 //            var fakeEvent = {
 //                pageX:10,
@@ -234,15 +236,15 @@
 //            };
 //            Engine3D.EventManager.trigger(scene, Engine3D.EventMouse.create(fakeEvent, Engine3D.EventType.MOUSEDOWN));
 
-            setTimeout(function(){
-                console.log("off mousemove");
-                Engine3D.EventManager.off(scene, Engine3D.EventType.MOUSEMOVE);
-            }, 1000);
-
-            setTimeout(function(){
-                console.log("off all mouse event on scene");
-                Engine3D.EventManager.off(scene);
-            }, 2000);
+//            setTimeout(function(){
+//                console.log("off mousemove");
+//                Engine3D.EventManager.off(scene, Engine3D.EventType.MOUSEMOVE);
+//            }, 1000);
+//
+//            setTimeout(function(){
+//                console.log("off all mouse event on scene");
+//                Engine3D.EventManager.off(scene);
+//            }, 2000);
 
 
 //            c.on("mousedown", function (ev) {

@@ -40,8 +40,24 @@ module Engine3D {
         private static _eventBinder:EventBinder = EventBinder.create();
         private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
-        public static on(target:GameObject, listener:{}|EventListener) {
-            this._eventBinder.on(target, listener);
+        public static on(target:GameObject, listener:{}|EventListener):void;
+        public static on(target:GameObject, eventType:EventType, handler:Function, priority?:number):void;
+
+        public static on(args) {
+            if(arguments.length === 2){
+                let target = arguments[0],
+                    listener = arguments[1];
+
+                this._eventBinder.on(target, listener);
+            }
+            else if(arguments.length === 3 || arguments.length === 4){
+                let target = arguments[0],
+                    eventType = arguments[1],
+                    handler = arguments[2],
+                    priority = arguments[3] === undefined? 0 :arguments[3];
+
+                this._eventBinder.on(target, eventType, handler, priority);
+            }
         }
 
         public static off(target:GameObject, eventType?:EventType) {
