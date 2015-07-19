@@ -48,7 +48,7 @@
 
 /// <reference path="event/KeyCodeMap"/>
 /// <reference path="event/structure/EventListernerMap"/>
-/// <reference path="event/object/EventType"/>
+/// <reference path="event/object/EventCategory"/>
 /// <reference path="event/object/EventName"/>
 /// <reference path="event/object/EventPhase"/>
 /// <reference path="event/object/EventTable"/>
@@ -58,7 +58,7 @@
 /// <reference path="event/listener/EventListener"/>
 /// <reference path="event/handler/EventHandler"/>
 /// <reference path="event/handler/EventMouseHandler"/>
-/// <reference path="event/dipatcher/EventDispatcher"/>
+/// <reference path="event/dispatcher/EventDispatcher"/>
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/EventBinder"/>
 /// <reference path="event/factory/FactoryEventHandler"/>

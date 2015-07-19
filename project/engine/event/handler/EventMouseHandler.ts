@@ -25,7 +25,7 @@ module Engine3D {
         public on(view:IView, eventName:EventName, target:GameObject) {
             var self = this,
                 context = window;
-            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
+            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventCategory);
 
             //handlerDataList.forEach(function (handlerData) {
             dyCb.EventUtils.addEvent(

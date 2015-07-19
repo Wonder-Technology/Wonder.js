@@ -20,7 +20,7 @@ module Engine3D {
         /*!
         implement abstract attri
          */
-        public type:EventType = EventType.MOUSE;
+        public type:EventCategory = EventCategory.MOUSE;
 
 
         private _location:Point = null;

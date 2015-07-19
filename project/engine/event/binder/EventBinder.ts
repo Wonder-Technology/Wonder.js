@@ -50,11 +50,11 @@ module Engine3D {
             //bind event to view dom
 
 
-            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventType);
+            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventCategory);
 
             view = this._getView();
 
-            handler = FactoryEventHandler.createEventHandler(listener.eventType);
+            handler = FactoryEventHandler.createEventHandler(listener.eventCategory);
 
             listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                 //var wrapHandler = handler.wrapHandler(handlerData.handler);

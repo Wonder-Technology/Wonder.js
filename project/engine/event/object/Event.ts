@@ -13,7 +13,7 @@
 module Engine3D{
     export class Event{
         //abstact attri
-        public type:EventType = null;
+        public type:EventCategory = null;
         //get type(){
         //    dyCb.Log.error(this._type === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
         //

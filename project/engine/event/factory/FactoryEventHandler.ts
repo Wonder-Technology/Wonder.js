@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D{
     export class FactoryEventHandler{
-        public static createEventHandler(eventType?:EventType){
+        public static createEventHandler(eventCategory?:EventCategory){
 
             if(arguments.length === 0){
                 return this._createAllEventHandlers();
@@ -9,13 +9,13 @@ module Engine3D{
             else if(arguments.length === 1){
                 let handler = null;
 
-                switch (eventType){
-                    case EventType.MOUSE:
+                switch (eventCategory){
+                    case EventCategory.MOUSE:
                         handler = EventMouseHandler.getInstance();
                         break;
                     //todo more type
                     default :
-                        dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
+                        dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventCategory"));
                         break;
                 }
 
@@ -24,16 +24,16 @@ module Engine3D{
 
         }
         //
-        //public static createEvent(eventType:EventType, eventName:EventName, phase:EventPhase=EventPhase.EMIT){
+        //public static createEvent(eventCategory:EventCategory, eventName:EventName, phase:EventPhase=EventPhase.EMIT){
         //    var eventObj = null;
         //
-        //    switch (eventType){
-        //        case EventType.MOUSE:
+        //    switch (eventCategory){
+        //        case EventCategory.MOUSE:
         //            eventObj = EventMouse.create(null, eventName);
         //            break;
         //        //todo more type
         //        default :
-        //            dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
+        //            dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventCategory"));
         //            break;
         //    }
         //

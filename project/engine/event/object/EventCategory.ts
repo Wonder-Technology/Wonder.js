@@ -1,5 +1,5 @@
 module Engine3D{
-    export enum EventType{
+    export enum EventCategory{
         MOUSE
     }
 }

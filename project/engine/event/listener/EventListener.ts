@@ -14,12 +14,12 @@ module Engine3D {
             return obj;
         }
 
-        private _eventType:EventType = null;
-        get eventType(){
-            return this._eventType;
+        private _eventCategory:EventCategory = null;
+        get eventCategory(){
+            return this._eventCategory;
         }
-        set eventType(eventType:EventType){
-            this._eventType = eventType;
+        set eventCategory(eventCategory:EventCategory){
+            this._eventCategory = eventCategory;
         }
 
         private _priority:number = null;
@@ -39,7 +39,7 @@ module Engine3D {
         }
 
         constructor(option:any){
-            this._eventType = option.eventType;
+            this._eventCategory = option.eventCategory;
             this._priority = option.priority || 1;
         }
 

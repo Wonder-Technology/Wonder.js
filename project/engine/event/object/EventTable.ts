@@ -4,17 +4,17 @@ module Engine3D {
      const _table = dyCb.Hash.create();
 
     //todo not declare "<any>"!
-    _table.addChild(<any>EventName.CLICK, EventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOVER, EventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOUT, EventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEMOVE, EventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEDOWN, EventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEUP, EventType.MOUSE);
+    _table.addChild(<any>EventName.CLICK, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.MOUSEOVER, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.MOUSEOUT, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.MOUSEMOVE, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.MOUSEDOWN, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.MOUSEUP, EventCategory.MOUSE);
 
     export class EventTable {
         //getEventType should put here,
         //it should not put in Event class, it's better to extract EventTable class to put in
-        public static getEventType(eventName:EventName):EventType {
+        public static getEventType(eventName:EventName):EventCategory {
             return _table.getChild(<any>eventName);
         }
 
@@ -22,7 +22,7 @@ module Engine3D {
         //    var result = false;
         //
         //    switch(this.getEventType(eventName)){
-        //        case EventType.MOUSE:
+        //        case EventCategory.MOUSE:
         //            result = true;
         //            break;
         //        default:

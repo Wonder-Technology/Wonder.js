@@ -47,7 +47,7 @@ module Engine3D {
             this._listenerMap.appendChild(eventName, data);
 
 
-            //this._listenerList.addChild(listener.eventType,  {
+            //this._listenerList.addChild(listener.eventCategory,  {
             //    target:target,
             //    listener:listener
             //});
