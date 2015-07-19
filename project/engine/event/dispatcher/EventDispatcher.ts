@@ -29,8 +29,8 @@ module Engine3D {
             }
 
             var self = this;
-            //var eventCategory = this._eventBinder.getEventType(eventType);
-            //var eventCategory = EventTable.getEventType(eventType);
+            //var eventCategory = this._eventBinder.getEventCategory(eventType);
+            //var eventCategory = EventTable.getEventCategory(eventType);
             var eventCategory= eventObject.type,
                 eventType= eventObject.name;
 

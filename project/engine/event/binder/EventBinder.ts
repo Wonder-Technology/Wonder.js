@@ -94,7 +94,7 @@ module Engine3D {
                 });
             }
             else if(arguments.length === 2){
-                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventType));
+                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType));
 
                 handler.off.apply(
                     handler,

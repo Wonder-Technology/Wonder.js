@@ -12,16 +12,16 @@ module Engine3D {
     _table.addChild(<any>EventType.MOUSEUP, EventCategory.MOUSE);
 
     export class EventTable {
-        //getEventType should put here,
+        //getEventCategory should put here,
         //it should not put in Event class, it's better to extract EventTable class to put in
-        public static getEventType(eventType:EventType):EventCategory {
+        public static getEventCategory(eventType:EventType):EventCategory {
             return _table.getChild(<any>eventType);
         }
 
         //public static isEventOnView(eventType:EventType){
         //    var result = false;
         //
-        //    switch(this.getEventType(eventType)){
+        //    switch(this.getEventCategory(eventType)){
         //        case EventCategory.MOUSE:
         //            result = true;
         //            break;
