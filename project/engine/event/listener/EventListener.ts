@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventHandlerData{
-        eventName:EventName;
+        eventType:EventType;
         handler:Function;
     }
 
@@ -55,7 +55,7 @@ module Engine3D {
                 if(option.hasOwnProperty(i)){
                     if(REGEX_HANDER.test(i)){
                         this._handlerDataList.addChild({
-                            eventName: this._parseEventName(i),
+                            eventType: this._parseEventName(i),
                             handler: option[i]
                         });
                     }

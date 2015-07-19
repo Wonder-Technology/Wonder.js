@@ -19,7 +19,7 @@ module Engine3D {
 
         private _listenerMap:EventListernerMap = EventListernerMap.create();
 
-        public register(target:GameObject, eventName:EventName, handler:Function, priority:number) {
+        public register(target:GameObject, eventType:EventType, handler:Function, priority:number) {
             //var isBindEventOnView = false,
             var data = <IEventRegisterData>{
                 currentTarget: target,
@@ -27,24 +27,24 @@ module Engine3D {
                 priority: priority
             };
 
-            //eventName = <string>eventName;
+            //eventType = <string>eventType;
             ////priority set in listener, not in this(binder)!
             //if(priority){
             //    listener.setPriority(priority);
             //}
 
 
-            //if (this.isBindEventOnView(eventName)){
+            //if (this.isBindEventOnView(eventType)){
             //    isBindEventOnView = true;
-            //    //this._listenerMap.appendChild(this._buildKey(target.uid, eventName), handler);
+            //    //this._listenerMap.appendChild(this._buildKey(target.uid, eventType), handler);
             //}
             //else {
             //    isBindEventOnView = false;
-            //    //this._listenerMap.addChild(eventName, data);
+            //    //this._listenerMap.addChild(eventType, data);
             //}
 
 
-            this._listenerMap.appendChild(eventName, data);
+            this._listenerMap.appendChild(eventType, data);
 
 
             //this._listenerList.addChild(listener.eventCategory,  {
@@ -55,8 +55,8 @@ module Engine3D {
             //return isBindEventOnView;
         }
 
-        public remove(target:GameObject, eventName?:EventName) {
-            //this._removeFromMap(target, eventName);
+        public remove(target:GameObject, eventType?:EventType) {
+            //this._removeFromMap(target, eventType);
             //var self = this,
             //    result = this._listenerMap;
 
@@ -68,39 +68,39 @@ module Engine3D {
                 return;
             }
             else if(arguments.length === 2){
-                this._listenerMap.removeChild(target, eventName);
+                this._listenerMap.removeChild(target, eventType);
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
                 }
             }
             //
-            //if(eventName){
-            //    result = this._listenerMap.filter((list:dyCb.Collection, name:EventName) => {
-            //        return name === eventName;
+            //if(eventType){
+            //    result = this._listenerMap.filter((list:dyCb.Collection, name:EventType) => {
+            //        return name === eventType;
             //    });
             //}
             //
-            //result.forEach((list:dyCb.Collection, eventName:EventName) => {
+            //result.forEach((list:dyCb.Collection, eventType:EventType) => {
             //    var listResult = list.filter((data:IEventRegisterData) => {
             //        return target.uid !== data.currentTarget.uid;
             //    });
             //
             //    if(listResult.getCount() > 0){
             //        //todo no <any>
-            //        self._listenerMap.addChild(<any>eventName, listResult);
+            //        self._listenerMap.addChild(<any>eventType, listResult);
             //    }
             //    else{
             //        self.setBubbleParent(target, null);
-            //        self._listenerMap.removeChild(eventName);
+            //        self._listenerMap.removeChild(eventType);
             //    }
             //});
-            ////this._listenerMap.removeChild(function (data:IEventRegisterData, eventName) {
+            ////this._listenerMap.removeChild(function (data:IEventRegisterData, eventType) {
             ////    return target.uid === data.currentTarget.uid;
             ////});
         }
 
-        public getListenerDataList(currentTarget:GameObject, eventName:EventName){
-            //var result = this._listenerMap.getChild(<any>eventName),
+        public getListenerDataList(currentTarget:GameObject, eventType:EventType){
+            //var result = this._listenerMap.getChild(<any>eventType),
             //    self = this;
             //
             //if(!result || !currentTarget){
@@ -116,7 +116,7 @@ module Engine3D {
             //    });
 
 
-            var result:dyCb.Collection = this._listenerMap.getChild(currentTarget, eventName),
+            var result:dyCb.Collection = this._listenerMap.getChild(currentTarget, eventType),
                 self = this;
 
             //if(!result || !currentTarget){
@@ -133,8 +133,8 @@ module Engine3D {
             target.bubbleParent = parent;
         }
 
-        public isBinded(target:GameObject, eventName:EventName) {
-            return this._listenerMap.hasChild(target, eventName);
+        public isBinded(target:GameObject, eventType:EventType) {
+            return this._listenerMap.hasChild(target, eventType);
         }
 
         public filter(func:Function) {
@@ -145,7 +145,7 @@ module Engine3D {
             return this._listenerMap.forEach(func);
         }
 
-        public getChild(target:GameObject, eventName?:EventName){
+        public getChild(target:GameObject, eventType?:EventType){
             return this._listenerMap.getChild.apply(
                 this._listenerMap,
                 Array.prototype.slice.call(arguments, 0)
@@ -169,7 +169,7 @@ module Engine3D {
         //}
 
 
-        //private _removeFromMap(target:GameObject, eventName:EventName) {
+        //private _removeFromMap(target:GameObject, eventType:EventType) {
         //}
 
         private _isAllEventHandlerRemoved(target:GameObject){
@@ -182,8 +182,8 @@ module Engine3D {
             this.setBubbleParent(target, null);
         }
 
-        //private _buildKey(uid, eventName){
-        //    return String(uid) + "_" + eventName;
+        //private _buildKey(uid, eventType){
+        //    return String(uid) + "_" + eventType;
         //}
     }
 }

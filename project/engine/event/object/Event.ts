@@ -20,17 +20,17 @@ module Engine3D{
         //    return this._type;
         //}
 
-        private _name:EventName = null;
+        private _name:EventType = null;
         get name() {
             return this._name;
         }
-        set name(name:EventName) {
+        set name(name:EventType) {
             this._name = name;
         }
 
-        constructor(event:any, eventName:EventName) {
+        constructor(event:any, eventType:EventType) {
             this._event = event;
-            this._name = eventName;
+            this._name = eventType;
         }
 
         //target is the actual target that received the event.

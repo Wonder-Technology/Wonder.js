@@ -24,12 +24,12 @@ module Engine3D{
 
         }
         //
-        //public static createEvent(eventCategory:EventCategory, eventName:EventName, phase:EventPhase=EventPhase.EMIT){
+        //public static createEvent(eventCategory:EventCategory, eventType:EventType, phase:EventPhase=EventPhase.EMIT){
         //    var eventObj = null;
         //
         //    switch (eventCategory){
         //        case EventCategory.MOUSE:
-        //            eventObj = EventMouse.create(null, eventName);
+        //            eventObj = EventMouse.create(null, eventType);
         //            break;
         //        //todo more type
         //        default :

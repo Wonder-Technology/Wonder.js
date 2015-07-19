@@ -22,7 +22,7 @@ module Engine3D {
 
         //private _eventRegister:EventRegister = null;
 
-        public on(view:IView, eventName:EventName, target:GameObject) {
+        public on(view:IView, eventType:EventType, target:GameObject) {
             var self = this,
                 context = window;
             //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventCategory);
@@ -30,10 +30,10 @@ module Engine3D {
             //handlerDataList.forEach(function (handlerData) {
             dyCb.EventUtils.addEvent(
                 view.dom,
-                eventName,
+                eventType,
                 //dyCb.EventUtils.bindEvent(context, function (eventObject:EventMouse) {
                 dyCb.EventUtils.bindEvent(context, function (event) {
-                    var eventObject:EventMouse = self._createEventObject(event, eventName, target),
+                    var eventObject:EventMouse = self._createEventObject(event, eventType, target),
                     //should invoking eventRegister read newest register data when trigger event,
                     //so the class need retain eventRegister's reference
                     //    targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
@@ -63,29 +63,29 @@ module Engine3D {
         //    return this._wrapHandler(target, handlerData.handler)
         //}
 
-        public off(view: IView, target:GameObject, eventName?:EventName) {
+        public off(view: IView, target:GameObject, eventType?:EventType) {
             var eventRegister = EventRegister.getInstance();
 
             //if (arguments.length === 2) {
             //    //EventRegister.getInstance()
-            //    //    .filter((data:IEventRegisterData, eventName:EventName) => {
+            //    //    .filter((data:IEventRegisterData, eventType:EventType) => {
             //    //        return JudgeUtils.isEqual(target, data.currentTarget);
-            //    //            //&& EventTable.isEventOnView(eventName)
+            //    //            //&& EventTable.isEventOnView(eventType)
             //    //    })
-            //    //    .forEach((data:IEventRegisterData, eventName:EventName) => {
-            //    //        dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+            //    //    .forEach((data:IEventRegisterData, eventType:EventType) => {
+            //    //        dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
             //    //    });
             //    eventRegister.getChild(target)
             //}
             //else if (arguments.length === 3) {
-            //    eventRegister.getChild(target, eventName)
+            //    eventRegister.getChild(target, eventType)
             //        .forEach((data:IEventRegisterData) => {
-            //            dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+            //            dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
             //        });
             //}
             eventRegister.getChild.apply(eventRegister, Array.prototype.slice.call(arguments, 1))
                 .forEach((data:IEventRegisterData) => {
-                    dyCb.EventUtils.removeEvent(view.dom, eventName, data.handler);
+                    dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
                 });
         }
 
@@ -169,8 +169,8 @@ module Engine3D {
             return result && result.getCount() > 0;
         }
 
-        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
-            var obj = EventMouse.create(event ? event : window.event, eventName);
+        private _createEventObject(event:any, eventType:EventType, currentTarget:GameObject) {
+            var obj = EventMouse.create(event ? event : window.event, eventType);
 
             obj.currentTarget = currentTarget;
 

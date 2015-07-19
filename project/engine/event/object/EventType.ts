@@ -1,5 +1,5 @@
 module Engine3D{
-    export enum EventName{
+    export enum EventType{
         CLICK = <any>"click",
         MOUSEOVER = <any>"mouseover",
         MOUSEUP = <any>"mouseup",

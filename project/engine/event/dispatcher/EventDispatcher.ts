@@ -29,30 +29,30 @@ module Engine3D {
             }
 
             var self = this;
-            //var eventCategory = this._eventBinder.getEventType(eventName);
-            //var eventCategory = EventTable.getEventType(eventName);
+            //var eventCategory = this._eventBinder.getEventType(eventType);
+            //var eventCategory = EventTable.getEventType(eventType);
             var eventCategory= eventObject.type,
-                eventName= eventObject.name;
+                eventType= eventObject.name;
 
             //eventObject.stopPropagation();
 
             //todo move to eventbinder?
-            //may bind multi listener on eventName(based on priority)
-            var listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventName);
+            //may bind multi listener on eventType(based on priority)
+            var listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
 
             if (listenerDataList === null || listenerDataList.getCount()=== 0) {
                 return;
             }
 
             listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                //FactoryEventHandler.createEventHandler(eventCategory).trigger(target, listener.handlerDataList, eventName);
+                //FactoryEventHandler.createEventHandler(eventCategory).trigger(target, listener.handlerDataList, eventType);
                 FactoryEventHandler.createEventHandler(eventCategory).trigger(
                     //target,
                     listenerData.currentTarget,
                     //todo need copy?
                     //eventObject.copy(),
                     eventObject,
-                    //FactoryEventHandler.createEvent(eventCategory, eventName, EventPhase.EMIT),
+                    //FactoryEventHandler.createEvent(eventCategory, eventType, EventPhase.EMIT),
                     listenerData.handler
                 );
             });

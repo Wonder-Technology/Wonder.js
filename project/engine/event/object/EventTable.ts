@@ -4,29 +4,29 @@ module Engine3D {
      const _table = dyCb.Hash.create();
 
     //todo not declare "<any>"!
-    _table.addChild(<any>EventName.CLICK, EventCategory.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOVER, EventCategory.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOUT, EventCategory.MOUSE);
-    _table.addChild(<any>EventName.MOUSEMOVE, EventCategory.MOUSE);
-    _table.addChild(<any>EventName.MOUSEDOWN, EventCategory.MOUSE);
-    _table.addChild(<any>EventName.MOUSEUP, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.CLICK, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.MOUSEOVER, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.MOUSEOUT, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.MOUSEMOVE, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.MOUSEDOWN, EventCategory.MOUSE);
+    _table.addChild(<any>EventType.MOUSEUP, EventCategory.MOUSE);
 
     export class EventTable {
         //getEventType should put here,
         //it should not put in Event class, it's better to extract EventTable class to put in
-        public static getEventType(eventName:EventName):EventCategory {
-            return _table.getChild(<any>eventName);
+        public static getEventType(eventType:EventType):EventCategory {
+            return _table.getChild(<any>eventType);
         }
 
-        //public static isEventOnView(eventName:EventName){
+        //public static isEventOnView(eventType:EventType){
         //    var result = false;
         //
-        //    switch(this.getEventType(eventName)){
+        //    switch(this.getEventType(eventType)){
         //        case EventCategory.MOUSE:
         //            result = true;
         //            break;
         //        default:
-        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
+        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventType"));
         //            result = false;
         //            break;
         //    }

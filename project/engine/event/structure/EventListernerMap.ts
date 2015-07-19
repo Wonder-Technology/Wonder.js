@@ -9,19 +9,19 @@ module Engine3D{
 
         private _listenerMap:dyCb.Hash = dyCb.Hash.create();
 
-        public appendChild(eventName:EventName, data:IEventRegisterData){
+        public appendChild(eventType:EventType, data:IEventRegisterData){
             this._listenerMap.appendChild(
-                //String(data.currentTarget.uid) + "_" + eventName,
-                this._buildKey(data.currentTarget, eventName),
+                //String(data.currentTarget.uid) + "_" + eventType,
+                this._buildKey(data.currentTarget, eventType),
                 data
             );
         }
 
-        public getChild(currentTarget:GameObject, eventName?:EventName){
+        public getChild(currentTarget:GameObject, eventType?:EventType){
             var self = this;
             //
             //return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
-            //    return key === self._buildKey(currentTarget, eventName);
+            //    return key === self._buildKey(currentTarget, eventType);
             //});
             //
             if(arguments.length === 1){
@@ -30,7 +30,7 @@ module Engine3D{
                 });
             }
             else if(arguments.length === 2){
-                return this._listenerMap.getChild(this._buildKey(currentTarget, eventName));
+                return this._listenerMap.getChild(this._buildKey(currentTarget, eventType));
             }
         }
 
@@ -40,9 +40,9 @@ module Engine3D{
             }
             else if(arguments.length === 2){
                 let currentTarget = arguments[0],
-                    eventName = arguments[1];
+                    eventType = arguments[1];
 
-                return this._listenerMap.hasChild(this._buildKey(currentTarget, eventName));
+                return this._listenerMap.hasChild(this._buildKey(currentTarget, eventType));
             }
         }
 
@@ -54,7 +54,7 @@ module Engine3D{
             return this._listenerMap.forEach(func);
         }
 
-        public removeChild(currentTarget:GameObject, eventName?:EventName){
+        public removeChild(currentTarget:GameObject, eventType?:EventType){
             var self = this;
 
             if(arguments.length === 1){
@@ -63,12 +63,12 @@ module Engine3D{
                 });
             }
             else if(arguments.length === 2){
-                return this._listenerMap.removeChild(this._buildKey(currentTarget, eventName));
+                return this._listenerMap.removeChild(this._buildKey(currentTarget, eventType));
             }
         }
 
-        private _buildKey(currentTarget:GameObject, eventName:EventName){
-            return String(currentTarget.uid) + "_" + eventName;
+        private _buildKey(currentTarget:GameObject, eventType:EventType){
+            return String(currentTarget.uid) + "_" + eventType;
         }
 
         private _isTarget(key:string, target:GameObject, list:dyCb.Collection){

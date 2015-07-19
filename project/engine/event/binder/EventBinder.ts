@@ -59,15 +59,15 @@ module Engine3D {
             listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                 //var wrapHandler = handler.wrapHandler(handlerData.handler);
 
-                //if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventName)) {
-                if (!EventRegister.getInstance().isBinded(target, handlerData.eventName)) {
-                    //handler.on(view, handlerData.eventName, wrapHandler);
-                    handler.on(view, handlerData.eventName, target);
+                //if (!EventRegister.getInstance().isBindEventOnView(handlerData.eventType)) {
+                if (!EventRegister.getInstance().isBinded(target, handlerData.eventType)) {
+                    //handler.on(view, handlerData.eventType, wrapHandler);
+                    handler.on(view, handlerData.eventType, target);
                 }
 
                 EventRegister.getInstance().register(
                     target,
-                    handlerData.eventName,
+                    handlerData.eventType,
                     //wrapHandler,
                     //handler,
                     handlerData.handler,
@@ -76,7 +76,7 @@ module Engine3D {
             });
         }
 
-        public off(target:GameObject, eventName?:EventName) {
+        public off(target:GameObject, eventType?:EventType) {
             var eventRegister = EventRegister.getInstance(),
                 argArr = Array.prototype.slice.call(arguments, 0),
                 argArrCopy = argArr.concat();
@@ -94,7 +94,7 @@ module Engine3D {
                 });
             }
             else if(arguments.length === 2){
-                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName));
+                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventType(eventType));
 
                 handler.off.apply(
                     handler,
@@ -110,8 +110,8 @@ module Engine3D {
         //    this.off(target);
         //}
 
-        public getListenerDataList(target:GameObject, eventName:EventName) {
-            return EventRegister.getInstance().getListenerDataList(target, eventName);
+        public getListenerDataList(target:GameObject, eventType:EventType) {
+            return EventRegister.getInstance().getListenerDataList(target, eventType);
         }
 
         private _getView() {

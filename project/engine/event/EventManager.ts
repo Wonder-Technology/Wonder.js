@@ -44,7 +44,7 @@ module Engine3D {
             this._eventBinder.on(target, listener);
         }
 
-        public static off(target:GameObject, eventName?:EventName) {
+        public static off(target:GameObject, eventType?:EventType) {
             this._eventBinder.off.apply(
                 this._eventBinder,
                 Array.prototype.slice.call(arguments, 0)

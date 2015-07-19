@@ -6,13 +6,13 @@ module Engine3D {
         //public static MOUSEOUT:string = "mouseout";
         //public static MOUSEMOVE:string = "mousemove";
 
-        //public static create(eventName:EventName) {
-        //    var obj = new this(eventName);
+        //public static create(eventType:EventType) {
+        //    var obj = new this(eventType);
         //
         //    return obj;
         //}
-        public static create(event:any, eventName:EventName) {
-            var obj = new this(event, eventName);
+        public static create(event:any, eventType:EventType) {
+            var obj = new this(event, eventType);
 
             return obj;
         }
