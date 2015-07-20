@@ -83,6 +83,16 @@ module Engine3D {
             this._eventDispatcher.emit(target, event);
         }
 
+        public static fromEvent(target:GameObject, eventType:EventType, priority:number = 0){
+            return dyRt.fromEventPattern(
+                function(handler){
+                    EventManager.on(target, eventType, handler, priority);
+                },
+                function(handler){
+                    EventManager.off(target, eventType, handler);
+                });
+        }
+
         public static setBubbleParent(target:GameObject, parent:any) {
             EventRegister.getInstance().setBubbleParent(target, parent);
             //this._eventDispatcher.setBubbleParent(target, parent);
