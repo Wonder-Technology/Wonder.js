@@ -24,69 +24,74 @@ module Engine3D {
 
         public on(view:IView, eventType:EventType, target:GameObject) {
             var self = this,
-                context = window;
-            //var listenerList = EventRegister.getInstance().getListenerDataList(target, listener.eventCategory);
+                context = window,
+                wrapHandler = null;
 
-            //handlerDataList.forEach(function (handlerData) {
-            dyCb.EventUtils.addEvent(
-                view.dom,
-                eventType,
-                //dyCb.EventUtils.bindEvent(context, function (eventObject:MouseEvent) {
-                dyCb.EventUtils.bindEvent(context, function (event) {
+            wrapHandler = dyCb.EventUtils.bindEvent(context, function (event) {
                     var eventObject:MouseEvent = self._createEventObject(event, eventType, target),
-                    //should invoking eventRegister read newest register data when trigger event,
-                    //so the class need retain eventRegister's reference
-                    //    targetDataArr:dyCb.Collection = self._getTopTriggerDataArrUnderPoint(eventObject);
                         topTarget = Director.getInstance().getTopUnderPoint(eventObject.locationInView);
 
                     EventManager.emit(topTarget, eventObject);
+                });
 
-                    //targetDataArr && targetDataArr.forEach((targetData:IEventRegisterData)=>{
-                    //    EventManager.emit(target, eventObject);
-                    //    //self.trigger(
-                    //    //    target,
-                    //    //    eventObject,
-                    //    //    targetData.handler
-                    //    //);
-                    //});
-
-                    //EventManager.trigger(
-                    //    self._getTopGameObjectUnderPoint()
-                    //);
-                })
-                //, self._createEventObject)
-                //});
+            dyCb.EventUtils.addEvent(
+                view.dom,
+                eventType,
+                wrapHandler
             )
+
+            return wrapHandler;
         }
 
         //public wrapHandler(target:GameObject, handler:Function) {
         //    return this._wrapHandler(target, handlerData.handler)
         //}
 
-        public off(view: IView, target:GameObject, eventType?:EventType) {
-            var eventRegister = EventRegister.getInstance();
+        //public off(view: IView, target:GameObject):void;
+        //public off(view: IView, target:GameObject, eventType:EventType):void;
+        //public off(view: IView, target:GameObject, eventType:EventType, handler:Function):void;
 
+        //public off(args) {
+        public off(view:IView, eventType:EventType, handler:Function) {
+            //var eventRegister = EventRegister.getInstance(),
+            //    view = arguments[0],
+            //    target = arguments[1];
+
+            dyCb.EventUtils.removeEvent(view.dom, eventType, handler);
+            //
             //if (arguments.length === 2) {
-            //    //EventRegister.getInstance()
-            //    //    .filter((data:IEventRegisterData, eventType:EventType) => {
-            //    //        return JudgeUtils.isEqual(target, data.currentTarget);
-            //    //            //&& EventTable.isEventOnView(eventType)
-            //    //    })
-            //    //    .forEach((data:IEventRegisterData, eventType:EventType) => {
-            //    //        dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
-            //    //    });
             //    eventRegister.getChild(target)
+            //        .forEach((list:dyCb.Collection, key:string) => {
+            //            if(list.getCount() === 0){
+            //                dyCb.Log.assert(false, dyCb.Log.info.FUNC_MUST_NOT_BE("value", "empty"));
+            //                return;
+            //            }
+            //
+            //            //dyCb.EventUtils.removeEvent(view.dom, eventRegister.getEventTypeFromKey(key), data.handler);
+            //            dyCb.EventUtils.removeEvent(view.dom, eventRegister.getEventTypeFromKey(key), list.getChild(0).wrapHandler);
+            //        });
             //}
             //else if (arguments.length === 3) {
+            //    let eventType = arguments[2];
+            //
             //    eventRegister.getChild(target, eventType)
-            //        .forEach((data:IEventRegisterData) => {
+            //        .forEach((data:IEventRegisterData, key:string) => {
             //            dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
             //        });
             //}
-            eventRegister.getChild.apply(eventRegister, Array.prototype.slice.call(arguments, 1))
-                .forEach((data:IEventRegisterData) => {
-                    dyCb.EventUtils.removeEvent(view.dom, eventType, data.handler);
-                });
+            //else if (arguments.length === 4) {
+            //    let eventType = arguments[2],
+            //        handler = arguments[3];
+            //
+            //    dyCb.EventUtils.removeEvent(view.dom, eventType, handler);
+            //    //eventRegister.getChild(target, eventType)
+            //    //    .filter((data:IEventRegisterData) => {
+            //    //        return data.handler === handler;
+            //    //    })
+            //    //    .forEach((data:IEventRegisterData) => {
+            //    //        dyCb.EventUtils.removeEvent(view.dom, eventType, handler);
+            //    //    });
+            //}
         }
 
         public trigger(target:GameObject, eventObject:Event, handler:Function) {

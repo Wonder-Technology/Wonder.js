@@ -47,7 +47,7 @@
 /// <reference path="geometry/TriangleGeometry"/>
 
 /// <reference path="event/KeyCodeMap"/>
-/// <reference path="event/structure/EventListernerMap"/>
+/// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventCategory"/>
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventPhase"/>

@@ -70,9 +70,9 @@
             var mesh = Engine3D.Mesh.create(geometry);
 
 
-            //test event emit
-            var mesh2 = Engine3D.Mesh.create(geometry);
-            mesh.addChild(mesh2);
+//            //test event emit
+//            var mesh2 = Engine3D.Mesh.create(geometry);
+//            mesh.addChild(mesh2);
 
             var rotateAction = Engine3D.Rotate.create(
                     mesh.matrix, {
@@ -226,9 +226,31 @@
                         }
                     });
 
-            Engine3D.EventManager.on(scene, "click", function(e){
+            var clickHandler = function(e){
                 console.log("click: ", e);
-            })
+            };
+            var clickHandler2 = function(e){
+                console.log("click2222222222: ", e);
+            };
+
+            Engine3D.EventManager.on(scene, "click", clickHandler);
+
+            Engine3D.EventManager.on(scene, "click", clickHandler2);
+
+//            Engine3D.EventManager.on(scene, "click", clickHandler, 1);
+//
+//            Engine3D.EventManager.on(scene, "click", clickHandler2, 2);
+
+
+            setTimeout(function(){
+//                console.log("off click2");
+
+//                Engine3D.EventManager.off(scene, "click", clickHandler2);
+
+
+                console.log("off click");
+                Engine3D.EventManager.off(scene, "click");
+            }, 3000);
 
 //            var fakeEvent = {
 //                pageX:10,

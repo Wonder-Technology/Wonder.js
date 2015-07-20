@@ -5,7 +5,7 @@ module Engine3D {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public off(view:IView, target:GameObject, eventType?:EventType) {
+        public off(view:IView, eventType:EventType, handler:Function) {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 

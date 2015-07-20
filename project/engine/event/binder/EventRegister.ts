@@ -2,7 +2,10 @@
 module Engine3D {
     export interface IEventRegisterData {
         currentTarget:GameObject,
+        //user's event handler
         handler:Function,
+        //the actual event handler
+        wrapHandler:Function,
         priority:number
     }
 
@@ -17,13 +20,14 @@ module Engine3D {
         }
 
 
-        private _listenerMap:EventListernerMap = EventListernerMap.create();
+        private _listenerMap:EventListenerMap = EventListenerMap.create();
 
-        public register(target:GameObject, eventType:EventType, handler:Function, priority:number) {
+        public register(target:GameObject, eventType:EventType, handler:Function, wrapHandler:Function, priority:number) {
             //var isBindEventOnView = false,
             var data = <IEventRegisterData>{
                 currentTarget: target,
                 handler: handler,
+                wrapHandler: wrapHandler,
                 priority: priority
             };
 
@@ -55,50 +59,36 @@ module Engine3D {
             //return isBindEventOnView;
         }
 
-        public remove(target:GameObject, eventType?:EventType) {
-            //this._removeFromMap(target, eventType);
-            //var self = this,
-            //    result = this._listenerMap;
+        public remove(target:GameObject):void;
+        public remove(target:GameObject, eventType:EventType):void;
+        public remove(target:GameObject, eventType:EventType, handler:Function):void;
+
+        public remove(args) {
+            var target = arguments[0];
 
             if(arguments.length === 1){
                 this._listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
 
-                return;
+                return this._listenerMap.getEventOffDataList(target);
             }
-            else if(arguments.length === 2){
-                this._listenerMap.removeChild(target, eventType);
+            else if(arguments.length === 2 || arguments.length === 3){
+                let eventType = arguments[1];
+
+                this._listenerMap.removeChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
+
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
+
+                    return this._listenerMap.getEventOffDataList(target, eventType);
                 }
+
+                return null;
             }
-            //
-            //if(eventType){
-            //    result = this._listenerMap.filter((list:dyCb.Collection, name:EventType) => {
-            //        return name === eventType;
-            //    });
-            //}
-            //
-            //result.forEach((list:dyCb.Collection, eventType:EventType) => {
-            //    var listResult = list.filter((data:IEventRegisterData) => {
-            //        return target.uid !== data.currentTarget.uid;
-            //    });
-            //
-            //    if(listResult.getCount() > 0){
-            //        //todo no <any>
-            //        self._listenerMap.addChild(<any>eventType, listResult);
-            //    }
-            //    else{
-            //        self.setBubbleParent(target, null);
-            //        self._listenerMap.removeChild(eventType);
-            //    }
-            //});
-            ////this._listenerMap.removeChild(function (data:IEventRegisterData, eventType) {
-            ////    return target.uid === data.currentTarget.uid;
-            ////});
         }
 
+        //todo rename to getEventRegisterDataList
         public getListenerDataList(currentTarget:GameObject, eventType:EventType){
             //var result = this._listenerMap.getChild(<any>eventType),
             //    self = this;
@@ -150,6 +140,18 @@ module Engine3D {
                 this._listenerMap,
                 Array.prototype.slice.call(arguments, 0)
             );
+        }
+
+        public getEventTypeFromKey(key:string){
+            return this._listenerMap.getEventTypeFromKey(key);
+        }
+
+        public getWrapHandler(target:GameObject, eventType:EventType){
+            var list:dyCb.Collection = this.getChild(target, eventType);
+
+            if(list && list.getCount() > 0){
+                return list.getChild(0).wrapHandler;
+            }
         }
 
         //private _isContain(parentTarget:GameObject, childTarget:GameObject){

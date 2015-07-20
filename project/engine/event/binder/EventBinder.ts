@@ -55,46 +55,54 @@ module Engine3D {
             }
         }
 
-        private _handler(eventHandler, view, target, eventType, priority, handler){
-            if (!EventRegister.getInstance().isBinded(target, eventType)) {
-                eventHandler.on(view, eventType, target);
-            }
+        public off(target:GameObject):void;
+        public off(target:GameObject, eventType:EventType):void;
+        public off(target:GameObject, eventType:EventType, handler:Function):void;
 
-            EventRegister.getInstance().register(
-                target,
-                eventType,
-                handler,
-                priority
-            );
-        }
-
-        public off(target:GameObject, eventType?:EventType) {
+        public off(args) {
             var eventRegister = EventRegister.getInstance(),
-                argArr = Array.prototype.slice.call(arguments, 0),
-                argArrCopy = argArr.concat();
+                eventOffDataList:dyCb.Collection = null,
+                argArr = Array.prototype.slice.call(arguments, 0);
+                //argArrCopy = argArr.concat();
 
-            argArr.unshift(this._getView());
+            eventOffDataList = eventRegister.remove.apply(eventRegister, argArr);
 
-            if(arguments.length === 1){
-                let handlerList:dyCb.Collection = FactoryEventHandler.createEventHandler();
+            //argArr.unshift(this._getView());
 
-                handlerList.forEach((handler:EventHandler) => {
-                    handler.off.apply(
-                        handler,
-                        argArr
-                    );
-                });
+            if(eventOffDataList){
+                this._unBind(eventOffDataList);
             }
-            else if(arguments.length === 2){
-                let handler = FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType));
-
-                handler.off.apply(
-                    handler,
-                    argArr
-                );
-            }
-
-            eventRegister.remove.apply(eventRegister, argArrCopy);
+            //
+            //if(arguments.length === 1){
+            //    let handlerList:dyCb.Collection = FactoryEventHandler.createEventHandler();
+            //
+            //    handlerList.forEach((handler:EventHandler) => {
+            //        handler.off.apply(
+            //            handler,
+            //            argArr
+            //        );
+            //    });
+            //}
+            //else{
+            //    let eventHandler:EventHandler = null,
+            //        eventType = null,
+            //        handler = null;
+            //
+            //    if(arguments.length === 2){
+            //        eventType = arguments[1];
+            //    }
+            //    else if(arguments.length === 3){
+            //        eventType = arguments[1];
+            //        handler = arguments[2];
+            //    }
+            //
+            //    eventHandler = FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType));
+            //
+            //    eventHandler.off.apply(
+            //        eventHandler,
+            //        argArr
+            //    );
+            //}
         }
 
         //public remove(target:GameObject) {
@@ -108,6 +116,34 @@ module Engine3D {
 
         private _getView() {
             return Director.getInstance().getView();
+        }
+
+        private _handler(eventHandler, view, target, eventType, priority, handler){
+            var wrapHandler = null;
+
+            if (!EventRegister.getInstance().isBinded(target, eventType)) {
+                wrapHandler = eventHandler.on(view, eventType, target, handler);
+            }
+            else{
+                wrapHandler = EventRegister.getInstance().getWrapHandler(target, eventType);
+            }
+
+            EventRegister.getInstance().register(
+                target,
+                eventType,
+                handler,
+                wrapHandler,
+                priority
+            );
+        }
+
+        private _unBind(eventOffDataList){
+            var view = this._getView();
+
+            eventOffDataList.forEach((eventOffData:IEventOffData) => {
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventOffData.eventType))
+                    .off(view, eventOffData.eventType, eventOffData.wrapHandler);
+            })
         }
     }
 }
