@@ -10,7 +10,8 @@ var combineDTsList = [
     combineContentList = [
         "DYCommonLib",
         "DYReactive",
-        "bowser"
+        "bowser",
+        "rsvp"
     ];
 var definitionsPath = "engine/definitions.d.ts";
 

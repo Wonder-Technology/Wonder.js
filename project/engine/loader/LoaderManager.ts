@@ -28,12 +28,11 @@ module Engine3D{
         public load(resourcesArr:Array<{url:string; id:string}>) {
             var self = this;
 
-            resourcesArr.forEach((res) => {
-                GLSLLoader.getInstance().load(res.url, res.id);
-                self._resCount += 1;
-            });
+            return dyRt.fromArray(resourcesArr).flatMap(function(res){
+                self._resCount++;
 
-            this._isFinishLoad();
+                return GLSLLoader.getInstance().load(res.url, res.id);
+            });
         }
 
         public reset() {

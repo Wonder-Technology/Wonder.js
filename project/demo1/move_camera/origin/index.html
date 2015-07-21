@@ -26,7 +26,10 @@
         Engine3D.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"}
-        ]);
+        ]).subscribe(null, null,
+                function(){
+                    init();
+                });
 
         function init() {
             _initContext();
@@ -353,11 +356,6 @@
 //            Engine3D.EventManager.create(document.querySelector("body")).off("keydown");
 //            Engine3D.EventManager.create().off();
         }
-
-
-        Engine3D.LoaderManager.getInstance().onload = function () {
-            init();
-        };
     };
 </script>
 </body>
