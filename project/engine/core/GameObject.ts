@@ -3,12 +3,6 @@ module Engine3D {
     export class GameObject {
         private static _count:number = 1;
 
-        public static create() {
-        	var obj = new this();
-
-        	return obj;
-        }
-
         private _uid:number = null;
         get uid() {
             return this._uid;
