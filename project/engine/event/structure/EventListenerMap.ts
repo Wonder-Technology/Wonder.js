@@ -22,19 +22,33 @@ module Engine3D{
             );
         }
 
-        public getChild(target:GameObject, eventType?:EventType){
+        public getChild(eventType:EventType):any;
+        public getChild(target:GameObject):any;
+        public getChild(target:GameObject, eventType:EventType):any;
+
+        public getChild(args){
             var self = this;
             //
             //return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
             //    return key === self._buildKey(target, eventType);
             //});
             //
-            if(arguments.length === 1){
+            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
+                let eventType = arguments[0];
+
+                return this._listenerMap.getChild(eventType);
+            }
+            else if(arguments.length === 1){
+                let target = arguments[0];
+
                 return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
                     return self._isTarget(key, target, list);
                 });
             }
             else if(arguments.length === 2){
+                let target = arguments[0],
+                    eventType = arguments[1];
+
                 return this._listenerMap.getChild(this._buildKey(target, eventType));
             }
         }
@@ -59,6 +73,8 @@ module Engine3D{
             return this._listenerMap.forEach(func);
         }
 
+        public removeChild(eventType:EventType):void;
+        public removeChild(eventType:EventType, handler:Function):void;
         public removeChild(target:GameObject):void;
         public removeChild(target:GameObject, eventType:EventType):void;
         public removeChild(target:GameObject, eventType:EventType, handler:Function):void;
@@ -67,21 +83,41 @@ module Engine3D{
             var self = this,
                 target = arguments[0];
 
-            if(arguments.length === 1){
-                return this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
+            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
+                let eventType = arguments[0];
+
+                this._listenerMap.removeChild(eventType);
+            }
+            else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
+                let eventType = arguments[0],
+                    handler = arguments[1],
+                    list:dyCb.Collection = null;
+
+                list = this._listenerMap.getChild(eventType);
+
+                list.removeChild((val:IEventRegisterData) => {
+                        return val.handler === handler;
+                    });
+
+                if(list.getCount() === 0){
+                    this._listenerMap.removeChild(eventType);
+                }
+            }
+            else if(arguments.length === 1){
+                this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
                     return self._isTarget(key, target, list);
                 });
             }
             else if(arguments.length === 2){
                 let eventType = arguments[1];
 
-                return this._listenerMap.removeChild(this._buildKey(target, eventType));
+                this._listenerMap.removeChild(this._buildKey(target, eventType));
             }
             else if(arguments.length === 3){
                 let eventType = arguments[1],
                     handler = arguments[2];
 
-                return this._listenerMap.map((list:dyCb.Collection, key:string) => {
+                this._listenerMap.map((list:dyCb.Collection, key:string) => {
                     list.removeChild((val:IEventRegisterData) => {
                         return val.handler === handler;
                     });
@@ -135,7 +171,7 @@ module Engine3D{
         }
 
         private _buildKey(target:GameObject, eventType:EventType){
-            return String(target.uid) + "_" + eventType;
+            return target ? String(target.uid) + "_" + eventType : <any>eventType;
         }
 
         private _isTarget(key:string, target:GameObject, list:dyCb.Collection){

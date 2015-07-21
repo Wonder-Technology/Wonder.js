@@ -25,8 +25,9 @@ module.exports = function(config) {
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
 
-        'test/unit/math/*.js'
-        //'test/unit/event/*.js',
+        //'test/unit/**/*.js'
+        'test/unit/math/*.js',
+        'test/unit/event/*.js'
         //'test/unit/utils/browserDetector/useragents.js',
         //'test/unit/utils/**/*.js',
 

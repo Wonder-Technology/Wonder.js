@@ -12,6 +12,10 @@
 
 module Engine3D{
     export class Event{
+        constructor(eventType:EventType) {
+            this._name = eventType;
+        }
+
         //abstact attri
         public type:EventCategory = null;
         //get type(){
@@ -26,11 +30,6 @@ module Engine3D{
         }
         set name(name:EventType) {
             this._name = name;
-        }
-
-        constructor(event:any, eventType:EventType) {
-            this._event = event;
-            this._name = eventType;
         }
 
         //target is the actual target that received the event.
@@ -59,7 +58,6 @@ module Engine3D{
         get isStopPropagation() {
             return this._isStopPropagation;
         }
-
         set isStopPropagation(isStopPropagation:boolean) {
             this._isStopPropagation = isStopPropagation;
         }
@@ -68,28 +66,15 @@ module Engine3D{
         get phase() {
             return this._phase;
         }
-
         set phase(phase:EventPhase) {
             this._phase = phase;
         }
 
-        private _event:any = null;
-        get event() {
-            return this._event;
-        }
-
-        set event(event:any) {
-            this._event = event || window.event;
-        }
-
-
-
         public stopPropagation() {
             this._isStopPropagation = true;
         }
-
-        public copy():Event{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        //public copy():Event{
+        //    return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        //}
     }
 }

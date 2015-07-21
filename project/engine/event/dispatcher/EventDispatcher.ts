@@ -22,40 +22,52 @@ module Engine3D {
         //    EventRegister.getInstance().setBubbleParent(target, parent);
         //}
 
-        public trigger(target:GameObject, eventObject:Event) {
-            if (!(target instanceof GameObject)) {
-                dyCb.Log.log("target is not GameObject, can't trigger event");
-                return;
+        public trigger(event:Event):void;
+        public trigger(target:GameObject, event:Event):void;
+
+        public trigger(args) {
+            if(arguments.length === 1){
+                let event = arguments[0],
+                    eventType= event.name,
+                    listenerDataList = EventRegister.getInstance().getListenerDataList(eventType);
+
+                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                    return;
+                }
+
+                listenerDataList.forEach((listenerDataList:IEventRegisterData) => {
+                    listenerDataList.handler(event);
+                });
             }
+            else if(arguments.length === 2){
+                let target = arguments[0],
+                    event = arguments[1],
+                    eventType= event.name,
+                    eventCategory = event.type,
+                    listenerDataList:dyCb.Collection = null,
+                    self = this;
 
-            var self = this;
-            //var eventCategory = this._eventBinder.getEventCategory(eventType);
-            //var eventCategory = EventTable.getEventCategory(eventType);
-            var eventCategory= eventObject.type,
-                eventType= eventObject.name;
+                if (!(target instanceof GameObject)) {
+                    dyCb.Log.log("target is not GameObject, can't trigger event");
+                    return;
+                }
 
-            //eventObject.stopPropagation();
+                listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
 
-            //todo move to eventbinder?
-            //may bind multi listener on eventType(based on priority)
-            var listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
+                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                    return;
+                }
 
-            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                return;
+                listenerDataList.forEach((listenerData:IEventRegisterData) => {
+                    FactoryEventHandler.createEventHandler(eventCategory).trigger(
+                        listenerData.currentTarget,
+                        //todo need copy?
+                        //eventObject.copy(),
+                        event,
+                        listenerData.handler
+                    );
+                });
             }
-
-            listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                //FactoryEventHandler.createEventHandler(eventCategory).trigger(target, listener.handlerDataList, eventType);
-                FactoryEventHandler.createEventHandler(eventCategory).trigger(
-                    //target,
-                    listenerData.currentTarget,
-                    //todo need copy?
-                    //eventObject.copy(),
-                    eventObject,
-                    //FactoryEventHandler.createEvent(eventCategory, eventType, EventPhase.EMIT),
-                    listenerData.handler
-                );
-            });
         }
 
         /**

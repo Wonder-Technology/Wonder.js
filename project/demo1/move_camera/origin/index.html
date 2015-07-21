@@ -249,14 +249,15 @@
 
 
             setTimeout(function(){
-                console.log("off click2");
+//                console.log("off click2");
+//
+//                subscription2.dispose();
+//                Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
 
-                subscription2.dispose();
-                Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
 
-
-//                console.log("off click");
+                console.log("off click");
 //                Engine3D.EventManager.off(scene, "click");
+                Engine3D.EventManager.off(scene);
             }, 3000);
 
             var fakeEvent = {

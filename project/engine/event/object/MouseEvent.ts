@@ -17,11 +17,26 @@ module Engine3D {
             return obj;
         }
 
+        constructor(event:any, eventType:EventType) {
+            super(eventType);
+
+            this._event = event;
+        }
+
+
         /*!
         implement abstract attri
          */
         public type:EventCategory = EventCategory.MOUSE;
 
+
+        private _event:any = null;
+        get event() {
+            return this._event;
+        }
+        set event(event:any) {
+            this._event = event || window.event;
+        }
 
         private _location:Point = null;
         //Get cursor location(related to document)
@@ -46,7 +61,6 @@ module Engine3D {
 
             return point;
         }
-
         set location(point:Point) {
             this._location = point;
         }
@@ -70,7 +84,6 @@ module Engine3D {
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
         }
-
         set locationInView(locationInView:Point) {
             this._locationInView = locationInView;
         }

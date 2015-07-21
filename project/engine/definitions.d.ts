@@ -55,6 +55,7 @@
 /// <reference path="event/object/EventTable"/>
 /// <reference path="event/object/Event"/>
 /// <reference path="event/object/MouseEvent"/>
+/// <reference path="event/object/CustomEvent"/>
 /// <reference path="event/object/MouseButton"/>
 /// <reference path="event/listener/EventListener"/>
 /// <reference path="event/handler/EventHandler"/>

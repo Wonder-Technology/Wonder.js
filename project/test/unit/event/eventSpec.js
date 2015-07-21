@@ -17,7 +17,7 @@ describe("event", function () {
         sandbox = sinon.sandbox.create();
         insertDom();
         dom = $("#event-test");
-        manager = Engine3D.Eventmanager.getInstance();
+        manager = Engine3D.EventManager;
         Listener = Engine3D.EventListener;
     });
     afterEach(function () {
@@ -61,16 +61,6 @@ describe("event", function () {
         })
     });
 
-    describe("custom event", function(){
-        beforeEach(function(){
-
-        });
-
-        //can write unit test
-        it("", function(){
-
-        });
-    });
 
 
 
@@ -132,10 +122,6 @@ describe("event", function () {
             describe("mobile event", function () {
                 //todo support acceleration event(like cocos2d)
             });
-        });
-
-        it("custom event", function () {
-
         });
     });
 
@@ -286,7 +272,7 @@ describe("event", function () {
     it("e.target is what triggers the event dispatcher to trigger and e.currentTarget is what you assigned your listener to", function () {
 
     });
-    it("can set listener priority of the same target", function (e) {
+    it("can set listener priority of the same target", function () {
 
     });
 });

@@ -40,15 +40,32 @@ module Engine3D {
         private static _eventBinder:EventBinder = EventBinder.create();
         private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
+        public static on(eventType:EventType, handler:Function):void;
+        public static on(eventType:EventType, handler:Function, priority:number):void;
         public static on(target:GameObject, listener:{}|EventListener):void;
-        public static on(target:GameObject, eventType:EventType, handler:Function, priority?:number):void;
+        public static on(target:GameObject, eventType:EventType, handler:Function):void;
+        public static on(target:GameObject, eventType:EventType, handler:Function, priority:number):void;
 
         public static on(args) {
-            if(arguments.length === 2){
+            if(arguments.length === 2 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1])){
+                let eventType = arguments[0],
+                    handler = arguments[1],
+                    priority = 0;
+
+                this._eventBinder.on(eventType, handler, priority);
+            }
+            else if(arguments.length === 2){
                 let target = arguments[0],
                     listener = arguments[1];
 
                 this._eventBinder.on(target, listener);
+            }
+            else if(arguments.length === 3 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1]) && JudgeUtils.isNumber(arguments[2])){
+                let eventType = arguments[0],
+                    handler = arguments[1],
+                    priority = arguments[2];
+
+                this._eventBinder.on(eventType, handler, priority);
             }
             else if(arguments.length === 3 || arguments.length === 4){
                 let target = arguments[0],
@@ -60,6 +77,8 @@ module Engine3D {
             }
         }
 
+        public static off(eventType:EventType):void;
+        public static off(eventType:EventType, handler:Function):void;
         public static off(target:GameObject):void;
         public static off(target:GameObject, eventType:EventType):void;
         public static off(target:GameObject, eventType:EventType, handler:Function):void;
@@ -71,8 +90,11 @@ module Engine3D {
             );
         }
 
-        public static trigger(target:GameObject, event:Event) {
-            this._eventDispatcher.trigger(target, event);
+        public static trigger(event:Event):void;
+        public static trigger(target:GameObject, event:Event):void;
+
+        public static trigger(args) {
+            this._eventDispatcher.trigger.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
         public static broadcast(target:GameObject, event:Event) {
@@ -83,14 +105,61 @@ module Engine3D {
             this._eventDispatcher.emit(target, event);
         }
 
-        public static fromEvent(target:GameObject, eventType:EventType, priority:number = 0){
-            return dyRt.fromEventPattern(
-                function(handler){
+        public static fromEvent(eventType:EventType):any;
+        public static fromEvent(eventType:EventType, priority:number):any;
+        public static fromEvent(target:GameObject, eventType:EventType):any;
+        public static fromEvent(target:GameObject, eventType:EventType, priority:number):any;
+
+        public static fromEvent(args) {
+            var addHandler = null,
+                removeHandler = null;
+
+            if (arguments.length === 1) {
+                let eventType = arguments[0];
+
+                addHandler = function (handler) {
+                    EventManager.on(eventType, handler);
+                };
+                removeHandler = function (handler) {
+                    EventManager.off(eventType, handler);
+                };
+            }
+            else if (arguments.length === 2 && JudgeUtils.isNumber(arguments[1])) {
+                let eventType = arguments[0],
+                    priority = arguments[1];
+
+                addHandler = function (handler) {
+                    EventManager.on(eventType, handler, priority);
+                };
+                removeHandler = function (handler) {
+                    EventManager.off(eventType, handler);
+                };
+            }
+            else if (arguments.length === 2) {
+                let target = arguments[0],
+                    eventType = arguments[1];
+
+                addHandler = function (handler) {
+                    EventManager.on(target, eventType, handler);
+                };
+                removeHandler = function (handler) {
+                    EventManager.off(target, eventType);
+                };
+            }
+            else if (arguments.length === 3) {
+                let target = arguments[0],
+                    eventType = arguments[1],
+                    priority = arguments[2];
+
+                addHandler = function (handler) {
                     EventManager.on(target, eventType, handler, priority);
-                },
-                function(handler){
-                    EventManager.off(target, eventType, handler);
-                });
+                };
+                removeHandler = function (handler) {
+                    EventManager.off(target, eventType);
+                };
+            }
+
+            return dyRt.fromEventPattern(addHandler, removeHandler);
         }
 
         public static setBubbleParent(target:GameObject, parent:any) {

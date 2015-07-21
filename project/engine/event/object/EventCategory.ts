@@ -1,5 +1,6 @@
 module Engine3D{
     export enum EventCategory{
-        MOUSE
+        MOUSE,
+        CUSTOM
     }
 }
