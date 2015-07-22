@@ -58,7 +58,25 @@ describe("custom event", function () {
 
             });
             it("target eventType", function () {
-                //todo assertion currentTarget, target
+                var target = Engine3D.Mesh.create();
+                var eventTarget = null;
+                var sum = 0;
+
+                manager.on(target, eventType, function (e) {
+                    eventTarget = e;
+                    sum++;
+                });
+                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+
+                expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
+                expect(eventTarget.currentTarget).toEqual(target);
+                expect(eventTarget.target).toEqual(target);
+                expect(sum).toEqual(1);
+
+                manager.off(target, eventType);
+                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+
+                expect(sum).toEqual(1);
             });
         });
         describe("fromEvent", function () {
@@ -177,7 +195,26 @@ describe("custom event", function () {
                 });
             });
             it("target eventType", function () {
+                var target = Engine3D.Mesh.create();
+                var eventTarget = null;
+                var sum = 0;
 
+                var subscription = manager.fromEvent(target, eventType)
+                    .subscribe(function (e) {
+                    eventTarget = e;
+                    sum++;
+                });
+                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+
+                expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
+                expect(eventTarget.currentTarget).toEqual(target);
+                expect(eventTarget.target).toEqual(target);
+                expect(sum).toEqual(1);
+
+                subscription.dispose();
+                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+
+                expect(sum).toEqual(1);
             });
         });
     });

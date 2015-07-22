@@ -26,12 +26,11 @@ module Engine3D {
                     arg = arguments[1],
                     listener:EventListener = null;
 
-
                 listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
 
                 listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                     FactoryEventHandler.createEventHandler(listener.eventCategory)
-                        .on(target, handlerData.eventType, listener.priority, handlerData.handler);
+                        .on(target, handlerData.eventType, handlerData.handler, listener.priority);
                 });
             }
             else if(arguments.length === 3){
@@ -49,7 +48,7 @@ module Engine3D {
                     priority = arguments[3];
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
-                    .on(target, eventType, priority, handler);
+                    .on(target, eventType, handler, priority);
             }
         }
 

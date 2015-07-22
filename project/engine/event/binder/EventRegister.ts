@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventRegisterData {
-        currentTarget:GameObject,
+        target:GameObject,
         //user's event handler
         handler:Function,
         //the actual event handler
@@ -25,7 +25,7 @@ module Engine3D {
         public register(target:GameObject, eventType:EventType, handler:Function, wrapHandler:Function, priority:number) {
             //var isBindEventOnView = false,
             var data = <IEventRegisterData>{
-                currentTarget: target,
+                target: target,
                 handler: handler,
                 wrapHandler: wrapHandler,
                 priority: priority

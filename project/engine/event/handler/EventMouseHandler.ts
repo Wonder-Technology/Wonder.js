@@ -14,10 +14,10 @@ module Engine3D {
             return this._instance;
         }
 
-        public on(target:GameObject, eventType:EventType, priority:number, handler:Function) {
+        public on(target:GameObject, eventType:EventType, handler:Function, priority:number) {
             dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
 
-            this._handler(target, eventType, priority, handler);
+            this._handler(target, eventType, handler, priority);
         }
 
         public off(target:GameObject, eventType:EventType):void;
@@ -49,6 +49,8 @@ module Engine3D {
                 return;
             }
 
+            event.target = target;
+
             listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
 
             if (listenerDataList === null || listenerDataList.getCount()=== 0) {
@@ -56,12 +58,12 @@ module Engine3D {
             }
 
             listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                event.target = listenerData.currentTarget;
+                //event.target = listenerData.target;
                 listenerData.handler(event);
             });
         }
 
-        private _handler(target, eventType, priority, handler){
+        private _handler(target, eventType, handler, priority){
             var wrapHandler = null;
 
             if (!EventRegister.getInstance().isBinded(target, eventType)) {

@@ -10,18 +10,42 @@ module Engine3D {
             return this._instance;
         }
 
-        public on(eventType:string, handler:Function, priority:number) {
-            EventRegister.getInstance().register(
-                null,
-                <any>eventType,
-                handler,
-                null,
-                priority
-            );
+        public on(eventType:string, handler:Function, priority:number):void;
+        public on(target:GameObject, eventType:string, handler:Function, priority:number):void;
+
+        public on(args) {
+            if(arguments.length === 3){
+                let eventType = arguments[0],
+                    handler = arguments[1],
+                    priority = arguments[2];
+
+                EventRegister.getInstance().register(
+                    null,
+                    <any>eventType,
+                    handler,
+                    null,
+                    priority
+                );
+            }
+            else if(arguments.length === 4){
+                let target = arguments[0],
+                    eventType = arguments[1],
+                    handler = arguments[2],
+                    priority = arguments[3];
+
+                EventRegister.getInstance().register(
+                    target,
+                    <any>eventType,
+                    handler,
+                    null,
+                    priority
+                );
+            }
         }
 
         public off(eventType:string):void;
         public off(eventType:string, handler:Function):void;
+        public off(target:GameObject, eventType:string, handler:Function):void;
 
         public off(args) {
             var eventRegister = EventRegister.getInstance();
@@ -29,18 +53,48 @@ module Engine3D {
             eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
         }
 
-        public trigger(event:Event) {
-            var eventType= event.name,
-                listenerDataList = EventRegister.getInstance().getListenerDataList(eventType);
+        public trigger(event:Event):void;
+        public trigger(target:GameObject, event:Event):void;
 
-            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                return;
+        public trigger(args) {
+            var event:Event = null,
+                listenerDataList:dyCb.Collection = null;
+
+            if(arguments.length === 1){
+                event = arguments[0];
+
+                listenerDataList = EventRegister.getInstance().getListenerDataList(event.name);
+
+                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                    return;
+                }
+
+                listenerDataList.forEach((listenerData:IEventRegisterData) => {
+                    event.currentTarget = listenerData.target;
+                    event.target = listenerData.target;
+
+                    listenerData.handler(event);
+                });
+            }
+            else if(arguments.length === 2){
+                let target = arguments[0];
+
+                event = arguments[1];
+                event.target = target;
+
+                listenerDataList = EventRegister.getInstance().getListenerDataList(target, event.name);
+
+                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                    return;
+                }
+
+                listenerDataList.forEach((listenerData:IEventRegisterData) => {
+                    event.currentTarget = listenerData.target;
+
+                    listenerData.handler(event);
+                });
             }
 
-            listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                event.target = listenerData.currentTarget;
-                listenerData.handler(event);
-            });
         }
     }
 }

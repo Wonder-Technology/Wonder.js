@@ -17,7 +17,7 @@ module Engine3D{
         public appendChild(eventType:EventType, data:IEventRegisterData){
             this._listenerMap.appendChild(
                 //String(data.target.uid) + "_" + eventType,
-                this._buildKey(data.currentTarget, eventType),
+                this._buildKey(data.target, eventType),
                 data
             );
         }

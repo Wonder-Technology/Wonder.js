@@ -2,11 +2,10 @@ describe("event", function () {
     var manager = null;
     var Listener = null;
     var sandbox = null;
-    var dom = null;
+    var target = null;
 
     function insertDom() {
-        $("<div id='event-test'></div>")
-            .append($("body"));
+        $("html").append($("<canvas id='event-test'></canvas>"));
     }
 
     function removeDom() {
@@ -15,18 +14,49 @@ describe("event", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
         insertDom();
-        dom = $("#event-test");
+        Engine3D.WebGLContext.createGL("#event-test");
+
         manager = Engine3D.EventManager;
         Listener = Engine3D.EventListener;
+        target = Engine3D.Mesh.create();
     });
     afterEach(function () {
         removeDom();
         sandbox.restore();
     });
 
+    describe("off", function(){
+        it("off target", function(){
+            var eventTarget = null,
+                eventTarget2 = null,
+                sum = 0,
+                sum2 = 0;
+            var eventType = "custom";
+            var fakeEvent = {
+                pageX:10,
+                pageY:10
+            };
 
-    //both can dispatch in event flow
+            manager.on(target, Engine3D.EventType.CLICK, function (e) {
+                eventTarget = e;
+                sum++;
+            });
+            manager.on(target, eventType, function (e) {
+                eventTarget2 = e;
+                sum2++;
+            });
+            manager.off(target);
+            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
+            manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+
+            expect(eventTarget).toBeNull();
+            expect(eventTarget2).toBeNull();
+            expect(sum).toEqual(0);
+            expect(sum2).toEqual(0);
+        });
+    });
 
     describe("system event", function(){
         beforeEach(function(){
