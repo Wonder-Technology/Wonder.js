@@ -123,6 +123,10 @@ module Engine3D {
             return this;
         }
 
+        public getChilren(){
+            return this._childs;
+        }
+
         public sort(){
             this._childs.sort(this._ascendZ);
 

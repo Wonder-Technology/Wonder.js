@@ -73,6 +73,27 @@ module Engine3D {
          * @param eventObject
          */
         public broadcast(target:GameObject, eventObject:Event) {
+            var self = this;
+
+            eventObject.phase = EventPhase.BROADCAST;
+            eventObject.target = target;
+
+            this.trigger(target, eventObject.copy(), true);
+
+            function iterator(obj:GameObject){
+                var children:dyCb.Collection = obj.getChilren();
+
+                if(children.getCount() === 0){
+                    return;
+                }
+
+                children.forEach((child:GameObject) => {
+                    self.trigger(child, eventObject.copy(), true);
+                    iterator(child);
+                });
+            }
+
+            iterator(target);
         }
 
        private _getParent(target:GameObject):GameObject {

@@ -131,55 +131,78 @@ describe("mouse event", function () {
         });
     });
 
-    it("emit mouse event", function(){
-        var mesh1 = Engine3D.Mesh.create();
-        var mesh2 = Engine3D.Mesh.create();
-        var mesh3 = Engine3D.Mesh.create();
-        var mesh4 = Engine3D.Mesh.create();
-        mesh2.addChild(mesh1);
-        mesh4.addChild(mesh2);
-        mesh4.addChild(mesh3);
+    describe("transfer event", function(){
+        var mesh1,mesh2,mesh3,mesh4;
         var eventTarget1 = null,
             eventTarget2 = null,
             eventTarget3 = null,
             eventTarget4 = null;
-        var fakeObj = {
-            a:sandbox.stub(),
-            b:sandbox.stub(),
-            c:sandbox.stub(),
-            d:sandbox.stub()
-        }
+        var fakeObj;
 
-        manager.fromEvent(mesh1, Engine3D.EventType.MOUSEMOVE)
-            .subscribe(function (e) {
-                eventTarget1 = e;
-                fakeObj.a();
-            });
-        manager.fromEvent(mesh2, Engine3D.EventType.MOUSEMOVE)
-            .subscribe(function (e) {
-                eventTarget2 = e;
-                fakeObj.b();
-            });
-        manager.fromEvent(mesh3, Engine3D.EventType.MOUSEMOVE)
-            .subscribe(function (e) {
-                eventTarget3 = e;
-                fakeObj.c();
-            });
-        manager.fromEvent(mesh4, Engine3D.EventType.MOUSEMOVE)
-            .subscribe(function (e) {
-                eventTarget4 = e;
-                fakeObj.d();
-            });
-        manager.emit(mesh1, Engine3D.CustomEvent.create(Engine3D.EventType.MOUSEMOVE));
+        beforeEach(function(){
+            mesh1 = Engine3D.Mesh.create();
+            mesh2 = Engine3D.Mesh.create();
+            mesh3 = Engine3D.Mesh.create();
+            mesh4 = Engine3D.Mesh.create();
+            mesh2.addChild(mesh1);
+            mesh4.addChild(mesh2);
+            mesh4.addChild(mesh3);
+            fakeObj = {
+                a:sandbox.stub(),
+                b:sandbox.stub(),
+                c:sandbox.stub(),
+                d:sandbox.stub()
+            }
 
-        expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
-        expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-        expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
-        expect(eventTarget2.target.uid).toEqual(mesh1.uid);
-        expect(eventTarget3).toBeNull();
-        expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
-        expect(eventTarget4.target.uid).toEqual(mesh1.uid);
-        expect(fakeObj.a).toCalledBefore(fakeObj.b);
-        expect(fakeObj.b).toCalledBefore(fakeObj.d);
+            manager.fromEvent(mesh1, Engine3D.EventType.MOUSEDOWN)
+                .subscribe(function (e) {
+                    eventTarget1 = e;
+                    fakeObj.a();
+                });
+            manager.fromEvent(mesh2, Engine3D.EventType.MOUSEDOWN)
+                .subscribe(function (e) {
+                    eventTarget2 = e;
+                    fakeObj.b();
+                });
+            manager.fromEvent(mesh3, Engine3D.EventType.MOUSEDOWN)
+                .subscribe(function (e) {
+                    eventTarget3 = e;
+                    fakeObj.c();
+                });
+            manager.fromEvent(mesh4, Engine3D.EventType.MOUSEDOWN)
+                .subscribe(function (e) {
+                    eventTarget4 = e;
+                    fakeObj.d();
+                });
+        });
+
+        it("emit custom event", function(){
+            manager.emit(mesh1, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.MOUSEDOWN));
+
+            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget1.target.uid).toEqual(mesh1.uid);
+            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget2.target.uid).toEqual(mesh1.uid);
+            expect(eventTarget3).toBeNull();
+            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget4.target.uid).toEqual(mesh1.uid);
+            expect(fakeObj.a).toCalledBefore(fakeObj.b);
+            expect(fakeObj.b).toCalledBefore(fakeObj.d);
+        });
+        it("broadcast custom event", function(){
+            manager.broadcast(mesh4, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.MOUSEDOWN));
+
+            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget4.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget2.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget1.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget3.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget3.target.uid).toEqual(mesh4.uid);
+            expect(fakeObj.d).toCalledBefore(fakeObj.b);
+            expect(fakeObj.b).toCalledBefore(fakeObj.a);
+            expect(fakeObj.a).toCalledBefore(fakeObj.c);
+        });
     });
 });
