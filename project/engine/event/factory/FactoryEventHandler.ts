@@ -8,6 +8,9 @@ module Engine3D{
                 case EventCategory.MOUSE:
                     handler = EventMouseHandler.getInstance();
                     break;
+                case EventCategory.CUSTOM:
+                    handler = CustomEventHandler.getInstance();
+                    break;
                 //todo more type
                 default :
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventCategory"));

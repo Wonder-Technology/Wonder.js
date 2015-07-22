@@ -1,4 +1,4 @@
-describe("event", function () {
+describe("custom event", function () {
     var manager = null;
     var sandbox = null;
     var eventType = null;
@@ -179,6 +179,26 @@ describe("event", function () {
             it("target eventType", function () {
 
             });
+        });
+    });
+
+    describe("emit custom event", function(){
+        beforeEach(function(){
+
+        });
+
+        it("", function(){
+
+        });
+    });
+
+    describe("broadcast custom event", function(){
+        beforeEach(function(){
+
+        });
+
+        it("", function(){
+
         });
     });
 

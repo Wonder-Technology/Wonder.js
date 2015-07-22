@@ -28,45 +28,18 @@ module Engine3D {
         public trigger(args) {
             if(arguments.length === 1){
                 let event = arguments[0],
-                    eventType= event.name,
-                    listenerDataList = EventRegister.getInstance().getListenerDataList(eventType);
+                    eventCategory = event.type;
 
-                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return;
-                }
-
-                listenerDataList.forEach((listenerDataList:IEventRegisterData) => {
-                    listenerDataList.handler(event);
-                });
+                FactoryEventHandler.createEventHandler(eventCategory)
+                    .trigger(event);
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
                     event = arguments[1],
-                    eventType= event.name,
-                    eventCategory = event.type,
-                    listenerDataList:dyCb.Collection = null,
-                    self = this;
+                    eventCategory = event.type;
 
-                if (!(target instanceof GameObject)) {
-                    dyCb.Log.log("target is not GameObject, can't trigger event");
-                    return;
-                }
-
-                listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
-
-                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return;
-                }
-
-                listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                    FactoryEventHandler.createEventHandler(eventCategory).trigger(
-                        listenerData.currentTarget,
-                        //todo need copy?
-                        //eventObject.copy(),
-                        event,
-                        listenerData.handler
-                    );
-                });
+                FactoryEventHandler.createEventHandler(eventCategory)
+                    .trigger(target, event);
             }
         }
 

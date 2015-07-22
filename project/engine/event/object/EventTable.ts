@@ -15,7 +15,13 @@ module Engine3D {
         //getEventCategory should put here,
         //it should not put in Event class, it's better to extract EventTable class to put in
         public static getEventCategory(eventType:EventType):EventCategory {
-            return _table.getChild(<any>eventType);
+            var result = _table.getChild(<any>eventType);
+
+            if(result === void 0){
+                result = EventCategory.CUSTOM;
+            }
+
+            return result;
         }
 
         //public static isEventOnView(eventType:EventType){

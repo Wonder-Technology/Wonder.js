@@ -162,6 +162,14 @@ module Engine3D {
             }
         }
 
+        public isTarget(key:string, target:GameObject, list:dyCb.Collection){
+            return this._listenerMap.isTarget(key, target, list);
+        }
+
+        //public copy(){
+        //
+        //}
+
         //private _isContain(parentTarget:GameObject, childTarget:GameObject){
         //    var parent = null;
         //

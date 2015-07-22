@@ -26,8 +26,9 @@ module.exports = function(config) {
         'test/helper/sinonJs/*.js',
 
         //'test/unit/**/*.js'
-        'test/unit/math/*.js',
+        //'test/unit/math/*.js',
         'test/unit/event/*.js'
+        //'test/unit/event/mouseEventSpec.js'
         //'test/unit/utils/browserDetector/useragents.js',
         //'test/unit/utils/**/*.js',
 

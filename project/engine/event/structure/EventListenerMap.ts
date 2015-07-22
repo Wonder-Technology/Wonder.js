@@ -42,7 +42,7 @@ module Engine3D{
                 let target = arguments[0];
 
                 return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
-                    return self._isTarget(key, target, list);
+                    return self.isTarget(key, target, list);
                 });
             }
             else if(arguments.length === 2){
@@ -105,7 +105,7 @@ module Engine3D{
             }
             else if(arguments.length === 1){
                 this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
-                    return self._isTarget(key, target, list);
+                    return self.isTarget(key, target, list);
                 });
             }
             else if(arguments.length === 2){
@@ -170,12 +170,12 @@ module Engine3D{
             return <any>key.split("_")[1];
         }
 
-        private _buildKey(target:GameObject, eventType:EventType){
-            return target ? String(target.uid) + "_" + eventType : <any>eventType;
+        public isTarget(key:string, target:GameObject, list:dyCb.Collection){
+            return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
 
-        private _isTarget(key:string, target:GameObject, list:dyCb.Collection){
-            return key.indexOf(String(target.uid)) > -1 && list !== undefined;
+        private _buildKey(target:GameObject, eventType:EventType){
+            return target ? String(target.uid) + "_" + eventType : <any>eventType;
         }
     }
 }

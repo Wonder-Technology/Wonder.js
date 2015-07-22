@@ -143,7 +143,7 @@ module Engine3D {
                     EventManager.on(target, eventType, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventType);
+                    EventManager.off(target, eventType, handler);
                 };
             }
             else if (arguments.length === 3) {
@@ -155,7 +155,7 @@ module Engine3D {
                     EventManager.on(target, eventType, handler, priority);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventType);
+                    EventManager.off(target, eventType, handler);
                 };
             }
 

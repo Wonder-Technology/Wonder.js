@@ -24,18 +24,14 @@ module Engine3D {
             if(arguments.length === 2){
                 let target = arguments[0],
                     arg = arguments[1],
-                    listener:EventListener = null,
-                    eventHandler:EventHandler = null,
-                    self = this;
+                    listener:EventListener = null;
 
-                dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
 
                 listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
 
-                eventHandler = FactoryEventHandler.createEventHandler(listener.eventCategory);
-
                 listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
-                    self._handler(eventHandler, target, handlerData.eventType, listener.priority, handlerData.handler);
+                    FactoryEventHandler.createEventHandler(listener.eventCategory)
+                        .on(target, handlerData.eventType, listener.priority, handlerData.handler);
                 });
             }
             else if(arguments.length === 3){
@@ -43,13 +39,8 @@ module Engine3D {
                     handler = arguments[1],
                     priority = arguments[2];
 
-                EventRegister.getInstance().register(
-                    null,
-                    eventType,
-                    handler,
-                    null,
-                    priority
-                );
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .on(eventType, handler, priority);
             }
             else if(arguments.length === 4) {
                 let target = arguments[0],
@@ -57,12 +48,8 @@ module Engine3D {
                     handler = arguments[2],
                     priority = arguments[3];
 
-                dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
-
-                this._handler(
-                    FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType)),
-                    target, eventType, priority, handler
-                );
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .on(target, eventType, priority, handler);
             }
         }
 
@@ -77,47 +64,46 @@ module Engine3D {
                 eventOffDataList:dyCb.Collection = null,
                 argArr = Array.prototype.slice.call(arguments, 0);
 
-            eventOffDataList = eventRegister.remove.apply(eventRegister, argArr);
+            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
+                let eventType = arguments[0];
 
-            if(eventOffDataList){
-                this._unBind(eventOffDataList);
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .off(eventType);
             }
-        }
+            else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
+                let eventType = arguments[0],
+                    handler = arguments[1];
 
-        public getListenerDataList(target:GameObject, eventType:EventType) {
-            return EventRegister.getInstance().getListenerDataList(target, eventType);
-        }
-
-        private _getView() {
-            return Director.getInstance().getView();
-        }
-
-        private _handler(eventHandler, target, eventType, priority, handler){
-            var wrapHandler = null;
-
-            if (!EventRegister.getInstance().isBinded(target, eventType)) {
-                wrapHandler = eventHandler.on(this._getView(), eventType, target, handler);
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .off(eventType, handler);
             }
-            else{
-                wrapHandler = EventRegister.getInstance().getWrapHandler(target, eventType);
+            else if(arguments.length === 1){
+                let target = arguments[0];
+
+                eventRegister.forEach((list:dyCb.Collection, key:string) => {
+                    var eventType = eventRegister.getEventTypeFromKey(key);
+
+                    if(eventRegister.isTarget(key, target, list)){
+                        FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                            .off(target, eventType);
+                    }
+                });
             }
+            else if(arguments.length === 2){
+                let target = arguments[0],
+                    eventType = arguments[1];
 
-            EventRegister.getInstance().register(
-                target,
-                eventType,
-                handler,
-                wrapHandler,
-                priority
-            );
-        }
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .off(target, eventType);
+            }
+            else if(arguments.length === 3){
+                let target = arguments[0],
+                    eventType = arguments[1],
+                    handler = arguments[2];
 
-        private _unBind(eventOffDataList){
-            var view = this._getView();
-
-            eventOffDataList.forEach((eventOffData:IEventOffData) => {
-                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventOffData.eventType))
-                    .off(view, eventOffData.eventType, eventOffData.wrapHandler);
-            })
+                FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                    .off(target, eventType, handler);
+            }
         }
     }
 }
