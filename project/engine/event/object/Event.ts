@@ -35,7 +35,7 @@ module Engine3D{
         //target is the actual target that received the event.
         private _target:GameObject = null;
         get target() {
-            dyCb.Log.error(!this._target, dyCb.Log.info.FUNC_MUST_DEFINE("target"));
+            //dyCb.Log.error(!this._target, dyCb.Log.info.FUNC_MUST_DEFINE("target"));
 
             return this._target;
             //return this._target;
@@ -70,11 +70,20 @@ module Engine3D{
             this._phase = phase;
         }
 
+        public copy():Event{
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
         public stopPropagation() {
             this._isStopPropagation = true;
         }
-        //public copy():Event{
-        //    return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        //}
+
+        protected copyMember(destination:Event, source:Event, memberArr:[any]){
+            memberArr.forEach((member) => {
+                destination[member] = source[member];
+            });
+
+            return destination;
+        }
     }
 }

@@ -38,7 +38,7 @@ module Engine3D {
             }
         }
 
-        public trigger(target:GameObject, event:Event){
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean){
             var eventType = event.name,
                 eventCategory = event.type,
                 listenerDataList:dyCb.Collection = null,
@@ -49,7 +49,9 @@ module Engine3D {
                 return;
             }
 
-            event.target = target;
+            if(!notSetTarget){
+                event.target = target;
+            }
 
             listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
 
@@ -59,7 +61,7 @@ module Engine3D {
 
             listenerDataList.forEach((listenerData:IEventRegisterData) => {
                 //event.target = listenerData.target;
-                listenerData.handler(event);
+                listenerData.handler(event.copy());
             });
         }
 

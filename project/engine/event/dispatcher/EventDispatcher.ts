@@ -24,6 +24,7 @@ module Engine3D {
 
         public trigger(event:Event):void;
         public trigger(target:GameObject, event:Event):void;
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean):void;
 
         public trigger(args) {
             if(arguments.length === 1){
@@ -33,13 +34,14 @@ module Engine3D {
                 FactoryEventHandler.createEventHandler(eventCategory)
                     .trigger(event);
             }
-            else if(arguments.length === 2){
+            else if(arguments.length === 2 || arguments.length === 3){
                 let target = arguments[0],
                     event = arguments[1],
+                    notSetTarget = arguments[2] === void 0 ? false : arguments[2],
                     eventCategory = event.type;
 
                 FactoryEventHandler.createEventHandler(eventCategory)
-                    .trigger(target, event);
+                    .trigger(target, event, notSetTarget);
             }
         }
 
@@ -52,13 +54,14 @@ module Engine3D {
             var parent:GameObject = null;
 
             eventObject.phase = EventPhase.EMIT;
+            eventObject.target = target;
 
-            this.trigger(target, eventObject);
+            this.trigger(target, eventObject.copy(), true);
 
             parent = this._getParent(target);
             while (parent) {
                 //this.trigger(target, eventObject);
-                this.trigger(parent, eventObject);
+                this.trigger(parent, eventObject.copy(), true);
 
                 parent = this._getParent(parent);
             }

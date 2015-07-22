@@ -54,7 +54,7 @@ module Engine3D {
         }
 
         public trigger(event:Event):void;
-        public trigger(target:GameObject, event:Event):void;
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean):void;
 
         public trigger(args) {
             var event:Event = null,
@@ -70,17 +70,22 @@ module Engine3D {
                 }
 
                 listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                    event.currentTarget = listenerData.target;
-                    event.target = listenerData.target;
+                    var eventCopy = event.copy();
 
-                    listenerData.handler(event);
+                    eventCopy.currentTarget = listenerData.target;
+                    eventCopy.target = listenerData.target;
+
+                    listenerData.handler(eventCopy);
                 });
             }
-            else if(arguments.length === 2){
-                let target = arguments[0];
+            else if(arguments.length === 3){
+                let target = arguments[0],
+                    notSetTarget = arguments[2];
 
                 event = arguments[1];
-                event.target = target;
+                if(!notSetTarget){
+                    event.target = target;
+                }
 
                 listenerDataList = EventRegister.getInstance().getListenerDataList(target, event.name);
 
@@ -89,9 +94,11 @@ module Engine3D {
                 }
 
                 listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                    event.currentTarget = listenerData.target;
+                    var eventCopy = event.copy();
 
-                    listenerData.handler(event);
+                    eventCopy.currentTarget = listenerData.target;
+
+                    listenerData.handler(eventCopy);
                 });
             }
 

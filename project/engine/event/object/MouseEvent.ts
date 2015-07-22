@@ -23,10 +23,6 @@ module Engine3D {
             this._event = event;
         }
 
-
-        /*!
-        implement abstract attri
-         */
         public type:EventCategory = EventCategory.MOUSE;
 
 
@@ -138,10 +134,11 @@ module Engine3D {
             this._button = button;
         }
 
+        public copy(){
+            var eventObj = MouseEvent.create(this._event, this.name);
 
-        //public copy():MouseEvent {
-        //    return dyCb.ExtendUtils.copyPublicAttri(this);
-        //}
+            return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
+        }
 
 
         //private _getCanvasOffset(view:IView) {
