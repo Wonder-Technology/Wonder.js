@@ -75,13 +75,13 @@ module Engine3D{
 
         public removeChild(eventType:EventType):void;
         public removeChild(eventType:EventType, handler:Function):void;
+        public removeChild(uid:number, eventType:EventType):void;
         public removeChild(target:GameObject):void;
         public removeChild(target:GameObject, eventType:EventType):void;
         public removeChild(target:GameObject, eventType:EventType, handler:Function):void;
 
         public removeChild(args){
-            var self = this,
-                target = arguments[0];
+            var self = this;
 
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
                 let eventType = arguments[0];
@@ -103,18 +103,28 @@ module Engine3D{
                     this._listenerMap.removeChild(eventType);
                 }
             }
+            else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
+                let uid = arguments[0],
+                    eventType = arguments[1];
+
+                this._listenerMap.removeChild(this._buildKey(uid, eventType));
+            }
             else if(arguments.length === 1){
+                let target = arguments[0];
+
                 this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
             else if(arguments.length === 2){
-                let eventType = arguments[1];
+                let target = arguments[0],
+                eventType = arguments[1];
 
                 this._listenerMap.removeChild(this._buildKey(target, eventType));
             }
             else if(arguments.length === 3){
-                let eventType = arguments[1],
+                let target = arguments[0],
+                    eventType = arguments[1],
                     handler = arguments[2];
 
                 this._listenerMap.map((list:dyCb.Collection, key:string) => {
@@ -167,15 +177,37 @@ module Engine3D{
         }
 
         public getEventTypeFromKey(key:string):EventType{
-            return <any>key.split("_")[1];
+            return key.indexOf("_") > -1 ? <any>key.split("_")[1] : key;
+        }
+
+        public getUidFromKey(key:string):number{
+            return key.indexOf("_") > -1 ? Number(<any>key.split("_")[0]) : null;
         }
 
         public isTarget(key:string, target:GameObject, list:dyCb.Collection){
             return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
 
-        private _buildKey(target:GameObject, eventType:EventType){
-            return target ? String(target.uid) + "_" + eventType : <any>eventType;
+        private _buildKey(uid:number, eventType:EventType):string;
+        private _buildKey(target:GameObject, eventType:EventType):string;
+
+        private _buildKey(args){
+            if(JudgeUtils.isNumber(arguments[0])){
+                let uid = arguments[0],
+                    eventType = arguments[1];
+
+                return this._buildKeyWithUid(uid, eventType);
+            }
+            else{
+                let target = arguments[0],
+                    eventType = arguments[1];
+
+                return target ? this._buildKeyWithUid(target.uid, eventType) : <any>eventType;
+            }
+        }
+
+        private _buildKeyWithUid(uid:number, eventType:EventType){
+            return String(uid) + "_" + eventType;
         }
     }
 }

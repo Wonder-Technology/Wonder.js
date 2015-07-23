@@ -44,6 +44,7 @@ module Engine3D {
         }
 
         public off(eventType:string):void;
+        public off(uid:number, eventType:string):void;
         public off(eventType:string, handler:Function):void;
         public off(target:GameObject, eventType:string, handler:Function):void;
 

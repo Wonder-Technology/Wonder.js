@@ -61,13 +61,13 @@ module Engine3D {
 
         public remove(eventType:EventType):void;
         public remove(eventType:EventType, handler:Function):void;
+        public remove(uid:number, eventType:EventType):void;
         public remove(target:GameObject):void;
         public remove(target:GameObject, eventType:EventType):void;
         public remove(target:GameObject, eventType:EventType, handler:Function):void;
 
         public remove(args) {
-            var target = arguments[0],
-                dataList = null;
+            var target = arguments[0];
 
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
                 let eventType = arguments[0];
@@ -84,7 +84,17 @@ module Engine3D {
 
                 return null;
             }
+            else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
+                let uid = arguments[0],
+                    eventType = arguments[1];
+
+                this._listenerMap.removeChild(uid, eventType);
+
+                return null;
+            }
             else if(arguments.length === 1){
+                let dataList = null;
+
                 dataList = this._listenerMap.getEventOffDataList(target);
 
                 this._listenerMap.removeChild(target);
@@ -96,14 +106,12 @@ module Engine3D {
             else if(arguments.length === 2 || arguments.length === 3){
                 let eventType = arguments[1];
 
-                dataList = this._listenerMap.getEventOffDataList(target, eventType);
-
                 this._listenerMap.removeChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
 
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
 
-                    return dataList;
+                    return this._listenerMap.getEventOffDataList(target, eventType);
                 }
 
                 return null;
@@ -152,6 +160,10 @@ module Engine3D {
 
         public getEventTypeFromKey(key:string){
             return this._listenerMap.getEventTypeFromKey(key);
+        }
+
+        public getUidFromKey(key:string){
+            return this._listenerMap.getUidFromKey(key);
         }
 
         public getWrapHandler(target:GameObject, eventType:EventType){

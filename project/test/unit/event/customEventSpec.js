@@ -10,7 +10,7 @@ describe("custom event", function () {
 
     });
     afterEach(function () {
-        manager.off(eventType);
+        manager.off();
         sandbox.restore();
     });
 

@@ -77,13 +77,14 @@ module Engine3D {
             }
         }
 
+        public static off():void;
         public static off(eventType:EventType):void;
         public static off(eventType:EventType, handler:Function):void;
         public static off(target:GameObject):void;
         public static off(target:GameObject, eventType:EventType):void;
         public static off(target:GameObject, eventType:EventType, handler:Function):void;
 
-        public static off(args) {
+        public static off() {
             this._eventBinder.off.apply(
                 this._eventBinder,
                 Array.prototype.slice.call(arguments, 0)

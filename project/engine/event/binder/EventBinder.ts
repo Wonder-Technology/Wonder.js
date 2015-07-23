@@ -52,18 +52,35 @@ module Engine3D {
             }
         }
 
+        public off():void;
         public off(eventType:EventType):void;
         public off(eventType:EventType, handler:Function):void;
         public off(target:GameObject):void;
         public off(target:GameObject, eventType:EventType):void;
         public off(target:GameObject, eventType:EventType, handler:Function):void;
 
-        public off(args) {
+        public off() {
             var eventRegister = EventRegister.getInstance(),
                 eventOffDataList:dyCb.Collection = null,
                 argArr = Array.prototype.slice.call(arguments, 0);
 
-            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
+            if(arguments.length === 0){
+                eventRegister.forEach((list:dyCb.Collection, key:string) => {
+                    var eventType = eventRegister.getEventTypeFromKey(key),
+                        targetUid = eventRegister.getUidFromKey(key);
+
+                    if(!targetUid){
+                        FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                            .off(eventType);
+
+                        return;
+                    }
+
+                    FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))
+                        .off(targetUid, eventType);
+                });
+            }
+            else if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
                 let eventType = arguments[0];
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventCategory(eventType))

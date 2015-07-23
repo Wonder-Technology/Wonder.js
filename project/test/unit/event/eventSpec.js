@@ -24,20 +24,27 @@ describe("event", function () {
     });
     afterEach(function () {
         removeDom();
+        manager.off();
         sandbox.restore();
     });
 
     describe("off", function(){
-        it("off target", function(){
-            var eventTarget = null,
-                eventTarget2 = null,
-                sum = 0,
-                sum2 = 0;
-            var eventType = "custom";
-            var fakeEvent = {
+        var eventTarget = null,
+            eventTarget2 = null,
+            sum = 0,
+            sum2 = 0,
+        sum3 = 0;
+        var eventType = null;
+        var fakeEvent = null;
+        var target2 = null;
+
+        beforeEach(function(){
+            eventType = "custom1";
+            fakeEvent = {
                 pageX:10,
                 pageY:10
             };
+            target2 = Engine3D.Mesh.create();
 
             manager.on(target, Engine3D.EventType.CLICK, function (e) {
                 eventTarget = e;
@@ -47,6 +54,11 @@ describe("event", function () {
                 eventTarget2 = e;
                 sum2++;
             });
+            manager.on(target2, eventType, function (e) {
+                sum2++;
+            });
+        });
+        it("off target", function(){
             manager.off(target);
             manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
             manager.trigger(target, Engine3D.CustomEvent.create(eventType));
@@ -55,6 +67,18 @@ describe("event", function () {
             expect(eventTarget2).toBeNull();
             expect(sum).toEqual(0);
             expect(sum2).toEqual(0);
+        });
+        it("off all", function(){
+            manager.off();
+            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
+            manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+            manager.trigger(target2, Engine3D.CustomEvent.create(eventType));
+
+            expect(eventTarget).toBeNull();
+            expect(eventTarget2).toBeNull();
+            expect(sum).toEqual(0);
+            expect(sum2).toEqual(0);
+            expect(sum3).toEqual(0);
         });
     });
 

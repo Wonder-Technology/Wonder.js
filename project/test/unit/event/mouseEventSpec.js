@@ -27,6 +27,7 @@ describe("mouse event", function () {
     });
     afterEach(function () {
         removeDom();
+        manager.off();
         sandbox.restore();
     });
 

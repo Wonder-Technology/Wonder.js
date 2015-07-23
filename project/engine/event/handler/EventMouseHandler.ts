@@ -21,6 +21,7 @@ module Engine3D {
         }
 
         public off(target:GameObject, eventType:EventType):void;
+        public off(uid:number, eventType:EventType):void;
         public off(target:GameObject, eventType:EventType, handler:Function):void;
 
         public off(args) {
