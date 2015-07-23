@@ -118,11 +118,10 @@ module Engine3D {
             }
         }
 
-        //todo rename to getEventRegisterDataList
-        public getListenerDataList(eventName:EventName):dyCb.Collection;
-        public getListenerDataList(currentTarget:GameObject, eventName:EventName):dyCb.Collection;
+        public getEventRegisterDataList(eventName:EventName):dyCb.Collection;
+        public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):dyCb.Collection;
 
-        public getListenerDataList(args){
+        public getEventRegisterDataList(args){
             var result:dyCb.Collection = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
                 self = this;
 

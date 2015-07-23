@@ -54,7 +54,7 @@ module Engine3D {
                 event.target = target;
             }
 
-            listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventName);
+            listenerDataList = EventRegister.getInstance().getEventRegisterDataList(target, eventName);
 
             if (listenerDataList === null || listenerDataList.getCount()=== 0) {
                 return;
