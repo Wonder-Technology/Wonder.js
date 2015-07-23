@@ -4,8 +4,8 @@
 //judge is under point
 //wrap event object
 module Engine3D {
-    export class EventMouseHandler extends EventHandler{
-        private static _instance:EventMouseHandler = null;
+    export class MouseEventHandler extends EventHandler{
+        private static _instance:MouseEventHandler = null;
 
         public static getInstance() {
             if (this._instance === null) {

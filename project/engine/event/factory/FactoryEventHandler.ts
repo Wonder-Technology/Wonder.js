@@ -6,7 +6,7 @@ module Engine3D{
 
             switch (eventCategory){
                 case EventCategory.MOUSE:
-                    handler = EventMouseHandler.getInstance();
+                    handler = MouseEventHandler.getInstance();
                     break;
                 case EventCategory.CUSTOM:
                     handler = CustomEventHandler.getInstance();
@@ -39,7 +39,7 @@ module Engine3D{
         //}
 
         //private static _createAllEventHandlers(){
-        //     return dyCb.Collection.create([EventMouseHandler.getInstance()]);
+        //     return dyCb.Collection.create([MouseEventHandler.getInstance()]);
         //}
     }
 }

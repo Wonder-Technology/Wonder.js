@@ -59,7 +59,7 @@
 /// <reference path="event/object/MouseButton"/>
 /// <reference path="event/listener/EventListener"/>
 /// <reference path="event/handler/EventHandler"/>
-/// <reference path="event/handler/EventMouseHandler"/>
+/// <reference path="event/handler/MouseEventHandler"/>
 /// <reference path="event/dispatcher/EventDispatcher"/>
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/EventBinder"/>
