@@ -43,7 +43,7 @@ module Engine3D{
         }
 
         private _clearCommand(){
-            this._commandQueue.removeAllChilds();
+            this._commandQueue.removeAllChildren();
         }
     }
 }

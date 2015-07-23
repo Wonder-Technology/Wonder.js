@@ -7,7 +7,7 @@ module Engine3D{
             return obj;
         }
 
-        private _childs:dyCb.Collection = dyCb.Collection.create();
+        private _children:dyCb.Collection = dyCb.Collection.create();
 
         constructor(){
         }
@@ -17,11 +17,11 @@ module Engine3D{
                 return;
             }
 
-            this._childs.addChild(action);
+            this._children.addChild(action);
         }
 
         public hasChild(action:Action){
-            return this._childs.hasChild(action);
+            return this._children.hasChild(action);
         }
 
         public update(){
@@ -29,7 +29,7 @@ module Engine3D{
                 removeQueue = [];
             //time = null;
 
-            this._childs.forEach(function(child){
+            this._children.forEach(function(child){
                 //修复“如果遍历的动作删除了动作序列中某个动作，则在后面的遍历中会报错”的bug
                 if (!child) {
                     return;
@@ -48,7 +48,7 @@ module Engine3D{
             });
 
             removeQueue.forEach(function (child) {
-                self._childs.removeChild(child);
+                self._children.removeChild(child);
             });
         }
     }

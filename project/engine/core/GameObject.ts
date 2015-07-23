@@ -39,7 +39,7 @@ module Engine3D {
             this._bubbleParent = bubbleParent;
         }
 
-        private _childs:dyCb.Collection = dyCb.Collection.create();
+        private _children:dyCb.Collection = dyCb.Collection.create();
 
         constructor() {
             this._uid = GameObject._count;
@@ -74,13 +74,13 @@ module Engine3D {
         }
 
         public hasChild(child:GameObject):boolean {
-            return this._childs.hasChild(child);
+            return this._children.hasChild(child);
         }
 
         //public addChild(child:GameObject, sort:boolean=true):boolean {
         public addChild(child:GameObject):GameObject {
             //need user judge it!
-            //if(this._childs.hasChild(child)) {
+            //if(this._children.hasChild(child)) {
             //    return false;
             //}
 
@@ -97,14 +97,14 @@ module Engine3D {
             //}));
 
 
-            this._childs.addChild(child);
+            this._children.addChild(child);
 
             //if(sort) {
 
 
             /*!
-            sort when add child/childs, not when get childs.
-            because each loop will get childs(to render), so if using the latter, each loop should sort!
+            sort when add child/children, not when get children.
+            because each loop will get children(to render), so if using the latter, each loop should sort!
              */
                 this.sort();
             //}
@@ -124,17 +124,17 @@ module Engine3D {
         }
 
         public getChilren(){
-            return this._childs;
+            return this._children;
         }
 
         public sort(){
-            this._childs.sort(this._ascendZ);
+            this._children.sort(this._ascendZ);
 
             return this;
         }
 
         public forEach(func:Function){
-            this._childs.forEach(func);
+            this._children.forEach(func);
 
             return this;
         }
@@ -142,7 +142,7 @@ module Engine3D {
         public removeChild(child:GameObject):GameObject {
             child.onExit();
 
-            this._childs.removeChild(child);
+            this._children.removeChild(child);
             //var idx = this._children.indexOf(child);
             //if(idx !== -1) {
             //    child.dispatchEvent(new CoreEvent('beforeremove', false));
@@ -208,13 +208,13 @@ module Engine3D {
 
             var result = null,
                 i = null,
-                childs:dyCb.Collection = null,
-                len = this._childs.getCount();
+                children:dyCb.Collection = null,
+                len = this._children.getCount();
 
-            childs = this._childs;
+            children = this._children;
             if(len > 0) {
                 for (i = len - 1; i >= 0; i--) {
-                    let child = childs.getChild(i);
+                    let child = children.getChild(i);
 
                     result = child.getTopUnderPoint(point);
                     if (result) {

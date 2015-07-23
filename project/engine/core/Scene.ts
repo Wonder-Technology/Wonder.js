@@ -38,7 +38,7 @@ module Engine3D {
         }
 
         //public add(meshesArr:Mesh[]) {
-        //    this._meshes.addChilds(meshesArr);
+        //    this._meshes.addChildren(meshesArr);
         //}
 
         public run() {

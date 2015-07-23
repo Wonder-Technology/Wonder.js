@@ -247,7 +247,7 @@ describe("event", function () {
             //mesh = Engine3D.Mesh.create(null);
             //
             ////scene.add(mesh);
-            //scene._meshes.addChilds(mesh);
+            //scene._meshes.addChildren(mesh);
             ////director.runWithScene(scene);
             //
             //director._scene = scene;
