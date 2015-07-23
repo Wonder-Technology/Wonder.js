@@ -34,34 +34,34 @@ describe("event", function () {
             sum = 0,
             sum2 = 0,
         sum3 = 0;
-        var eventType = null;
+        var eventName = null;
         var fakeEvent = null;
         var target2 = null;
 
         beforeEach(function(){
-            eventType = "custom1";
+            eventName = "custom1";
             fakeEvent = {
                 pageX:10,
                 pageY:10
             };
             target2 = Engine3D.Mesh.create();
 
-            manager.on(target, Engine3D.EventType.CLICK, function (e) {
+            manager.on(target, Engine3D.EventName.CLICK, function (e) {
                 eventTarget = e;
                 sum++;
             });
-            manager.on(target, eventType, function (e) {
+            manager.on(target, eventName, function (e) {
                 eventTarget2 = e;
                 sum2++;
             });
-            manager.on(target2, eventType, function (e) {
+            manager.on(target2, eventName, function (e) {
                 sum2++;
             });
         });
         it("off target", function(){
             manager.off(target);
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
-            manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+            manager.trigger(target, Engine3D.CustomEvent.create(eventName));
 
             expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
@@ -70,9 +70,9 @@ describe("event", function () {
         });
         it("off all", function(){
             manager.off();
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
-            manager.trigger(target, Engine3D.CustomEvent.create(eventType));
-            manager.trigger(target2, Engine3D.CustomEvent.create(eventType));
+            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+            manager.trigger(target, Engine3D.CustomEvent.create(eventName));
+            manager.trigger(target2, Engine3D.CustomEvent.create(eventName));
 
             expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
@@ -96,7 +96,7 @@ describe("event", function () {
 
         //manager.on(scene,
         //    {
-        //        eventType: EventType.MOUSE,
+        //        eventName: EventName.MOUSE,
 
         //        onClick: function (e) {
         //            expect(e instanceof Engine3D.Event).toBeTruthy();

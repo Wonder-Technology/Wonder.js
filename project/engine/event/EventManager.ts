@@ -40,19 +40,19 @@ module Engine3D {
         private static _eventBinder:EventBinder = EventBinder.create();
         private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
-        public static on(eventType:EventType, handler:Function):void;
-        public static on(eventType:EventType, handler:Function, priority:number):void;
+        public static on(eventName:EventName, handler:Function):void;
+        public static on(eventName:EventName, handler:Function, priority:number):void;
         public static on(target:GameObject, listener:{}|EventListener):void;
-        public static on(target:GameObject, eventType:EventType, handler:Function):void;
-        public static on(target:GameObject, eventType:EventType, handler:Function, priority:number):void;
+        public static on(target:GameObject, eventName:EventName, handler:Function):void;
+        public static on(target:GameObject, eventName:EventName, handler:Function, priority:number):void;
 
         public static on(args) {
             if(arguments.length === 2 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1])){
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     handler = arguments[1],
                     priority = 0;
 
-                this._eventBinder.on(eventType, handler, priority);
+                this._eventBinder.on(eventName, handler, priority);
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
@@ -61,28 +61,28 @@ module Engine3D {
                 this._eventBinder.on(target, listener);
             }
             else if(arguments.length === 3 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1]) && JudgeUtils.isNumber(arguments[2])){
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     handler = arguments[1],
                     priority = arguments[2];
 
-                this._eventBinder.on(eventType, handler, priority);
+                this._eventBinder.on(eventName, handler, priority);
             }
             else if(arguments.length === 3 || arguments.length === 4){
                 let target = arguments[0],
-                    eventType = arguments[1],
+                    eventName = arguments[1],
                     handler = arguments[2],
                     priority = arguments[3] === undefined? 0 :arguments[3];
 
-                this._eventBinder.on(target, eventType, handler, priority);
+                this._eventBinder.on(target, eventName, handler, priority);
             }
         }
 
         public static off():void;
-        public static off(eventType:EventType):void;
-        public static off(eventType:EventType, handler:Function):void;
+        public static off(eventName:EventName):void;
+        public static off(eventName:EventName, handler:Function):void;
         public static off(target:GameObject):void;
-        public static off(target:GameObject, eventType:EventType):void;
-        public static off(target:GameObject, eventType:EventType, handler:Function):void;
+        public static off(target:GameObject, eventName:EventName):void;
+        public static off(target:GameObject, eventName:EventName, handler:Function):void;
 
         public static off() {
             this._eventBinder.off.apply(
@@ -106,57 +106,57 @@ module Engine3D {
             this._eventDispatcher.emit(target, event);
         }
 
-        public static fromEvent(eventType:EventType):any;
-        public static fromEvent(eventType:EventType, priority:number):any;
-        public static fromEvent(target:GameObject, eventType:EventType):any;
-        public static fromEvent(target:GameObject, eventType:EventType, priority:number):any;
+        public static fromEvent(eventName:EventName):any;
+        public static fromEvent(eventName:EventName, priority:number):any;
+        public static fromEvent(target:GameObject, eventName:EventName):any;
+        public static fromEvent(target:GameObject, eventName:EventName, priority:number):any;
 
         public static fromEvent(args) {
             var addHandler = null,
                 removeHandler = null;
 
             if (arguments.length === 1) {
-                let eventType = arguments[0];
+                let eventName = arguments[0];
 
                 addHandler = function (handler) {
-                    EventManager.on(eventType, handler);
+                    EventManager.on(eventName, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(eventType, handler);
+                    EventManager.off(eventName, handler);
                 };
             }
             else if (arguments.length === 2 && JudgeUtils.isNumber(arguments[1])) {
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     priority = arguments[1];
 
                 addHandler = function (handler) {
-                    EventManager.on(eventType, handler, priority);
+                    EventManager.on(eventName, handler, priority);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(eventType, handler);
+                    EventManager.off(eventName, handler);
                 };
             }
             else if (arguments.length === 2) {
                 let target = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
                 addHandler = function (handler) {
-                    EventManager.on(target, eventType, handler);
+                    EventManager.on(target, eventName, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventType, handler);
+                    EventManager.off(target, eventName, handler);
                 };
             }
             else if (arguments.length === 3) {
                 let target = arguments[0],
-                    eventType = arguments[1],
+                    eventName = arguments[1],
                     priority = arguments[2];
 
                 addHandler = function (handler) {
-                    EventManager.on(target, eventType, handler, priority);
+                    EventManager.on(target, eventName, handler, priority);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventType, handler);
+                    EventManager.off(target, eventName, handler);
                 };
             }
 

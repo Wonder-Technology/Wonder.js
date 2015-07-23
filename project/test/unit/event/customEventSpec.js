@@ -1,12 +1,12 @@
 describe("custom event", function () {
     var manager = null;
     var sandbox = null;
-    var eventType = null;
+    var eventName = null;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         manager = Engine3D.EventManager;
-        eventType = "custom1";
+        eventName = "custom1";
 
     });
     afterEach(function () {
@@ -16,21 +16,21 @@ describe("custom event", function () {
 
     describe("bind/unbind custom event", function () {
         describe("on/off", function () {
-            it("eventType", function () {
+            it("eventName", function () {
                 var eventTarget = null;
                 var sum = 0;
 
-                manager.on(eventType, function (e) {
+                manager.on(eventName, function (e) {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(sum).toEqual(1);
 
-                manager.off(eventType);
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.off(eventName);
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -42,60 +42,60 @@ describe("custom event", function () {
                     b:sandbox.stub()
                 };
 
-                manager.on(eventType, function (e) {
+                manager.on(eventName, function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 }, 1);
-                manager.on(eventType, function (e) {
+                manager.on(eventName, function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 }, 2);
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(eventTarget2).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             });
-            it("target eventType", function () {
+            it("target eventName", function () {
                 var target = Engine3D.Mesh.create();
                 var eventTarget = null;
                 var sum = 0;
 
-                manager.on(target, eventType, function (e) {
+                manager.on(target, eventName, function (e) {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+                manager.trigger(target, Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(eventTarget.currentTarget).toEqual(target);
                 expect(eventTarget.target).toEqual(target);
                 expect(sum).toEqual(1);
 
-                manager.off(target, eventType);
-                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+                manager.off(target, eventName);
+                manager.trigger(target, Engine3D.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
         });
         describe("fromEvent", function () {
-            it("eventType", function () {
+            it("eventName", function () {
                 var eventTarget = null;
                 var sum = 0;
 
-                var subscription = manager.fromEvent(eventType)
+                var subscription = manager.fromEvent(eventName)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -110,12 +110,12 @@ describe("custom event", function () {
                 };
                 var subject = dyRt.Subject.create();
 
-                var subscription1 = manager.fromEvent(eventType, 1)
+                var subscription1 = manager.fromEvent(eventName, 1)
                     .subscribe(function (e) {
                         eventTarget = e;
                         fakeObj.a();
                     });
-                manager.fromEvent(eventType, 2).subscribe(subject);
+                manager.fromEvent(eventName, 2).subscribe(subject);
                 var subscription2 = subject.subscribe(function (e) {
                         eventTarget2 = e;
                         fakeObj.b();
@@ -125,7 +125,7 @@ describe("custom event", function () {
                     fakeObj.c();
                 });
                 subject.start();
-                manager.trigger(Engine3D.CustomEvent.create(eventType));
+                manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(eventTarget2).toBeInstanceOf(Engine3D.CustomEvent);
@@ -156,13 +156,13 @@ describe("custom event", function () {
                     };
                     subject = dyRt.Subject.create();
 
-                    subscription1 = manager.fromEvent(eventType, 1)
+                    subscription1 = manager.fromEvent(eventName, 1)
                         .subscribe(function (e) {
                             eventTarget = e;
                             fakeObj.a();
                         });
 
-                    manager.fromEvent(eventType, 2).subscribe(subject);
+                    manager.fromEvent(eventName, 2).subscribe(subject);
                     subscription2 = subject.subscribe(function (e) {
                         eventTarget2 = e;
                         fakeObj.b();
@@ -173,12 +173,12 @@ describe("custom event", function () {
                     });
                     subject.start();
 
-                    manager.trigger(Engine3D.CustomEvent.create(eventType));
+                    manager.trigger(Engine3D.CustomEvent.create(eventName));
                 });
 
                 it("subject dispose", function () {
                     subject.dispose();
-                    manager.trigger(Engine3D.CustomEvent.create(eventType));
+                    manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                     expect(fakeObj.a).toCalledTwice();
                     expect(fakeObj.b).toCalledOnce();
@@ -187,24 +187,24 @@ describe("custom event", function () {
                 it("subscription dispose", function () {
                     subscription1.dispose();
                     subscription2.dispose();
-                    manager.trigger(Engine3D.CustomEvent.create(eventType));
+                    manager.trigger(Engine3D.CustomEvent.create(eventName));
 
                     expect(fakeObj.a).toCalledOnce();
                     expect(fakeObj.b).toCalledOnce();
                     expect(fakeObj.c).toCalledOnce();
                 });
             });
-            it("target eventType", function () {
+            it("target eventName", function () {
                 var target = Engine3D.Mesh.create();
                 var eventTarget = null;
                 var sum = 0;
 
-                var subscription = manager.fromEvent(target, eventType)
+                var subscription = manager.fromEvent(target, eventName)
                     .subscribe(function (e) {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+                manager.trigger(target, Engine3D.CustomEvent.create(eventName));
 
                 expect(eventTarget).toBeInstanceOf(Engine3D.CustomEvent);
                 expect(eventTarget.currentTarget).toEqual(target);
@@ -212,7 +212,7 @@ describe("custom event", function () {
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(target, Engine3D.CustomEvent.create(eventType));
+                manager.trigger(target, Engine3D.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -242,22 +242,22 @@ describe("custom event", function () {
                 d:sandbox.stub()
             }
 
-            manager.fromEvent(mesh1, eventType)
+            manager.fromEvent(mesh1, eventName)
                 .subscribe(function (e) {
                     eventTarget1 = e;
                     fakeObj.a();
                 });
-            manager.fromEvent(mesh2, eventType)
+            manager.fromEvent(mesh2, eventName)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.fromEvent(mesh3, eventType)
+            manager.fromEvent(mesh3, eventName)
                 .subscribe(function (e) {
                     eventTarget3 = e;
                     fakeObj.c();
                 });
-            manager.fromEvent(mesh4, eventType)
+            manager.fromEvent(mesh4, eventName)
                 .subscribe(function (e) {
                     eventTarget4 = e;
                     fakeObj.d();
@@ -265,7 +265,7 @@ describe("custom event", function () {
         });
 
         it("emit custom event", function(){
-            manager.emit(mesh1, Engine3D.CustomEvent.create(eventType));
+            manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
 
             expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
@@ -281,7 +281,7 @@ describe("custom event", function () {
             expect(fakeObj.b).toCalledBefore(fakeObj.d);
         });
         it("broadcast custom event", function(){
-            manager.broadcast(mesh4, Engine3D.CustomEvent.create(eventType));
+            manager.broadcast(mesh4, Engine3D.CustomEvent.create(eventName));
 
             expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.BROADCAST);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);

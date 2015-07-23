@@ -326,7 +326,7 @@ beforeEach(function () {
 
                  MyEngine addEvent():
                  if (Tool.judge.isHostMethod(dom, "addEventListener")) {    //判断dom是否具有addEventListener方法
-            dom.addEventListener(sEventType, fnHandler, false);
+            dom.addEventListener(sEventName, fnHandler, false);
             }
                  */
                 isHostMethod: (function () {

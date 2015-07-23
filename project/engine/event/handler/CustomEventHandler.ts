@@ -10,18 +10,18 @@ module Engine3D {
             return this._instance;
         }
 
-        public on(eventType:string, handler:Function, priority:number):void;
-        public on(target:GameObject, eventType:string, handler:Function, priority:number):void;
+        public on(eventName:string, handler:Function, priority:number):void;
+        public on(target:GameObject, eventName:string, handler:Function, priority:number):void;
 
         public on(args) {
             if(arguments.length === 3){
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     handler = arguments[1],
                     priority = arguments[2];
 
                 EventRegister.getInstance().register(
                     null,
-                    <any>eventType,
+                    <any>eventName,
                     handler,
                     null,
                     priority
@@ -29,13 +29,13 @@ module Engine3D {
             }
             else if(arguments.length === 4){
                 let target = arguments[0],
-                    eventType = arguments[1],
+                    eventName = arguments[1],
                     handler = arguments[2],
                     priority = arguments[3];
 
                 EventRegister.getInstance().register(
                     target,
-                    <any>eventType,
+                    <any>eventName,
                     handler,
                     null,
                     priority
@@ -43,10 +43,10 @@ module Engine3D {
             }
         }
 
-        public off(eventType:string):void;
-        public off(uid:number, eventType:string):void;
-        public off(eventType:string, handler:Function):void;
-        public off(target:GameObject, eventType:string, handler:Function):void;
+        public off(eventName:string):void;
+        public off(uid:number, eventName:string):void;
+        public off(eventName:string, handler:Function):void;
+        public off(target:GameObject, eventName:string, handler:Function):void;
 
         public off(args) {
             var eventRegister = EventRegister.getInstance();

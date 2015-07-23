@@ -49,8 +49,8 @@
 
 /// <reference path="event/KeyCodeMap"/>
 /// <reference path="event/structure/EventListenerMap"/>
-/// <reference path="event/object/EventCategory"/>
 /// <reference path="event/object/EventType"/>
+/// <reference path="event/object/EventName"/>
 /// <reference path="event/object/EventPhase"/>
 /// <reference path="event/object/EventTable"/>
 /// <reference path="event/object/Event"/>

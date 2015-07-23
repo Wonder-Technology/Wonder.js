@@ -1,13 +1,13 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export class CustomEvent extends Event{
-        public static create(eventType:string) {
-            var obj = new this(<any>eventType);
+        public static create(eventName:string) {
+            var obj = new this(<any>eventName);
 
             return obj;
         }
 
-        public type:EventCategory = EventCategory.CUSTOM;
+        public type:EventType = EventType.CUSTOM;
 
         public copyPublicAttri(destination, source:any){
             var property = null;

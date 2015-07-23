@@ -4,35 +4,35 @@ module Engine3D {
      const _table = dyCb.Hash.create();
 
     //todo not declare "<any>"!
-    _table.addChild(<any>EventType.CLICK, EventCategory.MOUSE);
-    _table.addChild(<any>EventType.MOUSEOVER, EventCategory.MOUSE);
-    _table.addChild(<any>EventType.MOUSEOUT, EventCategory.MOUSE);
-    _table.addChild(<any>EventType.MOUSEMOVE, EventCategory.MOUSE);
-    _table.addChild(<any>EventType.MOUSEDOWN, EventCategory.MOUSE);
-    _table.addChild(<any>EventType.MOUSEUP, EventCategory.MOUSE);
+    _table.addChild(<any>EventName.CLICK, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEOVER, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEOUT, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEMOVE, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEDOWN, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEUP, EventType.MOUSE);
 
     export class EventTable {
-        //getEventCategory should put here,
+        //getEventType should put here,
         //it should not put in Event class, it's better to extract EventTable class to put in
-        public static getEventCategory(eventType:EventType):EventCategory {
-            var result = _table.getChild(<any>eventType);
+        public static getEventType(eventName:EventName):EventType {
+            var result = _table.getChild(<any>eventName);
 
             if(result === void 0){
-                result = EventCategory.CUSTOM;
+                result = EventType.CUSTOM;
             }
 
             return result;
         }
 
-        //public static isEventOnView(eventType:EventType){
+        //public static isEventOnView(eventName:EventName){
         //    var result = false;
         //
-        //    switch(this.getEventCategory(eventType)){
-        //        case EventCategory.MOUSE:
+        //    switch(this.getEventType(eventName)){
+        //        case EventType.MOUSE:
         //            result = true;
         //            break;
         //        default:
-        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventType"));
+        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
         //            result = false;
         //            break;
         //    }

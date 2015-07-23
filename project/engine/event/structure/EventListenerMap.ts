@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D{
     export interface IEventOffData {
-        eventType:EventType,
+        eventName:EventName,
         wrapHandler:Function
     }
 
@@ -14,29 +14,29 @@ module Engine3D{
 
         private _listenerMap:dyCb.Hash = dyCb.Hash.create();
 
-        public appendChild(eventType:EventType, data:IEventRegisterData){
+        public appendChild(eventName:EventName, data:IEventRegisterData){
             this._listenerMap.appendChild(
-                //String(data.target.uid) + "_" + eventType,
-                this._buildKey(data.target, eventType),
+                //String(data.target.uid) + "_" + eventName,
+                this._buildKey(data.target, eventName),
                 data
             );
         }
 
-        public getChild(eventType:EventType):any;
+        public getChild(eventName:EventName):any;
         public getChild(target:GameObject):any;
-        public getChild(target:GameObject, eventType:EventType):any;
+        public getChild(target:GameObject, eventName:EventName):any;
 
         public getChild(args){
             var self = this;
             //
             //return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
-            //    return key === self._buildKey(target, eventType);
+            //    return key === self._buildKey(target, eventName);
             //});
             //
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventType = arguments[0];
+                let eventName = arguments[0];
 
-                return this._listenerMap.getChild(eventType);
+                return this._listenerMap.getChild(eventName);
             }
             else if(arguments.length === 1){
                 let target = arguments[0];
@@ -47,9 +47,9 @@ module Engine3D{
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                return this._listenerMap.getChild(this._buildKey(target, eventType));
+                return this._listenerMap.getChild(this._buildKey(target, eventName));
             }
         }
 
@@ -59,9 +59,9 @@ module Engine3D{
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                return this._listenerMap.hasChild(this._buildKey(target, eventType));
+                return this._listenerMap.hasChild(this._buildKey(target, eventName));
             }
         }
 
@@ -73,41 +73,41 @@ module Engine3D{
             return this._listenerMap.forEach(func);
         }
 
-        public removeChild(eventType:EventType):void;
-        public removeChild(eventType:EventType, handler:Function):void;
-        public removeChild(uid:number, eventType:EventType):void;
+        public removeChild(eventName:EventName):void;
+        public removeChild(eventName:EventName, handler:Function):void;
+        public removeChild(uid:number, eventName:EventName):void;
         public removeChild(target:GameObject):void;
-        public removeChild(target:GameObject, eventType:EventType):void;
-        public removeChild(target:GameObject, eventType:EventType, handler:Function):void;
+        public removeChild(target:GameObject, eventName:EventName):void;
+        public removeChild(target:GameObject, eventName:EventName, handler:Function):void;
 
         public removeChild(args){
             var self = this;
 
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventType = arguments[0];
+                let eventName = arguments[0];
 
-                this._listenerMap.removeChild(eventType);
+                this._listenerMap.removeChild(eventName);
             }
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     handler = arguments[1],
                     list:dyCb.Collection = null;
 
-                list = this._listenerMap.getChild(eventType);
+                list = this._listenerMap.getChild(eventName);
 
                 list.removeChild((val:IEventRegisterData) => {
                         return val.handler === handler;
                     });
 
                 if(list.getCount() === 0){
-                    this._listenerMap.removeChild(eventType);
+                    this._listenerMap.removeChild(eventName);
                 }
             }
             else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
                 let uid = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                this._listenerMap.removeChild(this._buildKey(uid, eventType));
+                this._listenerMap.removeChild(this._buildKey(uid, eventName));
             }
             else if(arguments.length === 1){
                 let target = arguments[0];
@@ -118,13 +118,13 @@ module Engine3D{
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
-                eventType = arguments[1];
+                eventName = arguments[1];
 
-                this._listenerMap.removeChild(this._buildKey(target, eventType));
+                this._listenerMap.removeChild(this._buildKey(target, eventName));
             }
             else if(arguments.length === 3){
                 let target = arguments[0],
-                    eventType = arguments[1],
+                    eventName = arguments[1],
                     handler = arguments[2];
 
                 this._listenerMap.map((list:dyCb.Collection, key:string) => {
@@ -141,7 +141,7 @@ module Engine3D{
             }
         }
 
-        public getEventOffDataList(target:GameObject, eventType?:EventType){
+        public getEventOffDataList(target:GameObject, eventName?:EventName){
             var result:dyCb.Collection = dyCb.Collection.create(),
                 self = this;
 
@@ -151,7 +151,7 @@ module Engine3D{
                         if(list && list.getCount() > 0){
                             result.addChild(
                                 <IEventOffData>{
-                                    eventType: self.getEventTypeFromKey(key),
+                                    eventName: self.getEventNameFromKey(key),
                                     wrapHandler: list.getChild(0).wrapHandler
                                 }
                             );
@@ -161,12 +161,12 @@ module Engine3D{
                 return result;
             }
             else if(arguments.length === 2){
-                var list:dyCb.Collection = this.getChild(target, eventType);
+                var list:dyCb.Collection = this.getChild(target, eventName);
 
                 if(list && list.getCount() > 0){
                     result.addChild(
                         <IEventOffData>{
-                            eventType: eventType,
+                            eventName: eventName,
                             wrapHandler: list.getChild(0).wrapHandler
                         }
                     );
@@ -176,7 +176,7 @@ module Engine3D{
             }
         }
 
-        public getEventTypeFromKey(key:string):EventType{
+        public getEventNameFromKey(key:string):EventName{
             return key.indexOf("_") > -1 ? <any>key.split("_")[1] : key;
         }
 
@@ -188,26 +188,26 @@ module Engine3D{
             return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
 
-        private _buildKey(uid:number, eventType:EventType):string;
-        private _buildKey(target:GameObject, eventType:EventType):string;
+        private _buildKey(uid:number, eventName:EventName):string;
+        private _buildKey(target:GameObject, eventName:EventName):string;
 
         private _buildKey(args){
             if(JudgeUtils.isNumber(arguments[0])){
                 let uid = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                return this._buildKeyWithUid(uid, eventType);
+                return this._buildKeyWithUid(uid, eventName);
             }
             else{
                 let target = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                return target ? this._buildKeyWithUid(target.uid, eventType) : <any>eventType;
+                return target ? this._buildKeyWithUid(target.uid, eventName) : <any>eventName;
             }
         }
 
-        private _buildKeyWithUid(uid:number, eventType:EventType){
-            return String(uid) + "_" + eventType;
+        private _buildKeyWithUid(uid:number, eventName:EventName){
+            return String(uid) + "_" + eventName;
         }
     }
 }

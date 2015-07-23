@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module Engine3D {
     export interface IEventHandlerData{
-        eventType:EventType;
+        eventName:EventName;
         handler:Function;
     }
 
@@ -14,12 +14,12 @@ module Engine3D {
             return obj;
         }
 
-        private _eventCategory:EventCategory = null;
-        get eventCategory(){
-            return this._eventCategory;
+        private _eventType:EventType = null;
+        get eventType(){
+            return this._eventType;
         }
-        set eventCategory(eventCategory:EventCategory){
-            this._eventCategory = eventCategory;
+        set eventType(eventType:EventType){
+            this._eventType = eventType;
         }
 
         private _priority:number = null;
@@ -39,7 +39,7 @@ module Engine3D {
         }
 
         constructor(option:any){
-            this._eventCategory = option.eventCategory;
+            this._eventType = option.eventType;
             this._priority = option.priority || 1;
         }
 
@@ -55,7 +55,7 @@ module Engine3D {
                 if(option.hasOwnProperty(i)){
                     if(REGEX_HANDER.test(i)){
                         this._handlerDataList.addChild({
-                            eventType: this._parseEventName(i),
+                            eventName: this._parseEventName(i),
                             handler: option[i]
                         });
                     }

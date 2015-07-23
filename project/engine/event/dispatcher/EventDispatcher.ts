@@ -29,18 +29,18 @@ module Engine3D {
         public trigger(args) {
             if(arguments.length === 1){
                 let event = arguments[0],
-                    eventCategory = event.type;
+                    eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventCategory)
+                FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
             else if(arguments.length === 2 || arguments.length === 3){
                 let target = arguments[0],
                     event = arguments[1],
                     notSetTarget = arguments[2] === void 0 ? false : arguments[2],
-                    eventCategory = event.type;
+                    eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventCategory)
+                FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
         }

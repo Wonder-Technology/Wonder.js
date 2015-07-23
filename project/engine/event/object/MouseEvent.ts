@@ -6,24 +6,24 @@ module Engine3D {
         //public static MOUSEOUT:string = "mouseout";
         //public static MOUSEMOVE:string = "mousemove";
 
-        //public static create(eventType:EventType) {
-        //    var obj = new this(eventType);
+        //public static create(eventName:EventName) {
+        //    var obj = new this(eventName);
         //
         //    return obj;
         //}
-        public static create(event:any, eventType:EventType) {
-            var obj = new this(event, eventType);
+        public static create(event:any, eventName:EventName) {
+            var obj = new this(event, eventName);
 
             return obj;
         }
 
-        constructor(event:any, eventType:EventType) {
-            super(eventType);
+        constructor(event:any, eventName:EventName) {
+            super(eventName);
 
             this._event = event;
         }
 
-        public type:EventCategory = EventCategory.MOUSE;
+        public type:EventType = EventType.MOUSE;
 
 
         private _event:any = null;

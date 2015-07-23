@@ -22,7 +22,7 @@ module Engine3D {
 
         private _listenerMap:EventListenerMap = EventListenerMap.create();
 
-        public register(target:GameObject, eventType:EventType, handler:Function, wrapHandler:Function, priority:number) {
+        public register(target:GameObject, eventName:EventName, handler:Function, wrapHandler:Function, priority:number) {
             //var isBindEventOnView = false,
             var data = <IEventRegisterData>{
                 target: target,
@@ -31,27 +31,27 @@ module Engine3D {
                 priority: priority
             };
 
-            //eventType = <string>eventType;
+            //eventName = <string>eventName;
             ////priority set in listener, not in this(binder)!
             //if(priority){
             //    listener.setPriority(priority);
             //}
 
 
-            //if (this.isBindEventOnView(eventType)){
+            //if (this.isBindEventOnView(eventName)){
             //    isBindEventOnView = true;
-            //    //this._listenerMap.appendChild(this._buildKey(target.uid, eventType), handler);
+            //    //this._listenerMap.appendChild(this._buildKey(target.uid, eventName), handler);
             //}
             //else {
             //    isBindEventOnView = false;
-            //    //this._listenerMap.addChild(eventType, data);
+            //    //this._listenerMap.addChild(eventName, data);
             //}
 
 
-            this._listenerMap.appendChild(eventType, data);
+            this._listenerMap.appendChild(eventName, data);
 
 
-            //this._listenerList.addChild(listener.eventCategory,  {
+            //this._listenerList.addChild(listener.eventType,  {
             //    target:target,
             //    listener:listener
             //});
@@ -59,36 +59,36 @@ module Engine3D {
             //return isBindEventOnView;
         }
 
-        public remove(eventType:EventType):void;
-        public remove(eventType:EventType, handler:Function):void;
-        public remove(uid:number, eventType:EventType):void;
+        public remove(eventName:EventName):void;
+        public remove(eventName:EventName, handler:Function):void;
+        public remove(uid:number, eventName:EventName):void;
         public remove(target:GameObject):void;
-        public remove(target:GameObject, eventType:EventType):void;
-        public remove(target:GameObject, eventType:EventType, handler:Function):void;
+        public remove(target:GameObject, eventName:EventName):void;
+        public remove(target:GameObject, eventName:EventName, handler:Function):void;
 
         public remove(args) {
             var target = arguments[0];
 
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventType = arguments[0];
+                let eventName = arguments[0];
 
-                this._listenerMap.removeChild(eventType);
+                this._listenerMap.removeChild(eventName);
 
                 return null;
             }
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
-                let eventType = arguments[0],
+                let eventName = arguments[0],
                     handler = arguments[1];
 
-                this._listenerMap.removeChild(eventType, handler);
+                this._listenerMap.removeChild(eventName, handler);
 
                 return null;
             }
             else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
                 let uid = arguments[0],
-                    eventType = arguments[1];
+                    eventName = arguments[1];
 
-                this._listenerMap.removeChild(uid, eventType);
+                this._listenerMap.removeChild(uid, eventName);
 
                 return null;
             }
@@ -104,14 +104,14 @@ module Engine3D {
                 return dataList;
             }
             else if(arguments.length === 2 || arguments.length === 3){
-                let eventType = arguments[1];
+                let eventName = arguments[1];
 
                 this._listenerMap.removeChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
 
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
 
-                    return this._listenerMap.getEventOffDataList(target, eventType);
+                    return this._listenerMap.getEventOffDataList(target, eventName);
                 }
 
                 return null;
@@ -119,8 +119,8 @@ module Engine3D {
         }
 
         //todo rename to getEventRegisterDataList
-        public getListenerDataList(eventType:EventType):dyCb.Collection;
-        public getListenerDataList(currentTarget:GameObject, eventType:EventType):dyCb.Collection;
+        public getListenerDataList(eventName:EventName):dyCb.Collection;
+        public getListenerDataList(currentTarget:GameObject, eventName:EventName):dyCb.Collection;
 
         public getListenerDataList(args){
             var result:dyCb.Collection = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
@@ -139,8 +139,8 @@ module Engine3D {
             target.bubbleParent = parent;
         }
 
-        public isBinded(target:GameObject, eventType:EventType) {
-            return this._listenerMap.hasChild(target, eventType);
+        public isBinded(target:GameObject, eventName:EventName) {
+            return this._listenerMap.hasChild(target, eventName);
         }
 
         public filter(func:Function) {
@@ -151,23 +151,23 @@ module Engine3D {
             return this._listenerMap.forEach(func);
         }
 
-        public getChild(target:GameObject, eventType?:EventType){
+        public getChild(target:GameObject, eventName?:EventName){
             return this._listenerMap.getChild.apply(
                 this._listenerMap,
                 Array.prototype.slice.call(arguments, 0)
             );
         }
 
-        public getEventTypeFromKey(key:string){
-            return this._listenerMap.getEventTypeFromKey(key);
+        public getEventNameFromKey(key:string){
+            return this._listenerMap.getEventNameFromKey(key);
         }
 
         public getUidFromKey(key:string){
             return this._listenerMap.getUidFromKey(key);
         }
 
-        public getWrapHandler(target:GameObject, eventType:EventType){
-            var list:dyCb.Collection = this.getChild(target, eventType);
+        public getWrapHandler(target:GameObject, eventName:EventName){
+            var list:dyCb.Collection = this.getChild(target, eventName);
 
             if(list && list.getCount() > 0){
                 return list.getChild(0).wrapHandler;
@@ -199,7 +199,7 @@ module Engine3D {
         //}
 
 
-        //private _removeFromMap(target:GameObject, eventType:EventType) {
+        //private _removeFromMap(target:GameObject, eventName:EventName) {
         //}
 
         private _isAllEventHandlerRemoved(target:GameObject){
@@ -212,8 +212,8 @@ module Engine3D {
             this.setBubbleParent(target, null);
         }
 
-        //private _buildKey(uid, eventType){
-        //    return String(uid) + "_" + eventType;
+        //private _buildKey(uid, eventName){
+        //    return String(uid) + "_" + eventName;
         //}
     }
 }

@@ -14,15 +14,15 @@ module Engine3D {
             return this._instance;
         }
 
-        public on(target:GameObject, eventType:EventType, handler:Function, priority:number) {
+        public on(target:GameObject, eventName:EventName, handler:Function, priority:number) {
             dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
 
-            this._handler(target, eventType, handler, priority);
+            this._handler(target, eventName, handler, priority);
         }
 
-        public off(target:GameObject, eventType:EventType):void;
-        public off(uid:number, eventType:EventType):void;
-        public off(target:GameObject, eventType:EventType, handler:Function):void;
+        public off(target:GameObject, eventName:EventName):void;
+        public off(uid:number, eventName:EventName):void;
+        public off(target:GameObject, eventName:EventName, handler:Function):void;
 
         public off(args) {
             var self = this,
@@ -34,14 +34,14 @@ module Engine3D {
 
             if(eventOffDataList){
                 eventOffDataList.forEach((eventOffData:IEventOffData) => {
-                    self._unBind(view, eventOffData.eventType, eventOffData.wrapHandler);
+                    self._unBind(view, eventOffData.eventName, eventOffData.wrapHandler);
                 })
             }
         }
 
         public trigger(target:GameObject, event:Event, notSetTarget:boolean){
-            var eventType = event.name,
-                eventCategory = event.type,
+            var eventName = event.name,
+                eventType = event.type,
                 listenerDataList:dyCb.Collection = null,
                 self = this;
 
@@ -54,7 +54,7 @@ module Engine3D {
                 event.target = target;
             }
 
-            listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventType);
+            listenerDataList = EventRegister.getInstance().getListenerDataList(target, eventName);
 
             if (listenerDataList === null || listenerDataList.getCount()=== 0) {
                 return;
@@ -66,19 +66,19 @@ module Engine3D {
             });
         }
 
-        private _handler(target, eventType, handler, priority){
+        private _handler(target, eventName, handler, priority){
             var wrapHandler = null;
 
-            if (!EventRegister.getInstance().isBinded(target, eventType)) {
-                wrapHandler = this._bind(this._getView(), eventType, target);
+            if (!EventRegister.getInstance().isBinded(target, eventName)) {
+                wrapHandler = this._bind(this._getView(), eventName, target);
             }
             else{
-                wrapHandler = EventRegister.getInstance().getWrapHandler(target, eventType);
+                wrapHandler = EventRegister.getInstance().getWrapHandler(target, eventName);
             }
 
             EventRegister.getInstance().register(
                 target,
-                eventType,
+                eventName,
                 handler,
                 wrapHandler,
                 priority
@@ -89,13 +89,13 @@ module Engine3D {
             return Director.getInstance().getView();
         }
 
-        private _bind(view:IView, eventType:EventType, target:GameObject){
+        private _bind(view:IView, eventName:EventName, target:GameObject){
             var self = this,
                 context = window,
                 wrapHandler = null;
 
             wrapHandler = dyCb.EventUtils.bindEvent(context, function (event) {
-                var eventObject:MouseEvent = self._createEventObject(event, eventType, target),
+                var eventObject:MouseEvent = self._createEventObject(event, eventName, target),
                     topTarget = Director.getInstance().getTopUnderPoint(eventObject.locationInView);
 
                 EventManager.emit(topTarget, eventObject);
@@ -103,15 +103,15 @@ module Engine3D {
 
             dyCb.EventUtils.addEvent(
                 view.dom,
-                eventType,
+                eventName,
                 wrapHandler
             )
 
             return wrapHandler;
         }
 
-        private _unBind(view, eventType, handler){
-            dyCb.EventUtils.removeEvent(view.dom, eventType, handler);
+        private _unBind(view, eventName, handler){
+            dyCb.EventUtils.removeEvent(view.dom, eventName, handler);
         }
 
 
@@ -119,8 +119,8 @@ module Engine3D {
             return result && result.getCount() > 0;
         }
 
-        private _createEventObject(event:any, eventType:EventType, currentTarget:GameObject) {
-            var obj = MouseEvent.create(event ? event : window.event, eventType);
+        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
+            var obj = MouseEvent.create(event ? event : window.event, eventName);
 
             obj.currentTarget = currentTarget;
 
