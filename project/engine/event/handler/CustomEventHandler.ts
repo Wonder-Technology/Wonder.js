@@ -55,65 +55,116 @@ module Engine3D {
         }
 
         public trigger(event:Event):boolean;
+        public trigger(event:Event, userData:any):boolean;
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
+        public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
         public trigger(args) {
-            var event:Event = null,
-                listenerDataList:dyCb.Collection = null,
-                isStopPropagation = false;
+            var event:Event = null;
 
-            if(arguments.length === 1){
-                event = arguments[0];
+            if(arguments.length === 1 || arguments.length === 2){
+                let userData = null;
 
-                listenerDataList = EventRegister.getInstance().getEventRegisterDataList(event.name);
-
-                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return false;
+                if(arguments.length === 1){
+                    event = arguments[0];
+                }
+                else{
+                    event = arguments[0];
+                    userData = arguments[1];
                 }
 
-                listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                    var eventCopy = event.copy();
-
-                    eventCopy.currentTarget = listenerData.target;
-                    eventCopy.target = listenerData.target;
-
-                    listenerData.handler(eventCopy);
-                    if(eventCopy.isStopPropagation){
-                        isStopPropagation = true;
-                    }
-                });
-
-                return isStopPropagation;
+                return this._triggerEventHandler(event, userData);
             }
-            else if(arguments.length === 3){
-                let target = arguments[0],
+            else if(arguments.length === 2){
+
+            }
+            else if(arguments.length === 3 || arguments.length === 4){
+                let target = null,
+                    userData = null,
+                    notSetTarget = null;
+
+                if(arguments.length === 3){
+                    target = arguments[0];
+                    event = arguments[1];
                     notSetTarget = arguments[2];
-
-                event = arguments[1];
-                if(!notSetTarget){
-                    event.target = target;
+                }
+                else{
+                    target = arguments[0];
+                    event = arguments[1];
+                    userData = arguments[2];
+                    notSetTarget = arguments[3];
                 }
 
-                listenerDataList = EventRegister.getInstance().getEventRegisterDataList(target, event.name);
-
-                if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return false;
-                }
-
-                listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                    var eventCopy = event.copy();
-
-                    eventCopy.currentTarget = listenerData.target;
-
-                    listenerData.handler(eventCopy);
-                    if(eventCopy.isStopPropagation){
-                        isStopPropagation = true;
-                    }
-                });
-
-                return isStopPropagation;
+                return this._triggerTargetAndEventHandler(target, event, userData, notSetTarget);
             }
 
+        }
+
+        private _triggerEventHandler(event, userData){
+            var listenerDataList:dyCb.Collection = null,
+                isStopPropagation = false,
+                self = this;
+
+            listenerDataList = EventRegister.getInstance().getEventRegisterDataList(event.name);
+
+            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                return false;
+            }
+
+            listenerDataList.forEach((listenerData:IEventRegisterData) => {
+                var eventCopy = event.copy();
+
+                eventCopy.currentTarget = listenerData.target;
+                eventCopy.target = listenerData.target;
+
+                self._setUserData(eventCopy, userData);
+
+                listenerData.handler(eventCopy);
+
+                if(eventCopy.isStopPropagation){
+                    isStopPropagation = true;
+                }
+            });
+
+            return isStopPropagation;
+        }
+
+        private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){
+            var listenerDataList:dyCb.Collection = null,
+                isStopPropagation = false,
+                self = this;
+
+            if(!notSetTarget){
+                event.target = target;
+            }
+
+            listenerDataList = EventRegister.getInstance().getEventRegisterDataList(target, event.name);
+
+            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+                return false;
+            }
+
+            listenerDataList.forEach((listenerData:IEventRegisterData) => {
+                var eventCopy = event.copy();
+
+                eventCopy.currentTarget = listenerData.target;
+
+                self._setUserData(eventCopy, userData);
+
+                listenerData.handler(eventCopy);
+
+                if(eventCopy.isStopPropagation){
+                    isStopPropagation = true;
+                }
+            });
+
+            return isStopPropagation;
+        }
+
+        private _setUserData(event:CustomEvent, userData){
+            if(userData){
+                event.userData = userData;
+            }
         }
     }
 }

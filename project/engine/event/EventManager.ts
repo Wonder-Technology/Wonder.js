@@ -92,18 +92,20 @@ module Engine3D {
         }
 
         public static trigger(event:Event):void;
+        public static trigger(event:Event, userData:any):void;
         public static trigger(target:GameObject, event:Event):void;
+        public static trigger(target:GameObject, event:Event, userData:any):void;
 
         public static trigger(args) {
             this._eventDispatcher.trigger.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
-        public static broadcast(target:GameObject, event:Event) {
-            this._eventDispatcher.broadcast(target, event);
+        public static broadcast(target:GameObject, event:Event, userData?:any) {
+            this._eventDispatcher.broadcast.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
-        public static emit(target:GameObject, event:Event) {
-            this._eventDispatcher.emit(target, event);
+        public static emit(target:GameObject, event:Event, userData?:any) {
+            this._eventDispatcher.emit.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
         public static fromEvent(eventName:EventName):any;

@@ -23,18 +23,33 @@ module Engine3D {
         //}
 
         public trigger(event:Event):boolean;
+        public trigger(event:Event, userData:any):void;
         public trigger(target:GameObject, event:Event):boolean;
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
+        public trigger(target:GameObject, event:Event, userData:any):boolean;
+        public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
         public trigger(args) {
             if(arguments.length === 1){
                 let event = arguments[0],
                     eventType = event.type;
 
+                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
-            else if(arguments.length === 2 || arguments.length === 3){
+            else if(arguments.length === 2 && !(arguments[1] instanceof Event)){
+                let event = arguments[0],
+                    userData = arguments[1],
+                    eventType = event.type;
+
+                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+
+                return FactoryEventHandler.createEventHandler(eventType)
+                    .trigger(event, userData);
+            }
+            else if(arguments.length === 2 || (arguments.length === 3 && JudgeUtils.isBoolean(arguments[2]))){
                 let target = arguments[0],
                     event = arguments[1],
                     notSetTarget = arguments[2] === void 0 ? false : arguments[2],
@@ -43,6 +58,18 @@ module Engine3D {
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
+            else if(arguments.length === 3 || arguments.length === 4){
+                let target = arguments[0],
+                    event = arguments[1],
+                    userData = arguments[2],
+                    notSetTarget = arguments[3] === void 0 ? false : arguments[3],
+                    eventType = event.type;
+
+                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+
+                return FactoryEventHandler.createEventHandler(eventType)
+                    .trigger(target, event, userData, notSetTarget);
+            }
         }
 
         /**
@@ -50,14 +77,15 @@ module Engine3D {
          * @param target
          * @param eventObject
          */
-        public emit(target:GameObject, eventObject:Event) {
+        public emit(target:GameObject, eventObject:Event, userData?:any) {
             var isStopPropagation = false;
 
             eventObject.phase = EventPhase.EMIT;
             eventObject.target = target;
 
             do{
-                isStopPropagation = this.trigger(target, eventObject.copy(), true);
+                isStopPropagation = this._triggerWithUserData(target, eventObject.copy(), userData, true);
+
                 if(isStopPropagation){
                     break;
                 }
@@ -70,13 +98,13 @@ module Engine3D {
          * @param target
          * @param eventObject
          */
-        public broadcast(target:GameObject, eventObject:Event) {
+        public broadcast(target:GameObject, eventObject:Event, userData?:any) {
             var self = this;
 
             eventObject.phase = EventPhase.BROADCAST;
             eventObject.target = target;
 
-            this.trigger(target, eventObject.copy(), true);
+            this._triggerWithUserData(target, eventObject.copy(), userData, true);
 
             function iterator(obj:GameObject){
                 var children:dyCb.Collection = obj.getChilren();
@@ -86,7 +114,8 @@ module Engine3D {
                 }
 
                 children.forEach((child:GameObject) => {
-                    self.trigger(child, eventObject.copy(), true);
+                    self._triggerWithUserData(child, eventObject.copy(), userData, true);
+
                     iterator(child);
                 });
             }
@@ -98,6 +127,11 @@ module Engine3D {
             var parent = target.bubbleParent;
 
             return parent ? parent : target.parent;
+        }
+
+        private _triggerWithUserData(target, event, userData, notSetTarget){
+            return userData ? this.trigger(target, event.copy(), userData, notSetTarget)
+                : this.trigger(target, event, notSetTarget);
         }
     }
 }

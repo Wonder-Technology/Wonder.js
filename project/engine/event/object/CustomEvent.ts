@@ -8,6 +8,14 @@ module Engine3D {
         }
 
         public type:EventType = EventType.CUSTOM;
+        
+        private _userData:any = null;
+        get userData(){
+            return this._userData;
+        }
+        set userData(userData:any){
+            this._userData = userData;
+        }
 
         public copyPublicAttri(destination, source:any){
             var property = null;

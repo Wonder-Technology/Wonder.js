@@ -301,7 +301,59 @@ describe("custom event", function () {
         });
     });
 
-    it("pass user data", function () {
+    describe("pass user data", function () {
+        var mesh1,mesh2,mesh3,mesh4;
+        var eventTarget1 = null,
+            eventTarget2 = null,
+            eventTarget3 = null,
+            eventTarget4 = null;
+        var userData = null;
 
+        beforeEach(function(){
+            userData = {
+                a: 1,
+                b: "b"
+            };
+            mesh1 = Engine3D.Mesh.create();
+            mesh2 = Engine3D.Mesh.create();
+            mesh2.addChild(mesh1);
+
+            manager.fromEvent(mesh1, eventName)
+                .subscribe(function (e) {
+                    eventTarget1 = e;
+                });
+            manager.fromEvent(mesh2, eventName)
+                .subscribe(function (e) {
+                    eventTarget2 = e;
+                });
+        });
+
+        it("trigger event", function(){
+            manager.fromEvent(eventName)
+                .subscribe(function (e) {
+                    eventTarget1 = e;
+                });
+
+            manager.trigger(Engine3D.CustomEvent.create(eventName), userData);
+
+            expect(eventTarget1.userData).toEqual(userData);
+        });
+        it("trigger target and event", function(){
+            manager.trigger(mesh1, Engine3D.CustomEvent.create(eventName), userData);
+
+            expect(eventTarget1.userData).toEqual(userData);
+        });
+        it("emit", function(){
+            manager.emit(mesh1, Engine3D.CustomEvent.create(eventName), userData);
+
+            expect(eventTarget1.userData).toEqual(userData);
+            expect(eventTarget2.userData).toEqual(userData);
+        });
+        it("broadcast", function(){
+            manager.broadcast(mesh2, Engine3D.CustomEvent.create(eventName), userData);
+
+            expect(eventTarget2.userData).toEqual(userData);
+            expect(eventTarget1.userData).toEqual(userData);
+        });
     });
 });
