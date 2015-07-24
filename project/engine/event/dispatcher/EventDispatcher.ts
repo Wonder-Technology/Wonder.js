@@ -22,16 +22,16 @@ module Engine3D {
         //    EventRegister.getInstance().setBubbleParent(target, parent);
         //}
 
-        public trigger(event:Event):void;
-        public trigger(target:GameObject, event:Event):void;
-        public trigger(target:GameObject, event:Event, notSetTarget:boolean):void;
+        public trigger(event:Event):boolean;
+        public trigger(target:GameObject, event:Event):boolean;
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
 
         public trigger(args) {
             if(arguments.length === 1){
                 let event = arguments[0],
                     eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventType)
+                return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
             else if(arguments.length === 2 || arguments.length === 3){
@@ -40,7 +40,7 @@ module Engine3D {
                     notSetTarget = arguments[2] === void 0 ? false : arguments[2],
                     eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventType)
+                return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
         }
@@ -51,20 +51,18 @@ module Engine3D {
          * @param eventObject
          */
         public emit(target:GameObject, eventObject:Event) {
-            var parent:GameObject = null;
+            var isStopPropagation = false;
 
             eventObject.phase = EventPhase.EMIT;
             eventObject.target = target;
 
-            this.trigger(target, eventObject.copy(), true);
-
-            parent = this._getParent(target);
-            while (parent) {
-                //this.trigger(target, eventObject);
-                this.trigger(parent, eventObject.copy(), true);
-
-                parent = this._getParent(parent);
-            }
+            do{
+                isStopPropagation = this.trigger(target, eventObject.copy(), true);
+                if(isStopPropagation){
+                    break;
+                }
+                target = this._getParent(target);
+            }while(target);
         }
 
         /**

@@ -54,12 +54,13 @@ module Engine3D {
             eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
         }
 
-        public trigger(event:Event):void;
-        public trigger(target:GameObject, event:Event, notSetTarget:boolean):void;
+        public trigger(event:Event):boolean;
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
 
         public trigger(args) {
             var event:Event = null,
-                listenerDataList:dyCb.Collection = null;
+                listenerDataList:dyCb.Collection = null,
+                isStopPropagation = false;
 
             if(arguments.length === 1){
                 event = arguments[0];
@@ -67,7 +68,7 @@ module Engine3D {
                 listenerDataList = EventRegister.getInstance().getEventRegisterDataList(event.name);
 
                 if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return;
+                    return false;
                 }
 
                 listenerDataList.forEach((listenerData:IEventRegisterData) => {
@@ -77,7 +78,12 @@ module Engine3D {
                     eventCopy.target = listenerData.target;
 
                     listenerData.handler(eventCopy);
+                    if(eventCopy.isStopPropagation){
+                        isStopPropagation = true;
+                    }
                 });
+
+                return isStopPropagation;
             }
             else if(arguments.length === 3){
                 let target = arguments[0],
@@ -91,7 +97,7 @@ module Engine3D {
                 listenerDataList = EventRegister.getInstance().getEventRegisterDataList(target, event.name);
 
                 if (listenerDataList === null || listenerDataList.getCount()=== 0) {
-                    return;
+                    return false;
                 }
 
                 listenerDataList.forEach((listenerData:IEventRegisterData) => {
@@ -100,7 +106,12 @@ module Engine3D {
                     eventCopy.currentTarget = listenerData.target;
 
                     listenerData.handler(eventCopy);
+                    if(eventCopy.isStopPropagation){
+                        isStopPropagation = true;
+                    }
                 });
+
+                return isStopPropagation;
             }
 
         }

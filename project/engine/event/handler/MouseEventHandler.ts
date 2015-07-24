@@ -39,10 +39,11 @@ module Engine3D {
             }
         }
 
-        public trigger(target:GameObject, event:Event, notSetTarget:boolean){
+        public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean{
             var eventName = event.name,
                 eventType = event.type,
                 listenerDataList:dyCb.Collection = null,
+                isStopPropagation = false,
                 self = this;
 
             if (!(target instanceof GameObject)) {
@@ -61,9 +62,15 @@ module Engine3D {
             }
 
             listenerDataList.forEach((listenerData:IEventRegisterData) => {
-                //event.target = listenerData.target;
-                listenerData.handler(event.copy());
+                var eventCopy = event.copy();
+
+                listenerData.handler(eventCopy);
+                if(eventCopy.isStopPropagation){
+                    isStopPropagation = true;
+                }
             });
+
+            return isStopPropagation;
         }
 
         private _handler(target, eventName, handler, priority){

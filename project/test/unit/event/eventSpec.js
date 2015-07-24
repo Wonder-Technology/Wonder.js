@@ -82,6 +82,115 @@ describe("event", function () {
         });
     });
 
+    describe("stopPropagation", function () {
+        var mesh1, mesh2, mesh3, mesh4;
+        var eventTarget1 = null,
+            eventTarget2 = null,
+            eventTarget3 = null,
+            eventTarget4 = null;
+        var fakeObj;
+        var eventName = "custom";
+
+        beforeEach(function () {
+            mesh1 = Engine3D.Mesh.create();
+            mesh2 = Engine3D.Mesh.create();
+            mesh3 = Engine3D.Mesh.create();
+            mesh4 = Engine3D.Mesh.create();
+            mesh2.addChild(mesh1);
+            mesh4.addChild(mesh2);
+            mesh4.addChild(mesh3);
+            fakeObj = {
+                a: sandbox.stub(),
+                b: sandbox.stub(),
+                c: sandbox.stub(),
+                d: sandbox.stub()
+            }
+
+            manager.fromEvent(mesh1, eventName)
+                .subscribe(function (e) {
+                    eventTarget1 = e;
+                    fakeObj.a();
+                });
+            manager.fromEvent(mesh2, eventName)
+                .subscribe(function (e) {
+                    e.stopPropagation();
+
+                    eventTarget2 = e;
+                    fakeObj.b();
+                });
+            manager.fromEvent(mesh3, eventName)
+                .subscribe(function (e) {
+                    eventTarget3 = e;
+                    fakeObj.c();
+                });
+            manager.fromEvent(mesh4, eventName)
+                .subscribe(function (e) {
+                    eventTarget4 = e;
+                    fakeObj.d();
+                });
+        });
+
+        describe("stopPropagation() can work in emited event", function () {
+            it("single handler", function(){
+                manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
+
+                expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
+                expect(eventTarget1.target.uid).toEqual(mesh1.uid);
+                expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
+                expect(eventTarget2.target.uid).toEqual(mesh1.uid);
+                expect(eventTarget3).toBeNull();
+                expect(eventTarget4).toBeNull();
+                expect(fakeObj.a).toCalledBefore(fakeObj.b);
+            });
+            it("if one of multi handler stopPropagation, then stop propagation", function(){
+                var eventTarget5 = null;
+
+                manager.fromEvent(mesh2, eventName)
+                    .subscribe(function (e) {
+                        eventTarget5 = e;
+                        fakeObj.d();
+                    });
+
+                manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
+
+                expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
+                expect(eventTarget1.target.uid).toEqual(mesh1.uid);
+                expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
+                expect(eventTarget2.target.uid).toEqual(mesh1.uid);
+                expect(eventTarget5.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget5.currentTarget.uid).toEqual(mesh2.uid);
+                expect(eventTarget5.target.uid).toEqual(mesh1.uid);
+                expect(eventTarget3).toBeNull();
+                expect(eventTarget4).toBeNull();
+                expect(fakeObj.a).toCalledBefore(fakeObj.b);
+                expect(fakeObj.b).toCalledBefore(fakeObj.d);
+            });
+        });
+        it("stopPropagation() not work in broadcasted event", function () {
+            manager.broadcast(mesh4, Engine3D.CustomEvent.create(eventName));
+
+            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
+            expect(eventTarget4.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
+            expect(eventTarget2.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
+            expect(eventTarget1.target.uid).toEqual(mesh4.uid);
+            expect(eventTarget3.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget3.currentTarget.uid).toEqual(mesh3.uid);
+            expect(eventTarget3.target.uid).toEqual(mesh4.uid);
+            expect(fakeObj.d).toCalledBefore(fakeObj.b);
+            expect(fakeObj.b).toCalledBefore(fakeObj.a);
+            expect(fakeObj.a).toCalledBefore(fakeObj.c);
+        });
+    });
+
     describe("system event", function(){
         beforeEach(function(){
 

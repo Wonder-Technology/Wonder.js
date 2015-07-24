@@ -9,8 +9,8 @@ module Engine3D {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public trigger(...args) {
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        public trigger(...args):boolean {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
     }
 }
