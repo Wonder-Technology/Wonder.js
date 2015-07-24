@@ -182,89 +182,140 @@
 
 //            var listener =
 
-            Engine3D.EventManager.on(scene,
-                    {
-                        eventCategory: Engine3D.EventCategory.MOUSE,
-
-                        onMouseDown: function (e) {
-//                            var x = ev.clientX, y = ev.clientY;
-                            var x = e.location.x,
-                                    y = e.location.y;
-                            lastX = x;
-                            lastY = y;
-                            dragging = true;
-                            // Start dragging if a moue is in <canvas>
-//                            var rect = ev.target.getBoundingClientRect();
-//                            if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
-//                                lastX = x;
-//                                lastY = y;
-//                                dragging = true;
+//            Engine3D.EventManager.on(scene,
+//                    {
+//                        eventCategory: Engine3D.EventCategory.MOUSE,
+//
+//                        onMouseDown: function (e) {
+////                            var x = ev.clientX, y = ev.clientY;
+//                            var x = e.location.x,
+//                                    y = e.location.y;
+//                            lastX = x;
+//                            lastY = y;
+//                            dragging = true;
+//                            // Start dragging if a moue is in <canvas>
+////                            var rect = ev.target.getBoundingClientRect();
+////                            if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
+////                                lastX = x;
+////                                lastY = y;
+////                                dragging = true;
+////                            }
+//                            console.log("mousedown");
+//                        },
+//                        onMouseUp: function(e){
+//                            dragging = false;
+//                            console.log("mouseup", e);
+//                        },
+//                        onMouseMove: function(e){
+////                            var x = ev.clientX, y = ev.clientY;
+//                            var x = e.location.x,
+//                                    y = e.location.y;
+//                            if (dragging) {
+//                                var factor = 100 / canvas.height; // The rotation ratio
+//                                var dx = factor * (x - lastX);
+//                                var dy = factor * (y - lastY);
+//
+//                                //此处为针对视图坐标系的角度变换！
+//                                camera.rotateStepY = -dx;
+//                                camera.rotateStepX = -dy;
+//
+//
+//                                isRotate = true;
 //                            }
-                            console.log("mousedown");
-                        },
-                        onMouseUp: function(e){
-                            dragging = false;
-                            console.log("mouseup", e);
-                        },
-                        onMouseMove: function(e){
-//                            var x = ev.clientX, y = ev.clientY;
-                            var x = e.location.x,
-                                    y = e.location.y;
-                            if (dragging) {
-                                var factor = 100 / canvas.height; // The rotation ratio
-                                var dx = factor * (x - lastX);
-                                var dy = factor * (y - lastY);
-
-                                //此处为针对视图坐标系的角度变换！
-                                camera.rotateStepY = -dx;
-                                camera.rotateStepX = -dy;
-
-
-                                isRotate = true;
-                            }
-                            lastX = x;
-                            lastY = y;
-
-                            console.log("mousemove");
-                        }
-                    });
-
-            var clickHandler = function(e){
-                console.log("click: ", e);
-            };
-            var clickHandler2 = function(e){
-                console.log("click2222222222: ", e);
-            };
-
-//            Engine3D.EventManager.on(scene, "click", clickHandler);
-
-//            Engine3D.EventManager.on(scene, "click", clickHandler2);
-
-            var subscription1 = Engine3D.EventManager.fromEvent(scene, "click", 0).subscribe(clickHandler);
-            var subscription2 = Engine3D.EventManager.fromEvent(scene, "click", 1).subscribe(clickHandler2);
-
-//            Engine3D.EventManager.on(scene, "click", clickHandler, 1);
+//                            lastX = x;
+//                            lastY = y;
 //
-//            Engine3D.EventManager.on(scene, "click", clickHandler2, 2);
+//                            console.log("mousemove");
+//                        }
+//                    });
 
 
-            setTimeout(function(){
-//                console.log("off click2");
+            // Get the three major events
+            var mouseup = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEUP);
+            var mousemove = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEMOVE);
+            var mousedown = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEDOWN);
+
+            var mousedrag = mousedown.flatMap(function (e) {
+                // calculate offsets when mouse down
+                var startX = e.location.x,
+                        startY = e.location.y;
+
+                // Calculate delta with mousemove until mouseup
+                return mousemove.map(function (e) {
+                    var x = e.location.x,
+                            y = e.location.y;
+                    var factor = 100 / canvas.height; // The rotation ratio
+
+//                    e.preventDefault();
+                    var dx = factor * (x - startX);
+                    var dy = factor * (y - startY);
+
+                    startX = x;
+                    startY = y;
+
+                    return {
+                        dx: dx,
+                        dy: dy
+                    };
+                }).takeUntil(mouseup);
+            });
+
+            // Update position
+            var subscription = mousedrag.subscribe(function (pos) {
+                //此处为针对视图坐标系的角度变换！
+                camera.rotateStepY = -pos.dx;
+                camera.rotateStepX = -pos.dy;
+
+                isRotate = true;
+            });
+
+
+
+
+
+
+
+
 //
-//                subscription2.dispose();
-//                Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
+//            var clickHandler = function(e){
+//                console.log("click: ", e);
+//            };
+//            var clickHandler2 = function(e){
+//                console.log("click2222222222: ", e);
+//            };
+//
+////            Engine3D.EventManager.on(scene, "click", clickHandler);
+//
+////            Engine3D.EventManager.on(scene, "click", clickHandler2);
+//
+//            var subscription1 = Engine3D.EventManager.fromEvent(scene, "click", 0).subscribe(clickHandler);
+//            var subscription2 = Engine3D.EventManager.fromEvent(scene, "click", 1).subscribe(clickHandler2);
+//
+////            Engine3D.EventManager.on(scene, "click", clickHandler, 1);
+////
+////            Engine3D.EventManager.on(scene, "click", clickHandler2, 2);
+//
+//
+//            setTimeout(function(){
+////                console.log("off click2");
+////
+////                subscription2.dispose();
+////                Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
+//
+//
+//                console.log("off click");
+////                Engine3D.EventManager.off(scene, "click");
+//                Engine3D.EventManager.off(scene);
+//            }, 3000);
+//
+//            var fakeEvent = {
+//                pageX:10,
+//                pageY:10
+//            };
+//            Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
 
 
-                console.log("off click");
-//                Engine3D.EventManager.off(scene, "click");
-                Engine3D.EventManager.off(scene);
-            }, 3000);
 
-            var fakeEvent = {
-                pageX:10,
-                pageY:10
-            };
-            Engine3D.EventManager.trigger(scene, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventType.CLICK));
 
 //            setTimeout(function(){
 //                console.log("off mousemove");
