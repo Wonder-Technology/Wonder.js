@@ -16,7 +16,7 @@ describe("mouse event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        Engine3D.WebGLContext.createGL("#event-test");
+        Engine3D.Director.getInstance().createGL("#event-test");
         fakeEvent = {
             pageX:10,
             pageY:10

@@ -90,7 +90,7 @@ module Engine3D{
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
-                gl = WebGLContext.gl;
+                gl = Director.getInstance().gl;
 
 
             if (this._buffers.hasChild("indexBuffer")) {

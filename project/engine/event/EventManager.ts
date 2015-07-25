@@ -56,7 +56,7 @@ module Engine3D {
             else if(arguments.length === 2 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
                     handler = arguments[1],
-                    priority = 0;
+                    priority = 1;
 
                 this._eventBinder.on(eventName, handler, priority);
             }
@@ -77,7 +77,7 @@ module Engine3D {
                 let target = arguments[0],
                     eventName = arguments[1],
                     handler = arguments[2],
-                    priority = arguments[3] === undefined? 0 :arguments[3];
+                    priority = arguments[3] === undefined? 1 :arguments[3];
 
                 this._eventBinder.on(target, eventName, handler, priority);
             }

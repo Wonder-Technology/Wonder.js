@@ -16,7 +16,7 @@ describe("event", function () {
         sandbox = sinon.sandbox.create();
 
         insertDom();
-        Engine3D.WebGLContext.createGL("#event-test");
+        Engine3D.Director.getInstance().createGL("#event-test");
 
         manager = Engine3D.EventManager;
         Listener = Engine3D.EventListener;

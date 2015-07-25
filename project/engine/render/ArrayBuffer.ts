@@ -33,7 +33,7 @@ module Engine3D{
         }
 
         public initWhenCreate(data, num, type:BufferType) {
-            var gl = WebGLContext.gl;
+            var gl = Director.getInstance().gl;
 
             if(!data){
                 return null;

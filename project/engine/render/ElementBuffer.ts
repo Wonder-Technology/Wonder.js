@@ -28,7 +28,7 @@ module Engine3D{
         get typeSize() { return this._typeSize; }
 
         public initWhenCreate(data, type:BufferType) {
-            var gl = WebGLContext.gl;
+            var gl = Director.getInstance().gl;
 
             if(!data || !this._checkDataType(data, type)){
                 return null;

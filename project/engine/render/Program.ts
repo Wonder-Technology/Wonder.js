@@ -9,17 +9,17 @@ module Engine3D{
             return obj;
         }
 
-        private _program:any = WebGLContext.gl.createProgram();
+        private _program:any = Director.getInstance().gl.createProgram();
 
         constructor(){
         }
 
         public use(){
-            WebGLContext.gl.useProgram(this._program);
+            Director.getInstance().gl.useProgram(this._program);
         }
 
         public setUniformData(name:string, type:UniformDataType, data:Matrix){
-            var gl = WebGLContext.gl,
+            var gl = Director.getInstance().gl,
                 pos= gl.getUniformLocation(this._program, name);
 
             switch (type){
@@ -33,7 +33,7 @@ module Engine3D{
         }
 
         public setAttributeData(name:string, type:AttributeDataType, data:ArrayBuffer|number[]){
-            var gl = WebGLContext.gl,
+            var gl = Director.getInstance().gl,
                 pos = gl.getAttribLocation(this._program, name);
 
             switch (type){
@@ -54,7 +54,7 @@ module Engine3D{
         }
 
         public initWhenCreate(vsSource:string, fsSource:string){
-            var gl = WebGLContext.gl,
+            var gl = Director.getInstance().gl,
                 vs = null,
                 fs = null;
 

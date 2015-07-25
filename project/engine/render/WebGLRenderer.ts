@@ -33,13 +33,13 @@ module Engine3D{
         }
 
         public init(){
-            WebGLContext.gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearAlpha);
+            Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearAlpha);
         }
 
         public setClearColor(color:Color, alpha:number = 1.0){
             this._clearColor = color;
             this._clearAlpha = alpha;
-            WebGLContext.gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
+            Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
         }
 
         private _clearCommand(){

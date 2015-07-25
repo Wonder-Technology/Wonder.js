@@ -149,6 +149,22 @@ module Engine3D{
             this._renderer = renderer;
         }
 
+        private _view:IView = null;
+        get view(){
+            return this._view;
+        }
+        set view(view:IView){
+            this._view = view;
+        }
+
+        private _gl:any = null;
+        get gl(){
+            return this._gl;
+        }
+        set gl(gl:any){
+            this._gl = gl;
+        }
+
         private _scene:Scene = null;
         private _loopId:string = null;
 
@@ -169,8 +185,7 @@ module Engine3D{
         }
 
         public getView():IView{
-            //todo move it to Director
-            return WebGLContext.view;
+            return this._view;
         }
 
         public getTopUnderPoint(point:Point):GameObject{
@@ -179,6 +194,11 @@ module Engine3D{
             }
 
             return this._scene.getTopUnderPoint(point);
+        }
+
+        public createGL(canvasId:string){
+            this._view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
+            this._gl = this._view.getContext();
         }
 
         private _startLoop() {
@@ -195,8 +215,7 @@ module Engine3D{
 
         //todo add tick mechanism
         private _loopBody(time) {
-            var gl = WebGLContext.gl;
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
 
             this._scene.onStartLoop();
 

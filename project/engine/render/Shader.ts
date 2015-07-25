@@ -7,7 +7,7 @@ module Engine3D{
 
         public static createShader(source:string, type:ShaderType){
             var shader = null,
-                gl = WebGLContext.gl;
+                gl = Director.getInstance().gl;
 
             switch(type){
                 case ShaderType.VS:

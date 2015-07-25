@@ -18,7 +18,6 @@
 /// <reference path="action/Translate"/>
 
 /// <reference path="Camera"/>
-/// <reference path="WebGLContext"/>
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
