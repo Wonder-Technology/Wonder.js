@@ -1,0 +1,19 @@
+{
+    "name": "commonLib",
+    "version": "0.0.1",
+    "devDependencies": {
+        "del": "^1.2.0",
+        "gulp": "^3.8.11",
+        "gulp-concat": "^2.6.0",
+        "gulp-sourcemaps": "^1.5.2",
+        "gulp-sync": "^0.1.4",
+        "gulp-typescript": "^2.7.5",
+        "karma": "~0.12",
+        "karma-chrome-launcher": "^0.1.5",
+        "karma-ie-launcher": "^0.1.5",
+        "karma-jasmine": "^0.2.2",
+        "merge2": "^0.3.5",
+        "typescript": "^1.5.0-beta"
+    }
+}
+

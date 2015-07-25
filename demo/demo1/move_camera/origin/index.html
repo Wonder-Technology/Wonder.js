@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>摄像机</title>
+
+    <!--<script src="/project/lib/inner/DYCommonLib/dist/dyCb.js" type="text/javascript"></script>-->
+    <!--<script src="/project/lib/inner/DYReactive/dist/dyRt.core.js" type="text/javascript"></script>-->
+    <!--<script src="/project/lib/inner/bowser/bowser.js" type="text/javascript"></script>-->
+    <script src="/DYEngine/dist/Engine.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/Engine.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+<input id="inp"/>
+
+<script>
+    window.onload = function () {
+        var camera = null,
+                scene = null;
+        //todo add Event class
+        var keyState = {};
+        //todo move to Camera
+        var isRotate = false;
+
+        Engine3D.LoaderManager.getInstance().load([
+            {url: "../vertex.glsl", id: "vs"},
+            {url: "../fragment.glsl", id: "fs"}
+        ]).subscribe(null, null,
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initContext();
+            _initScene();
+
+        }
+
+        function _initContext() {
+            Engine3D.Director.getInstance().createGL("canvas");
+        }
+
+        function _initScene() {
+            var geometry = null;
+
+            camera = _createCamera();
+
+            scene = Engine3D.Scene.create(camera,
+                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
+                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
+
+            scene.onEnter = function () {
+                bindCanvasEvent(Engine3D.Director.getInstance().view, this.camera);
+            };
+
+            scene.onEndLoop = function () {
+                setAllFalse();
+                isRotate = false;
+            };
+
+            scene.onExit = function () {
+                removeEvent();
+            };
+
+
+            var material = Engine3D.MeshMaterial.create({color: "#FFCDff"});
+            geometry = Engine3D.BoxGeometry.create(5, 5, 5, material);
+//            geometry = Engine3D.TriangleGeometry.create(5, 5, material);
+//            geometry = Engine3D.RectGeometry.create(5, 5, material);
+//            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
+
+            var mesh = Engine3D.Mesh.create(geometry);
+
+
+//            //test event emit
+//            var mesh2 = Engine3D.Mesh.create(geometry);
+//            mesh.addChild(mesh2);
+
+            var rotateAction = Engine3D.Rotate.create(
+                    mesh.matrix, {
+                        speed: 0.5,
+                        axis: [Engine3D.Vector3.create(0, 1, 0)]
+                    }
+            );
+
+            mesh.runAction(rotateAction);
+
+            scene.addChild(mesh);
+
+
+            var director = Engine3D.Director.getInstance();
+
+            //can set renderer
+//            digeometryor.renderer
+
+            director.runWithScene(scene);
+        }
+
+        function _createCamera() {
+            var camera = Engine3D.Camera.create({
+                        eyeX: 0.0,
+                        eyeY: 0.0,
+                        eyeZ: 10.0,
+                        centerX: 0,
+                        centerY: 0,
+                        centerZ: -1,
+                        upX: 0,
+                        upY: 1,
+                        upZ: 0
+                    },
+                    {
+                        angle: 60,
+                        aspect: canvas.width / canvas.height,
+                        near: 0.1,
+                        far: 100
+                    });
+
+            camera.onStartLoop = function () {
+                move(this);
+                if (isRotate) {
+                    this.rotate();
+                }
+                zoom(this);
+            };
+
+            return camera;
+        }
+
+
+        function move(camera) {
+//            var map = Engine3D.Key;
+
+//            if (keyState[map.A]) {
+//                camera.moveLeft();
+//            }
+//            else if (keyState[map.D]) {
+//                camera.moveRight();
+//            }
+//            else if (keyState[map.W]) {
+//                camera.moveFront();
+//            }
+//            else if (keyState[map.S]) {
+//                camera.moveBack();
+//            }
+            if (keyState["a"]) {
+                camera.moveLeft();
+            }
+            else if (keyState["d"]) {
+                camera.moveRight();
+            }
+            else if (keyState["w"]) {
+                camera.moveFront();
+            }
+            else if (keyState["s"]) {
+                camera.moveBack();
+            }
+        }
+
+        function zoom(camera) {
+//            var map = Engine3D.Key;
+//
+//            if (keyState[map.G]) {
+//                camera.zoomOut();
+//            }
+//            else if (keyState[map.H]) {
+//                camera.zoomIn();
+//            }
+
+            if (keyState["g"]) {
+                camera.zoomOut();
+            }
+            else if (keyState["h"]) {
+                camera.zoomIn();
+            }
+        }
+
+
+        function setAllFalse() {
+            var i = null;
+
+            for (i in keyState) {
+                if (keyState.hasOwnProperty(i)) {
+                    keyState[i] = false;
+                }
+            }
+        }
+
+        function bindCanvasEvent(canvas, camera) {
+            var dragging = false;         // Dragging or not
+            var lastX = -1, lastY = -1;   // Last position of the mouse
+
+
+//            var c = Engine3D.EventManager.create(this).on();
+//            var c = Engine3D.EventManager.create(this).emit();
+//            var c = Engine3D.EventManager.create(this).broadcast();
+
+
+//            var c = Engine3D.EventManager.create(canvas);
+
+
+//            var listener =
+
+//            Engine3D.EventManager.on(scene,
+//                    {
+//                        eventCategory: Engine3D.EventCategory.MOUSE,
+//
+//                        onMouseDown: function (e) {
+////                            var x = ev.clientX, y = ev.clientY;
+//                            var x = e.location.x,
+//                                    y = e.location.y;
+//                            lastX = x;
+//                            lastY = y;
+//                            dragging = true;
+//                            // Start dragging if a moue is in <canvas>
+////                            var rect = ev.target.getBoundingClientRect();
+////                            if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
+////                                lastX = x;
+////                                lastY = y;
+////                                dragging = true;
+////                            }
+//                            console.log("mousedown");
+//                        },
+//                        onMouseUp: function(e){
+//                            dragging = false;
+//                            console.log("mouseup", e);
+//                        },
+//                        onMouseMove: function(e){
+////                            var x = ev.clientX, y = ev.clientY;
+//                            var x = e.location.x,
+//                                    y = e.location.y;
+//                            if (dragging) {
+//                                var factor = 100 / canvas.height; // The rotation ratio
+//                                var dx = factor * (x - lastX);
+//                                var dy = factor * (y - lastY);
+//
+//                                //此处为针对视图坐标系的角度变换！
+//                                camera.rotateStepY = -dx;
+//                                camera.rotateStepX = -dy;
+//
+//
+//                                isRotate = true;
+//                            }
+//                            lastX = x;
+//                            lastY = y;
+//
+//                            console.log("mousemove");
+//                        }
+//                    });
+
+
+            // Get the three major events
+            var mouseup = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEUP);
+            var mousemove = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEMOVE);
+            var mousedown = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEDOWN);
+
+            var mousedrag = mousedown.flatMap(function (e) {
+                // calculate offsets when mouse down
+                var startX = e.location.x,
+                        startY = e.location.y;
+
+                // Calculate delta with mousemove until mouseup
+                return mousemove.map(function (e) {
+                    var x = e.location.x,
+                            y = e.location.y;
+                    var factor = 100 / canvas.height; // The rotation ratio
+
+//                    e.preventDefault();
+                    var dx = factor * (x - startX);
+                    var dy = factor * (y - startY);
+
+                    startX = x;
+                    startY = y;
+
+                    return {
+                        dx: dx,
+                        dy: dy
+                    };
+                }).takeUntil(mouseup);
+            });
+
+            // Update position
+            var subscription = mousedrag.subscribe(function (pos) {
+                //此处为针对视图坐标系的角度变换！
+                camera.rotateStepY = -pos.dx;
+                camera.rotateStepX = -pos.dy;
+
+                isRotate = true;
+            });
+
+
+
+
+
+            Engine3D.EventManager.fromEvent(Engine3D.EventName.KEYDOWN)
+                    .subscribe(function(e){
+                        console.log(e);
+
+                        setAllFalse();
+                        keyState[e.key] = true;
+                    });
+
+
+
+//            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
+
+
+//            Engine3D.EventManager.create().on("custom", function(ev){
+//                console.log("this is custom event")
+//            });
+//            Engine3D.EventManager.create(canvas).on("canvasCustom", function(ev, data1, data2){
+//                console.log("this is canvasCustom event ", data1, " ", data2);
+//            });
+
+
+//            setTimeout(function(){
+//                c.trigger("click", 100);
+//            });
+        }
+
+        function removeEvent() {
+            Engine3D.EventManager.off(scene);
+            document.querySelector("body").off("keydown");
+//            Engine3D.EventManager.create(canvas).off();
+//            Engine3D.EventManager.create(document.querySelector("body")).off("keydown");
+//            Engine3D.EventManager.create().off();
+        }
+    };
+</script>
+</body>
+</html>

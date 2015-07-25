@@ -1,0 +1,17 @@
+{
+  "name": "DYReactive",
+  "version": "0.1.0",
+  "homepage": "",
+  "authors": [
+    "yyc <395976266@qq.com>"
+  ],
+  "description": "",
+  "keywords": [
+    "typescript"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jquery": "~2.1.3",
+    "yyctoolbox": "~1.0.1"
+  }
+}

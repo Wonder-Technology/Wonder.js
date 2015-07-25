@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="dist/dyRt.all.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+</head>
+<body>
+<div style="width:100px;height:100px;border:1px solid red;" id="a">
+    <div style="width:50px;height:50px;border:1px solid red;" id="b"></div>
+</div>
+<script>
+//    var source = dyRt.interval(500);
+////    var source = dyRt.fromArray([1,2,3,4,5]);
+//
+//    var subject = new dyRt.Subject();
+//
+//    source.subscribe(subject);
+//    var subscription = subject.subscribe(
+//            function (x) {
+//                console.log('onNext: %s', x);
+////                if(x === 3){
+////                    throw new Error("break when 3");
+////                }
+//            },
+//            function (e) {
+//                console.log('onError: %s', e);
+//            },
+//            function () {
+//                console.log('onCompleted');
+//            });
+//
+//    var subscription2 = subject.subscribe(
+//            function (x) {
+//                console.log('onNext: %s', x);
+////                if(x === 3){
+////                    throw new Error("break when 3");
+////                }
+//            },
+//            function (e) {
+//                console.log('onError: %s', e);
+//            },
+//            function () {
+//                console.log('onCompleted');
+//            });
+//
+//    subject.start();
+////
+//    setTimeout(function(){
+//        subject.subscribe(
+//            function (x) {
+//                console.log('onNext-1000: %s', x);
+////                console.log("222");
+//            },
+//            function (e) {
+//                console.log('onError: %s', e);
+//            },
+//            function () {
+//                console.log('onCompleted');
+//            });
+//    }, 1000);
+////
+//    setTimeout(function(){
+//        subscription2.dispose();
+//    }, 5100);
+
+
+
+//
+//var a = 0;
+//
+//var subject = dyRt.Subject.create();
+//var source = dyRt.fromArray([1,2,3]);
+//source.do(function(x){
+//    a += x;
+//}).subscribe(subject);
+//
+//        subject.subscribe(function(x){
+//            console.log(x);
+//        }, null, function(){
+//            console.log("a = ", a);
+//        });
+//
+//subject.subscribe(function(x){
+//    console.log("x = ", x);
+//}, null, function(){
+//    console.log("total a = ", a);
+//});
+//
+//subject.start();
+
+
+
+
+//
+//var sources = dyRt.fromArray([1, 2])
+//        .map(function(value){
+//            if(value === 2){
+//                return dyRt.interval(100);
+//            }
+//            else{
+//                return dyRt.interval(60);
+//            }
+//        });
+//    sources.mergeAll().subscribe(function(x){
+//        console.log(x);
+//    });
+
+
+
+
+
+
+
+
+
+
+
+
+//var a = 0,
+//        b = 0;
+//var source = dyRt.createStream(function (observer) {
+//    observer.next(1);
+//    observer.next(2);
+//    observer.completed();
+//});
+////var subject = dyRt.Subject.create();
+//var subject = new dyRt.Subject();
+//
+//source.subscribe(subject);
+//subject.subscribe(function(x){
+//    a += x;
+//}, function(e){
+//}, function(){
+//    console.log("a = ", a);
+//});
+//subject.subscribe(function(x){
+//    b += x;
+//}, function(e){
+//}, function(){
+//    console.log("b = ", b);
+//});
+//subject.start();
+
+
+
+
+
+    $("#a").on("click", function(e){
+        console.log("a");
+    })
+
+$("#b").on("click", function(e){
+    console.log("b");
+});
+$("#b").on("click", function(e){
+    console.log("222222222");
+});
+
+</script>
+</body>
+</html>
