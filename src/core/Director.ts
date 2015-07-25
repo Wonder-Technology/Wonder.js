@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     declare var window:any;
     /**
      * 来自《HTML5 Canvas 核心技术》

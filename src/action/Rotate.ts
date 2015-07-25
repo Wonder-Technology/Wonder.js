@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Rotate extends Action{
         public static create(matrix, actionData):Rotate {
             var obj = new this(matrix, actionData);

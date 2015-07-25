@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class ActionManager{
         public static create():ActionManager {
             var obj = new this();

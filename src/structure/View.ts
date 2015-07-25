@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export interface IView {
         offset:{x:number, y:number};
         width:number;

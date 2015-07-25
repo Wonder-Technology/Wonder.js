@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class CustomEventHandler extends EventHandler{
         private static _instance:CustomEventHandler = null;
 

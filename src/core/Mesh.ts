@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Mesh extends GameObject{
         //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
         //when need push,pop matrix?

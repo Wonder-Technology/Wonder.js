@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Program{
         public static create(vsSource:string, fsSource:string):Program {
             var obj = new this();

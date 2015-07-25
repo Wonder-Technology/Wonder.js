@@ -14,7 +14,7 @@
         var camera = null,
                 scene = null;
 
-        Engine3D.LoaderManager.getInstance().load([
+        dy.LoaderManager.getInstance().load([
             {url:"../vertex.glsl", id:"vs"},
             {url:"../fragment.glsl", id:"fs"}
         ]);
@@ -26,13 +26,13 @@
         }
 
         function _initContext(){
-            Engine3D.WebGLContext.createGL("canvas");
+            dy.WebGLContext.createGL("canvas");
         }
 
         function _initScene(){
             var geometry = null;
 
-            camera = Engine3D.Camera.create({
+            camera = dy.Camera.create({
                         eyeX: 0.0,
                         eyeY: 0.0,
                         eyeZ: 10.0,
@@ -50,38 +50,38 @@
                         far : 100
                     });
 
-            scene = Engine3D.Scene.create(camera,
-                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
-                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
+            scene = dy.Scene.create(camera,
+                    dy.GLSLLoader.getInstance().getGLSL("vs"),
+                    dy.GLSLLoader.getInstance().getGLSL("fs"));
 
 
-            var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
-//            geometry = Engine3D.BoxGeometry.create(5, 5, 1, material);
-            geometry = Engine3D.TriangleGeometry.create(5, 5, material);
-//            geometry = Engine3D.RectGeometry.create(5, 5, material);
-//            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
+            var material = dy.MeshMaterial.create( { color: "#FFCDff"} );
+//            geometry = dy.BoxGeometry.create(5, 5, 1, material);
+            geometry = dy.TriangleGeometry.create(5, 5, material);
+//            geometry = dy.RectGeometry.create(5, 5, material);
+//            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
 
-            var mesh = Engine3D.Mesh.create(geometry);
+            var mesh = dy.Mesh.create(geometry);
 
-//            mesh.runAction(Engine3D.Translate.create(
+//            mesh.runAction(dy.Translate.create(
 //                    mesh.matrix, {
 //                        x: 1, y: 2, z: 3
 //                    }
 //            ));
-//            mesh.runAction(Engine3D.Rotate.create(
+//            mesh.runAction(dy.Rotate.create(
 //               mesh.matrix, {
 //                        speed: 0.4,
-//                        axis: [Engine3D.Vector3.create(2, 0, 0),
-//                            Engine3D.Vector3.create(2, 1, 0)]
+//                        axis: [dy.Vector3.create(2, 0, 0),
+//                            dy.Vector3.create(2, 1, 0)]
 //                    }
 //            ));
-            var rotateAction = Engine3D.Rotate.create(
+            var rotateAction = dy.Rotate.create(
                     mesh.matrix, {
                         speed: 0.5,
-                        axis: [Engine3D.Vector3.create(0, 1, 0)]
+                        axis: [dy.Vector3.create(0, 1, 0)]
                     }
             );
-            var scaleAction = Engine3D.Scale.create(
+            var scaleAction = dy.Scale.create(
                     mesh.matrix, {
                         x: 2,
                         y:1,
@@ -100,18 +100,18 @@
             mesh.runAction(rotateAction);
 
             mesh.runAction(scaleAction);
-//            mesh.runAction(Engine3D.Rotate.create(
+//            mesh.runAction(dy.Rotate.create(
 //               mesh.matrix, {
 //                        speed: 0.4,
-//                        axis: [Engine3D.Vector3.create(2, 0, 0),
-//                            Engine3D.Vector3.create(2, 1, 0)]
+//                        axis: [dy.Vector3.create(2, 0, 0),
+//                            dy.Vector3.create(2, 1, 0)]
 //                    }
 //            ));
 
             scene.add(mesh);
 
 
-            var director = Engine3D.Director.getInstance();
+            var director = dy.Director.getInstance();
 
             //can set renderer
 //            digeometryor.renderer
@@ -119,7 +119,7 @@
             director.runWithScene(scene);
         }
 
-        Engine3D.LoaderManager.getInstance().onload = function(){
+        dy.LoaderManager.getInstance().onload = function(){
             init();
         };
     };

@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     //responsibilty:on, off event(manage list)
 
     export class EventBinder {

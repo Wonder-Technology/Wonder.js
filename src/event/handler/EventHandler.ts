@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class EventHandler {
         public on(...args) {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);

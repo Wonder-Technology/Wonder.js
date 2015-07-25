@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Scale extends Action{
         public static create(matrix, data):Scale {
             var obj = new this(matrix, data);

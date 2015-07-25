@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export interface IEventRegisterData {
         target:GameObject,
         //user's event handler

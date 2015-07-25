@@ -29,10 +29,10 @@ gulp.task("compileTs", function() {
 
     return merge([
         tsResult.dts
-            .pipe(gulpConcat("Engine.d.ts"))
+            .pipe(gulpConcat("dy.d.ts"))
             .pipe(gulp.dest("dist")),
         tsResult.js
-            .pipe(gulpConcat("Engine.js"))
+            .pipe(gulpConcat("dy.js"))
             .pipe(gulp.dest("dist/"))
     ])
 });
@@ -53,7 +53,7 @@ gulp.task("compileTsDebug", function() {
 
     return merge([
         tsResult.js
-            .pipe(gulpConcat("Engine.debug.js"))
+            .pipe(gulpConcat("dy.debug.js"))
             .pipe(gulpSourcemaps.write())
             .pipe(gulp.dest("dist/"))
     ])

@@ -23,9 +23,9 @@ describe("keyboard event", function () {
             shiftKey: true,
             metaKey: false
         };
-        target =  Engine3D.Mesh.create();
-        manager = Engine3D.EventManager;
-        Listener = Engine3D.EventListener;
+        target =  dy.Mesh.create();
+        manager = dy.EventManager;
+        Listener = dy.EventListener;
     });
     afterEach(function () {
         removeDom();
@@ -43,14 +43,14 @@ describe("keyboard event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                manager.on(Engine3D.EventName.KEYDOWN, function (e) {
+                manager.on(dy.EventName.KEYDOWN, function (e) {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+                manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
-                expect(eventTarget).toBeInstanceOf(Engine3D.KeyboardEvent);
-                expect(eventTarget.name).toEqual(Engine3D.EventName.KEYDOWN);
+                expect(eventTarget).toBeInstanceOf(dy.KeyboardEvent);
+                expect(eventTarget.name).toEqual(dy.EventName.KEYDOWN);
                 expect(eventTarget.keyCode).toEqual(fakeEvent.keyCode);
                 expect(eventTarget.key).toEqual("a");
                 expect(eventTarget.ctrlKey).toEqual(fakeEvent.ctrlKey);
@@ -60,8 +60,8 @@ describe("keyboard event", function () {
 
                 expect(sum).toEqual(1);
 
-                manager.off(Engine3D.EventName.KEYDOWN);
-                manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+                manager.off(dy.EventName.KEYDOWN);
+                manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
                 expect(sum).toEqual(1);
             });
@@ -69,15 +69,15 @@ describe("keyboard event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                var subscription = manager.fromEvent(Engine3D.EventName.KEYDOWN)
+                var subscription = manager.fromEvent(dy.EventName.KEYDOWN)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+                manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
-                expect(eventTarget).toBeInstanceOf(Engine3D.KeyboardEvent);
-                expect(eventTarget.name).toEqual(Engine3D.EventName.KEYDOWN);
+                expect(eventTarget).toBeInstanceOf(dy.KeyboardEvent);
+                expect(eventTarget.name).toEqual(dy.EventName.KEYDOWN);
                 expect(eventTarget.keyCode).toEqual(fakeEvent.keyCode);
                 expect(eventTarget.key).toEqual("a");
                 expect(eventTarget.ctrlKey).toEqual(fakeEvent.ctrlKey);
@@ -87,7 +87,7 @@ describe("keyboard event", function () {
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+                manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
                 expect(sum).toEqual(1);
             });
@@ -104,7 +104,7 @@ describe("keyboard event", function () {
                 sum2 = 0;
 
             manager.on({
-                    eventType: Engine3D.EventType.KEYBOARD,
+                    eventType: dy.EventType.KEYBOARD,
 
                     onKeyPress: function (e) {
                         eventTarget = e;
@@ -115,18 +115,18 @@ describe("keyboard event", function () {
                         sum2++;
                     }
                 });
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYPRESS));
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYUP));
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYPRESS));
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYUP));
 
-            expect(eventTarget).toBeInstanceOf(Engine3D.KeyboardEvent);
-            expect(eventTarget.name).toEqual(Engine3D.EventName.KEYPRESS);
-            expect(eventTarget2).toBeInstanceOf(Engine3D.KeyboardEvent);
-            expect(eventTarget2.name).toEqual(Engine3D.EventName.KEYUP);
+            expect(eventTarget).toBeInstanceOf(dy.KeyboardEvent);
+            expect(eventTarget.name).toEqual(dy.EventName.KEYPRESS);
+            expect(eventTarget2).toBeInstanceOf(dy.KeyboardEvent);
+            expect(eventTarget2.name).toEqual(dy.EventName.KEYUP);
 
-            manager.off(Engine3D.EventName.KEYPRESS);
-            manager.off(Engine3D.EventName.KEYUP);
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYPRESS));
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYUP));
+            manager.off(dy.EventName.KEYPRESS);
+            manager.off(dy.EventName.KEYUP);
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYPRESS));
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYUP));
 
             expect(sum).toEqual(1);
             expect(sum2).toEqual(1);
@@ -139,24 +139,24 @@ describe("keyboard event", function () {
                     b:sandbox.stub()
                 };
 
-            var subscription1 = manager.fromEvent(Engine3D.EventName.KEYDOWN, 1)
+            var subscription1 = manager.fromEvent(dy.EventName.KEYDOWN, 1)
                 .subscribe(function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 });
-            var subscription2 = manager.fromEvent(Engine3D.EventName.KEYDOWN, 2)
+            var subscription2 = manager.fromEvent(dy.EventName.KEYDOWN, 2)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
-            expect(eventTarget).toBeInstanceOf(Engine3D.KeyboardEvent);
-            expect(eventTarget.name).toEqual(Engine3D.EventName.KEYDOWN);
+            expect(eventTarget).toBeInstanceOf(dy.KeyboardEvent);
+            expect(eventTarget.name).toEqual(dy.EventName.KEYDOWN);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             subscription2.dispose();
-            manager.trigger(Engine3D.KeyboardEvent.create(fakeEvent, Engine3D.EventName.KEYDOWN));
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
 
             expect(fakeObj.a).toCalledTwice();
             expect(fakeObj.b).toCalledOnce();
@@ -168,10 +168,10 @@ describe("keyboard event", function () {
             function judge(event, key){
                 var eventTarget = null;
 
-                manager.on(Engine3D.EventName.KEYDOWN, function (e) {
+                manager.on(dy.EventName.KEYDOWN, function (e) {
                     eventTarget = e;
                 });
-                manager.trigger(Engine3D.KeyboardEvent.create(event, Engine3D.EventName.KEYDOWN));
+                manager.trigger(dy.KeyboardEvent.create(event, dy.EventName.KEYDOWN));
 
                 expect(eventTarget.key).toEqual(key);
             }

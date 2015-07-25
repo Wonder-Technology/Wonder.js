@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class FactoryEventHandler{
         public static createEventHandler(eventType:EventType){
             let handler = null;

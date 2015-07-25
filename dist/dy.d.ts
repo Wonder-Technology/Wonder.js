@@ -405,7 +405,7 @@ declare module dyRt {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     class Point {
         x: number;
         y: number;
@@ -414,7 +414,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     class Position {
         x: number;
         y: number;
@@ -425,7 +425,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     interface IView {
         offset: {
             x: number;
@@ -452,7 +452,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Vector3 {
         static create(x: any, y: any, z: any): Vector3;
         static create(): Vector3;
@@ -469,7 +469,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Vector4 {
         static create(x: any, y: any, z: any, w: any): Vector4;
         static create(): Vector4;
@@ -483,7 +483,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Matrix {
         static create(mat: Float32Array): Matrix;
         static create(): Matrix;
@@ -593,7 +593,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Action {
         private _isFinish;
         isFinish: boolean;
@@ -605,7 +605,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class ActionManager {
         static create(): ActionManager;
         private _children;
@@ -617,7 +617,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Rotate extends Action {
         static create(matrix: any, actionData: any): Rotate;
         private _speed;
@@ -634,7 +634,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Scale extends Action {
         static create(matrix: any, data: any): Scale;
         private _x;
@@ -650,7 +650,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Translate extends Action {
         static create(matrix: any, posData: any): Translate;
         private _x;
@@ -665,7 +665,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     class Color {
         static create(colorVal: string): Color;
         private _r;
@@ -682,14 +682,14 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class JudgeUtils extends dyCb.JudgeUtils {
         static isView(obj: any): boolean;
         static isEqual(target1: GameObject, target2: GameObject): boolean;
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum ShaderType {
         VS = 0,
         FS = 1,
@@ -697,14 +697,14 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Shader {
         constructor();
         static createShader(source: string, type: ShaderType): any;
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum BufferType {
         UNSIGNED_BYTE,
         SHORT,
@@ -715,21 +715,21 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum AttributeDataType {
         FLOAT_4 = 0,
         BUFFER = 1,
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum DrawMode {
         TRIANGLES,
     }
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class ElementBuffer {
         static create(data: any, type: BufferType): ElementBuffer;
         private _buffer;
@@ -747,7 +747,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class ArrayBuffer {
         static create(data: any, num: any, type: BufferType): ArrayBuffer;
         private _buffer;
@@ -762,14 +762,14 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum UniformDataType {
         FLOAT_MAT4 = 0,
     }
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Program {
         static create(vsSource: string, fsSource: string): Program;
         private _program;
@@ -782,7 +782,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class QuadCommand {
         static create(): QuadCommand;
         private _buffers;
@@ -799,7 +799,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class WebGLRenderer {
         static create(): WebGLRenderer;
         private _commandQueue;
@@ -815,7 +815,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class MeshMaterial {
         static create(params: any): MeshMaterial;
         private _color;
@@ -825,7 +825,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class GLSLLoader {
         private static _instance;
         static getInstance(): GLSLLoader;
@@ -837,7 +837,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class LoaderManager {
         private static _instance;
         static getInstance(): LoaderManager;
@@ -859,7 +859,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Geometry {
         private _vertices;
         vertices: ArrayBuffer;
@@ -877,7 +877,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class BoxGeometry extends Geometry {
         static create(width: number, height: number, depth: number, material: MeshMaterial): BoxGeometry;
         private _width;
@@ -890,7 +890,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class RectGeometry extends Geometry {
         static create(width: number, height: number, material: MeshMaterial): RectGeometry;
         private _width;
@@ -901,7 +901,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum SphereDrawMode {
         LATITUDELONGTITUDE = 0,
         DECOMPOSITION = 1,
@@ -909,7 +909,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class SphereGeometry extends Geometry {
         static create(radius: number, drawMode: SphereDrawMode, segments: number, material: MeshMaterial): SphereGeometry;
         private _radius;
@@ -925,7 +925,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class TriangleGeometry extends Geometry {
         static create(width: number, height: number, material: MeshMaterial): TriangleGeometry;
         private _width;
@@ -937,7 +937,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     interface IEventOffData {
         eventName: EventName;
         wrapHandler: Function;
@@ -968,7 +968,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum EventType {
         MOUSE = 0,
         KEYBOARD = 1,
@@ -976,7 +976,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum EventName {
         CLICK,
         MOUSEOVER,
@@ -990,7 +990,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum EventPhase {
         BROADCAST = 0,
         EMIT = 1,
@@ -998,14 +998,14 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class EventTable {
         static getEventType(eventName: EventName): EventType;
     }
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Event {
         constructor(eventName: EventName);
         type: EventType;
@@ -1026,7 +1026,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class MouseEvent extends Event {
         static create(event: any, eventName: EventName): MouseEvent;
         constructor(event: any, eventName: EventName);
@@ -1044,7 +1044,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class KeyboardEvent extends Event {
         static create(event: any, eventName: EventName): KeyboardEvent;
         constructor(event: any, eventName: EventName);
@@ -1062,7 +1062,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class CustomEvent extends Event {
         static create(eventName: string): CustomEvent;
         type: EventType;
@@ -1073,7 +1073,7 @@ declare module Engine3D {
     }
 }
 
-declare module Engine3D {
+declare module dy {
     enum MouseButton {
         LEFT = 0,
         RIGHT = 1,
@@ -1082,7 +1082,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     interface IEventHandlerData {
         eventName: EventName;
         handler: Function;
@@ -1105,7 +1105,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class EventHandler {
         on(...args: any[]): void;
         off(...args: any[]): void;
@@ -1114,7 +1114,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class DomEventHandler extends EventHandler {
         off(...args: any[]): void;
         protected getDom(): any;
@@ -1126,7 +1126,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class MouseEventHandler extends DomEventHandler {
         private static _instance;
         static getInstance(): MouseEventHandler;
@@ -1140,7 +1140,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class KeyboardEventHandler extends DomEventHandler {
         private static _instance;
         static getInstance(): KeyboardEventHandler;
@@ -1154,7 +1154,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class CustomEventHandler extends EventHandler {
         private static _instance;
         static getInstance(): CustomEventHandler;
@@ -1175,7 +1175,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class EventDispatcher {
         static create(): EventDispatcher;
         constructor();
@@ -1203,7 +1203,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     interface IEventRegisterData {
         target: GameObject;
         handler: Function;
@@ -1238,7 +1238,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class EventBinder {
         static create(): EventBinder;
         constructor();
@@ -1256,14 +1256,14 @@ declare module Engine3D {
 }
 
 /// <reference path="../../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class FactoryEventHandler {
         static createEventHandler(eventType: EventType): any;
     }
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class EventManager {
         private static _eventBinder;
         private static _eventDispatcher;
@@ -1294,7 +1294,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class GameObject {
         private static _count;
         private _uid;
@@ -1331,7 +1331,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Mesh extends GameObject {
         static create(gemo: Geometry): Mesh;
         private _matrix;
@@ -1348,7 +1348,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Scene extends GameObject {
         static create(camera: Camera, vsSource: string, fsSource: string): Scene;
         private _camera;
@@ -1365,7 +1365,7 @@ declare module Engine3D {
 }
 
 /// <reference path="../definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Director {
         private static _instance;
         static getInstance(): Director;
@@ -1388,7 +1388,7 @@ declare module Engine3D {
 }
 
 /// <reference path="definitions.d.ts" />
-declare module Engine3D {
+declare module dy {
     class Camera {
         static create(lookAtParams: any, perspectiveParams: any): Camera;
         private _pMatrix;

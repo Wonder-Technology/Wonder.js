@@ -7,8 +7,8 @@
     <!--<script src="/project/lib/inner/DYCommonLib/dist/dyCb.js" type="text/javascript"></script>-->
     <!--<script src="/project/lib/inner/DYReactive/dist/dyRt.core.js" type="text/javascript"></script>-->
     <!--<script src="/project/lib/inner/bowser/bowser.js" type="text/javascript"></script>-->
-    <script src="/DYEngine/dist/Engine.innerLib.js" type="text/javascript"></script>
-    <script src="/DYEngine/dist/Engine.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
     <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
 </head>
 <body>
@@ -24,7 +24,7 @@
         //todo move to Camera
         var isRotate = false;
 
-        Engine3D.LoaderManager.getInstance().load([
+        dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"}
         ]).subscribe(null, null,
@@ -39,7 +39,7 @@
         }
 
         function _initContext() {
-            Engine3D.Director.getInstance().createGL("canvas");
+            dy.Director.getInstance().createGL("canvas");
         }
 
         function _initScene() {
@@ -47,12 +47,12 @@
 
             camera = _createCamera();
 
-            scene = Engine3D.Scene.create(camera,
-                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
-                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
+            scene = dy.Scene.create(camera,
+                    dy.GLSLLoader.getInstance().getGLSL("vs"),
+                    dy.GLSLLoader.getInstance().getGLSL("fs"));
 
             scene.onEnter = function () {
-                bindCanvasEvent(Engine3D.Director.getInstance().view, this.camera);
+                bindCanvasEvent(dy.Director.getInstance().view, this.camera);
             };
 
             scene.onEndLoop = function () {
@@ -65,23 +65,23 @@
             };
 
 
-            var material = Engine3D.MeshMaterial.create({color: "#FFCDff"});
-            geometry = Engine3D.BoxGeometry.create(5, 5, 5, material);
-//            geometry = Engine3D.TriangleGeometry.create(5, 5, material);
-//            geometry = Engine3D.RectGeometry.create(5, 5, material);
-//            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
+            var material = dy.MeshMaterial.create({color: "#FFCDff"});
+            geometry = dy.BoxGeometry.create(5, 5, 5, material);
+//            geometry = dy.TriangleGeometry.create(5, 5, material);
+//            geometry = dy.RectGeometry.create(5, 5, material);
+//            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
 
-            var mesh = Engine3D.Mesh.create(geometry);
+            var mesh = dy.Mesh.create(geometry);
 
 
 //            //test event emit
-//            var mesh2 = Engine3D.Mesh.create(geometry);
+//            var mesh2 = dy.Mesh.create(geometry);
 //            mesh.addChild(mesh2);
 
-            var rotateAction = Engine3D.Rotate.create(
+            var rotateAction = dy.Rotate.create(
                     mesh.matrix, {
                         speed: 0.5,
-                        axis: [Engine3D.Vector3.create(0, 1, 0)]
+                        axis: [dy.Vector3.create(0, 1, 0)]
                     }
             );
 
@@ -90,7 +90,7 @@
             scene.addChild(mesh);
 
 
-            var director = Engine3D.Director.getInstance();
+            var director = dy.Director.getInstance();
 
             //can set renderer
 //            digeometryor.renderer
@@ -99,7 +99,7 @@
         }
 
         function _createCamera() {
-            var camera = Engine3D.Camera.create({
+            var camera = dy.Camera.create({
                         eyeX: 0.0,
                         eyeY: 0.0,
                         eyeZ: 10.0,
@@ -130,7 +130,7 @@
 
 
         function move(camera) {
-//            var map = Engine3D.Key;
+//            var map = dy.Key;
 
 //            if (keyState[map.A]) {
 //                camera.moveLeft();
@@ -159,7 +159,7 @@
         }
 
         function zoom(camera) {
-//            var map = Engine3D.Key;
+//            var map = dy.Key;
 //
 //            if (keyState[map.G]) {
 //                camera.zoomOut();
@@ -192,19 +192,19 @@
             var lastX = -1, lastY = -1;   // Last position of the mouse
 
 
-//            var c = Engine3D.EventManager.create(this).on();
-//            var c = Engine3D.EventManager.create(this).emit();
-//            var c = Engine3D.EventManager.create(this).broadcast();
+//            var c = dy.EventManager.create(this).on();
+//            var c = dy.EventManager.create(this).emit();
+//            var c = dy.EventManager.create(this).broadcast();
 
 
-//            var c = Engine3D.EventManager.create(canvas);
+//            var c = dy.EventManager.create(canvas);
 
 
 //            var listener =
 
-//            Engine3D.EventManager.on(scene,
+//            dy.EventManager.on(scene,
 //                    {
-//                        eventCategory: Engine3D.EventCategory.MOUSE,
+//                        eventCategory: dy.EventCategory.MOUSE,
 //
 //                        onMouseDown: function (e) {
 ////                            var x = ev.clientX, y = ev.clientY;
@@ -251,9 +251,9 @@
 
 
             // Get the three major events
-            var mouseup = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEUP);
-            var mousemove = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEMOVE);
-            var mousedown = Engine3D.EventManager.fromEvent(scene, Engine3D.EventName.MOUSEDOWN);
+            var mouseup = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEUP);
+            var mousemove = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEMOVE);
+            var mousedown = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEDOWN);
 
             var mousedrag = mousedown.flatMap(function (e) {
                 // calculate offsets when mouse down
@@ -293,7 +293,7 @@
 
 
 
-            Engine3D.EventManager.fromEvent(Engine3D.EventName.KEYDOWN)
+            dy.EventManager.fromEvent(dy.EventName.KEYDOWN)
                     .subscribe(function(e){
                         console.log(e);
 
@@ -306,10 +306,10 @@
 //            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
 
 
-//            Engine3D.EventManager.create().on("custom", function(ev){
+//            dy.EventManager.create().on("custom", function(ev){
 //                console.log("this is custom event")
 //            });
-//            Engine3D.EventManager.create(canvas).on("canvasCustom", function(ev, data1, data2){
+//            dy.EventManager.create(canvas).on("canvasCustom", function(ev, data1, data2){
 //                console.log("this is canvasCustom event ", data1, " ", data2);
 //            });
 
@@ -320,11 +320,11 @@
         }
 
         function removeEvent() {
-            Engine3D.EventManager.off(scene);
+            dy.EventManager.off(scene);
             document.querySelector("body").off("keydown");
-//            Engine3D.EventManager.create(canvas).off();
-//            Engine3D.EventManager.create(document.querySelector("body")).off("keydown");
-//            Engine3D.EventManager.create().off();
+//            dy.EventManager.create(canvas).off();
+//            dy.EventManager.create(document.querySelector("body")).off("keydown");
+//            dy.EventManager.create().off();
         }
     };
 </script>

@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D {
+module dy {
 //    /*!
 //     it is designed as singleton, not static class, because it need maintain state(_instance attri).
 //

@@ -1,5 +1,5 @@
 /// <reference path="definitions.d.ts"/>
-module Engine3D{
+module dy{
     //todo can set perspectiveParams, add updateProjectMatrix method
     //todo optimize to reduce compute
     export class Camera{

@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class MouseEvent extends Event{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";

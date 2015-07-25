@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     const SPECIAL_KEY_MAP = {
             8: "backspace",
             9: "tab",

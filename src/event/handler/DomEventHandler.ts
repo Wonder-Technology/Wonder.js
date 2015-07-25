@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class DomEventHandler extends EventHandler{
         public off(...args) {
             var self = this,

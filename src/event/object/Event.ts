@@ -10,7 +10,7 @@
 //event type
 
 
-module Engine3D{
+module dy{
     export class Event{
         constructor(eventName:EventName) {
             this._name = eventName;

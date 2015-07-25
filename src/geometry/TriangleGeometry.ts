@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class TriangleGeometry extends Geometry{
         public static create(width:number, height:number, material:MeshMaterial):TriangleGeometry {
             var geom = new this(width, height, material);

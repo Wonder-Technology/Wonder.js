@@ -4192,8 +4192,8 @@ var dyRt;
 }).call(this);
 
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Point = (function () {
         function Point(x, y) {
             if (x === void 0) { x = null; }
@@ -4209,11 +4209,11 @@ var Engine3D;
         };
         return Point;
     })();
-    Engine3D.Point = Point;
-})(Engine3D || (Engine3D = {}));
+    dy.Point = Point;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Position = (function () {
         function Position(x, y, z) {
             this.x = null;
@@ -4229,12 +4229,12 @@ var Engine3D;
         };
         return Position;
     })();
-    Engine3D.Position = Position;
-})(Engine3D || (Engine3D = {}));
+    dy.Position = Position;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var ViewWebGL = (function () {
         function ViewWebGL(dom) {
             this._dom = null;
@@ -4283,12 +4283,12 @@ var Engine3D;
         };
         return ViewWebGL;
     })();
-    Engine3D.ViewWebGL = ViewWebGL;
-})(Engine3D || (Engine3D = {}));
+    dy.ViewWebGL = ViewWebGL;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Vector3 = (function () {
         function Vector3() {
             this._values = new Float32Array(3);
@@ -4344,16 +4344,16 @@ var Engine3D;
             return result;
         };
         Vector3.prototype.toVec4 = function () {
-            return Engine3D.Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
+            return dy.Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
         };
         return Vector3;
     })();
-    Engine3D.Vector3 = Vector3;
-})(Engine3D || (Engine3D = {}));
+    dy.Vector3 = Vector3;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Vector4 = (function () {
         function Vector4() {
             this._values = new Float32Array(4);
@@ -4395,16 +4395,16 @@ var Engine3D;
             return this;
         };
         Vector4.prototype.toVec3 = function () {
-            return Engine3D.Vector3.create(this._values[0], this._values[1], this._values[2]);
+            return dy.Vector3.create(this._values[0], this._values[1], this._values[2]);
         };
         return Vector4;
     })();
-    Engine3D.Vector4 = Vector4;
-})(Engine3D || (Engine3D = {}));
+    dy.Vector4 = Vector4;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     /*!
      注意：矩阵元素是按列主序存储在数组中的。
      */
@@ -4919,7 +4919,7 @@ var Engine3D;
             result[1] = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[9] + vec4[3] * mat1[13];
             result[2] = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
             result[3] = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
-            return Engine3D.Vector4.create(result[0], result[1], result[2], result[3]);
+            return dy.Vector4.create(result[0], result[1], result[2], result[3]);
         };
         Matrix.prototype.copy = function () {
             var result = Matrix.create(), i = 0, len = this._values.length;
@@ -4930,12 +4930,12 @@ var Engine3D;
         };
         return Matrix;
     })();
-    Engine3D.Matrix = Matrix;
-})(Engine3D || (Engine3D = {}));
+    dy.Matrix = Matrix;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Action = (function () {
         function Action(matrix) {
             this._isFinish = false;
@@ -4960,12 +4960,12 @@ var Engine3D;
         };
         return Action;
     })();
-    Engine3D.Action = Action;
-})(Engine3D || (Engine3D = {}));
+    dy.Action = Action;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var ActionManager = (function () {
         function ActionManager() {
             this._children = dyCb.Collection.create();
@@ -5007,8 +5007,8 @@ var Engine3D;
         };
         return ActionManager;
     })();
-    Engine3D.ActionManager = ActionManager;
-})(Engine3D || (Engine3D = {}));
+    dy.ActionManager = ActionManager;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5017,8 +5017,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Rotate = (function (_super) {
         __extends(Rotate, _super);
         function Rotate(matrix, axisData) {
@@ -5034,7 +5034,7 @@ var Engine3D;
             }
             else if (axisData.axis.length === 1) {
                 this._axis = axisData.axis[0];
-                this._point = Engine3D.Vector3.create(0, 0, 0);
+                this._point = dy.Vector3.create(0, 0, 0);
             }
             else {
                 dyCb.Log.error(true, "axis's length should be 1 or 2");
@@ -5064,9 +5064,9 @@ var Engine3D;
                 || this._point.values[2] !== 0;
         };
         return Rotate;
-    })(Engine3D.Action);
-    Engine3D.Rotate = Rotate;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Action);
+    dy.Rotate = Rotate;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5075,8 +5075,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Scale = (function (_super) {
         __extends(Scale, _super);
         function Scale(matrix, data) {
@@ -5097,9 +5097,9 @@ var Engine3D;
             this.finish();
         };
         return Scale;
-    })(Engine3D.Action);
-    Engine3D.Scale = Scale;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Action);
+    dy.Scale = Scale;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5108,8 +5108,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Translate = (function (_super) {
         __extends(Translate, _super);
         function Translate(matrix, posData) {
@@ -5130,13 +5130,13 @@ var Engine3D;
             this.finish();
         };
         return Translate;
-    })(Engine3D.Action);
-    Engine3D.Translate = Translate;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Action);
+    dy.Translate = Translate;
+})(dy || (dy = {}));
 
 //reference to three.js->Color.js
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Color = (function () {
         function Color() {
             this._r = null;
@@ -5266,8 +5266,8 @@ var Engine3D;
         };
         return Color;
     })();
-    Engine3D.Color = Color;
-})(Engine3D || (Engine3D = {}));
+    dy.Color = Color;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5276,8 +5276,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var JudgeUtils = (function (_super) {
         __extends(JudgeUtils, _super);
         function JudgeUtils() {
@@ -5291,31 +5291,31 @@ var Engine3D;
         };
         return JudgeUtils;
     })(dyCb.JudgeUtils);
-    Engine3D.JudgeUtils = JudgeUtils;
-})(Engine3D || (Engine3D = {}));
+    dy.JudgeUtils = JudgeUtils;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (ShaderType) {
         ShaderType[ShaderType["VS"] = 0] = "VS";
         ShaderType[ShaderType["FS"] = 1] = "FS";
-    })(Engine3D.ShaderType || (Engine3D.ShaderType = {}));
-    var ShaderType = Engine3D.ShaderType;
-})(Engine3D || (Engine3D = {}));
+    })(dy.ShaderType || (dy.ShaderType = {}));
+    var ShaderType = dy.ShaderType;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Shader = (function () {
         function Shader() {
         }
         Shader.createShader = function (source, type) {
-            var shader = null, gl = Engine3D.Director.getInstance().gl;
+            var shader = null, gl = dy.Director.getInstance().gl;
             switch (type) {
-                case Engine3D.ShaderType.VS:
+                case dy.ShaderType.VS:
                     shader = gl.createShader(gl.VERTEX_SHADER);
                     break;
-                case Engine3D.ShaderType.FS:
+                case dy.ShaderType.FS:
                     shader = gl.createShader(gl.FRAGMENT_SHADER);
                     break;
                 default:
@@ -5332,11 +5332,11 @@ var Engine3D;
         };
         return Shader;
     })();
-    Engine3D.Shader = Shader;
-})(Engine3D || (Engine3D = {}));
+    dy.Shader = Shader;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (BufferType) {
         BufferType[BufferType["UNSIGNED_BYTE"] = "UNSIGNED_BYTE"] = "UNSIGNED_BYTE";
         BufferType[BufferType["SHORT"] = "SHORT"] = "SHORT";
@@ -5344,30 +5344,30 @@ var Engine3D;
         BufferType[BufferType["INT"] = "INT"] = "INT";
         BufferType[BufferType["UNSIGNED_INT"] = "UNSIGNED_INT"] = "UNSIGNED_INT";
         BufferType[BufferType["FLOAT"] = "FLOAT"] = "FLOAT";
-    })(Engine3D.BufferType || (Engine3D.BufferType = {}));
-    var BufferType = Engine3D.BufferType;
-})(Engine3D || (Engine3D = {}));
+    })(dy.BufferType || (dy.BufferType = {}));
+    var BufferType = dy.BufferType;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (AttributeDataType) {
         AttributeDataType[AttributeDataType["FLOAT_4"] = 0] = "FLOAT_4";
         AttributeDataType[AttributeDataType["BUFFER"] = 1] = "BUFFER";
-    })(Engine3D.AttributeDataType || (Engine3D.AttributeDataType = {}));
-    var AttributeDataType = Engine3D.AttributeDataType;
-})(Engine3D || (Engine3D = {}));
+    })(dy.AttributeDataType || (dy.AttributeDataType = {}));
+    var AttributeDataType = dy.AttributeDataType;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (DrawMode) {
         DrawMode[DrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
-    })(Engine3D.DrawMode || (Engine3D.DrawMode = {}));
-    var DrawMode = Engine3D.DrawMode;
-})(Engine3D || (Engine3D = {}));
+    })(dy.DrawMode || (dy.DrawMode = {}));
+    var DrawMode = dy.DrawMode;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var ElementBuffer = (function () {
         function ElementBuffer() {
             this._buffer = null;
@@ -5407,7 +5407,7 @@ var Engine3D;
             configurable: true
         });
         ElementBuffer.prototype.initWhenCreate = function (data, type) {
-            var gl = Engine3D.Director.getInstance().gl;
+            var gl = dy.Director.getInstance().gl;
             if (!data || !this._checkDataType(data, type)) {
                 return null;
             }
@@ -5431,37 +5431,37 @@ var Engine3D;
         ElementBuffer.prototype._getInfo = function (type) {
             var info = null;
             switch (type) {
-                case Engine3D.BufferType.UNSIGNED_BYTE:
+                case dy.BufferType.UNSIGNED_BYTE:
                     info = {
                         typeClass: Uint8Array,
                         size: 1
                     };
                     break;
-                case Engine3D.BufferType.SHORT:
+                case dy.BufferType.SHORT:
                     info = {
                         typeClass: Int16Array,
                         size: 2
                     };
                     break;
-                case Engine3D.BufferType.UNSIGNED_SHORT:
+                case dy.BufferType.UNSIGNED_SHORT:
                     info = {
                         typeClass: Uint16Array,
                         size: 2
                     };
                     break;
-                case Engine3D.BufferType.INT:
+                case dy.BufferType.INT:
                     info = {
                         typeClass: Int32Array,
                         size: 4
                     };
                     break;
-                case Engine3D.BufferType.UNSIGNED_INT:
+                case dy.BufferType.UNSIGNED_INT:
                     info = {
                         typeClass: Uint32Array,
                         size: 4
                     };
                     break;
-                case Engine3D.BufferType.FLOAT:
+                case dy.BufferType.FLOAT:
                     info = {
                         typeClass: Float32Array,
                         size: 4
@@ -5475,12 +5475,12 @@ var Engine3D;
         };
         return ElementBuffer;
     })();
-    Engine3D.ElementBuffer = ElementBuffer;
-})(Engine3D || (Engine3D = {}));
+    dy.ElementBuffer = ElementBuffer;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var ArrayBuffer = (function () {
         function ArrayBuffer() {
             this._buffer = null;
@@ -5525,7 +5525,7 @@ var Engine3D;
             configurable: true
         });
         ArrayBuffer.prototype.initWhenCreate = function (data, num, type) {
-            var gl = Engine3D.Director.getInstance().gl;
+            var gl = dy.Director.getInstance().gl;
             if (!data) {
                 return null;
             }
@@ -5544,23 +5544,23 @@ var Engine3D;
         };
         return ArrayBuffer;
     })();
-    Engine3D.ArrayBuffer = ArrayBuffer;
-})(Engine3D || (Engine3D = {}));
+    dy.ArrayBuffer = ArrayBuffer;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (UniformDataType) {
         UniformDataType[UniformDataType["FLOAT_MAT4"] = 0] = "FLOAT_MAT4";
-    })(Engine3D.UniformDataType || (Engine3D.UniformDataType = {}));
-    var UniformDataType = Engine3D.UniformDataType;
-})(Engine3D || (Engine3D = {}));
+    })(dy.UniformDataType || (dy.UniformDataType = {}));
+    var UniformDataType = dy.UniformDataType;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Program = (function () {
         function Program() {
-            this._program = Engine3D.Director.getInstance().gl.createProgram();
+            this._program = dy.Director.getInstance().gl.createProgram();
         }
         Program.create = function (vsSource, fsSource) {
             var obj = new this();
@@ -5568,12 +5568,12 @@ var Engine3D;
             return obj;
         };
         Program.prototype.use = function () {
-            Engine3D.Director.getInstance().gl.useProgram(this._program);
+            dy.Director.getInstance().gl.useProgram(this._program);
         };
         Program.prototype.setUniformData = function (name, type, data) {
-            var gl = Engine3D.Director.getInstance().gl, pos = gl.getUniformLocation(this._program, name);
+            var gl = dy.Director.getInstance().gl, pos = gl.getUniformLocation(this._program, name);
             switch (type) {
-                case Engine3D.UniformDataType.FLOAT_MAT4:
+                case dy.UniformDataType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos, false, data.values);
                     break;
                 default:
@@ -5582,13 +5582,13 @@ var Engine3D;
             }
         };
         Program.prototype.setAttributeData = function (name, type, data) {
-            var gl = Engine3D.Director.getInstance().gl, pos = gl.getAttribLocation(this._program, name);
+            var gl = dy.Director.getInstance().gl, pos = gl.getAttribLocation(this._program, name);
             switch (type) {
-                case Engine3D.AttributeDataType.FLOAT_4:
+                case dy.AttributeDataType.FLOAT_4:
                     var dataArr = data;
                     gl.vertexAttrib4f(pos, dataArr[0], dataArr[1], dataArr[2], dataArr[3]);
                     break;
-                case Engine3D.AttributeDataType.BUFFER:
+                case dy.AttributeDataType.BUFFER:
                     var buffer = data;
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
                     gl.vertexAttribPointer(pos, buffer.num, buffer.type, false, 0, 0);
@@ -5600,9 +5600,9 @@ var Engine3D;
             }
         };
         Program.prototype.initWhenCreate = function (vsSource, fsSource) {
-            var gl = Engine3D.Director.getInstance().gl, vs = null, fs = null;
-            vs = Engine3D.Shader.createShader(vsSource, Engine3D.ShaderType.VS);
-            fs = Engine3D.Shader.createShader(fsSource, Engine3D.ShaderType.FS);
+            var gl = dy.Director.getInstance().gl, vs = null, fs = null;
+            vs = dy.Shader.createShader(vsSource, dy.ShaderType.VS);
+            fs = dy.Shader.createShader(fsSource, dy.ShaderType.FS);
             // 向程序对象里分配着色器
             gl.attachShader(this._program, vs);
             gl.attachShader(this._program, fs);
@@ -5644,17 +5644,17 @@ var Engine3D;
         };
         return Program;
     })();
-    Engine3D.Program = Program;
-})(Engine3D || (Engine3D = {}));
+    dy.Program = Program;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var QuadCommand = (function () {
         function QuadCommand() {
             this._buffers = dyCb.Hash.create();
             this._color = null;
-            this._drawMode = Engine3D.DrawMode.TRIANGLES;
+            this._drawMode = dy.DrawMode.TRIANGLES;
         }
         QuadCommand.create = function () {
             var obj = new this();
@@ -5721,7 +5721,7 @@ var Engine3D;
         //}
         QuadCommand.prototype._sendData = function (program) {
             if (this._buffers.hasChild("vertexBuffer")) {
-                program.setAttributeData("a_position", Engine3D.AttributeDataType.BUFFER, this._buffers.getChild("vertexBuffer"));
+                program.setAttributeData("a_position", dy.AttributeDataType.BUFFER, this._buffers.getChild("vertexBuffer"));
             }
             else {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
@@ -5732,11 +5732,11 @@ var Engine3D;
             because a_color'pos is 0, and it should be array data(like Float32Array)
             refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
             */
-            program.setAttributeData("a_color", Engine3D.AttributeDataType.BUFFER, this._buffers.getChild("colorBuffer"));
+            program.setAttributeData("a_color", dy.AttributeDataType.BUFFER, this._buffers.getChild("colorBuffer"));
             //}
         };
         QuadCommand.prototype._draw = function () {
-            var totalNum = 0, startOffset = 0, vertexBuffer = this._buffers.getChild("vertexBuffer"), gl = Engine3D.Director.getInstance().gl;
+            var totalNum = 0, startOffset = 0, vertexBuffer = this._buffers.getChild("vertexBuffer"), gl = dy.Director.getInstance().gl;
             if (this._buffers.hasChild("indexBuffer")) {
                 var indexBuffer = this._buffers.getChild("indexBuffer");
                 totalNum = indexBuffer.num;
@@ -5751,16 +5751,16 @@ var Engine3D;
         };
         return QuadCommand;
     })();
-    Engine3D.QuadCommand = QuadCommand;
-})(Engine3D || (Engine3D = {}));
+    dy.QuadCommand = QuadCommand;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var WebGLRenderer = (function () {
         function WebGLRenderer() {
             this._commandQueue = dyCb.Collection.create();
-            this._clearColor = Engine3D.Color.create("#000000");
+            this._clearColor = dy.Color.create("#000000");
             this._clearAlpha = 1.0;
         }
         WebGLRenderer.create = function () {
@@ -5768,7 +5768,7 @@ var Engine3D;
             return obj;
         };
         WebGLRenderer.prototype.createQuadCommand = function () {
-            return Engine3D.QuadCommand.create();
+            return dy.QuadCommand.create();
         };
         WebGLRenderer.prototype.addCommand = function (command) {
             if (this._commandQueue.hasChild(command)) {
@@ -5784,29 +5784,29 @@ var Engine3D;
             this._clearCommand();
         };
         WebGLRenderer.prototype.init = function () {
-            Engine3D.Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearAlpha);
+            dy.Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearAlpha);
         };
         WebGLRenderer.prototype.setClearColor = function (color, alpha) {
             if (alpha === void 0) { alpha = 1.0; }
             this._clearColor = color;
             this._clearAlpha = alpha;
-            Engine3D.Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
+            dy.Director.getInstance().gl.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.g, this._clearAlpha);
         };
         WebGLRenderer.prototype._clearCommand = function () {
             this._commandQueue.removeAllChildren();
         };
         return WebGLRenderer;
     })();
-    Engine3D.WebGLRenderer = WebGLRenderer;
-})(Engine3D || (Engine3D = {}));
+    dy.WebGLRenderer = WebGLRenderer;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var MeshMaterial = (function () {
         function MeshMaterial(params) {
             this._color = null;
-            this._color = Engine3D.Color.create(params.color || "0xffffff");
+            this._color = dy.Color.create(params.color || "0xffffff");
         }
         MeshMaterial.create = function (params) {
             var obj = new this(params);
@@ -5824,12 +5824,12 @@ var Engine3D;
         });
         return MeshMaterial;
     })();
-    Engine3D.MeshMaterial = MeshMaterial;
-})(Engine3D || (Engine3D = {}));
+    dy.MeshMaterial = MeshMaterial;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var GLSLLoader = (function () {
         function GLSLLoader() {
             this._container = dyCb.Hash.create();
@@ -5843,14 +5843,14 @@ var Engine3D;
         GLSLLoader.prototype.load = function (url, id) {
             var self = this;
             if (this._container.getChild(id)) {
-                Engine3D.LoaderManager.getInstance().onResLoaded();
+                dy.LoaderManager.getInstance().onResLoaded();
                 return;
             }
             return dyRt.fromPromise(this._loadText(url)).do(function (data) {
-                Engine3D.LoaderManager.getInstance().onResLoaded();
+                dy.LoaderManager.getInstance().onResLoaded();
                 self._container.addChild(id, data);
             }, function (err) {
-                Engine3D.LoaderManager.getInstance().onResError(url, err);
+                dy.LoaderManager.getInstance().onResError(url, err);
             }, null);
         };
         GLSLLoader.prototype.getGLSL = function (id) {
@@ -5879,12 +5879,12 @@ var Engine3D;
         GLSLLoader._instance = null;
         return GLSLLoader;
     })();
-    Engine3D.GLSLLoader = GLSLLoader;
-})(Engine3D || (Engine3D = {}));
+    dy.GLSLLoader = GLSLLoader;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var LoaderManager = (function () {
         function LoaderManager() {
             this._resCount = 0;
@@ -5906,7 +5906,7 @@ var Engine3D;
             var self = this;
             return dyRt.fromArray(resourcesArr).flatMap(function (res) {
                 self._resCount++;
-                return Engine3D.GLSLLoader.getInstance().load(res.url, res.id);
+                return dy.GLSLLoader.getInstance().load(res.url, res.id);
             });
         };
         LoaderManager.prototype.reset = function () {
@@ -5946,12 +5946,12 @@ var Engine3D;
         LoaderManager._instance = null;
         return LoaderManager;
     })();
-    Engine3D.LoaderManager = LoaderManager;
-})(Engine3D || (Engine3D = {}));
+    dy.LoaderManager = LoaderManager;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Geometry = (function () {
         function Geometry(material) {
             this._vertices = null;
@@ -6008,12 +6008,12 @@ var Engine3D;
             for (i = 0; i < len; i++) {
                 arr.push(color.r, color.g, color.b, 1.0);
             }
-            return Engine3D.ArrayBuffer.create(new Float32Array(arr), 4, Engine3D.BufferType.FLOAT);
+            return dy.ArrayBuffer.create(new Float32Array(arr), 4, dy.BufferType.FLOAT);
         };
         return Geometry;
     })();
-    Engine3D.Geometry = Geometry;
-})(Engine3D || (Engine3D = {}));
+    dy.Geometry = Geometry;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6022,8 +6022,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var BoxGeometry = (function (_super) {
         __extends(BoxGeometry, _super);
         function BoxGeometry(width, height, depth, material) {
@@ -6042,29 +6042,29 @@ var Engine3D;
         };
         BoxGeometry.prototype.computeVerticesBuffer = function () {
             var width = this._width, height = this._height, depth = this._depth, left = -width / 2, right = width / 2, up = height / 2, down = -height / 2, front = depth / 2, back = -depth / 2;
-            return Engine3D.ArrayBuffer.create(new Float32Array([
+            return dy.ArrayBuffer.create(new Float32Array([
                 right, up, front, left, up, front, left, down, front, right, down, front,
                 right, up, front, right, down, front, right, down, back, right, up, back,
                 right, up, front, right, up, back, left, up, back, left, up, front,
                 left, up, front, left, up, back, left, down, back, left, down, front,
                 left, down, back, right, down, back, right, down, front, left, down, front,
                 right, down, back, left, down, back, left, up, back, right, up, back // v4-v7-v6-v5 back
-            ]), 3, Engine3D.BufferType.FLOAT);
+            ]), 3, dy.BufferType.FLOAT);
         };
         BoxGeometry.prototype.computeIndicesBuffer = function () {
-            return Engine3D.ElementBuffer.create(new Uint16Array([
+            return dy.ElementBuffer.create(new Uint16Array([
                 0, 1, 2, 0, 2, 3,
                 4, 5, 6, 4, 6, 7,
                 8, 9, 10, 8, 10, 11,
                 12, 13, 14, 12, 14, 15,
                 16, 17, 18, 16, 18, 19,
                 20, 21, 22, 20, 22, 23 // back
-            ]), Engine3D.BufferType.UNSIGNED_SHORT);
+            ]), dy.BufferType.UNSIGNED_SHORT);
         };
         return BoxGeometry;
-    })(Engine3D.Geometry);
-    Engine3D.BoxGeometry = BoxGeometry;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Geometry);
+    dy.BoxGeometry = BoxGeometry;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6073,8 +6073,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var RectGeometry = (function (_super) {
         __extends(RectGeometry, _super);
         function RectGeometry(width, height, material) {
@@ -6091,31 +6091,31 @@ var Engine3D;
         };
         RectGeometry.prototype.computeVerticesBuffer = function () {
             var width = this._width, height = this._height, left = -width / 2, right = width / 2, up = height / 2, down = -height / 2;
-            return Engine3D.ArrayBuffer.create(new Float32Array([
+            return dy.ArrayBuffer.create(new Float32Array([
                 right, up, 0,
                 left, up, 0,
                 left, down, 0,
                 right, down, 0
-            ]), 3, Engine3D.BufferType.FLOAT);
+            ]), 3, dy.BufferType.FLOAT);
         };
         RectGeometry.prototype.computeIndicesBuffer = function () {
-            return Engine3D.ElementBuffer.create(new Uint16Array([
+            return dy.ElementBuffer.create(new Uint16Array([
                 0, 1, 2, 0, 2, 3
-            ]), Engine3D.BufferType.UNSIGNED_SHORT);
+            ]), dy.BufferType.UNSIGNED_SHORT);
         };
         return RectGeometry;
-    })(Engine3D.Geometry);
-    Engine3D.RectGeometry = RectGeometry;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Geometry);
+    dy.RectGeometry = RectGeometry;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (SphereDrawMode) {
         SphereDrawMode[SphereDrawMode["LATITUDELONGTITUDE"] = 0] = "LATITUDELONGTITUDE";
         SphereDrawMode[SphereDrawMode["DECOMPOSITION"] = 1] = "DECOMPOSITION";
-    })(Engine3D.SphereDrawMode || (Engine3D.SphereDrawMode = {}));
-    var SphereDrawMode = Engine3D.SphereDrawMode;
-})(Engine3D || (Engine3D = {}));
+    })(dy.SphereDrawMode || (dy.SphereDrawMode = {}));
+    var SphereDrawMode = dy.SphereDrawMode;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6124,8 +6124,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var SphereGeometry = (function (_super) {
         __extends(SphereGeometry, _super);
         function SphereGeometry(radius, drawMode, segments, material) {
@@ -6155,17 +6155,17 @@ var Engine3D;
         };
         SphereGeometry.prototype._computeData = function (radius, drawMode, segments) {
             var data = null;
-            if (drawMode === Engine3D.SphereDrawMode.LATITUDELONGTITUDE) {
+            if (drawMode === dy.SphereDrawMode.LATITUDELONGTITUDE) {
                 data = GetDataByLatitudeLongtitude.create(radius, segments).getData();
             }
-            else if (drawMode === Engine3D.SphereDrawMode.DECOMPOSITION) {
+            else if (drawMode === dy.SphereDrawMode.DECOMPOSITION) {
                 data = GetDataByDecomposition.create(radius, segments).getData();
             }
             return data;
         };
         return SphereGeometry;
-    })(Engine3D.Geometry);
-    Engine3D.SphereGeometry = SphereGeometry;
+    })(dy.Geometry);
+    dy.SphereGeometry = SphereGeometry;
     var GetDataByLatitudeLongtitude = (function () {
         function GetDataByLatitudeLongtitude(radius, bands) {
             this._vertices = [];
@@ -6244,8 +6244,8 @@ var Engine3D;
                 }
             }
             return {
-                vertices: Engine3D.ArrayBuffer.create(new Float32Array(this._vertices), 3, Engine3D.BufferType.FLOAT),
-                indices: Engine3D.ElementBuffer.create(new Uint16Array(this._indices), Engine3D.BufferType.UNSIGNED_SHORT)
+                vertices: dy.ArrayBuffer.create(new Float32Array(this._vertices), 3, dy.BufferType.FLOAT),
+                indices: dy.ElementBuffer.create(new Uint16Array(this._indices), dy.BufferType.UNSIGNED_SHORT)
             };
         };
         return GetDataByLatitudeLongtitude;
@@ -6315,8 +6315,8 @@ var Engine3D;
                 this._subDivide(originVertices[originIndices[j][0]], originVertices[originIndices[j][1]], originVertices[originIndices[j][2]], originIndices[j], this._count, this._radius);
             }
             return {
-                vertices: Engine3D.ArrayBuffer.create(new Float32Array(this._vertices), 3, Engine3D.BufferType.FLOAT),
-                indices: Engine3D.ElementBuffer.create(new Uint16Array(this._indices), Engine3D.BufferType.UNSIGNED_SHORT)
+                vertices: dy.ArrayBuffer.create(new Float32Array(this._vertices), 3, dy.BufferType.FLOAT),
+                indices: dy.ElementBuffer.create(new Uint16Array(this._indices), dy.BufferType.UNSIGNED_SHORT)
             };
         };
         GetDataByDecomposition.prototype._subDivide = function (v1, v2, v3, ind, count, radius) {
@@ -6370,7 +6370,7 @@ var Engine3D;
         };
         return GetDataByDecomposition;
     })();
-})(Engine3D || (Engine3D = {}));
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6379,8 +6379,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var TriangleGeometry = (function (_super) {
         __extends(TriangleGeometry, _super);
         function TriangleGeometry(width, height, material) {
@@ -6397,25 +6397,25 @@ var Engine3D;
         };
         TriangleGeometry.prototype.computeVerticesBuffer = function () {
             var width = this._width, height = this._height, left = -width / 2, right = width / 2, up = height / 2, down = -height / 2;
-            return Engine3D.ArrayBuffer.create(new Float32Array([
+            return dy.ArrayBuffer.create(new Float32Array([
                 0.0, up, 0,
                 left, down, 0,
                 right, down, 0
-            ]), 3, Engine3D.BufferType.FLOAT);
+            ]), 3, dy.BufferType.FLOAT);
         };
         TriangleGeometry.prototype.computeIndicesBuffer = function () {
-            return Engine3D.ElementBuffer.create(new Uint8Array([
+            return dy.ElementBuffer.create(new Uint8Array([
                 0, 1, 2
-            ]), Engine3D.BufferType.UNSIGNED_BYTE);
+            ]), dy.BufferType.UNSIGNED_BYTE);
         };
         return TriangleGeometry;
-    })(Engine3D.Geometry);
-    Engine3D.TriangleGeometry = TriangleGeometry;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Geometry);
+    dy.TriangleGeometry = TriangleGeometry;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var EventListenerMap = (function () {
         function EventListenerMap() {
             this._listenerMap = dyCb.Hash.create();
@@ -6436,7 +6436,7 @@ var Engine3D;
             //    return key === self._buildKey(target, eventName);
             //});
             //
-            if (arguments.length === 1 && Engine3D.JudgeUtils.isString(arguments[0])) {
+            if (arguments.length === 1 && dy.JudgeUtils.isString(arguments[0])) {
                 var eventName = arguments[0];
                 return this._listenerMap.getChild(eventName);
             }
@@ -6456,7 +6456,7 @@ var Engine3D;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (arguments.length === 1 && Engine3D.JudgeUtils.isFunction(arguments[0])) {
+            if (arguments.length === 1 && dy.JudgeUtils.isFunction(arguments[0])) {
                 return this._listenerMap.hasChild(arguments[0]);
             }
             else if (arguments.length === 2) {
@@ -6472,11 +6472,11 @@ var Engine3D;
         };
         EventListenerMap.prototype.removeChild = function (args) {
             var self = this;
-            if (arguments.length === 1 && Engine3D.JudgeUtils.isString(arguments[0])) {
+            if (arguments.length === 1 && dy.JudgeUtils.isString(arguments[0])) {
                 var eventName = arguments[0];
                 this._listenerMap.removeChild(eventName);
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isFunction(arguments[1])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isFunction(arguments[1])) {
                 var eventName = arguments[0], handler = arguments[1], list = null;
                 list = this._listenerMap.getChild(eventName);
                 list.removeChild(function (val) {
@@ -6486,7 +6486,7 @@ var Engine3D;
                     this._listenerMap.removeChild(eventName);
                 }
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isNumber(arguments[0])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isNumber(arguments[0])) {
                 var uid = arguments[0], eventName = arguments[1];
                 this._listenerMap.removeChild(this._buildKey(uid, eventName));
             }
@@ -6548,7 +6548,7 @@ var Engine3D;
             return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         };
         EventListenerMap.prototype._buildKey = function (args) {
-            if (Engine3D.JudgeUtils.isNumber(arguments[0])) {
+            if (dy.JudgeUtils.isNumber(arguments[0])) {
                 var uid = arguments[0], eventName = arguments[1];
                 return this._buildKeyWithUid(uid, eventName);
             }
@@ -6562,21 +6562,21 @@ var Engine3D;
         };
         return EventListenerMap;
     })();
-    Engine3D.EventListenerMap = EventListenerMap;
-})(Engine3D || (Engine3D = {}));
+    dy.EventListenerMap = EventListenerMap;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (EventType) {
         EventType[EventType["MOUSE"] = 0] = "MOUSE";
         EventType[EventType["KEYBOARD"] = 1] = "KEYBOARD";
         EventType[EventType["CUSTOM"] = 2] = "CUSTOM";
-    })(Engine3D.EventType || (Engine3D.EventType = {}));
-    var EventType = Engine3D.EventType;
-})(Engine3D || (Engine3D = {}));
+    })(dy.EventType || (dy.EventType = {}));
+    var EventType = dy.EventType;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (EventName) {
         EventName[EventName["CLICK"] = "click"] = "CLICK";
         EventName[EventName["MOUSEOVER"] = "mouseover"] = "MOUSEOVER";
@@ -6587,34 +6587,34 @@ var Engine3D;
         EventName[EventName["KEYDOWN"] = "keydown"] = "KEYDOWN";
         EventName[EventName["KEYUP"] = "keyup"] = "KEYUP";
         EventName[EventName["KEYPRESS"] = "keypress"] = "KEYPRESS";
-    })(Engine3D.EventName || (Engine3D.EventName = {}));
-    var EventName = Engine3D.EventName;
-})(Engine3D || (Engine3D = {}));
+    })(dy.EventName || (dy.EventName = {}));
+    var EventName = dy.EventName;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (EventPhase) {
         EventPhase[EventPhase["BROADCAST"] = 0] = "BROADCAST";
         EventPhase[EventPhase["EMIT"] = 1] = "EMIT";
-    })(Engine3D.EventPhase || (Engine3D.EventPhase = {}));
-    var EventPhase = Engine3D.EventPhase;
-})(Engine3D || (Engine3D = {}));
+    })(dy.EventPhase || (dy.EventPhase = {}));
+    var EventPhase = dy.EventPhase;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
 //todo complete it(add more event type)
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var _table = dyCb.Hash.create();
     //todo not declare "<any>"!
-    _table.addChild(Engine3D.EventName.CLICK, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.MOUSEOVER, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.MOUSEOUT, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.MOUSEMOVE, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.MOUSEDOWN, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.MOUSEUP, Engine3D.EventType.MOUSE);
-    _table.addChild(Engine3D.EventName.KEYDOWN, Engine3D.EventType.KEYBOARD);
-    _table.addChild(Engine3D.EventName.KEYPRESS, Engine3D.EventType.KEYBOARD);
-    _table.addChild(Engine3D.EventName.KEYUP, Engine3D.EventType.KEYBOARD);
+    _table.addChild(dy.EventName.CLICK, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.MOUSEOVER, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.MOUSEOUT, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.MOUSEMOVE, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.MOUSEDOWN, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.MOUSEUP, dy.EventType.MOUSE);
+    _table.addChild(dy.EventName.KEYDOWN, dy.EventType.KEYBOARD);
+    _table.addChild(dy.EventName.KEYPRESS, dy.EventType.KEYBOARD);
+    _table.addChild(dy.EventName.KEYUP, dy.EventType.KEYBOARD);
     var EventTable = (function () {
         function EventTable() {
         }
@@ -6623,14 +6623,14 @@ var Engine3D;
         EventTable.getEventType = function (eventName) {
             var result = _table.getChild(eventName);
             if (result === void 0) {
-                result = Engine3D.EventType.CUSTOM;
+                result = dy.EventType.CUSTOM;
             }
             return result;
         };
         return EventTable;
     })();
-    Engine3D.EventTable = EventTable;
-})(Engine3D || (Engine3D = {}));
+    dy.EventTable = EventTable;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
 //rich domain model
@@ -6640,8 +6640,8 @@ var Engine3D;
 //event context(target, currentTarget...)
 //user data(custom event)
 //event type
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Event = (function () {
         function Event(eventName) {
             //abstact attri
@@ -6727,8 +6727,8 @@ var Engine3D;
         };
         return Event;
     })();
-    Engine3D.Event = Event;
-})(Engine3D || (Engine3D = {}));
+    dy.Event = Event;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6737,13 +6737,13 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var MouseEvent = (function (_super) {
         __extends(MouseEvent, _super);
         function MouseEvent(event, eventName) {
             _super.call(this, eventName);
-            this.type = Engine3D.EventType.MOUSE;
+            this.type = dy.EventType.MOUSE;
             this._event = null;
             this._location = null;
             this._locationInView = null;
@@ -6780,7 +6780,7 @@ var Engine3D;
                 if (this._location) {
                     return this._location;
                 }
-                point = Engine3D.Point.create();
+                point = dy.Point.create();
                 if (bowser.msie) {
                     point.x = e.clientX + document.body.scrollLeft || document.documentElement.scrollLeft;
                     point.y = e.clientY + document.body.scrollTop || document.documentElement.scrollTop;
@@ -6807,8 +6807,8 @@ var Engine3D;
                 }
                 point = this.location;
                 //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
-                viewOffset = Engine3D.Director.getInstance().getView().offset;
-                return Engine3D.Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
+                viewOffset = dy.Director.getInstance().getView().offset;
+                return dy.Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
             },
             set: function (locationInView) {
                 this._locationInView = locationInView;
@@ -6825,13 +6825,13 @@ var Engine3D;
                 if (bowser.msie) {
                     switch (e.button) {
                         case 1:
-                            mouseButton = Engine3D.MouseButton.LEFT;
+                            mouseButton = dy.MouseButton.LEFT;
                             break;
                         case 4:
-                            mouseButton = Engine3D.MouseButton.RIGHT;
+                            mouseButton = dy.MouseButton.RIGHT;
                             break;
                         case 2:
-                            mouseButton = Engine3D.MouseButton.CENTER;
+                            mouseButton = dy.MouseButton.CENTER;
                             break;
                         default:
                             dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
@@ -6842,13 +6842,13 @@ var Engine3D;
                 else {
                     switch (e.button) {
                         case 0:
-                            mouseButton = Engine3D.MouseButton.LEFT;
+                            mouseButton = dy.MouseButton.LEFT;
                             break;
                         case 1:
-                            mouseButton = Engine3D.MouseButton.RIGHT;
+                            mouseButton = dy.MouseButton.RIGHT;
                             break;
                         case 2:
-                            mouseButton = Engine3D.MouseButton.CENTER;
+                            mouseButton = dy.MouseButton.CENTER;
                             break;
                         default:
                             dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
@@ -6869,9 +6869,9 @@ var Engine3D;
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         };
         return MouseEvent;
-    })(Engine3D.Event);
-    Engine3D.MouseEvent = MouseEvent;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Event);
+    dy.MouseEvent = MouseEvent;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -6880,8 +6880,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var SPECIAL_KEY_MAP = {
         8: "backspace",
         9: "tab",
@@ -6998,7 +6998,7 @@ var Engine3D;
         __extends(KeyboardEvent, _super);
         function KeyboardEvent(event, eventName) {
             _super.call(this, eventName);
-            this.type = Engine3D.EventType.KEYBOARD;
+            this.type = dy.EventType.KEYBOARD;
             this._event = null;
             this._event = event;
         }
@@ -7072,9 +7072,9 @@ var Engine3D;
             return this.copyMember(eventObj, this, ["altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
         };
         return KeyboardEvent;
-    })(Engine3D.Event);
-    Engine3D.KeyboardEvent = KeyboardEvent;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Event);
+    dy.KeyboardEvent = KeyboardEvent;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -7083,13 +7083,13 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var CustomEvent = (function (_super) {
         __extends(CustomEvent, _super);
         function CustomEvent() {
             _super.apply(this, arguments);
-            this.type = Engine3D.EventType.CUSTOM;
+            this.type = dy.EventType.CUSTOM;
             this._userData = null;
         }
         CustomEvent.create = function (eventName) {
@@ -7111,7 +7111,7 @@ var Engine3D;
             //destination = {};
             dyCb.ExtendUtils.extend(destination, function (item, property) {
                 return property.slice(0, 1) !== "_"
-                    && !Engine3D.JudgeUtils.isFunction(item);
+                    && !dy.JudgeUtils.isFunction(item);
             });
             return destination;
         };
@@ -7120,23 +7120,23 @@ var Engine3D;
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         };
         return CustomEvent;
-    })(Engine3D.Event);
-    Engine3D.CustomEvent = CustomEvent;
-})(Engine3D || (Engine3D = {}));
+    })(dy.Event);
+    dy.CustomEvent = CustomEvent;
+})(dy || (dy = {}));
 
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     (function (MouseButton) {
         MouseButton[MouseButton["LEFT"] = 0] = "LEFT";
         MouseButton[MouseButton["RIGHT"] = 1] = "RIGHT";
         MouseButton[MouseButton["CENTER"] = 2] = "CENTER";
-    })(Engine3D.MouseButton || (Engine3D.MouseButton = {}));
-    var MouseButton = Engine3D.MouseButton;
-})(Engine3D || (Engine3D = {}));
+    })(dy.MouseButton || (dy.MouseButton = {}));
+    var MouseButton = dy.MouseButton;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var EventListener = (function () {
         function EventListener(option) {
             this._eventType = null;
@@ -7201,12 +7201,12 @@ var Engine3D;
         };
         return EventListener;
     })();
-    Engine3D.EventListener = EventListener;
-})(Engine3D || (Engine3D = {}));
+    dy.EventListener = EventListener;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var EventHandler = (function () {
         function EventHandler() {
         }
@@ -7233,8 +7233,8 @@ var Engine3D;
         };
         return EventHandler;
     })();
-    Engine3D.EventHandler = EventHandler;
-})(Engine3D || (Engine3D = {}));
+    dy.EventHandler = EventHandler;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -7243,8 +7243,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var DomEventHandler = (function (_super) {
         __extends(DomEventHandler, _super);
         function DomEventHandler() {
@@ -7255,7 +7255,7 @@ var Engine3D;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var self = this, dom = this.getDom(), eventRegister = Engine3D.EventRegister.getInstance(), eventOffDataList = null;
+            var self = this, dom = this.getDom(), eventRegister = dy.EventRegister.getInstance(), eventOffDataList = null;
             eventOffDataList = eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
             if (eventOffDataList) {
                 eventOffDataList.forEach(function (eventOffData) {
@@ -7271,13 +7271,13 @@ var Engine3D;
         };
         DomEventHandler.prototype.handler = function (target, eventName, handler, priority) {
             var wrapHandler = null;
-            if (!Engine3D.EventRegister.getInstance().isBinded(target, eventName)) {
+            if (!dy.EventRegister.getInstance().isBinded(target, eventName)) {
                 wrapHandler = this._bind(this.getDom(), eventName, target);
             }
             else {
-                wrapHandler = Engine3D.EventRegister.getInstance().getWrapHandler(target, eventName);
+                wrapHandler = dy.EventRegister.getInstance().getWrapHandler(target, eventName);
             }
-            Engine3D.EventRegister.getInstance().register(target, eventName, handler, wrapHandler, priority);
+            dy.EventRegister.getInstance().register(target, eventName, handler, wrapHandler, priority);
         };
         DomEventHandler.prototype._bind = function (dom, eventName, target) {
             var wrapHandler = null;
@@ -7289,9 +7289,9 @@ var Engine3D;
             dyCb.EventUtils.removeEvent(dom, eventName, handler);
         };
         return DomEventHandler;
-    })(Engine3D.EventHandler);
-    Engine3D.DomEventHandler = DomEventHandler;
-})(Engine3D || (Engine3D = {}));
+    })(dy.EventHandler);
+    dy.DomEventHandler = DomEventHandler;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
 var __extends = this.__extends || function (d, b) {
@@ -7303,8 +7303,8 @@ var __extends = this.__extends || function (d, b) {
 //responsiblity:handle logic with specify event category
 //judge is under point
 //wrap event object
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var MouseEventHandler = (function (_super) {
         __extends(MouseEventHandler, _super);
         function MouseEventHandler() {
@@ -7317,19 +7317,19 @@ var Engine3D;
             return this._instance;
         };
         MouseEventHandler.prototype.on = function (target, eventName, handler, priority) {
-            dyCb.Log.error(!(target instanceof Engine3D.GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
+            dyCb.Log.error(!(target instanceof dy.GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
             this.handler(target, eventName, handler, priority);
         };
         MouseEventHandler.prototype.trigger = function (target, event, notSetTarget) {
             var eventName = event.name, eventType = event.type, registerDataList = null, isStopPropagation = false, self = this;
-            if (!(target instanceof Engine3D.GameObject)) {
+            if (!(target instanceof dy.GameObject)) {
                 dyCb.Log.log("target is not GameObject, can't trigger event");
                 return;
             }
             if (!notSetTarget) {
                 event.target = target;
             }
-            registerDataList = Engine3D.EventRegister.getInstance().getEventRegisterDataList(target, eventName);
+            registerDataList = dy.EventRegister.getInstance().getEventRegisterDataList(target, eventName);
             if (registerDataList === null || registerDataList.getCount() === 0) {
                 return;
             }
@@ -7343,28 +7343,28 @@ var Engine3D;
             return isStopPropagation;
         };
         MouseEventHandler.prototype.getDom = function () {
-            return Engine3D.Director.getInstance().getView().dom;
+            return dy.Director.getInstance().getView().dom;
         };
         MouseEventHandler.prototype.buildWrapHandler = function (target, eventName) {
             var self = this, context = window;
             return dyCb.EventUtils.bindEvent(context, function (event) {
-                var eventObject = self._createEventObject(event, eventName, target), topTarget = Engine3D.Director.getInstance().getTopUnderPoint(eventObject.locationInView);
-                Engine3D.EventManager.emit(topTarget, eventObject);
+                var eventObject = self._createEventObject(event, eventName, target), topTarget = dy.Director.getInstance().getTopUnderPoint(eventObject.locationInView);
+                dy.EventManager.emit(topTarget, eventObject);
             });
         };
         MouseEventHandler.prototype._isTrigger = function (result) {
             return result && result.getCount() > 0;
         };
         MouseEventHandler.prototype._createEventObject = function (event, eventName, currentTarget) {
-            var obj = Engine3D.MouseEvent.create(event ? event : window.event, eventName);
+            var obj = dy.MouseEvent.create(event ? event : window.event, eventName);
             obj.currentTarget = currentTarget;
             return obj;
         };
         MouseEventHandler._instance = null;
         return MouseEventHandler;
-    })(Engine3D.DomEventHandler);
-    Engine3D.MouseEventHandler = MouseEventHandler;
-})(Engine3D || (Engine3D = {}));
+    })(dy.DomEventHandler);
+    dy.MouseEventHandler = MouseEventHandler;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -7373,8 +7373,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     //todo bind on GameObject which has the focus
     var KeyboardEventHandler = (function (_super) {
         __extends(KeyboardEventHandler, _super);
@@ -7392,7 +7392,7 @@ var Engine3D;
         };
         KeyboardEventHandler.prototype.trigger = function (event) {
             var eventName = event.name, eventType = event.type, registerDataList = null, self = this;
-            registerDataList = Engine3D.EventRegister.getInstance().getEventRegisterDataList(eventName);
+            registerDataList = dy.EventRegister.getInstance().getEventRegisterDataList(eventName);
             if (registerDataList === null || registerDataList.getCount() === 0) {
                 return;
             }
@@ -7408,21 +7408,21 @@ var Engine3D;
         KeyboardEventHandler.prototype.buildWrapHandler = function (target, eventName) {
             var self = this, context = window;
             return dyCb.EventUtils.bindEvent(context, function (event) {
-                Engine3D.EventManager.trigger(self._createEventObject(event, eventName));
+                dy.EventManager.trigger(self._createEventObject(event, eventName));
             });
         };
         KeyboardEventHandler.prototype._isTrigger = function (result) {
             return result && result.getCount() > 0;
         };
         KeyboardEventHandler.prototype._createEventObject = function (event, eventName) {
-            var obj = Engine3D.KeyboardEvent.create(event ? event : window.event, eventName);
+            var obj = dy.KeyboardEvent.create(event ? event : window.event, eventName);
             return obj;
         };
         KeyboardEventHandler._instance = null;
         return KeyboardEventHandler;
-    })(Engine3D.DomEventHandler);
-    Engine3D.KeyboardEventHandler = KeyboardEventHandler;
-})(Engine3D || (Engine3D = {}));
+    })(dy.DomEventHandler);
+    dy.KeyboardEventHandler = KeyboardEventHandler;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -7431,8 +7431,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var CustomEventHandler = (function (_super) {
         __extends(CustomEventHandler, _super);
         function CustomEventHandler() {
@@ -7447,15 +7447,15 @@ var Engine3D;
         CustomEventHandler.prototype.on = function (args) {
             if (arguments.length === 3) {
                 var eventName = arguments[0], handler = arguments[1], priority = arguments[2];
-                Engine3D.EventRegister.getInstance().register(null, eventName, handler, null, priority);
+                dy.EventRegister.getInstance().register(null, eventName, handler, null, priority);
             }
             else if (arguments.length === 4) {
                 var target = arguments[0], eventName = arguments[1], handler = arguments[2], priority = arguments[3];
-                Engine3D.EventRegister.getInstance().register(target, eventName, handler, null, priority);
+                dy.EventRegister.getInstance().register(target, eventName, handler, null, priority);
             }
         };
         CustomEventHandler.prototype.off = function (args) {
-            var eventRegister = Engine3D.EventRegister.getInstance();
+            var eventRegister = dy.EventRegister.getInstance();
             eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
         };
         CustomEventHandler.prototype.trigger = function (args) {
@@ -7489,7 +7489,7 @@ var Engine3D;
         };
         CustomEventHandler.prototype._triggerEventHandler = function (event, userData) {
             var listenerDataList = null, isStopPropagation = false, self = this;
-            listenerDataList = Engine3D.EventRegister.getInstance().getEventRegisterDataList(event.name);
+            listenerDataList = dy.EventRegister.getInstance().getEventRegisterDataList(event.name);
             if (listenerDataList === null || listenerDataList.getCount() === 0) {
                 return false;
             }
@@ -7511,7 +7511,7 @@ var Engine3D;
             if (!notSetTarget) {
                 event.target = target;
             }
-            listenerDataList = Engine3D.EventRegister.getInstance().getEventRegisterDataList(target, event.name);
+            listenerDataList = dy.EventRegister.getInstance().getEventRegisterDataList(target, event.name);
             if (listenerDataList === null || listenerDataList.getCount() === 0) {
                 return false;
             }
@@ -7533,13 +7533,13 @@ var Engine3D;
         };
         CustomEventHandler._instance = null;
         return CustomEventHandler;
-    })(Engine3D.EventHandler);
-    Engine3D.CustomEventHandler = CustomEventHandler;
-})(Engine3D || (Engine3D = {}));
+    })(dy.EventHandler);
+    dy.CustomEventHandler = CustomEventHandler;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var EventDispatcher = (function () {
         //private _eventBinder: EventBinder = null;
         //private _eventRegister:EventRegister = null;
@@ -7555,24 +7555,24 @@ var Engine3D;
             if (arguments.length === 1) {
                 var event_1 = arguments[0], eventType = event_1.type;
                 //dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
-                return Engine3D.FactoryEventHandler.createEventHandler(eventType)
+                return dy.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event_1);
             }
-            else if (arguments.length === 2 && !(arguments[1] instanceof Engine3D.Event)) {
+            else if (arguments.length === 2 && !(arguments[1] instanceof dy.Event)) {
                 var event_2 = arguments[0], userData = arguments[1], eventType = event_2.type;
-                dyCb.Log.error(eventType !== Engine3D.EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
-                return Engine3D.FactoryEventHandler.createEventHandler(eventType)
+                dyCb.Log.error(eventType !== dy.EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                return dy.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event_2, userData);
             }
-            else if (arguments.length === 2 || (arguments.length === 3 && Engine3D.JudgeUtils.isBoolean(arguments[2]))) {
+            else if (arguments.length === 2 || (arguments.length === 3 && dy.JudgeUtils.isBoolean(arguments[2]))) {
                 var target = arguments[0], event_3 = arguments[1], notSetTarget = arguments[2] === void 0 ? false : arguments[2], eventType = event_3.type;
-                return Engine3D.FactoryEventHandler.createEventHandler(eventType)
+                return dy.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event_3, notSetTarget);
             }
             else if (arguments.length === 3 || arguments.length === 4) {
                 var target = arguments[0], event_4 = arguments[1], userData = arguments[2], notSetTarget = arguments[3] === void 0 ? false : arguments[3], eventType = event_4.type;
-                dyCb.Log.error(eventType !== Engine3D.EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
-                return Engine3D.FactoryEventHandler.createEventHandler(eventType)
+                dyCb.Log.error(eventType !== dy.EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                return dy.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event_4, userData, notSetTarget);
             }
         };
@@ -7583,7 +7583,7 @@ var Engine3D;
          */
         EventDispatcher.prototype.emit = function (target, eventObject, userData) {
             var isStopPropagation = false;
-            eventObject.phase = Engine3D.EventPhase.EMIT;
+            eventObject.phase = dy.EventPhase.EMIT;
             eventObject.target = target;
             do {
                 isStopPropagation = this._triggerWithUserData(target, eventObject.copy(), userData, true);
@@ -7600,7 +7600,7 @@ var Engine3D;
          */
         EventDispatcher.prototype.broadcast = function (target, eventObject, userData) {
             var self = this;
-            eventObject.phase = Engine3D.EventPhase.BROADCAST;
+            eventObject.phase = dy.EventPhase.BROADCAST;
             eventObject.target = target;
             this._triggerWithUserData(target, eventObject.copy(), userData, true);
             function iterator(obj) {
@@ -7625,15 +7625,15 @@ var Engine3D;
         };
         return EventDispatcher;
     })();
-    Engine3D.EventDispatcher = EventDispatcher;
-})(Engine3D || (Engine3D = {}));
+    dy.EventDispatcher = EventDispatcher;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var EventRegister = (function () {
         function EventRegister() {
-            this._listenerMap = Engine3D.EventListenerMap.create();
+            this._listenerMap = dy.EventListenerMap.create();
         }
         EventRegister.getInstance = function () {
             if (this._instance === null) {
@@ -7671,17 +7671,17 @@ var Engine3D;
         };
         EventRegister.prototype.remove = function (args) {
             var target = arguments[0];
-            if (arguments.length === 1 && Engine3D.JudgeUtils.isString(arguments[0])) {
+            if (arguments.length === 1 && dy.JudgeUtils.isString(arguments[0])) {
                 var eventName = arguments[0];
                 this._listenerMap.removeChild(eventName);
                 return null;
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isFunction(arguments[1])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isFunction(arguments[1])) {
                 var eventName = arguments[0], handler = arguments[1];
                 this._listenerMap.removeChild(eventName, handler);
                 return null;
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isNumber(arguments[0])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isNumber(arguments[0])) {
                 var uid = arguments[0], eventName = arguments[1];
                 this._listenerMap.removeChild(uid, eventName);
                 return null;
@@ -7773,12 +7773,12 @@ var Engine3D;
         EventRegister._instance = null;
         return EventRegister;
     })();
-    Engine3D.EventRegister = EventRegister;
-})(Engine3D || (Engine3D = {}));
+    dy.EventRegister = EventRegister;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     //responsibilty:on, off event(manage list)
     var EventBinder = (function () {
         //private _listenerList:EventListener = EventListener.create();
@@ -7792,52 +7792,52 @@ var Engine3D;
         };
         EventBinder.prototype.on = function (args) {
             if (arguments.length === 1) {
-                var listener = !(arguments[0] instanceof Engine3D.EventListener) ? Engine3D.EventListener.create(arguments[0]) : arguments[0];
+                var listener = !(arguments[0] instanceof dy.EventListener) ? dy.EventListener.create(arguments[0]) : arguments[0];
                 listener.handlerDataList.forEach(function (handlerData) {
-                    Engine3D.FactoryEventHandler.createEventHandler(listener.eventType)
+                    dy.FactoryEventHandler.createEventHandler(listener.eventType)
                         .on(handlerData.eventName, handlerData.handler, listener.priority);
                 });
             }
             else if (arguments.length === 2) {
-                var target = arguments[0], listener = !(arguments[1] instanceof Engine3D.EventListener) ? Engine3D.EventListener.create(arguments[1]) : arguments[1];
+                var target = arguments[0], listener = !(arguments[1] instanceof dy.EventListener) ? dy.EventListener.create(arguments[1]) : arguments[1];
                 listener.handlerDataList.forEach(function (handlerData) {
-                    Engine3D.FactoryEventHandler.createEventHandler(listener.eventType)
+                    dy.FactoryEventHandler.createEventHandler(listener.eventType)
                         .on(target, handlerData.eventName, handlerData.handler, listener.priority);
                 });
             }
             else if (arguments.length === 3) {
                 var eventName = arguments[0], handler = arguments[1], priority = arguments[2];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
             else if (arguments.length === 4) {
                 var target = arguments[0], eventName = arguments[1], handler = arguments[2], priority = arguments[3];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .on(target, eventName, handler, priority);
             }
         };
         EventBinder.prototype.off = function () {
-            var eventRegister = Engine3D.EventRegister.getInstance(), eventOffDataList = null, argArr = Array.prototype.slice.call(arguments, 0);
+            var eventRegister = dy.EventRegister.getInstance(), eventOffDataList = null, argArr = Array.prototype.slice.call(arguments, 0);
             if (arguments.length === 0) {
                 eventRegister.forEach(function (list, key) {
                     var eventName = eventRegister.getEventNameFromKey(key), targetUid = eventRegister.getUidFromKey(key);
                     if (!targetUid) {
-                        Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                        dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                             .off(eventName);
                         return;
                     }
-                    Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                    dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                         .off(targetUid, eventName);
                 });
             }
-            else if (arguments.length === 1 && Engine3D.JudgeUtils.isString(arguments[0])) {
+            else if (arguments.length === 1 && dy.JudgeUtils.isString(arguments[0])) {
                 var eventName = arguments[0];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .off(eventName);
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isFunction(arguments[1])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isFunction(arguments[1])) {
                 var eventName = arguments[0], handler = arguments[1];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .off(eventName, handler);
             }
             else if (arguments.length === 1) {
@@ -7845,44 +7845,44 @@ var Engine3D;
                 eventRegister.forEach(function (list, key) {
                     var eventName = eventRegister.getEventNameFromKey(key);
                     if (eventRegister.isTarget(key, target, list)) {
-                        Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                        dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                             .off(target, eventName);
                     }
                 });
             }
             else if (arguments.length === 2) {
                 var target = arguments[0], eventName = arguments[1];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .off(target, eventName);
             }
             else if (arguments.length === 3) {
                 var target = arguments[0], eventName = arguments[1], handler = arguments[2];
-                Engine3D.FactoryEventHandler.createEventHandler(Engine3D.EventTable.getEventType(eventName))
+                dy.FactoryEventHandler.createEventHandler(dy.EventTable.getEventType(eventName))
                     .off(target, eventName, handler);
             }
         };
         return EventBinder;
     })();
-    Engine3D.EventBinder = EventBinder;
-})(Engine3D || (Engine3D = {}));
+    dy.EventBinder = EventBinder;
+})(dy || (dy = {}));
 
 /// <reference path="../../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var FactoryEventHandler = (function () {
         function FactoryEventHandler() {
         }
         FactoryEventHandler.createEventHandler = function (eventType) {
             var handler = null;
             switch (eventType) {
-                case Engine3D.EventType.MOUSE:
-                    handler = Engine3D.MouseEventHandler.getInstance();
+                case dy.EventType.MOUSE:
+                    handler = dy.MouseEventHandler.getInstance();
                     break;
-                case Engine3D.EventType.KEYBOARD:
-                    handler = Engine3D.KeyboardEventHandler.getInstance();
+                case dy.EventType.KEYBOARD:
+                    handler = dy.KeyboardEventHandler.getInstance();
                     break;
-                case Engine3D.EventType.CUSTOM:
-                    handler = Engine3D.CustomEventHandler.getInstance();
+                case dy.EventType.CUSTOM:
+                    handler = dy.CustomEventHandler.getInstance();
                     break;
                 //todo more type
                 default:
@@ -7893,12 +7893,12 @@ var Engine3D;
         };
         return FactoryEventHandler;
     })();
-    Engine3D.FactoryEventHandler = FactoryEventHandler;
-})(Engine3D || (Engine3D = {}));
+    dy.FactoryEventHandler = FactoryEventHandler;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     //    /*!
     //     it is designed as singleton, not static class, because it need maintain state(_instance attri).
     //
@@ -7931,7 +7931,7 @@ var Engine3D;
                 var listener = arguments[0];
                 this._eventBinder.on(listener);
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isString(arguments[0]) && Engine3D.JudgeUtils.isFunction(arguments[1])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isString(arguments[0]) && dy.JudgeUtils.isFunction(arguments[1])) {
                 var eventName = arguments[0], handler = arguments[1], priority = 1;
                 this._eventBinder.on(eventName, handler, priority);
             }
@@ -7939,7 +7939,7 @@ var Engine3D;
                 var target = arguments[0], listener = arguments[1];
                 this._eventBinder.on(target, listener);
             }
-            else if (arguments.length === 3 && Engine3D.JudgeUtils.isString(arguments[0]) && Engine3D.JudgeUtils.isFunction(arguments[1]) && Engine3D.JudgeUtils.isNumber(arguments[2])) {
+            else if (arguments.length === 3 && dy.JudgeUtils.isString(arguments[0]) && dy.JudgeUtils.isFunction(arguments[1]) && dy.JudgeUtils.isNumber(arguments[2])) {
                 var eventName = arguments[0], handler = arguments[1], priority = arguments[2];
                 this._eventBinder.on(eventName, handler, priority);
             }
@@ -7971,7 +7971,7 @@ var Engine3D;
                     EventManager.off(eventName, handler);
                 };
             }
-            else if (arguments.length === 2 && Engine3D.JudgeUtils.isNumber(arguments[1])) {
+            else if (arguments.length === 2 && dy.JudgeUtils.isNumber(arguments[1])) {
                 var eventName = arguments[0], priority = arguments[1];
                 addHandler = function (handler) {
                     EventManager.on(eventName, handler, priority);
@@ -8001,7 +8001,7 @@ var Engine3D;
             return dyRt.fromEventPattern(addHandler, removeHandler);
         };
         EventManager.setBubbleParent = function (target, parent) {
-            Engine3D.EventRegister.getInstance().setBubbleParent(target, parent);
+            dy.EventRegister.getInstance().setBubbleParent(target, parent);
             //this._eventDispatcher.setBubbleParent(target, parent);
         };
         //private static static _instance:EventManager = null;
@@ -8013,16 +8013,16 @@ var Engine3D;
         //    }
         //    return this._instance;
         //}
-        EventManager._eventBinder = Engine3D.EventBinder.create();
-        EventManager._eventDispatcher = Engine3D.EventDispatcher.create();
+        EventManager._eventBinder = dy.EventBinder.create();
+        EventManager._eventDispatcher = dy.EventDispatcher.create();
         return EventManager;
     })();
-    Engine3D.EventManager = EventManager;
-})(Engine3D || (Engine3D = {}));
+    dy.EventManager = EventManager;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var GameObject = (function () {
         function GameObject() {
             this._uid = null;
@@ -8082,7 +8082,7 @@ var Engine3D;
          */
         GameObject.prototype.dispose = function () {
             this.parent = null;
-            Engine3D.EventManager.off(this);
+            dy.EventManager.off(this);
         };
         /*!
          hook method
@@ -8241,8 +8241,8 @@ var Engine3D;
         GameObject._count = 1;
         return GameObject;
     })();
-    Engine3D.GameObject = GameObject;
-})(Engine3D || (Engine3D = {}));
+    dy.GameObject = GameObject;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -8251,15 +8251,15 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Mesh = (function (_super) {
         __extends(Mesh, _super);
         function Mesh(gemo) {
             _super.call(this);
-            this._matrix = Engine3D.Matrix.create();
+            this._matrix = dy.Matrix.create();
             this._gemo = null;
-            this._actionManager = Engine3D.ActionManager.create();
+            this._actionManager = dy.ActionManager.create();
             this._gemo = gemo;
         }
         //todo push,pop matrix, so need change pos, rotate angle, scale instead of changing matrix!
@@ -8290,10 +8290,10 @@ var Engine3D;
             this._addDrawCommand();
         };
         Mesh.prototype.init = function () {
-            this.position = Engine3D.Position.create(0, 0, 0);
+            this.position = dy.Position.create(0, 0, 0);
         };
         Mesh.prototype._addDrawCommand = function () {
-            var renderer = Engine3D.Director.getInstance().renderer, quadCmd = renderer.createQuadCommand();
+            var renderer = dy.Director.getInstance().renderer, quadCmd = renderer.createQuadCommand();
             quadCmd.buffers = {
                 vertexBuffer: this._gemo.vertices,
                 //texCoords: this._gemo.texCoords,
@@ -8306,9 +8306,9 @@ var Engine3D;
             renderer.addCommand(quadCmd);
         };
         return Mesh;
-    })(Engine3D.GameObject);
-    Engine3D.Mesh = Mesh;
-})(Engine3D || (Engine3D = {}));
+    })(dy.GameObject);
+    dy.Mesh = Mesh;
+})(dy || (dy = {}));
 
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -8317,8 +8317,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     var Scene = (function (_super) {
         __extends(Scene, _super);
         function Scene(camera) {
@@ -8354,7 +8354,7 @@ var Engine3D;
             configurable: true
         });
         Scene.prototype.initWhenCreate = function (vsSource, fsSource) {
-            this._program = Engine3D.Program.create(vsSource, fsSource);
+            this._program = dy.Program.create(vsSource, fsSource);
         };
         //public add(meshesArr:Mesh[]) {
         //    this._meshes.addChildren(meshesArr);
@@ -8374,22 +8374,22 @@ var Engine3D;
             this._camera.popMatrix();
         };
         Scene.prototype.init = function () {
-            this.position = Engine3D.Position.create(0, 0, 0);
+            this.position = dy.Position.create(0, 0, 0);
         };
         Scene.prototype._setData = function (mesh) {
-            this._program.setUniformData("u_mvpMatrix", Engine3D.UniformDataType.FLOAT_MAT4, this._computeMvpMatrix(mesh));
+            this._program.setUniformData("u_mvpMatrix", dy.UniformDataType.FLOAT_MAT4, this._computeMvpMatrix(mesh));
         };
         Scene.prototype._computeMvpMatrix = function (mesh) {
             return mesh.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
         };
         return Scene;
-    })(Engine3D.GameObject);
-    Engine3D.Scene = Scene;
-})(Engine3D || (Engine3D = {}));
+    })(dy.GameObject);
+    dy.Scene = Scene;
+})(dy || (dy = {}));
 
 /// <reference path="../definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     /**
      * 来自《HTML5 Canvas 核心技术》
      * 不能写到global中，否则会报错“illegal invocation”！
@@ -8533,7 +8533,7 @@ var Engine3D;
         });
         Director.prototype.initWhenCreate = function () {
             //todo detect to decide using which renderer
-            this._renderer = Engine3D.WebGLRenderer.create();
+            this._renderer = dy.WebGLRenderer.create();
         };
         Director.prototype.runWithScene = function (scene) {
             scene.init();
@@ -8553,7 +8553,7 @@ var Engine3D;
             return this._scene.getTopUnderPoint(point);
         };
         Director.prototype.createGL = function (canvasId) {
-            this._view = Engine3D.ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
+            this._view = dy.ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
             this._gl = this._view.getContext();
         };
         Director.prototype._startLoop = function () {
@@ -8575,12 +8575,12 @@ var Engine3D;
         Director._instance = null;
         return Director;
     })();
-    Engine3D.Director = Director;
-})(Engine3D || (Engine3D = {}));
+    dy.Director = Director;
+})(dy || (dy = {}));
 
 /// <reference path="definitions.d.ts"/>
-var Engine3D;
-(function (Engine3D) {
+var dy;
+(function (dy) {
     //todo can set perspectiveParams, add updateProjectMatrix method
     //todo optimize to reduce compute
     var Camera = (function () {
@@ -8631,8 +8631,8 @@ var Engine3D;
             this._rotateAngleY = 0;
             this._zoomInAngle = 0;
             this._zoomOutAngle = 0;
-            this._pMatrix = Engine3D.Matrix.create();
-            this._vMatrix = Engine3D.Matrix.create();
+            this._pMatrix = dy.Matrix.create();
+            this._vMatrix = dy.Matrix.create();
         }
         Camera.create = function (lookAtParams, perspectiveParams) {
             var obj = new this(lookAtParams, perspectiveParams);
@@ -8704,31 +8704,31 @@ var Engine3D;
             this._pMatrix.setPerspective(this._zoomAngle, this._aspect, this._near, this._far);
         };
         Camera.prototype.computeVpMatrix = function () {
-            var matrix = Engine3D.Matrix.create();
+            var matrix = dy.Matrix.create();
             matrix.applyMatrix(this._vMatrix);
             matrix.applyMatrix(this._pMatrix);
             return matrix;
         };
         Camera.prototype.moveLeft = function () {
-            this._computeMoveDistance(Engine3D.Vector4.create(-this._moveSpeed, 0, 0, 1));
+            this._computeMoveDistance(dy.Vector4.create(-this._moveSpeed, 0, 0, 1));
             //绕x轴旋转时，投影xy平面为垂直方向，而Left和Right移动投影到xy平面为水平方向，因此绕x轴旋转不会影响Left和Right移动
             //this._moveX = this._moveX + cos(this._rotateAngleY * PI / 180) * this._moveSpeed;
             //this._moveZ = this._moveZ + sin(this._rotateAngleY* PI / 180) *this._moveSpeed;
         };
         Camera.prototype.moveRight = function () {
-            this._computeMoveDistance(Engine3D.Vector4.create(this._moveSpeed, 0, 0, 1));
+            this._computeMoveDistance(dy.Vector4.create(this._moveSpeed, 0, 0, 1));
             //this._moveX = this._moveX - cos(this._rotateAngleY * PI / 180) * this._moveSpeed;
             //this._moveZ = this._moveZ - sin(this._rotateAngleY* PI / 180) *this._moveSpeed;
         };
         Camera.prototype.moveBack = function () {
-            this._computeMoveDistance(Engine3D.Vector4.create(0, 0, this._moveSpeed, 1));
+            this._computeMoveDistance(dy.Vector4.create(0, 0, this._moveSpeed, 1));
             //this._moveY = this._moveY - sin(this._rotateAngleX * PI / 180) * this._moveSpeed;
             //this._moveZ = this._moveZ + cos(this._rotateAngleX* PI / 180) *this._moveSpeed;
             //this._moveX = this._moveX + sin(this._rotateAngleY * PI / 180) * this._moveSpeed;
             //this._moveZ = this._moveZ - cos(this._rotateAngleY* PI / 180) *this._moveSpeed;
         };
         Camera.prototype.moveFront = function () {
-            this._computeMoveDistance(Engine3D.Vector4.create(0, 0, -this._moveSpeed, 1));
+            this._computeMoveDistance(dy.Vector4.create(0, 0, -this._moveSpeed, 1));
             //this._moveY = this._moveY + sin(this._rotateAngleX * PI / 180) * this._moveSpeed;
             //this._moveZ = this._moveZ - cos(this._rotateAngleX* PI / 180) *this._moveSpeed;
             //this._moveX = this._moveX - sin(this._rotateAngleY * PI / 180) * this._moveSpeed;
@@ -8784,7 +8784,7 @@ var Engine3D;
             /*!
              此处移动距离是针对视图坐标系的（先旋转，然后平移），因此需要计算视图坐标系旋转后移动的距离。
              */
-            var matrix = Engine3D.Matrix.create();
+            var matrix = dy.Matrix.create();
             matrix.setRotate(this._rotateAngleX, 1.0, 0.0, 0.0);
             matrix.rotate(this._rotateAngleY, 0.0, 1.0, 0.0);
             var result = matrix.multiplyVector4(speedVec4).values;
@@ -8794,5 +8794,5 @@ var Engine3D;
         };
         return Camera;
     })();
-    Engine3D.Camera = Camera;
-})(Engine3D || (Engine3D = {}));
+    dy.Camera = Camera;
+})(dy || (dy = {}));

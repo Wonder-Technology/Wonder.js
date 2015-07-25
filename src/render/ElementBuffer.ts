@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class ElementBuffer{
         public static create(data, type:BufferType):ElementBuffer {
             var obj = new this();

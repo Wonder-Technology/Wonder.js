@@ -1,4 +1,4 @@
-module Engine3D{
+module dy{
     export enum ShaderType{
         VS,
         FS

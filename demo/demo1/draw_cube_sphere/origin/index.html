@@ -14,7 +14,7 @@
         var camera = null,
                 scene = null;
 
-        Engine3D.LoaderManager.getInstance().load([
+        dy.LoaderManager.getInstance().load([
             {url:"../vertex.glsl", id:"vs"},
             {url:"../fragment.glsl", id:"fs"}
         ]);
@@ -26,13 +26,13 @@
         }
 
         function _initContext(){
-            Engine3D.WebGLContext.createGL("canvas");
+            dy.WebGLContext.createGL("canvas");
         }
 
         function _initScene(){
             var geometry = null;
 
-            camera = Engine3D.Camera.create({
+            camera = dy.Camera.create({
                         eyeX: 0.0,
                         eyeY: 0.0,
                         eyeZ: 10.0,
@@ -50,22 +50,22 @@
                         far : 10
                     });
 
-            scene = Engine3D.Scene.create(camera,
-                    Engine3D.GLSLLoader.getInstance().getGLSL("vs"),
-                    Engine3D.GLSLLoader.getInstance().getGLSL("fs"));
+            scene = dy.Scene.create(camera,
+                    dy.GLSLLoader.getInstance().getGLSL("vs"),
+                    dy.GLSLLoader.getInstance().getGLSL("fs"));
 
 
-            var material = Engine3D.MeshMaterial.create( { color: "#FFCDff"} );
-//            geometry = Engine3D.BoxGeometry.create(5, 5, 10, material);
-            geometry = Engine3D.SphereGeometry.create(5, Engine3D.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
+            var material = dy.MeshMaterial.create( { color: "#FFCDff"} );
+//            geometry = dy.BoxGeometry.create(5, 5, 10, material);
+            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
 
-            var mesh = Engine3D.Mesh.create(geometry);
+            var mesh = dy.Mesh.create(geometry);
 
 
             scene.add(mesh);
 
 
-            var director = Engine3D.Director.getInstance();
+            var director = dy.Director.getInstance();
 
             //can set renderer
 //            digeometryor.renderer
@@ -73,7 +73,7 @@
             director.runWithScene(scene);
         }
 
-        Engine3D.LoaderManager.getInstance().onload = function(){
+        dy.LoaderManager.getInstance().onload = function(){
             init();
         };
     };

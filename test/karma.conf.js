@@ -18,8 +18,8 @@ module.exports = function(config) {
         'bower_components/yyctoolbox/tool/yTool.js',
 
         //'src/math/*.js',
-        'dist/Engine.innerLib.js',
-        'dist/Engine.debug.js',
+        'dist/dy.innerLib.js',
+        'dist/dy.debug.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',

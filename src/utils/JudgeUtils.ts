@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class JudgeUtils extends dyCb.JudgeUtils{
         public static isView(obj) {
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);

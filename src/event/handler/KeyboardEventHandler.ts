@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     declare var document:any;
 
     //todo bind on GameObject which has the focus

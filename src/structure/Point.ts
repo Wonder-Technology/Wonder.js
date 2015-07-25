@@ -1,4 +1,4 @@
-module Engine3D {
+module dy {
     export class Point {
         public x:number = null;
         public y:number = null;

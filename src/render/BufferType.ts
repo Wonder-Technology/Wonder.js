@@ -1,4 +1,4 @@
-module Engine3D {
+module dy {
     export enum BufferType{
         UNSIGNED_BYTE = <any>"UNSIGNED_BYTE",
         SHORT = <any>"SHORT",

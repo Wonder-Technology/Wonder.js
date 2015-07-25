@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class Scene extends GameObject{
         public static create(camera:Camera, vsSource:string, fsSource:string) {
             var obj = new this(camera);

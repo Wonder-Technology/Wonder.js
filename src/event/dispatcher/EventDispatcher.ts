@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class EventDispatcher {
         public static create() {
             var obj = new this();

@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class GameObject {
         private static _count:number = 1;
 

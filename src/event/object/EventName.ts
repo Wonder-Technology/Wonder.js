@@ -1,4 +1,4 @@
-module Engine3D{
+module dy{
     export enum EventName{
         CLICK = <any>"click",
         MOUSEOVER = <any>"mouseover",

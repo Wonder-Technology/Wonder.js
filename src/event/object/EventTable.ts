@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 //todo complete it(add more event type)
-module Engine3D {
+module dy {
      const _table = dyCb.Hash.create();
 
     //todo not declare "<any>"!

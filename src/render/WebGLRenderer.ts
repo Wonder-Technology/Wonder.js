@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class WebGLRenderer{
         public static create():WebGLRenderer {
             var obj = new this();

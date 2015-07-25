@@ -1,4 +1,4 @@
-module Engine3D {
+module dy {
     export class Position {
         public x:number = null;
         public y:number = null;

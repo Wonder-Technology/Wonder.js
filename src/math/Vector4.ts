@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Vector4{
         public static create(x, y, z, w):Vector4 ;
         public static create():Vector4 ;

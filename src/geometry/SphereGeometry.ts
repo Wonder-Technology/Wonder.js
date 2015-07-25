@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class SphereGeometry extends Geometry{
         public static create(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial):SphereGeometry {
             var geom = new this(radius, drawMode, segments, material);

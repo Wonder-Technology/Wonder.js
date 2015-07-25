@@ -6,7 +6,7 @@ describe("Camera", function(){
     }
 
     beforeEach(function(){
-        obj = new Engine3D.Camera({}, {});
+        obj = new dy.Camera({}, {});
     });
 
     describe("测试移动", function(){

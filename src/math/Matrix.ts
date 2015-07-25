@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     /*!
      注意：矩阵元素是按列主序存储在数组中的。
      */

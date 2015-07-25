@@ -1,5 +1,5 @@
 //reference to three.js->Color.js
-module Engine3D{
+module dy{
     export class Color {
         public static create(colorVal:string) {
             var obj = new this();

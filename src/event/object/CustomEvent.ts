@@ -1,5 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
-module Engine3D {
+module dy {
     export class CustomEvent extends Event{
         public static create(eventName:string) {
             var obj = new this(<any>eventName);

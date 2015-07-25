@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class RectGeometry extends Geometry{
         public static create(width:number, height:number, material:MeshMaterial):RectGeometry {
             var geom = new this(width, height, material);

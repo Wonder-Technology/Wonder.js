@@ -1,7 +1,7 @@
 describe("Vector3", function(){
     var vec = null;
     var sandbox = null;
-    var Vector3 = Engine3D.Vector3;
+    var Vector3 = dy.Vector3;
 
     beforeEach(function(){
         vec = new Vector3(1,2,3);

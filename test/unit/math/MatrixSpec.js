@@ -1,7 +1,7 @@
 describe("matrix", function(){
-    var Matrix = Engine3D.Matrix;
-    var matrix = Engine3D.matrix;
-    var Vector4 = Engine3D.Vector4;
+    var Matrix = dy.Matrix;
+    var matrix = dy.matrix;
+    var Vector4 = dy.Vector4;
 
     function getValues(values){
         if(values){

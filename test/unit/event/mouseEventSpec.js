@@ -16,14 +16,14 @@ describe("mouse event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        Engine3D.Director.getInstance().createGL("#event-test");
+        dy.Director.getInstance().createGL("#event-test");
         fakeEvent = {
             pageX:10,
             pageY:10
         };
-        target =  Engine3D.Mesh.create();
-        manager = Engine3D.EventManager;
-        Listener = Engine3D.EventListener;
+        target =  dy.Mesh.create();
+        manager = dy.EventManager;
+        Listener = dy.EventListener;
     });
     afterEach(function () {
         removeDom();
@@ -41,18 +41,18 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                manager.on(target, Engine3D.EventName.CLICK, function (e) {
+                manager.on(target, dy.EventName.CLICK, function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
-                expect(eventTarget).toBeInstanceOf(Engine3D.MouseEvent);
-                expect(eventTarget.name).toEqual(Engine3D.EventName.CLICK);
+                expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
+                expect(eventTarget.name).toEqual(dy.EventName.CLICK);
                 expect(sum).toEqual(1);
 
-                manager.off(target, Engine3D.EventName.CLICK);
-                manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+                manager.off(target, dy.EventName.CLICK);
+                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -60,19 +60,19 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                var subscription = manager.fromEvent(target, Engine3D.EventName.CLICK)
+                var subscription = manager.fromEvent(target, dy.EventName.CLICK)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
-                expect(eventTarget).toBeInstanceOf(Engine3D.MouseEvent);
-                expect(eventTarget.name).toEqual(Engine3D.EventName.CLICK);
+                expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
+                expect(eventTarget.name).toEqual(dy.EventName.CLICK);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -83,20 +83,20 @@ describe("mouse event", function () {
 
             manager.on(target,
                 {
-                    eventType: Engine3D.EventType.MOUSE,
+                    eventType: dy.EventType.MOUSE,
 
                     onClick: function (e) {
                         eventTarget = e;
                         sum++;
                     }
                 });
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
-            expect(eventTarget).toBeInstanceOf(Engine3D.MouseEvent);
-            expect(eventTarget.name).toEqual(Engine3D.EventName.CLICK);
+            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
+            expect(eventTarget.name).toEqual(dy.EventName.CLICK);
 
-            manager.off(target, Engine3D.EventName.CLICK);
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
+            manager.off(target, dy.EventName.CLICK);
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
 
             expect(sum).toEqual(1);
         });
@@ -108,24 +108,24 @@ describe("mouse event", function () {
                     b:sandbox.stub()
                 };
 
-            var subscription1 = manager.fromEvent(target, Engine3D.EventName.MOUSEDOWN, 1)
+            var subscription1 = manager.fromEvent(target, dy.EventName.MOUSEDOWN, 1)
                 .subscribe(function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 });
-            var subscription2 = manager.fromEvent(target, Engine3D.EventName.MOUSEDOWN, 2)
+            var subscription2 = manager.fromEvent(target, dy.EventName.MOUSEDOWN, 2)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.MOUSEDOWN));
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
 
-            expect(eventTarget).toBeInstanceOf(Engine3D.MouseEvent);
-            expect(eventTarget.name).toEqual(Engine3D.EventName.MOUSEDOWN);
+            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
+            expect(eventTarget.name).toEqual(dy.EventName.MOUSEDOWN);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             subscription2.dispose();
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.MOUSEDOWN));
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
 
             expect(fakeObj.a).toCalledTwice();
             expect(fakeObj.b).toCalledOnce();
@@ -141,10 +141,10 @@ describe("mouse event", function () {
         var fakeObj;
 
         beforeEach(function(){
-            mesh1 = Engine3D.Mesh.create();
-            mesh2 = Engine3D.Mesh.create();
-            mesh3 = Engine3D.Mesh.create();
-            mesh4 = Engine3D.Mesh.create();
+            mesh1 = dy.Mesh.create();
+            mesh2 = dy.Mesh.create();
+            mesh3 = dy.Mesh.create();
+            mesh4 = dy.Mesh.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -155,22 +155,22 @@ describe("mouse event", function () {
                 d:sandbox.stub()
             }
 
-            manager.fromEvent(mesh1, Engine3D.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh1, dy.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget1 = e;
                     fakeObj.a();
                 });
-            manager.fromEvent(mesh2, Engine3D.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh2, dy.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.fromEvent(mesh3, Engine3D.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh3, dy.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget3 = e;
                     fakeObj.c();
                 });
-            manager.fromEvent(mesh4, Engine3D.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh4, dy.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget4 = e;
                     fakeObj.d();
@@ -178,28 +178,28 @@ describe("mouse event", function () {
         });
 
         it("emit custom event", function(){
-            manager.emit(mesh1, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.MOUSEDOWN));
+            manager.emit(mesh1, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
 
-            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget1.phase).toEqual(dy.EventPhase.EMIT);
             expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget2.phase).toEqual(dy.EventPhase.EMIT);
             expect(eventTarget2.target.uid).toEqual(mesh1.uid);
             expect(eventTarget3).toBeNull();
-            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.EMIT);
+            expect(eventTarget4.phase).toEqual(dy.EventPhase.EMIT);
             expect(eventTarget4.target.uid).toEqual(mesh1.uid);
             expect(fakeObj.a).toCalledBefore(fakeObj.b);
             expect(fakeObj.b).toCalledBefore(fakeObj.d);
         });
         it("broadcast custom event", function(){
-            manager.broadcast(mesh4, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.MOUSEDOWN));
+            manager.broadcast(mesh4, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
 
-            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget4.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget2.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget1.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget3.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget3.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget3.target.uid).toEqual(mesh4.uid);
             expect(fakeObj.d).toCalledBefore(fakeObj.b);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);

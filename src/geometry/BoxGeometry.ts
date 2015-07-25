@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class BoxGeometry extends Geometry{
         public static create(width:number, height:number, depth:number, material:MeshMaterial):BoxGeometry {
             var geom = new this(width, height, depth, material);

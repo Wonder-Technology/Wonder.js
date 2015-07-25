@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module Engine3D{
+module dy{
     export class Translate extends Action{
         public static create(matrix, posData):Translate {
             var obj = new this(matrix, posData);

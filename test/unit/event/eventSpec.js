@@ -16,11 +16,11 @@ describe("event", function () {
         sandbox = sinon.sandbox.create();
 
         insertDom();
-        Engine3D.Director.getInstance().createGL("#event-test");
+        dy.Director.getInstance().createGL("#event-test");
 
-        manager = Engine3D.EventManager;
-        Listener = Engine3D.EventListener;
-        target = Engine3D.Mesh.create();
+        manager = dy.EventManager;
+        Listener = dy.EventListener;
+        target = dy.Mesh.create();
     });
     afterEach(function () {
         removeDom();
@@ -44,9 +44,9 @@ describe("event", function () {
                 pageX:10,
                 pageY:10
             };
-            target2 = Engine3D.Mesh.create();
+            target2 = dy.Mesh.create();
 
-            manager.on(target, Engine3D.EventName.CLICK, function (e) {
+            manager.on(target, dy.EventName.CLICK, function (e) {
                 eventTarget = e;
                 sum++;
             });
@@ -60,8 +60,8 @@ describe("event", function () {
         });
         it("off target", function(){
             manager.off(target);
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
-            manager.trigger(target, Engine3D.CustomEvent.create(eventName));
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+            manager.trigger(target, dy.CustomEvent.create(eventName));
 
             expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
@@ -70,9 +70,9 @@ describe("event", function () {
         });
         it("off all", function(){
             manager.off();
-            manager.trigger(target, Engine3D.MouseEvent.create(fakeEvent, Engine3D.EventName.CLICK));
-            manager.trigger(target, Engine3D.CustomEvent.create(eventName));
-            manager.trigger(target2, Engine3D.CustomEvent.create(eventName));
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+            manager.trigger(target, dy.CustomEvent.create(eventName));
+            manager.trigger(target2, dy.CustomEvent.create(eventName));
 
             expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
@@ -92,10 +92,10 @@ describe("event", function () {
         var eventName = "custom";
 
         beforeEach(function () {
-            mesh1 = Engine3D.Mesh.create();
-            mesh2 = Engine3D.Mesh.create();
-            mesh3 = Engine3D.Mesh.create();
-            mesh4 = Engine3D.Mesh.create();
+            mesh1 = dy.Mesh.create();
+            mesh2 = dy.Mesh.create();
+            mesh3 = dy.Mesh.create();
+            mesh4 = dy.Mesh.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -132,12 +132,12 @@ describe("event", function () {
 
         describe("stopPropagation() can work in emited event", function () {
             it("single handler", function(){
-                manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
+                manager.emit(mesh1, dy.CustomEvent.create(eventName));
 
-                expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget1.phase).toEqual(dy.EventPhase.EMIT);
                 expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
                 expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-                expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget2.phase).toEqual(dy.EventPhase.EMIT);
                 expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
                 expect(eventTarget2.target.uid).toEqual(mesh1.uid);
                 expect(eventTarget3).toBeNull();
@@ -153,15 +153,15 @@ describe("event", function () {
                         fakeObj.d();
                     });
 
-                manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
+                manager.emit(mesh1, dy.CustomEvent.create(eventName));
 
-                expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget1.phase).toEqual(dy.EventPhase.EMIT);
                 expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
                 expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-                expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget2.phase).toEqual(dy.EventPhase.EMIT);
                 expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
                 expect(eventTarget2.target.uid).toEqual(mesh1.uid);
-                expect(eventTarget5.phase).toEqual(Engine3D.EventPhase.EMIT);
+                expect(eventTarget5.phase).toEqual(dy.EventPhase.EMIT);
                 expect(eventTarget5.currentTarget.uid).toEqual(mesh2.uid);
                 expect(eventTarget5.target.uid).toEqual(mesh1.uid);
                 expect(eventTarget3).toBeNull();
@@ -171,18 +171,18 @@ describe("event", function () {
             });
         });
         it("stopPropagation() not work in broadcasted event", function () {
-            manager.broadcast(mesh4, Engine3D.CustomEvent.create(eventName));
+            manager.broadcast(mesh4, dy.CustomEvent.create(eventName));
 
-            expect(eventTarget4.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget4.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
             expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget2.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget2.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
             expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget1.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget1.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
             expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget3.phase).toEqual(Engine3D.EventPhase.BROADCAST);
+            expect(eventTarget3.phase).toEqual(dy.EventPhase.BROADCAST);
             expect(eventTarget3.currentTarget.uid).toEqual(mesh3.uid);
             expect(eventTarget3.target.uid).toEqual(mesh4.uid);
             expect(fakeObj.d).toCalledBefore(fakeObj.b);
@@ -208,7 +208,7 @@ describe("event", function () {
         //        eventName: EventName.MOUSE,
 
         //        onClick: function (e) {
-        //            expect(e instanceof Engine3D.Event).toBeTruthy();
+        //            expect(e instanceof dy.Event).toBeTruthy();
         //            expect(e.target.id).toEqual("event-test");
         //            expect(e.mouseButton).toEqual(0);
         //            expect(e.type).toEqual(MouseEvent.CLICK);
@@ -240,7 +240,7 @@ describe("event", function () {
                     //    {
                     //        event: Listener.MOUSE,
                     //        onClick: function (e) {
-                    //            expect(e instanceof Engine3D.Event).toBeTruthy();
+                    //            expect(e instanceof dy.Event).toBeTruthy();
                     //            expect(e.target.id).toEqual("event-test");
                     //            expect(e.mouseButton).toEqual(0);
                     //            expect(e.type).toEqual(MouseEvent.CLICK);
@@ -294,7 +294,7 @@ describe("event", function () {
         //        {
         //            event: Listener.MOUSE,
         //            onClick: function (e) {
-        //                expect(e instanceof Engine3D.Event).toBeTruthy();
+        //                expect(e instanceof dy.Event).toBeTruthy();
         //                expect(e.target.id).toEqual("event-test");
         //                expect(e.mouseButton).toEqual(0);
         //                expect(e.type).toEqual(MouseEvent.CLICK);
@@ -307,7 +307,7 @@ describe("event", function () {
         //    var listener = EventListener.create({
         //        event: Listener.MOUSE,
         //        onClick: function (e) {
-        //            expect(e instanceof Engine3D.Event).toBeTruthy();
+        //            expect(e instanceof dy.Event).toBeTruthy();
         //            expect(e.target.id).toEqual("event-test");
         //            expect(e.mouseButton).toEqual(0);
         //            expect(e.type).toEqual(MouseEvent.CLICK);
@@ -351,9 +351,9 @@ describe("event", function () {
 
         beforeEach(function () {
             //count = 0;
-            //director = Engine3D.Director.getInstance();
-            //scene = Engine3D.Scene.create(null, "", "");
-            //mesh = Engine3D.Mesh.create(null);
+            //director = dy.Director.getInstance();
+            //scene = dy.Scene.create(null, "", "");
+            //mesh = dy.Mesh.create(null);
             //
             ////scene.add(mesh);
             //scene._meshes.addChildren(mesh);
