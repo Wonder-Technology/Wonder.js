@@ -42,12 +42,18 @@ module Engine3D {
 
         public static on(eventName:EventName, handler:Function):void;
         public static on(eventName:EventName, handler:Function, priority:number):void;
+        public static on(listener:{}|EventListener):void;
         public static on(target:GameObject, listener:{}|EventListener):void;
         public static on(target:GameObject, eventName:EventName, handler:Function):void;
         public static on(target:GameObject, eventName:EventName, handler:Function, priority:number):void;
 
         public static on(args) {
-            if(arguments.length === 2 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1])){
+            if(arguments.length === 1){
+                let listener = arguments[0];
+
+                this._eventBinder.on(listener);
+            }
+            else if(arguments.length === 2 && JudgeUtils.isString(arguments[0]) && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
                     handler = arguments[1],
                     priority = 0;

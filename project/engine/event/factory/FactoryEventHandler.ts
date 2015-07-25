@@ -8,6 +8,9 @@ module Engine3D{
                 case EventType.MOUSE:
                     handler = MouseEventHandler.getInstance();
                     break;
+                case EventType.KEYBOARD:
+                    handler = KeyboardEventHandler.getInstance();
+                    break;
                 case EventType.CUSTOM:
                     handler = CustomEventHandler.getInstance();
                     break;

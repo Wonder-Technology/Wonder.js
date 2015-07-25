@@ -47,7 +47,6 @@
 /// <reference path="geometry/SphereGeometry"/>
 /// <reference path="geometry/TriangleGeometry"/>
 
-/// <reference path="event/KeyCodeMap"/>
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventName"/>
@@ -55,11 +54,13 @@
 /// <reference path="event/object/EventTable"/>
 /// <reference path="event/object/Event"/>
 /// <reference path="event/object/MouseEvent"/>
+/// <reference path="event/object/KeyboardEvent"/>
 /// <reference path="event/object/CustomEvent"/>
 /// <reference path="event/object/MouseButton"/>
 /// <reference path="event/listener/EventListener"/>
 /// <reference path="event/handler/EventHandler"/>
 /// <reference path="event/handler/MouseEventHandler"/>
+/// <reference path="event/handler/KeyboardEventHandler"/>
 /// <reference path="event/dispatcher/EventDispatcher"/>
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/EventBinder"/>

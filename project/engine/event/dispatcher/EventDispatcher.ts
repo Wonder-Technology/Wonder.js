@@ -34,7 +34,7 @@ module Engine3D {
                 let event = arguments[0],
                     eventType = event.type;
 
-                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                //dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);

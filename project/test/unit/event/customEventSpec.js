@@ -264,6 +264,19 @@ describe("custom event", function () {
                 });
         });
 
+        it("it's not transfer data between event binded by on(eventName) and event binded by on(target, eventName)", function(){
+            var eventTarget5 = null;
+
+            manager.fromEvent(eventName)
+                .subscribe(function (e) {
+                    eventTarget5 = e;
+                });
+
+
+            manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
+
+            expect(eventTarget5).toBeNull();
+        });
         it("emit custom event", function(){
             manager.emit(mesh1, Engine3D.CustomEvent.create(eventName));
 

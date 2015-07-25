@@ -75,9 +75,6 @@ module Engine3D {
 
                 return this._triggerEventHandler(event, userData);
             }
-            else if(arguments.length === 2){
-
-            }
             else if(arguments.length === 3 || arguments.length === 4){
                 let target = null,
                     userData = null,
@@ -121,12 +118,13 @@ module Engine3D {
 
                 listenerData.handler(eventCopy);
 
-                if(eventCopy.isStopPropagation){
-                    isStopPropagation = true;
-                }
+                //if(eventCopy.isStopPropagation){
+                //    isStopPropagation = true;
+                //}
             });
 
-            return isStopPropagation;
+            //return isStopPropagation;
+            return true;
         }
 
         private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){

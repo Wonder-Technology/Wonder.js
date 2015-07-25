@@ -17,16 +17,22 @@ module Engine3D {
         }
 
         public on(eventName:EventName, handler:Function, priority:number):void;
-        public on(target:GameObject, arg:{}|EventListener):void;
+        public on(listener:{}|EventListener):void;
+        public on(target:GameObject, listener:{}|EventListener):void;
         public on(target:GameObject, eventName:EventName, handler:Function, priority:number):void;
 
         public on(args) {
-            if(arguments.length === 2){
-                let target = arguments[0],
-                    arg = arguments[1],
-                    listener:EventListener = null;
+            if(arguments.length === 1){
+                let listener:EventListener = !(arguments[0] instanceof EventListener) ?  EventListener.create(arguments[0]): arguments[0];
 
-                listener = !(arg instanceof EventListener) ?  EventListener.create(arg): arg;
+                listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
+                    FactoryEventHandler.createEventHandler(listener.eventType)
+                        .on(handlerData.eventName, handlerData.handler, listener.priority);
+                });
+            }
+            else if(arguments.length === 2){
+                let target = arguments[0],
+                    listener:EventListener = !(arguments[1] instanceof EventListener) ?  EventListener.create(arguments[1]): arguments[1];
 
                 listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
                     FactoryEventHandler.createEventHandler(listener.eventType)

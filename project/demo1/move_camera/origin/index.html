@@ -13,6 +13,7 @@
 </head>
 <body>
 <canvas id="canvas" width="600" height="400"></canvas>
+<input id="inp"/>
 
 <script>
     window.onload = function () {
@@ -129,29 +130,48 @@
 
 
         function move(camera) {
-            var map = Engine3D.KeyCodeMap;
+//            var map = Engine3D.Key;
 
-            if (keyState[map.A]) {
+//            if (keyState[map.A]) {
+//                camera.moveLeft();
+//            }
+//            else if (keyState[map.D]) {
+//                camera.moveRight();
+//            }
+//            else if (keyState[map.W]) {
+//                camera.moveFront();
+//            }
+//            else if (keyState[map.S]) {
+//                camera.moveBack();
+//            }
+            if (keyState["a"]) {
                 camera.moveLeft();
             }
-            else if (keyState[map.D]) {
+            else if (keyState["d"]) {
                 camera.moveRight();
             }
-            else if (keyState[map.W]) {
+            else if (keyState["w"]) {
                 camera.moveFront();
             }
-            else if (keyState[map.S]) {
+            else if (keyState["s"]) {
                 camera.moveBack();
             }
         }
 
         function zoom(camera) {
-            var map = Engine3D.KeyCodeMap;
+//            var map = Engine3D.Key;
+//
+//            if (keyState[map.G]) {
+//                camera.zoomOut();
+//            }
+//            else if (keyState[map.H]) {
+//                camera.zoomIn();
+//            }
 
-            if (keyState[map.G]) {
+            if (keyState["g"]) {
                 camera.zoomOut();
             }
-            else if (keyState[map.H]) {
+            else if (keyState["h"]) {
                 camera.zoomIn();
             }
         }
@@ -373,14 +393,26 @@
 //            $(canvas.dom).on("mousemove", function(e){
 //                console.log(move);
 //            })
-            $("body").on("keydown", function(ev){
+//            $("body").on("keydown", function(ev){
+//                $(canvas.dom).on("keydown", function(ev){
+//                    $("#inp").on("keydown", function(ev){
+//
+//                setAllFalse();
+//
+////             Engine3D.EventManager.create().trigger("custom");
+//
+//                keyState[ev.keyCode] = true;
+//            })
+            Engine3D.EventManager.fromEvent(Engine3D.EventName.KEYDOWN)
+                    .subscribe(function(e){
+                        console.log(e);
 
-                setAllFalse();
+//                        setAllFalse();
+//                        keyState[ev.keyCode] = true;
+                    });
 
-//             Engine3D.EventManager.create().trigger("custom");
 
-                keyState[ev.keyCode] = true;
-            })
+
 //            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
 
 
