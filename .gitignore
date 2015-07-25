@@ -3,8 +3,6 @@ bower_components/
 reference/
 node_modules/
 mine/
-3d/
-document/
 src/*.js.map
 src/*.js
 src/**/*.js.map
