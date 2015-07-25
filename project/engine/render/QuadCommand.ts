@@ -70,7 +70,7 @@ module Engine3D{
                 program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.getChild("vertexBuffer"));
             }
             else{
-                throw new Error("must has vertexBuffer");
+                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
 
             //if(this.color){

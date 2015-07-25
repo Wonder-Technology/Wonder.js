@@ -40,11 +40,11 @@ module Engine3D{
         }
 
         protected computeVerticesBuffer():ArrayBuffer{
-            throw new Error("abstract method need override");
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         protected computeIndicesBuffer():ElementBuffer{
-            throw new Error("abstract method need override");
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         private _computeColorsBuffer(material:MeshMaterial){

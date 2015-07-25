@@ -99,7 +99,7 @@ module Engine3D{
                     };
                     break;
                 default:
-                    throw new Error("无效的类型");
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("BufferType"));
                     break;
             }
 

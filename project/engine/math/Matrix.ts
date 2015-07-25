@@ -419,22 +419,18 @@ module Engine3D{
          * @return this
          */
         public setPerspective (fovy: number, aspect, near, far):Matrix {
-            var e, rd, s, ct;
+            var e, rd, s, ct,
+                log = dyCb.Log,
+                info = log.info;
 
-            if (near === far || aspect === 0) {
-                throw 'null frustum';
-            }
-            if (near <= 0) {
-                throw 'near <= 0';
-            }
-            if (far <= 0) {
-                throw 'far <= 0';
-            }
+            log.error(near === far || aspect === 0, info.FUNC_MUST_NOT_BE("frustum", "null"));
+            log.error(near <= 0, info.FUNC_MUST("near", "> 0"));
+            log.error(far <= 0, info.FUNC_MUST("far", "> 0"));
 
             var fovy = Math.PI * fovy / 180 / 2;
             s = Math.sin(fovy);
             if (s === 0) {
-                throw 'null frustum';
+                log.error(s === 0, info.FUNC_MUST_NOT_BE("frustum", "null"));
             }
 
             rd = 1 / (far - near);

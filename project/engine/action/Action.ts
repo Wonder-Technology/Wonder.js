@@ -16,7 +16,7 @@ module Engine3D{
         }
 
         public update(){
-            throw new Error("abstract method need override");
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         protected finish(){

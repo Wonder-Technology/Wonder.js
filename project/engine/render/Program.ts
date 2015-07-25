@@ -27,7 +27,7 @@ module Engine3D{
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;
                 default :
-                    throw new Error("数据类型错误");
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("UniformDataType"));
                     break;
             }
         }
@@ -48,7 +48,7 @@ module Engine3D{
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :
-                    throw new Error("数据类型错误");
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("AttributeDataType"));
                     break;
             }
         }
