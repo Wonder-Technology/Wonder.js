@@ -1040,13 +1040,117 @@ var dyRt;
 /// <reference path="../definitions.d.ts"/>
 var dyRt;
 (function (dyRt) {
+    dyRt.root.requestNextAnimationFrame = (function () {
+        var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = navigator.userAgent, index = 0, self = this;
+        wrapper = function (time) {
+            time = +new Date();
+            self.callback(time);
+        };
+        /*!
+         bug!
+         below code:
+         when invoke b after 1s, will only invoke b, not invoke a!
+
+         function a(time){
+         console.log("a", time);
+         webkitRequestAnimationFrame(a);
+         }
+
+         function b(time){
+         console.log("b", time);
+         webkitRequestAnimationFrame(b);
+         }
+
+         a();
+
+         setTimeout(b, 1000);
+
+
+
+         so use requestAnimationFrame priority!
+         */
+        if (dyRt.root.requestAnimationFrame) {
+            return requestAnimationFrame;
+        }
+        // Workaround for Chrome 10 bug where Chrome
+        // does not pass the time to the animation function
+        if (dyRt.root.webkitRequestAnimationFrame) {
+            // Define the wrapper
+            // Make the switch
+            originalRequestAnimationFrame = dyRt.root.webkitRequestAnimationFrame;
+            dyRt.root.webkitRequestAnimationFrame = function (callback, element) {
+                self.callback = callback;
+                // Browser calls the wrapper and wrapper calls the callback
+                return originalRequestAnimationFrame(wrapper, element);
+            };
+        }
+        //修改time参数
+        if (dyRt.root.msRequestAnimationFrame) {
+            originalRequestAnimationFrame = dyRt.root.msRequestAnimationFrame;
+            dyRt.root.msRequestAnimationFrame = function (callback) {
+                self.callback = callback;
+                return originalRequestAnimationFrame(wrapper);
+            };
+        }
+        // Workaround for Gecko 2.0, which has a bug in
+        // mozRequestAnimationFrame() that restricts animations
+        // to 30-40 fps.
+        if (dyRt.root.mozRequestAnimationFrame) {
+            // Check the Gecko version. Gecko is used by browsers
+            // other than Firefox. Gecko 2.0 corresponds to
+            // Firefox 4.0.
+            index = userAgent.indexOf('rv:');
+            if (userAgent.indexOf('Gecko') != -1) {
+                geckoVersion = userAgent.substr(index + 3, 3);
+                if (geckoVersion === '2.0') {
+                    // Forces the return statement to fall through
+                    // to the setTimeout() function.
+                    dyRt.root.mozRequestAnimationFrame = undefined;
+                }
+            }
+        }
+        //            return  root.requestAnimationFrame ||  //传递给callback的time不是从1970年1月1日到当前所经过的毫秒数！
+        return dyRt.root.webkitRequestAnimationFrame ||
+            dyRt.root.mozRequestAnimationFrame ||
+            dyRt.root.oRequestAnimationFrame ||
+            dyRt.root.msRequestAnimationFrame ||
+            function (callback, element) {
+                var start, finish;
+                dyRt.root.setTimeout(function () {
+                    start = +new Date();
+                    callback(start);
+                    finish = +new Date();
+                    self.timeout = 1000 / 60 - (finish - start);
+                }, self.timeout);
+            };
+    }());
+    dyRt.root.cancelNextRequestAnimationFrame = dyRt.root.cancelRequestAnimationFrame
+        || dyRt.root.webkitCancelAnimationFrame
+        || dyRt.root.webkitCancelRequestAnimationFrame
+        || dyRt.root.mozCancelRequestAnimationFrame
+        || dyRt.root.oCancelRequestAnimationFrame
+        || dyRt.root.msCancelRequestAnimationFrame
+        || clearTimeout;
     var Scheduler = (function () {
         function Scheduler() {
+            this._requestLoopId = null;
         }
         Scheduler.create = function () {
             var obj = new this();
             return obj;
         };
+        Object.defineProperty(Scheduler.prototype, "requestLoopId", {
+            get: function () {
+                return this._requestLoopId;
+            },
+            set: function (requestLoopId) {
+                this._requestLoopId = requestLoopId;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        //observer is for TestScheduler to inject
+        //todo remove observer
         Scheduler.prototype.publishRecursive = function (observer, initial, action) {
             action(initial);
         };
@@ -1054,6 +1158,13 @@ var dyRt;
             return dyRt.root.setInterval(function () {
                 initial = action(initial);
             }, interval);
+        };
+        Scheduler.prototype.publishIntervalRequest = function (observer, action) {
+            var self = this, loop = function (time) {
+                action(time);
+                self._requestLoopId = dyRt.root.requestNextAnimationFrame(loop);
+            };
+            this._requestLoopId = dyRt.root.requestNextAnimationFrame(loop);
         };
         return Scheduler;
     })();
@@ -1862,6 +1973,10 @@ var dyRt;
         if (scheduler === void 0) { scheduler = dyRt.Scheduler.create(); }
         return dyRt.IntervalStream.create(interval, scheduler);
     };
+    dyRt.intervalRequest = function (scheduler) {
+        if (scheduler === void 0) { scheduler = dyRt.Scheduler.create(); }
+        return dyRt.IntervalRequestStream.create(scheduler);
+    };
 })(dyRt || (dyRt = {}));
 
 /// <reference path="../definitions.d.ts"/>
@@ -2078,8 +2193,7 @@ var dyRt;
             this._isDisposed = true;
         };
         TestScheduler.prototype.publishRecursive = function (observer, initial, recursiveFunc) {
-            var self = this;
-            var messages = [];
+            var self = this, messages = [];
             this._setClock();
             recursiveFunc(initial, function (value) {
                 self._tick(1);
@@ -2092,8 +2206,7 @@ var dyRt;
         };
         TestScheduler.prototype.publishInterval = function (observer, initial, interval, action) {
             //produce 10 val for test
-            var COUNT = 10;
-            var messages = [];
+            var COUNT = 10, messages = [];
             this._setClock();
             while (COUNT > 0 && !this._isDisposed) {
                 this._tick(interval);
@@ -2101,6 +2214,18 @@ var dyRt;
                 //no need to invoke action
                 //action(initial);
                 initial++;
+                COUNT--;
+            }
+            this.setStreamMap(observer, messages);
+            return NaN;
+        };
+        TestScheduler.prototype.publishIntervalRequest = function (observer, action) {
+            //produce 10 val for test
+            var COUNT = 10, messages = [], interval = 100;
+            this._setClock();
+            while (COUNT > 0 && !this._isDisposed) {
+                this._tick(interval);
+                messages.push(TestScheduler.next(this._clock, interval));
                 COUNT--;
             }
             this.setStreamMap(observer, messages);
@@ -2277,6 +2402,39 @@ var dyRt;
         return JudgeUtils;
     })(dyCb.JudgeUtils);
     dyRt.JudgeUtils = JudgeUtils;
+})(dyRt || (dyRt = {}));
+
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+/// <reference path="../definitions.d.ts"/>
+var dyRt;
+(function (dyRt) {
+    var IntervalRequestStream = (function (_super) {
+        __extends(IntervalRequestStream, _super);
+        function IntervalRequestStream(scheduler) {
+            _super.call(this, null);
+            this.scheduler = scheduler;
+        }
+        IntervalRequestStream.create = function (scheduler) {
+            var obj = new this(scheduler);
+            return obj;
+        };
+        IntervalRequestStream.prototype.subscribeCore = function (observer) {
+            var self = this;
+            this.scheduler.publishIntervalRequest(observer, function (time) {
+                observer.next(time);
+            });
+            this.addDisposeHandler(function () {
+                dyRt.root.cancelNextRequestAnimationFrame(self.scheduler.requestLoopId);
+            });
+        };
+        return IntervalRequestStream;
+    })(dyRt.BaseStream);
+    dyRt.IntervalRequestStream = IntervalRequestStream;
 })(dyRt || (dyRt = {}));
 
 /*!
@@ -5843,8 +6001,13 @@ var dy;
         GLSLLoader.prototype.load = function (url, id) {
             var self = this;
             if (this._container.getChild(id)) {
-                dy.LoaderManager.getInstance().onResLoaded();
-                return;
+                console.log("has");
+                return dyRt.createStream(function (observer) {
+                    observer.next(null);
+                    observer.completed();
+                }).do(function () {
+                    dy.LoaderManager.getInstance().onResLoaded();
+                });
             }
             return dyRt.fromPromise(this._loadText(url)).do(function (data) {
                 dy.LoaderManager.getInstance().onResLoaded();
@@ -5896,12 +6059,6 @@ var dy;
             }
             return this._instance;
         };
-        LoaderManager.prototype.getResourceCount = function () {
-            return this._resCount;
-        };
-        LoaderManager.prototype.getCurrentLoadedCount = function () {
-            return this._currentLoadedCount;
-        };
         LoaderManager.prototype.load = function (resourcesArr) {
             var self = this;
             return dyRt.fromArray(resourcesArr).flatMap(function (res) {
@@ -5920,27 +6077,6 @@ var dy;
             dyCb.Log.log("加载" + path + "资源失败");
             if (err) {
                 dyCb.Log.log(err);
-            }
-        };
-        LoaderManager.prototype._isFinishLoad = function () {
-            var self = this;
-            if (this.getCurrentLoadedCount() === this.getResourceCount()) {
-                if (this.onload) {
-                    this.onload();
-                }
-                else {
-                    dyCb.Log.assert(false, "没有定义onload");
-                }
-            }
-            else {
-                if (this.onloading) {
-                    setTimeout(function () {
-                        self.onloading(self.getCurrentLoadedCount(), self.getResourceCount());
-                    }, 16);
-                }
-                setTimeout(function () {
-                    self._isFinishLoad.call(self);
-                }, 16);
             }
         };
         LoaderManager._instance = null;
@@ -8390,101 +8526,6 @@ var dy;
 /// <reference path="../definitions.d.ts"/>
 var dy;
 (function (dy) {
-    /**
-     * 来自《HTML5 Canvas 核心技术》
-     * 不能写到global中，否则会报错“illegal invocation”！
-     */
-    window.requestNextAnimationFrame = (function () {
-        var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = navigator.userAgent, index = 0, self = this;
-        wrapper = function (time) {
-            time = +new Date();
-            self.callback(time);
-        };
-        /*!
-         bug!
-         below code:
-         when invoke b after 1s, will only invoke b, not invoke a!
-
-         function a(time){
-         console.log("a", time);
-         webkitRequestAnimationFrame(a);
-         }
-
-         function b(time){
-         console.log("b", time);
-         webkitRequestAnimationFrame(b);
-         }
-
-         a();
-
-         setTimeout(b, 1000);
-
-
-
-         so use requestAnimationFrame priority!
-         */
-        if (window.requestAnimationFrame) {
-            return requestAnimationFrame;
-        }
-        // Workaround for Chrome 10 bug where Chrome
-        // does not pass the time to the animation function
-        if (window.webkitRequestAnimationFrame) {
-            // Define the wrapper
-            // Make the switch
-            originalRequestAnimationFrame = window.webkitRequestAnimationFrame;
-            window.webkitRequestAnimationFrame = function (callback, element) {
-                self.callback = callback;
-                // Browser calls the wrapper and wrapper calls the callback
-                return originalRequestAnimationFrame(wrapper, element);
-            };
-        }
-        //修改time参数
-        if (window.msRequestAnimationFrame) {
-            originalRequestAnimationFrame = window.msRequestAnimationFrame;
-            window.msRequestAnimationFrame = function (callback) {
-                self.callback = callback;
-                return originalRequestAnimationFrame(wrapper);
-            };
-        }
-        // Workaround for Gecko 2.0, which has a bug in
-        // mozRequestAnimationFrame() that restricts animations
-        // to 30-40 fps.
-        if (window.mozRequestAnimationFrame) {
-            // Check the Gecko version. Gecko is used by browsers
-            // other than Firefox. Gecko 2.0 corresponds to
-            // Firefox 4.0.
-            index = userAgent.indexOf('rv:');
-            if (userAgent.indexOf('Gecko') != -1) {
-                geckoVersion = userAgent.substr(index + 3, 3);
-                if (geckoVersion === '2.0') {
-                    // Forces the return statement to fall through
-                    // to the setTimeout() function.
-                    window.mozRequestAnimationFrame = undefined;
-                }
-            }
-        }
-        //            return  window.requestAnimationFrame ||  //传递给callback的time不是从1970年1月1日到当前所经过的毫秒数！
-        return window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (callback, element) {
-                var start, finish;
-                window.setTimeout(function () {
-                    start = +new Date();
-                    callback(start);
-                    finish = +new Date();
-                    self.timeout = 1000 / 60 - (finish - start);
-                }, self.timeout);
-            };
-    }());
-    window.cancelNextRequestAnimationFrame = window.cancelRequestAnimationFrame
-        || window.webkitCancelAnimationFrame
-        || window.webkitCancelRequestAnimationFrame
-        || window.mozCancelRequestAnimationFrame
-        || window.oCancelRequestAnimationFrame
-        || window.msCancelRequestAnimationFrame
-        || clearTimeout;
     var Director = (function () {
         function Director() {
             //todo :Renderer
@@ -8492,7 +8533,7 @@ var dy;
             this._view = null;
             this._gl = null;
             this._scene = null;
-            this._loopId = null;
+            this._gameLoop = null;
         }
         Director.getInstance = function () {
             if (this._instance === null) {
@@ -8557,12 +8598,11 @@ var dy;
             this._gl = this._view.getContext();
         };
         Director.prototype._startLoop = function () {
-            var self = this, mainLoop = null;
-            mainLoop = function (time) {
+            var self = this;
+            this._gameLoop = dyRt.intervalRequest()
+                .subscribe(function (time) {
                 self._loopBody(time);
-                self._loopId = window.requestNextAnimationFrame(mainLoop);
-            };
-            this._loopId = window.requestNextAnimationFrame(mainLoop);
+            });
         };
         //todo add tick mechanism
         Director.prototype._loopBody = function (time) {

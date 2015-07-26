@@ -85,8 +85,11 @@ declare module dyRt {
 declare module dyRt {
     class Scheduler {
         static create(): Scheduler;
+        private _requestLoopId;
+        requestLoopId: any;
         publishRecursive(observer: IObserver, initial: any, action: Function): void;
         publishInterval(observer: IObserver, initial: any, interval: number, action: Function): number;
+        publishIntervalRequest(observer: IObserver, action: Function): void;
     }
 }
 
@@ -298,6 +301,7 @@ declare module dyRt {
     var fromPromise: (promise: any, scheduler?: Scheduler) => FromPromiseStream;
     var fromEventPattern: (addHandler: Function, removeHandler: Function) => FromEventPatternStream;
     var interval: (interval: any, scheduler?: Scheduler) => IntervalStream;
+    var intervalRequest: (scheduler?: Scheduler) => IntervalRequestStream;
 }
 
 /// <reference path="../definitions.d.ts" />
@@ -361,6 +365,7 @@ declare module dyRt {
         remove(observer: Observer): void;
         publishRecursive(observer: IObserver, initial: any, recursiveFunc: Function): void;
         publishInterval(observer: IObserver, initial: any, interval: number, action: Function): number;
+        publishIntervalRequest(observer: IObserver, action: Function): number;
         private _setClock();
         startWithTime(create: Function, subscribedTime: number, disposedTime: number): MockObserver;
         startWithSubscribe(create: any, subscribedTime?: number): MockObserver;
@@ -402,6 +407,15 @@ declare module dyRt {
     class JudgeUtils extends dyCb.JudgeUtils {
         static isPromise(obj: any): boolean;
         static isEqual(ob1: Entity, ob2: Entity): boolean;
+    }
+}
+
+/// <reference path="../definitions.d.ts" />
+declare module dyRt {
+    class IntervalRequestStream extends BaseStream {
+        static create(scheduler: Scheduler): IntervalRequestStream;
+        constructor(scheduler: Scheduler);
+        subscribeCore(observer: IObserver): void;
     }
 }
 
@@ -845,8 +859,6 @@ declare module dy {
         private _currentLoadedCount;
         onload: Function;
         onloading: Function;
-        getResourceCount(): number;
-        getCurrentLoadedCount(): number;
         load(resourcesArr: Array<{
             url: string;
             id: string;
@@ -854,7 +866,6 @@ declare module dy {
         reset(): void;
         onResLoaded(): void;
         onResError(path: any, err: any): void;
-        private _isFinishLoad();
     }
 }
 
@@ -1376,7 +1387,7 @@ declare module dy {
         private _gl;
         gl: any;
         private _scene;
-        private _loopId;
+        private _gameLoop;
         initWhenCreate(): void;
         runWithScene(scene: Scene): void;
         getView(): IView;
