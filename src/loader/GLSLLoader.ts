@@ -16,14 +16,19 @@ module dy{
             var self = this;
 
             if(this._container.getChild(id)){
-                LoaderManager.getInstance().onResLoaded();
-                return;
+                console.log("has");
+                return dyRt.createStream((observer:dyRt.IObserver) => {
+                    observer.next(null);
+                    observer.completed();
+                }).do(() => {
+                    LoaderManager.getInstance().onResLoaded();
+                });
             }
 
-            return dyRt.fromPromise(this._loadText(url)).do(function(data){
+            return dyRt.fromPromise(this._loadText(url)).do((data) => {
                 LoaderManager.getInstance().onResLoaded();
                 self._container.addChild(id, data);
-            }, function(err){
+            }, (err) => {
                 LoaderManager.getInstance().onResError(url, err);
             }, null);
         }
@@ -33,7 +38,7 @@ module dy{
         }
 
         private _loadText(url) {
-            return new RSVP.Promise(function(resolve, reject) {
+            return new RSVP.Promise((resolve, reject) => {
                 dyCb.AjaxUtils.ajax({
                     type: "get",
                     //async: true,
@@ -41,10 +46,10 @@ module dy{
                     contentType: "text/plain; charset=utf-8",
                     dataType: "text",
                     //cache: false,
-                    success: function (data) {
+                    success: (data) => {
                         resolve(data);
                     },
-                    error: function (XMLHttpRequest, errorThrown) {
+                    error: (XMLHttpRequest, errorThrown) => {
                         reject("url:" + url + "\nreadyState:" + XMLHttpRequest.readyState + "\nstatus:" + XMLHttpRequest.status
                             + "\nmessage:" + errorThrown.message
                             + "\nresponseText:" + XMLHttpRequest.responseText);
