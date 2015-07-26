@@ -1,3 +1,0 @@
-[submodule "lib/inner/DYCommonLib"]
-	path = lib/inner/DYCommonLib
-	url = git@github.com:yyc-git/DYCommonLib.git
