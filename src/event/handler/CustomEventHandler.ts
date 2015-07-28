@@ -98,7 +98,7 @@ module dy {
         }
 
         private _triggerEventHandler(event, userData){
-            var listenerDataList:dyCb.Collection = null,
+            var listenerDataList:dyCb.Collection<IEventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 
@@ -128,7 +128,7 @@ module dy {
         }
 
         private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){
-            var listenerDataList:dyCb.Collection = null,
+            var listenerDataList:dyCb.Collection<IEventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 

@@ -16,13 +16,11 @@ module dy{
             this._name = eventName;
         }
 
-        //abstact attri
-        public type:EventType = null;
-        //get type(){
-        //    dyCb.Log.error(this._type === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
-        //
-        //    return this._type;
-        //}
+        get type(){
+            dyCb.Log.error(this.innerType === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
+
+            return this.innerType;
+        }
 
         private _name:EventName = null;
         get name() {
@@ -69,6 +67,8 @@ module dy{
         set phase(phase:EventPhase) {
             this._phase = phase;
         }
+
+        protected innerType:EventType = null;
 
         public copy():Event{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);

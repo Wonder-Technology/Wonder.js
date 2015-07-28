@@ -67,11 +67,10 @@ module dy {
 
         public off() {
             var eventRegister = EventRegister.getInstance(),
-                eventOffDataList:dyCb.Collection = null,
                 argArr = Array.prototype.slice.call(arguments, 0);
 
             if(arguments.length === 0){
-                eventRegister.forEach((list:dyCb.Collection, key:string) => {
+                eventRegister.forEach((list:dyCb.Collection<IEventHandlerData>, key:string) => {
                     var eventName = eventRegister.getEventNameFromKey(key),
                         targetUid = eventRegister.getUidFromKey(key);
 
@@ -102,7 +101,7 @@ module dy {
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                eventRegister.forEach((list:dyCb.Collection, key:string) => {
+                eventRegister.forEach((list:dyCb.Collection<IEventRegisterData>, key:string) => {
                     var eventName = eventRegister.getEventNameFromKey(key);
 
                     if(eventRegister.isTarget(key, target, list)){

@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        private _buffers:dyCb.Hash = dyCb.Hash.create();
+        private _buffers:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
         get buffers(){
             return this._buffers;
         }
@@ -67,7 +67,7 @@ module dy{
 
         private _sendData(program:Program){
             if(this._buffers.hasChild("vertexBuffer")){
-                program.setAttributeData("a_position", AttributeDataType.BUFFER, this._buffers.getChild("vertexBuffer"));
+                program.setAttributeData("a_position", AttributeDataType.BUFFER, <ArrayBuffer>this._buffers.getChild("vertexBuffer"));
             }
             else{
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
@@ -81,7 +81,7 @@ module dy{
                 */
 
 
-                program.setAttributeData("a_color", AttributeDataType.BUFFER, this._buffers.getChild("colorBuffer"));
+                program.setAttributeData("a_color", AttributeDataType.BUFFER, <ArrayBuffer>this._buffers.getChild("colorBuffer"));
             //}
         }
 
@@ -94,7 +94,8 @@ module dy{
 
 
             if (this._buffers.hasChild("indexBuffer")) {
-                let indexBuffer = this._buffers.getChild("indexBuffer");
+                let indexBuffer:ElementBuffer = <ElementBuffer>this._buffers.getChild("indexBuffer");
+
                 totalNum = indexBuffer.num;
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);

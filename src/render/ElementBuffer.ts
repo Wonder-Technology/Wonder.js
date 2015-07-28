@@ -1,27 +1,12 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class ElementBuffer{
+    export class ElementBuffer extends Buffer{
         public static create(data, type:BufferType):ElementBuffer {
             var obj = new this();
 
             obj.initWhenCreate(data, type);
 
             return obj;
-        }
-
-        private _buffer = null;
-        get buffer() { return this._buffer; }
-
-        private _type:string = null;
-        get type() { return this._type; }
-        set type(type:string){
-            this._type = type;
-        }
-
-        private _num:number = null;
-        get num() { return this._num; }
-        set num(num:number) {
-            this._num = num;
         }
 
         private _typeSize:number = null;
@@ -34,21 +19,21 @@ module dy{
                 return null;
             }
 
-            this._buffer = gl.createBuffer();   // Create a buffer object
-            if (!this._buffer) {
-                dyCb.Log.log('Failed to create the this._buffer object');
+            this.innerBuffer = gl.createBuffer();   // Create a buffer object
+            if (!this.innerBuffer) {
+                dyCb.Log.log('Failed to create the this.innerBuffer object');
                 return null;
             }
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffer);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.innerBuffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-            this._type = gl[type];
-            this._num = data.length;
+            this.innerType = gl[type];
+            this.innerNum = data.length;
             this._typeSize = this._getInfo(type).size;
 
-            return this._buffer;
+            return this.innerBuffer;
         }
 
 

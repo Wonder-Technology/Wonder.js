@@ -10,7 +10,7 @@ module dy{
             return this._instance;
         }
 
-        private _container:dyCb.Hash = dyCb.Hash.create();
+        private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
 
         public load(url:string, id:string){
             var self = this;

@@ -114,12 +114,12 @@ module dy {
             this._eventDispatcher.emit.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
-        public static fromEvent(eventName:EventName):any;
-        public static fromEvent(eventName:EventName, priority:number):any;
-        public static fromEvent(target:GameObject, eventName:EventName):any;
-        public static fromEvent(target:GameObject, eventName:EventName, priority:number):any;
+        public static fromEvent(eventName:EventName):dyRt.FromEventPatternStream;
+        public static fromEvent(eventName:EventName, priority:number):dyRt.FromEventPatternStream;
+        public static fromEvent(target:GameObject, eventName:EventName):dyRt.FromEventPatternStream;
+        public static fromEvent(target:GameObject, eventName:EventName, priority:number):dyRt.FromEventPatternStream;
 
-        public static fromEvent(args) {
+        public static fromEvent(args):any {
             var addHandler = null,
                 removeHandler = null;
 

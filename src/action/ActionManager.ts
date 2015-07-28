@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        private _children:dyCb.Collection = dyCb.Collection.create();
+        private _children:dyCb.Collection<Action> = dyCb.Collection.create<Action>();
 
         constructor(){
         }

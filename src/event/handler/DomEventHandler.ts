@@ -5,7 +5,7 @@ module dy {
             var self = this,
                 dom = this.getDom(),
                 eventRegister = EventRegister.getInstance(),
-                eventOffDataList:dyCb.Collection = null;
+                eventOffDataList:dyCb.Collection<IEventOffData> = null;
 
             eventOffDataList = eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
 

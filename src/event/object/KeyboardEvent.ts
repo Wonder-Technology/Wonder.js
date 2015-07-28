@@ -127,7 +127,7 @@ module dy {
             this._event = event;
         }
 
-        public type:EventType = EventType.KEYBOARD;
+        protected innerType:EventType = EventType.KEYBOARD;
 
         private _event:any = null;
         get event() {

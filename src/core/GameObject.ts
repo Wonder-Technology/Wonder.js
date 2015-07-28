@@ -39,7 +39,7 @@ module dy {
             this._bubbleParent = bubbleParent;
         }
 
-        private _children:dyCb.Collection = dyCb.Collection.create();
+        private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
 
         constructor() {
             this._uid = GameObject._count;
@@ -208,7 +208,7 @@ module dy {
 
             var result = null,
                 i = null,
-                children:dyCb.Collection = null,
+                children:dyCb.Collection<GameObject> = null,
                 len = this._children.getCount();
 
             children = this._children;

@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        private _commandQueue:dyCb.Collection = dyCb.Collection.create();
+        private _commandQueue:dyCb.Collection<QuadCommand> = dyCb.Collection.create<QuadCommand>();
         private _clearColor:Color = Color.create("#000000");
         private _clearAlpha:number = 1.0;
 

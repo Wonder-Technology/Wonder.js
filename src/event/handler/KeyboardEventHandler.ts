@@ -20,7 +20,7 @@ module dy {
         public trigger(event:Event):boolean{
             var eventName = event.name,
                 eventType = event.type,
-                registerDataList:dyCb.Collection = null,
+                registerDataList:dyCb.Collection<IEventRegisterData> = null,
                 self = this;
 
             registerDataList = EventRegister.getInstance().getEventRegisterDataList(eventName);

@@ -30,11 +30,11 @@ module dy {
             this._priority = priority;
         }
 
-        private _handlerDataList:dyCb.Collection = dyCb.Collection.create();
+        private _handlerDataList:dyCb.Collection<IEventHandlerData> = dyCb.Collection.create<IEventHandlerData>();
         get handlerDataList(){
             return this._handlerDataList;
         }
-        set handlerDataList(handlerDataList:dyCb.Collection){
+        set handlerDataList(handlerDataList:dyCb.Collection<IEventHandlerData>){
             this._handlerDataList = handlerDataList;
         }
 

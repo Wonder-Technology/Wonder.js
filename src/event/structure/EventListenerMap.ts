@@ -12,7 +12,7 @@ module dy{
         	return obj;
         }
 
-        private _listenerMap:dyCb.Hash = dyCb.Hash.create();
+        private _listenerMap:dyCb.Hash<dyCb.Collection<IEventRegisterData>> = dyCb.Hash.create<dyCb.Collection<IEventRegisterData>>();
 
         public appendChild(eventName:EventName, data:IEventRegisterData){
             this._listenerMap.appendChild(
@@ -22,11 +22,11 @@ module dy{
             );
         }
 
-        public getChild(eventName:EventName):any;
-        public getChild(target:GameObject):any;
-        public getChild(target:GameObject, eventName:EventName):any;
+        public getChild(eventName:EventName):dyCb.Collection<IEventRegisterData>;
+        public getChild(target:GameObject):dyCb.Collection<IEventRegisterData>;
+        public getChild(target:GameObject, eventName:EventName):dyCb.Collection<IEventRegisterData>;
 
-        public getChild(args){
+        public getChild(args):any{
             var self = this;
             //
             //return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
@@ -41,7 +41,7 @@ module dy{
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                return this._listenerMap.filter((list:dyCb.Collection, key:string) => {
+                return this._listenerMap.filter((list:dyCb.Collection<IEventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -91,7 +91,7 @@ module dy{
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
                     handler = arguments[1],
-                    list:dyCb.Collection = null;
+                    list:dyCb.Collection<IEventRegisterData> = null;
 
                 list = this._listenerMap.getChild(eventName);
 
@@ -112,7 +112,7 @@ module dy{
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                this._listenerMap.removeChild((list:dyCb.Collection, key:string) => {
+                this._listenerMap.removeChild((list:dyCb.Collection<IEventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -127,7 +127,7 @@ module dy{
                     eventName = arguments[1],
                     handler = arguments[2];
 
-                this._listenerMap.map((list:dyCb.Collection, key:string) => {
+                this._listenerMap.map((list:dyCb.Collection<IEventRegisterData>, key:string) => {
                     list.removeChild((val:IEventRegisterData) => {
                         return val.handler === handler;
                     });
@@ -142,12 +142,12 @@ module dy{
         }
 
         public getEventOffDataList(target:GameObject, eventName?:EventName){
-            var result:dyCb.Collection = dyCb.Collection.create(),
+            var result:dyCb.Collection<IEventOffData> = dyCb.Collection.create<IEventOffData>(),
                 self = this;
 
             if(arguments.length === 1){
                 this.getChild(target)
-                .forEach((list:dyCb.Collection, key:string) => {
+                .forEach((list:dyCb.Collection<IEventRegisterData>, key:string) => {
                         if(list && list.getCount() > 0){
                             result.addChild(
                                 <IEventOffData>{
@@ -161,7 +161,7 @@ module dy{
                 return result;
             }
             else if(arguments.length === 2){
-                var list:dyCb.Collection = this.getChild(target, eventName);
+                var list:dyCb.Collection<IEventRegisterData> = this.getChild(target, eventName);
 
                 if(list && list.getCount() > 0){
                     result.addChild(
@@ -184,7 +184,7 @@ module dy{
             return key.indexOf("_") > -1 ? Number(<any>key.split("_")[0]) : null;
         }
 
-        public isTarget(key:string, target:GameObject, list:dyCb.Collection){
+        public isTarget(key:string, target:GameObject, list:dyCb.Collection<IEventRegisterData>){
             return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
 

@@ -27,6 +27,7 @@
 /// <reference path="render/BufferType"/>
 /// <reference path="render/AttributeDataType"/>
 /// <reference path="render/DrawMode"/>
+/// <reference path="render/Buffer"/>
 /// <reference path="render/ElementBuffer"/>
 /// <reference path="render/ArrayBuffer"/>
 /// <reference path="render/UniformDataType"/>
@@ -72,4 +73,3 @@
 /// <reference path="core/Mesh"/>
 /// <reference path="core/Scene"/>
 /// <reference path="core/Director"/>
-
