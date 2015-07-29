@@ -274,8 +274,24 @@ module dy{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        public rotate (angle, x, y, z): Matrix {
-            this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
+        public rotate (angle, vector3:Vector3): Matrix;
+        public rotate (angle, x, y, z): Matrix;
+
+        public rotate (args): Matrix {
+            var angle = arguments[0];
+
+            if(arguments.length === 2){
+                let vector3 = arguments[1];
+
+                this.applyMatrix(Matrix.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
+            }
+            else if(arguments.length === 4){
+                let x = arguments[1],
+                    y = arguments[2],
+                    z = arguments[3];
+
+                this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
+            }
 
             return this;
         }
@@ -537,6 +553,18 @@ module dy{
 
 
             return result;
+        }
+
+        public getX(){
+            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+        }
+
+        public getY(){
+            return Vector3.create(this._values[4], this._values[5], this._values[6]);
+        }
+
+        public getZ(){
+            return Vector3.create(this._values[8], this._values[9], this._values[10]);
         }
     }
 }

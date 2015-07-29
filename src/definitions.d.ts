@@ -1,10 +1,9 @@
-/// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
-/// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 /// <reference path="../lib/inner/bowser/bowser.d.ts"/>
 /// <reference path="../lib/inner/rsvp/rsvp.d.ts"/>
+/// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
+/// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
 /// <reference path="structure/Point"/>
-/// <reference path="structure/Position"/>
 /// <reference path="structure/View"/>
 
 /// <reference path="math/Vector3"/>
@@ -69,6 +68,7 @@
 /// <reference path="event/factory/FactoryEventHandler"/>
 /// <reference path="event/EventManager"/>
 
+/// <reference path="core/Transform"/>
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Mesh"/>
 /// <reference path="core/Scene"/>

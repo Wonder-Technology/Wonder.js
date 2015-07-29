@@ -13,14 +13,6 @@ module dy{
             return obj;
         }
 
-        private _matrix:Matrix = Matrix.create();
-        get matrix(){
-            return this._matrix;
-        }
-        set matrix(matrix:Matrix){
-            this._matrix = matrix;
-        }
-
         private _gemo:Geometry = null;
         private _actionManager:ActionManager = ActionManager.create();
 
@@ -43,7 +35,6 @@ module dy{
         }
 
         public init(){
-            this.position = Position.create(0, 0, 0);
         }
 
         private _addDrawCommand(){

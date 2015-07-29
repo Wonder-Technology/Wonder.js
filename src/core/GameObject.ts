@@ -3,24 +3,18 @@ module dy {
     export class GameObject {
         private static _count:number = 1;
 
+        public static create(...args) {
+        	var obj = new this();
+
+        	return obj;
+        }
+
         private _uid:number = null;
         get uid() {
             return this._uid;
         }
 
-        set uid(uid:number) {
-            this._uid = uid;
-        }
 
-        //todo add mesh,scene position 研究threejs->dynamic，看如何表示position
-        private _position:Position = null;
-        get position() {
-            return this._position;
-        }
-
-        set position(position:Position) {
-            this._position = position;
-        }
 
         private _parent:GameObject = null;
         get parent() {
@@ -37,6 +31,14 @@ module dy {
         }
         set bubbleParent(bubbleParent:GameObject){
             this._bubbleParent = bubbleParent;
+        }
+        
+        private _transform:Transform = Transform.create();
+        get transform(){
+            return this._transform;
+        }
+        set transform(transform:Transform){
+            this._transform = transform;
         }
 
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
