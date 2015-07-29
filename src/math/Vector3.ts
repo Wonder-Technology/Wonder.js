@@ -1,6 +1,11 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class Vector3{
+        public static up = Vector3.create(0, 1, 0);
+        public static forward = Vector3.create(0, 0, 1);
+        public static right = Vector3.create(1, 0, 0);
+
+
         public static create(x, y, z):Vector3 ;
         public static create():Vector3 ;
         public static create():Vector3 {
@@ -20,6 +25,27 @@ module dy{
         get values():Float32Array { return this._values; }
         set values(values: Float32Array) {
             this._values = values;
+        }
+
+        get x(){
+            return this._values[0];
+        }
+        set x(x:number){
+            this._values[0] = x;
+        }
+
+        get y(){
+            return this._values[1];
+        }
+        set y(y:number){
+            this._values[0] = y;
+        }
+
+        get z(){
+            return this._values[2];
+        }
+        set z(z:number){
+            this._values[0] = z;
         }
 
         constructor(x, y, z);

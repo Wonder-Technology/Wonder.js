@@ -274,8 +274,24 @@ module dy{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        public rotate (angle, x, y, z): Matrix {
-            this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
+        public rotate (angle, vector3:Vector3): Matrix;
+        public rotate (angle, x, y, z): Matrix;
+
+        public rotate (args): Matrix {
+            var angle = arguments[0];
+
+            if(arguments.length === 2){
+                let vector3 = arguments[1];
+
+                this.applyMatrix(Matrix.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
+            }
+            else if(arguments.length === 4){
+                let x = arguments[1],
+                    y = arguments[2],
+                    z = arguments[3];
+
+                this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
+            }
 
             return this;
         }
@@ -309,12 +325,12 @@ module dy{
             return this;
         }
 
-        public setLookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
+        public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix {
             var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
 
-            fx = centerX - eyeX;
-            fy = centerY - eyeY;
-            fz = centerZ - eyeZ;
+            fx = center.x - eye.x;
+            fy = center.y - eye.y;
+            fz = center.z - eye.z;
 
             // Normalize f.
             rlf = 1 / Math.sqrt(fx*fx + fy*fy + fz*fz);
@@ -323,9 +339,9 @@ module dy{
             fz *= rlf;
 
             // Calculate cross product of f and up.
-            sx = fy * upZ - fz * upY;
-            sy = fz * upX - fx * upZ;
-            sz = fx * upY - fy * upX;
+            sx = fy * up.z - fz * up.y;
+            sy = fz * up.x - fx * up.z;
+            sz = fx * up.y - fy * up.x;
 
             // Normalize s.
             rls = 1 / Math.sqrt(sx*sx + sy*sy + sz*sz);
@@ -361,8 +377,8 @@ module dy{
             e[15] = 1;
 
             //Translate.
-            //this.translate(-eyeX, -eyeY, -eyeZ);
-            this.values = this.multiply(Matrix.create().setTranslate(-eyeX, -eyeY, -eyeZ)).values;
+            //this.translate(-eye.x, -eye.y, -eye.z);
+            this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
 
             return this;
         }
@@ -374,8 +390,8 @@ module dy{
          * @param upX, upY, upZ The direction of the up vector.
          * @return this
          */
-        public lookAt (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ):Matrix {
-            this.applyMatrix(Matrix.create().setLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ));
+        public lookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix {
+            this.applyMatrix(Matrix.create().setLookAt(eye, center, up));
 
             return this;
         }
@@ -537,6 +553,18 @@ module dy{
 
 
             return result;
+        }
+
+        public getX(){
+            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+        }
+
+        public getY(){
+            return Vector3.create(this._values[4], this._values[5], this._values[6]);
+        }
+
+        public getZ(){
+            return Vector3.create(this._values[8], this._values[9], this._values[10]);
         }
     }
 }

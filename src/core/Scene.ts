@@ -65,7 +65,6 @@ module dy {
         }
 
         public init(){
-            this.position = Position.create(0, 0, 0);
         }
 
 
@@ -74,7 +73,7 @@ module dy {
         }
 
         private _computeMvpMatrix(mesh):Matrix{
-            return mesh.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
+            return mesh.transform.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
         }
     }
 }
