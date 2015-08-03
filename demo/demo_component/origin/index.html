@@ -21,8 +21,9 @@
                 scene = null;
         //todo add Event class
         var keyState = {};
-        //todo move to Camera
-        var isRotate = false;
+
+        var rotateX = 0,
+                rotateY = 0;
 
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
@@ -59,7 +60,6 @@
 
             scene.onEndLoop = function () {
                 setAllFalse();
-                isRotate = false;
             };
 
             scene.onExit = function () {
@@ -75,6 +75,15 @@
 
             var mesh = dy.Mesh.create(geometry);
 
+//            //todo move to GameObject->addChild
+//            mesh.transform.parent = dy.Director.getInstance().stage;
+
+
+
+//            var mesh2 = dy.Mesh.create(geometry);
+//
+//            //todo move to GameObject->addChild
+//            mesh2.transform.parent = dy.Director.getInstance().stage;
 
 //            //test event emit
 //            var mesh2 = dy.Mesh.create(geometry);
@@ -89,28 +98,41 @@
 
 //            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
 
-            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
+//            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
+            mesh.transform.translateLocal(dy.Vector3.create(0, 0, -20));
 
+//            mesh2.transform.translate(dy.Vector3.create(0, 0, -20));
+//            mesh2.transform.lookAt(dy.Vector3.create(10, 0, 1))
 
 //            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
 
+                mesh.transform.rotateLocal(dy.Vector3.create(0, 0, 30));
 
-//            setInterval(function(){
-//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
-//            }, 30);
+            var num = 10;
+
+//            mesh.transform.rotateAround(10, dy.Vector3.create(0, 0, 0), dy.Vector3.create(0,1,0));
+            setInterval(function(){
+//                num += 5;
+//                mesh.transform.rotateAround(num, dy.Vector3.create(0, 0, -22), dy.Vector3.create(1,1,0));
+//                mesh.transform.translateLocal(dy.Vector3.create(0, 0.1, 0));
+//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0), dy.Space.WORLD);
+//                mesh.transform.rotateAround(5, dy.Vector3.create(5,1,0));
+//                mesh.transform.rotateLocal(dy.Vector3.create(0, 20, 0), dy.Space.SELF);
+//                mesh.transform.rotateLocal(dy.Vector3.create(0, 0, 1));
+            }, 30);
 //            setInterval(function(){
 //                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0), dy.Space.WORLD);
 //            }, 30);
-            var id = setInterval(function(){
-                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
-            }, 30);
-
-            setTimeout(function(){
-                clearInterval(id);
-                setInterval(function(){
-                    mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
-                }, 30);
-            }, 3000);
+//            var id = setInterval(function(){
+//                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
+//            }, 30);
+//
+//            setTimeout(function(){
+//                clearInterval(id);
+//                setInterval(function(){
+//                    mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
+//                }, 30);
+//            }, 3000);
 //            setInterval(function(){
 //                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
 //            }, 30);
@@ -122,6 +144,7 @@
 //            mesh.runAction(rotateAction);
 
             scene.addChild(mesh);
+//            scene.addChild(mesh2);
 
 
             var director = dy.Director.getInstance();
@@ -133,30 +156,53 @@
         }
 
         function _createCamera() {
-            var camera = dy.Camera.create({
-                        eyeX: 0.0,
-                        eyeY: 0.0,
-                        eyeZ: 10.0,
-                        centerX: 0,
-                        centerY: 0,
-                        centerZ: -1,
-                        upX: 0,
-                        upY: 1,
-                        upZ: 0
-                    },
-                    {
-                        angle: 60,
-                        aspect: canvas.width / canvas.height,
-                        near: 0.1,
-                        far: 100
-                    });
+            var camera = dy.GameObject.create();
+
+//            //todo move to GameObject->addChild
+//            camera.transform.parent = dy.Director.getInstance().stage;
+
+
+            var cameraComponent = dy.Camera.create();
+//            cameraComponent.eye = dy.Vector3.create(0, 0, 10);
+//            cameraComponent.center = dy.Vector3.create(0, 0, -1);
+//            cameraComponent.up = dy.Vector3.create(0, 1, 0);
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+//            camera.transform.translate(dy.Vector3.create(0, 0, 0));
+//            camera.transform.translate(dy.Vector3.create(0, 0, -5));
+//            camera.transform.scale(dy.Vector3.create(0.5, 1, 1));
+//            camera.transform.rotateLocal(dy.Vector3.create(30, 0, 0))
+//            camera.transform.lookAt(dy.Vector3.create(0, 0.2, -1));
+//            camera.transform.rotateLocal(dy.Vector3.create(35, 30, 0))
+//            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+
+//            // add the first_person_camera script to the camera
+//            camera.addComponent("script", {
+//                scripts: [{
+//                    url: 'first_person_camera.js'
+//                }]
+//            })
+
+//            camera.transform.position.z = 10;
+//            camera.transform.position = dy.Vector3.create(0, 0, 10);
+
 
             camera.onStartLoop = function () {
                 move(this);
-                if (isRotate) {
-                    this.rotate();
-                }
-                zoom(this);
+//                if (isRotate) {
+//                    camera.transform.rotateLocal(dy.Vector3.create(camera.rotateStepX, camera.rotateStepY ,0));
+                    camera.transform.setLocalEulerAngles(rotateX, rotateY, 0);
+//                    console.log(camera.rotateStepX, camera.rotateStepY)
+//                }
+                zoom(cameraComponent);
             };
 
             return camera;
@@ -164,49 +210,30 @@
 
 
         function move(camera) {
-//            var map = dy.Key;
+            var speed = 1.2;
 
-//            if (keyState[map.A]) {
-//                camera.moveLeft();
-//            }
-//            else if (keyState[map.D]) {
-//                camera.moveRight();
-//            }
-//            else if (keyState[map.W]) {
-//                camera.moveFront();
-//            }
-//            else if (keyState[map.S]) {
-//                camera.moveBack();
-//            }
             if (keyState["a"]) {
-                camera.moveLeft();
+                camera.transform.translateLocal(dy.Vector3.create(-speed, 0, 0));
             }
             else if (keyState["d"]) {
-                camera.moveRight();
+                camera.transform.translateLocal(dy.Vector3.create(speed, 0, 0));
             }
             else if (keyState["w"]) {
-                camera.moveFront();
+                camera.transform.translateLocal(dy.Vector3.create(0, 0, -speed));
             }
             else if (keyState["s"]) {
-                camera.moveBack();
+                camera.transform.translateLocal(dy.Vector3.create(0, 0, speed));
             }
         }
 
-        function zoom(camera) {
-//            var map = dy.Key;
-//
-//            if (keyState[map.G]) {
-//                camera.zoomOut();
-//            }
-//            else if (keyState[map.H]) {
-//                camera.zoomIn();
-//            }
+        function zoom(cameraComponent) {
+            var speed = 10;
 
             if (keyState["g"]) {
-                camera.zoomOut();
+                cameraComponent.zoomIn(speed);
             }
             else if (keyState["h"]) {
-                camera.zoomIn();
+                cameraComponent.zoomOut(speed);
             }
         }
 
@@ -316,11 +343,8 @@
 
             // Update position
             var subscription = mousedrag.subscribe(function (pos) {
-                //此处为针对视图坐标系的角度变换！
-                camera.rotateStepY = -pos.dx;
-                camera.rotateStepX = -pos.dy;
-
-                isRotate = true;
+                rotateY -= pos.dx;
+                rotateX -= pos.dy;
             });
 
 

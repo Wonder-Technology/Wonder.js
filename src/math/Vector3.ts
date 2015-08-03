@@ -38,14 +38,14 @@ module dy{
             return this._values[1];
         }
         set y(y:number){
-            this._values[0] = y;
+            this._values[1] = y;
         }
 
         get z(){
             return this._values[2];
         }
         set z(z:number){
-            this._values[0] = z;
+            this._values[2] = z;
         }
 
         constructor(x, y, z);
@@ -77,11 +77,35 @@ module dy{
             return this;
         }
 
+        public scale(scalar:number) {
+            var v = this._values;
+
+            v[0] *= scalar;
+            v[1] *= scalar;
+            v[2] *= scalar;
+
+            return this;
+        }
+
+        public set(x:number, y:number, z:number){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
         public sub(v:Vector3):Vector3 {
             return Vector3.create(
                 this._values[0] - v.values[0],
                 this._values[1] - v.values[1],
                 this._values[2] - v.values[2]
+            )
+        }
+
+        public add(v:Vector3){
+            return Vector3.create(
+                this._values[0] + v.values[0],
+                this._values[1] + v.values[1],
+                this._values[2] + v.values[2]
             )
         }
 

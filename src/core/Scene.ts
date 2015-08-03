@@ -11,11 +11,11 @@ module dy {
 
         //private _meshes:dyCb.Collection = dyCb.Collection.create();
 
-        private _camera:Camera = null;
+        private _camera:GameObject = null;
         get camera() {
             return this._camera;
         }
-        set camera(camera:Camera) {
+        set camera(camera:GameObject) {
             this._camera = camera;
         }
 
@@ -43,11 +43,11 @@ module dy {
 
         public run() {
             var self = this;
+            var camera = this._camera.getComponent<Camera>(Camera);
 
-            this._camera.pushMatrix();
             this._camera.onStartLoop();
 
-            this._camera.run();
+            camera.update();
 
             this._program.use();
 
@@ -61,7 +61,6 @@ module dy {
 
 
             this._camera.onEndLoop();
-            this._camera.popMatrix();
         }
 
         public init(){
@@ -73,7 +72,9 @@ module dy {
         }
 
         private _computeMvpMatrix(mesh):Matrix{
-            return mesh.transform.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
+            //return mesh.transform.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
+            var camera = this._camera.getComponent<Camera>(Camera);
+            return mesh.transform.matrix.copy().applyMatrix(camera.computeVpMatrix());
         }
     }
 }

@@ -325,8 +325,25 @@ module dy{
             return this;
         }
 
-        public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix {
-            var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz;
+        public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix;
+        public setLookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix;
+
+        public setLookAt (args):Matrix {
+            var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz,
+                eye = null,
+                center = null,
+                up = null;
+
+            if(arguments.length === 3){
+                eye = arguments[0];
+                center = arguments[1];
+                up = arguments[2]
+            }
+            else if(arguments.length === 9){
+                eye = Vector3.create(arguments[0], arguments[1], arguments[2]);
+                center = Vector3.create(arguments[3], arguments[4], arguments[5]);
+                up = Vector3.create(arguments[6], arguments[7], arguments[8]);
+            }
 
             fx = center.x - eye.x;
             fy = center.y - eye.y;
@@ -371,14 +388,18 @@ module dy{
             e[10] = -fz;
             e[11] = 0;
 
-            e[12] = 0;
-            e[13] = 0;
-            e[14] = 0;
-            e[15] = 1;
+            //e[12] = 0;
+            //e[13] = 0;
+            //e[14] = 0;
+            //e[15] = 1;
 
+            e[12] = -eye.x;
+            e[13] = -eye.y;
+            e[14] = -eye.z;
+            e[15] = 1;
             //Translate.
             //this.translate(-eye.x, -eye.y, -eye.z);
-            this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
+            //this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
 
             return this;
         }
@@ -390,8 +411,13 @@ module dy{
          * @param upX, upY, upZ The direction of the up vector.
          * @return this
          */
-        public lookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix {
-            this.applyMatrix(Matrix.create().setLookAt(eye, center, up));
+        public lookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix;
+        public lookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix;
+
+        public lookAt (args):Matrix {
+            var matrix = Matrix.create();
+
+            this.applyMatrix(matrix.setLookAt.apply(matrix, Array.prototype.slice.call(arguments, 0)));
 
             return this;
         }
@@ -565,6 +591,78 @@ module dy{
 
         public getZ(){
             return Vector3.create(this._values[8], this._values[9], this._values[10]);
+        }
+
+        /**
+         * @function
+         * @name pc.Mat4#setTRS
+         * @description Sets the specified matrix to the concatenation of a translation, a
+         * quaternion rotation and a scale.
+         * @param {pc.Vec3} t A 3-d vector translation.
+         * @param {pc.Quat} r A quaternion rotation.
+         * @param {pc.Vec3} s A 3-d vector scale.
+         * @returns {pc.Mat4} Self for chaining.
+         * @example
+         * var t = new pc.Vec3(10, 20, 30);
+         * var r = new pc.Quat();
+         * var s = new pc.Vec3(2, 2, 2);
+         *
+         * var m = new pc.Mat4();
+         * m.compose(t, r, s);
+         */
+        public setTRS(t:Vector3, r:Quaternion, s:Vector3) {
+            var tx, ty, tz, qx, qy, qz, qw, sx, sy, sz,
+                x2, y2, z2, xx, xy, xz, yy, yz, zz, wx, wy, wz, m;
+
+            tx = t.x;
+            ty = t.y;
+            tz = t.z;
+
+            qx = r.x;
+            qy = r.y;
+            qz = r.z;
+            qw = r.w;
+
+            sx = s.x;
+            sy = s.y;
+            sz = s.z;
+
+            x2 = qx + qx;
+            y2 = qy + qy;
+            z2 = qz + qz;
+            xx = qx * x2;
+            xy = qx * y2;
+            xz = qx * z2;
+            yy = qy * y2;
+            yz = qy * z2;
+            zz = qz * z2;
+            wx = qw * x2;
+            wy = qw * y2;
+            wz = qw * z2;
+
+            m = this._values;
+
+            m[0] = (1 - (yy + zz)) * sx;
+            m[1] = (xy + wz) * sx;
+            m[2] = (xz - wy) * sx;
+            m[3] = 0;
+
+            m[4] = (xy - wz) * sy;
+            m[5] = (1 - (xx + zz)) * sy;
+            m[6] = (yz + wx) * sy;
+            m[7] = 0;
+
+            m[8] = (xz + wy) * sz;
+            m[9] = (yz - wx) * sz;
+            m[10] = (1 - (xx + yy)) * sz;
+            m[11] = 0;
+
+            m[12] = tx;
+            m[13] = ty;
+            m[14] = tz;
+            m[15] = 1;
+
+            return this;
         }
     }
 }

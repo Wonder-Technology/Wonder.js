@@ -3,12 +3,20 @@
 /// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
+/// <reference path="core/Transform"/>
+/// <reference path="core/Component"/>
+/// <reference path="core/GameObject"/>
+/// <reference path="core/Mesh"/>
+/// <reference path="core/Scene"/>
+/// <reference path="core/Director"/>
+
 /// <reference path="structure/Point"/>
 /// <reference path="structure/View"/>
 
 /// <reference path="math/Vector3"/>
 /// <reference path="math/Vector4"/>
 /// <reference path="math/Matrix"/>
+/// <reference path="math/Quaternion"/>
 
 /// <reference path="action/Action"/>
 /// <reference path="action/ActionManager"/>
@@ -16,7 +24,7 @@
 /// <reference path="action/Scale"/>
 /// <reference path="action/Translate"/>
 
-/// <reference path="Camera"/>
+/// <reference path="component/Camera"/>
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
@@ -68,8 +76,3 @@
 /// <reference path="event/factory/FactoryEventHandler"/>
 /// <reference path="event/EventManager"/>
 
-/// <reference path="core/Transform"/>
-/// <reference path="core/GameObject"/>
-/// <reference path="core/Mesh"/>
-/// <reference path="core/Scene"/>
-/// <reference path="core/Director"/>

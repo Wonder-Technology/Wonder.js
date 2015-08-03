@@ -42,6 +42,7 @@ module dy {
         }
 
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
+        private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
 
         constructor() {
             this._uid = GameObject._count;
@@ -251,6 +252,22 @@ module dy {
             else{
                 return false;
             }
+        }
+
+        public getComponent<T>(_class:any):T{
+            return this._components.filter((component) => {
+                return component instanceof Component;
+            }).getChild(0);
+        }
+
+        public addComponent(component:Component){
+            component.gameObject = this;
+            component.init();
+
+            this._components.addChild(component);
+        }
+        public removeComponent(component:Component){
+            //todo implement
         }
 
         private _ascendZ(a:GameObject, b:GameObject){
