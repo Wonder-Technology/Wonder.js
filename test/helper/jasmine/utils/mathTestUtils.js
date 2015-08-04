@@ -2,7 +2,7 @@ var mathTestUtils = (function () {
     var Matrix = dy.Matrix;
 
     return {
-        getValues: function (values) {
+        getValues: function (values, digit) {
             var len = 0,
                 i = 0,
                 result = [];
@@ -14,7 +14,7 @@ var mathTestUtils = (function () {
                     result[i] = 0;
                     continue;
                 }
-                result[i] = YYC.Tool.math.toFixed(values[i], 7);
+                result[i] = YYC.Tool.math.toFixed(values[i], digit === undefined ? 7 : digit);
             }
             return result;
         },
