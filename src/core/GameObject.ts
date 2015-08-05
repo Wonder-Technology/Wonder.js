@@ -24,7 +24,7 @@ module dy {
             this._bubbleParent = bubbleParent;
         }
         
-        private _transform:Transform = Transform.create();
+        private _transform:Transform = Transform.create(this);
         get transform(){
             return this._transform;
         }
