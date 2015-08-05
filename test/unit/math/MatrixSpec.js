@@ -55,7 +55,7 @@ describe("matrix", function(){
         });
     });
 
-    describe("setInverseOf", function(){
+    describe("inverseOf", function(){
         it("设置为逆矩阵", function(){
             var mat = Matrix.create();
             mat.values = new Float32Array([
@@ -65,9 +65,9 @@ describe("matrix", function(){
                 2, 1, 0, 0
             ]);
 
-            matrix.setInverseOf(mat);
+            mat.inverseOf();
 
-            expect(getValues()).toEqual(
+            expect(getValues(mat)).toEqual(
                 [0, 0, 1, -2, 0, 0, -2, 5, 0.3333333, -0.3333333, 0, 0, 0.6666667, 0.3333333, 0, 0 ]
             )
         });
@@ -293,13 +293,13 @@ describe("matrix", function(){
             );
         });
         it("测试视图矩阵", function(){
-            var v =Vector4.create(1, 1, 1, 1);
+            var v =Vector4.create(1, 1, 0, 1);
 
            matrix.lookAt(1, 2, 1, 1, 2, -1, 0, 1, 0);
             var result = matrix.multiplyVector4(v);
 
             expect(getValues(result)).toEqual(
-                [ 0, -1, 0, 1 ]
+                [ 0, -1, -1, 1 ]
             );
         });
         it("旋转视图矩阵", function(){

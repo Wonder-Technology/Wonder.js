@@ -1,20 +1,11 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    export class GameObject {
-        private static _count:number = 1;
-
+    export class GameObject extends Entity{
         public static create(...args) {
         	var obj = new this();
 
         	return obj;
         }
-
-        private _uid:number = null;
-        get uid() {
-            return this._uid;
-        }
-
-
 
         private _parent:GameObject = null;
         get parent() {
@@ -43,11 +34,6 @@ module dy {
 
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
-
-        constructor() {
-            this._uid = GameObject._count;
-            GameObject._count += 1;
-        }
 
         public init() {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
@@ -89,7 +75,8 @@ module dy {
 
             if (child.parent) {
                 //will remove bind event,remove from parent ...
-                child.removeMe();
+                //child.removeMe();
+                child.parent.removeChild(child);
             }
 
             child.parent = this;
@@ -166,17 +153,17 @@ module dy {
             return this;
         }
 
-        /**
-         * remove this game object from parent.
-         * @returns {boolean}
-         */
-        public removeMe():GameObject {
-            var parent = this._parent;
-
-            parent && parent.removeChild(this);
-
-            return this;
-        }
+        ///**
+        // * remove this game object from parent.
+        // * @returns {boolean}
+        // */
+        //public removeMe():GameObject {
+        //    var parent = this._parent;
+        //
+        //    parent && parent.removeChild(this);
+        //
+        //    return this;
+        //}
 
         public getTopUnderPoint(point:Point):GameObject {
             //var found, localP, child;

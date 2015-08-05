@@ -17,6 +17,10 @@ module.exports = function(config) {
         'bower_components/jquery/dist/jquery.js',
         'bower_components/yyctoolbox/tool/yTool.js',
 
+
+        "reference/playCanvas/build/output/playcanvas-latest.js",
+        "reference/three.js.sourcecode/Three.js",
+
         //'src/math/*.js',
         'dist/dy.innerLib.js',
         'dist/dy.debug.js',
@@ -27,6 +31,7 @@ module.exports = function(config) {
 
         //'test/unit/**/*.js'
         'test/unit/math/*.js',
+        'test/unit/core/*.js',
         //'test/unit/event/eventSpec.js'
         'test/unit/event/*.js'
         //'test/unit/event/mouseEventSpec.js'

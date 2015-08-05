@@ -3,6 +3,7 @@
 /// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
+/// <reference path="core/Entity"/>
 /// <reference path="core/Transform"/>
 /// <reference path="core/Component"/>
 /// <reference path="core/GameObject"/>
@@ -13,6 +14,7 @@
 /// <reference path="structure/Point"/>
 /// <reference path="structure/View"/>
 
+/// <reference path="math/Global"/>
 /// <reference path="math/Vector3"/>
 /// <reference path="math/Vector4"/>
 /// <reference path="math/Matrix"/>

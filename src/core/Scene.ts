@@ -74,7 +74,7 @@ module dy {
         private _computeMvpMatrix(mesh):Matrix{
             //return mesh.transform.matrix.copy().applyMatrix(this._camera.computeVpMatrix());
             var camera = this._camera.getComponent<Camera>(Camera);
-            return mesh.transform.matrix.copy().applyMatrix(camera.computeVpMatrix());
+            return mesh.transform.localToWorldMatrix.copy().applyMatrix(camera.computeVpMatrix());
         }
     }
 }

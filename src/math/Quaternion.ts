@@ -1,7 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    const DEG_TO_RAD = Math.PI / 180;
-
     export class Quaternion {
         public static create(x?:number, y?:number, z?:number, w?:number) {
             var obj = new this(x, y, z, w);
@@ -64,8 +62,11 @@ module dy {
          * var q = new pc.Quat();
          * q.setFromEulerAngles(45, 90, 180);
          */
-        public setFromEulerAngles(ex, ey, ez) {
-            var sx, cx, sy, cy, sz, cz, halfToRad;
+        public setFromEulerAngles(eulerAngles:Vector3) {
+            var sx, cx, sy, cy, sz, cz, halfToRad,
+                ex = eulerAngles.x,
+                ey = eulerAngles.y,
+                ez = eulerAngles.z;
 
             halfToRad = 0.5 * DEG_TO_RAD;
             ex *= halfToRad;
@@ -124,7 +125,7 @@ module dy {
          * // Convert to a quaternion
          * var q = new pc.Quat().setFromMat4(rot);
          */
-        public setFromMat4(matrix:Matrix) {
+        public setFromMatrix(matrix:Matrix) {
             var m00, m01, m02, m10, m11, m12, m20, m21, m22,
                 tr, s, rs, lx, ly, lz, m;
 
@@ -283,25 +284,8 @@ module dy {
             return Quaternion.create(this._x, this._y, this._z, this._w);
         }
 
-        /**
-         * @function
-         * @name pc.Quat#copy
-         * @description Copies the contents of a source quaternion to a destination quaternion.
-         * @param {pc.Quat} rhs The quaternion to be copied.
-         * @returns {pc.Quat} Self for chaining.
-         * @example
-         * var src = new pc.Quat();
-         * var dst = new pc.Quat();
-         * dst.copy(src, src);
-         * console.log("The two quaternions are " + (src.equals(dst) ? "equal" : "different"));
-         */
-        public copy(rhs) {
-            this._x = rhs.x;
-            this._y = rhs.y;
-            this._z = rhs.z;
-            this._w = rhs.w;
-
-            return this;
+        public copy() {
+            return Quaternion.create(this._x, this._y, this._z, this._w);
         }
 
         /**
@@ -406,6 +390,44 @@ module dy {
             this._y = y;
             this._z = z;
             this._w = w;
+        }
+
+        public sub(quat:Quaternion){
+            return quat.copy().invert().multiply(this);
+        }
+
+        /**
+         * @function
+         * @name pc.Quat#getEulerAngles
+         * @description Converts the supplied quaternion to Euler angles.
+         * @param {pc.Vec3} [eulers] The 3-dimensional vector to receive the Euler angles.
+         * @returns {pc.Vec3} The 3-dimensional vector holding the Euler angles that
+         * correspond to the supplied quaternion.
+         */
+        public getEulerAngles() {
+            var x, y, z, qx, qy, qz, qw, a2;
+
+            qx = this._x;
+            qy = this._y;
+            qz = this._z;
+            qw = this._w;
+
+            a2 = 2 * (qw * qy - qx * qz);
+            if (a2 <= -0.99999) {
+                x = 2 * Math.atan2(qx, qw);
+                y = -Math.PI / 2;
+                z = 0;
+            } else if (a2 >= 0.99999) {
+                x = 2 * Math.atan2(qx, qw);
+                y = Math.PI / 2;
+                z = 0;
+            } else {
+                x = Math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy));
+                y = Math.asin(a2);
+                z = Math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz));
+            }
+
+            return Vector3.create(x, y, z).scale(RAD_TO_DEG);
         }
     }
 }

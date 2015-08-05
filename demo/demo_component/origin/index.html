@@ -99,14 +99,14 @@
 //            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
 
 //            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
-            mesh.transform.translateLocal(dy.Vector3.create(0, 0, -20));
+            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
 
 //            mesh2.transform.translate(dy.Vector3.create(0, 0, -20));
 //            mesh2.transform.lookAt(dy.Vector3.create(10, 0, 1))
 
 //            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
 
-                mesh.transform.rotateLocal(dy.Vector3.create(0, 0, 30));
+                mesh.transform.rotate(dy.Vector3.create(0, 0, 30));
 
             var num = 10;
 
@@ -199,7 +199,7 @@
                 move(this);
 //                if (isRotate) {
 //                    camera.transform.rotateLocal(dy.Vector3.create(camera.rotateStepX, camera.rotateStepY ,0));
-                    camera.transform.setLocalEulerAngles(rotateX, rotateY, 0);
+                    camera.transform.setEulerAngles(rotateX, rotateY, 0);
 //                    console.log(camera.rotateStepX, camera.rotateStepY)
 //                }
                 zoom(cameraComponent);
@@ -213,16 +213,16 @@
             var speed = 1.2;
 
             if (keyState["a"]) {
-                camera.transform.translateLocal(dy.Vector3.create(-speed, 0, 0));
+                camera.transform.translate(dy.Vector3.create(-speed, 0, 0));
             }
             else if (keyState["d"]) {
-                camera.transform.translateLocal(dy.Vector3.create(speed, 0, 0));
+                camera.transform.translate(dy.Vector3.create(speed, 0, 0));
             }
             else if (keyState["w"]) {
-                camera.transform.translateLocal(dy.Vector3.create(0, 0, -speed));
+                camera.transform.translate(dy.Vector3.create(0, 0, -speed));
             }
             else if (keyState["s"]) {
-                camera.transform.translateLocal(dy.Vector3.create(0, 0, speed));
+                camera.transform.translate(dy.Vector3.create(0, 0, speed));
             }
         }
 
