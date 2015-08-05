@@ -66,7 +66,7 @@ module dy{
             );
 
             if(d === 0){
-                return Vector3.create(0, 0, 0);
+                return this;
             }
 
             v[0] = v[0] / d;
@@ -136,6 +136,40 @@ module dy{
             var v = this._values;
 
             return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        }
+
+        /**
+         * @function
+         * @name pc.Vec3#cross
+         * @description Returns the result of a cross product operation performed on the two specified 3-dimensional vectors.
+         * @param {pc.Vec3} lhs The first 3-dimensional vector operand of the cross product.
+         * @param {pc.Vec3} rhs The second 3-dimensional vector operand of the cross product.
+         * @returns {pc.Vec3} Self for chaining.
+         * @example
+         * var back = new pc.Vec3().cross(pc.Vec3.RIGHT, pc.Vec3.UP);
+         *
+         * // Should print the Z axis (i.e. [0, 0, 1])
+         * console.log("The result of the cross product is: " + back.toString());
+         */
+        public cross(lhs, rhs) {
+            var a, b, r, ax, ay, az, bx, by, bz;
+
+            a = lhs.values;
+            b = rhs.values;
+            r = this._values;
+
+            ax = a[0];
+            ay = a[1];
+            az = a[2];
+            bx = b[0];
+            by = b[1];
+            bz = b[2];
+
+            r[0] = ay * bz - by * az;
+            r[1] = az * bx - bz * ax;
+            r[2] = ax * by - bx * ay;
+
+            return this;
         }
     }
 }

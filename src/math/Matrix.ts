@@ -319,78 +319,140 @@ module dy{
         public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix;
         public setLookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix;
 
-        public setLookAt (args):Matrix {
-            var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz,
-                eye = null,
-                center = null,
-                up = null;
+        //public setLookAt (args):Matrix {
+        //    var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz,
+        //        eye = null,
+        //        center = null,
+        //        up = null;
+        //
+        //    if(arguments.length === 3){
+        //        eye = arguments[0];
+        //        center = arguments[1];
+        //        up = arguments[2]
+        //    }
+        //    else if(arguments.length === 9){
+        //        eye = Vector3.create(arguments[0], arguments[1], arguments[2]);
+        //        center = Vector3.create(arguments[3], arguments[4], arguments[5]);
+        //        up = Vector3.create(arguments[6], arguments[7], arguments[8]);
+        //    }
+        //
+        //    fx = center.x - eye.x;
+        //    fy = center.y - eye.y;
+        //    fz = center.z - eye.z;
+        //
+        //    // Normalize f.
+        //    rlf = 1 / Math.sqrt(fx*fx + fy*fy + fz*fz);
+        //    fx *= rlf;
+        //    fy *= rlf;
+        //    fz *= rlf;
+        //
+        //    // Calculate cross product of f and up.
+        //    sx = fy * up.z - fz * up.y;
+        //    sy = fz * up.x - fx * up.z;
+        //    sz = fx * up.y - fy * up.x;
+        //
+        //    // Normalize s.
+        //    rls = 1 / Math.sqrt(sx*sx + sy*sy + sz*sz);
+        //    sx *= rls;
+        //    sy *= rls;
+        //    sz *= rls;
+        //
+        //    // Calculate cross product of s and f.
+        //    ux = sy * fz - sz * fy;
+        //    uy = sz * fx - sx * fz;
+        //    uz = sx * fy - sy * fx;
+        //
+        //    // Set to this.
+        //    e = this._values;
+        //    e[0] = sx;
+        //    e[1] = ux;
+        //    e[2] = -fx;
+        //    e[3] = 0;
+        //
+        //    e[4] = sy;
+        //    e[5] = uy;
+        //    e[6] = -fy;
+        //    e[7] = 0;
+        //
+        //    e[8] = sz;
+        //    e[9] = uz;
+        //    e[10] = -fz;
+        //    e[11] = 0;
+        //
+        //    //e[12] = 0;
+        //    //e[13] = 0;
+        //    //e[14] = 0;
+        //    //e[15] = 1;
+        //
+        //    e[12] = -eye.x;
+        //    e[13] = -eye.y;
+        //    e[14] = -eye.z;
+        //    e[15] = 1;
+        //    //Translate.
+        //    //this.translate(-eye.x, -eye.y, -eye.z);
+        //    //this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
+        //
+        //    return this;
+        //}
+        /**
+         * @function
+         * @name pc.Mat4#setLookAt
+         * @description Sets the specified matrix to a viewing matrix derived from an eye point, a target point
+         * and an up vector. The matrix maps the target point to the negative z-axis and the eye point to the
+         * origin, so that when you use a typical projection matrix, the center of the scene maps to the center
+         * of the viewport. Similarly, the direction described by the up vector projected onto the viewing plane
+         * is mapped to the positive y-axis so that it points upward in the viewport. The up vector must not be
+         * parallel to the line of sight from the eye to the reference point.
+         * @param {pc.Vec3} position 3-d vector holding view position.
+         * @param {pc.Vec3} target 3-d vector holding reference point.
+         * @param {pc.Vec3} up 3-d vector holding the up direction.
+         * @returns {pc.Mat4} Self for chaining.
+         * @example
+         * var position = new pc.Vec3(10, 10, 10);
+         * var target = new pc.Vec3(0, 0, 0);
+         * var up = new pc.Vec3(0, 1, 0);
+         * var m = new pc.Mat4().setLookAt(position, target, up);
+         */
+        public setLookAt(args) {
+        var x, y, z,
+            eye, center, up;
 
-            if(arguments.length === 3){
-                eye = arguments[0];
-                center = arguments[1];
-                up = arguments[2]
-            }
-            else if(arguments.length === 9){
-                eye = Vector3.create(arguments[0], arguments[1], arguments[2]);
-                center = Vector3.create(arguments[3], arguments[4], arguments[5]);
-                up = Vector3.create(arguments[6], arguments[7], arguments[8]);
-            }
+        if(arguments.length === 3){
+            eye = arguments[0];
+            center = arguments[1];
+            up = arguments[2]
+        }
+        else if(arguments.length === 9){
+            eye = Vector3.create(arguments[0], arguments[1], arguments[2]);
+            center = Vector3.create(arguments[3], arguments[4], arguments[5]);
+            up = Vector3.create(arguments[6], arguments[7], arguments[8]);
+        }
+        x = Vector3.create();
 
-            fx = center.x - eye.x;
-            fy = center.y - eye.y;
-            fz = center.z - eye.z;
+            z = eye.sub(center).normalize();
 
-            // Normalize f.
-            rlf = 1 / Math.sqrt(fx*fx + fy*fy + fz*fz);
-            fx *= rlf;
-            fy *= rlf;
-            fz *= rlf;
+            y = up.copy().normalize();
+            x.cross(y, z).normalize();
+            y.cross(z, x);
 
-            // Calculate cross product of f and up.
-            sx = fy * up.z - fz * up.y;
-            sy = fz * up.x - fx * up.z;
-            sz = fx * up.y - fy * up.x;
+            var r = this._values;
 
-            // Normalize s.
-            rls = 1 / Math.sqrt(sx*sx + sy*sy + sz*sz);
-            sx *= rls;
-            sy *= rls;
-            sz *= rls;
-
-            // Calculate cross product of s and f.
-            ux = sy * fz - sz * fy;
-            uy = sz * fx - sx * fz;
-            uz = sx * fy - sy * fx;
-
-            // Set to this.
-            e = this._values;
-            e[0] = sx;
-            e[1] = ux;
-            e[2] = -fx;
-            e[3] = 0;
-
-            e[4] = sy;
-            e[5] = uy;
-            e[6] = -fy;
-            e[7] = 0;
-
-            e[8] = sz;
-            e[9] = uz;
-            e[10] = -fz;
-            e[11] = 0;
-
-            //e[12] = 0;
-            //e[13] = 0;
-            //e[14] = 0;
-            //e[15] = 1;
-
-            e[12] = -eye.x;
-            e[13] = -eye.y;
-            e[14] = -eye.z;
-            e[15] = 1;
-            //Translate.
-            //this.translate(-eye.x, -eye.y, -eye.z);
-            //this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
+            r[0]  = x.x;
+            r[1]  = x.y;
+            r[2]  = x.z;
+            r[3]  = 0;
+            r[4]  = y.x;
+            r[5]  = y.y;
+            r[6]  = y.z;
+            r[7]  = 0;
+            r[8]  = z.x;
+            r[9]  = z.y;
+            r[10] = z.z;
+            r[11] = 0;
+            r[12] = eye.x;
+            r[13] = eye.y;
+            r[14] = eye.z;
+            r[15] = 1;
 
             return this;
         }
@@ -564,9 +626,9 @@ module dy{
                 vec3 = vector.values;
             var result = [];
 
-            result[0] = vec3[0] * mat1[0] + vec3[1] * mat1[4] + vec3[2] * mat1[8];
-            result[1] = vec3[0] * mat1[1] + vec3[1] * mat1[5] + vec3[2] * mat1[9];
-            result[2] = vec3[0] * mat1[2] + vec3[1] * mat1[6] + vec3[2] * mat1[10];
+            result[0] = vec3[0] * mat1[0] + vec3[1] * mat1[4] + vec3[2] * mat1[8] + mat1[12];
+            result[1] = vec3[0] * mat1[1] + vec3[1] * mat1[5] + vec3[2] * mat1[9] + mat1[13];
+            result[2] = vec3[0] * mat1[2] + vec3[1] * mat1[6] + vec3[2] * mat1[10] + mat1[14];
 
             return Vector3.create(result[0], result[1], result[2]);
         }

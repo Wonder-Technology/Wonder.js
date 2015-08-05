@@ -13,13 +13,13 @@ module dy{
         }
 
         get cameraToWorldMatrix(){
-            //return this.transform.worldTransform;
-            return this.transform.localToWorldMatrix;
+            return this.transform.localToWorldMatrix.copy();
+            //return this.transform.localToWorldMatrix;
         }
 
         get worldToCameraMatrix(){
-            return this.transform.worldToLocalMatrix;
-            //return this.cameraToWorldMatrix;
+            //return this.transform.worldToLocalMatrix;
+            return this.cameraToWorldMatrix.inverseOf();
         }
 
         private _pMatrix:Matrix = Matrix.create();
