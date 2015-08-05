@@ -1,4 +1,6 @@
 {
+    "name": "dy",
+    "version": "0.0.1",
   "devDependencies": {
     "del": "^1.2.0",
     "fs-extra": "^0.22.1",
