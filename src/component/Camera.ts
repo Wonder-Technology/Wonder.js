@@ -5,7 +5,7 @@ module dy{
     //todo optimize to reduce compute
     //todo add Frustum?
 
-    export class Camera extends Component{
+    export class Camera extends Action{
         public static create() {
             var obj = new this();
 
@@ -115,6 +115,7 @@ module dy{
         }
 
         public update(){
+            //todo add dirty mechanism
             this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
         }
     }

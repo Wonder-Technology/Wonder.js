@@ -4,15 +4,27 @@
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
 /// <reference path="core/Entity"/>
-/// <reference path="core/Transform"/>
 /// <reference path="core/Component"/>
+/// <reference path="core/Transform"/>
 /// <reference path="core/GameObject"/>
-/// <reference path="core/Mesh"/>
-/// <reference path="core/Scene"/>
+/// <reference path="core/Stage"/>
 /// <reference path="core/Director"/>
 
 /// <reference path="structure/Point"/>
 /// <reference path="structure/View"/>
+
+/// <reference path="component/geometry/Geometry"/>
+/// <reference path="component/geometry/BoxGeometry"/>
+/// <reference path="component/geometry/RectGeometry"/>
+/// <reference path="component/geometry/SphereDrawMode"/>
+/// <reference path="component/geometry/SphereGeometry"/>
+/// <reference path="component/geometry/TriangleGeometry"/>
+/// <reference path="component/action/Action"/>
+/// <reference path="component/action/ActionManager"/>
+/// <reference path="component/renderer/Renderer"/>
+/// <reference path="component/renderer/MeshRenderer"/>
+/// <reference path="component/Camera"/>
+
 
 /// <reference path="math/Global"/>
 /// <reference path="math/Vector3"/>
@@ -20,18 +32,11 @@
 /// <reference path="math/Matrix"/>
 /// <reference path="math/Quaternion"/>
 
-/// <reference path="action/Action"/>
-/// <reference path="action/ActionManager"/>
-/// <reference path="action/Rotate"/>
-/// <reference path="action/Scale"/>
-/// <reference path="action/Translate"/>
-
-/// <reference path="component/Camera"/>
-
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
 
-/// <reference path="render/ShaderType"/>
+/// <reference path="render/Renderer"/>
+/// <reference path="render/WebGLRenderer"/>
 /// <reference path="render/Shader"/>
 /// <reference path="render/BufferType"/>
 /// <reference path="render/AttributeDataType"/>
@@ -42,19 +47,11 @@
 /// <reference path="render/UniformDataType"/>
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
-/// <reference path="render/WebGLRenderer"/>
 
 /// <reference path="material/MeshMaterial"/>
 
 /// <reference path="loader/GLSLLoader"/>
 /// <reference path="Loader/LoaderManager"/>
-
-/// <reference path="geometry/Geometry"/>
-/// <reference path="geometry/BoxGeometry"/>
-/// <reference path="geometry/RectGeometry"/>
-/// <reference path="geometry/SphereDrawMode"/>
-/// <reference path="geometry/SphereGeometry"/>
-/// <reference path="geometry/TriangleGeometry"/>
 
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>

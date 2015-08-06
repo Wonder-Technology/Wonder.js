@@ -321,7 +321,7 @@ module dy{
                 up = arguments[1];
             }
 
-            this.rotation = Quaternion.create().setFromMatrix(Matrix.create().lookAt(this.position, target, up));
+            this.rotation = Quaternion.create().setFromMatrix(Matrix.create().setLookAt(this.position, target, up));
         }
     }
 }

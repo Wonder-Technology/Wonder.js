@@ -1,6 +1,8 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class Action{
+    export class Action extends Component{
+        //enabled:boolean = true;
+
         private _isFinish:boolean = false;
         get isFinish(){
             return this._isFinish;
@@ -8,12 +10,12 @@ module dy{
         set isFinish(isFinish:boolean){
             this._isFinish = isFinish;
         }
-
-        protected matrix:Matrix = null;
-
-        constructor(matrix:Matrix){
-            this.matrix = matrix;
-        }
+        //
+        //protected matrix:Matrix = null;
+        //
+        //constructor(matrix:Matrix){
+        //    this.matrix = matrix;
+        //}
 
         public update(){
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
@@ -22,5 +24,7 @@ module dy{
         protected finish(){
             this._isFinish = true;
         }
+
+        //todo add hook method like onEnter/onExit?
     }
 }

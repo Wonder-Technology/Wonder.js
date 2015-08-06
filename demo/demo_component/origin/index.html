@@ -51,67 +51,67 @@
 
             camera = _createCamera();
 
-            scene = dy.Scene.create(camera,
-                    dy.GLSLLoader.getInstance().getGLSL("vs"),
-                    dy.GLSLLoader.getInstance().getGLSL("fs"));
-
-            scene.onEnter = function () {
-                bindCanvasEvent(dy.Director.getInstance().view, this.camera);
-            };
-
-            scene.onEndLoop = function () {
-                setAllFalse();
-            };
-
-            scene.onExit = function () {
-                removeEvent();
-            };
-
-
-            var material = dy.MeshMaterial.create({color: "#FFCDff"});
-            geometry = dy.BoxGeometry.create(5, 5, 5, material);
-//            geometry = dy.TriangleGeometry.create(5, 5, material);
-//            geometry = dy.RectGeometry.create(5, 5, material);
-//            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
-
-            var mesh = dy.Mesh.create(geometry);
-
-//            //todo move to GameObject->addChild
-//            mesh.transform.parent = dy.Director.getInstance().stage;
-
-
-
-//            var mesh2 = dy.Mesh.create(geometry);
+//            scene = dy.Scene.create(camera,
+//                    dy.GLSLLoader.getInstance().getGLSL("vs"),
+//                    dy.GLSLLoader.getInstance().getGLSL("fs"));
 //
-//            //todo move to GameObject->addChild
-//            mesh2.transform.parent = dy.Director.getInstance().stage;
-
-//            //test event emit
-//            var mesh2 = dy.Mesh.create(geometry);
-//            mesh.addChild(mesh2);
-
-//            var rotateAction = dy.Rotate.create(
-//                    mesh.matrix, {
-//                        speed: 0.5,
-//                        axis: [dy.Vector3.create(0, 1, 0)]
-//                    }
-//            );
-
-//            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
-
-//            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
-            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
-
-//            mesh2.transform.translate(dy.Vector3.create(0, 0, -20));
-//            mesh2.transform.lookAt(dy.Vector3.create(10, 0, 1))
-
-//            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
-
-//                mesh.transform.rotate(dy.Vector3.create(0, 0, 30));
-
-            var num = 10;
-
-//            mesh.transform.rotateAround(10, dy.Vector3.create(0, 0, 0), dy.Vector3.create(0,1,0));
+//            scene.onEnter = function () {
+//                bindCanvasEvent(dy.Director.getInstance().view, this.camera);
+//            };
+//
+//            scene.onEndLoop = function () {
+//                setAllFalse();
+//            };
+//
+//            scene.onExit = function () {
+//                removeEvent();
+//            };
+//
+//
+//            var material = dy.MeshMaterial.create({color: "#FFCDff"});
+//            geometry = dy.BoxGeometry.create(5, 5, 5, material);
+////            geometry = dy.TriangleGeometry.create(5, 5, material);
+////            geometry = dy.RectGeometry.create(5, 5, material);
+////            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
+//
+//            var mesh = dy.Mesh.create(geometry);
+//
+////            //todo move to GameObject->addChild
+////            mesh.transform.parent = dy.Director.getInstance().stage;
+//
+//
+//
+////            var mesh2 = dy.Mesh.create(geometry);
+////
+////            //todo move to GameObject->addChild
+////            mesh2.transform.parent = dy.Director.getInstance().stage;
+//
+////            //test event emit
+////            var mesh2 = dy.Mesh.create(geometry);
+////            mesh.addChild(mesh2);
+//
+////            var rotateAction = dy.Rotate.create(
+////                    mesh.matrix, {
+////                        speed: 0.5,
+////                        axis: [dy.Vector3.create(0, 1, 0)]
+////                    }
+////            );
+//
+////            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
+//
+////            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
+//            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
+//
+////            mesh2.transform.translate(dy.Vector3.create(0, 0, -20));
+////            mesh2.transform.lookAt(dy.Vector3.create(10, 0, 1))
+//
+////            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
+//
+////                mesh.transform.rotate(dy.Vector3.create(0, 0, 30));
+//
+//            var num = 10;
+//
+////            mesh.transform.rotateAround(10, dy.Vector3.create(0, 0, 0), dy.Vector3.create(0,1,0));
             setInterval(function(){
             mesh.transform.rotateAround(1, dy.Vector3.create(0, 0, -18), dy.Vector3.create(3,1,0));
 //                num += 5;
@@ -146,16 +146,72 @@
 
 //            mesh.runAction(rotateAction);
 
-            scene.addChild(mesh);
-//            scene.addChild(mesh2);
+
+
+
+            var shader = dy.render.Shader.create(
+                    dy.GLSLLoader.getInstance().getGLSL("vs"),
+                    dy.GLSLLoader.getInstance().getGLSL("fs")
+            );
+
+
+            var material = dy.MeshMaterial.create();
+            material.color= dy.Color.create("#FFCDff");
+            material.shader = shader;
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+            geometry.material = material;
+
+            var mesh = dy.GameObject.create();
+//            var mesh = dy.Mesh.create();
+            mesh.addComponent(geometry);
+
+
+
+            var meshRenderer = dy.MeshRenderer.create();
+//            meshRenderer.material = material;
+
+            mesh.addComponent(meshRenderer);
+
+
+            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
+
 
 
             var director = dy.Director.getInstance();
 
-            //can set renderer
-//            digeometryor.renderer
+            //can set render
+//            digeometryor.render
 
-            director.runWithScene(scene);
+//            director.runWithScene(scene);
+//            director.stage.addChild(scene);
+
+
+            director.stage.addChild(mesh);
+
+            director.stage.addChild(camera);
+
+
+
+            director.stage.onEnter = function () {
+                bindCanvasEvent(dy.Director.getInstance().view);
+            };
+
+            director.stage.onEndLoop = function () {
+                setAllFalse();
+                isRotate = false;
+            };
+
+            director.stage.onExit = function () {
+                removeEvent();
+            };
+
+
+            director.start();
         }
 
         function _createCamera() {
@@ -253,7 +309,7 @@
             }
         }
 
-        function bindCanvasEvent(canvas, camera) {
+        function bindCanvasEvent(canvas) {
             var dragging = false;         // Dragging or not
             var lastX = -1, lastY = -1;   // Last position of the mouse
 
@@ -315,11 +371,12 @@
 //                        }
 //                    });
 
+            var stage = dy.Director.getInstance().stage;
 
             // Get the three major events
-            var mouseup = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEUP);
-            var mousemove = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEMOVE);
-            var mousedown = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEDOWN);
+            var mouseup = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEUP);
+            var mousemove = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEMOVE);
+            var mousedown = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEDOWN);
 
             var mousedrag = mousedown.flatMap(function (e) {
                 // calculate offsets when mouse down

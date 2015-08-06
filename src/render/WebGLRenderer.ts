@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
-    export class WebGLRenderer{
+module dy.render{
+    export class WebGLRenderer extends Renderer{
         public static create():WebGLRenderer {
             var obj = new this();
 
@@ -20,13 +20,13 @@ module dy{
                 return;
             }
 
-            command.init();
             this._commandQueue.addChild(command);
+            command.init();
         }
 
-        public render(scene:Scene){
+        public render(){
             this._commandQueue.forEach((command) => {
-                command.execute(scene);
+                command.execute();
             });
 
             this._clearCommand();

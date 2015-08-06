@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
-    export class QuadCommand{
+module dy.render {
+    export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();
 
@@ -8,85 +8,107 @@ module dy{
         }
 
         private _buffers:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
-        get buffers(){
+        get buffers() {
             return this._buffers;
         }
-        set buffers(buffers:any){
+        set buffers(buffers:any) {
             var i = null;
 
-            for(i in buffers){
-                if(buffers.hasOwnProperty(i)){
+            for (i in buffers) {
+                if (buffers.hasOwnProperty(i)) {
                     this._buffers.addChild(i, buffers[i]);
                 }
             }
         }
 
         private _color:Color = null;
-        get color(){
+        get color() {
             return this._color;
         }
-        set color(color:Color){
+        set color(color:Color) {
             this._color = color;
         }
 
+        //todo remove it?
+        set shader(shader:Shader) {
+            if (Director.getInstance().stage.program.isChangeShader(shader)) {
+                Director.getInstance().stage.program.initWithShader(shader);
+                Director.getInstance().stage.program.use();
+            }
+        }
+
+        private _mvpMatrix:Matrix = null;
+        get mvpMatrix() {
+            return this._mvpMatrix;
+        }
+        set mvpMatrix(mvpMatrix:Matrix) {
+            this._mvpMatrix = mvpMatrix;
+        }
+
         private _drawMode:DrawMode = DrawMode.TRIANGLES;
-        get drawMode(){
+        get drawMode() {
             return this._drawMode;
         }
-        set drawMode(drawMode:DrawMode){
+        set drawMode(drawMode:DrawMode) {
             this._drawMode = drawMode;
         }
 
-        public execute(scene:Scene){
-            this._sendData(scene.program);
+
+        public execute() {
+            this._sendData();
 
             this._draw();
         }
 
-        public init(){
+        public init() {
             //this._initBuffer();
         }
 
         //private _initBuffer(){
         //    this._buffers.addChild("vertexBuffer",
-        //        this._bufferData.vertices? ArrayBuffer.create(this._bufferData.vertices, 3, BufferType.FLOAT) : null
+        //        this._bufferData.vertices? render.ArrayBuffer.create(this._bufferData.vertices, 3, BufferType.FLOAT) : null
         //    );
         //    this._buffers.addChild("texCoordBuffer",
-        //        this._bufferData.texCoords? ArrayBuffer.create(this._bufferData.texCoords, 2, BufferType.FLOAT) : null
+        //        this._bufferData.texCoords? render.ArrayBuffer.create(this._bufferData.texCoords, 2, BufferType.FLOAT) : null
         //    );
         //    this._buffers.addChild("normalBuffer",
-        //        this._bufferData.normals? ArrayBuffer.create(this._bufferData.normals, 3, BufferType.FLOAT) : null
+        //        this._bufferData.normals? render.ArrayBuffer.create(this._bufferData.normals, 3, BufferType.FLOAT) : null
         //    );
         //    this._buffers.addChild("indexBuffer",
         //        this._bufferData.indices? ElementBuffer.create(this._bufferData.indices, BufferType.UNSIGNED_SHORT) : null
         //    );
         //    this._buffers.addChild("colorBuffer",
-        //        this._bufferData.colors? ArrayBuffer.create(this._bufferData.colors, 3, BufferType.FLOAT) : null
+        //        this._bufferData.colors? render.ArrayBuffer.create(this._bufferData.colors, 3, BufferType.FLOAT) : null
         //    );
         //}
 
-        private _sendData(program:Program){
-            if(this._buffers.hasChild("vertexBuffer")){
-                program.setAttributeData("a_position", AttributeDataType.BUFFER, <ArrayBuffer>this._buffers.getChild("vertexBuffer"));
+        private _sendData() {
+            var program = Director.getInstance().stage.program;
+
+            if (this._buffers.hasChild("vertexBuffer")) {
+                program.setAttributeData("a_position", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("vertexBuffer"));
             }
-            else{
+            else {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
 
             //if(this.color){
-                /*!
-                this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
-                because a_color'pos is 0, and it should be array data(like Float32Array)
-                refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
-                */
+            /*!
+             this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
+             because a_color'pos is 0, and it should be array data(like Float32Array)
+             refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
+             */
 
 
-                program.setAttributeData("a_color", AttributeDataType.BUFFER, <ArrayBuffer>this._buffers.getChild("colorBuffer"));
+            program.setAttributeData("a_color", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
             //}
+
+
+            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
         }
 
 
-        private _draw(){
+        private _draw() {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
