@@ -55,7 +55,7 @@ describe("matrix", function(){
         });
     });
 
-    describe("inverseOf", function(){
+    describe("invert", function(){
         it("设置为逆矩阵", function(){
             var mat = Matrix.create();
             mat.values = new Float32Array([
@@ -65,7 +65,7 @@ describe("matrix", function(){
                 2, 1, 0, 0
             ]);
 
-            mat.inverseOf();
+            mat.invert();
 
             expect(getValues(mat)).toEqual(
                 [0, 0, 1, -2, 0, 0, -2, 5, 0.3333333, -0.3333333, 0, 0, 0.6666667, 0.3333333, 0, 0 ]

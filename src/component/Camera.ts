@@ -19,7 +19,7 @@ module dy{
 
         get worldToCameraMatrix(){
             //return this.transform.worldToLocalMatrix;
-            return this.cameraToWorldMatrix.inverseOf();
+            return this.cameraToWorldMatrix.invert();
         }
 
         private _pMatrix:Matrix = Matrix.create();

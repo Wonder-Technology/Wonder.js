@@ -6,11 +6,9 @@ var merge = require("merge2");
 
 
 var tsFilePaths = [
+    "src/definitions.d.ts",
     "src/*.ts",
     "src/**/*.ts"
-    //"src/Camera.ts",
-    //"src/math/*.ts"
-    //"src/structure/Point.ts"
 ];
 
 //todo remove "///reference" of d.ts file?
@@ -45,8 +43,6 @@ gulp.task("compileTsDebug", function() {
             target: "ES5",
             sortOutput:true,
             noEmitOnError: true,
-            //noExternalResolve: true
-            //out: "dyR.js"
             typescript: require("typescript")
         }));
 

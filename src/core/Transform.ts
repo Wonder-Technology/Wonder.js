@@ -77,7 +77,7 @@ module dy{
                 this._localPosition = position.copy();
             }
             else {
-                this._localPosition = this._parent.localToWorldMatrix.copy().inverseOf().multiplyVector3(position);
+                this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(position);
             }
 
             this._dirtyLocal = true;
@@ -111,7 +111,7 @@ module dy{
                 this._localScale = scale.copy();
             }
             else {
-                this._localScale = this._parent.localToWorldMatrix.copy().inverseOf().multiplyVector3(scale);
+                this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
             }
 
             this._dirtyLocal = true;
@@ -246,7 +246,7 @@ module dy{
                     this._localToWorldMatrix = this._localToParentMatrix.copy();
                 }
                 else {
-                    this._localToWorldMatrix = this._parent.localToWorldMatrix.multiply(this._localToParentMatrix);
+                    this._localToWorldMatrix = this._parent.localToWorldMatrix.copy().multiply(this._localToParentMatrix);
                 }
 
                 this._dirtyWorld = false;
@@ -291,15 +291,15 @@ module dy{
 
             quaternion.setFromEulerAngles(eulerAngles);
 
-            this._localRotation = this._localRotation.multiply(quaternion);
+            this._localRotation.multiply(quaternion);
 
             this._dirtyLocal = true;
         }
 
         public rotateAround(angle:number, center:Vector3, axis:Vector3){
-            var pos: Vector3 = this.position;
-            var rot: Quaternion = Quaternion.create().setFromAxisAngle(angle, axis);
-            var dir: Vector3 = pos.sub(center); // find current direction relative to center
+            var rot:Quaternion = Quaternion.create().setFromAxisAngle(angle, axis),
+                dir:Vector3 = this.position.copy().sub(center); // find current direction relative to center
+
             dir = rot.multiplyVector3(dir); // rotate the direction
 
             this.position = center.add(dir); // define new position
@@ -321,7 +321,7 @@ module dy{
                 up = arguments[1];
             }
 
-            this.rotation = Quaternion.create().setFromMatrix(Matrix.create().setLookAt(this.position, target, up));
+            this.rotation = Quaternion.create().setFromMatrix(Matrix.create().lookAt(this.position, target, up));
         }
     }
 }

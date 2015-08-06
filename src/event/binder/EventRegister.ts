@@ -118,8 +118,8 @@ module dy {
             }
         }
 
-        public getEventRegisterDataList(eventName:EventName):dyCb.Collection<IEventRegisterData>;
-        public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):dyCb.Collection<IEventRegisterData>;
+        public getEventRegisterDataList(eventName:EventName):any;
+        public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
 
         public getEventRegisterDataList(args){
             var result:dyCb.Collection<IEventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),

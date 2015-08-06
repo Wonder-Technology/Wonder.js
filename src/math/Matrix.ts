@@ -64,7 +64,7 @@ module dy{
          * @param other The source matrix
          * @return this
          */
-        public inverseOf ():Matrix {
+        public invert ():Matrix {
             var i, s, d, inv, det;
 
             s = this._values;
@@ -429,7 +429,7 @@ module dy{
         }
         x = Vector3.create();
 
-            z = eye.sub(center).normalize();
+            z = eye.copy().sub(center).normalize();
 
             y = up.copy().normalize();
             x.cross(y, z).normalize();
@@ -575,9 +575,26 @@ module dy{
             return this;
         }
 
-        public multiply(matrix2:Matrix):Matrix {
-            var mat1 = this._values,
-                mat2 = matrix2.values;
+        public multiply(matrix2:Matrix):Matrix;
+        public multiply(matrix1:Matrix, matrix2:Matrix):Matrix;
+
+        public multiply(args):Matrix {
+            var mat1 = null,
+                mat2 = null,
+                result = null;
+
+            result = this._values;
+
+            if(arguments.length === 1){
+                mat1 = this._values;
+                mat2 = arguments[0].values;
+            }
+            else if(arguments.length === 2){
+                mat1 = arguments[0].values;
+                mat2 = arguments[1].values;
+
+            }
+
             var a = mat1[0], b = mat1[1], c = mat1[2], d = mat1[3],
                 e = mat1[4], f = mat1[5], g = mat1[6], h = mat1[7],
                 i = mat1[8], j = mat1[9], k = mat1[10], l = mat1[11],
@@ -586,26 +603,25 @@ module dy{
                 E = mat2[4], F = mat2[5], G = mat2[6], H = mat2[7],
                 I = mat2[8], J = mat2[9], K = mat2[10], L = mat2[11],
                 M = mat2[12], N = mat2[13], O = mat2[14], P = mat2[15];
-            var dest = new Float32Array(16);
 
-            dest[0] = A * a + B * e + C * i + D * m;
-            dest[1] = A * b + B * f + C * j + D * n;
-            dest[2] = A * c + B * g + C * k + D * o;
-            dest[3] = A * d + B * h + C * l + D * p;
-            dest[4] = E * a + F * e + G * i + H * m;
-            dest[5] = E * b + F * f + G * j + H * n;
-            dest[6] = E * c + F * g + G * k + H * o;
-            dest[7] = E * d + F * h + G * l + H * p;
-            dest[8] = I * a + J * e + K * i + L * m;
-            dest[9] = I * b + J * f + K * j + L * n;
-            dest[10] = I * c + J * g + K * k + L * o;
-            dest[11] = I * d + J * h + K * l + L * p;
-            dest[12] = M * a + N * e + O * i + P * m;
-            dest[13] = M * b + N * f + O * j + P * n;
-            dest[14] = M * c + N * g + O * k + P * o;
-            dest[15] = M * d + N * h + O * l + P * p;
+            result[0] = A * a + B * e + C * i + D * m;
+            result[1] = A * b + B * f + C * j + D * n;
+            result[2] = A * c + B * g + C * k + D * o;
+            result[3] = A * d + B * h + C * l + D * p;
+            result[4] = E * a + F * e + G * i + H * m;
+            result[5] = E * b + F * f + G * j + H * n;
+            result[6] = E * c + F * g + G * k + H * o;
+            result[7] = E * d + F * h + G * l + H * p;
+            result[8] = I * a + J * e + K * i + L * m;
+            result[9] = I * b + J * f + K * j + L * n;
+            result[10] = I * c + J * g + K * k + L * o;
+            result[11] = I * d + J * h + K * l + L * p;
+            result[12] = M * a + N * e + O * i + P * m;
+            result[13] = M * b + N * f + O * j + P * n;
+            result[14] = M * c + N * g + O * k + P * o;
+            result[15] = M * d + N * h + O * l + P * p;
 
-            return Matrix.create(dest);
+            return this;
         }
 
         public multiplyVector4(vector:Vector4):Vector4 {

@@ -30,7 +30,9 @@ describe("Quaternion", function() {
             var self = Quaternion.create().setFromEulerAngles(Vector3.create(30, 0, 0));
             var target = Quaternion.create().setFromEulerAngles(Vector3.create(40, 0, 0));
 
-            expect(getValues(target.sub(self).getEulerAngles())).toEqual([10, 0, 0]);
+            target.sub(self);
+
+            expect(getValues(target.getEulerAngles())).toEqual([10, 0, 0]);
 
             self = Quaternion.create().setFromEulerAngles(Vector3.create(0, 30, 0));
             target = Quaternion.create().setFromEulerAngles(Vector3.create(0, 40, 0));

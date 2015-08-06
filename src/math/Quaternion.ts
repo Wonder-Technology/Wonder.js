@@ -88,19 +88,32 @@ module dy {
             return this;
         }
 
-        public multiply(rhs:Quaternion) {
+        public multiply(rhs:Quaternion);
+        public multiply(rhs1:Quaternion, rhs2:Quaternion);
+
+        public multiply(args) {
             var q1x, q1y, q1z, q1w, q2x, q2y, q2z, q2w,
-                result = Quaternion.create();
+                rhs1, rhs2,
+                result = this;
 
-            q1x = this._x;
-            q1y = this._y;
-            q1z = this._z;
-            q1w = this._w;
+            if(arguments.length === 1){
+                rhs1 = this;
+                rhs2 = arguments[0];
+            }
+            else if(arguments.length === 2){
+                rhs1 = arguments[0];
+                rhs2 = arguments[1];
+            }
 
-            q2x = rhs.x;
-            q2y = rhs.y;
-            q2z = rhs.z;
-            q2w = rhs.w;
+            q1x = rhs1.x;
+            q1y = rhs1.y;
+            q1z = rhs1.z;
+            q1w = rhs1.w;
+
+            q2x = rhs2.x;
+            q2y = rhs2.y;
+            q2z = rhs2.z;
+            q2w = rhs2.w;
 
             result.x = q1w * q2x + q1x * q2w + q1y * q2z - q1z * q2y;
             result.y = q1w * q2y + q1y * q2w + q1z * q2x - q1x * q2z;
@@ -393,7 +406,11 @@ module dy {
         }
 
         public sub(quat:Quaternion){
-            return quat.copy().invert().multiply(this);
+            var result = quat.copy().invert().multiply(this);
+
+            this.set(result.x, result.y, result.z, result.w);
+
+            return this;
         }
 
         /**
