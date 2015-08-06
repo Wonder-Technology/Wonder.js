@@ -1,21 +1,25 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export class RectGeometry extends Geometry{
-        public static create(width:number, height:number, material:MeshMaterial):RectGeometry {
-            var geom = new this(width, height, material);
+        public static create(){
+                var geom = new this();
 
-            geom.initWhenCreate();
-
-            return geom;
-        }
+                return geom;
+            }
 
         private _width:number = null;
-        private _height:number = null;
-
-        constructor(width, height, material){
-            super(material);
-
+        get width(){
+            return this._width;
+        }
+        set width(width:number){
             this._width = width;
+        }
+
+        private _height:number = null;
+        get height(){
+            return this._height;
+        }
+        set height(height:number){
             this._height = height;
         }
 
@@ -27,19 +31,19 @@ module dy{
                 up = height / 2,
                 down = -height / 2;
 
-            return ArrayBuffer.create(new Float32Array([
+            return render.ArrayBuffer.create(new Float32Array([
                 right, up, 0,
                 left, up, 0,
                 left, down, 0,
                 right, down, 0
             ]),
-                3, BufferType.FLOAT)
+                3, render.BufferType.FLOAT)
         }
 
         protected computeIndicesBuffer(){
-            return ElementBuffer.create(new Uint16Array([
+            return render.ElementBuffer.create(new Uint16Array([
                 0, 1, 2,   0, 2, 3
-            ]), BufferType.UNSIGNED_SHORT)
+            ]), render.BufferType.UNSIGNED_SHORT)
         }
     }
 }

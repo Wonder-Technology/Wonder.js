@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
+module dy.render{
     export class ArrayBuffer extends Buffer{
-        public static create(data, num, type:BufferType):ArrayBuffer {
+        public static create(data, num, type:BufferType):render.ArrayBuffer {
             var obj = new this();
 
             obj.initWhenCreate(data, num, type);

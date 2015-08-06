@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
+module dy.render{
     export class Buffer{
         get buffer() {
             dyCb.Log.error(this.innerBuffer === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);

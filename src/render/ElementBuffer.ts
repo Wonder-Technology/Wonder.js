@@ -1,5 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
+module dy.render{
     export class ElementBuffer extends Buffer{
         public static create(data, type:BufferType):ElementBuffer {
             var obj = new this();

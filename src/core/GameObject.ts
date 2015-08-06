@@ -32,19 +32,33 @@ module dy {
             this._transform = transform;
         }
 
-        private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
-        private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
-
-        public init() {
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        /**
+         * get renderer component of this game object
+         * @property {WOZLLA.Renderer} renderer
+         * @member WOZLLA.GameObject
+         * @readonly
+         */
+        private _renderer:Renderer = null;
+        get renderer(){
+            return this._renderer;
+        }
+        set renderer(renderer:Renderer){
+            this._renderer = renderer;
         }
 
-        /*!
-         virtual
-         */
-        public dispose() {
-            this.parent = null;
-            EventManager.off(this);
+        //private _collider:Collider = null;
+        //get collider(){
+        //    return this._collider;
+        //}
+        //set collider(collider:Collider){
+        //    this._collider = collider;
+        //}
+
+        private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
+        private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        private _actionManager:ActionManager = ActionManager.create();
+
+        public init() {
         }
 
         /*!
@@ -60,6 +74,16 @@ module dy {
         }
 
         public onExit() {
+        }
+
+
+        public dispose() {
+            if(this._parent){
+                this._parent.removeChild(this);
+            }
+            this._parent = null;
+
+            EventManager.off(this);
         }
 
         public hasChild(child:GameObject):boolean {
@@ -137,7 +161,9 @@ module dy {
             //if(idx !== -1) {
             //    child.dispatchEvent(new CoreEvent('beforeremove', false));
             //    this._children.splice(idx, 1);
-            child.dispose();
+
+            //child.dispose();
+
             //child.setBubbleParent(null);
             //    child.dispatchEvent(new CoreEvent('remove', false, {
             //        parent: this
@@ -241,20 +267,126 @@ module dy {
             }
         }
 
-        public getComponent<T>(_class:any):T{
+        public hasComponent(component:Component):boolean;
+        public hasComponent(_class:Function):boolean;
+
+        public hasComponent(args){
+            if(arguments[0] instanceof Component){
+                let component = arguments[0];
+
+                return this._components.hasChild(component);
+            }
+            else{
+                let _class = arguments[0];
+
+                return this._components.hasChild((component) => {
+                    return component instanceof _class;
+                })
+            }
+        }
+
+        public getComponent<T>(_class:Function):T{
             return this._components.filter((component) => {
-                return component instanceof Component;
+                return component instanceof _class;
             }).getChild(0);
         }
 
         public addComponent(component:Component){
+            var Log = dyCb.Log;
+
+            if(this.hasComponent(component)){
+                Log.assert(false, "the component already exist");
+                return this;
+            }
+
+            if(component.gameObject) {
+                component.gameObject.removeComponent(component);
+            }
             component.gameObject = this;
-            component.init();
 
             this._components.addChild(component);
+            component.init();
+
+            if(component instanceof Action) {
+                this._actionManager.addChild(<Action>component);
+            }
+            else if(component instanceof Renderer) {
+                Log.assert(!this._renderer, "renderer is overlapped");
+
+                this._renderer = <Renderer>component;
+            }
+            //else if(component instanceof Collider) {
+            //    Log.assert(!this._renderer, "collider is overlapped");
+            //
+            //    this._collider = <Collider>component;
+            //}
+
+            return this;
         }
         public removeComponent(component:Component){
-            //todo implement
+            this._components.removeChild(component);
+
+            if(component instanceof Action) {
+                this._actionManager.removeChild(<Action>component);
+                //this._behaviours.push(<Behaviour>comp);
+            }
+            else if(component instanceof Renderer) {
+                this._renderer = null;
+            }
+            //else if(component instanceof Collider) {
+            //    this._collider = null;
+            //}
+
+            component.gameObject = null;
+
+            return this;
+        }
+
+        //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
+        public render(renderer:render.Renderer, camera:GameObject):void{
+            //var i, len;
+            //if(!this._active || !this._initialized || this._destroyed) {
+            //    if(transformDirty) {
+            //        this._transform.dirty = true;
+            //    }
+            //    return;
+            //}
+            //if(this._transform.dirty) {
+            //    transformDirty = transformDirty || this._transform.dirty;
+            //}
+            //if(transformDirty) {
+            //    if(this._transform instanceof RectTransform) {
+            //        this._transform.transform(this._stage.viewRectTransform, parentTransform);
+            //    } else {
+            //        this._transform.transform(this._stage.rootTransform, parentTransform);
+            //    }
+            //}
+            //
+            //if(!this._visible) {
+            //    visibleFlag = visibleFlag && this._visible;
+            //}
+            //
+            //if(visibleFlag) {
+            //    this.render(renderer, transformDirty);
+            //}
+            //
+            //for(i=0,len=this._children.length; i<len; i++) {
+            //    this._children[i].visit(renderer, this._transform, transformDirty, visibleFlag);
+            //}
+
+            this._renderer && this._renderer.render(renderer, this.getComponent<Geometry>(Geometry),  camera);
+
+            this._children.forEach((child:GameObject) => {
+                child.render(renderer, camera);
+            });
+        }
+
+        update():void {
+            this._actionManager.update();
+
+            this._children.forEach((child:GameObject) => {
+                child.update();
+            });
         }
 
         private _ascendZ(a:GameObject, b:GameObject){

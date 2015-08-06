@@ -1,13 +1,20 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
+    //todo add more attribute refer to unity
+
     export class MeshMaterial {
-        public static create(params) {
-            var obj = new this(params);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
 
-        private _color:Color = null;
+        /**
+         * main color
+         * @type {Color|dy.Color}
+         * @private
+         */
+        private _color:Color = Color.create("0xffffff");
         get color(){
             return this._color;
         }
@@ -15,8 +22,13 @@ module dy {
             this._color = color;
         }
 
-        constructor(params) {
-            this._color = Color.create(params.color || "0xffffff");
+        //todo add default shader
+        private _shader:render.Shader = null;
+        get shader(){
+            return this._shader;
+        }
+        set shader(shader:render.Shader){
+            this._shader = shader;
         }
     }
 }

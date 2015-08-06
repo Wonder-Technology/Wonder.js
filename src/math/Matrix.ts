@@ -564,7 +564,7 @@ module dy{
 
         public applyMatrix (other:Matrix):Matrix{
             var a = this,
-                b = other;
+                b = other.copy();
 
             //this._values = MathUtils.multiply(a, b);
                 //b*a，而不是a*b

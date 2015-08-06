@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export class ActionManager{
         public static create():ActionManager {
@@ -18,6 +18,10 @@ module dy{
             }
 
             this._children.addChild(action);
+        }
+
+        public removeChild(action:Action){
+            this._children.removeChild(action);
         }
 
         public hasChild(action:Action){

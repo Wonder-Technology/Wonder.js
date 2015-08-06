@@ -1,18 +1,14 @@
 /// <reference path="../definitions.d.ts"/>
-module dy{
+module dy.render{
     export class Program{
-        public static create(vsSource:string, fsSource:string):Program {
+        public static create():Program {
             var obj = new this();
-
-            obj.initWhenCreate(vsSource, fsSource);
 
             return obj;
         }
 
         private _program:any = Director.getInstance().gl.createProgram();
-
-        constructor(){
-        }
+        private _shader:Shader = null;
 
         public use(){
             Director.getInstance().gl.useProgram(this._program);
@@ -32,7 +28,7 @@ module dy{
             }
         }
 
-        public setAttributeData(name:string, type:AttributeDataType, data:ArrayBuffer|number[]){
+        public setAttributeData(name:string, type:AttributeDataType, data:render.ArrayBuffer|number[]){
             var gl = Director.getInstance().gl,
                 pos = gl.getAttribLocation(this._program, name);
 
@@ -42,7 +38,7 @@ module dy{
                     gl.vertexAttrib4f(pos, dataArr[0], dataArr[1], dataArr[2], dataArr[3]);
                     break;
                 case AttributeDataType.BUFFER:
-                    let buffer:ArrayBuffer = <ArrayBuffer>data;
+                    let buffer:render.ArrayBuffer = <render.ArrayBuffer>data;
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
                     gl.vertexAttribPointer(pos, buffer.num, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
@@ -53,13 +49,15 @@ module dy{
             }
         }
 
-        public initWhenCreate(vsSource:string, fsSource:string){
+        public initWithShader(shader:Shader){
             var gl = Director.getInstance().gl,
                 vs = null,
                 fs = null;
 
-            vs = Shader.createShader(vsSource, ShaderType.VS);
-            fs = Shader.createShader(fsSource, ShaderType.FS);
+            vs = shader.createVsShader();
+            fs = shader.createFsShader();
+
+            this._shader = shader;
 
             // 向程序对象里分配着色器
             gl.attachShader(this._program, vs);
@@ -106,6 +104,10 @@ module dy{
 
                 return null;
             }
+        }
+
+        public isChangeShader(shader:Shader){
+            return this._shader ? !this._shader.isEqual(shader) : true;
         }
     }
 }

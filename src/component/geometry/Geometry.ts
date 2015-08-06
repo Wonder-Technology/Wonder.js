@@ -1,49 +1,52 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class Geometry{
-        private _vertices:ArrayBuffer = null;
+    export class Geometry extends Component{
+        private _vertices:render.ArrayBuffer = null;
         get vertices(){
             return this._vertices;
         }
-        set vertices(vertices:ArrayBuffer){
+        set vertices(vertices:render.ArrayBuffer){
             this._vertices = vertices;
         }
 
-        private _indices:ElementBuffer = null;
+        private _indices:render.ElementBuffer = null;
         get indices(){
             return this._indices;
         }
-        set indices(indices:ElementBuffer){
+        set indices(indices:render.ElementBuffer){
             this._indices = indices;
         }
 
-        private _colors:ArrayBuffer = null;
+        private _colors:render.ArrayBuffer = null;
         get colors(){
             return this._colors;
         }
-        set colors(colors:ArrayBuffer){
+        set colors(colors:render.ArrayBuffer){
             this._colors = colors;
         }
 
-        protected material:MeshMaterial = null;
-
-        constructor(material){
-            this.material = material;
+        private _material:MeshMaterial = null;
+        get material(){
+            return this._material;
+        }
+        set material(material:MeshMaterial){
+            this._material = material;
         }
 
-        public initWhenCreate(){
+        public init(){
             this._vertices = this.computeVerticesBuffer();
             this._indices = this.computeIndicesBuffer();
             //this._normals = this._computeNormals();
             //this._texCoords = this._computeTexCoords();
-            this._colors = this._computeColorsBuffer(this.material);
+            //todo compute from vertexColors(refer to threejs)
+            this._colors = this._computeColorsBuffer(this._material);
         }
 
-        protected computeVerticesBuffer():ArrayBuffer{
+        protected computeVerticesBuffer():render.ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        protected computeIndicesBuffer():ElementBuffer{
+        protected computeIndicesBuffer():render.ElementBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
@@ -57,7 +60,7 @@ module dy{
                 arr.push( color.r, color.g, color.b, 1.0);
             }
 
-            return ArrayBuffer.create(new Float32Array(arr), 4, BufferType.FLOAT);
+            return render.ArrayBuffer.create(new Float32Array(arr), 4, render.BufferType.FLOAT);
         }
     }
 }

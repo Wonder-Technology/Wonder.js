@@ -1,34 +1,43 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export class SphereGeometry extends Geometry{
-        public static create(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial):SphereGeometry {
-            var geom = new this(radius, drawMode, segments, material);
-
-            geom.initWhenCreate();
+        public static create(){
+            var geom = new this();
 
             return geom;
         }
 
         private _radius:number = null;
+        get radius(){
+            return this._radius;
+        }
+        set radius(radius:number){
+            this._radius = radius;
+        }
+
         private _drawMode:SphereDrawMode = null;
+        get drawMode(){
+            return this._drawMode;
+        }
+        set drawMode(drawMode:SphereDrawMode){
+            this._drawMode = drawMode;
+        }
+
         private _segments:number = null;
+        get segments(){
+            return this._segments;
+        }
+        set segments(segments:number){
+            this._segments = segments;
+        }
+
         private _data:{
             vertices;
             indices
         } = null;
 
-        constructor(radius:number, drawMode:SphereDrawMode, segments:number,  material:MeshMaterial){
-            super(material);
-
-            this._radius = radius;
-            this._drawMode = drawMode;
-            this._segments = segments;
-        }
-
-        public initWhenCreate(){
+        public init(){
             this._data = this._computeData(this._radius, this._drawMode, this._segments);
-
-            super.initWhenCreate();
         }
 
         protected computeVerticesBuffer(){
@@ -137,10 +146,10 @@ module dy{
             }
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(this._vertices),
-                    3, BufferType.FLOAT),
-                indices: ElementBuffer.create(new Uint16Array(this._indices),
-                    BufferType.UNSIGNED_SHORT)
+                vertices: render.ArrayBuffer.create(new Float32Array(this._vertices),
+                    3, render.BufferType.FLOAT),
+                indices: render.ElementBuffer.create(new Uint16Array(this._indices),
+                    render.BufferType.UNSIGNED_SHORT)
                 //normals: new Float32Array(normals),
                 //texCoords: new Float32Array(texCoords)
             }
@@ -227,10 +236,10 @@ module dy{
             }
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(this._vertices),
-                    3, BufferType.FLOAT),
-                indices: ElementBuffer.create(new Uint16Array(this._indices),
-                    BufferType.UNSIGNED_SHORT)
+                vertices: render.ArrayBuffer.create(new Float32Array(this._vertices),
+                    3, render.BufferType.FLOAT),
+                indices: render.ElementBuffer.create(new Uint16Array(this._indices),
+                    render.BufferType.UNSIGNED_SHORT)
             }
         }
 

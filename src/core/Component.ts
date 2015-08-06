@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Component{
+    export class Component extends Entity{
         private _gameObject:GameObject = null;
         get gameObject(){
             return this._gameObject;
