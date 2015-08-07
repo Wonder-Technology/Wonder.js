@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     //todo can set perspectiveParams, add updateProjectMatrix method
     //todo add backgroundColor

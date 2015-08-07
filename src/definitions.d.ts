@@ -21,11 +21,11 @@
 /// <reference path="component/geometry/TriangleGeometry"/>
 /// <reference path="component/action/Action"/>
 /// <reference path="component/action/ActionManager"/>
+/// <reference path="component/action/Camera"/>
 /// <reference path="component/renderer/Renderer"/>
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/TopCollider"/>
-/// <reference path="component/Camera"/>
 
 
 /// <reference path="math/Global"/>
