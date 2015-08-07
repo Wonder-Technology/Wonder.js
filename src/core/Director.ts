@@ -166,7 +166,7 @@ module dy{
         private _run(time:number) {
             //Time.update(timeScale);
             //update children's behaviour
-            this._stage.update();
+            this._stage.update(time);
             //invoke children's tranform(update modelMatrix, rotate,translate,scale)
             // and render(send vertice and indice datas to this._render, do other render work)
             //this._stage.visitStage(this._renderer);

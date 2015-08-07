@@ -28,7 +28,7 @@ module dy{
             return this._children.hasChild(action);
         }
 
-        public update(){
+        public update(time:number){
             var self = this,
                 removeQueue = [];
             //time = null;
@@ -47,8 +47,7 @@ module dy{
                 //    return;
                 //}
 
-                //child.update(time);
-                child.update();
+                child.update(time);
             });
 
             removeQueue.forEach(function (child) {

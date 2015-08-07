@@ -355,11 +355,11 @@ module dy {
             });
         }
 
-        update():void {
-            this._actionManager.update();
+        update(time:number):void {
+            this._actionManager.update(time);
 
             this._children.forEach((child:GameObject) => {
-                child.update();
+                child.update(time);
             });
         }
 

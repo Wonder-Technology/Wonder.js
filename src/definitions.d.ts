@@ -20,6 +20,7 @@
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>
 /// <reference path="component/action/Action"/>
+/// <reference path="component/action/Tween"/>
 /// <reference path="component/action/ActionManager"/>
 /// <reference path="component/action/Camera"/>
 /// <reference path="component/renderer/Renderer"/>

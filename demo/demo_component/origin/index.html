@@ -113,7 +113,7 @@
 //
 ////            mesh.transform.rotateAround(10, dy.Vector3.create(0, 0, 0), dy.Vector3.create(0,1,0));
             setInterval(function(){
-            mesh.transform.rotateAround(1, dy.Vector3.create(0, 0, -18), dy.Vector3.create(3,1,0));
+//            mesh.transform.rotateAround(1, dy.Vector3.create(0, 0, -18), dy.Vector3.create(3,1,0));
 //                num += 5;
 //                mesh.transform.rotateAround(num, dy.Vector3.create(0, 0, -22), dy.Vector3.create(1,1,0));
 //                mesh.transform.translateLocal(dy.Vector3.create(0, 0.1, 0));
@@ -178,6 +178,58 @@
             mesh.addComponent(meshRenderer);
 
 
+
+
+//            dyRt.fromAction(tween).subscribe(subject)
+
+//            subject.subscribe();
+
+//            var tweenHead = dy.Tween.create();
+//            tweenHead.from({x:0, y:0, z:0}).to({x: 100, y:50, z:200}, 2000)
+//                    .easing(TWEEN.Easing.Elastic.InOut)
+//                    .onUpdate(function(){
+//                        console.log(this.x, this.y, this.z);
+//                    });
+//
+//            var tweenBack = dy.Tween.create();
+//            tweenBack.from({x:0, y:0, z:0}).to({x: 100, y:50, z:200}, 2000)
+//                    .easing(TWEEN.Easing.Elastic.InOut)
+//                    .interpolation()
+//                    .onUpdate(function(){
+//                        console.log(this.x, this.y, this.z);
+//                    });
+//
+//            var stream = tweenHead.toStream().concat(tweenBack.toStream()).repeat()
+////            tweenHead.concat(tweenBack).repeat()
+//            dyRt.fromAction([tweenHead, tweenBack]).repeat();
+//
+////            mesh.addComponent(tween);
+//            mesh.addComponent(stream);
+
+//            tween.start();
+//            dyRt.delay(1000).subscribe(function(e){
+////                tween.start();
+//                stream.start();
+//            });
+//            dyRt.delay(2000).subscribe(function(e){
+////                tween.stop();
+//            });
+
+
+
+            var tween = dy.Tween.create();
+
+            tween.from({x:0, y:0, z:-10}).to({x: 4, y:4, z:-20}, 2000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        console.log(this.x, this.y, this.z);
+                        mesh.transform.position = dy.Vector3.create(this.x, this.y, this.z);
+                    });
+
+            mesh.addComponent(tween);
+            tween.start();
+
+
             mesh.transform.translate(dy.Vector3.create(0, 0, -20));
 
 
@@ -204,6 +256,7 @@
             director.stage.onEndLoop = function () {
                 setAllFalse();
                 isRotate = false;
+//                console.log(director.fps, director.gameTime);
             };
 
             director.stage.onExit = function () {
