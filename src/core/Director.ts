@@ -1,5 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
+    const STARTING_FPS = 60;
+
     export class Director{
         private static _instance:Director = null;
 
@@ -40,7 +42,24 @@ module dy{
             this._gl = gl;
         }
 
-        //private _scene:Scene = null;
+        private _gameTime:number = 0;
+        get gameTime(){
+            return this._gameTime;
+        }
+        set gameTime(gameTime:number){
+            this._gameTime = gameTime;
+        }
+
+        private _fps:number = null;
+        get fps(){
+            return this._fps;
+        }
+        set fps(fps:number){
+            this._fps = fps;
+        }
+
+        private _lastTime:number = null;
+        private _startTime:number = null;
         private _gameLoop:dyRt.IDisposable = null;
 
         public initWhenCreate(){
@@ -66,6 +85,8 @@ module dy{
 
             //todo not put here?
             this._renderer.init();
+
+            this._startTime = this._getTimeNow();
 
             this._startLoop();
         }
@@ -96,8 +117,10 @@ module dy{
                     self._loopBody(time);
                 });
         }
-        //todo add tick mechanism
         private _loopBody(time) {
+            //todo create Tween class to control time(contain tick method)?
+            this._tick(time);
+
             //todo invoke stage->syncHierarchy()
 
             this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
@@ -109,6 +132,30 @@ module dy{
             //this._renderer.render(this._scene);
 
             this._stage.onEndLoop();
+        }
+
+        private _getTimeNow() {
+            return +new Date();
+        }
+
+        private _tick(time) {
+            this._updateFps(time);
+            this.gameTime = (this._getTimeNow() - this._startTime) / 1000;
+            this._lastTime = time;
+        }
+
+        private _updateFps(time) {
+            //if (this._loopType === YE.Director.LoopType.INTERVAL) {
+            //    this._fps = 1 / this._loopInterval;
+            //    return;
+            //}
+
+            if (this._lastTime === 0) {
+                this._fps = STARTING_FPS;
+            }
+            else {
+                this._fps = 1000 / (time - this._lastTime);
+            }
         }
 
         /**
