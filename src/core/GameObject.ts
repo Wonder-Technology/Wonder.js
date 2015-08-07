@@ -46,14 +46,7 @@ module dy {
             this._renderer = renderer;
         }
 
-        //private _collider:Collider = null;
-        //get collider(){
-        //    return this._collider;
-        //}
-        //set collider(collider:Collider){
-        //    this._collider = collider;
-        //}
-
+        private _collider:Collider = null;
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
         private _actionManager:ActionManager = ActionManager.create();
@@ -222,21 +215,19 @@ module dy {
             //}
             //return null;
 
-            var result = null,
-                i = null,
-                children:dyCb.Collection<GameObject> = null,
-                len = this._children.getCount();
+            //todo judge position.z?
+            var result = null;
 
-            children = this._children;
-            if(len > 0) {
-                for (i = len - 1; i >= 0; i--) {
-                    let child = children.getChild(i);
+            this._children.copy().reverse().forEach((child:GameObject) => {
+                result = child.getTopUnderPoint(point);
 
-                    result = child.getTopUnderPoint(point);
-                    if (result) {
-                        return result;
-                    }
+                if (result) {
+                    return dyCb.$BREAK;
                 }
+            });
+
+            if(result){
+                return result;
             }
 
             if(this.isHit(point)) {
@@ -247,24 +238,7 @@ module dy {
         }
 
         public isHit(locationInView:Point):boolean {
-            //todo extract collider?
-            //var collider:Collider = this._collider;
-            //return collider && collider.collideXY(localX, localY);
-
-
-            //var RANGE = 10;
-            //
-            //return Math.abs(this._position.x - locationInView.x) < RANGE
-            //&& Math.abs(this._position.y - locationInView.y) < RANGE;
-
-
-            //todo complete this after adding position
-            if(locationInView){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return this._collider ? this._collider.collideXY(locationInView.x, locationInView.y) : false;
         }
 
         public hasComponent(component:Component):boolean;
@@ -315,11 +289,11 @@ module dy {
 
                 this._renderer = <Renderer>component;
             }
-            //else if(component instanceof Collider) {
-            //    Log.assert(!this._renderer, "collider is overlapped");
-            //
-            //    this._collider = <Collider>component;
-            //}
+            else if(component instanceof Collider) {
+                Log.assert(!this._renderer, "collider is overlapped");
+
+                this._collider = <Collider>component;
+            }
 
             return this;
         }
@@ -333,9 +307,9 @@ module dy {
             else if(component instanceof Renderer) {
                 this._renderer = null;
             }
-            //else if(component instanceof Collider) {
-            //    this._collider = null;
-            //}
+            else if(component instanceof Collider) {
+                this._collider = null;
+            }
 
             component.gameObject = null;
 

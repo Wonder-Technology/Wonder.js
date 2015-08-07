@@ -383,6 +383,8 @@
                 var startX = e.location.x,
                         startY = e.location.y;
 
+                e.stopPropagation();
+
                 // Calculate delta with mousemove until mouseup
                 return mousemove.map(function (e) {
                     var x = e.location.x,

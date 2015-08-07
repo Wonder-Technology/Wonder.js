@@ -27,7 +27,9 @@
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"}
-        ]).subscribe(null, null,
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
                 function(){
                     init();
                 });
@@ -78,14 +80,46 @@
 //            var mesh2 = dy.Mesh.create(geometry);
 //            mesh.addChild(mesh2);
 
-            var rotateAction = dy.Rotate.create(
-                    mesh.matrix, {
-                        speed: 0.5,
-                        axis: [dy.Vector3.create(0, 1, 0)]
-                    }
-            );
+//            var rotateAction = dy.Rotate.create(
+//                    mesh.matrix, {
+//                        speed: 0.5,
+//                        axis: [dy.Vector3.create(0, 1, 0)]
+//                    }
+//            );
 
-            mesh.runAction(rotateAction);
+//            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
+
+            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
+
+
+//            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
+
+
+//            setInterval(function(){
+//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
+//            }, 30);
+//            setInterval(function(){
+//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0), dy.Space.WORLD);
+//            }, 30);
+            var id = setInterval(function(){
+                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
+            }, 30);
+
+            setTimeout(function(){
+                clearInterval(id);
+            setInterval(function(){
+                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
+            }, 30);
+            }, 3000);
+//            setInterval(function(){
+//                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
+//            }, 30);
+//            setInterval(function(){
+//                mesh.transform.rotateAround(1, dy.Vector3.create(2,0,0), dy.Vector3.up);
+//                mesh.transform.rotateAround(1, dy.Vector3.create(2,0,0), dy.Vector3.create(2,1,0));
+//            }, 30);
+
+//            mesh.runAction(rotateAction);
 
             scene.addChild(mesh);
 

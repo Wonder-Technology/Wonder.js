@@ -14,6 +14,8 @@ module dy {
 
         public init(){
             this.program = render.Program.create();
+
+            this.addComponent(TopCollider.create());
         }
 
         public addChild(child:GameObject):GameObject{
@@ -33,7 +35,7 @@ module dy {
         public onStartLoop(){
             super.onStartLoop();
 
-            this.getChilren().forEach((child:GameObject) => {
+            this.forEach((child:GameObject) => {
                 child.onStartLoop();
             });
         }
@@ -41,7 +43,7 @@ module dy {
         public onEndLoop(){
             super.onEndLoop();
 
-            this.getChilren().forEach((child:GameObject) => {
+            this.forEach((child:GameObject) => {
                 child.onEndLoop();
             });
         }
