@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy {
     export class Spawn extends Control{
         public static create() {

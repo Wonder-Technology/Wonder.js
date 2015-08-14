@@ -285,12 +285,12 @@ module dy {
                 this._actionManager.addChild(<Action>component);
             }
             else if(component instanceof Renderer) {
-                Log.assert(!this._renderer, "renderer is overlapped");
+                Log.assert(!this._renderer, "renderer is overwrite");
 
                 this._renderer = <Renderer>component;
             }
             else if(component instanceof Collider) {
-                Log.assert(!this._renderer, "collider is overlapped");
+                Log.assert(!this._renderer, "collider is overwrite");
 
                 this._collider = <Collider>component;
             }
@@ -355,7 +355,7 @@ module dy {
             });
         }
 
-        update(time:number):void {
+        public update(time:number):void {
             this._actionManager.update(time);
 
             this._children.forEach((child:GameObject) => {

@@ -1,6 +1,6 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy{
-    export class Action extends Component{
+    export class Action extends Behavior{
         //enabled:boolean = true;
 
         //to avoid be duplicate with child class's private attribute

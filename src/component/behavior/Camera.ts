@@ -5,7 +5,7 @@ module dy{
     //todo optimize to reduce compute
     //todo add Frustum?
 
-    export class Camera extends Action{
+    export class Camera extends Behavior{
         public static create() {
             var obj = new this();
 
@@ -114,27 +114,9 @@ module dy{
             this._fovy = Math.min(this._fovy + speed, max);
         }
 
-        public update(){
+        public update(time){
             //todo add dirty mechanism
             this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
-        }
-
-        //todo extract Behavior(update),Action inhert from Behavior
-
-        public start() {
-        }
-
-        public stop() {
-        }
-
-        public isStop() {
-            return false;
-        }
-
-        public copy() {
-        }
-
-        public reverse() {
         }
     }
 }

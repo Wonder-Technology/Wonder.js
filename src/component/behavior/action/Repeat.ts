@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy {
     export class Repeat extends Control {
         public static create(action:Action, times:number) {
