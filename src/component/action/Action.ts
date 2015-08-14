@@ -12,6 +12,10 @@ module dy{
             this.dy_isFinish = isFinish;
         }
 
+        public isStart() {
+            return !this.isStop();
+        }
+
         public reset() {
             this.dy_isFinish = false;
         }
@@ -28,8 +32,21 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
+        public isStop() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public copy() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public reverse() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
         protected finish(){
             this.dy_isFinish = true;
+            this.stop();
         }
 
         //todo add hook method like onEnter/onExit?

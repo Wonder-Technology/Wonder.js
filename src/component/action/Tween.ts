@@ -1,27 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-// performance.now polyfill
     declare var window;
 
-    if ('performance' in window === false) {
-        window.performance = {};
-    }
-
-    // IE 8
-    Date.now = ( Date.now || function () {
-        return new Date().getTime();
-    } );
-
-    if ('now' in window.performance === false) {
-        var offset = window.performance.timing && window.performance.timing.navigationStart ? performance.timing.navigationStart
-            : Date.now();
-
-        window.performance.now = function () {
-            return Date.now() - offset;
-        };
-    }
-
-    export class Tween extends Action {
+    export class Tween extends ActionInterval {
         public static Easing = {
             Linear: {
 
@@ -404,17 +385,10 @@ module dy {
         private _object:dyCb.Hash<any> = null;
         private _valuesStart:dyCb.Hash<any> = dyCb.Hash.create<any>();
         private _valuesEnd:dyCb.Hash<any> = dyCb.Hash.create<any>();
-        //private _valuesStartRepeat = {};
         private _duration = null;
-        //private _repeat = 0;
-        private _isReset = false;
-        private _isPlaying = false;
-        //private _reversed = false;
-        //private _delayTime = 0;
         private _startTime = null;
         private _easingFunction = Tween.Easing.Linear.None;
         private _interpolationFunction = Tween.Interpolation.Linear;
-        //private _chainedTweens = [];
         private _onStartCallback = null;
         private _onStartCallbackFired = false;
         private _onUpdateCallback = null;
@@ -426,11 +400,9 @@ module dy {
                 elapsed = null,
                 easeValue = null;
 
-            //if (time < this._startTime) {
-            //
-            //    return true;
-            //
-            //}
+            if (time < this._startTime) {
+                return true;
+            }
 
             if (this._onStartCallbackFired === false) {
 
@@ -445,7 +417,8 @@ module dy {
             }
 
             elapsed = ( time - this._startTime ) / this._duration;
-            elapsed = elapsed > 1 ? 1 : elapsed;
+            elapsed = elapsed > 1 ? 1 :
+                (elapsed < 0 ? 0 : elapsed);
 
             easeValue = this._easingFunction(elapsed);
 
@@ -552,22 +525,10 @@ module dy {
             return this;
         }
 
-        public start() {
+        public init(){
             var self = this;
 
-            //Tween.add( this );
-
-            this._isPlaying = true;
-
-            this._onStartCallbackFired = false;
-
-            this._startTime = window.performance.now();
-
-            //_startTime += _delayTime;
-
             this._valuesEnd.forEach((value:any, key:string) => {
-                //todo need test the use interplote
-
                 // check if an Array was provided as property value
                 if (value instanceof Array) {
 
@@ -584,38 +545,35 @@ module dy {
                 if (( self._valuesStart.getChild(key) instanceof Array ) === false) {
                     self._valuesStart.setValue(key, self._valuesStart.getChild(key) * 1.0); // Ensures we're using numbers, not strings
                 }
-
-                //_valuesStartRepeat[ property ] = _valuesStart[ property ] || 0;
             });
+        }
+
+        public start() {
+            super.start();
+
+            this._onStartCallbackFired = false;
+
+            this._startTime = window.performance.now();
 
             return this;
         }
 
         public stop() {
-            if (!this._isPlaying) {
-                return this;
-            }
-
-            //Tween.remove( this );
-            this._isPlaying = false;
+            super.stop();
 
             if (this._onStopCallback !== null) {
                 this._onStopCallback.call(this._object.getChildren());
             }
 
-            //this.stopChainedTweens();
             return this;
         }
 
-        /**
-         * tweens can bounce back to their original value when finished
-         */
-        public reset() {
-            super.reset();
+        public copy() {
+            //todo
+        }
 
-            this._isReset = true;
-
-            return this;
+        public reverse() {
+            //todo
         }
 
         public easing(easing) {
@@ -655,18 +613,7 @@ module dy {
         }
 
         protected finish(){
-            var tmp = null;
-
             super.finish();
-
-            if(this._isReset){
-                //tmp = _valuesStartRepeat[ property ];
-                //_valuesStartRepeat[ property ] = _valuesEnd[ property ];
-                //_valuesEnd[ property ] = tmp;
-                tmp = this._valuesStart;
-                this._valuesStart = this._valuesEnd;
-                this._valuesEnd = tmp;
-            }
 
             if (this._onFinishCallback !== null) {
                 this._onFinishCallback.call(this._object.getChildren());

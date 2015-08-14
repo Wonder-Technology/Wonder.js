@@ -204,48 +204,95 @@
 //            dyRt.fromAction([tweenHead, tweenBack]).repeat();
 //
 ////            mesh.addComponent(tween);
-//            mesh.addComponent(stream);
+//            var subject = mesh.addStream(stream);
 
 //            tween.start();
 //            dyRt.delay(1000).subscribe(function(e){
 ////                tween.start();
-//                stream.start();
+//                subject.start();
 //            });
 //            dyRt.delay(2000).subscribe(function(e){
-////                tween.stop();
+////                subject.stop();
 //            });
+
+
+            mesh.transform.translate(dy.Vector3.create(0, 0, -10));
+
+
+            var geometry2 = dy.BoxGeometry.create();
+            geometry2.width = 5;
+            geometry2.height = 5;
+            geometry2.depth = 5;
+            geometry2.material = material;
+
+
+            var mesh2 = dy.GameObject.create();
+            mesh2.addComponent(geometry2);
+
+
+
+            var meshRenderer2 = dy.MeshRenderer.create();
+
+            mesh2.addComponent(meshRenderer2);
+
+
+
+            mesh2.transform.translate(dy.Vector3.create(-2, 0, -5));
 
 
 
             var tween = dy.Tween.create();
 
-            tween.from({x:0, y:0, z:-10}).to({x: 4, y:4, z:-20}, 2000)
+            tween.from({x:0, y:0, z:-10}).to({x: 4, y:4, z:-20}, 1000)
                     .easing( dy.Tween.Easing.Cubic.InOut )
                     .onUpdate(function(){
                         console.log(this.x, this.y, this.z);
                         mesh.transform.position = dy.Vector3.create(this.x, this.y, this.z);
                     });
 
-            mesh.addComponent(tween);
-            tween.start();
+            var tween2 = dy.Tween.create();
 
+            tween2.from({x: 4, y:4, z:-20}).to({x:0, y:0, z:-10}, 1000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        console.log(this.x, this.y, this.z);
+                        mesh.transform.position = dy.Vector3.create(this.x, this.y, this.z);
+                    });
 
-            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
+            var tween3 = dy.Tween.create();
+
+            tween3.from({x: -2, y:0, z:-5}).to({x:-3, y:-2, z:-10}, 1000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        console.log(this.x, this.y, this.z);
+                        mesh2.transform.position = dy.Vector3.create(this.x, this.y, this.z);
+                    });
+
+//            var action = dy.Spawn.create(dy.Repeat.create(tween3, 2), dy.RepeatForever.create(dy.Sequence.create(dy.DelayTime.create(2000), tween, tween2)));
+//            var action = dy.Spawn.create(dy.Repeat.create(tween3, 2), dy.RepeatForever.create(dy.Sequence.create(tween, tween2)));
+//            var action = dy.RepeatForever.create(dy.Sequence.create(tween, tween2));
+//            var action = dy.RepeatForever.create(dy.Sequence.create(dy.DelayTime.create(500), tween3));
+//            var action = dy.RepeatForever.create(dy.Spawn.create(dy.Repeat.create(tween3, 2), dy.Sequence.create(tween, tween2)));
+            var action = dy.RepeatForever.create(dy.Spawn.create(tween3, dy.Sequence.create(tween, tween2)));
+
 
 
 
             var director = dy.Director.getInstance();
 
-            //can set render
-//            digeometryor.render
-
-//            director.runWithScene(scene);
-//            director.stage.addChild(scene);
-
 
             director.stage.addChild(mesh);
+            director.stage.addChild(mesh2);
+
+            director.stage.addComponent(action);
+            action.start();
 
             director.stage.addChild(camera);
+
+
+
+
+
 
 
 

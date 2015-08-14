@@ -20,6 +20,14 @@
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>
 /// <reference path="component/action/Action"/>
+/// <reference path="component/action/ActionInstant"/>
+/// <reference path="component/action/CallFunc"/>
+/// <reference path="component/action/ActionInterval"/>
+/// <reference path="component/action/Control"/>
+/// <reference path="component/action/Sequence"/>
+/// <reference path="component/action/DelayTime"/>
+/// <reference path="component/action/Repeat"/>
+/// <reference path="component/action/RepeatForever"/>
 /// <reference path="component/action/Tween"/>
 /// <reference path="component/action/ActionManager"/>
 /// <reference path="component/action/Camera"/>
@@ -77,3 +85,4 @@
 /// <reference path="event/binder/EventBinder"/>
 /// <reference path="event/factory/FactoryEventHandler"/>
 /// <reference path="event/EventManager"/>
+

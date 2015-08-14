@@ -118,5 +118,23 @@ module dy{
             //todo add dirty mechanism
             this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
         }
+
+        //todo extract Behavior(update),Action inhert from Behavior
+
+        public start() {
+        }
+
+        public stop() {
+        }
+
+        public isStop() {
+            return false;
+        }
+
+        public copy() {
+        }
+
+        public reverse() {
+        }
     }
 }
