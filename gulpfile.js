@@ -8,7 +8,7 @@ require("./build/gulp_task/compile/combineInnerLib");
 require("./build/gulp_task/createDefinitionFile/bowser/create");
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean", "compileTs", "compileTsDebug", "combineInnerLib"]));
+gulp.task("build", gulpSync.sync(["clean", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference"]));
 
 
 
