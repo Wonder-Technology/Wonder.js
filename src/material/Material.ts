@@ -2,7 +2,7 @@
 module dy {
     //todo add more attribute refer to unity
 
-    export class MeshMaterial {
+    export class Material {
         public static create() {
             var obj = new this();
 

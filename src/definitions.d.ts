@@ -60,7 +60,7 @@
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
 
-/// <reference path="material/MeshMaterial"/>
+/// <reference path="material/Material"/>
 
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/LoaderManager"/>

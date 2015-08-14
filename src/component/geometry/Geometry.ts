@@ -25,11 +25,11 @@ module dy{
             this._colors = colors;
         }
 
-        private _material:MeshMaterial = null;
+        private _material:Material = null;
         get material(){
             return this._material;
         }
-        set material(material:MeshMaterial){
+        set material(material:Material){
             this._material = material;
         }
 
@@ -50,7 +50,7 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        private _computeColorsBuffer(material:MeshMaterial){
+        private _computeColorsBuffer(material:Material){
             var arr = [],
                 color = material.color,
                 i = 0,
