@@ -62,8 +62,8 @@
 
 /// <reference path="material/MeshMaterial"/>
 
-/// <reference path="loader/GLSLLoader"/>
-/// <reference path="Loader/LoaderManager"/>
+/// <reference path="asset/GLSLLoader"/>
+/// <reference path="asset/LoaderManager"/>
 
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>

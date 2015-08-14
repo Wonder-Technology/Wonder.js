@@ -16,7 +16,6 @@ module dy{
             var self = this;
 
             if(this._container.getChild(id)){
-                console.log("has");
                 return dyRt.createStream((observer:dyRt.IObserver) => {
                     observer.next(null);
                     observer.completed();
