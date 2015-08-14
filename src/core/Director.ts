@@ -86,6 +86,7 @@ module dy{
             //todo not put here?
             this._renderer.init();
 
+            //todo use performance.now?
             this._startTime = this._getTimeNow();
 
             this._startLoop();
@@ -135,12 +136,12 @@ module dy{
         }
 
         private _getTimeNow() {
-            return +new Date();
+            return performance.now();
         }
 
         private _tick(time) {
             this._updateFps(time);
-            this.gameTime = (this._getTimeNow() - this._startTime) / 1000;
+            this.gameTime = (time - this._startTime) / 1000;
             this._lastTime = time;
         }
 
