@@ -1,8 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
+    //refer to http://docs.unity3d.com/ScriptReference/Transform.html, playCanvas->src/scene/scene_graphnode.js
     //todo addChildAndSaveTransform?(playCanvas->scene_graphnode.js)
-    //todo refer to http://docs.unity3d.com/ScriptReference/Transform.html, playCanvas->src/scene/scene_graphnode.js
-
     //todo inherit from Component?
     export class Transform extends Entity{
         public static create(gameObject:GameObject) {
@@ -65,7 +64,6 @@ module dy{
         }
 
         private _position:Vector3 = Vector3.create();
-        //todo gameObject set parent
         get position(){
             this._position = this.localToWorldMatrix.getTranslation();
 
@@ -133,12 +131,6 @@ module dy{
 
             this._dirtyLocal = true;
         }
-
-        //todo no scale based on world space now
-        //private _scale:Vector3 = Vector3.create(1, 1, 1);
-        //get scale(){
-        //    return this._scale;
-        //}
 
         private _localPosition:Vector3 = Vector3.create(0, 0, 0);
         get localPosition(){

@@ -1,8 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    //todo can set perspectiveParams, add updateProjectMatrix method
     //todo add backgroundColor
-    //todo optimize to reduce compute
     //todo add Frustum?
 
     export class Camera extends Behavior{
@@ -14,11 +12,9 @@ module dy{
 
         get cameraToWorldMatrix(){
             return this.transform.localToWorldMatrix.copy();
-            //return this.transform.localToWorldMatrix;
         }
 
         get worldToCameraMatrix(){
-            //return this.transform.worldToLocalMatrix;
             return this.cameraToWorldMatrix.invert();
         }
 
@@ -68,6 +64,7 @@ module dy{
         }
         set fovy(fovy:number){
             this._fovy = fovy;
+            this._dirty = true;
         }
 
         private _aspect:number = null;
@@ -76,6 +73,7 @@ module dy{
         }
         set aspect(aspect:number){
             this._aspect = aspect;
+            this._dirty = true;
         }
 
         private _near:number = null;
@@ -84,6 +82,7 @@ module dy{
         }
         set near(near:number){
             this._near = near;
+            this._dirty = true;
         }
 
         private _far:number = null;
@@ -92,7 +91,10 @@ module dy{
         }
         set far(far:number){
             this._far = far;
+            this._dirty = true;
         }
+
+        private _dirty:boolean = false;
 
         public init(){
             this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
@@ -115,8 +117,10 @@ module dy{
         }
 
         public update(time){
-            //todo add dirty mechanism
-            this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+            if(this._dirty){
+                this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+                this._dirty = false;
+            }
         }
     }
 }

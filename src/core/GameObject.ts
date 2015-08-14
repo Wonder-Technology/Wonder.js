@@ -32,18 +32,20 @@ module dy {
             this._transform = transform;
         }
 
-        /**
-         * get renderer component of this game object
-         * @property {WOZLLA.Renderer} renderer
-         * @member WOZLLA.GameObject
-         * @readonly
-         */
         private _renderer:Renderer = null;
         get renderer(){
             return this._renderer;
         }
         set renderer(renderer:Renderer){
             this._renderer = renderer;
+        }
+
+        private _name:string = "gameObject" + String(this.uid);
+        get name(){
+            return this._name;
+        }
+        set name(name:string){
+            this._name = name;
         }
 
         private _collider:Collider = null;
@@ -277,6 +279,8 @@ module dy {
                 component.gameObject.removeComponent(component);
             }
             component.gameObject = this;
+            //todo set Transform parent?
+
 
             this._components.addChild(component);
             component.init();
