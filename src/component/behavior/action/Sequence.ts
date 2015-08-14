@@ -88,6 +88,14 @@ module dy {
             return this;
         }
 
+        public reverse() {
+            this._actions.reverse();
+
+            super.reverse();
+
+            return this;
+        }
+
         public getInnerActions() {
             return this._actions;
         }

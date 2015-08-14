@@ -14,25 +14,25 @@ module dy {
 
             this._context = context || window;
             this._callFunc = func;
-            this._dataArr = dataArr;
+            this._dataArr = dyCb.Collection.create<any>(dataArr);
         }
 
         private _context:any = null;
         private _callFunc:Function = null;
-        private _dataArr:Array<any> = null;
+        private _dataArr:dyCb.Collection<any> = null;
 
         public reverse() {
             return this;
         }
         public update(time) {
             if (this._callFunc) {
-                this._callFunc.call(this._context, this.gameObject, this._dataArr);
+                this._callFunc.call(this._context, this.target, this._dataArr);
             }
 
             this.finish();
         }
         public copy() {
-            return new CallFunc(this._context, this._callFunc, dyCb.ExtendUtils.extendDeep(this._dataArr));
+            return new CallFunc(this._context, this._callFunc, this._dataArr.copy(true).getChildren());
         }
     }
 }

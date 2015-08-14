@@ -38,7 +38,10 @@ module dy {
                 if (this._times !== 0) {
                     this._innerAction.reset();
                     this._innerAction.start();
+
+                    return;
                 }
+                this.finish();
             }
         }
 
@@ -52,6 +55,18 @@ module dy {
             this._times = this._originTimes;
 
             return this;
+        }
+
+        public start() {
+            super.start();
+
+            this._innerAction.start();
+        }
+
+        public stop() {
+            super.stop();
+
+            this._innerAction.stop();
         }
 
         public getInnerActions() {

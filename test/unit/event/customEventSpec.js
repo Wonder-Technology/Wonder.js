@@ -58,7 +58,7 @@ describe("custom event", function () {
 
             });
             it("target eventName", function () {
-                var target = dy.Mesh.create();
+                var target = dy.GameObject.create();
                 var eventTarget = null;
                 var sum = 0;
 
@@ -195,7 +195,7 @@ describe("custom event", function () {
                 });
             });
             it("target eventName", function () {
-                var target = dy.Mesh.create();
+                var target = dy.GameObject.create();
                 var eventTarget = null;
                 var sum = 0;
 
@@ -228,10 +228,10 @@ describe("custom event", function () {
         var fakeObj;
 
         beforeEach(function(){
-             mesh1 = dy.Mesh.create();
-             mesh2 = dy.Mesh.create();
-             mesh3 = dy.Mesh.create();
-             mesh4 = dy.Mesh.create();
+             mesh1 = dy.GameObject.create();
+             mesh2 = dy.GameObject.create();
+             mesh3 = dy.GameObject.create();
+             mesh4 = dy.GameObject.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -327,8 +327,8 @@ describe("custom event", function () {
                 a: 1,
                 b: "b"
             };
-            mesh1 = dy.Mesh.create();
-            mesh2 = dy.Mesh.create();
+            mesh1 = dy.GameObject.create();
+            mesh2 = dy.GameObject.create();
             mesh2.addChild(mesh1);
 
             manager.fromEvent(mesh1, eventName)

@@ -20,7 +20,7 @@ describe("event", function () {
 
         manager = dy.EventManager;
         Listener = dy.EventListener;
-        target = dy.Mesh.create();
+        target = dy.GameObject.create();
     });
     afterEach(function () {
         removeDom();
@@ -44,7 +44,7 @@ describe("event", function () {
                 pageX:10,
                 pageY:10
             };
-            target2 = dy.Mesh.create();
+            target2 = dy.GameObject.create();
 
             manager.on(target, dy.EventName.CLICK, function (e) {
                 eventTarget = e;
@@ -92,10 +92,10 @@ describe("event", function () {
         var eventName = "custom";
 
         beforeEach(function () {
-            mesh1 = dy.Mesh.create();
-            mesh2 = dy.Mesh.create();
-            mesh3 = dy.Mesh.create();
-            mesh4 = dy.Mesh.create();
+            mesh1 = dy.GameObject.create();
+            mesh2 = dy.GameObject.create();
+            mesh3 = dy.GameObject.create();
+            mesh4 = dy.GameObject.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -353,7 +353,7 @@ describe("event", function () {
             //count = 0;
             //director = dy.Director.getInstance();
             //scene = dy.Scene.create(null, "", "");
-            //mesh = dy.Mesh.create(null);
+            //mesh = dy.GameObject.create(null);
             //
             ////scene.add(mesh);
             //scene._meshes.addChildren(mesh);

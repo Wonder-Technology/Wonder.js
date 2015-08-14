@@ -417,8 +417,7 @@ module dy {
             }
 
             elapsed = ( time - this._startTime ) / this._duration;
-            elapsed = elapsed > 1 ? 1 :
-                (elapsed < 0 ? 0 : elapsed);
+            elapsed = elapsed > 1 ? 1 : elapsed;
 
             easeValue = this._easingFunction(elapsed);
 
@@ -505,7 +504,7 @@ module dy {
             return true;
         }
 
-        public from(object:{any}) {
+        public from(object:any) {
             var self = this;
 
             this._object = dyCb.Hash.create<any>(object);
@@ -518,7 +517,7 @@ module dy {
             return this;
         }
 
-        public to(properties:{any}, duration:number = 1000) {
+        public to(properties:any, duration:number = 1000) {
             this._duration = duration;
             this._valuesEnd = dyCb.Hash.create<any>(properties);
 
@@ -569,11 +568,23 @@ module dy {
         }
 
         public copy() {
-            //todo
+            var action = Tween.create();
+
+            return Tween.create().from(this._valuesStart.getChildren())
+            .to(this._valuesEnd.getChildren(), this._duration)
+                .easing(this._easingFunction)
+                .interpolation(this._interpolationFunction)
+                .onStart(this._onStartCallback)
+                .onStop(this._onStopCallback)
+                .onFinish(this._onFinishCallback)
+                .onUpdate(this._onUpdateCallback);
         }
 
         public reverse() {
-            //todo
+            var tmp = this._valuesStart;
+
+            this._valuesStart = this._valuesEnd;
+            this._valuesEnd = tmp;
         }
 
         public easing(easing) {

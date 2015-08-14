@@ -1,9 +1,7 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
     export class Action extends Behavior{
-        //enabled:boolean = true;
-
-        //to avoid be duplicate with child class's private attribute
+        /*!to avoid be duplicate with child class's private attribute*/
         private dy_isFinish:boolean = false;
         get isFinish(){
             return this.dy_isFinish;
@@ -18,6 +16,17 @@ module dy{
 
         get isStop() {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        /*!
+        add "p_" prefix to avoid be duplicate with the getter
+         */
+        protected p_target:GameObject = null;
+        get target(){
+            return this.p_target;
+        }
+        set target(target:GameObject){
+            this.p_target = target;
         }
 
         public reset() {

@@ -18,7 +18,6 @@ module dy {
         private _delayTime:number = null;
         private _elapsed:number = null;
         private _startTime:number = null;
-        //private _firstTick:boolean = true;
 
         public reverse() {
             return this;
@@ -28,14 +27,6 @@ module dy {
             if (time < this._startTime) {
                 return;
             }
-
-            //if (this._firstTick) {
-            //    this._firstTick = false;
-            //    this._elapsed = 0;
-            //
-            //    //return YE.returnForTest;
-            //    return null;
-            //}
 
             this._elapsed  = time - this._startTime;
 
@@ -51,12 +42,6 @@ module dy {
 
             return this;
         }
-
-        //public reset(){
-        //    super.reset();
-        //
-        //
-        //}
 
         public copy() {
             return DelayTime.create(this._delayTime);

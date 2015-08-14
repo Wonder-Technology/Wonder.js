@@ -21,7 +21,7 @@ describe("mouse event", function () {
             pageX:10,
             pageY:10
         };
-        target =  dy.Mesh.create();
+        target =  dy.GameObject.create();
         manager = dy.EventManager;
         Listener = dy.EventListener;
     });
@@ -141,10 +141,10 @@ describe("mouse event", function () {
         var fakeObj;
 
         beforeEach(function(){
-            mesh1 = dy.Mesh.create();
-            mesh2 = dy.Mesh.create();
-            mesh3 = dy.Mesh.create();
-            mesh4 = dy.Mesh.create();
+            mesh1 = dy.GameObject.create();
+            mesh2 = dy.GameObject.create();
+            mesh3 = dy.GameObject.create();
+            mesh4 = dy.GameObject.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);

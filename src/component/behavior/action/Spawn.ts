@@ -53,6 +53,22 @@ module dy {
             return this;
         }
 
+        public reset() {
+            super.reset();
+
+            this.iterate("reset");
+
+            return this;
+        }
+
+        public reverse() {
+            this._actions.reverse();
+
+            super.reverse();
+
+            return this;
+        }
+
         public getInnerActions() {
             return this._actions;
         }

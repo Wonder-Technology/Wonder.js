@@ -32,6 +32,18 @@ module dy {
             return RepeatForever.create(this._innerAction.copy());
         }
 
+        public start() {
+            super.start();
+
+            this._innerAction.start();
+        }
+
+        public stop() {
+            super.stop();
+
+            this._innerAction.stop();
+        }
+
         public getInnerActions() {
             return dyCb.Collection.create<Action>([this._innerAction]);
         }

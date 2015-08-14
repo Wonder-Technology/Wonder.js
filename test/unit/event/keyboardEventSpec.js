@@ -23,7 +23,7 @@ describe("keyboard event", function () {
             shiftKey: true,
             metaKey: false
         };
-        target =  dy.Mesh.create();
+        target =  dy.GameObject.create();
         manager = dy.EventManager;
         Listener = dy.EventListener;
     });

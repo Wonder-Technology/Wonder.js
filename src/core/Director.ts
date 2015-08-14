@@ -115,6 +115,12 @@ module dy{
 
             this._gameLoop = dyRt.intervalRequest()
             .subscribe((time) => {
+                    //todo need polyfill
+                    /*!
+                     i consider that the time is DOMHighResTimeStamp(从页面导航开始时测量的高精确度时间),
+                     but it may be DOMTimeStamp in some browser!
+                     so it may need polyfill!
+                     */
                     self._loopBody(time);
                 });
         }

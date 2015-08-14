@@ -286,7 +286,10 @@ module dy {
             component.init();
 
             if(component instanceof Action) {
-                this._actionManager.addChild(<Action>component);
+                let action = <Action>component;
+
+                action.target = this;
+                this._actionManager.addChild(action);
             }
             else if(component instanceof Renderer) {
                 Log.assert(!this._renderer, "renderer is overwrite");
