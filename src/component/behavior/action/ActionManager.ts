@@ -79,7 +79,7 @@ module dy{
                     return;
                 }
 
-                if (child.isStop()) {
+                if (child.isStop) {
                     return;
                 }
 
@@ -106,7 +106,7 @@ module dy{
                     removeQueue.push(child);
                     return;
                 }
-                //if (child.isStop()) {
+                //if (child.isStop) {
                 //    return;
                 //}
 
@@ -133,7 +133,7 @@ module dy{
         //    //        removeQueue.push(stream);
         //    //        return;
         //    //    }
-        //    //    //if (stream.isStop()) {
+        //    //    //if (stream.isStop) {
         //    //    //    return;
         //    //    //}
         //    //

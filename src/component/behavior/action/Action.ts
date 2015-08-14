@@ -12,8 +12,12 @@ module dy{
             this.dy_isFinish = isFinish;
         }
 
-        public isStart() {
-            return !this.isStop();
+        get isStart() {
+            return !this.isStop;
+        }
+
+        get isStop() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         public reset() {
@@ -29,10 +33,6 @@ module dy{
         }
 
         public stop() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public isStop() {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 

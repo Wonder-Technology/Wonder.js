@@ -3,6 +3,10 @@ module dy {
     export class ActionInterval extends Action{
         private _isStop:boolean = true;
 
+        get isStop() {
+            return this._isStop;
+        }
+
         public start() {
             this._isStop = false;
         }
@@ -11,17 +15,10 @@ module dy {
             super.reset();
 
             this._isStop = true;
-            //this.stop();
-            //this.start();
         }
 
         public stop() {
             this._isStop = true;
-        }
-
-        //todo attri
-        public isStop() {
-            return this._isStop;
         }
     }
 }

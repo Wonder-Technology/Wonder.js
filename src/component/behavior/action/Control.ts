@@ -30,7 +30,7 @@ module dy {
         }
 
         protected startOnce(action:Action){
-            if(!action.isStop()){
+            if(action.isStart){
                 return;
             }
 
@@ -38,7 +38,7 @@ module dy {
         }
 
         protected stopOnce(action:Action){
-            if(!action.isStop()){
+            if(action.isStop){
                 return;
             }
 

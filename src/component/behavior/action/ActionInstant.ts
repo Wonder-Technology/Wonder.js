@@ -1,7 +1,7 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
     export class ActionInstant extends Action {
-        public isStop() {
+        get isStop() {
             return false;
         }
 
