@@ -18,6 +18,10 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
+        get isPause() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
         /*!
         add "p_" prefix to avoid be duplicate with the getter
          */
@@ -45,6 +49,14 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
+        public pause() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public resume() {
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
         public copy() {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
@@ -57,7 +69,6 @@ module dy{
             this.dy_isFinish = true;
             this.stop();
         }
-
         //todo add hook method like onEnter/onExit?
     }
 }

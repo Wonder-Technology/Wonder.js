@@ -137,7 +137,7 @@ describe("Tween", function () {
             expect(a._valuesEnd.getChildren()).toEqual(
                 {x: [0, 50, 100]}
             );
-            expect(a._duration).toEqual(100);
+            expect(a.duration).toEqual(100);
             expect(a._onStartCallback).toEqual(action._onStartCallback);
             expect(a._onStopCallback).toEqual(action._onStopCallback);
             expect(a._onUpdateCallback).toEqual(action._onUpdateCallback);

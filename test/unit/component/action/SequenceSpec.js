@@ -8,13 +8,13 @@ describe("Sequence", function () {
         sandbox = sinon.sandbox.create();
         action = new Sequence();
         gameObject = dy.GameObject.create();
+        sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
         sandbox.restore();
     });
 
     it("exec inner actions in order", function(){
-        sandbox.stub(window.performance, "now").returns(0);
         var action1 = dy.DelayTime.create(100);
         var context = {
             a:1
@@ -40,22 +40,23 @@ describe("Sequence", function () {
         gameObject.addComponent(action);
 
         action.start();
-        gameObject._actionManager.update(50);
+        testTool.updateAction(50, gameObject);
         expect(action1.isFinish).toBeFalsy();
-        gameObject._actionManager.update(150);
+        testTool.updateAction(150, gameObject);
         expect(action1.isFinish).toBeTruthy();
-        gameObject._actionManager.update(200);
+        testTool.updateAction(200, gameObject);
         expect(action2.isFinish).toBeTruthy();
         expect(context).toEqual({
             name:"test",
             a:7
         });
-        window.performance.now.returns(200);
-        gameObject._actionManager.update(250);
+
+        testTool.updateAction(250, gameObject);
         expect(x).toEqual(2);
-        gameObject._actionManager.update(300);
+        testTool.updateAction(300, gameObject);
         expect(x).toEqual(4);
         expect(tween.isFinish).toBeTruthy();
+        expect(action.isFinish).toBeTruthy();
     });
 
     describe("copy", function(){
@@ -79,8 +80,6 @@ describe("Sequence", function () {
 
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
-            sandbox.stub(window.performance, "now").returns(0);
-
             var action1 = dy.DelayTime.create(100);
             var x = null;
             var tween = dy.Tween.create();
@@ -97,18 +96,60 @@ describe("Sequence", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(50);
+            testTool.updateAction(50, gameObject);
             action.stop();
-            gameObject._actionManager.update(150);
-            expect(action1.isFinish).toBeFalsy();
 
-            window.performance.now.returns(150);
+            testTool.updateAction(150, gameObject);
+            expect(action1.isFinish).toBeFalsy();
             action.start();
-            gameObject._actionManager.update(250);
+
+            testTool.updateAction(250, gameObject);
             expect(action1.isFinish).toBeTruthy();
 
-            gameObject._actionManager.update(300);
+            testTool.updateAction(350, gameObject);
             expect(tween.isFinish).toBeTruthy();
+        });
+    });
+
+    describe("pause,resume", function(){
+        it("can pause action and continue action", function () {
+            var action1 = dy.DelayTime.create(100);
+            var x = null;
+            var tween = dy.Tween.create();
+            tween.from({x:0}).to({x: 4}, 100)
+                .easing( dy.Tween.Easing.Linear.None)
+                .onUpdate(function(){
+                    x = this.x;
+                });
+
+            action = Sequence.create(
+                action1,
+                tween
+            );
+            gameObject.addComponent(action);
+
+            action.start();
+            testTool.updateAction(50, gameObject);
+
+            action.pause();
+
+            testTool.updateAction(150, gameObject);
+            expect(action1.isFinish).toBeFalsy();
+
+            action.resume();
+
+            testTool.updateAction(200, gameObject);
+            expect(action1.isFinish).toBeTruthy();
+
+
+            testTool.updateAction(250, gameObject);
+            expect(tween.isFinish).toBeFalsy();
+            expect(x).toEqual(2);
+
+            testTool.updateAction(300, gameObject);
+            expect(x).toEqual(4);
+            expect(tween.isFinish).toBeTruthy();
+            expect(action.isFinish).toBeTruthy();
         });
     });
 
@@ -128,8 +169,8 @@ describe("Sequence", function () {
             gameObject.addComponent(action);
             action.reverse();
             action.start();
-            gameObject._actionManager.update();
-            gameObject._actionManager.update();
+            testTool.updateAction(0, gameObject);
+            testTool.updateAction(0, gameObject);
 
             expect(context.name).toEqual("ba");
         });

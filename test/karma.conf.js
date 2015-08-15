@@ -28,6 +28,7 @@ module.exports = function(config) {
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
+        'test/unit/testTool.js',
 
         //'test/unit/**/*.js'
         'test/unit/math/*.js',

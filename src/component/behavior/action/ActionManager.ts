@@ -40,7 +40,7 @@ module dy{
                     return;
                 }
 
-                if (child.isStop) {
+                if (child.isStop || child.isPause) {
                     return;
                 }
 

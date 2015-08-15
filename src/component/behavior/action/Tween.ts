@@ -385,8 +385,6 @@ module dy {
         private _object:dyCb.Hash<any> = null;
         private _valuesStart:dyCb.Hash<any> = dyCb.Hash.create<any>();
         private _valuesEnd:dyCb.Hash<any> = dyCb.Hash.create<any>();
-        private _duration = null;
-        private _startTime = null;
         private _easingFunction = Tween.Easing.Linear.None;
         private _interpolationFunction = Tween.Interpolation.Linear;
         private _onStartCallback = null;
@@ -395,14 +393,9 @@ module dy {
         private _onFinishCallback = null;
         private _onStopCallback = null;
 
-        public update(time:number) {
+        protected updateBody(time:number) {
             var self = this,
-                elapsed = null,
                 easeValue = null;
-
-            if (time < this._startTime) {
-                return true;
-            }
 
             if (this._onStartCallbackFired === false) {
 
@@ -416,10 +409,7 @@ module dy {
 
             }
 
-            elapsed = ( time - this._startTime ) / this._duration;
-            elapsed = elapsed > 1 ? 1 : elapsed;
-
-            easeValue = this._easingFunction(elapsed);
+            easeValue = this._easingFunction(this.elapsed);
 
             this._valuesEnd.forEach((value:any, key:string) => {
                 var start = self._valuesStart.getChild(key),
@@ -446,61 +436,6 @@ module dy {
                 this._onUpdateCallback.call(this._object.getChildren(), easeValue);
             }
 
-            if (this._isFinish(elapsed)) {
-
-                //if ( _repeat > 0 ) {
-                //
-                //if( isFinite( _repeat ) ) {
-                //	_repeat--;
-                //}
-                //
-                //// reassign starting values, restart by making startTime = now
-                //for( property in _valuesStartRepeat ) {
-                //
-                //	if ( typeof( _valuesEnd[ property ] ) === "string" ) {
-                //		_valuesStartRepeat[ property ] = _valuesStartRepeat[ property ] + parseFloat(_valuesEnd[ property ], 10);
-                //	}
-                //
-                //	if (_yoyo) {
-                //		var tmp = _valuesStartRepeat[ property ];
-                //		_valuesStartRepeat[ property ] = _valuesEnd[ property ];
-                //		_valuesEnd[ property ] = tmp;
-                //	}
-                //
-                //	_valuesStart[ property ] = _valuesStartRepeat[ property ];
-                //
-                //}
-                //
-                //if (_yoyo) {
-                //	_reversed = !_reversed;
-                //}
-                //
-                //_startTime = time + _delayTime;
-                //
-                //return true;
-                //
-                //}
-                //else {
-
-                //if (_onFinishCallback !== null) {
-
-                this.finish();
-                //this.onFinish.call(_object);
-
-                //}
-
-                //for ( var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++ ) {
-                //
-                //	_chainedTweens[ i ].start( time );
-                //
-                //}
-
-                return false;
-
-                //}
-
-            }
-
             return true;
         }
 
@@ -518,7 +453,7 @@ module dy {
         }
 
         public to(properties:any, duration:number = 1000) {
-            this._duration = duration;
+            this.duration = duration;
             this._valuesEnd = dyCb.Hash.create<any>(properties);
 
             return this;
@@ -552,8 +487,6 @@ module dy {
 
             this._onStartCallbackFired = false;
 
-            this._startTime = window.performance.now();
-
             return this;
         }
 
@@ -567,11 +500,25 @@ module dy {
             return this;
         }
 
+        //public pause() {
+        //    super.pause();
+        //
+        //    this._startTime = window.performance.now();
+        //
+        //    return this;
+        //}
+        //
+        //public resume() {
+        //    super.resume();
+        //
+        //    return this;
+        //}
+
         public copy() {
             var action = Tween.create();
 
             return Tween.create().from(this._valuesStart.getChildren())
-            .to(this._valuesEnd.getChildren(), this._duration)
+            .to(this._valuesEnd.getChildren(), this.duration)
                 .easing(this._easingFunction)
                 .interpolation(this._interpolationFunction)
                 .onStart(this._onStartCallback)
@@ -629,10 +576,6 @@ module dy {
             if (this._onFinishCallback !== null) {
                 this._onFinishCallback.call(this._object.getChildren());
             }
-        }
-
-        private _isFinish(elapsed){
-            return elapsed >= 1;
         }
     }
 }

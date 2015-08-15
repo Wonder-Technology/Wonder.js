@@ -38,12 +38,7 @@ describe("action integration test", function () {
         expect(action3.isFinish).toBeTruthy();
         expect(action4.isFinish).toBeFalsy();
 
-        //invoke sequence.finish
         gameObject._actionManager.update(81);
-        expect(action4.isFinish).toBeFalsy();
-
-        //invoke action4
-        gameObject._actionManager.update(82);
         expect(action4.isFinish).toBeTruthy();
         expect(sum).toEqual(100);
 
@@ -54,10 +49,6 @@ describe("action integration test", function () {
         gameObject._actionManager.update(200);
         expect(action1.isFinish).toBeTruthy();
         expect(x).toEqual(5);
-        expect(action.isFinish).toBeFalsy();
-
-        gameObject._actionManager.update(201);
-        expect(action1.isFinish).toBeTruthy();
         expect(action.isFinish).toBeTruthy();
     });
 });

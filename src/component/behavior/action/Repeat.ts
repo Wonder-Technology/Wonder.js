@@ -69,6 +69,18 @@ module dy {
             this._innerAction.stop();
         }
 
+        public pause() {
+            super.pause();
+
+            this._innerAction.pause();
+        }
+
+        public resume() {
+            super.resume();
+
+            this._innerAction.resume();
+        }
+
         public getInnerActions() {
             return dyCb.Collection.create<Action>([this._innerAction]);
         }

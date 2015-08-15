@@ -39,17 +39,17 @@ module dy {
             this._currentAction = this._actions.getChild(this._actionIndex);
 
             if(this._currentAction.isFinish){
-                this._actionIndex += 1;
-                this.update(time);
+                this._startNextActionAndJudgeFinish();
 
                 return;
             }
 
-            this.startOnce(this._currentAction);
-
             this._currentAction.update(time);
 
-            //return YE.returnForTest;
+            if(this._currentAction.isFinish){
+                this._startNextActionAndJudgeFinish();
+            }
+
             return null;
         }
 
@@ -75,7 +75,8 @@ module dy {
         public start() {
             super.start();
 
-            this.startOnce(this._currentAction);
+            //this.startOnce(this._currentAction);
+            this._currentAction.start();
 
             return this;
         }
@@ -83,7 +84,24 @@ module dy {
         public stop() {
             super.stop();
 
-            this.stopOnce(this._currentAction);
+            //this.stopOnce(this._currentAction);
+            this._currentAction.stop();
+
+            return this;
+        }
+
+        public pause() {
+            super.pause();
+
+            this._currentAction.pause();
+
+            return this;
+        }
+
+        public resume() {
+            super.resume();
+
+            this._currentAction.resume();
 
             return this;
         }
@@ -98,6 +116,17 @@ module dy {
 
         public getInnerActions() {
             return this._actions;
+        }
+
+        private _startNextActionAndJudgeFinish(){
+            this._actionIndex ++;
+
+            if (this._actionIndex === this._actions.getCount()) {
+                this.finish();
+                return;
+            }
+
+            this._actions.getChild(this._actionIndex).start();
         }
     }
 }

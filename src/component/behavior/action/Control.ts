@@ -37,38 +37,9 @@ module dy {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        protected startOnce(action:Action){
-            if(action.isStart){
-                return;
-            }
-
-            action.start();
-        }
-
-        protected stopOnce(action:Action){
-            if(action.isStop){
-                return;
-            }
-
-            action.stop();
-        }
-
         protected iterate(method:string, argArr?:Array<any>) {
-            var actions = this.getInnerActions(),
-                self = this;
-
-            actions.forEach((action) => {
-                switch(method) {
-                    case "start":
-                        self.startOnce(action);
-                        break;
-                    case "stop":
-                        self.stopOnce(action);
-                        break;
-                    default :
-                        action[method].apply(action, argArr);
-                        break;
-                }
+            this.getInnerActions().forEach((action) => {
+                action[method].apply(action, argArr);
             });
         }
     }

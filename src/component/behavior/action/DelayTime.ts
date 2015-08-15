@@ -12,40 +12,17 @@ module dy {
         constructor(delayTime:number) {
             super();
 
-            this._delayTime = delayTime;
+            this.duration = delayTime;
         }
-
-        private _delayTime:number = null;
-        private _elapsed:number = null;
-        private _startTime:number = null;
 
         public reverse() {
             return this;
         }
 
-        public update(time) {
-            if (time < this._startTime) {
-                return;
-            }
-
-            this._elapsed  = time - this._startTime;
-
-            if (this._elapsed >= this._delayTime) {
-                this.finish();
-            }
-        }
-
-        public start(){
-            super.start();
-
-            this._startTime = window.performance.now();
-
-            return this;
-        }
-
         public copy() {
-            return DelayTime.create(this._delayTime);
+            return DelayTime.create(this.duration);
         }
+
     }
 }
 

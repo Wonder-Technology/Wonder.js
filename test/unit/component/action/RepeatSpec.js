@@ -8,13 +8,13 @@ describe("Repeat", function () {
         sandbox = sinon.sandbox.create();
         action = new Repeat();
         gameObject = dy.GameObject.create();
+        sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
         sandbox.restore();
     });
 
     it("repeat action for the specific times", function(){
-        sandbox.stub(window.performance, "now").returns(0);
         var x1 = null;
         var tween1 = dy.Tween.create();
         tween1.from({x:0}).to({x: 10}, 100)
@@ -27,21 +27,21 @@ describe("Repeat", function () {
         gameObject.addComponent(action);
 
         action.start();
-        gameObject._actionManager.update(10);
+        testTool.updateAction(10, gameObject);
         expect(x1).toEqual(1);
-        gameObject._actionManager.update(40);
+        testTool.updateAction(40, gameObject);
         expect(x1).toEqual(4);
 
-        window.performance.now.returns(100);
-        gameObject._actionManager.update(100);
+
+        testTool.updateAction(100, gameObject);
         expect(tween1.isFinish).toBeFalsy();
         expect(action.isFinish).toBeFalsy();
         expect(x1).toEqual(10);
 
-        gameObject._actionManager.update(110);
+        testTool.updateAction(110, gameObject);
         expect(x1).toEqual(1);
 
-        gameObject._actionManager.update(200);
+        testTool.updateAction(200, gameObject);
         expect(x1).toEqual(10);
         expect(tween1.isFinish).toBeTruthy();
         expect(action.isFinish).toBeTruthy();
@@ -65,7 +65,6 @@ describe("Repeat", function () {
 
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
-            sandbox.stub(window.performance, "now").returns(0);
             var x1 = null;
             var tween1 = dy.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
@@ -78,23 +77,58 @@ describe("Repeat", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(10);
+            testTool.updateAction(10, gameObject);
             expect(x1).toEqual(1);
 
             action.stop();
-            gameObject._actionManager.update(100);
+            testTool.updateAction(100, gameObject);
             expect(tween1.isFinish).toBeFalsy();
             expect(x1).toEqual(1);
 
-            window.performance.now.returns(100);
+
             action.start();
-            gameObject._actionManager.update(140);
+            testTool.updateAction(140, gameObject);
             expect(x1).toEqual(4);
 
-            gameObject._actionManager.update(240);
-            gameObject._actionManager.update(340);
+            testTool.updateAction(240, gameObject);
+            testTool.updateAction(340, gameObject);
             expect(x1).toEqual(10);
             expect(tween1.isFinish).toBeTruthy();
+        });
+    });
+
+    describe("pause,resume", function(){
+        it("can pause action and continue action", function () {
+            var x1 = null;
+            var tween1 = dy.Tween.create();
+            tween1.from({x:0}).to({x: 10}, 100)
+                .easing( dy.Tween.Easing.Linear.None)
+                .onUpdate(function(){
+                    x1 = this.x;
+                });
+
+            action = Repeat.create(tween1, 2);
+            gameObject.addComponent(action);
+
+            action.start();
+            testTool.updateAction(10, gameObject);
+            expect(x1).toEqual(1);
+            action.pause();
+
+            testTool.updateAction(100, gameObject);
+            expect(tween1.isFinish).toBeFalsy();
+            expect(x1).toEqual(1);
+            action.resume();
+
+            testTool.updateAction(140, gameObject);
+            expect(x1).toEqual(5);
+
+            testTool.updateAction(190, gameObject);
+
+            testTool.updateAction(290, gameObject);
+            expect(x1).toEqual(10);
+            expect(tween1.isFinish).toBeTruthy();
+            expect(action.isFinish).toBeTruthy();
         });
     });
 });

@@ -8,13 +8,13 @@ describe("Spawn", function () {
         sandbox = sinon.sandbox.create();
         action = new Spawn();
         gameObject = dy.GameObject.create();
+        sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
         sandbox.restore();
     });
 
     it("exec inner actions at the same time", function(){
-        sandbox.stub(window.performance, "now").returns(0);
         var x1 = null;
         var x2 = null;
         var tween1 = dy.Tween.create();
@@ -37,14 +37,14 @@ describe("Spawn", function () {
         gameObject.addComponent(action);
 
         action.start();
-        gameObject._actionManager.update(10);
+        testTool.updateAction(10, gameObject);
         expect(x1).toEqual(1);
         expect(x2).toEqual(-1);
-        gameObject._actionManager.update(40);
+        testTool.updateAction(40, gameObject);
         expect(tween2.isFinish).toBeTruthy();
         expect(x1).toEqual(4);
         expect(x2).toEqual(-4);
-        gameObject._actionManager.update(100);
+        testTool.updateAction(100, gameObject);
         expect(tween1.isFinish).toBeTruthy();
         expect(x1).toEqual(10);
         expect(x2).toEqual(-4);
@@ -71,7 +71,6 @@ describe("Spawn", function () {
 
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
-            sandbox.stub(window.performance, "now").returns(0);
             var x1 = null;
             var x2 = null;
             var tween1 = dy.Tween.create();
@@ -94,35 +93,89 @@ describe("Spawn", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(10);
+            testTool.updateAction(10, gameObject);
             expect(x1).toEqual(1);
             expect(x2).toEqual(-1);
 
             action.stop();
-            gameObject._actionManager.update(40);
+            testTool.updateAction(40, gameObject);
             expect(tween2.isFinish).toBeFalsy();
             expect(x1).toEqual(1);
             expect(x2).toEqual(-1);
 
-            window.performance.now.returns(40);
+
             action.start();
-            gameObject._actionManager.update(80);
+            testTool.updateAction(80, gameObject);
             expect(x1).toEqual(4);
             expect(x2).toEqual(-4);
             expect(tween2.isFinish).toBeTruthy();
 
             action.stop();
-            gameObject._actionManager.update(130);
+            testTool.updateAction(130, gameObject);
             expect(tween1.isFinish).toBeFalsy();
             expect(x1).toEqual(4);
             expect(x2).toEqual(-4);
 
-            window.performance.now.returns(130);
+
             action.start();
-            gameObject._actionManager.update(230);
+            testTool.updateAction(230, gameObject);
             expect(x1).toEqual(10);
             expect(x2).toEqual(-4);
             expect(tween1.isFinish).toBeTruthy();
+        });
+    });
+
+    describe("pause,resume", function(){
+        it("can pause action and continue action", function () {
+            var x1 = null;
+            var x2 = null;
+            var tween1 = dy.Tween.create();
+            tween1.from({x:0}).to({x: 10}, 100)
+                .easing( dy.Tween.Easing.Linear.None)
+                .onUpdate(function(){
+                    x1 = this.x;
+                });
+            var tween2 = dy.Tween.create();
+            tween2.from({x:0}).to({x: -4}, 40)
+                .easing( dy.Tween.Easing.Linear.None)
+                .onUpdate(function(){
+                    x2 = this.x;
+                });
+
+            action = Spawn.create(
+                tween1,
+                tween2
+            );
+            gameObject.addComponent(action);
+
+            action.start();
+            testTool.updateAction(10, gameObject);
+            expect(x1).toEqual(1);
+            expect(x2).toEqual(-1);
+
+            action.pause();
+            testTool.updateAction(40, gameObject);
+            expect(tween2.isFinish).toBeFalsy();
+            expect(x1).toEqual(1);
+            expect(x2).toEqual(-1);
+            action.resume();
+
+
+            testTool.updateAction(70, gameObject);
+            expect(x1).toEqual(4);
+            expect(x2).toEqual(-4);
+            expect(tween2.isFinish).toBeTruthy();
+
+            testTool.updateAction(100, gameObject);
+            expect(x1).toEqual(7);
+            expect(x2).toEqual(-4);
+            expect(tween1.isFinish).toBeFalsy();
+
+            testTool.updateAction(130, gameObject);
+            expect(x1).toEqual(10);
+            expect(x2).toEqual(-4);
+            expect(tween1.isFinish).toBeTruthy();
+            expect(action.isFinish).toBeTruthy();
         });
     });
 

@@ -5,10 +5,20 @@ module dy {
             return false;
         }
 
+        get isPause() {
+            return false;
+        }
+
         public start() {
         }
 
         public stop() {
+        }
+
+        public pause() {
+        }
+
+        public resume() {
         }
     }
 }

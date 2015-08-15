@@ -26,12 +26,40 @@ module dy {
             }
 
             this.iterate("update", [time]);
+
+            if (this._isFinish()) {
+                this.finish();
+            }
         }
 
         public start() {
             super.start();
 
             this.iterate("start");
+
+            return this;
+        }
+
+        public stop() {
+            super.stop();
+
+            this.iterate("stop");
+
+            return this;
+        }
+
+        public pause() {
+            super.pause();
+
+            this.iterate("pause");
+
+            return this;
+        }
+
+        public resume() {
+            super.resume();
+
+            this.iterate("resume");
 
             return this;
         }
@@ -43,14 +71,6 @@ module dy {
                 actions.push(action.copy());
             });
             return Spawn.create.apply(Spawn, actions);
-        }
-
-        public stop() {
-            super.stop();
-
-            this.iterate("stop");
-
-            return this;
         }
 
         public reset() {
