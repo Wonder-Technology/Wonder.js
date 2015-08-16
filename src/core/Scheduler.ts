@@ -1,12 +1,10 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    //todo extract ScheduleItem
-
     export class Scheduler{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         private _scheduleCount = 0;
@@ -14,34 +12,15 @@ module dy{
 
         public update(time:number) {
             this._schedules.forEach((scheduleItem:any, scheduleId:string) => {
-                    if(scheduleItem.isStop || scheduleItem.isPause){
-                        return;
-                    }
+                if(scheduleItem.isStop || scheduleItem.isPause){
+                    return;
+                }
 
-                    if (scheduleItem.isFrame) {
-                        scheduleItem.frame--;
-                        if (scheduleItem.frame <= 0) {
-                            this.remove(scheduleId);
-                            scheduleItem.task.apply(scheduleItem, scheduleItem.args);
-                        }
-                    }
-                    else if (scheduleItem.isTime) {
-                        var elapsed = TimeUtils.computeElapseTime(time, scheduleItem.startTime, scheduleItem.pauseElapsed);
-                        if (elapsed >= scheduleItem.time) {
-                            this.remove(scheduleId);
-                            scheduleItem.task.apply(scheduleItem, scheduleItem.args);
-                        }
-                    }
-                    else if (scheduleItem.isInterval) {
-                        var elapsed = TimeUtils.computeElapseTime(time, scheduleItem.startTime, scheduleItem.pauseElapsed)
-                        if (elapsed - scheduleItem.elapsed >= scheduleItem.intervalTime) {
-                            scheduleItem.task.apply(scheduleItem, scheduleItem.args);
-                            scheduleItem.elapsed =  elapsed;
-                        }
-                    }
-                    else if (scheduleItem.isLoop) {
-                        scheduleItem.task.apply(scheduleItem, scheduleItem.args);
-                    }
+                scheduleItem.update(time);
+
+                if(scheduleItem.isFinish){
+                    this.remove(scheduleId);
+                }
             });
         }
 
@@ -51,16 +30,8 @@ module dy{
          * @param args
          * @returns {string} schedule id
          */
-        public scheduleLoop(task, args?) {
-            var scheduleId = 'Schedule_' + (this._scheduleCount++);
-            this._schedules.setValue(scheduleId, {
-                task : task,
-                args : args,
-                isLoop : true
-            });
-            this.start(scheduleId);
-
-            return scheduleId;
+        public scheduleLoop(task:Function, args:Array<any>=[]) {
+            return this._schedule(LoopScheduleItem, Array.prototype.slice.call(arguments, 0));
         }
 
         /**
@@ -71,16 +42,7 @@ module dy{
          * @returns {string} schedule id
          */
         public scheduleFrame(task, frame=1, args?) {
-            var scheduleId = 'Schedule_' + (this._scheduleCount++);
-            this._schedules.setValue(scheduleId, {
-                task : task,
-                frame : frame,
-                args : args,
-                isFrame : true
-            });
-            this.start(scheduleId);
-
-            return scheduleId
+            return this._schedule(FrameScheduleItem, Array.prototype.slice.call(arguments, 0));
         }
 
         /**
@@ -91,17 +53,7 @@ module dy{
          * @returns {string} schedule id
          */
         public scheduleInterval(task, time=0, args?) {
-            var scheduleId = 'Schedule_' + (this._scheduleCount++);
-            this._schedules.setValue(scheduleId, {
-                task : task,
-                intervalTime : time,
-                elapsed : 0,
-                args : args,
-                isInterval : true
-            });
-            this.start(scheduleId);
-
-            return scheduleId;
+            return this._schedule(IntervalScheduleItem, Array.prototype.slice.call(arguments, 0));
         }
 
         /**
@@ -112,17 +64,7 @@ module dy{
          * @returns {string} schedule id
          */
         public scheduleTime(task, time=0, args?) {
-            var scheduleId = 'Schedule_' + (this._scheduleCount++);
-            time = time || 0;
-            this._schedules.setValue(scheduleId, {
-                task : task,
-                time : time,
-                args : args,
-                isTime : true
-            });
-            this.start(scheduleId);
-
-            return scheduleId;
+            return this._schedule(TimeScheduleItem, Array.prototype.slice.call(arguments, 0));
         }
 
         /**
@@ -140,8 +82,7 @@ module dy{
             else if(arguments.length === 1) {
                 let scheduleItem = this._schedules.getChild(arguments[0]);
 
-                scheduleItem.isPause = true;
-                scheduleItem.pauseTime = window.performance.now();
+                scheduleItem.pause();
             }
         }
 
@@ -160,9 +101,7 @@ module dy{
             else if(arguments.length === 1) {
                 let scheduleItem = this._schedules.getChild(arguments[0]);
 
-                scheduleItem.isPause = false;
-                scheduleItem.pauseElapsed = window.performance.now() - scheduleItem.pauseTime;
-                scheduleItem.pauseTime = null;
+                scheduleItem.resume();
             }
         }
 
@@ -177,10 +116,7 @@ module dy{
             else if(arguments.length === 1){
                 let scheduleItem = this._schedules.getChild(arguments[0]);
 
-                scheduleItem.isStop = false;
-                scheduleItem.startTime = window.performance.now();
-                scheduleItem.pauseElapsed = null;
-                scheduleItem.elapsed = 0;
+                scheduleItem.start();
             }
         }
 
@@ -195,7 +131,7 @@ module dy{
             else if(arguments.length === 1){
                 let scheduleItem = this._schedules.getChild(arguments[0]);
 
-                scheduleItem.isStop = true;
+                scheduleItem.stop();
             }
         }
 
@@ -208,11 +144,169 @@ module dy{
          * @param id
          */
         public remove(scheduleId:string) {
-             this._schedules.removeChild(scheduleId);
+            this._schedules.removeChild(scheduleId);
         }
 
         public removeAll(){
             this._schedules.removeAllChildren();
+        }
+
+        private _schedule(_class:any, args:Array<any>){
+            var scheduleId = this._buildId();
+
+            this._schedules.setValue(scheduleId, _class.create.apply(_class, args));
+
+            this.start(scheduleId);
+
+            return scheduleId;
+        }
+
+        private _buildId(){
+            return 'Schedule_' + (this._scheduleCount++);
+        }
+    }
+
+    class ScheduleItem{
+        constructor(task:Function, args:Array<any>){
+            this.task = task;
+            this.args = args;
+        }
+
+        public isPause:boolean = false;
+        public isStop:boolean = false;
+        public pauseTime:number = null;
+        public pauseElapsed:number = null;
+        public startTime:number = null;
+        public isFinish:boolean = false;
+
+        protected task:Function = null;
+        protected args:Array<any> = null;
+
+        /**
+         * pause the specified schedule
+         * @param scheduleId
+         */
+        public pause() {
+            this.isPause = true;
+            this.pauseTime = window.performance.now();
+        }
+
+        /**
+         * resume the specified schedule
+         * @param scheduleId
+         */
+        public resume(){
+            this.isPause = false;
+            this.pauseElapsed = window.performance.now() - this.pauseTime;
+            this.pauseTime = null;
+        }
+
+        public start(){
+            this.isStop = false;
+            this.startTime = window.performance.now();
+            this.pauseElapsed = null;
+        }
+
+        public stop(){
+            this.isStop = true;
+        }
+
+        public finish(){
+            this.isFinish = true;
+        }
+    }
+
+    class TimeScheduleItem extends ScheduleItem{
+        public static create(task:Function, time:number = 0, args:Array<any> = []) {
+            var obj = new this(task, time, args);
+
+            return obj;
+        }
+
+        constructor(task:Function, time:number = 0, args:Array<any> = []){
+            super(task, args);
+
+            this._time = time;
+        }
+
+        private _time:number = null;
+
+        public update(time:number){
+            var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
+
+            if (elapsed >= this._time) {
+                this.task.apply(this, this.args);
+                this.finish();
+            }
+        }
+    }
+
+    class IntervalScheduleItem extends ScheduleItem{
+        public static create(task:Function, time:number = 0, args:Array<any> = []) {
+            var obj = new this(task, time, args);
+
+            return obj;
+        }
+
+        constructor(task:Function, time:number = 0, args:Array<any> = []) {
+            super(task, args);
+
+            this._intervalTime = time;
+        }
+
+        private _intervalTime:number = null;
+        private _elapsed:number = 0;
+
+        public update(time:number){
+            var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
+
+            if (elapsed - this._elapsed >= this._intervalTime) {
+                this.task.apply(this, this.args);
+                this._elapsed =  elapsed;
+            }
+        }
+
+        public start(){
+            super.start();
+
+            this._elapsed = 0;
+        }
+    }
+
+    class LoopScheduleItem extends ScheduleItem{
+        public static create(task:Function, args:Array<any> = []) {
+            var obj = new this(task, args);
+
+            return obj;
+        }
+
+        public update(time:number){
+            this.task.apply(this, this.args);
+        }
+    }
+
+    class FrameScheduleItem extends ScheduleItem {
+        public static create(task:Function, frame:number = 1, args:Array<any> = []) {
+            var obj = new this(task, frame, args);
+
+            return obj;
+        }
+
+        constructor(task:Function, frame:number = 1, args:Array<any> = []) {
+            super(task, args);
+
+            this._frame = frame;
+        }
+
+        private _frame:number = null;
+
+        public update(time:number){
+            this._frame--;
+
+            if (this._frame <= 0) {
+                this.task.apply(this, this.args);
+                this.finish();
+            }
         }
     }
 }
