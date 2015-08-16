@@ -23,7 +23,7 @@ module dy {
                 return;
             }
 
-            this.elapsed = this._convertToRatio(this._computeElapseTime(time));
+            this.elapsed = this._convertToRatio(TimeUtils.computeElapseTime(time, this._startTime, this._pauseElapsed));
 
             this.updateBody(time);
 

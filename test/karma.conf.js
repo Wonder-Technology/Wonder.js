@@ -33,6 +33,7 @@ module.exports = function(config) {
         //'test/unit/**/*.js'
         'test/unit/math/*.js',
         'test/unit/component/**/*.js',
+        'test/unit/core/SchedulerSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/event/eventSpec.js'
         'test/unit/event/*.js'

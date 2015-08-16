@@ -27,6 +27,7 @@
 /// <reference path="component/behavior/action/ActionInterval"/>
 /// <reference path="component/behavior/action/Control"/>
 /// <reference path="component/behavior/action/Sequence"/>
+/// <reference path="component/behavior/action/Spawn"/>
 /// <reference path="component/behavior/action/DelayTime"/>
 /// <reference path="component/behavior/action/Repeat"/>
 /// <reference path="component/behavior/action/RepeatForever"/>
@@ -46,6 +47,7 @@
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
+/// <reference path="utils/TimeUtils"/>
 
 /// <reference path="render/Renderer"/>
 /// <reference path="render/WebGLRenderer"/>

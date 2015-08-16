@@ -18,6 +18,11 @@ module dy{
             return this._stage;
         }
 
+        private _scheduler:Scheduler = Scheduler.create();
+        get scheduler(){
+            return this._scheduler;
+        }
+
         private _renderer:render.Renderer= null;
         get renderer(){
             return this._renderer;
@@ -67,18 +72,6 @@ module dy{
             this._renderer = dy.render.WebGLRenderer.create();
         }
 
-        //public runWithScene(scene:Scene) {
-        //    scene.init();
-        //    scene.onEnter();
-        //    this._scene = scene;
-        //
-        //    this._renderer.init();
-        //
-        //    this._startLoop();
-        //}
-
-        //todo add stop,pause,resume method
-
         public start(){
             this._stage.init();
             this._stage.onEnter();
@@ -86,11 +79,24 @@ module dy{
             //todo not put here?
             this._renderer.init();
 
-            //todo use performance.now?
             this._startTime = this._getTimeNow();
 
             this._startLoop();
         }
+
+        public stop(){
+
+        }
+
+        public pause(){
+
+        }
+
+        public resume(){
+
+        }
+
+        //todo add dispose
 
         public getView():IView{
             return this._view;
@@ -181,7 +187,7 @@ module dy{
             //operate vertice and indice data, draw them(drawArray or drawElement)
             this._renderer.render();
             //do task?
-            //this._scheduler.runSchedule();
+            this._scheduler.update(time);
             //WOZLLA.utils.Tween.tick(Time.delta);
         }
     }
