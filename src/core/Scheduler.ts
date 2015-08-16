@@ -181,6 +181,7 @@ module dy{
 
         protected task:Function = null;
         protected args:Array<any> = null;
+        protected timeController = TimeController.create();
 
         /**
          * pause the specified schedule
@@ -188,7 +189,8 @@ module dy{
          */
         public pause() {
             this.isPause = true;
-            this.pauseTime = window.performance.now();
+            this.timeController.pause();
+            //this.pauseTime = window.performance.now();
         }
 
         /**
@@ -197,14 +199,14 @@ module dy{
          */
         public resume(){
             this.isPause = false;
-            this.pauseElapsed = window.performance.now() - this.pauseTime;
-            this.pauseTime = null;
+            //this.pauseElapsed = window.performance.now() - this.pauseTime;
+            //this.pauseTime = null;
+            this.timeController.resume();
         }
 
         public start(){
             this.isStop = false;
-            this.startTime = window.performance.now();
-            this.pauseElapsed = null;
+            this.timeController.start();
         }
 
         public stop(){
@@ -232,7 +234,8 @@ module dy{
         private _time:number = null;
 
         public update(time:number){
-            var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
+            //var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
+            var elapsed = this.timeController.computeElapseTime(time);
 
             if (elapsed >= this._time) {
                 this.task.apply(this, this.args);
@@ -258,7 +261,7 @@ module dy{
         private _elapsed:number = 0;
 
         public update(time:number){
-            var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
+            var elapsed = this.timeController.computeElapseTime(time);
 
             if (elapsed - this._elapsed >= this._intervalTime) {
                 this.task.apply(this, this.args);

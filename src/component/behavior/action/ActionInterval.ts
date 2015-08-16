@@ -6,9 +6,7 @@ module dy {
 
         private _isStop:boolean = true;
         private _isPause:boolean = false;
-        private _pauseElapsed:number = null;
-        private _pauseTime:number = null;
-        private _startTime:number = null;
+        private _timeController:TimeController = TimeController.create();
 
         get isStop() {
             return this._isStop;
@@ -19,11 +17,11 @@ module dy {
         }
 
         public update(time:number){
-            if (time < this._startTime) {
+            if (time < this._timeController.startTime) {
                 return;
             }
 
-            this.elapsed = this._convertToRatio(TimeUtils.computeElapseTime(time, this._startTime, this._pauseElapsed));
+            this.elapsed = this._convertToRatio(this._timeController.computeElapseTime(time));
 
             this.updateBody(time);
 
@@ -35,8 +33,7 @@ module dy {
         public start() {
             this._isStop = false;
 
-            this._startTime = window.performance.now();
-            this._pauseElapsed = null;
+            this._timeController.start();
         }
 
         public stop() {
@@ -51,25 +48,16 @@ module dy {
 
         public pause() {
             this._isPause = true;
-            this._pauseTime = window.performance.now();
+            this._timeController.pause();
         }
 
         public resume(){
             this._isPause = false;
-            this._pauseElapsed = window.performance.now() - this._pauseTime;
-            this._pauseTime = null;
+            this._timeController.resume();
         }
 
         /*! virtual method */
         protected updateBody(time:number){
-        }
-
-        private _computeElapseTime(time:number){
-            if(this._pauseElapsed){
-                return time - this._pauseElapsed - this._startTime;
-            }
-
-            return time - this._startTime;
         }
 
         private _convertToRatio(elapsed:number){

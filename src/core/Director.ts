@@ -1,6 +1,10 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    const STARTING_FPS = 60;
+    enum GameState{
+        NORMAL,
+        STOP,
+        PAUSE
+    }
 
     export class Director{
         private static _instance:Director = null;
@@ -47,25 +51,16 @@ module dy{
             this._gl = gl;
         }
 
-        private _gameTime:number = 0;
         get gameTime(){
-            return this._gameTime;
-        }
-        set gameTime(gameTime:number){
-            this._gameTime = gameTime;
+            return this._timeController.gameTime;
         }
 
-        private _fps:number = null;
         get fps(){
-            return this._fps;
-        }
-        set fps(fps:number){
-            this._fps = fps;
+            return this._timeController.fps;
         }
 
-        private _lastTime:number = null;
-        private _startTime:number = null;
         private _gameLoop:dyRt.IDisposable = null;
+        private _timeController:DirectorTimeController= DirectorTimeController.create();
 
         public initWhenCreate(){
             //todo detect to decide using which renderer
@@ -73,28 +68,42 @@ module dy{
         }
 
         public start(){
+            this._gameState = GameState.NORMAL;
+
             this._stage.init();
             this._stage.onEnter();
 
             //todo not put here?
             this._renderer.init();
 
-            this._startTime = this._getTimeNow();
+            this._timeController.start();
 
             this._startLoop();
         }
 
         public stop(){
-
+            this._gameLoop.dispose();
+            this._gameState = GameState.STOP;
+            this._scheduler.stop();
         }
 
         public pause(){
+            if (this._gameState === GameState.PAUSE) {
+                return;
+            }
 
+            this._gameState = GameState.PAUSE;
+            this._timeController.pause();
+            this._gameLoop.dispose();
         }
 
         public resume(){
-
+            this._gameState = GameState.NORMAL;
+            this._timeController.resume();
+            this._startLoop();
         }
+
+        private _gameState:GameState = GameState.NORMAL;
 
         //todo add dispose
 
@@ -131,8 +140,15 @@ module dy{
                 });
         }
         private _loopBody(time) {
-            //todo create Tween class to control time(contain tick method)?
-            this._tick(time);
+            var elapseTime = null;
+
+            if(this._gameState === GameState.PAUSE || this._gameState === GameState.STOP){
+                return;
+            }
+
+            elapseTime = this._timeController.computeElapseTime(time);
+
+            this._timeController.tick(elapseTime);
 
             //todo invoke stage->syncHierarchy()
 
@@ -140,35 +156,11 @@ module dy{
 
             this._stage.onStartLoop();
 
-            this._run(time);
+            this._run(elapseTime);
 
             //this._renderer.render(this._scene);
 
             this._stage.onEndLoop();
-        }
-
-        private _getTimeNow() {
-            return performance.now();
-        }
-
-        private _tick(time) {
-            this._updateFps(time);
-            this.gameTime = (time - this._startTime) / 1000;
-            this._lastTime = time;
-        }
-
-        private _updateFps(time) {
-            //if (this._loopType === YE.Director.LoopType.INTERVAL) {
-            //    this._fps = 1 / this._loopInterval;
-            //    return;
-            //}
-
-            if (this._lastTime === 0) {
-                this._fps = STARTING_FPS;
-            }
-            else {
-                this._fps = 1000 / (time - this._lastTime);
-            }
         }
 
         /**

@@ -8,6 +8,7 @@
 /// <reference path="core/Transform"/>
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Stage"/>
+/// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
 
 /// <reference path="structure/Point"/>
@@ -47,7 +48,8 @@
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
-/// <reference path="utils/TimeUtils"/>
+/// <reference path="utils/time/TimeController"/>
+/// <reference path="utils/time/DirectorTimeController"/>
 
 /// <reference path="render/Renderer"/>
 /// <reference path="render/WebGLRenderer"/>
