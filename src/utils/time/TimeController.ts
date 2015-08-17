@@ -1,28 +1,22 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class TimeController{
-        public static create() {
-        	var obj = new this();
-
-        	return obj;
-        }
-
         public elapsed:number = null;
-        public pauseElapsed:number = null;
+        public pauseElapsed:number = 0;
         public pauseTime:number = null;
         public startTime:number = null;
 
         public start() {
-            this.startTime = window.performance.now();
+            this.startTime = this.getNow();
             this.pauseElapsed = null;
         }
 
         public pause() {
-            this.pauseTime = window.performance.now();
+            this.pauseTime = this.getNow();
         }
 
         public resume(){
-            this.pauseElapsed = window.performance.now() - this.pauseTime;
+            this.pauseElapsed += this.getNow() - this.pauseTime;
             this.pauseTime = null;
         }
 
@@ -36,6 +30,10 @@ module dy{
             this.elapsed = time - this.startTime;
 
             return this.elapsed;
+        }
+
+        protected getNow(){
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
     }
 }

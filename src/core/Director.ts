@@ -59,7 +59,28 @@ module dy{
             return this._timeController.fps;
         }
 
+        get isNormal(){
+            return this._gameState === GameState.NORMAL;
+        }
+
+        get isStop(){
+            return this._gameState === GameState.STOP;
+        }
+
+        get isPause(){
+            return this._gameState === GameState.PAUSE;
+        }
+
+        get isTimeChange(){
+            return this._timeController.isTimeChange;
+        }
+
+        get elapsed(){
+            return this._timeController.elapsed;
+        }
+
         private _gameLoop:dyRt.IDisposable = null;
+        private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
 
         public initWhenCreate(){
@@ -77,6 +98,7 @@ module dy{
             this._renderer.init();
 
             this._timeController.start();
+            this._scheduler.start();
 
             this._startLoop();
         }
@@ -94,16 +116,14 @@ module dy{
 
             this._gameState = GameState.PAUSE;
             this._timeController.pause();
-            this._gameLoop.dispose();
+            this._scheduler.pause();
         }
 
         public resume(){
             this._gameState = GameState.NORMAL;
             this._timeController.resume();
-            this._startLoop();
+            this._scheduler.resume();
         }
-
-        private _gameState:GameState = GameState.NORMAL;
 
         //todo add dispose
 
@@ -143,7 +163,7 @@ module dy{
             var elapseTime = null;
 
             if(this._gameState === GameState.PAUSE || this._gameState === GameState.STOP){
-                return;
+                return false;
             }
 
             elapseTime = this._timeController.computeElapseTime(time);
@@ -157,10 +177,13 @@ module dy{
             this._stage.onStartLoop();
 
             this._run(elapseTime);
+            //this._run(time);
 
             //this._renderer.render(this._scene);
 
             this._stage.onEndLoop();
+
+            return true;
         }
 
         /**

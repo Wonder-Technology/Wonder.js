@@ -1,6 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    const STARTING_FPS = 60;
+    const STARTING_FPS = 60,
+        GAMETIME_SCALE = 1000;
 
     export class DirectorTimeController extends TimeController{
         public static create() {
@@ -11,13 +12,33 @@ module dy{
 
         public gameTime:number = null;
         public fps:number = null;
+        public isTimeChange:boolean = false;
 
         private _lastTime:number = null;
 
         public tick(time:number) {
             this._updateFps(time);
-            this.gameTime = (time - this.startTime) / 1000;
+            //this.gameTime = (time - this.startTime) / 1000;
+            this.gameTime = time / GAMETIME_SCALE;
+
             this._lastTime = time;
+        }
+
+        public start(){
+            super.start();
+
+            this.isTimeChange = true;
+            this.elapsed = 0;
+        }
+
+        public resume(){
+            super.resume();
+
+            this.isTimeChange = true;
+        }
+
+        protected getNow(){
+            return window.performance.now();
         }
 
         private _updateFps(time) {
@@ -26,7 +47,7 @@ module dy{
             //    return;
             //}
 
-            if (this._lastTime === 0) {
+            if (this._lastTime === null) {
                 this.fps = STARTING_FPS;
             }
             else {

@@ -6,7 +6,7 @@ module dy {
 
         private _isStop:boolean = true;
         private _isPause:boolean = false;
-        private _timeController:TimeController = TimeController.create();
+        private _timeController:CommonTimeController = CommonTimeController.create();
 
         get isStop() {
             return this._isStop;

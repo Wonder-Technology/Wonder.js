@@ -50,6 +50,7 @@
 /// <reference path="utils/JudgeUtils"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
+/// <reference path="utils/time/CommonTimeController"/>
 
 /// <reference path="render/Renderer"/>
 /// <reference path="render/WebGLRenderer"/>

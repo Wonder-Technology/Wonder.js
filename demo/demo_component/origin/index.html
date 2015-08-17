@@ -273,7 +273,8 @@
 //            var action = dy.RepeatForever.create(dy.Sequence.create(tween, tween2));
 //            var action = dy.RepeatForever.create(dy.Sequence.create(dy.DelayTime.create(500), tween3));
 //            var action = dy.RepeatForever.create(dy.Spawn.create(dy.Repeat.create(tween3, 2), dy.Sequence.create(tween, tween2)));
-            var action = dy.RepeatForever.create(dy.Spawn.create(tween3, dy.Sequence.create(tween, tween2)));
+//            var action = dy.RepeatForever.create(dy.Spawn.create(tween3, dy.Sequence.create(tween, tween2)));
+            var action = dy.RepeatForever.create(tween3);
 
 
 
@@ -290,6 +291,13 @@
             director.stage.addChild(camera);
 
 
+            director.scheduler.scheduleTime(function(){
+                director.pause();
+            }, 1500);
+
+            setTimeout(function(){
+                director.resume();
+            }, 4000);
 
 
 

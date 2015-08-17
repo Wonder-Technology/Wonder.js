@@ -156,7 +156,7 @@ module dy{
 
             this._schedules.setValue(scheduleId, _class.create.apply(_class, args));
 
-            this.start(scheduleId);
+            //this.start(scheduleId);
 
             return scheduleId;
         }
@@ -181,7 +181,7 @@ module dy{
 
         protected task:Function = null;
         protected args:Array<any> = null;
-        protected timeController = TimeController.create();
+        protected timeController:CommonTimeController = CommonTimeController.create();
 
         /**
          * pause the specified schedule
