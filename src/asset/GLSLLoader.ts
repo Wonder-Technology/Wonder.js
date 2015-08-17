@@ -12,28 +12,31 @@ module dy{
 
         private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
 
-        public load(url:string, id:string){
-            var self = this;
+        public load(url:string, id:string):dyRt.Stream{
+            var self = this,
+                stream = null;
 
             if(this._container.getChild(id)){
-                return dyRt.createStream((observer:dyRt.IObserver) => {
-                    observer.next(null);
-                    observer.completed();
-                }).do(() => {
-                    LoaderManager.getInstance().onResLoaded();
-                });
+                stream = dyRt.empty();
+            }
+            else{
+                stream = dyRt.fromPromise(this._loadText(url))
+                .do((data) => {
+                        self._container.addChild(id, data);
+                }, (err) => {
+                        self._errorHandle(url, err);
+                }, null);
             }
 
-            return dyRt.fromPromise(this._loadText(url)).do((data) => {
-                LoaderManager.getInstance().onResLoaded();
-                self._container.addChild(id, data);
-            }, (err) => {
-                LoaderManager.getInstance().onResError(url, err);
-            }, null);
+            return stream;
         }
 
-        public getGLSL(id:string):string{
+        public get(id:string):string{
            return this._container.getChild(id);
+        }
+
+        public has(id:string){
+            return this._container.hasChild(id);
         }
 
         private _loadText(url) {
@@ -55,6 +58,10 @@ module dy{
                     }
                 });
             });
+        }
+
+        private _errorHandle(path, err) {
+            dyCb.Log.log("加载" + path + "资源失败:", err);
         }
     }
 }

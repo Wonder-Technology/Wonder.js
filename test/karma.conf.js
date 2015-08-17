@@ -31,19 +31,21 @@ module.exports = function(config) {
         'test/unit/testTool.js',
 
         //'test/unit/**/*.js'
+        'test/unit/asset/*.js',
         'test/unit/math/*.js',
         'test/unit/component/**/*.js',
         'test/unit/core/SchedulerSpec.js',
         'test/unit/core/DirectorSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/event/eventSpec.js'
-        'test/unit/event/*.js'
+        'test/unit/event/*.js',
         //'test/unit/event/mouseEventSpec.js'
         //'test/unit/utils/browserDetector/useragents.js',
         //'test/unit/utils/**/*.js',
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
+        {pattern: 'test/res/*.glsl', watched: false, included: false, served: true}
     ],
 
 
