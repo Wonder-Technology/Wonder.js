@@ -17,15 +17,6 @@
 
 <script>
     window.onload = function () {
-        var camera = null,
-                scene = null;
-
-        var keyState = {};
-        var isRotate = false;
-
-        var rotateX = 0,
-                rotateY = 0;
-
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"}
@@ -48,103 +39,6 @@
 
         function _initScene() {
             var geometry = null;
-
-            camera = _createCamera();
-
-//            scene = dy.Scene.create(camera,
-//                    dy.GLSLLoader.getInstance().getGLSL("vs"),
-//                    dy.GLSLLoader.getInstance().getGLSL("fs"));
-//
-//            scene.onEnter = function () {
-//                bindCanvasEvent(dy.Director.getInstance().view, this.camera);
-//            };
-//
-//            scene.onEndLoop = function () {
-//                setAllFalse();
-//            };
-//
-//            scene.onExit = function () {
-//                removeEvent();
-//            };
-//
-//
-//            var material = dy.Material.create({color: "#FFCDff"});
-//            geometry = dy.BoxGeometry.create(5, 5, 5, material);
-////            geometry = dy.TriangleGeometry.create(5, 5, material);
-////            geometry = dy.RectGeometry.create(5, 5, material);
-////            geometry = dy.SphereGeometry.create(5, dy.SphereDrawMode.LATITUDELONGTITUDE, 20, material);
-//
-//            var mesh = dy.Mesh.create(geometry);
-//
-////            //todo move to GameObject->addChild
-////            mesh.transform.parent = dy.Director.getInstance().stage;
-//
-//
-//
-////            var mesh2 = dy.Mesh.create(geometry);
-////
-////            //todo move to GameObject->addChild
-////            mesh2.transform.parent = dy.Director.getInstance().stage;
-//
-////            //test event emit
-////            var mesh2 = dy.Mesh.create(geometry);
-////            mesh.addChild(mesh2);
-//
-////            var rotateAction = dy.Rotate.create(
-////                    mesh.matrix, {
-////                        speed: 0.5,
-////                        axis: [dy.Vector3.create(0, 1, 0)]
-////                    }
-////            );
-//
-////            mesh.transform.rotateLocal(dy.Vector3.create(30, 0, 0));
-//
-////            mesh.transform.translate(dy.Vector3.create(5, 0, 0));
-//            mesh.transform.translate(dy.Vector3.create(0, 0, -20));
-//
-////            mesh2.transform.translate(dy.Vector3.create(0, 0, -20));
-////            mesh2.transform.lookAt(dy.Vector3.create(10, 0, 1))
-//
-////            mesh.transform.scale(dy.Vector3.create(1, 2, 0.5));
-//
-////                mesh.transform.rotate(dy.Vector3.create(0, 0, 30));
-//
-//            var num = 10;
-//
-////            mesh.transform.rotateAround(10, dy.Vector3.create(0, 0, 0), dy.Vector3.create(0,1,0));
-            setInterval(function(){
-//            mesh.transform.rotateAround(1, dy.Vector3.create(0, 0, -18), dy.Vector3.create(3,1,0));
-//                num += 5;
-//                mesh.transform.rotateAround(num, dy.Vector3.create(0, 0, -22), dy.Vector3.create(1,1,0));
-//                mesh.transform.translateLocal(dy.Vector3.create(0, 0.1, 0));
-//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
-//                mesh.transform.rotate(dy.Vector3.create(0, 1, 0));
-//                mesh.transform.rotateAround(5, dy.Vector3.create(5,1,0));
-//                mesh.transform.rotateLocal(dy.Vector3.create(0, 20, 0), dy.Space.SELF);
-//                mesh.transform.rotateLocal(dy.Vector3.create(0, 0, 1));
-            }, 30);
-//            setInterval(function(){
-//                mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0), dy.Space.WORLD);
-//            }, 30);
-//            var id = setInterval(function(){
-//                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
-//            }, 30);
-//
-//            setTimeout(function(){
-//                clearInterval(id);
-//                setInterval(function(){
-//                    mesh.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
-//                }, 30);
-//            }, 3000);
-//            setInterval(function(){
-//                mesh.transform.rotateWorld(dy.Vector3.create(0, 0, 1));
-//            }, 30);
-//            setInterval(function(){
-//                mesh.transform.rotateAround(1, dy.Vector3.create(2,0,0), dy.Vector3.up);
-//                mesh.transform.rotateAround(1, dy.Vector3.create(2,0,0), dy.Vector3.create(2,1,0));
-//            }, 30);
-
-//            mesh.runAction(rotateAction);
 
 
 
@@ -288,35 +182,21 @@
             director.stage.addComponent(action);
             action.start();
 
-            director.stage.addChild(camera);
+            director.stage.addChild(_createCamera());
 
 
-            director.scheduler.scheduleTime(function(){
-                director.pause();
-            }, 1500);
-
-            setTimeout(function(){
-                director.resume();
-            }, 4000);
-
-
-
+//            director.scheduler.scheduleTime(function(){
+//                director.pause();
+//            }, 1500);
+//
+//            setTimeout(function(){
+//                director.resume();
+//            }, 4000);
 
 
 
-            director.stage.onEnter = function () {
-                bindCanvasEvent(dy.Director.getInstance().view);
-            };
+            director.stage.addComponent(dy.Script.create("./stage.js"));
 
-            director.stage.onEndLoop = function () {
-                setAllFalse();
-                isRotate = false;
-//                console.log(director.fps, director.gameTime);
-            };
-
-            director.stage.onExit = function () {
-                removeEvent();
-            };
 
 
             director.start();
@@ -347,7 +227,7 @@
 //            camera.transform.translate(dy.Vector3.create(0, 0, -5));
 //            camera.transform.scale(dy.Vector3.create(0.5, 1, 1));
 //            camera.transform.rotateLocal(dy.Vector3.create(30, 0, 0))
-            camera.transform.lookAt(dy.Vector3.create(0,0.5,-1));
+            camera.transform.lookAt(dy.Vector3.create(0, 0.5, -1));
 //            camera.transform.rotateLocal(dy.Vector3.create(35, 30, 0))
 //            camera.transform.translate(dy.Vector3.create(0, 0, 10));
 //            camera.transform.translate(dy.Vector3.create(0, 0, 2));
@@ -362,202 +242,15 @@
 //            camera.transform.position.z = 10;
 //            camera.transform.position = dy.Vector3.create(0, 0, 10);
 
+            var script = dy.Script.create();
 
-            camera.onStartLoop = function () {
-                move(this);
-                if (isRotate) {
-//                    camera.transform.rotateLocal(dy.Vector3.create(camera.rotateStepX, camera.rotateStepY ,0));
-                    camera.transform.eulerAngles = dy.Vector3.create(rotateX, rotateY, 0);
-//                    console.log(camera.rotateStepX, camera.rotateStepY)
-                    isRotate = false;
-                }
-                zoom(cameraComponent);
-            };
+            script.url = "./camera.js";
 
-            return camera;
+            camera.addComponent(script);
+
+            return camera
         }
 
-
-        function move(camera) {
-            var speed = 1.2;
-
-            if (keyState["a"]) {
-                camera.transform.translateLocal(dy.Vector3.create(-speed, 0, 0));
-            }
-            else if (keyState["d"]) {
-                camera.transform.translateLocal(dy.Vector3.create(speed, 0, 0));
-            }
-            else if (keyState["w"]) {
-                camera.transform.translateLocal(dy.Vector3.create(0, 0, -speed));
-            }
-            else if (keyState["s"]) {
-                camera.transform.translateLocal(dy.Vector3.create(0, 0, speed));
-            }
-        }
-
-        function zoom(cameraComponent) {
-            var speed = 10;
-
-            if (keyState["g"]) {
-                cameraComponent.zoomIn(speed);
-            }
-            else if (keyState["h"]) {
-                cameraComponent.zoomOut(speed);
-            }
-        }
-
-
-        function setAllFalse() {
-            var i = null;
-
-            for (i in keyState) {
-                if (keyState.hasOwnProperty(i)) {
-                    keyState[i] = false;
-                }
-            }
-        }
-
-        function bindCanvasEvent(canvas) {
-            var dragging = false;         // Dragging or not
-            var lastX = -1, lastY = -1;   // Last position of the mouse
-
-
-//            var c = dy.EventManager.create(this).on();
-//            var c = dy.EventManager.create(this).emit();
-//            var c = dy.EventManager.create(this).broadcast();
-
-
-//            var c = dy.EventManager.create(canvas);
-
-
-//            var listener =
-
-//            dy.EventManager.on(scene,
-//                    {
-//                        eventCategory: dy.EventCategory.MOUSE,
-//
-//                        onMouseDown: function (e) {
-////                            var x = ev.clientX, y = ev.clientY;
-//                            var x = e.location.x,
-//                                    y = e.location.y;
-//                            lastX = x;
-//                            lastY = y;
-//                            dragging = true;
-//                            // Start dragging if a moue is in <canvas>
-////                            var rect = ev.target.getBoundingClientRect();
-////                            if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
-////                                lastX = x;
-////                                lastY = y;
-////                                dragging = true;
-////                            }
-//                            console.log("mousedown");
-//                        },
-//                        onMouseUp: function(e){
-//                            dragging = false;
-//                            console.log("mouseup", e);
-//                        },
-//                        onMouseMove: function(e){
-////                            var x = ev.clientX, y = ev.clientY;
-//                            var x = e.location.x,
-//                                    y = e.location.y;
-//                            if (dragging) {
-//                                var factor = 100 / canvas.height; // The rotation ratio
-//                                var dx = factor * (x - lastX);
-//                                var dy = factor * (y - lastY);
-//
-//                                //此处为针对视图坐标系的角度变换！
-//                                camera.rotateStepY = -dx;
-//                                camera.rotateStepX = -dy;
-//
-//
-//                                isRotate = true;
-//                            }
-//                            lastX = x;
-//                            lastY = y;
-//
-//                            console.log("mousemove");
-//                        }
-//                    });
-
-            var stage = dy.Director.getInstance().stage;
-
-            // Get the three major events
-            var mouseup = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEUP);
-            var mousemove = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEMOVE);
-            var mousedown = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEDOWN);
-
-            var mousedrag = mousedown.flatMap(function (e) {
-                // calculate offsets when mouse down
-                var startX = e.location.x,
-                        startY = e.location.y;
-
-                e.stopPropagation();
-
-                // Calculate delta with mousemove until mouseup
-                return mousemove.map(function (e) {
-                    var x = e.location.x,
-                            y = e.location.y;
-                    var factor = 100 / canvas.height; // The rotation ratio
-
-//                    e.preventDefault();
-                    var dx = factor * (x - startX);
-                    var dy = factor * (y - startY);
-
-                    startX = x;
-                    startY = y;
-
-                    isRotate = true;
-
-                    return {
-                        dx: dx,
-                        dy: dy
-                    };
-                }).takeUntil(mouseup);
-            });
-
-            // Update position
-            var subscription = mousedrag.subscribe(function (pos) {
-                rotateY -= pos.dx;
-                rotateX -= pos.dy;
-            });
-
-
-
-
-
-            dy.EventManager.fromEvent(dy.EventName.KEYDOWN)
-                    .subscribe(function(e){
-                        console.log(e);
-
-                        setAllFalse();
-                        keyState[e.key] = true;
-                    });
-
-
-
-//            YE.EventManager.addListener(YE.Event.MOUSE_MOVE, mapLayer.onmousemove, document.getElementById("gameArea"), mapLayer);
-
-
-//            dy.EventManager.create().on("custom", function(ev){
-//                console.log("this is custom event")
-//            });
-//            dy.EventManager.create(canvas).on("canvasCustom", function(ev, data1, data2){
-//                console.log("this is canvasCustom event ", data1, " ", data2);
-//            });
-
-
-//            setTimeout(function(){
-//                c.trigger("click", 100);
-//            });
-        }
-
-        function removeEvent() {
-            dy.EventManager.off(scene);
-            document.querySelector("body").off("keydown");
-//            dy.EventManager.create(canvas).off();
-//            dy.EventManager.create(document.querySelector("body")).off("keydown");
-//            dy.EventManager.create().off();
-        }
     };
 </script>
 </body>

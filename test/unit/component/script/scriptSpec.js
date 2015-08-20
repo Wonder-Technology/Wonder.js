@@ -157,7 +157,7 @@ describe("script", function () {
         director.stop();
         director.start();
 
-        expect(dyRt.fromCollection).toCalledThrice();
+        expect(dyRt.fromCollection.callCount).toEqual(4);
     });
     it("one gameObject can has multi script components", function(done){
         testTwoScript(function(test, test2){
@@ -235,7 +235,7 @@ describe("script", function () {
     });
 
     describe("communicate with other script component", function(){
-        it("comunicate with the same gameObject's or the other gameObject's script component according to visitting it directly", function(done){
+        it("comunicate with the gameObject's script component according to visitting it directly", function(done){
             testTwoScript(function(test, test2){
                 sandbox.spy(test, "update");
                 sandbox.spy(test2, "update");

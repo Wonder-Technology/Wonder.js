@@ -10,11 +10,17 @@ module dy{
         public static script:dyCb.Stack<IScriptFileData> = dyCb.Stack.create<IScriptFileData>();
 
         public static create():Script;
+        public static create(url:string):Script;
         public static create(scriptName:string, callback:Function):Script;
 
         public static create() {
             if(arguments.length === 0){
                 return new this();
+            }
+            if(arguments.length === 1){
+                let url = arguments[0];
+
+                return new this(url);
             }
             else if(arguments.length === 2){
                 let scriptName = arguments[0],
@@ -22,22 +28,24 @@ module dy{
 
                 this.script.push(<IScriptFileData>{
                     name: scriptName,
-                    class: callback()
+                    class: callback(Director.getInstance())
                 });
             }
         }
 
-        //todo prepend script prefix(defined in config data) to relative path?
-        private _url:string = null;
-        get url(){
-            return this._url;
-        }
-        set url(url:string){
-            this._url = url;
+        constructor(url:string = null){
+            super();
+
+            this.url = url;
         }
 
+        //todo prepend script prefix(defined in config data) to relative path?
+        public url:string = null;
+
         public createLoadJsStream(){
-            return LoaderManager.getInstance().load(this._url)
+            dyCb.Log.error(!this.url, dyCb.Log.info.FUNC_MUST_DEFINE("url"));
+
+            return LoaderManager.getInstance().load(this.url)
             .map(() => {
                     return Script.script.pop();
                 });

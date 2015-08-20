@@ -107,7 +107,7 @@ module dy {
             this._triggerWithUserData(target, eventObject.copy(), userData, true);
 
             function iterator(obj:GameObject){
-                var children:dyCb.Collection<GameObject> = obj.getChilren();
+                var children:dyCb.Collection<GameObject> = obj.getChildren();
 
                 if(children.getCount() === 0){
                     return;

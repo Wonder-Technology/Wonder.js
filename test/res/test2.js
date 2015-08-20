@@ -1,4 +1,4 @@
-dy.Script.create("test2", function () {
+dy.Script.create("test2", function (director) {
     function Test2(gameObject) {
         this.gameObject = gameObject;
     }

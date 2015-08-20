@@ -145,7 +145,7 @@ module dy{
             this._gameLoop = dyRt.judge(
                 () => { return self._isFirstStart; },
                 () => {
-                    return dyRt.fromCollection(self._stage.getChilren())
+                    return dyRt.fromCollection(<dyCb.Collection<GameObject>>(self._stage.getChildren().copy().addChild(self._stage)))
                         .map((gameObject:GameObject) => {
                             return gameObject.scriptStreams;
                         })
@@ -169,7 +169,6 @@ module dy{
                 }, self))
                 .ignoreElements()
                 .concat(dyRt.intervalRequest())
-                //.skip(count)
                 .subscribe((time) => {
                     //todo need polyfill
                     /*!

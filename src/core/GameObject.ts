@@ -65,31 +65,31 @@ module dy {
 
         public init() {
             this._script.forEach((script:IScriptBehavior) => {
-                script.init();
+                script.init && script.init();
             });
         }
 
         public onEnter() {
             this._script.forEach((script:IScriptBehavior) => {
-                script.onEnter();
+                script.onEnter && script.onEnter();
             });
         }
 
         public onStartLoop() {
             this._script.forEach((script:IScriptBehavior) => {
-                script.onStartLoop();
+                script.onStartLoop && script.onStartLoop();
             });
         }
 
         public onEndLoop() {
             this._script.forEach((script:IScriptBehavior) => {
-                script.onEndLoop();
+                script.onEndLoop && script.onEndLoop();
             });
         }
 
         public onExit() {
             this._script.forEach((script:IScriptBehavior) => {
-                script.onExit();
+                script.onExit && script.onExit();
             });
         }
 
@@ -155,7 +155,7 @@ module dy {
             return this;
         }
 
-        public getChilren(){
+        public getChildren(){
             return this._children;
         }
 
@@ -417,7 +417,7 @@ module dy {
             });
 
             this._script.forEach((script:IScriptBehavior) => {
-                script.update(time);
+                script.update && script.update(time);
             });
         }
 
