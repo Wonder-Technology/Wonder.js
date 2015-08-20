@@ -3,6 +3,8 @@
 /// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
+/// <reference path="extend/dyRt"/>
+
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
 /// <reference path="core/Transform"/>
@@ -38,6 +40,8 @@
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/TopCollider"/>
+/// <reference path="component/script/Script"/>
+/// <reference path="component/script/IScriptBehavior"/>
 
 
 /// <reference path="math/Global"/>
@@ -68,7 +72,9 @@
 /// <reference path="material/Material"/>
 
 /// <reference path="asset/GLSLLoader"/>
+/// <reference path="asset/JsLoader"/>
 /// <reference path="asset/LoaderManager"/>
+/// <reference path="asset/LoaderFactory"/>
 
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>

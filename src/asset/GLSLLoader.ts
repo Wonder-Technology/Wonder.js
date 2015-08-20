@@ -61,7 +61,7 @@ module dy{
         }
 
         private _errorHandle(path, err) {
-            dyCb.Log.log("加载" + path + "资源失败:", err);
+            dyCb.Log.log("加载" + path + "资源失败:"+ err);
         }
     }
 }

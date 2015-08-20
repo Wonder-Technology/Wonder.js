@@ -48,35 +48,58 @@ module dy {
             this._name = name;
         }
 
+        private _script:dyCb.Hash<IScriptBehavior> = dyCb.Hash.create<IScriptBehavior>();
+        get script(){
+            return this._script;
+        }
+
+        private _scriptStreams:dyCb.Collection<dyRt.Stream> = dyCb.Collection.create<dyRt.Stream>();
+        get scriptStreams():dyRt.Stream{
+            return dyRt.fromCollection(this._scriptStreams).mergeAll();
+        }
+
         private _collider:Collider = null;
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
         private _actionManager:ActionManager = ActionManager.create();
 
         public init() {
+            this._script.forEach((script:IScriptBehavior) => {
+                script.init();
+            });
         }
 
-        /*!
-         hook method
-         */
         public onEnter() {
+            this._script.forEach((script:IScriptBehavior) => {
+                script.onEnter();
+            });
         }
 
         public onStartLoop() {
+            this._script.forEach((script:IScriptBehavior) => {
+                script.onStartLoop();
+            });
         }
 
         public onEndLoop() {
+            this._script.forEach((script:IScriptBehavior) => {
+                script.onEndLoop();
+            });
         }
 
         public onExit() {
+            this._script.forEach((script:IScriptBehavior) => {
+                script.onExit();
+            });
         }
 
-
         public dispose() {
+            this.onExit();
+
             if(this._parent){
                 this._parent.removeChild(this);
+                this._parent = null;
             }
-            this._parent = null;
 
             EventManager.off(this);
         }
@@ -149,9 +172,12 @@ module dy {
         }
 
         public removeChild(child:GameObject):GameObject {
-            child.onExit();
-
             this._children.removeChild(child);
+
+            child.parent = null;
+            //child.setBubbleParent(null);
+
+            child.dispose();
             //var idx = this._children.indexOf(child);
             //if(idx !== -1) {
             //    child.dispatchEvent(new CoreEvent('beforeremove', false));
@@ -279,7 +305,6 @@ module dy {
                 component.gameObject.removeComponent(component);
             }
             component.gameObject = this;
-            //todo set Transform parent?
 
 
             this._components.addChild(component);
@@ -301,9 +326,31 @@ module dy {
 
                 this._collider = <Collider>component;
             }
+            else if(component instanceof Script){
+                let script = <Script>component,
+                    self = this;
+
+                this._scriptStreams.addChild(script.createLoadJsStream()
+                    .do((data:IScriptFileData) => {
+                            self._script.addChild(data.name, new data.class(self));
+                        })
+                );
+                //script.createLoadJsStream()
+                //        .do((data:IScriptFileData) => {
+                //            self._script.addChild(data.name, new data.class(self));
+                //        })
+                //.subscribe(() => {
+                //
+                //}, (err) => {
+                //        var t = err;
+                //    }, () => {
+                //        var a = 1;
+                //    })
+            }
 
             return this;
         }
+
         public removeComponent(component:Component){
             this._components.removeChild(component);
 
@@ -367,6 +414,10 @@ module dy {
 
             this._children.forEach((child:GameObject) => {
                 child.update(time);
+            });
+
+            this._script.forEach((script:IScriptBehavior) => {
+                script.update(time);
             });
         }
 

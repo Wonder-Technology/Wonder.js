@@ -13,9 +13,15 @@ module dy {
         private _camera:GameObject = null;
 
         public init(){
+            super.init();
+
             this.program = render.Program.create();
 
             this.addComponent(TopCollider.create());
+
+            this.forEach((child:GameObject) => {
+                child.init();
+            });
         }
 
         public addChild(child:GameObject):GameObject{
@@ -31,6 +37,16 @@ module dy {
 
             super.render(renderer, this._camera);
         }
+
+        public onEnter(){
+            super.onEnter();
+
+            this.forEach((child:GameObject) => {
+                child.onEnter();
+            });
+        }
+
+        //todo onExit
 
         public onStartLoop(){
             super.onStartLoop();

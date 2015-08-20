@@ -6,6 +6,8 @@ module dy{
         PAUSE
     }
 
+    //todo invoke stage.onExit
+
     export class Director{
         private static _instance:Director = null;
 
@@ -85,24 +87,16 @@ module dy{
 
         public initWhenCreate(){
             //todo detect to decide using which renderer
-            this._renderer = dy.render.WebGLRenderer.create();
+            this._renderer = render.WebGLRenderer.create();
         }
 
         public start(){
             this._gameState = GameState.NORMAL;
 
-            this._stage.init();
-            this._stage.onEnter();
-
-            //todo not put here?
-            this._renderer.init();
-
-            this._timeController.start();
-            this._scheduler.start();
-
             this._startLoop();
         }
 
+        //todo dispose
         public stop(){
             this._gameLoop.dispose();
             this._gameState = GameState.STOP;
@@ -148,8 +142,27 @@ module dy{
         private _startLoop() {
             var self = this;
 
-            this._gameLoop = dyRt.intervalRequest()
-            .subscribe((time) => {
+            //todo catch
+
+            this._gameLoop = dyRt.fromCollection(this._stage.getChilren())
+                .map((gameObject:GameObject) => {
+                    return gameObject.scriptStreams;
+                })
+                .mergeAll()
+            .concat(dyRt.callFunc(() => {
+                    this._stage.init();
+                    this._stage.onEnter();
+
+                    //todo not put here?
+                    this._renderer.init();
+
+                    this._timeController.start();
+                    this._scheduler.start();
+                }, self))
+                .ignoreElements()
+                .concat(dyRt.intervalRequest())
+                //.skip(count)
+                .subscribe((time) => {
                     //todo need polyfill
                     /*!
                      i consider that the time is DOMHighResTimeStamp(从页面导航开始时测量的高精确度时间),
@@ -159,6 +172,7 @@ module dy{
                     self._loopBody(time);
                 });
         }
+
         private _loopBody(time) {
             var elapseTime = null;
 
