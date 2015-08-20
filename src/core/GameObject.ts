@@ -149,8 +149,8 @@ module dy {
             //}));
 
 
-            child.init();
-            child.onEnter();
+            //child.init();
+            //child.onEnter();
 
             return this;
         }
