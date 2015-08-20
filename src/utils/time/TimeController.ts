@@ -11,6 +11,10 @@ module dy{
             this.pauseElapsed = null;
         }
 
+        public stop(){
+            this.startTime = null;
+        }
+
         public pause() {
             this.pauseTime = this.getNow();
         }

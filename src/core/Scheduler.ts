@@ -211,6 +211,7 @@ module dy{
 
         public stop(){
             this.isStop = true;
+            this.timeController.stop();
         }
 
         public finish(){

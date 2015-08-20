@@ -32,12 +32,12 @@ module dy {
 
         public start() {
             this._isStop = false;
-
             this._timeController.start();
         }
 
         public stop() {
             this._isStop = true;
+            this._timeController.stop();
         }
 
         public reset() {

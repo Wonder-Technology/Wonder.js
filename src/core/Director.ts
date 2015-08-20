@@ -100,6 +100,7 @@ module dy{
         public stop(){
             this._gameLoop.dispose();
             this._gameState = GameState.STOP;
+            this._timeController.stop();
             this._scheduler.stop();
         }
 
