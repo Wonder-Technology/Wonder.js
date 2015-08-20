@@ -84,6 +84,7 @@ module dy{
         private _gameLoop:dyRt.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
+        private _isFirstStart:boolean = true;
 
         public initWhenCreate(){
             //todo detect to decide using which renderer
@@ -96,7 +97,6 @@ module dy{
             this._startLoop();
         }
 
-        //todo dispose
         public stop(){
             this._gameLoop.dispose();
             this._gameState = GameState.STOP;
@@ -142,14 +142,22 @@ module dy{
         private _startLoop() {
             var self = this;
 
-            //todo catch
-
-            this._gameLoop = dyRt.fromCollection(this._stage.getChilren())
-                .map((gameObject:GameObject) => {
-                    return gameObject.scriptStreams;
-                })
-                .mergeAll()
+            this._gameLoop = dyRt.judge(
+                () => { return self._isFirstStart; },
+                () => {
+                    return dyRt.fromCollection(self._stage.getChilren())
+                        .map((gameObject:GameObject) => {
+                            return gameObject.scriptStreams;
+                        })
+                        .mergeAll();
+                },
+                () => {
+                    return dyRt.empty();
+                }
+            )
             .concat(dyRt.callFunc(() => {
+                    this._isFirstStart = false;
+
                     this._stage.init();
                     this._stage.onEnter();
 

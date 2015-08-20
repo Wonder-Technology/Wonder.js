@@ -46,7 +46,7 @@ module dy{
                 var script:any = self._createScript();
 
                 script.addEventListener("error", function (e) {
-                    reject("err");
+                    reject(e);
                 });
 
                 if (script.readyState) { //IE
@@ -81,7 +81,7 @@ module dy{
         }
 
         private _errorHandle(path, err) {
-            dyCb.Log.log("加载" + path + "资源失败:"+ err);
+            dyCb.Log.log("加载" + path + "资源失败");
         }
 
         private _appendScript(script) {

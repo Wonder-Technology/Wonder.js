@@ -4,7 +4,6 @@
 
 describe("Director", function () {
     var sandbox = null;
-    var canvas = null;
     var director = null;
 
     function createCamera(){
@@ -12,7 +11,7 @@ describe("Director", function () {
             cameraComponent = dy.Camera.create();
 
         cameraComponent.fovy = 60;
-        cameraComponent.aspect = canvas.width / canvas.height;
+        cameraComponent.aspect = 1;
         cameraComponent.near = 0.1;
         cameraComponent.far = 100;
 
@@ -25,13 +24,10 @@ describe("Director", function () {
         sandbox = sinon.sandbox.create();
         director = dy.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
-        canvas = $("<canvas id='test'></canvas>");
-        $("html").append(canvas);
-        director.createGL("#test");
+        director.gl = testTool.buildFakeGl(sandbox);
         director.stage.addChild(createCamera());
     });
     afterEach(function () {
-        canvas.remove();
         dy.Director._instance = null;
         sandbox.restore();
     });
