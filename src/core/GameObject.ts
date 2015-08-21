@@ -128,7 +128,7 @@ module dy {
             sort when add child/children, not when get children.
             because each loop will get children(to render), so if using the latter, each loop should sort!
              */
-                this.sort();
+            this.sort();
             //}
             //child._parent = this;
             //child.setBubbleParent(this);
@@ -410,9 +410,7 @@ module dy {
         }
 
         private _ascendZ(a:GameObject, b:GameObject){
-            return function(a, b) {
-                return a.position.z - b.position.z;
-            }
+                return b.transform.position.z - a.transform.position.z;
         }
 
         private _execScript(method:string, arg?:any){

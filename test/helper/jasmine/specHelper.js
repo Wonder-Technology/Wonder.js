@@ -627,15 +627,24 @@ beforeEach(function () {
                 return {
                     compare: function (actual, expected) {
                         var actualArg = null,
-                            expectedArg = null;
+                            expectedArg = null,
+                            message = null;
 
                         actualArg = _isSpecificCall(actual) ? actual.args : actual.args[0];
                         expectedArg = Array.prototype.slice.call(arguments, 1);
 
+                        message = "Expected to called with " + Tool.convert.toString(expectedArg).slice(1,-1);
+
+                        if(!actualArg){
+                            message += ", but actual is not called";
+                        }
+                        else{
+                            message += ", but actual is " + Tool.convert.toString(actualArg).slice(1,-1);
+                        }
+
                         return {
                             pass: actual.calledWith.apply(actual, expectedArg),
-                            message: "Expected to called with " + Tool.convert.toString(expectedArg).slice(1,-1)
-                                + ", actual is " + Tool.convert.toString(actualArg).slice(1,-1)
+                            message: message
                         }
                     }
                 };
