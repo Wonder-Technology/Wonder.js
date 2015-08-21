@@ -500,23 +500,7 @@ module dy {
             return this;
         }
 
-        //public pause() {
-        //    super.pause();
-        //
-        //    this._startTime = window.performance.now();
-        //
-        //    return this;
-        //}
-        //
-        //public resume() {
-        //    super.resume();
-        //
-        //    return this;
-        //}
-
         public copy() {
-            var action = Tween.create();
-
             return Tween.create().from(this._valuesStart.getChildren())
             .to(this._valuesEnd.getChildren(), this.duration)
                 .easing(this._easingFunction)

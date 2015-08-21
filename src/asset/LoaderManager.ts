@@ -10,11 +10,11 @@ module dy{
             return this._instance;
         }
 
-        public resCount:number = 0;
+        public assetCount:number = 0;
         public currentLoadedCount:number = 0;
 
         public load(url:string):dyRt.Stream;
-        public load(resourcesArr:Array<{url:string; id:string}>) :dyRt.Stream;
+        public load(assetArr:Array<{url:string; id:string}>) :dyRt.Stream;
 
         public load() {
             var self = this;
@@ -26,26 +26,26 @@ module dy{
                 return this._createLoadStream(url, id);
             }
             else{
-                let resourcesArr = arguments[0];
+                let assetArr = arguments[0];
 
-                return dyRt.fromArray(resourcesArr).flatMap((res) => {
-                    return self._createLoadResourceStream(res.url, res.id);
+                return dyRt.fromArray(assetArr).flatMap((asset) => {
+                    return self._createLoadAssetStream(asset.url, asset.id);
                 });
             }
         }
 
         public reset() {
-            this.resCount = 0;
+            this.assetCount = 0;
             this.currentLoadedCount = 0;
         }
 
-        private _createLoadResourceStream(url, id){
+        private _createLoadAssetStream(url, id){
             var loader = this._getLoader(url),
                 stream = null,
                 self = this;
 
             if(!loader.has(id)){
-                self.resCount ++;
+                self.assetCount ++;
             }
 
             stream = loader.load(url, id)
@@ -54,7 +54,7 @@ module dy{
 
                     return {
                         currentLoadedCount: self.currentLoadedCount,
-                        resCount:self.resCount
+                        assetCount:self.assetCount
                     }
                 });
 

@@ -71,6 +71,7 @@
 
 /// <reference path="material/Material"/>
 
+/// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
 /// <reference path="asset/LoaderManager"/>

@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class JsLoader{
+    export class JsLoader extends Loader{
         private static _instance = null;
 
         public static getInstance() {
@@ -10,43 +10,15 @@ module dy{
             return this._instance;
         }
 
-        private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
-
-        public load(url:string, id:string):dyRt.Stream{
-            var self = this,
-                stream = null;
-
-            if(this._container.getChild(id)){
-                stream = dyRt.empty();
-            }
-            else{
-                stream = dyRt.fromPromise(this._load(url))
-                    .do((data) => {
-                        self._container.addChild(id, data);
-                    }, (err) => {
-                        self._errorHandle(url, err);
-                    }, null);
-            }
-
-            return stream;
-        }
-
-        public get(id:string):string{
-            return this._container.getChild(id);
-        }
-
-        public has(id:string){
-            return this._container.hasChild(id);
-        }
-
-        private _load(url) {
+        protected loadAsset(url:string) {
             var self = this;
 
             return new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();
 
                 script.addEventListener("error", function (e) {
-                    reject(e);
+                    //todo get error message from e(Event)?
+                    reject("error");
                 });
 
                 if (script.readyState) { //IE
@@ -78,10 +50,6 @@ module dy{
             //script.async = false;
 
             return script;
-        }
-
-        private _errorHandle(path, err) {
-            dyCb.Log.log("加载" + path + "资源失败");
         }
 
         private _appendScript(script) {

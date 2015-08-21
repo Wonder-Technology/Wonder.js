@@ -146,30 +146,15 @@ module dy{
             this._gameLoop = dyRt.judge(
                 () => { return self._isFirstStart; },
                 () => {
-                    return dyRt.fromCollection(<dyCb.Collection<GameObject>>(self._stage.getChildren().copy().addChild(self._stage)))
-                        .map((gameObject:GameObject) => {
-                            return gameObject.scriptStreams;
-                        })
-                        .mergeAll();
+                    return self._buildLoadScriptStream();
                 },
                 () => {
                     return dyRt.empty();
                 }
             )
-            .concat(dyRt.callFunc(() => {
-                    this._isFirstStart = false;
-
-                    this._stage.init();
-                    this._stage.onEnter();
-
-                    //todo not put here?
-                    this._renderer.init();
-
-                    this._timeController.start();
-                    this._scheduler.start();
-                }, self))
+            .concat(this._buildInitStream())
                 .ignoreElements()
-                .concat(dyRt.intervalRequest())
+                .concat(this._buildLoopStream())
                 .subscribe((time) => {
                     //todo need polyfill
                     /*!
@@ -179,6 +164,33 @@ module dy{
                      */
                     self._loopBody(time);
                 });
+        }
+
+        private _buildLoadScriptStream(){
+            return dyRt.fromCollection(<dyCb.Collection<GameObject>>(this._stage.getChildren().copy().addChild(this._stage)))
+                .map((gameObject:GameObject) => {
+                    return gameObject.scriptStreams;
+                })
+                .mergeAll();
+        }
+
+        private _buildInitStream(){
+            return dyRt.callFunc(() => {
+                this._isFirstStart = false;
+
+                this._stage.init();
+                this._stage.onEnter();
+
+                //todo not put here?
+                this._renderer.init();
+
+                this._timeController.start();
+                this._scheduler.start();
+            }, this);
+        }
+
+        private _buildLoopStream(){
+            return dyRt.intervalRequest();
         }
 
         private _loopBody(time) {

@@ -145,7 +145,7 @@ describe("script", function () {
         sandbox.stub(dyRt, "intervalRequest").returns(
             dyRt.empty()
         );
-        sandbox.spy(dyRt, "fromCollection");
+        sandbox.spy(director, "_buildLoadScriptStream");
         var script = dy.Script.create();
         var gameObject = dy.GameObject.create();
 
@@ -157,7 +157,7 @@ describe("script", function () {
         director.stop();
         director.start();
 
-        expect(dyRt.fromCollection.callCount).toEqual(4);
+        expect(director._buildLoadScriptStream.callCount).toEqual(1);
     });
     it("one gameObject can has multi script components", function(done){
         testTwoScript(function(test, test2){

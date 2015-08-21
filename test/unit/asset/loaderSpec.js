@@ -21,7 +21,7 @@ describe("loader", function () {
             {url: testTool.resPath + "test/res/fragment.glsl", id: "a2"}
         ]).subscribe(function(data){
             current.push(data.currentLoadedCount);
-            total.push(data.resCount);
+            total.push(data.assetCount);
         }, function(err){
         }, function(){
             expect(current).toEqual([1, 2]);

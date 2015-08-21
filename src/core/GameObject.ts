@@ -64,33 +64,23 @@ module dy {
         private _actionManager:ActionManager = ActionManager.create();
 
         public init() {
-            this._script.forEach((script:IScriptBehavior) => {
-                script.init && script.init();
-            });
+            this._execScript("init");
         }
 
         public onEnter() {
-            this._script.forEach((script:IScriptBehavior) => {
-                script.onEnter && script.onEnter();
-            });
+            this._execScript("onEnter");
         }
 
         public onStartLoop() {
-            this._script.forEach((script:IScriptBehavior) => {
-                script.onStartLoop && script.onStartLoop();
-            });
+            this._execScript("onStartLoop");
         }
 
         public onEndLoop() {
-            this._script.forEach((script:IScriptBehavior) => {
-                script.onEndLoop && script.onEndLoop();
-            });
+            this._execScript("onEndLoop");
         }
 
         public onExit() {
-            this._script.forEach((script:IScriptBehavior) => {
-                script.onExit && script.onExit();
-            });
+            this._execScript("onExit");
         }
 
         public dispose() {
@@ -416,15 +406,19 @@ module dy {
                 child.update(time);
             });
 
-            this._script.forEach((script:IScriptBehavior) => {
-                script.update && script.update(time);
-            });
+            this._execScript("update", time);
         }
 
         private _ascendZ(a:GameObject, b:GameObject){
             return function(a, b) {
                 return a.position.z - b.position.z;
             }
+        }
+
+        private _execScript(method:string, arg?:any){
+            this._script.forEach((script:IScriptBehavior) => {
+                script[method] && (arg ? script[method](arg) : script[method]());
+            });
         }
     }
 }

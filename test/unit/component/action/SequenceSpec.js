@@ -112,7 +112,7 @@ describe("Sequence", function () {
     });
 
     describe("pause,resume", function(){
-        it("can pause action and continue action", function () {
+        it("can pause and continue action", function () {
             var action1 = dy.DelayTime.create(100);
             var x = null;
             var tween = dy.Tween.create();
