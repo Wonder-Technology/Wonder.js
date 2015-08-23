@@ -43,15 +43,7 @@ module dy {
             //quadCmd.bufferData = ;
             //quadCmd.color = this._material.color;
 
-            quadCmd.polygonOffsetMode = geometry.polygonOffsetMode;
-            quadCmd.cullMode = geometry.cullMode;
-
-            if(material.blend){
-                quadCmd.blend = material.blend;
-                quadCmd.blendSrc = material.blendSrc;
-                quadCmd.blendDst = material.blendDst;
-                quadCmd.blendEquation = material.blendEquation;
-            }
+            quadCmd.material = material;
 
             quadCmd.z = this.gameObject.transform.position.z;
 

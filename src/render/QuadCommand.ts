@@ -53,14 +53,8 @@ module dy.render {
             this._drawMode = drawMode;
         }
 
-        //todo move default value to GLManager?
-        public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
-        public cullMode:CullMode = CullMode.BACK;
-        public blend:boolean = false;
-        public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
-        public blendDst:BlendFunction = BlendFunction.DST_COLOR;
-        public blendEquation:BlendEquation = BlendEquation.FUNC_ADD;
         public z:number = null;
+        public material:Material = null;
 
         public execute() {
             this._sendData();
@@ -121,14 +115,8 @@ module dy.render {
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
                 gl = Director.getInstance().gl;
-            var glManager = GLManager.getInstance();
 
-            glManager.polygonOffsetMode = this.polygonOffsetMode;
-            glManager.cullMode = this.cullMode;
-
-            glManager.blend = this.blend;
-            glManager.setBlendFunction(this.blendSrc, this.blendDst);
-            glManager.setBlendEquation(this.blendEquation);
+            this._setEffects();
 
             if (this._buffers.hasChild("indexBuffer")) {
                 let indexBuffer:ElementBuffer = <ElementBuffer>this._buffers.getChild("indexBuffer");
@@ -143,6 +131,18 @@ module dy.render {
                 totalNum = vertexBuffer.num;
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
+        }
+
+        private _setEffects(){
+            var glManager = GLManager.getInstance();
+
+            glManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
+            glManager.polygonOffsetMode = this.material.polygonOffsetMode;
+            glManager.cullMode = this.material.cullMode;
+
+            glManager.blend = this.material.blend;
+            glManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
+            glManager.setBlendEquation(this.material.blendEquation);
         }
     }
 }

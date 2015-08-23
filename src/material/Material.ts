@@ -31,6 +31,14 @@ module dy {
             this._shader = shader;
         }
 
+        //public depthTest:boolean = true;
+        //public depthWrite:boolean = true;
+        public redWrite:boolean = true;
+        public greenWrite:boolean = true;
+        public blueWrite:boolean = true;
+        public alphaWrite:boolean = true;
+        public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
+        public cullMode:CullMode = CullMode.BACK;
         public blend:boolean = false;
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;

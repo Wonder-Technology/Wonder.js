@@ -63,7 +63,7 @@ module dy.render{
         private _renderOpaqueCommands() {
             this._commandQueue
                 .filter((command:QuadCommand) => {
-                    return !command.blend;
+                    return !command.material.blend;
                 })
                 .forEach((command:QuadCommand) => {
                     command.execute();
@@ -75,7 +75,7 @@ module dy.render{
 
             this._commandQueue
                 .filter((command:QuadCommand) => {
-                    return command.blend;
+                    return command.material.blend;
                 })
                 .sort((a:QuadCommand, b:QuadCommand) => {
                     return self._getObjectToCameraZDistance(b) - self._getObjectToCameraZDistance(a);
