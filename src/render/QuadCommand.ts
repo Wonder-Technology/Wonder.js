@@ -53,8 +53,14 @@ module dy.render {
             this._drawMode = drawMode;
         }
 
+        //todo move default value to GLManager?
         public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
         public cullMode:CullMode = CullMode.BACK;
+        public blend:boolean = false;
+        public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
+        public blendDst:BlendFunction = BlendFunction.DST_COLOR;
+        public blendEquation:BlendEquation = BlendEquation.FUNC_ADD;
+        public z:number = null;
 
         public execute() {
             this._sendData();
@@ -119,6 +125,10 @@ module dy.render {
 
             glManager.polygonOffsetMode = this.polygonOffsetMode;
             glManager.cullMode = this.cullMode;
+
+            glManager.blend = this.blend;
+            glManager.setBlendFunction(this.blendSrc, this.blendDst);
+            glManager.setBlendEquation(this.blendEquation);
 
             if (this._buffers.hasChild("indexBuffer")) {
                 let indexBuffer:ElementBuffer = <ElementBuffer>this._buffers.getChild("indexBuffer");

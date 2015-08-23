@@ -60,7 +60,7 @@ module dy{
                 len = this._vertices.count;
 
             for(i = 0; i < len; i++){
-                arr.push( color.r, color.g, color.b, 1.0);
+                arr.push( color.r, color.g, color.b, color.a);
             }
 
             return render.ArrayBuffer.create(new Float32Array(arr), 4, render.BufferType.FLOAT);

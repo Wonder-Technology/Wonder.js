@@ -27,11 +27,15 @@ module dy.render{
         }
 
         public render(){
-            GLManager.getInstance().clear(this._clearOptions);
+            var gl = GLManager.getInstance();
 
-            this._commandQueue.forEach((command) => {
-                command.execute();
-            });
+            gl.clear(this._clearOptions);
+
+            this._renderOpaqueCommands();
+
+            gl.depthWrite = false;
+            this._renderSortedTransparentCommands();
+            gl.depthWrite = true;
 
             this._clearCommand();
         }
@@ -45,6 +49,35 @@ module dy.render{
                 color:color,
                 alpha:alpha
             });
+        }
+
+        private _renderOpaqueCommands() {
+            this._commandQueue
+                .filter((command:QuadCommand) => {
+                    return !command.blend;
+                })
+                .forEach((command:QuadCommand) => {
+                    command.execute();
+                });
+        }
+
+        private _renderSortedTransparentCommands() {
+            var self = this;
+
+            this._commandQueue
+                .filter((command:QuadCommand) => {
+                    return command.blend;
+                })
+                .sort((a:QuadCommand, b:QuadCommand) => {
+                    return self._getObjectToCameraZDistance(b) - self._getObjectToCameraZDistance(a);
+                })
+                .forEach((command:QuadCommand) => {
+                    command.execute();
+                });
+        }
+
+        private _getObjectToCameraZDistance(quad){
+            return Director.getInstance().stage.camera.transform.position.z - quad.z;
         }
 
         private _clearCommand(){

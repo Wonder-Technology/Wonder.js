@@ -30,5 +30,10 @@ module dy {
         set shader(shader:render.Shader){
             this._shader = shader;
         }
+
+        public blend:boolean = false;
+        public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
+        public blendDst:BlendFunction = BlendFunction.DST_COLOR;
+        public blendEquation:BlendEquation = BlendEquation.FUNC_ADD;
     }
 }

@@ -17,6 +17,26 @@ module dy {
         CUSTOM
     }
 
+    export enum BlendFunction{
+        ZERO = <any>"ZEOR",
+        ONE = <any>"ONE",
+        SRC_COLOR = <any>"SRC_COLOR",
+        ONE_MINUS_SRC_COLOR = <any>"ONE_MINUS_SRC_COLOR",
+        DST_COLOR = <any>"DST_COLOR",
+        ONE_MINUS_DST_COLOR = <any>"ONE_MINUS_DST_COLOR",
+        SRC_ALPHA = <any>"SRC_ALPHA",
+        SRC_ALPHA_SATURATE = <any>"SRC_ALPHA_SATURATE",
+        ONE_MINUS_SRC_ALPHA = <any>"ONE_MINUS_SRC_ALPHA",
+        DST_ALPHA = <any>"DST_ALPHA",
+        ONE_MINUS_DST_ALPH = <any>"ONE_MINUS_DST_ALPHA"
+    }
+
+    export enum BlendEquation{
+        FUNC_ADD = <any>"FUNC_ADD",
+        FUNC_SUBTRACT = <any>"FUNC_SUBTRACT",
+        FUNC_REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
+    }
+
     export class GLManager {
         private static _instance:GLManager = null;
 
@@ -48,7 +68,8 @@ module dy {
             if (this._depthTest !== depthTest) {
                 if (depthTest) {
                     gl.enable(gl.DEPTH_TEST);
-                } else {
+                }
+                else {
                     gl.disable(gl.DEPTH_TEST);
                 }
 
@@ -134,6 +155,92 @@ module dy {
             }
         }
 
+
+
+        /*! blend record
+        所 谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。不要被混乱的顺序搞晕 了。
+
+
+         也许你迫不及待的想要绘制一个三维的带有半透明物体的场景了。但是现在恐怕还不行，还有一点是在进行三维场景的混合时必须注意的，那就是深度缓冲。
+         总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
+
+         在进行混合时，绘制的顺序十分重要。因为在绘制时，正要绘制上去的是源颜色，原来存在的是目标颜色，因此先绘制的物体就成为目标颜色，后来绘制的则成为源颜色。绘制的顺序要考虑清楚，将目标颜色和设置的目标因子相对应，源颜色和设置的源因子相对应。
+         在进行三维混合时，不仅要考虑源因子和目标因子，还应该考虑深度缓冲区。必须先绘制所有不透明的物体，再绘制半透明的物体。在绘制半透明物体时前，还需要将深度缓冲区设置为只读形式，否则可能出现画面错误。
+        */
+
+
+        private _blend:boolean = null;
+        get blend(){
+            return this._blend;
+        }
+        set blend(blend:boolean){
+            var gl = this.gl;
+
+            if (this._blend !== blend) {
+                if (blend) {
+                    gl.enable(gl.BLEND);
+                }
+                else {
+                    gl.disable(gl.BLEND);
+                }
+
+                this._blend = blend;
+            }
+        }
+
+        private _depthWrite:boolean = null;
+        get depthWrite(){
+            return this._depthWrite;
+        }
+        set depthWrite(depthWrite:boolean){
+            if (this._depthWrite !== depthWrite) {
+                this.gl.depthMask(depthWrite);
+
+                this._depthWrite = depthWrite;
+            }
+        }
+
+        private _blendSrc:BlendFunction = null;
+        private _blendDst:BlendFunction = null;
+        private _blendEquation: BlendEquation = null;
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setBlendFunction
+         * @description Configures blending operations.
+         * @param {pc.BLENDMODE} blendSrc The source blend function.
+         * @param {pc.BLENDMODE} blendDst The destination blend function.
+         */
+        public setBlendFunction(blendSrc:BlendFunction, blendDst:BlendFunction) {
+            if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
+                this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
+                this._blendSrc = blendSrc;
+                this._blendDst = blendDst;
+            }
+        }
+        /*!
+         OpenGL gives us even more flexibility by allowing us to change the operator between the source and destination part of the equation. Right now, the source and destination components are added together, but we could also subtract them if we want. glBlendEquation(GLenum mode) allows us to set this operation and has 3 possible options:
+
+         GL_FUNC_ADD: the default, adds both components to each other: C¯result=Src+Dst.
+         GL_FUNC_SUBTRACT: subtracts both components from each other: C¯result=Src−Dst.
+         GL_FUNC_REVERSE_SUBTRAThe default blend equation is
+
+         default is FUNC_ADD
+         */
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setBlendEquation
+         * @description Configures the blending equation. .
+         * @param {pc.BLENDEQUATION} blendEquation The blend equation.
+         */
+        public setBlendEquation(blendEquation:BlendEquation) {
+            if (this._blendEquation !== blendEquation) {
+                this._blend && this.gl.blendEquation(this.gl[blendEquation]);
+                this._blendEquation = blendEquation;
+            }
+        }
+
         public clear(options:any) {
          //   /**
          //    * @function
@@ -199,6 +306,8 @@ module dy {
             gl.clearColor(color.r, color.g, color.b, options.alpha);
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            this.depthWrite = true;
         }
     }
 }

@@ -10,7 +10,7 @@ module dy {
         //todo move it elsewhere?
         public program:render.Program = null;
 
-        private _camera:GameObject = null;
+        public camera:GameObject = null;
 
         public init(){
             super.init();
@@ -26,16 +26,16 @@ module dy {
 
         public addChild(child:GameObject):GameObject{
             if(this._isCamera(child)){
-                this._camera = child;
+                this.camera = child;
             }
 
             return super.addChild(child);
         }
 
         public render(renderer:render.Renderer) {
-            dyCb.Log.error(!this._camera, "stage must add camera");
+            dyCb.Log.error(!this.camera, "stage must add camera");
 
-            super.render(renderer, this._camera);
+            super.render(renderer, this.camera);
         }
 
         public onEnter(){

@@ -9,29 +9,10 @@ module dy{
             return obj;
         }
 
-        private _r:number = null;
-        get r(){
-            return this._r;
-        }
-        set r(r:number){
-            this._r = r;
-        }
-
-        private _g:number = null;
-        get g(){
-            return this._g;
-        }
-        set g(g:number){
-            this._g = g;
-        }
-
-        private _b:number = null;
-        get b(){
-            return this._b;
-        }
-        set b(b:number){
-            this._b = b;
-        }
+        public r:number = null;
+        public g:number = null;
+        public b:number = null;
+        public a:number = null;
 
         constructor() {
         }
@@ -40,25 +21,27 @@ module dy{
             this._setColor(colorVal);
         }
 
-
         private _setColor(colorVal:string) {
+            var REGEX1 = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
+                REGEX2 = /^\#([0-9a-f]{6})$/i;
+            var color = null;
+
+            // rgba(255,0,0,0)
             //
-            //// rgb(255,0,0)
-            ////
-            ////将我们平常习惯的颜色值表达形式rgb(255,0,0)-数值型，转换成THREE.JS认识的形式0.0-1.0，
-            ////这里将取值范围从0-255换算成0.0-1.0.
-            //
-            //if ( /^rgb\((\d+), ?(\d+), ?(\d+)\)$/i.test( style ) ) {	//用正则表达式检查当前传递的颜色值表达样式是否为数值型rgb(255,0,0)
-            //
-            //    var color = /^rgb\((\d+), ?(\d+), ?(\d+)\)$/i.exec( style );	//将字符串中的数值赋值给color，color是一个数组。
-            //
-            //    this.r = Math.min( 255, parseInt( color[ 1 ], 10 ) ) / 255;		//将数组中的第2个元素转换成10进制int类型整数，判断是否小于255，然后除以255，得出小数，复制给Color.r
-            //    this.g = Math.min( 255, parseInt( color[ 2 ], 10 ) ) / 255;		//将数组中的第3个元素转换成10进制int类型整数，判断是否小于255，然后除以255，得出小数，复制给Color.g
-            //    this.b = Math.min( 255, parseInt( color[ 3 ], 10 ) ) / 255;		//将数组中的第4个元素转换成10进制int类型整数，判断是否小于255，然后除以255，得出小数，复制给Color.b
-            //
-            //    return this; //返回颜色对象。
-            //
-            //}
+            //将我们平常习惯的颜色值表达形式rgba(255,0,0,0)-数值型，转换成THREE.JS认识的形式0.0-1.0，
+            //这里将取值范围从0-255换算成0.0-1.0.
+
+            if ( REGEX1.test( colorVal ) ) {	//用正则表达式检查当前传递的颜色值表达样式是否为数值型rgb(255,0,0)
+                color = REGEX1.exec( colorVal );	//将字符串中的数值赋值给color，color是一个数组。
+
+                this.r = this._getColorValue(color, 1) ;
+                this.g = this._getColorValue(color, 2) ;
+                this.b = this._getColorValue(color, 3) ;
+                this.a = Number(color[4]);
+
+                return this; //返回颜色对象。
+
+            }
             //
             //// rgb(100%,0%,0%)
             ////将我们平常习惯的颜色值表达形式rgb(100%,0%,0%)-百分比型，转换成THREE.JS认识的形式0.0-1.0，
@@ -80,9 +63,8 @@ module dy{
             //将我们平常习惯的颜色值表达形式#ff0000-6位16进制型，转换成THREE.JS认识的形式0.0-1.0，
             //这里将取值范围从00-ff换算成0.0-1.0.
 
-            if (/^\#([0-9a-f]{6})$/i.test(colorVal)) {		//用正则表达式检查当前传递的颜色值表达样式是否为6位16进制型 #ff0000
-
-                var color = /^\#([0-9a-f]{6})$/i.exec(colorVal);		//将字符串中的数值赋值给color，color是一个数组。
+            if (REGEX2.test(colorVal)) {		//用正则表达式检查当前传递的颜色值表达样式是否为6位16进制型 #ff0000
+                color = REGEX2.exec(colorVal);		//将字符串中的数值赋值给color，color是一个数组。
 
                 this._setHex(parseInt(color[1], 16));	//将数组中的第2个元素转换成16进制int类型整数.调用setHex 方法，将16进制数值赋值给Color.r,Color.g,Color.b
 
@@ -116,6 +98,12 @@ module dy{
             //
             //}
         }
+
+        private _getColorValue(color, index, num=255){
+            return Math.min( num, parseInt( color[ index ], 10 ) ) / num;
+        }
+
+
         /*setHex方法
          ///setHex方法用于设置16进制颜色值给当前实例
          ///更多关于hex颜色的内容参考维基百科,http://zh.wikipedia.org/wiki/%E7%BD%91%E9%A1%B5%E9%A2%9C%E8%89%B2
@@ -126,9 +114,10 @@ module dy{
         private _setHex(hex) {
             hex = Math.floor(hex);
 
-            this._r = ( hex >> 16 & 255 ) / 255; //将左边两位16进制数值变换成rgb颜色值对应的red，并赋值给属性Color.r。
-            this._g = ( hex >> 8 & 255 ) / 255;  //将中间两位16进制数值变换成rgb颜色值对应的green，并赋值给属性Color.g。
-            this._b = ( hex & 255 ) / 255;	    //将右边两位16进制数值变换成rgb颜色值对应的blue，并赋值给属性Color.b。
+            this.r = ( hex >> 16 & 255 ) / 255; //将左边两位16进制数值变换成rgb颜色值对应的red，并赋值给属性Color.r。
+            this.g = ( hex >> 8 & 255 ) / 255;  //将中间两位16进制数值变换成rgb颜色值对应的green，并赋值给属性Color.g。
+            this.b = ( hex & 255 ) / 255;	    //将右边两位16进制数值变换成rgb颜色值对应的blue，并赋值给属性Color.b。
+            this.a = 1;
 
             return this;	//返回颜色对象
         }

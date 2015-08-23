@@ -25,7 +25,8 @@ module dy {
         //}
 
         private _addDrawCommand(renderer:render.Renderer, geometry:Geometry, mvpMatrix:Matrix){
-            var quadCmd = renderer.createQuadCommand();
+            var quadCmd = renderer.createQuadCommand(),
+                material:Material = geometry.material;
 
             dyCb.Log.error(!geometry, dyCb.Log.info.FUNC_MUST("Mesh", "add geometry component"));
 
@@ -44,6 +45,15 @@ module dy {
 
             quadCmd.polygonOffsetMode = geometry.polygonOffsetMode;
             quadCmd.cullMode = geometry.cullMode;
+
+            if(material.blend){
+                quadCmd.blend = material.blend;
+                quadCmd.blendSrc = material.blendSrc;
+                quadCmd.blendDst = material.blendDst;
+                quadCmd.blendEquation = material.blendEquation;
+            }
+
+            quadCmd.z = this.gameObject.transform.position.z;
 
             renderer.addCommand(quadCmd);
         }
