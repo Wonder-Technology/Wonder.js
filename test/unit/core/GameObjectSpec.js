@@ -33,7 +33,7 @@ describe("GameObject", function() {
             gameObject.sort();
 
             expect(gameObject.getChildren().toArray()).toEqual(
-                [ob1, ob3, ob2]
+                [ob2, ob3, ob1]
             );
         });
     });

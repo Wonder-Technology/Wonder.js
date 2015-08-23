@@ -123,12 +123,16 @@ module dy {
 
             //if(sort) {
 
-
             /*!
-            sort when add child/children, not when get children.
-            because each loop will get children(to render), so if using the latter, each loop should sort!
+            no need to sort!
+            because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->_renderSortedTransparentCommands sort the commands)
              */
-            this.sort();
+
+            ///*!
+            //sort when add child/children, not when get children.
+            //because each loop will get children(to render), so if using the latter, each loop should sort!
+            // */
+            //this.sort();
             //}
             //child._parent = this;
             //child.setBubbleParent(this);
@@ -410,7 +414,8 @@ module dy {
         }
 
         private _ascendZ(a:GameObject, b:GameObject){
-                return b.transform.position.z - a.transform.position.z;
+                //return b.transform.position.z - a.transform.position.z;
+            return a.transform.position.z - b.transform.position.z;
         }
 
         private _execScript(method:string, arg?:any){
