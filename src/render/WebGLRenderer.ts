@@ -27,30 +27,30 @@ module dy.render{
         }
 
         public render(){
-            var gl = GLManager.getInstance();
+            var deviceManager = DeviceManager.getInstance();
 
-            gl.clear(this._clearOptions);
+            deviceManager.clear(this._clearOptions);
 
             this._renderOpaqueCommands();
 
-            gl.depthWrite = false;
+            deviceManager.depthWrite = false;
             this._renderSortedTransparentCommands();
-            gl.depthWrite = true;
+            deviceManager.depthWrite = true;
 
             this._clearCommand();
         }
 
         public init(){
-            var gl = GLManager.getInstance();
+            var deviceManager = DeviceManager.getInstance();
 
-            gl.depthTest = true;
-            gl.blend = false;
-            gl.setBlendFunction(BlendFunction.ONE, BlendFunction.ZERO);
-            gl.setBlendEquation(BlendEquation.FUNC_ADD);
-            gl.setColorWrite(true, true, true, true);
-            gl.cullMode = CullMode.BACK;
-            gl.depthWrite = true;
-            gl.scissorTest = true;
+            deviceManager.depthTest = true;
+            deviceManager.blend = false;
+            deviceManager.setBlendFunction(BlendFunction.ONE, BlendFunction.ZERO);
+            deviceManager.setBlendEquation(BlendEquation.FUNC_ADD);
+            deviceManager.setColorWrite(true, true, true, true);
+            deviceManager.cullMode = CullMode.BACK;
+            deviceManager.depthWrite = true;
+            deviceManager.scissorTest = true;
         }
 
         public setClearColor(color:Color = Color.create("#000000"), alpha:number = 1.0){

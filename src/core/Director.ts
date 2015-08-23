@@ -140,7 +140,7 @@ module dy{
             //todo delete Director->gl
             this._gl = this._view.getContext();
 
-            GLManager.getInstance().gl = this._view.getContext();
+            DeviceManager.getInstance().gl = this._gl;
         }
 
         private _startLoop() {

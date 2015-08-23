@@ -134,15 +134,15 @@ module dy.render {
         }
 
         private _setEffects(){
-            var glManager = GLManager.getInstance();
+            var deviceManager = DeviceManager.getInstance();
 
-            glManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
-            glManager.polygonOffsetMode = this.material.polygonOffsetMode;
-            glManager.cullMode = this.material.cullMode;
+            deviceManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
+            deviceManager.polygonOffsetMode = this.material.polygonOffsetMode;
+            deviceManager.cullMode = this.material.cullMode;
 
-            glManager.blend = this.material.blend;
-            glManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
-            glManager.setBlendEquation(this.material.blendEquation);
+            deviceManager.blend = this.material.blend;
+            deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
+            deviceManager.setBlendEquation(this.material.blendEquation);
         }
     }
 }

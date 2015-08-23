@@ -1,4 +1,9 @@
 /// <reference path="../definitions.d.ts"/>
+
+/*!
+DeviceManager is responsible for global setting of gl
+ */
+
 module dy {
     /*!default is BACK*/
     export enum CullMode{
@@ -37,8 +42,8 @@ module dy {
         FUNC_REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
     }
 
-    export class GLManager {
-        private static _instance:GLManager = null;
+    export class DeviceManager {
+        private static _instance:DeviceManager = null;
 
         public static getInstance() {
             if (this._instance === null) {
@@ -47,7 +52,10 @@ module dy {
             return this._instance;
         }
 
-        public gl:any = null;
+        private _gl:any = null;
+        set gl(gl:any){
+            this._gl = gl;
+        }
 
         /*!
         test order:
@@ -68,7 +76,7 @@ module dy {
             return this._scissorTest;
         }
         set scissorTest(scissorTest:boolean){
-            var gl = this.gl;
+            var gl = this._gl;
 
             if (scissorTest) {
                 gl.enable(gl.SCISSOR_TEST);
@@ -90,7 +98,7 @@ module dy {
          * @param {Number} h The height of the scissor rectangle in pixels.
          */
         public setScissor(x:number, y:number, width:number, height:number) {
-            this.gl.scissor(x, y, width, height);
+            this._gl.scissor(x, y, width, height);
         }
 
         /*! Difference between viewports and scissor rectangles
@@ -112,7 +120,7 @@ module dy {
          * @param {Number} h The height of the viewport in pixels.
          */
         public setViewport(x:number, y:number, width:number, height:number) {
-            this.gl.viewport(x, y, width, height);
+            this._gl.viewport(x, y, width, height);
         }
 
 
@@ -130,7 +138,7 @@ module dy {
         }
 
         set depthTest(depthTest:boolean) {
-            var gl = this.gl;
+            var gl = this._gl;
 
             if (this._depthTest !== depthTest) {
                 if (depthTest) {
@@ -150,7 +158,7 @@ module dy {
         }
 
         set cullMode(cullMode:CullMode) {
-            var gl = this.gl;
+            var gl = this._gl;
 
             if (this._cullMode !== cullMode) {
                 switch (cullMode) {
@@ -192,7 +200,7 @@ module dy {
             return this._polygonOffsetMode;
         }
         set polygonOffsetMode(polygonOffsetMode:PolygonOffsetMode){
-            var gl = this.gl;
+            var gl = this._gl;
 
             if (this._polygonOffsetMode !== polygonOffsetMode) {
                 switch (polygonOffsetMode){
@@ -241,7 +249,7 @@ module dy {
             return this._blend;
         }
         set blend(blend:boolean){
-            var gl = this.gl;
+            var gl = this._gl;
 
             if (this._blend !== blend) {
                 if (blend) {
@@ -261,7 +269,7 @@ module dy {
         }
         set depthWrite(depthWrite:boolean){
             if (this._depthWrite !== depthWrite) {
-                this.gl.depthMask(depthWrite);
+                this._gl.depthMask(depthWrite);
 
                 this._depthWrite = depthWrite;
             }
@@ -287,7 +295,7 @@ module dy {
                 || this._writeGreen !== writeGreen
                 || this._writeBlue !== writeBlue
                 || this._writeAlpha !== writeAlpha) {
-                this.gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+                this._gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
 
                 this._writeRed = writeRed;
                 this._writeGreen = writeGreen;
@@ -313,7 +321,7 @@ module dy {
          */
         public setBlendFunction(blendSrc:BlendFunction, blendDst:BlendFunction) {
             if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
-                this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
+                this._blend && this._gl.blendFunc(this._gl[blendSrc], this._gl[blendDst]);
                 this._blendSrc = blendSrc;
                 this._blendDst = blendDst;
             }
@@ -336,7 +344,7 @@ module dy {
          */
         public setBlendEquation(blendEquation:BlendEquation) {
             if (this._blendEquation !== blendEquation) {
-                this._blend && this.gl.blendEquation(this.gl[blendEquation]);
+                this._blend && this._gl.blendEquation(this._gl[blendEquation]);
                 this._blendEquation = blendEquation;
             }
         }
@@ -372,7 +380,7 @@ module dy {
             //
             //var flags = (options.flags === undefined) ? defaultOptions.flags : options.flags;
             //if (flags !== 0) {
-            //    var gl = this.gl;
+            //    var gl = this._gl;
             //
             //    // Set the clear color
             //    if (flags & pc.CLEARFLAG_COLOR) {
@@ -390,7 +398,7 @@ module dy {
             //    }
             //
             //    // Clear the frame buffer
-            //    gl.clear(this.glClearFlag[flags]);
+            //    gl.clear(this._glClearFlag[flags]);
             //
             //    if (flags & pc.CLEARFLAG_DEPTH) {
             //        if (!this.depthWrite) {
@@ -400,7 +408,7 @@ module dy {
             //}
 
 
-            var gl = this.gl,
+            var gl = this._gl,
                 color = options.color;
 
             gl.clearColor(color.r, color.g, color.b, options.alpha);
