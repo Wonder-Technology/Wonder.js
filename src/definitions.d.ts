@@ -99,3 +99,5 @@
 /// <reference path="event/factory/FactoryEventHandler"/>
 /// <reference path="event/EventManager"/>
 
+/// <reference path="device/GLManager"/>
+

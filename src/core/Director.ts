@@ -137,7 +137,10 @@ module dy{
 
         public createGL(canvasId:string){
             this._view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
+            //todo delete Director->gl
             this._gl = this._view.getContext();
+
+            GLManager.getInstance().gl = this._view.getContext();
         }
 
         private _startLoop() {
