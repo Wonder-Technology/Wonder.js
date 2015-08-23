@@ -58,14 +58,11 @@
             var material3 = dy.Material.create();
             material3.color= dy.Color.create("rgba(255, 0, 255, 0.4)");
             material3.shader = shader;
-            material3.blend = true;
-            material3.blendSrc = dy.BlendFunction.SRC_ALPHA;
-            material3.blendDst = dy.BlendFunction.ONE_MINUS_SRC_ALPHA;
+            material3.blendType = dy.BlendType.NORMAL;
 
 
             var geometry = dy.TriangleGeometry.create();
             geometry.material = material;
-//            geometry.polygonOffsetMode = dy.PolygonOffsetMode.OUT;
 
 
             var mesh = dy.GameObject.create();

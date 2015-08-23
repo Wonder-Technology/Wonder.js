@@ -46,7 +46,7 @@ module dy.render{
             deviceManager.depthTest = true;
             deviceManager.blend = false;
             deviceManager.setBlendFunction(BlendFunction.ONE, BlendFunction.ZERO);
-            deviceManager.setBlendEquation(BlendEquation.FUNC_ADD);
+            deviceManager.setBlendEquation(BlendEquation.ADD);
             deviceManager.setColorWrite(true, true, true, true);
             deviceManager.cullMode = CullMode.BACK;
             deviceManager.depthWrite = true;

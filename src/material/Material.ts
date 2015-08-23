@@ -31,6 +31,89 @@ module dy {
             this._shader = shader;
         }
 
+        private _blendType:BlendType = null;
+        get blendType(){
+            if(this._blendType){
+                return this._blendType;
+            }
+
+            if ( (this.blendSrc === BlendFunction.ONE)
+                && (this.blendDst === BlendFunction.ZERO)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.NONE;
+            }
+            else if ((this.blendSrc === BlendFunction.SRC_ALPHA)
+                && (this.blendDst === BlendFunction.ONE_MINUS_SRC_ALPHA)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.NORMAL;
+            }
+            else if ((this.blendSrc === BlendFunction.ONE)
+                && (this.blendDst === BlendFunction.ONE)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.ADDITIVE;
+            }
+            else if ((this.blendSrc === BlendFunction.SRC_ALPHA)
+                && (this.blendDst === BlendFunction.ONE)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.ADDITIVEALPHA;
+            }
+            else if ((this.blendSrc === BlendFunction.DST_COLOR)
+                && (this.blendDst === BlendFunction.ZERO)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.MULTIPLICATIVE;
+            }
+            else if ((this.blendSrc === BlendFunction.ONE)
+                && (this.blendDst === BlendFunction.ONE_MINUS_SRC_ALPHA)
+                && (this.blendEquation === BlendEquation.ADD)) {
+                return BlendType.PREMULTIPLIED;
+            }
+            else {
+                return BlendType.NORMAL;
+            }
+        }
+        set blendType(blendType:BlendType){
+            switch (blendType) {
+                case BlendType.NONE:
+                    this.blend = false;
+                    this.blendSrc = BlendFunction.ONE;
+                    this.blendDst = BlendFunction.ZERO;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+                case BlendType.NORMAL:
+                    this.blend = true;
+                    this.blendSrc = BlendFunction.SRC_ALPHA;
+                    this.blendDst = BlendFunction.ONE_MINUS_SRC_ALPHA;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+                case BlendType.PREMULTIPLIED:
+                    this.blend = true;
+                    this.blendSrc = BlendFunction.ONE;
+                    this.blendDst = BlendFunction.ONE_MINUS_SRC_ALPHA;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+                case BlendType.ADDITIVE:
+                    this.blend = true;
+                    this.blendSrc = BlendFunction.ONE;
+                    this.blendDst = BlendFunction.ONE;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+                case BlendType.ADDITIVEALPHA:
+                    this.blend = true;
+                    this.blendSrc = BlendFunction.SRC_ALPHA;
+                    this.blendDst = BlendFunction.ONE;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+                case BlendType.MULTIPLICATIVE:
+                    this.blend = true;
+                    this.blendSrc = BlendFunction.DST_COLOR;
+                    this.blendDst = BlendFunction.ZERO;
+                    this.blendEquation = BlendEquation.ADD;
+                    break;
+            }
+
+            this._blendType = blendType;
+        }
+
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;
@@ -42,6 +125,6 @@ module dy {
         public blend:boolean = false;
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
-        public blendEquation:BlendEquation = BlendEquation.FUNC_ADD;
+        public blendEquation:BlendEquation = BlendEquation.ADD;
     }
 }

@@ -37,9 +37,18 @@ module dy {
     }
 
     export enum BlendEquation{
-        FUNC_ADD = <any>"FUNC_ADD",
-        FUNC_SUBTRACT = <any>"FUNC_SUBTRACT",
-        FUNC_REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
+        ADD = <any>"FUNC_ADD",
+        SUBTRACT = <any>"FUNC_SUBTRACT",
+        REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
+    }
+
+    export enum BlendType{
+        NONE,
+        NORMAL,
+        ADDITIVE,
+        ADDITIVEALPHA,
+        MULTIPLICATIVE,
+        PREMULTIPLIED
     }
 
     export class DeviceManager {

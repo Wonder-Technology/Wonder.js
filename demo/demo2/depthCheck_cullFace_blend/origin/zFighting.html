@@ -44,6 +44,7 @@
             var material = dy.Material.create();
             material.color= dy.Color.create("#FFCDff");
             material.shader = shader;
+            material.polygonOffsetMode = dy.PolygonOffsetMode.OUT;
 
             var material2 = dy.Material.create();
             material2.color= dy.Color.create("#FFFFFF");
@@ -52,7 +53,6 @@
 
             var geometry = dy.TriangleGeometry.create();
             geometry.material = material;
-            geometry.polygonOffsetMode = dy.PolygonOffsetMode.OUT;
 
 
             var mesh = dy.GameObject.create();

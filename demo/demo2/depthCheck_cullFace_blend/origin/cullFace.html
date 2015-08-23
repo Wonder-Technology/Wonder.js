@@ -44,17 +44,18 @@
             var material = dy.Material.create();
             material.color= dy.Color.create("#FFCDff");
             material.shader = shader;
+            material.cullMode = dy.CullMode.NONE;
 
             var material2 = dy.Material.create();
             material2.color= dy.Color.create("#FFFFFF");
             material2.shader = shader;
+            material2.cullMode = dy.CullMode.BACK;
 
 
             var geometry = dy.TriangleGeometry.create();
             geometry.width = 5;
             geometry.height = 5;
             geometry.material = material;
-            geometry.cullMode = dy.CullMode.NONE;
 
 
             var mesh = dy.GameObject.create();
@@ -76,7 +77,6 @@
             geometry2.width = 3;
             geometry2.height = 3;
             geometry2.material = material2;
-            geometry2.cullMode = dy.CullMode.BACK;
 
 
             var mesh2 = dy.GameObject.create();
