@@ -206,8 +206,6 @@ module dy{
 
             //todo invoke stage->syncHierarchy()
 
-            this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
-
             this._stage.onStartLoop();
 
             this._run(elapseTime);
