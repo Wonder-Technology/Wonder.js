@@ -200,6 +200,39 @@ module dy {
             }
         }
 
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setColorWrite
+         * @description Enables or disables writes to the color buffer. Once this state
+         * is set, it persists until it is changed. By default, color writes are enabled
+         * for all color channels.
+         * @param {Boolean} writeRed true to enable writing  of the red channel and false otherwise.
+         * @param {Boolean} writeGreen true to enable writing  of the green channel and false otherwise.
+         * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
+         * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
+         * @example
+         * // Just write alpha into the frame buffer
+         * device.setColorWrite(false, false, false, true);
+         */
+        public setColorWrite(writeRed, writeGreen, writeBlue, writeAlpha) {
+            if (this._writeRed !== writeRed
+                || this._writeGreen !== writeGreen
+                || this._writeBlue !== writeBlue
+                || this._writeAlpha !== writeAlpha) {
+                this.gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+
+                this._writeRed = writeRed;
+                this._writeGreen = writeGreen;
+                this._writeBlue = writeBlue;
+                this._writeAlpha = writeAlpha;
+            }
+        }
+
+        private _writeRed:boolean = null;
+        private _writeGreen:boolean = null;
+        private _writeBlue:boolean = null;
+        private _writeAlpha:boolean = null;
         private _blendSrc:BlendFunction = null;
         private _blendDst:BlendFunction = null;
         private _blendEquation: BlendEquation = null;
