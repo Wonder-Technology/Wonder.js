@@ -33,6 +33,8 @@ module dy{
             this._material = material;
         }
 
+        public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
+
         public init(){
             this._vertices = this.computeVerticesBuffer();
             this._indices = this.computeIndicesBuffer();

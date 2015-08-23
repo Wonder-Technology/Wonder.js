@@ -42,6 +42,8 @@ module dy {
             //quadCmd.bufferData = ;
             //quadCmd.color = this._material.color;
 
+            quadCmd.polygonOffsetMode = geometry.polygonOffsetMode;
+
             renderer.addCommand(quadCmd);
         }
 

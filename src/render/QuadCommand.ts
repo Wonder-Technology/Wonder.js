@@ -53,6 +53,8 @@ module dy.render {
             this._drawMode = drawMode;
         }
 
+        public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
+
 
         public execute() {
             this._sendData();
@@ -113,7 +115,9 @@ module dy.render {
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
                 gl = Director.getInstance().gl;
+            var glManager = GLManager.getInstance();
 
+            glManager.polygonOffsetMode = this.polygonOffsetMode;
 
             if (this._buffers.hasChild("indexBuffer")) {
                 let indexBuffer:ElementBuffer = <ElementBuffer>this._buffers.getChild("indexBuffer");
@@ -128,6 +132,8 @@ module dy.render {
                 totalNum = vertexBuffer.num;
                 gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
             }
+
+            glManager.polygonOffsetMode = PolygonOffsetMode.NONE;
         }
     }
 }

@@ -10,6 +10,13 @@ module dy {
         FRONT_AND_BACK
     }
 
+    export enum PolygonOffsetMode{
+        NONE,
+        IN,
+        OUT,
+        CUSTOM
+    }
+
     export class GLManager {
         private static _instance:GLManager = null;
 
@@ -80,6 +87,50 @@ module dy {
                 }
 
                 this._cullMode = cullMode;
+            }
+        }
+
+        /*!
+         偏移值是在z值计算后、深度检测之前加上的，此时坐标已经被映射到Normalized Device Coordinates中了，
+         而此时的z轴是向内的（opengl的z轴是向外的），因此多边形偏移量为正值的话，意味着往远处移动，否则往近处移动。
+         可参考下面的说明：
+         The results are summed to produce the depth offset. This offset is applied in screen space, typically with positive Z pointing into the screen.
+         the offset is calculated after the normal Z calculations, but applied before the depth test and before being written to the depth buffer.
+         */
+        public polygonOffset:Point = null;
+
+        private _polygonOffsetMode:PolygonOffsetMode = null;
+        get polygonOffsetMode(){
+            return this._polygonOffsetMode;
+        }
+        set polygonOffsetMode(polygonOffsetMode:PolygonOffsetMode){
+            var gl = this.gl;
+
+            if (this._polygonOffsetMode !== polygonOffsetMode) {
+                switch (polygonOffsetMode){
+                    case PolygonOffsetMode.NONE:
+                        gl.polygonOffset(0.0, 0.0);
+                        gl.disable(gl.POLYGON_OFFSET_FILL);
+                        break;
+                    case PolygonOffsetMode.IN:
+                        gl.enable(gl.POLYGON_OFFSET_FILL);
+                        gl.polygonOffset(1.0, 1.0);
+                        break;
+                    case PolygonOffsetMode.OUT:
+                        gl.enable(gl.POLYGON_OFFSET_FILL);
+                        gl.polygonOffset(-1.0, -1.0);
+                        break;
+                    case PolygonOffsetMode.CUSTOM:
+                        gl.enable(gl.POLYGON_OFFSET_FILL);
+                        dyCb.Log.error(!this.polygonOffset, dyCb.Log.info.FUNC_MUST_DEFINE("polygonOffset"));
+                        gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
+                        break;
+                    default:
+                        return;
+                        break;
+                }
+
+                this._polygonOffsetMode = polygonOffsetMode;
             }
         }
 

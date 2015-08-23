@@ -27,8 +27,6 @@ module dy.render{
         }
 
         public render(){
-            var gl = Director.getInstance().gl;
-
             GLManager.getInstance().clear(this._clearOptions);
 
             this._commandQueue.forEach((command) => {
@@ -43,7 +41,7 @@ module dy.render{
             GLManager.getInstance().cullMode = CullMode.BACK;
         }
 
-        public setClearColor(color:Color, alpha:number = 1.0){
+        public setClearColor(color:Color = Color.create("#000000"), alpha:number = 1.0){
             this._setClearOptions({
                 color:color,
                 alpha:alpha
