@@ -41,7 +41,16 @@ module dy.render{
         }
 
         public init(){
-            GLManager.getInstance().depthTest = true;
+            var gl = GLManager.getInstance();
+
+            gl.depthTest = true;
+            gl.blend = false;
+            gl.setBlendFunction(BlendFunction.ONE, BlendFunction.ZERO);
+            gl.setBlendEquation(BlendEquation.FUNC_ADD);
+            gl.setColorWrite(true, true, true, true);
+            gl.cullMode = CullMode.BACK;
+            gl.depthWrite = true;
+            gl.scissorTest = true;
         }
 
         public setClearColor(color:Color = Color.create("#000000"), alpha:number = 1.0){

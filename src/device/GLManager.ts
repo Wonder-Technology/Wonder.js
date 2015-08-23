@@ -49,6 +49,73 @@ module dy {
 
         public gl:any = null;
 
+        /*!
+        test order:
+        scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
+         */
+
+
+
+
+        /*!
+         The scissor test culls pixels that are outside of the scissor rectangle, a user-defined rectangular sub-section of the render target.
+         The scissor rectangle could be used to indicate the area of the render target where the game world is drawn. The area outside the rectangle is culled and could be devoted to a game's GUI. The scissor test cannot cull non-rectangular areas.
+         Scissor rectangles cannot be set larger than the render target, but they can be set larger than the viewport.
+         The scissor rectangle is managed by a device render state. A scissor test is enabled or disabled by setting the renderstate to TRUE or FALSE. This test is performed after the fragment color is computed but before alpha testing. IDirect3DDevice9
+         */
+        private _scissorTest:boolean = null;
+        get scissorTest(){
+            return this._scissorTest;
+        }
+        set scissorTest(scissorTest:boolean){
+            var gl = this.gl;
+
+            if (scissorTest) {
+                gl.enable(gl.SCISSOR_TEST);
+            }
+            else {
+                gl.disable(gl.SCISSOR_TEST);
+            }
+
+            this._scissorTest = scissorTest;
+        }
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setScissor
+         * @description Set the active scissor rectangle on the specified device.
+         * @param {Number} x The pixel space x-coordinate of the bottom left corner of the scissor rectangle.
+         * @param {Number} y The pixel space y-coordinate of the bottom left corner of the scissor rectangle.
+         * @param {Number} w The width of the scissor rectangle in pixels.
+         * @param {Number} h The height of the scissor rectangle in pixels.
+         */
+        public setScissor(x:number, y:number, width:number, height:number) {
+            this.gl.scissor(x, y, width, height);
+        }
+
+        /*! Difference between viewports and scissor rectangles
+
+         Viewports are basically scaled views, the left side is 0 and the right side is 1. The entire view will be scaled down into that viewport after everything is projected.
+
+         Scissor tests clip to a rectangle inside that viewport. Instead of rendering from 0 to 1, you render from .2 to .8, with black bars on the outside. This actually cuts off a portion of what would normally be visible (if you used a viewport of the same size, you'd see the same amount but shrunk slightly).
+
+         Viewports are used for full views (consider 3D Studio Max, each viewport is the full view from that angle, but fit into a single square). Scissor tests are used to cut out extra pixels that you don't want/need to be affected (lights in deferred rendering, for instance, everything outside the range is not affected, so why bother calculating that if you already know it's not lit, just scissor around the projected sphere and forget about everything beyond that).
+         */
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setViewport
+         * @description Set the active rectangle for rendering on the specified device.
+         * @param {Number} x The pixel space x-coordinate of the bottom left corner of the viewport.
+         * @param {Number} y The pixel space y-coordinate of the bottom left corner of the viewport.
+         * @param {Number} w The width of the viewport in pixels.
+         * @param {Number} h The height of the viewport in pixels.
+         */
+        public setViewport(x:number, y:number, width:number, height:number) {
+            this.gl.viewport(x, y, width, height);
+        }
+
+
         //todo set depth func?
         /*! 默认情况是将需要绘制的新像素的z值与深度缓冲区中对应位置的z值进行比较，如果比深度缓存中的值小，那么用新像素的颜色值更新帧缓存中对应像素的颜色值。
          但是可以使用glDepthFunc(func)来对这种默认测试方式进行修改。
