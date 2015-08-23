@@ -38,7 +38,6 @@ module dy.render{
 
         public init(){
             GLManager.getInstance().depthTest = true;
-            GLManager.getInstance().cullMode = CullMode.BACK;
         }
 
         public setClearColor(color:Color = Color.create("#000000"), alpha:number = 1.0){

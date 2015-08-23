@@ -43,6 +43,7 @@ module dy {
             //quadCmd.color = this._material.color;
 
             quadCmd.polygonOffsetMode = geometry.polygonOffsetMode;
+            quadCmd.cullMode = geometry.cullMode;
 
             renderer.addCommand(quadCmd);
         }

@@ -34,6 +34,7 @@ module dy{
         }
 
         public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
+        public cullMode:CullMode = CullMode.BACK;
 
         public init(){
             this._vertices = this.computeVerticesBuffer();
