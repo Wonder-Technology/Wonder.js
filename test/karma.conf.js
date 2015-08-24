@@ -37,11 +37,9 @@ module.exports = function(config) {
 
         'test/unit/core/*.js',
         'test/unit/renderer/*.js',
-        //'test/unit/event/eventSpec.js'
+        'test/unit/device/*.js',
         'test/unit/event/*.js',
-        //'test/unit/event/mouseEventSpec.js'
-        //'test/unit/utils/browserDetector/useragents.js',
-        //'test/unit/utils/**/*.js',
+        'test/unit/utils/**',
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}

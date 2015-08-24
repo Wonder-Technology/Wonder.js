@@ -9,8 +9,7 @@ module dy.render{
 
         private _commandQueue:dyCb.Collection<QuadCommand> = dyCb.Collection.create<QuadCommand>();
         private _clearOptions:any = {
-            color:Color.create("#000000"),
-            alpha: 1.0
+            color:Color.create("#000000")
         };
 
         public createQuadCommand():QuadCommand{

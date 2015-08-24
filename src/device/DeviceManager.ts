@@ -416,11 +416,9 @@ module dy {
             var gl = this._gl,
                 color = options.color;
 
-            gl.clearColor(color.r, color.g, color.b, options.alpha);
+            gl.clearColor(color.r, color.g, color.b, color.a);
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-            this.depthWrite = true;
         }
     }
 }
