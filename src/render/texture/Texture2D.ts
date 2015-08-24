@@ -14,6 +14,8 @@ module dy.render{
             this._flipY = flipY;
         }
 
+        public autoMipMap:boolean = false;
+
         private _params:{} = null;
         private _flipY:boolean = null;
         private _texture:any = Director.getInstance().gl.createTexture();
@@ -26,6 +28,10 @@ module dy.render{
             }
             else{
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            }
+
+            if(this.autoMipMap){
+                gl.generateMipmap(gl.TEXTURE_2D);
             }
         }
 
