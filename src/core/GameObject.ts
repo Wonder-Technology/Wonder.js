@@ -62,6 +62,7 @@ module dy {
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
         private _actionManager:ActionManager = ActionManager.create();
+        private _behaviors:dyCb.Collection<Behavior> = dyCb.Collection.create<Behavior>();
 
         public init() {
             this._execScript("init");
@@ -304,11 +305,18 @@ module dy {
             this._components.addChild(component);
             component.init();
 
-            if(component instanceof Action) {
-                let action = <Action>component;
+            if(component instanceof Behavior){
+                if(component instanceof Action) {
+                    let action = <Action>component;
 
-                action.target = this;
-                this._actionManager.addChild(action);
+                    action.target = this;
+                    this._actionManager.addChild(action);
+                }
+                else{
+                    let behavior = <Behavior>component;
+
+                    this._behaviors.addChild(behavior);
+                }
             }
             else if(component instanceof Renderer) {
                 Log.assert(!this._renderer, "renderer is overwrite");
@@ -329,17 +337,6 @@ module dy {
                             self._script.addChild(data.name, new data.class(self));
                         })
                 );
-                //script.createLoadJsStream()
-                //        .do((data:IScriptFileData) => {
-                //            self._script.addChild(data.name, new data.class(self));
-                //        })
-                //.subscribe(() => {
-                //
-                //}, (err) => {
-                //        var t = err;
-                //    }, () => {
-                //        var a = 1;
-                //    })
             }
 
             return this;
@@ -348,9 +345,13 @@ module dy {
         public removeComponent(component:Component){
             this._components.removeChild(component);
 
-            if(component instanceof Action) {
-                this._actionManager.removeChild(<Action>component);
-                //this._behaviours.push(<Behaviour>comp);
+            if(component instanceof Behavior){
+                if(component instanceof Action) {
+                    this._actionManager.removeChild(component);
+                }
+                else{
+                    this._behaviors.removeChild(component);
+                }
             }
             else if(component instanceof Renderer) {
                 this._renderer = null;
@@ -404,6 +405,9 @@ module dy {
         }
 
         public update(time:number):void {
+            this._behaviors.forEach((behavior:Behavior) => {
+                behavior.update(time);
+            });
             this._actionManager.update(time);
 
             this._children.forEach((child:GameObject) => {

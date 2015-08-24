@@ -110,10 +110,10 @@ module dy{
         }
 
         public zoomIn(speed:number, min:number = 1){
-            this._fovy = Math.max(this._fovy - speed, min);
+            this.fovy = Math.max(this.fovy - speed, min);
         }
         public zoomOut(speed:number, max:number = 179){
-            this._fovy = Math.min(this._fovy + speed, max);
+            this.fovy = Math.min(this.fovy + speed, max);
         }
 
         public update(time){

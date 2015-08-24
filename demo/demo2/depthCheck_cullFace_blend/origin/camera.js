@@ -6,7 +6,7 @@ dy.Script.create("camera", function (director) {
 
     Camera.prototype.onStartLoop = function () {
         var stage = director.stage.script.getChild("stage"),
-            cameraComponent = this.gameObject.getComponent(Camera);
+            cameraComponent = this.gameObject.getComponent(dy.Camera);
 
         this.move();
         if (stage.isRotate) {
