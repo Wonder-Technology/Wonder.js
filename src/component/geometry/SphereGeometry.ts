@@ -156,13 +156,13 @@ module dy{
                 for (var longNumber = 0; longNumber < this._longitudeBands; longNumber++) {
                     var first = latNumber * (this._longitudeBands + 1) + longNumber;
                     var second = first + this._longitudeBands + 1;
+                    this._indices.push(first + 1);
+                    this._indices.push(second);
                     this._indices.push(first);
-                    this._indices.push(second);
-                    this._indices.push(first + 1);
 
-                    this._indices.push(second);
-                    this._indices.push(second + 1);
                     this._indices.push(first + 1);
+                    this._indices.push(second + 1);
+                    this._indices.push(second);
                 }
             }
 
