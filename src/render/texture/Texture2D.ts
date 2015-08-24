@@ -14,20 +14,18 @@ module dy.render{
             this._flipY = flipY;
         }
 
-        public image:HTMLImageElement = null;
-
         private _params:{} = null;
         private _flipY:boolean = null;
         private _texture:any = Director.getInstance().gl.createTexture();
 
-        createTextureArea(width?:number, height?:number):void{
+        public createTextureArea(image:HTMLImageElement, width?:number, height?:number):void{
             var gl = Director.getInstance().gl;
 
             if(width && height){
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.image);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
             }
             else{
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.image);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
             }
         }
 
@@ -38,14 +36,14 @@ module dy.render{
             gl.uniform1i(program.getUniformLocation("u_sampler"), index);
         }
 
-        bindToUnit (unit) {
+        public bindToUnit (unit:number) {
             var gl = Director.getInstance().gl;
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl.TEXTURE_2D, this._texture);
         }
 
-        initWhenCreate(){
+        public initWhenCreate(){
             var i = null,
                 gl = Director.getInstance().gl;
 

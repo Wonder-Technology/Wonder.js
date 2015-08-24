@@ -27,8 +27,6 @@ module dy.render{
         public sendData(){
             this._textures.forEach((texture:Texture2D, index:number) => {
                 texture.bindToUnit(index);
-
-                texture.createTextureArea();
                 texture.sendData(index);
             });
         }

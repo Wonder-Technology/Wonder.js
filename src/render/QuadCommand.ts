@@ -1,5 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy.render {
+    declare var window;
     export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();
@@ -64,7 +65,9 @@ module dy.render {
 
         public init() {
             //this._initBuffer();
-            TextureManager.getInstance().addChild(this.material.texture);
+            if(this.material.texture){
+                TextureManager.getInstance().addChild(this.material.texture);
+            }
         }
 
         //private _initBuffer(){
@@ -89,6 +92,7 @@ module dy.render {
             var program = Director.getInstance().stage.program;
 
             this._sendBufferData();
+
             TextureManager.getInstance().sendData();
 
             program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
@@ -124,7 +128,6 @@ module dy.render {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
-                //texCoordsBuffer = this._buffers.getChild("texCoordsBuffer"),
                 gl = Director.getInstance().gl;
 
             this._setEffects();
@@ -134,8 +137,6 @@ module dy.render {
 
                 totalNum = indexBuffer.num;
 
-                //gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);
-                //texCoordsBuffer && gl.bindBuffer(gl.ARRAY_BUFFER, texCoordsBuffer.buffer);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 gl.drawElements(gl[this._drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }

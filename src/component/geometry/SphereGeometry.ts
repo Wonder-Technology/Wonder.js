@@ -15,7 +15,7 @@ module dy{
             this._radius = radius;
         }
 
-        private _drawMode:SphereDrawMode = null;
+        private _drawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
         get drawMode(){
             return this._drawMode;
         }
@@ -33,11 +33,14 @@ module dy{
 
         private _data:{
             vertices;
-            indices
+            indices;
+            texCoords;
         } = null;
 
         public init(){
             this._data = this._computeData(this._radius, this._drawMode, this._segments);
+
+            super.init();
         }
 
         protected computeVerticesBuffer(){
@@ -46,6 +49,10 @@ module dy{
 
         protected computeIndicesBuffer(){
             return this._data.indices;
+        }
+
+        protected computeTexCoordsBuffer():render.ArrayBuffer{
+            return this._data.texCoords;
         }
 
         private _computeData(radius:number, drawMode:SphereDrawMode, segments:number){
@@ -85,6 +92,14 @@ module dy{
             this._indices = indices;
         }
 
+        private _texCoords:number[] = [];
+        get texCoords(){
+            return this._texCoords;
+        }
+        set texCoords(texCoords:number[]){
+            this._texCoords = texCoords;
+        }
+
         private _radius:number = null;
         private _latitudeBands:number = null;
         private _longitudeBands:number = null;
@@ -120,8 +135,14 @@ module dy{
                     //normals.push(x);
                     //normals.push(y);
                     //normals.push(z);
-                    //texCoords.push(u);
-                    //texCoords.push(v);
+                    //if(u<0.5){
+                    //    this._texCoords.push(1);
+                    //    this._texCoords.push(0);
+                    //}
+                    //else{
+                        this._texCoords.push(u);
+                        this._texCoords.push(v);
+                    //}
                     this._vertices.push(x);
                     this._vertices.push(y);
                     this._vertices.push(z);
@@ -149,14 +170,16 @@ module dy{
                 vertices: render.ArrayBuffer.create(new Float32Array(this._vertices),
                     3, render.BufferType.FLOAT),
                 indices: render.ElementBuffer.create(new Uint16Array(this._indices),
-                    render.BufferType.UNSIGNED_SHORT)
+                    render.BufferType.UNSIGNED_SHORT),
                 //normals: new Float32Array(normals),
-                //texCoords: new Float32Array(texCoords)
+                texCoords: render.ArrayBuffer.create(new Float32Array(this._texCoords),
+                    2, render.BufferType.FLOAT)
             }
         }
 
     }
 
+    //todo add texCoords
     class GetDataByDecomposition{
         public static create(radius:number, count:number):GetDataByDecomposition {
             var geom = new this(radius, count);
@@ -189,7 +212,6 @@ module dy{
             this._count = count;
         }
 
-        //todo add texCoords
         public getData(){
             var originVertices = [
                 [this._radius, 0, 0],
