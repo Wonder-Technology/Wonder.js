@@ -11,6 +11,12 @@ module dy{
                 case ".glsl":
                     loader = GLSLLoader.getInstance();
                     break;
+                case ".jpg":
+                case ".png":
+                //case ".gif":
+                //case ".bmp":
+                    loader = ImgLoader.getInstance();
+                    break;
                 default:
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT(extname));
                     break;

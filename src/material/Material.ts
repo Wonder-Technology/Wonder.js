@@ -126,5 +126,7 @@ module dy {
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
+
+        public texture:render.Texture2D = null;
     }
 }

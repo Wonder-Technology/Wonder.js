@@ -14,9 +14,15 @@ module dy.render{
             Director.getInstance().gl.useProgram(this._program);
         }
 
+        public getUniformLocation(name:string){
+            return Director.getInstance().gl.getUniformLocation(this._program, name);
+        }
+
         public setUniformData(name:string, type:UniformDataType, data:Matrix){
             var gl = Director.getInstance().gl,
                 pos= gl.getUniformLocation(this._program, name);
+
+            dyCb.Log.error(!pos, dyCb.Log.info.FUNC_MUST_NOT_BE(name, "null"));
 
             switch (type){
                 case UniformDataType.FLOAT_MAT4:
@@ -31,6 +37,10 @@ module dy.render{
         public setAttributeData(name:string, type:AttributeDataType, data:render.ArrayBuffer|number[]){
             var gl = Director.getInstance().gl,
                 pos = gl.getAttribLocation(this._program, name);
+
+            if(pos === -1){
+                return;
+            }
 
             switch (type){
                 case AttributeDataType.FLOAT_4:

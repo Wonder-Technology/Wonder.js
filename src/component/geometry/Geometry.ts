@@ -16,6 +16,14 @@ module dy{
         set indices(indices:render.ElementBuffer){
             this._indices = indices;
         }
+        
+        private _texCoords:render.ArrayBuffer = null;
+        get texCoords(){
+            return this._texCoords;
+        }
+        set texCoords(texCoords:render.ArrayBuffer){
+            this._texCoords = texCoords;
+        }
 
         private _colors:render.ArrayBuffer = null;
         get colors(){
@@ -37,7 +45,7 @@ module dy{
             this._vertices = this.computeVerticesBuffer();
             this._indices = this.computeIndicesBuffer();
             //this._normals = this._computeNormals();
-            //this._texCoords = this._computeTexCoords();
+            this._texCoords = this.computeTexCoordsBuffer();
             //todo compute from vertexColors(refer to threejs)
             this._colors = this._computeColorsBuffer(this._material);
         }
@@ -47,6 +55,10 @@ module dy{
         }
 
         protected computeIndicesBuffer():render.ElementBuffer{
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+        
+        protected computeTexCoordsBuffer():render.ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 

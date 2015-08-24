@@ -68,12 +68,15 @@
 /// <reference path="render/UniformDataType"/>
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
+/// <reference path="render/texture/Texture2D"/>
+/// <reference path="render/texture/TextureManager"/>
 
 /// <reference path="material/Material"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
+/// <reference path="asset/ImgLoader"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 

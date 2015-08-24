@@ -32,7 +32,7 @@ module dy {
 
             quadCmd.buffers = {
                 vertexBuffer: geometry.vertices,
-                //texCoords: geometry.texCoords,
+                texCoordsBuffer: geometry.texCoords,
                 //normals: geometry.normals,
                 indexBuffer: geometry.indices,
                 colorBuffer: geometry.colors

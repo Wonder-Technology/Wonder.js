@@ -36,13 +36,22 @@ module dy{
                     left, down, 0,
                     right, down, 0
                 ]),
-                3, render.BufferType.FLOAT)
+                3, render.BufferType.FLOAT);
         }
 
         protected computeIndicesBuffer(){
             return render.ElementBuffer.create(new Uint8Array([
                 0, 1, 2
-            ]), render.BufferType.UNSIGNED_BYTE)
+            ]), render.BufferType.UNSIGNED_BYTE);
+        }
+
+        protected computeTexCoordsBuffer(){
+            return render.ArrayBuffer.create(new Float32Array([
+                    0.5, 1.0,
+                    0.0, 0.0,
+                    1.0, 0.0
+                ]),
+                2, render.BufferType.FLOAT);
         }
     }
 }

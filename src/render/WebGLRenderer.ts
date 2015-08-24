@@ -92,6 +92,7 @@ module dy.render{
 
         private _clearCommand(){
             this._commandQueue.removeAllChildren();
+            TextureManager.getInstance().removeAllChildren();
         }
 
         private _setClearOptions(clearOptions:any){

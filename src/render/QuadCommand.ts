@@ -64,6 +64,7 @@ module dy.render {
 
         public init() {
             //this._initBuffer();
+            TextureManager.getInstance().addChild(this.material.texture);
         }
 
         //private _initBuffer(){
@@ -87,6 +88,15 @@ module dy.render {
         private _sendData() {
             var program = Director.getInstance().stage.program;
 
+            this._sendBufferData();
+            TextureManager.getInstance().sendData();
+
+            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
+        }
+
+        private _sendBufferData(){
+            var program = Director.getInstance().stage.program;
+
             if (this._buffers.hasChild("vertexBuffer")) {
                 program.setAttributeData("a_position", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("vertexBuffer"));
             }
@@ -94,26 +104,27 @@ module dy.render {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
 
-            //if(this.color){
-            /*!
-             this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
-             because a_color'pos is 0, and it should be array data(like Float32Array)
-             refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
-             */
+            if (this._buffers.hasChild("texCoordsBuffer")) {
+                program.setAttributeData("a_texCoord", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("texCoordsBuffer"));
+            }
+
+            if(this._buffers.hasChild("colorBuffer")){
+                /*!
+                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
+                 because a_color'pos is 0, and it should be array data(like Float32Array)
+                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
+                 */
 
 
-            program.setAttributeData("a_color", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
-            //}
-
-
-            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
+                program.setAttributeData("a_color", AttributeDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
+            }
         }
-
 
         private _draw() {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
+                //texCoordsBuffer = this._buffers.getChild("texCoordsBuffer"),
                 gl = Director.getInstance().gl;
 
             this._setEffects();
@@ -123,7 +134,8 @@ module dy.render {
 
                 totalNum = indexBuffer.num;
 
-                gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);
+                //gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer.buffer);
+                //texCoordsBuffer && gl.bindBuffer(gl.ARRAY_BUFFER, texCoordsBuffer.buffer);
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 gl.drawElements(gl[this._drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
