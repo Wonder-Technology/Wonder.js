@@ -103,7 +103,8 @@ describe("script", function () {
         script = dy.Script.create();
         director = dy.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
-        director.gl = testTool.buildFakeGl(sandbox);
+        sandbox.stub(director, "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         director.stage.addChild(createCamera());
 
         url1 = testTool.resPath + "test/res/test.js";

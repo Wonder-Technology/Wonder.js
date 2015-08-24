@@ -4,6 +4,14 @@ var testTool = (function(){
 
         buildFakeGl: function(sandbox){
             return {
+                enable:sandbox.stub(),
+                disable:sandbox.stub(),
+                polygonOffset:sandbox.stub(),
+                colorMask:sandbox.stub(),
+                depthMask:sandbox.stub(),
+                cullFace:sandbox.stub(),
+                blendFunc:sandbox.stub(),
+                blendEquation:sandbox.stub(),
                 createProgram:sandbox.stub(),
                 clearColor:sandbox.stub(),
                 clear:sandbox.stub()

@@ -635,7 +635,7 @@ beforeEach(function () {
 
                         message = "Expected to called with " + Tool.convert.toString(expectedArg).slice(1,-1);
 
-                        if(!actualArg){
+                        if(!actualArg || actualArg.length === 0){
                             message += ", but actual is not called";
                         }
                         else{

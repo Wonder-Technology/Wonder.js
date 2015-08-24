@@ -239,7 +239,17 @@ module dy {
             }
         }
 
+        private _depthWrite:boolean = null;
+        get depthWrite(){
+            return this._depthWrite;
+        }
+        set depthWrite(depthWrite:boolean){
+            if (this._depthWrite !== depthWrite) {
+                this._gl.depthMask(depthWrite);
 
+                this._depthWrite = depthWrite;
+            }
+        }
 
         /*! blend record
         所 谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。不要被混乱的顺序搞晕 了。
@@ -251,7 +261,6 @@ module dy {
          在进行混合时，绘制的顺序十分重要。因为在绘制时，正要绘制上去的是源颜色，原来存在的是目标颜色，因此先绘制的物体就成为目标颜色，后来绘制的则成为源颜色。绘制的顺序要考虑清楚，将目标颜色和设置的目标因子相对应，源颜色和设置的源因子相对应。
          在进行三维混合时，不仅要考虑源因子和目标因子，还应该考虑深度缓冲区。必须先绘制所有不透明的物体，再绘制半透明的物体。在绘制半透明物体时前，还需要将深度缓冲区设置为只读形式，否则可能出现画面错误。
         */
-
 
         private _blend:boolean = null;
         get blend(){
@@ -271,55 +280,6 @@ module dy {
                 this._blend = blend;
             }
         }
-
-        private _depthWrite:boolean = null;
-        get depthWrite(){
-            return this._depthWrite;
-        }
-        set depthWrite(depthWrite:boolean){
-            if (this._depthWrite !== depthWrite) {
-                this._gl.depthMask(depthWrite);
-
-                this._depthWrite = depthWrite;
-            }
-        }
-
-
-        /**
-         * @function
-         * @name pc.GraphicsDevice#setColorWrite
-         * @description Enables or disables writes to the color buffer. Once this state
-         * is set, it persists until it is changed. By default, color writes are enabled
-         * for all color channels.
-         * @param {Boolean} writeRed true to enable writing  of the red channel and false otherwise.
-         * @param {Boolean} writeGreen true to enable writing  of the green channel and false otherwise.
-         * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
-         * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
-         * @example
-         * // Just write alpha into the frame buffer
-         * device.setColorWrite(false, false, false, true);
-         */
-        public setColorWrite(writeRed, writeGreen, writeBlue, writeAlpha) {
-            if (this._writeRed !== writeRed
-                || this._writeGreen !== writeGreen
-                || this._writeBlue !== writeBlue
-                || this._writeAlpha !== writeAlpha) {
-                this._gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
-
-                this._writeRed = writeRed;
-                this._writeGreen = writeGreen;
-                this._writeBlue = writeBlue;
-                this._writeAlpha = writeAlpha;
-            }
-        }
-
-        private _writeRed:boolean = null;
-        private _writeGreen:boolean = null;
-        private _writeBlue:boolean = null;
-        private _writeAlpha:boolean = null;
-        private _blendSrc:BlendFunction = null;
-        private _blendDst:BlendFunction = null;
-        private _blendEquation: BlendEquation = null;
 
         /**
          * @function
@@ -357,6 +317,42 @@ module dy {
                 this._blendEquation = blendEquation;
             }
         }
+
+        /**
+         * @function
+         * @name pc.GraphicsDevice#setColorWrite
+         * @description Enables or disables writes to the color buffer. Once this state
+         * is set, it persists until it is changed. By default, color writes are enabled
+         * for all color channels.
+         * @param {Boolean} writeRed true to enable writing  of the red channel and false otherwise.
+         * @param {Boolean} writeGreen true to enable writing  of the green channel and false otherwise.
+         * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
+         * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
+         * @example
+         * // Just write alpha into the frame buffer
+         * device.setColorWrite(false, false, false, true);
+         */
+        public setColorWrite(writeRed, writeGreen, writeBlue, writeAlpha) {
+            if (this._writeRed !== writeRed
+                || this._writeGreen !== writeGreen
+                || this._writeBlue !== writeBlue
+                || this._writeAlpha !== writeAlpha) {
+                this._gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+
+                this._writeRed = writeRed;
+                this._writeGreen = writeGreen;
+                this._writeBlue = writeBlue;
+                this._writeAlpha = writeAlpha;
+            }
+        }
+
+        private _writeRed:boolean = null;
+        private _writeGreen:boolean = null;
+        private _writeBlue:boolean = null;
+        private _writeAlpha:boolean = null;
+        private _blendSrc:BlendFunction = null;
+        private _blendDst:BlendFunction = null;
+        private _blendEquation: BlendEquation = null;
 
         public clear(options:any) {
          //   /**

@@ -107,7 +107,7 @@ module dy {
         }
 
         public reverse() {
-            this._actions.reverse();
+            this._actions = this._actions.reverse();
 
             super.reverse();
 

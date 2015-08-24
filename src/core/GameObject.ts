@@ -154,7 +154,7 @@ module dy {
         }
 
         public sort(){
-            this._children.sort(this._ascendZ);
+            this._children = this._children.sort(this._ascendZ);
 
             return this;
         }

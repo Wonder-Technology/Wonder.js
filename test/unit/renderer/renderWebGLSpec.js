@@ -1,33 +1,55 @@
 describe("renderWebGL", function() {
     var sandbox = null;
     var renderer = null;
+    var deviceManager = null;
+
+    function getGL(){
+        return deviceManager._gl;
+    }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         renderer = dy.render.WebGLRenderer.create();
+        deviceManager = dy.DeviceManager.getInstance();
+        sandbox.stub(deviceManager, "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
+        dy.DeviceManager._instance = null;
         sandbox.restore();
     });
 
     describe("init", function(){
-        it("clearColor to #000000", function(){
-            var gl = {
-                clearColor:sandbox.stub()
-            };
-            sandbox.stub(dy.Director.getInstance(), "gl", gl);
+        it("set clearColorOptions to color:#000000, alpha:1", function(){
+            renderer.init();
+
+            expect(renderer._clearOptions.color).toEqual(
+                dy.Color.create("#000000")
+            );
+            expect(renderer._clearOptions.alpha).toEqual(1.0);
+        });
+        it("init depthTest, blend, colorWrite, cullMode, depthWrite, scissorTest", function(){
+            var gl = getGL();
 
             renderer.init();
 
-            expect(gl.clearColor).toCalledWith( 0, 0, 0, 1 );
+            expect(deviceManager.depthTest).toBeTruthy();
+            expect(deviceManager.blend).toBeFalsy();
+            expect(gl.blendFunc).not.toCalled();
+            expect(gl.blendEquation).not.toCalled();
+            expect(gl.colorMask).toCalledOnce();
+            expect(deviceManager.cullMode).toEqual(dy.CullMode.BACK);
+            expect(gl.cullFace).toCalledWith(gl.BACK);
+            expect(deviceManager.depthWrite).toBeTruthy();
+            expect(deviceManager.scissorTest).toBeTruthy();
         });
     });
 
     describe("render", function(){
-        var gl, program,
-            quadCmd,shader,material,geometry,mvpMatrix;
+        var gl, program;
 
-        function renderCommand(isNoIndexBuffer){
+        function addCommand(isNoIndexBuffer){
+            var quadCmd,shader,material,geometry;
+
             quadCmd = renderer.createQuadCommand();
             var vsSource = "",
                 fsSource = "";
@@ -46,7 +68,6 @@ describe("renderWebGL", function() {
             geometry.material = material;
             geometry.init();
 
-            mvpMatrix = dy.Matrix.create();
 
             quadCmd.buffers = {
                 vertexBuffer: geometry.vertices,
@@ -61,12 +82,21 @@ describe("renderWebGL", function() {
             quadCmd.shader = geometry.material.shader;
             quadCmd.mvpMatrix = mvpMatrix;
 
+
+            quadCmd.material = material;
+
             renderer.addCommand(quadCmd);
 
-            renderer.render();
+            return {
+                quadCmd:quadCmd,
+                material:material,
+                shader:shader,
+                geometry:geometry
+            }
         }
 
         beforeEach(function(){
+            mvpMatrix = dy.Matrix.create();
             gl = {
                 TRIANGLES:"TRIANGLES",
                 ARRAY_BUFFER:"ARRAY_BUFFER",
@@ -90,44 +120,134 @@ describe("renderWebGL", function() {
             sandbox.stub(dy.Director.getInstance().stage, "program", program);
         });
 
-        it("set quadCommand's shader", function(){
-            program.isChangeShader.returns(false);
+        it("clear by clearOptions", function(){
+            sandbox.stub(deviceManager, "clear");
+            var result = addCommand();
+            sandbox.stub(result.quadCmd, "execute");
 
-            renderCommand();
+            renderer.render();
 
-            expect(program.initWithShader).not.toCalled();
-
-            program.isChangeShader.returns(true);
-
-            renderCommand();
-
-            expect(program.initWithShader).toCalledWith(shader);
-            expect(program.use).toCalledOnce();
+            expect(deviceManager.clear).toCalledWith(renderer._clearOptions);
         });
-        it("send vertex,color,mvpMatrix to program", function(){
-            renderCommand();
+        it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
+            var result1 = addCommand();
+            var result2 = addCommand();
+            var result3 = addCommand();
+            var result4 = addCommand();
+            var quad1 = result1.quadCmd,
+                quad2 = result2.quadCmd,
+                quad3 = result3.quadCmd,
+                quad4 = result4.quadCmd;
+            var material1 = result1.material,
+                material2 = result2.material,
+                material3 = result3.material,
+                material4 = result4.material;
 
-            expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
-            expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
-            expect(program.setUniformData).toCalledWith("u_mvpMatrix", dy.render.UniformDataType.FLOAT_MAT4, mvpMatrix);
-        });
-        describe("draw", function(){
-            it("if geometry has no index buffer, then drawArray", function(){
-                renderCommand(true);
+            sandbox.stub(quad1, "execute");
+            sandbox.stub(quad2, "execute");
+            sandbox.stub(quad3, "execute");
+            sandbox.stub(quad4, "execute");
 
-                expect(gl.drawArrays).toCalledWith(gl.TRIANGLES, 0, quadCmd.buffers.getChild("vertexBuffer").num);
+            material1.blend = true;
+            material2.blend = true;
+            material3.blend = false;
+            material4.blend = false;
+
+            sandbox.stub(dy.Director, "getInstance").returns({
+                stage:{
+                    camera:{
+                        transform:{
+                            position:{
+                                z: 10
+                            }
+                        }
+                    }
+                }
             });
-            it("else, drawElements", function(){
-                renderCommand();
+            quad1.z = 8;
+            quad2.z = 7;
+            quad3.z = 2;
+            quad4.z = -1;
 
-                var indexBuffer = quadCmd.buffers.getChild("indexBuffer");
+            renderer.render();
 
-                expect(gl.bindBuffer.args.slice(-2)).toEqual([[gl.ARRAY_BUFFER, quadCmd.buffers.getChild("vertexBuffer").buffer], [gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
-                expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
+            expect(quad3.execute).toCalledBefore(quad4.execute);
+            expect(quad4.execute).toCalledBefore(quad2.execute);
+            expect(quad2.execute).toCalledBefore(quad1.execute);
+        });
+
+        describe("execute quadCommand test", function(){
+            it("set quadCommand's shader", function(){
+                program.isChangeShader.returns(false);
+                addCommand();
+
+                renderer.render();
+
+                expect(program.initWithShader).not.toCalled();
+
+                program.isChangeShader.returns(true);
+                var result = addCommand();
+
+                renderer.render();
+
+                expect(program.initWithShader).toCalledWith(result.shader);
+                expect(program.use).toCalledOnce();
+            });
+            it("send vertex,color,mvpMatrix to program", function(){
+                var result = addCommand();
+                var geometry = result.geometry;
+
+                renderer.render();
+
+                expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
+                expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
+                expect(program.setUniformData).toCalledWith("u_mvpMatrix", dy.render.UniformDataType.FLOAT_MAT4, mvpMatrix);
+            });
+
+            describe("draw", function(){
+                it("set effects", function(){
+                    sandbox.stub(deviceManager, "setColorWrite");
+                    sandbox.stub(deviceManager, "setBlendFunction");
+                    sandbox.stub(deviceManager, "setBlendEquation");
+                    var result = addCommand();
+                    var material = result.material;
+
+                    renderer.render();
+
+                    expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
+                    expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
+                    expect(deviceManager.cullMode).toEqual(material.cullMode);
+                    expect(deviceManager.blend).toEqual(material.blend);
+                    expect(deviceManager.setBlendFunction).toCalledWith(material.blendSrc, material.blendDst);
+                    expect(deviceManager.setBlendEquation).toCalledWith(material.blendEquation);
+                });
+                it("if geometry has no index buffer, then drawArray", function(){
+                    var result = addCommand(true);
+                    var quadCmd = result.quadCmd;
+
+                    renderer.render();
+
+                    expect(gl.drawArrays).toCalledWith(gl.TRIANGLES, 0, quadCmd.buffers.getChild("vertexBuffer").num);
+                });
+                it("else, drawElements", function(){
+                    var result = addCommand();
+                    var quadCmd = result.quadCmd;
+
+                    renderer.render();
+
+                    var indexBuffer = quadCmd.buffers.getChild("indexBuffer");
+
+                    expect(gl.bindBuffer.args.slice(-2)).toEqual([[gl.ARRAY_BUFFER, quadCmd.buffers.getChild("vertexBuffer").buffer], [gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
+                    expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
+                });
             });
         });
+
         it("clear command", function(){
-            renderCommand();
+            var result = addCommand();
+            sandbox.stub(result.quadCmd, "execute");
+
+            renderer.render();
 
             expect(renderer._commandQueue.getCount()).toEqual(0);
         });

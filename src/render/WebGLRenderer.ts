@@ -51,6 +51,8 @@ module dy.render{
             deviceManager.cullMode = CullMode.BACK;
             deviceManager.depthWrite = true;
             deviceManager.scissorTest = true;
+
+            this.setClearColor(Color.create("#000000"), 1.0);
         }
 
         public setClearColor(color:Color = Color.create("#000000"), alpha:number = 1.0){
