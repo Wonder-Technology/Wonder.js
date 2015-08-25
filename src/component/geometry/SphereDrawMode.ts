@@ -1,6 +1,6 @@
 module dy{
     export enum SphereDrawMode{
-        LATITUDELONGTITUDE,
-        DECOMPOSITION
+        LATITUDELONGTITUDE
+        //DECOMPOSITION
     }
 }
