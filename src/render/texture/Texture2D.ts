@@ -39,7 +39,7 @@ module dy.render{
             var gl = Director.getInstance().gl,
                 program = Director.getInstance().stage.program;
 
-            gl.uniform1i(program.getUniformLocation("u_sampler"), index);
+            gl.uniform1i(program.getUniformLocation("u_sampler" + index), index);
         }
 
         public bindToUnit (unit:number) {
