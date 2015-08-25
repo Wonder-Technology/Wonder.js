@@ -1,13 +1,10 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy.render{
     export class TextureManager{
-        private static _instance:TextureManager = null;
+        public static create() {
+        	var obj = new this();
 
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
+        	return obj;
         }
 
         private _textures:dyCb.Collection<Texture2D> = dyCb.Collection.create<Texture2D>();

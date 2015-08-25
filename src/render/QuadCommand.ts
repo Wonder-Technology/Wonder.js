@@ -65,9 +65,6 @@ module dy.render {
 
         public init() {
             //this._initBuffer();
-            if(this.material.texture){
-                TextureManager.getInstance().addChild(this.material.texture);
-            }
         }
 
         //private _initBuffer(){
@@ -93,7 +90,7 @@ module dy.render {
 
             this._sendBufferData();
 
-            TextureManager.getInstance().sendData();
+            this.material.textureManager.sendData();
 
             program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
         }

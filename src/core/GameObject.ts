@@ -113,7 +113,7 @@ module dy {
             }
 
             child.parent = this;
-            child.transform.parent = this.transform.parent;
+            child.transform.parent = this.transform;
 
             //child.dispatchEvent(new CoreEvent('beforeadd', false, {
             //    parent: this
