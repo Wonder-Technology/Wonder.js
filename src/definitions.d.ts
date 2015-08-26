@@ -68,7 +68,9 @@
 /// <reference path="render/UniformDataType"/>
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
+/// <reference path="render/texture/Texture"/>
 /// <reference path="render/texture/Texture2D"/>
+/// <reference path="render/texture/CompressedTexture"/>
 /// <reference path="render/texture/TextureManager"/>
 
 /// <reference path="material/Material"/>
@@ -76,7 +78,16 @@
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
-/// <reference path="asset/ImgLoader"/>
+/// <reference path="asset/TextureLoader"/>
+/// <reference path="asset/utils/ImgLoader"/>
+/// <reference path="asset/utils/AjaxLoader"/>
+/// <reference path="asset/texture/CompressedTextureLoader"/>
+/// <reference path="asset/texture/DDSParser"/>
+/// <reference path="asset/texture/IMipmap"/>
+/// <reference path="asset/texture/TextureFilterMode"/>
+/// <reference path="asset/texture/TextureWrapMode"/>
+/// <reference path="asset/texture/TextureFormat"/>
+/// <reference path="asset/texture/TextureType"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
@@ -103,4 +114,5 @@
 /// <reference path="event/EventManager"/>
 
 /// <reference path="device/DeviceManager"/>
+/// <reference path="device/GPUDetector"/>
 

@@ -66,7 +66,7 @@ module dy{
         }
 
         private _getLoader(url){
-            return LoaderFactory.create(dyCb.PathUtils.extname(url));
+            return LoaderFactory.create(dyCb.PathUtils.extname(url).toLowerCase());
         }
     }
 }

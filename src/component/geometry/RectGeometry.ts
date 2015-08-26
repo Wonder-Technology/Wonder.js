@@ -45,6 +45,16 @@ module dy{
                 0, 1, 2,   0, 2, 3
             ]), render.BufferType.UNSIGNED_SHORT)
         }
+
+        protected computeTexCoordsBuffer(){
+            return render.ArrayBuffer.create(new Float32Array([
+                    1.0, 1.0,
+                    0.0, 1.0,
+                    0.0, 0.0,
+                    1.0, 0.0
+                ]),
+                2, render.BufferType.FLOAT);
+        }
     }
 }
 

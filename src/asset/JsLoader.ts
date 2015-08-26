@@ -10,10 +10,10 @@ module dy{
             return this._instance;
         }
 
-        protected loadAsset(url:string) {
+        protected loadAsset(url:string):dyRt.Stream  {
             var self = this;
 
-            return new RSVP.Promise((resolve, reject) => {
+            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();
 
                 script.addEventListener("error", function (e) {
@@ -39,7 +39,7 @@ module dy{
                 script.src = url;
 
                 this._appendScript(script);
-            });
+            }));
         }
 
         private _createScript() {

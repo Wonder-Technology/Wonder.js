@@ -1,17 +1,8 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class ImgLoader extends Loader{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-            }
-            return this._instance;
-        }
-
-        protected loadAsset(url:string) {
-            return new RSVP.Promise((resolve, reject) => {
+    export class ImgLoader{
+        public static load(url:string) {
+            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var img = null;
 
                 img = new Image();
@@ -37,7 +28,7 @@ module dy{
                 };
 
                 img.src = url;
-            });
+            }));
         }
     }
 }

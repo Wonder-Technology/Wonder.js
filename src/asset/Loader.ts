@@ -11,7 +11,7 @@ module dy{
                 stream = dyRt.empty();
             }
             else{
-                stream = dyRt.fromPromise(this.loadAsset(url))
+                stream = this.loadAsset(url)
                     .do((data) => {
                         self._container.addChild(id, data);
                     }, (err) => {
@@ -30,7 +30,7 @@ module dy{
             return this._container.hasChild(id);
         }
 
-        protected loadAsset(url:string){
+        protected loadAsset(url:string):dyRt.Stream{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 

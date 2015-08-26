@@ -58,13 +58,14 @@ module dy.render {
         public material:Material = null;
 
         public execute() {
+            this._update();
             this._sendData();
-
             this._draw();
         }
 
         public init() {
             //this._initBuffer();
+            //this.material.textureManager.init();
         }
 
         //private _initBuffer(){
@@ -84,6 +85,10 @@ module dy.render {
         //        this._bufferData.colors? render.ArrayBuffer.create(this._bufferData.colors, 3, BufferType.FLOAT) : null
         //    );
         //}
+
+        private _update(){
+            this.material.textureManager.update();
+        }
 
         private _sendData() {
             var program = Director.getInstance().stage.program;
