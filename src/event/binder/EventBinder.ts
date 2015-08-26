@@ -16,10 +16,10 @@ module dy {
             //EventRegister.getInstance() = eventRegister;
         }
 
-        public on(eventName:EventName, handler:Function, priority:number):void;
+        public on(eventName:EventName|string, handler:Function, priority:number):void;
         public on(listener:{}|EventListener):void;
         public on(target:GameObject, listener:{}|EventListener):void;
-        public on(target:GameObject, eventName:EventName, handler:Function, priority:number):void;
+        public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
 
         public on(args) {
             if(arguments.length === 1){

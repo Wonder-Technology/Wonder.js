@@ -40,12 +40,12 @@ module dy {
         private static _eventBinder:EventBinder = EventBinder.create();
         private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
-        public static on(eventName:EventName, handler:Function):void;
-        public static on(eventName:EventName, handler:Function, priority:number):void;
+        public static on(eventName:EventName|string, handler:Function):void;
+        public static on(eventName:EventName|string, handler:Function, priority:number):void;
         public static on(listener:{}|EventListener):void;
         public static on(target:GameObject, listener:{}|EventListener):void;
-        public static on(target:GameObject, eventName:EventName, handler:Function):void;
-        public static on(target:GameObject, eventName:EventName, handler:Function, priority:number):void;
+        public static on(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public static on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
 
         public static on(args) {
             if(arguments.length === 1){
