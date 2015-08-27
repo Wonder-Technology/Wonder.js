@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>manual mipmap(use w/s to see the sphere color)</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+<input id="inp"/>
+
+<script>
+    window.onload = function () {
+        dy.LoaderManager.getInstance().load([
+            {url: "../vertex.glsl", id: "vs"},
+            {url: "../fragment.glsl", id: "fs"},
+            {url: "../../../res/1.jpg", id:"texture"}
+//            {url: "../../../res/compressed/disturb_dxt1_mip.dds", id:"compressedTexture"}
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initContext();
+            _initScene();
+
+        }
+
+        function _initContext() {
+            dy.Director.getInstance().createGL("canvas");
+        }
+
+        function _initScene() {
+            var shader = dy.render.Shader.create(
+                    dy.GLSLLoader.getInstance().get("vs"),
+                    dy.GLSLLoader.getInstance().get("fs")
+            );
+
+
+            var material1 = dy.Material.create();
+            material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
+            material1.shader = shader;
+
+
+            /*! mipmap
+
+            auto adapt the distance from the geometry to camera, use the most appropriate interpolation designed by filter
+             */
+
+            var canvas = mipmap( 128, '#f00' );
+            var textureCanvas1 = dy.render.Texture2D.create(canvas);
+            textureCanvas1.wrapS = dy.TextureWrapMode.REPEAT;
+            textureCanvas1.wrapT = dy.TextureWrapMode.REPEAT;
+            textureCanvas1.repeatRegion = dy.Vector4.create(0, 0, 10, 10);
+            textureCanvas1.mipmaps.addChild(canvas);
+            textureCanvas1.mipmaps.addChild(mipmap( 64, '#0f0' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 32, '#00f' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 16, '#400' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 8,  '#040' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 4,  '#004' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 2,  '#044' ));
+            textureCanvas1.mipmaps.addChild(mipmap( 1,  '#404' ));
+            textureCanvas1.needsUpdate = true;
+
+
+            material1.textureManager.addChild(textureCanvas1);
+
+
+
+
+
+            var geometry1 = dy.SphereGeometry.create();
+            geometry1.material = material1;
+            geometry1.radius = 2;
+            geometry1.segments = 30;
+
+
+            var mesh1 = dy.GameObject.create();
+            mesh1.addComponent(geometry1);
+
+            var meshRenderer1 = dy.MeshRenderer.create();
+
+            mesh1.addComponent(meshRenderer1);
+
+
+
+
+            var material2 = dy.Material.create();
+            material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
+            material2.shader = shader;
+            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
+            material2.cullMode = dy.CullMode.NONE;
+
+
+
+            var geometry2 = dy.RectGeometry.create();
+            geometry2.material = material2;
+            geometry2.width = 5;
+            geometry2.height = 5;
+
+
+            var mesh2 = dy.GameObject.create();
+            mesh2.addComponent(geometry2);
+
+            var meshRenderer2 = dy.MeshRenderer.create();
+
+            mesh2.addComponent(meshRenderer2);
+
+
+            mesh2.transform.translateLocal(dy.Vector3.create(5, 0, 0));
+
+
+
+
+
+
+            var director = dy.Director.getInstance();
+
+            director.stage.addChild(mesh1);
+            director.stage.addChild(mesh2);
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("./stage.js"));
+
+
+
+            director.start();
+        }
+
+        function mipmap( size, color ) {
+            var imageCanvas = document.createElement( "canvas" ),
+                    context = imageCanvas.getContext( "2d" );
+
+            imageCanvas.width = imageCanvas.height = size;
+
+            context.fillStyle = "#444";
+            context.fillRect( 0, 0, size, size );
+
+            context.fillStyle = color;
+            context.fillRect( 0, 0, size / 2, size / 2 );
+            context.fillRect( size / 2, size / 2, size / 2, size / 2 );
+            return imageCanvas;
+
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.Camera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+//            camera.transform.translate(dy.Vector3.create(0, 0, 0));
+//            camera.transform.translate(dy.Vector3.create(0, 0, -5));
+//            camera.transform.scale(dy.Vector3.create(0.5, 1, 1));
+//            camera.transform.rotateLocal(dy.Vector3.create(30, 0, 0))
+//            camera.transform.lookAt(dy.Vector3.create(0, 0.5, -1));
+//            camera.transform.rotateLocal(dy.Vector3.create(35, 30, 0))
+//            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+
+            var script = dy.Script.create();
+
+            script.url = "./camera.js";
+
+            camera.addComponent(script);
+
+            return camera
+        }
+
+    };
+</script>
+</body>
+</html>
