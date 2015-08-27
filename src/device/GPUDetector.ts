@@ -13,12 +13,14 @@ module dy{
             return Director.getInstance().gl;
         }
 
+        public maxTextureUnit:number = null;
         public maxTextureSize:number = null;
         public extensionCompressedTextureS3TC:any = null;
 
         public detect(){
             var gl = this.gl;
 
+            this.maxTextureUnit = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
             this.maxTextureSize = gl.getParameter( gl.MAX_TEXTURE_SIZE );
 
             this._getExtension();

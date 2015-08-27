@@ -1,6 +1,9 @@
 /// <reference path="../definitions.d.ts"/>
+
+/*! referenced from:
+ https://github.com/playcanvas/engine
+ */
 module dy{
-    //refer to http://docs.unity3d.com/ScriptReference/Transform.html, playCanvas->src/scene/scene_graphnode.js
     //todo addChildAndSaveTransform?(playCanvas->scene_graphnode.js)
     //todo inherit from Component?
     export class Transform extends Entity{
