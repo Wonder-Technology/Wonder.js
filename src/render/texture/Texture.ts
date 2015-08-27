@@ -105,7 +105,12 @@ module dy.render{
         }
 
         public bindToUnit (unit:number) {
-            var gl = Director.getInstance().gl;
+            var gl = Director.getInstance().gl,
+                maxUnit = GPUDetector.getInstance().maxTextureUnit;
+
+            if(unit >= maxUnit){
+                dyCb.Log.warn("trying to use %d texture units, but GPU only supports %d units", unit, maxUnit);
+            }
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl.TEXTURE_2D, this._texture);

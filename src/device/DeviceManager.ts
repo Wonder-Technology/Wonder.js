@@ -61,9 +61,8 @@ module dy {
             return this._instance;
         }
 
-        private _gl:any = null;
-        set gl(gl:any){
-            this._gl = gl;
+        get gl(){
+            return Director.getInstance().gl;
         }
 
         /*!
@@ -85,7 +84,7 @@ module dy {
             return this._scissorTest;
         }
         set scissorTest(scissorTest:boolean){
-            var gl = this._gl;
+            var gl = this.gl;
 
             if (scissorTest) {
                 gl.enable(gl.SCISSOR_TEST);
@@ -107,7 +106,7 @@ module dy {
          * @param {Number} h The height of the scissor rectangle in pixels.
          */
         public setScissor(x:number, y:number, width:number, height:number) {
-            this._gl.scissor(x, y, width, height);
+            this.gl.scissor(x, y, width, height);
         }
 
         /*! Difference between viewports and scissor rectangles
@@ -129,7 +128,7 @@ module dy {
          * @param {Number} h The height of the viewport in pixels.
          */
         public setViewport(x:number, y:number, width:number, height:number) {
-            this._gl.viewport(x, y, width, height);
+            this.gl.viewport(x, y, width, height);
         }
 
 
@@ -147,7 +146,7 @@ module dy {
         }
 
         set depthTest(depthTest:boolean) {
-            var gl = this._gl;
+            var gl = this.gl;
 
             if (this._depthTest !== depthTest) {
                 if (depthTest) {
@@ -167,7 +166,7 @@ module dy {
         }
 
         set cullMode(cullMode:CullMode) {
-            var gl = this._gl;
+            var gl = this.gl;
 
             if (this._cullMode !== cullMode) {
                 switch (cullMode) {
@@ -209,7 +208,7 @@ module dy {
             return this._polygonOffsetMode;
         }
         set polygonOffsetMode(polygonOffsetMode:PolygonOffsetMode){
-            var gl = this._gl;
+            var gl = this.gl;
 
             if (this._polygonOffsetMode !== polygonOffsetMode) {
                 switch (polygonOffsetMode){
@@ -245,7 +244,7 @@ module dy {
         }
         set depthWrite(depthWrite:boolean){
             if (this._depthWrite !== depthWrite) {
-                this._gl.depthMask(depthWrite);
+                this.gl.depthMask(depthWrite);
 
                 this._depthWrite = depthWrite;
             }
@@ -267,7 +266,7 @@ module dy {
             return this._blend;
         }
         set blend(blend:boolean){
-            var gl = this._gl;
+            var gl = this.gl;
 
             if (this._blend !== blend) {
                 if (blend) {
@@ -290,7 +289,7 @@ module dy {
          */
         public setBlendFunction(blendSrc:BlendFunction, blendDst:BlendFunction) {
             if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
-                this._blend && this._gl.blendFunc(this._gl[blendSrc], this._gl[blendDst]);
+                this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
                 this._blendSrc = blendSrc;
                 this._blendDst = blendDst;
             }
@@ -313,7 +312,7 @@ module dy {
          */
         public setBlendEquation(blendEquation:BlendEquation) {
             if (this._blendEquation !== blendEquation) {
-                this._blend && this._gl.blendEquation(this._gl[blendEquation]);
+                this._blend && this.gl.blendEquation(this.gl[blendEquation]);
                 this._blendEquation = blendEquation;
             }
         }
@@ -337,7 +336,7 @@ module dy {
                 || this._writeGreen !== writeGreen
                 || this._writeBlue !== writeBlue
                 || this._writeAlpha !== writeAlpha) {
-                this._gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+                this.gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
 
                 this._writeRed = writeRed;
                 this._writeGreen = writeGreen;
@@ -385,7 +384,7 @@ module dy {
             //
             //var flags = (options.flags === undefined) ? defaultOptions.flags : options.flags;
             //if (flags !== 0) {
-            //    var gl = this._gl;
+            //    var gl = this.gl;
             //
             //    // Set the clear color
             //    if (flags & pc.CLEARFLAG_COLOR) {
@@ -403,7 +402,7 @@ module dy {
             //    }
             //
             //    // Clear the frame buffer
-            //    gl.clear(this._glClearFlag[flags]);
+            //    gl.clear(this.glClearFlag[flags]);
             //
             //    if (flags & pc.CLEARFLAG_DEPTH) {
             //        if (!this.depthWrite) {
@@ -413,7 +412,7 @@ module dy {
             //}
 
 
-            var gl = this._gl,
+            var gl = this.gl,
                 color = options.color;
 
             gl.clearColor(color.r, color.g, color.b, color.a);

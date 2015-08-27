@@ -23,7 +23,6 @@ module dy.render{
                 pos= gl.getUniformLocation(this._program, name);
 
             if(pos === null){
-                dyCb.Log.log(dyCb.Log.info.FUNC_NOT_EXIST(name));
                 return;
             }
 
@@ -48,7 +47,6 @@ module dy.render{
                 pos = gl.getAttribLocation(this._program, name);
 
             if(pos === -1){
-                dyCb.Log.log(dyCb.Log.info.FUNC_NOT_EXIST(name));
                 return;
             }
 

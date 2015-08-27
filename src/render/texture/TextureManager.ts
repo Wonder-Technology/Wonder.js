@@ -16,15 +16,9 @@ module dy.render{
         //}
 
         public addChild(texture:Texture){
-            var copyTexture = texture.copy(),
-                count = this._textures.getCount(),
-                maxUnit = GPUDetector.getInstance().maxTextureUnit;
+            var copyTexture = texture.copy();
 
             copyTexture.init();
-
-            if(count >= maxUnit){
-                dyCb.Log.warn("trying to use %d texture units, but GPU only supports %d units", count, maxUnit);
-            }
 
             this._textures.addChild(copyTexture);
         }
