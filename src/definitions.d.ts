@@ -13,9 +13,6 @@
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
 
-/// <reference path="structure/Point"/>
-/// <reference path="structure/View"/>
-
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
@@ -88,6 +85,7 @@
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
+/// <reference path="asset/texture/TexCoordMapping"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
@@ -116,3 +114,6 @@
 /// <reference path="device/DeviceManager"/>
 /// <reference path="device/GPUDetector"/>
 
+/// <reference path="structure/Point"/>
+/// <reference path="structure/RectRegion"/>
+/// <reference path="structure/View"/>

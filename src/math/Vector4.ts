@@ -1,9 +1,9 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class Vector4{
-        public static create(x, y, z, w):Vector4 ;
-        public static create():Vector4 ;
-        public static create():Vector4 {
+        public static create(x, y, z, w);
+        public static create();
+        public static create(){
             var m = null;
 
             if(arguments.length === 0){
@@ -81,8 +81,16 @@ module dy{
             return this;
         }
 
-        public copy(){
-            var result = Vector4.create(),
+        public copy():Vector4{
+            return this.copyHelper(Vector4.create());
+        }
+
+        public toVec3(): Vector3{
+            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+        }
+
+        protected copyHelper(vector4:Vector4):any{
+            var result = vector4,
                 i = 0,
                 len = this._values.length;
 
@@ -91,10 +99,6 @@ module dy{
             }
 
             return result;
-        }
-
-        public toVec3(): Vector3{
-            return Vector3.create(this._values[0], this._values[1], this._values[2]);
         }
     }
 }

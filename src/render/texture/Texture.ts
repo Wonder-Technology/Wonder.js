@@ -26,7 +26,22 @@ module dy.render{
             this._height = height;
         }
 
-        public repeatRegion:Vector4 = Vector4.create(0, 0, 1, 1);
+        public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
+
+        private _sourceRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
+        get sourceRegion(){
+            return this._sourceRegion;
+        }
+        set sourceRegion(sourceRegion:RectRegion){
+            if(this.sourceRegionMapping === TexCoordMapping.CANVAS){
+                this._sourceRegion = this._convertCanvasMappingToUVMapping(sourceRegion)
+            }
+            else if(this.sourceRegionMapping === TexCoordMapping.UV){
+                this._sourceRegion = sourceRegion;
+            }
+        }
+
+        public sourceRegionMapping:TexCoordMapping = TexCoordMapping.CANVAS;
 
         public generateMipmaps:boolean = true;
         public flipY:boolean = true;
@@ -85,6 +100,7 @@ module dy.render{
             var program = Director.getInstance().stage.program;
 
             program.setUniformData("u_sampler" + index, UniformDataType.NUMBER_1, index);
+            program.setUniformData("u_sourceRegion", UniformDataType.FLOAT_4, this.sourceRegion);
             program.setUniformData("u_repeatRegion", UniformDataType.FLOAT_4, this.repeatRegion);
         }
 
@@ -204,6 +220,17 @@ module dy.render{
             dyCb.Log.log(source + " is too big (" + source.width + "x" + source.height + "). Resized to " + canvas.width + "x" + canvas.height + ".");
 
             return canvas;
+        }
+
+        private _convertCanvasMappingToUVMapping(sourceRegion:RectRegion){
+            var region = RectRegion.create();
+
+            region.x = sourceRegion.x;
+            region.y = 1 - sourceRegion.y - sourceRegion.height;
+            region.width = sourceRegion.width;
+            region.height = sourceRegion.height;
+
+            return region;
         }
     }
 }

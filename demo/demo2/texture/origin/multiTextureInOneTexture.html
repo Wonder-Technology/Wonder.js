@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>repeat</title>
+    <title>multi texture in one texture</title>
 
     <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
     <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
@@ -17,7 +17,7 @@
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"},
-            {url: "../../../res/1.jpg", id:"texture"}
+            {url: "../../../res/multiTextureInOneTexture/goulong_023.tt.png", id:"multiTexture"}
         ]).subscribe(null, function(e){
                     throw e;
                 },
@@ -45,12 +45,9 @@
             var material1 = dy.Material.create();
             material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material1.shader = shader;
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
+            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
             var map1 = material1.textureManager.getChild(0);
-        map1.wrapS = dy.TextureWrapMode.REPEAT;
-            map1.wrapT = dy.TextureWrapMode.REPEAT;
-            map1.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
-            map1.needUpdate = true;
+            map1.sourceRegion = dy.RectRegion.create(0, 0, 0.5, 0.5);
 
 
 
@@ -73,12 +70,9 @@
             var material2 = dy.Material.create();
             material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
             material2.shader = shader;
-            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
+            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
             var map2 = material2.textureManager.getChild(0);
-            map2.wrapS = dy.TextureWrapMode.MIRRORED_REPEAT;
-            map2.wrapT = dy.TextureWrapMode.CLAMP_TO_EDGE;
-            map2.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
-            map2.needUpdate = true;
+            map2.sourceRegion = dy.RectRegion.create(0.2, 0.5, 0.5, 0.5);
             material2.cullMode = dy.CullMode.NONE;
 
 
@@ -106,7 +100,7 @@
 
             var director = dy.Director.getInstance();
 
-//            director.stage.addChild(mesh1);
+            director.stage.addChild(mesh1);
             director.stage.addChild(mesh2);
 
             director.stage.addChild(_createCamera());
