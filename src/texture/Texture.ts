@@ -57,6 +57,7 @@ module dy{
         public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
         public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
         public mipmaps:dyCb.Collection<IMipmap> = dyCb.Collection.create<IMipmap>();
+        public anisotropy:number = null;
 
         public needUpdate:boolean = true;
 
@@ -126,7 +127,6 @@ module dy{
             texture.source = this.source;
             texture.mipmaps = this.mipmaps.copy();
 
-            //texture.mapping = this.mapping;
 
             texture.wrapS = this.wrapS;
             texture.wrapT = this.wrapT;
@@ -134,12 +134,14 @@ module dy{
             texture.magFilter = this.magFilter;
             texture.minFilter = this.minFilter;
 
-            //texture.anisotropy = this.anisotropy;
+            texture.anisotropy = this.anisotropy;
 
             texture.format = this.format;
             texture.type = this.type;
 
             texture.repeatRegion = this.repeatRegion.copy();
+            texture.sourceRegion = this.sourceRegion.copy();
+            texture.sourceRegionMapping = this.sourceRegionMapping;
 
             texture.generateMipmaps = this.generateMipmaps;
             texture.premultiplyAlpha = this.premultiplyAlpha;
@@ -176,18 +178,40 @@ module dy{
                 gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, this._filterFallback(this.magFilter));
                 gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, this._filterFallback(this.minFilter));
             }
+
+            this._setAnisotropy(textureType);
         }
 
         // Fallback filters for non-power-of-2 textures
         private _filterFallback(filter:TextureFilterMode) {
             var gl = Director.getInstance().gl;
 
-        if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
-            return gl.NEAREST;
+            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
+                return gl.NEAREST;
+            }
+
+            return gl.LINEAR;
         }
 
-        return gl.LINEAR;
-    }
+        private _setAnisotropy(textureType){
+            var gpu = GPUDetector.getInstance(),
+                gl = Director.getInstance().gl;
+
+            if(!gpu.extensionTextureFilterAnisotropic){
+                return;
+            }
+            //todo halfFloat/float for texture?(threejs->Ocean.js use it!)
+            //if (this.type !== THREE.FloatType && texture.type !== THREE.HalfFloatType ) {
+
+
+            if (this.anisotropy > 1) {
+                gl.texParameterf(textureType, gpu.extensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, gpu.maxAnisotropy));
+                //gl.texParameterf(textureType, 34046, Math.min(this.anisotropy, gpu.maxAnisotropy));
+                //texture.__currentAnisotropy = texture.anisotropy;
+
+                //}
+            }
+        }
 
         private _clampToMaxSize ( source:any) {
             var maxSize = null,

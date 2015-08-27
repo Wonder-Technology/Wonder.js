@@ -16,6 +16,7 @@
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
+/// <reference path="component/geometry/PlaneGeometry"/>
 /// <reference path="component/geometry/SphereDrawMode"/>
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>

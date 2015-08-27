@@ -1,5 +1,7 @@
-module dy{
-    export class GPUDetector{
+/// <reference path="../definitions.d.ts"/>
+module dy {
+    //todo check extension/capability support
+    export class GPUDetector {
         private static _instance:GPUDetector = null;
 
         public static getInstance() {
@@ -9,33 +11,53 @@ module dy{
             return this._instance;
         }
 
-        get gl(){
+        get gl() {
             return Director.getInstance().gl;
         }
 
-        public maxTextureUnit:number = null;
-        public maxTextureSize:number = null;
-        public extensionCompressedTextureS3TC:any = null;
+        private _maxTextureUnit:number = null;
+        get maxTextureUnit(){
+            this._ensureDetected();
 
-        public detect(){
-            var gl = this.gl;
-
-            this.maxTextureUnit = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
-            this.maxTextureSize = gl.getParameter( gl.MAX_TEXTURE_SIZE );
-
-            this._getExtension();
+            return this._maxTextureUnit;
         }
 
-        private _getExtension(){
-            var gl = this.gl;
+        private _maxTextureSize:number = null;
+        get maxTextureSize(){
+            this._ensureDetected();
 
+            return this._maxTextureSize;
+        }
+
+        private _maxAnisotropy:number = null;
+        get maxAnisotropy(){
+            this._ensureDetected();
+
+            return this._maxAnisotropy;
+        }
+
+        public extensionCompressedTextureS3TC:any = null;
+        public extensionTextureFilterAnisotropic:any = null;
+
+        private _isDetected:boolean = false;
+
+        public detect() {
+            this._isDetected = true;
+
+            this._detectExtension();
+            this._detectCapabilty();
+        }
+
+        private _detectExtension() {
             //this.extensionTextureFloat = gl.getExtension( "OES_texture_float" );
             //this.extensionTextureFloatLinear = gl.getExtension( "OES_texture_float_linear" );
             //this.extensionStandardDerivatives = gl.getExtension( "OES_standard_derivatives" );
             //
             //this.extensionTextureFilterAnisotropic = gl.getExtension( "EXT_texture_filter_anisotropic" ) || gl.getExtension( "MOZ_EXT_texture_filter_anisotropic" ) || gl.getExtension( "WEBKIT_EXT_texture_filter_anisotropic" );
 
-            this.extensionCompressedTextureS3TC = gl.getExtension( "WEBGL_compressed_texture_s3tc" ) || gl.getExtension( "MOZ_WEBGL_compressed_texture_s3tc" ) || gl.getExtension( "WEBKIT_WEBGL_compressed_texture_s3tc" );
+            this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
+
+            this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
 
             //this.extensionElementIndexUint = gl.getExtension( "OES_element_index_uint" );
 
@@ -58,9 +80,9 @@ module dy{
             //
             //}
 
-            if ( this.extensionCompressedTextureS3TC === null ) {
-                dyCb.Log.log( "S3TC compressed textures not supported." );
-            }
+            //if ( this.extensionCompressedTextureS3TC === null ) {
+            //    dyCb.Log.log( "S3TC compressed textures not supported." );
+            //}
 
             //if ( this.extensionElementIndexUint === null ) {
             //
@@ -86,6 +108,64 @@ module dy{
             //    this.extensionFragDepth = gl.getExtension( "EXT_frag_depth" );
             //
             //}
+        }
+
+        private _detectCapabilty() {
+            var gl = this.gl;
+
+            this._maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+            this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            this._maxAnisotropy = this._getMaxAnisotropy();
+        }
+
+        private _getExtension(name:string) {
+            //
+            //
+            //if ( extensions[ name ] !== undefined ) {
+            //
+            //    return extensions[ name ];
+            //
+            //}
+
+            var extension,
+                gl = this.gl;
+
+            switch (name) {
+                case "EXT_texture_filter_anisotropic":
+                    extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+                    break;
+                case "WEBGL_compressed_texture_s3tc":
+                    extension = gl.getExtension("WEBGL_compressed_texture_s3tc") || gl.getExtension("MOZ_WEBGL_compressed_texture_s3tc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
+                    break;
+                case "WEBGL_compressed_texture_pvrtc":
+                    extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
+                    break;
+                default:
+                    extension = gl.getExtension(name);
+            }
+
+            //if ( extension === null ) {
+            //
+            //    THREE.warn( "THREE.WebGLRenderer: " + name + " extension not supported." );
+            //
+            //}
+
+            //extensions[ name ] = extension;
+
+            return extension;
+        }
+
+        private _getMaxAnisotropy() {
+            var extension = this.extensionTextureFilterAnisotropic,
+                gl = this.gl;
+
+            return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
+        }
+
+        private _ensureDetected(){
+            if(!this._isDetected){
+                this.detect();
+            }
         }
     }
 }

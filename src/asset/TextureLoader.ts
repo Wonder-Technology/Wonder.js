@@ -17,6 +17,7 @@ module dy{
             switch (extname){
                 case ".jpg":
                 case ".jpeg":
+                case ".gif":
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
