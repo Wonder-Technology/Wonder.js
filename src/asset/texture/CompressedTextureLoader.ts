@@ -7,7 +7,7 @@ module dy{
                     var texDatas:DDSData = DDSParser.parse(data, true);
                     //var images = [];
 
-                    var texture = render.CompressedTexture.create();
+                    var texture = CompressedTexture.create();
                     //texture.image = images;
 
 

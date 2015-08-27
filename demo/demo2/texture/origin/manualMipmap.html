@@ -54,7 +54,7 @@
              */
 
             var canvas = mipmap( 128, '#f00' );
-            var textureCanvas1 = dy.render.Texture2D.create(canvas);
+            var textureCanvas1 = dy.Texture2D.create(canvas);
             textureCanvas1.wrapS = dy.TextureWrapMode.REPEAT;
             textureCanvas1.wrapT = dy.TextureWrapMode.REPEAT;
             textureCanvas1.repeatRegion = dy.Vector4.create(0, 0, 10, 10);

@@ -1,5 +1,5 @@
-/// <reference path="../../definitions.d.ts"/>
-module dy.render{
+/// <reference path="../definitions.d.ts"/>
+module dy{
     export class CompressedTexture extends Texture {
         public static create() {
             var obj = new this();

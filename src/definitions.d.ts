@@ -65,10 +65,6 @@
 /// <reference path="render/UniformDataType"/>
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
-/// <reference path="render/texture/Texture"/>
-/// <reference path="render/texture/Texture2D"/>
-/// <reference path="render/texture/CompressedTexture"/>
-/// <reference path="render/texture/TextureManager"/>
 
 /// <reference path="material/Material"/>
 
@@ -117,3 +113,8 @@
 /// <reference path="structure/Point"/>
 /// <reference path="structure/RectRegion"/>
 /// <reference path="structure/View"/>
+
+/// <reference path="texture/Texture"/>
+/// <reference path="texture/Texture2D"/>
+/// <reference path="texture/CompressedTexture"/>
+/// <reference path="texture/TextureManager"/>

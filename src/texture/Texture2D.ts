@@ -1,5 +1,5 @@
-/// <reference path="../../definitions.d.ts"/>
-module dy.render{
+/// <reference path="../definitions.d.ts"/>
+module dy{
     export class Texture2D extends Texture{
         public static create(source:any=Texture.defaultTexture){
             var obj = new this(source);

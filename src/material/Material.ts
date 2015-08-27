@@ -127,6 +127,6 @@ module dy {
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
 
-        public textureManager:render.TextureManager = render.TextureManager.create();
+        public textureManager:TextureManager = TextureManager.create();
     }
 }

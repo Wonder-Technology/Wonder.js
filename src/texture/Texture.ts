@@ -1,5 +1,5 @@
-/// <reference path="../../definitions.d.ts"/>
-module dy.render{
+/// <reference path="../definitions.d.ts"/>
+module dy{
     export class Texture{
         public static defaultTexture = null;
 
@@ -99,9 +99,9 @@ module dy.render{
         public sendData(index){
             var program = Director.getInstance().stage.program;
 
-            program.setUniformData("u_sampler" + index, UniformDataType.NUMBER_1, index);
-            program.setUniformData("u_sourceRegion", UniformDataType.FLOAT_4, this.sourceRegion);
-            program.setUniformData("u_repeatRegion", UniformDataType.FLOAT_4, this.repeatRegion);
+            program.setUniformData("u_sampler" + index, render.UniformDataType.NUMBER_1, index);
+            program.setUniformData("u_sourceRegion", render.UniformDataType.FLOAT_4, this.sourceRegion);
+            program.setUniformData("u_repeatRegion", render.UniformDataType.FLOAT_4, this.repeatRegion);
         }
 
         public bindToUnit (unit:number) {
