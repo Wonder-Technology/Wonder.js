@@ -20,6 +20,18 @@ module dy{
             return m;
         }
 
+        constructor(x, y, z);
+        constructor();
+        constructor(){
+            this._values = new Float32Array(3);
+
+            if(arguments.length > 0){
+                this._values[0] = arguments[0];
+                this._values[1] = arguments[1];
+                this._values[2] =arguments[2];
+            }
+        }
+
         private _values: Float32Array;
         get values():Float32Array { return this._values; }
         set values(values: Float32Array) {
@@ -45,18 +57,6 @@ module dy{
         }
         set z(z:number){
             this._values[2] = z;
-        }
-
-        constructor(x, y, z);
-        constructor();
-        constructor(){
-            this._values = new Float32Array(3);
-
-            if(arguments.length > 0){
-                this._values[0] = arguments[0];
-                this._values[1] = arguments[1];
-                this._values[2] =arguments[2];
-            }
         }
 
         public normalize(): Vector3{

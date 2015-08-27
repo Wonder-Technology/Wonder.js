@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy.render{
-    export class CompressedTexture extends Texture2D {
+    export class CompressedTexture extends Texture {
         public static create() {
             var obj = new this();
 
@@ -18,6 +18,10 @@ module dy.render{
              */
             this.generateMipmaps = false;
             this.flipY = false;
+        }
+
+        public copy(){
+            return this.copyHelper(CompressedTexture.create());
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

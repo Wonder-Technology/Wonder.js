@@ -26,6 +26,8 @@ module dy.render{
             this._height = height;
         }
 
+        public repeatRegion:Vector4 = Vector4.create(0, 0, 1, 1);
+
         public generateMipmaps:boolean = true;
         public flipY:boolean = true;
         public premultiplyAlpha:boolean = false;		//预乘Alpha值,如果设置为true,纹素的rgb值会先乘以alpha值,然后在存储.
@@ -77,15 +79,13 @@ module dy.render{
             }
 
             this.needUpdate = false;
-
-            //todo trigger onUpdateTexture event for custom script
         }
 
         public sendData(index){
-            var gl = Director.getInstance().gl,
-                program = Director.getInstance().stage.program;
+            var program = Director.getInstance().stage.program;
 
-            gl.uniform1i(program.getUniformLocation("u_sampler" + index), index);
+            program.setUniformData("u_sampler" + index, UniformDataType.NUMBER_1, index);
+            program.setUniformData("u_repeatRegion", UniformDataType.FLOAT_4, this.repeatRegion);
         }
 
         public bindToUnit (unit:number) {
@@ -93,6 +93,41 @@ module dy.render{
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl.TEXTURE_2D, this._texture);
+        }
+
+        public copy(){
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        protected copyHelper(texture:Texture){
+            dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
+
+            texture.source = this.source;
+            texture.mipmaps = this.mipmaps.copy();
+
+            //texture.mapping = this.mapping;
+
+            texture.wrapS = this.wrapS;
+            texture.wrapT = this.wrapT;
+
+            texture.magFilter = this.magFilter;
+            texture.minFilter = this.minFilter;
+
+            //texture.anisotropy = this.anisotropy;
+
+            texture.format = this.format;
+            texture.type = this.type;
+
+            texture.repeatRegion = this.repeatRegion.copy();
+
+            texture.generateMipmaps = this.generateMipmaps;
+            texture.premultiplyAlpha = this.premultiplyAlpha;
+            texture.flipY = this.flipY;
+            texture.unpackAlignment = this.unpackAlignment;
+
+            texture.needUpdate = this.needUpdate;
+
+            return texture;
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

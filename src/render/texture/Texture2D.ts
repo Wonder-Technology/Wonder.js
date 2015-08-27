@@ -7,6 +7,10 @@ module dy.render{
             return obj;
         }
 
+        public copy(){
+            return this.copyHelper(Texture2D.create());
+        }
+
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
                 var gl = Director.getInstance().gl;
 

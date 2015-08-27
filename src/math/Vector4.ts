@@ -16,12 +16,6 @@ module dy{
             return m;
         }
 
-        private _values: Float32Array;
-        get values():Float32Array { return this._values; }
-        set values(values: Float32Array) {
-            this._values = values;
-        }
-
         constructor(x, y, z, w);
         constructor();
         constructor(){
@@ -33,6 +27,40 @@ module dy{
                 this._values[2] =arguments[2];
                 this._values[3] =arguments[3];
             }
+        }
+
+        private _values: Float32Array;
+        get values():Float32Array { return this._values; }
+        set values(values: Float32Array) {
+            this._values = values;
+        }
+
+        get x(){
+            return this._values[0];
+        }
+        set x(x:number){
+            this._values[0] = x;
+        }
+
+        get y(){
+            return this._values[1];
+        }
+        set y(y:number){
+            this._values[1] = y;
+        }
+
+        get z(){
+            return this._values[2];
+        }
+        set z(z:number){
+            this._values[2] = z;
+        }
+
+        get w(){
+            return this._values[3];
+        }
+        set w(w:number){
+            this._values[3] = w;
         }
 
         public normalize(): Vector4{
@@ -51,6 +79,18 @@ module dy{
             v[3] = v[3] / d;
 
             return this;
+        }
+
+        public copy(){
+            var result = Vector4.create(),
+                i = 0,
+                len = this._values.length;
+
+            for(i = 0; i < len; i++){
+                result.values[i] = this._values[i];
+            }
+
+            return result;
         }
 
         public toVec3(): Vector3{

@@ -18,15 +18,24 @@ module dy.render{
             return Director.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public setUniformData(name:string, type:UniformDataType, data:Matrix){
+        public setUniformData(name:string, type:UniformDataType, data:any){
             var gl = Director.getInstance().gl,
                 pos= gl.getUniformLocation(this._program, name);
 
-            dyCb.Log.error(!pos, dyCb.Log.info.FUNC_MUST_NOT_BE(name, "null"));
+            if(pos === null){
+                dyCb.Log.log(dyCb.Log.info.FUNC_NOT_EXIST(name));
+                return;
+            }
 
             switch (type){
                 case UniformDataType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
+                    break;
+                case UniformDataType.FLOAT_4:
+                    gl.uniform4f(pos, data.x, data.y, data.z, data.w);
+                    break;
+                case UniformDataType.NUMBER_1:
+                    gl.uniform1i(pos, data);
                     break;
                 default :
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("UniformDataType"));
@@ -39,6 +48,7 @@ module dy.render{
                 pos = gl.getAttribLocation(this._program, name);
 
             if(pos === -1){
+                dyCb.Log.log(dyCb.Log.info.FUNC_NOT_EXIST(name));
                 return;
             }
 

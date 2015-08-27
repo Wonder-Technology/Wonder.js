@@ -7,18 +7,28 @@ module dy.render{
         	return obj;
         }
 
-        private _textures:dyCb.Collection<Texture2D> = dyCb.Collection.create<Texture2D>();
+        private _textures:dyCb.Collection<Texture> = dyCb.Collection.create<Texture>();
 
         //public init(){
-        //    this._textures.forEach((texture:Texture2D, index:number) => {
+        //    this._textures.forEach((texture:Texture, index:number) => {
         //        texture.init();
         //    });
         //}
 
-        public addChild(texture:Texture2D){
-            this._textures.addChild(texture);
+        public addChild(texture:Texture){
+            var copyTexture = texture.copy();
 
-            texture.init();
+            copyTexture.init();
+
+            this._textures.addChild(copyTexture);
+        }
+
+        public getChildren(){
+            return this._textures.getChildren();
+        }
+
+        public getChild(index){
+            return this._textures.getChild(index);
         }
 
         public removeAllChildren(){
@@ -28,21 +38,21 @@ module dy.render{
 
             this._textures.removeAllChildren();
 
-            //gl.bindTexture(gl.TEXTURE_2D, null);
+            //gl.bindTexture(gl.TEXTURE_, null);
         }
 
         public update(){
             this._textures
-                .filter((texture:Texture2D) => {
+                .filter((texture:Texture) => {
                     return texture.needUpdate;
                 })
-                .forEach((texture:Texture2D, index:number) => {
+                .forEach((texture:Texture, index:number) => {
                     texture.update(index);
             });
         }
 
         public sendData(){
-            this._textures.forEach((texture:Texture2D, index:number) => {
+            this._textures.forEach((texture:Texture, index:number) => {
                 texture.bindToUnit(index);
                 texture.sendData(index);
             });
