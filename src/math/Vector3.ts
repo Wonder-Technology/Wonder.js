@@ -100,10 +100,26 @@ module dy{
             return this;
         }
 
+        public sub2(v1:Vector3, v2:Vector3){
+            this._values[0] = v1.values[0] - v2.values[0];
+            this._values[1] = v1.values[1] - v2.values[1];
+            this._values[2] = v1.values[2] - v2.values[2];
+
+            return this;
+        }
+
         public add(v:Vector3){
             this._values[0] = this._values[0] + v.values[0];
             this._values[1] = this._values[1] + v.values[1];
             this._values[2] = this._values[2] + v.values[2];
+
+            return this;
+        }
+
+        public add2(v1:Vector3, v2:Vector3){
+            this._values[0] = v1.values[0] + v2.values[0];
+            this._values[1] = v1.values[1] + v2.values[1];
+            this._values[2] = v1.values[2] + v2.values[2];
 
             return this;
         }
@@ -151,7 +167,7 @@ module dy{
          * // Should print the Z axis (i.e. [0, 0, 1])
          * console.log("The result of the cross product is: " + back.toString());
          */
-        public cross(lhs, rhs) {
+        public cross(lhs:Vector3, rhs:Vector3) {
             var a, b, r, ax, ay, az, bx, by, bz;
 
             a = lhs.values;
@@ -168,6 +184,37 @@ module dy{
             r[0] = ay * bz - by * az;
             r[1] = az * bx - bz * ax;
             r[2] = ax * by - bx * ay;
+
+            return this;
+        }
+
+        /**
+         * @function
+         * @name pc.Vec3#lerp
+         * @description Returns the result of a linear interpolation between two specified 3-dimensional vectors.
+         * @param {pc.Vec3} lhs The 3-dimensional to interpolate from.
+         * @param {pc.Vec3} rhs The 3-dimensional to interpolate to.
+         * @param {Number} alpha The value controlling the point of interpolation. Between 0 and 1, the linear interpolant
+         * will occur on a straight line between lhs and rhs. Outside of this range, the linear interpolant will occur on
+         * a ray extrapolated from this line.
+         * @returns {pc.Vec3} Self for chaining.
+         * @example
+         * var a = new pc.Vec3(0, 0, 0);
+         * var b = new pc.Vec3(10, 10, 10);
+         * var r = new pc.Vec3();
+         *
+         * r.lerp(a, b, 0);   // r is equal to a
+         * r.lerp(a, b, 0.5); // r is 5, 5, 5
+         * r.lerp(a, b, 1);   // r is equal to b
+         */
+        public lerp(lhs:Vector3, rhs:Vector3, alpha:number) {
+            var a = lhs.values,
+                b = rhs.values,
+                r = this._values;
+
+            r[0] = a[0] + alpha * (b[0] - a[0]);
+            r[1] = a[1] + alpha * (b[1] - a[1]);
+            r[2] = a[2] + alpha * (b[2] - a[2]);
 
             return this;
         }

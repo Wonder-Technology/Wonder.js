@@ -7,61 +7,125 @@ module dy{
             return geom;
         }
 
-        private _width:number = null;
-        get width(){
-            return this._width;
-        }
-        set width(width:number){
-            this._width = width;
+        public width:number = null;
+        public height:number = null;
+        public depth:number = null;
+        public widthSegments:number = 1;
+        public heightSegments:number = 1;
+        public depthSegments:number = 1;
+
+        public init() {
+            this._data = this._computeData(this.width, this.height, this.depth, this.widthSegments, this.heightSegments, this.depthSegments);
+
+            super.init();
         }
 
-        private _height:number = null;
-        get height(){
-            return this._height;
-        }
-        set height(height:number){
-            this._height = height;
-        }
+        private _data:{
+            vertices;
+            indices;
+            texCoords;
+        } = null;
 
-        private _depth:number = null;
-        get depth(){
-            return this._depth;
-        }
-        set depth(depth:number){
-            this._depth = depth;
+        private _computeData(width, height, depth, widthSegments, heightSegments, depthSegments){
+            var sides = {
+                FRONT  : 0,
+                BACK   : 1,
+                TOP    : 2,
+                BOTTOM : 3,
+                RIGHT  : 4,
+                LEFT   : 5
+            };
+            var faceAxes = [
+                [ 0, 1, 3 ], // FRONT
+                [ 4, 5, 7 ], // BACK
+                [ 3, 2, 6 ], // TOP
+                [ 1, 0, 4 ], // BOTTOM
+                [ 1, 4, 2 ], // RIGHT
+                [ 5, 0, 6 ]  // LEFT
+            ];
+
+            var faceNormals = [
+                [  0,  0,  1 ], // FRONT
+                [  0,  0, -1 ], // BACK
+                [  0,  1,  0 ], // TOP
+                [  0, -1,  0 ], // BOTTOM
+                [  1,  0,  0 ], // RIGHT
+                [ -1,  0,  0 ]  // LEFT
+            ];
+            var corners = [
+                Vector3.create(-width, -height, depth),
+                Vector3.create( width, -height, depth),
+                Vector3.create( width,  height, depth),
+                Vector3.create(-width,  height, depth),
+                Vector3.create( width, -height, -depth),
+                Vector3.create(-width, -height, -depth),
+                Vector3.create(-width,  height, -depth),
+                Vector3.create( width,  height, -depth)
+            ];
+
+            var positions = [];
+            var normals = [];
+            var uvs = [];
+            var indices = [];
+
+            function generateFace(side, uSegments, vSegments) {
+                var x, y, z, u, v;
+                var i, j;
+                var offset = positions.length / 3;
+
+                for (i = 0; i <= uSegments; i++) {
+                    for (j = 0; j <= vSegments; j++) {
+                        var temp1 = Vector3.create();
+                        var temp2 = Vector3.create();
+                        var temp3 = Vector3.create();
+                        var r = Vector3.create();
+                        temp1.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][1]], i / uSegments);
+                        temp2.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][2]], j / vSegments);
+                        temp3.sub2(temp2, corners[faceAxes[side][0]]);
+                        r.add2(temp1, temp3);
+                        u = i / uSegments;
+                        v = j / vSegments;
+
+                        positions.push(r.x, r.y, r.z);
+                        normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
+                        uvs.push(u, v);
+
+                        if ((i < uSegments) && (j < vSegments)) {
+                            indices.push(offset + j + i * (uSegments + 1),       offset + j + (i + 1) * (uSegments + 1),     offset + j + i * (uSegments + 1) + 1);
+                            indices.push(offset + j + (i + 1) * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1) + 1, offset + j + i * (uSegments + 1) + 1);
+                        }
+                    }
+                }
+            }
+
+            generateFace(sides.FRONT, widthSegments, heightSegments);
+            generateFace(sides.BACK, widthSegments, heightSegments);
+            generateFace(sides.TOP, widthSegments, depthSegments);
+            generateFace(sides.BOTTOM, widthSegments, depthSegments);
+            generateFace(sides.RIGHT, depthSegments, heightSegments);
+            generateFace(sides.LEFT, depthSegments, heightSegments);
+
+            return {
+                vertices: render.ArrayBuffer.create(new Float32Array(positions),
+                    3, render.BufferType.FLOAT),
+                indices: render.ElementBuffer.create(new Uint16Array(indices),
+                    render.BufferType.UNSIGNED_SHORT),
+                //normals: new Float32Array(normals),
+                texCoords: render.ArrayBuffer.create(new Float32Array(uvs),
+                    2, render.BufferType.FLOAT)
+            };
         }
 
         protected computeVerticesBuffer(){
-            var width = this._width,
-                height = this._height,
-                depth = this._depth,
-                left = -width / 2,
-                right = width / 2,
-                up = height / 2,
-                down = -height / 2,
-                front = depth / 2,
-                back = -depth /2;
-
-            return render.ArrayBuffer.create(new Float32Array([
-                    right, up, front, left, up, front,  left, down, front,  right, down, front,  // v0-v1-v2-v3 front
-                    right, up, front,  right, down, front,  right, down, back,  right, up, back,  // v0-v3-v4-v5 right
-                    right, up, front,  right, up, back,  left, up, back,  left, up, front,  // v0-v5-v6-v1 up
-                    left, up, front,  left, up, back,  left, down, back,  left, down, front,  // v1-v6-v7-v2 left
-                    left, down, back,  right, down, back,  right, down, front,  left, down, front,  // v7-v4-v3-v2 down
-                    right, down, back,  left, down, back,  left, up, back,  right, up, back// v4-v7-v6-v5 back
-                ]),
-                3, render.BufferType.FLOAT)
+            return this._data.vertices;
         }
 
         protected computeIndicesBuffer(){
-            return render.ElementBuffer.create(new Uint16Array([
-                0, 1, 2,   0, 2, 3,    // front
-                4, 5, 6,   4, 6, 7,    // right
-                8, 9,10,   8,10,11,    // up
-                12,13,14,  12,14,15,    // left
-                16,17,18,  16,18,19,    // down
-                20,21,22,  20,22,23     // back
-            ]), render.BufferType.UNSIGNED_SHORT)
+            return this._data.indices;
+        }
+
+        protected computeTexCoordsBuffer():render.ArrayBuffer{
+            return this._data.texCoords;
         }
     }
 }
