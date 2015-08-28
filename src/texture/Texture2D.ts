@@ -19,7 +19,7 @@ module dy{
             // set 0 level mipmap and then use GL to generate other mipmap levels
 
             if(isSourcePowerOfTwo && this.mipmaps.getCount() > 0) {
-                this.mipmaps.forEach((mipmap:IMipmap, index:number) => {
+                this.mipmaps.forEach((mipmap:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, index:number) => {
                     gl.texImage2D(gl.TEXTURE_2D, index, gl[this.format], gl[this.format], gl[this.type], mipmap);
                 });
 

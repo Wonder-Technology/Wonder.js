@@ -77,7 +77,6 @@
 /// <reference path="asset/utils/AjaxLoader"/>
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
-/// <reference path="asset/texture/IMipmap"/>
 /// <reference path="asset/texture/TextureFilterMode"/>
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>

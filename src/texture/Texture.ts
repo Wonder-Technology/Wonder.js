@@ -56,7 +56,7 @@ module dy{
         public magFilter:TextureFilterMode = TextureFilterMode.LINEAR;
         public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
         public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
-        public mipmaps:dyCb.Collection<IMipmap> = dyCb.Collection.create<IMipmap>();
+        public mipmaps:dyCb.Collection<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement> = dyCb.Collection.create<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement>();
         public anisotropy:number = null;
 
         public needUpdate:boolean = true;
@@ -84,7 +84,9 @@ module dy{
             gl.pixelStorei( gl.UNPACK_ALIGNMENT, this.unpackAlignment );
 
 
-            this.source = this._clampToMaxSize(this.source);
+            if(this.isCheckMaxSize()){
+                this.source = this._clampToMaxSize(this.source);
+            }
 
             this._setTextureParameters( gl.TEXTURE_2D, isSourcePowerOfTwo);
 
@@ -127,7 +129,6 @@ module dy{
             texture.source = this.source;
             texture.mipmaps = this.mipmaps.copy();
 
-
             texture.wrapS = this.wrapS;
             texture.wrapT = this.wrapT;
 
@@ -151,6 +152,10 @@ module dy{
             texture.needUpdate = this.needUpdate;
 
             return texture;
+        }
+
+        protected isCheckMaxSize(){
+            return true;
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

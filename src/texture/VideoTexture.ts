@@ -30,6 +30,10 @@ module dy{
         public copy(){
             return this.copyHelper(VideoTexture.create());
         }
+
+        protected isCheckMaxSize(){
+            return false;
+        }
     }
 }
 

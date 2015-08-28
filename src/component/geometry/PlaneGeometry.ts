@@ -12,17 +12,17 @@ module dy{
         public widthSegments:number = 1;
         public heightSegments:number = 1;
 
-        public init() {
-            this._data = this._computeData(this.width, this.height, this.widthSegments, this.heightSegments);
-
-            super.init();
-        }
-
         private _data:{
             vertices;
             indices;
             texCoords;
         } = null;
+
+        public init() {
+            this._data = this._computeData(this.width, this.height, this.widthSegments, this.heightSegments);
+
+            super.init();
+        }
 
         private _computeData(width, height, widthSegments, heightSegments){
             var x = null,

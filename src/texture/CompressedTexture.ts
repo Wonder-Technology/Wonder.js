@@ -32,16 +32,20 @@ module dy{
             dyCb.Log.error(format === null, dyCb.Log.info.FUNC_NOT_SUPPORT(this.format));
 
             if (this.format !== TextureFormat.RGBA) {
-                this.mipmaps.forEach((mipmap:IMipmap, index:number) => {
+                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
                     gl.compressedTexImage2D(gl.TEXTURE_2D, index, format, mipmap.width, mipmap.height, 0, mipmap.data);
                 });
 
             }
             else{
-                this.mipmaps.forEach((mipmap:IMipmap, index:number) => {
+                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
                     gl.texImage2D(gl.TEXTURE_2D, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], mipmap.data);
                 });
             }
+        }
+
+        protected isCheckMaxSize(){
+            return false;
         }
 
         //todo support pvr
@@ -74,6 +78,12 @@ module dy{
 
             return format;
         }
+    }
+
+    export interface ICompressedTextureMipmap{
+        data:any;
+        width:number;
+        height:number;
     }
 }
 
