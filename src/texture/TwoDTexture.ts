@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Texture2D extends Texture{
+    export class TwoDTexture extends Texture{
         public static create(source:any=Texture.defaultTexture){
             var obj = new this(source);
 
@@ -8,7 +8,7 @@ module dy{
         }
 
         public copy(){
-            return this.copyHelper(Texture2D.create());
+            return this.copyHelper(TwoDTexture.create());
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

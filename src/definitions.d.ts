@@ -115,7 +115,7 @@
 /// <reference path="structure/View"/>
 
 /// <reference path="texture/Texture"/>
-/// <reference path="texture/Texture2D"/>
+/// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>

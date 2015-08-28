@@ -21,7 +21,7 @@ module dy{
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            var texture = Texture2D.create(image);
+                            var texture = TwoDTexture.create(image);
 
                             texture.format = TextureFormat.RGB;
 
@@ -31,7 +31,7 @@ module dy{
                 case ".png":
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            return Texture2D.create(image);
+                            return TwoDTexture.create(image);
                         });
                     break;
                 case ".dds":

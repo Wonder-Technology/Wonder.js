@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class VideoTexture extends Texture2D{
+    export class VideoTexture extends TwoDTexture{
         public static create(video:any=Texture.defaultTexture){
             var obj = new this(video);
 
