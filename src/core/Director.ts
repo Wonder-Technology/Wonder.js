@@ -209,7 +209,7 @@ module dy{
 
             //todo invoke stage->syncHierarchy()
 
-            this._stage.onStartLoop();
+            EventManager.trigger(dy.CustomEvent.create("startLoop"));
 
             this._run(elapseTime);
             //this._run(time);

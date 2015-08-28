@@ -65,7 +65,13 @@ module dy {
         private _behaviors:dyCb.Collection<Behavior> = dyCb.Collection.create<Behavior>();
 
         public init() {
+            var self = this;
+
             this._execScript("init");
+
+            EventManager.on("startLoop", () => {
+               self.onStartLoop();
+            });
         }
 
         public onEnter() {
@@ -93,6 +99,8 @@ module dy {
             }
 
             EventManager.off(this);
+
+            EventManager.off("startLoop", this.onStartLoop);
         }
 
         public hasChild(child:GameObject):boolean {

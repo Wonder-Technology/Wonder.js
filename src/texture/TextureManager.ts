@@ -38,7 +38,7 @@ module dy{
 
             this._textures.removeAllChildren();
 
-            //gl.bindTexture(gl.TEXTURE_, null);
+            //gl.bindTexture(gl.TEXTURE, null);
         }
 
         public update(){

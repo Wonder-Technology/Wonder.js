@@ -84,11 +84,11 @@ module dy {
         }
 
         public static off():void;
-        public static off(eventName:EventName):void;
-        public static off(eventName:EventName, handler:Function):void;
+        public static off(eventName:EventName|string):void;
+        public static off(eventName:EventName|string, handler:Function):void;
         public static off(target:GameObject):void;
-        public static off(target:GameObject, eventName:EventName):void;
-        public static off(target:GameObject, eventName:EventName, handler:Function):void;
+        public static off(target:GameObject, eventName:EventName|string):void;
+        public static off(target:GameObject, eventName:EventName|string, handler:Function):void;
 
         public static off() {
             this._eventBinder.off.apply(
