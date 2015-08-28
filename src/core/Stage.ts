@@ -38,32 +38,6 @@ module dy {
             super.render(renderer, this.camera);
         }
 
-        public onEnter(){
-            super.onEnter();
-
-            this.forEach((child:GameObject) => {
-                child.onEnter();
-            });
-        }
-
-        //todo onExit
-
-        public onStartLoop(){
-            super.onStartLoop();
-
-            this.forEach((child:GameObject) => {
-                child.onStartLoop();
-            });
-        }
-
-        public onEndLoop(){
-            super.onEndLoop();
-
-            this.forEach((child:GameObject) => {
-                child.onEndLoop();
-            });
-        }
-
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);
         }

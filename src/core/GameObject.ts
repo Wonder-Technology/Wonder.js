@@ -53,11 +53,6 @@ module dy {
             return this._script;
         }
 
-        private _scriptStreams:dyCb.Collection<dyRt.Stream> = dyCb.Collection.create<dyRt.Stream>();
-        get scriptStreams():dyRt.Stream{
-            return dyRt.fromCollection(this._scriptStreams).mergeAll();
-        }
-
         private _collider:Collider = null;
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
@@ -67,27 +62,50 @@ module dy {
         public init() {
             var self = this;
 
-            this._execScript("init");
-
-            EventManager.on("startLoop", () => {
+            EventManager.on("dy_startLoop", () => {
                self.onStartLoop();
+            });
+            EventManager.on("dy_endLoop", () => {
+                self.onEndLoop();
+            });
+            EventManager.on("dy_enter", () => {
+                self.onEnter();
+            });
+            EventManager.on("dy_exit", () => {
+                self.onExit();
+            });
+        }
+
+        public onStartLoop() {
+            this._execScript("onStartLoop");
+
+            this.forEach((child:GameObject) => {
+                child.onStartLoop();
+            });
+        }
+
+        public onEndLoop() {
+            this._execScript("onEndLoop");
+
+            this.forEach((child:GameObject) => {
+                child.onEndLoop();
             });
         }
 
         public onEnter() {
             this._execScript("onEnter");
-        }
 
-        public onStartLoop() {
-            this._execScript("onStartLoop");
-        }
-
-        public onEndLoop() {
-            this._execScript("onEndLoop");
+            this.forEach((child:GameObject) => {
+                child.onEnter();
+            });
         }
 
         public onExit() {
             this._execScript("onExit");
+
+            this.forEach((child:GameObject) => {
+                child.onExit();
+            });
         }
 
         public dispose() {
@@ -296,6 +314,7 @@ module dy {
             }).getChild(0);
         }
 
+        //todo refactor add "addToGameObject","removeFromGameObject" for component
         public addComponent(component:Component){
             var Log = dyCb.Log;
 
@@ -340,7 +359,7 @@ module dy {
                 let script = <Script>component,
                     self = this;
 
-                this._scriptStreams.addChild(script.createLoadJsStream()
+                Director.getInstance().scriptStreams.addChild(script.createLoadJsStream()
                     .do((data:IScriptFileData) => {
                             self._script.addChild(data.name, new data.class(self));
                         })
@@ -366,6 +385,18 @@ module dy {
             }
             else if(component instanceof Collider) {
                 this._collider = null;
+            }
+            else if(component instanceof Script){
+                let script = <Script>component,
+                    self = this;
+
+                //todo Director.getInstance().scriptStreams remove stream
+
+                //Director.getInstance().scriptStreams.removeChild(script.createLoadJsStream()
+                //        .do((data:IScriptFileData) => {
+                //            self._script.addChild(data.name, new data.class(self));
+                //        })
+                //);
             }
 
             component.gameObject = null;

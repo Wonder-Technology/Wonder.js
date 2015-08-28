@@ -81,6 +81,8 @@ module dy{
             return this._timeController.elapsed;
         }
 
+        public scriptStreams:dyCb.Collection<dyRt.Stream> = dyCb.Collection.create<dyRt.Stream>();
+
         private _gameLoop:dyRt.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
@@ -168,10 +170,7 @@ module dy{
         }
 
         private _buildLoadScriptStream(){
-            return dyRt.fromCollection(<dyCb.Collection<GameObject>>(this._stage.getChildren().copy().addChild(this._stage)))
-                .map((gameObject:GameObject) => {
-                    return gameObject.scriptStreams;
-                })
+            return dyRt.fromCollection(this.scriptStreams)
                 .mergeAll();
         }
 
@@ -182,7 +181,7 @@ module dy{
                 GPUDetector.getInstance().detect();
 
                 this._stage.init();
-                this._stage.onEnter();
+                EventManager.trigger(dy.CustomEvent.create("dy_enter"));
 
                 //todo not put here?
                 this._renderer.init();
@@ -209,14 +208,14 @@ module dy{
 
             //todo invoke stage->syncHierarchy()
 
-            EventManager.trigger(dy.CustomEvent.create("startLoop"));
+            EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
 
             this._run(elapseTime);
             //this._run(time);
 
             //this._renderer.render(this._scene);
 
-            this._stage.onEndLoop();
+            EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
 
             return true;
         }
