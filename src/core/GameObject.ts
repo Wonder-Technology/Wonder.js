@@ -177,14 +177,6 @@ module dy {
             return this;
         }
 
-        public getChildren(){
-            return this._children;
-        }
-
-        public getChild(index:number){
-            return this._children.getChild(index);
-        }
-
         public sort(){
             this._children = this._children.sort(this._ascendZ);
 
@@ -197,31 +189,33 @@ module dy {
             return this;
         }
 
-        public getComponent<T>(_class:Function):T{
-            return this._components.findOne((component:Component) => {
-                return component instanceof _class;
-            });
+        public getChildren(){
+            return this._children;
         }
-        //
-        //public getChild<T>(_class:Function):T{
-        //    return this._children.findOne((child:GameObject) => {
-        //        return child instanceof _class;
-        //    });
-        //}
 
-        public findChildByUid(uid:number){
+        public getChild(index:number){
+            return this._children.getChild(index);
+        }
+
+        public getChildByUid(uid:number){
             return this._children.findOne((child:GameObject) => {
                 return child.uid === uid;
             });
         }
 
-        public findChildByName(name:string){
+        public getChildByName(name:string){
             return this._children.findOne((child:GameObject) => {
                 return child.name === name;
             });
         }
 
-        public findComponentByUid(uid:number){
+        public getComponent<T>(_class:Function):T{
+            return this._components.findOne((component:Component) => {
+                return component instanceof _class;
+            });
+        }
+
+        public getComponentByUid(uid:number){
             return this._components.findOne((component:Component) => {
                 return component.uid === uid;
             });
