@@ -128,5 +128,9 @@ module dy {
         public blendEquation:BlendEquation = BlendEquation.ADD;
 
         public textureManager:TextureManager = TextureManager.create();
+
+        public dispose(){
+            this.textureManager.dispose();
+        }
     }
 }

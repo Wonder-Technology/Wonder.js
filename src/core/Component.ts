@@ -19,5 +19,8 @@ module dy{
 
         public init(){
         }
+
+        public dispose(){
+        }
     }
 }

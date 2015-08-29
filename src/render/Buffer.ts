@@ -25,9 +25,14 @@ module dy.render{
             this.p_num = num;
         }
 
-        protected p_buffer = null;
-        protected p_type = null;
-        protected p_num = null;
+        protected p_buffer:any = null;
+        protected p_type:string = null;
+        protected p_num:number = null;
+
+        public dispose(){
+            Director.getInstance().gl.deleteBuffer(this.p_buffer);
+            delete this.p_buffer;
+        }
     }
 }
 

@@ -69,6 +69,7 @@ module dy.render{
 
         public initWithShader(shader:Shader){
             var gl = Director.getInstance().gl,
+                result = null,
                 vs = null,
                 fs = null;
 
@@ -77,7 +78,6 @@ module dy.render{
 
             this._shader = shader;
 
-            // 向程序对象里分配着色器
             gl.attachShader(this._program, vs);
             gl.attachShader(this._program, fs);
 
@@ -107,21 +107,24 @@ module dy.render{
              */
 
 
-            // 将着色器连接
             gl.linkProgram(this._program);
 
-            // 判断着色器的连接是否成功
-            if(gl.getProgramParameter(this._program, gl.LINK_STATUS)){
+            dyCb.Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
 
-                // 返回程序对象
-                return this._program;
-            }else{
+            result = this._program;
 
-                // 如果失败，弹出错误信息
-                alert(gl.getProgramInfoLog(this._program));
+            /*!
+             should detach and delete shaders after linking the program
 
-                return null;
-            }
+             explain:
+             The shader object, due to being attached to the program object, will continue to exist even if you delete the shader object. It will only be deleted by the system when it is no longer attached to any program object (and when the user has asked to delete it, of course).
+
+             "Deleting" the shader, as with all OpenGL objects, merely sets a flag that says you don't need it any more. OpenGL will keep it around for as long as it needs it itself, and will do the actual delete any time later (most likely, but not necessarily, after the program is deleted).
+             */
+            gl.deleteShader(vs);
+            gl.deleteShader(fs);
+
+            return result;
         }
 
         public isChangeShader(shader:Shader){

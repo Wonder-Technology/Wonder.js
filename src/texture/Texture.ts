@@ -124,6 +124,13 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
+        public dispose(){
+            var gl = Director.getInstance().gl;
+
+            gl.deleteTexture(this._texture);
+            delete this._texture;
+        }
+
         protected copyHelper(texture:Texture){
             dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
 

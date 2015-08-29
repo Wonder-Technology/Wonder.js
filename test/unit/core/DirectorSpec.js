@@ -1,7 +1,3 @@
-//todo test stop loop
-
-//todo pass it
-
 describe("Director", function () {
     var sandbox = null;
     var director = null;

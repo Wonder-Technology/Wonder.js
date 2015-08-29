@@ -50,6 +50,15 @@ module dy{
             this._colors = this._computeColorsBuffer(this._material);
         }
 
+        public dispose(){
+            this._vertices.dispose();
+            this._indices.dispose();
+            this._texCoords.dispose();
+            this._colors.dispose();
+
+            this.material.dispose();
+        }
+
         protected computeVerticesBuffer():render.ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }

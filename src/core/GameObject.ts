@@ -54,6 +54,7 @@ module dy {
         }
 
         private _collider:Collider = null;
+        private _geometry:Geometry = null;
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
         private _actionManager:ActionManager = ActionManager.create();
@@ -83,37 +84,29 @@ module dy {
 
         public onStartLoop() {
             this._execScript("onStartLoop");
-            //
-            //this.forEach((child:GameObject) => {
-            //    child.onStartLoop();
-            //});
         }
 
         public onEndLoop() {
             this._execScript("onEndLoop");
-            //
-            //this.forEach((child:GameObject) => {
-            //    child.onEndLoop();
-            //});
         }
 
         public onEnter() {
             this._execScript("onEnter");
-
-            //this.forEach((child:GameObject) => {
-            //    child.onEnter();
-            //});
         }
 
         public onExit() {
             this._execScript("onExit");
+        }
 
-            //this.forEach((child:GameObject) => {
-            //    child.onExit();
-            //});
+        public onDispose(){
+            this._execScript("onDispose");
         }
 
         public dispose() {
+            var self = this;
+
+            this._execScript("onDispose");
+
             if(this._parent){
                 this._parent.removeChild(this);
                 this._parent = null;
@@ -123,6 +116,16 @@ module dy {
 
             EventManager.off("dy_startLoop", this.onStartLoop);
             EventManager.off("dy_endLoop", this.onEndLoop);
+
+            this._components.forEach((component:Component) => {
+                //self.removeComponent(component);
+                component.dispose();
+            });
+
+            this.forEach((child:GameObject) => {
+                //self.removeChild(child);
+                child.dispose();
+            });
         }
 
         public hasChild(child:GameObject):boolean {
@@ -200,6 +203,18 @@ module dy {
             return this;
         }
 
+        public getComponent<T>(_class:Function):T{
+            return this._components.findOne((component:Component) => {
+                return component instanceof _class;
+            });
+        }
+        //
+        //public getChild<T>(_class:Function):T{
+        //    return this._children.findOne((child:GameObject) => {
+        //        return child instanceof _class;
+        //    });
+        //}
+
         public findChildByUid(uid:number){
             return this._children.findOne((child:GameObject) => {
                 return child.uid === uid;
@@ -219,13 +234,14 @@ module dy {
         }
 
         public removeChild(child:GameObject):GameObject {
+            child.onExit();
+
             this._children.removeChild(child);
 
             child.parent = null;
             //child.setBubbleParent(null);
 
 
-            child.onExit();
 
             //var idx = this._children.indexOf(child);
             //if(idx !== -1) {
@@ -336,12 +352,6 @@ module dy {
             }
         }
 
-        public getComponent<T>(_class:Function):T{
-            return this._components.findOne((component) => {
-                return component instanceof _class;
-            });
-        }
-
         //todo refactor add "addToGameObject","removeFromGameObject" for component
         public addComponent(component:Component){
             var Log = dyCb.Log;
@@ -372,6 +382,11 @@ module dy {
 
                     this._behaviors.addChild(behavior);
                 }
+            }
+            else if(component instanceof Geometry){
+                Log.assert(!this._renderer, "renderer is overwrite");
+
+                this._geometry = <Geometry>component;
             }
             else if(component instanceof Renderer) {
                 Log.assert(!this._renderer, "renderer is overwrite");
@@ -409,6 +424,9 @@ module dy {
                 else{
                     this._behaviors.removeChild(component);
                 }
+            }
+            else if(component instanceof Geometry){
+                this._geometry = null;
             }
             else if(component instanceof Renderer) {
                 this._renderer = null;
@@ -457,7 +475,9 @@ module dy {
             //    this._children[i].visit(renderer, this._transform, transformDirty, visibleFlag);
             //}
 
-            this._renderer && this._renderer.render(renderer, this.getComponent<Geometry>(Geometry),  camera);
+            if(this._renderer && this._geometry){
+                this._renderer.render(renderer, this._geometry,  camera);
+            }
 
             this._children.forEach((child:GameObject) => {
                 child.render(renderer, camera);

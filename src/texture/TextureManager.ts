@@ -34,11 +34,17 @@ module dy{
         public removeAllChildren(){
             var gl = Director.getInstance().gl;
 
-            //todo all dispose
-
             this._textures.removeAllChildren();
 
             //gl.bindTexture(gl.TEXTURE, null);
+        }
+
+        public dispose(){
+            this._textures.forEach((texture:Texture) => {
+                texture.dispose();
+            });
+
+            this.removeAllChildren();
         }
 
         public update(){

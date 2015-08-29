@@ -232,6 +232,11 @@ describe("Stage", function() {
     });
 
     describe("removeChild", function(){
+        it("invoke target's onExit", function(){
+            stage.removeChild(gameObject2);
+
+            expect(gameObject2.onExit).toCalledOnce();
+        });
         it("remove target", function(){
             expect(stage.findChildByUid(gameObject2.uid)).toEqual(gameObject2);
 
@@ -243,11 +248,6 @@ describe("Stage", function() {
             stage.removeChild(gameObject2);
 
             expect(gameObject2.parent).toBeNull();
-        });
-        it("invoke target's onExit", function(){
-            stage.removeChild(gameObject2);
-
-            expect(gameObject2.onExit).toCalledOnce();
         });
     });
 
@@ -295,6 +295,16 @@ describe("Stage", function() {
                 stage.addComponent(component);
 
                 expect(stage._behaviors.hasChild(component)).toBeTruthy();
+            });
+        });
+
+        describe("if component is Geometry", function(){
+            it("set geometry to be it", function(){
+                var component = new dy.Geometry();
+
+                stage.addComponent(component);
+
+                expect(stage._geometry).toEqual(component);
             });
         });
 
@@ -370,6 +380,17 @@ describe("Stage", function() {
                 stage.removeComponent(component);
 
                 expect(stage._behaviors.hasChild(component)).toBeFalsy();
+            });
+        });
+
+        describe("if component is Geometry", function(){
+            it("set geometry to be null", function(){
+                var component = new dy.Geometry();
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(stage._geometry).toBeNull();
             });
         });
 

@@ -6,5 +6,6 @@ module dy{
         onExit();
         onStartLoop();
         onEndLoop();
+        onDispose();
     }
 }
