@@ -62,55 +62,58 @@ module dy {
         public init() {
             var self = this;
 
+            /*! global event should add "dy_" prefix */
             EventManager.on("dy_startLoop", () => {
                self.onStartLoop();
             });
             EventManager.on("dy_endLoop", () => {
                 self.onEndLoop();
             });
-            EventManager.on("dy_enter", () => {
-                self.onEnter();
+
+            this._components.forEach((component:Component) => {
+                component.init();
             });
-            EventManager.on("dy_exit", () => {
-                self.onExit();
+
+            this._execScript("init");
+
+            this.forEach((child:GameObject) => {
+                child.init();
             });
         }
 
         public onStartLoop() {
             this._execScript("onStartLoop");
-
-            this.forEach((child:GameObject) => {
-                child.onStartLoop();
-            });
+            //
+            //this.forEach((child:GameObject) => {
+            //    child.onStartLoop();
+            //});
         }
 
         public onEndLoop() {
             this._execScript("onEndLoop");
-
-            this.forEach((child:GameObject) => {
-                child.onEndLoop();
-            });
+            //
+            //this.forEach((child:GameObject) => {
+            //    child.onEndLoop();
+            //});
         }
 
         public onEnter() {
             this._execScript("onEnter");
 
-            this.forEach((child:GameObject) => {
-                child.onEnter();
-            });
+            //this.forEach((child:GameObject) => {
+            //    child.onEnter();
+            //});
         }
 
         public onExit() {
             this._execScript("onExit");
 
-            this.forEach((child:GameObject) => {
-                child.onExit();
-            });
+            //this.forEach((child:GameObject) => {
+            //    child.onExit();
+            //});
         }
 
         public dispose() {
-            this.onExit();
-
             if(this._parent){
                 this._parent.removeChild(this);
                 this._parent = null;
@@ -118,7 +121,8 @@ module dy {
 
             EventManager.off(this);
 
-            EventManager.off("startLoop", this.onStartLoop);
+            EventManager.off("dy_startLoop", this.onStartLoop);
+            EventManager.off("dy_endLoop", this.onEndLoop);
         }
 
         public hasChild(child:GameObject):boolean {
@@ -171,13 +175,17 @@ module dy {
 
 
             //child.init();
-            //child.onEnter();
+            child.onEnter();
 
             return this;
         }
 
         public getChildren(){
             return this._children;
+        }
+
+        public getChild(index:number){
+            return this._children.getChild(index);
         }
 
         public sort(){
@@ -192,13 +200,27 @@ module dy {
             return this;
         }
 
+        public findByUid(uid:number){
+            return this._children.findOne((child:GameObject) => {
+                return child.uid === uid;
+            });
+        }
+
+        public findByName(name:string){
+            return this._children.findOne((child:GameObject) => {
+                return child.name === name;
+            });
+        }
+
         public removeChild(child:GameObject):GameObject {
             this._children.removeChild(child);
 
             child.parent = null;
             //child.setBubbleParent(null);
 
-            child.dispose();
+
+            child.onExit();
+
             //var idx = this._children.indexOf(child);
             //if(idx !== -1) {
             //    child.dispatchEvent(new CoreEvent('beforeremove', false));
@@ -309,9 +331,9 @@ module dy {
         }
 
         public getComponent<T>(_class:Function):T{
-            return this._components.filter((component) => {
+            return this._components.findOne((component) => {
                 return component instanceof _class;
-            }).getChild(0);
+            });
         }
 
         //todo refactor add "addToGameObject","removeFromGameObject" for component
@@ -330,7 +352,7 @@ module dy {
 
 
             this._components.addChild(component);
-            component.init();
+            //component.init();
 
             if(component instanceof Behavior){
                 if(component instanceof Action) {
@@ -449,11 +471,11 @@ module dy {
             });
             this._actionManager.update(time);
 
+            this._execScript("update", time);
+
             this._children.forEach((child:GameObject) => {
                 child.update(time);
             });
-
-            this._execScript("update", time);
         }
 
         private _ascendZ(a:GameObject, b:GameObject){

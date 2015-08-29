@@ -110,7 +110,7 @@ describe("Tween", function () {
             expect(x).toEqual(0);
 
             gameObject._actionManager.update(50);
-            expect(x).toEqual(25);
+            expect(x).toEqual(50);
 
             gameObject._actionManager.update(100);
             expect(x).toEqual(100);

@@ -25,7 +25,8 @@ describe("Director", function () {
         director = dy.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
         sandbox.stub(director, "gl", testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        //sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.GPUDetector.getInstance(), "detect");
         director.stage.addChild(createCamera());
     });
     afterEach(function () {
@@ -34,8 +35,8 @@ describe("Director", function () {
     });
 
     describe("tick", function(){
-        beforeEach(function(){
-            director.start();
+        afterEach(function(){
+            director.stop();
         });
 
         it("gameTime is in seconds", function(){
@@ -58,7 +59,7 @@ describe("Director", function () {
                 expect(director.fps).toEqual(1000 / (1100 - 100));
             });
         });
-        
+
         describe("start,stop", function(){
             it("test gameTime", function(){
                 director.start();
@@ -124,7 +125,7 @@ describe("Director", function () {
                 expect(director._gameLoop.dispose).toCalledOnce();
             });
         });
-        
+
         describe("pause,resume", function(){
             it("test gameTime", function(){
                 director.start();

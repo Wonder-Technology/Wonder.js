@@ -1,6 +1,3 @@
-//cull face
-//polygonOffset
-//blend
 describe("Color", function() {
     var sandbox = null;
     var manager = null;
@@ -9,8 +6,8 @@ describe("Color", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         manager = dy.DeviceManager.getInstance();
-        manager.gl = testTool.buildFakeGl(sandbox);
-        gl = manager._gl;
+        dy.Director.getInstance().gl = testTool.buildFakeGl(sandbox);
+        gl = manager.gl;
     });
     afterEach(function () {
         dy.DeviceManager._instance = null;

@@ -28,6 +28,7 @@ module dy{
 
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
 
+        //todo how to repeat texture of sourceRegion?
         private _sourceRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
         get sourceRegion(){
             return this._sourceRegion;

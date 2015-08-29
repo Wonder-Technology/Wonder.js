@@ -17,6 +17,14 @@ var testTool = (function(){
                 clear:sandbox.stub()
             };
         },
+        extend: function(destination, source) {
+            var property = "";
+
+            for (property in source) {
+                destination[property] = source[property];
+            }
+            return destination;
+        },
         updateAction: function(time, gameObject){
             window.performance.now.returns(time);
             gameObject._actionManager.update(time);

@@ -13,15 +13,11 @@ module dy {
         public camera:GameObject = null;
 
         public init(){
-            super.init();
-
             this.program = render.Program.create();
 
             this.addComponent(TopCollider.create());
 
-            this.forEach((child:GameObject) => {
-                child.init();
-            });
+            super.init();
         }
 
         public addChild(child:GameObject):GameObject{
@@ -37,6 +33,7 @@ module dy {
 
             super.render(renderer, this.camera);
         }
+
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);

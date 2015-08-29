@@ -100,7 +100,7 @@ module dy{
         }
 
         public stop(){
-            this._gameLoop.dispose();
+            this._gameLoop && this._gameLoop.dispose();
             this._gameState = GameState.STOP;
             this._timeController.stop();
             this._scheduler.stop();
@@ -180,8 +180,8 @@ module dy{
 
                 GPUDetector.getInstance().detect();
 
+                this._stage.onEnter();
                 this._stage.init();
-                EventManager.trigger(dy.CustomEvent.create("dy_enter"));
 
                 //todo not put here?
                 this._renderer.init();

@@ -19,7 +19,7 @@ describe("script", function () {
         return camera;
     }
 
-    function testScript(judgeInit, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+    function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         var gameObject = dy.GameObject.create();
 
         script.url = url1;
@@ -27,13 +27,11 @@ describe("script", function () {
         gameObject.addComponent(script);
 
         var test = null;
-        var init = director.stage.init;
-        director.stage.init = function(){
+        var onEnter = director.stage.onEnter;
+        director.stage.onEnter = function(){
             test = gameObject.script.getChild("test");
-
-            judgeInit(test, gameObject);
-
-            init.call(director.stage);
+            judgeOnEnter(test, gameObject);
+            onEnter.call(director.stage);
         };
 
         director.stage.addChild(gameObject);
@@ -56,7 +54,7 @@ describe("script", function () {
         director.start();
     }
 
-    function testTwoScript(judgeInit, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+    function testTwoScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         var script2 = dy.Script.create();
         var gameObject = dy.GameObject.create();
 
@@ -68,14 +66,14 @@ describe("script", function () {
 
         var test = null;
         var test2 = null;
-        var init = director.stage.init;
-        director.stage.init = function(){
+        var onEnter = director.stage.onEnter;
+        director.stage.onEnter = function(){
             test = gameObject.script.getChild("test");
             test2 = gameObject.script.getChild("test2");
 
-            judgeInit(test, test2, gameObject);
+            judgeOnEnter(test, test2, gameObject);
 
-            init.call(director.stage);
+            onEnter.call(director.stage);
         };
 
         director.stage.addChild(gameObject);
@@ -98,6 +96,39 @@ describe("script", function () {
         director.start();
     }
 
+
+    function testStageScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+        script.url = url1;
+
+        director.stage.addComponent(script);
+
+        var test = null;
+        var onEnter = director.stage.onEnter;
+        director.stage.onEnter = function(){
+            test = this.script.getChild("test");
+            judgeOnEnter(test, this);
+            onEnter.call(director.stage);
+        };
+
+        var loopBody = director._loopBody;
+        director._loopBody = function(){
+            var time = 100;
+
+            judgeBeforeLoopBody(test, director.stage);
+
+            loopBody.call(director, time);
+
+            judgeAfterLoopBody(test, time, director.stage);
+
+            director.stop();
+
+            done();
+        };
+
+        director.start();
+    }
+
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         script = dy.Script.create();
@@ -105,6 +136,7 @@ describe("script", function () {
         sandbox.stub(window.performance, "now").returns(0);
         sandbox.stub(director, "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.GPUDetector.getInstance(), "detect");
         director.stage.addChild(createCamera());
 
         url1 = testTool.resPath + "test/res/test.js";
@@ -128,17 +160,47 @@ describe("script", function () {
         }, function(test){
             expect(test.init).toCalledOnce();
             expect(test.isInit).toBeTruthy();
-            expect(test.onEnter).toCalledOnce();
-            expect(test.a).toEqual(1);
+
+            /*!
+            the script's onEnter,onExit before the loopBody is invoked will not be invoked, because the script is not loaded into engine at that time
+             */
+
+            //expect(test.onEnter).toCalledOnce();
+            expect(test.onEnter).not.toCalled();
+
         }, function(test, time, gameObject){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(time);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
 
             director.stage.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
+        }, done);
+    });
+    it("test director->stage's script", function(done){
+        testStageScript(function(test){
+            sandbox.spy(test, "init");
+            sandbox.spy(test, "update");
+            sandbox.spy(test, "onStartLoop");
+            sandbox.spy(test, "onEndLoop");
+            sandbox.spy(test, "onEnter");
+            sandbox.spy(test, "onExit");
+        }, function(test){
+            /*!
+                stage->onEnter will be called, because it's invoked after the script is loaded
+             */
+            expect(test.onEnter).toCalledBefore(test.init);
+        }, function(test, time, gameObject){
+            expect(test.update).toCalledWith(time);
+            expect(test.time).toEqual(time);
+            expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
+            //expect(test.b).toEqual(-1);
+
+            director.stage.removeChild(gameObject);
+            expect(test.onExit).toCalledOnce();
+            //expect(test.b).toEqual(-1);
         }, done);
     });
 
@@ -178,23 +240,26 @@ describe("script", function () {
         }, function(test, test2){
             expect(test.init).toCalledOnce();
             expect(test.isInit).toBeTruthy();
-            expect(test.onEnter).toCalledOnce();
-            expect(test.a).toEqual(1);
+            //expect(test.onEnter).toCalledOnce();
+            expect(test.onEnter).not.toCalled();
+            //expect(test.a).toEqual(1);
+            //expect(test.a).toEqual(0);
 
             expect(test2.init).toCalledOnce();
-            expect(test2.onEnter).toCalledOnce();
+            //expect(test2.onEnter).toCalledOnce();
+            expect(test2.onEnter).not.toCalled();
         }, function(test, test2, time, gameObject){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(100);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
 
             expect(test2.update).toCalledWith(time);
             expect(test2.onStartLoop).toCalledBefore(test2.onEndLoop);
 
             director.stage.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
 
             expect(test2.onExit).toCalledOnce();
         }, done);
@@ -212,17 +277,18 @@ describe("script", function () {
         }, function(test){
             expect(test.init).toCalledOnce();
             expect(test.isInit).toBeTruthy();
-            expect(test.onEnter).toCalledOnce();
-            expect(test.a).toEqual(1);
+            //expect(test.onEnter).toCalledOnce();
+            expect(test.onEnter).not.toCalled();
+            //expect(test.a).toEqual(1);
         }, function(test, time, gameObject){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(time);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
 
             director.stage.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
-            expect(test.b).toEqual(-1);
+            //expect(test.b).toEqual(-1);
         }, done);
     });
     it("only load the the script(based on url) once", function(done){

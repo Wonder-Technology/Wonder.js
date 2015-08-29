@@ -4,17 +4,18 @@ describe("renderWebGL", function() {
     var deviceManager = null;
 
     function getGL(){
-        return deviceManager._gl;
+        return dy.Director.getInstance().gl;
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         renderer = dy.render.WebGLRenderer.create();
         deviceManager = dy.DeviceManager.getInstance();
-        sandbox.stub(deviceManager, "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         dy.DeviceManager._instance = null;
+        dy.Director._instance = null;
         sandbox.restore();
     });
 
@@ -25,7 +26,6 @@ describe("renderWebGL", function() {
             expect(renderer._clearOptions.color).toEqual(
                 dy.Color.create("#000000")
             );
-            expect(renderer._clearOptions.alpha).toEqual(1.0);
         });
         it("init depthTest, blend, colorWrite, cullMode, depthWrite, scissorTest", function(){
             var gl = getGL();
@@ -109,7 +109,7 @@ describe("renderWebGL", function() {
                 drawArrays:sandbox.stub(),
                 createBuffer:sandbox.stub().returns({})
             };
-            sandbox.stub(dy.Director.getInstance(), "gl", gl);
+            testTool.extend(dy.Director.getInstance().gl, gl);
             program = {
                 setAttributeData:sandbox.stub(),
                 setUniformData:sandbox.stub(),
@@ -153,16 +153,12 @@ describe("renderWebGL", function() {
             material3.blend = false;
             material4.blend = false;
 
-            sandbox.stub(dy.Director, "getInstance").returns({
-                stage:{
-                    camera:{
-                        transform:{
-                            position:{
-                                z: 10
-                            }
+            sandbox.stub(dy.Director.getInstance().stage, "camera", {
+                    transform:{
+                        position:{
+                            z: 10
                         }
                     }
-                }
             });
             quad1.z = 8;
             quad2.z = 7;
@@ -237,7 +233,7 @@ describe("renderWebGL", function() {
 
                     var indexBuffer = quadCmd.buffers.getChild("indexBuffer");
 
-                    expect(gl.bindBuffer.args.slice(-2)).toEqual([[gl.ARRAY_BUFFER, quadCmd.buffers.getChild("vertexBuffer").buffer], [gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
+                    expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
                     expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
                 });
             });
