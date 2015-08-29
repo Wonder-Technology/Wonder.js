@@ -71,6 +71,8 @@ module dy{
             this._texture = gl.createTexture();
 
             //_this.info.memory.textures ++;
+
+            return this;
         }
 
         public update(index:number){
@@ -98,6 +100,8 @@ module dy{
             }
 
             this.needUpdate = false;
+
+            return this;
         }
 
         public sendData(index){
@@ -106,6 +110,8 @@ module dy{
             program.setUniformData("u_sampler" + index, render.UniformDataType.NUMBER_1, index);
             program.setUniformData("u_sourceRegion", render.UniformDataType.FLOAT_4, this.sourceRegion);
             program.setUniformData("u_repeatRegion", render.UniformDataType.FLOAT_4, this.repeatRegion);
+
+            return this;
         }
 
         public bindToUnit (unit:number) {
@@ -118,6 +124,8 @@ module dy{
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl.TEXTURE_2D, this._texture);
+
+            return this;
         }
 
         public copy(){

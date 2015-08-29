@@ -28,6 +28,18 @@ var testTool = (function(){
         updateAction: function(time, gameObject){
             window.performance.now.returns(time);
             gameObject.actionManager.update(time);
+        },
+        getValues:function(values){
+            if(values){
+                if(mathTestUtils.isFloat32Array(values)){
+                    return mathTestUtils.getValues(values);
+                }
+                else{
+                    return mathTestUtils.getValues(values.values);
+                }
+            }
+
+            return mathTestUtils.getValues(matrix.values);
         }
     }
 }());

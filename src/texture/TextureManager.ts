@@ -16,11 +16,11 @@ module dy{
         //}
 
         public addChild(texture:Texture){
-            var copyTexture = texture.copy();
+            //var copyTexture = texture.copy();
+            //
+            //copyTexture.init();
 
-            copyTexture.init();
-
-            this._textures.addChild(copyTexture);
+            this._textures.addChild(texture.copy().init());
         }
 
         public getChildren(){
@@ -32,11 +32,7 @@ module dy{
         }
 
         public removeAllChildren(){
-            var gl = Director.getInstance().gl;
-
             this._textures.removeAllChildren();
-
-            //gl.bindTexture(gl.TEXTURE, null);
         }
 
         public dispose(){

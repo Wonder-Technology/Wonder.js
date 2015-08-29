@@ -87,6 +87,9 @@ describe("renderWebGL", function() {
 
             renderer.addCommand(quadCmd);
 
+            sandbox.stub(material.textureManager, "update");
+            sandbox.stub(material.textureManager, "sendData");
+
             return {
                 quadCmd:quadCmd,
                 material:material,
@@ -189,6 +192,13 @@ describe("renderWebGL", function() {
                 expect(program.initWithShader).toCalledWith(result.shader);
                 expect(program.use).toCalledOnce();
             });
+            it("update texture", function(){
+                var result = addCommand();
+
+                renderer.render();
+
+                expect(result.material.textureManager.update).toCalledOnce();
+            });
             it("send vertex,color,mvpMatrix to program", function(){
                 var result = addCommand();
                 var geometry = result.geometry;
@@ -198,6 +208,13 @@ describe("renderWebGL", function() {
                 expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
                 expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
                 expect(program.setUniformData).toCalledWith("u_mvpMatrix", dy.render.UniformDataType.FLOAT_MAT4, mvpMatrix);
+            });
+            it("send texture data", function(){
+                var result = addCommand();
+
+                renderer.render();
+
+                expect(result.material.textureManager.sendData).toCalledOnce();
             });
 
             describe("draw", function(){

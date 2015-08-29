@@ -36,7 +36,7 @@ module.exports = function(config) {
         'test/unit/component/**/*.js',
 
         'test/unit/core/*.js',
-        'test/unit/renderer/*.js',
+        'test/unit/renderer/**',
         'test/unit/device/*.js',
         'test/unit/event/*.js',
         'test/unit/utils/**',
