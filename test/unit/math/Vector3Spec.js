@@ -27,4 +27,21 @@ describe("Vector3", function(){
             );
         });
     });
+
+    describe("cross", function(){
+        it("Returns the result of a cross product operation performed on the two specified 3-dimensional vectors", function(){
+            expect(Vector3.create().cross(Vector3.right, Vector3.up)).toEqual(Vector3.forward);
+        });
+    });
+
+    describe("lerp", function(){
+        it("Returns the result of a linear interpolation between two specified 3-dimensional vectors", function(){
+            var a = Vector3.create(0, 0, 0);
+            var b = Vector3.create(10, 10, 10);
+
+            expect(Vector3.create().lerp(a, b, 0)).toEqual(a);
+            expect(Vector3.create().lerp(a, b, 0.5)).toEqual(Vector3.create(5, 5, 5));
+            expect(Vector3.create().lerp(a, b, 1)).toEqual(b);
+        });
+    });
 });
