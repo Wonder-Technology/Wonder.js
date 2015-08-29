@@ -233,11 +233,11 @@ describe("Stage", function() {
 
     describe("removeChild", function(){
         it("remove target", function(){
-            expect(stage.findByUid(gameObject2.uid)).toEqual(gameObject2);
+            expect(stage.findChildByUid(gameObject2.uid)).toEqual(gameObject2);
 
             stage.removeChild(gameObject2);
 
-            expect(stage.findByUid(gameObject2)).toBeNull();
+            expect(stage.findChildByUid(gameObject2)).toBeNull();
         });
         it("set target's parent to be null", function(){
             stage.removeChild(gameObject2);
@@ -248,6 +248,166 @@ describe("Stage", function() {
             stage.removeChild(gameObject2);
 
             expect(gameObject2.onExit).toCalledOnce();
+        });
+    });
+
+    describe("addComponent", function(){
+        it("if component exist, return", function(){
+            var component = new dy.Action();
+            sandbox.stub(dyCb.Log, "assert");
+
+            stage.addComponent(component);
+            var result = stage.addComponent(component);
+
+            expect(dyCb.Log.assert).toCalledOnce();
+            expect(result).toEqual(stage);
+        });
+        it("set component's gameObject", function(){
+            var component = new dy.Action();
+
+            stage.addComponent(component);
+
+            expect(component.gameObject).toEqual(stage);
+        });
+        it("add component to container", function(){
+            var component = new dy.Action();
+
+            stage.addComponent(component);
+
+            expect(stage.findComponentByUid(component.uid)).toEqual(component);
+        });
+
+        describe("if component is Action", function(){
+            it("set action's target and add it to actionManager", function(){
+                var component = new dy.Action();
+
+                stage.addComponent(component);
+
+                expect(component.target).toEqual(stage);
+                expect(stage._actionManager.hasChild(component)).toBeTruthy();
+            });
+        });
+
+        describe("if component is other Behavior", function(){
+            it("add it to behaviors", function(){
+                var component = new dy.Behavior();
+
+                stage.addComponent(component);
+
+                expect(stage._behaviors.hasChild(component)).toBeTruthy();
+            });
+        });
+
+        describe("if component is Renderer", function(){
+            it("set renderer to be it", function(){
+                var component = new dy.Renderer();
+
+                stage.addComponent(component);
+
+                expect(stage._renderer).toEqual(component);
+            });
+        });
+
+        describe("if component is Collider", function(){
+            it("set collider to be it", function(){
+                var component = new dy.Collider();
+
+                stage.addComponent(component);
+
+                expect(stage._collider).toEqual(component);
+            });
+        });
+
+        describe("if component is Script", function(){
+            it("add load stream to Director->scriptStreams", function(){
+                var stream = new dyRt.Stream();
+                var component = dy.Script.create("aaa.js");
+                sandbox.stub(component, "createLoadJsStream").returns({
+                    do:sandbox.stub().returns(stream)
+                });
+
+                stage.addComponent(component);
+
+                expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeTruthy();
+            });
+        });
+    });
+
+    describe("removeComponent", function(){
+        it("remove component from container", function(){
+            var component = new dy.Action();
+            stage.addComponent(component);
+
+            stage.removeComponent(component);
+
+            expect(stage.findComponentByUid(component.uid)).toBeNull();
+        });
+        it("set component's gameObject to be null", function(){
+            var component = new dy.Action();
+            stage.addComponent(component);
+
+            stage.removeComponent(component);
+
+            expect(component.gameObject).toBeNull();
+        });
+
+        describe("if component is Action", function(){
+            it("remove it from actionManager", function(){
+                var component = new dy.Action();
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(stage._actionManager.hasChild(component)).toBeFalsy();
+            });
+        });
+
+        describe("if component is other Behavior", function(){
+            it("remove it from behaviors", function(){
+                var component = new dy.Behavior();
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(stage._behaviors.hasChild(component)).toBeFalsy();
+            });
+        });
+
+        describe("if component is Renderer", function(){
+            it("set renderer to be null", function(){
+                var component = new dy.Renderer();
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(stage._renderer).toBeNull();
+            });
+        });
+
+        describe("if component is Collider", function(){
+            it("set collider to be null", function(){
+                var component = new dy.Collider();
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(stage._collider).toBeNull();
+            });
+        });
+
+        describe("if component is Script", function(){
+            it("remove load stream to Director->scriptStreams", function(){
+                var stream = new dyRt.Stream();
+                var component = dy.Script.create("aaa.js");
+                sandbox.stub(component, "createLoadJsStream").returns({
+                    do:sandbox.stub().returns(stream)
+                });
+                stage.addComponent(component);
+
+                stage.removeComponent(component);
+
+                expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeFalsy();
+            });
         });
     });
 });

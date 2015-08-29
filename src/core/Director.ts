@@ -81,7 +81,7 @@ module dy{
             return this._timeController.elapsed;
         }
 
-        public scriptStreams:dyCb.Collection<dyRt.Stream> = dyCb.Collection.create<dyRt.Stream>();
+        public scriptStreams:dyCb.Hash<dyRt.Stream> = dyCb.Hash.create<dyRt.Stream>();
 
         private _gameLoop:dyRt.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
@@ -170,7 +170,7 @@ module dy{
         }
 
         private _buildLoadScriptStream(){
-            return dyRt.fromCollection(this.scriptStreams)
+            return dyRt.fromCollection(this.scriptStreams.getValues())
                 .mergeAll();
         }
 

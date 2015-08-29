@@ -200,15 +200,21 @@ module dy {
             return this;
         }
 
-        public findByUid(uid:number){
+        public findChildByUid(uid:number){
             return this._children.findOne((child:GameObject) => {
                 return child.uid === uid;
             });
         }
 
-        public findByName(name:string){
+        public findChildByName(name:string){
             return this._children.findOne((child:GameObject) => {
                 return child.name === name;
+            });
+        }
+
+        public findComponentByUid(uid:number){
+            return this._components.findOne((component:Component) => {
+                return component.uid === uid;
             });
         }
 
@@ -381,7 +387,7 @@ module dy {
                 let script = <Script>component,
                     self = this;
 
-                Director.getInstance().scriptStreams.addChild(script.createLoadJsStream()
+                Director.getInstance().scriptStreams.addChild(script.uid.toString(), script.createLoadJsStream()
                     .do((data:IScriptFileData) => {
                             self._script.addChild(data.name, new data.class(self));
                         })
@@ -393,6 +399,8 @@ module dy {
 
         public removeComponent(component:Component){
             this._components.removeChild(component);
+
+            component.gameObject = null;
 
             if(component instanceof Behavior){
                 if(component instanceof Action) {
@@ -409,19 +417,10 @@ module dy {
                 this._collider = null;
             }
             else if(component instanceof Script){
-                let script = <Script>component,
-                    self = this;
+                let script = <Script>component;
 
-                //todo Director.getInstance().scriptStreams remove stream
-
-                //Director.getInstance().scriptStreams.removeChild(script.createLoadJsStream()
-                //        .do((data:IScriptFileData) => {
-                //            self._script.addChild(data.name, new data.class(self));
-                //        })
-                //);
+                Director.getInstance().scriptStreams.removeChild(script.uid.toString());
             }
-
-            component.gameObject = null;
 
             return this;
         }
