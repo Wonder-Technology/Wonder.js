@@ -41,6 +41,15 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
+        public addToGameObject(gameObject:GameObject){
+            this.target = gameObject;
+            gameObject.actionManager.addChild(this);
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            gameObject.actionManager.removeChild(this);
+        }
+
         public start() {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }

@@ -130,7 +130,7 @@ describe("Stage", function() {
             behavior4 = buildBehavior();
             behavior5 = buildBehavior();
 
-            sandbox.stub(stage._actionManager, "update");
+            sandbox.stub(stage.actionManager, "update");
         });
 
         it("invoke stage and it's children's all behavior->update and all action->update", function(){
@@ -144,7 +144,7 @@ describe("Stage", function() {
 
             expect(behavior1.update).toCalledWith(time);
             expect(behavior1.update).toCalledOnce();
-            expect(behavior1.update).toCalledBefore(stage._actionManager.update);
+            expect(behavior1.update).toCalledBefore(stage.actionManager.update);
             expect(behavior1.update).toCalledBefore(behavior3.update);
             expect(behavior3.update).toCalledWith(time);
             expect(behavior3.update).toCalledOnce();
@@ -284,7 +284,7 @@ describe("Stage", function() {
                 stage.addComponent(component);
 
                 expect(component.target).toEqual(stage);
-                expect(stage._actionManager.hasChild(component)).toBeTruthy();
+                expect(stage.actionManager.hasChild(component)).toBeTruthy();
             });
         });
 
@@ -294,7 +294,7 @@ describe("Stage", function() {
 
                 stage.addComponent(component);
 
-                expect(stage._behaviors.hasChild(component)).toBeTruthy();
+                expect(stage.behaviors.hasChild(component)).toBeTruthy();
             });
         });
 
@@ -304,7 +304,7 @@ describe("Stage", function() {
 
                 stage.addComponent(component);
 
-                expect(stage._geometry).toEqual(component);
+                expect(stage.geometry).toEqual(component);
             });
         });
 
@@ -314,7 +314,7 @@ describe("Stage", function() {
 
                 stage.addComponent(component);
 
-                expect(stage._renderer).toEqual(component);
+                expect(stage.renderer).toEqual(component);
             });
         });
 
@@ -324,7 +324,7 @@ describe("Stage", function() {
 
                 stage.addComponent(component);
 
-                expect(stage._collider).toEqual(component);
+                expect(stage.collider).toEqual(component);
             });
         });
 
@@ -368,7 +368,7 @@ describe("Stage", function() {
 
                 stage.removeComponent(component);
 
-                expect(stage._actionManager.hasChild(component)).toBeFalsy();
+                expect(stage.actionManager.hasChild(component)).toBeFalsy();
             });
         });
 
@@ -379,7 +379,7 @@ describe("Stage", function() {
 
                 stage.removeComponent(component);
 
-                expect(stage._behaviors.hasChild(component)).toBeFalsy();
+                expect(stage.behaviors.hasChild(component)).toBeFalsy();
             });
         });
 
@@ -390,7 +390,7 @@ describe("Stage", function() {
 
                 stage.removeComponent(component);
 
-                expect(stage._geometry).toBeNull();
+                expect(stage.geometry).toBeNull();
             });
         });
 
@@ -401,7 +401,7 @@ describe("Stage", function() {
 
                 stage.removeComponent(component);
 
-                expect(stage._renderer).toBeNull();
+                expect(stage.renderer).toBeNull();
             });
         });
 
@@ -412,7 +412,7 @@ describe("Stage", function() {
 
                 stage.removeComponent(component);
 
-                expect(stage._collider).toBeNull();
+                expect(stage.collider).toBeNull();
             });
         });
 

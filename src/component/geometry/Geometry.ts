@@ -59,6 +59,16 @@ module dy{
             this.material.dispose();
         }
 
+        public addToGameObject(gameObject:GameObject){
+            dyCb.Log.assert(!gameObject.geometry, "renderer is overwrite");
+
+            gameObject.geometry = this;
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            gameObject.geometry = null;
+        }
+
         protected computeVerticesBuffer():render.ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }

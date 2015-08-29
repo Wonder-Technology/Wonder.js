@@ -1,12 +1,22 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
     export class Collider extends Component {
-        collideXY(localX:number, localY:number):boolean {
+        public collideXY(localX:number, localY:number):boolean {
             return false;
         }
 
-        collide(collider:Collider):boolean {
+        public collide(collider:Collider):boolean {
             return false;
+        }
+
+        public addToGameObject(gameObject:GameObject){
+            dyCb.Log.assert(!gameObject.collider, "renderer is overwrite");
+
+            gameObject.collider = this;
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            gameObject.collider = null;
         }
     }
 }

@@ -30,23 +30,23 @@ describe("action integration test", function () {
         gameObject.addComponent(action);
 
         action.start();
-        gameObject._actionManager.update(50);
+        gameObject.actionManager.update(50);
         expect(x).toEqual(2.5);
         expect(action2.isFinish).toBeTruthy();
 
-        gameObject._actionManager.update(80);
+        gameObject.actionManager.update(80);
         expect(action3.isFinish).toBeTruthy();
         expect(action4.isFinish).toBeFalsy();
 
-        gameObject._actionManager.update(81);
+        gameObject.actionManager.update(81);
         expect(action4.isFinish).toBeTruthy();
         expect(sum).toEqual(100);
 
         window.performance.now.returns(100);
-        gameObject._actionManager.update(100);
+        gameObject.actionManager.update(100);
         expect(x).toEqual(5);
 
-        gameObject._actionManager.update(200);
+        gameObject.actionManager.update(200);
         expect(action1.isFinish).toBeTruthy();
         expect(x).toEqual(5);
         expect(action.isFinish).toBeTruthy();

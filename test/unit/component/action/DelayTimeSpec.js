@@ -19,11 +19,11 @@ describe("DelayTime", function () {
         gameObject.addComponent(action);
 
         action.start();
-        gameObject._actionManager.update(50);
+        gameObject.actionManager.update(50);
 
         expect(action.isFinish).toBeFalsy();
 
-        gameObject._actionManager.update(100);
+        gameObject.actionManager.update(100);
 
         expect(action.isFinish).toBeTruthy();
     });
@@ -43,17 +43,17 @@ describe("DelayTime", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(50);
+            gameObject.actionManager.update(50);
             action.stop();
-            gameObject._actionManager.update(150);
+            gameObject.actionManager.update(150);
             expect(action.isFinish).toBeFalsy();
 
             window.performance.now.returns(150);
             action.start();
-            gameObject._actionManager.update(200);
+            gameObject.actionManager.update(200);
             expect(action.isFinish).toBeFalsy();
 
-            gameObject._actionManager.update(250);
+            gameObject.actionManager.update(250);
             expect(action.isFinish).toBeTruthy();
         });
     });
@@ -64,19 +64,19 @@ describe("DelayTime", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(50);
+            gameObject.actionManager.update(50);
             window.performance.now.returns(50);
             action.pause();
 
-            gameObject._actionManager.update(100);
+            gameObject.actionManager.update(100);
             expect(action.isFinish).toBeFalsy();
             window.performance.now.returns(100);
             action.resume();
 
-            gameObject._actionManager.update(120);
+            gameObject.actionManager.update(120);
             expect(action.isFinish).toBeFalsy();
 
-            gameObject._actionManager.update(150);
+            gameObject.actionManager.update(150);
             expect(action.isFinish).toBeTruthy();
         });
     });

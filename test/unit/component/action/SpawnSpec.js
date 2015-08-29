@@ -195,8 +195,8 @@ describe("Spawn", function () {
             gameObject.addComponent(action);
             action.reverse();
             action.start();
-            gameObject._actionManager.update();
-            gameObject._actionManager.update();
+            gameObject.actionManager.update();
+            gameObject.actionManager.update();
 
             expect(context.name).toEqual("ba");
         });

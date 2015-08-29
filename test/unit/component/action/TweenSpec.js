@@ -41,17 +41,17 @@ describe("Tween", function () {
             action.start();
             expect(startCount).toEqual(0);
 
-            gameObject._actionManager.update(1);
+            gameObject.actionManager.update(1);
             expect(startCount).toEqual(1);
 
-            gameObject._actionManager.update(50);
+            gameObject.actionManager.update(50);
             expect(x).toEqual(2);
             expect(y).toEqual(5);
 
             action.stop();
             expect(stopCount).toEqual(1);
 
-            gameObject._actionManager.update(100);
+            gameObject.actionManager.update(100);
             expect(x).toEqual(2);
             expect(y).toEqual(5);
             expect(action.isFinish).toBeFalsy();
@@ -60,14 +60,14 @@ describe("Tween", function () {
             action.start();
             expect(startCount).toEqual(1);
 
-            gameObject._actionManager.update(101);
+            gameObject.actionManager.update(101);
             expect(startCount).toEqual(2);
 
-            gameObject._actionManager.update(125);
+            gameObject.actionManager.update(125);
             expect(x).toEqual(1);
             expect(y).toEqual(2.5);
 
-            gameObject._actionManager.update(200);
+            gameObject.actionManager.update(200);
             expect(x).toEqual(4);
             expect(y).toEqual(10);
             expect(action.isFinish).toBeTruthy();
@@ -86,7 +86,7 @@ describe("Tween", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(50);
+            gameObject.actionManager.update(50);
 
             expect(x).toEqual(Tween.Easing.Quadratic.In(0.5));
         });
@@ -106,13 +106,13 @@ describe("Tween", function () {
             gameObject.addComponent(action);
 
             action.start();
-            gameObject._actionManager.update(0);
+            gameObject.actionManager.update(0);
             expect(x).toEqual(0);
 
-            gameObject._actionManager.update(50);
+            gameObject.actionManager.update(50);
             expect(x).toEqual(50);
 
-            gameObject._actionManager.update(100);
+            gameObject.actionManager.update(100);
             expect(x).toEqual(100);
             expect(action.isFinish).toBeTruthy();
         });
@@ -159,11 +159,11 @@ describe("Tween", function () {
             action.reverse();
             action.start();
 
-            gameObject._actionManager.update(10);
+            gameObject.actionManager.update(10);
             expect(x).toEqual(3.6);
             expect(y).toEqual(9);
 
-            gameObject._actionManager.update(100);
+            gameObject.actionManager.update(100);
             expect(x).toEqual(0);
             expect(y).toEqual(0);
         });

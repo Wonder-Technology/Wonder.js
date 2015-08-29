@@ -22,5 +22,13 @@ module dy{
 
         public dispose(){
         }
+
+        public addToGameObject(gameObject:GameObject){
+            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
     }
 }

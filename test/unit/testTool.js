@@ -27,7 +27,7 @@ var testTool = (function(){
         },
         updateAction: function(time, gameObject){
             window.performance.now.returns(time);
-            gameObject._actionManager.update(time);
+            gameObject.actionManager.update(time);
         }
     }
 }());

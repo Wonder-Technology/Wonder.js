@@ -50,5 +50,17 @@ module dy{
                     return Script.script.pop();
                 });
         }
+
+        public addToGameObject(gameObject:GameObject){
+            Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
+                    .do((data:IScriptFileData) => {
+                        gameObject.script.addChild(data.name, new data.class(gameObject));
+                    })
+            );
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            Director.getInstance().scriptStreams.removeChild(this.uid.toString());
+        }
     }
 }

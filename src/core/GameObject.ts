@@ -32,14 +32,6 @@ module dy {
             this._transform = transform;
         }
 
-        private _renderer:Renderer = null;
-        get renderer(){
-            return this._renderer;
-        }
-        set renderer(renderer:Renderer){
-            this._renderer = renderer;
-        }
-
         private _name:string = "gameObject" + String(this.uid);
         get name(){
             return this._name;
@@ -53,12 +45,14 @@ module dy {
             return this._script;
         }
 
-        private _collider:Collider = null;
-        private _geometry:Geometry = null;
+        public renderer:Renderer = null;
+        public collider:Collider = null;
+        public geometry:Geometry = null;
+        public actionManager:ActionManager = ActionManager.create();
+        public behaviors:dyCb.Collection<Behavior> = dyCb.Collection.create<Behavior>();
+
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
-        private _actionManager:ActionManager = ActionManager.create();
-        private _behaviors:dyCb.Collection<Behavior> = dyCb.Collection.create<Behavior>();
 
         public init() {
             var self = this;
@@ -159,7 +153,7 @@ module dy {
 
             /*!
             no need to sort!
-            because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->_renderSortedTransparentCommands sort the commands)
+            because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
              */
 
             ///*!
@@ -331,7 +325,7 @@ module dy {
         }
 
         public isHit(locationInView:Point):boolean {
-            return this._collider ? this._collider.collideXY(locationInView.x, locationInView.y) : false;
+            return this.collider ? this.collider.collideXY(locationInView.x, locationInView.y) : false;
         }
 
         public hasComponent(component:Component):boolean;
@@ -352,7 +346,6 @@ module dy {
             }
         }
 
-        //todo refactor add "addToGameObject","removeFromGameObject" for component
         public addComponent(component:Component){
             var Log = dyCb.Log;
 
@@ -370,44 +363,7 @@ module dy {
             this._components.addChild(component);
             //component.init();
 
-            if(component instanceof Behavior){
-                if(component instanceof Action) {
-                    let action = <Action>component;
-
-                    action.target = this;
-                    this._actionManager.addChild(action);
-                }
-                else{
-                    let behavior = <Behavior>component;
-
-                    this._behaviors.addChild(behavior);
-                }
-            }
-            else if(component instanceof Geometry){
-                Log.assert(!this._renderer, "renderer is overwrite");
-
-                this._geometry = <Geometry>component;
-            }
-            else if(component instanceof Renderer) {
-                Log.assert(!this._renderer, "renderer is overwrite");
-
-                this._renderer = <Renderer>component;
-            }
-            else if(component instanceof Collider) {
-                Log.assert(!this._renderer, "collider is overwrite");
-
-                this._collider = <Collider>component;
-            }
-            else if(component instanceof Script){
-                let script = <Script>component,
-                    self = this;
-
-                Director.getInstance().scriptStreams.addChild(script.uid.toString(), script.createLoadJsStream()
-                    .do((data:IScriptFileData) => {
-                            self._script.addChild(data.name, new data.class(self));
-                        })
-                );
-            }
+            component.addToGameObject(this);
 
             return this;
         }
@@ -417,28 +373,7 @@ module dy {
 
             component.gameObject = null;
 
-            if(component instanceof Behavior){
-                if(component instanceof Action) {
-                    this._actionManager.removeChild(component);
-                }
-                else{
-                    this._behaviors.removeChild(component);
-                }
-            }
-            else if(component instanceof Geometry){
-                this._geometry = null;
-            }
-            else if(component instanceof Renderer) {
-                this._renderer = null;
-            }
-            else if(component instanceof Collider) {
-                this._collider = null;
-            }
-            else if(component instanceof Script){
-                let script = <Script>component;
-
-                Director.getInstance().scriptStreams.removeChild(script.uid.toString());
-            }
+            component.removeFromGameObject(this);
 
             return this;
         }
@@ -475,8 +410,8 @@ module dy {
             //    this._children[i].visit(renderer, this._transform, transformDirty, visibleFlag);
             //}
 
-            if(this._renderer && this._geometry){
-                this._renderer.render(renderer, this._geometry,  camera);
+            if(this.renderer && this.geometry){
+                this.renderer.render(renderer, this.geometry,  camera);
             }
 
             this._children.forEach((child:GameObject) => {
@@ -485,10 +420,10 @@ module dy {
         }
 
         public update(time:number):void {
-            this._behaviors.forEach((behavior:Behavior) => {
+            this.behaviors.forEach((behavior:Behavior) => {
                 behavior.update(time);
             });
-            this._actionManager.update(time);
+            this.actionManager.update(time);
 
             this._execScript("update", time);
 

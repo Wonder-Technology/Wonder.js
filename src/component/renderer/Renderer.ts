@@ -6,6 +6,16 @@ module dy {
         public render(renderer:render.Renderer, geometry:Geometry, camera:GameObject):void {
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
+
+        public addToGameObject(gameObject:GameObject){
+            dyCb.Log.assert(!gameObject.renderer, "renderer is overwrite");
+
+            gameObject.renderer = this;
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            gameObject.renderer = null;
+        }
     }
 }
 
