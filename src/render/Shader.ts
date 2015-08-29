@@ -7,41 +7,29 @@ module dy.render{
         	return obj;
         }
 
-        private _vsSource:string = null;
-        get vsSource(){
-            return this._vsSource;
-        }
-        set vsSource(vsSource:string){
-            this._vsSource = vsSource;
-        }
-        private _fsSource:string = null;
-        get fsSource(){
-            return this._fsSource;
-        }
-        set fsSource(fsSource:string){
-            this._fsSource = fsSource;
-        }
+        public vsSource:string = null;
+        public fsSource:string = null;
 
         constructor(vsSource:string, fsSource:string){
-        	this._vsSource = vsSource;
-        	this._fsSource = fsSource;
+        	this.vsSource = vsSource;
+        	this.fsSource = fsSource;
         }
 
         public createVsShader(){
             var gl = Director.getInstance().gl;
 
-            return this._initShader(gl.createShader(gl.VERTEX_SHADER), this._vsSource);
+            return this._initShader(gl.createShader(gl.VERTEX_SHADER), this.vsSource);
         }
 
         public createFsShader(){
             var gl = Director.getInstance().gl;
 
-            return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this._fsSource);
+            return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
         }
 
         public isEqual(other:Shader){
-            return this._vsSource === other.vsSource
-            && this._fsSource === other.fsSource;
+            return this.vsSource === other.vsSource
+            && this.fsSource === other.fsSource;
         }
 
         private _initShader(shader, source){

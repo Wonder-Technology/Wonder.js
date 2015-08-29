@@ -25,9 +25,11 @@ module dy{
                     self.needUpdate = true;
                 }
             });
+
+            return this;
         }
 
-        public copy(){
+        public copy():any{
             return this.copyHelper(VideoTexture.create());
         }
 

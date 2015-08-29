@@ -19,39 +19,33 @@ module dy{
             return m;
         }
 
-        private _values: Float32Array = null;
-        get values():Float32Array { return this._values; }
-        set values(values: Float32Array) {
-            this._values = values;
-        }
-
-        private _matrixArr:Array<Float32Array> = null;
-
         constructor(mat:Float32Array);
         constructor();
         constructor() {
             if (arguments.length === 1) {
-                this._values = arguments[0];
+                this.values = arguments[0];
             }
             else {
-                this._values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+                this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
             }
 
             this._matrixArr = [];
         }
 
+        public values: Float32Array = null;
 
+        private _matrixArr:Array<Float32Array> = null;
 
         public push(){
-            this._matrixArr.push(this._values);
+            this._matrixArr.push(this.values);
         }
 
         public pop(){
-            this._values = this._matrixArr.pop();
+            this.values = this._matrixArr.pop();
         }
 
         public setIdentity (): Matrix {
-            var e = this._values;
+            var e = this.values;
             e[0] = 1;   e[4] = 0;   e[8]  = 0;   e[12] = 0;
             e[1] = 0;   e[5] = 1;   e[9]  = 0;   e[13] = 0;
             e[2] = 0;   e[6] = 0;   e[10] = 1;   e[14] = 0;
@@ -67,9 +61,9 @@ module dy{
         public invert ():Matrix {
             var i, s, d, inv, det;
 
-            s = this._values;
+            s = this.values;
             inv = new Float32Array(16);
-            d = this._values;
+            d = this.values;
 
             inv[0]  =   s[5]*s[10]*s[15] - s[5] *s[11]*s[14] - s[9] *s[6]*s[15]
                 + s[9]*s[7] *s[14] + s[13]*s[6] *s[11] - s[13]*s[7]*s[10];
@@ -127,7 +121,7 @@ module dy{
         public transpose ():Matrix {
             var e, t;
 
-            e = this._values;
+            e = this.values;
 
             t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
             t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
@@ -147,7 +141,7 @@ module dy{
          * @return this
          */
         public setTranslate (x, y, z): Matrix {
-            var e = this._values;
+            var e = this.values;
             e[0] = 1;  e[4] = 0;  e[8]  = 0;  e[12] = x;
             e[1] = 0;  e[5] = 1;  e[9]  = 0;  e[13] = y;
             e[2] = 0;  e[6] = 0;  e[10] = 1;  e[14] = z;
@@ -181,7 +175,7 @@ module dy{
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
             var angle = Math.PI * angle / 180;
-            e = this._values;
+            e = this.values;
 
             s = Math.sin(angle);
             c = Math.cos(angle);
@@ -295,7 +289,7 @@ module dy{
          * @return this
          */
         public setScale (x, y, z):Matrix {
-            var e = this._values;
+            var e = this.values;
             e[0] = x;  e[4] = 0;  e[8]  = 0;  e[12] = 0;
             e[1] = 0;  e[5] = y;  e[9]  = 0;  e[13] = 0;
             e[2] = 0;  e[6] = 0;  e[10] = z;  e[14] = 0;
@@ -363,7 +357,7 @@ module dy{
         //    uz = sx * fy - sy * fx;
         //
         //    // Set to this.
-        //    e = this._values;
+        //    e = this.values;
         //    e[0] = sx;
         //    e[1] = ux;
         //    e[2] = -fx;
@@ -435,7 +429,7 @@ module dy{
             x.cross(y, z).normalize();
             y.cross(z, x);
 
-            var r = this._values;
+            var r = this.values;
 
             r[0]  = x.x;
             r[1]  = x.y;
@@ -477,7 +471,7 @@ module dy{
 
 
         public setOrtho (near, far):Matrix {
-            var e = this._values;
+            var e = this.values;
 
             e[0] = 1;
             e[1] = 0;
@@ -531,7 +525,7 @@ module dy{
             rd = 1 / (far - near);
             ct = Math.cos(fovy) / s;
 
-            e = this._values;
+            e = this.values;
 
             e[0]  = ct / aspect;
             e[1]  = 0;
@@ -566,11 +560,11 @@ module dy{
             var a = this,
                 b = other.copy();
 
-            //this._values = MathUtils.multiply(a, b);
+            //this.values = MathUtils.multiply(a, b);
                 //b*a，而不是a*b
                 //这是因为在webgl中，向量是右乘的，
-                //此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
-                this._values = b.multiply(a).values;
+                //此处希望坐标向量先进行this.values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+                this.values = b.multiply(a).values;
 
             return this;
         }
@@ -583,10 +577,10 @@ module dy{
                 mat2 = null,
                 result = null;
 
-            result = this._values;
+            result = this.values;
 
             if(arguments.length === 1){
-                mat1 = this._values;
+                mat1 = this.values;
                 mat2 = arguments[0].values;
             }
             else if(arguments.length === 2){
@@ -625,7 +619,7 @@ module dy{
         }
 
         public multiplyVector4(vector:Vector4):Vector4 {
-            var mat1 = this._values,
+            var mat1 = this.values,
                 vec4 = vector.values;
             var result = [];
 
@@ -638,7 +632,7 @@ module dy{
         }
 
         public multiplyVector3(vector:Vector3):Vector3 {
-            var mat1 = this._values,
+            var mat1 = this.values,
                 vec3 = vector.values;
             var result = [];
 
@@ -652,10 +646,10 @@ module dy{
         public copy(): Matrix{
             var result = Matrix.create(),
                 i = 0,
-                len = this._values.length;
+                len = this.values.length;
 
             for(i = 0; i < len; i++){
-                result.values[i] = this._values[i];
+                result.values[i] = this.values[i];
             }
 
 
@@ -663,19 +657,19 @@ module dy{
         }
 
         public getX(){
-            return Vector3.create(this._values[0], this._values[1], this._values[2]);
+            return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }
 
         public getY(){
-            return Vector3.create(this._values[4], this._values[5], this._values[6]);
+            return Vector3.create(this.values[4], this.values[5], this.values[6]);
         }
 
         public getZ(){
-            return Vector3.create(this._values[8], this._values[9], this._values[10]);
+            return Vector3.create(this.values[8], this.values[9], this.values[10]);
         }
 
         public getTranslation() {
-            return Vector3.create(this._values[12], this._values[13], this._values[14]);
+            return Vector3.create(this.values[12], this.values[13], this.values[14]);
         }
 
         public getScale() {
@@ -690,7 +684,7 @@ module dy{
             sy = scale.y;
             sz = scale.z;
 
-            m = this._values;
+            m = this.values;
 
             y = Math.asin(-m[2] / sx);
             halfPi = Math.PI * 0.5;
@@ -760,7 +754,7 @@ module dy{
             wy = qw * y2;
             wz = qw * z2;
 
-            m = this._values;
+            m = this.values;
 
             m[0] = (1 - (yy + zz)) * sx;
             m[1] = (xy + wz) * sx;

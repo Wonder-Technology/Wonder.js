@@ -13,7 +13,7 @@
 module dy{
     export class Event{
         constructor(eventName:EventName) {
-            this._name = eventName;
+            this.name = eventName;
         }
 
         get type(){
@@ -22,51 +22,13 @@ module dy{
             return this.innerType;
         }
 
-        private _name:EventName = null;
-        get name() {
-            return this._name;
-        }
-        set name(name:EventName) {
-            this._name = name;
-        }
-
+        public name:EventName = null;
         //target is the actual target that received the event.
-        private _target:GameObject = null;
-        get target() {
-            //dyCb.Log.error(!this._target, dyCb.Log.info.FUNC_MUST_DEFINE("target"));
-
-            return this._target;
-            //return this._target;
-            //return this._event.srcElement || this._event.target;
-        }
-        set target(target:GameObject) {
-            this._target = target;
-        }
-
+        public target:GameObject = null;
         //currentTarget is always the object listening for the event
-        private _currentTarget:GameObject = null;
-        get currentTarget() {
-            return this._currentTarget;
-        }
-        set currentTarget(currentTarget:GameObject) {
-            this._currentTarget = currentTarget;
-        }
-
-        private _isStopPropagation:boolean = false;
-        get isStopPropagation() {
-            return this._isStopPropagation;
-        }
-        set isStopPropagation(isStopPropagation:boolean) {
-            this._isStopPropagation = isStopPropagation;
-        }
-
-        private _phase:EventPhase = null;
-        get phase() {
-            return this._phase;
-        }
-        set phase(phase:EventPhase) {
-            this._phase = phase;
-        }
+        public currentTarget:GameObject = null;
+        public isStopPropagation:boolean = false;
+        public phase:EventPhase = null;
 
         protected innerType:EventType = null;
 
@@ -75,7 +37,7 @@ module dy{
         }
 
         public stopPropagation() {
-            this._isStopPropagation = true;
+            this.isStopPropagation = true;
         }
 
         protected copyMember(destination:Event, source:Event, memberArr:[any]){

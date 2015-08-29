@@ -7,44 +7,15 @@ module dy {
         	return obj;
         }
 
-        private _parent:GameObject = null;
-        get parent() {
-            return this._parent;
-        }
-
-        set parent(parent:GameObject) {
-            this._parent = parent;
-        }
-        
-        private _bubbleParent:GameObject = null;
-        get bubbleParent(){
-            return this._bubbleParent;
-        }
-        set bubbleParent(bubbleParent:GameObject){
-            this._bubbleParent = bubbleParent;
-        }
-        
-        private _transform:Transform = Transform.create(this);
-        get transform(){
-            return this._transform;
-        }
-        set transform(transform:Transform){
-            this._transform = transform;
-        }
-
-        private _name:string = "gameObject" + String(this.uid);
-        get name(){
-            return this._name;
-        }
-        set name(name:string){
-            this._name = name;
-        }
-
         private _script:dyCb.Hash<IScriptBehavior> = dyCb.Hash.create<IScriptBehavior>();
         get script(){
             return this._script;
         }
 
+        public parent:GameObject = null;
+        public bubbleParent:GameObject = null;
+        public transform:Transform = Transform.create(this);
+        public name:string = "gameObject" + String(this.uid);
         public renderer:Renderer = null;
         public collider:Collider = null;
         public geometry:Geometry = null;
@@ -101,9 +72,9 @@ module dy {
 
             this._execScript("onDispose");
 
-            if(this._parent){
-                this._parent.removeChild(this);
-                this._parent = null;
+            if(this.parent){
+                this.parent.removeChild(this);
+                this.parent = null;
             }
 
             EventManager.off(this);
@@ -162,9 +133,9 @@ module dy {
             // */
             //this.sort();
             //}
-            //child._parent = this;
+            //child.parent = this;
             //child.setBubbleParent(this);
-            //child._transform.dirty = true;
+            //child.transform.dirty = true;
             //child.dispatchEvent(new CoreEvent('add', false));
             //this.dispatchEvent(new CoreEvent('childadd', false, {
             //    child: child
@@ -258,7 +229,7 @@ module dy {
         // * @returns {boolean}
         // */
         //public removeMe():GameObject {
-        //    var parent = this._parent;
+        //    var parent = this.parent;
         //
         //    parent && parent.removeChild(this);
         //
@@ -377,18 +348,18 @@ module dy {
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {
             //    if(transformDirty) {
-            //        this._transform.dirty = true;
+            //        this.transform.dirty = true;
             //    }
             //    return;
             //}
-            //if(this._transform.dirty) {
-            //    transformDirty = transformDirty || this._transform.dirty;
+            //if(this.transform.dirty) {
+            //    transformDirty = transformDirty || this.transform.dirty;
             //}
             //if(transformDirty) {
-            //    if(this._transform instanceof RectTransform) {
-            //        this._transform.transform(this._stage.viewRectTransform, parentTransform);
+            //    if(this.transform instanceof RectTransform) {
+            //        this.transform.transform(this._stage.viewRectTransform, parentTransform);
             //    } else {
-            //        this._transform.transform(this._stage.rootTransform, parentTransform);
+            //        this.transform.transform(this._stage.rootTransform, parentTransform);
             //    }
             //}
             //
@@ -401,7 +372,7 @@ module dy {
             //}
             //
             //for(i=0,len=this._children.length; i<len; i++) {
-            //    this._children[i].visit(renderer, this._transform, transformDirty, visibleFlag);
+            //    this._children[i].visit(renderer, this.transform, transformDirty, visibleFlag);
             //}
 
             if(this.renderer && this.geometry){

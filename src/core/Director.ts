@@ -19,39 +19,11 @@ module dy{
             return this._instance;
         }
 
-        private _stage:Stage = Stage.create();
-        get stage(){
-            return this._stage;
-        }
-
-        private _scheduler:Scheduler = Scheduler.create();
-        get scheduler(){
-            return this._scheduler;
-        }
-
-        private _renderer:render.Renderer= null;
-        get renderer(){
-            return this._renderer;
-        }
-        set renderer(renderer:render.Renderer){
-            this._renderer = renderer;
-        }
-
-        private _view:IView = null;
-        get view(){
-            return this._view;
-        }
-        set view(view:IView){
-            this._view = view;
-        }
-
-        private _gl:any = null;
-        get gl(){
-            return this._gl;
-        }
-        set gl(gl:any){
-            this._gl = gl;
-        }
+        public stage:Stage = Stage.create();
+        public scheduler:Scheduler = Scheduler.create();
+        public renderer:render.Renderer= null;
+        public view:IView = null;
+        public gl:any = null;
 
         get gameTime(){
             return this._timeController.gameTime;
@@ -90,20 +62,20 @@ module dy{
 
         public initWhenCreate(){
             //todo detect to decide using which renderer
-            this._renderer = render.WebGLRenderer.create();
+            this.renderer = render.WebGLRenderer.create();
         }
 
         public start(){
             this._gameState = GameState.NORMAL;
 
-            this._startLoop();
+            this.startLoop();
         }
 
         public stop(){
             this._gameLoop && this._gameLoop.dispose();
             this._gameState = GameState.STOP;
             this._timeController.stop();
-            this._scheduler.stop();
+            this.scheduler.stop();
         }
 
         public pause(){
@@ -113,37 +85,37 @@ module dy{
 
             this._gameState = GameState.PAUSE;
             this._timeController.pause();
-            this._scheduler.pause();
+            this.scheduler.pause();
         }
 
         public resume(){
             this._gameState = GameState.NORMAL;
             this._timeController.resume();
-            this._scheduler.resume();
+            this.scheduler.resume();
         }
 
         //todo add dispose
 
         public getView():IView{
-            return this._view;
+            return this.view;
         }
 
         public getTopUnderPoint(point:Point):GameObject{
-            //if(!this._scene){
+            //if(!this.scene){
             //    return null;
             //}
 
-            //return this._scene.getTopUnderPoint(point);
-            return this._stage.getTopUnderPoint(point);
+            //return this.scene.getTopUnderPoint(point);
+            return this.stage.getTopUnderPoint(point);
         }
 
         public createGL(canvasId:string){
-            this._view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
+            this.view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
             //todo delete Director->gl
-            this._gl = this._view.getContext();
+            this.gl = this.view.getContext();
         }
 
-        private _startLoop() {
+        private startLoop() {
             var self = this;
 
             this._gameLoop = dyRt.judge(
@@ -180,14 +152,14 @@ module dy{
 
                 GPUDetector.getInstance().detect();
 
-                this._stage.onEnter();
-                this._stage.init();
+                this.stage.onEnter();
+                this.stage.init();
 
                 //todo not put here?
-                this._renderer.init();
+                this.renderer.init();
 
                 this._timeController.start();
-                this._scheduler.start();
+                this.scheduler.start();
             }, this);
         }
 
@@ -213,7 +185,7 @@ module dy{
             this._run(elapseTime);
             //this._run(time);
 
-            //this._renderer.render(this._scene);
+            //this.renderer.render(this.scene);
 
             EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
 
@@ -228,15 +200,15 @@ module dy{
         private _run(time:number) {
             //Time.update(timeScale);
             //update children's behaviour
-            this._stage.update(time);
+            this.stage.update(time);
             //invoke children's tranform(update modelMatrix, rotate,translate,scale)
-            // and render(send vertice and indice datas to this._render, do other render work)
-            //this._stage.visitStage(this._renderer);
-            this._stage.render(this._renderer);
+            // and render(send vertice and indice datas to this.render, do other render work)
+            //this.stage.visitStage(this.renderer);
+            this.stage.render(this.renderer);
             //operate vertice and indice data, draw them(drawArray or drawElement)
-            this._renderer.render();
+            this.renderer.render();
             //do task?
-            this._scheduler.update(time);
+            this.scheduler.update(time);
             //WOZLLA.utils.Tween.tick(Time.delta);
         }
     }

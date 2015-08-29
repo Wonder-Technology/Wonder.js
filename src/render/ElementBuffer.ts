@@ -19,21 +19,21 @@ module dy.render{
                 return null;
             }
 
-            this.p_buffer = gl.createBuffer();   // Create a buffer object
-            if (!this.p_buffer) {
-                dyCb.Log.log('Failed to create the this.p_buffer object');
+            this.buffer = gl.createBuffer();   // Create a buffer object
+            if (!this.buffer) {
+                dyCb.Log.log('Failed to create the this.buffer object');
                 return null;
             }
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.p_buffer);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
-            this.p_type = gl[type];
-            this.p_num = data.length;
+            this.type = gl[type];
+            this.num = data.length;
             this._typeSize = this._getInfo(type).size;
 
-            return this.p_buffer;
+            return this.buffer;
         }
 
 

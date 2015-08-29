@@ -9,13 +9,7 @@ module dy.render{
             return obj;
         }
 
-        private _count:number = null;
-        get count(){
-            return this._count;
-        }
-        set count(count:number){
-            this._count = count;
-        }
+        public count:number = null;
 
         public initWhenCreate(data, num, type:BufferType) {
             var gl = Director.getInstance().gl;
@@ -24,21 +18,21 @@ module dy.render{
                 return null;
             }
 
-            this.p_buffer = gl.createBuffer();   // Create a buffer object
-            if (!this.p_buffer) {
-                dyCb.Log.log('Failed to create the this.p_buffer object');
+            this.buffer = gl.createBuffer();   // Create a buffer object
+            if (!this.buffer) {
+                dyCb.Log.log('Failed to create the this.buffer object');
                 return null;
             }
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.p_buffer);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
             gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-            this.p_num = num;
-            this.p_type = gl[type];
-            this._count = data.length / num;
+            this.num = num;
+            this.type = gl[type];
+            this.count = data.length / num;
 
-            return this.p_buffer;
+            return this.buffer;
         }
     }
 }

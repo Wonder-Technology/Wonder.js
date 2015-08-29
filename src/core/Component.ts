@@ -1,20 +1,14 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class Component extends Entity{
-        private _gameObject:GameObject = null;
-        get gameObject(){
-            return this._gameObject;
-        }
-        set gameObject(gameObject:GameObject){
-            this._gameObject = gameObject;
-        }
+        public gameObject:GameObject = null;
 
         public get transform():Transform {
-            if(!this._gameObject) {
+            if(!this.gameObject) {
                 return null;
             }
 
-            return this._gameObject.transform;
+            return this.gameObject.transform;
         }
 
         public init(){

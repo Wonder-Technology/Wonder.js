@@ -9,7 +9,6 @@ module dy {
 
         //todo move it elsewhere?
         public program:render.Program = null;
-
         public camera:GameObject = null;
 
         public init(){

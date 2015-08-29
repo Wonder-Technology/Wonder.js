@@ -18,7 +18,7 @@ describe("TextureManager", function() {
 
         beforeEach(function(){
             copyTexture = {
-                init:sandbox.stub()
+                init:sandbox.stub().returns({})
             };
             texture = {
                 copy: sandbox.stub().returns(copyTexture)

@@ -13,10 +13,6 @@ module dy {
             this._innerAction = action;
         }
 
-        get isFinish() {
-            return false;
-        }
-
         private _innerAction:Action = null;
 
         public update(time) {

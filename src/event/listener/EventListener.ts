@@ -14,33 +14,13 @@ module dy {
             return obj;
         }
 
-        private _eventType:EventType = null;
-        get eventType(){
-            return this._eventType;
-        }
-        set eventType(eventType:EventType){
-            this._eventType = eventType;
-        }
-
-        private _priority:number = null;
-        get priority(){
-            return this._priority;
-        }
-        set priority(priority:number){
-            this._priority = priority;
-        }
-
-        private _handlerDataList:dyCb.Collection<IEventHandlerData> = dyCb.Collection.create<IEventHandlerData>();
-        get handlerDataList(){
-            return this._handlerDataList;
-        }
-        set handlerDataList(handlerDataList:dyCb.Collection<IEventHandlerData>){
-            this._handlerDataList = handlerDataList;
-        }
+        public eventType:EventType = null;
+        public priority:number = null;
+        public handlerDataList:dyCb.Collection<IEventHandlerData> = dyCb.Collection.create<IEventHandlerData>();
 
         constructor(option:any){
-            this._eventType = option.eventType;
-            this._priority = option.priority || 1;
+            this.eventType = option.eventType;
+            this.priority = option.priority || 1;
         }
 
         public initWhenCreate(option:{any}){
@@ -54,7 +34,7 @@ module dy {
             for(i in option){
                 if(option.hasOwnProperty(i)){
                     if(REGEX_HANDER.test(i)){
-                        this._handlerDataList.addChild({
+                        this.handlerDataList.addChild({
                             eventName: this._parseEventName(i),
                             handler: option[i]
                         });

@@ -7,48 +7,17 @@ module dy {
             return obj;
         }
 
-        private _x:number = null;
-        get x() {
-            return this._x;
-        }
-
-        set x(x:number) {
-            this._x = x;
-        }
-
-        private _y:number = null;
-        get y() {
-            return this._y;
-        }
-
-        set y(y:number) {
-            this._y = y;
-        }
-
-        private _z:number = null;
-        get z() {
-            return this._z;
-        }
-
-        set z(z:number) {
-            this._z = z;
-        }
-
-        private _w:number = null;
-        get w() {
-            return this._w;
-        }
-
-        set w(w:number) {
-            this._w = w;
-        }
-
         constructor(x:number = 0, y:number = 0, z:number = 0, w:number = 1) {
-            this._x = x;
-            this._y = y;
-            this._z = z;
-            this._w = w;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
         }
+
+        public x:number = null;
+        public y:number = null;
+        public z:number = null;
+        public w:number = null;
 
         /**
          * @function
@@ -80,10 +49,10 @@ module dy {
             sz = Math.sin(ez);
             cz = Math.cos(ez);
 
-            this._x = sx * cy * cz - cx * sy * sz;
-            this._y = cx * sy * cz + sx * cy * sz;
-            this._z = cx * cy * sz - sx * sy * cz;
-            this._w = cx * cy * cz + sx * sy * sz;
+            this.x = sx * cy * cz - cx * sy * sz;
+            this.y = cx * sy * cz + sx * cy * sz;
+            this.z = cx * cy * sz - sx * sy * cz;
+            this.w = cx * cy * cz + sx * sy * sz;
 
             return this;
         }
@@ -175,11 +144,11 @@ module dy {
             tr = m00 + m11 + m22;
             if (tr >= 0) {
                 s = Math.sqrt(tr + 1);
-                this._w = s * 0.5;
+                this.w = s * 0.5;
                 s = 0.5 / s;
-                this._x = (m12 - m21) * s;
-                this._y = (m20 - m02) * s;
-                this._z = (m01 - m10) * s;
+                this.x = (m12 - m21) * s;
+                this.y = (m20 - m02) * s;
+                this.z = (m01 - m10) * s;
             } else {
                 if (m00 > m11) {
                     if (m00 > m22) {
@@ -187,42 +156,42 @@ module dy {
                         rs = (m00 - (m11 + m22)) + 1;
                         rs = Math.sqrt(rs);
 
-                        this._x = rs * 0.5;
+                        this.x = rs * 0.5;
                         rs = 0.5 / rs;
-                        this._w = (m12 - m21) * rs;
-                        this._y = (m01 + m10) * rs;
-                        this._z = (m02 + m20) * rs;
+                        this.w = (m12 - m21) * rs;
+                        this.y = (m01 + m10) * rs;
+                        this.z = (m02 + m20) * rs;
                     } else {
                         // ZDiagDomMatrix
                         rs = (m22 - (m00 + m11)) + 1;
                         rs = Math.sqrt(rs);
 
-                        this._z = rs * 0.5;
+                        this.z = rs * 0.5;
                         rs = 0.5 / rs;
-                        this._w = (m01 - m10) * rs;
-                        this._x = (m20 + m02) * rs;
-                        this._y = (m21 + m12) * rs;
+                        this.w = (m01 - m10) * rs;
+                        this.x = (m20 + m02) * rs;
+                        this.y = (m21 + m12) * rs;
                     }
                 } else if (m11 > m22) {
                     // YDiagDomMatrix
                     rs = (m11 - (m22 + m00)) + 1;
                     rs = Math.sqrt(rs);
 
-                    this._y = rs * 0.5;
+                    this.y = rs * 0.5;
                     rs = 0.5 / rs;
-                    this._w = (m20 - m02) * rs;
-                    this._z = (m12 + m21) * rs;
-                    this._x = (m10 + m01) * rs;
+                    this.w = (m20 - m02) * rs;
+                    this.z = (m12 + m21) * rs;
+                    this.x = (m10 + m01) * rs;
                 } else {
                     // ZDiagDomMatrix
                     rs = (m22 - (m00 + m11)) + 1;
                     rs = Math.sqrt(rs);
 
-                    this._z = rs * 0.5;
+                    this.z = rs * 0.5;
                     rs = 0.5 / rs;
-                    this._w = (m01 - m10) * rs;
-                    this._x = (m20 + m02) * rs;
-                    this._y = (m21 + m12) * rs;
+                    this.w = (m01 - m10) * rs;
+                    this.x = (m20 + m02) * rs;
+                    this.y = (m21 + m12) * rs;
                 }
             }
 
@@ -250,10 +219,10 @@ module dy {
             sa = Math.sin(angle);
             ca = Math.cos(angle);
 
-            this._x = sa * axis.x;
-            this._y = sa * axis.y;
-            this._z = sa * axis.z;
-            this._w = ca;
+            this.x = sa * axis.x;
+            this.y = sa * axis.y;
+            this.z = sa * axis.z;
+            this.w = ca;
 
             return this;
         }
@@ -275,9 +244,9 @@ module dy {
         }
 
         public conjugate() {
-            this._x *= -1;
-            this._y *= -1;
-            this._z *= -1;
+            this.x *= -1;
+            this.y *= -1;
+            this.z *= -1;
 
             return this;
         }
@@ -294,11 +263,11 @@ module dy {
          * console.log("The result of the cloning is: " + q.toString());
          */
         public clone() {
-            return Quaternion.create(this._x, this._y, this._z, this._w);
+            return Quaternion.create(this.x, this.y, this.z, this.w);
         }
 
         public copy() {
-            return Quaternion.create(this._x, this._y, this._z, this._w);
+            return Quaternion.create(this.x, this.y, this.z, this.w);
         }
 
         /**
@@ -317,14 +286,14 @@ module dy {
         public normalize() {
             var len = this.length();
             if (len === 0) {
-                this._x = this._y = this._z = 0;
-                this._w = 1;
+                this.x = this.y = this.z = 0;
+                this.w = 1;
             } else {
                 len = 1 / len;
-                this._x *= len;
-                this._y *= len;
-                this._z *= len;
-                this._w *= len;
+                this.x *= len;
+                this.y *= len;
+                this.z *= len;
+                this.w *= len;
             }
 
             return this;
@@ -344,10 +313,10 @@ module dy {
         public length() {
             var x, y, z, w;
 
-            x = this._x;
-            y = this._y;
-            z = this._z;
-            w = this._w;
+            x = this.x;
+            y = this.y;
+            z = this.z;
+            w = this.w;
 
             return Math.sqrt(x * x + y * y + z * z + w * w);
         }
@@ -399,10 +368,10 @@ module dy {
     }
 
         public set(x:number, y:number, z:number, w:number){
-            this._x = x;
-            this._y = y;
-            this._z = z;
-            this._w = w;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
         }
 
         public sub(quat:Quaternion){
@@ -424,10 +393,10 @@ module dy {
         public getEulerAngles() {
             var x, y, z, qx, qy, qz, qw, a2;
 
-            qx = this._x;
-            qy = this._y;
-            qz = this._z;
-            qw = this._w;
+            qx = this.x;
+            qy = this.y;
+            qz = this.z;
+            qw = this.w;
 
             a2 = 2 * (qw * qy - qx * qz);
             if (a2 <= -0.99999) {

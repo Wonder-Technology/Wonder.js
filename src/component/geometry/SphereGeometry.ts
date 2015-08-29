@@ -7,29 +7,9 @@ module dy{
             return geom;
         }
 
-        private _radius:number = null;
-        get radius(){
-            return this._radius;
-        }
-        set radius(radius:number){
-            this._radius = radius;
-        }
-
-        private _drawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
-        get drawMode(){
-            return this._drawMode;
-        }
-        set drawMode(drawMode:SphereDrawMode){
-            this._drawMode = drawMode;
-        }
-
-        private _segments:number = null;
-        get segments(){
-            return this._segments;
-        }
-        set segments(segments:number){
-            this._segments = segments;
-        }
+        public radius:number = null;
+        public drawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
+        public segments:number = null;
 
         private _data:{
             vertices;
@@ -38,7 +18,7 @@ module dy{
         } = null;
 
         public init(){
-            this._data = this._computeData(this._radius, this._drawMode, this._segments);
+            this._data = this._computeData(this.radius, this.drawMode, this.segments);
 
             super.init();
         }
@@ -76,36 +56,16 @@ module dy{
             return geom;
         }
 
-        private _vertices:number[] = [];
-        get vertices(){
-            return this._vertices;
-        }
-        set vertices(vertices:number[]){
-            this._vertices = vertices;
-        }
+        public vertices:number[] = [];
+        public indices:number[] = [];
+        public texCoords:number[] = [];
 
-        private _indices:number[] = [];
-        get indices(){
-            return this._indices;
-        }
-        set indices(indices:number[]){
-            this._indices = indices;
-        }
-
-        private _texCoords:number[] = [];
-        get texCoords(){
-            return this._texCoords;
-        }
-        set texCoords(texCoords:number[]){
-            this._texCoords = texCoords;
-        }
-
-        private _radius:number = null;
+        private radius:number = null;
         private _latitudeBands:number = null;
         private _longitudeBands:number = null;
 
         constructor(radius, bands){
-            this._radius = radius;
+            this.radius = radius;
             this._latitudeBands = bands;
             this._longitudeBands = bands;
         }
@@ -123,12 +83,12 @@ module dy{
                     var sinPhi = Math.sin(phi);
                     var cosPhi = Math.cos(phi);
 
-                    //var x = this._radius * cosPhi * sinTheta + pointX;
-                    //var y = this._radius *cosTheta + pointY;
-                    //var z = this._radius *sinPhi * sinTheta + pointZ;
-                    var x = this._radius * cosPhi * sinTheta;
-                    var y = this._radius *cosTheta;
-                    var z = this._radius *sinPhi * sinTheta;
+                    //var x = this.radius * cosPhi * sinTheta + pointX;
+                    //var y = this.radius *cosTheta + pointY;
+                    //var z = this.radius *sinPhi * sinTheta + pointZ;
+                    var x = this.radius * cosPhi * sinTheta;
+                    var y = this.radius *cosTheta;
+                    var z = this.radius *sinPhi * sinTheta;
                     var u = 1 - (longNumber / this._longitudeBands);
                     var v = 1 - (latNumber / this._latitudeBands);
 
@@ -140,39 +100,39 @@ module dy{
                     //    this._texCoords.push(0);
                     //}
                     //else{
-                        this._texCoords.push(u);
-                        this._texCoords.push(v);
+                        this.texCoords.push(u);
+                        this.texCoords.push(v);
                     //}
-                    this._vertices.push(x);
-                    this._vertices.push(y);
-                    this._vertices.push(z);
+                    this.vertices.push(x);
+                    this.vertices.push(y);
+                    this.vertices.push(z);
                 }
             }
 
 
 
-            //this._一圈有经度点longitudeBands个
+            //this.一圈有经度点longitudeBands个
             for (var latNumber = 0; latNumber < this._latitudeBands; latNumber++) {
                 for (var longNumber = 0; longNumber < this._longitudeBands; longNumber++) {
                     var first = latNumber * (this._longitudeBands + 1) + longNumber;
                     var second = first + this._longitudeBands + 1;
-                    this._indices.push(first + 1);
-                    this._indices.push(second);
-                    this._indices.push(first);
+                    this.indices.push(first + 1);
+                    this.indices.push(second);
+                    this.indices.push(first);
 
-                    this._indices.push(first + 1);
-                    this._indices.push(second + 1);
-                    this._indices.push(second);
+                    this.indices.push(first + 1);
+                    this.indices.push(second + 1);
+                    this.indices.push(second);
                 }
             }
 
             return {
-                vertices: render.ArrayBuffer.create(new Float32Array(this._vertices),
+                vertices: render.ArrayBuffer.create(new Float32Array(this.vertices),
                     3, render.BufferType.FLOAT),
-                indices: render.ElementBuffer.create(new Uint16Array(this._indices),
+                indices: render.ElementBuffer.create(new Uint16Array(this.indices),
                     render.BufferType.UNSIGNED_SHORT),
                 //normals: new Float32Array(normals),
-                texCoords: render.ArrayBuffer.create(new Float32Array(this._texCoords),
+                texCoords: render.ArrayBuffer.create(new Float32Array(this.texCoords),
                     2, render.BufferType.FLOAT)
             }
         }
@@ -204,22 +164,22 @@ module dy{
     //    }
     //
     //    private _vLen:number = null;
-    //    private _radius:number = null;
+    //    private radius:number = null;
     //    private _count:number = null;
     //
     //    constructor(radius, count){
-    //        this._radius = radius;
+    //        this.radius = radius;
     //        this._count = count;
     //    }
     //
     //    public getData(){
     //        var originVertices = [
-    //            [this._radius, 0, 0],
-    //            [-this._radius, 0, 0],
-    //            [0, this._radius, 0],
-    //            [0, -this._radius, 0],
-    //            [0, 0, this._radius],
-    //            [0, 0, -this._radius]
+    //            [this.radius, 0, 0],
+    //            [-this.radius, 0, 0],
+    //            [0, this.radius, 0],
+    //            [0, -this.radius, 0],
+    //            [0, 0, this.radius],
+    //            [0, 0, -this.radius]
     //        ];
     //        var originIndices = [
     //            //[2,4,0],[2,0,5],[2,5,1],[2,1,4],   [3,0,4],[3,5,0],[3,1,5],[3,4,1]
@@ -251,7 +211,7 @@ module dy{
     //                originVertices[originIndices[j][2]],
     //                originIndices[j],
     //                this._count,
-    //                this._radius);
+    //                this.radius);
     //
     //            //}
     //

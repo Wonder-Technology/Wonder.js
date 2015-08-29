@@ -23,44 +23,40 @@ module dy{
         constructor(x, y, z);
         constructor();
         constructor(){
-            this._values = new Float32Array(3);
+            this.values = new Float32Array(3);
 
             if(arguments.length > 0){
-                this._values[0] = arguments[0];
-                this._values[1] = arguments[1];
-                this._values[2] =arguments[2];
+                this.values[0] = arguments[0];
+                this.values[1] = arguments[1];
+                this.values[2] =arguments[2];
             }
         }
 
-        private _values: Float32Array;
-        get values():Float32Array { return this._values; }
-        set values(values: Float32Array) {
-            this._values = values;
-        }
-
         get x(){
-            return this._values[0];
+            return this.values[0];
         }
         set x(x:number){
-            this._values[0] = x;
+            this.values[0] = x;
         }
 
         get y(){
-            return this._values[1];
+            return this.values[1];
         }
         set y(y:number){
-            this._values[1] = y;
+            this.values[1] = y;
         }
 
         get z(){
-            return this._values[2];
+            return this.values[2];
         }
         set z(z:number){
-            this._values[2] = z;
+            this.values[2] = z;
         }
 
+        public values: Float32Array;
+
         public normalize(): Vector3{
-            var v = this._values;
+            var v = this.values;
             var d = Math.sqrt(
                 v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
             );
@@ -77,7 +73,7 @@ module dy{
         }
 
         public scale(scalar:number) {
-            var v = this._values;
+            var v = this.values;
 
             v[0] *= scalar;
             v[1] *= scalar;
@@ -93,41 +89,41 @@ module dy{
         }
 
         public sub(v:Vector3):Vector3 {
-            this._values[0] = this._values[0] - v.values[0];
-            this._values[1] = this._values[1] - v.values[1];
-            this._values[2] = this._values[2] - v.values[2];
+            this.values[0] = this.values[0] - v.values[0];
+            this.values[1] = this.values[1] - v.values[1];
+            this.values[2] = this.values[2] - v.values[2];
 
             return this;
         }
 
         public sub2(v1:Vector3, v2:Vector3){
-            this._values[0] = v1.values[0] - v2.values[0];
-            this._values[1] = v1.values[1] - v2.values[1];
-            this._values[2] = v1.values[2] - v2.values[2];
+            this.values[0] = v1.values[0] - v2.values[0];
+            this.values[1] = v1.values[1] - v2.values[1];
+            this.values[2] = v1.values[2] - v2.values[2];
 
             return this;
         }
 
         public add(v:Vector3){
-            this._values[0] = this._values[0] + v.values[0];
-            this._values[1] = this._values[1] + v.values[1];
-            this._values[2] = this._values[2] + v.values[2];
+            this.values[0] = this.values[0] + v.values[0];
+            this.values[1] = this.values[1] + v.values[1];
+            this.values[2] = this.values[2] + v.values[2];
 
             return this;
         }
 
         public add2(v1:Vector3, v2:Vector3){
-            this._values[0] = v1.values[0] + v2.values[0];
-            this._values[1] = v1.values[1] + v2.values[1];
-            this._values[2] = v1.values[2] + v2.values[2];
+            this.values[0] = v1.values[0] + v2.values[0];
+            this.values[1] = v1.values[1] + v2.values[1];
+            this.values[2] = v1.values[2] + v2.values[2];
 
             return this;
         }
 
         public reverse():Vector3{
-            this._values[0] = -this._values[0];
-            this._values[1] = -this._values[1];
-            this._values[2] = -this._values[2];
+            this.values[0] = -this.values[0];
+            this.values[1] = -this.values[1];
+            this.values[2] = -this.values[2];
 
             return this;
         }
@@ -135,21 +131,21 @@ module dy{
         public copy(): Vector3{
             var result = Vector3.create(),
                 i = 0,
-                len = this._values.length;
+                len = this.values.length;
 
             for(i = 0; i < len; i++){
-                result.values[i] = this._values[i];
+                result.values[i] = this.values[i];
             }
 
             return result;
         }
 
         public toVec4(): Vector4{
-            return Vector4.create(this._values[0], this._values[1], this._values[2], 1.0);
+            return Vector4.create(this.values[0], this.values[1], this.values[2], 1.0);
         }
 
         public length() {
-            var v = this._values;
+            var v = this.values;
 
             return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
         }
@@ -172,7 +168,7 @@ module dy{
 
             a = lhs.values;
             b = rhs.values;
-            r = this._values;
+            r = this.values;
 
             ax = a[0];
             ay = a[1];
@@ -210,7 +206,7 @@ module dy{
         public lerp(lhs:Vector3, rhs:Vector3, alpha:number) {
             var a = lhs.values,
                 b = rhs.values,
-                r = this._values;
+                r = this.values;
 
             r[0] = a[0] + alpha * (b[0] - a[0]);
             r[1] = a[1] + alpha * (b[1] - a[1]);

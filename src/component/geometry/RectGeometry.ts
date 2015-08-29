@@ -7,25 +7,12 @@ module dy{
                 return geom;
             }
 
-        private _width:number = null;
-        get width(){
-            return this._width;
-        }
-        set width(width:number){
-            this._width = width;
-        }
-
-        private _height:number = null;
-        get height(){
-            return this._height;
-        }
-        set height(height:number){
-            this._height = height;
-        }
+        public width:number = null;
+        public height:number = null;
 
         protected computeVerticesBuffer(){
-            var width = this._width,
-                height = this._height,
+            var width = this.width,
+                height = this.height,
             left = -width / 2,
                 right = width / 2,
                 up = height / 2,

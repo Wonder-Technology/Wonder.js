@@ -1,6 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy.render {
-    declare var window;
     export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();
@@ -22,14 +21,6 @@ module dy.render {
             }
         }
 
-        private _color:Color = null;
-        get color() {
-            return this._color;
-        }
-        set color(color:Color) {
-            this._color = color;
-        }
-
         //todo remove it?
         set shader(shader:Shader) {
             if (Director.getInstance().stage.program.isChangeShader(shader)) {
@@ -38,29 +29,15 @@ module dy.render {
             }
         }
 
-        private _mvpMatrix:Matrix = null;
-        get mvpMatrix() {
-            return this._mvpMatrix;
-        }
-        set mvpMatrix(mvpMatrix:Matrix) {
-            this._mvpMatrix = mvpMatrix;
-        }
-
-        private _drawMode:DrawMode = DrawMode.TRIANGLES;
-        get drawMode() {
-            return this._drawMode;
-        }
-        set drawMode(drawMode:DrawMode) {
-            this._drawMode = drawMode;
-        }
-
+        public mvpMatrix:Matrix = null;
+        public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
 
         public execute() {
             this._update();
             this._sendData();
-            this._draw();
+            this.draw();
         }
 
         public init() {
@@ -97,7 +74,7 @@ module dy.render {
 
             this.material.textureManager.sendData();
 
-            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._mvpMatrix);
+            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this.mvpMatrix);
         }
 
         private _sendBufferData(){
@@ -126,7 +103,7 @@ module dy.render {
             }
         }
 
-        private _draw() {
+        private draw() {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
@@ -140,11 +117,11 @@ module dy.render {
                 totalNum = indexBuffer.num;
 
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-                gl.drawElements(gl[this._drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
                 totalNum = vertexBuffer.num;
-                gl.drawArrays(gl[this._drawMode], startOffset, totalNum);
+                gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         }
 

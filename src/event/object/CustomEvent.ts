@@ -9,13 +9,7 @@ module dy {
 
         protected innerType:EventType = EventType.CUSTOM;
         
-        private _userData:any = null;
-        get userData(){
-            return this._userData;
-        }
-        set userData(userData:any){
-            this._userData = userData;
-        }
+        public userData:any = null;
 
         public copyPublicAttri(destination, source:any){
             var property = null;

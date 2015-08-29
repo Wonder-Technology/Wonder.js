@@ -18,46 +18,6 @@ module dy{
             return this.cameraToWorldMatrix.invert();
         }
 
-        private _pMatrix:Matrix = Matrix.create();
-        get pMatrix(){
-            return this._pMatrix;
-        }
-        set pMatrix(pMatrix:Matrix){
-            this._pMatrix = pMatrix;
-        }
-
-        private _vMatrix:Matrix = Matrix.create();
-        get vMatrix(){
-            return this._vMatrix;
-        }
-        set vMatrix(vMatrix:Matrix){
-            this._vMatrix = vMatrix;
-        }
-
-        private _eye:Vector3 = null;
-        get eye(){
-            return this._eye;
-        }
-        set eye(eye:Vector3){
-            this._eye = eye;
-        }
-
-        private _center:Vector3 = null;
-        get center(){
-            return this._center;
-        }
-        set center(center:Vector3){
-            this._center = center;
-        }
-
-        private _up:Vector3 = null;
-        get up(){
-            return this._up;
-        }
-        set up(up:Vector3){
-            this._up = up;
-        }
-
         private _fovy:number= null;
         get fovy(){
             return this._fovy;
@@ -94,17 +54,23 @@ module dy{
             this._dirty = true;
         }
 
+        public pMatrix:Matrix = Matrix.create();
+        public vMatrix:Matrix = Matrix.create();
+        public eye:Vector3 = null;
+        public center:Vector3 = null;
+        public up:Vector3 = null;
+
         private _dirty:boolean = false;
 
         public init(){
-            this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+            this.pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
         }
 
         public computeVpMatrix(){
             var matrix = Matrix.create();
 
             matrix.applyMatrix(this.worldToCameraMatrix);
-            matrix.applyMatrix(this._pMatrix);
+            matrix.applyMatrix(this.pMatrix);
 
             return matrix;
         }
@@ -118,7 +84,7 @@ module dy{
 
         public update(time){
             if(this._dirty){
-                this._pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+                this.pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
                 this._dirty = false;
             }
         }

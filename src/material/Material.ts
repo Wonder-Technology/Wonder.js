@@ -9,28 +9,6 @@ module dy {
             return obj;
         }
 
-        /**
-         * main color
-         * @type {Color|dy.Color}
-         * @private
-         */
-        private _color:Color = Color.create("0xffffff");
-        get color(){
-            return this._color;
-        }
-        set color(color:Color){
-            this._color = color;
-        }
-
-        //todo add default shader
-        private _shader:render.Shader = null;
-        get shader(){
-            return this._shader;
-        }
-        set shader(shader:render.Shader){
-            this._shader = shader;
-        }
-
         private _blendType:BlendType = null;
         get blendType(){
             if(this._blendType){
@@ -114,6 +92,9 @@ module dy {
             this._blendType = blendType;
         }
 
+        public color:Color = Color.create("0xffffff");
+        //todo add default shader
+        public shader:render.Shader = null;
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;

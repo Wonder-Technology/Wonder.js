@@ -20,7 +20,7 @@ module dy{
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
                 this._dirtyLocal = false;
-                this._dirtyWorld = true;
+                this.dirtyWorld = true;
             }
             return this.localToParentMatrix;
         }
@@ -200,13 +200,7 @@ module dy{
             return this.localToWorldMatrix.getZ().normalize().scale(-1);
         }
 
-        private _dirtyWorld:boolean = null;
-        get dirtyWorld(){
-            return this._dirtyWorld;
-        }
-        set dirtyWorld(dirtyWorld:boolean){
-            this._dirtyWorld = dirtyWorld;
-        }
+        public dirtyWorld:boolean = null;
 
         private _dirtyLocal:boolean = true;
         private _children:dyCb.Collection<Transform> = dyCb.Collection.create<Transform>();
@@ -233,10 +227,10 @@ module dy{
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
                 this._dirtyLocal = false;
-                this._dirtyWorld = true;
+                this.dirtyWorld = true;
             }
 
-            if (this._dirtyWorld) {
+            if (this.dirtyWorld) {
                 if (this._parent === null) {
                     this._localToWorldMatrix = this._localToParentMatrix.copy();
                 }
@@ -244,7 +238,7 @@ module dy{
                     this._localToWorldMatrix = this._parent.localToWorldMatrix.copy().multiply(this._localToParentMatrix);
                 }
 
-                this._dirtyWorld = false;
+                this.dirtyWorld = false;
 
                 this._children.forEach((child:Transform) => {
                     child.dirtyWorld = true;

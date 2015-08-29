@@ -2,7 +2,7 @@
 module dy {
     export class Control extends ActionInterval{
         set target(target:GameObject){
-            this.p_target = target;
+            this.target = target;
 
             this.getInnerActions().forEach((action:Action) => {
                 action.target = target;

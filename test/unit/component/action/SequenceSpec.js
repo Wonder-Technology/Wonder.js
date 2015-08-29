@@ -24,6 +24,7 @@ describe("Sequence", function () {
                     this.name = gameObject.name;
                     this.a = dataArr.getChild(0) + dataArr.getChild(1);
                 }, context, 3, 4);
+        action2.target = gameObject;
         var x = null;
         var tween = dy.Tween.create();
         tween.from({x:0}).to({x: 4}, 100)

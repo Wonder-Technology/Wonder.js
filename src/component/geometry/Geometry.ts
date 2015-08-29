@@ -1,60 +1,26 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class Geometry extends Component{
-        private _vertices:render.ArrayBuffer = null;
-        get vertices(){
-            return this._vertices;
-        }
-        set vertices(vertices:render.ArrayBuffer){
-            this._vertices = vertices;
-        }
-
-        private _indices:render.ElementBuffer = null;
-        get indices(){
-            return this._indices;
-        }
-        set indices(indices:render.ElementBuffer){
-            this._indices = indices;
-        }
-        
-        private _texCoords:render.ArrayBuffer = null;
-        get texCoords(){
-            return this._texCoords;
-        }
-        set texCoords(texCoords:render.ArrayBuffer){
-            this._texCoords = texCoords;
-        }
-
-        private _colors:render.ArrayBuffer = null;
-        get colors(){
-            return this._colors;
-        }
-        set colors(colors:render.ArrayBuffer){
-            this._colors = colors;
-        }
-
-        private _material:Material = null;
-        get material(){
-            return this._material;
-        }
-        set material(material:Material){
-            this._material = material;
-        }
+        public vertices:render.ArrayBuffer = null;
+        public indices:render.ElementBuffer = null;
+        public texCoords:render.ArrayBuffer = null;
+        public colors:render.ArrayBuffer = null;
+        public material:Material = null;
 
         public init(){
-            this._vertices = this.computeVerticesBuffer();
-            this._indices = this.computeIndicesBuffer();
-            //this._normals = this._computeNormals();
-            this._texCoords = this.computeTexCoordsBuffer();
+            this.vertices = this.computeVerticesBuffer();
+            this.indices = this.computeIndicesBuffer();
+            //this.normals = this.computeNormals();
+            this.texCoords = this.computeTexCoordsBuffer();
             //todo compute from vertexColors(refer to threejs)
-            this._colors = this._computeColorsBuffer(this._material);
+            this.colors = this._computeColorsBuffer(this.material);
         }
 
         public dispose(){
-            this._vertices.dispose();
-            this._indices.dispose();
-            this._texCoords.dispose();
-            this._colors.dispose();
+            this.vertices.dispose();
+            this.indices.dispose();
+            this.texCoords.dispose();
+            this.colors.dispose();
 
             this.material.dispose();
         }
@@ -85,7 +51,7 @@ module dy{
             var arr = [],
                 color = material.color,
                 i = 0,
-                len = this._vertices.count;
+                len = this.vertices.count;
 
             for(i = 0; i < len; i++){
                 arr.push( color.r, color.g, color.b, color.a);

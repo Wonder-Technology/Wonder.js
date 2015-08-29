@@ -1,13 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    export interface IView {
-        offset:{x:number, y:number};
-        width:number;
-        height:number;
-        dom:any;
-        getContext():any;
-    }
-
     export class ViewWebGL implements IView {
         public static create(view:IView) {
             var obj = new this(view);
@@ -49,4 +41,13 @@ module dy {
             return this._dom.getContext("webgl") || this._dom.getContext("experimental-webgl");
         }
     }
+
+    export interface IView {
+        offset:{x:number, y:number};
+        width:number;
+        height:number;
+        dom:any;
+        getContext():any;
+    }
+
 }

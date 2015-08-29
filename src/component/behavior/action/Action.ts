@@ -1,15 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
     export class Action extends Behavior{
-        /*!to avoid be duplicate with child class's private attribute*/
-        private dy_isFinish:boolean = false;
-        get isFinish(){
-            return this.dy_isFinish;
-        }
-        set isFinish(isFinish:boolean){
-            this.dy_isFinish = isFinish;
-        }
-
         get isStart() {
             return !this.isStop;
         }
@@ -22,19 +13,18 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        /*!
-        add "p_" prefix to avoid be duplicate with the getter
-         */
-        protected p_target:GameObject = null;
+        private _target:GameObject = null;
         get target(){
-            return this.p_target;
+            return this._target;
         }
         set target(target:GameObject){
-            this.p_target = target;
+            this._target = target;
         }
 
+        public isFinish:boolean = false;
+
         public reset() {
-            this.dy_isFinish = false;
+            this.isFinish = false;
         }
 
         public update(time:number){
@@ -42,7 +32,7 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
-            this.target = gameObject;
+            this._target = gameObject;
             gameObject.actionManager.addChild(this);
         }
 
@@ -75,7 +65,7 @@ module dy{
         }
 
         protected finish(){
-            this.dy_isFinish = true;
+            this.isFinish = true;
             this.stop();
         }
         //todo add hook method like onEnter/onExit?
