@@ -8,12 +8,16 @@ module dy {
         }
 
         public addToGameObject(gameObject:GameObject){
+            super.addToGameObject(gameObject);
+
             dyCb.Log.assert(!gameObject.renderer, "renderer is overwrite");
 
             gameObject.renderer = this;
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             gameObject.renderer = null;
         }
     }

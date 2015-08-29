@@ -26,7 +26,7 @@ module dy {
         }
         public update(time) {
             if (this._callFunc) {
-                this._callFunc.call(this._context, this.target, this._dataArr);
+                this._callFunc.call(this._context, this.p_target, this._dataArr);
             }
 
             this.finish();

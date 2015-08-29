@@ -6,10 +6,14 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
+            super.addToGameObject(gameObject);
+
             gameObject.behaviors.addChild(this);
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             gameObject.behaviors.removeChild(this);
         }
     }

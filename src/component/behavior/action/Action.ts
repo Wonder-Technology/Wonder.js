@@ -13,12 +13,12 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        private _target:GameObject = null;
+        protected p_target:GameObject = null;
         get target(){
-            return this._target;
+            return this.p_target;
         }
         set target(target:GameObject){
-            this._target = target;
+            this.p_target = target;
         }
 
         public isFinish:boolean = false;
@@ -32,11 +32,15 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
-            this._target = gameObject;
+            super.addToGameObject(gameObject);
+
+            this.target = gameObject;
             gameObject.actionManager.addChild(this);
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             gameObject.actionManager.removeChild(this);
         }
 

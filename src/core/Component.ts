@@ -18,11 +18,14 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+            if(this.gameObject) {
+                this.gameObject.removeComponent(this);
+            }
+            this.gameObject = gameObject;
         }
 
         public removeFromGameObject(gameObject:GameObject){
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+            this.gameObject = null;
         }
     }
 }

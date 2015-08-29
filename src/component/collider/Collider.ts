@@ -10,12 +10,16 @@ module dy {
         }
 
         public addToGameObject(gameObject:GameObject){
+            super.addToGameObject(gameObject);
+
             dyCb.Log.assert(!gameObject.collider, "renderer is overwrite");
 
             gameObject.collider = this;
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             gameObject.collider = null;
         }
     }

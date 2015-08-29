@@ -319,12 +319,6 @@ module dy {
                 return this;
             }
 
-            if(component.gameObject) {
-                component.gameObject.removeComponent(component);
-            }
-            component.gameObject = this;
-
-
             this._components.addChild(component);
             //component.init();
 
@@ -335,8 +329,6 @@ module dy {
 
         public removeComponent(component:Component){
             this._components.removeChild(component);
-
-            component.gameObject = null;
 
             component.removeFromGameObject(this);
 

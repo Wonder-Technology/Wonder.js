@@ -52,6 +52,8 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
+            super.addToGameObject(gameObject);
+
             Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
                     .do((data:IScriptFileData) => {
                         gameObject.script.addChild(data.name, new data.class(gameObject));
@@ -60,6 +62,8 @@ module dy{
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             Director.getInstance().scriptStreams.removeChild(this.uid.toString());
         }
     }

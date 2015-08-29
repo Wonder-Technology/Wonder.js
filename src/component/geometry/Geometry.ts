@@ -26,12 +26,16 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
+            super.addToGameObject(gameObject);
+
             dyCb.Log.assert(!gameObject.geometry, "renderer is overwrite");
 
             gameObject.geometry = this;
         }
 
         public removeFromGameObject(gameObject:GameObject){
+            super.removeFromGameObject(gameObject);
+
             gameObject.geometry = null;
         }
 
