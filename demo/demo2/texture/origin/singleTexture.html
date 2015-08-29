@@ -45,7 +45,7 @@
             var material = dy.Material.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material.shader = shader;
-            material.texture = createTexture();
+            material.textureManager.addChild(dy.TextureLoader.getInstance().get("texture1"));
 
 
 
@@ -82,19 +82,6 @@
 
 
             director.start();
-        }
-
-        function createTexture(){
-            var texture = dy.TwoDTexture.create({
-                "TEXTURE_MIN_FILTER":"LINEAR"
-            }, true);
-            if (!texture) {
-                console.log('Failed to create the texture object');
-                return null;
-            }
-            texture.createTextureArea(dy.ImgLoader.getInstance().get("texture1"));
-
-            return texture;
         }
 
         function _createCamera() {

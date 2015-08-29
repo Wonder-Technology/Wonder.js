@@ -46,8 +46,8 @@
             var material1 = dy.Material.create();
             material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material1.shader = shader;
-            material1.textureManager.addChild(createTexture());
-            material1.textureManager.addChild(createTexture2());
+            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture1"));
+            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture2"));
 
 
 

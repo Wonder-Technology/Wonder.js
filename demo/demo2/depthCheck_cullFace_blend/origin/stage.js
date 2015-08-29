@@ -7,7 +7,7 @@ dy.Script.create("stage", function (director) {
         this.keyState = {};
     }
 
-    Stage.prototype.onEnter = function () {
+    Stage.prototype.init = function () {
         this.bindCanvasEvent(director.view);
     };
 
@@ -16,7 +16,7 @@ dy.Script.create("stage", function (director) {
         this.isRotate = false;
     };
 
-    Stage.prototype.onExit = function () {
+    Stage.prototype.onDispose = function () {
         this.removeEvent();
     };
 
