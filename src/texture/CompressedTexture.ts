@@ -33,15 +33,23 @@ module dy{
 
             if (this.format !== TextureFormat.RGBA) {
                 this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                    gl.compressedTexImage2D(gl.TEXTURE_2D, index, format, mipmap.width, mipmap.height, 0, mipmap.data);
+                    gl.compressedTexImage2D(gl.TEXTURE_2D, index, format, mipmap.width, mipmap.height, 0, self.getDrawTarget(mipmap.data));
                 });
-
             }
             else{
                 this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                    gl.texImage2D(gl.TEXTURE_2D, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], mipmap.data);
+                    gl.texImage2D(gl.TEXTURE_2D, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], self.getDrawTarget(mipmap.data));
                 });
             }
+        }
+
+        protected getDrawTarget(source:any=this.source){
+            /*!
+            because canvas->drawImage can't draw the compressed texture's data
+             */
+            dyCb.Log.error(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS");
+
+            return super.getDrawTarget(source);
         }
 
         protected isCheckMaxSize(){

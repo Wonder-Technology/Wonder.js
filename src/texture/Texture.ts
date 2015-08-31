@@ -27,22 +27,10 @@ module dy{
         }
 
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
+        public sourceRegion:RectRegion = null;
 
-        //todo how to repeat texture of sourceRegion?
-        private _sourceRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
-        get sourceRegion(){
-            return this._sourceRegion;
-        }
-        set sourceRegion(sourceRegion:RectRegion){
-            if(this.sourceRegionMapping === TexCoordMapping.CANVAS){
-                this._sourceRegion = this._convertCanvasMappingToUVMapping(sourceRegion)
-            }
-            else if(this.sourceRegionMapping === TexCoordMapping.UV){
-                this._sourceRegion = sourceRegion;
-            }
-        }
-
-        public sourceRegionMapping:TexCoordMapping = TexCoordMapping.CANVAS;
+        public sourceRegionMapping:TextureSourceRegionMapping = TextureSourceRegionMapping.CANVAS;
+        public sourceRegionMethod: TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
 
         public generateMipmaps:boolean = true;
         public flipY:boolean = true;
@@ -105,10 +93,19 @@ module dy{
         }
 
         public sendData(index){
-            var program = Director.getInstance().stage.program;
+            var program = Director.getInstance().stage.program,
+                sourceRegion = null;
 
             program.setUniformData("u_sampler" + index, render.UniformDataType.NUMBER_1, index);
-            program.setUniformData("u_sourceRegion", render.UniformDataType.FLOAT_4, this.sourceRegion);
+
+            if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
+                sourceRegion = this._convertSourceRegionToUV();
+            }
+            else{
+                sourceRegion = RectRegion.create(0, 0, 1, 1);
+            }
+            program.setUniformData("u_sourceRegion", render.UniformDataType.FLOAT_4, sourceRegion);
+
             program.setUniformData("u_repeatRegion", render.UniformDataType.FLOAT_4, this.repeatRegion);
 
             return this;
@@ -143,6 +140,10 @@ module dy{
             dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
 
             texture.source = this.source;
+
+            texture.width = this.width;
+            texture.height = this.height;
+
             texture.mipmaps = this.mipmaps.copy();
 
             texture.wrapS = this.wrapS;
@@ -157,8 +158,10 @@ module dy{
             texture.type = this.type;
 
             texture.repeatRegion = this.repeatRegion.copy();
-            texture.sourceRegion = this.sourceRegion.copy();
+            texture.sourceRegion = this.sourceRegion && this.sourceRegion.copy();
             texture.sourceRegionMapping = this.sourceRegionMapping;
+
+            texture.sourceRegionMethod = this.sourceRegionMethod;
 
             texture.generateMipmaps = this.generateMipmaps;
             texture.premultiplyAlpha = this.premultiplyAlpha;
@@ -172,6 +175,32 @@ module dy{
 
         protected isCheckMaxSize(){
             return true;
+        }
+
+        protected getDrawTarget(source:any=this.source){
+            var result = null,
+                canvas = null,
+                ctx = null;
+
+            if(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS
+                && this.sourceRegion.isNotEmpty()){
+                canvas = document.createElement( "canvas" );
+                canvas.width = this.sourceRegion.width;
+                canvas.height = this.sourceRegion.height;
+
+                ctx = canvas.getContext("2d");
+
+                ctx.drawImage(source,
+                    this.sourceRegion.x, this.sourceRegion.y, this.sourceRegion.width, this.sourceRegion.height,
+                    0, 0, this.sourceRegion.width, this.sourceRegion.height);
+
+                result = canvas;
+            }
+            else{
+                result = source;
+            }
+
+            return result;
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
@@ -272,15 +301,31 @@ module dy{
             return canvas;
         }
 
-        private _convertCanvasMappingToUVMapping(sourceRegion:RectRegion){
-            var region = RectRegion.create();
+        private _convertSourceRegionCanvasMapToUV(sourceRegion:RectRegion){
+            var width = this.width,
+                height = this.height,
+                region:RectRegion = null;
 
-            region.x = sourceRegion.x;
-            region.y = 1 - sourceRegion.y - sourceRegion.height;
-            region.width = sourceRegion.width;
-            region.height = sourceRegion.height;
+            region = RectRegion.create(
+                sourceRegion.x / width,
+                sourceRegion.y / height,
+                sourceRegion.width / width,
+                sourceRegion.height / height
+            );
+
+            region.y = 1 - region.y - region.height;
 
             return region;
+        }
+
+        //todo optimize: add dirty cache
+        private _convertSourceRegionToUV(){
+            if(this.sourceRegionMapping === TextureSourceRegionMapping.CANVAS){
+                return this._convertSourceRegionCanvasMapToUV(this.sourceRegion);
+            }
+            else if(this.sourceRegionMapping === TextureSourceRegionMapping.UV){
+                return this.sourceRegion;
+            }
         }
     }
 }

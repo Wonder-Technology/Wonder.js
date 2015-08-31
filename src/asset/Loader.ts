@@ -30,6 +30,10 @@ module dy{
             return this._container.hasChild(id);
         }
 
+        public dispose(){
+            this._container.removeAllChildren();
+        }
+
         protected loadAsset(url:string):dyRt.Stream{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }

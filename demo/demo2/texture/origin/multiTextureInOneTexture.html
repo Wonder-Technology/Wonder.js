@@ -17,7 +17,8 @@
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"},
-            {url: "../../../res/multiTextureInOneTexture/goulong_023.tt.png", id:"multiTexture"}
+            {url: "../../../res/multiTextureInOneTexture/goulong_023.tt.png", id:"multiTexture"},
+            {url: "../../../res/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
         ]).subscribe(null, function(e){
                     throw e;
                 },
@@ -45,16 +46,37 @@
             var material1 = dy.Material.create();
             material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material1.shader = shader;
+
+
+
+
+
+
+
             material1.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
+
+            material1.cullMode = dy.CullMode.NONE;
+
+
             var map1 = material1.textureManager.getChild(0);
-            map1.sourceRegion = dy.RectRegion.create(0, 0, 0.5, 0.5);
+
+            map1.sourceRegion = dy.RectRegion.create(0, 0, 64, 64);
+            /*!
+            default sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.
+            in this case, it can't repeat correctly!
+            (because the texture is the whole texture, not the part(while map2 is the part of texture)
 
 
+            map1.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
+            map1.wrapS = dy.TextureWrapMode.REPEAT;
+            map1.wrapT = dy.TextureWrapMode.REPEAT;
 
-            var geometry1 = dy.SphereGeometry.create();
+             */
+
+            var geometry1 = dy.RectGeometry.create();
             geometry1.material = material1;
-            geometry1.radius = 2;
-            geometry1.segments = 30;
+            geometry1.width = 5;
+            geometry1.height = 5;
 
 
             var mesh1 = dy.GameObject.create();
@@ -64,16 +86,27 @@
 
             mesh1.addComponent(meshRenderer1);
 
+            mesh1.transform.translateLocal(dy.Vector3.create(-5, 0, 0));
 
 
 
             var material2 = dy.Material.create();
             material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
             material2.shader = shader;
+            material2.cullMode = dy.CullMode.NONE;
+
             material2.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
             var map2 = material2.textureManager.getChild(0);
-            map2.sourceRegion = dy.RectRegion.create(0.2, 0.5, 0.5, 0.5);
-            material2.cullMode = dy.CullMode.NONE;
+
+            /*!
+             when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
+             */
+
+            map2.sourceRegion = dy.RectRegion.create(0, 0, 64, 64);
+            map2.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+            map2.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
+            map2.wrapS = dy.TextureWrapMode.REPEAT;
+            map2.wrapT = dy.TextureWrapMode.REPEAT;
 
 
 
@@ -98,10 +131,49 @@
 
 
 
+            var material3 = dy.Material.create();
+            material3.color= dy.Color.create("rgba(0, 355, 0, 0.4)");
+            material3.shader = shader;
+            material3.cullMode = dy.CullMode.NONE;
+
+            material3.textureManager.addChild(dy.TextureLoader.getInstance().get("compressedTexture"));
+            var map3 = material3.textureManager.getChild(0);
+
+            map3.sourceRegion = dy.RectRegion.create(0, 0, 256, 256);
+            /*! compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS
+
+            map3.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+*/
+
+
+
+            var geometry3 = dy.RectGeometry.create();
+            geometry3.material = material3;
+            geometry3.width = 3;
+            geometry3.height = 3;
+
+
+            var mesh3 = dy.GameObject.create();
+            mesh3.addComponent(geometry3);
+
+            var meshRenderer3 = dy.MeshRenderer.create();
+
+            mesh3.addComponent(meshRenderer3);
+
+
+            mesh3.transform.translateLocal(dy.Vector3.create(0, 3, 0));
+
+
+
+
+
+
+
             var director = dy.Director.getInstance();
 
             director.stage.addChild(mesh1);
             director.stage.addChild(mesh2);
+            director.stage.addChild(mesh3);
 
             director.stage.addChild(_createCamera());
 

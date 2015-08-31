@@ -81,7 +81,7 @@
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
-/// <reference path="asset/texture/TexCoordMapping"/>
+/// <reference path="asset/texture/TextureSourceRegionMapping"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 

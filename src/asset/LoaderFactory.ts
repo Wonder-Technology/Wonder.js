@@ -26,5 +26,9 @@ module dy{
 
             return loader;
         }
+
+        public static createAllLoader():dyCb.Collection<Loader>{
+            return dyCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance()]);
+        }
     }
 }

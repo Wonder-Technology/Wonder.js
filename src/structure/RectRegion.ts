@@ -24,6 +24,13 @@ module dy {
         public copy():RectRegion{
             return this.copyHelper(RectRegion.create());
         }
+
+        public isNotEmpty(){
+            return this.x !== 0
+            || this.y !== 0
+            || this.width !== 0
+            || this.height !== 0;
+        }
         //get width(){
         //    return this.width;
         //}

@@ -12,7 +12,7 @@ module dy{
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-                var gl = Director.getInstance().gl;
+            var self = this;
 
             // use manually created mipmaps if available
             // if there are no manual mipmaps
@@ -20,14 +20,20 @@ module dy{
 
             if(isSourcePowerOfTwo && this.mipmaps.getCount() > 0) {
                 this.mipmaps.forEach((mipmap:HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, index:number) => {
-                    gl.texImage2D(gl.TEXTURE_2D, index, gl[this.format], gl[this.format], gl[this.type], mipmap);
+                    self._drawTexture(index, mipmap);
                 });
 
                 this.generateMipmaps = false;
             }
             else {
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl[this.format], gl[this.format], gl[this.type], this.source);
+                this._drawTexture(0, this.source);
             }
+        }
+
+        private _drawTexture(index:number, source:any){
+            var gl = Director.getInstance().gl;
+
+            gl.texImage2D(gl.TEXTURE_2D, index, gl[this.format], gl[this.format], gl[this.type], this.getDrawTarget(source));
         }
     }
 }

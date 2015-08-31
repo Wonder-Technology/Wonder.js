@@ -620,6 +620,11 @@ beforeEach(function () {
         function _isSpecificCall(stub) {
             return !stub.firstCall
         }
+        function _isCalled(stub){
+            var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];
+
+            return actualArg;
+        }
 
 
         jasmine.addMatchers({
@@ -638,13 +643,12 @@ beforeEach(function () {
                                 }
                             };
 
-                        actualArg = _isSpecificCall(actual) ? actual.args : actual.args[0];
                         expectedArg = Array.prototype.slice.call(arguments, 1);
 
 
                         message = "Expected to called with " + toString(expectedArg);
 
-                        if(!actualArg || actualArg.length === 0){
+                        if(!_isCalled(actual)){
                             message += ", but actual is not called";
                         }
                         else{
@@ -703,7 +707,7 @@ beforeEach(function () {
                         var msg = null;
 
                         msg = "Expected to be called before, ";
-                        msg += actual.called ? "but actual is be called after" : "but actual is not called";
+                        msg += _isCalled(actual) ? "but actual is be called after" : "but actual is not called";
 
                         return {
                             pass: actual.calledBefore(expected),
@@ -718,7 +722,7 @@ beforeEach(function () {
                         var msg = null;
 
                         msg = "Expected to be called after, ";
-                        msg += actual.called ? "but actual is be called before" : "but actual is not called";
+                        msg += _isCalled(actual) ? "but actual is be called after" : "but actual is not called";
 
                         return {
                             pass: actual.calledAfter(expected),

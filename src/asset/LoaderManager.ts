@@ -39,6 +39,12 @@ module dy{
             this.currentLoadedCount = 0;
         }
 
+        public dispose(){
+            LoaderFactory.createAllLoader().forEach((loader:Loader) => {
+                loader.dispose();
+            });
+        }
+
         private _createLoadAssetStream(url, id){
             var loader = this._getLoader(url),
                 stream = null,
