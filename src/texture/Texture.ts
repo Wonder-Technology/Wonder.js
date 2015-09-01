@@ -47,8 +47,9 @@ module dy{
         public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
         public mipmaps:dyCb.Collection<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement> = dyCb.Collection.create<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement>();
         public anisotropy:number = null;
-
         public needUpdate:boolean = true;
+
+        protected target:TextureTarget = TextureTarget.TEXTURE_2D;
 
         private _texture:any = null;
 
@@ -79,12 +80,12 @@ module dy{
                 this.source = this._clampToMaxSize(this.source);
             }
 
-            this._setTextureParameters( gl.TEXTURE_2D, isSourcePowerOfTwo);
+            this._setTextureParameters( gl[this.target], isSourcePowerOfTwo);
 
             this.allocateSourceToTexture(isSourcePowerOfTwo);
 
             if (this.generateMipmaps && isSourcePowerOfTwo) {
-                gl.generateMipmap(gl.TEXTURE_2D);
+                gl.generateMipmap(gl[this.target]);
             }
 
             this.needUpdate = false;
@@ -120,7 +121,7 @@ module dy{
             }
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
-            gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            gl.bindTexture(gl[this.target], this._texture);
 
             return this;
         }

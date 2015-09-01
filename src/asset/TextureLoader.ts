@@ -21,17 +21,17 @@ module dy{
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            var texture = TwoDTexture.create(image);
+                            var asset = CommonTextureAsset.create(image);
 
-                            texture.format = TextureFormat.RGB;
+                            asset.format = TextureFormat.RGB;
 
-                            return texture;
+                            return asset;
                         });
                     break;
                 case ".png":
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            return TwoDTexture.create(image);
+                            return CommonTextureAsset.create(image);
                         });
                     break;
                 case ".dds":

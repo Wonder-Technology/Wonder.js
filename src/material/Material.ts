@@ -110,6 +110,10 @@ module dy {
 
         public textureManager:TextureManager = TextureManager.create();
 
+        public init(){
+            this.textureManager.init();
+        }
+
         public dispose(){
             this.textureManager.dispose();
         }

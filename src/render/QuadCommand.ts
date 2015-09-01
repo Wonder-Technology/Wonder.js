@@ -29,10 +29,13 @@ module dy.render {
             }
         }
 
-        public mvpMatrix:Matrix = null;
+        public mMatrix:Matrix = null;
+        public vMatrix:Matrix = null;
+        public pMatrix:Matrix = null;
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
+        public isSkybox:boolean = false;
 
         public execute() {
             this._update();
@@ -74,7 +77,9 @@ module dy.render {
 
             this.material.textureManager.sendData();
 
-            program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this.mvpMatrix);
+            program.setUniformData("u_mMatrix", UniformDataType.FLOAT_MAT4, this.mMatrix);
+            program.setUniformData("u_vMatrix", UniformDataType.FLOAT_MAT4, this.vMatrix);
+            program.setUniformData("u_pMatrix", UniformDataType.FLOAT_MAT4, this.pMatrix);
         }
 
         private _sendBufferData(){

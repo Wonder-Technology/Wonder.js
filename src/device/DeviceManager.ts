@@ -5,6 +5,18 @@ DeviceManager is responsible for global setting of gl
  */
 
 module dy {
+    /*! default is LESS */
+    export enum DepthFunction{
+        NEVER = <any>"NEVER",
+        ALWAYS = <any>"ALWAYS",
+        LESS = <any>"LESS",
+        LEQUAL = <any>"LEQUAL",
+        EQUAL = <any>"EQUAL",
+        GEQUAL = <any>"GEQUAL",
+        GREATER = <any>"GREATER",
+        NOTEQUAL = <any>"NOTEQUAL"
+    }
+
     /*!default is BACK*/
     export enum CullMode{
         NONE,
@@ -159,6 +171,21 @@ module dy {
                 this._depthTest = depthTest;
             }
         }
+
+        private _depthFunc:DepthFunction = null;
+        get depthFunc(){
+            return this._depthFunc;
+        }
+        set depthFunc(depthFunc:DepthFunction){
+            var gl = this.gl;
+
+            if (this._depthFunc !== depthFunc) {
+                gl.depthFunc(gl[depthFunc]);
+
+                this._depthFunc = depthFunc;
+            }
+        }
+
 
         private _cullMode:CullMode = null;
         get cullMode() {

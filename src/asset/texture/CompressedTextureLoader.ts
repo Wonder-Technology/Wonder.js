@@ -7,8 +7,8 @@ module dy{
                     var texDatas:DDSData = DDSParser.parse(data, true);
                     //var images = [];
 
-                    var texture = CompressedTexture.create();
-                    //texture.image = images;
+                    var asset = CompressedTextureAsset.create();
+                    //asset.image = images;
 
 
                     //if ( texDatas.isCubemap ) {
@@ -31,22 +31,22 @@ module dy{
                     //
                     //}
                     //else {
-                    //    texture.image.width = texDatas.width;
-                    //    texture.image.height = texDatas.height;
-                    texture.width = texDatas.width;
-                    texture.height = texDatas.height;
-                    texture.mipmaps = texDatas.mipmaps;
+                    //    asset.image.width = texDatas.width;
+                    //    asset.image.height = texDatas.height;
+                    asset.width = texDatas.width;
+                    asset.height = texDatas.height;
+                    asset.mipmaps = texDatas.mipmaps;
 
                     //}
                     if (texDatas.mipmapCount == 1){
-                        texture.minFilter = TextureFilterMode.LINEAR;
+                        asset.minFilter = TextureFilterMode.LINEAR;
                     }
 
 
-                    texture.format = texDatas.format;
-                    //texture.needsUpdate = true;
+                    asset.format = texDatas.format;
+                    //asset.needsUpdate = true;
 
-                    return texture;
+                    return asset;
                 })
         }
     }

@@ -7,21 +7,36 @@ module dy{
         	return obj;
         }
 
+        //public cubemapTextures:dyCb.Collection<CubeTexture> = dyCb.Collection.create<CubeTexture>();
+
         private _textures:dyCb.Collection<Texture> = dyCb.Collection.create<Texture>();
 
-        //public init(){
-        //    this._textures.forEach((texture:Texture, index:number) => {
-        //        texture.init();
-        //    });
-        //}
-
-        public addChild(texture:Texture){
-            //var copyTexture = texture.copy();
-            //
-            //copyTexture.init();
-
-            this._textures.addChild(texture.copy().init());
+        public init(){
+            this._textures.forEach((texture:Texture) => {
+                texture.init();
+            });
+            //this.cubemapTextures.forEach((texture:Texture) => {
+            //    texture.init();
+            //});
         }
+
+        public addChild(asset:TextureAsset){
+            this._textures.addChild(asset.toTexture());
+        }
+
+        public addCubemap(assetArray:Array<CommonTextureAsset>){
+            dyCb.Log.error(assetArray.length !== 6, dyCb.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
+            assetArray.forEach((asset:CommonTextureAsset) => {
+                dyCb.Log.error(asset instanceof CompressedTextureAsset, dyCb.Log.info.FUNC_NOT_SUPPORT("cubemap", "CompressedTextureAsset"));
+            });
+
+            this._textures.addChild(CubeTexture.create(assetArray));
+
+            //todo refactor
+            this.isSkybox = true;
+        }
+
+        public isSkybox = false;
 
         public getChildren(){
             return this._textures.getChildren();

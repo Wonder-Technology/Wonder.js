@@ -77,11 +77,16 @@
 /// <reference path="asset/utils/AjaxLoader"/>
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
+/// <reference path="asset/texture/TextureAsset"/>
+/// <reference path="asset/texture/CommonTextureAsset"/>
+/// <reference path="asset/texture/CompressedTextureAsset"/>
 /// <reference path="asset/texture/TextureFilterMode"/>
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
 /// <reference path="asset/texture/TextureSourceRegionMapping"/>
+/// <reference path="asset/texture/TextureSourceRegionMethod"/>
+/// <reference path="asset/texture/TextureTarget"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
@@ -117,5 +122,6 @@
 /// <reference path="texture/Texture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
+/// <reference path="texture/CubeTexture"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>

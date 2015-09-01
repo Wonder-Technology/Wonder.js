@@ -9,7 +9,7 @@ module dy {
 
         public render(renderer:render.Renderer, geometry:Geometry, camera:GameObject):void {
             //this._setData(camera);
-            this._addDrawCommand(renderer, geometry, this._computeMvpMatrix(camera));
+            this._addDrawCommand(renderer, geometry, camera);
         }
 
         private _computeMvpMatrix(camera:GameObject):Matrix{
@@ -24,8 +24,9 @@ module dy {
         //    this._program.setUniformData("u_mvpMatrix", UniformDataType.FLOAT_MAT4, this._computeMvpMatrix(camera));
         //}
 
-        private _addDrawCommand(renderer:render.Renderer, geometry:Geometry, mvpMatrix:Matrix){
+        private _addDrawCommand(renderer:render.Renderer, geometry:Geometry, camera:GameObject){
             var quadCmd = renderer.createQuadCommand(),
+                cameraComponent = camera.getComponent<Camera>(Camera),
                 material:Material = geometry.material;
 
             dyCb.Log.error(!geometry, dyCb.Log.info.FUNC_MUST("Mesh", "add geometry component"));
@@ -39,13 +40,23 @@ module dy {
             };
 
             quadCmd.shader = geometry.material.shader;
-            quadCmd.mvpMatrix = mvpMatrix;
+            //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
+            quadCmd.mMatrix = this.transform.localToWorldMatrix;
+            quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
+            quadCmd.pMatrix = cameraComponent.pMatrix;
+
+
             //quadCmd.bufferData = ;
             //quadCmd.color = this._material.color;
 
             quadCmd.material = material;
 
             quadCmd.z = this.gameObject.transform.position.z;
+
+            //todo refactor
+            if(material.textureManager.isSkybox){
+                quadCmd.isSkybox = true;
+            }
 
             renderer.addCommand(quadCmd);
         }

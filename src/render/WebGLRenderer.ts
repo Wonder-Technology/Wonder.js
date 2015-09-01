@@ -26,15 +26,32 @@ module dy.render{
         }
 
         public render(){
-            var deviceManager = DeviceManager.getInstance();
+            var deviceManager = DeviceManager.getInstance(),
+                skybox = null;
 
             deviceManager.clear(this._clearOptions);
+
+            //todo refactor:remove flag
+            skybox = this._commandQueue.removeChild((command:QuadCommand) => {
+                return command.isSkybox;
+            }).getChild(0);
 
             this._renderOpaqueCommands();
 
             deviceManager.depthWrite = false;
             this._renderSortedTransparentCommands();
             deviceManager.depthWrite = true;
+
+
+            //todo material add depthWrite,depthFunc
+            //deviceManager.depthWrite = false;
+            deviceManager.depthFunc = DepthFunction.LEQUAL;
+            //render skybox
+            skybox && skybox.execute();
+
+            //deviceManager.depthWrite = true;
+            deviceManager.depthFunc = DepthFunction.LESS;
+
 
             this._clearCommand();
         }
@@ -60,7 +77,7 @@ module dy.render{
 
         private _renderOpaqueCommands() {
             this._commandQueue
-                .filter((command:QuadCommand) => {
+                .removeChild((command:QuadCommand) => {
                     return !command.material.blend;
                 })
                 .forEach((command:QuadCommand) => {
@@ -72,9 +89,6 @@ module dy.render{
             var self = this;
 
             this._commandQueue
-                .filter((command:QuadCommand) => {
-                    return command.material.blend;
-                })
                 .sort((a:QuadCommand, b:QuadCommand) => {
                     return self._getObjectToCameraZDistance(b) - self._getObjectToCameraZDistance(a);
                 })

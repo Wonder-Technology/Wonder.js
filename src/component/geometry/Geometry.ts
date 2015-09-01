@@ -14,6 +14,8 @@ module dy{
             this.texCoords = this.computeTexCoordsBuffer();
             //todo compute from vertexColors(refer to threejs)
             this.colors = this._computeColorsBuffer(this.material);
+
+            this.material.init();
         }
 
         public dispose(){
