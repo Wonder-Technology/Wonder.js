@@ -35,7 +35,6 @@ module dy.render {
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
-        public isSkybox:boolean = false;
 
         public execute() {
             this._update();

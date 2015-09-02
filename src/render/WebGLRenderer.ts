@@ -26,15 +26,9 @@ module dy.render{
         }
 
         public render(){
-            var deviceManager = DeviceManager.getInstance(),
-                skybox = null;
+            var deviceManager = DeviceManager.getInstance();
 
             deviceManager.clear(this._clearOptions);
-
-            //todo refactor:remove flag
-            skybox = this._commandQueue.removeChild((command:QuadCommand) => {
-                return command.isSkybox;
-            }).getChild(0);
 
             this._renderOpaqueCommands();
 
@@ -43,15 +37,11 @@ module dy.render{
             deviceManager.depthWrite = true;
 
 
-            //todo material add depthWrite,depthFunc
-            //deviceManager.depthWrite = false;
-            deviceManager.depthFunc = DepthFunction.LEQUAL;
-            //render skybox
-            skybox && skybox.execute();
-
-            //deviceManager.depthWrite = true;
-            deviceManager.depthFunc = DepthFunction.LESS;
-
+            if(this.skyboxCommand){
+                deviceManager.depthFunc = DepthFunction.LEQUAL;
+                this.skyboxCommand.execute();
+                deviceManager.depthFunc = DepthFunction.LESS;
+            }
 
             this._clearCommand();
         }
@@ -103,6 +93,7 @@ module dy.render{
 
         private _clearCommand(){
             this._commandQueue.removeAllChildren();
+            this.skyboxCommand = null;
         }
 
         private _setClearOptions(clearOptions:any){

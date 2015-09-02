@@ -10,6 +10,7 @@
 /// <reference path="core/Transform"/>
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Stage"/>
+/// <reference path="core/Skybox"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
 
@@ -36,6 +37,7 @@
 /// <reference path="component/behavior/action/ActionManager"/>
 /// <reference path="component/renderer/Renderer"/>
 /// <reference path="component/renderer/MeshRenderer"/>
+/// <reference path="component/renderer/SkyboxRenderer"/>
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/TopCollider"/>
 /// <reference path="component/script/Script"/>

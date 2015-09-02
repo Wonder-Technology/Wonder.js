@@ -84,13 +84,8 @@
             geometry.depth = 5;
 
 
-            var mesh = dy.GameObject.create();
-            mesh.addComponent(geometry);
-
-            var meshRenderer = dy.MeshRenderer.create();
-
-            mesh.addComponent(meshRenderer);
-
+            var skybox = dy.Skybox.create();
+            skybox.addComponent(geometry);
 
 
 
@@ -99,7 +94,7 @@
             var director = dy.Director.getInstance();
 
 
-            director.stage.addChild(mesh);
+            director.stage.addChild(skybox);
 
             director.stage.addChild(_createCamera());
 
