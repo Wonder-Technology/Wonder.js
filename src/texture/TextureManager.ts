@@ -24,13 +24,13 @@ module dy{
             this._textures.addChild(asset.toTexture());
         }
 
-        public addCubemap(assetArray:Array<CommonTextureAsset>){
-            dyCb.Log.error(assetArray.length !== 6, dyCb.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
-            assetArray.forEach((asset:CommonTextureAsset) => {
-                dyCb.Log.error(asset instanceof CompressedTextureAsset, dyCb.Log.info.FUNC_NOT_SUPPORT("cubemap", "CompressedTextureAsset"));
+        public addCubemap(assets:Array<ICubemapData>){
+            dyCb.Log.error(assets.length !== 6, dyCb.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
+            assets.forEach((asset:any) => {
+                dyCb.Log.error(asset.asset && asset.asset instanceof CompressedTextureAsset, dyCb.Log.info.FUNC_NOT_SUPPORT("cubemap", "CompressedTextureAsset"));
             });
 
-            this._textures.addChild(CubeTexture.create(assetArray));
+            this._textures.addChild(CubeTexture.create(assets));
 
             //todo refactor
             this.isSkybox = true;

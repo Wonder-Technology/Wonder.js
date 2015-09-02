@@ -123,5 +123,6 @@
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
 /// <reference path="texture/CubeTexture"/>
+/// <reference path="texture/CubeFaceTexture"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>

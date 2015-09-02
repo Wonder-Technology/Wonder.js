@@ -26,11 +26,18 @@ module dy{
             this._height = height;
         }
 
+        private _sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        get sourceRegionMethod(){
+            return this._sourceRegionMethod;
+        }
+        set sourceRegionMethod(sourceRegionMethod:TextureSourceRegionMethod){
+            this._sourceRegionMethod = sourceRegionMethod;
+        }
+
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
         public sourceRegion:RectRegion = null;
 
         public sourceRegionMapping:TextureSourceRegionMapping = TextureSourceRegionMapping.CANVAS;
-        public sourceRegionMethod: TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
 
         public generateMipmaps:boolean = true;
         public flipY:boolean = true;
@@ -39,6 +46,8 @@ module dy{
         // 默认值是4。指定用于在内存中的每个像素行开始校准要求。
         // 允许的值是1（字节对齐），2（行对齐，偶数字节），4（对齐），和8（行开始在双字的边界）。更多信息见glpixelstorei。
         //http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml
+
+        //todo extract TextureDefault class to save default setting?
 
         public wrapS:TextureWrapMode = TextureWrapMode.CLAMP_TO_EDGE;
         public wrapT:TextureWrapMode = TextureWrapMode.CLAMP_TO_EDGE;
@@ -178,22 +187,22 @@ module dy{
             return true;
         }
 
-        protected getDrawTarget(source:any=this.source){
+        protected getDrawTarget(source:any=this.source, sourceRegion:RectRegion=this.sourceRegion){
             var result = null,
                 canvas = null,
                 ctx = null;
 
             if(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS
-                && this.sourceRegion.isNotEmpty()){
+                && sourceRegion && sourceRegion.isNotEmpty()){
                 canvas = document.createElement( "canvas" );
-                canvas.width = this.sourceRegion.width;
-                canvas.height = this.sourceRegion.height;
+                canvas.width = sourceRegion.width;
+                canvas.height = sourceRegion.height;
 
                 ctx = canvas.getContext("2d");
 
                 ctx.drawImage(source,
-                    this.sourceRegion.x, this.sourceRegion.y, this.sourceRegion.width, this.sourceRegion.height,
-                    0, 0, this.sourceRegion.width, this.sourceRegion.height);
+                    sourceRegion.x, sourceRegion.y, sourceRegion.width, sourceRegion.height,
+                    0, 0, sourceRegion.width, sourceRegion.height);
 
                 result = canvas;
             }

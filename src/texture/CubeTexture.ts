@@ -1,30 +1,41 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeTexture extends Texture{
-        public static create(assetArray:Array<CommonTextureAsset>);
+    /*!skybox: it's flipX when viewer is inside the skybox*/
 
-        public static create(assetArray:Array<CommonTextureAsset>){
-            var obj = new this(assetArray);
+    export class CubeTexture extends Texture{
+        public static create(assets:Array<ICubemapData>){
+            var obj = new this(assets);
+
+            obj.initWhenCreate();
 
             return obj;
         }
 
-        constructor(assetArray:Array<CommonTextureAsset>){
+        constructor(assets:Array<ICubemapData>){
             super();
 
-            this.assets.addChildren(assetArray);
-
+            this._assets = assets;
             this.flipY = false;
         }
 
-        public assets:dyCb.Collection<CommonTextureAsset> = dyCb.Collection.create<CommonTextureAsset>();
+        public initWhenCreate(){
+            this._createTextures(this._assets);
+        }
+
+        //CubeTexture only support DRAW_IN_CANVAS
+        get sourceRegionMethod(){
+            return TextureSourceRegionMethod.DRAW_IN_CANVAS;
+        }
+
+        public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
+
+        private _assets:Array<ICubemapData>= null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 
         public copy(){
-            return this.copyHelper(CubeTexture.create(this.assets.copy().toArray()));
+            return this.copyHelper(CubeTexture.create(this._assets));
         }
-
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             //var self = this;
@@ -47,14 +58,33 @@ module dy{
 
         private _drawTexture(index:number){
             var gl = Director.getInstance().gl,
-                //todo set asset's type?
-                type = this.type,
                 self = this;
 
-            this.assets.forEach((asset:CommonTextureAsset, i:number) => {
-                gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, index, gl[asset.format], gl[asset.format], gl[type], self.getDrawTarget(asset.source));
+            this.textures.forEach((texture:CubeFaceTexture, i:number) => {
+                gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, index, gl[texture.format], gl[texture.format], gl[texture.type], self.getDrawTarget(texture.source, texture.sourceRegion));
             });
         }
+
+        private _createTextures(assets:Array<ICubemapData>){
+            var self = this;
+
+            assets.forEach((data:ICubemapData) => {
+                var face = CubeFaceTexture.create();
+
+                face.asset = data.asset;
+                if(data.sourceRegion){
+                    face.sourceRegion = data.sourceRegion;
+                }
+
+                self.textures.addChild(face);
+            });
+        }
+    }
+
+    export interface ICubemapData{
+        asset:CommonTextureAsset;
+        sourceRegion?:RectRegion;
+        type?:TextureType;
     }
 }
 
