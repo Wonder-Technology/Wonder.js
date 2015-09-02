@@ -54,7 +54,7 @@ module dy{
         public magFilter:TextureFilterMode = TextureFilterMode.LINEAR;
         public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
         public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
-        public mipmaps:dyCb.Collection<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement> = dyCb.Collection.create<ICompressedTextureMipmap|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement>();
+        public mipmaps:dyCb.Collection<any> = dyCb.Collection.create<any>();
         public anisotropy:number = null;
         public needUpdate:boolean = true;
 
@@ -75,7 +75,7 @@ module dy{
 
         public update(index:number){
             var gl = Director.getInstance().gl,
-                isSourcePowerOfTwo = this._isSourcePowerOfTwo();
+                isSourcePowerOfTwo = this.isSourcePowerOfTwo();
 
             this.bindToUnit(index);
 
@@ -189,38 +189,16 @@ module dy{
             return true;
         }
 
-        protected getDrawTarget(source:any=this.source, sourceRegion:RectRegion=this.sourceRegion){
-            var result = null,
-                canvas = null,
-                ctx = null;
-
-            if(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS
-                && sourceRegion && sourceRegion.isNotEmpty()){
-                canvas = document.createElement( "canvas" );
-                canvas.width = sourceRegion.width;
-                canvas.height = sourceRegion.height;
-
-                ctx = canvas.getContext("2d");
-
-                ctx.drawImage(source,
-                    sourceRegion.x, sourceRegion.y, sourceRegion.width, sourceRegion.height,
-                    0, 0, sourceRegion.width, sourceRegion.height);
-
-                result = canvas;
-            }
-            else{
-                result = source;
-            }
-
-            return result;
-        }
-
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        private _isSourcePowerOfTwo(){
-            return JudgeUtils.isPowerOfTwo( this.width ) && JudgeUtils.isPowerOfTwo( this.height );
+        protected isSourcePowerOfTwo(){
+            return this.isPowerOfTwo(this.width, this.height);
+        }
+
+        protected isPowerOfTwo(width:number, height:number){
+            return JudgeUtils.isPowerOfTwo(width) && JudgeUtils.isPowerOfTwo(height);
         }
 
         protected filterFallback(filter:TextureFilterMode) {

@@ -54,7 +54,26 @@
             material.cullMode = dy.CullMode.FRONT;
 
 
-            material.textureManager.addCubemap([dy.TextureLoader.getInstance().get("texture1"), dy.TextureLoader.getInstance().get("texture2"),dy.TextureLoader.getInstance().get("texture3"), dy.TextureLoader.getInstance().get("texture4"), dy.TextureLoader.getInstance().get("texture5"), dy.TextureLoader.getInstance().get("texture6")]);
+            material.textureManager.addCubemap([
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture1")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture2")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture3")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture4")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture5")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture6")
+                }
+            ]);
 
 
 

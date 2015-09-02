@@ -19,72 +19,28 @@ module dy{
             this.flipY = false;
         }
 
+        public mipmaps:dyCb.Collection<ICompressedTextureMipmap>;
+
         public copy(){
             return this.copyHelper(CompressedTexture.create());
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             var gl = Director.getInstance().gl,
-                self = this,
-                format = this._getCompressedFormat();
+                compressedCmd = DrawCompressedTextureCommand.create();
 
-            dyCb.Log.error(format === null, dyCb.Log.info.FUNC_NOT_SUPPORT(this.format));
+            compressedCmd.glTarget = gl.TEXTURE_2D;
+            compressedCmd.type = this.type;
+            compressedCmd.format = this.format;
+            compressedCmd.mipmaps = this.mipmaps;
+            compressedCmd.sourceRegion = this.sourceRegion;
+            compressedCmd.sourceRegionMethod = this.sourceRegionMethod;
 
-            if (this.format !== TextureFormat.RGBA) {
-                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                    gl.compressedTexImage2D(gl.TEXTURE_2D, index, format, mipmap.width, mipmap.height, 0, self.getDrawTarget(mipmap.data));
-                });
-            }
-            else{
-                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                    gl.texImage2D(gl.TEXTURE_2D, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], self.getDrawTarget(mipmap.data));
-                });
-            }
-        }
-
-        protected getDrawTarget(source:any=this.source){
-            /*!
-            because canvas->drawImage can't draw the compressed texture's data
-             */
-            dyCb.Log.error(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS");
-
-            return super.getDrawTarget(source);
+            compressedCmd.execute();
         }
 
         protected isCheckMaxSize(){
             return false;
-        }
-
-        //todo move to load compressed texture, add to CompressedTextureAsset
-        //todo support pvr
-        private _getCompressedFormat(){
-            var extension = GPUDetector.getInstance().extensionCompressedTextureS3TC,
-                format = null;
-
-            if(this.format === TextureFormat.RGBA){
-                return this.format;
-            }
-
-            if(!extension){
-                return null;
-            }
-
-            switch (this.format){
-                case TextureFormat.RGB_S3TC_DXT1:
-                    format = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT1:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT3:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT5:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
-                    break;
-            }
-
-            return format;
         }
     }
 

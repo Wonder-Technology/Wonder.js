@@ -129,3 +129,8 @@
 /// <reference path="texture/CubeFaceFactory"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>
+/// <reference path="texture/command/DrawTextureCommand"/>
+/// <reference path="texture/command/DrawCompressedTextureCommand"/>
+/// <reference path="texture/command/DrawTwoDTextureCommand"/>
+/// <reference path="texture/command/DrawMipmapTwoDTextureCommand"/>
+/// <reference path="texture/command/DrawNoMipmapTwoDTextureCommand"/>

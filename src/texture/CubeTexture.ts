@@ -24,9 +24,11 @@ module dy{
 
         public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
 
-        private _assets:Array<ICubemapData>= null;
-
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
+
+        private _assets:Array<ICubemapData>= null;
+        private _isAllCompressedAsset:boolean = false;
+
 
         public copy(){
             return this.copyHelper(CubeTexture.create(this._assets));
@@ -46,6 +48,65 @@ module dy{
              */
             this.generateMipmaps = false;
             this.minFilter = this.filterFallback(this.minFilter);
+        }
+
+        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
+            var gl = Director.getInstance().gl;
+
+            if(this._isAllCompressedAsset){
+                this.textures.forEach((texture:CubeFaceCompressedTexture, i:number) => {
+                    var compressedCmd = DrawCompressedTextureCommand.create();
+
+                    compressedCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + i;
+                    compressedCmd.type = texture.type;
+                    compressedCmd.format = texture.format;
+                    compressedCmd.mipmaps = texture.mipmaps;
+
+                    compressedCmd.execute();
+                });
+            }
+            else{
+                //todo support mipmap
+
+                this.textures.forEach((texture:CubeFaceTwoDTexture, i:number) => {
+                    var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
+
+                    noMipmapCmd.source = texture.source;
+                    noMipmapCmd.sourceRegion = texture.sourceRegion;
+                    noMipmapCmd.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                    noMipmapCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + i;
+                    noMipmapCmd.format = texture.format;
+                    noMipmapCmd.type = texture.type;
+
+                    noMipmapCmd.execute();
+                });
+            }
+        }
+
+        protected isSourcePowerOfTwo(){
+            var isAllSourcePowerOfTwo = false,
+                self = this;
+
+            this.textures.forEach((texture:CubeFaceTexture) => {
+                if(!self.isPowerOfTwo(texture.width, texture.height)){
+                    isAllSourcePowerOfTwo = false;
+                    return dyCb.$BREAK;
+                }
+            });
+
+            return isAllSourcePowerOfTwo;
+        }
+
+        protected clampToMaxSize(){
+            var self = this,
+                maxSize = GPUDetector.getInstance().maxCubemapTextureSize;
+
+            this.textures.forEach((texture:CubeFaceTexture) => {
+                //todo refactor?
+                if(texture.source){
+                    texture.source = self.clampToMaxSizeHelper(texture.source, maxSize);
+                }
+            });
         }
 
         private  _judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets:Array<ICubemapData>){
@@ -71,97 +132,12 @@ module dy{
             }
         }
 
-        private _isAllCompressedAsset:boolean = false;
-
-
-        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            var gl = Director.getInstance().gl,
-                self = this;
-
-            if(this._isAllCompressedAsset){
-                //todo move to load compressed texture, add to CompressedTextureAsset
-                var format = this._getCompressedFormat();
-
-                this.textures.forEach((texture:CubeFaceCompressedTexture, i:number) => {
-                    if (texture.format !== TextureFormat.RGBA) {
-                        texture.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, index, format, mipmap.width, mipmap.height, 0, self.getDrawTarget(mipmap.data));
-                        });
-                    }
-                    else{
-                        texture.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
-                            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], self.getDrawTarget(mipmap.data));
-                        });
-                    }
-                });
-            }
-            else{
-                this.textures.forEach((texture:CubeFaceTwoDTexture, i:number) => {
-                    //texture.draw(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, self.getDrawTarget(texture.source, texture.sourceRegion));
-                    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl[texture.format], gl[texture.format], gl[texture.type], self.getDrawTarget(texture.source, texture.sourceRegion));
-                });
-            }
-        }
-
-        private _getCompressedFormat(){
-            var extension = GPUDetector.getInstance().extensionCompressedTextureS3TC,
-                format = null;
-
-            if(this.format === TextureFormat.RGBA){
-                return this.format;
-            }
-
-            if(!extension){
-                return null;
-            }
-
-            switch (this.format){
-                case TextureFormat.RGB_S3TC_DXT1:
-                    format = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT1:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT3:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
-                    break;
-                case TextureFormat.RGBA_S3TC_DXT5:
-                    format = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
-                    break;
-            }
-
-            return format;
-        }
-
-
-        protected clampToMaxSize(){
-            var self = this,
-                maxSize = GPUDetector.getInstance().maxCubemapTextureSize;
-
-            this.textures.forEach((texture:CubeFaceTexture) => {
-                //todo refactor?
-                if(texture.source){
-                    texture.source = self.clampToMaxSizeHelper(texture.source, maxSize);
-                }
-            });
-        }
-
-        //private _drawTexture(){
-        //    var gl = Director.getInstance().gl,
-        //        self = this;
-        //
-        //    this.textures.forEach((texture:CubeFaceTexture, i:number) => {
-        //        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl[texture.format], gl[texture.format], gl[texture.type], self.getDrawTarget(texture.source, texture.sourceRegion));
-        //    });
-        //}
-
         private _createTextures(assets:Array<ICubemapData>){
             var self = this;
 
             assets.forEach((data:ICubemapData) => {
                 var face = CubeFaceFactory.create(data.asset);
 
-                //face.asset = data.asset;
                 if(data.sourceRegion){
                     face.sourceRegion = data.sourceRegion;
                 }
