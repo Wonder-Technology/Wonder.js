@@ -81,12 +81,14 @@ module dy{
 
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
 
+
+            //todo not set UNPACK_PREMULTIPLY_ALPHA_WEBGL,UNPACK_ALIGNMENT when cubemap?
             gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha );
             gl.pixelStorei( gl.UNPACK_ALIGNMENT, this.unpackAlignment );
 
 
             if(this.isCheckMaxSize()){
-                this.source = this._clampToMaxSize(this.source);
+                this.clampToMaxSize();
             }
 
             this._setTextureParameters( gl[this.target], isSourcePowerOfTwo);
@@ -221,6 +223,14 @@ module dy{
             return JudgeUtils.isPowerOfTwo( this.width ) && JudgeUtils.isPowerOfTwo( this.height );
         }
 
+        protected filterFallback(filter:TextureFilterMode) {
+            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
+                return TextureFilterMode.NEAREST;
+            }
+
+            return TextureFilterMode.LINEAR;
+        }
+
         private _setTextureParameters(textureType, isSourcePowerOfTwo){
             var gl = Director.getInstance().gl;
 
@@ -235,22 +245,11 @@ module dy{
                 gl.texParameteri(textureType, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                 gl.texParameteri(textureType, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-                gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, this._filterFallback(this.magFilter));
-                gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, this._filterFallback(this.minFilter));
+                gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, gl[this.filterFallback(this.magFilter)]);
+                gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl[this.filterFallback(this.minFilter)]);
             }
 
             this._setAnisotropy(textureType);
-        }
-
-        // Fallback filters for non-power-of-2 textures
-        private _filterFallback(filter:TextureFilterMode) {
-            var gl = Director.getInstance().gl;
-
-            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
-                return gl.NEAREST;
-            }
-
-            return gl.LINEAR;
         }
 
         private _setAnisotropy(textureType){
@@ -273,9 +272,12 @@ module dy{
             }
         }
 
-        private _clampToMaxSize ( source:any) {
-            var maxSize = null,
-                maxDimension = null,
+        protected clampToMaxSize(){
+            this.source = this.clampToMaxSizeHelper(this.source, GPUDetector.getInstance().maxTextureSize);
+        }
+
+        protected clampToMaxSizeHelper (source:any, maxSize:number) {
+            var maxDimension = null,
                 newWidth = null,
                 newHeight = null,
                 canvas = null,
@@ -284,8 +286,6 @@ module dy{
             if(!source){
                 return null;
             }
-
-            maxSize = GPUDetector.getInstance().maxTextureSize;
 
             if(source.width <= maxSize && source.height <= maxSize) {
                 return source;

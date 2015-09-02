@@ -29,6 +29,13 @@ module dy {
             return this._maxTextureSize;
         }
 
+        private _maxCubemapTextureSize:number = null;
+        get maxCubemapTextureSize(){
+            this._ensureDetected();
+
+            return this._maxCubemapTextureSize;
+        }
+
         private _maxAnisotropy:number = null;
         get maxAnisotropy(){
             this._ensureDetected();
@@ -115,6 +122,7 @@ module dy {
 
             this._maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
             this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            this._maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
             this._maxAnisotropy = this._getMaxAnisotropy();
         }
 

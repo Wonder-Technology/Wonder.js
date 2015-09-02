@@ -11,8 +11,7 @@ module dy{
             super();
 
             /*!
-             can't generate mipmaps for compressed textures
-             mips must be embedded in files
+             no need to generate mipmaps for compressed textures, mips will be embedded in files
 
              flipping doesn't work for compressed textures
              */
@@ -56,6 +55,7 @@ module dy{
             return false;
         }
 
+        //todo move to load compressed texture, add to CompressedTextureAsset
         //todo support pvr
         private _getCompressedFormat(){
             var extension = GPUDetector.getInstance().extensionCompressedTextureS3TC,
