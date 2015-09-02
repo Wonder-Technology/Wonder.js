@@ -9,10 +9,10 @@
 /// <reference path="core/Component"/>
 /// <reference path="core/Transform"/>
 /// <reference path="core/GameObject"/>
-/// <reference path="core/Stage"/>
-/// <reference path="core/Skybox"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
+/// <reference path="core/entity/Stage"/>
+/// <reference path="core/entity/Skybox"/>
 
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
