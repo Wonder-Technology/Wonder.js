@@ -16,13 +16,23 @@ module dy{
         public initWhenCreate(asset:CommonTextureAsset){
             asset.copyToCubeFaceTexture(this);
 
+            //cube twoD texture only support DRAW_IN_CANVAS
             this.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
-        //
-        //public draw(glTarget:any, source:any){
-        //    var gl = Director.getInstance().gl;
-        //
-        //    gl.texImage2D(glTarget, 0, gl[this.format], gl[this.format], gl[this.type], source);
-        //}
+
+        //todo support manual mipmap
+        public draw(index:number){
+            var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create(),
+            gl = Director.getInstance().gl;
+
+            noMipmapCmd.source = this.source;
+            noMipmapCmd.sourceRegion = this.sourceRegion;
+            noMipmapCmd.sourceRegionMethod = this.sourceRegionMethod;
+            noMipmapCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + index;
+            noMipmapCmd.format = this.format;
+            noMipmapCmd.type = this.type;
+
+            noMipmapCmd.execute();
+        }
     }
 }

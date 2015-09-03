@@ -5,9 +5,8 @@ module dy{
         public format:TextureFormat = null;
         public width:number = null;
         public height:number = null;
-        //
-        //public draw(glTarget:any, source:any){
-        //    dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        //}
+        public draw(index:number){
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
     }
 }

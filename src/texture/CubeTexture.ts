@@ -48,37 +48,15 @@ module dy{
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            var gl = Director.getInstance().gl;
-
             if(this._isAllCompressedAsset){
-                //cube compressed texture not support sourceRegion
                 this.textures.forEach((texture:CubeFaceCompressedTexture, i:number) => {
-                    var compressedCmd = DrawCompressedTextureCommand.create();
-
-                    compressedCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + i;
-                    compressedCmd.type = texture.type;
-                    compressedCmd.format = texture.format;
-                    compressedCmd.mipmaps = texture.mipmaps;
-
-                    compressedCmd.execute();
+                    texture.draw(i);
                 });
             }
             else{
-                //todo support manual mipmap
 
                 this.textures.forEach((texture:CubeFaceTwoDTexture, i:number) => {
-                    var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
-
-                    noMipmapCmd.source = texture.source;
-                    noMipmapCmd.sourceRegion = texture.sourceRegion;
-                    //cube twoD texture only support DRAW_IN_CANVAS
-                    //noMipmapCmd.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
-                    noMipmapCmd.sourceRegionMethod = texture.sourceRegionMethod;
-                    noMipmapCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + i;
-                    noMipmapCmd.format = texture.format;
-                    noMipmapCmd.type = texture.type;
-
-                    noMipmapCmd.execute();
+                    texture.draw(i);
                 });
             }
         }
@@ -115,7 +93,7 @@ module dy{
                 return false;
             }
 
-            return this.textures.filter((texture:ICubeFaceCompressedTextureAsset) => {
+            return this.textures.filter((texture:CubeFaceCompressedTexture) => {
                 return !self._isMipmapFilter(texture.minFilter);
             }).getCount() > 0;
         }
