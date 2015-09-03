@@ -16,9 +16,21 @@ module dy{
         public mipmaps:dyCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
 
         public toTexture():Texture{
-            var texture = TwoDTexture.create(this);
+            return TwoDTexture.create(this);
+        }
 
-            return this.copyTo(texture);
+        public toCubeFaceTexture():CubeFaceTwoDTexture{
+            return CubeFaceTwoDTexture.create(this);
+        }
+
+        public copyToCubeFaceTexture(cubeFaceTexture:ICubeFaceTwoDTextureAsset){
+            cubeFaceTexture.source = this.source;
+            cubeFaceTexture.type = this.type;
+            cubeFaceTexture.format = this.format;
+            cubeFaceTexture.width = this.width;
+            cubeFaceTexture.height = this.height;
+            cubeFaceTexture.sourceRegion = this.sourceRegion;
+            cubeFaceTexture.sourceRegionMethod = this.sourceRegionMethod;
         }
     }
 }

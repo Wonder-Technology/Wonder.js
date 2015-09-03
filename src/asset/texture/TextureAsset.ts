@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class TextureAsset{
+    export class TextureAsset implements ITextureAsset{
         public static defaultTexture = null;
 
         private _width:number = null;
@@ -49,6 +49,27 @@ module dy{
 
         public toTexture():Texture{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public toCubeFaceTexture():CubeFaceTexture{
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public copyToCubeFaceTexture(cubeFaceTexture:any){
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        public copyToCubeTexture(cubeFaceTexture:ICubeTextureAsset){
+            cubeFaceTexture.generateMipmaps = this.generateMipmaps;
+            cubeFaceTexture.minFilter = this.minFilter;
+            cubeFaceTexture.magFilter = this.magFilter;
+            cubeFaceTexture.width = this.width;
+            cubeFaceTexture.height = this.height;
+            cubeFaceTexture.wrapS = this.wrapS;
+            cubeFaceTexture.wrapT = this.wrapT;
+            cubeFaceTexture.anisotropy = this.anisotropy;
+            cubeFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
+            cubeFaceTexture.unpackAlignment = this.unpackAlignment;
         }
 
         public copyTo(texture:Texture){

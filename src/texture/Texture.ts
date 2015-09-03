@@ -1,10 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Texture{
-        constructor(asset:TextureAsset){
-            this.asset = asset;
-        }
-
+    export class Texture implements ITextureAsset{
         //private _generateMipmaps:boolean = null;
         //get generateMipmaps(){
         //    return this._generateMipmaps;
@@ -26,7 +22,6 @@ module dy{
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
-        public asset:TextureAsset = null;
         public generateMipmaps:boolean = null;
         public width:number = null;
         public height:number = null;
@@ -228,7 +223,8 @@ module dy{
             newWidth = Math.floor( source.width * maxSize / maxDimension );
             newHeight = Math.floor( source.height * maxSize / maxDimension );
 
-            canvas = document.createElement( "canvas" );
+            canvas = this._createResizedCanvas();
+
             canvas.width = newWidth;
             canvas.height = newHeight;
 
@@ -238,6 +234,10 @@ module dy{
             dyCb.Log.log(source + " is too big (" + source.width + "x" + source.height + "). Resized to " + canvas.width + "x" + canvas.height + ".");
 
             return canvas;
+        }
+
+        private _createResizedCanvas(){
+            return document.createElement( "canvas" );
         }
 
         private _convertSourceRegionCanvasMapToUV(sourceRegion:RectRegion){

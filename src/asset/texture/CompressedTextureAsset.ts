@@ -20,9 +20,20 @@ module dy{
         }
 
         public toTexture():Texture{
-            var texture = CompressedTexture.create(this);
+            return CompressedTexture.create(this);
+        }
 
-            return this.copyTo(texture);
+        public toCubeFaceTexture():CubeFaceCompressedTexture{
+            return CubeFaceCompressedTexture.create(this);
+        }
+
+        public copyToCubeFaceTexture(cubeFaceTexture:ICubeFaceCompressedTextureAsset){
+            cubeFaceTexture.type = this.type;
+            cubeFaceTexture.format = this.format;
+            cubeFaceTexture.width = this.width;
+            cubeFaceTexture.height = this.height;
+            cubeFaceTexture.mipmaps = this.mipmaps;
+            cubeFaceTexture.minFilter = this.minFilter;
         }
     }
 }

@@ -2,7 +2,9 @@
 module dy{
     export class CompressedTexture extends Texture {
         public static create(asset:CompressedTextureAsset) {
-            var obj = new this(asset);
+            var obj = new this();
+
+            obj.initWhenCreate(asset);
 
             return obj;
         }
@@ -11,6 +13,10 @@ module dy{
             dyCb.Log.assert(this.p_sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS, will use TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
 
             return TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        }
+
+        public initWhenCreate(asset:CompressedTextureAsset){
+            asset.copyTo(this);
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

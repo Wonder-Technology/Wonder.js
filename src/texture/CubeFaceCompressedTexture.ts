@@ -1,28 +1,19 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeFaceCompressedTexture extends CubeFaceTexture{
+    export class CubeFaceCompressedTexture extends CubeFaceTexture implements ICubeFaceCompressedTextureAsset{
         public static create(asset:CompressedTextureAsset) {
-            var obj = new this(asset);
+            var obj = new this();
+
+            obj.initWhenCreate(asset);
 
             return obj;
         }
 
-        public asset:CompressedTextureAsset;
+        public mipmaps:dyCb.Collection<ICompressedTextureMipmap> = null;
+        public minFilter:TextureFilterMode = null;
 
-        get mipmaps(){
-            return this.asset.mipmaps;
-        }
-
-        get width(){
-            return this.asset.width;
-        }
-
-        get height(){
-            return this.asset.height;
-        }
-
-        get source(){
-            return null;
+        public initWhenCreate(asset:CompressedTextureAsset){
+            asset.copyToCubeFaceTexture(this);
         }
     }
 }

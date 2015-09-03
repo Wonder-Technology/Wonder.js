@@ -93,7 +93,33 @@ describe("cube texture", function() {
                 ]);
             }).toThrow();
         });
-        it("set size by the first cube face texture", function(){
+        it("add cube face textures", function(){
+            var commonAsset = dy.CommonTextureAsset.create({
+                width:200,
+                height:200
+            });
+            var region = dy.RectRegion.create(0.1, 0.2, 0.3, 0.4);
+            var type = dy.TextureType.UNSIGNED_SHORT_4_4_4_4;
+
+            var texture = dy.CubeTexture.create([
+                {asset:commonAsset},
+                {
+                    asset:commonAsset,
+                    sourceRegion:region,
+                    type: type
+                },
+                {asset:commonAsset},
+                {asset:commonAsset},
+                {asset:commonAsset},
+                {asset:commonAsset}
+            ]);
+
+            expect(texture.textures.getCount()).toEqual(6);
+            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubeFaceTwoDTexture);
+            expect(texture.textures.getChild(1).sourceRegion).toEqual(region);
+            expect(texture.textures.getChild(1).type).toEqual(type);
+        });
+        it("set ICubeTextureAsset's attri by the first cube face texture", function(){
             var commonAsset = dy.CommonTextureAsset.create({
                 width:200,
                 height:200
@@ -114,9 +140,54 @@ describe("cube texture", function() {
 
             expect(texture.width).toEqual(200);
             expect(texture.height).toEqual(200);
+            expect(texture.generateMipmaps).toBeTruthy();
+            expect(texture.minFilter).toEqual(commonAsset.minFilter);
+            expect(texture.magFilter).toEqual(commonAsset.magFilter);
+            expect(texture.wrapS).toEqual(commonAsset.wrapS);
+            expect(texture.wrapT).toEqual(commonAsset.wrapT);
+            expect(texture.anisotropy).toEqual(commonAsset.anisotropy);
+            expect(texture.premultiplyAlpha).toEqual(commonAsset.premultiplyAlpha);
+            expect(texture.unpackAlignment).toEqual(commonAsset.unpackAlignment);
         });
-        it("generateMipmaps is true default", function(){
-            var asset = dy.CompressedTextureAsset.create({});
+
+        describe("if is all compressed cube face textures", function(){
+            it("generateMipmaps is false", function(){
+                var asset = dy.CompressedTextureAsset.create({});
+                asset.minFilter = dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+
+                var texture = dy.CubeTexture.create([
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset}
+                ]);
+
+                expect(texture.generateMipmaps).toBeFalsy();
+                expect(texture.minFilter).toEqual(dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+            });
+            it("if there is one no mipmap asset at least, minFilter will convert to be non-mipmap filter", function(){
+                var asset = dy.CompressedTextureAsset.create({});
+                asset.minFilter = dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                var asset2 = dy.CompressedTextureAsset.create({});
+                asset2.minFilter = dy.TextureFilterMode.LINEAR;
+
+                var texture = dy.CubeTexture.create([
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset2},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset}
+                ]);
+
+                expect(texture.generateMipmaps).toBeFalsy();
+                expect(texture.minFilter).toEqual(dy.TextureFilterMode.LINEAR);
+            });
+        });
+        it("else, generateMipmaps is true", function(){
+            var asset = dy.CommonTextureAsset.create({});
 
             var texture = dy.CubeTexture.create([
                 {asset:asset},
@@ -128,6 +199,20 @@ describe("cube texture", function() {
             ]);
 
             expect(texture.generateMipmaps).toBeTruthy();
+        });
+        it("set flipY false", function(){
+            var asset = dy.CommonTextureAsset.create({});
+
+            var texture = dy.CubeTexture.create([
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset}
+            ]);
+
+            expect(texture.flipY).toBeFalsy();
         });
     });
 
@@ -238,6 +323,8 @@ describe("cube texture", function() {
                         expect(program.setUniformData).toCalledTwice();
 
                         done();
+                    }, function(asset){
+                        asset.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                     });
                 });
                 it("cube twoD texture only and default support DRAW_IN_CANVAS", function(done){
@@ -262,6 +349,8 @@ describe("cube texture", function() {
                         expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 2, 2)));
 
                         done();
+                    }, function(asset){
+                        asset.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                     });
                 });
         });
@@ -350,8 +439,23 @@ describe("cube texture", function() {
         describe("clampToMaxSize", function(){
             it("if cube face texture's size exceed max size, then make it to be canvas and scale the canvas", function(done){
                 gpuDetector.maxCubemapTextureSize = 50;
+                ctx = {
+                    drawImage:sandbox.stub()
+                };
+                canvas = {
+                    getContext: sandbox.stub().returns(ctx)
+                };
+                var ctx2 = {
+                    drawImage:sandbox.stub()
+                };
+                var canvas2 = {
+                    getContext: sandbox.stub().returns(ctx2)
+                };
 
                 load2DTexture(function(texture){
+                    sandbox.stub(texture, "_createResizedCanvas").returns(canvas);
+                    document.createElement.returns(canvas2);
+
                     texture.update(0);
 
                     texture.textures.forEach(function(face){

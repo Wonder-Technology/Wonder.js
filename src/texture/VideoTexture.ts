@@ -1,15 +1,17 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class VideoTexture extends TwoDTexture{
-        public static create(asset:CommonTextureAsset){
-            var obj = new this(asset);
+        public static create(asset:CommonTextureAsset) {
+            var obj = new this();
 
-            obj.initWhenCreate();
+            obj.initWhenCreate(asset);
 
             return obj;
         }
 
-        public initWhenCreate(){
+        public initWhenCreate(asset:CommonTextureAsset){
+            super.initWhenCreate(asset);
+
             this.generateMipmaps = false;
             this.needUpdate = false;
         }

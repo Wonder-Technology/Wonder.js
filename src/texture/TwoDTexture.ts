@@ -1,10 +1,16 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class TwoDTexture extends Texture{
-        public static create(asset:CommonTextureAsset){
-            var obj = new this(asset);
+        public static create(asset:CommonTextureAsset) {
+            var obj = new this();
+
+            obj.initWhenCreate(asset);
 
             return obj;
+        }
+
+        public initWhenCreate(asset:CommonTextureAsset){
+            asset.copyTo(this);
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

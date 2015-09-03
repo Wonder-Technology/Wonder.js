@@ -77,6 +77,7 @@
 /// <reference path="asset/TextureLoader"/>
 /// <reference path="asset/utils/ImgLoader"/>
 /// <reference path="asset/utils/AjaxLoader"/>
+/// <reference path="asset/texture/ITextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
 /// <reference path="asset/texture/TextureAsset"/>
@@ -128,7 +129,6 @@
 /// <reference path="texture/CubeFaceTexture"/>
 /// <reference path="texture/CubeFaceTwoDTexture"/>
 /// <reference path="texture/CubeFaceCompressedTexture"/>
-/// <reference path="texture/CubeFaceFactory"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>
 /// <reference path="texture/command/DrawTextureCommand"/>

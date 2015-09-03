@@ -13,8 +13,8 @@ module dy{
 
         protected getDrawTarget(source:any, sourceRegion:RectRegion=this.sourceRegion){
             var result = null,
-                canvas = null,
-                ctx = null;
+                canvas:HTMLCanvasElement = null,
+                ctx:any = null;
 
             if(this.sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS
                 && sourceRegion && sourceRegion.isNotEmpty()){
