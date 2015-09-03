@@ -8,7 +8,7 @@ module dy{
         }
 
         public mipmaps:dyCb.Collection<ICompressedTextureMipmap> = null;
-        public texture:Texture = null;
+        //public texture:Texture = null;
 
         public execute(){
             var gl = Director.getInstance().gl,
@@ -25,10 +25,6 @@ module dy{
                 this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
                     gl.texImage2D(self.glTarget, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], self.getDrawTarget(mipmap.data));
                 });
-            }
-
-            if(this.mipmaps.getCount() > 1){
-                this.texture.generateMipmaps = false;
             }
         }
     }

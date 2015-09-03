@@ -1,17 +1,16 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class VideoTexture extends TwoDTexture{
-        public static create(video:any=Texture.defaultTexture){
-            var obj = new this(video);
+        public static create(asset:CommonTextureAsset){
+            var obj = new this(asset);
+
+            obj.initWhenCreate();
 
             return obj;
         }
 
-        constructor(video:any = Texture.defaultTexture){
-            super(video);
-
+        public initWhenCreate(){
             this.generateMipmaps = false;
-
             this.needUpdate = false;
         }
 
@@ -27,10 +26,6 @@ module dy{
             });
 
             return this;
-        }
-
-        public copy():any{
-            return this.copyHelper(VideoTexture.create());
         }
 
         protected isCheckMaxSize(){

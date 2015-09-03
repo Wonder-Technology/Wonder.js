@@ -31,20 +31,20 @@ describe("TextureManager", function() {
             expect(manager.getChild(0)).toBeInstanceOf(dy.CompressedTexture);
             expect(manager.getChild(0).format).toEqual(asset.format);
         });
-        it("test add texture", function(){
-            var asset = dy.CompressedTextureAsset.create({});
-            var texture = dy.CubeTexture.create([
-                {asset:asset},
-                {asset:asset},
-                {asset:asset},
-                {asset:asset},
-                {asset:asset},
-                {asset:asset}
-            ]);
-
-            manager.addChild(texture);
-
-            expect(manager.getChild(0)).toBeInstanceOf(dy.CubeTexture);
-        });
+        //it("test add texture", function(){
+        //    var asset = dy.CompressedTextureAsset.create({});
+        //    var texture = dy.CubeTexture.create([
+        //        {asset:asset},
+        //        {asset:asset},
+        //        {asset:asset},
+        //        {asset:asset},
+        //        {asset:asset},
+        //        {asset:asset}
+        //    ]);
+        //
+        //    manager.addChild(texture);
+        //
+        //    expect(manager.getChild(0)).toBeInstanceOf(dy.CubeTexture);
+        //});
     });
 });

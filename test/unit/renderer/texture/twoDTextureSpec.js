@@ -189,7 +189,7 @@ describe("twoD texture", function() {
                     done();
                 });
             });
-            it("manual set mipmap", function (done) {
+            it("test manual set mipmap", function (done) {
                 load2DTexture(function (texture) {
                     var mipmap1 = buildMipmap();
                     var mipmap2 = buildMipmap();

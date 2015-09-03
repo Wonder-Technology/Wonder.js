@@ -1,32 +1,16 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class CompressedTexture extends Texture {
-        public static create() {
-            var obj = new this();
+        public static create(asset:CompressedTextureAsset) {
+            var obj = new this(asset);
 
             return obj;
-        }
-
-        constructor() {
-            super();
-
-            this.generateMipmaps = false;
-            /*!
-             flipping doesn't work for compressed textures
-             */
-            this.flipY = false;
         }
 
         get sourceRegionMethod(){
             dyCb.Log.assert(this.p_sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS, will use TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
 
             return TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
-        }
-
-        public mipmaps:dyCb.Collection<ICompressedTextureMipmap>;
-
-        public copy(){
-            return this.copyHelper(CompressedTexture.create());
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
@@ -39,9 +23,12 @@ module dy{
             compressedCmd.mipmaps = this.mipmaps;
             compressedCmd.sourceRegion = this.sourceRegion;
             compressedCmd.sourceRegionMethod = this.sourceRegionMethod;
-            compressedCmd.texture = this;
 
             compressedCmd.execute();
+
+            if(this.mipmaps.getCount() > 1){
+                this.generateMipmaps = false;
+            }
         }
 
         protected isCheckMaxSize(){

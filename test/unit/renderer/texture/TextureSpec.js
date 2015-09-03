@@ -66,6 +66,8 @@ describe("Texture", function() {
                     setUniformData:sandbox.stub()
                 };
                 sandbox.stub(director.stage, "program", program);
+
+                texture.sourceRegionMethod = dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
             });
 
             it("if sourceRegion is based on canvas coordinate system, convert it to webgl coordinate stystem", function(){

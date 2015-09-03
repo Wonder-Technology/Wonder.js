@@ -13,14 +13,12 @@ module dy{
             this.source = source;
         }
 
-        public source:HTMLImageElement = null;
+        public mipmaps:dyCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
 
         public toTexture():Texture{
-            var texture = TwoDTexture.create(this.source);
+            var texture = TwoDTexture.create(this);
 
-            texture.format = this.format;
-
-            return texture;
+            return this.copyTo(texture);
         }
     }
 }
