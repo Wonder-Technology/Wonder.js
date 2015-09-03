@@ -32,7 +32,7 @@ module dy{
                 this.generateMipmaps = false;
             }
             else {
-                noMipmapCmd = DrawMipmapTwoDTextureCommand.create();
+                noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
                 noMipmapCmd.source = this.source;
                 noMipmapCmd.format = this.format;
                 noMipmapCmd.type = this.type;
@@ -40,7 +40,7 @@ module dy{
                 noMipmapCmd.sourceRegionMethod = this.sourceRegionMethod;
                 noMipmapCmd.glTarget = gl.TEXTURE_2D;
 
-                mipmapCmd.execute();
+                noMipmapCmd.execute();
             }
         }
     }

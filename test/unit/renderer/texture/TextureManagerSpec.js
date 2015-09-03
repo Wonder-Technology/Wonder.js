@@ -13,27 +13,38 @@ describe("TextureManager", function() {
     });
 
     describe("addChild", function(){
-        var texture = null,
-            copyTexture = null;
+        it("test add common texture asset", function(){
+            var asset = dy.CommonTextureAsset.create({});
+            asset.format = dy.TextureFormat.RGBA;
 
-        beforeEach(function(){
-            copyTexture = {
-                init:sandbox.stub().returns({})
-            };
-            texture = {
-                copy: sandbox.stub().returns(copyTexture)
-            };
+            manager.addChild(asset);
+
+            expect(manager.getChild(0)).toBeInstanceOf(dy.TwoDTexture);
+            expect(manager.getChild(0).format).toEqual(asset.format);
         });
-        it("add the copied texture", function(){
+        it("test add compressed texture asset", function(){
+            var asset = dy.CompressedTextureAsset.create({});
+            asset.format = dy.TextureFormat.RGBA;
+
+            manager.addChild(asset);
+
+            expect(manager.getChild(0)).toBeInstanceOf(dy.CompressedTexture);
+            expect(manager.getChild(0).format).toEqual(asset.format);
+        });
+        it("test add texture", function(){
+            var asset = dy.CompressedTextureAsset.create({});
+            var texture = dy.CubeTexture.create([
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset}
+            ]);
+
             manager.addChild(texture);
 
-            manager.getChild(0).a = 1;
-            expect(texture.a).toBeUndefined();
-        });
-        it("init the texture", function(){
-            manager.addChild(texture);
-
-            expect(copyTexture.init).toCalledOnce();
+            expect(manager.getChild(0)).toBeInstanceOf(dy.CubeTexture);
         });
     });
 });

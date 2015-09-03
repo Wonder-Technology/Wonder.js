@@ -625,13 +625,18 @@ beforeEach(function () {
 
             return actualArg;
         }
+        function getActualArg(stub){
+            var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];
+
+            return actualArg;
+        }
 
 
         jasmine.addMatchers({
             toCalledWith: function () {
                 return {
                     compare: function (actual, expected) {
-                        var actualArg = null,
+                        var actualArg = getActualArg(actual),
                             expectedArg = null,
                             message = null,
                             toString = function(arg){
@@ -667,6 +672,12 @@ beforeEach(function () {
                         return {
                             pass: actual.called,
                             message: "Expected to be called, but actual is not called"
+                        }
+                    },
+                    negativeCompare: function(actual, expected) {
+                        return {
+                            pass: !actual.called,
+                            message: "Expected to be not called, but actual is called"
                         }
                     }
                 };

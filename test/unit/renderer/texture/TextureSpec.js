@@ -2,6 +2,7 @@ describe("Texture", function() {
     var sandbox = null;
     var Texture = null;
     var texture = null;
+    var textureManager = null;
     var director = null;
     var gl = null;
 
@@ -9,6 +10,7 @@ describe("Texture", function() {
         sandbox = sinon.sandbox.create();
         Texture = dy.Texture;
         texture = new Texture();
+        textureManager = dy.TextureManager.create();
         director = dy.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
@@ -122,11 +124,7 @@ describe("Texture", function() {
                         {url: testTool.resPath  + "test/res/1.jpg", id:"texture"}
                     ]).subscribe(null, null,
                         function(){
-                            var texture = dy.TextureLoader.getInstance().get("texture").copy();
-
-                            texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                            texture.width = 128;
-                            texture.height = 128;
+                            var texture = dy.TextureLoader.getInstance().get("texture").toTexture();
 
                             onload(texture);
                         });
@@ -137,16 +135,8 @@ describe("Texture", function() {
                 {url: testTool.resPath  + "test/res/disturb_dxt1_mip.dds", id:"compressedTexture"}
             ]).subscribe(null, null,
                 function(){
-                    var texture1 = dy.TextureLoader.getInstance().get("texture").copy(),
-                        texture2 = dy.TextureLoader.getInstance().get("compressedTexture").copy();
-
-                    texture1.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                    texture1.width = 128;
-                    texture1.height = 128;
-
-                    texture2.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                    texture2.width = 128;
-                    texture2.height = 128;
+                    var texture1 = dy.TextureLoader.getInstance().get("texture");
+                        texture2 = dy.TextureLoader.getInstance().get("compressedTexture");
 
                     onload(texture1, texture2);
                 });
@@ -198,11 +188,10 @@ describe("Texture", function() {
 
             it("one material can contain multi texture", function(done){
                 loadMultiTexture(function(texture1, texture2){
-                    var material = dy.Material.create();
-                    material.textureManager.addChild(texture1);
-                    material.textureManager.addChild(texture2);
+                    textureManager.addChild(texture1);
+                    textureManager.addChild(texture2);
 
-                    material.textureManager.update();
+                    textureManager.update();
 
                     expect(gl.activeTexture.firstCall).toCalledWith(gl.TEXTURE0);
                     expect(gl.activeTexture.firstCall).toCalledBefore(gl.texImage2D.firstCall);
@@ -219,11 +208,10 @@ describe("Texture", function() {
                 sandbox.stub(dyCb.Log, "warn");
 
                 loadMultiTexture(function(texture1, texture2){
-                    var material = dy.Material.create();
-                    material.textureManager.addChild(texture1);
-                    material.textureManager.addChild(texture2);
+                    textureManager.addChild(texture1);
+                    textureManager.addChild(texture2);
 
-                    material.textureManager.update();
+                    textureManager.update();
 
                     expect(dyCb.Log.warn).toCalledOnce();
 

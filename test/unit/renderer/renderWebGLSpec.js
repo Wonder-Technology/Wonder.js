@@ -45,7 +45,7 @@ describe("renderWebGL", function() {
     });
 
     describe("render", function(){
-        var gl, program;
+        var gl, program,mMatrix,vMatrix,pMatrix;
 
         function addCommand(isNoIndexBuffer){
             var quadCmd,shader,material,geometry;
@@ -80,7 +80,9 @@ describe("renderWebGL", function() {
             }
 
             quadCmd.shader = geometry.material.shader;
-            quadCmd.mvpMatrix = mvpMatrix;
+            quadCmd.mMatrix = mMatrix;
+            quadCmd.vMatrix = vMatrix;
+            quadCmd.pMatrix = pMatrix;
 
 
             quadCmd.material = material;
@@ -99,7 +101,10 @@ describe("renderWebGL", function() {
         }
 
         beforeEach(function(){
-            mvpMatrix = dy.Matrix.create();
+            mMatrix = dy.Matrix.create();
+            vMatrix = dy.Matrix.create();
+            pMatrix = dy.Matrix.create();
+
             gl = {
                 TRIANGLES:"TRIANGLES",
                 ARRAY_BUFFER:"ARRAY_BUFFER",
@@ -199,7 +204,7 @@ describe("renderWebGL", function() {
 
                 expect(result.material.textureManager.update).toCalledOnce();
             });
-            it("send vertex,color,mvpMatrix to program", function(){
+            it("send vertex,color,mMatrix,vMatrix,pMatrix to program", function(){
                 var result = addCommand();
                 var geometry = result.geometry;
 
@@ -207,7 +212,9 @@ describe("renderWebGL", function() {
 
                 expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
                 expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
-                expect(program.setUniformData).toCalledWith("u_mvpMatrix", dy.render.UniformDataType.FLOAT_MAT4, mvpMatrix);
+                expect(program.setUniformData).toCalledWith("u_mMatrix", dy.render.UniformDataType.FLOAT_MAT4, mMatrix);
+                expect(program.setUniformData).toCalledWith("u_vMatrix", dy.render.UniformDataType.FLOAT_MAT4, vMatrix);
+                expect(program.setUniformData).toCalledWith("u_pMatrix", dy.render.UniformDataType.FLOAT_MAT4, pMatrix);
             });
             it("send texture data", function(){
                 var result = addCommand();

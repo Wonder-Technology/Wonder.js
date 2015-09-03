@@ -61,9 +61,8 @@ describe("compressed texture", function() {
                 {url: testTool.resPath  + "test/res/disturb_dxt1_mip.dds", id:"compressedTexture"}
             ]).subscribe(null, null,
                 function(){
-                    var texture = dy.TextureLoader.getInstance().get("compressedTexture").copy();
+                    var texture = dy.TextureLoader.getInstance().get("compressedTexture").toTexture();
 
-                    texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                     texture.width = 128;
                     texture.height = 128;
 
@@ -109,37 +108,33 @@ describe("compressed texture", function() {
                 sandbox.stub(director.stage, "program", program);
             });
 
-                it("test sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.", function(done){
-                    loadCompressedTexture(function(texture){
-                        texture.format = dy.TextureFormat.RGB_S3TC_DXT1;
-                        /*!
-                         in this case, it can't repeat correctly! (because the texture is the whole texture, not the part)
+                describe("sourceRegionMethod always be CHANGE_TEXCOORDS_IN_GLSL, because canvas->drawImage can't draw the compressed texture's data.", function(){
+                    it("test default", function(done){
+                        loadCompressedTexture(function(texture){
+                            texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
 
-                         texture.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
-                         texture.wrapS = dy.TextureWrapMode.REPEAT;
-                         texture.wrapT = dy.TextureWrapMode.REPEAT;
-                         */
-
-                        texture.update(0);
-
-                        expect(gl.compressedTexImage2D).toCalled();
-
-                        texture.sendData(0);
-
-                        expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
-
-                        done();
-                    });
-                });
-                it("not support DRAW_IN_CANVAS.", function(done){
-                    loadCompressedTexture(function(texture){
-                        texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
-
-                        expect(function(){
                             texture.update(0);
-                        }).toThrow();
 
-                        done();
+                            texture.sendData(0);
+
+                            expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+
+                            done();
+                        });
+                    });
+                    it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(done){
+                        loadCompressedTexture(function(texture){
+                            texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                            texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                            sandbox.stub(dyCb.Log, "assert");
+
+                            texture.update(0);
+
+                            expect(dyCb.Log.assert).toCalled();
+                            expect(texture.sourceRegionMethod).toEqual(dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+
+                            done();
+                        });
                     });
                 });
         });
@@ -154,8 +149,32 @@ describe("compressed texture", function() {
             }
 
             describe("compressed texture", function(){
-                it("can't auto generate mipmap", function(done){
+                it("can't auto generate mipmap default", function(done){
                     loadCompressedTexture(function(texture){
+                        expect(texture.generateMipmaps).toBeFalsy();
+
+                        done();
+                    });
+                });
+                it("if texture isn't power of two or texture contain multi mipmaps, don't generate mipmap", function(done){
+                    loadCompressedTexture(function(texture){
+                        texture.generateMipmaps = true;
+                        texture.width = 100;
+                        texture.height = 50;
+
+                        texture.update(0);
+
+                        expect(gl.generateMipmap).not.toCalled();
+
+                        texture.generateMipmaps = true;
+                        texture.width = 128;
+                        texture.height = 128;
+                        texture.mipmaps.removeAllChildren();
+                        var mipmap1 = buildMipmap();
+                        var mipmap2 = buildMipmap();
+
+                        texture.mipmaps.addChild(mipmap1);
+                        texture.mipmaps.addChild(mipmap2);
                         texture.update(0);
 
                         expect(gl.generateMipmap).not.toCalled();
@@ -184,7 +203,6 @@ describe("compressed texture", function() {
                 });
                 it("else, use compressedTexImage2D", function(done){
                     loadCompressedTexture(function(texture){
-                        texture.format = dy.TextureFormat.RGB_S3TC_DXT1;
                         texture.mipmaps.removeAllChildren();
                         var format = gpuDetector.extensionCompressedTextureS3TC.
                             COMPRESSED_RGB_S3TC_DXT1_EXT;

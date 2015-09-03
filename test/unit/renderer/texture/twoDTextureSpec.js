@@ -61,7 +61,7 @@ describe("twoD texture", function() {
                 {url: testTool.resPath + "test/res/1.jpg", id: "texture"}
             ]).subscribe(null, null,
                 function () {
-                    var texture = dy.TextureLoader.getInstance().get("texture").copy();
+                    var texture = dy.TextureLoader.getInstance().get("texture").toTexture();
 
                     texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                     texture.width = 128;
@@ -157,13 +157,34 @@ describe("twoD texture", function() {
                 return {};
             }
 
-            it("auto generate mipmap", function (done) {
+            it("can auto generate mipmap default", function(done){
+                load2DTexture(function(texture){
+                    expect(texture.generateMipmaps).toBeTruthy();
+
+                    done();
+                });
+            });
+            it("if source isn't power of two or is manual set mipmap, don't generate mipmap", function (done) {
                 load2DTexture(function (texture) {
                     texture.generateMipmaps = true;
+                    texture.width = 100;
+                    texture.height = 50;
 
                     texture.update(0);
 
-                    expect(gl.generateMipmap).toCalledWith(gl.TEXTURE_2D);
+                    expect(gl.generateMipmap).not.toCalled();
+
+                    texture.generateMipmaps = true;
+                    texture.width = 128;
+                    texture.height = 128;
+                    var mipmap1 = buildMipmap();
+                    var mipmap2 = buildMipmap();
+                    texture.mipmaps.addChild(mipmap1);
+                    texture.mipmaps.addChild(mipmap2);
+
+                    texture.update(0);
+
+                    expect(gl.generateMipmap).not.toCalled();
 
                     done();
                 });

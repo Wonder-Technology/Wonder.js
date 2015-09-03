@@ -40,6 +40,8 @@ module dy{
         }
 
         public dispose(){
+            this.reset();
+
             LoaderFactory.createAllLoader().forEach((loader:Loader) => {
                 loader.dispose();
             });

@@ -4,6 +4,7 @@ var testTool = (function(){
 
         buildFakeGl: function(sandbox){
             return {
+                createBuffer:sandbox.stub(),
                 enable:sandbox.stub(),
                 disable:sandbox.stub(),
                 polygonOffset:sandbox.stub(),

@@ -7,32 +7,35 @@ module dy{
         	return obj;
         }
 
-        //public cubemapTextures:dyCb.Collection<CubeTexture> = dyCb.Collection.create<CubeTexture>();
-
         private _textures:dyCb.Collection<Texture> = dyCb.Collection.create<Texture>();
 
         public init(){
             this._textures.forEach((texture:Texture) => {
                 texture.init();
             });
-            //this.cubemapTextures.forEach((texture:Texture) => {
-            //    texture.init();
-            //});
         }
 
-        public addChild(asset:TextureAsset){
-            this._textures.addChild(asset.toTexture());
+        public addChild(asset:TextureAsset);
+        public addChild(assets:Array<ICubemapData>);
+        public addChild(texture:Texture);
+
+        public addChild(arg){
+            if(arguments[0] instanceof TextureAsset){
+                let asset:TextureAsset = arguments[0];
+
+                this._textures.addChild(asset.toTexture());
+            }
+            else if(JudgeUtils.isArray(arguments[0])){
+                let assets:Array<ICubemapData> = arguments[0];
+
+                this._textures.addChild(CubeTexture.create(assets));
+            }
+            else if(arguments[0] instanceof Texture){
+                let texture:Texture = arguments[0];
+
+                this._textures.addChild(texture);
+            }
         }
-
-        public addCubemap(assets:Array<ICubemapData>){
-
-            this._textures.addChild(CubeTexture.create(assets));
-
-            //todo refactor
-            this.isSkybox = true;
-        }
-
-        public isSkybox = false;
 
         public getChildren(){
             return this._textures.getChildren();

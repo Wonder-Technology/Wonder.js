@@ -17,10 +17,6 @@ module dy{
             this._assets = assets;
             this.flipY = false;
         }
-        //CubeTexture only support DRAW_IN_CANVAS
-        get sourceRegionMethod(){
-            return TextureSourceRegionMethod.DRAW_IN_CANVAS;
-        }
 
         public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
 
@@ -41,19 +37,25 @@ module dy{
             this._createTextures(this._assets);
 
 
-            this.width = this.textures.getChild(0).width;
-            this.height = this.textures.getChild(0).height;
-            /*!
-            skybox don't use mipmaps default
-             */
-            this.generateMipmaps = false;
-            this.minFilter = this.filterFallback(this.minFilter);
+            this.width = this._getRepresentTexture().width;
+            this.height =this._getRepresentTexture().height;
+        }
+
+        public sendData(index){
+            var program = Director.getInstance().stage.program;
+
+            program.setUniformData("u_sampler" + index, render.UniformDataType.NUMBER_1, index);
+            program.setUniformData("u_repeatRegion", render.UniformDataType.FLOAT_4, this.repeatRegion);
+
+            return this;
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            var gl = Director.getInstance().gl;
+            var gl = Director.getInstance().gl,
+                self = this;
 
             if(this._isAllCompressedAsset){
+                //cube compressed texture not support sourceRegion
                 this.textures.forEach((texture:CubeFaceCompressedTexture, i:number) => {
                     var compressedCmd = DrawCompressedTextureCommand.create();
 
@@ -61,18 +63,20 @@ module dy{
                     compressedCmd.type = texture.type;
                     compressedCmd.format = texture.format;
                     compressedCmd.mipmaps = texture.mipmaps;
+                    compressedCmd.texture = self;
 
                     compressedCmd.execute();
                 });
             }
             else{
-                //todo support mipmap
+                //todo support manual mipmap
 
                 this.textures.forEach((texture:CubeFaceTwoDTexture, i:number) => {
                     var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
 
                     noMipmapCmd.source = texture.source;
                     noMipmapCmd.sourceRegion = texture.sourceRegion;
+                    //cube twoD texture only support DRAW_IN_CANVAS
                     noMipmapCmd.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
                     noMipmapCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + i;
                     noMipmapCmd.format = texture.format;
@@ -84,7 +88,7 @@ module dy{
         }
 
         protected isSourcePowerOfTwo(){
-            var isAllSourcePowerOfTwo = false,
+            var isAllSourcePowerOfTwo = true,
                 self = this;
 
             this.textures.forEach((texture:CubeFaceTexture) => {
@@ -102,11 +106,14 @@ module dy{
                 maxSize = GPUDetector.getInstance().maxCubemapTextureSize;
 
             this.textures.forEach((texture:CubeFaceTexture) => {
-                //todo refactor?
                 if(texture.source){
                     texture.source = self.clampToMaxSizeHelper(texture.source, maxSize);
                 }
             });
+        }
+
+        private _getRepresentTexture(){
+            return this.textures.getChild(0);
         }
 
         private  _judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets:Array<ICubemapData>){

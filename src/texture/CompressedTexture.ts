@@ -10,13 +10,17 @@ module dy{
         constructor() {
             super();
 
+            this.generateMipmaps = false;
             /*!
-             no need to generate mipmaps for compressed textures, mips will be embedded in files
-
              flipping doesn't work for compressed textures
              */
-            this.generateMipmaps = false;
             this.flipY = false;
+        }
+
+        get sourceRegionMethod(){
+            dyCb.Log.assert(this.p_sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS, will use TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
+
+            return TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         }
 
         public mipmaps:dyCb.Collection<ICompressedTextureMipmap>;
@@ -35,6 +39,7 @@ module dy{
             compressedCmd.mipmaps = this.mipmaps;
             compressedCmd.sourceRegion = this.sourceRegion;
             compressedCmd.sourceRegionMethod = this.sourceRegionMethod;
+            compressedCmd.texture = this;
 
             compressedCmd.execute();
         }

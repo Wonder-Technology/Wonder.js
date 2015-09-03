@@ -7,9 +7,6 @@ module dy{
             this.source = source;
         }
 
-        public format:TextureFormat = TextureFormat.RGBA;
-        public source:any = null;
-
         private _width:number = null;
         get width(){
             return this._width === null? (this.source? this.source.width : null) : this._width;
@@ -26,20 +23,34 @@ module dy{
             this._height = height;
         }
 
-        private _sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        protected p_sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         get sourceRegionMethod(){
-            return this._sourceRegionMethod;
+            return this.p_sourceRegionMethod;
         }
         set sourceRegionMethod(sourceRegionMethod:TextureSourceRegionMethod){
-            this._sourceRegionMethod = sourceRegionMethod;
+            this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
+        private _generateMipmaps:boolean = true;
+        get generateMipmaps(){
+            return this._generateMipmaps;
+        }
+        set generateMipmaps(generateMipmaps:boolean){
+            if(!generateMipmaps){
+                this.minFilter = this.filterFallback(this.minFilter);
+                this.magFilter = this.filterFallback(this.magFilter);
+            }
+
+            this._generateMipmaps = generateMipmaps;
+        }
+
+        public format:TextureFormat = TextureFormat.RGBA;
+        public source:any = null;
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
         public sourceRegion:RectRegion = null;
 
         public sourceRegionMapping:TextureSourceRegionMapping = TextureSourceRegionMapping.CANVAS;
 
-        public generateMipmaps:boolean = true;
         public flipY:boolean = true;
         public premultiplyAlpha:boolean = false;		//预乘Alpha值,如果设置为true,纹素的rgb值会先乘以alpha值,然后在存储.
         public unpackAlignment:number = 4; // valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
@@ -148,6 +159,14 @@ module dy{
             delete this._texture;
         }
 
+        public filterFallback(filter:TextureFilterMode) {
+            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
+                return TextureFilterMode.NEAREST;
+            }
+
+            return TextureFilterMode.LINEAR;
+        }
+
         protected copyHelper(texture:Texture){
             dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
 
@@ -199,14 +218,6 @@ module dy{
 
         protected isPowerOfTwo(width:number, height:number){
             return JudgeUtils.isPowerOfTwo(width) && JudgeUtils.isPowerOfTwo(height);
-        }
-
-        protected filterFallback(filter:TextureFilterMode) {
-            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
-                return TextureFilterMode.NEAREST;
-            }
-
-            return TextureFilterMode.LINEAR;
         }
 
         private _setTextureParameters(textureType, isSourcePowerOfTwo){

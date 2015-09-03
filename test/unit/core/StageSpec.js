@@ -71,6 +71,22 @@ describe("Stage", function() {
             expect(gameObject2.onEndLoop).toCalledOnce();
             expect(gameObject3.onEndLoop).toCalledOnce();
         });
+        it("invoke components' init", function(){
+            var geometry = new dy.BoxGeometry();
+            var material = new dy.Material();
+            geometry.material = material;
+
+            sandbox.spy(geometry, "init");
+            sandbox.spy(material, "init");
+            sandbox.spy(material.textureManager, "init");
+            stage.addComponent(geometry);
+
+            stage.init();
+
+            expect(geometry.init).toCalledOnce();
+            expect(material.init).toCalledOnce();
+            expect(material.textureManager.init).toCalledOnce();
+        });
         it("invoke stage and it's children's script->init", function(){
             stage.init();
 

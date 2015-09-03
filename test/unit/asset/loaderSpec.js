@@ -7,9 +7,7 @@ describe("loader", function () {
         manager = dy.LoaderManager.getInstance();
     });
     afterEach(function () {
-        dy.LoaderManager._instance = null;
-        dy.GLSLLoader._instance = null;
-        dy.TextureLoader._instance = null;
+        manager.dispose();
         sandbox.restore();
     });
 
@@ -36,34 +34,56 @@ describe("loader", function () {
     });
 
     //todo load pvr
-    it("load texture", function(done){
-        var current = [],
-            total = [];
+    describe("load texture", function() {
+        it("load common texture", function (done) {
+            var current = [],
+                total = [];
 
-        dy.LoaderManager.getInstance().load([
-            {url: testTool.resPath + "test/res/1.jpg", id: "jpg"},
-            {url: testTool.resPath + "test/res/2.png", id: "png"},
-            {url: testTool.resPath + "test/res/disturb_dxt1_mip.dds", id: "dds"}
-        ]).subscribe(function(data){
-            current.push(data.currentLoadedCount);
-            total.push(data.assetCount);
-        }, function(err){
-            console.log(err);
-            done();
-        }, function(){
-            expect(current).toEqual([1, 2, 3]);
-            expect(total).toEqual([3, 3, 3]);
+            dy.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/1.jpg", id: "jpg"},
+                {url: testTool.resPath + "test/res/2.png", id: "png"}
+            ]).subscribe(function (data) {
+                current.push(data.currentLoadedCount);
+                total.push(data.assetCount);
+            }, function (err) {
+                console.log(err);
+                done();
+            }, function () {
+                expect(current).toEqual([1, 2]);
+                expect(total).toEqual([2, 2]);
 
-            var jpg = dy.TextureLoader.getInstance().get("jpg");
-            var png = dy.TextureLoader.getInstance().get("png");
-            var dds = dy.TextureLoader.getInstance().get("dds");
+                var jpg = dy.TextureLoader.getInstance().get("jpg");
+                var png = dy.TextureLoader.getInstance().get("png");
 
-            expect(jpg).toBeInstanceOf(dy.TwoDTexture);
-            expect(jpg.format).toEqual(dy.TextureFormat.RGB);
-            expect(png).toBeInstanceOf(dy.TwoDTexture);
-            expect(png.format).toEqual(dy.TextureFormat.RGBA);
+                expect(jpg).toBeInstanceOf(dy.CommonTextureAsset);
+                expect(jpg.format).toEqual(dy.TextureFormat.RGB);
+                expect(png).toBeInstanceOf(dy.CommonTextureAsset);
+                expect(png.format).toEqual(dy.TextureFormat.RGBA);
 
-            done();
+                done();
+            });
+        });
+        it("load compressed texture", function (done) {
+            sandbox.stub(dy.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
+                COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
+            });
+
+            dy.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/disturb_dxt1_mip.dds", id: "dds"}
+            ]).subscribe(function (data) {
+            }, function (err) {
+                console.log(err);
+                done();
+            }, function () {
+                var dds = dy.TextureLoader.getInstance().get("dds");
+
+                expect(dds).toBeInstanceOf(dy.CompressedTextureAsset);
+                expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
+                expect(dds.mipmaps.getCount()).toEqual(10);
+                expect(dds.minFilter).toEqual(dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+
+                done();
+            });
         });
     });
 
