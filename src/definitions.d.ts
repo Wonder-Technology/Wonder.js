@@ -74,6 +74,7 @@
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
+/// <reference path="asset/VideoLoader"/>
 /// <reference path="asset/TextureLoader"/>
 /// <reference path="asset/utils/ImgLoader"/>
 /// <reference path="asset/utils/AjaxLoader"/>
@@ -136,3 +137,5 @@
 /// <reference path="texture/command/DrawTwoDTextureCommand"/>
 /// <reference path="texture/command/DrawMipmapTwoDTextureCommand"/>
 /// <reference path="texture/command/DrawNoMipmapTwoDTextureCommand"/>
+
+/// <reference path="video/Video"/>

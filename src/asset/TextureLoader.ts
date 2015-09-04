@@ -10,9 +10,17 @@ module dy{
             return this._instance;
         }
 
-        protected loadAsset(url:string):dyRt.Stream {
-            var extname = dyCb.PathUtils.extname(url).toLowerCase(),
-                stream = null;
+        protected loadAsset(url:string):dyRt.Stream;
+        protected loadAsset(url:Array<string>):dyRt.Stream;
+
+        protected loadAsset(arg):dyRt.Stream {
+            var extname = null,
+                stream = null,
+                url = arguments[0];
+
+            dyCb.Log.error(JudgeUtils.isArray(url), dyCb.Log.info.FUNC_MUST_BE("texture's url", "string"));
+
+            extname = dyCb.PathUtils.extname(url).toLowerCase();
 
             switch (extname){
                 case ".jpg":

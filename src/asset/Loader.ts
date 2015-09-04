@@ -3,8 +3,14 @@ module dy{
     export class Loader{
         private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
 
-        public load(url:string, id:string):dyRt.Stream{
-            var self = this,
+        public load(url:string, id:string):dyRt.Stream;
+        public load(url:Array<string>, id:string):dyRt.Stream;
+
+
+        public load(args):dyRt.Stream{
+            var url = arguments[0],
+                id = arguments[1],
+                self = this,
                 stream = null;
 
             if(this._container.getChild(id)){
@@ -34,12 +40,31 @@ module dy{
             this._container.removeAllChildren();
         }
 
-        protected loadAsset(url:string):dyRt.Stream{
+        protected loadAsset(url:string):dyRt.Stream;
+        protected loadAsset(url:Array<string>):dyRt.Stream;
+
+
+        protected loadAsset(arg):dyRt.Stream{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        private _errorHandle(path:string, err:string) {
-            dyCb.Log.log("加载" + path + "资源失败:" + err);
+        private _errorHandle(path:string, err:string);
+        private _errorHandle(path:Array<string>, err:string);
+
+
+        private _errorHandle(args) {
+            var path = null,
+                err = null;
+
+            if(JudgeUtils.isArray(arguments[0])){
+                path = arguments[0].join(",");
+            }
+            else{
+                path = arguments[0];
+            }
+            err = arguments[1];
+
+            dyCb.Log.log("加载" + path + " 资源失败:" + err);
         }
     }
 }

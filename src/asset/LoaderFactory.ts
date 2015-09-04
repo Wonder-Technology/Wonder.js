@@ -19,6 +19,11 @@ module dy{
                 //case ".bmp":
                     loader = TextureLoader.getInstance();
                     break;
+                case ".mp4":
+                case ".ogv":
+                case ".webm":
+                    loader = VideoLoader.getInstance();
+                    break;
                 default:
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT(extname));
                     break;

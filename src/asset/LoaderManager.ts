@@ -15,6 +15,7 @@ module dy{
 
         public load(url:string):dyRt.Stream;
         public load(assetArr:Array<{url:string; id:string}>) :dyRt.Stream;
+        public load(assetArr:Array<{url:Array<string>; id:string}>) :dyRt.Stream;
 
         public load() {
             var self = this;
@@ -47,8 +48,13 @@ module dy{
             });
         }
 
-        private _createLoadAssetStream(url, id){
-            var loader = this._getLoader(url),
+        private _createLoadAssetStream(url:string, id:string);
+        private _createLoadAssetStream(url:Array<string>, id:string);
+
+        private _createLoadAssetStream(args){
+            var url = arguments[0],
+                id = arguments[1],
+                loader = this._getLoader(url),
                 stream = null,
                 self = this;
 
@@ -73,8 +79,20 @@ module dy{
             return this._getLoader(url).load(url, id);
         }
 
-        private _getLoader(url){
-            return LoaderFactory.create(dyCb.PathUtils.extname(url).toLowerCase());
+        private _getLoader(url:string);
+        private _getLoader(url:Array<string>);
+
+        private _getLoader(arg){
+            var extname:string = null;
+
+            if(JudgeUtils.isArray(arguments[0])){
+                extname = dyCb.PathUtils.extname(arguments[0][0]);
+            }
+            else{
+                extname = dyCb.PathUtils.extname(arguments[0]);
+            }
+
+            return LoaderFactory.create(extname.toLowerCase());
         }
     }
 }

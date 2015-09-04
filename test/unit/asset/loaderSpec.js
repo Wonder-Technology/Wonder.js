@@ -87,6 +87,35 @@ describe("loader", function () {
         });
     });
 
+    describe("load video", function(){
+        it("test load success", function(done){
+            var current = [],
+                total = [];
+
+            dy.LoaderManager.getInstance().load([
+                {url: [testTool.resPath + "test/res/sintel.mp4",testTool.resPath + "test/res/sintel.ogv"], id: "video1"},
+                {url: testTool.resPath + "test/res/kinect.webm", id: "video2"}
+            ]).subscribe(function(data){
+                current.push(data.currentLoadedCount);
+                total.push(data.assetCount);
+            }, function(err){
+                console.log(err);
+            }, function(){
+                expect(current).toEqual([1, 2]);
+                expect(total).toEqual([2, 2]);
+
+                expect(dy.VideoLoader.getInstance().get("video1")).toBeInstanceOf(dy.Video);
+                expect(dy.VideoLoader.getInstance().get("video1").url).toEqual(testTool.resPath + "test/res/sintel.mp4");
+                expect(dy.VideoLoader.getInstance().get("video2")).toBeInstanceOf(dy.Video);
+
+                done();
+            });
+        });
+        //it("test load error", function(done){
+        //
+        //});
+    });
+
     //it("if already load the same id, not load it again", function(done){
     //    sandbox.spy(dyCb.AjaxUtils, "ajax");
     //    var current = [],

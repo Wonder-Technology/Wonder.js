@@ -22,9 +22,7 @@ module dy{
             super.init();
 
             EventManager.on("dy_startLoop", () => {
-                if ( self.source.readyState === self.source.HAVE_ENOUGH_DATA ) {
-                    self.needUpdate = true;
-                }
+                self.needUpdate = true;
             });
 
             return this;
