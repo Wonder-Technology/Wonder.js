@@ -1,46 +1,31 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class TwoDTexture extends Texture{
-        public static create(asset:CommonTextureAsset) {
+    export class TwoDTexture extends CommonTexture{
+        public static create(asset:CommonTextureAsset);
+        public static create(canvas:HTMLCanvasElement);
+
+        public static create(arg) {
             var obj = new this();
 
-            obj.initWhenCreate(asset);
+            obj.initWhenCreate(arg);
 
             return obj;
         }
 
-        public initWhenCreate(asset:CommonTextureAsset){
-            asset.copyTo(this);
-        }
 
-        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            var mipmapCmd:DrawMipmapTwoDTextureCommand = null,
-                noMipmapCmd:DrawNoMipmapTwoDTextureCommand = null,
-                gl = Director.getInstance().gl;
+        public initWhenCreate(asset:CommonTextureAsset);
+        public initWhenCreate(canvas:HTMLCanvasElement);
 
-            if(isSourcePowerOfTwo && this.mipmaps.getCount() > 0) {
-                mipmapCmd = DrawMipmapTwoDTextureCommand.create();
-                mipmapCmd.mipmaps = this.mipmaps;
-                mipmapCmd.format = this.format;
-                mipmapCmd.type = this.type;
-                mipmapCmd.sourceRegion = this.sourceRegion;
-                mipmapCmd.sourceRegionMethod = this.sourceRegionMethod;
-                mipmapCmd.glTarget = gl.TEXTURE_2D;
+        public initWhenCreate(arg){
+            if(arguments[0] instanceof CommonTextureAsset){
+                let asset = arguments[0];
 
-                mipmapCmd.execute();
-
-                this.generateMipmaps = false;
+                super.initWhenCreate(asset);
             }
-            else {
-                noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
-                noMipmapCmd.source = this.source;
-                noMipmapCmd.format = this.format;
-                noMipmapCmd.type = this.type;
-                noMipmapCmd.sourceRegion = this.sourceRegion;
-                noMipmapCmd.sourceRegionMethod = this.sourceRegionMethod;
-                noMipmapCmd.glTarget = gl.TEXTURE_2D;
+            else{
+                let canvas = arguments[0];
 
-                noMipmapCmd.execute();
+                CommonTextureAsset.create(canvas).copyTo(this);
             }
         }
     }

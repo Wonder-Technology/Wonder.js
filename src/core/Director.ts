@@ -150,8 +150,6 @@ module dy{
             return dyRt.callFunc(() => {
                 this._isFirstStart = false;
 
-                GPUDetector.getInstance().detect();
-
                 this.stage.onEnter();
                 this.stage.init();
 

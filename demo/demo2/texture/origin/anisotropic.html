@@ -14,6 +14,10 @@
 
 <script>
     window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"},
@@ -26,13 +30,7 @@
                 });
 
         function init() {
-            _initContext();
             _initScene();
-
-        }
-
-        function _initContext() {
-            dy.Director.getInstance().createGL("canvas");
         }
 
         function _initScene() {
@@ -46,18 +44,18 @@
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material.shader = shader;
 
-            var texture = dy.TextureLoader.getInstance().get("texture");
+
+            material.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
+
+            var texture = material.textureManager.getChild(0);
             /*!
-            can comment this sentence to see the difference
+             can comment this sentence to see the difference
              */
             texture.anisotropy = dy.GPUDetector.getInstance().maxAnisotropy;
             console.log(texture.anisotropy);
 
             texture.wrapS = texture.wrapT = dy.TextureWrapMode.REPEAT;
             texture.repeatRegion = dy.RectRegion.create(0, 0, 512, 512);
-
-            material.textureManager.addChild(texture);
-
 
 
             var geometry = dy.PlaneGeometry.create();

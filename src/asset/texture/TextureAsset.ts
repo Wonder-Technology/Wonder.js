@@ -70,6 +70,8 @@ module dy{
             cubeFaceTexture.anisotropy = this.anisotropy;
             cubeFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
             cubeFaceTexture.unpackAlignment = this.unpackAlignment;
+            //todo test
+            cubeFaceTexture.needUpdate = this.needUpdate;
         }
 
         public copyTo(texture:Texture){

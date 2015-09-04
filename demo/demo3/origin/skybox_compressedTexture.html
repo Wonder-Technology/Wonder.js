@@ -13,6 +13,10 @@
 
 <script>
     window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"},
@@ -26,13 +30,7 @@
                 });
 
         function init() {
-            _initContext();
             _initScene();
-
-        }
-
-        function _initContext() {
-            dy.Director.getInstance().createGL("canvas");
         }
 
         function _initScene() {
@@ -48,7 +46,7 @@
             material.cullMode = dy.CullMode.FRONT;
 
 
-            material.textureManager.addCubemap([
+            material.textureManager.addChild([
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
                 },

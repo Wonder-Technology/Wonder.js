@@ -11,6 +11,7 @@
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
+/// <reference path="core/Main"/>
 /// <reference path="core/entity/Stage"/>
 /// <reference path="core/entity/Skybox"/>
 
@@ -124,6 +125,7 @@
 /// <reference path="structure/View"/>
 
 /// <reference path="texture/Texture"/>
+/// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
 /// <reference path="texture/CubeTexture"/>

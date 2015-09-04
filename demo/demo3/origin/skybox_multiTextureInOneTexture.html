@@ -14,15 +14,17 @@
 
 <script>
     window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
             {url: "../fragment.glsl", id: "fs"},
             {url: "../../res/cube/skybox/px.jpg", id:"texture1"},
-            {url: "../../res/cube/skybox/nx.jpg", id:"texture2"},
-            {url: "../../res/cube/skybox/py.jpg", id:"texture3"},
-            {url: "../../res/cube/skybox/ny.jpg", id:"texture4"},
-            {url: "../../res/cube/skybox/pz.jpg", id:"texture5"},
-            {url: "../../res/cube/skybox/nz.jpg", id:"texture6"}
+            {url: "../../res/cube/skybox/nx.jpg", id:"texture2"}
+//            {url: "../../res/compressed/disturb_argb_nomip.dds", id:"texture1"},
+//            {url: "../../res/compressed/disturb_argb_mip.dds", id:"texture2"}
 
         ]).subscribe(null, function(e){
                     throw e;
@@ -32,13 +34,7 @@
                 });
 
         function init() {
-            _initContext();
             _initScene();
-
-        }
-
-        function _initContext() {
-            dy.Director.getInstance().createGL("canvas");
         }
 
         function _initScene() {
@@ -54,13 +50,13 @@
             material.cullMode = dy.CullMode.FRONT;
 
 
-            material.textureManager.addCubemap([
+            material.textureManager.addChild([
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 },
                 {
-                    asset:dy.TextureLoader.getInstance().get("texture1"),
+                    asset:dy.TextureLoader.getInstance().get("texture2"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 },
                 {

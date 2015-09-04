@@ -34,6 +34,7 @@ module dy{
         anisotropy:number;
         premultiplyAlpha:boolean;
         unpackAlignment:number;
+        needUpdate:boolean;
     }
 
     export interface ICubeFaceCompressedTextureAsset {
