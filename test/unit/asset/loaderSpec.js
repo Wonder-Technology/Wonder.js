@@ -55,9 +55,9 @@ describe("loader", function () {
                 var jpg = dy.TextureLoader.getInstance().get("jpg");
                 var png = dy.TextureLoader.getInstance().get("png");
 
-                expect(jpg).toBeInstanceOf(dy.CommonTextureAsset);
+                expect(jpg).toBeInstanceOf(dy.TwoDTextureAsset);
                 expect(jpg.format).toEqual(dy.TextureFormat.RGB);
-                expect(png).toBeInstanceOf(dy.CommonTextureAsset);
+                expect(png).toBeInstanceOf(dy.TwoDTextureAsset);
                 expect(png.format).toEqual(dy.TextureFormat.RGBA);
 
                 done();

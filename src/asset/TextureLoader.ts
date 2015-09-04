@@ -29,7 +29,7 @@ module dy{
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            var asset = CommonTextureAsset.create(image);
+                            var asset = TwoDTextureAsset.create(image);
 
                             asset.format = TextureFormat.RGB;
 
@@ -39,7 +39,7 @@ module dy{
                 case ".png":
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            return CommonTextureAsset.create(image);
+                            return TwoDTextureAsset.create(image);
                         });
                     break;
                 case ".dds":

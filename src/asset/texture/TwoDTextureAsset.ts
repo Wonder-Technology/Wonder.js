@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class CommonTextureAsset extends TextureAsset{
+    export class TwoDTextureAsset extends TextureAsset{
         public static create(source:HTMLImageElement) {
         	var obj = new this(source);
 

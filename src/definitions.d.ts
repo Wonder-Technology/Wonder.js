@@ -83,7 +83,7 @@
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
 /// <reference path="asset/texture/TextureAsset"/>
-/// <reference path="asset/texture/CommonTextureAsset"/>
+/// <reference path="asset/texture/TwoDTextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureAsset"/>
 /// <reference path="asset/texture/TextureFilterMode"/>
 /// <reference path="asset/texture/TextureWrapMode"/>

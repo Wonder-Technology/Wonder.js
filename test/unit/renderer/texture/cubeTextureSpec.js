@@ -80,7 +80,7 @@ describe("cube texture", function() {
         });
         it("if not all common assets or all compressed assets, error", function(){
             var compressedAsset = dy.CompressedTextureAsset.create({});
-            var commonAsset = dy.CommonTextureAsset.create({});
+            var commonAsset = dy.TwoDTextureAsset.create({});
 
             expect(function(){
                 dy.CubeTexture.create([
@@ -94,7 +94,7 @@ describe("cube texture", function() {
             }).toThrow();
         });
         it("add cube face textures", function(){
-            var commonAsset = dy.CommonTextureAsset.create({
+            var commonAsset = dy.TwoDTextureAsset.create({
                 width:200,
                 height:200
             });
@@ -120,11 +120,11 @@ describe("cube texture", function() {
             expect(texture.textures.getChild(1).type).toEqual(type);
         });
         it("set ICubeTextureAsset's attri by the first cube face texture", function(){
-            var commonAsset = dy.CommonTextureAsset.create({
+            var commonAsset = dy.TwoDTextureAsset.create({
                 width:200,
                 height:200
             });
-            var commonAsset2 = dy.CommonTextureAsset.create({
+            var commonAsset2 = dy.TwoDTextureAsset.create({
                 width: 100,
                 height:100
             });
@@ -188,7 +188,7 @@ describe("cube texture", function() {
             });
         });
         it("else, generateMipmaps is true", function(){
-            var asset = dy.CommonTextureAsset.create({});
+            var asset = dy.TwoDTextureAsset.create({});
 
             var texture = dy.CubeTexture.create([
                 {asset:asset},
@@ -202,7 +202,7 @@ describe("cube texture", function() {
             expect(texture.generateMipmaps).toBeTruthy();
         });
         it("set flipY false", function(){
-            var asset = dy.CommonTextureAsset.create({});
+            var asset = dy.TwoDTextureAsset.create({});
 
             var texture = dy.CubeTexture.create([
                 {asset:asset},

@@ -14,7 +14,7 @@ describe("TextureManager", function() {
 
     describe("addChild", function(){
         it("test add common texture asset", function(){
-            var asset = dy.CommonTextureAsset.create({});
+            var asset = dy.TwoDTextureAsset.create({});
             asset.format = dy.TextureFormat.RGBA;
 
             manager.addChild(asset);

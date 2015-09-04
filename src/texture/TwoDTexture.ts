@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class TwoDTexture extends CommonTexture{
-        public static create(asset:CommonTextureAsset);
+        public static create(asset:TwoDTextureAsset);
         public static create(canvas:HTMLCanvasElement);
 
         public static create(arg) {
@@ -13,11 +13,11 @@ module dy{
         }
 
 
-        public initWhenCreate(asset:CommonTextureAsset);
+        public initWhenCreate(asset:TwoDTextureAsset);
         public initWhenCreate(canvas:HTMLCanvasElement);
 
         public initWhenCreate(arg){
-            if(arguments[0] instanceof CommonTextureAsset){
+            if(arguments[0] instanceof TwoDTextureAsset){
                 let asset = arguments[0];
 
                 super.initWhenCreate(asset);
@@ -25,7 +25,7 @@ module dy{
             else{
                 let canvas = arguments[0];
 
-                CommonTextureAsset.create(canvas).copyTo(this);
+                TwoDTextureAsset.create(canvas).copyTo(this);
             }
         }
     }

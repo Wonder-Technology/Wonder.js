@@ -111,7 +111,7 @@ module dy{
                 isCommonAssets = [];
 
             assets.forEach((asset:ICubemapData) => {
-                if(asset.asset instanceof CommonTextureAsset){
+                if(asset.asset instanceof TwoDTextureAsset){
                     isCommonAssets.push(asset);
                 }
                 else if(asset.asset instanceof CompressedTextureAsset){
@@ -119,7 +119,7 @@ module dy{
                 }
             });
 
-            dyCb.Log.error(isCommonAssets.length > 0 && isCompressedAssets.length > 0, dyCb.Log.info.FUNC_MUST_BE("cubemap's six face's assets", "all CommonTextureAsset or all CompressedTextureAsset"));
+            dyCb.Log.error(isCommonAssets.length > 0 && isCompressedAssets.length > 0, dyCb.Log.info.FUNC_MUST_BE("cubemap's six face's assets", "all TwoDTextureAsset or all CompressedTextureAsset"));
 
             if(isCompressedAssets.length === 6){
                 this._isAllCompressedAsset = true;
