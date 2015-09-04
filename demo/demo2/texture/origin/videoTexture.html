@@ -14,9 +14,14 @@
 
 <script>
     window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
         dy.LoaderManager.getInstance().load([
             {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"}
+            {url: "../fragment.glsl", id: "fs"},
+            {url: "../../../res/video/MaryOculus.webm", id: "video"}
         ]).subscribe(null, function(e){
                     throw e;
                 },
@@ -25,13 +30,7 @@
                 });
 
         function init() {
-            _initContext();
             _initScene();
-
-        }
-
-        function _initContext() {
-            dy.Director.getInstance().createGL("canvas");
         }
 
         function _initScene() {
@@ -45,19 +44,9 @@
             material.shader = shader;
 
 
+            material.textureManager.addChild(dy.VideoTexture.create(dy.VideoLoader.getInstance().get("video")));
 
-            // video
-
-            var video = document.createElement("video");
-            video.loop = true;
-            video.src = "../../../res/video/kinect.webm";
-            video.play();
-
-            var texture = dy.VideoTexture.create(video);
-
-
-            material.textureManager.addChild(texture);
-
+            dy.VideoManager.getInstance().play("video");
 
 
             var geometry = dy.RectGeometry.create();

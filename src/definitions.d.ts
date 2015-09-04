@@ -141,3 +141,4 @@
 /// <reference path="texture/command/DrawNoMipmapTwoDTextureCommand"/>
 
 /// <reference path="video/Video"/>
+/// <reference path="video/VideoManager"/>

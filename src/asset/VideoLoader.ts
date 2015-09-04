@@ -27,7 +27,7 @@ module dy{
                 Video.create({
                     urlArr:urlArr,
                     onLoad: (video:Video) => {
-                        resolve(video);
+                        resolve(VideoTextureAsset.create(video));
                     },
                     onError: (err:string) => {
                         reject(err);

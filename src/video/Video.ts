@@ -1,9 +1,9 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    //todo add VideoManager
     //todo refer to video.js, mediaelement.js to enhance
     //todo unify with Audio
     //todo can fallback to flash
+    //todo support loop
     export class Video{
         public static create(config:IVideoConfig) {
         	var obj = new this(config);
@@ -20,36 +20,26 @@ module dy{
         }
 
         public url:string = null;
+        public source:HTMLVideoElement = null;
+        public isStop:boolean = false;
 
         private _urlArr:dyCb.Collection<string> = null;
         private _onLoad:Function = function(video:Video){};
         private _onError:Function = function (err:any){};
-        private _video:HTMLVideoElement = null;
 
 
         public initWhenCreate(){
             this.url = this._getCanPlayUrl();
-
-            this.load();
-        }
-
-        public load(){
-            var self = this;
-
-            this._video = document.createElement("video");
-            this._video.src = this.url;
-            this._video.load();
-
-            this._video.addEventListener("canplaythrough", function () {
-                self._onLoad(self);
-            }, false);
-            this._video.addEventListener("error", function () {
-                self._onError("errorCode " + self._video.error.code);
-            }, false);
+            this.source = document.createElement("video");
+            this.source.src = this.url;
+            this._bindEvent();
+            this.source.load();
         }
 
         public play(){
-            this._video.play();
+            this.isStop = false;
+
+            this.source.play();
         }
 
         private _getCanPlayUrl() {
@@ -93,6 +83,20 @@ module dy{
             }
 
             return !!video.canPlayType && video.canPlayType(mimeStr) !== "";
+        }
+
+        private _bindEvent(){
+            var self = this;
+
+            this.source.addEventListener("canplaythrough", function () {
+                self._onLoad(self);
+            }, false);
+            this.source.addEventListener("error", function () {
+                self._onError("errorCode " + self.source.error.code);
+            }, false);
+            this.source.addEventListener("ended", function () {
+                self.isStop = true;
+            }, false);
         }
     }
 

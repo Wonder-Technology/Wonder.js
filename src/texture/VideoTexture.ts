@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class VideoTexture extends TwoDTexture{
-        public static create(asset:CommonTextureAsset) {
+    export class VideoTexture extends CommonTexture{
+        public static create(asset:VideoTextureAsset) {
             var obj = new this();
 
             obj.initWhenCreate(asset);
@@ -9,11 +9,12 @@ module dy{
             return obj;
         }
 
-        public initWhenCreate(asset:CommonTextureAsset){
+        private _video:Video = null;
+
+        public initWhenCreate(asset:VideoTextureAsset){
             super.initWhenCreate(asset);
 
-            this.generateMipmaps = false;
-            this.needUpdate = false;
+            this._video = asset.video;
         }
 
         public init(){
@@ -22,7 +23,12 @@ module dy{
             super.init();
 
             EventManager.on("dy_startLoop", () => {
-                self.needUpdate = true;
+                if(self._video.isStop){
+                    self.needUpdate = false;
+                }
+                else{
+                    self.needUpdate = true;
+                }
             });
 
             return this;
