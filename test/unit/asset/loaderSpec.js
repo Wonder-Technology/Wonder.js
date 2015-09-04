@@ -104,9 +104,10 @@ describe("loader", function () {
                 expect(current).toEqual([1, 2]);
                 expect(total).toEqual([2, 2]);
 
-                expect(dy.VideoLoader.getInstance().get("video1")).toBeInstanceOf(dy.Video);
-                expect(dy.VideoLoader.getInstance().get("video1").url).toEqual(testTool.resPath + "test/res/sintel.mp4");
-                expect(dy.VideoLoader.getInstance().get("video2")).toBeInstanceOf(dy.Video);
+                expect(dy.VideoLoader.getInstance().get("video1")).toBeInstanceOf(dy.VideoTextureAsset);
+                expect(dy.VideoLoader.getInstance().get("video1").video).toBeInstanceOf(dy.Video);
+                expect(dy.VideoLoader.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
+                expect(dy.VideoLoader.getInstance().get("video2")).toBeInstanceOf(dy.VideoTextureAsset);
 
                 done();
             });

@@ -5,6 +5,7 @@ module dy{
         public format:TextureFormat = null;
         public width:number = null;
         public height:number = null;
+
         public draw(index:number){
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }

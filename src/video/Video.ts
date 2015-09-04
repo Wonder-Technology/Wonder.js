@@ -33,7 +33,7 @@ module dy{
             this.source = document.createElement("video");
             this.source.src = this.url;
             this._bindEvent();
-            this.source.load();
+            //this.source.load();
         }
 
         public play(){

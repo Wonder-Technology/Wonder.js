@@ -16,7 +16,7 @@ module dy{
 
             dyCb.Log.error(!asset, dyCb.Log.info.FUNC_NOT_EXIST("video asset which id is " + id));
 
-            video = asset.source;
+            video = asset.video;
 
             video.play();
         }

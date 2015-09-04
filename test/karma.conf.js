@@ -40,6 +40,7 @@ module.exports = function(config) {
         'test/unit/device/*.js',
         'test/unit/event/*.js',
         'test/unit/utils/**',
+        'test/unit/video/**',
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}

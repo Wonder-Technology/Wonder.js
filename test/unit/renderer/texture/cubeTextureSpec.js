@@ -148,6 +148,7 @@ describe("cube texture", function() {
             expect(texture.anisotropy).toEqual(commonAsset.anisotropy);
             expect(texture.premultiplyAlpha).toEqual(commonAsset.premultiplyAlpha);
             expect(texture.unpackAlignment).toEqual(commonAsset.unpackAlignment);
+            expect(texture.needUpdate).toEqual(commonAsset.needUpdate);
         });
 
         describe("if is all compressed cube face textures", function(){
