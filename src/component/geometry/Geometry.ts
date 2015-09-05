@@ -4,13 +4,14 @@ module dy{
         public vertices:render.ArrayBuffer = null;
         public indices:render.ElementBuffer = null;
         public texCoords:render.ArrayBuffer = null;
+        public normals:render.ArrayBuffer = null;
         public colors:render.ArrayBuffer = null;
         public material:Material = null;
 
         public init(){
             this.vertices = this.computeVerticesBuffer();
             this.indices = this.computeIndicesBuffer();
-            //this.normals = this.computeNormals();
+            this.normals = this.computeNormalsBuffer();
             this.texCoords = this.computeTexCoordsBuffer();
             //todo compute from vertexColors(refer to threejs)
             this.colors = this._computeColorsBuffer(this.material);
@@ -50,6 +51,10 @@ module dy{
         }
         
         protected computeTexCoordsBuffer():render.ArrayBuffer{
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+        }
+
+        protected computeNormalsBuffer():render.ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 

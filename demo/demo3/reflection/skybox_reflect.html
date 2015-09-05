@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>skybox reflect</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+<input id="inp"/>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+            {url: "./vertex.glsl", id: "vs"},
+            {url: "./fragment.glsl", id: "fs"},
+            {url: "./vertex_reflect.glsl", id: "vs_reflect"},
+            {url: "./fragment_reflect.glsl", id: "fs_reflect"},
+            {url: "../../res/1.jpg", id:"texture1"},
+            {url: "../../res/2.jpg", id:"texture2"},
+            {url: "../../res/3.jpg", id:"texture3"},
+            {url: "../../res/4.jpg", id:"texture4"},
+            {url: "../../res/5.jpg", id:"texture5"},
+            {url: "../../res/6.jpg", id:"texture6"}
+
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        function _initScene() {
+            var shader = dy.render.Shader.create(
+                    dy.GLSLLoader.getInstance().get("vs"),
+                    dy.GLSLLoader.getInstance().get("fs")
+            );
+
+
+            var material = dy.Material.create();
+            material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
+            material.shader = shader;
+
+            material.cullMode = dy.CullMode.FRONT;
+
+
+
+
+            var cubemap = dy.CubeTexture.create(
+                    [
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture1")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture2")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture3")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture4")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture5")
+                },
+                {
+                    asset:dy.TextureLoader.getInstance().get("texture6")
+                }
+            ]
+            );
+
+            material.textureManager.addChild(cubemap);
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var skybox = dy.Skybox.create();
+            skybox.addComponent(geometry);
+
+
+
+
+
+
+
+
+
+
+            var shader2 = dy.render.Shader.create(
+                    dy.GLSLLoader.getInstance().get("vs_reflect"),
+                    dy.GLSLLoader.getInstance().get("fs_reflect")
+            );
+            shader2.uniforms.addChildren({
+                u_cameraPos: {
+                    type:dy.render.ShaderDataType.FLOAT_3,
+                    value: function(){
+                        if(director.stage.camera){
+                            return director.stage.camera.transform.position;
+                        }
+
+                        return null;
+                    }
+                }
+            });
+
+
+            var material2 = dy.Material.create();
+            material2.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
+            material2.shader = shader2;
+
+
+
+
+            material2.textureManager.addChild(cubemap);
+
+
+
+            var geometry2 = dy.BoxGeometry.create();
+            geometry2.material = material2;
+            geometry2.width = 2;
+            geometry2.height = 2;
+            geometry2.depth = 2;
+
+
+
+            var rect = dy.GameObject.create();
+
+            rect.addComponent(dy.MeshRenderer.create());
+            rect.addComponent(geometry2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var director = dy.Director.getInstance();
+
+
+            director.stage.addChild(skybox);
+            director.stage.addChild(rect);
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.Camera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera
+        }
+
+    };
+</script>
+</body>
+</html>

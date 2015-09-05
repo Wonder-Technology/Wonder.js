@@ -23,6 +23,7 @@ module dy {
                 vertexBuffer: geometry.vertices,
                 texCoordsBuffer: geometry.texCoords,
                 indexBuffer: geometry.indices,
+                normalBuffer: geometry.normals,
                 colorBuffer: geometry.colors
             };
 

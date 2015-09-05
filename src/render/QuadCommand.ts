@@ -79,6 +79,7 @@ module dy.render {
             program.setUniformData("u_mMatrix", ShaderDataType.FLOAT_MAT4, this.mMatrix);
             program.setUniformData("u_vMatrix", ShaderDataType.FLOAT_MAT4, this.vMatrix);
             program.setUniformData("u_pMatrix", ShaderDataType.FLOAT_MAT4, this.pMatrix);
+            program.setUniformData("u_normalMatrix", ShaderDataType.FLOAT_MAT4, this.mMatrix.copy().invert().transpose());
 
             program.setUniformDataFromShader();
         }
@@ -95,6 +96,10 @@ module dy.render {
 
             if (this._buffers.hasChild("texCoordsBuffer")) {
                 program.setAttributeData("a_texCoord", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("texCoordsBuffer"));
+            }
+
+            if (this._buffers.hasChild("normalBuffer")) {
+                program.setAttributeData("a_normal", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("normalBuffer"));
             }
 
             if(this._buffers.hasChild("colorBuffer")){

@@ -24,6 +24,7 @@ module dy{
             vertices;
             indices;
             texCoords;
+            normals;
         } = null;
 
         private _computeData(width, height, depth, widthSegments, heightSegments, depthSegments){
@@ -110,7 +111,8 @@ module dy{
                     3, render.BufferType.FLOAT),
                 indices: render.ElementBuffer.create(new Uint16Array(indices),
                     render.BufferType.UNSIGNED_SHORT),
-                //normals: new Float32Array(normals),
+                normals: render.ArrayBuffer.create(new Float32Array(normals),
+                    3, render.BufferType.FLOAT),
                 texCoords: render.ArrayBuffer.create(new Float32Array(uvs),
                     2, render.BufferType.FLOAT)
             };
@@ -126,6 +128,10 @@ module dy{
 
         protected computeTexCoordsBuffer():render.ArrayBuffer{
             return this._data.texCoords;
+        }
+
+        protected computeNormalsBuffer():render.ArrayBuffer{
+            return this._data.normals;
         }
     }
 }

@@ -26,6 +26,10 @@ module dy.render{
                 return;
             }
 
+            if(JudgeUtils.isFunction(data)){
+                data = data();
+            }
+
             switch (type){
                 case ShaderDataType.FLOAT_1:
                     gl.uniform1f(pos, data);
@@ -66,6 +70,10 @@ module dy.render{
                 return;
             }
 
+            if(JudgeUtils.isFunction(data)){
+                data = data();
+            }
+
             switch (type){
                 case ShaderDataType.BUFFER:
                     gl.bindBuffer(gl.ARRAY_BUFFER, data.buffer);
@@ -76,27 +84,6 @@ module dy.render{
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("ShaderDataType:", type));
                     break;
             }
-        }
-        private _convertToVector3(data:any){
-            if(JudgeUtils.isArray(data)){
-                return Vector3.create(data[0], data[1], data[2]);
-            }
-            else if(data instanceof Vector3){
-                return data;
-            }
-
-            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
-        }
-
-        private _convertToVector4(data:any){
-            if(JudgeUtils.isArray(data)){
-                return Vector4.create(data[0], data[1], data[2], data[3]);
-            }
-            else if(data instanceof Vector4){
-                return data;
-            }
-
-            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
         }
 
         public setAttributeDataFromShader(){
@@ -165,8 +152,26 @@ module dy.render{
             return this;
         }
 
-        public isChangeShader(shader:Shader){
-            return this._shader ? !this._shader.isEqual(shader) : true;
+        private _convertToVector3(data:any){
+            if(JudgeUtils.isArray(data)){
+                return Vector3.create(data[0], data[1], data[2]);
+            }
+            else if(data instanceof Vector3){
+                return data;
+            }
+
+            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+        }
+
+        private _convertToVector4(data:any){
+            if(JudgeUtils.isArray(data)){
+                return Vector4.create(data[0], data[1], data[2], data[3]);
+            }
+            else if(data instanceof Vector4){
+                return data;
+            }
+
+            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
         }
     }
 }
