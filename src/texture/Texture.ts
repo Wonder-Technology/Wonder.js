@@ -91,11 +91,10 @@ module dy{
             return this;
         }
 
-        public sendData(index){
-            var program = Director.getInstance().stage.program,
-                sourceRegion = null;
+        public sendData(program:render.Program, index:number){
+            var sourceRegion = null;
 
-            program.setUniformData("u_sampler" + index, render.UniformDataType.NUMBER_1, index);
+            program.setUniformData("u_sampler" + index, render.ShaderDataType.NUMBER_1, index);
 
             if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();
@@ -103,9 +102,9 @@ module dy{
             else{
                 sourceRegion = RectRegion.create(0, 0, 1, 1);
             }
-            program.setUniformData("u_sourceRegion", render.UniformDataType.FLOAT_4, sourceRegion);
+            program.setUniformData("u_sourceRegion", render.ShaderDataType.FLOAT_4, sourceRegion);
 
-            program.setUniformData("u_repeatRegion", render.UniformDataType.FLOAT_4, this.repeatRegion);
+            program.setUniformData("u_repeatRegion", render.ShaderDataType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

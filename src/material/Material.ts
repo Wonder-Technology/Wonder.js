@@ -95,6 +95,7 @@ module dy {
         public color:Color = Color.create("0xffffff");
         //todo add default shader
         public shader:render.Shader = null;
+        public program:render.Program = null;
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;
@@ -112,10 +113,18 @@ module dy {
 
         public init(){
             this.textureManager.init();
+            this.shader.init();
+
+            this.program = this._createProgramWithShader(this.shader);
         }
 
         public dispose(){
             this.textureManager.dispose();
+        }
+
+        private _createProgramWithShader(shader:render.Shader){
+            //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+            return render.Program.create().initWithShader(shader);
         }
     }
 }

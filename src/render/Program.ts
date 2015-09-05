@@ -18,7 +18,7 @@ module dy.render{
             return Director.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public setUniformData(name:string, type:UniformDataType, data:any){
+        public setUniformData(name:string, type:ShaderDataType, data:any){
             var gl = Director.getInstance().gl,
                 pos= gl.getUniformLocation(this._program, name);
 
@@ -27,22 +27,38 @@ module dy.render{
             }
 
             switch (type){
-                case UniformDataType.FLOAT_MAT4:
-                    gl.uniformMatrix4fv(pos,false, data.values);
+                case ShaderDataType.FLOAT_1:
+                    gl.uniform1f(pos, data);
                     break;
-                case UniformDataType.FLOAT_4:
+                case ShaderDataType.FLOAT_3:
+                    data = this._convertToVector3(data);
+                    gl.uniform3f(pos, data.x, data.y, data.z);
+                    break;
+                case ShaderDataType.FLOAT_4:
+                    data = this._convertToVector4(data);
                     gl.uniform4f(pos, data.x, data.y, data.z, data.w);
                     break;
-                case UniformDataType.NUMBER_1:
+                case ShaderDataType.FLOAT_MAT4:
+                    gl.uniformMatrix4fv(pos,false, data.values);
+                    break;
+                case ShaderDataType.NUMBER_1:
                     gl.uniform1i(pos, data);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("UniformDataType"));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("ShaderDataType:", type));
                     break;
             }
         }
 
-        public setAttributeData(name:string, type:AttributeDataType, data:render.ArrayBuffer|number[]){
+        public setUniformDataFromShader(){
+            var self = this;
+
+            this._shader.uniforms.forEach((val:IShaderData, key:string) => {
+                self.setUniformData(key, val.type, val.value);
+            });
+        }
+
+        public setAttributeData(name:string, type:ShaderDataType, data:any){
             var gl = Director.getInstance().gl,
                 pos = gl.getAttribLocation(this._program, name);
 
@@ -51,25 +67,48 @@ module dy.render{
             }
 
             switch (type){
-                case AttributeDataType.FLOAT_4:
-                    let dataArr:number[] = <Array<number>>data;
-                    gl.vertexAttrib4f(pos, dataArr[0], dataArr[1], dataArr[2], dataArr[3]);
-                    break;
-                case AttributeDataType.BUFFER:
-                    let buffer:render.ArrayBuffer = <render.ArrayBuffer>data;
-                    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-                    gl.vertexAttribPointer(pos, buffer.num, buffer.type, false, 0, 0);
+                case ShaderDataType.BUFFER:
+                    gl.bindBuffer(gl.ARRAY_BUFFER, data.buffer);
+                    gl.vertexAttribPointer(pos, data.num, data.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("AttributeDataType"));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("ShaderDataType:", type));
                     break;
             }
+        }
+        private _convertToVector3(data:any){
+            if(JudgeUtils.isArray(data)){
+                return Vector3.create(data[0], data[1], data[2]);
+            }
+            else if(data instanceof Vector3){
+                return data;
+            }
+
+            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+        }
+
+        private _convertToVector4(data:any){
+            if(JudgeUtils.isArray(data)){
+                return Vector4.create(data[0], data[1], data[2], data[3]);
+            }
+            else if(data instanceof Vector4){
+                return data;
+            }
+
+            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
+        }
+
+        public setAttributeDataFromShader(){
+            var self = this;
+
+            this._shader.attributes.forEach((val:IShaderData, key:string) => {
+                self.setAttributeData(key, ShaderDataType.BUFFER, val.value);
+            });
         }
 
         public initWithShader(shader:Shader){
             var gl = Director.getInstance().gl,
-                result = null,
                 vs = null,
                 fs = null;
 
@@ -105,13 +144,12 @@ module dy.render{
 
              https://github.com/mrdoob/three.js/issues/3896
              */
+            gl.bindAttribLocation( this._program, 0, "a_position");
 
 
             gl.linkProgram(this._program);
 
             dyCb.Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
-
-            result = this._program;
 
             /*!
              should detach and delete shaders after linking the program
@@ -124,7 +162,7 @@ module dy.render{
             gl.deleteShader(vs);
             gl.deleteShader(fs);
 
-            return result;
+            return this;
         }
 
         public isChangeShader(shader:Shader){

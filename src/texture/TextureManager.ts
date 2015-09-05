@@ -67,10 +67,10 @@ module dy{
             });
         }
 
-        public sendData(){
+        public sendData(program:render.Program){
             this._textures.forEach((texture:Texture, index:number) => {
                 texture.bindToUnit(index);
-                texture.sendData(index);
+                texture.sendData(program, index);
             });
         }
     }

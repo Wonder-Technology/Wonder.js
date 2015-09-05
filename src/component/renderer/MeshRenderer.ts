@@ -26,7 +26,6 @@ module dy {
                 colorBuffer: geometry.colors
             };
 
-            quadCmd.shader = geometry.material.shader;
             //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
             quadCmd.mMatrix = this.transform.localToWorldMatrix;
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
@@ -38,5 +37,6 @@ module dy {
 
             return quadCmd;
         }
+
     }
 }

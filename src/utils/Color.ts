@@ -21,6 +21,14 @@ module dy{
             this._setColor(colorVal);
         }
 
+        public toVector3(){
+            return Vector3.create(this.r, this.g, this.b);
+        }
+
+        public toVector4(){
+            return Vector4.create(this.r, this.g, this.b, this.a);
+        }
+
         private _setColor(colorVal:string) {
             var REGEX1 = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
                 REGEX2 = /^\#([0-9a-f]{6})$/i;

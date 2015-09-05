@@ -7,13 +7,9 @@ module dy {
             return obj;
         }
 
-        //todo move it elsewhere?
-        public program:render.Program = null;
         public camera:GameObject = null;
 
         public init(){
-            this.program = render.Program.create();
-
             this.addComponent(TopCollider.create());
 
             super.init();
@@ -32,7 +28,6 @@ module dy {
 
             super.render(renderer, this.camera);
         }
-
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);

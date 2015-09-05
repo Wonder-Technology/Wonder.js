@@ -61,12 +61,11 @@
 /// <reference path="render/WebGLRenderer"/>
 /// <reference path="render/Shader"/>
 /// <reference path="render/BufferType"/>
-/// <reference path="render/AttributeDataType"/>
+/// <reference path="render/ShaderDataType"/>
 /// <reference path="render/DrawMode"/>
 /// <reference path="render/Buffer"/>
 /// <reference path="render/ElementBuffer"/>
 /// <reference path="render/ArrayBuffer"/>
-/// <reference path="render/UniformDataType"/>
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
 
@@ -84,6 +83,7 @@
 /// <reference path="asset/texture/DDSParser"/>
 /// <reference path="asset/texture/TextureAsset"/>
 /// <reference path="asset/texture/TwoDTextureAsset"/>
+/// <reference path="asset/texture/VideoTextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureAsset"/>
 /// <reference path="asset/texture/TextureFilterMode"/>
 /// <reference path="asset/texture/TextureWrapMode"/>
