@@ -74,11 +74,13 @@
 /// <reference path="render/shader/variable/VariableTable"/>
 /// <reference path="render/shader/lib/ShaderLib"/>
 /// <reference path="render/shader/lib/BasicShaderLib"/>
+/// <reference path="render/shader/lib/SkyboxShaderLib"/>
 /// <reference path="render/shader/chunk/ShaderChunk"/>
 
 
 /// <reference path="material/Material"/>
 /// <reference path="material/BasicMaterial"/>
+/// <reference path="material/SkyboxMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>

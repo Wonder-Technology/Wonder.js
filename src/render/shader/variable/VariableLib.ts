@@ -27,6 +27,11 @@ module dy.render{
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
         };
+
+        public static u_sampler0:IShaderVariable = {
+            type:VariableType.NUMBER_1,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export interface IShaderVariable{
