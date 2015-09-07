@@ -39,6 +39,7 @@ module dy.render {
             this.program.use();
 
             this._sendData();
+            this.material.updateShader(this);
             this.draw();
         }
 
@@ -72,34 +73,32 @@ module dy.render {
         private _sendData() {
             var program = this.program;
 
+            //todo send common shader variable
+
             this._sendAttributeData();
 
-            this.material.textureManager.sendData(this.program);
-
-            program.setUniformData("u_mMatrix", ShaderDataType.FLOAT_MAT4, this.mMatrix);
-            program.setUniformData("u_vMatrix", ShaderDataType.FLOAT_MAT4, this.vMatrix);
-            program.setUniformData("u_pMatrix", ShaderDataType.FLOAT_MAT4, this.pMatrix);
-            program.setUniformData("u_normalMatrix", ShaderDataType.FLOAT_MAT4, this.mMatrix.copy().invert().transpose());
-
-            program.setUniformDataFromShader();
+            program.setUniformData("u_mMatrix", VariableType.FLOAT_MAT4, this.mMatrix);
+            program.setUniformData("u_vMatrix", VariableType.FLOAT_MAT4, this.vMatrix);
+            program.setUniformData("u_pMatrix", VariableType.FLOAT_MAT4, this.pMatrix);
+            //program.setUniformData("u_normalMatrix", VariableType.FLOAT_MAT4, this.mMatrix.copy().invert().transpose());
         }
 
         private _sendAttributeData(){
             var program = this.program;
 
             if (this._buffers.hasChild("vertexBuffer")) {
-                program.setAttributeData("a_position", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("vertexBuffer"));
+                program.setAttributeData("a_position", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("vertexBuffer"));
             }
             else {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
 
             if (this._buffers.hasChild("texCoordsBuffer")) {
-                program.setAttributeData("a_texCoord", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("texCoordsBuffer"));
+                program.setAttributeData("a_texCoord", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("texCoordsBuffer"));
             }
 
             if (this._buffers.hasChild("normalBuffer")) {
-                program.setAttributeData("a_normal", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("normalBuffer"));
+                program.setAttributeData("a_normal", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("normalBuffer"));
             }
 
             if(this._buffers.hasChild("colorBuffer")){
@@ -110,10 +109,8 @@ module dy.render {
                  */
 
 
-                program.setAttributeData("a_color", ShaderDataType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
+                program.setAttributeData("a_color", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
             }
-
-            program.setAttributeDataFromShader();
         }
 
         private draw() {

@@ -59,9 +59,7 @@
 
 /// <reference path="render/Renderer"/>
 /// <reference path="render/WebGLRenderer"/>
-/// <reference path="render/Shader"/>
 /// <reference path="render/BufferType"/>
-/// <reference path="render/ShaderDataType"/>
 /// <reference path="render/DrawMode"/>
 /// <reference path="render/Buffer"/>
 /// <reference path="render/ElementBuffer"/>
@@ -69,7 +67,18 @@
 /// <reference path="render/Program"/>
 /// <reference path="render/QuadCommand"/>
 
+/// <reference path="render/shader/Shader"/>
+/// <reference path="render/shader/variable/VariableType"/>
+/// <reference path="render/shader/variable/VariableCategory"/>
+/// <reference path="render/shader/variable/VariableLib"/>
+/// <reference path="render/shader/variable/VariableTable"/>
+/// <reference path="render/shader/lib/ShaderLib"/>
+/// <reference path="render/shader/lib/BasicShaderLib"/>
+/// <reference path="render/shader/chunk/ShaderChunk"/>
+
+
 /// <reference path="material/Material"/>
+/// <reference path="material/BasicMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>

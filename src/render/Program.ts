@@ -18,11 +18,12 @@ module dy.render{
             return Director.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public setUniformData(name:string, type:ShaderDataType, data:any){
+        public setUniformData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
                 pos= gl.getUniformLocation(this._program, name);
 
-            if(pos === null){
+            if (pos === null
+                || data === VariableCategory.ENGINE) {
                 return;
             }
 
@@ -31,25 +32,25 @@ module dy.render{
             }
 
             switch (type){
-                case ShaderDataType.FLOAT_1:
+                case VariableType.FLOAT_1:
                     gl.uniform1f(pos, data);
                     break;
-                case ShaderDataType.FLOAT_3:
+                case VariableType.FLOAT_3:
                     data = this._convertToVector3(data);
                     gl.uniform3f(pos, data.x, data.y, data.z);
                     break;
-                case ShaderDataType.FLOAT_4:
+                case VariableType.FLOAT_4:
                     data = this._convertToVector4(data);
                     gl.uniform4f(pos, data.x, data.y, data.z, data.w);
                     break;
-                case ShaderDataType.FLOAT_MAT4:
+                case VariableType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;
-                case ShaderDataType.NUMBER_1:
+                case VariableType.NUMBER_1:
                     gl.uniform1i(pos, data);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("ShaderDataType:", type));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("VariableType:", type));
                     break;
             }
         }
@@ -62,11 +63,12 @@ module dy.render{
             });
         }
 
-        public setAttributeData(name:string, type:ShaderDataType, data:any){
+        public setAttributeData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
                 pos = gl.getAttribLocation(this._program, name);
 
-            if(pos === -1){
+            if (pos === -1
+                || data === VariableCategory.ENGINE) {
                 return;
             }
 
@@ -75,13 +77,13 @@ module dy.render{
             }
 
             switch (type){
-                case ShaderDataType.BUFFER:
+                case VariableType.BUFFER:
                     gl.bindBuffer(gl.ARRAY_BUFFER, data.buffer);
                     gl.vertexAttribPointer(pos, data.num, data.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("ShaderDataType:", type));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("VariableType:", type));
                     break;
             }
         }
@@ -90,7 +92,7 @@ module dy.render{
             var self = this;
 
             this._shader.attributes.forEach((val:IShaderData, key:string) => {
-                self.setAttributeData(key, ShaderDataType.BUFFER, val.value);
+                self.setAttributeData(key, VariableType.BUFFER, val.value);
             });
         }
 

@@ -94,7 +94,7 @@ module dy{
         public sendData(program:render.Program, index:number){
             var sourceRegion = null;
 
-            program.setUniformData("u_sampler" + index, render.ShaderDataType.NUMBER_1, index);
+            program.setUniformData("u_sampler" + index, render.VariableType.NUMBER_1, index);
 
             if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();
@@ -102,9 +102,9 @@ module dy{
             else{
                 sourceRegion = RectRegion.create(0, 0, 1, 1);
             }
-            program.setUniformData("u_sourceRegion", render.ShaderDataType.FLOAT_4, sourceRegion);
+            program.setUniformData("u_sourceRegion", render.VariableType.FLOAT_4, sourceRegion);
 
-            program.setUniformData("u_repeatRegion", render.ShaderDataType.FLOAT_4, this.repeatRegion);
+            program.setUniformData("u_repeatRegion", render.VariableType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

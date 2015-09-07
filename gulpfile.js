@@ -5,10 +5,12 @@ require("./build/gulp_task/clean/clean");
 require("./build/gulp_task/compile/compileTs");
 require("./build/gulp_task/compile/combineInnerLib");
 
-require("./build/gulp_task/createDefinitionFile/bowser/create");
+require("./build/gulp_task/createDefinitionFile/index");
+require("./build/gulp_task/createInnerFile/index");
+
 require("./build/gulp_task/test/test");
 
-gulp.task("build", gulpSync.sync(["clean", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference"]));
+gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference"]));
 
 
 

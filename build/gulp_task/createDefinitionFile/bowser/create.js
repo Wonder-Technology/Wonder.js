@@ -1,5 +1,4 @@
 var gulp = require("gulp");
-var gulpSync = require("gulp-sync")(gulp);
 var path = require("path");
 var fs = require("fs");
 
@@ -62,6 +61,4 @@ gulp.task("createBowserDefinitionFile", function(done){
 
     done();
 });
-
-gulp.task("createDefinitionFile", gulpSync.async(["createBowserDefinitionFile"]));
 

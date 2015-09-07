@@ -1,8 +1,12 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy.render{
     export class Shader{
-        public static create(vsSource:string, fsSource:string) {
-        	var obj = new this(vsSource, fsSource);
+        public static create(shaderDefinition?:IShaderDefinition) {
+        	var obj = new this();
+
+            if(shaderDefinition){
+                obj.read(shaderDefinition);
+            }
 
         	return obj;
         }
@@ -11,11 +15,6 @@ module dy.render{
         public fsSource:string = null;
         public attributes:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
         public uniforms:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
-
-        constructor(vsSource:string, fsSource:string){
-        	this.vsSource = vsSource;
-        	this.fsSource = fsSource;
-        }
 
         public createVsShader(){
             var gl = Director.getInstance().gl;
@@ -38,7 +37,8 @@ module dy.render{
             var self = this;
 
             this.attributes.forEach((val:IShaderData, key:string) => {
-                if(val.value instanceof ArrayBuffer){
+                if(val.value instanceof ArrayBuffer
+                || val.value === VariableCategory.ENGINE){
                     return;
                 }
 
@@ -48,23 +48,46 @@ module dy.render{
             });
         }
 
-        private _convertToArrayBuffer(type:ShaderDataType, value:Array<any>) {
+        public read(def:IShaderDefinition){
+            this.attributes = def.attributes;
+            this.uniforms = def.uniforms;
+
+            this.vsSource = this._insertAttribute(def.vsSource);
+            this.fsSource = def.fsSource;
+        }
+
+        private _insertAttribute(vsSource:string){
+            var result = "";
+
+            this.attributes.forEach((val:IShaderData, key:string) => {
+                if(!val){
+                    return;
+                }
+
+                //todo use typescript template to refactor
+                result += "attribute " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
+            });
+
+            return result + vsSource;
+        }
+
+        private _convertToArrayBuffer(type:VariableType, value:Array<any>) {
             //todo get BufferType from val.type?
             return ArrayBuffer.create(new Float32Array(value), this._getBufferNum(type), render.BufferType.FLOAT);
         }
 
-        private _getBufferNum(type:ShaderDataType){
+        private _getBufferNum(type:VariableType){
             var num = null;
 
             switch (type){
-                case ShaderDataType.FLOAT_1:
-                case ShaderDataType.NUMBER_1:
+                case VariableType.FLOAT_1:
+                case VariableType.NUMBER_1:
                     num = 1;
                     break;
-                case ShaderDataType.FLOAT_3:
+                case VariableType.FLOAT_3:
                     num = 3;
                     break;
-                case ShaderDataType.FLOAT_4:
+                case VariableType.FLOAT_4:
                     num = 4;
                     break;
                 default:
@@ -92,7 +115,7 @@ module dy.render{
     }
 
     export interface IShaderData{
-        type:ShaderDataType;
+        type:VariableType;
         value:any;
     }
 }

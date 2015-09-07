@@ -1,5 +1,5 @@
 module dy.render{
-    export enum ShaderDataType{
+    export enum VariableType{
         FLOAT_1,
         FLOAT_3,
         FLOAT_4,

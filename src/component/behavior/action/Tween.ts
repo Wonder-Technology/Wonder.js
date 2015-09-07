@@ -2,6 +2,9 @@
 module dy {
     declare var window;
 
+    /*! referenced from:
+     https://github.com/tweenjs/tween.js
+     */
     export class Tween extends ActionInterval {
         public static Easing = {
             Linear: {

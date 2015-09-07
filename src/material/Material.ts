@@ -3,11 +3,8 @@ module dy {
     //todo add more attribute refer to unity
 
     export class Material {
-        public static create() {
-            var obj = new this();
-
-            return obj;
-        }
+        //todo abstract
+        public shader:render.Shader = null;
 
         private _blendType:BlendType = null;
         get blendType(){
@@ -93,8 +90,6 @@ module dy {
         }
 
         public color:Color = Color.create("0xffffff");
-        //todo add default shader
-        public shader:render.Shader = null;
         public program:render.Program = null;
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
@@ -121,6 +116,10 @@ module dy {
 
         public dispose(){
             this.textureManager.dispose();
+        }
+
+        public updateShader(quadCmd:render.QuadCommand){
+            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         private _createProgramWithShader(shader:render.Shader){
