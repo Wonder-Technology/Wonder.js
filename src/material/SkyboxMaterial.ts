@@ -9,20 +9,15 @@ module dy{
             return obj;
         }
 
-        public shader:render.Shader = render.Shader.create(render.SkyboxShaderLib.getInstance().createShaderDefinition({}));
-
         public initWhenCreate(){
             this.cullMode = CullMode.FRONT;
+            this.shader = render.Shader.create(render.SkyboxShaderLib.getInstance().createShaderDefinition({}));
         }
 
-        //todo duplicate
-        public updateShader(quadCmd:render.QuadCommand){
-            super.updateShader(quadCmd);
-
-            this.textureManager.sendData(this.program);
-
-            this.program.setUniformDataFromShader();
-            this.program.setAttributeDataFromShader();
+        protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
+            if (quadCmd.buffers.hasChild("normalBuffer")) {
+                this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+            }
         }
     }
 }

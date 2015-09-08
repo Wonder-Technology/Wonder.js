@@ -22,19 +22,13 @@ module dy{
             super.init();
         }
 
-        //todo duplicate
-        public updateShader(quadCmd:render.QuadCommand){
-            super.updateShader(quadCmd);
-
-            this.textureManager.sendData(this.program);
-
-            this.program.setUniformDataFromShader();
-            this.program.setAttributeDataFromShader();
-
+        protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
+            if (quadCmd.buffers.hasChild("normalBuffer")) {
+                this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+            }
 
             this.program.setUniformData("u_normalMatrix", render.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose());
             this.program.setUniformData("u_cameraPos", render.VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
-
 
             //todo refactor
             if(this.refract){

@@ -119,6 +119,15 @@ module dy {
 
         public updateShader(quadCmd:render.QuadCommand){
             this._sendCommonShaderVariables(quadCmd);
+            this.sendSpecificShaderVariables(quadCmd);
+
+            this.textureManager.sendData(this.program);
+
+            this.program.setUniformDataFromShader();
+            this.program.setAttributeDataFromShader();
+        }
+
+        protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
         }
 
         private _sendCommonShaderVariables(quadCmd:render.QuadCommand) {
@@ -142,24 +151,13 @@ module dy {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
 
-            if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
-                program.setAttributeData("a_texCoord", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
-            }
+            //if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
+            //    program.setAttributeData("a_texCoord", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
+            //}
 
-            if (quadCmd.buffers.hasChild("normalBuffer")) {
-                program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
-            }
-
-            if(quadCmd.buffers.hasChild("colorBuffer")){
-                /*!
-                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
-                 because a_color'pos is 0, and it should be array data(like Float32Array)
-                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
-                 */
-
-
-                program.setAttributeData("a_color", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
-            }
+            //if (quadCmd.buffers.hasChild("normalBuffer")) {
+            //    program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+            //}
         }
 
         private _createProgramWithShader(shader:render.Shader){
