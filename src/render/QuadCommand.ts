@@ -33,7 +33,7 @@ module dy.render {
         public material:Material = null;
 
         public execute() {
-            this._update();
+            this.material.updateTexture();
 
             dyCb.Log.error(!this.program, dyCb.Log.info.FUNC_MUST_DEFINE("program"));
             this.program.use();
@@ -65,10 +65,6 @@ module dy.render {
         //        this._bufferData.colors? render.ArrayBuffer.create(this._bufferData.colors, 3, BufferType.FLOAT) : null
         //    );
         //}
-
-        private _update(){
-            this.material.textureManager.update();
-        }
 
         private draw() {
             var totalNum = 0,

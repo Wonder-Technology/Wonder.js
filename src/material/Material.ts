@@ -104,24 +104,44 @@ module dy {
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
 
-        public textureManager:TextureManager = TextureManager.create();
+        private _textureManager:TextureManager = TextureManager.create();
+
 
         public init(){
-            this.textureManager.init();
+            this._textureManager.init();
             this.shader.init();
 
             this.program = this._createProgramWithShader(this.shader);
         }
 
         public dispose(){
-            this.textureManager.dispose();
+            this._textureManager.dispose();
+        }
+
+        public addMap(asset:TextureAsset);
+        public addMap(map:TwoDTexture);
+
+        public addMap(arg){
+            this._textureManager.addMap(arguments[0]);
+        }
+
+        public setEnvMap(envMap:CubeTexture){
+            this._textureManager.setEnvMap(envMap);
+        }
+
+        public getEnvMap():CubeTexture{
+            return this._textureManager.getEnvMap();
+        }
+
+        public updateTexture(){
+            this._textureManager.update();
         }
 
         public updateShader(quadCmd:render.QuadCommand){
             this._sendCommonShaderVariables(quadCmd);
             this.sendSpecificShaderVariables(quadCmd);
 
-            this.textureManager.sendData(this.program);
+            this._textureManager.sendData(this.program);
 
             this.program.setUniformDataFromShader();
             this.program.setAttributeDataFromShader();

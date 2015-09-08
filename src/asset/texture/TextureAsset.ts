@@ -72,6 +72,8 @@ module dy{
             cubeFaceTexture.unpackAlignment = this.unpackAlignment;
             //todo test
             cubeFaceTexture.needUpdate = this.needUpdate;
+
+            cubeFaceTexture.mode = CubemapMode.NORMAL;
         }
 
         public copyTo(texture:Texture){

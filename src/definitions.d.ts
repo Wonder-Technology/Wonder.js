@@ -100,6 +100,7 @@
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
+/// <reference path="asset/texture/CubemapMode"/>
 /// <reference path="asset/texture/TextureSourceRegionMapping"/>
 /// <reference path="asset/texture/TextureSourceRegionMethod"/>
 /// <reference path="asset/texture/TextureTarget"/>

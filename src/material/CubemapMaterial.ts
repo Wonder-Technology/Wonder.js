@@ -7,22 +7,21 @@ module dy{
             return obj;
         }
 
-        public reflect:boolean = false;
-        public refract:boolean = false;
-        public fresnel:boolean = false;
         public refractionRatio:number = null;
 
         public init(){
+            var envMap = this.getEnvMap();
+
             this.shader = render.Shader.create(render.CubemapShaderLib.getInstance().createShaderDefinition({
-                reflect: this.reflect,
-                refract: this.refract,
-                fresnel: this.fresnel
+                mode: envMap.mode
             }));
 
             super.init();
         }
 
         protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
+            var envMap = this.getEnvMap();
+
             if (quadCmd.buffers.hasChild("normalBuffer")) {
                 this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
@@ -31,10 +30,8 @@ module dy{
             this.program.setUniformData("u_cameraPos", render.VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
 
             //todo refactor
-            if(this.refract){
-                this.program.setUniformData("u_refractionRatio", render.VariableType.FLOAT_1, this.refractionRatio);
-            }
-            if(this.fresnel){
+            if(envMap.mode === CubemapMode.REFRACTION
+            || envMap.mode === CubemapMode.FRESNEL){
                 this.program.setUniformData("u_refractionRatio", render.VariableType.FLOAT_1, this.refractionRatio);
             }
         }

@@ -2,14 +2,22 @@
 module dy{
     export class CubeTexture extends Texture{
         public static create(assets:Array<ICubemapData>){
-            var obj = new this();
+            var obj = new this(assets);
 
             obj.initWhenCreate(assets);
 
             return obj;
         }
 
+        constructor(assets:Array<ICubemapData>){
+            super();
+
+            this.assets = assets;
+        }
+
+        public assets:Array<ICubemapData> = null;
         public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
+        public mode:CubemapMode = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 

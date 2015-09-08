@@ -7,7 +7,7 @@ module dy{
         	return obj;
         }
 
-        private _textures:dyCb.Collection<Texture> = dyCb.Collection.create<Texture>();
+        private _textures:dyCb.Hash<Texture> = dyCb.Hash.create<Texture>();
 
         public init(){
             this._textures.forEach((texture:Texture) => {
@@ -15,34 +15,34 @@ module dy{
             });
         }
 
-        public addChild(asset:TextureAsset);
-        public addChild(assets:Array<ICubemapData>);
-        public addChild(texture:Texture);
+        public addMap(asset:TextureAsset);
+        public addMap(map:TwoDTexture);
 
-        public addChild(arg){
-            if(arguments[0] instanceof TextureAsset){
-                let asset:TextureAsset = arguments[0];
+        public addMap(arg){
+            var map = null;
+                if(arguments[0] instanceof TextureAsset){
+                    let asset:TextureAsset = arguments[0];
 
-                this._textures.addChild(asset.toTexture());
-            }
-            else if(JudgeUtils.isArray(arguments[0])){
-                let assets:Array<ICubemapData> = arguments[0];
+                    map = asset.toTexture();
+                }
+                else if(arguments[0] instanceof Texture){
+                    map = arguments[0];
+                }
 
-                this._textures.addChild(CubeTexture.create(assets));
-            }
-            else if(arguments[0] instanceof Texture){
-                let texture:Texture = arguments[0];
 
-                this._textures.addChild(texture);
-            }
+            this._textures.appendChild("map", map);
+        }
+
+        public setEnvMap(envMap:CubeTexture){
+            this._textures.addChild("envMap", envMap);
+        }
+
+        public getEnvMap():CubeTexture{
+            return <CubeTexture>this._textures.getChild("envMap");
         }
 
         public getChildren(){
             return this._textures.getChildren();
-        }
-
-        public getChild(index){
-            return this._textures.getChild(index);
         }
 
         public removeAllChildren(){
@@ -58,19 +58,27 @@ module dy{
         }
 
         public update(){
+            var index = 0;
+
             this._textures
                 .filter((texture:Texture) => {
                     return texture.needUpdate;
                 })
-                .forEach((texture:Texture, index:number) => {
+                .forEach((texture:Texture) => {
                     texture.update(index);
-            });
+
+                    index++;
+                });
         }
 
         public sendData(program:render.Program){
-            this._textures.forEach((texture:Texture, index:number) => {
+            var index = 0;
+
+            this._textures.forEach((texture:Texture) => {
                 texture.bindToUnit(index);
                 texture.sendData(program, index);
+
+                index++;
             });
         }
     }

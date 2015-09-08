@@ -40,7 +40,7 @@
             var material = dy.SkyboxMaterial.create();
 
 
-            var cubemap = dy.CubeTexture.create(
+            var skyboxCubemapTexture = dy.CubeTexture.create(
                     [
                         {
                             asset:dy.TextureLoader.getInstance().get("texture1")
@@ -63,7 +63,9 @@
                     ]
             );
 
-            material.textureManager.addChild(cubemap);
+
+//            material.textureManager.addChild(cubemap);
+            material.setEnvMap(skyboxCubemapTexture);
 
 
 
@@ -90,12 +92,15 @@
 
 
             var material2 = dy.CubemapMaterial.create();
-            material2.reflect = true;
+//            material2.reflect = true;
+
+            var reflectCubemapTexture = dy.CubeTexture.create(skyboxCubemapTexture.assets);
 
 
+            reflectCubemapTexture.mode = dy.CubemapMode.REFLECTION;
 
-
-            material2.textureManager.addChild(cubemap);
+            material2.setEnvMap(reflectCubemapTexture);
+//            material2.textureManager.addChild(cubemap);
 
 
 
@@ -120,13 +125,18 @@
 
 
             var material3 = dy.CubemapMaterial.create();
-            material3.refract = true;
+
+            var refractCubemapTexture = dy.CubeTexture.create(skyboxCubemapTexture.assets);
+
+
+            refractCubemapTexture.mode = dy.CubemapMode.REFRACTION;
+
             material3.refractionRatio = 1.52;
+            material3.setEnvMap(refractCubemapTexture);
 
 
 
-
-            material3.textureManager.addChild(cubemap);
+//            material3.textureManager.addChild(cubemap);
 
 
 
@@ -161,13 +171,16 @@
 
 
             var material4 = dy.CubemapMaterial.create();
-            material4.fresnel = true;
+
+
+            var fresnelCubemapTexture = dy.CubeTexture.create(skyboxCubemapTexture.assets);
+
+
+            fresnelCubemapTexture.mode = dy.CubemapMode.FRESNEL;
+
             material4.refractionRatio = 1.52;
+            material4.setEnvMap(fresnelCubemapTexture);
 
-
-
-
-            material4.textureManager.addChild(cubemap);
 
 
 
@@ -206,9 +219,9 @@
             var director = dy.Director.getInstance();
 
 
+            director.stage.addChild(box);
             director.stage.addChild(box2);
             director.stage.addChild(box3);
-            director.stage.addChild(box);
             director.stage.addChild(box4);
 
             director.stage.addChild(_createCamera());

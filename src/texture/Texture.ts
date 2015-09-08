@@ -33,9 +33,6 @@ module dy{
         public flipY:boolean = null;
         public premultiplyAlpha:boolean = null;
         public unpackAlignment:number = null;
-
-        //todo extract TextureDefault class to save default setting?
-
         public wrapS:TextureWrapMode = null;
         public wrapT:TextureWrapMode = null;
         public magFilter:TextureFilterMode = null;
