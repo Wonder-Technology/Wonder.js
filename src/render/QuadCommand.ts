@@ -38,8 +38,8 @@ module dy.render {
             dyCb.Log.error(!this.program, dyCb.Log.info.FUNC_MUST_DEFINE("program"));
             this.program.use();
 
-            this._sendData();
             this.material.updateShader(this);
+
             this.draw();
         }
 
@@ -68,49 +68,6 @@ module dy.render {
 
         private _update(){
             this.material.textureManager.update();
-        }
-
-        private _sendData() {
-            var program = this.program;
-
-            //todo send common shader variable
-
-            this._sendAttributeData();
-
-            program.setUniformData("u_mMatrix", VariableType.FLOAT_MAT4, this.mMatrix);
-            program.setUniformData("u_vMatrix", VariableType.FLOAT_MAT4, this.vMatrix);
-            program.setUniformData("u_pMatrix", VariableType.FLOAT_MAT4, this.pMatrix);
-            //program.setUniformData("u_normalMatrix", VariableType.FLOAT_MAT4, this.mMatrix.copy().invert().transpose());
-        }
-
-        private _sendAttributeData(){
-            var program = this.program;
-
-            if (this._buffers.hasChild("vertexBuffer")) {
-                program.setAttributeData("a_position", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("vertexBuffer"));
-            }
-            else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
-            }
-
-            if (this._buffers.hasChild("texCoordsBuffer")) {
-                program.setAttributeData("a_texCoord", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("texCoordsBuffer"));
-            }
-
-            if (this._buffers.hasChild("normalBuffer")) {
-                program.setAttributeData("a_normal", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("normalBuffer"));
-            }
-
-            if(this._buffers.hasChild("colorBuffer")){
-                /*!
-                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
-                 because a_color'pos is 0, and it should be array data(like Float32Array)
-                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
-                 */
-
-
-                program.setAttributeData("a_color", VariableType.BUFFER, <render.ArrayBuffer>this._buffers.getChild("colorBuffer"));
-            }
         }
 
         private draw() {

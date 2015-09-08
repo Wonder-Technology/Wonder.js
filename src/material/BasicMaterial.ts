@@ -10,6 +10,8 @@ module dy{
         public shader:render.Shader = render.Shader.create(render.BasicShaderLib.getInstance().createShaderDefinition({}));
 
         public updateShader(quadCmd:render.QuadCommand){
+            super.updateShader(quadCmd);
+
             this.textureManager.sendData(this.program);
 
             this.program.setUniformDataFromShader();

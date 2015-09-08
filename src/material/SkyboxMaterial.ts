@@ -17,6 +17,8 @@ module dy{
 
         //todo duplicate
         public updateShader(quadCmd:render.QuadCommand){
+            super.updateShader(quadCmd);
+
             this.textureManager.sendData(this.program);
 
             this.program.setUniformDataFromShader();

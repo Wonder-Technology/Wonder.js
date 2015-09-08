@@ -8,6 +8,11 @@ module dy.render{
             value:VariableCategory.ENGINE
         };
 
+        public static a_normal:IShaderVariable = {
+            type:VariableType.FLOAT_4,
+            value:VariableCategory.ENGINE
+        };
+
         public static a_color:IShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
@@ -28,8 +33,23 @@ module dy.render{
             value:VariableCategory.ENGINE
         };
 
+        public static u_normalMatrix:IShaderVariable = {
+            type:VariableType.FLOAT_MAT4,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_sampler0:IShaderVariable = {
             type:VariableType.NUMBER_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_cameraPos:IShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_refractionRatio:IShaderVariable = {
+            type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
     }

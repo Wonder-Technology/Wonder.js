@@ -20,10 +20,16 @@ module dy.render{
 
         public setUniformData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
-                pos= gl.getUniformLocation(this._program, name);
+                pos= null;
 
-            if (pos === null
-                || data === VariableCategory.ENGINE) {
+            if (data === VariableCategory.ENGINE) {
+                return;
+            }
+
+
+            pos= gl.getUniformLocation(this._program, name);
+
+            if (pos === null) {
                 return;
             }
 
@@ -65,10 +71,15 @@ module dy.render{
 
         public setAttributeData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
-                pos = gl.getAttribLocation(this._program, name);
+                pos = null;
 
-            if (pos === -1
-                || data === VariableCategory.ENGINE) {
+            if (data === VariableCategory.ENGINE) {
+                return;
+            }
+
+            pos= gl.getAttribLocation(this._program, name);
+
+            if (pos === -1) {
                 return;
             }
 

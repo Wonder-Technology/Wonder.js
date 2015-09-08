@@ -103,7 +103,6 @@ module dy {
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
-        public refractionRation:number = null;
 
         public textureManager:TextureManager = TextureManager.create();
 
@@ -119,7 +118,48 @@ module dy {
         }
 
         public updateShader(quadCmd:render.QuadCommand){
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+            this._sendCommonShaderVariables(quadCmd);
+        }
+
+        private _sendCommonShaderVariables(quadCmd:render.QuadCommand) {
+            var program = this.program;
+
+
+            this._sendAttributeVariables(quadCmd);
+
+            program.setUniformData("u_mMatrix", render.VariableType.FLOAT_MAT4, quadCmd.mMatrix);
+            program.setUniformData("u_vMatrix", render.VariableType.FLOAT_MAT4, quadCmd.vMatrix);
+            program.setUniformData("u_pMatrix", render.VariableType.FLOAT_MAT4, quadCmd.pMatrix);
+        }
+
+        private _sendAttributeVariables(quadCmd:render.QuadCommand){
+            var program = this.program;
+
+            if (quadCmd.buffers.hasChild("vertexBuffer")) {
+                program.setAttributeData("a_position", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
+            }
+            else {
+                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
+            }
+
+            if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
+                program.setAttributeData("a_texCoord", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
+            }
+
+            if (quadCmd.buffers.hasChild("normalBuffer")) {
+                program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+            }
+
+            if(quadCmd.buffers.hasChild("colorBuffer")){
+                /*!
+                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
+                 because a_color'pos is 0, and it should be array data(like Float32Array)
+                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
+                 */
+
+
+                program.setAttributeData("a_color", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
+            }
         }
 
         private _createProgramWithShader(shader:render.Shader){
