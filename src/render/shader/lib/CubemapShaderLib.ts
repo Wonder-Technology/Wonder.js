@@ -1,45 +1,21 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
     export class CubemapShaderLib extends ShaderLib{
-        private static _instance:CubemapShaderLib = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:Material) {
+            if (quadCmd.buffers.hasChild("normalBuffer")) {
+                program.sendAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
-            return this._instance;
+
+            program.sendUniformData("u_normalMatrix", render.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose());
+            program.sendUniformData("u_cameraPos", render.VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
         }
 
-        //todo typescript define options' type
-        //protected setShaderDefinition(options:{mode:CubemapMode}){
         protected setShaderDefinition(){
-            //this.addAttributeVariable(["a_normal"]);
-            //
-            //this.addUniformVariable(["u_sampler0", "u_cameraPos", "u_normalMatrix"]);
-            //
-            //switch (options.mode){
-            //    case CubemapMode.REFLECTION:
-            //
-            //        this.vsSource = ShaderChunk.cubemap_vertex;
-            //        this.fsSource = ShaderChunk.cubemap_fragment;
-            //        break;
-            //    case CubemapMode.REFRACTION:
-            //        this.addUniformVariable(["u_refractionRatio"]);
-            //
-            //        this.vsSource = ShaderChunk.refraction_vertex;
-            //        this.fsSource = ShaderChunk.refraction_fragment;
-            //        break;
-            //    case CubemapMode.FRESNEL:
-            //        this.addUniformVariable(["u_refractionRatio"]);
-            //
-            //        this.vsSource = ShaderChunk.fresnel_vertex;
-            //        this.fsSource = ShaderChunk.fresnel_fragment;
-            //        break;
-            //    default:
-            //        dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("CubemapMode"));
-            //        break;
-            //}
+            this.addAttributeVariable(["a_normal"]);
+
+            this.addUniformVariable(["u_sampler0", "u_cameraPos", "u_normalMatrix"]);
+
+            this.vsSourceBody = ShaderSnippet.setPos_mvp;
         }
     }
 }

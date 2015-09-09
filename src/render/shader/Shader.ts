@@ -70,35 +70,23 @@ module dy.render{
             this.program.initWithShader(this);
         }
 
-        //public read(def:IShaderDefinition){
-        //    this.attributes = def.attributes;
-        //    this.uniforms = def.uniforms;
-        //
-        //    this.vsSource = this._insertAttribute(def.vsSource);
-        //    this.fsSource = def.fsSource;
-        //}
-
         public update(quadCmd:QuadCommand, material:Material){
-            //this._sendCommonShaderVariables(quadCmd);
-            //this.sendSpecificShaderVariables(quadCmd);
+            var program = this.program;
 
-            //todo move
-            //this._textureManager.sendData(this.program);
+            material.textureManager.sendData(program);
 
             this._libs.forEach((lib:ShaderLib) => {
-                lib.sendShaderVariables(quadCmd, material);
+                lib.sendShaderVariables(program, quadCmd, material);
             });
 
-            this.program.sendUniformDataFromShader();
-            this.program.sendAttributeDataFromShader();
+            program.sendUniformDataFromShader();
+            program.sendAttributeDataFromShader();
         }
 
         //todo move
         private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
 
         public addLib(lib:ShaderLib){
-            lib.program = this.program;
-
             this._libs.addChild(lib);
         }
 

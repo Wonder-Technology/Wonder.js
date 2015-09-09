@@ -1,9 +1,12 @@
 var gulp = require("gulp");
+var gutil = require("gulp-util");
 var through = require("through-gulp");
 var path = require("path");
 var fs = require("fs");
 
-var glslPath = "src/render/shader/chunk/glsl/*.glsl";
+var PLUGIN_NAME = "ShaderChunk";
+
+var glslPath = "src/render/shader/chunk/glsl/**/*.glsl";
 var destFilePath = "src/render/shader/chunk/ShaderChunk.ts";
 
 gulp.task("createShaderChunk", function(){

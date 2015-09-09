@@ -11,10 +11,8 @@ module dy.render{
             return this._instance;
         }
 
-        public sendShaderVariables(quadCmd:render.QuadCommand, material:Material){
-            var program = this.program;
-
-            this._sendAttributeVariables(quadCmd);
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:Material){
+            this._sendAttributeVariables(program, quadCmd);
 
             program.sendUniformData("u_mMatrix", render.VariableType.FLOAT_MAT4, quadCmd.mMatrix);
             program.sendUniformData("u_vMatrix", render.VariableType.FLOAT_MAT4, quadCmd.vMatrix);
@@ -33,9 +31,7 @@ module dy.render{
             this.fsSourceBody = ShaderChunk.common_body_fragment;
         }
 
-        private _sendAttributeVariables(quadCmd:render.QuadCommand){
-            var program = this.program;
-
+        private _sendAttributeVariables(program: Program, quadCmd:render.QuadCommand){
             if (quadCmd.buffers.hasChild("vertexBuffer")) {
                 program.sendAttributeData("a_position", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
             }

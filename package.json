@@ -1,6 +1,6 @@
 {
-    "name": "dy",
-    "version": "0.0.1",
+  "name": "dy",
+  "version": "0.0.1",
   "devDependencies": {
     "del": "^1.2.0",
     "fs-extra": "^0.22.1",
@@ -9,6 +9,7 @@
     "gulp-sourcemaps": "^1.5.2",
     "gulp-sync": "^0.1.4",
     "gulp-typescript": "^2.8.0",
+    "gulp-util": "^3.0.6",
     "karma": "~0.13",
     "karma-chrome-launcher": "^0.2.0",
     "karma-ie-launcher": "^0.2.0",

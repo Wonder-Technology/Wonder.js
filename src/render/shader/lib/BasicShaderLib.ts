@@ -11,7 +11,7 @@ module dy.render{
             return this._instance;
         }
 
-        public sendShaderVariables(quadCmd:render.QuadCommand, material:Material){
+        public sendShaderVariables(program: Program, quadCmd:render.QuadCommand, material:Material){
             if(quadCmd.buffers.hasChild("colorBuffer")){
                 /*!
                  this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
@@ -20,16 +20,15 @@ module dy.render{
                  */
 
 
-                this.program.sendAttributeData("a_color", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
+                program.sendAttributeData("a_color", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
             }
         }
 
-        //todo typescript define options' type
         protected setShaderDefinition(){
             this.addAttributeVariable(["a_color"]);
 
             this.vsSourceHead = ShaderChunk.basic_head_vertex;
-            this.vsSourceBody = ShaderChunk.basic_body_vertex;
+            this.vsSourceBody = ShaderSnippet.setPos_mvp + ShaderChunk.basic_body_vertex;
             this.fsSourceHead = ShaderChunk.basic_head_fragment;
             this.fsSourceBody = ShaderChunk.basic_body_fragment;
         }

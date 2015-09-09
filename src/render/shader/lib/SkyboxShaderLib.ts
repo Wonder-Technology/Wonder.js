@@ -11,15 +11,21 @@ module dy.render{
             return this._instance;
         }
 
-        //todo typescript define options' type
-        //protected setShaderDefinition(options:any){
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:Material){
+                if (quadCmd.buffers.hasChild("normalBuffer")) {
+                    program.sendAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+                }
+        }
+
         protected setShaderDefinition(){
-            //this.addAttributeVariable(["a_normal"]);
-            //
-            //this.addUniformVariable(["u_sampler0"]);
-            //
-            //this.vsSource = ShaderChunk.skybox_vertex;
-            //this.fsSource = ShaderChunk.skybox_fragment;
+            this.addAttributeVariable(["a_normal"]);
+
+            this.addUniformVariable(["u_sampler0"]);
+
+            this.vsSourceHead = ShaderChunk.skybox_head_vertex;
+            this.vsSourceBody = ShaderChunk.skybox_body_vertex;
+            this.fsSourceHead = ShaderChunk.skybox_head_fragment;
+            this.fsSourceBody = ShaderChunk.skybox_body_fragment;
         }
     }
 }

@@ -9,33 +9,15 @@ module dy.render{
         public fsSource:string = null;
         public fsSourceHead:string = null;
         public fsSourceBody:string = null;
-        public program:Program = null;
 
         public initWhenCreate(){
             //todo rename?
             this.setShaderDefinition();
         }
 
-        public sendShaderVariables(quadCmd:render.QuadCommand, material:Material){
+        public sendShaderVariables(program: Program, quadCmd:render.QuadCommand, material:Material){
         }
 
-        //todo typescript define options' type
-        //public createShaderDefinition(options:any):IShaderDefinition{
-        //public createShaderDefinition():IShaderDefinition{
-        //
-        //    //this.setShaderDefinition(options);
-        //    this.setShaderDefinition();
-        //
-        //    return {
-        //        attributes: this.attributes,
-        //        uniforms: this.uniforms,
-        //        vsSource: this.vsSource,
-        //        fsSource: this.fsSource
-        //    }
-        //}
-
-        //todo typescript define options' type
-        //protected setShaderDefinition(options:any){
         protected setShaderDefinition(){
         }
 
@@ -54,12 +36,5 @@ module dy.render{
                 target.addChild(variable, VariableLib[variable]);
             });
         }
-    }
-
-    export interface IShaderDefinition{
-        attributes:dyCb.Hash<IShaderVariable>;
-        uniforms:dyCb.Hash<IShaderVariable>;
-        vsSource:string;
-        fsSource:string;
     }
 }
