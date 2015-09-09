@@ -6,16 +6,32 @@ module dy.render{
         public static getInstance() {
             if (this._instance === null) {
                 this._instance = new this();
+                this._instance.initWhenCreate();
             }
             return this._instance;
         }
 
+        public sendShaderVariables(quadCmd:render.QuadCommand, material:Material){
+            if(quadCmd.buffers.hasChild("colorBuffer")){
+                /*!
+                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
+                 because a_color'pos is 0, and it should be array data(like Float32Array)
+                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
+                 */
+
+
+                this.program.sendAttributeData("a_color", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
+            }
+        }
+
         //todo typescript define options' type
-        protected setShaderDefinition(options:any){
+        protected setShaderDefinition(){
             this.addAttributeVariable(["a_color"]);
 
-            this.vsSource = ShaderChunk.basic_vertex;
-            this.fsSource = ShaderChunk.basic_fragment;
+            this.vsSourceHead = ShaderChunk.basic_head_vertex;
+            this.vsSourceBody = ShaderChunk.basic_body_vertex;
+            this.fsSourceHead = ShaderChunk.basic_head_fragment;
+            this.fsSourceBody = ShaderChunk.basic_body_fragment;
         }
     }
 }

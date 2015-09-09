@@ -1,18 +1,25 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy.render{
     export class Shader{
-        public static create(shaderDefinition?:IShaderDefinition) {
+        //public static create(shaderDefinition?:IShaderDefinition) {
+        public static create() {
         	var obj = new this();
 
-            if(shaderDefinition){
-                obj.read(shaderDefinition);
-            }
+            //if(shaderDefinition){
+            //    obj.read(shaderDefinition);
+            //}
+
+            obj.initWhenCreate();
 
         	return obj;
         }
 
-        public vsSource:string = null;
-        public fsSource:string = null;
+        public vsSource:string = "";
+        public vsSourceHead:string = "";
+        public vsSourceBody:string = "";
+        public fsSource:string = "";
+        public fsSourceHead:string = "";
+        public fsSourceBody:string = "";
         public attributes:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
         public uniforms:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
 
@@ -33,8 +40,20 @@ module dy.render{
             && this.fsSource === other.fsSource;
         }
 
+        public initWhenCreate(){
+            this.addLib(render.CommonShaderLib.getInstance());
+
+        }
+
+        //todo move
+        public program:Program = Program.create();
+
         public init(){
             var self = this;
+
+            //todo not build here?
+            //todo rename?
+            this.build();
 
             this.attributes.forEach((val:IShaderData, key:string) => {
                 if(val.value instanceof ArrayBuffer
@@ -46,17 +65,68 @@ module dy.render{
 
                 val.value = self._convertToArrayBuffer(val.type, val.value);
             });
+
+            //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+            this.program.initWithShader(this);
         }
 
-        public read(def:IShaderDefinition){
-            this.attributes = def.attributes;
-            this.uniforms = def.uniforms;
+        //public read(def:IShaderDefinition){
+        //    this.attributes = def.attributes;
+        //    this.uniforms = def.uniforms;
+        //
+        //    this.vsSource = this._insertAttribute(def.vsSource);
+        //    this.fsSource = def.fsSource;
+        //}
 
-            this.vsSource = this._insertAttribute(def.vsSource);
-            this.fsSource = def.fsSource;
+        public update(quadCmd:QuadCommand, material:Material){
+            //this._sendCommonShaderVariables(quadCmd);
+            //this.sendSpecificShaderVariables(quadCmd);
+
+            //todo move
+            //this._textureManager.sendData(this.program);
+
+            this._libs.forEach((lib:ShaderLib) => {
+                lib.sendShaderVariables(quadCmd, material);
+            });
+
+            this.program.sendUniformDataFromShader();
+            this.program.sendAttributeDataFromShader();
         }
 
-        private _insertAttribute(vsSource:string){
+        //todo move
+        private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
+
+        public addLib(lib:ShaderLib){
+            lib.program = this.program;
+
+            this._libs.addChild(lib);
+        }
+
+        public build(){
+            var self = this;
+
+            this._libs.forEach((lib:ShaderLib) => {
+                self.attributes.addChildren(lib.attributes);
+                self.uniforms.addChildren(lib.uniforms);
+                self.vsSourceHead += lib.vsSourceHead;
+                self.vsSourceBody += lib.vsSourceBody;
+                self.fsSourceHead += lib.fsSourceHead;
+                self.fsSourceBody += lib.fsSourceBody;
+            });
+
+            this._buildVsSource();
+            this._buildFsSource();
+        }
+
+        private _buildVsSource(){
+            this.vsSource = this._generateAttributeSource() + this.vsSourceHead + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+        }
+
+        private _buildFsSource(){
+            this.fsSource = this.fsSourceHead + ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+        }
+
+        private _generateAttributeSource(){
             var result = "";
 
             this.attributes.forEach((val:IShaderData, key:string) => {
@@ -68,7 +138,7 @@ module dy.render{
                 result += "attribute " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
             });
 
-            return result + vsSource;
+            return result;
         }
 
         private _convertToArrayBuffer(type:VariableType, value:Array<any>) {

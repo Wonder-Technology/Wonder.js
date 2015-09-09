@@ -1,30 +1,42 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
     export class ShaderLib{
-        protected attributes:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
-        protected uniforms:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
-        protected vsSource:string = null;
-        protected fsSource:string = null;
+        public attributes:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
+        public uniforms:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
+        public vsSource:string = null;
+        public vsSourceHead:string = null;
+        public vsSourceBody:string = null;
+        public fsSource:string = null;
+        public fsSourceHead:string = null;
+        public fsSourceBody:string = null;
+        public program:Program = null;
 
+        public initWhenCreate(){
+            //todo rename?
+            this.setShaderDefinition();
+        }
 
-        //todo typescript define options' type
-        public createShaderDefinition(options:any):IShaderDefinition{
-            //todo use VariableLib.xxx?
-            this.addAttributeVariable(["a_position"]);
-            this.addUniformVariable(["u_mMatrix", "u_vMatrix", "u_pMatrix"]);
-
-            this.setShaderDefinition(options);
-
-            return {
-                attributes: this.attributes,
-                uniforms: this.uniforms,
-                vsSource: this.vsSource,
-                fsSource: this.fsSource
-            }
+        public sendShaderVariables(quadCmd:render.QuadCommand, material:Material){
         }
 
         //todo typescript define options' type
-        protected setShaderDefinition(options:any){
+        //public createShaderDefinition(options:any):IShaderDefinition{
+        //public createShaderDefinition():IShaderDefinition{
+        //
+        //    //this.setShaderDefinition(options);
+        //    this.setShaderDefinition();
+        //
+        //    return {
+        //        attributes: this.attributes,
+        //        uniforms: this.uniforms,
+        //        vsSource: this.vsSource,
+        //        fsSource: this.fsSource
+        //    }
+        //}
+
+        //todo typescript define options' type
+        //protected setShaderDefinition(options:any){
+        protected setShaderDefinition(){
         }
 
         protected addAttributeVariable(variableArr:Array<string>){

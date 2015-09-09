@@ -1,0 +1,2 @@
+precision mediump float;
+

@@ -3,8 +3,9 @@ module dy {
     //todo add more attribute refer to unity
 
     export class Material {
-        //todo abstract
-        public shader:render.Shader = null;
+        get program(){
+            return this.shader.program;
+        }
 
         private _blendType:BlendType = null;
         get blendType(){
@@ -89,8 +90,8 @@ module dy {
             this._blendType = blendType;
         }
 
+        public shader:render.Shader = render.Shader.create();
         public color:Color = Color.create("0xffffff");
-        public program:render.Program = null;
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;
@@ -109,9 +110,8 @@ module dy {
 
         public init(){
             this._textureManager.init();
-            this.shader.init();
 
-            this.program = this._createProgramWithShader(this.shader);
+            this.shader.init();
         }
 
         public dispose(){
@@ -138,51 +138,7 @@ module dy {
         }
 
         public updateShader(quadCmd:render.QuadCommand){
-            this._sendCommonShaderVariables(quadCmd);
-            this.sendSpecificShaderVariables(quadCmd);
-
-            this._textureManager.sendData(this.program);
-
-            this.program.setUniformDataFromShader();
-            this.program.setAttributeDataFromShader();
-        }
-
-        protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
-        }
-
-        private _sendCommonShaderVariables(quadCmd:render.QuadCommand) {
-            var program = this.program;
-
-
-            this._sendAttributeVariables(quadCmd);
-
-            program.setUniformData("u_mMatrix", render.VariableType.FLOAT_MAT4, quadCmd.mMatrix);
-            program.setUniformData("u_vMatrix", render.VariableType.FLOAT_MAT4, quadCmd.vMatrix);
-            program.setUniformData("u_pMatrix", render.VariableType.FLOAT_MAT4, quadCmd.pMatrix);
-        }
-
-        private _sendAttributeVariables(quadCmd:render.QuadCommand){
-            var program = this.program;
-
-            if (quadCmd.buffers.hasChild("vertexBuffer")) {
-                program.setAttributeData("a_position", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
-            }
-            else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
-            }
-
-            //if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
-            //    program.setAttributeData("a_texCoord", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
-            //}
-
-            //if (quadCmd.buffers.hasChild("normalBuffer")) {
-            //    program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
-            //}
-        }
-
-        private _createProgramWithShader(shader:render.Shader){
-            //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-            return render.Program.create().initWithShader(shader);
+            this.shader.update(quadCmd, this);
         }
     }
 }

@@ -73,9 +73,11 @@
 /// <reference path="render/shader/variable/VariableLib"/>
 /// <reference path="render/shader/variable/VariableTable"/>
 /// <reference path="render/shader/lib/ShaderLib"/>
+/// <reference path="render/shader/lib/CommonShaderLib"/>
 /// <reference path="render/shader/lib/BasicShaderLib"/>
 /// <reference path="render/shader/lib/SkyboxShaderLib"/>
 /// <reference path="render/shader/chunk/ShaderChunk"/>
+/// <reference path="render/shader/snippet/ShaderSnippet"/>
 
 
 /// <reference path="material/Material"/>

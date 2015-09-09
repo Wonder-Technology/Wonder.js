@@ -18,7 +18,7 @@ module dy.render{
             return Director.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public setUniformData(name:string, type:VariableType, data:any){
+        public sendUniformData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
                 pos= null;
 
@@ -61,15 +61,15 @@ module dy.render{
             }
         }
 
-        public setUniformDataFromShader(){
+        public sendUniformDataFromShader(){
             var self = this;
 
             this._shader.uniforms.forEach((val:IShaderData, key:string) => {
-                self.setUniformData(key, val.type, val.value);
+                self.sendUniformData(key, val.type, val.value);
             });
         }
 
-        public setAttributeData(name:string, type:VariableType, data:any){
+        public sendAttributeData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
                 pos = null;
 
@@ -99,11 +99,11 @@ module dy.render{
             }
         }
 
-        public setAttributeDataFromShader(){
+        public sendAttributeDataFromShader(){
             var self = this;
 
             this._shader.attributes.forEach((val:IShaderData, key:string) => {
-                self.setAttributeData(key, VariableType.BUFFER, val.value);
+                self.sendAttributeData(key, VariableType.BUFFER, val.value);
             });
         }
 

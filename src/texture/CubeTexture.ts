@@ -47,8 +47,8 @@ module dy{
         }
 
         public sendData(program:render.Program, index:number){
-            program.setUniformData("u_sampler" + index, render.VariableType.NUMBER_1, index);
-            program.setUniformData("u_repeatRegion", render.VariableType.FLOAT_4, this.repeatRegion);
+            program.sendUniformData("u_sampler" + index, render.VariableType.NUMBER_1, index);
+            program.sendUniformData("u_repeatRegion", render.VariableType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

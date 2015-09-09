@@ -11,14 +11,14 @@ module dy{
 
         public initWhenCreate(){
             this.cullMode = CullMode.FRONT;
-            this.shader = render.Shader.create(render.SkyboxShaderLib.getInstance().createShaderDefinition({}));
+            //this.shader = render.Shader.create(render.SkyboxShaderLib.getInstance().createShaderDefinition({}));
         }
-
-        protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
-            if (quadCmd.buffers.hasChild("normalBuffer")) {
-                this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
-            }
-        }
+        //
+        //protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
+        //    if (quadCmd.buffers.hasChild("normalBuffer")) {
+        //        this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+        //    }
+        //}
     }
 }
 
