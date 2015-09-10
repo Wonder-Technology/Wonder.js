@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     //todo support more than 2 maps
     export class MultiMapShaderLib extends MapShaderLib{

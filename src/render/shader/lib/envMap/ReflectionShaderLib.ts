@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class ReflectionShaderLib extends EnvMapShaderLib{
         private static _instance:ReflectionShaderLib = null;

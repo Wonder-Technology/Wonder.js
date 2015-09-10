@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class BasicMapShaderLib extends MapShaderLib{
         private static _instance:BasicMapShaderLib = null;

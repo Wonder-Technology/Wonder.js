@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class CommonShaderLib extends ShaderLib{
         private static _instance:CommonShaderLib = null;

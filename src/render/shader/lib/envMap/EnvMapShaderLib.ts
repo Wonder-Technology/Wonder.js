@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class EnvMapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:Material) {

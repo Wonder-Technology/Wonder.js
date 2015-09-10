@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class SkyboxShaderLib extends ShaderLib{
         private static _instance:SkyboxShaderLib = null;
