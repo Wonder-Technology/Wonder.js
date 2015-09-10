@@ -15,36 +15,13 @@ module dy {
             return Director.getInstance().gl;
         }
 
-        private _maxTextureUnit:number = null;
-        get maxTextureUnit(){
-            this._ensureDetected();
-
-            return this._maxTextureUnit;
-        }
-
-        private _maxTextureSize:number = null;
-        get maxTextureSize(){
-            this._ensureDetected();
-
-            return this._maxTextureSize;
-        }
-
-        private _maxCubemapTextureSize:number = null;
-        get maxCubemapTextureSize(){
-            this._ensureDetected();
-
-            return this._maxCubemapTextureSize;
-        }
-
-        private _maxAnisotropy:number = null;
-        get maxAnisotropy(){
-            this._ensureDetected();
-
-            return this._maxAnisotropy;
-        }
-
+        public maxTextureUnit:number = null;
+        public maxTextureSize:number = null;
+        public maxCubemapTextureSize:number = null;
+        public maxAnisotropy:number = null;
         public extensionCompressedTextureS3TC:any = null;
         public extensionTextureFilterAnisotropic:any = null;
+        public precision:number = null;
 
         private _isDetected:boolean = false;
 
@@ -120,10 +97,11 @@ module dy {
         private _detectCapabilty() {
             var gl = this.gl;
 
-            this._maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-            this._maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-            this._maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-            this._maxAnisotropy = this._getMaxAnisotropy();
+            this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+            this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+            this.maxAnisotropy = this._getMaxAnisotropy();
+            this._detectPrecision();
         }
 
         private _getExtension(name:string) {
@@ -170,62 +148,36 @@ module dy {
             return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
         }
 
-        private _ensureDetected(){
-            if(!this._isDetected){
-                this.detect();
+        private _detectPrecision() {
+            var gl = this.gl,
+                vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
+                vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT),
+                vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
+            fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT),
+                fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT),
+                fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
+            highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0,
+            mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
+
+            if (!highpAvailable) {
+                if (mediumpAvailable) {
+                    this.precision = GPUPrecision.MEDIUMP;
+                    dyCb.Log.warn(dyCb.Log.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
+                }
+                else {
+                    this.precision = GPUPrecision.LOWP;
+                    dyCb.Log.warn(dyCb.Log.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
+                }
+            }
+            else{
+                this.precision = GPUPrecision.HIGHP;
             }
         }
     }
-}
-//// GPU capabilities
-//
-//var _maxTextures = gl.getParameter( gl.MAX_TEXTURE_IMAGE_UNITS );
-//var _maxVertexTextures = gl.getParameter( gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS );
-//var _maxTextureSize = gl.getParameter( gl.MAX_TEXTURE_SIZE );
-//var _maxCubemapSize = gl.getParameter( gl.MAX_CUBE_MAP_TEXTURE_SIZE );
-//
-//var _maxAnisotropy = this.extensionTextureFilterAnisotropic ? gl.getParameter( this.extensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT ) : 0;
-//
-//var _supportsVertexTextures = ( _maxVertexTextures > 0 );
-//var _supportsBoneTextures = _supportsVertexTextures && this.extensionTextureFloat;
-//
-//var _compressedTextureFormats = this.extensionCompressedTextureS3TC ? gl.getParameter( gl.COMPRESSED_TEXTURE_FORMATS ) : [];
-//
-////
-//
-//var _vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.HIGH_FLOAT );
-//var _vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.MEDIUM_FLOAT );
-//var _vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat( gl.VERTEX_SHADER, gl.LOW_FLOAT );
-//
-//var _fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.HIGH_FLOAT );
-//var _fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT );
-//var _fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat( gl.FRAGMENT_SHADER, gl.LOW_FLOAT );
-//
-//// clamp precision to maximum available
-//
-//var highpAvailable = _vertexShaderPrecisionHighpFloat.precision > 0 && _fragmentShaderPrecisionHighpFloat.precision > 0;
-//var mediumpAvailable = _vertexShaderPrecisionMediumpFloat.precision > 0 && _fragmentShaderPrecisionMediumpFloat.precision > 0;
-//
-//if ( _precision === "highp" && ! highpAvailable ) {
-//
-//    if ( mediumpAvailable ) {
-//
-//        _precision = "mediump";
-//        console.warn( "highp not supported, using mediump." );
-//
-//    } else {
-//
-//        _precision = "lowp";
-//        console.warn( "highp and mediump not supported, using lowp." );
-//
-//    }
-//
-//}
-//
-//if ( _precision === "mediump" && ! mediumpAvailable ) {
-//
-//    _precision = "lowp";
-//    console.warn( "mediump not supported, using lowp." );
-//
-//}
 
+    export enum GPUPrecision{
+        HIGHP,
+        MEDIUMP,
+        LOWP
+    }
+}

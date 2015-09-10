@@ -19,7 +19,6 @@ module dy.render{
             program.sendUniformData("u_pMatrix", render.VariableType.FLOAT_MAT4, quadCmd.pMatrix);
         }
 
-        //todo typescript define options' type
         protected setShaderDefinition(){
             //todo use VariableLib.xxx?
             this.addAttributeVariable(["a_position"]);
@@ -27,8 +26,30 @@ module dy.render{
 
             this.vsSourceHead = ShaderChunk.common_head_vertex;
             this.vsSourceBody = ShaderChunk.common_body_vertex;
-            this.fsSourceHead = ShaderChunk.common_head_fragment;
+            this._setPrecision();
             this.fsSourceBody = ShaderChunk.common_body_fragment;
+        }
+
+        private _setPrecision(){
+            var precision = GPUDetector.getInstance().precision,
+                result = null;
+
+            switch (precision){
+                case GPUPrecision.HIGHP:
+                    result = ShaderChunk.highp_head_fragment;
+                    break;
+                case GPUPrecision.MEDIUMP:
+                    result = ShaderChunk.mediump_head_fragment;
+                    break;
+                case GPUPrecision.LOWP:
+                    result = ShaderChunk.lowp_head_fragment;
+                    break;
+                default:
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
+                    break;
+            }
+
+            this.fsSourceHead = result;
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:render.QuadCommand){
@@ -38,11 +59,6 @@ module dy.render{
             else {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
             }
-
-            //todo add it in TextureShaderLib?
-            //if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
-            //    program.sendAttributeData("a_texCoord", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
-            //}
         }
     }
 }
