@@ -113,6 +113,7 @@
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
 /// <reference path="asset/texture/EnvMapMode"/>
+/// <reference path="asset/texture/TextureCombineMode"/>
 /// <reference path="asset/texture/TextureSourceRegionMapping"/>
 /// <reference path="asset/texture/TextureSourceRegionMethod"/>
 /// <reference path="asset/texture/TextureTarget"/>

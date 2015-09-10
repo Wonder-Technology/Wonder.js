@@ -12,10 +12,17 @@ module dy.render{
             return this._instance;
         }
 
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:MapMaterial) {
+            super.sendShaderVariables(program, quadCmd, material);
+
+            program.sendUniformData("u_combineMode", render.VariableType.NUMBER_1, material.combineMode);
+            program.sendUniformData("u_mixRatio", render.VariableType.FLOAT_1, material.mixRatio);
+        }
+
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.addUniformVariable(["u_sampler2D1"]);
+            this.addUniformVariable(["u_sampler2D1", "u_combineMode", "u_mixRatio"]);
 
             this.fsSourceBody = ShaderChunk.multi_map_body_fragment;
         }

@@ -7,6 +7,9 @@ module dy{
             return obj;
         }
 
+        public combineMode:TextureCombineMode = TextureCombineMode.MIX;
+        public mixRatio:number = 0.5;
+
         public init(){
             if(this._isMultiMap()){
                 this.shader.addLib(render.MultiMapShaderLib.getInstance());

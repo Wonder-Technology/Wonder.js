@@ -82,6 +82,16 @@ module dy.render{
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
+
+        public static u_combineMode:IShaderVariable = {
+            type:VariableType.NUMBER_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_mixRatio:IShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export interface IShaderVariable{
