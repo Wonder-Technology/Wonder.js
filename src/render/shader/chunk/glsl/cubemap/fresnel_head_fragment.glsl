@@ -1,4 +1,5 @@
 uniform float u_refractionRatio;
+uniform float u_reflectivity;
 
 float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){
     float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);

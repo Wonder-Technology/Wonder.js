@@ -52,6 +52,11 @@ module dy.render{
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
+
+        public static u_reflectivity:IShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export interface IShaderVariable{

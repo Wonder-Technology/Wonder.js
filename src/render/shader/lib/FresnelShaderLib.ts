@@ -15,12 +15,19 @@ module dy.render{
             super.sendShaderVariables(program, quadCmd, material);
 
             program.sendUniformData("u_refractionRatio", render.VariableType.FLOAT_1, material.refractionRatio);
+
+            if(material.reflectivity !== null){
+                program.sendUniformData("u_reflectivity", render.VariableType.FLOAT_1, material.reflectivity);
+            }
+            else{
+                program.sendUniformData("u_reflectivity", render.VariableType.FLOAT_1, -1);
+            }
         }
 
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.addUniformVariable(["u_refractionRatio"]);
+            this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);
 
             this.setVsSource();
             this.fsSourceHead = ShaderChunk.cubemap_head_fragment + ShaderChunk.fresnel_head_fragment;

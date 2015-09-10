@@ -8,6 +8,7 @@ module dy{
         }
 
         public refractionRatio:number = null;
+        public reflectivity:number = null;
 
         public init(){
             var envMap = this.getEnvMap();

@@ -6,5 +6,10 @@
     vec4 reflectColor = textureCube(u_sampler0, reflectDir);
     vec4 refractColor = textureCube(u_sampler0, refractDir);
 
-    gl_FragColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));
+	if(u_reflectivity != -1.0){
+        gl_FragColor = mix(reflectColor, refractColor, u_reflectivity);
+	}
+	else{
+        gl_FragColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));
+	}
 
