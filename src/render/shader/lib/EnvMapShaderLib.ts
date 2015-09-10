@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
-    export class CubemapShaderLib extends ShaderLib{
+    export class EnvMapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:Material) {
             if (quadCmd.buffers.hasChild("normalBuffer")) {
                 program.sendAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
@@ -19,8 +19,8 @@ module dy.render{
         }
 
         protected setVsSource(){
-            this.vsSourceHead = ShaderChunk.cubemap_head_vertex;
-            this.vsSourceBody += ShaderChunk.cubemap_body_vertex;
+            this.vsSourceHead = ShaderChunk.envMap_head_vertex;
+            this.vsSourceBody += ShaderChunk.envMap_body_vertex;
         }
     }
 }

@@ -76,7 +76,8 @@
 /// <reference path="render/shader/lib/CommonShaderLib"/>
 /// <reference path="render/shader/lib/BasicShaderLib"/>
 /// <reference path="render/shader/lib/SkyboxShaderLib"/>
-/// <reference path="render/shader/lib/CubemapShaderLib"/>
+/// <reference path="render/shader/lib/EnvMapShaderLib"/>
+/// <reference path="render/shader/lib/BasicEnvMapShaderLib"/>
 /// <reference path="render/shader/lib/ReflectionShaderLib"/>
 /// <reference path="render/shader/lib/RefractionShaderLib"/>
 /// <reference path="render/shader/lib/FresnelShaderLib"/>
@@ -87,7 +88,7 @@
 /// <reference path="material/Material"/>
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
-/// <reference path="material/CubemapMaterial"/>
+/// <reference path="material/EnvMapMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
@@ -107,7 +108,7 @@
 /// <reference path="asset/texture/TextureWrapMode"/>
 /// <reference path="asset/texture/TextureFormat"/>
 /// <reference path="asset/texture/TextureType"/>
-/// <reference path="asset/texture/CubemapMode"/>
+/// <reference path="asset/texture/EnvMapMode"/>
 /// <reference path="asset/texture/TextureSourceRegionMapping"/>
 /// <reference path="asset/texture/TextureSourceRegionMethod"/>
 /// <reference path="asset/texture/TextureTarget"/>

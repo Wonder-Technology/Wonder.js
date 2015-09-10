@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
-    export class ReflectionShaderLib extends CubemapShaderLib{
+    export class ReflectionShaderLib extends EnvMapShaderLib{
         private static _instance:ReflectionShaderLib = null;
 
         public static getInstance() {
@@ -17,8 +17,8 @@ module dy.render{
             this.addUniformVariable(["u_refractionRatio"]);
 
             this.setVsSource();
-            this.fsSourceHead = ShaderChunk.cubemap_head_fragment;
-            this.fsSourceBody = ShaderChunk.cubemap_body_fragment + ShaderChunk.reflection_body_fragment;
+            this.fsSourceHead = ShaderChunk.envMap_head_fragment;
+            this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.reflection_body_fragment;
         }
     }
 }

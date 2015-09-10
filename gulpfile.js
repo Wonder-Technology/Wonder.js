@@ -25,8 +25,7 @@ var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = "src/render/shader/chunk/glsl/**/*.glsl";
 
 gulp.task("watch", function(){
-    gulp.watch(glslFilePaths, ["createShaderChunk"]);
-    gulp.watch(tsFilePaths, ["compileTsDebug"]);
+    gulp.watch(glslFilePaths, ["createShaderChunk", "compileTsDebug"]);
 });
 
 

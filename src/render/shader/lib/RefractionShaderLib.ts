@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
-    export class RefractionShaderLib extends CubemapShaderLib{
+    export class RefractionShaderLib extends EnvMapShaderLib{
         private static _instance:RefractionShaderLib = null;
 
         public static getInstance() {
@@ -11,7 +11,7 @@ module dy.render{
             return this._instance;
         }
 
-        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:CubemapMaterial) {
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:EnvMapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
             program.sendUniformData("u_refractionRatio", render.VariableType.FLOAT_1, material.refractionRatio);
@@ -23,8 +23,8 @@ module dy.render{
             this.addUniformVariable(["u_refractionRatio"]);
 
             this.setVsSource();
-            this.fsSourceHead = ShaderChunk.cubemap_head_fragment;
-            this.fsSourceBody = ShaderChunk.cubemap_body_fragment + ShaderChunk.refraction_body_fragment;
+            this.fsSourceHead = ShaderChunk.envMap_head_fragment;
+            this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.refraction_body_fragment;
         }
     }
 }

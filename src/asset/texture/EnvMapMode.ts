@@ -1,5 +1,5 @@
 module dy{
-    export enum CubemapMode{
+    export enum EnvMapMode{
         NORMAL,
         REFLECTION,
         REFRACTION,

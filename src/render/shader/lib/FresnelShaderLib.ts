@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy.render{
-    export class FresnelShaderLib extends CubemapShaderLib{
+    export class FresnelShaderLib extends EnvMapShaderLib{
         private static _instance:FresnelShaderLib = null;
 
         public static getInstance() {
@@ -11,7 +11,7 @@ module dy.render{
             return this._instance;
         }
 
-        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:CubemapMaterial) {
+        public sendShaderVariables(program:Program, quadCmd:render.QuadCommand, material:EnvMapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
             program.sendUniformData("u_refractionRatio", render.VariableType.FLOAT_1, material.refractionRatio);
@@ -30,8 +30,8 @@ module dy.render{
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);
 
             this.setVsSource();
-            this.fsSourceHead = ShaderChunk.cubemap_head_fragment + ShaderChunk.fresnel_head_fragment;
-            this.fsSourceBody = ShaderChunk.cubemap_body_fragment + ShaderChunk.fresnel_body_fragment;
+            this.fsSourceHead = ShaderChunk.envMap_head_fragment + ShaderChunk.fresnel_head_fragment;
+            this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.fresnel_body_fragment;
         }
     }
 }

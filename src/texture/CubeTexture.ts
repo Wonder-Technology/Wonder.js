@@ -17,7 +17,7 @@ module dy{
 
         public assets:Array<ICubemapData> = null;
         public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
-        public mode:CubemapMode = null;
+        public mode:EnvMapMode = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 

@@ -35,7 +35,7 @@ module dy{
         premultiplyAlpha:boolean;
         unpackAlignment:number;
         needUpdate:boolean;
-        mode:CubemapMode;
+        mode:EnvMapMode;
     }
 
     export interface ICubeFaceCompressedTextureAsset {
