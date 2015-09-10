@@ -1,19 +1,15 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy.render{
     export class Shader{
-        //public static create(shaderDefinition?:IShaderDefinition) {
         public static create() {
         	var obj = new this();
-
-            //if(shaderDefinition){
-            //    obj.read(shaderDefinition);
-            //}
 
             obj.initWhenCreate();
 
         	return obj;
         }
 
+        public program:Program = Program.create();
         public vsSource:string = "";
         public vsSourceHead:string = "";
         public vsSourceBody:string = "";
@@ -22,6 +18,9 @@ module dy.render{
         public fsSourceBody:string = "";
         public attributes:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
         public uniforms:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
+
+        private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
+
 
         public createVsShader(){
             var gl = Director.getInstance().gl;
@@ -43,9 +42,6 @@ module dy.render{
         public initWhenCreate(){
             this.addLib(render.CommonShaderLib.getInstance());
         }
-
-        //todo move
-        public program:Program = Program.create();
 
         public init(){
             var self = this;
@@ -81,9 +77,6 @@ module dy.render{
             program.sendUniformDataFromShader();
             program.sendAttributeDataFromShader();
         }
-
-        //todo move
-        private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
 
         public addLib(lib:ShaderLib){
             this._libs.addChild(lib);

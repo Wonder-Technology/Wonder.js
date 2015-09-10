@@ -11,15 +11,13 @@ module dy{
 
         public initWhenCreate(){
             this.cullMode = CullMode.FRONT;
-            //this.shader = render.Shader.create(render.SkyboxShaderLib.getInstance().createShaderDefinition({}));
-            this.shader.addLib(render.SkyboxShaderLib.getInstance());
         }
-        //
-        //protected sendSpecificShaderVariables(quadCmd:render.QuadCommand){
-        //    if (quadCmd.buffers.hasChild("normalBuffer")) {
-        //        this.program.setAttributeData("a_normal", render.VariableType.BUFFER, <render.ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
-        //    }
-        //}
+
+        public init(){
+            this.shader.addLib(render.SkyboxShaderLib.getInstance());
+
+            super.init();
+        }
     }
 }
 

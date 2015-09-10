@@ -4,13 +4,13 @@ module dy{
         public static create() {
             var obj = new this();
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
-        public initWhenCreate(){
+        public init(){
             this.shader.addLib(render.BasicShaderLib.getInstance());
+
+            super.init();
         }
     }
 }
