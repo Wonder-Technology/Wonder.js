@@ -4,6 +4,13 @@ export class ShaderChunk{public static basic_body_fragment:string = "    gl_Frag
 public static basic_body_vertex:string = "    v_color = a_color;\n";
 public static basic_head_fragment:string = "varying vec4 v_color;\n";
 public static basic_head_vertex:string = "varying vec4 v_color;\n";
+public static common_body_fragment:string = "\n";
+public static common_body_vertex:string = "\n";
+public static common_head_fragment:string = "\n";
+public static common_head_vertex:string = "";
+public static highp_head_fragment:string = "precision highp float;\n";
+public static lowp_head_fragment:string = "precision lowp float;\n";
+public static mediump_head_fragment:string = "precision mediump float;\n";
 public static basic_envMap_body_fragment:string = "    gl_FragColor = textureCube(u_samplerCube0, v_dir);\n";
 public static basic_envMap_body_vertex:string = "    v_dir = vec3(a_position);\n";
 public static basic_envMap_head_fragment:string = "varying vec3 v_dir;\n";
@@ -25,12 +32,5 @@ public static skybox_body_fragment:string = "    gl_FragColor = textureCube(u_sa
 public static skybox_body_vertex:string = "    vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * a_position;\n    gl_Position = pos.xyww;\n\n    v_dir = vec3(a_position);\n\n";
 public static skybox_head_fragment:string = "varying vec3 v_dir;\n";
 public static skybox_head_vertex:string = "varying vec3 v_dir;\n";
-public static common_body_fragment:string = "\n";
-public static common_body_vertex:string = "\n";
-public static common_head_fragment:string = "\n";
-public static common_head_vertex:string = "";
-public static highp_head_fragment:string = "precision highp float;\n";
-public static lowp_head_fragment:string = "precision lowp float;\n";
-public static mediump_head_fragment:string = "precision mediump float;\n";
 }
 }

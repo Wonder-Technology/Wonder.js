@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>custom shader</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400"></canvas>
+<input id="inp"/>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        function _initScene() {
+            var material = dy.CustomMaterial.create();
+            material.color= dy.Color.create("rgba(255, 0, 0, 1)");
+
+
+            var shaderDefinitionData = {
+                attributes:  {
+                    "a_color": {
+                        type:dy.render.VariableType.FLOAT_4,
+                        value: [
+                            1, 0, 0, 1,
+                            1, 0, 0, 1,
+                            0, 1, 0, 1,
+                            0, 0, 1, 1
+                        ]
+                    }
+                },
+                vsSourceHead: [
+                    "varying vec4 v_color;"
+                ].join("\n"),
+                vsSourceBody: [
+                    "v_color = a_color;",
+                        "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;"
+                ].join("\n"),
+                fsSourceHead: [
+                    "precision highp float;",
+                    "varying vec4 v_color;"
+                ].join("\n"),
+                fsSourceBody: [
+                    "gl_FragColor = v_color;"
+                ].join("\n")
+            };
+
+            material.shader.read(shaderDefinitionData);
+
+
+
+            var geometry = dy.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry);
+
+
+
+
+
+            var director = dy.Director.getInstance();
+
+
+            director.stage.addChild(box);
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.Camera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 20));
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera
+        }
+
+    };
+</script>
+</body>
+</html>

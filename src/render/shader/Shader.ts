@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy.render{
     export class Shader{
-        public static create() {
+        public static create(){
         	var obj = new this();
 
             obj.initWhenCreate();
@@ -46,9 +46,7 @@ module dy.render{
         public init(){
             var self = this;
 
-            //todo not build here?
-            //todo rename?
-            this.build();
+            this.buildDefinitionData();
 
             this.attributes.forEach((val:IShaderData, key:string) => {
                 if(val.value instanceof ArrayBuffer
@@ -82,7 +80,29 @@ module dy.render{
             this._libs.addChild(lib);
         }
 
-        public build(){
+        public removeAllLibs(){
+            this._libs.removeAllChildren();
+        }
+
+        public read(definitionData:IShaderDefinitionData){
+            if(definitionData.attributes){
+                this.attributes = <dyCb.Hash<IShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
+            }
+
+            if(definitionData.uniforms){
+                this.uniforms = <dyCb.Hash<IShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
+            }
+
+            this.vsSourceHead = definitionData.vsSourceHead || "";
+            this.vsSourceBody = definitionData.vsSourceBody || "";
+            this.fsSourceHead = definitionData.fsSourceHead || "";
+            this.fsSourceBody = definitionData.fsSourceBody || "";
+            //
+            //this._buildVsSource();
+            //this._buildFsSource();
+        }
+
+        public buildDefinitionData(){
             var self = this;
 
             this._libs.forEach((lib:ShaderLib) => {
@@ -158,7 +178,7 @@ module dy.render{
                     num = 4;
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT(type));
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT("VariableType", type));
                     break;
             }
 
@@ -184,5 +204,15 @@ module dy.render{
     export interface IShaderData{
         type:VariableType;
         value:any;
+    }
+
+    //todo typescript inner interface
+    export interface IShaderDefinitionData{
+        vsSourceHead:string;
+        vsSourceBody:string;
+        fsSourceHead:string;
+        fsSourceBody:string;
+        attributes:IShaderData|dyCb.Hash<IShaderData>;
+        uniforms:IShaderData|dyCb.Hash<IShaderData>;
     }
 }
