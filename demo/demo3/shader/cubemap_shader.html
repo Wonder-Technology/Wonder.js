@@ -206,6 +206,33 @@
 
 
 
+            var material5 = dy.CubemapMaterial.create();
+
+
+            var cubemapTexture = dy.CubeTexture.create(skyboxCubemapTexture.assets);
+
+
+
+            material5.setEnvMap(cubemapTexture);
+
+
+
+
+            var geometry5 = dy.BoxGeometry.create();
+            geometry5.material = material5;
+            geometry5.width = 2;
+            geometry5.height = 2;
+            geometry5.depth = 2;
+
+
+
+            var box5 = dy.GameObject.create();
+
+            box5.addComponent(dy.MeshRenderer.create());
+            box5.addComponent(geometry5);
+
+            box5.transform.translate(dy.Vector3.create(0, 10, 0));
+
 
 
 
@@ -223,6 +250,7 @@
             director.stage.addChild(box2);
             director.stage.addChild(box3);
             director.stage.addChild(box4);
+            director.stage.addChild(box5);
 
             director.stage.addChild(_createCamera());
 

@@ -17,6 +17,11 @@ module dy.render{
 
             this.vsSourceBody = ShaderSnippet.setPos_mvp;
         }
+
+        protected setVsSource(){
+            this.vsSourceHead = ShaderChunk.cubemap_head_vertex;
+            this.vsSourceBody += ShaderChunk.cubemap_body_vertex;
+        }
     }
 }
 

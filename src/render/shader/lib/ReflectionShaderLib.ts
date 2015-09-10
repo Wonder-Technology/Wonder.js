@@ -16,8 +16,7 @@ module dy.render{
 
             this.addUniformVariable(["u_refractionRatio"]);
 
-            this.vsSourceHead = ShaderChunk.cubemap_head_vertex;
-            this.vsSourceBody += ShaderChunk.cubemap_body_vertex;
+            this.setVsSource();
             this.fsSourceHead = ShaderChunk.cubemap_head_fragment;
             this.fsSourceBody = ShaderChunk.cubemap_body_fragment + ShaderChunk.reflection_body_fragment;
         }

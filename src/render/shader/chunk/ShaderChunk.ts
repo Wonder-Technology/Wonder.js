@@ -8,6 +8,14 @@ public static common_body_fragment:string = "\n";
 public static common_body_vertex:string = "\n";
 public static common_head_fragment:string = "precision mediump float;\n";
 public static common_head_vertex:string = "uniform mat4 u_mMatrix;\nuniform mat4 u_vMatrix;\nuniform mat4 u_pMatrix;\n";
+public static skybox_body_fragment:string = "    gl_FragColor = textureCube(u_sampler0, v_dir);\n";
+public static skybox_body_vertex:string = "    vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * a_position;\n    gl_Position = pos.xyww;\n\n    v_dir = vec3(a_position);\n\n";
+public static skybox_head_fragment:string = "uniform samplerCube u_sampler0;\nvarying vec3 v_dir;\n";
+public static skybox_head_vertex:string = "varying vec3 v_dir;\n";
+public static basic_cubemap_body_fragment:string = "    gl_FragColor = textureCube(u_sampler0, v_dir);\n";
+public static basic_cubemap_body_vertex:string = "    v_dir = vec3(a_position);\n";
+public static basic_cubemap_head_fragment:string = "uniform samplerCube u_sampler0;\nvarying vec3 v_dir;\n";
+public static basic_cubemap_head_vertex:string = "varying vec3 v_dir;\n";
 public static cubemap_body_fragment:string = "    vec3 inDir = normalize(v_position - u_cameraPos);\n";
 public static cubemap_body_vertex:string = "    v_normal = vec3(u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * a_position);\n";
 public static cubemap_head_fragment:string = "uniform samplerCube u_sampler0;\nuniform vec3 u_cameraPos;\nvarying vec3 v_normal;\nvarying vec3 v_position;\n";
@@ -17,9 +25,5 @@ public static fresnel_head_fragment:string = "uniform float u_refractionRatio;\n
 public static reflection_body_fragment:string = "    gl_FragColor = textureCube(u_sampler0, reflect(inDir, normalize(v_normal)));\n";
 public static refraction_body_fragment:string = "    gl_FragColor = textureCube(u_sampler0, refract(inDir, normalize(v_normal), u_refractionRatio));\n";
 public static refraction_head_fragment:string = "uniform float u_refractionRatio;\n";
-public static skybox_body_fragment:string = "    gl_FragColor = textureCube(u_sampler0, v_dir);\n";
-public static skybox_body_vertex:string = "    vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * a_position;\n    gl_Position = pos.xyww;\n\n    v_dir = vec3(a_position);\n\n";
-public static skybox_head_fragment:string = "uniform samplerCube u_sampler0;\nvarying vec3 v_dir;\n";
-public static skybox_head_vertex:string = "varying vec3 v_dir;\n";
 }
 }

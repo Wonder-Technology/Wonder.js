@@ -12,14 +12,22 @@ module dy{
         public init(){
             var envMap = this.getEnvMap();
 
-            if(envMap.mode === CubemapMode.REFLECTION){
-                this.shader.addLib(render.ReflectionShaderLib.getInstance());
-            }
-            else if(envMap.mode === CubemapMode.REFRACTION){
-                this.shader.addLib(render.RefractionShaderLib.getInstance());
-            }
-            else if(envMap.mode === CubemapMode.FRESNEL){
-                this.shader.addLib(render.FresnelShaderLib.getInstance());
+            switch (envMap.mode){
+                case CubemapMode.NORMAL:
+                    this.shader.addLib(render.BasicCubemapShaderLib.getInstance());
+                    break;
+                case CubemapMode.REFLECTION:
+                    this.shader.addLib(render.ReflectionShaderLib.getInstance());
+                    break;
+                case CubemapMode.REFRACTION:
+                    this.shader.addLib(render.RefractionShaderLib.getInstance());
+                    break;
+                case CubemapMode.FRESNEL:
+                    this.shader.addLib(render.FresnelShaderLib.getInstance());
+                    break;
+                default:
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("CubemapMode"));
+                    break;
             }
 
             super.init();

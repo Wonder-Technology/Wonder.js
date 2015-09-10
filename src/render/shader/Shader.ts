@@ -42,7 +42,6 @@ module dy.render{
 
         public initWhenCreate(){
             this.addLib(render.CommonShaderLib.getInstance());
-
         }
 
         //todo move

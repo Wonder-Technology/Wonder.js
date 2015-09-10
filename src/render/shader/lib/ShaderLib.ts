@@ -3,12 +3,12 @@ module dy.render{
     export class ShaderLib{
         public attributes:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
         public uniforms:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
-        public vsSource:string = null;
-        public vsSourceHead:string = null;
-        public vsSourceBody:string = null;
-        public fsSource:string = null;
-        public fsSourceHead:string = null;
-        public fsSourceBody:string = null;
+        public vsSource:string = "";
+        public vsSourceHead:string = "";
+        public vsSourceBody:string = "";
+        public fsSource:string = "";
+        public fsSourceHead:string = "";
+        public fsSourceBody:string = "";
 
         public initWhenCreate(){
             //todo rename?
