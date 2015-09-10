@@ -52,7 +52,9 @@ module dy.render{
                 case VariableType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;
+                //todo add SAMPLER_2D
                 case VariableType.NUMBER_1:
+                case VariableType.SAMPLER_CUBE:
                     gl.uniform1i(pos, data);
                     break;
                 default :

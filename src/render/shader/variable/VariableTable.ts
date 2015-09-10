@@ -8,6 +8,8 @@ module dy.render{
     _table.addChild(<any>VariableType.FLOAT_4, "vec4");
     _table.addChild(<any>VariableType.FLOAT_MAT4, "mat4");
     _table.addChild(<any>VariableType.NUMBER_1, "int");
+    _table.addChild(<any>VariableType.SAMPLER_CUBE, "samplerCube");
+    //todo add sampler2D
 
     export class VariableTable{
         public static getVariableType(type:VariableType){

@@ -106,11 +106,11 @@ module dy.render{
         }
 
         private _buildVsSource(){
-            this.vsSource = this._generateAttributeSource() + this.vsSourceHead + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+            this.vsSource = this.vsSourceHead + this._generateAttributeSource() + this._generateUniformSource(this.vsSourceBody) + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
         }
 
         private _buildFsSource(){
-            this.fsSource = this.fsSourceHead + ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+            this.fsSource = this.fsSourceHead + this._generateUniformSource(this.fsSourceBody) +  ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
         }
 
         private _generateAttributeSource(){
@@ -123,6 +123,23 @@ module dy.render{
 
                 //todo use typescript template to refactor
                 result += "attribute " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
+            });
+
+            return result;
+        }
+
+        private _generateUniformSource(sourceBody:string){
+            var result = "";
+
+            this.uniforms.forEach((val:IShaderData, key:string) => {
+                if(!val){
+                    return;
+                }
+
+                if(sourceBody.indexOf(key) !== -1){
+                    //todo use typescript template to refactor
+                    result += "uniform " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
+                }
             });
 
             return result;

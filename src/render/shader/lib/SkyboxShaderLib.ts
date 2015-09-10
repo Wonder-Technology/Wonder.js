@@ -20,7 +20,7 @@ module dy.render{
         protected setShaderDefinition(){
             this.addAttributeVariable(["a_normal"]);
 
-            this.addUniformVariable(["u_sampler0"]);
+            this.addUniformVariable(["u_samplerCube0"]);
 
             this.vsSourceHead = ShaderChunk.skybox_head_vertex;
             this.vsSourceBody = ShaderChunk.skybox_body_vertex;

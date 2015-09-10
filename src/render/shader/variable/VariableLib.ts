@@ -38,8 +38,8 @@ module dy.render{
             value:VariableCategory.ENGINE
         };
 
-        public static u_sampler0:IShaderVariable = {
-            type:VariableType.NUMBER_1,
+        public static u_samplerCube0:IShaderVariable = {
+            type:VariableType.SAMPLER_CUBE,
             value:VariableCategory.ENGINE
         };
 

@@ -5,6 +5,7 @@ module dy.render{
         FLOAT_4,
         FLOAT_MAT4,
         BUFFER,
+        SAMPLER_CUBE,
         NUMBER_1
     }
 }

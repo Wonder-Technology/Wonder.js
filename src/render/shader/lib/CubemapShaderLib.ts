@@ -13,7 +13,7 @@ module dy.render{
         protected setShaderDefinition(){
             this.addAttributeVariable(["a_normal"]);
 
-            this.addUniformVariable(["u_sampler0", "u_cameraPos", "u_normalMatrix"]);
+            this.addUniformVariable(["u_samplerCube0", "u_cameraPos", "u_normalMatrix"]);
 
             this.vsSourceBody = ShaderSnippet.setPos_mvp;
         }
