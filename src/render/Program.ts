@@ -41,6 +41,9 @@ module dy.render{
                 case VariableType.FLOAT_1:
                     gl.uniform1f(pos, data);
                     break;
+                case VariableType.FLOAT_2:
+                    gl.uniform2f(pos, data[0], data[1]);
+                    break;
                 case VariableType.FLOAT_3:
                     data = this._convertToVector3(data);
                     gl.uniform3f(pos, data.x, data.y, data.z);
@@ -52,9 +55,9 @@ module dy.render{
                 case VariableType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;
-                //todo add SAMPLER_2D
                 case VariableType.NUMBER_1:
                 case VariableType.SAMPLER_CUBE:
+                case VariableType.SAMPLER_2D:
                     gl.uniform1i(pos, data);
                     break;
                 default :

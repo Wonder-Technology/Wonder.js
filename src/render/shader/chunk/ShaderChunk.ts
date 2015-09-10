@@ -24,5 +24,10 @@ public static skybox_body_fragment:string = "    gl_FragColor = textureCube(u_sa
 public static skybox_body_vertex:string = "    vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * a_position;\n    gl_Position = pos.xyww;\n\n    v_dir = vec3(a_position);\n\n";
 public static skybox_head_fragment:string = "varying vec3 v_dir;\n";
 public static skybox_head_vertex:string = "varying vec3 v_dir;\n";
+public static map_body_fragment:string = "    gl_FragColor = texture2D(u_sampler2D0, v_texCoord);\n";
+public static map_body_vertex:string = "    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_texCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n";
+public static map_head_fragment:string = "varying vec2 v_texCoord;\n";
+public static map_head_vertex:string = "varying vec2 v_texCoord;\n";
+public static multi_map_body_fragment:string = "    vec4 color0 = texture2D(u_sampler2D0, v_texCoord);\n    vec4 color1 = texture2D(u_sampler2D1, v_texCoord);\n    gl_FragColor = mix(color0, color1, 0.2);\n";
 }
 }

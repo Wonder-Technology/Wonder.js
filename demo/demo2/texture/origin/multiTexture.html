@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment_multiTexture.glsl", id: "fs"},
             {url: "../../../res/1.jpg", id:"texture1"},
             {url: "../../../res/2.jpg", id:"texture2"}
         ]).subscribe(null, function(e){
@@ -35,17 +33,15 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material1 = dy.MapMaterial.create();
 
 
-            var material1 = dy.Material.create();
-            material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material1.shader = shader;
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture1"));
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture2"));
+            var map1 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture1"));
+            var map2 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture2"));
+
+
+            material1.addMap(map1);
+            material1.addMap(map2);
 
 
 
@@ -61,38 +57,6 @@
             var meshRenderer1 = dy.MeshRenderer.create();
 
             mesh1.addComponent(meshRenderer1);
-
-//
-//            var material2 = dy.Material.create();
-//            material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
-//            material2.shader = shader;
-//            material2.textureManager.addChild(createTexture2());
-//            material2.cullMode = dy.CullMode.FRONT;
-//
-//
-//
-//            var geometry2 = dy.SphereGeometry.create();
-//            geometry2.material = material2;
-//            geometry2.radius = 5;
-//            geometry2.segments = 30;
-//
-//
-//            var mesh2 = dy.GameObject.create();
-//            mesh2.addComponent(geometry2);
-//
-//            var meshRenderer2 = dy.MeshRenderer.create();
-//
-//            mesh2.addComponent(meshRenderer2);
-//
-//
-//
-//
-//            var mesh = dy.GameObject.create();
-//            mesh.addChild(mesh1);
-//            mesh.addChild(mesh2);
-//
-//            mesh.transform.translateLocal(dy.Vector3.create(5, 2, 0));
-
 
 
             var director = dy.Director.getInstance();

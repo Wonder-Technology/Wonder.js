@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/video/MaryOculus.webm", id: "video"}
         ]).subscribe(null, function(e){
                     throw e;
@@ -34,17 +32,13 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material = dy.MapMaterial.create();
 
 
-            var material = dy.Material.create();
-            material.shader = shader;
+            var map = dy.VideoTexture.create( dy.VideoLoader.getInstance().get("video"));
 
 
-            material.textureManager.addChild(dy.VideoTexture.create(dy.VideoLoader.getInstance().get("video")));
+            material.addMap(map);
 
             dy.VideoManager.getInstance().play("video");
 

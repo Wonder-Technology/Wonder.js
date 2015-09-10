@@ -14,6 +14,7 @@ module dy{
         private _data:{
             vertices;
             indices;
+            normals;
             texCoords;
         } = null;
 
@@ -29,6 +30,10 @@ module dy{
 
         protected computeIndicesBuffer(){
             return this._data.indices;
+        }
+
+        protected computeNormalsBuffer():render.ArrayBuffer{
+            return this._data.normals;
         }
 
         protected computeTexCoordsBuffer():render.ArrayBuffer{
@@ -59,6 +64,7 @@ module dy{
         public vertices:number[] = [];
         public indices:number[] = [];
         public texCoords:number[] = [];
+        public normals:number[] = [];
 
         private radius:number = null;
         private _latitudeBands:number = null;
@@ -83,26 +89,17 @@ module dy{
                     var sinPhi = Math.sin(phi);
                     var cosPhi = Math.cos(phi);
 
-                    //var x = this.radius * cosPhi * sinTheta + pointX;
-                    //var y = this.radius *cosTheta + pointY;
-                    //var z = this.radius *sinPhi * sinTheta + pointZ;
                     var x = this.radius * cosPhi * sinTheta;
                     var y = this.radius *cosTheta;
                     var z = this.radius *sinPhi * sinTheta;
                     var u = 1 - (longNumber / this._longitudeBands);
                     var v = 1 - (latNumber / this._latitudeBands);
 
-                    //normals.push(x);
-                    //normals.push(y);
-                    //normals.push(z);
-                    //if(u<0.5){
-                    //    this._texCoords.push(1);
-                    //    this._texCoords.push(0);
-                    //}
-                    //else{
-                        this.texCoords.push(u);
-                        this.texCoords.push(v);
-                    //}
+                    this.normals.push(x);
+                    this.normals.push(y);
+                    this.normals.push(z);
+                    this.texCoords.push(u);
+                    this.texCoords.push(v);
                     this.vertices.push(x);
                     this.vertices.push(y);
                     this.vertices.push(z);
@@ -131,7 +128,8 @@ module dy{
                     3, render.BufferType.FLOAT),
                 indices: render.ElementBuffer.create(new Uint16Array(this.indices),
                     render.BufferType.UNSIGNED_SHORT),
-                //normals: new Float32Array(normals),
+                normals: render.ArrayBuffer.create(new Float32Array(this.normals),
+                    3, render.BufferType.FLOAT),
                 texCoords: render.ArrayBuffer.create(new Float32Array(this.texCoords),
                     2, render.BufferType.FLOAT)
             }

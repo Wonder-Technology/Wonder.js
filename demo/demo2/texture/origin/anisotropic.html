@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/crate.gif", id:"texture"}
         ]).subscribe(null, function(e){
                     throw e;
@@ -34,28 +32,20 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material = dy.MapMaterial.create();
 
 
-            var material = dy.Material.create();
-            material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
+            var map = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
 
-
-            material.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
-
-            var texture = material.textureManager.getChild(0);
+            material.addMap(map);
             /*!
              can comment this sentence to see the difference
              */
-            texture.anisotropy = dy.GPUDetector.getInstance().maxAnisotropy;
-            console.log(texture.anisotropy);
+            map.anisotropy = dy.GPUDetector.getInstance().maxAnisotropy;
+            console.log(map.anisotropy);
 
-            texture.wrapS = texture.wrapT = dy.TextureWrapMode.REPEAT;
-            texture.repeatRegion = dy.RectRegion.create(0, 0, 512, 512);
+            map.wrapS = map.wrapT = dy.TextureWrapMode.REPEAT;
+            map.repeatRegion = dy.RectRegion.create(0, 0, 512, 512);
 
 
             var geometry = dy.PlaneGeometry.create();

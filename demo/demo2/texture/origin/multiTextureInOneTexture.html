@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/multiTextureInOneTexture/goulong_023.tt.png", id:"multiTexture"},
             {url: "../../../res/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
         ]).subscribe(null, function(e){
@@ -35,28 +33,17 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material1 = dy.MapMaterial.create();
 
 
-            var material1 = dy.Material.create();
-            material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material1.shader = shader;
+            var map1 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("multiTexture"));
 
 
-
-
-
-
-
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
+            material1.addMap(map1);
 
             material1.cullMode = dy.CullMode.NONE;
 
 
-            var map1 = material1.textureManager.getChild(0);
 
             map1.sourceRegion = dy.RectRegion.create(0, 0, 64, 64);
             /*!
@@ -88,13 +75,15 @@
 
 
 
-            var material2 = dy.Material.create();
-            material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
-            material2.shader = shader;
+            var material2 = dy.MapMaterial.create();
+
+
+            var map2 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("multiTexture"));
+
+
+            material2.addMap(map2);
             material2.cullMode = dy.CullMode.NONE;
 
-            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("multiTexture"));
-            var map2 = material2.textureManager.getChild(0);
 
             /*!
              when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
@@ -129,13 +118,15 @@
 
 
 
-            var material3 = dy.Material.create();
-            material3.color= dy.Color.create("rgba(0, 355, 0, 0.4)");
-            material3.shader = shader;
+            var material3 = dy.MapMaterial.create();
+
+
+            var map3 = dy.CompressedTexture.create( dy.TextureLoader.getInstance().get("compressedTexture"));
+
+
+            material3.addMap(map3);
             material3.cullMode = dy.CullMode.NONE;
 
-            material3.textureManager.addChild(dy.TextureLoader.getInstance().get("compressedTexture"));
-            var map3 = material3.textureManager.getChild(0);
 
             map3.sourceRegion = dy.RectRegion.create(0, 0, 256, 256);
             /*! compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS

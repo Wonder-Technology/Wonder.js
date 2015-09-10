@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/1.jpg", id:"texture1"}
         ]).subscribe(null, function(e){
                     throw e;
@@ -34,16 +32,13 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material = dy.MapMaterial.create();
 
 
-            var material = dy.Material.create();
-            material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
-            material.textureManager.addChild(dy.TextureLoader.getInstance().get("texture1"));
+            var map = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture1"));
+
+
+            material.addMap(map);
 
 
 

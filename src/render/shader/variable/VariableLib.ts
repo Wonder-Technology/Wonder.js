@@ -18,6 +18,11 @@ module dy.render{
             value:VariableCategory.ENGINE
         };
 
+        public static a_texCoord:IShaderVariable = {
+            type:VariableType.FLOAT_2,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_mMatrix:IShaderVariable = {
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
@@ -43,6 +48,16 @@ module dy.render{
             value:VariableCategory.ENGINE
         };
 
+        public static u_sampler2D0:IShaderVariable = {
+            type:VariableType.SAMPLER_2D,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_sampler2D1:IShaderVariable = {
+            type:VariableType.SAMPLER_2D,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_cameraPos:IShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
@@ -55,6 +70,16 @@ module dy.render{
 
         public static u_reflectivity:IShaderVariable = {
             type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_sourceRegion:IShaderVariable = {
+            type:VariableType.FLOAT_4,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_repeatRegion:IShaderVariable = {
+            type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
     }

@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/1.jpg", id:"texture"}
         ]).subscribe(null, function(e){
                     throw e;
@@ -34,17 +32,14 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material1 = dy.MapMaterial.create();
 
 
-            var material1 = dy.Material.create();
-            material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material1.shader = shader;
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
-            var map1 = material1.textureManager.getChild(0);
+            var map1 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
+
+
+            material1.addMap(map1);
+
         map1.wrapS = dy.TextureWrapMode.REPEAT;
             map1.wrapT = dy.TextureWrapMode.REPEAT;
             map1.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
@@ -68,11 +63,12 @@
 
 
 
-            var material2 = dy.Material.create();
-            material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
-            material2.shader = shader;
-            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("texture"));
-            var map2 = material2.textureManager.getChild(0);
+            var material2 = dy.MapMaterial.create();
+            var map2 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
+
+
+            material2.addMap(map2);
+
             map2.wrapS = dy.TextureWrapMode.MIRRORED_REPEAT;
             map2.wrapT = dy.TextureWrapMode.CLAMP_TO_EDGE;
             map2.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);

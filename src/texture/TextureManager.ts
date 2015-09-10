@@ -10,7 +10,7 @@ module dy{
         private _textures:dyCb.Hash<Texture> = dyCb.Hash.create<Texture>();
 
         public init(){
-            this._textures.forEach((texture:Texture) => {
+            this._getTextureList().forEach((texture:Texture) => {
                 texture.init();
             });
         }
@@ -40,17 +40,17 @@ module dy{
         public getEnvMap():CubeTexture{
             return <CubeTexture>this._textures.getChild("envMap");
         }
-
-        public getChildren(){
-            return this._textures.getChildren();
-        }
+        //
+        //public getChildren(){
+        //    return this._textures.getChildren();
+        //}
 
         public removeAllChildren(){
             this._textures.removeAllChildren();
         }
 
         public dispose(){
-            this._textures.forEach((texture:Texture) => {
+            this._getTextureList().forEach((texture:Texture) => {
                 texture.dispose();
             });
 
@@ -58,28 +58,28 @@ module dy{
         }
 
         public update(){
-            var index = 0;
-
-            this._textures
+            this._getTextureList()
                 .filter((texture:Texture) => {
                     return texture.needUpdate;
                 })
-                .forEach((texture:Texture) => {
+                .forEach((texture:Texture, index:number) => {
                     texture.update(index);
-
-                    index++;
                 });
         }
 
         public sendData(program:render.Program){
-            var index = 0;
-
-            this._textures.forEach((texture:Texture) => {
+            this._getTextureList().forEach((texture:Texture, index:number) => {
                 texture.bindToUnit(index);
                 texture.sendData(program, index);
-
-                index++;
             });
+        }
+
+        public hasMultiTextures(){
+            return this._getTextureList().getCount() > 1;
+        }
+
+        private _getTextureList(){
+            return this._textures.toCollection();
         }
     }
 }

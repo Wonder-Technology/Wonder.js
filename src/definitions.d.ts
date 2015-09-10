@@ -77,6 +77,9 @@
 /// <reference path="render/shader/lib/BasicShaderLib"/>
 /// <reference path="render/shader/lib/SkyboxShaderLib"/>
 /// <reference path="render/shader/lib/EnvMapShaderLib"/>
+/// <reference path="render/shader/lib/MapShaderLib"/>
+/// <reference path="render/shader/lib/BasicMapShaderLib"/>
+/// <reference path="render/shader/lib/MultiMapShaderLib"/>
 /// <reference path="render/shader/lib/BasicEnvMapShaderLib"/>
 /// <reference path="render/shader/lib/ReflectionShaderLib"/>
 /// <reference path="render/shader/lib/RefractionShaderLib"/>
@@ -89,6 +92,7 @@
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/EnvMapMaterial"/>
+/// <reference path="material/MapMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>

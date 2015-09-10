@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../../res/1.jpg", id:"texture1"},
             {url: "../../../res/2.jpg", id:"texture2"}
         ]).subscribe(null, function(e){
@@ -35,16 +33,13 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
+            var material1 = dy.MapMaterial.create();
 
 
-            var material1 = dy.Material.create();
-            material1.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material1.shader = shader;
-            material1.textureManager.addChild(dy.TextureLoader.getInstance().get("texture1"));
+            var map1 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture1"));
+
+
+            material1.addMap(map1);
 
 
 
@@ -62,10 +57,11 @@
             mesh1.addComponent(meshRenderer1);
 
 
-            var material2 = dy.Material.create();
-            material2.color= dy.Color.create("rgba(0, 255, 0, 0.4)");
-            material2.shader = shader;
-            material2.textureManager.addChild(dy.TextureLoader.getInstance().get("texture2"));
+            var material2 = dy.MapMaterial.create();
+            var map2 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture2"));
+
+
+            material2.addMap(map2);
             material2.cullMode = dy.CullMode.FRONT;
 
 
@@ -108,32 +104,6 @@
 
 
             director.start();
-        }
-
-        function createTexture(){
-            var texture = dy.TwoDTexture.create({
-            }, true);
-            if (!texture) {
-                console.log('Failed to create the texture object');
-                return null;
-            }
-            texture.autoMipMap = true;
-            texture.createTextureArea(dy.ImgLoader.getInstance().get("texture1"));
-
-            return texture;
-        }
-
-        function createTexture2(){
-            var texture = dy.TwoDTexture.create({
-            }, true);
-            if (!texture) {
-                console.log('Failed to create the texture object');
-                return null;
-            }
-            texture.autoMipMap = true;
-            texture.createTextureArea(dy.ImgLoader.getInstance().get("texture2"));
-
-            return texture;
         }
 
         function _createCamera() {

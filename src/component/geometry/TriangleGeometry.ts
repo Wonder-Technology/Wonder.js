@@ -32,6 +32,15 @@ module dy{
             ]), render.BufferType.UNSIGNED_BYTE);
         }
 
+        protected computeNormalsBuffer(){
+            return render.ArrayBuffer.create(new Float32Array([
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1
+                ]),
+                3, render.BufferType.FLOAT)
+        }
+
         protected computeTexCoordsBuffer(){
             return render.ArrayBuffer.create(new Float32Array([
                     0.5, 1.0,

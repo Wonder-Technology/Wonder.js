@@ -91,7 +91,7 @@ module dy{
         public sendData(program:render.Program, index:number){
             var sourceRegion = null;
 
-            program.sendUniformData("u_sampler" + index, render.VariableType.NUMBER_1, index);
+            program.sendUniformData("u_sampler2D" + index, render.VariableType.SAMPLER_2D, index);
 
             if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();
