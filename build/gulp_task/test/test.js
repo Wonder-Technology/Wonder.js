@@ -12,4 +12,10 @@ gulp.task("test", function (done) {
     }, done);
 });
 
+var karmaSyncConfPath= path.join(process.cwd(), "test/karmaSync.conf.js");
 
+gulp.task("testSync", function (done) {
+    karma.start({
+        configFile: karmaSyncConfPath
+    }, done);
+});
