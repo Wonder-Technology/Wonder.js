@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../res/cube/skybox/px.jpg", id:"texture1"},
             {url: "../../res/cube/skybox/nx.jpg", id:"texture2"},
             {url: "../../res/cube/skybox/py.jpg", id:"texture3"},
@@ -41,16 +39,8 @@
         }
 
         function _initScene() {
-            var shader = dy.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
-
-
-            var material = dy.Material.create();
+            var material = dy.SkyboxMaterial.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
-            material.cullMode = dy.CullMode.FRONT;
 
 
             var cubemap = dy.CubemapTexture.create(
@@ -76,7 +66,7 @@
             ]
             );
 
-            material.textureManager.addChild(cubemap);
+            material.setEnvMap(cubemap);
 
 
 

@@ -18,8 +18,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../res/compressed/disturb_argb_nomip.dds", id:"texture1"},
             {url: "../../res/compressed/disturb_argb_mip.dds", id:"texture2"}
         ]).subscribe(null, function(e){
@@ -34,19 +32,11 @@
         }
 
         function _initScene() {
-            var shader = dy.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
-
-
-            var material = dy.Material.create();
+            var material = dy.SkyboxMaterial.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
-            material.cullMode = dy.CullMode.FRONT;
 
 
-            material.textureManager.addChild([
+            material.setEnvMap(dy.CubemapTexture.create([
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
                 },
@@ -65,10 +55,10 @@
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
                 }
-            ]);
+            ]));
 
 
-            var map1 = material.textureManager.getChild(0);
+            var map1 = material.getEnvMap();
 //            map1.minFilter = dy.TextureFilterMode.LINEAR;
 
             var geometry = dy.BoxGeometry.create();

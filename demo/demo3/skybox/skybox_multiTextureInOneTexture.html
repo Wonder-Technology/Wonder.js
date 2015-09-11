@@ -19,8 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../vertex.glsl", id: "vs"},
-            {url: "../fragment.glsl", id: "fs"},
             {url: "../../res/cube/skybox/px.jpg", id:"texture1"},
             {url: "../../res/cube/skybox/nx.jpg", id:"texture2"}
 //            {url: "../../res/compressed/disturb_argb_nomip.dds", id:"texture1"},
@@ -38,30 +36,23 @@
         }
 
         function _initScene() {
-            var shader = dy.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
-
-
-            var material = dy.Material.create();
+            var material = dy.SkyboxMaterial.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
-            material.cullMode = dy.CullMode.FRONT;
 
 
-            material.textureManager.addChild([
+            material.setEnvMap(dy.CubemapTexture.create([
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 },
                 {
-                    asset:dy.TextureLoader.getInstance().get("texture2"),
+                    asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 },
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1"),
-                    sourceRegion:dy.RectRegion.create(256, 256, 512, 512)
+//                    sourceRegion:dy.RectRegion.create(256, 256, 512, 512)
+                    sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 },
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1"),
@@ -75,9 +66,9 @@
                     asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 }
-                    ]);
+                    ]));
 //
-            var map1 = material.textureManager.getChild(0);
+            var map1 = material.getEnvMap();
             map1.textures.getChild(1).sourceRegion = dy.RectRegion.create(128, 128, 512, 512);
 
             //method is DRAW_IN_CANVAS default
