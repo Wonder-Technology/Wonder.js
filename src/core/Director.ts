@@ -9,7 +9,7 @@ module dy{
     //todo invoke stage.onExit
 
     export class Director{
-        private static _instance:Director = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

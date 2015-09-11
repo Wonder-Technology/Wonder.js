@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
     export class CustomEventHandler extends EventHandler{
-        private static _instance:CustomEventHandler = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

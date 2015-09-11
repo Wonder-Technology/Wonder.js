@@ -4,7 +4,7 @@ module dy {
 
     //todo bind on GameObject which has the focus
     export class KeyboardEventHandler extends DomEventHandler{
-        private static _instance:KeyboardEventHandler = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

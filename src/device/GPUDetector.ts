@@ -2,7 +2,7 @@
 module dy {
     //todo check extension/capability support
     export class GPUDetector {
-        private static _instance:GPUDetector = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

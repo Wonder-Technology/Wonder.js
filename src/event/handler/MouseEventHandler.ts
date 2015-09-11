@@ -5,7 +5,7 @@
 //wrap event object
 module dy {
     export class MouseEventHandler extends DomEventHandler{
-        private static _instance:MouseEventHandler = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

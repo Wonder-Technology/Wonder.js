@@ -64,7 +64,7 @@ module dy {
     }
 
     export class DeviceManager {
-        private static _instance:DeviceManager = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

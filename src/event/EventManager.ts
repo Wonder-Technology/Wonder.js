@@ -27,7 +27,7 @@ module dy {
     //static class
 
     export class EventManager {
-        //private static static _instance:EventManager = null;
+        //private static static _instance = null;
         //
         //public static static getInstance() {
         //    if (this._instance === null) {

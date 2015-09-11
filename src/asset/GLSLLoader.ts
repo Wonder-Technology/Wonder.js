@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class GLSLLoader extends Loader{
-        private static _instance:GLSLLoader = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

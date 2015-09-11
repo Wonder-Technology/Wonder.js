@@ -1,7 +1,7 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy.render{
     export class ReflectionShaderLib extends EnvMapShaderLib{
-        private static _instance:ReflectionShaderLib = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

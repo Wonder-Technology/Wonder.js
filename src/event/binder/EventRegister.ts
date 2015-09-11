@@ -10,7 +10,7 @@ module dy {
     }
 
     export class EventRegister {
-        private static _instance:EventRegister = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {

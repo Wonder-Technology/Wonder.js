@@ -2,7 +2,7 @@
 module dy.render{
     //todo support more than 2 maps
     export class MultiMapShaderLib extends MapShaderLib{
-        private static _instance:MultiMapShaderLib = null;
+        private static _instance = null;
 
         public static getInstance() {
             if (this._instance === null) {
