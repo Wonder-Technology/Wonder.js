@@ -21,7 +21,7 @@ module dy{
 
         public stage:Stage = Stage.create();
         public scheduler:Scheduler = Scheduler.create();
-        public renderer:render.Renderer= null;
+        public renderer:Renderer= null;
         public view:IView = null;
         public gl:any = null;
 
@@ -62,7 +62,7 @@ module dy{
 
         public initWhenCreate(){
             //todo detect to decide using which renderer
-            this.renderer = render.WebGLRenderer.create();
+            this.renderer = WebGLRenderer.create();
         }
 
         public start(){

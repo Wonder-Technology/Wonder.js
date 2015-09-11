@@ -9,7 +9,7 @@ describe("renderWebGL", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        renderer = dy.render.WebGLRenderer.create();
+        renderer = dy.WebGLRenderer.create();
         deviceManager = dy.DeviceManager.getInstance();
         sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
@@ -52,7 +52,7 @@ describe("renderWebGL", function() {
             quadCmd = renderer.createQuadCommand();
             var vsSource = "",
                 fsSource = "";
-            shader = dy.render.Shader.create( vsSource, fsSource );
+            shader = dy.Shader.create( vsSource, fsSource );
 
 
             material = dy.BasicMaterial.create();
@@ -228,11 +228,11 @@ describe("renderWebGL", function() {
             //
             //    renderer.render();
             //
-            //    expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
-            //    expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
-            //    expect(program.setUniformData).toCalledWith("u_mMatrix", dy.render.UniformDataType.FLOAT_MAT4, mMatrix);
-            //    expect(program.setUniformData).toCalledWith("u_vMatrix", dy.render.UniformDataType.FLOAT_MAT4, vMatrix);
-            //    expect(program.setUniformData).toCalledWith("u_pMatrix", dy.render.UniformDataType.FLOAT_MAT4, pMatrix);
+            //    expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.AttributeDataType.BUFFER, geometry.vertices);
+            //    expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.AttributeDataType.BUFFER, geometry.colors);
+            //    expect(program.setUniformData).toCalledWith("u_mMatrix", dy.UniformDataType.FLOAT_MAT4, mMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_vMatrix", dy.UniformDataType.FLOAT_MAT4, vMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_pMatrix", dy.UniformDataType.FLOAT_MAT4, pMatrix);
             //});
             //it("send texture data", function(){
             //    var result = addCommand();

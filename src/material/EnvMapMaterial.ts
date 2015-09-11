@@ -15,16 +15,16 @@ module dy{
 
             switch (envMap.mode){
                 case EnvMapMode.NORMAL:
-                    this.shader.addLib(render.BasicEnvMapShaderLib.getInstance());
+                    this.shader.addLib(BasicEnvMapShaderLib.getInstance());
                     break;
                 case EnvMapMode.REFLECTION:
-                    this.shader.addLib(render.ReflectionShaderLib.getInstance());
+                    this.shader.addLib(ReflectionShaderLib.getInstance());
                     break;
                 case EnvMapMode.REFRACTION:
-                    this.shader.addLib(render.RefractionShaderLib.getInstance());
+                    this.shader.addLib(RefractionShaderLib.getInstance());
                     break;
                 case EnvMapMode.FRESNEL:
-                    this.shader.addLib(render.FresnelShaderLib.getInstance());
+                    this.shader.addLib(FresnelShaderLib.getInstance());
                     break;
                 default:
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("EnvMapMode"));

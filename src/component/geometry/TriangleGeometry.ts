@@ -18,36 +18,36 @@ module dy{
                 up = height / 2,
                 down = -height / 2;
 
-            return render.ArrayBuffer.create(new Float32Array([
+            return ArrayBuffer.create(new Float32Array([
                     0.0, up, 0,
                     left, down, 0,
                     right, down, 0
                 ]),
-                3, render.BufferType.FLOAT);
+                3, BufferType.FLOAT);
         }
 
         protected computeIndicesBuffer(){
-            return render.ElementBuffer.create(new Uint8Array([
+            return ElementBuffer.create(new Uint8Array([
                 0, 1, 2
-            ]), render.BufferType.UNSIGNED_BYTE);
+            ]), BufferType.UNSIGNED_BYTE);
         }
 
         protected computeNormalsBuffer(){
-            return render.ArrayBuffer.create(new Float32Array([
+            return ArrayBuffer.create(new Float32Array([
                     0, 0, 1,
                     0, 0, 1,
                     0, 0, 1
                 ]),
-                3, render.BufferType.FLOAT)
+                3, BufferType.FLOAT)
         }
 
         protected computeTexCoordsBuffer(){
-            return render.ArrayBuffer.create(new Float32Array([
+            return ArrayBuffer.create(new Float32Array([
                     0.5, 1.0,
                     0.0, 0.0,
                     1.0, 0.0
                 ]),
-                2, render.BufferType.FLOAT);
+                2, BufferType.FLOAT);
         }
     }
 }

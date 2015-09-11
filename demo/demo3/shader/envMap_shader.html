@@ -40,7 +40,7 @@
             var material = dy.SkyboxMaterial.create();
 
 
-            var skyboxEnvMapTexture = dy.CubeTexture.create(
+            var skyboxEnvMapTexture = dy.CubemapTexture.create(
                     [
                         {
                             asset:dy.TextureLoader.getInstance().get("texture1")
@@ -94,7 +94,7 @@
             var material2 = dy.EnvMapMaterial.create();
 //            material2.reflect = true;
 
-            var reflectEnvMapTexture = dy.CubeTexture.create(skyboxEnvMapTexture.assets);
+            var reflectEnvMapTexture = dy.CubemapTexture.create(skyboxEnvMapTexture.assets);
 
 
             reflectEnvMapTexture.mode = dy.EnvMapMode.REFLECTION;
@@ -126,7 +126,7 @@
 
             var material3 = dy.EnvMapMaterial.create();
 
-            var refractEnvMapTexture = dy.CubeTexture.create(skyboxEnvMapTexture.assets);
+            var refractEnvMapTexture = dy.CubemapTexture.create(skyboxEnvMapTexture.assets);
 
 
             refractEnvMapTexture.mode = dy.EnvMapMode.REFRACTION;
@@ -173,7 +173,7 @@
             var material4 = dy.EnvMapMaterial.create();
 
 
-            var fresnelEnvMapTexture = dy.CubeTexture.create(skyboxEnvMapTexture.assets);
+            var fresnelEnvMapTexture = dy.CubemapTexture.create(skyboxEnvMapTexture.assets);
 
 
             fresnelEnvMapTexture.mode = dy.EnvMapMode.FRESNEL;
@@ -210,7 +210,7 @@
             var material5 = dy.EnvMapMaterial.create();
 
 
-            var envMapTexture = dy.CubeTexture.create(skyboxEnvMapTexture.assets);
+            var envMapTexture = dy.CubemapTexture.create(skyboxEnvMapTexture.assets);
 
 
 

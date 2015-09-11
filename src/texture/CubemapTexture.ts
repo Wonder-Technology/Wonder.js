@@ -46,9 +46,9 @@ module dy{
             this.flipY = false;
         }
 
-        public sendData(program:render.Program, index:number){
-            program.sendUniformData("u_samplerCube" + index, render.VariableType.SAMPLER_CUBE, index);
-            program.sendUniformData("u_repeatRegion", render.VariableType.FLOAT_4, this.repeatRegion);
+        public sendData(program:Program, index:number){
+            program.sendUniformData("u_samplerCube" + index, VariableType.SAMPLER_CUBE, index);
+            program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

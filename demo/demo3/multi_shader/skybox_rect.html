@@ -44,7 +44,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -67,7 +67,7 @@
 
 
 
-            var cubemap = dy.CubeTexture.create(
+            var cubemap = dy.CubemapTexture.create(
                     [
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
@@ -113,25 +113,25 @@
 
 
 
-            var shader2 = dy.render.Shader.create(
+            var shader2 = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs_rect"),
                     dy.GLSLLoader.getInstance().get("fs_rect")
             );
             //RectGeometry has 4 vertices, so value.length should be 4
             shader2.attributes.addChildren({
                 a_data1:{
-                    type:dy.render.ShaderDataType.FLOAT_1,
+                    type:dy.ShaderDataType.FLOAT_1,
                     value: [100, 100, 100, 100]
                 },
                 a_data2: {
-                    type:dy.render.ShaderDataType.FLOAT_3,
+                    type:dy.ShaderDataType.FLOAT_3,
                     value: [5,5,5, 5,5,5, 5,5,5, 5,5,5]
                 }
             });
 
             shader2.uniforms.addChildren({
                 u_color: {
-                    type:dy.render.ShaderDataType.FLOAT_3,
+                    type:dy.ShaderDataType.FLOAT_3,
                     value: dy.Color.create("#123456").toVector3()
                 }
             });

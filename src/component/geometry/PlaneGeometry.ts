@@ -67,14 +67,14 @@ module dy{
             }
 
             return {
-                vertices: render.ArrayBuffer.create(new Float32Array(positions),
-                    3, render.BufferType.FLOAT),
-                indices: render.ElementBuffer.create(new Uint16Array(indices),
-                    render.BufferType.UNSIGNED_SHORT),
-                normals: render.ArrayBuffer.create(new Float32Array(normals),
-                    3, render.BufferType.FLOAT),
-                texCoords: render.ArrayBuffer.create(new Float32Array(uvs),
-                    2, render.BufferType.FLOAT)
+                vertices: ArrayBuffer.create(new Float32Array(positions),
+                    3, BufferType.FLOAT),
+                indices: ElementBuffer.create(new Uint16Array(indices),
+                    BufferType.UNSIGNED_SHORT),
+                normals: ArrayBuffer.create(new Float32Array(normals),
+                    3, BufferType.FLOAT),
+                texCoords: ArrayBuffer.create(new Float32Array(uvs),
+                    2, BufferType.FLOAT)
             };
         }
 
@@ -90,7 +90,7 @@ module dy{
             return this._data.normals;
         }
 
-        protected computeTexCoordsBuffer():render.ArrayBuffer{
+        protected computeTexCoordsBuffer():ArrayBuffer{
             return this._data.texCoords;
         }
     }

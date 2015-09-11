@@ -310,7 +310,7 @@ describe("cubemap texture", function() {
             it("send cube texture unit index", function () {
                 texture.sendData(program, 1);
 
-                expect(program.sendUniformData.firstCall).toCalledWith("u_samplerCube1", dy.render.VariableType.SAMPLER_CUBE, 1);
+                expect(program.sendUniformData.firstCall).toCalledWith("u_samplerCube1", dy.VariableType.SAMPLER_CUBE, 1);
             });
         });
 

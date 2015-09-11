@@ -36,7 +36,7 @@ var rendererTool = {
                     shader = material.shader;
                     program = shader.program;
 
-                    sandbox.stub(dy.render.ArrayBuffer, "create", function(arr, num, type){
+                    sandbox.stub(dy.ArrayBuffer, "create", function(arr, num, type){
                         return testTool.getValues(arr);
                     });
 
@@ -56,14 +56,14 @@ var rendererTool = {
                     it("build definition data", function () {
                         var attributes = testTool.extend({
                             a_position: {
-                                type: dy.render.VariableType.FLOAT_4,
-                                value: dy.render.VariableCategory.ENGINE
+                                type: dy.VariableType.FLOAT_4,
+                                value: dy.VariableCategory.ENGINE
                             }
                         }, definitionData_attributes);
                         var uniforms = testTool.extend({
-                            u_mMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE},
-                            u_vMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE},
-                            u_pMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE}
+                            u_mMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
+                            u_vMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
+                            u_pMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE}
                         }, definitionData_uniforms);
 
 
@@ -81,7 +81,7 @@ var rendererTool = {
                     var quadCmd;
 
                     beforeEach(function () {
-                        quadCmd = dy.render.QuadCommand.create();
+                        quadCmd = dy.QuadCommand.create();
                         sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
                         sandbox.stub(quadCmd.buffers, "getChild");
 

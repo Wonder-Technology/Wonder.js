@@ -93,7 +93,7 @@ module dy {
             this._blendType = blendType;
         }
 
-        public shader:render.Shader = render.Shader.create();
+        public shader:Shader = Shader.create();
         public color:Color = Color.create("0xffffff");
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
@@ -139,7 +139,7 @@ module dy {
             this.textureManager.update();
         }
 
-        public updateShader(quadCmd:render.QuadCommand){
+        public updateShader(quadCmd:QuadCommand){
             this.shader.update(quadCmd, this);
         }
     }

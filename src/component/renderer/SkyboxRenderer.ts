@@ -7,7 +7,7 @@ module dy {
             return obj;
         }
 
-        public render(renderer:render.Renderer, geometry:Geometry, camera:GameObject):void {
+        public render(renderer:Renderer, geometry:Geometry, camera:GameObject):void {
             renderer.skyboxCommand = this.createDrawCommand(renderer, geometry, camera);
         }
     }

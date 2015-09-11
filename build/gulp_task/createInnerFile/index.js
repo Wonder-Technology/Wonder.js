@@ -3,5 +3,5 @@ var gulpSync = require("gulp-sync")(gulp);
 
 require("./ShaderChunk/create");
 
-gulp.task("createInnerFile", gulpSync.async(["createShaderChunk"]));
+gulp.task("createInnerFile", gulpSync.sync(["createShaderChunk"]));
 

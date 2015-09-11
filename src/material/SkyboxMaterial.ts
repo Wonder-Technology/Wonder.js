@@ -14,7 +14,7 @@ module dy{
         }
 
         public init(){
-            this.shader.addLib(render.SkyboxShaderLib.getInstance());
+            this.shader.addLib(SkyboxShaderLib.getInstance());
 
             super.init();
         }

@@ -35,7 +35,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -83,9 +83,9 @@
             mesh2.addComponent(geometry2);
 
 
-            geometry2.indices = dy.render.ElementBuffer.create(new Uint8Array([
+            geometry2.indices = dy.ElementBuffer.create(new Uint8Array([
                     2, 1, 0
-            ]), dy.render.BufferType.UNSIGNED_BYTE);
+            ]), dy.BufferType.UNSIGNED_BYTE);
 
             var meshRenderer2 = dy.MeshRenderer.create();
 

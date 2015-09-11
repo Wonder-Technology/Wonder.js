@@ -1,11 +1,11 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class Geometry extends Component{
-        public vertices:render.ArrayBuffer = null;
-        public indices:render.ElementBuffer = null;
-        public texCoords:render.ArrayBuffer = null;
-        public normals:render.ArrayBuffer = null;
-        public colors:render.ArrayBuffer = null;
+        public vertices:ArrayBuffer = null;
+        public indices:ElementBuffer = null;
+        public texCoords:ArrayBuffer = null;
+        public normals:ArrayBuffer = null;
+        public colors:ArrayBuffer = null;
         public material:Material = null;
 
         public init(){
@@ -42,19 +42,19 @@ module dy{
             gameObject.geometry = null;
         }
 
-        protected computeVerticesBuffer():render.ArrayBuffer{
+        protected computeVerticesBuffer():ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        protected computeIndicesBuffer():render.ElementBuffer{
+        protected computeIndicesBuffer():ElementBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
         
-        protected computeTexCoordsBuffer():render.ArrayBuffer{
+        protected computeTexCoordsBuffer():ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        protected computeNormalsBuffer():render.ArrayBuffer{
+        protected computeNormalsBuffer():ArrayBuffer{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
@@ -68,7 +68,7 @@ module dy{
                 arr.push( color.r, color.g, color.b, color.a);
             }
 
-            return render.ArrayBuffer.create(new Float32Array(arr), 4, render.BufferType.FLOAT);
+            return ArrayBuffer.create(new Float32Array(arr), 4, BufferType.FLOAT);
         }
     }
 }

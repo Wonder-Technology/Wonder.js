@@ -35,7 +35,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -58,11 +58,11 @@
             var mesh = dy.GameObject.create();
             mesh.addComponent(geometry);
 
-            geometry.vertices = dy.render.ArrayBuffer.create(new Float32Array([
+            geometry.vertices = dy.ArrayBuffer.create(new Float32Array([
                 0.0,  2.5,  -5.0,
                 -2.5, -2.5,  -5.0,
                 2.5, -2.5,  -5.0
-            ]), 3, dy.render.BufferType.FLOAT);
+            ]), 3, dy.BufferType.FLOAT);
 
             var meshRenderer = dy.MeshRenderer.create();
 
@@ -77,11 +77,11 @@
             mesh2.addComponent(geometry2);
 
 
-            geometry2.vertices = dy.render.ArrayBuffer.create(new Float32Array([
+            geometry2.vertices = dy.ArrayBuffer.create(new Float32Array([
                 0.0,  3.0,  -5.0,
                 -3.0, -3.0,  -5.0,
                 3.0, -3.0,  -5.0
-            ]), 3, dy.render.BufferType.FLOAT);
+            ]), 3, dy.BufferType.FLOAT);
 
 
 

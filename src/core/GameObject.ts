@@ -16,7 +16,7 @@ module dy {
         public bubbleParent:GameObject = null;
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
-        public renderer:Renderer = null;
+        public rendererComponent:RendererComponent = null;
         public collider:Collider = null;
         public geometry:Geometry = null;
         public actionManager:ActionManager = ActionManager.create();
@@ -336,7 +336,7 @@ module dy {
         }
 
         //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
-        public render(renderer:render.Renderer, camera:GameObject):void{
+        public render(renderer:Renderer, camera:GameObject):void{
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {
             //    if(transformDirty) {
@@ -367,8 +367,8 @@ module dy {
             //    this._children[i].visit(renderer, this.transform, transformDirty, visibleFlag);
             //}
 
-            if(this.renderer && this.geometry){
-                this.renderer.render(renderer, this.geometry,  camera);
+            if(this.rendererComponent && this.geometry){
+                this.rendererComponent.render(renderer, this.geometry,  camera);
             }
 
             this._children.forEach((child:GameObject) => {

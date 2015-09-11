@@ -66,7 +66,7 @@ describe("Texture", function() {
         it("send texture unit index", function(){
             texture.sendData(program, 1);
 
-            expect(program.sendUniformData.firstCall).toCalledWith("u_sampler2D1", dy.render.VariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData.firstCall).toCalledWith("u_sampler2D1", dy.VariableType.SAMPLER_2D, 1);
         });
 
         describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){

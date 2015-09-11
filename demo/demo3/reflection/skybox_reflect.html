@@ -42,7 +42,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -57,7 +57,7 @@
 
 
 
-            var cubemap = dy.CubeTexture.create(
+            var cubemap = dy.CubemapTexture.create(
                     [
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
@@ -103,13 +103,13 @@
 
 
 
-            var shader2 = dy.render.Shader.create(
+            var shader2 = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs_reflect"),
                     dy.GLSLLoader.getInstance().get("fs_reflect")
             );
             shader2.uniforms.addChildren({
                 u_cameraPos: {
-                    type:dy.render.ShaderDataType.FLOAT_3,
+                    type:dy.ShaderDataType.FLOAT_3,
                     value: function(){
                         if(director.stage.camera){
                             return director.stage.camera.transform.position;

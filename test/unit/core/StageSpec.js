@@ -326,13 +326,13 @@ describe("Stage", function() {
             });
         });
 
-        describe("if component is Renderer", function(){
-            it("set renderer to be it", function(){
-                var component = new dy.Renderer();
+        describe("if component is RendererComponent", function(){
+            it("set rendererComponent to be it", function(){
+                var component = new dy.RendererComponent();
 
                 stage.addComponent(component);
 
-                expect(stage.renderer).toEqual(component);
+                expect(stage.rendererComponent).toEqual(component);
             });
         });
 
@@ -412,14 +412,14 @@ describe("Stage", function() {
             });
         });
 
-        describe("if component is Renderer", function(){
-            it("set renderer to be null", function(){
-                var component = new dy.Renderer();
+        describe("if component is RendererComponent", function(){
+            it("set rendererComponent to be null", function(){
+                var component = new dy.RendererComponent();
                 stage.addComponent(component);
 
                 stage.removeComponent(component);
 
-                expect(stage.renderer).toBeNull();
+                expect(stage.rendererComponent).toBeNull();
             });
         });
 

@@ -32,11 +32,11 @@ module dy{
             return this._data.indices;
         }
 
-        protected computeNormalsBuffer():render.ArrayBuffer{
+        protected computeNormalsBuffer():ArrayBuffer{
             return this._data.normals;
         }
 
-        protected computeTexCoordsBuffer():render.ArrayBuffer{
+        protected computeTexCoordsBuffer():ArrayBuffer{
             return this._data.texCoords;
         }
 
@@ -124,14 +124,14 @@ module dy{
             }
 
             return {
-                vertices: render.ArrayBuffer.create(new Float32Array(this.vertices),
-                    3, render.BufferType.FLOAT),
-                indices: render.ElementBuffer.create(new Uint16Array(this.indices),
-                    render.BufferType.UNSIGNED_SHORT),
-                normals: render.ArrayBuffer.create(new Float32Array(this.normals),
-                    3, render.BufferType.FLOAT),
-                texCoords: render.ArrayBuffer.create(new Float32Array(this.texCoords),
-                    2, render.BufferType.FLOAT)
+                vertices: ArrayBuffer.create(new Float32Array(this.vertices),
+                    3, BufferType.FLOAT),
+                indices: ElementBuffer.create(new Uint16Array(this.indices),
+                    BufferType.UNSIGNED_SHORT),
+                normals: ArrayBuffer.create(new Float32Array(this.normals),
+                    3, BufferType.FLOAT),
+                texCoords: ArrayBuffer.create(new Float32Array(this.texCoords),
+                    2, BufferType.FLOAT)
             }
         }
 
@@ -216,10 +216,10 @@ module dy{
     //        }
     //
     //        return {
-    //            vertices: render.ArrayBuffer.create(new Float32Array(this._vertices),
-    //                3, render.BufferType.FLOAT),
-    //            indices: render.ElementBuffer.create(new Uint16Array(this._indices),
-    //                render.BufferType.UNSIGNED_SHORT)
+    //            vertices: ArrayBuffer.create(new Float32Array(this._vertices),
+    //                3, BufferType.FLOAT),
+    //            indices: ElementBuffer.create(new Uint16Array(this._indices),
+    //                BufferType.UNSIGNED_SHORT)
     //        }
     //    }
     //

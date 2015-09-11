@@ -5,14 +5,14 @@ describe("skybox shader", function () {
             shaderName: "skybox",
             definitionData_attributes: {
             a_normal: {
-                type: dy.render.VariableType.FLOAT_4,
-                value: dy.render.VariableCategory.ENGINE
+                type: dy.VariableType.FLOAT_4,
+                value: dy.VariableCategory.ENGINE
             }
         },
             definitionData_uniforms: {
             u_samplerCube0: {
-                type: dy.render.VariableType.SAMPLER_CUBE,
-                    value: dy.render.VariableCategory.ENGINE
+                type: dy.VariableType.SAMPLER_CUBE,
+                    value: dy.VariableCategory.ENGINE
             }
         },
             definitionData_vsSource: 'varying vec3 v_dir;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;void main(void){    vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * a_position;    gl_Position = pos.xyww;    v_dir = vec3(a_position);}',

@@ -22,14 +22,14 @@ describe("custom shader", function () {
                 shader = material.shader;
                 program = shader.program;
 
-                sandbox.stub(dy.render.ArrayBuffer, "create", function(arr, num, type){
+                sandbox.stub(dy.ArrayBuffer, "create", function(arr, num, type){
                     return testTool.getValues(arr);
                 });
 
                 shaderDefinitionData = {
                     attributes: {
                         "a_color": {
-                            type: dy.render.VariableType.FLOAT_4,
+                            type: dy.VariableType.FLOAT_4,
                             value: [
                                 1, 0, 0, 1,
                                 1, 0, 0, 1,
@@ -40,11 +40,11 @@ describe("custom shader", function () {
                     },
                     uniforms: {
                         "u_test1": {
-                            type: dy.render.VariableType.FLOAT_1,
+                            type: dy.VariableType.FLOAT_1,
                             value: 1.0
                         },
                         "u_test2": {
-                            type: dy.render.VariableType.FLOAT_1,
+                            type: dy.VariableType.FLOAT_1,
                             value: function () {
                                 return 2.0;
                             }
@@ -87,8 +87,8 @@ describe("custom shader", function () {
                                 value:attributes.a_color.value
                             },
                             a_position: {
-                                type: dy.render.VariableType.FLOAT_4,
-                                value: dy.render.VariableCategory.ENGINE
+                                type: dy.VariableType.FLOAT_4,
+                                value: dy.VariableCategory.ENGINE
                             }
                         }
                     );
@@ -96,9 +96,9 @@ describe("custom shader", function () {
                         {
                             u_test1: {type: uniforms.u_test1.type, value: uniforms.u_test1.value},
                             u_test2: {type: uniforms.u_test2.type, value: uniforms.u_test2.value},
-                            u_mMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE},
-                            u_vMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE},
-                            u_pMatrix: {type: dy.render.VariableType.FLOAT_MAT4, value: dy.render.VariableCategory.ENGINE}
+                            u_mMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
+                            u_vMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
+                            u_pMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE}
                         }
                     );
                     expect(shader.vsSource.split("\n").join("")).toEqual(
@@ -121,7 +121,7 @@ describe("custom shader", function () {
                     sandbox.stub(shader.program, "sendAttributeData");
                     sandbox.stub(shader.program, "sendUniformData");
 
-                    quadCmd = dy.render.QuadCommand.create();
+                    quadCmd = dy.QuadCommand.create();
                     sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
                     sandbox.stub(quadCmd.buffers, "getChild");
 
@@ -152,7 +152,7 @@ describe("custom shader", function () {
                 });
                 it("send custom shader's attribute variables", function () {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_color");
-                    expect(program.sendAttributeData.secondCall.args[1]).toEqual(dy.render.VariableType.BUFFER);
+                    expect(program.sendAttributeData.secondCall.args[1]).toEqual(dy.VariableType.BUFFER);
                     expect(program.sendAttributeData.secondCall.args[2]).toEqual(
                         [ 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1 ]
                     );

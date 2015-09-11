@@ -10,7 +10,7 @@ dy.Script.create("stage", function (director) {
     }
 
     Stage.prototype._buildMesh = function(){
-        var shader = dy.render.Shader.create(
+        var shader = dy.Shader.create(
             dy.GLSLLoader.getInstance().get("vs"),
             dy.GLSLLoader.getInstance().get("fs")
         );

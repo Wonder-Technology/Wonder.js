@@ -6,8 +6,8 @@ describe("basic shader", function () {
             definitionData_attributes:
             {
                 a_color: {
-                    type: dy.render.VariableType.FLOAT_4,
-                    value: dy.render.VariableCategory.ENGINE
+                    type: dy.VariableType.FLOAT_4,
+                    value: dy.VariableCategory.ENGINE
                 }
             },
             definitionData_uniforms: {

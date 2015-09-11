@@ -41,7 +41,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -53,7 +53,7 @@
             material.cullMode = dy.CullMode.FRONT;
 
 
-            var cubemap = dy.CubeTexture.create(
+            var cubemap = dy.CubemapTexture.create(
                     [
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")

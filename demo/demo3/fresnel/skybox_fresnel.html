@@ -42,7 +42,7 @@
         }
 
         function _initScene() {
-            var shader = dy.render.Shader.create(
+            var shader = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs"),
                     dy.GLSLLoader.getInstance().get("fs")
             );
@@ -57,7 +57,7 @@
 
 
 
-            var cubemap = dy.CubeTexture.create(
+            var cubemap = dy.CubemapTexture.create(
                     [
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1")
@@ -106,13 +106,13 @@
             material2.refractionRatio = 1.52;
 
 
-            var shader2 = dy.render.Shader.create(
+            var shader2 = dy.Shader.create(
                     dy.GLSLLoader.getInstance().get("vs_fresnel"),
                     dy.GLSLLoader.getInstance().get("fs_fresnel")
             );
             shader2.uniforms.addChildren({
                 u_cameraPos: {
-                    type:dy.render.ShaderDataType.FLOAT_3,
+                    type:dy.ShaderDataType.FLOAT_3,
                     value: function(){
                         if(director.stage.camera){
                             return director.stage.camera.transform.position;
@@ -122,7 +122,7 @@
                     }
                 },
                 u_refractionRatio: {
-                    type:dy.render.ShaderDataType.FLOAT_1,
+                    type:dy.ShaderDataType.FLOAT_1,
                     //todo move to engine
                     //default light pass through air
 

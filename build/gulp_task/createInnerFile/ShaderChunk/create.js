@@ -6,8 +6,8 @@ var fs = require("fs");
 
 var PLUGIN_NAME = "ShaderChunk";
 
-var glslPath = "src/render/shader/chunk/glsl/**/*.glsl";
-var destFilePath = "src/render/shader/chunk/ShaderChunk.ts";
+var glslPath = "src/renderer/shader/chunk/glsl/**/*.glsl";
+var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 
 gulp.task("createShaderChunk", function(){
     var result = "";
@@ -15,7 +15,7 @@ gulp.task("createShaderChunk", function(){
     //todo typescript refactor
     result = [
         '/// <reference path="../../../definitions.d.ts"/>',
-        'module dy.render{',
+        'module dy{',
     'export class ShaderChunk{'
     ].join("\n");
 

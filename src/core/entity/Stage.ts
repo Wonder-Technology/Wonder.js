@@ -23,7 +23,7 @@ module dy {
             return super.addChild(child);
         }
 
-        public render(renderer:render.Renderer) {
+        public render(renderer:Renderer) {
             dyCb.Log.error(!this.camera, "stage must add camera");
 
             super.render(renderer, this.camera);

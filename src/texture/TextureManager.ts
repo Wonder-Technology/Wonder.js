@@ -68,7 +68,7 @@ module dy{
                 });
         }
 
-        public sendData(program:render.Program){
+        public sendData(program:Program){
             this._getTextureList().forEach((texture:Texture, index:number) => {
                 texture.bindToUnit(index);
                 texture.sendData(program, index);

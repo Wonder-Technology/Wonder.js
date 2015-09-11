@@ -6,22 +6,22 @@ describe("map shader", function () {
                 shaderName: "basic map",
                 definitionData_attributes: {
                     a_texCoord: {
-                        type: dy.render.VariableType.FLOAT_2,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_2,
+                        value: dy.VariableCategory.ENGINE
                     }
                 },
                 definitionData_uniforms: {
                     u_sampler2D0: {
-                        type: dy.render.VariableType.SAMPLER_2D,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.SAMPLER_2D,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_sourceRegion: {
-                        type: dy.render.VariableType.FLOAT_4,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_4,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_repeatRegion: {
-                        type: dy.render.VariableType.FLOAT_4,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_4,
+                        value: dy.VariableCategory.ENGINE
                     }
                 },
                 definitionData_vsSource:
@@ -59,34 +59,34 @@ describe("map shader", function () {
                 shaderName: "multi maps",
                 definitionData_attributes: {
                     a_texCoord: {
-                        type: dy.render.VariableType.FLOAT_2,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_2,
+                        value: dy.VariableCategory.ENGINE
                     }
                 },
                 definitionData_uniforms: {
                     u_sampler2D0: {
-                        type: dy.render.VariableType.SAMPLER_2D,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.SAMPLER_2D,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_sampler2D1: {
-                        type: dy.render.VariableType.SAMPLER_2D,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.SAMPLER_2D,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_sourceRegion: {
-                        type: dy.render.VariableType.FLOAT_4,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_4,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_repeatRegion: {
-                        type: dy.render.VariableType.FLOAT_4,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_4,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_combineMode: {
-                        type: dy.render.VariableType.NUMBER_1,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.NUMBER_1,
+                        value: dy.VariableCategory.ENGINE
                     },
                     u_mixRatio: {
-                        type: dy.render.VariableType.FLOAT_1,
-                        value: dy.render.VariableCategory.ENGINE
+                        type: dy.VariableType.FLOAT_1,
+                        value: dy.VariableCategory.ENGINE
                     }
                 },
                 definitionData_vsSource:
@@ -99,10 +99,10 @@ describe("map shader", function () {
                 },
                 judge_sendLibVariable_uniforms: function(program, quadCmd, material){
                     expect(program.sendUniformData.getCall(3).args).toEqual(
-                        ["u_combineMode", dy.render.VariableType.NUMBER_1, dy.TextureCombineMode.MULTIPLY]
+                        ["u_combineMode", dy.VariableType.NUMBER_1, dy.TextureCombineMode.MULTIPLY]
                     );
                     expect(program.sendUniformData.getCall(4).args).toEqual(
-                        ["u_mixRatio", dy.render.VariableType.FLOAT_1, 0.9]
+                        ["u_mixRatio", dy.VariableType.FLOAT_1, 0.9]
                     );
                 },
                 judge_sendLibVariable_texture: function(program, quadCmd, material){

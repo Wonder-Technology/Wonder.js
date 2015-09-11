@@ -1,17 +1,17 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class MeshRenderer extends Renderer {
+    export class MeshRenderer extends RendererComponent {
         public static create() {
         	var obj = new this();
 
         	return obj;
         }
 
-        public render(renderer:render.Renderer, geometry:Geometry, camera:GameObject):void {
+        public render(renderer:Renderer, geometry:Geometry, camera:GameObject):void {
             renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
         }
 
-        protected createDrawCommand(renderer:render.Renderer, geometry:Geometry, camera:GameObject){
+        protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject){
              var quadCmd = renderer.createQuadCommand(),
                 cameraComponent = camera.getComponent<Camera>(Camera),
                 material:Material = geometry.material;
