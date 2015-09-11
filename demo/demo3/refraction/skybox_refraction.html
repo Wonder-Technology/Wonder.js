@@ -19,10 +19,6 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "./vertex.glsl", id: "vs"},
-            {url: "./fragment.glsl", id: "fs"},
-            {url: "./vertex_refraction.glsl", id: "vs_refraction"},
-            {url: "./fragment_refraction.glsl", id: "fs_refraction"},
             {url: "../../res/1.jpg", id:"texture1"},
             {url: "../../res/2.jpg", id:"texture2"},
             {url: "../../res/3.jpg", id:"texture3"},
@@ -42,15 +38,8 @@
         }
 
         function _initScene() {
-            var shader = dy.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs"),
-                    dy.GLSLLoader.getInstance().get("fs")
-            );
-
-
-            var material = dy.Material.create();
+            var material = dy.SkyboxMaterial.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material.shader = shader;
 
             material.cullMode = dy.CullMode.FRONT;
 
@@ -59,25 +48,25 @@
 
             var cubemap = dy.CubemapTexture.create(
                     [
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture1")
-                },
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture2")
-                },
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture3")
-                },
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture4")
-                },
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture5")
-                },
-                {
-                    asset:dy.TextureLoader.getInstance().get("texture6")
-                }
-            ]
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture1")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture2")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture3")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture4")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture5")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture6")
+                        }
+                    ]
             );
 
             material.setEnvMap(cubemap);
@@ -101,56 +90,41 @@
 
 
 
-            var material2 = dy.Material.create();
+            var material2 = dy.EnvMapMaterial.create();
             //suppose it's glass
             material2.refractionRatio = 1.52;
 
 
-            var shader2 = dy.Shader.create(
-                    dy.GLSLLoader.getInstance().get("vs_refraction"),
-                    dy.GLSLLoader.getInstance().get("fs_refraction")
-            );
-            shader2.uniforms.addChildren({
-                u_cameraPos: {
-                    type:dy.ShaderDataType.FLOAT_3,
-                    value: function(){
-                        if(director.stage.camera){
-                            return director.stage.camera.transform.position;
+
+
+
+
+            var cubemap2 = dy.CubemapTexture.create(
+                    [
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture1")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture2")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture3")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture4")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture5")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture6")
                         }
+                    ]
+            );
 
-                        return null;
-                    }
-                },
-                refractionRatio: {
-                    type:dy.ShaderDataType.FLOAT_1,
-                    //todo move to engine
-                    //default light pass through air
+            cubemap2.mode = dy.EnvMapMode.REFRACTION;
 
-                    /*!
-                    Material	Refractive index
-                            Air	1.00
-                            Water	1.33
-                            Ice	1.309
-                            Glass	1.52
-                            Diamond	2.42
-
-                            We use these refractive indices to calculate the ratio between both materials the light passes through. In our case, the light/view ray goes from air to glass (if we assume the container is made of glass) so the ratio becomes 1.001.52=0.658
-                    */
-
-
-
-                    value: 1.00 / material2.refractionRatio
-                }
-            });
-
-
-            material2.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
-            material2.shader = shader2;
-
-
-
-
-            material2.textureManager.addChild(cubemap);
+            material2.setEnvMap(cubemap2);
 
 
 
@@ -162,10 +136,10 @@
 
 
 
-            var rect = dy.GameObject.create();
+            var box = dy.GameObject.create();
 
-            rect.addComponent(dy.MeshRenderer.create());
-            rect.addComponent(geometry2);
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry2);
 
 
 
@@ -183,7 +157,7 @@
 
 
             director.stage.addChild(skybox);
-            director.stage.addChild(rect);
+            director.stage.addChild(box);
 
             director.stage.addChild(_createCamera());
 
@@ -226,3 +200,4 @@
 </script>
 </body>
 </html>
+
