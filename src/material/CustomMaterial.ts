@@ -4,13 +4,7 @@ module dy{
         public static create() {
             var obj = new this();
 
-            obj.initWhenCreate();
-
             return obj;
-        }
-
-        public initWhenCreate(){
-            //this.shader.removeAllLibs();
         }
     }
 }

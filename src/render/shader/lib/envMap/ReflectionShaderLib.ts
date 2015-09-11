@@ -14,8 +14,6 @@ module dy.render{
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.addUniformVariable(["u_refractionRatio"]);
-
             this.setVsSource();
             this.fsSourceHead = ShaderChunk.envMap_head_fragment;
             this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.reflection_body_fragment;

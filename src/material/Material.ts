@@ -85,6 +85,9 @@ module dy {
                     this.blendDst = BlendFunction.ZERO;
                     this.blendEquation = BlendEquation.ADD;
                     break;
+                default:
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("blendType"));
+                    break;
             }
 
             this._blendType = blendType;

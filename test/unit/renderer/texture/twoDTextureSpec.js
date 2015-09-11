@@ -102,7 +102,6 @@ describe("twoD texture", function() {
                 program = {
                     sendUniformData: sandbox.stub()
                 };
-                sandbox.stub(director.stage, "program", program);
             });
 
             it("default sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.", function (done) {

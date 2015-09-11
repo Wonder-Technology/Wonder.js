@@ -4,6 +4,8 @@ var testTool = (function(){
 
         buildFakeGl: function(sandbox){
             return {
+                activeTexture: sandbox.stub(),
+                bindTexture: sandbox.stub(),
                 deleteShader: sandbox.stub(),
                 bindAttribLocation : sandbox.stub(),
                 linkProgram: sandbox.stub(),
@@ -66,6 +68,23 @@ var testTool = (function(){
                 get: getterFunc,
                 set: setterFunc
             });
+        },
+        clearInstance: function(){
+            dy.Director._instance = null;
+            dy.GPUDetector._instance = null;
+            dy.DeviceManager._instance = null;
+
+            dy.render.CommonShaderLib._instance = null;
+            dy.render.BasicShaderLib._instance = null;
+            dy.render.BasicEnvMapShaderLib._instance = null;
+            dy.render.FresnelShaderLib._instance = null;
+            dy.render.ReflectionShaderLib._instance = null;
+            dy.render.RefractionShaderLib._instance = null;
+            dy.render.BasicMapShaderLib._instance = null;
+            dy.render.MultiMapShaderLib._instance = null;
+            dy.render.SkyboxShaderLib._instance = null;
+
+            //todo add more
         }
     }
 }());

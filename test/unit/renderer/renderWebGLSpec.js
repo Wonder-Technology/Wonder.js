@@ -14,8 +14,7 @@ describe("renderWebGL", function() {
         sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
-        dy.DeviceManager._instance = null;
-        dy.Director._instance = null;
+        testTool.clearInstance();
         sandbox.restore();
     });
 

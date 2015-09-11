@@ -56,7 +56,7 @@ module dy.render{
 
                 dyCb.Log.error(!JudgeUtils.isArray(val.value), dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "array"));
 
-                val.value = self._convertToArrayBuffer(val.type, val.value);
+                val.value = self._convertArrayToArrayBuffer(val.type, val.value);
             });
 
             //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
@@ -66,14 +66,15 @@ module dy.render{
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;
 
-            material.textureManager.sendData(program);
-
             this._libs.forEach((lib:ShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
 
-            program.sendUniformDataFromShader();
-            program.sendAttributeDataFromShader();
+            program.sendAttributeDataFromCustomShader();
+            program.sendUniformDataFromCustomShader();
+
+            material.textureManager.sendData(program);
+
         }
 
         public addLib(lib:ShaderLib){
@@ -97,22 +98,30 @@ module dy.render{
             this.vsSourceBody = definitionData.vsSourceBody || "";
             this.fsSourceHead = definitionData.fsSourceHead || "";
             this.fsSourceBody = definitionData.fsSourceBody || "";
-            //
-            //this._buildVsSource();
-            //this._buildFsSource();
         }
 
         public buildDefinitionData(){
-            var self = this;
+            var self = this,
+                vsHead = "",
+                vsBody = "",
+                fsHead = "",
+                fsBody = "";
+
 
             this._libs.forEach((lib:ShaderLib) => {
                 self.attributes.addChildren(lib.attributes);
                 self.uniforms.addChildren(lib.uniforms);
-                self.vsSourceHead += lib.vsSourceHead;
-                self.vsSourceBody += lib.vsSourceBody;
-                self.fsSourceHead += lib.fsSourceHead;
-                self.fsSourceBody += lib.fsSourceBody;
+                vsHead += lib.vsSourceHead;
+                vsBody += lib.vsSourceBody;
+                fsHead += lib.fsSourceHead;
+                fsBody += lib.fsSourceBody;
             });
+
+            //ensure shader lib's code is in the top
+            this.vsSourceHead = vsHead + this.vsSourceHead;
+            this.vsSourceBody = vsBody + this.vsSourceBody;
+            this.fsSourceHead = fsHead + this.fsSourceHead;
+            this.fsSourceBody = fsBody + this.fsSourceBody;
 
             this._buildVsSource();
             this._buildFsSource();
@@ -158,7 +167,7 @@ module dy.render{
             return result;
         }
 
-        private _convertToArrayBuffer(type:VariableType, value:Array<any>) {
+        private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>) {
             //todo get BufferType from val.type?
             return ArrayBuffer.create(new Float32Array(value), this._getBufferNum(type), render.BufferType.FLOAT);
         }

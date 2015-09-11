@@ -300,6 +300,20 @@ describe("cube texture", function() {
             dy.LoaderManager.getInstance().dispose();
         });
 
+        describe("sendData", function() {
+            beforeEach(function () {
+                program = {
+                    sendUniformData: sandbox.stub()
+                };
+            });
+
+            it("send cube texture unit index", function () {
+                texture.sendData(program, 1);
+
+                expect(program.sendUniformData.firstCall).toCalledWith("u_samplerCube1", dy.render.VariableType.SAMPLER_CUBE, 1);
+            });
+        });
+
         describe("sourceRegion", function(){
             beforeEach(function(){
                 texture.width = 100;
@@ -308,7 +322,6 @@ describe("cube texture", function() {
                 program = {
                     sendUniformData:sandbox.stub()
                 };
-                sandbox.stub(director.stage, "program", program);
             });
 
                 it("cube compressed texture not support sourceRegion", function(done){

@@ -26,7 +26,7 @@ describe("Director", function () {
         director.stage.addChild(createCamera());
     });
     afterEach(function () {
-        dy.Director._instance = null;
+        testTool.clearInstance();
         sandbox.restore();
     });
 

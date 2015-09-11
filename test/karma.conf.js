@@ -29,18 +29,19 @@ module.exports = function(config) {
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
         'test/unit/testTool.js',
+        'test/unit/rendererTool.js',
 
-        //'test/unit/**/*.js'
-        'test/unit/asset/*.js',
-        'test/unit/math/*.js',
-        'test/unit/component/**/*.js',
-
-        'test/unit/core/*.js',
-        'test/unit/renderer/**',
-        'test/unit/device/*.js',
-        'test/unit/event/*.js',
-        'test/unit/utils/**',
-        'test/unit/video/**',
+        'test/unit/**/*.js',
+        //'test/unit/asset/*.js',
+        //'test/unit/math/*.js',
+        //'test/unit/component/**/*.js',
+        //
+        //'test/unit/core/*.js',
+        //'test/unit/renderer/**',
+        //'test/unit/device/*.js',
+        //'test/unit/event/*.js',
+        //'test/unit/utils/**',
+        //'test/unit/video/**',
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}

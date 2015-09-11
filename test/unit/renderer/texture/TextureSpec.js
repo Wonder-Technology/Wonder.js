@@ -55,17 +55,24 @@ describe("Texture", function() {
     });
 
     describe("sendData", function(){
-        describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){
-            var program = null;
+        var program = null;
 
+        beforeEach(function(){
+            program = {
+                sendUniformData:sandbox.stub()
+            };
+        });
+
+        it("send texture unit index", function(){
+            texture.sendData(program, 1);
+
+            expect(program.sendUniformData.firstCall).toCalledWith("u_sampler2D1", dy.render.VariableType.SAMPLER_2D, 1);
+        });
+
+        describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){
             beforeEach(function(){
                 texture.width = 100;
                 texture.height = 100;
-
-                program = {
-                    sendUniformData:sandbox.stub()
-                };
-                sandbox.stub(director.stage, "program", program);
 
                 texture.sourceRegionMethod = dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
             });

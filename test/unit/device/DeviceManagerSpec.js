@@ -10,7 +10,7 @@ describe("Color", function() {
         gl = manager.gl;
     });
     afterEach(function () {
-        dy.DeviceManager._instance = null;
+        testTool.clearInstance();
         sandbox.restore();
     });
     

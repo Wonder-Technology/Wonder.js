@@ -22,11 +22,6 @@ module dy.render{
             var gl = Director.getInstance().gl,
                 pos= null;
 
-            if (data === VariableCategory.ENGINE) {
-                return;
-            }
-
-
             pos= gl.getUniformLocation(this._program, name);
 
             if (pos === null) {
@@ -66,10 +61,14 @@ module dy.render{
             }
         }
 
-        public sendUniformDataFromShader(){
+        public sendUniformDataFromCustomShader(){
             var self = this;
 
-            this._shader.uniforms.forEach((val:IShaderData, key:string) => {
+            this._shader.uniforms
+                .filter((val:IShaderData) => {
+                    return val.value !== VariableCategory.ENGINE;
+                })
+                .forEach((val:IShaderData, key:string) => {
                 self.sendUniformData(key, val.type, val.value);
             });
         }
@@ -77,10 +76,6 @@ module dy.render{
         public sendAttributeData(name:string, type:VariableType, data:any){
             var gl = Director.getInstance().gl,
                 pos = null;
-
-            if (data === VariableCategory.ENGINE) {
-                return;
-            }
 
             pos= gl.getAttribLocation(this._program, name);
 
@@ -104,11 +99,15 @@ module dy.render{
             }
         }
 
-        public sendAttributeDataFromShader(){
+        public sendAttributeDataFromCustomShader(){
             var self = this;
 
-            this._shader.attributes.forEach((val:IShaderData, key:string) => {
-                self.sendAttributeData(key, VariableType.BUFFER, val.value);
+            this._shader.attributes
+                .filter((val:IShaderData) => {
+                    return val.value !== VariableCategory.ENGINE;
+                })
+                .forEach((val:IShaderData, key:string) => {
+                self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
             });
         }
 
@@ -168,6 +167,10 @@ module dy.render{
             gl.deleteShader(fs);
 
             return this;
+        }
+
+        private _convertAttributeDataType(val:IShaderData){
+            return VariableType.BUFFER;
         }
 
         private _convertToVector3(data:any){

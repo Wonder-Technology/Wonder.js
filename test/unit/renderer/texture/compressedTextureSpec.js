@@ -105,7 +105,6 @@ describe("compressed texture", function() {
                 program = {
                     sendUniformData:sandbox.stub()
                 };
-                sandbox.stub(director.stage, "program", program);
             });
 
                 describe("sourceRegionMethod always be CHANGE_TEXCOORDS_IN_GLSL, because canvas->drawImage can't draw the compressed texture's data.", function(){
