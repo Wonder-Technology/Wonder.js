@@ -623,7 +623,7 @@ beforeEach(function () {
         function _isCalled(stub){
             var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];
 
-            return actualArg;
+            return actualArg && actualArg.length > 0;
         }
         function getActualArg(stub){
             var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];

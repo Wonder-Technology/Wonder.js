@@ -7,7 +7,7 @@ module dy{
         	return obj;
         }
 
-        private _textures:dyCb.Hash<Texture> = dyCb.Hash.create<Texture>();
+        private _textures:dyCb.Hash<any> = dyCb.Hash.create<any>();
 
         public init(){
             this._getTextureList().forEach((texture:Texture) => {
@@ -16,7 +16,7 @@ module dy{
         }
 
         public addMap(asset:TextureAsset);
-        public addMap(map:TwoDTexture);
+        public addMap(map:CommonTexture|CompressedTexture);
 
         public addMap(arg){
             var map = null;
@@ -25,12 +25,17 @@ module dy{
 
                     map = asset.toTexture();
                 }
-                else if(arguments[0] instanceof Texture){
+                else if(arguments[0] instanceof CommonTexture
+                || arguments[0] instanceof CompressedTexture){
                     map = arguments[0];
                 }
 
 
             this._textures.appendChild("map", map);
+        }
+
+        public getMap(index:number){
+            return this._textures.getChild("map").getChild(index);
         }
 
         public setEnvMap(envMap:CubeTexture){
@@ -40,10 +45,6 @@ module dy{
         public getEnvMap():CubeTexture{
             return <CubeTexture>this._textures.getChild("envMap");
         }
-        //
-        //public getChildren(){
-        //    return this._textures.getChildren();
-        //}
 
         public removeAllChildren(){
             this._textures.removeAllChildren();

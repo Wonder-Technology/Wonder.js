@@ -103,7 +103,7 @@ describe("compressed texture", function() {
                 texture.height = 100;
 
                 program = {
-                    setUniformData:sandbox.stub()
+                    sendUniformData:sandbox.stub()
                 };
                 sandbox.stub(director.stage, "program", program);
             });
@@ -115,9 +115,9 @@ describe("compressed texture", function() {
 
                             texture.update(0);
 
-                            texture.sendData(0);
+                            texture.sendData(program, 0);
 
-                            expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+                            expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
 
                             done();
                         });

@@ -45,7 +45,8 @@ module dy.render{
                     result = ShaderChunk.lowp_head_fragment;
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
+                    //dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
+                    result = "";
                     break;
             }
 

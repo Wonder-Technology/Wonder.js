@@ -100,7 +100,7 @@ describe("twoD texture", function() {
                 texture.height = 100;
 
                 program = {
-                    setUniformData: sandbox.stub()
+                    sendUniformData: sandbox.stub()
                 };
                 sandbox.stub(director.stage, "program", program);
             });
@@ -119,9 +119,9 @@ describe("twoD texture", function() {
 
                     expect(gl.texImage2D).toCalledWith(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, texture.source);
 
-                    texture.sendData(0);
+                    texture.sendData(program, 0);
 
-                    expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
 
                     done();
                 });
@@ -142,10 +142,10 @@ describe("twoD texture", function() {
                     expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, dy.TextureWrapMode.REPEAT);
                     expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, dy.TextureWrapMode.REPEAT);
 
-                    texture.sendData(0);
+                    texture.sendData(program, 0);
 
-                    expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 1, 1)));
-                    expect(testTool.getValues(program.setUniformData.thirdCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 2, 2)));
+                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 1, 1)));
+                    expect(testTool.getValues(program.sendUniformData.thirdCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 2, 2)));
 
                     done();
                 });

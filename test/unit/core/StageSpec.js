@@ -73,12 +73,13 @@ describe("Stage", function() {
         });
         it("invoke components' init", function(){
             var geometry = new dy.BoxGeometry();
-            var material = new dy.Material();
+            var material = new dy.BasicMaterial();
             geometry.material = material;
 
             sandbox.spy(geometry, "init");
             sandbox.spy(material, "init");
             sandbox.spy(material.textureManager, "init");
+            sandbox.stub(material.shader, "init");
             stage.addComponent(geometry);
 
             stage.init();
@@ -86,6 +87,7 @@ describe("Stage", function() {
             expect(geometry.init).toCalledOnce();
             expect(material.init).toCalledOnce();
             expect(material.textureManager.init).toCalledOnce();
+            expect(material.shader.init).toCalledOnce();
         });
         it("invoke stage and it's children's script->init", function(){
             stage.init();

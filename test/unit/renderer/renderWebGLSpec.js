@@ -56,7 +56,7 @@ describe("renderWebGL", function() {
             shader = dy.render.Shader.create( vsSource, fsSource );
 
 
-            material = dy.Material.create();
+            material = dy.BasicMaterial.create();
             material.color= dy.Color.create("#FFCDff");
             material.shader = shader;
 
@@ -91,6 +91,9 @@ describe("renderWebGL", function() {
 
             sandbox.stub(material.textureManager, "update");
             sandbox.stub(material.textureManager, "sendData");
+            sandbox.stub(material.program, "use");
+            sandbox.stub(material, "updateTexture");
+            sandbox.stub(material, "updateShader");
 
             return {
                 quadCmd:quadCmd,
@@ -168,6 +171,12 @@ describe("renderWebGL", function() {
                         }
                     }
             });
+
+            var depthWriteArr = [];
+            testTool.stubGetterSetter(sinon, dy.DeviceManager.prototype, "depthWrite", null, function(val){
+                depthWriteArr.push(val);
+            });
+
             quad1.z = 8;
             quad2.z = 7;
             quad3.z = 2;
@@ -178,50 +187,67 @@ describe("renderWebGL", function() {
             expect(quad3.execute).toCalledBefore(quad4.execute);
             expect(quad4.execute).toCalledBefore(quad2.execute);
             expect(quad2.execute).toCalledBefore(quad1.execute);
+            expect(depthWriteArr).toEqual([
+                false, true
+            ]);
         });
 
-        describe("execute quadCommand test", function(){
-            it("set quadCommand's shader", function(){
-                program.isChangeShader.returns(false);
-                addCommand();
-
-                renderer.render();
-
-                expect(program.initWithShader).not.toCalled();
-
-                program.isChangeShader.returns(true);
-                var result = addCommand();
-
-                renderer.render();
-
-                expect(program.initWithShader).toCalledWith(result.shader);
-                expect(program.use).toCalledOnce();
-            });
+        describe("execute quadCommand", function(){
+            //it("set quadCommand's shader", function(){
+            //    program.isChangeShader.returns(false);
+            //    addCommand();
+            //
+            //    renderer.render();
+            //
+            //    expect(program.initWithShader).not.toCalled();
+            //
+            //    program.isChangeShader.returns(true);
+            //    var result = addCommand();
+            //
+            //    renderer.render();
+            //
+            //    expect(program.initWithShader).toCalledWith(result.shader);
+            //    expect(program.use).toCalledOnce();
+            //});
             it("update texture", function(){
                 var result = addCommand();
 
                 renderer.render();
 
-                expect(result.material.textureManager.update).toCalledOnce();
+                expect(result.material.updateTexture).toCalledOnce();
             });
-            it("send vertex,color,mMatrix,vMatrix,pMatrix to program", function(){
-                var result = addCommand();
-                var geometry = result.geometry;
-
-                renderer.render();
-
-                expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
-                expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
-                expect(program.setUniformData).toCalledWith("u_mMatrix", dy.render.UniformDataType.FLOAT_MAT4, mMatrix);
-                expect(program.setUniformData).toCalledWith("u_vMatrix", dy.render.UniformDataType.FLOAT_MAT4, vMatrix);
-                expect(program.setUniformData).toCalledWith("u_pMatrix", dy.render.UniformDataType.FLOAT_MAT4, pMatrix);
-            });
-            it("send texture data", function(){
+            it("use program", function(){
                 var result = addCommand();
 
                 renderer.render();
 
-                expect(result.material.textureManager.sendData).toCalledOnce();
+                expect(result.material.program.use).toCalledOnce();
+            });
+            //it("send vertex,color,mMatrix,vMatrix,pMatrix to program", function(){
+            //    var result = addCommand();
+            //    var geometry = result.geometry;
+            //
+            //    renderer.render();
+            //
+            //    expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.render.AttributeDataType.BUFFER, geometry.vertices);
+            //    expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.render.AttributeDataType.BUFFER, geometry.colors);
+            //    expect(program.setUniformData).toCalledWith("u_mMatrix", dy.render.UniformDataType.FLOAT_MAT4, mMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_vMatrix", dy.render.UniformDataType.FLOAT_MAT4, vMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_pMatrix", dy.render.UniformDataType.FLOAT_MAT4, pMatrix);
+            //});
+            //it("send texture data", function(){
+            //    var result = addCommand();
+            //
+            //    renderer.render();
+            //
+            //    expect(result.material.textureManager.sendData).toCalledOnce();
+            //});
+            it("update shader", function(){
+                var result = addCommand();
+
+                renderer.render();
+
+                expect(result.material.updateShader).toCalledWith(result.quadCmd);
             });
 
             describe("draw", function(){
@@ -260,6 +286,28 @@ describe("renderWebGL", function() {
                     expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
                     expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
                 });
+            });
+        });
+
+        describe("if skyboxCommand exist, execute skyboxCommand", function(){
+            it("set depthFunc to be LEQUAL, then execute skyboxCommand, then restore depthFunc to be LESS", function(){
+                var depthFuncValArr = [];
+                var stub = sandbox.stub();
+
+                testTool.stubGetterSetter(sinon, dy.DeviceManager.prototype, "depthFunc", null, function(val){
+                        depthFuncValArr.push(val);
+                    });
+                cmd = {
+                    execute: sandbox.stub()
+                };
+                renderer.skyboxCommand = cmd;
+
+                renderer.render();
+
+                expect(depthFuncValArr).toEqual([
+                    "LEQUAL", "LESS"
+                ]);
+                expect(cmd.execute).toCalledOnce();
             });
         });
 

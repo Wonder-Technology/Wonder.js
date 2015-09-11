@@ -63,7 +63,7 @@ describe("Texture", function() {
                 texture.height = 100;
 
                 program = {
-                    setUniformData:sandbox.stub()
+                    sendUniformData:sandbox.stub()
                 };
                 sandbox.stub(director.stage, "program", program);
 
@@ -74,15 +74,15 @@ describe("Texture", function() {
                 texture.sourceRegionMapping = dy.TextureSourceRegionMapping.CANVAS;
                 texture.sourceRegion = dy.RectRegion.create(10, 20, 50, 40);
 
-                texture.sendData(0);
+                texture.sendData(program, 0);
 
-                expect(testTool.getValues(program.setUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
+                expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
             });
             it("else, directly set it", function(){
                 texture.sourceRegionMapping = dy.TextureSourceRegionMapping.UV;
                 texture.sourceRegion = dy.RectRegion.create(0.1, 0.1, 0.5, 0.6);
 
-                texture.sendData(0);
+                texture.sendData(program, 0);
 
                 expect(testTool.getValues(texture.sourceRegion)).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.1, 0.5, 0.6)));
 
@@ -190,8 +190,8 @@ describe("Texture", function() {
 
             it("one material can contain multi texture", function(done){
                 loadMultiTexture(function(texture1, texture2){
-                    textureManager.addChild(texture1);
-                    textureManager.addChild(texture2);
+                    textureManager.addMap(texture1);
+                    textureManager.addMap(texture2);
 
                     textureManager.update();
 
@@ -210,8 +210,8 @@ describe("Texture", function() {
                 sandbox.stub(dyCb.Log, "warn");
 
                 loadMultiTexture(function(texture1, texture2){
-                    textureManager.addChild(texture1);
-                    textureManager.addChild(texture2);
+                    textureManager.addMap(texture1);
+                    textureManager.addMap(texture2);
 
                     textureManager.update();
 
