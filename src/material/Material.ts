@@ -127,11 +127,11 @@ module dy {
             this.textureManager.addMap(arguments[0]);
         }
 
-        public setEnvMap(envMap:CubeTexture){
+        public setEnvMap(envMap:CubemapTexture){
             this.textureManager.setEnvMap(envMap);
         }
 
-        public getEnvMap():CubeTexture{
+        public getEnvMap():CubemapTexture{
             return this.textureManager.getEnvMap();
         }
 

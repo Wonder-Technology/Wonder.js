@@ -51,29 +51,29 @@ module dy{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public toCubeFaceTexture():CubeFaceTexture{
+        public toCubemapFaceTexture():CubemapFaceTexture{
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public copyToCubeFaceTexture(cubeFaceTexture:any){
+        public copyToCubemapFaceTexture(cubemapFaceTexture:any){
             return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
-        public copyToCubeTexture(cubeFaceTexture:ICubeTextureAsset){
-            cubeFaceTexture.generateMipmaps = this.generateMipmaps;
-            cubeFaceTexture.minFilter = this.minFilter;
-            cubeFaceTexture.magFilter = this.magFilter;
-            cubeFaceTexture.width = this.width;
-            cubeFaceTexture.height = this.height;
-            cubeFaceTexture.wrapS = this.wrapS;
-            cubeFaceTexture.wrapT = this.wrapT;
-            cubeFaceTexture.anisotropy = this.anisotropy;
-            cubeFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
-            cubeFaceTexture.unpackAlignment = this.unpackAlignment;
+        public copyToCubemapTexture(cubemapFaceTexture:ICubemapTextureAsset){
+            cubemapFaceTexture.generateMipmaps = this.generateMipmaps;
+            cubemapFaceTexture.minFilter = this.minFilter;
+            cubemapFaceTexture.magFilter = this.magFilter;
+            cubemapFaceTexture.width = this.width;
+            cubemapFaceTexture.height = this.height;
+            cubemapFaceTexture.wrapS = this.wrapS;
+            cubemapFaceTexture.wrapT = this.wrapT;
+            cubemapFaceTexture.anisotropy = this.anisotropy;
+            cubemapFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
+            cubemapFaceTexture.unpackAlignment = this.unpackAlignment;
             //todo test
-            cubeFaceTexture.needUpdate = this.needUpdate;
+            cubemapFaceTexture.needUpdate = this.needUpdate;
 
-            cubeFaceTexture.mode = EnvMapMode.NORMAL;
+            cubemapFaceTexture.mode = EnvMapMode.NORMAL;
         }
 
         public copyTo(texture:Texture){

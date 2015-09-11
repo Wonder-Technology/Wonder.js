@@ -45,7 +45,7 @@ describe("envMap shader", function () {
                 },
                 setMaterial: function (material) {
                     var asset = dy.TwoDTextureAsset.create({});
-                    var cubemap = dy.CubeTexture.create(
+                    var cubemap = dy.CubemapTexture.create(
                         [
                             {
                                 asset:asset
@@ -127,7 +127,7 @@ describe("envMap shader", function () {
                 },
                 setMaterial: function (material) {
                     var asset = dy.TwoDTextureAsset.create({});
-                    var cubemap = dy.CubeTexture.create(
+                    var cubemap = dy.CubemapTexture.create(
                         [
                             {
                                 asset:asset
@@ -219,7 +219,7 @@ describe("envMap shader", function () {
                 },
                 setMaterial: function (material) {
                     var asset = dy.TwoDTextureAsset.create({});
-                    var cubemap = dy.CubeTexture.create(
+                    var cubemap = dy.CubemapTexture.create(
                         [
                             {
                                 asset:asset
@@ -321,7 +321,7 @@ describe("envMap shader", function () {
                 },
                 setMaterial: function (material) {
                     var asset = dy.TwoDTextureAsset.create({});
-                    var cubemap = dy.CubeTexture.create(
+                    var cubemap = dy.CubemapTexture.create(
                         [
                             {
                                 asset:asset

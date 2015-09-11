@@ -38,12 +38,12 @@ module dy{
             return this._textures.getChild("map").getChild(index);
         }
 
-        public setEnvMap(envMap:CubeTexture){
+        public setEnvMap(envMap:CubemapTexture){
             this._textures.addChild("envMap", envMap);
         }
 
-        public getEnvMap():CubeTexture{
-            return <CubeTexture>this._textures.getChild("envMap");
+        public getEnvMap():CubemapTexture{
+            return <CubemapTexture>this._textures.getChild("envMap");
         }
 
         public removeAllChildren(){

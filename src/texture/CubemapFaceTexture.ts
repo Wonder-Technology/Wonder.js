@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeFaceTexture{
+    export class CubemapFaceTexture{
         public type:TextureType = TextureType.UNSIGNED_BYTE;
         public format:TextureFormat = null;
         public width:number = null;

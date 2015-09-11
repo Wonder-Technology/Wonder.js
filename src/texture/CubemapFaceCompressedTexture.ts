@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeFaceCompressedTexture extends CubeFaceTexture implements ICubeFaceCompressedTextureAsset{
+    export class CubemapFaceCompressedTexture extends CubemapFaceTexture implements ICubemapFaceCompressedTextureAsset{
         public static create(asset:CompressedTextureAsset) {
             var obj = new this();
 
@@ -13,7 +13,7 @@ module dy{
         public minFilter:TextureFilterMode = null;
 
         public initWhenCreate(asset:CompressedTextureAsset){
-            asset.copyToCubeFaceTexture(this);
+            asset.copyToCubemapFaceTexture(this);
         }
 
         //cube compressed texture not support sourceRegion

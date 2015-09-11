@@ -19,18 +19,18 @@ module dy{
             return TwoDTexture.create(this);
         }
 
-        public toCubeFaceTexture():CubeFaceTwoDTexture{
-            return CubeFaceTwoDTexture.create(this);
+        public toCubemapFaceTexture():CubemapFaceTwoDTexture{
+            return CubemapFaceTwoDTexture.create(this);
         }
 
-        public copyToCubeFaceTexture(cubeFaceTexture:ICubeFaceTwoDTextureAsset){
-            cubeFaceTexture.source = this.source;
-            cubeFaceTexture.type = this.type;
-            cubeFaceTexture.format = this.format;
-            cubeFaceTexture.width = this.width;
-            cubeFaceTexture.height = this.height;
-            cubeFaceTexture.sourceRegion = this.sourceRegion;
-            cubeFaceTexture.sourceRegionMethod = this.sourceRegionMethod;
+        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
+            cubemapFaceTexture.source = this.source;
+            cubemapFaceTexture.type = this.type;
+            cubemapFaceTexture.format = this.format;
+            cubemapFaceTexture.width = this.width;
+            cubemapFaceTexture.height = this.height;
+            cubemapFaceTexture.sourceRegion = this.sourceRegion;
+            cubemapFaceTexture.sourceRegionMethod = this.sourceRegionMethod;
         }
     }
 }

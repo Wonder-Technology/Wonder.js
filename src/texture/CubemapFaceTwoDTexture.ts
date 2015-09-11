@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeFaceTwoDTexture extends CubeFaceTexture implements ICubeFaceTwoDTextureAsset{
+    export class CubemapFaceTwoDTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
         public static create(asset:TwoDTextureAsset) {
         	var obj = new this();
 
@@ -14,7 +14,7 @@ module dy{
         public source:any = null;
 
         public initWhenCreate(asset:TwoDTextureAsset){
-            asset.copyToCubeFaceTexture(this);
+            asset.copyToCubemapFaceTexture(this);
 
             //cube twoD texture only support DRAW_IN_CANVAS
             this.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;

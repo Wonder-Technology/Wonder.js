@@ -153,10 +153,10 @@
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
-/// <reference path="texture/CubeTexture"/>
-/// <reference path="texture/CubeFaceTexture"/>
-/// <reference path="texture/CubeFaceTwoDTexture"/>
-/// <reference path="texture/CubeFaceCompressedTexture"/>
+/// <reference path="texture/CubemapTexture"/>
+/// <reference path="texture/CubemapFaceTexture"/>
+/// <reference path="texture/CubemapFaceTwoDTexture"/>
+/// <reference path="texture/CubemapFaceCompressedTexture"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>
 /// <reference path="texture/command/DrawTextureCommand"/>

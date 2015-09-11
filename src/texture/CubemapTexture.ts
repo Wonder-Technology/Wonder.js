@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CubeTexture extends Texture{
+    export class CubemapTexture extends Texture{
         public static create(assets:Array<ICubemapData>){
             var obj = new this(assets);
 
@@ -16,7 +16,7 @@ module dy{
         }
 
         public assets:Array<ICubemapData> = null;
-        public textures:dyCb.Collection<CubeFaceTexture> = dyCb.Collection.create<CubeFaceTexture>();
+        public textures:dyCb.Collection<CubemapFaceTexture> = dyCb.Collection.create<CubemapFaceTexture>();
         public mode:EnvMapMode = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
@@ -30,7 +30,7 @@ module dy{
 
             this._createTextures(assets);
 
-            this._getRepresentAsset(assets).copyToCubeTexture(this);
+            this._getRepresentAsset(assets).copyToCubemapTexture(this);
 
             if(this._isAllCompressedAsset){
                 this.generateMipmaps = false;
@@ -55,13 +55,13 @@ module dy{
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             if(this._isAllCompressedAsset){
-                this.textures.forEach((texture:CubeFaceCompressedTexture, i:number) => {
+                this.textures.forEach((texture:CubemapFaceCompressedTexture, i:number) => {
                     texture.draw(i);
                 });
             }
             else{
 
-                this.textures.forEach((texture:CubeFaceTwoDTexture, i:number) => {
+                this.textures.forEach((texture:CubemapFaceTwoDTexture, i:number) => {
                     texture.draw(i);
                 });
             }
@@ -71,7 +71,7 @@ module dy{
             var isAllSourcePowerOfTwo = true,
                 self = this;
 
-            this.textures.forEach((texture:CubeFaceTexture) => {
+            this.textures.forEach((texture:CubemapFaceTexture) => {
                 if(!self.isPowerOfTwo(texture.width, texture.height)){
                     isAllSourcePowerOfTwo = false;
                     return dyCb.$BREAK;
@@ -99,7 +99,7 @@ module dy{
                 return false;
             }
 
-            return this.textures.filter((texture:CubeFaceCompressedTexture) => {
+            return this.textures.filter((texture:CubemapFaceCompressedTexture) => {
                 return !self._isMipmapFilter(texture.minFilter);
             }).getCount() > 0;
         }
@@ -139,10 +139,10 @@ module dy{
             var self = this;
 
             assets.forEach((data:ICubemapData) => {
-                var face = data.asset.toCubeFaceTexture();
+                var face = data.asset.toCubemapFaceTexture();
 
-                if(data.sourceRegion && face instanceof CubeFaceTwoDTexture){
-                    let twoDFace:CubeFaceTwoDTexture = face;
+                if(data.sourceRegion && face instanceof CubemapFaceTwoDTexture){
+                    let twoDFace:CubemapFaceTwoDTexture = face;
                     twoDFace.sourceRegion = data.sourceRegion;
                 }
                 if(data.type){

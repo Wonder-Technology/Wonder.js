@@ -23,17 +23,17 @@ module dy{
             return CompressedTexture.create(this);
         }
 
-        public toCubeFaceTexture():CubeFaceCompressedTexture{
-            return CubeFaceCompressedTexture.create(this);
+        public toCubemapFaceTexture():CubemapFaceCompressedTexture{
+            return CubemapFaceCompressedTexture.create(this);
         }
 
-        public copyToCubeFaceTexture(cubeFaceTexture:ICubeFaceCompressedTextureAsset){
-            cubeFaceTexture.type = this.type;
-            cubeFaceTexture.format = this.format;
-            cubeFaceTexture.width = this.width;
-            cubeFaceTexture.height = this.height;
-            cubeFaceTexture.mipmaps = this.mipmaps;
-            cubeFaceTexture.minFilter = this.minFilter;
+        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceCompressedTextureAsset){
+            cubemapFaceTexture.type = this.type;
+            cubemapFaceTexture.format = this.format;
+            cubemapFaceTexture.width = this.width;
+            cubemapFaceTexture.height = this.height;
+            cubemapFaceTexture.mipmaps = this.mipmaps;
+            cubemapFaceTexture.minFilter = this.minFilter;
         }
     }
 }

@@ -1,4 +1,4 @@
-describe("cube texture", function() {
+describe("cubemap texture", function() {
     var sandbox = null;
     var Texture = null;
     var texture = null;
@@ -7,7 +7,7 @@ describe("cube texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.CubeTexture;
+        Texture = dy.CubemapTexture;
         texture = new Texture();
         director = dy.Director.getInstance();
         gl = {
@@ -63,12 +63,12 @@ describe("cube texture", function() {
             var asset = dy.CompressedTextureAsset.create({});
 
             expect(function(){
-                dy.CubeTexture.create([
+                dy.CubemapTexture.create([
                     {asset:asset}
                 ]);
             }).toThrow();
             expect(function(){
-                dy.CubeTexture.create([
+                dy.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset},
@@ -83,7 +83,7 @@ describe("cube texture", function() {
             var commonAsset = dy.TwoDTextureAsset.create({});
 
             expect(function(){
-                dy.CubeTexture.create([
+                dy.CubemapTexture.create([
                     {asset:commonAsset},
                     {asset:commonAsset},
                     {asset:commonAsset},
@@ -101,7 +101,7 @@ describe("cube texture", function() {
             var region = dy.RectRegion.create(0.1, 0.2, 0.3, 0.4);
             var type = dy.TextureType.UNSIGNED_SHORT_4_4_4_4;
 
-            var texture = dy.CubeTexture.create([
+            var texture = dy.CubemapTexture.create([
                 {asset:commonAsset},
                 {
                     asset:commonAsset,
@@ -115,11 +115,11 @@ describe("cube texture", function() {
             ]);
 
             expect(texture.textures.getCount()).toEqual(6);
-            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubeFaceTwoDTexture);
+            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubemapFaceTwoDTexture);
             expect(texture.textures.getChild(1).sourceRegion).toEqual(region);
             expect(texture.textures.getChild(1).type).toEqual(type);
         });
-        it("set ICubeTextureAsset's attri by the first cube face texture", function(){
+        it("set ICubemapTextureAsset's attri by the first cube face texture", function(){
             var commonAsset = dy.TwoDTextureAsset.create({
                 width:200,
                 height:200
@@ -129,7 +129,7 @@ describe("cube texture", function() {
                 height:100
             });
 
-                var texture = dy.CubeTexture.create([
+                var texture = dy.CubemapTexture.create([
                     {asset:commonAsset},
                     {asset:commonAsset2},
                     {asset:commonAsset2},
@@ -156,7 +156,7 @@ describe("cube texture", function() {
                 var asset = dy.CompressedTextureAsset.create({});
                 asset.minFilter = dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
 
-                var texture = dy.CubeTexture.create([
+                var texture = dy.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset},
@@ -174,7 +174,7 @@ describe("cube texture", function() {
                 var asset2 = dy.CompressedTextureAsset.create({});
                 asset2.minFilter = dy.TextureFilterMode.LINEAR;
 
-                var texture = dy.CubeTexture.create([
+                var texture = dy.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset2},
@@ -190,7 +190,7 @@ describe("cube texture", function() {
         it("else, generateMipmaps is true", function(){
             var asset = dy.TwoDTextureAsset.create({});
 
-            var texture = dy.CubeTexture.create([
+            var texture = dy.CubemapTexture.create([
                 {asset:asset},
                 {asset:asset},
                 {asset:asset},
@@ -204,7 +204,7 @@ describe("cube texture", function() {
         it("set flipY false", function(){
             var asset = dy.TwoDTextureAsset.create({});
 
-            var texture = dy.CubeTexture.create([
+            var texture = dy.CubemapTexture.create([
                 {asset:asset},
                 {asset:asset},
                 {asset:asset},
@@ -235,7 +235,7 @@ describe("cube texture", function() {
 
                     onSetAsset && onSetAsset(asset);
 
-                    var texture = dy.CubeTexture.create([
+                    var texture = dy.CubemapTexture.create([
                         {asset:asset},
                         {asset:asset},
                         {asset:asset},
@@ -259,7 +259,7 @@ describe("cube texture", function() {
 
                     onSetAsset && onSetAsset(asset);
 
-                    var texture = dy.CubeTexture.create([
+                    var texture = dy.CubemapTexture.create([
                         {asset:asset},
                         {asset:asset},
                         {asset:asset},
@@ -271,7 +271,7 @@ describe("cube texture", function() {
                     onload(texture);
                 });
         }
-        function getCubeFaceTexture(texture, index){
+        function getCubemapFaceTexture(texture, index){
             return texture.textures.getChild(index);
         }
 
@@ -440,8 +440,8 @@ describe("cube texture", function() {
                     texture.update(0);
 
                     expect(gl.texImage2D.callCount).toEqual(6);
-                    expect(gl.texImage2D.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, getCubeFaceTexture(texture, 0).source);
-                    expect(gl.texImage2D.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, getCubeFaceTexture(texture, 1).source);
+                    expect(gl.texImage2D.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, getCubemapFaceTexture(texture, 0).source);
+                    expect(gl.texImage2D.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, getCubemapFaceTexture(texture, 1).source);
 
                     done();
                 }, function(asset){

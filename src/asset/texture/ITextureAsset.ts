@@ -23,7 +23,7 @@ module dy{
         needUpdate:boolean;
     }
 
-    export interface ICubeTextureAsset {
+    export interface ICubemapTextureAsset {
         generateMipmaps:boolean;
         width:number;
         height:number;
@@ -38,7 +38,7 @@ module dy{
         mode:EnvMapMode;
     }
 
-    export interface ICubeFaceCompressedTextureAsset {
+    export interface ICubemapFaceCompressedTextureAsset {
         type:TextureType;
         format:TextureFormat;
         width:number;
@@ -47,7 +47,7 @@ module dy{
         minFilter:TextureFilterMode;
     }
 
-    export interface ICubeFaceTwoDTextureAsset {
+    export interface ICubemapFaceTwoDTextureAsset {
         sourceRegion:RectRegion;
         sourceRegionMethod:TextureSourceRegionMethod;
         type:TextureType;

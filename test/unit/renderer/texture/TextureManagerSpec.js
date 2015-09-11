@@ -50,10 +50,10 @@ describe("TextureManager", function() {
             var asset = {
                 asset: dy.CompressedTextureAsset.create({})
             };
-            var texture1 = dy.CubeTexture.create(
+            var texture1 = dy.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
-            var texture2 = dy.CubeTexture.create(
+            var texture2 = dy.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
 
@@ -69,7 +69,7 @@ describe("TextureManager", function() {
             var asset = {
                 asset: dy.CompressedTextureAsset.create({})
             };
-            var texture1 = dy.CubeTexture.create(
+            var texture1 = dy.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
             manager.setEnvMap(texture1);

@@ -33,11 +33,11 @@ module dy{
         }
 
         //todo support cubemap?
-        public toCubeFaceTexture():CubeFaceTwoDTexture{
+        public toCubemapFaceTexture():CubemapFaceTwoDTexture{
             return dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         }
 
-        public copyToCubeFaceTexture(cubeFaceTexture:ICubeFaceTwoDTextureAsset){
+        public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){
             dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         }
     }
