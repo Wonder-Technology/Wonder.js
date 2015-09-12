@@ -5,18 +5,26 @@ module dy{
     //todo can fallback to flash
     //todo support loop
     export class Video{
-        public static create(config:VideoConfig) {
-        	var obj = new this(config);
+        public static create({
+            urlArr,
+            onLoad,
+            onError
+            }) {
+            var obj = new this(arguments[0]);
 
         	obj.initWhenCreate();
 
         	return obj;
         }
 
-        constructor(config:VideoConfig){
-            this._urlArr = dyCb.Collection.create<string>(config.urlArr);
-            this._onLoad = config.onLoad;
-            this._onError = config.onError;
+        constructor({
+            urlArr,
+            onLoad= (video:Video) => {},
+            onError= (err:any) => {}
+            }){
+            this._urlArr = dyCb.Collection.create<string>(urlArr);
+            this._onLoad = onLoad;
+            this._onError = onError;
         }
 
         public url:string = null;
@@ -24,8 +32,8 @@ module dy{
         public isStop:boolean = false;
 
         private _urlArr:dyCb.Collection<string> = null;
-        private _onLoad:Function = function(video:Video){};
-        private _onError:Function = function (err:any){};
+        private _onLoad:Function = null;
+        private _onError:Function = null;
 
 
         public initWhenCreate(){
@@ -100,9 +108,9 @@ module dy{
         }
     }
 
-    export type VideoConfig = {
-        urlArr:Array<string>;
-        onLoad:Function;
-        onError:Function;
-    }
+    //export type VideoConfig = {
+    //    urlArr:Array<string>;
+    //    onLoad:Function;
+    //    onError:Function;
+    //}
 }

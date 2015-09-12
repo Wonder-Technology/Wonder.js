@@ -1,9 +1,9 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class Main{
-        public static setConfig(config:MainConfig){
+        public static setConfig({ canvasId }){
             //todo set more global config
-            this._canvasId = config.canvasId;
+            this._canvasId = canvasId;
 
             this._globalInit();
         }
@@ -15,8 +15,4 @@ module dy{
             GPUDetector.getInstance().detect();
         }
     }
-
-    export type MainConfig = {
-        canvasId:string;
-    };
 }
