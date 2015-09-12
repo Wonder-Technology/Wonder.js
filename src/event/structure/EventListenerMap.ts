@@ -202,7 +202,7 @@ module dy{
         }
 
         private _buildKeyWithUid(uid:number, eventName:EventName){
-            return String(uid) + "_" + eventName;
+            return `${String(uid)}_${eventName}`;
         }
     }
 

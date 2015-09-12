@@ -14,9 +14,7 @@ module dy{
                         resolve(data);
                     },
                     error: (XMLHttpRequest, errorThrown) => {
-                        reject("url:" + url + "\nreadyState:" + XMLHttpRequest.readyState + "\nstatus:" + XMLHttpRequest.status
-                            + "\nmessage:" + errorThrown.message
-                            + "\nresponseText:" + XMLHttpRequest.responseText);
+                        reject(`url:${url}\nreadyState:${XMLHttpRequest.readyState}\nstatus:${XMLHttpRequest.status}\nmessage:${errorThrown.message}\nresponseText:${XMLHttpRequest.responseText}`);
                     }
                 });
             }));

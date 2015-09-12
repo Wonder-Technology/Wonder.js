@@ -143,8 +143,7 @@ module dy{
                     return;
                 }
 
-                //todo use typescript template to refactor
-                result += "attribute " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
+                result += `attribute ${VariableTable.getVariableType(val.type)} ${key};\n`;
             });
 
             return result;
@@ -159,8 +158,7 @@ module dy{
                 }
 
                 if(sourceBody.indexOf(key) !== -1){
-                    //todo use typescript template to refactor
-                    result += "uniform " + VariableTable.getVariableType(val.type) + " " + key + ";\n";
+                    result += `uniform ${VariableTable.getVariableType(val.type)} ${key};\n`;
                 }
             });
 
