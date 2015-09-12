@@ -1,10 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export interface IEventHandlerData{
-        eventName:EventName;
-        handler:Function;
-    }
-
     export class EventListener {
         public static create(option) {
             var obj = new this(option);
@@ -16,7 +11,7 @@ module dy {
 
         public eventType:EventType = null;
         public priority:number = null;
-        public handlerDataList:dyCb.Collection<IEventHandlerData> = dyCb.Collection.create<IEventHandlerData>();
+        public handlerDataList:dyCb.Collection<EventHandlerData> = dyCb.Collection.create<EventHandlerData>();
 
         constructor(option:any){
             this.eventType = option.eventType;
@@ -46,5 +41,10 @@ module dy {
         private _parseEventName(handlerName){
             return handlerName.slice(2).toLowerCase();
         }
+    }
+
+    export type EventHandlerData = {
+        eventName:EventName;
+        handler:Function;
     }
 }

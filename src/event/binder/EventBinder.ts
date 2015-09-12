@@ -25,7 +25,7 @@ module dy {
             if(arguments.length === 1){
                 let listener:EventListener = !(arguments[0] instanceof EventListener) ?  EventListener.create(arguments[0]): arguments[0];
 
-                listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
+                listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
                     FactoryEventHandler.createEventHandler(listener.eventType)
                         .on(handlerData.eventName, handlerData.handler, listener.priority);
                 });
@@ -34,7 +34,7 @@ module dy {
                 let target = arguments[0],
                     listener:EventListener = !(arguments[1] instanceof EventListener) ?  EventListener.create(arguments[1]): arguments[1];
 
-                listener.handlerDataList.forEach(function (handlerData:IEventHandlerData) {
+                listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
                     FactoryEventHandler.createEventHandler(listener.eventType)
                         .on(target, handlerData.eventName, handlerData.handler, listener.priority);
                 });
@@ -70,7 +70,7 @@ module dy {
                 argArr = Array.prototype.slice.call(arguments, 0);
 
             if(arguments.length === 0){
-                eventRegister.forEach((list:dyCb.Collection<IEventHandlerData>, key:string) => {
+                eventRegister.forEach((list:dyCb.Collection<EventHandlerData>, key:string) => {
                     var eventName = eventRegister.getEventNameFromKey(key),
                         targetUid = eventRegister.getUidFromKey(key);
 
@@ -101,7 +101,7 @@ module dy {
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                eventRegister.forEach((list:dyCb.Collection<IEventRegisterData>, key:string) => {
+                eventRegister.forEach((list:dyCb.Collection<EventRegisterData>, key:string) => {
                     var eventName = eventRegister.getEventNameFromKey(key);
 
                     if(eventRegister.isTarget(key, target, list)){

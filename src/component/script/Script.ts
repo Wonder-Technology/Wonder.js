@@ -1,13 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export interface IScriptFileData{
-        name:string;
-        class:any
-    }
-
     //todo add expose attributes for editor(refer to playcanvas)
     export class Script extends Component{
-        public static script:dyCb.Stack<IScriptFileData> = dyCb.Stack.create<IScriptFileData>();
+        public static script:dyCb.Stack<ScriptFileData> = dyCb.Stack.create<ScriptFileData>();
 
         public static create():Script;
         public static create(url:string):Script;
@@ -26,7 +21,7 @@ module dy{
                 let scriptName = arguments[0],
                     callback = arguments[1];
 
-                this.script.push(<IScriptFileData>{
+                this.script.push(<ScriptFileData>{
                     name: scriptName,
                     class: callback(Director.getInstance())
                 });
@@ -55,7 +50,7 @@ module dy{
             super.addToGameObject(gameObject);
 
             Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
-                    .do((data:IScriptFileData) => {
+                    .do((data:ScriptFileData) => {
                         gameObject.script.addChild(data.name, new data.class(gameObject));
                     })
             );
@@ -67,4 +62,9 @@ module dy{
             Director.getInstance().scriptStreams.removeChild(this.uid.toString());
         }
     }
+
+    export type ScriptFileData = {
+        name:string;
+        class:any;
+    };
 }

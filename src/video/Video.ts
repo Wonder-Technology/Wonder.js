@@ -5,7 +5,7 @@ module dy{
     //todo can fallback to flash
     //todo support loop
     export class Video{
-        public static create(config:IVideoConfig) {
+        public static create(config:VideoConfig) {
         	var obj = new this(config);
 
         	obj.initWhenCreate();
@@ -13,7 +13,7 @@ module dy{
         	return obj;
         }
 
-        constructor(config:IVideoConfig){
+        constructor(config:VideoConfig){
             this._urlArr = dyCb.Collection.create<string>(config.urlArr);
             this._onLoad = config.onLoad;
             this._onError = config.onError;
@@ -100,7 +100,7 @@ module dy{
         }
     }
 
-    export interface IVideoConfig{
+    export type VideoConfig = {
         urlArr:Array<string>;
         onLoad:Function;
         onError:Function;

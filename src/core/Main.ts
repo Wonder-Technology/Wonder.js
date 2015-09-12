@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class Main{
-        public static setConfig(config:IMainConfig){
+        public static setConfig(config:MainConfig){
             //todo set more global config
             this._canvasId = config.canvasId;
 
@@ -16,7 +16,7 @@ module dy{
         }
     }
 
-    export interface IMainConfig{
+    export type MainConfig = {
         canvasId:string;
-    }
+    };
 }

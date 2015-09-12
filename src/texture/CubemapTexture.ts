@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class CubemapTexture extends Texture{
-        public static create(assets:Array<ICubemapData>){
+        public static create(assets:Array<CubemapData>){
             var obj = new this(assets);
 
             obj.initWhenCreate(assets);
@@ -9,13 +9,13 @@ module dy{
             return obj;
         }
 
-        constructor(assets:Array<ICubemapData>){
+        constructor(assets:Array<CubemapData>){
             super();
 
             this.assets = assets;
         }
 
-        public assets:Array<ICubemapData> = null;
+        public assets:Array<CubemapData> = null;
         public textures:dyCb.Collection<CubemapFaceTexture> = dyCb.Collection.create<CubemapFaceTexture>();
         public mode:EnvMapMode = null;
 
@@ -24,7 +24,7 @@ module dy{
         private _isAllCompressedAsset:boolean = false;
 
 
-        public initWhenCreate(assets:Array<ICubemapData>){
+        public initWhenCreate(assets:Array<CubemapData>){
             dyCb.Log.error(assets.length !== 6, dyCb.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
             this._judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets);
 
@@ -108,15 +108,15 @@ module dy{
             return filter === TextureFilterMode.LINEAR_MIPMAP_LINEAR || filter === TextureFilterMode.LINEAR_MIPMAP_NEAREST || filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ||filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST;
         }
 
-        private _getRepresentAsset(assets:Array<ICubemapData>){
+        private _getRepresentAsset(assets:Array<CubemapData>){
             return assets[0].asset;
         }
 
-        private  _judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets:Array<ICubemapData>){
+        private  _judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets:Array<CubemapData>){
             var isCompressedAssets = [],
                 isCommonAssets = [];
 
-            assets.forEach((asset:ICubemapData) => {
+            assets.forEach((asset:CubemapData) => {
                 if(asset.asset instanceof TwoDTextureAsset){
                     isCommonAssets.push(asset);
                 }
@@ -135,10 +135,10 @@ module dy{
             }
         }
 
-        private _createTextures(assets:Array<ICubemapData>){
+        private _createTextures(assets:Array<CubemapData>){
             var self = this;
 
-            assets.forEach((data:ICubemapData) => {
+            assets.forEach((data:CubemapData) => {
                 var face = data.asset.toCubemapFaceTexture();
 
                 if(data.sourceRegion && face instanceof CubemapFaceTwoDTexture){
@@ -154,7 +154,7 @@ module dy{
         }
     }
 
-    export interface ICubemapData{
+    export type CubemapData = {
         asset:TextureAsset;
         sourceRegion?:RectRegion;
         type?:TextureType;

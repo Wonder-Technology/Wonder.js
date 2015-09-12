@@ -98,7 +98,7 @@ module dy {
         }
 
         private _triggerEventHandler(event, userData){
-            var listenerDataList:dyCb.Collection<IEventRegisterData> = null,
+            var listenerDataList:dyCb.Collection<EventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 
@@ -108,7 +108,7 @@ module dy {
                 return false;
             }
 
-            listenerDataList.forEach((listenerData:IEventRegisterData) => {
+            listenerDataList.forEach((listenerData:EventRegisterData) => {
                 var eventCopy = event.copy();
 
                 eventCopy.currentTarget = listenerData.target;
@@ -128,7 +128,7 @@ module dy {
         }
 
         private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){
-            var listenerDataList:dyCb.Collection<IEventRegisterData> = null,
+            var listenerDataList:dyCb.Collection<EventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 
@@ -142,7 +142,7 @@ module dy {
                 return false;
             }
 
-            listenerDataList.forEach((listenerData:IEventRegisterData) => {
+            listenerDataList.forEach((listenerData:EventRegisterData) => {
                 var eventCopy = event.copy();
 
                 eventCopy.currentTarget = listenerData.target;

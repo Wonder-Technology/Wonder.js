@@ -149,7 +149,7 @@ module dy{
                         var byteArray = new Uint8Array( buffer, dataOffset, dataLength );
                     }
 
-                    var mipmap = <ICompressedTextureMipmap>{ "data": byteArray, "width": width, "height": height };
+                    var mipmap = <CompressedTextureMipmap>{ "data": byteArray, "width": width, "height": height };
                     dds.mipmaps.addChild( mipmap );
 
                     dataOffset += dataLength;
@@ -205,7 +205,7 @@ module dy{
     }
 
     export class DDSData{
-        public mipmaps:dyCb.Collection<ICompressedTextureMipmap> = dyCb.Collection.create<ICompressedTextureMipmap>();
+        public mipmaps:dyCb.Collection<CompressedTextureMipmap> = dyCb.Collection.create<CompressedTextureMipmap>();
         public width:number = 0;
         public height:number = 0;
         public format:TextureFormat = null;

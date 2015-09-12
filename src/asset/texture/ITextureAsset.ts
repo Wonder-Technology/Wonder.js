@@ -43,7 +43,7 @@ module dy{
         format:TextureFormat;
         width:number;
         height:number;
-        mipmaps:dyCb.Collection<ICompressedTextureMipmap>;
+        mipmaps:dyCb.Collection<CompressedTextureMipmap>;
         minFilter:TextureFilterMode;
     }
 

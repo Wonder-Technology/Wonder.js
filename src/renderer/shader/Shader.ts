@@ -16,8 +16,8 @@ module dy{
         public fsSource:string = "";
         public fsSourceHead:string = "";
         public fsSourceBody:string = "";
-        public attributes:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
-        public uniforms:dyCb.Hash<IShaderData> = dyCb.Hash.create<IShaderData>();
+        public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
 
         private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
 
@@ -48,7 +48,7 @@ module dy{
 
             this.buildDefinitionData();
 
-            this.attributes.forEach((val:IShaderData, key:string) => {
+            this.attributes.forEach((val:ShaderData, key:string) => {
                 if(val.value instanceof ArrayBuffer
                 || val.value === VariableCategory.ENGINE){
                     return;
@@ -85,13 +85,13 @@ module dy{
             this._libs.removeAllChildren();
         }
 
-        public read(definitionData:IShaderDefinitionData){
+        public read(definitionData:ShaderDefinitionData){
             if(definitionData.attributes){
-                this.attributes = <dyCb.Hash<IShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
+                this.attributes = <dyCb.Hash<ShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
             }
 
             if(definitionData.uniforms){
-                this.uniforms = <dyCb.Hash<IShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
+                this.uniforms = <dyCb.Hash<ShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
             }
 
             this.vsSourceHead = definitionData.vsSourceHead || "";
@@ -138,7 +138,7 @@ module dy{
         private _generateAttributeSource(){
             var result = "";
 
-            this.attributes.forEach((val:IShaderData, key:string) => {
+            this.attributes.forEach((val:ShaderData, key:string) => {
                 if(!val){
                     return;
                 }
@@ -153,7 +153,7 @@ module dy{
         private _generateUniformSource(sourceBody:string){
             var result = "";
 
-            this.uniforms.forEach((val:IShaderData, key:string) => {
+            this.uniforms.forEach((val:ShaderData, key:string) => {
                 if(!val){
                     return;
                 }
@@ -210,18 +210,17 @@ module dy{
         }
     }
 
-    export interface IShaderData{
+    export type ShaderData = {
         type:VariableType;
         value:any;
     }
 
-    //todo typescript inner interface
-    export interface IShaderDefinitionData{
+    export type ShaderDefinitionData = {
         vsSourceHead:string;
         vsSourceBody:string;
         fsSourceHead:string;
         fsSourceBody:string;
-        attributes:IShaderData|dyCb.Hash<IShaderData>;
-        uniforms:IShaderData|dyCb.Hash<IShaderData>;
+        attributes:ShaderData|dyCb.Hash<ShaderData>;
+        uniforms:ShaderData|dyCb.Hash<ShaderData>;
     }
 }

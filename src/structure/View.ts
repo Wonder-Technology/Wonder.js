@@ -1,10 +1,14 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
     export class ViewWebGL implements IView {
-        public static create(view:IView) {
+        public static create(view:any) {
             var obj = new this(view);
 
             return obj;
+        }
+
+        constructor(dom:any){
+            this._dom = dom;
         }
 
         get offset() {
@@ -31,10 +35,6 @@ module dy {
 
         get height(){
             return this._dom.height;
-        }
-
-        constructor(dom:any){
-            this._dom = dom;
         }
 
         public getContext():any{

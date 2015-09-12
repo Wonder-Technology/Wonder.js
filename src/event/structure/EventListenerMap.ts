@@ -1,10 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export interface IEventOffData {
-        eventName:EventName,
-        wrapHandler:Function
-    }
-
     export class EventListenerMap{
         public static create() {
         	var obj = new this();
@@ -12,9 +7,9 @@ module dy{
         	return obj;
         }
 
-        private _listenerMap:dyCb.Hash<dyCb.Collection<IEventRegisterData>> = dyCb.Hash.create<dyCb.Collection<IEventRegisterData>>();
+        private _listenerMap:dyCb.Hash<dyCb.Collection<EventRegisterData>> = dyCb.Hash.create<dyCb.Collection<EventRegisterData>>();
 
-        public appendChild(eventName:EventName, data:IEventRegisterData){
+        public appendChild(eventName:EventName, data:EventRegisterData){
             this._listenerMap.appendChild(
                 //String(data.target.uid) + "_" + eventName,
                 this._buildKey(data.target, eventName),
@@ -22,9 +17,9 @@ module dy{
             );
         }
 
-        public getChild(eventName:EventName):dyCb.Collection<IEventRegisterData>;
-        public getChild(target:GameObject):dyCb.Collection<IEventRegisterData>;
-        public getChild(target:GameObject, eventName:EventName):dyCb.Collection<IEventRegisterData>;
+        public getChild(eventName:EventName):dyCb.Collection<EventRegisterData>;
+        public getChild(target:GameObject):dyCb.Collection<EventRegisterData>;
+        public getChild(target:GameObject, eventName:EventName):dyCb.Collection<EventRegisterData>;
 
         public getChild(args):any{
             var self = this;
@@ -41,7 +36,7 @@ module dy{
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                return this._listenerMap.filter((list:dyCb.Collection<IEventRegisterData>, key:string) => {
+                return this._listenerMap.filter((list:dyCb.Collection<EventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -91,11 +86,11 @@ module dy{
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
                     handler = arguments[1],
-                    list:dyCb.Collection<IEventRegisterData> = null;
+                    list:dyCb.Collection<EventRegisterData> = null;
 
                 list = this._listenerMap.getChild(eventName);
 
-                list.removeChild((val:IEventRegisterData) => {
+                list.removeChild((val:EventRegisterData) => {
                         return val.handler === handler;
                     });
 
@@ -112,7 +107,7 @@ module dy{
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                this._listenerMap.removeChild((list:dyCb.Collection<IEventRegisterData>, key:string) => {
+                this._listenerMap.removeChild((list:dyCb.Collection<EventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -127,8 +122,8 @@ module dy{
                     eventName = arguments[1],
                     handler = arguments[2];
 
-                this._listenerMap.map((list:dyCb.Collection<IEventRegisterData>, key:string) => {
-                    list.removeChild((val:IEventRegisterData) => {
+                this._listenerMap.map((list:dyCb.Collection<EventRegisterData>, key:string) => {
+                    list.removeChild((val:EventRegisterData) => {
                         return val.handler === handler;
                     });
 
@@ -142,15 +137,15 @@ module dy{
         }
 
         public getEventOffDataList(target:GameObject, eventName?:EventName){
-            var result:dyCb.Collection<IEventOffData> = dyCb.Collection.create<IEventOffData>(),
+            var result:dyCb.Collection<EventOffData> = dyCb.Collection.create<EventOffData>(),
                 self = this;
 
             if(arguments.length === 1){
                 this.getChild(target)
-                .forEach((list:dyCb.Collection<IEventRegisterData>, key:string) => {
+                .forEach((list:dyCb.Collection<EventRegisterData>, key:string) => {
                         if(list && list.getCount() > 0){
                             result.addChild(
-                                <IEventOffData>{
+                                <EventOffData>{
                                     eventName: self.getEventNameFromKey(key),
                                     wrapHandler: list.getChild(0).wrapHandler
                                 }
@@ -161,11 +156,11 @@ module dy{
                 return result;
             }
             else if(arguments.length === 2){
-                var list:dyCb.Collection<IEventRegisterData> = this.getChild(target, eventName);
+                var list:dyCb.Collection<EventRegisterData> = this.getChild(target, eventName);
 
                 if(list && list.getCount() > 0){
                     result.addChild(
-                        <IEventOffData>{
+                        <EventOffData>{
                             eventName: eventName,
                             wrapHandler: list.getChild(0).wrapHandler
                         }
@@ -184,7 +179,7 @@ module dy{
             return key.indexOf("_") > -1 ? Number(<any>key.split("_")[0]) : null;
         }
 
-        public isTarget(key:string, target:GameObject, list:dyCb.Collection<IEventRegisterData>){
+        public isTarget(key:string, target:GameObject, list:dyCb.Collection<EventRegisterData>){
             return key.indexOf(String(target.uid)) > -1 && list !== undefined;
         }
 
@@ -209,5 +204,10 @@ module dy{
         private _buildKeyWithUid(uid:number, eventName:EventName){
             return String(uid) + "_" + eventName;
         }
+    }
+
+    export type EventOffData = {
+        eventName:EventName,
+        wrapHandler:Function
     }
 }

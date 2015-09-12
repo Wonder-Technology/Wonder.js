@@ -9,7 +9,7 @@ module dy{
             return obj;
         }
 
-        public mipmaps:dyCb.Collection<ICompressedTextureMipmap>;
+        public mipmaps:dyCb.Collection<CompressedTextureMipmap>;
 
         public initWhenCreate(){
             this.generateMipmaps = false;

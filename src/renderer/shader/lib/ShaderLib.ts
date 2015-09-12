@@ -1,8 +1,8 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
     export class ShaderLib{
-        public attributes:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
-        public uniforms:dyCb.Hash<IShaderVariable> = dyCb.Hash.create<IShaderVariable>();
+        public attributes:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
+        public uniforms:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
         public vsSource:string = "";
         public vsSourceHead:string = "";
         public vsSourceBody:string = "";
@@ -29,7 +29,7 @@ module dy{
             this._addVariable(this.uniforms, variableArr);
         }
 
-        private _addVariable(target:dyCb.Hash<IShaderVariable>, variableArr:Array<string>){
+        private _addVariable(target:dyCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
                 dyCb.Log.assert(VariableLib[variable], dyCb.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
 

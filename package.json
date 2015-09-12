@@ -8,7 +8,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-sync": "^0.1.4",
-    "gulp-typescript": "^2.8.0",
+    "gulp-typescript": "^2.8.2",
     "gulp-util": "^3.0.6",
     "karma": "~0.13",
     "karma-chrome-launcher": "^0.2.0",
@@ -16,6 +16,6 @@
     "karma-jasmine": "^0.3.6",
     "merge2": "^0.3.6",
     "through-gulp": "^0.3.8",
-    "typescript": "^1.5.3"
+    "typescript": "^1.6.0-beta"
   }
 }

@@ -20,7 +20,7 @@ module dy {
         public trigger(event:Event):boolean{
             var eventName = event.name,
                 eventType = event.type,
-                registerDataList:dyCb.Collection<IEventRegisterData> = null,
+                registerDataList:dyCb.Collection<EventRegisterData> = null,
                 self = this;
 
             registerDataList = EventRegister.getInstance().getEventRegisterDataList(eventName);
@@ -29,7 +29,7 @@ module dy {
                 return;
             }
 
-            registerDataList.forEach((registerData:IEventRegisterData) => {
+            registerDataList.forEach((registerData:EventRegisterData) => {
                 var eventCopy = event.copy();
 
                 registerData.handler(eventCopy);

@@ -42,7 +42,7 @@ module dy{
         }
     }
 
-    export interface ICompressedTextureMipmap{
+    export type CompressedTextureMipmap = {
         data:any;
         width:number;
         height:number;

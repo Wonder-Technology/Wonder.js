@@ -1,14 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export interface IEventRegisterData {
-        target:GameObject,
-        //user's event handler
-        handler:Function,
-        //the actual event handler
-        wrapHandler:Function,
-        priority:number
-    }
-
     export class EventRegister {
         private static _instance = null;
 
@@ -24,7 +15,7 @@ module dy {
 
         public register(target:GameObject, eventName:EventName, handler:Function, wrapHandler:Function, priority:number) {
             //var isBindEventOnView = false,
-            var data = <IEventRegisterData>{
+            var data = <EventRegisterData>{
                 target: target,
                 handler: handler,
                 wrapHandler: wrapHandler,
@@ -122,7 +113,7 @@ module dy {
         public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
 
         public getEventRegisterDataList(args){
-            var result:dyCb.Collection<IEventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
+            var result:dyCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
                 self = this;
 
             if(!result){
@@ -166,14 +157,14 @@ module dy {
         }
 
         public getWrapHandler(target:GameObject, eventName:EventName){
-            var list:dyCb.Collection<IEventOffData> = this.getChild(target, eventName);
+            var list:dyCb.Collection<EventOffData> = this.getChild(target, eventName);
 
             if(list && list.getCount() > 0){
                 return list.getChild(0).wrapHandler;
             }
         }
 
-        public isTarget(key:string, target:GameObject, list:dyCb.Collection<IEventRegisterData>){
+        public isTarget(key:string, target:GameObject, list:dyCb.Collection<EventRegisterData>){
             return this._listenerMap.isTarget(key, target, list);
         }
 
@@ -202,7 +193,7 @@ module dy {
         //}
 
         private _isAllEventHandlerRemoved(target:GameObject){
-            return !this._listenerMap.hasChild((list:dyCb.Collection<IEventRegisterData>, key:string) => {
+            return !this._listenerMap.hasChild((list:dyCb.Collection<EventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && list !== undefined;
             });
         }
@@ -215,4 +206,13 @@ module dy {
         //    return String(uid) + "_" + eventName;
         //}
     }
+
+    export type EventRegisterData = {
+        target:GameObject,
+        //user's event handler
+        handler:Function,
+        //the actual event handler
+        wrapHandler:Function,
+        priority:number
+    };
 }

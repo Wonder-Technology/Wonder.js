@@ -65,10 +65,10 @@ module dy{
             var self = this;
 
             this._shader.uniforms
-                .filter((val:IShaderData) => {
+                .filter((val:ShaderData) => {
                     return val.value !== VariableCategory.ENGINE;
                 })
-                .forEach((val:IShaderData, key:string) => {
+                .forEach((val:ShaderData, key:string) => {
                 self.sendUniformData(key, val.type, val.value);
             });
         }
@@ -103,10 +103,10 @@ module dy{
             var self = this;
 
             this._shader.attributes
-                .filter((val:IShaderData) => {
+                .filter((val:ShaderData) => {
                     return val.value !== VariableCategory.ENGINE;
                 })
-                .forEach((val:IShaderData, key:string) => {
+                .forEach((val:ShaderData, key:string) => {
                 self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
             });
         }
@@ -169,7 +169,7 @@ module dy{
             return this;
         }
 
-        private _convertAttributeDataType(val:IShaderData){
+        private _convertAttributeDataType(val:ShaderData){
             return VariableType.BUFFER;
         }
 

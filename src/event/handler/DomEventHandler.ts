@@ -5,12 +5,12 @@ module dy {
             var self = this,
                 dom = this.getDom(),
                 eventRegister = EventRegister.getInstance(),
-                eventOffDataList:dyCb.Collection<IEventOffData> = null;
+                eventOffDataList:dyCb.Collection<EventOffData> = null;
 
             eventOffDataList = eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
 
             if(eventOffDataList){
-                eventOffDataList.forEach((eventOffData:IEventOffData) => {
+                eventOffDataList.forEach((eventOffData:EventOffData) => {
                     self._unBind(dom, eventOffData.eventName, eventOffData.wrapHandler);
                 })
             }

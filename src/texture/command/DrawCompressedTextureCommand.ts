@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        public mipmaps:dyCb.Collection<ICompressedTextureMipmap> = null;
+        public mipmaps:dyCb.Collection<CompressedTextureMipmap> = null;
         //public texture:Texture = null;
 
         public execute(){
@@ -17,12 +17,12 @@ module dy{
             dyCb.Log.error(this.format === null, dyCb.Log.info.FUNC_NOT_SUPPORT(this.format));
 
             if (this.format !== TextureFormat.RGBA) {
-                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
+                this.mipmaps.forEach((mipmap:CompressedTextureMipmap, index:number) => {
                     gl.compressedTexImage2D(self.glTarget, index, self.format, mipmap.width, mipmap.height, 0, self.getDrawTarget(mipmap.data));
                 });
             }
             else{
-                this.mipmaps.forEach((mipmap:ICompressedTextureMipmap, index:number) => {
+                this.mipmaps.forEach((mipmap:CompressedTextureMipmap, index:number) => {
                     gl.texImage2D(self.glTarget, index, gl[self.format], mipmap.width, mipmap.height, 0, gl[self.format], gl[self.type], self.getDrawTarget(mipmap.data));
                 });
             }

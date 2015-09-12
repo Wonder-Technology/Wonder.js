@@ -3,98 +3,98 @@ module dy{
     export class VariableLib{
         //todo group?(common,cubemap...)
 
-        public static a_position:IShaderVariable = {
+        public static a_position:ShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
 
-        public static a_normal:IShaderVariable = {
+        public static a_normal:ShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
 
-        public static a_color:IShaderVariable = {
+        public static a_color:ShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
 
-        public static a_texCoord:IShaderVariable = {
+        public static a_texCoord:ShaderVariable = {
             type:VariableType.FLOAT_2,
             value:VariableCategory.ENGINE
         };
 
-        public static u_mMatrix:IShaderVariable = {
+        public static u_mMatrix:ShaderVariable = {
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_vMatrix:IShaderVariable = {
+        public static u_vMatrix:ShaderVariable = {
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_pMatrix:IShaderVariable = {
+        public static u_pMatrix:ShaderVariable = {
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_normalMatrix:IShaderVariable = {
+        public static u_normalMatrix:ShaderVariable = {
             type:VariableType.FLOAT_MAT4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_samplerCube0:IShaderVariable = {
+        public static u_samplerCube0:ShaderVariable = {
             type:VariableType.SAMPLER_CUBE,
             value:VariableCategory.ENGINE
         };
 
-        public static u_sampler2D0:IShaderVariable = {
+        public static u_sampler2D0:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };
 
-        public static u_sampler2D1:IShaderVariable = {
+        public static u_sampler2D1:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };
 
-        public static u_cameraPos:IShaderVariable = {
+        public static u_cameraPos:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
 
-        public static u_refractionRatio:IShaderVariable = {
+        public static u_refractionRatio:ShaderVariable = {
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
 
-        public static u_reflectivity:IShaderVariable = {
+        public static u_reflectivity:ShaderVariable = {
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
 
-        public static u_sourceRegion:IShaderVariable = {
+        public static u_sourceRegion:ShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_repeatRegion:IShaderVariable = {
+        public static u_repeatRegion:ShaderVariable = {
             type:VariableType.FLOAT_4,
             value:VariableCategory.ENGINE
         };
 
-        public static u_combineMode:IShaderVariable = {
+        public static u_combineMode:ShaderVariable = {
             type:VariableType.NUMBER_1,
             value:VariableCategory.ENGINE
         };
 
-        public static u_mixRatio:IShaderVariable = {
+        public static u_mixRatio:ShaderVariable = {
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
     }
 
-    export interface IShaderVariable{
+    export type ShaderVariable = {
         type:VariableType;
         value:any
     }
