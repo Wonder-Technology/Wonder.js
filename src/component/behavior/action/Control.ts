@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
-    export class Control extends ActionInterval{
+    export abstract class Control extends ActionInterval{
         set target(target:GameObject){
             this.p_target = target;
 
@@ -8,6 +8,8 @@ module dy {
                 action.target = target;
             });
         }
+
+        public abstract getInnerActions();
 
         public init() {
             this.iterate("init");
@@ -31,10 +33,6 @@ module dy {
             this.iterate("reset");
 
             return this;
-        }
-
-        public getInnerActions():dyCb.Collection<Action> {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         protected iterate(method:string, argArr?:Array<any>) {

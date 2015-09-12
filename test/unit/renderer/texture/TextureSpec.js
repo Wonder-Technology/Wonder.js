@@ -6,10 +6,18 @@ describe("Texture", function() {
     var director = null;
     var gl = null;
 
+    function buildTexture(){
+        var texture = new Texture();
+
+        texture.allocateSourceToTexture = sandbox.stub();
+
+        return texture;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Texture = dy.Texture;
-        texture = new Texture();
+        texture = buildTexture();
         textureManager = dy.TextureManager.create();
         director = dy.Director.getInstance();
         gl = {
@@ -100,7 +108,6 @@ describe("Texture", function() {
     describe("update", function(){
         beforeEach(function(){
             sandbox.stub(texture, "bindToUnit");
-            sandbox.stub(texture, "allocateSourceToTexture");
             sandbox.stub(dy.GPUDetector, "getInstance").returns({
                 maxTextureSize: 50
             });

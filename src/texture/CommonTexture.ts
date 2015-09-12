@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CommonTexture extends Texture{
+    export abstract class CommonTexture extends Texture{
         public initWhenCreate(asset:TwoDTextureAsset){
             asset.copyTo(this);
         }

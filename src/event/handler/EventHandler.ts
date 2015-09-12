@@ -1,16 +1,10 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class EventHandler {
-        public on(...args) {
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+    export abstract class EventHandler {
+        public abstract on(...args);
 
-        public off(...args) {
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract off(...args);
 
-        public trigger(...args):boolean {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract trigger(...args);
     }
 }

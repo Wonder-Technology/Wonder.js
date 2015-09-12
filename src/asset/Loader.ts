@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Loader{
+    export abstract class Loader{
         private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
 
         public load(url:string, id:string):dyRt.Stream;
@@ -40,13 +40,8 @@ module dy{
             this._container.removeAllChildren();
         }
 
-        protected loadAsset(url:string):dyRt.Stream;
-        protected loadAsset(url:Array<string>):dyRt.Stream;
-
-
-        protected loadAsset(arg):dyRt.Stream{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract loadAsset(url:string):dyRt.Stream;
+        protected abstract loadAsset(url:Array<string>):dyRt.Stream;
 
         private _errorHandle(path:string, err:string);
         private _errorHandle(path:Array<string>, err:string);

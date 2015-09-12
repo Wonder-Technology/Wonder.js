@@ -1,19 +1,13 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Renderer{
+    export abstract class Renderer{
         public skyboxCommand:QuadCommand = null;
 
-        public createQuadCommand():QuadCommand{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract createQuadCommand();
 
-        public addCommand(command:QuadCommand){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract addCommand(command:QuadCommand);
 
-        public render(){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract render();
 
         public init(){
         }

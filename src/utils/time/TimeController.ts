@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class TimeController{
+    export abstract class TimeController{
         public elapsed:number = null;
         public pauseElapsed:number = 0;
         public pauseTime:number = null;
@@ -36,8 +36,6 @@ module dy{
             return this.elapsed;
         }
 
-        protected getNow(){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract getNow();
     }
 }

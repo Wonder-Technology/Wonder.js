@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
-    export class ActionInterval extends Action{
+    export abstract class ActionInterval extends Action{
         protected elapsed:number = null;
         protected duration:number = null;
 

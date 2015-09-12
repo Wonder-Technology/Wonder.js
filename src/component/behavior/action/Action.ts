@@ -1,16 +1,16 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
-    export class Action extends Behavior{
+    export abstract class Action extends Behavior{
         get isStart() {
             return !this.isStop;
         }
 
         get isStop() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
         }
 
         get isPause() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
+            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
         }
 
         protected p_target:GameObject = null;
@@ -27,9 +27,19 @@ module dy{
             this.isFinish = false;
         }
 
-        public update(time:number){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract update(time:number);
+
+        public abstract start();
+
+        public abstract stop();
+
+        public abstract pause();
+
+        public abstract resume();
+
+        public abstract copy();
+
+        public abstract reverse();
 
         public addToGameObject(gameObject:GameObject){
             super.addToGameObject(gameObject);
@@ -42,30 +52,6 @@ module dy{
             super.removeFromGameObject(gameObject);
 
             gameObject.actionManager.removeChild(this);
-        }
-
-        public start() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public stop() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public pause() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public resume() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public copy() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-
-        public reverse() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
         }
 
         protected finish(){

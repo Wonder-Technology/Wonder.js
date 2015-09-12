@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
-    export class ActionInstant extends Action {
+    export abstract class ActionInstant extends Action {
         get isStop() {
             return false;
         }

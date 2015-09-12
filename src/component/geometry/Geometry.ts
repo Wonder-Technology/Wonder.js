@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class Geometry extends Component{
+    export abstract class Geometry extends Component{
         public vertices:ArrayBuffer = null;
         public indices:ElementBuffer = null;
         public texCoords:ArrayBuffer = null;
@@ -42,21 +42,13 @@ module dy{
             gameObject.geometry = null;
         }
 
-        protected computeVerticesBuffer():ArrayBuffer{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract computeVerticesBuffer();
 
-        protected computeIndicesBuffer():ElementBuffer{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
-        
-        protected computeTexCoordsBuffer():ArrayBuffer{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract computeIndicesBuffer();
 
-        protected computeNormalsBuffer():ArrayBuffer{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract computeTexCoordsBuffer();
+
+        protected abstract computeNormalsBuffer();
 
         private _computeColorsBuffer(material:Material){
             var arr = [],

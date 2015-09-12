@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Texture implements ITextureAsset{
+    export abstract class Texture implements ITextureAsset{
         //private _generateMipmaps:boolean = null;
         //get generateMipmaps(){
         //    return this._generateMipmaps;
@@ -139,9 +139,7 @@ module dy{
             return true;
         }
 
-        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract allocateSourceToTexture(isSourcePowerOfTwo:boolean);
 
         protected isSourcePowerOfTwo(){
             return this.isPowerOfTwo(this.width, this.height);

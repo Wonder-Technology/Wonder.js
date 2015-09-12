@@ -11,7 +11,7 @@
 
 
 module dy{
-    export class Event{
+    export abstract class Event{
         constructor(eventName:EventName) {
             this.name = eventName;
         }
@@ -32,9 +32,7 @@ module dy{
 
         protected innerType:EventType = null;
 
-        public copy():Event{
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract copy();
 
         public stopPropagation() {
             this.isStopPropagation = true;

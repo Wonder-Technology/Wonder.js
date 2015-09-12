@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class EnvMapShaderLib extends ShaderLib{
+    export abstract class EnvMapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             if (quadCmd.buffers.hasChild("normalBuffer")) {
                 program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));

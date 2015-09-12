@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class DrawTwoDTextureCommand extends DrawTextureCommand{
+    export abstract class DrawTwoDTextureCommand extends DrawTextureCommand{
         public source:any = null;
 
         protected drawTexture(index:number, source:any){

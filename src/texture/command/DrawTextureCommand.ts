@@ -1,15 +1,13 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class DrawTextureCommand{
+    export abstract class DrawTextureCommand{
         public format:TextureFormat = null;
         public type:TextureType = null;
         public sourceRegion:RectRegion = null;
         public sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         public glTarget:any = null;
 
-        public execute(){
-            dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        public abstract execute();
 
         protected getDrawTarget(source:any, sourceRegion:RectRegion=this.sourceRegion){
             var result = null,

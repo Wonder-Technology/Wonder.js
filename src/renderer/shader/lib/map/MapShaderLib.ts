@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class MapShaderLib extends ShaderLib{
+    export abstract class MapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
                 program.sendAttributeData("a_texCoord", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));

@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class DomEventHandler extends EventHandler{
+    export abstract class DomEventHandler extends EventHandler{
         public off(...args) {
             var self = this,
                 dom = this.getDom(),
@@ -16,13 +16,9 @@ module dy {
             }
         }
 
-        protected getDom(){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract getDom();
 
-        protected buildWrapHandler(target:GameObject, eventName:EventName){
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_METHOD);
-        }
+        protected abstract buildWrapHandler(target:GameObject, eventName:EventName);
 
         protected handler(target, eventName, handler, priority){
             var wrapHandler = null;

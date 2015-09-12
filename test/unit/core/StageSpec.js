@@ -135,7 +135,7 @@ describe("Stage", function() {
         function buildBehavior(){
             var behavior = new dy.Behavior();
 
-            sandbox.stub(behavior, "update");
+            behavior.update = sandbox.stub();
 
             return behavior;
         }
