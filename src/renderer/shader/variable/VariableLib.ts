@@ -113,8 +113,8 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
-        public static u_directionLight:ShaderVariable = {
-            type:VariableType.STRUCTURE,
+        public static u_directionLights:ShaderVariable = {
+            type:VariableType.STRUCTURES,
             value:VariableCategory.ENGINE
         };
 

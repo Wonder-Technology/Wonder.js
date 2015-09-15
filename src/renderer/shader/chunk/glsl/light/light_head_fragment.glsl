@@ -64,22 +64,21 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 
 
 
-//struct DirectionLight {
-//    vec3 direction;
-//
-//    float intensity;
-//
-//    vec3 color;
-//};
-//uniform DirectionLight u_directionLight;
+#if MAX_DIRECTION_LIGHTS > 0
+struct DirectionLight {
+    vec3 direction;
 
+    float intensity;
 
-// Calculates the color when using a directional light.
-//vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
-//{
-//    vec3 lightDir = normalize(-light.direction);
-//    float attenuation = 1.0;
-//
-//    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-//}
+    vec3 color;
+};
+uniform DirectionLight u_directionLights[MAX_DIRECTION_LIGHTS];
 
+vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(-light.direction);
+    float attenuation = 1.0;
+
+    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
+}
+#endif

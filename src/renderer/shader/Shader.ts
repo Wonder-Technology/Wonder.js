@@ -168,7 +168,7 @@ module dy{
 
             //todo destructure define
             define.forEach((define:any) => {
-                if(!define.value){
+                if(define.value === void 0){
                     result += `#define ${define.name}\n`;
                 }
                 else{
