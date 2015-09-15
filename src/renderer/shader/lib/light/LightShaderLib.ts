@@ -1,16 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class LightShaderLib extends ShaderLib{
-        private static _instance = null;
-
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
-            }
-            return this._instance;
-        }
-
+    export abstract class LightShaderLib extends ShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             if(quadCmd.buffers.hasChild("normalBuffer")){
                 program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
@@ -28,6 +18,9 @@ module dy{
             this._sendLightVariables(program);
         }
 
+        protected abstract setSourceContent();
+        protected abstract setSourceDefine(direction_lights_count:number, point_lights_count:number);
+
         protected setShaderDefinition(){
             this.addAttributeVariable(["a_normal"]);
 
@@ -35,10 +28,7 @@ module dy{
 
             this._setLightDefinition();
 
-            this.vsSourceHead = ShaderChunk.light_head_vertex;
-            this.vsSourceBody = ShaderChunk.light_body_vertex;
-            this.fsSourceHead = ShaderChunk.light_head_fragment;
-            this.fsSourceBody = ShaderChunk.light_body_fragment;
+            this.setSourceContent();
         }
 
         private _sendLightVariables(program:Program){
@@ -109,13 +99,7 @@ module dy{
                 point_lights_count = pointLights.getCount();
             }
 
-            this.fsSourceDefineList.addChildren([{
-                name: "DIRECTION_LIGHTS_COUNT",
-                value: direction_lights_count
-            }, {
-                name: "POINT_LIGHTS_COUNT",
-                value: point_lights_count
-            }]);
+            this.setSourceDefine(direction_lights_count, point_lights_count);
         }
     }
 }

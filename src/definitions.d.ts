@@ -60,6 +60,7 @@
 /// <reference path="component/light/DirectionLight"/>
 /// <reference path="component/light/PointLight"/>
 /// <reference path="component/light/Attenuation"/>
+/// <reference path="component/light/LightShaderMode"/>
 
 
 /// <reference path="utils/Color"/>
@@ -97,6 +98,8 @@
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/GouraudLightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/PhongLightShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>
 

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>gouraud</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        function _initScene() {
+            var director = dy.Director.getInstance();
+
+
+
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+
+            var pointLightComponent = dy.PointLight.create();
+            pointLightComponent.color = dy.Color.create("#ffffff");
+            pointLightComponent.intensity = 0.5;
+            pointLightComponent.rangeLevel = 10;
+
+            var pointLight = dy.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+
+            var pointMaterial = dy.BasicMaterial.create();
+            pointMaterial.color = dy.Color.create("#ffffff");
+
+            var geometry = dy.SphereGeometry.create();
+            geometry.material = pointMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(dy.MeshRenderer.create());
+
+            var tween = dy.Tween.create();
+
+            tween.from({x:0}).to({x: 360}, 10000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        pointLight.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+                    });
+
+            var action = dy.RepeatForever.create(tween);
+
+
+
+            pointLight.addComponent(action);
+
+
+            pointLight.transform.translate(dy.Vector3.create(0, 0, 10));
+
+
+            director.stage.addChild(ambientLight);
+            director.stage.addChild(pointLight);
+
+
+            action.start();
+
+
+
+
+
+
+
+            var directionLightComponent = dy.DirectionLight.create();
+            directionLightComponent.color = dy.Color.create("#1f8888");
+            directionLightComponent.intensity = 1;
+
+            var directionLight = dy.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+
+            //it's no work to set directionLight's position
+            directionLight.transform.translate(dy.Vector3.create(10, 0, 0));
+
+
+
+            directionLight.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
+
+
+            director.stage.addChild(directionLight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var material = dy.LightMaterial.create();
+            material.color = dy.Color.create("rgb(100, 255, 100)");
+            material.specular = dy.Color.create("rgb(0, 255, 0)");
+            material.shininess = 32;
+            material.mode = dy.LightShaderMode.GOURAUD;
+
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry);
+
+
+
+
+
+
+
+            director.stage.addChild(box);
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.Camera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 20));
+
+            var script = dy.Script.create();
+
+            script.url = "../../camera.js";
+
+            camera.addComponent(script);
+
+            return camera
+        }
+
+    };
+</script>
+</body>
+</html>
