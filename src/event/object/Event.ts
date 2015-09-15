@@ -16,10 +16,12 @@ module dy{
             this.name = eventName;
         }
 
-        get type(){
-            dyCb.Log.error(this.innerType === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
 
-            return this.innerType;
+        protected p_type:EventType = null;
+        get type(){
+            dyCb.Log.error(this.p_type === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
+
+            return this.p_type;
         }
 
         public name:EventName = null;
@@ -29,8 +31,6 @@ module dy{
         public currentTarget:GameObject = null;
         public isStopPropagation:boolean = false;
         public phase:EventPhase = null;
-
-        protected innerType:EventType = null;
 
         public abstract copy();
 

@@ -7,7 +7,7 @@ module dy {
             return obj;
         }
 
-        protected innerType:EventType = EventType.CUSTOM;
+        protected p_type:EventType = EventType.CUSTOM;
         
         public userData:any = null;
 

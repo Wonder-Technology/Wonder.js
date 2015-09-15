@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class Collider extends Component {
+    export abstract class Collider extends Component {
         public collideXY(localX:number, localY:number):boolean {
             return false;
         }

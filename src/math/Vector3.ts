@@ -140,7 +140,7 @@ module dy{
             return result;
         }
 
-        public toVec4(): Vector4{
+        public toVector4(): Vector4{
             return Vector4.create(this.values[0], this.values[1], this.values[2], 1.0);
         }
 

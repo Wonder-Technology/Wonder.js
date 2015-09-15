@@ -1,7 +1,10 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class Component extends Entity{
+    export abstract class Component extends Entity{
         public gameObject:GameObject = null;
+
+        public init(){}
+        public dispose(){}
 
         public get transform():Transform {
             if(!this.gameObject) {
@@ -9,12 +12,6 @@ module dy{
             }
 
             return this.gameObject.transform;
-        }
-
-        public init(){
-        }
-
-        public dispose(){
         }
 
         public addToGameObject(gameObject:GameObject){

@@ -23,7 +23,7 @@ module dy {
             this._event = event;
         }
 
-        protected innerType:EventType = EventType.MOUSE;
+        protected p_type:EventType = EventType.MOUSE;
 
 
         private _event:any = null;

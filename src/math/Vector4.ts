@@ -81,7 +81,7 @@ module dy{
             return this.copyHelper(Vector4.create());
         }
 
-        public toVec3(): Vector3{
+        public toVector3(): Vector3{
             return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }
 

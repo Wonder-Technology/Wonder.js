@@ -18,9 +18,9 @@ describe("Vector3", function(){
         });
     });
 
-    describe("toVec4", function(){
+    describe("toVector4", function(){
         it("convert to vector4", function(){
-            var result = vec.toVec4();
+            var result = vec.toVector4();
 
             expect(mathTestUtils.getValues(result.values)).toEqual(
                 [1, 2, 3, 1 ]
