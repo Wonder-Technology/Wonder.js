@@ -3,14 +3,14 @@
 
     vec3 totalLight = vec3(0, 0, 0);
 
-#if MAX_POINT_LIGHTS > 0
-   for(int i = 0; i < MAX_POINT_LIGHTS; i++){
+#if POINT_LIGHTS_COUNT > 0
+   for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
         totalLight += calcPointLight(u_pointLights[i], norm, viewDir);
    }
 #endif
 
-#if MAX_DIRECTION_LIGHTS > 0
-   for(int i = 0; i < MAX_DIRECTION_LIGHTS; i++){
+#if DIRECTION_LIGHTS_COUNT > 0
+   for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
         totalLight += calcDirectionLight(u_directionLights[i], norm, viewDir);
    }
 #endif

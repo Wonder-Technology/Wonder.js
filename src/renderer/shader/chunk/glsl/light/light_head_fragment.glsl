@@ -32,7 +32,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 
-#if MAX_POINT_LIGHTS > 0
+#if POINT_LIGHTS_COUNT > 0
 struct PointLight {
     vec3 position;
     vec3 color;
@@ -43,7 +43,7 @@ struct PointLight {
     float linear;
     float quadratic;
 };
-uniform PointLight u_pointLights[MAX_POINT_LIGHTS];
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 {
@@ -64,7 +64,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 
 
 
-#if MAX_DIRECTION_LIGHTS > 0
+#if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
     vec3 direction;
 
@@ -72,7 +72,7 @@ struct DirectionLight {
 
     vec3 color;
 };
-uniform DirectionLight u_directionLights[MAX_DIRECTION_LIGHTS];
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 
 vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
 {
