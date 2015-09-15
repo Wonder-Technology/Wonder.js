@@ -8,6 +8,7 @@ module dy {
         }
 
         public camera:GameObject = null;
+        public lights:dyCb.Hash<Light> = dyCb.Hash.create<Light>();
 
         public init(){
             this.addComponent(TopCollider.create());
@@ -18,6 +19,10 @@ module dy {
         public addChild(child:GameObject):GameObject{
             if(this._isCamera(child)){
                 this.camera = child;
+            }
+            else if(this._isLight(child)){
+                let light:Light = <Light>child.getFirstComponent();
+                this.lights.addChild(light.type, light);
             }
 
             return super.addChild(child);
@@ -31,6 +36,10 @@ module dy {
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);
+        }
+
+        private _isLight(child:GameObject){
+            return child.hasComponent(Light);
         }
     }
 }

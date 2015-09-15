@@ -92,6 +92,31 @@ module dy{
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };
+
+        public static u_diffuse:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_specular:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_shininess:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_ambient:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_directionLight:ShaderVariable = {
+            type:VariableType.STRUCTURE,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

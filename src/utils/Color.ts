@@ -30,8 +30,9 @@ module dy{
         }
 
         private _setColor(colorVal:string) {
-            var REGEX1 = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
-                REGEX2 = /^\#([0-9a-f]{6})$/i;
+            var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
+                REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
+                REGEX_NUM = /^\#([0-9a-f]{6})$/i;
             var color = null;
 
             // rgba(255,0,0,0)
@@ -39,13 +40,31 @@ module dy{
             //将我们平常习惯的颜色值表达形式rgba(255,0,0,0)-数值型，转换成THREE.JS认识的形式0.0-1.0，
             //这里将取值范围从0-255换算成0.0-1.0.
 
-            if ( REGEX1.test( colorVal ) ) {	//用正则表达式检查当前传递的颜色值表达样式是否为数值型rgb(255,0,0)
-                color = REGEX1.exec( colorVal );	//将字符串中的数值赋值给color，color是一个数组。
+            if ( REGEX_RGBA.test( colorVal ) ) {	//用正则表达式检查当前传递的颜色值表达样式是否为数值型rgb(255,0,0)
+                color = REGEX_RGBA.exec( colorVal );	//将字符串中的数值赋值给color，color是一个数组。
 
                 this.r = this._getColorValue(color, 1) ;
                 this.g = this._getColorValue(color, 2) ;
                 this.b = this._getColorValue(color, 3) ;
                 this.a = Number(color[4]);
+
+                return this; //返回颜色对象。
+
+            }
+
+            // rgba(255,0,0,0)
+            //
+            //将我们平常习惯的颜色值表达形式rgba(255,0,0,0)-数值型，转换成THREE.JS认识的形式0.0-1.0，
+            //这里将取值范围从0-255换算成0.0-1.0.
+
+            //todo test
+            if ( REGEX_RGB.test( colorVal ) ) {	//用正则表达式检查当前传递的颜色值表达样式是否为数值型rgb(255,0,0)
+                color = REGEX_RGB.exec( colorVal );	//将字符串中的数值赋值给color，color是一个数组。
+
+                this.r = this._getColorValue(color, 1) ;
+                this.g = this._getColorValue(color, 2) ;
+                this.b = this._getColorValue(color, 3) ;
+                this.a = 1;
 
                 return this; //返回颜色对象。
 
@@ -71,8 +90,8 @@ module dy{
             //将我们平常习惯的颜色值表达形式#ff0000-6位16进制型，转换成THREE.JS认识的形式0.0-1.0，
             //这里将取值范围从00-ff换算成0.0-1.0.
 
-            if (REGEX2.test(colorVal)) {		//用正则表达式检查当前传递的颜色值表达样式是否为6位16进制型 #ff0000
-                color = REGEX2.exec(colorVal);		//将字符串中的数值赋值给color，color是一个数组。
+            if (REGEX_NUM.test(colorVal)) {		//用正则表达式检查当前传递的颜色值表达样式是否为6位16进制型 #ff0000
+                color = REGEX_NUM.exec(colorVal);		//将字符串中的数值赋值给color，color是一个数组。
 
                 this._setHex(parseInt(color[1], 16));	//将数组中的第2个元素转换成16进制int类型整数.调用setHex 方法，将16进制数值赋值给Color.r,Color.g,Color.b
 

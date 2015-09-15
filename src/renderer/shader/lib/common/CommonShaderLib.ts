@@ -26,31 +26,7 @@ module dy{
 
             this.vsSourceHead = ShaderChunk.common_head_vertex;
             this.vsSourceBody = ShaderChunk.common_body_vertex;
-            this._setPrecision();
             this.fsSourceBody = ShaderChunk.common_body_fragment;
-        }
-
-        private _setPrecision(){
-            var precision = GPUDetector.getInstance().precision,
-                result = null;
-
-            switch (precision){
-                case GPUPrecision.HIGHP:
-                    result = ShaderChunk.highp_head_fragment;
-                    break;
-                case GPUPrecision.MEDIUMP:
-                    result = ShaderChunk.mediump_head_fragment;
-                    break;
-                case GPUPrecision.LOWP:
-                    result = ShaderChunk.lowp_head_fragment;
-                    break;
-                default:
-                    //dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
-                    result = "";
-                    break;
-            }
-
-            this.fsSourceHead = result;
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){

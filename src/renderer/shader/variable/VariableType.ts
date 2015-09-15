@@ -8,7 +8,8 @@ module dy{
         BUFFER,
         SAMPLER_CUBE,
         SAMPLER_2D,
-        NUMBER_1
+        NUMBER_1,
+        STRUCTURE
     }
 }
 

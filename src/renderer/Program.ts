@@ -111,6 +111,10 @@ module dy{
             });
         }
 
+        public sendStructureData(name:string, type:VariableType, data:any){
+            this.sendUniformData(name, type, data);
+        }
+
         public initWithShader(shader:Shader){
             var gl = Director.getInstance().gl,
                 vs = null,

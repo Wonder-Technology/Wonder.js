@@ -1,7 +1,7 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
     export class GameObject extends Entity{
-        public static create(...args) {
+        public static create() {
         	var obj = new this();
 
         	return obj;
@@ -190,6 +190,10 @@ module dy {
             return this._components.findOne((component:Component) => {
                 return component.uid === uid;
             });
+        }
+
+        public getFirstComponent():Component {
+            return this._components.getChild(0);
         }
 
         public removeChild(child:GameObject):GameObject {

@@ -44,6 +44,10 @@
 /// <reference path="component/script/Script"/>
 /// <reference path="component/script/IScriptBehavior"/>
 
+/// <reference path="component/light/Light"/>
+/// <reference path="component/light/AmbientLight"/>
+/// <reference path="component/light/DirectionLight"/>
+
 
 /// <reference path="math/Global"/>
 /// <reference path="math/Vector3"/>
@@ -84,6 +88,7 @@
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/LightShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>
 
@@ -93,6 +98,7 @@
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/EnvMapMaterial"/>
 /// <reference path="material/MapMaterial"/>
+/// <reference path="material/LightMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>

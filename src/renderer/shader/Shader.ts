@@ -117,7 +117,7 @@ module dy{
                 fsBody += lib.fsSourceBody;
             });
 
-            //ensure shader lib's code is in the top
+            //ensure shader lib's code is before custom shader's source
             this.vsSourceHead = vsHead + this.vsSourceHead;
             this.vsSourceBody = vsBody + this.vsSourceBody;
             this.fsSourceHead = fsHead + this.fsSourceHead;
@@ -127,12 +127,37 @@ module dy{
             this._buildFsSource();
         }
 
+        //todo test
         private _buildVsSource(){
-            this.vsSource = this.vsSourceHead + this._generateAttributeSource() + this._generateUniformSource(this.vsSourceBody) + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+            this.vsSource =  this._generateAttributeSource() + this._generateUniformSource(this.vsSourceHead, this.vsSourceBody) + this.vsSourceHead + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
         }
 
         private _buildFsSource(){
-            this.fsSource = this.fsSourceHead + this._generateUniformSource(this.fsSourceBody) +  ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+            this.fsSource =  this._generateUniformSource(this.fsSourceHead, this.fsSourceBody) + this.fsSourceHead +  ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
+            this.fsSource = this._getPrecisionSource() + this.fsSource;
+        }
+
+        private _getPrecisionSource(){
+            var precision = GPUDetector.getInstance().precision,
+                result = null;
+
+            switch (precision){
+                case GPUPrecision.HIGHP:
+                    result = ShaderChunk.highp_head_fragment;
+                    break;
+                case GPUPrecision.MEDIUMP:
+                    result = ShaderChunk.mediump_head_fragment;
+                    break;
+                case GPUPrecision.LOWP:
+                    result = ShaderChunk.lowp_head_fragment;
+                    break;
+                default:
+                    //dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
+                    result = "";
+                    break;
+            }
+
+            return result;
         }
 
         private _generateAttributeSource(){
@@ -149,15 +174,17 @@ module dy{
             return result;
         }
 
-        private _generateUniformSource(sourceBody:string){
+        //todo test
+        private _generateUniformSource(sourceHead:string, sourceBody:string){
             var result = "";
 
             this.uniforms.forEach((val:ShaderData, key:string) => {
-                if(!val){
+                if(!val || val.type === VariableType.STRUCTURE){
                     return;
                 }
 
-                if(sourceBody.indexOf(key) !== -1){
+                if(sourceHead.indexOf(key) !== -1
+                || sourceBody.indexOf(key) !== -1){
                     result += `uniform ${VariableTable.getVariableType(val.type)} ${key};\n`;
                 }
             });
