@@ -109,7 +109,7 @@ module dy{
                 point_lights_count = pointLights.getCount();
             }
 
-            this.fsSourceDefine.addChildren([{
+            this.fsSourceDefineList.addChildren([{
                 name: "DIRECTION_LIGHTS_COUNT",
                 value: direction_lights_count
             }, {

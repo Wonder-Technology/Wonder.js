@@ -79,6 +79,7 @@
 /// <reference path="renderer/QuadCommand"/>
 
 /// <reference path="renderer/shader/Shader"/>
+/// <reference path="renderer/shader/ShaderSourceBuilder"/>
 /// <reference path="renderer/shader/variable/VariableType"/>
 /// <reference path="renderer/shader/variable/VariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
