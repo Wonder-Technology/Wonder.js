@@ -25,9 +25,9 @@ describe("envMap shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec3 v_dir;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_dir = vec3(a_position);}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;varying vec3 v_dir;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_dir = vec3(a_position);}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec3 v_dir;uniform samplerCube u_samplerCube0;void main(void){    gl_FragColor = textureCube(u_samplerCube0, v_dir);}',
+                    'precision highp float;precision highp int;uniform samplerCube u_samplerCube0;varying vec3 v_dir;void main(void){    gl_FragColor = textureCube(u_samplerCube0, v_dir);}',
                 judge_sendLibVariable_attributes: function (program, quadCmd, material) {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_normal");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("normalBuffer");
@@ -107,9 +107,9 @@ describe("envMap shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec3 v_normal;varying vec3 v_position;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;varying vec3 v_normal;varying vec3 v_position;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec3 v_normal;varying vec3 v_position;uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    gl_FragColor = textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));}',
+                    'precision highp float;precision highp int;uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;varying vec3 v_normal;varying vec3 v_position;void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    gl_FragColor = textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));}',
                 judge_sendLibVariable_attributes: function (program, quadCmd, material) {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_normal");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("normalBuffer");
@@ -196,9 +196,9 @@ describe("envMap shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec3 v_normal;varying vec3 v_position;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;varying vec3 v_normal;varying vec3 v_position;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec3 v_normal;varying vec3 v_position;uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;uniform float u_refractionRatio;void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    gl_FragColor = textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));}',
+                    'precision highp float;precision highp int;uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;uniform float u_refractionRatio;varying vec3 v_normal;varying vec3 v_position;void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    gl_FragColor = textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));}',
                 judge_sendLibVariable_attributes: function (program, quadCmd, material) {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_normal");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("normalBuffer");
@@ -295,9 +295,9 @@ describe("envMap shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec3 v_normal;varying vec3 v_position;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec4 a_normal;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform mat4 u_normalMatrix;varying vec3 v_normal;varying vec3 v_position;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    v_normal = vec3(u_normalMatrix * a_normal);    v_position = vec3(u_mMatrix * a_position);}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec3 v_normal;varying vec3 v_position;float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);    float fresnelPower = 5.0;    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);    return ratio / 100.0;}uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;uniform float u_refractionRatio;uniform float u_reflectivity;void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    vec3 normal = normalize(v_normal);    vec3 reflectDir = reflect(inDir, normal);    vec3 refractDir = refract(inDir, normal, u_refractionRatio);    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);    vec4 refractColor = textureCube(u_samplerCube0, refractDir);	if(u_reflectivity != -1.0){        gl_FragColor = mix(reflectColor, refractColor, u_reflectivity);	}	else{        gl_FragColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));	}}',
+                    'precision highp float;precision highp int;uniform samplerCube u_samplerCube0;uniform vec3 u_cameraPos;uniform float u_refractionRatio;uniform float u_reflectivity;varying vec3 v_normal;varying vec3 v_position;float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);    float fresnelPower = 5.0;    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);    return ratio / 100.0;}void main(void){    vec3 inDir = normalize(v_position - u_cameraPos);    vec3 normal = normalize(v_normal);    vec3 reflectDir = reflect(inDir, normal);    vec3 refractDir = refract(inDir, normal, u_refractionRatio);    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);    vec4 refractColor = textureCube(u_samplerCube0, refractDir);	if(u_reflectivity != -1.0){        gl_FragColor = mix(reflectColor, refractColor, u_reflectivity);	}	else{        gl_FragColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));	}}',
                 judge_sendLibVariable_attributes: function (program, quadCmd, material) {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_normal");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("normalBuffer");

@@ -25,9 +25,9 @@ describe("map shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec2 v_texCoord;attribute vec4 a_position;attribute vec2 a_texCoord;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform vec4 u_sourceRegion;uniform vec4 u_repeatRegion;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;    v_texCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec2 a_texCoord;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform vec4 u_sourceRegion;uniform vec4 u_repeatRegion;varying vec2 v_texCoord;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;    v_texCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec2 v_texCoord;uniform sampler2D u_sampler2D0;void main(void){    gl_FragColor = texture2D(u_sampler2D0, v_texCoord);}',
+                    'precision highp float;precision highp int;uniform sampler2D u_sampler2D0;varying vec2 v_texCoord;void main(void){    gl_FragColor = texture2D(u_sampler2D0, v_texCoord);}',
                 judge_sendLibVariable_attributes: function(program, quadCmd, material){
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_texCoord");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("texCoordsBuffer");
@@ -90,9 +90,9 @@ describe("map shader", function () {
                     }
                 },
                 definitionData_vsSource:
-                    'varying vec2 v_texCoord;attribute vec4 a_position;attribute vec2 a_texCoord;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform vec4 u_sourceRegion;uniform vec4 u_repeatRegion;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;    v_texCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;}',
+                    'precision highp float;precision highp int;attribute vec4 a_position;attribute vec2 a_texCoord;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;uniform vec4 u_sourceRegion;uniform vec4 u_repeatRegion;varying vec2 v_texCoord;void main(void){gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;    v_texCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;}',
                 definitionData_fsSource:
-                    'precision highp float;varying vec2 v_texCoord;uniform sampler2D u_sampler2D0;uniform sampler2D u_sampler2D1;uniform int u_combineMode;uniform float u_mixRatio;void main(void){    vec4 color0 = texture2D(u_sampler2D0, v_texCoord);    vec4 color1 = texture2D(u_sampler2D1, v_texCoord);    if(u_combineMode == 0){        gl_FragColor = mix(color0, color1, u_mixRatio);    }    else if(u_combineMode == 1){        gl_FragColor = color0 * color1;    }    else if(u_combineMode == 2){        gl_FragColor = color0 + color1;    }}',
+                    'precision highp float;precision highp int;uniform sampler2D u_sampler2D0;uniform sampler2D u_sampler2D1;uniform int u_combineMode;uniform float u_mixRatio;varying vec2 v_texCoord;void main(void){    vec4 color0 = texture2D(u_sampler2D0, v_texCoord);    vec4 color1 = texture2D(u_sampler2D1, v_texCoord);    if(u_combineMode == 0){        gl_FragColor = mix(color0, color1, u_mixRatio);    }    else if(u_combineMode == 1){        gl_FragColor = color0 * color1;    }    else if(u_combineMode == 2){        gl_FragColor = color0 + color1;    }}',
                 judge_sendLibVariable_attributes: function(program, quadCmd, material){
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_texCoord");
                     expect(quadCmd.buffers.getChild.secondCall).toCalledWith("texCoordsBuffer");

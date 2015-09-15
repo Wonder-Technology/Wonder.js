@@ -102,10 +102,10 @@ describe("custom shader", function () {
                         }
                     );
                     expect(shader.vsSource.split("\n").join("")).toEqual(
-                        'varying vec4 v_color;attribute vec4 a_color;attribute vec4 a_position;uniform float u_test1;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;void main(void){v_color = a_color;float a = u_test1;gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;}'
+                        'precision highp float;precision highp int;attribute vec4 a_color;attribute vec4 a_position;uniform float u_test1;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;varying vec4 v_color;void main(void){v_color = a_color;float a = u_test1;gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;}'
                     );
                     expect(shader.fsSource.split("\n").join("")).toEqual(
-                        'precision highp float;varying vec4 v_color;uniform float u_test2;uniform float u_test2;void main(void){float a = u_test2;gl_FragColor = v_color;}'
+                        'precision highp float;precision highp int;uniform float u_test2;varying vec4 v_color;uniform float u_test2;void main(void){float a = u_test2;gl_FragColor = v_color;}'
                     )
                 });
                 it("program init with shader", function () {
