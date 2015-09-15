@@ -16,6 +16,8 @@ module dy{
         public fsSource:string = "";
         public fsSourceHead:string = "";
         public fsSourceBody:string = "";
+        public vsSourceDefine:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        public fsSourceDefine:dyCb.Collection<any> = dyCb.Collection.create<any>();
         public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
 
@@ -115,6 +117,8 @@ module dy{
                 vsBody += lib.vsSourceBody;
                 fsHead += lib.fsSourceHead;
                 fsBody += lib.fsSourceBody;
+                self.vsSourceDefine.addChildren(lib.vsSourceDefine);
+                self.fsSourceDefine.addChildren(lib.fsSourceDefine);
             });
 
             //ensure shader lib's code is before custom shader's source
@@ -128,13 +132,57 @@ module dy{
         }
 
         //todo test
+        //todo duplicate
         private _buildVsSource(){
-            this.vsSource =  this._generateAttributeSource() + this._generateUniformSource(this.vsSourceHead, this.vsSourceBody) + this.vsSourceHead + ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+            this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceHead() + this._buildVsSourceBody();
         }
 
         private _buildFsSource(){
-            this.fsSource =  this._generateUniformSource(this.fsSourceHead, this.fsSourceBody) + this.fsSourceHead +  ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
-            this.fsSource = this._getPrecisionSource() + this.fsSource;
+            this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceHead() + this._buildFsSourceBody();
+        }
+
+        //todo move to builder
+        private _buildVsSourceTop(){
+            return "";
+        }
+        private _buildVsSourceDefine(){
+            return this._buildSourceDefine(this.vsSourceDefine);
+        }
+        private _buildVsSourceHead(){
+            return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceHead, this.vsSourceBody) + this.vsSourceHead;
+        }
+        private _buildVsSourceBody(){
+            return ShaderSnippet.main_begin + this.vsSourceBody + ShaderSnippet.main_end;
+        }
+
+        private _buildFsSourceTop(){
+            return this._getPrecisionSource();
+        }
+
+        private _buildFsSourceDefine(){
+            return this._buildSourceDefine(this.fsSourceDefine);
+        }
+        //todo set define type
+        private _buildSourceDefine(define:any){
+            var result = "";
+
+            //todo destructure define
+            define.forEach((define:any) => {
+                if(!define.value){
+                    result += `#define ${define.name};\n`;
+                }
+                else{
+                    result += `#define ${define.name} ${define.value};\n`;
+                }
+            });
+
+            return result;
+        }
+        private _buildFsSourceHead(){
+            return this._generateUniformSource(this.fsSourceHead, this.fsSourceBody) + this.fsSourceHead;
+        }
+        private _buildFsSourceBody(){
+            return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
         }
 
         private _getPrecisionSource(){

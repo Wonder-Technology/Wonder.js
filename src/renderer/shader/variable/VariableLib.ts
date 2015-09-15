@@ -117,6 +117,11 @@ module dy{
             type:VariableType.STRUCTURE,
             value:VariableCategory.ENGINE
         };
+
+        public static u_pointLight:ShaderVariable = {
+            type:VariableType.STRUCTURE,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

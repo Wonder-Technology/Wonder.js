@@ -9,6 +9,8 @@ module dy{
         public fsSource:string = "";
         public fsSourceHead:string = "";
         public fsSourceBody:string = "";
+        public vsSourceDefine:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        public fsSourceDefine:dyCb.Collection<any> = dyCb.Collection.create<any>();
 
         public initWhenCreate(){
             //todo rename?
