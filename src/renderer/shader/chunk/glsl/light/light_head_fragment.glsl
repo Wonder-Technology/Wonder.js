@@ -32,7 +32,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 
-#ifdef POINT
+#if MAX_POINT_LIGHTS > 0
 struct PointLight {
     vec3 position;
     vec3 color;
@@ -43,7 +43,7 @@ struct PointLight {
     float linear;
     float quadratic;
 };
-uniform PointLight u_pointLight;
+uniform PointLight u_pointLights[MAX_POINT_LIGHTS];
 
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 {

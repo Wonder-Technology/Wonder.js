@@ -9,7 +9,8 @@ module dy{
         SAMPLER_CUBE,
         SAMPLER_2D,
         NUMBER_1,
-        STRUCTURE
+        STRUCTURE,
+        STRUCTURES
     }
 }
 

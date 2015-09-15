@@ -169,10 +169,10 @@ module dy{
             //todo destructure define
             define.forEach((define:any) => {
                 if(!define.value){
-                    result += `#define ${define.name};\n`;
+                    result += `#define ${define.name}\n`;
                 }
                 else{
-                    result += `#define ${define.name} ${define.value};\n`;
+                    result += `#define ${define.name} ${define.value}\n`;
                 }
             });
 
@@ -227,7 +227,7 @@ module dy{
             var result = "";
 
             this.uniforms.forEach((val:ShaderData, key:string) => {
-                if(!val || val.type === VariableType.STRUCTURE){
+                if(!val || val.type === VariableType.STRUCTURE || val.type === VariableType.STRUCTURES){
                     return;
                 }
 

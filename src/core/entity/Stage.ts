@@ -8,7 +8,7 @@ module dy {
         }
 
         public camera:GameObject = null;
-        public lights:dyCb.Hash<Light> = dyCb.Hash.create<Light>();
+        public lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
 
         public init(){
             this.addComponent(TopCollider.create());
@@ -22,7 +22,14 @@ module dy {
             }
             else if(this._isLight(child)){
                 let light:Light = <Light>child.getFirstComponent();
-                this.lights.addChild(light.type, light);
+
+                //limit ambient light to be one?
+                if(this._isAmbientLight(light)){
+                    this.lights.addChild(light.type, light);
+                }
+                else{
+                    this.lights.appendChild(light.type, light);
+                }
             }
 
             return super.addChild(child);
@@ -40,6 +47,10 @@ module dy {
 
         private _isLight(child:GameObject){
             return child.hasComponent(Light);
+        }
+
+        private _isAmbientLight(light: Light){
+            return light instanceof AmbientLight;
         }
     }
 }
