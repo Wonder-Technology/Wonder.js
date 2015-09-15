@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class AmbientLight extends Light{
-        public type:string = "ambientLight";
+        public static type:string = "ambientLight";
 
         public static create() {
             var obj = new this();

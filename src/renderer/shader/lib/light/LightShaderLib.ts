@@ -12,13 +12,10 @@ module dy{
         }
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var lights = dy.Director.getInstance().stage.lights,
-                //todo move to LightManager
-                directionLights:dyCb.Collection<DirectionLight> = <dyCb.Collection<DirectionLight>>lights.getChild("directionLight"),
-            //todo should be only one ambient
-                ambientLight:AmbientLight = <AmbientLight>lights.getChild("ambientLight");
-            //todo type to enum?
-            var pointLights:dyCb.Collection<PointLight> = <dyCb.Collection<PointLight>>lights.getChild("pointLight");
+            var stage:Stage = dy.Director.getInstance().stage,
+                directionLights:dyCb.Collection<GameObject> = stage.directionLights,
+                ambientLight:GameObject =stage.ambientLight,
+                pointLights:dyCb.Collection<GameObject> = stage.pointLights;
 
             if(quadCmd.buffers.hasChild("normalBuffer")){
                 program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
@@ -32,51 +29,69 @@ module dy{
             program.sendUniformData("u_specular", VariableType.FLOAT_3, material.specular.toVector3());
             program.sendUniformData("u_shininess", VariableType.FLOAT_1, material.shininess);
 
-            program.sendUniformData("u_ambient", VariableType.FLOAT_3, ambientLight.color.toVector3());
+            program.sendUniformData("u_ambient", VariableType.FLOAT_3, ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
+
 
             //todo refactor
             if(pointLights){
-                pointLights.forEach((pointLight:PointLight, index:number) => {
-                    program.sendStructureData(`u_pointLights[${index}].position`, VariableType.FLOAT_3, pointLight.position);
-                    program.sendStructureData(`u_pointLights[${index}].color`, VariableType.FLOAT_3, pointLight.color.toVector3());
+                pointLights.forEach((pointLight:GameObject, index:number) => {
+                    var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
 
-                    program.sendStructureData(`u_pointLights[${index}].intensity`, VariableType.FLOAT_1, pointLight.intensity);
-                    program.sendStructureData(`u_pointLights[${index}].range`, VariableType.FLOAT_1, pointLight.range);
-                    program.sendStructureData(`u_pointLights[${index}].constant`, VariableType.FLOAT_1, pointLight.constant);
-                    program.sendStructureData(`u_pointLights[${index}].linear`, VariableType.FLOAT_1, pointLight.linear);
-                    program.sendStructureData(`u_pointLights[${index}].quadratic`, VariableType.FLOAT_1, pointLight.quadratic);
+                    program.sendStructureData(`u_pointLights[${index}].position`, VariableType.FLOAT_3, pointLight.transform.position);
+                    program.sendStructureData(`u_pointLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
+
+                    program.sendStructureData(`u_pointLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
+                    program.sendStructureData(`u_pointLights[${index}].range`, VariableType.FLOAT_1, lightComponent.range);
+                    program.sendStructureData(`u_pointLights[${index}].constant`, VariableType.FLOAT_1, lightComponent.constant);
+                    program.sendStructureData(`u_pointLights[${index}].linear`, VariableType.FLOAT_1, lightComponent.linear);
+                    program.sendStructureData(`u_pointLights[${index}].quadratic`, VariableType.FLOAT_1, lightComponent.quadratic);
                 });
             }
 
             if(directionLights){
-                directionLights.forEach((directionLight:DirectionLight, index:number) => {
-                    program.sendStructureData(`u_directionLights[${index}].direction`, VariableType.FLOAT_3, directionLight.direction);
-                    program.sendStructureData(`u_directionLights[${index}].color`, VariableType.FLOAT_3, directionLight.color.toVector3());
+                var self = this;
 
-                    program.sendStructureData(`u_directionLights[${index}].intensity`, VariableType.FLOAT_1, directionLight.intensity);
+                directionLights.forEach((directionLight:GameObject, index:number) => {
+                    var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
+
+                    program.sendStructureData(`u_directionLights[${index}].direction`, VariableType.FLOAT_3, self._getDirection(directionLight));
+                    program.sendStructureData(`u_directionLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
+
+                    program.sendStructureData(`u_directionLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
                 });
             }
         }
 
+        //todo test
+        private _getDirection(directionLight:GameObject){
+            return directionLight.transform.rotation.multiplyVector3(DirectionLight.defaultDirection);
+        }
+
         protected setShaderDefinition(){
-            var lights = dy.Director.getInstance().stage.lights,
-            //todo move to LightManager
-                directionLights:dyCb.Collection<DirectionLight> = <dyCb.Collection<DirectionLight>>lights.getChild("directionLight");
-            //todo type to enum?
-            var pointLights:dyCb.Collection<PointLight> = <dyCb.Collection<PointLight>>lights.getChild("pointLight");
+            var stage:Stage = dy.Director.getInstance().stage,
+                directionLights:dyCb.Collection<GameObject> = stage.directionLights,
+                pointLights:dyCb.Collection<GameObject> = stage.pointLights;
+
+
+
 
             var max_direction_lights = 0,
                 max_point_lights = 0;
 
+            this.addAttributeVariable(["a_normal"]);
+
+            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_diffuse", "u_specular", "u_shininess", "u_ambient"]);
+
+
             //todo refactor
             if(directionLights){
-                this.addUniformVariable(["u_directionLights", "u_normalMatrix", "u_cameraPos", "u_diffuse", "u_specular", "u_shininess", "u_ambient"]);
+                this.addUniformVariable(["u_directionLights"]);
 
                 max_direction_lights = directionLights.getCount();
             }
 
             if(pointLights){
-                this.addUniformVariable(["u_pointLights", "u_normalMatrix", "u_cameraPos", "u_diffuse", "u_specular", "u_shininess", "u_ambient"]);
+                this.addUniformVariable(["u_pointLights"]);
 
                 max_point_lights = pointLights.getCount();
             }
@@ -89,9 +104,6 @@ module dy{
                 value: max_point_lights
             }]);
 
-
-            this.addAttributeVariable(["a_normal"]);
-            //this.addUniformVariable(["u_directionLight", "u_normalMatrix", "u_cameraPos", "u_diffuse", "u_specular", "u_shininess", "u_ambient"]);
 
             this.vsSourceHead = ShaderChunk.light_head_vertex;
             this.vsSourceBody = ShaderChunk.light_body_vertex;

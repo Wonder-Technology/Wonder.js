@@ -1,6 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class PointLight extends Light{
+        public static type:string = "pointLight";
+
         public static create() {
             var obj = new this();
 
@@ -32,8 +34,6 @@ module dy{
             return this._attenuation.quadratic;
         }
 
-        public type:string = "pointLight";
-        public position:Vector3 = Vector3.create(0, 0, 0);
         public intensity:number = 1;
 
         private _attenuation:Attenuation = Attenuation.create();

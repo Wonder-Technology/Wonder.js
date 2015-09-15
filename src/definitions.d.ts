@@ -13,7 +13,18 @@
 /// <reference path="core/Director"/>
 /// <reference path="core/Main"/>
 /// <reference path="core/entity/Stage"/>
+/// <reference path="core/entity/LightManager"/>
 /// <reference path="core/entity/Skybox"/>
+
+
+
+
+/// <reference path="math/Global"/>
+/// <reference path="math/Vector3"/>
+/// <reference path="math/Vector4"/>
+/// <reference path="math/Matrix"/>
+/// <reference path="math/Quaternion"/>
+
 
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
@@ -50,12 +61,6 @@
 /// <reference path="component/light/PointLight"/>
 /// <reference path="component/light/Attenuation"/>
 
-
-/// <reference path="math/Global"/>
-/// <reference path="math/Vector3"/>
-/// <reference path="math/Vector4"/>
-/// <reference path="math/Matrix"/>
-/// <reference path="math/Quaternion"/>
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>

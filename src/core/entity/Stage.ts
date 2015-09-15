@@ -7,8 +7,22 @@ module dy {
             return obj;
         }
 
+        get ambientLight():GameObject {
+            return this._lightManager.ambientLight;
+        }
+
+        get directionLights(): dyCb.Collection<GameObject>{
+            return this._lightManager.directionLights;
+        }
+
+        get pointLights(): dyCb.Collection<GameObject>{
+            return this._lightManager.pointLights;
+        }
+
         public camera:GameObject = null;
-        public lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        //public lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
+
+        private _lightManager:LightManager = LightManager.create();
 
         public init(){
             this.addComponent(TopCollider.create());
@@ -21,15 +35,7 @@ module dy {
                 this.camera = child;
             }
             else if(this._isLight(child)){
-                let light:Light = <Light>child.getFirstComponent();
-
-                //limit ambient light to be one?
-                if(this._isAmbientLight(light)){
-                    this.lights.addChild(light.type, light);
-                }
-                else{
-                    this.lights.appendChild(light.type, light);
-                }
+                this._lightManager.addChild(child);
             }
 
             return super.addChild(child);
@@ -47,10 +53,6 @@ module dy {
 
         private _isLight(child:GameObject){
             return child.hasComponent(Light);
-        }
-
-        private _isAmbientLight(light: Light){
-            return light instanceof AmbientLight;
         }
     }
 }

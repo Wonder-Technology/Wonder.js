@@ -7,9 +7,9 @@ module dy{
             return geom;
         }
 
-        public radius:number = null;
+        public radius:number = 1;
         public drawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
-        public segments:number = null;
+        public segments:number = 20;
 
         private _data:{
             vertices;
