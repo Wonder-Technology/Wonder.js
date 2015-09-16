@@ -20,12 +20,11 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
     }
 
     // Combine results
-    vec3 ambientColor = u_ambient;
+    vec3 ambientColor = u_ambient * u_diffuse;
     vec3 diffuseColor = diff * color * u_diffuse * intensity;
     vec3 specularColor = spec * u_specular * intensity;
 
     return  ambientColor + attenuation * (diffuseColor + specularColor);
-    //return vec3(distance/ 256.0, ambientColor, 0.0);
 }
 
 
