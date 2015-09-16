@@ -99,11 +99,20 @@
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
-/// <reference path="renderer/shader/lib/light/GouraudLightShaderLib"/>
-/// <reference path="renderer/shader/lib/light/PhongLightShaderLib"/>
+
+/// <reference path="renderer/shader/lib/light/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/DiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/SpecularMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/gouraud/GouraudLightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/gouraud/GouraudDiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/gouraud/GouraudSpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/phong/PhongLightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/phong/PhongDiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/phong/PhongSpecularMapShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
+
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>
 
 

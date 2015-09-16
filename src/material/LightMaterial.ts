@@ -19,23 +19,30 @@ module dy{
             this._diffuseMap = diffuseMap;
         }
 
+        private _specularMap:CommonTexture|CompressedTexture = null;
+        get specularMap(){
+            return this._specularMap;
+        }
+        set specularMap(specularMap:CommonTexture|CompressedTexture){
+            this.addMap(specularMap, {
+                samplerVariableName: VariableNameTable.getVariableName("specularMap")
+            });
+
+            this._specularMap = specularMap;
+        }
+
         public specular:Color = Color.create("0x111111");
         public shininess:number = 32;
         public mode:LightShaderMode = LightShaderMode.PHONG;
 
         public init(){
-            if(this._diffuseMap){
-                this.shader.addLib(DiffuseMapShaderLib.getInstance());
-            }
-            else{
-                this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
-            }
-
             switch (this.mode){
                 case LightShaderMode.PHONG:
+                    this._setPhongMapShaderLib();
                     this.shader.addLib(PhongLightShaderLib.getInstance());
                     break;
                 case LightShaderMode.GOURAUD:
+                    this._setGouraudMapShaderLib();
                     this.shader.addLib(GouraudLightShaderLib.getInstance());
                     break;
                 default:
@@ -45,6 +52,38 @@ module dy{
             }
 
             super.init();
+        }
+
+        private _setPhongMapShaderLib(){
+            if(this._diffuseMap){
+                this.shader.addLib(PhongDiffuseMapShaderLib.getInstance());
+            }
+            else{
+                this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
+            }
+
+            if(this._specularMap){
+                this.shader.addLib(PhongSpecularMapShaderLib.getInstance());
+            }
+            else{
+                this.shader.addLib(NoSpecularMapShaderLib.getInstance());
+            }
+        }
+
+        private _setGouraudMapShaderLib(){
+            if(this._diffuseMap){
+                this.shader.addLib(GouraudDiffuseMapShaderLib.getInstance());
+            }
+            else{
+                this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
+            }
+
+            if(this._specularMap){
+                this.shader.addLib(GouraudSpecularMapShaderLib.getInstance());
+            }
+            else{
+                this.shader.addLib(NoSpecularMapShaderLib.getInstance());
+            }
         }
     }
 }

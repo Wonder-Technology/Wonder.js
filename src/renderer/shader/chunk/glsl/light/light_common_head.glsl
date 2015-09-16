@@ -1,12 +1,11 @@
-varying vec3 v_color;
-
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
+    vec3 materialDiffuse = getMaterialDiffuse();
+    vec3 materialSpecular = getMaterialSpecular();
+
     float dotResultBetweenNormAndLight = dot(normal, lightDir);
-    // Diffuse shading
     float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-    // Specular shading
     float spec = 0.0;
     //背面（指立方体中与当前面对应的背面，而不是当前面的反面）没有当前面反射光
     if(dotResultBetweenNormAndLight < 0.0){
@@ -17,10 +16,11 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
         spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
     }
 
-    // Combine results
-    vec3 ambientColor = u_ambient * u_diffuse;
-    vec3 diffuseColor = diff * color * u_diffuse * intensity;
-    vec3 specularColor = spec * u_specular * intensity;
+    vec3 ambientColor = u_ambient * materialDiffuse;
+
+    vec3 diffuseColor = diff * color * materialDiffuse * intensity;
+
+    vec3 specularColor = spec * materialSpecular * intensity;
 
     return  ambientColor + attenuation * (diffuseColor + specularColor);
 }
@@ -80,3 +80,18 @@ vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
 }
 #endif
 
+
+
+void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir, vec3 worldPosition){
+    #if POINT_LIGHTS_COUNT > 0
+       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
+            totalLight += calcPointLight(u_pointLights[i], norm, viewDir, worldPosition);
+       }
+    #endif
+
+    #if DIRECTION_LIGHTS_COUNT > 0
+       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
+            totalLight += calcDirectionLight(u_directionLights[i], norm, viewDir);
+       }
+    #endif
+}

@@ -1,12 +1,12 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export abstract class DiffuseMapShaderLib extends LightMapShaderLib{
+    export abstract class SpecularMapShaderLib extends LightMapShaderLib{
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("diffuseMap")
-]);
+                VariableNameTable.getVariableName("specularMap")
+            ]);
 
             this.setSourceContent();
         }

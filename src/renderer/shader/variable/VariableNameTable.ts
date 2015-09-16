@@ -3,6 +3,7 @@ module dy{
     const _table = dyCb.Hash.create<string>();
 
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
+    _table.addChild("specularMap", "u_specularMapSampler");
 
     export class VariableNameTable{
         public static getVariableName(name: string){

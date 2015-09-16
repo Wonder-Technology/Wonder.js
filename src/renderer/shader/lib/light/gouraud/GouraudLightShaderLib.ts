@@ -1,6 +1,6 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class PhongLightShaderLib extends LightShaderLib {
+    export class GouraudLightShaderLib extends LightShaderLib {
         private static _instance = null;
 
         public static getInstance() {
@@ -12,14 +12,14 @@ module dy{
         }
 
         protected setSourceContent(){
-            this.vsSourceHead = ShaderChunk.light_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.light_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.light_phong_head_fragment;
-            this.fsSourceBody = ShaderChunk.light_phong_body_fragment;
+            this.vsSourceHead = ShaderChunk.light_gouraud_head_vertex + ShaderChunk.light_common_head;
+            this.vsSourceBody = ShaderChunk.light_gouraud_body_vertex;
+            this.fsSourceHead = ShaderChunk.light_gouraud_head_fragment;
+            this.fsSourceBody = ShaderChunk.light_gouraud_body_fragment;
         }
 
         protected setSourceDefine(direction_lights_count:number, point_lights_count:number){
-            this.fsSourceDefineList.addChildren([{
+            this.vsSourceDefineList.addChildren([{
                 name: "DIRECTION_LIGHTS_COUNT",
                 value: direction_lights_count
             }, {
