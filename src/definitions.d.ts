@@ -84,7 +84,7 @@
 /// <reference path="renderer/shader/variable/VariableType"/>
 /// <reference path="renderer/shader/variable/VariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
-/// <reference path="renderer/shader/variable/VariableTable"/>
+/// <reference path="renderer/shader/variable/VariableTypeTable"/>
 /// <reference path="renderer/shader/variable/VariableNameTable"/>
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>

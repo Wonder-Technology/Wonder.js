@@ -160,7 +160,7 @@ module dy{
                     return;
                 }
 
-                result += `attribute ${VariableTable.getVariableType(data.type)} ${key};\n`;
+                result += `attribute ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
             });
 
             return result;
@@ -175,7 +175,7 @@ module dy{
                     return !!data && data.type !== VariableType.STRUCTURE && data.type !== VariableType.STRUCTURES && self._isExistInSource(key, sourceHead, sourceBody);
                 })
                 .forEach((data:ShaderData, key:string) => {
-                    result += `uniform ${VariableTable.getVariableType(data.type)} ${key};\n`;
+                    result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
                 });
 
             return result;

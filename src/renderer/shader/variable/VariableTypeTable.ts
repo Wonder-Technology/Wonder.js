@@ -12,12 +12,12 @@ module dy{
     _table.addChild(<any>VariableType.SAMPLER_CUBE, "samplerCube");
     _table.addChild(<any>VariableType.SAMPLER_2D, "sampler2D");
 
-    export class VariableTable{
+    export class VariableTypeTable{
         public static getVariableType(type:VariableType){
             //todo remove <any>
             var result = _table.getChild(<any>type);
 
-            dyCb.Log.error(result === void 0, dyCb.Log.info.FUNC_NOT_EXIST(type, "in VariableTable"));
+            dyCb.Log.error(result === void 0, dyCb.Log.info.FUNC_NOT_EXIST(type, "in VariableTypeTable"));
 
             return result;
         }
