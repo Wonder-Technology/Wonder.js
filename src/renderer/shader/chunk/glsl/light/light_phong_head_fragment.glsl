@@ -1,14 +1,13 @@
-
 varying vec3 v_worldPosition;
 varying vec3 v_normal;
 
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
+    vec3 materialDiffuse = getMaterialDiffuse();
+
     float dotResultBetweenNormAndLight = dot(normal, lightDir);
-    // Diffuse shading
     float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-    // Specular shading
     float spec = 0.0;
     //背面（指立方体中与当前面对应的背面，而不是当前面的反面）没有当前面反射光
     if(dotResultBetweenNormAndLight < 0.0){
@@ -19,9 +18,10 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
         spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
     }
 
-    // Combine results
-    vec3 ambientColor = u_ambient * u_diffuse;
-    vec3 diffuseColor = diff * color * u_diffuse * intensity;
+    vec3 ambientColor = u_ambient * materialDiffuse;
+
+    vec3 diffuseColor = diff * color * materialDiffuse * intensity;
+
     vec3 specularColor = spec * u_specular * intensity;
 
     return  ambientColor + attenuation * (diffuseColor + specularColor);

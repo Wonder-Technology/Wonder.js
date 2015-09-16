@@ -47,7 +47,8 @@ module dy{
         }
 
         public sendData(program:Program, index:number){
-            program.sendUniformData("u_samplerCube" + index, VariableType.SAMPLER_CUBE, index);
+            this.sendSamplerVariable(VariableType.SAMPLER_CUBE, program, index);
+
             program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
 
             return this;

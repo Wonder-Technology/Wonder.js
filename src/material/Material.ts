@@ -121,10 +121,12 @@ module dy {
         }
 
         public addMap(asset:TextureAsset);
-        public addMap(map:TwoDTexture);
+        public addMap(asset:TextureAsset, option:MapVariableData);
+        public addMap(map:CommonTexture|CompressedTexture);
+        public addMap(map:CommonTexture|CompressedTexture, option:MapVariableData);
 
         public addMap(arg){
-            this.textureManager.addMap(arguments[0]);
+            this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));
         }
 
         public setEnvMap(envMap:CubemapTexture){
@@ -142,5 +144,10 @@ module dy {
         public updateShader(quadCmd:QuadCommand){
             this.shader.update(quadCmd, this);
         }
+    }
+
+    export type MapVariableData = {
+        samplerVariablePrefix?:string;
+        samplerVariableName?: string;
     }
 }

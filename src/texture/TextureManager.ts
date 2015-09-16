@@ -16,7 +16,9 @@ module dy{
         }
 
         public addMap(asset:TextureAsset);
+        public addMap(asset:TextureAsset, option:MapVariableData);
         public addMap(map:CommonTexture|CompressedTexture);
+        public addMap(map:CommonTexture|CompressedTexture, option:MapVariableData);
 
         public addMap(arg){
             var map = null;
@@ -30,6 +32,11 @@ module dy{
                     map = arguments[0];
                 }
 
+            if(arguments.length === 2){
+                let option = arguments[1];
+
+                map.variableData = option;
+            }
 
             this._textures.appendChild("map", map);
         }

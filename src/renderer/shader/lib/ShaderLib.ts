@@ -1,6 +1,6 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
-    export class ShaderLib{
+    export abstract class ShaderLib{
         public attributes:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
         public uniforms:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
         public vsSource:string = "";
@@ -17,11 +17,10 @@ module dy{
             this.setShaderDefinition();
         }
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material){
-        }
+        public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
 
-        protected setShaderDefinition(){
-        }
+        protected abstract setShaderDefinition();
+
 
         protected addAttributeVariable(variableArr:Array<string>){
             this._addVariable(this.attributes, variableArr);

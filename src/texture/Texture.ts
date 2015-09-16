@@ -22,6 +22,7 @@ module dy{
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
+        public variableData:MapVariableData = null;
         public generateMipmaps:boolean = null;
         public width:number = null;
         public height:number = null;
@@ -91,7 +92,7 @@ module dy{
         public sendData(program:Program, index:number){
             var sourceRegion = null;
 
-            program.sendUniformData("u_sampler2D" + index, VariableType.SAMPLER_2D, index);
+            this.sendSamplerVariable(VariableType.SAMPLER_2D, program, index);
 
             if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();
@@ -135,11 +136,11 @@ module dy{
             return TextureFilterMode.LINEAR;
         }
 
+        protected abstract allocateSourceToTexture(isSourcePowerOfTwo:boolean);
+
         protected isCheckMaxSize(){
             return true;
         }
-
-        protected abstract allocateSourceToTexture(isSourcePowerOfTwo:boolean);
 
         protected isSourcePowerOfTwo(){
             return this.isPowerOfTwo(this.width, this.height);
@@ -147,6 +148,20 @@ module dy{
 
         protected isPowerOfTwo(width:number, height:number){
             return JudgeUtils.isPowerOfTwo(width) && JudgeUtils.isPowerOfTwo(height);
+        }
+
+        protected sendSamplerVariable(type:VariableType, program:Program, index:number){
+            if(this.variableData){
+                if(this.variableData.samplerVariableName){
+                    program.sendUniformData(this.variableData.samplerVariableName, type, index);
+                }
+                else if(this.variableData.samplerVariablePrefix){
+                    program.sendUniformData(`${this.variableData.samplerVariablePrefix}${index}`, type, index);
+                }
+            }
+            else{
+                program.sendUniformData(type === VariableType.SAMPLER_2D ? `u_sampler2D${index}` : `u_samplerCube${index}`, type, index);
+            }
         }
 
         private _setTextureParameters(textureType, isSourcePowerOfTwo){

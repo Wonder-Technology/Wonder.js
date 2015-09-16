@@ -85,6 +85,7 @@
 /// <reference path="renderer/shader/variable/VariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
 /// <reference path="renderer/shader/variable/VariableTable"/>
+/// <reference path="renderer/shader/variable/VariableNameTable"/>
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
@@ -100,6 +101,8 @@
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/GouraudLightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/PhongLightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/DiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>
 
