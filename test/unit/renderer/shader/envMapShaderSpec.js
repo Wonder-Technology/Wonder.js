@@ -68,7 +68,7 @@ describe("envMap shader", function () {
                         ]
                     );
 
-                    material.setEnvMap(cubemap);
+                    material.envMap = cubemap;
                 }
             }
         );
@@ -145,7 +145,7 @@ describe("envMap shader", function () {
 
                     cubemap.mode = dy.EnvMapMode.REFLECTION;
 
-                    material.setEnvMap(cubemap);
+                    material.envMap = cubemap;
 
 
 
@@ -237,7 +237,7 @@ describe("envMap shader", function () {
 
                     cubemap.mode = dy.EnvMapMode.REFRACTION;
 
-                    material.setEnvMap(cubemap);
+                    material.envMap = cubemap;
 
                     material.refractionRatio = 0.1;
 
@@ -339,7 +339,7 @@ describe("envMap shader", function () {
 
                     cubemap.mode = dy.EnvMapMode.FRESNEL;
 
-                    material.setEnvMap(cubemap);
+                    material.envMap = cubemap;
 
                     material.refractionRatio = 0.1;
                     material.reflectivity = null;

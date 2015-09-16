@@ -11,7 +11,7 @@ module dy{
         public reflectivity:number = null;
 
         public init(){
-            var envMap = this.getEnvMap();
+            var envMap = this.envMap;
 
             switch (envMap.mode){
                 case EnvMapMode.NORMAL:

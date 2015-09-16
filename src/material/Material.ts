@@ -93,6 +93,13 @@ module dy {
             this._blendType = blendType;
         }
 
+        get envMap(){
+            return this.textureManager.getEnvMap();
+        }
+        set envMap(envMap:CubemapTexture){
+            this.textureManager.setEnvMap(envMap);
+        }
+
         public shader:Shader = Shader.create();
         public color:Color = Color.create("0xffffff");
         //public depthTest:boolean = true;
@@ -127,14 +134,6 @@ module dy {
 
         public addMap(arg){
             this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));
-        }
-
-        public setEnvMap(envMap:CubemapTexture){
-            this.textureManager.setEnvMap(envMap);
-        }
-
-        public getEnvMap():CubemapTexture{
-            return this.textureManager.getEnvMap();
         }
 
         public updateTexture(){

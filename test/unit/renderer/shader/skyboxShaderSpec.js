@@ -53,7 +53,7 @@ describe("skybox shader", function () {
                         ]
                     );
 
-                    material.setEnvMap(cubemap);
+                    material.envMap = cubemap;
                 }
         }
     );
