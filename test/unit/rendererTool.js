@@ -10,8 +10,8 @@ var rendererTool = {
             judge_sendLibVariable_uniforms = option.judge_sendLibVariable_uniforms,
             judge_sendLibVariable_texture = option.judge_sendLibVariable_texture,
             setMaterial = option.setMaterial,
-            moreTest = option.moreTest,
-            moreTestExplain = option.moreTestExplain;
+            moreTests = option.moreTests;
+            //moreTestExplain = option.moreTestExplain;
 
         var sandbox = null;
         var material = null;
@@ -22,11 +22,21 @@ var rendererTool = {
             sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
             sandbox.stub(dy.GPUDetector.getInstance(), "precision", dy.GPUPrecision.HIGHP);
 
+
+
+
+            dy.Director.getInstance().stage.camera = {
+                transform:{
+                    position: dy.Vector3.create(1, 2, 3)
+                }
+            };
+
+
             material = new dy[MaterialClassName]();
         });
         afterEach(function () {
-            sandbox.restore();
             testTool.clearInstance();
+            sandbox.restore();
         });
 
         describe("integration test", function() {
@@ -120,12 +130,14 @@ judge_sendLibVariable_texture && judge_sendLibVariable_texture(program, quadCmd,
                     it("send custom shader's uniform variables", function () {
                     });
 
-                    if(moreTest && moreTestExplain){
-                        it(moreTestExplain, function(){
-                            moreTest(function(){
-                                material.init();
-                                material.updateShader(quadCmd);
-                            },quadCmd, program, material);
+                    if(moreTests){
+                        moreTests.forEach(function(test){
+                            it(test.explain, function(){
+                                test.body(function(){
+                                    material.init();
+                                    material.updateShader(quadCmd);
+                                },quadCmd, program, material);
+                            });
                         });
                     }
                 });

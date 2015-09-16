@@ -61,6 +61,7 @@ module dy{
             }
         }
 
+        //todo support STRUCTURES
         public sendUniformDataFromCustomShader(){
             var self = this;
 
@@ -69,7 +70,17 @@ module dy{
                     return val.value !== VariableCategory.ENGINE;
                 })
                 .forEach((val:ShaderData, key:string) => {
-                self.sendUniformData(key, val.type, val.value);
+
+                if(val.type === VariableType.STRUCTURE){
+                    dyCb.Log.error(!JudgeUtils.isDirectObject(val.value), dyCb.Log.info.FUNC_MUST_BE("value's type", "object{}"));
+
+                    for(let i in val.value){
+                        self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
+                    }
+                }
+                else{
+                    self.sendUniformData(key, val.type, val.value);
+                }
             });
         }
 

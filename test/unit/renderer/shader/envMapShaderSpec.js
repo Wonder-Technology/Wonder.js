@@ -69,13 +69,6 @@ describe("envMap shader", function () {
                     );
 
                     material.setEnvMap(cubemap);
-
-
-                    dy.Director.getInstance().stage.camera = {
-                        transform:{
-                            position: dy.Vector3.create(1, 2, 3)
-                        }
-                    }
                 }
             }
         );
@@ -359,16 +352,20 @@ describe("envMap shader", function () {
                         }
                     }
                 },
-                moreTest: function (updateFunc, quadCmd, program, material) {
-                    material.reflectivity = 0.5;
+                moreTest:[
+                    {
+                        explain:"if set material's reflectivity, send it to glsl",
+                        body: function (updateFunc, quadCmd, program, material) {
+                            material.reflectivity = 0.5;
 
-                    updateFunc();
+                            updateFunc();
 
-                    expect(program.sendUniformData.getCall(6).args).toEqual(
-                        ["u_reflectivity", dy.VariableType.FLOAT_1, 0.5]
-                    );
-                },
-                moreTestExplain: "if set material's reflectivity, send it to glsl"
+                            expect(program.sendUniformData.getCall(6).args).toEqual(
+                                ["u_reflectivity", dy.VariableType.FLOAT_1, 0.5]
+                            );
+                        }
+                    }
+                ]
             }
         );
     });

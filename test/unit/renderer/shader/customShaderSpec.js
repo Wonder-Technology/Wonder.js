@@ -48,6 +48,21 @@ describe("custom shader", function () {
                             value: function () {
                                 return 2.0;
                             }
+                        },
+                        "u_test3": {
+                            type: dy.VariableType.STRUCTURE,
+                            value: {
+                                "a": {
+                                    type:dy.VariableType.NUMBER_1,
+                                    value: 10
+                                },
+                                "b": {
+                                    type:dy.VariableType.FLOAT_1,
+                                    value: function(){
+                                        return 3.0;
+                                    }
+                                }
+                            }
                         }
                     },
                     vsSourceHead: [
@@ -96,6 +111,8 @@ describe("custom shader", function () {
                         {
                             u_test1: {type: uniforms.u_test1.type, value: uniforms.u_test1.value},
                             u_test2: {type: uniforms.u_test2.type, value: uniforms.u_test2.value},
+                            u_test3: {type: uniforms.u_test3.type, value: uniforms.u_test3.value},
+
                             u_mMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
                             u_vMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
                             u_pMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE}
@@ -166,6 +183,15 @@ describe("custom shader", function () {
                     expect(program.sendUniformData.getCall(4).args[0]).toEqual("u_test2");
                     expect(program.sendUniformData.getCall(4).args[1]).toEqual(shaderDefinitionData.uniforms.u_test2.type);
                     expect(program.sendUniformData.getCall(4).args[2]).toEqual(shaderDefinitionData.uniforms.u_test2.value);
+
+
+                    var uniforms = shaderDefinitionData.uniforms;
+                    expect(program.sendUniformData.getCall(5).args).toEqual(
+                        ["u_test3.a", dy.VariableType.NUMBER_1, uniforms.u_test3.value.a.value]
+                    );
+                    expect(program.sendUniformData.getCall(6).args).toEqual(
+                        ["u_test3.b", dy.VariableType.FLOAT_1, uniforms.u_test3.value.b.value]
+                    );
                 });
             });
         });
