@@ -10,47 +10,55 @@ module dy{
         public width:number = null;
         public height:number = null;
 
-        protected computeVerticesBuffer(){
+        protected computeData(){
             var width = this.width,
                 height = this.height,
-            left = -width / 2,
+                left = -width / 2,
                 right = width / 2,
                 up = height / 2,
-                down = -height / 2;
+                down = -height / 2,
+                vertices = [],
+                texCoords = [],
+                indices = [],
+                normals = [];
 
-            return ArrayBuffer.create(new Float32Array([
+            vertices = [
                 right, up, 0,
                 left, up, 0,
                 left, down, 0,
                 right, down, 0
-            ]),
-                3, BufferType.FLOAT)
-        }
+            ];
 
-        protected computeIndicesBuffer(){
-            return ElementBuffer.create(new Uint16Array([
+            indices = [
                 0, 1, 2,   0, 2, 3
-            ]), BufferType.UNSIGNED_SHORT)
-        }
+            ];
 
-        protected computeNormalsBuffer(){
-            return ArrayBuffer.create(new Float32Array([
-                    0, 0, 1,
-                    0, 0, 1,
-                    0, 0, 1,
-                    0, 0, 1
-                ]),
-                3, BufferType.FLOAT)
-        }
+            texCoords = [
+                1.0, 1.0,
+                0.0, 1.0,
+                0.0, 0.0,
+                1.0, 0.0
+            ];
 
-        protected computeTexCoordsBuffer(){
-            return ArrayBuffer.create(new Float32Array([
-                    1.0, 1.0,
-                    0.0, 1.0,
-                    0.0, 0.0,
-                    1.0, 0.0
-                ]),
-                2, BufferType.FLOAT);
+            normals = [
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1
+            ];
+
+            return {
+                vertices: ArrayBuffer.create(new Float32Array(vertices),
+                    3, BufferType.FLOAT),
+                indices: ElementBuffer.create(new Uint16Array(indices),
+                    BufferType.UNSIGNED_SHORT),
+                normals: ArrayBuffer.create(new Float32Array(normals),
+                    3, BufferType.FLOAT),
+                texCoords: ArrayBuffer.create(new Float32Array(texCoords),
+                    2, BufferType.FLOAT),
+                tangents: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
+                    3, BufferType.FLOAT),
+            };
         }
     }
 }

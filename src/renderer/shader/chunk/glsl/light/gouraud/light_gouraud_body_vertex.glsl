@@ -1,7 +1,7 @@
-    gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;
+    gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);
 
-    vec3 worldPosition = vec3(u_mMatrix * a_position);
-    vec3 normal = vec3(u_normalMatrix * a_normal);
+    vec3 worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));
+    vec3 normal = vec3(u_normalMatrix * vec4(a_normal, 1.0));
 
 
 

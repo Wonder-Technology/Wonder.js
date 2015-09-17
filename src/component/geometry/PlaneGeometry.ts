@@ -12,29 +12,20 @@ module dy{
         public widthSegments:number = 1;
         public heightSegments:number = 1;
 
-        private _data:{
-            vertices;
-            indices;
-            normals;
-            texCoords;
-        } = null;
-
-        public init() {
-            this._data = this._computeData(this.width, this.height, this.widthSegments, this.heightSegments);
-
-            super.init();
-        }
-
-        private _computeData(width, height, widthSegments, heightSegments){
-            var x = null,
+        protected computeData(){
+            var width = this.width,
+                height = this.height,
+                widthSegments = this.widthSegments,
+                heightSegments = this.heightSegments,
+                x = null,
                 y = null,
                 z = null,
                 u = null,
                 v = null,
                 i = null,
                 j = null,
-                positions = [],
-                uvs = [],
+                vertices = [],
+                texCoords = [],
                 indices = [],
                 normals = [];
 
@@ -55,9 +46,9 @@ module dy{
                     u = i / widthSegments;
                     v = j / heightSegments;
 
-                    positions.push(x, y, z);
+                    vertices.push(x, y, z);
                     normals.push(0.0, 1.0, 0.0);
-                    uvs.push(u, v);
+                    texCoords.push(u, v);
 
                     if ((i < widthSegments) && (j < heightSegments)) {
                         indices.push(j + i * (widthSegments + 1),       j + (i + 1) * (widthSegments + 1),     j + i * (widthSegments + 1) + 1);
@@ -67,31 +58,17 @@ module dy{
             }
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(positions),
+                vertices: ArrayBuffer.create(new Float32Array(vertices),
                     3, BufferType.FLOAT),
                 indices: ElementBuffer.create(new Uint16Array(indices),
                     BufferType.UNSIGNED_SHORT),
                 normals: ArrayBuffer.create(new Float32Array(normals),
                     3, BufferType.FLOAT),
-                texCoords: ArrayBuffer.create(new Float32Array(uvs),
-                    2, BufferType.FLOAT)
+                texCoords: ArrayBuffer.create(new Float32Array(texCoords),
+                    2, BufferType.FLOAT),
+                tangents: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
+                    3, BufferType.FLOAT),
             };
-        }
-
-        protected computeVerticesBuffer(){
-            return this._data.vertices;
-        }
-
-        protected computeIndicesBuffer(){
-            return this._data.indices;
-        }
-
-        protected computeNormalsBuffer(){
-            return this._data.normals;
-        }
-
-        protected computeTexCoordsBuffer():ArrayBuffer{
-            return this._data.texCoords;
         }
     }
 }

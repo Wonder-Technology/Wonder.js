@@ -11,40 +11,27 @@ module dy{
         public drawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
         public segments:number = 20;
 
-        private _data:{
-            vertices;
-            indices;
-            normals;
-            texCoords;
-        } = null;
-
-        public init(){
-            this._data = this._computeData(this.radius, this.drawMode, this.segments);
-
-            super.init();
-        }
-
-        protected computeVerticesBuffer(){
-            return this._data.vertices;
-        }
-
-        protected computeIndicesBuffer(){
-            return this._data.indices;
-        }
-
-        protected computeNormalsBuffer():ArrayBuffer{
-            return this._data.normals;
-        }
-
-        protected computeTexCoordsBuffer():ArrayBuffer{
-            return this._data.texCoords;
-        }
-
-        private _computeData(radius:number, drawMode:SphereDrawMode, segments:number){
-            var data = null;
+        protected computeData(){
+            var radius = this.radius,
+                drawMode = this.drawMode,
+                segments = this.segments,
+                data = null;
 
             if(drawMode === SphereDrawMode.LATITUDELONGTITUDE){
-                data = GetDataByLatitudeLongtitude.create(radius, segments).getData();
+                var { vertices, indices, normals, texCoords } = GetDataByLatitudeLongtitude.create(radius, segments).getData();
+
+                return {
+                    vertices: ArrayBuffer.create(new Float32Array(vertices),
+                        3, BufferType.FLOAT),
+                    indices: ElementBuffer.create(new Uint16Array(indices),
+                        BufferType.UNSIGNED_SHORT),
+                    normals: ArrayBuffer.create(new Float32Array(normals),
+                        3, BufferType.FLOAT),
+                    texCoords: ArrayBuffer.create(new Float32Array(texCoords),
+                        2, BufferType.FLOAT),
+                    tangents: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
+                        3, BufferType.FLOAT),
+                }
             }
             //else if(drawMode === SphereDrawMode.DECOMPOSITION){
             //    data = GetDataByDecomposition.create(radius, segments).getData();
@@ -70,7 +57,7 @@ module dy{
         private _latitudeBands:number = null;
         private _longitudeBands:number = null;
 
-        constructor(radius, bands){
+        constructor(radius:number, bands:number){
             this.radius = radius;
             this._latitudeBands = bands;
             this._longitudeBands = bands;
@@ -124,14 +111,10 @@ module dy{
             }
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(this.vertices),
-                    3, BufferType.FLOAT),
-                indices: ElementBuffer.create(new Uint16Array(this.indices),
-                    BufferType.UNSIGNED_SHORT),
-                normals: ArrayBuffer.create(new Float32Array(this.normals),
-                    3, BufferType.FLOAT),
-                texCoords: ArrayBuffer.create(new Float32Array(this.texCoords),
-                    2, BufferType.FLOAT)
+                vertices: this.vertices,
+                indices: this.indices,
+                normals: this.normals,
+                texCoords: this.texCoords
             }
         }
 

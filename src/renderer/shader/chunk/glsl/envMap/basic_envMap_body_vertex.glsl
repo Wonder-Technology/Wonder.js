@@ -1,2 +1,2 @@
-    v_dir = vec3(a_position);
+    v_dir = a_position;
 

@@ -214,5 +214,24 @@ module dy{
 
             return this;
         }
+
+        /**
+         * @function
+         * @name pc.Vec3#dot
+         * @description Returns the result of a dot product operation performed on the two specified 3-dimensional vectors.
+         * @param {pc.Vec3} rhs The second 3-dimensional vector operand of the dot product.
+         * @returns {Number} The result of the dot product operation.
+         * @example
+         * var v1 = new pc.Vec3(5, 10, 20);
+         * var v2 = new pc.Vec3(10, 20, 40);
+         * var v1dotv2 = v1.dot(v2);
+         * console.log("The result of the dot product is: " + v1dotv2);
+         */
+        public dot(rhs) {
+            var a = this.values,
+                b = rhs.values;
+
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
     }
 }

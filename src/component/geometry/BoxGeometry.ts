@@ -14,28 +14,21 @@ module dy{
         public heightSegments:number = 1;
         public depthSegments:number = 1;
 
-        public init() {
-            this._data = this._computeData(this.width, this.height, this.depth, this.widthSegments, this.heightSegments, this.depthSegments);
-
-            super.init();
-        }
-
-        private _data:{
-            vertices;
-            indices;
-            texCoords;
-            normals;
-        } = null;
-
-        private _computeData(width, height, depth, widthSegments, heightSegments, depthSegments){
-            var sides = {
-                FRONT  : 0,
-                BACK   : 1,
-                TOP    : 2,
-                BOTTOM : 3,
-                RIGHT  : 4,
-                LEFT   : 5
-            };
+        protected computeData(){
+            var width = this.width,
+                height = this.height,
+                depth = this.depth,
+                widthSegments = this.widthSegments,
+                heightSegments = this.heightSegments,
+                depthSegments = this.depthSegments,
+                sides = {
+                    FRONT  : 0,
+                    BACK   : 1,
+                    TOP    : 2,
+                    BOTTOM : 3,
+                    RIGHT  : 4,
+                    LEFT   : 5
+                };
             var faceAxes = [
                 [ 0, 1, 3 ], // FRONT
                 [ 4, 5, 7 ], // BACK
@@ -64,15 +57,15 @@ module dy{
                 Vector3.create( width,  height, -depth)
             ];
 
-            var positions = [];
+            var vertices = [];
             var normals = [];
-            var uvs = [];
+            var texCoords = [];
             var indices = [];
 
             function generateFace(side, uSegments, vSegments) {
                 var x, y, z, u, v;
                 var i, j;
-                var offset = positions.length / 3;
+                var offset = vertices.length / 3;
 
                 for (i = 0; i <= uSegments; i++) {
                     for (j = 0; j <= vSegments; j++) {
@@ -87,9 +80,9 @@ module dy{
                         u = i / uSegments;
                         v = j / vSegments;
 
-                        positions.push(r.x, r.y, r.z);
+                        vertices.push(r.x, r.y, r.z);
                         normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
-                        uvs.push(u, v);
+                        texCoords.push(u, v);
 
                         if ((i < uSegments) && (j < vSegments)) {
                             indices.push(offset + j + i * (uSegments + 1),       offset + j + (i + 1) * (uSegments + 1),     offset + j + i * (uSegments + 1) + 1);
@@ -107,31 +100,17 @@ module dy{
             generateFace(sides.LEFT, depthSegments, heightSegments);
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(positions),
+                vertices: ArrayBuffer.create(new Float32Array(vertices),
                     3, BufferType.FLOAT),
                 indices: ElementBuffer.create(new Uint16Array(indices),
                     BufferType.UNSIGNED_SHORT),
                 normals: ArrayBuffer.create(new Float32Array(normals),
                     3, BufferType.FLOAT),
-                texCoords: ArrayBuffer.create(new Float32Array(uvs),
-                    2, BufferType.FLOAT)
+                texCoords: ArrayBuffer.create(new Float32Array(texCoords),
+                    2, BufferType.FLOAT),
+                tangents: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
+                    3, BufferType.FLOAT),
             };
-        }
-
-        protected computeVerticesBuffer(){
-            return this._data.vertices;
-        }
-
-        protected computeIndicesBuffer(){
-            return this._data.indices;
-        }
-
-        protected computeTexCoordsBuffer():ArrayBuffer{
-            return this._data.texCoords;
-        }
-
-        protected computeNormalsBuffer():ArrayBuffer{
-            return this._data.normals;
         }
     }
 }

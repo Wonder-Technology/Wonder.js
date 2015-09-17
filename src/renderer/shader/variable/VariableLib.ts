@@ -4,22 +4,27 @@ module dy{
         //todo group?(common,cubemap...)
 
         public static a_position:ShaderVariable = {
-            type:VariableType.FLOAT_4,
+            type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
 
         public static a_normal:ShaderVariable = {
-            type:VariableType.FLOAT_4,
+            type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
 
         public static a_color:ShaderVariable = {
-            type:VariableType.FLOAT_4,
+            type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
 
         public static a_texCoord:ShaderVariable = {
             type:VariableType.FLOAT_2,
+            value:VariableCategory.ENGINE
+        };
+
+        public static a_tangent:ShaderVariable = {
+            type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
 
@@ -64,6 +69,11 @@ module dy{
         };
 
         public static u_specularMapSampler:ShaderVariable = {
+            type:VariableType.SAMPLER_2D,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_normalMapSampler:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };

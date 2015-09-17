@@ -20,6 +20,7 @@
 
 
 /// <reference path="math/Global"/>
+/// <reference path="math/Vector2"/>
 /// <reference path="math/Vector3"/>
 /// <reference path="math/Vector4"/>
 /// <reference path="math/Matrix"/>
@@ -103,6 +104,7 @@
 /// <reference path="renderer/shader/lib/light/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/DiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/SpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/NormalMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/gouraud/GouraudLightShaderLib"/>
@@ -111,6 +113,8 @@
 /// <reference path="renderer/shader/lib/light/phong/PhongLightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/phong/PhongDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/phong/PhongSpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/phong/PhongNormalMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/phong/PhongNoNormalMapShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>

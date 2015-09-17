@@ -4,6 +4,7 @@ module dy{
 
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
     _table.addChild("specularMap", "u_specularMapSampler");
+    _table.addChild("normalMap", "u_normalMapSampler");
 
     export class VariableNameTable{
         public static getVariableName(name: string){

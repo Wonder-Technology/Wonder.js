@@ -1,2 +1,2 @@
-    v_color = a_color;
+    v_color = vec4(a_color, 1.0);
 

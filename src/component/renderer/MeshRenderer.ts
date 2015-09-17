@@ -24,6 +24,7 @@ module dy {
                 texCoordsBuffer: geometry.texCoords,
                 indexBuffer: geometry.indices,
                 normalBuffer: geometry.normals,
+                tangentBuffer:geometry.tangents,
                 colorBuffer: geometry.colors
             };
 

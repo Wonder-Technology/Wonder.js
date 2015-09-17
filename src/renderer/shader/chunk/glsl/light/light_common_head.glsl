@@ -42,18 +42,18 @@ struct PointLight {
 };
 uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
-vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir, vec3 worldPosition)
+vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(light.position - worldPosition);
-
-    // Attenuation
-    float distance = length(light.position - worldPosition);
+    //lightDir is not normalize computing distance
+    float distance = length(lightDir);
 
     float attenuation = 0.0;
     if(distance < light.range)
     {
         attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     }
+
+    lightDir = normalize(lightDir);
 
     return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }
@@ -71,10 +71,11 @@ struct DirectionLight {
 };
 uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 
-vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
+vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(-light.direction);
     float attenuation = 1.0;
+
+    lightDir = normalize(-lightDir);
 
     return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }
@@ -82,16 +83,16 @@ vec3 calcDirectionLight(DirectionLight light, vec3 normal, vec3 viewDir)
 
 
 
-void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir, vec3 worldPosition){
+void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
     #if POINT_LIGHTS_COUNT > 0
        for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
-            totalLight += calcPointLight(u_pointLights[i], norm, viewDir, worldPosition);
+            totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);
        }
     #endif
 
     #if DIRECTION_LIGHTS_COUNT > 0
        for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
-            totalLight += calcDirectionLight(u_directionLights[i], norm, viewDir);
+            totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);
        }
     #endif
 }

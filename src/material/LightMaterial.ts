@@ -31,6 +31,19 @@ module dy{
             this._specularMap = specularMap;
         }
 
+        private _normalMap:CommonTexture|CompressedTexture = null;
+        get normalMap(){
+            return this._normalMap;
+        }
+        set normalMap(normalMap:CommonTexture|CompressedTexture){
+            this.addMap(normalMap, {
+                samplerVariableName: VariableNameTable.getVariableName("normalMap")
+            });
+
+            this._normalMap = normalMap;
+        }
+
+
         public specular:Color = Color.create("0x111111");
         public shininess:number = 32;
         public mode:LightShaderMode = LightShaderMode.PHONG;
@@ -55,34 +68,33 @@ module dy{
         }
 
         private _setPhongMapShaderLib(){
-            if(this._diffuseMap){
-                this.shader.addLib(PhongDiffuseMapShaderLib.getInstance());
-            }
-            else{
-                this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
-            }
-
-            if(this._specularMap){
-                this.shader.addLib(PhongSpecularMapShaderLib.getInstance());
-            }
-            else{
-                this.shader.addLib(NoSpecularMapShaderLib.getInstance());
-            }
+            this._setMapShaderLib("Phong");
         }
 
         private _setGouraudMapShaderLib(){
+            this._setMapShaderLib("Gouraud");
+        }
+
+        private _setMapShaderLib(shaderModel:string){
             if(this._diffuseMap){
-                this.shader.addLib(GouraudDiffuseMapShaderLib.getInstance());
+                this.shader.addLib(dy[`${shaderModel}DiffuseMapShaderLib`].getInstance());
             }
             else{
                 this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
             }
 
             if(this._specularMap){
-                this.shader.addLib(GouraudSpecularMapShaderLib.getInstance());
+                this.shader.addLib(dy[`${shaderModel}SpecularMapShaderLib`].getInstance());
             }
             else{
                 this.shader.addLib(NoSpecularMapShaderLib.getInstance());
+            }
+
+            if(this._normalMap){
+                this.shader.addLib(dy[`${shaderModel}NormalMapShaderLib`].getInstance());
+            }
+            else{
+                this.shader.addLib(dy[`${shaderModel}NoNormalMapShaderLib`].getInstance());
             }
         }
     }
