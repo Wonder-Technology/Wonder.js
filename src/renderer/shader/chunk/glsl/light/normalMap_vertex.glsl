@@ -1,7 +1,6 @@
 @varDeclare
 	varying vec2 v_normalMapTexCoord;
 	varying vec3 v_viewDir;
-	varying vec3 v_normal;
 
 
 
@@ -49,8 +48,6 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
     vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));
 
     v_normalMapTexCoord = a_texCoord;
-
-    v_normal = a_normal;
 
     v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);
 

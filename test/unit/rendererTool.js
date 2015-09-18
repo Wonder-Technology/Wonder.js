@@ -1,4 +1,7 @@
 var rendererTool = {
+    convertSource: function(source){
+        return source.split("\n").join("")
+    },
     shaderTest: function(option){
         var MaterialClassName = option.MaterialClassName ,
             shaderName = option.shaderName,

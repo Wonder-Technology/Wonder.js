@@ -232,7 +232,7 @@ module dy{
                 self = this;
 
             this.uniforms.filter((data:ShaderData, key:string) => {
-                return !!data && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
+                return !!data && data.type !== VariableType.STRUCTURE && data.type !== VariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
                 }).forEach((data:ShaderData, key:string) => {
                     result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
                 });

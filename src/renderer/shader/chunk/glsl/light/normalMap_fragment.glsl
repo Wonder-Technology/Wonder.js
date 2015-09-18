@@ -1,7 +1,6 @@
 @varDeclare
 varying vec2 v_normalMapTexCoord;
 varying vec3 v_viewDir;
-varying vec3 v_normal;
 
 #if POINT_LIGHTS_COUNT > 0
 varying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];
