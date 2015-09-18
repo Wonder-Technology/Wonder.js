@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class DiffuseMapShaderLib extends LightMapShaderLib{
+    export class NoNormalMapShaderLib extends ShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,14 +11,9 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "diffuseMap";
+        public type:string = "noNormalMap";
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
-
-            this.addUniformVariable([
-                VariableNameTable.getVariableName("diffuseMap")
-            ]);
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
         }
     }
 }

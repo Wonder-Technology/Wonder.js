@@ -1,6 +1,18 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export abstract class LightShaderLib extends ShaderLib{
+    export class LightShaderLib extends ShaderLib{
+        private static _instance = null;
+
+        public static getInstance() {
+            if (this._instance === null) {
+                this._instance = new this();
+                this._instance.initWhenCreate();
+            }
+            return this._instance;
+        }
+
+        public type:string = "light";
+
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             if(quadCmd.buffers.hasChild("normalBuffer")){
                 program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
@@ -17,9 +29,6 @@ module dy{
             this._sendLightVariables(program);
         }
 
-        protected abstract setSourceContent();
-        protected abstract setSourceDefine(direction_lights_count:number, point_lights_count:number);
-
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
@@ -29,7 +38,8 @@ module dy{
 
             this._setLightDefinition();
 
-            this.setSourceContent();
+            this.setFsSource(this.getFsChunk("light_common.glsl"));
+            this.setFsSource(this.getFsChunk(), "+");
         }
 
         private _sendLightVariables(program:Program){
@@ -100,7 +110,18 @@ module dy{
                 point_lights_count = pointLights.getCount();
             }
 
-            this.setSourceDefine(direction_lights_count, point_lights_count);
+            this._addDefine(this.vsSourceDefineList, direction_lights_count, point_lights_count);
+            this._addDefine(this.fsSourceDefineList, direction_lights_count, point_lights_count);
+        }
+
+        private _addDefine(list, direction_lights_count, point_lights_count){
+            list.addChildren([{
+                name: "DIRECTION_LIGHTS_COUNT",
+                value: direction_lights_count
+            }, {
+                name: "POINT_LIGHTS_COUNT",
+                value: point_lights_count
+            }]);
         }
     }
 }

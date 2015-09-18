@@ -46,55 +46,34 @@ module dy{
 
         public specular:Color = Color.create("0x111111");
         public shininess:number = 32;
-        public mode:LightShaderMode = LightShaderMode.PHONG;
 
         public init(){
-            switch (this.mode){
-                case LightShaderMode.PHONG:
-                    this._setPhongMapShaderLib();
-                    this.shader.addLib(PhongLightShaderLib.getInstance());
-                    break;
-                //case LightShaderMode.GOURAUD:
-                //    this._setGouraudMapShaderLib();
-                //    this.shader.addLib(GouraudLightShaderLib.getInstance());
-                //    break;
-                default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("LightShaderMode"));
-                    break;
-
-            }
+            this._setPhongMapShaderLib();
+            this.shader.addLib(LightShaderLib.getInstance());
 
             super.init();
         }
 
         private _setPhongMapShaderLib(){
-            this._setMapShaderLib("Phong");
-        }
-
-        private _setGouraudMapShaderLib(){
-            this._setMapShaderLib("Gouraud");
-        }
-
-        private _setMapShaderLib(shaderModel:string){
             if(this._diffuseMap){
-                this.shader.addLib(dy[`${shaderModel}DiffuseMapShaderLib`].getInstance());
+                this.shader.addLib(DiffuseMapShaderLib.getInstance());
             }
             else{
                 this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
             }
 
             if(this._specularMap){
-                this.shader.addLib(dy[`${shaderModel}SpecularMapShaderLib`].getInstance());
+                this.shader.addLib(SpecularMapShaderLib.getInstance());
             }
             else{
                 this.shader.addLib(NoSpecularMapShaderLib.getInstance());
             }
 
             if(this._normalMap){
-                this.shader.addLib(dy[`${shaderModel}NormalMapShaderLib`].getInstance());
+                this.shader.addLib(NormalMapShaderLib.getInstance());
             }
             else{
-                this.shader.addLib(dy[`${shaderModel}NoNormalMapShaderLib`].getInstance());
+                this.shader.addLib(NoNormalMapShaderLib.getInstance());
             }
         }
     }

@@ -21,8 +21,6 @@ module dy{
             super.setShaderDefinition();
 
             this.addUniformVariable(["u_diffuse"]);
-
-            //this.fsSourceHead = ShaderChunk.noDiffuseMap_head_fragment;
         }
     }
 }
