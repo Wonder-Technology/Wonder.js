@@ -11,6 +11,8 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "skybox";
+
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
                 if (quadCmd.buffers.hasChild("normalBuffer")) {
                     program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
@@ -18,14 +20,11 @@ module dy{
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addAttributeVariable(["a_normal"]);
 
             this.addUniformVariable(["u_samplerCube0"]);
-
-            this.vsSourceHead = ShaderChunk.skybox_head_vertex;
-            this.vsSourceBody = ShaderChunk.skybox_body_vertex;
-            this.fsSourceHead = ShaderChunk.skybox_head_fragment;
-            this.fsSourceBody = ShaderChunk.skybox_body_fragment;
         }
     }
 }

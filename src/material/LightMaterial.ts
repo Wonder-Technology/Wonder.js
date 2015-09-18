@@ -54,10 +54,10 @@ module dy{
                     this._setPhongMapShaderLib();
                     this.shader.addLib(PhongLightShaderLib.getInstance());
                     break;
-                case LightShaderMode.GOURAUD:
-                    this._setGouraudMapShaderLib();
-                    this.shader.addLib(GouraudLightShaderLib.getInstance());
-                    break;
+                //case LightShaderMode.GOURAUD:
+                //    this._setGouraudMapShaderLib();
+                //    this.shader.addLib(GouraudLightShaderLib.getInstance());
+                //    break;
                 default:
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("LightShaderMode"));
                     break;

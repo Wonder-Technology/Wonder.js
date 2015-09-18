@@ -22,14 +22,13 @@ gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTs", "comp
 //});
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
-var glslFilePaths = "src/renderer/shader/chunk/glsl/**/*.glsl";
+var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl"];
 
 gulp.task("watch", function(){
-    gulp.watch(glslFilePaths, ["createShaderChunk"]);
-    gulp.watch(tsFilePaths, ["compileTsDebug"]);
+    var totalPaths = tsFilePaths.concat(glslFilePaths);
+
+    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsDebug"]));
 });
-
-
 
 
 

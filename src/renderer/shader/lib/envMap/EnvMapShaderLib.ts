@@ -11,16 +11,27 @@ module dy{
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addAttributeVariable(["a_normal"]);
 
             this.addUniformVariable(["u_samplerCube0", "u_cameraPos", "u_normalMatrix"]);
 
-            this.vsSourceBody = ShaderSnippet.setPos_mvp;
+            this.vsSourceBody = ShaderSnippet.setPos_mvp + this.getVsChunk().body;
         }
 
-        protected setVsSource(){
-            this.vsSourceHead = ShaderChunk.envMap_head_vertex;
-            this.vsSourceBody += ShaderChunk.envMap_body_vertex;
+        protected setEnvMapSource(){
+            var vs = this.getVsChunk("envMap"),
+                fs = this.getFsChunk("envMap");
+
+            this.vsSourceTop= vs.top;
+            this.vsSourceDefine= vs.define;
+            this.vsSourceVarDeclare= vs.varDeclare;
+            this.vsSourceFuncDeclare= vs.funcDeclare;
+            this.vsSourceFuncDefine= vs.funcDefine;
+            this.vsSourceBody += vs.body;
+
+            this.setFsSource(fs);
         }
     }
 }

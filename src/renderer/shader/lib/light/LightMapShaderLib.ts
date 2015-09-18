@@ -8,6 +8,8 @@ module dy{
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addAttributeVariable(["a_texCoord"]);
         }
     }

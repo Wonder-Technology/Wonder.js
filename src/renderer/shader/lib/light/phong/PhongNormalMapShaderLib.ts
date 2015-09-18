@@ -11,10 +11,14 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "normalMap_phong";
+
         protected setSourceContent(){
-            this.vsSourceHead = ShaderChunk.normalMap_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.normalMap_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.normalMap_phong_head_fragment;
+            //this.vsSourceHead = ShaderChunk.normalMap_phong_head_vertex;
+            //this.vsSourceBody = ShaderChunk.normalMap_phong_body_vertex;
+            //this.fsSourceHead = ShaderChunk.normalMap_phong_head_fragment;
+            //
+            this.vsSourceVarDeclare += this.getVsChunk("light_common.glsl").varDeclare;
         }
     }
 }

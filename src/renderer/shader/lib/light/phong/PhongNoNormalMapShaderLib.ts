@@ -11,14 +11,16 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "noNormalMap_phong";
+
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
         }
 
-        protected setShaderDefinition(){
-            this.vsSourceHead = ShaderChunk.noNormalMap_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.noNormalMap_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.noNormalMap_phong_head_fragment;
-        }
+        //protected setShaderDefinition(){
+        //    //this.vsSourceHead = ShaderChunk.noNormalMap_phong_head_vertex;
+        //    //this.vsSourceBody = ShaderChunk.noNormalMap_phong_body_vertex;
+        //    //this.fsSourceHead = ShaderChunk.noNormalMap_phong_head_fragment;
+        //}
     }
 }
 

@@ -11,11 +11,13 @@ module dy{
             return this._instance;
         }
 
-        protected setSourceContent(){
-            this.vsSourceHead = ShaderChunk.diffuseMap_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.diffuseMap_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.diffuseMap_phong_head_fragment;
-        }
+        public type:string = "diffuseMap_phong";
+        //
+        //protected setSourceContent(){
+        //    //this.vsSourceHead = ShaderChunk.diffuseMap_phong_head_vertex;
+        //    //this.vsSourceBody = ShaderChunk.diffuseMap_phong_body_vertex;
+        //    //this.fsSourceHead = ShaderChunk.diffuseMap_phong_head_fragment;
+        //}
     }
 }
 

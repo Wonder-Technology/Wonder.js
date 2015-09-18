@@ -11,14 +11,18 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "noDiffuseMap";
+
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             program.sendUniformData("u_diffuse", VariableType.FLOAT_3, material.color.toVector3());
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addUniformVariable(["u_diffuse"]);
 
-            this.fsSourceHead = ShaderChunk.noDiffuseMap_head_fragment;
+            //this.fsSourceHead = ShaderChunk.noDiffuseMap_head_fragment;
         }
     }
 }

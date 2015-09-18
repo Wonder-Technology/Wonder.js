@@ -11,6 +11,8 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "fresnel";
+
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EnvMapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
@@ -29,9 +31,10 @@ module dy{
 
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);
 
-            this.setVsSource();
-            this.fsSourceHead = ShaderChunk.envMap_head_fragment + ShaderChunk.fresnel_head_fragment;
-            this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.fresnel_body_fragment;
+            this.setEnvMapSource();
+            this.setFsSource(this.getFsChunk(), "+");
+            //this.fsSourceHead = ShaderChunk.envMap_head_fragment + ShaderChunk.fresnel_head_fragment;
+            //this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.fresnel_body_fragment;
         }
     }
 }

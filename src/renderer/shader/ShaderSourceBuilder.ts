@@ -11,10 +11,18 @@ module dy{
         public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public vsSource:string = "";
-        public vsSourceHead:string = "";
+        public vsSourceTop:string = "";
+        public vsSourceDefine:string = "";
+        public vsSourceVarDeclare:string = "";
+        public vsSourceFuncDeclare:string = "";
+        public vsSourceFuncDefine:string = "";
         public vsSourceBody:string = "";
         public fsSource:string = "";
-        public fsSourceHead:string = "";
+        public fsSourceTop:string = "";
+        public fsSourceDefine:string = "";
+        public fsSourceVarDeclare:string = "";
+        public fsSourceFuncDeclare:string = "";
+        public fsSourceFuncDefine:string = "";
         public fsSourceBody:string = "";
         public vsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
         public fsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
@@ -28,35 +36,25 @@ module dy{
                 this.uniforms = <dyCb.Hash<ShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
             }
 
-            this.vsSourceHead = definitionData.vsSourceHead || "";
+            this.vsSourceTop = definitionData.vsSourceTop || "";
+            this.vsSourceDefine = definitionData.vsSourceDefine || "";
+            this.vsSourceVarDeclare = definitionData.vsSourceVarDeclare || "";
+            this.vsSourceFuncDeclare = definitionData.vsSourceFuncDeclare || "";
+            this.vsSourceFuncDefine = definitionData.vsSourceFuncDefine || "";
             this.vsSourceBody = definitionData.vsSourceBody || "";
-            this.fsSourceHead = definitionData.fsSourceHead || "";
+
+            this.fsSourceTop = definitionData.fsSourceTop || "";
+            this.fsSourceDefine = definitionData.fsSourceDefine || "";
+            this.fsSourceVarDeclare = definitionData.fsSourceVarDeclare || "";
+            this.fsSourceFuncDeclare = definitionData.fsSourceFuncDeclare || "";
+            this.fsSourceFuncDefine = definitionData.fsSourceFuncDefine || "";
             this.fsSourceBody = definitionData.fsSourceBody || "";
         }
 
         public build(libs:dyCb.Collection<ShaderLib>){
-            var self = this,
-                vsHead = "",
-                vsBody = "",
-                fsHead = "",
-                fsBody = "";
+            var self = this;
 
-            libs.forEach((lib:ShaderLib) => {
-                self.attributes.addChildren(lib.attributes);
-                self.uniforms.addChildren(lib.uniforms);
-                vsHead += lib.vsSourceHead;
-                vsBody += lib.vsSourceBody;
-                fsHead += lib.fsSourceHead;
-                fsBody += lib.fsSourceBody;
-                self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
-                self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
-            });
-
-            //ensure shader lib's code is before custom shader's source
-            this.vsSourceHead = vsHead + this.vsSourceHead;
-            this.vsSourceBody = vsBody + this.vsSourceBody;
-            this.fsSourceHead = fsHead + this.fsSourceHead;
-            this.fsSourceBody = fsBody + this.fsSourceBody;
+            this._readLibSource(libs);
 
             this._buildVsSource();
             this._buildFsSource();
@@ -70,24 +68,85 @@ module dy{
             });
         }
 
+        private _readLibSource(libs:dyCb.Collection<ShaderLib>){
+            var self = this,
+                vsSourceTop = "",
+                vsSourceDefine = "",
+                vsSourceVarDeclare = "",
+                vsSourceFuncDeclare = "",
+                vsSourceFuncDefine = "",
+                vsSourceBody = "",
+                fsSourceTop = "",
+                fsSourceDefine = "",
+                fsSourceVarDeclare = "",
+                fsSourceFuncDeclare = "",
+                fsSourceFuncDefine = "",
+                fsSourceBody = "";
+
+            libs.forEach((lib:ShaderLib) => {
+                self.attributes.addChildren(lib.attributes);
+                self.uniforms.addChildren(lib.uniforms);
+
+                vsSourceTop += lib.vsSourceTop;
+                vsSourceDefine += lib.vsSourceDefine;
+                vsSourceVarDeclare += lib.vsSourceVarDeclare;
+                vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
+                vsSourceFuncDefine += lib.vsSourceFuncDefine;
+                vsSourceBody += lib.vsSourceBody;
+
+                fsSourceTop += lib.fsSourceTop;
+                fsSourceDefine += lib.fsSourceDefine;
+                fsSourceVarDeclare += lib.fsSourceVarDeclare;
+                fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
+                fsSourceFuncDefine += lib.fsSourceFuncDefine;
+                fsSourceBody += lib.fsSourceBody;
+
+                self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+            });
+
+            //ensure shader lib's code is before custom shader's source
+            this.vsSourceTop = vsSourceTop + this.vsSourceTop;
+            this.vsSourceDefine = vsSourceDefine + this.vsSourceDefine;
+            this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclare;
+            this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclare;
+            this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefine;
+            this.vsSourceBody = vsSourceBody + this.vsSourceBody;
+
+            this.fsSourceTop = fsSourceTop + this.fsSourceTop;
+            this.fsSourceDefine = fsSourceDefine + this.fsSourceDefine;
+            this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclare;
+            this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclare;
+            this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefine;
+            this.fsSourceBody = fsSourceBody + this.fsSourceBody;
+        }
+
         private _buildVsSource(){
-            this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceHead() + this._buildVsSourceBody();
+            this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceVarDeclare() + this._buildVsSourceFuncDeclare() + this._buildVsSourceFuncDefine() + this._buildVsSourceBody();
         }
 
         private _buildFsSource(){
-            this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceHead() + this._buildFsSourceBody();
+            this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
         }
 
         private _buildVsSourceTop(){
-            return this._getPrecisionSource();
+            return this._getPrecisionSource() + this.vsSourceTop;
         }
 
         private _buildVsSourceDefine(){
-            return this._buildSourceDefine(this.vsSourceDefineList);
+            return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
         }
 
-        private _buildVsSourceHead(){
-            return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceHead, this.vsSourceBody) + this.vsSourceHead;
+        private _buildVsSourceVarDeclare(){
+            return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceVarDeclare, this.vsSourceFuncDefine, this.vsSourceBody) + this.vsSourceVarDeclare;
+        }
+
+        private _buildVsSourceFuncDeclare(){
+            return this.vsSourceFuncDeclare;
+        }
+
+        private _buildVsSourceFuncDefine(){
+            return this.vsSourceFuncDefine;
         }
 
         private _buildVsSourceBody(){
@@ -95,11 +154,27 @@ module dy{
         }
 
         private _buildFsSourceTop(){
-            return this._getPrecisionSource();
+            return this._getPrecisionSource() + this.fsSourceTop;
         }
 
         private _buildFsSourceDefine(){
-            return this._buildSourceDefine(this.fsSourceDefineList);
+            return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
+        }
+
+        private _buildFsSourceVarDeclare(){
+            return this._generateUniformSource(this.fsSourceVarDeclare, this.fsSourceFuncDefine, this.fsSourceBody) + this.fsSourceVarDeclare;
+        }
+
+        private _buildFsSourceFuncDeclare(){
+            return this.fsSourceFuncDeclare;
+        }
+
+        private _buildFsSourceFuncDefine(){
+            return this.fsSourceFuncDefine;
+        }
+
+        private _buildFsSourceBody(){
+            return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
         }
 
         private _buildSourceDefine(defineList:dyCb.Collection<SourceDefine>){
@@ -117,27 +192,19 @@ module dy{
             return result;
         }
 
-        private _buildFsSourceHead(){
-            return this._generateUniformSource(this.fsSourceHead, this.fsSourceBody) + this.fsSourceHead;
-        }
-
-        private _buildFsSourceBody(){
-            return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
-        }
-
         private _getPrecisionSource(){
             var precision = GPUDetector.getInstance().precision,
                 result = null;
 
             switch (precision){
                 case GPUPrecision.HIGHP:
-                    result = ShaderChunk.highp_head_fragment;
+                    result = ShaderChunk.highp_fragment.top;
                     break;
                 case GPUPrecision.MEDIUMP:
-                    result = ShaderChunk.mediump_head_fragment;
+                    result = ShaderChunk.mediump_fragment.top;
                     break;
                 case GPUPrecision.LOWP:
-                    result = ShaderChunk.lowp_head_fragment;
+                    result = ShaderChunk.lowp_fragment.top;
                     break;
                 default:
                     //dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
@@ -151,38 +218,30 @@ module dy{
         private _generateAttributeSource(){
             var result = "";
 
-            this.attributes
-                .filter((data:ShaderData, key:string) => {
-                    return !!data;
-                })
-                .forEach((data:ShaderData, key:string) => {
-                if(!data){
-                    return;
-                }
-
+            this.attributes.filter((data:ShaderData, key:string) => {
+                return !!data;
+            }).forEach((data:ShaderData, key:string) => {
                 result += `attribute ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
             });
 
             return result;
         }
 
-        private _generateUniformSource(sourceHead:string, sourceBody:string){
+        private _generateUniformSource(sourceVarDeclare:string, sourceFuncDefine:string, sourceBody:string){
             var result = "",
                 self = this;
 
-            this.uniforms
-                .filter((data:ShaderData, key:string) => {
-                    return !!data && data.type !== VariableType.STRUCTURE && data.type !== VariableType.STRUCTURES && self._isExistInSource(key, sourceHead, sourceBody);
-                })
-                .forEach((data:ShaderData, key:string) => {
+            this.uniforms.filter((data:ShaderData, key:string) => {
+                return !!data && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
+                }).forEach((data:ShaderData, key:string) => {
                     result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
                 });
 
             return result;
         }
 
-        private _isExistInSource(key:string, sourceHead:string, sourceBody:string){
-            return sourceHead.indexOf(key) !== -1 || sourceBody.indexOf(key) !== -1;
+        private _isExistInSource(key:string, source:string){
+            return source.indexOf(key) !== -1;
         }
 
         private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>) {

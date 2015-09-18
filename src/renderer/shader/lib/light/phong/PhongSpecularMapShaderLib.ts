@@ -11,11 +11,13 @@ module dy{
             return this._instance;
         }
 
-        protected setSourceContent(){
-            this.vsSourceHead = ShaderChunk.specularMap_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.specularMap_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.specularMap_phong_head_fragment;
-        }
+        public type:string = "specularMap_phong";
+        //
+        //protected setSourceContent(){
+        //    this.vsSourceHead = ShaderChunk.specularMap_phong_head_vertex;
+        //    this.vsSourceBody = ShaderChunk.specularMap_phong_body_vertex;
+        //    this.fsSourceHead = ShaderChunk.specularMap_phong_head_fragment;
+        //}
     }
 }
 

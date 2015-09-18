@@ -12,6 +12,8 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "multi_map";
+
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
@@ -24,7 +26,7 @@ module dy{
 
             this.addUniformVariable(["u_sampler2D1", "u_combineMode", "u_mixRatio"]);
 
-            this.fsSourceBody = ShaderChunk.multi_map_body_fragment;
+            this.fsSourceBody = this.getFsChunk().body;
         }
     }
 }

@@ -11,12 +11,15 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "reflection";
+
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.setVsSource();
-            this.fsSourceHead = ShaderChunk.envMap_head_fragment;
-            this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.reflection_body_fragment;
+            this.setEnvMapSource();
+            this.setFsSource(this.getFsChunk(), "+");
+            //this.fsSourceHead = ShaderChunk.envMap_head_fragment;
+            //this.fsSourceBody += ShaderChunk.reflection_fragment.body;
         }
     }
 }

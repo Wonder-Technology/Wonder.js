@@ -104,9 +104,17 @@ module dy{
     }
 
     export type ShaderDefinitionData = {
-        vsSourceHead:string;
+        vsSourceTop:string;
+        vsSourceDefine:string;
+        vsSourceVarDeclare:string;
+        vsSourceFuncDeclare:string;
+        vsSourceFuncDefine:string;
         vsSourceBody:string;
-        fsSourceHead:string;
+        fsSourceTop:string;
+        fsSourceDefine:string;
+        fsSourceVarDeclare:string;
+        fsSourceFuncDeclare:string;
+        fsSourceFuncDefine:string;
         fsSourceBody:string;
         attributes:ShaderData|dyCb.Hash<ShaderData>;
         uniforms:ShaderData|dyCb.Hash<ShaderData>;

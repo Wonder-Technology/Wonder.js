@@ -11,6 +11,8 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "basic";
+
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material){
             if(quadCmd.buffers.hasChild("colorBuffer")){
                 /*!
@@ -25,12 +27,11 @@ module dy{
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addAttributeVariable(["a_color"]);
 
-            this.vsSourceHead = ShaderChunk.basic_head_vertex;
-            this.vsSourceBody = ShaderSnippet.setPos_mvp + ShaderChunk.basic_body_vertex;
-            this.fsSourceHead = ShaderChunk.basic_head_fragment;
-            this.fsSourceBody = ShaderChunk.basic_body_fragment;
+            this.vsSourceBody = ShaderSnippet.setPos_mvp + ShaderChunk.basic_vertex.body;
         }
     }
 }

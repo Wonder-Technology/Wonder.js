@@ -8,10 +8,10 @@ module dy{
                 VariableNameTable.getVariableName("diffuseMap")
 ]);
 
-            this.setSourceContent();
+            //this.setSourceContent();
         }
-
-        protected abstract setSourceContent();
+        //
+        //protected abstract setSourceContent();
     }
 }
 

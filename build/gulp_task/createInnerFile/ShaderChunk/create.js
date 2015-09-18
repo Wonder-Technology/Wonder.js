@@ -4,9 +4,12 @@ var through = require("through-gulp");
 var path = require("path");
 var fs = require("fs");
 
+var Parser = require("./parser").GLSLParser;
+
 var PLUGIN_NAME = "ShaderChunk";
 
 var glslPath = "src/renderer/shader/chunk/glsl/**/*.glsl";
+//var glslPath = ["src/renderer/shader/chunk/glsl/light/light_common.glsl", "src/renderer/shader/chunk/glsl/light/phong/*", "src/renderer/shader/chunk/glsl/common/*"];
 var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 
 gulp.task("createShaderChunk", function(){
@@ -22,7 +25,8 @@ gulp.task("createShaderChunk", function(){
     return gulp.src(glslPath)
         .pipe(through(function (file, encoding, callback) {
         var fileContent = null,
-            filePath = null;
+            filePath = null,
+            parser = new Parser();
 
         if (file.isNull()) {
             this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
@@ -31,16 +35,16 @@ gulp.task("createShaderChunk", function(){
         if (file.isBuffer()) {
             fileContent = file.contents.toString();
 
+            ////todo how to remove the last "\n\n;"?
+            fileContent = fileContent.split("\n").join("\\n").replace("\\n\\n", "\\n");
+
 
             filePath = file.path;
 
-            //todo typescript
             result += 'public static '
             + path.basename(filePath, path.extname(filePath))
-            + ':string = "'
-                    //todo how to remove the last "\n\n;"?
-            + fileContent.split("\n").join("\\n").replace("\\n\\n", "\\n")
-            + '";\n';
+            + ':GLSLChunk = '
+            + parser.parse(fileContent);
 
             return callback();
         }
@@ -50,7 +54,10 @@ gulp.task("createShaderChunk", function(){
             return callback();
         }
     }, function (callback) {
-            result += "}\n}";
+            result += '}\n';
+
+            result += 'export type GLSLChunk = {top?:string;define?:string;varDeclare?:string;funcDeclare?:string;funcDefine?:string;body?:string;}\n';
+            result += '}';
 
             fs.writeFileSync(destFilePath, result);
 

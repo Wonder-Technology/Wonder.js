@@ -8,10 +8,10 @@ module dy{
                 VariableNameTable.getVariableName("specularMap")
             ]);
 
-            this.setSourceContent();
+            //this.setSourceContent();
         }
 
-        protected abstract setSourceContent();
+        //protected abstract setSourceContent();
     }
 }
 

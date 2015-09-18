@@ -11,6 +11,8 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "common";
+
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
             this._sendAttributeVariables(program, quadCmd);
 
@@ -20,14 +22,14 @@ module dy{
         }
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             //todo use VariableLib.xxx?
             this.addAttributeVariable(["a_position"]);
             this.addUniformVariable(["u_mMatrix", "u_vMatrix", "u_pMatrix"]);
 
-            this.vsSourceHead = ShaderChunk.common_function + ShaderChunk.common_head_vertex;
-            this.vsSourceBody = ShaderChunk.common_body_vertex;
-            this.fsSourceHead = ShaderChunk.common_function;
-            this.fsSourceBody = ShaderChunk.common_body_fragment;
+            this.vsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_vertex.funcDefine;
+            this.fsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_fragment.funcDefine;
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){

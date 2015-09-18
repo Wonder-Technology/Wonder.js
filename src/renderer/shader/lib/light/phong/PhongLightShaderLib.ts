@@ -11,11 +11,20 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "light_phong";
+
         protected setSourceContent(){
-            this.vsSourceHead = ShaderChunk.light_phong_head_vertex;
-            this.vsSourceBody = ShaderChunk.light_phong_body_vertex;
-            this.fsSourceHead = ShaderChunk.light_phong_head_fragment + ShaderChunk.light_common_head;
-            this.fsSourceBody = ShaderChunk.light_phong_body_fragment;
+            //this.vsSourceHead = ShaderChunk.light_phong_head_vertex;
+            //this.vsSourceBody = ShaderChunk.light_phong_body_vertex;
+            //this.fsSourceHead = ShaderChunk.light_phong_head_fragment + ShaderChunk.light_common_head;
+            //this.fsSourceBody = ShaderChunk.light_phong_body_fragment;
+
+
+            this.setFsSource(this.getFsChunk("light_common.glsl"));
+
+            //this.setVsSource(this.getVsChunk());
+
+            this.setFsSource(this.getFsChunk(), "+");
         }
 
         protected setSourceDefine(direction_lights_count:number, point_lights_count:number){

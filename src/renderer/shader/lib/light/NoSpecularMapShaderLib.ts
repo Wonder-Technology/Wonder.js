@@ -11,14 +11,18 @@ module dy{
             return this._instance;
         }
 
+        public type:string = "noSpecularMap";
+
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             program.sendUniformData("u_specular", VariableType.FLOAT_3, material.color.toVector3());
         }
 
         protected setShaderDefinition(){
-            this.addUniformVariable(["u_specular"]);
+            super.setShaderDefinition();
 
-            this.fsSourceHead = ShaderChunk.noSpecularMap_head_fragment;
+            this.addUniformVariable(["u_specular"]);
+            //
+            //this.fsSourceHead = ShaderChunk.noSpecularMap_head_fragment;
         }
     }
 }

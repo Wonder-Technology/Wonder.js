@@ -21,6 +21,8 @@ module dy{
         protected abstract setSourceDefine(direction_lights_count:number, point_lights_count:number);
 
         protected setShaderDefinition(){
+            super.setShaderDefinition();
+
             this.addAttributeVariable(["a_normal"]);
 
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_specular", "u_shininess", "u_ambient"]);
