@@ -42,7 +42,7 @@ module dy{
         protected getVsChunk(){
             var type = arguments.length === 0 ? this.type : arguments[0];
 
-            return ShaderChunk[this._getChunkKey(type, ShaderLibType.vs)];
+            return this._getChunk(type, ShaderLibType.vs);
         }
 
         protected getFsChunk();
@@ -51,7 +51,7 @@ module dy{
         protected getFsChunk(){
             var type = arguments.length === 0 ? this.type : arguments[0];
 
-            return ShaderChunk[this._getChunkKey(type, ShaderLibType.fs)];
+            return this._getChunk(type, ShaderLibType.fs);
         }
 
         protected setVsSource(vs:GLSLChunk, operator:string="="){
@@ -70,18 +70,22 @@ module dy{
             this._addVariable(this.uniforms, variableArr);
         }
 
-        private _getChunkKey(type:string, sourceType:ShaderLibType){
+        private _getChunk(type:string, sourceType:ShaderLibType){
+            var key = null;
+
             if(type.indexOf(".glsl") > -1){
-                return `${dyCb.PathUtils.basename(type, ".glsl")}`;
+                key =  `${dyCb.PathUtils.basename(type, ".glsl")}`;
             }
             else{
                 if(sourceType === ShaderLibType.vs){
-                    return `${type}_vertex`;
+                    key = `${type}_vertex`;
                 }
                 else{
-                    return `${type}_fragment`;
+                    key = `${type}_fragment`;
                 }
             }
+
+            return ShaderChunk[key] ? ShaderChunk[key] : ShaderChunk.empty;
         }
 
         private _setSource(chunk:GLSLChunk, sourceType:ShaderLibType, operator:string) {

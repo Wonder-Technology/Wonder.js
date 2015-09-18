@@ -66,7 +66,7 @@ var rendererTool = {
                     it("build definition data", function () {
                         var attributes = testTool.extend({
                             a_position: {
-                                type: dy.VariableType.FLOAT_4,
+                                type: dy.VariableType.FLOAT_3,
                                 value: dy.VariableCategory.ENGINE
                             }
                         }, definitionData_attributes);

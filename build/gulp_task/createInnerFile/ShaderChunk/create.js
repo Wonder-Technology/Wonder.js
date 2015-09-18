@@ -15,12 +15,21 @@ var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 gulp.task("createShaderChunk", function(){
     var result = "";
 
+    function buildEmpty(){
+        return 'public static empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""}\n';
+    }
+
     //todo typescript refactor
     result = [
         '/// <reference path="../../../definitions.d.ts"/>',
         'module dy{',
     'export class ShaderChunk{'
     ].join("\n");
+
+
+
+    result += buildEmpty();
+
 
     return gulp.src(glslPath)
         .pipe(through(function (file, encoding, callback) {
@@ -37,6 +46,7 @@ gulp.task("createShaderChunk", function(){
 
             ////todo how to remove the last "\n\n;"?
             fileContent = fileContent.split("\n").join("\\n").replace("\\n\\n", "\\n");
+
 
 
             filePath = file.path;

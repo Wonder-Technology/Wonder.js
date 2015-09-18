@@ -56,10 +56,10 @@ describe("TextureManager", function() {
                 [asset,asset, asset, asset, asset, asset ]
             );
 
-            manager.envMap = texture1;
-            manager.envMap = texture2;
+            manager.setEnvMap(texture1);
+            manager.setEnvMap(texture2);
 
-            expect(manager.envMap).toEqual(texture2);
+            expect(manager.getEnvMap()).toEqual(texture2);
         });
 
     describe("dispose", function(){
@@ -70,7 +70,7 @@ describe("TextureManager", function() {
             var texture1 = dy.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
-            manager.envMap = texture1;
+            manager.setEnvMap(texture1);
 
             var asset1 = dy.TwoDTextureAsset.create({});
             var asset2 = dy.CompressedTextureAsset.create({});

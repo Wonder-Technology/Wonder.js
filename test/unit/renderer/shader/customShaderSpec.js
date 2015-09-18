@@ -29,7 +29,7 @@ describe("custom shader", function () {
                 shaderDefinitionData = {
                     attributes: {
                         "a_color": {
-                            type: dy.VariableType.FLOAT_4,
+                            type: dy.VariableType.FLOAT_3,
                             value: [
                                 1, 0, 0, 1,
                                 1, 0, 0, 1,
@@ -102,7 +102,7 @@ describe("custom shader", function () {
                                 value:attributes.a_color.value
                             },
                             a_position: {
-                                type: dy.VariableType.FLOAT_4,
+                                type: dy.VariableType.FLOAT_3,
                                 value: dy.VariableCategory.ENGINE
                             }
                         }
@@ -119,10 +119,10 @@ describe("custom shader", function () {
                         }
                     );
                     expect(shader.vsSource.split("\n").join("")).toEqual(
-                        'precision highp float;precision highp int;attribute vec4 a_color;attribute vec4 a_position;uniform float u_test1;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;varying vec4 v_color;void main(void){v_color = a_color;float a = u_test1;gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;}'
+                        'precision highp float;precision highp int;attribute vec3 a_color;attribute vec3 a_position;uniform float u_test1;uniform mat4 u_mMatrix;uniform mat4 u_vMatrix;uniform mat4 u_pMatrix;mat2 transpose(mat2 m) {  return mat2(  m[0][0], m[1][0],   // new col 0                m[0][1], m[1][1]    // new col 1             );  }mat3 transpose(mat3 m) {  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0                m[0][1], m[1][1], m[2][1],  // new col 1                m[0][2], m[1][2], m[2][2]   // new col 1             );  }void main(void){v_color = a_color;float a = u_test1;gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;}'
                     );
                     expect(shader.fsSource.split("\n").join("")).toEqual(
-                        'precision highp float;precision highp int;uniform float u_test2;varying vec4 v_color;uniform float u_test2;void main(void){float a = u_test2;gl_FragColor = v_color;}'
+                        'precision highp float;precision highp int;uniform float u_test2;mat2 transpose(mat2 m) {  return mat2(  m[0][0], m[1][0],   // new col 0                m[0][1], m[1][1]    // new col 1             );  }mat3 transpose(mat3 m) {  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0                m[0][1], m[1][1], m[2][1],  // new col 1                m[0][2], m[1][2], m[2][2]   // new col 1             );  }void main(void){float a = u_test2;gl_FragColor = v_color;}'
                     )
                 });
                 it("program init with shader", function () {

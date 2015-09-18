@@ -10,6 +10,8 @@ module dy{
             }
             return this._instance;
         }
+
+        public type:string = "map";
     }
 }
 

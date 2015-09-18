@@ -22,7 +22,6 @@ module dy{
             program.sendUniformData("u_cameraPos", VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
 
 
-            program.sendUniformData("u_specular", VariableType.FLOAT_3, material.specular.toVector3());
             program.sendUniformData("u_shininess", VariableType.FLOAT_1, material.shininess);
 
 
@@ -34,7 +33,7 @@ module dy{
 
             this.addAttributeVariable(["a_normal"]);
 
-            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_specular", "u_shininess", "u_ambient"]);
+            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient"]);
 
             this._setLightDefinition();
 
