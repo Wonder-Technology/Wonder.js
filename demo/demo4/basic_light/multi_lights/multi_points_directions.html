@@ -45,7 +45,6 @@
 
 
             var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.direction = dy.Vector3.create(0, 0, -1);
             directionLightComponent.color = dy.Color.create("#000000");
             directionLightComponent.intensity = 1;
 
@@ -55,7 +54,6 @@
 
 
             var directionLightComponent2 = dy.DirectionLight.create();
-            directionLightComponent2.direction = dy.Vector3.create(-1, 0, 0);
             directionLightComponent2.color = dy.Color.create("#222222");
             directionLightComponent2.intensity = 1;
 
@@ -63,6 +61,7 @@
             directionLight2.addComponent(directionLightComponent2);
 
 
+            directionLight2.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
 
 
 
@@ -76,7 +75,6 @@
 
 
             var pointLightComponent = dy.PointLight.create();
-            pointLightComponent.position = dy.Vector3.create(0, 10, 10);
             pointLightComponent.color = dy.Color.create("#1f89ca");
             pointLightComponent.intensity = 1;
             pointLightComponent.rangeLevel = 10;
@@ -85,9 +83,12 @@
             pointLight.addComponent(pointLightComponent);
 
 
+            pointLight.transform.translate(dy.Vector3.create(0, 10, 0));
+
+
+
 
             var pointLightComponent2 = dy.PointLight.create();
-            pointLightComponent2.position = dy.Vector3.create(10, -10, 0);
             pointLightComponent2.color = dy.Color.create("#f99981");
             pointLightComponent2.intensity = 1;
             pointLightComponent2.rangeLevel = 10;
@@ -95,6 +96,7 @@
             var pointLight2 = dy.GameObject.create();
             pointLight2.addComponent(pointLightComponent2);
 
+            pointLight2.transform.translate(dy.Vector3.create(0, -10, 0));
 
 
             director.stage.addChild(pointLight);

@@ -43,7 +43,6 @@
 
 
             var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.direction = dy.Vector3.create(0, 0, -1);
             directionLightComponent.color = dy.Color.create("#111111");
             directionLightComponent.intensity = 1;
 
@@ -52,7 +51,6 @@
 
 
             var directionLightComponent2 = dy.DirectionLight.create();
-            directionLightComponent2.direction = dy.Vector3.create(-1, 0, 0);
             directionLightComponent2.color = dy.Color.create("#ff5808");
             directionLightComponent2.intensity = 1;
 
@@ -61,6 +59,7 @@
 
 
 
+            directionLight2.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
 
 
             director.stage.addChild(ambientLight);

@@ -45,7 +45,6 @@
 
 
             var pointLightComponent = dy.PointLight.create();
-            pointLightComponent.position = dy.Vector3.create(0, 0, 20);
             pointLightComponent.color = dy.Color.create("#222222");
             pointLightComponent.intensity = 0.5;
             pointLightComponent.rangeLevel = 10;
@@ -54,6 +53,7 @@
             pointLight.addComponent(pointLightComponent);
 
 
+            pointLight.transform.translate(dy.Vector3.create(5, 0, 20));
 
 
             director.stage.addChild(ambientLight);
