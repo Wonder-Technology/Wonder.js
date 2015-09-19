@@ -26,7 +26,6 @@ module dy {
             return this._quadratic;
         }
 
-        //public rangeLevel:number = 0;
         private _rangeLevel:number = 0;
         get rangeLevel(){
             return this._rangeLevel;
@@ -100,7 +99,7 @@ module dy {
                     this._quadratic = 0.000007;
                     break;
                 default :
-                    throw new Error("超出范围");
+                    dyCb.Log.error(true, "over light range");
                     break;
             }
         }

@@ -23,7 +23,7 @@ module dy{
         public scheduler:Scheduler = Scheduler.create();
         public renderer:Renderer= null;
         public view:IView = null;
-        public gl:any = null;
+        public gl:WebGLRenderingContext = null;
 
         get gameTime(){
             return this._timeController.gameTime;

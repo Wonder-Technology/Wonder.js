@@ -37,7 +37,7 @@ module dy {
             return this._dom.height;
         }
 
-        public getContext():any{
+        public getContext():WebGLRenderingContext{
             return this._dom.getContext("webgl") || this._dom.getContext("experimental-webgl");
         }
     }
@@ -47,7 +47,7 @@ module dy {
         width:number;
         height:number;
         dom:any;
-        getContext():any;
+        getContext():WebGLRenderingContext;
     }
 
 }
