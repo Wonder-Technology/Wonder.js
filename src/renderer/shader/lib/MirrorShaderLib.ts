@@ -22,6 +22,7 @@ module dy{
 
             //todo refactor
             program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, stage.textureMatrix);
+            program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
         }
 
         //todo refactor
@@ -30,7 +31,7 @@ module dy{
 
             //this.addAttributeVariable(["a_texCoord"]);
 
-            this.addUniformVariable(["u_textureMatrix", "u_mirrorSampler"]);
+            this.addUniformVariable(["u_textureMatrix", "u_mirrorColor", "u_mirrorSampler"]);
 
 
             //var vs = this.getVsChunk();

@@ -88,6 +88,11 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
+        public static u_mirrorColor:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_cameraPos:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
