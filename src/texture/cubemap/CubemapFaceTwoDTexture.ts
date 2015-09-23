@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export class CubemapFaceTwoDTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
         public static create(asset:TwoDTextureAsset) {

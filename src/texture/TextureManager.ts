@@ -17,8 +17,8 @@ module dy{
 
         public addMap(asset:TextureAsset);
         public addMap(asset:TextureAsset, option:MapVariableData);
-        public addMap(map:CommonTexture|CompressedTexture);
-        public addMap(map:CommonTexture|CompressedTexture, option:MapVariableData);
+        public addMap(map:Texture);
+        public addMap(map:Texture, option:MapVariableData);
 
         public addMap(arg){
             var map = null;
@@ -27,8 +27,7 @@ module dy{
 
                     map = asset.toTexture();
                 }
-                else if(arguments[0] instanceof CommonTexture
-                || arguments[0] instanceof CompressedTexture){
+                else if(arguments[0] instanceof Texture){
                     map = arguments[0];
                 }
 

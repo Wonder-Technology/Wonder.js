@@ -25,6 +25,7 @@
 /// <reference path="math/Vector4"/>
 /// <reference path="math/Matrix"/>
 /// <reference path="math/Quaternion"/>
+/// <reference path="math/Plane"/>
 
 
 /// <reference path="component/geometry/Geometry"/>
@@ -98,6 +99,7 @@
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
+/// <reference path="renderer/shader/lib/MirrorShaderLib"/>
 
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightMapShaderLib"/>
@@ -118,6 +120,7 @@
 /// <reference path="material/EnvMapMaterial"/>
 /// <reference path="material/MapMaterial"/>
 /// <reference path="material/LightMaterial"/>
+/// <reference path="material/MirrorMaterial"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
@@ -168,6 +171,7 @@
 /// <reference path="event/EventManager"/>
 
 /// <reference path="device/DeviceManager"/>
+/// <reference path="device/FrameBufferManager"/>
 /// <reference path="device/GPUDetector"/>
 
 /// <reference path="structure/Point"/>
@@ -178,10 +182,10 @@
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
-/// <reference path="texture/CubemapTexture"/>
-/// <reference path="texture/CubemapFaceTexture"/>
-/// <reference path="texture/CubemapFaceTwoDTexture"/>
-/// <reference path="texture/CubemapFaceCompressedTexture"/>
+/// <reference path="texture/cubemap/CubemapTexture"/>
+/// <reference path="texture/cubemap/CubemapFaceTexture"/>
+/// <reference path="texture/cubemap/CubemapFaceTwoDTexture"/>
+/// <reference path="texture/cubemap/CubemapFaceCompressedTexture"/>
 /// <reference path="texture/CompressedTexture"/>
 /// <reference path="texture/TextureManager"/>
 /// <reference path="texture/command/DrawTextureCommand"/>

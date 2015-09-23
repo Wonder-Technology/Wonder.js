@@ -48,6 +48,11 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
+        public static u_textureMatrix:ShaderVariable = {
+            type:VariableType.FLOAT_MAT4,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_samplerCube0:ShaderVariable = {
             type:VariableType.SAMPLER_CUBE,
             value:VariableCategory.ENGINE
@@ -74,6 +79,11 @@ module dy{
         };
 
         public static u_normalMapSampler:ShaderVariable = {
+            type:VariableType.SAMPLER_2D,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_mirrorSampler:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };

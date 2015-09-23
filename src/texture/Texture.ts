@@ -45,7 +45,8 @@ module dy{
 
         protected target:TextureTarget = TextureTarget.TEXTURE_2D;
 
-        private _texture:any = null;
+        //todo refactor
+        public _texture:any = null;
 
         public init(){
             var gl = Director.getInstance().gl;
@@ -164,6 +165,46 @@ module dy{
             }
         }
 
+        protected clampToMaxSize(){
+            this.source = this.clampToMaxSizeHelper(this.source, GPUDetector.getInstance().maxTextureSize);
+        }
+
+        protected clampToMaxSizeHelper (source:any, maxSize:number) {
+            var maxDimension = null,
+                newWidth = null,
+                newHeight = null,
+                canvas = null,
+                ctx = null;
+
+            if(!source){
+                return null;
+            }
+
+            if(source.width <= maxSize && source.height <= maxSize) {
+                return source;
+            }
+
+
+            // Warning: Scaling through the canvas will only work with sources that use
+            // premultiplied alpha.
+
+            maxDimension = Math.max( source.width, source.height );
+            newWidth = Math.floor( source.width * maxSize / maxDimension );
+            newHeight = Math.floor( source.height * maxSize / maxDimension );
+
+            canvas = this._createResizedCanvas();
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            ctx = canvas.getContext( "2d" );
+            ctx.drawImage( source, 0, 0, source.width, source.height, 0, 0, newWidth, newHeight );
+
+            dyCb.Log.log(`source is too big (${source.width}x${source.height}). Resized to ${canvas.width}x${canvas.height}.`);
+
+            return canvas;
+        }
+
         private _setTextureParameters(textureType, isSourcePowerOfTwo){
             var gl = Director.getInstance().gl;
 
@@ -205,45 +246,6 @@ module dy{
             }
         }
 
-        protected clampToMaxSize(){
-            this.source = this.clampToMaxSizeHelper(this.source, GPUDetector.getInstance().maxTextureSize);
-        }
-
-        protected clampToMaxSizeHelper (source:any, maxSize:number) {
-            var maxDimension = null,
-                newWidth = null,
-                newHeight = null,
-                canvas = null,
-                ctx = null;
-
-            if(!source){
-                return null;
-            }
-
-            if(source.width <= maxSize && source.height <= maxSize) {
-                return source;
-            }
-
-
-            // Warning: Scaling through the canvas will only work with sources that use
-            // premultiplied alpha.
-
-            maxDimension = Math.max( source.width, source.height );
-            newWidth = Math.floor( source.width * maxSize / maxDimension );
-            newHeight = Math.floor( source.height * maxSize / maxDimension );
-
-            canvas = this._createResizedCanvas();
-
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-
-            ctx = canvas.getContext( "2d" );
-            ctx.drawImage( source, 0, 0, source.width, source.height, 0, 0, newWidth, newHeight );
-
-            dyCb.Log.log(`source is too big (${source.width}x${source.height}). Resized to ${canvas.width}x${canvas.height}.`);
-
-            return canvas;
-        }
 
         private _createResizedCanvas(){
             return document.createElement( "canvas" );

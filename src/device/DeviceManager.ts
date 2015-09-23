@@ -5,64 +5,6 @@ DeviceManager is responsible for global setting of gl
  */
 
 module dy {
-    /*! default is LESS */
-    export enum DepthFunction{
-        NEVER = <any>"NEVER",
-        ALWAYS = <any>"ALWAYS",
-        LESS = <any>"LESS",
-        LEQUAL = <any>"LEQUAL",
-        EQUAL = <any>"EQUAL",
-        GEQUAL = <any>"GEQUAL",
-        GREATER = <any>"GREATER",
-        NOTEQUAL = <any>"NOTEQUAL"
-    }
-
-    /*!default is BACK*/
-    export enum CullMode{
-        NONE,
-        //CCW
-        FRONT,
-        //CW
-        BACK,
-        FRONT_AND_BACK
-    }
-
-    export enum PolygonOffsetMode{
-        NONE,
-        IN,
-        OUT,
-        CUSTOM
-    }
-
-    export enum BlendFunction{
-        ZERO = <any>"ZEOR",
-        ONE = <any>"ONE",
-        SRC_COLOR = <any>"SRC_COLOR",
-        ONE_MINUS_SRC_COLOR = <any>"ONE_MINUS_SRC_COLOR",
-        DST_COLOR = <any>"DST_COLOR",
-        ONE_MINUS_DST_COLOR = <any>"ONE_MINUS_DST_COLOR",
-        SRC_ALPHA = <any>"SRC_ALPHA",
-        SRC_ALPHA_SATURATE = <any>"SRC_ALPHA_SATURATE",
-        ONE_MINUS_SRC_ALPHA = <any>"ONE_MINUS_SRC_ALPHA",
-        DST_ALPHA = <any>"DST_ALPHA",
-        ONE_MINUS_DST_ALPH = <any>"ONE_MINUS_DST_ALPHA"
-    }
-
-    export enum BlendEquation{
-        ADD = <any>"FUNC_ADD",
-        SUBTRACT = <any>"FUNC_SUBTRACT",
-        REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
-    }
-
-    export enum BlendType{
-        NONE,
-        NORMAL,
-        ADDITIVE,
-        ADDITIVEALPHA,
-        MULTIPLICATIVE,
-        PREMULTIPLIED
-    }
-
     export class DeviceManager {
         private static _instance = null;
 
@@ -446,5 +388,63 @@ module dy {
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         }
+    }
+
+    /*! default is LESS */
+    export enum DepthFunction{
+        NEVER = <any>"NEVER",
+        ALWAYS = <any>"ALWAYS",
+        LESS = <any>"LESS",
+        LEQUAL = <any>"LEQUAL",
+        EQUAL = <any>"EQUAL",
+        GEQUAL = <any>"GEQUAL",
+        GREATER = <any>"GREATER",
+        NOTEQUAL = <any>"NOTEQUAL"
+    }
+
+    /*!default is BACK*/
+    export enum CullMode{
+        NONE,
+        //CCW
+        FRONT,
+        //CW
+        BACK,
+        FRONT_AND_BACK
+    }
+
+    export enum PolygonOffsetMode{
+        NONE,
+        IN,
+        OUT,
+        CUSTOM
+    }
+
+    export enum BlendFunction{
+        ZERO = <any>"ZEOR",
+        ONE = <any>"ONE",
+        SRC_COLOR = <any>"SRC_COLOR",
+        ONE_MINUS_SRC_COLOR = <any>"ONE_MINUS_SRC_COLOR",
+        DST_COLOR = <any>"DST_COLOR",
+        ONE_MINUS_DST_COLOR = <any>"ONE_MINUS_DST_COLOR",
+        SRC_ALPHA = <any>"SRC_ALPHA",
+        SRC_ALPHA_SATURATE = <any>"SRC_ALPHA_SATURATE",
+        ONE_MINUS_SRC_ALPHA = <any>"ONE_MINUS_SRC_ALPHA",
+        DST_ALPHA = <any>"DST_ALPHA",
+        ONE_MINUS_DST_ALPH = <any>"ONE_MINUS_DST_ALPHA"
+    }
+
+    export enum BlendEquation{
+        ADD = <any>"FUNC_ADD",
+        SUBTRACT = <any>"FUNC_SUBTRACT",
+        REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
+    }
+
+    export enum BlendType{
+        NONE,
+        NORMAL,
+        ADDITIVE,
+        ADDITIVEALPHA,
+        MULTIPLICATIVE,
+        PREMULTIPLIED
     }
 }

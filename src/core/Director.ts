@@ -96,6 +96,7 @@ module dy{
 
         //todo add dispose
 
+        //todo remove?
         public getView():IView{
             return this.view;
         }

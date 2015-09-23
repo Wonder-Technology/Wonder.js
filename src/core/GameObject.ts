@@ -340,7 +340,8 @@ module dy {
         }
 
         //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
-        public render(renderer:Renderer, camera:GameObject):void{
+        //todo refactor
+        public render(renderer:Renderer, camera:GameObject, renderList?:dyCb.Collection<GameObject>):void{
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {
             //    if(transformDirty) {
@@ -375,9 +376,17 @@ module dy {
                 this.rendererComponent.render(renderer, this.geometry,  camera);
             }
 
-            this._children.forEach((child:GameObject) => {
-                child.render(renderer, camera);
-            });
+            //todo refactor
+            if(renderList){
+                renderList.forEach((child:GameObject) => {
+                    child.render(renderer, camera);
+                });
+            }
+            else{
+                this._children.forEach((child:GameObject) => {
+                    child.render(renderer, camera);
+                });
+            }
         }
 
         public update(time:number):void {

@@ -85,6 +85,28 @@ module dy{
             return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }
 
+
+        //todo refactor
+        public multiplyScalar(scalar:number) {
+            this.x *= scalar;
+            this.y *= scalar;
+            this.z *= scalar;
+            this.w *= scalar;
+
+            return this;
+        }
+
+        public dot(v:Vector4) {
+            return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
+        }
+
+        public set(x:number, y:number, z:number, w:number){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+
         protected copyHelper(vector4:Vector4):any{
             var result = vector4,
                 i = 0,

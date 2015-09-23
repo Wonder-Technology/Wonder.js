@@ -414,15 +414,37 @@ describe("Transform", function(){
         });
     });
 
-    it("lookAt", function(){
-        var tra2 = Transform.create();
-        tra2.position = Vector3.create(1, 2, 0);
-        tra1.position = Vector3.create(1, 1, 1);
+    describe("lookAt", function(){
+        it("default up direction is positive y", function(){
+            var tra2 = Transform.create();
+            tra2.position = Vector3.create(1, 2, 0);
+            tra1.position = Vector3.create(1, 1, 1);
 
-        tra1.lookAt(tra2.position);
+            tra1.lookAt(tra2.position);
 
-        expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
-        expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
+            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
+            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
+        });
+        it("if viewPoint to target is default up axis, should specify the new up direction", function(){
+            var tra2 = Transform.create();
+            tra2.position = Vector3.create(0, 2, 0);
+            tra1.position = Vector3.create(0, 1, 0);
+
+            tra1.lookAt(tra2.position);
+
+            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(NaN, NaN, 0)));
+            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(NaN, NaN, NaN)));
+
+
+
+            tra2.position = Vector3.create(0, 2, 0);
+            tra1.position = Vector3.create(0, 1, 0);
+
+            tra1.lookAt(tra2.position, Vector3.forward);
+
+            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
+            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
+        });
     });
 
     describe("set parent", function(){
