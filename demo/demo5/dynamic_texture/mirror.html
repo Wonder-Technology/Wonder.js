@@ -89,10 +89,42 @@
 
 
 
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(100, 0, 255)");
+
+            var boxGeometry = dy.BoxGeometry.create();
+            boxGeometry.material = material;
+            boxGeometry.width = 2;
+            boxGeometry.height = 2;
+            boxGeometry.depth = 2;
+
+
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(boxGeometry);
+
+
+            box.transform.translate(dy.Vector3.create(0, -13, 0));
+
+
+
+
+
+
+
+
+
+
+
             var texture = dy.MirrorTexture.create();
             texture.size = 512;
             ////todo set renderList
-            texture.renderList = [sphere];
+            texture.renderList = [sphere, box];
 
 
 //            var texture = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
@@ -111,8 +143,8 @@
 
 
             var plane = dy.PlaneGeometry.create();
-            plane.width = 10;
-            plane.height = 10;
+            plane.width = 20;
+            plane.height = 20;
 
 
             plane.material = material;
@@ -149,15 +181,17 @@
 //
 //            rect.transform.translate(0, -10, 0);
 
-            mirrorObj.transform.translate(dy.Vector3.create(0, -5, 0));
+            mirrorObj.transform.translate(dy.Vector3.create(0, -10, 0));
 
 
+            console.log(mirrorObj.transform.localToWorldMatrix.values);
 
 
 
 
 
             director.stage.addChild(sphere);
+            director.stage.addChild(box);
 //            director.stage.addChild(rect);
             director.stage.addChild(mirrorObj);
 

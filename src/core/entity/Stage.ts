@@ -102,7 +102,7 @@ module dy {
 
             //todo not copy
             var mirrorCameraViewMatrix =
-                this.mirrorPlane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix.copy());
+                this.mirrorPlane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
                 //cameracomponent.worldtocameramatrix.copy().applyMatrix(this.mirrorPlane.getReflectionMatrix());
 
                 //this.camera.transform.localToWorldMatrix.copy().applyMatrix(this.mirrorPlane.getReflectionMatrix()).applyMatrix(cameraComponent.worldToCameraMatrix.copy());
@@ -115,30 +115,57 @@ module dy {
 
             //change clip plane
 
-            //var clipPlane = Vector4.create();
-            //var clipBias = 0.3;
-            var projectMatrix = cameraComponent.pMatrix;
-            //
-            //clipPlane.set( this.mirrorPlane.normal.x, this.mirrorPlane.normal.y, this.mirrorPlane.normal.z, this.mirrorPlane.originToPlaneDistance );
-            //
-            //var q = Vector4.create();
+            var clipPlane = Vector4.create();
+            var clipBias = 0.3;
+            var projectMatrix = cameraComponent.pMatrix.copy();
+
+
+
+            //todo get mirror model matrix
+            var model = Matrix.create();
+            //model.values[13] = -10;
+            model.values[13] = 10;
+            var modelview =
+                model.applyMatrix( mirrorCameraViewMatrix.copy());
+
+            //todo get mirror position as the point in mirrorPlane
+            var p = modelview.multiplyVector3(Vector3.create(0, -10, 0));
+
+            var n = modelview.invert().transpose().multiplyVector3(this.mirrorPlane.normal).normalize();
+
+
+
+
+            clipPlane.set(n.x, n.y, n.z, -p.dot(n));
+
+
+
+
+
+
+            var q = Vector4.create();
             var projectionMatrix = projectMatrix;
-            //
-            //
-            //q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.values[ 8 ] ) / projectionMatrix.values[ 0 ];
-            //q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.values[ 9 ] ) / projectionMatrix.values[ 5 ];
-            //q.z = - 1.0;
-            //q.w = ( 1.0 + projectionMatrix.values[ 10 ] ) / projectionMatrix.values[ 14 ];
-            //
-            //// Calculate the scaled plane vector
-            //var c = Vector4.create();
-            //c = clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
-            //
-            //// Replacing the third row of the projection matrix
-            //projectionMatrix.values[ 2 ] = c.x;
-            //projectionMatrix.values[ 6 ] = c.y;
-            //projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
-            //projectionMatrix.values[ 14 ] = c.w;
+
+
+            q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.values[ 8 ] ) / projectionMatrix.values[ 0 ];
+            q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.values[ 9 ] ) / projectionMatrix.values[ 5 ];
+            q.z = - 1.0;
+            q.w = ( 1.0 + projectionMatrix.values[ 10 ] ) / projectionMatrix.values[ 14 ];
+
+            // Calculate the scaled plane vector
+            var c = Vector4.create();
+            c = clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
+
+            // Replacing the third row of the projection matrix
+            projectionMatrix.values[ 2 ] = c.x;
+            projectionMatrix.values[ 6 ] = c.y;
+            projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
+            projectionMatrix.values[ 14 ] = c.w;
+
+
+
+
+
 
 
 
@@ -146,16 +173,9 @@ module dy {
 
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix.copy();
-            //mirrorCameraComponent.worldToCameraMatrix = cameraComponent.worldToCameraMatrix.copy();
-            //mirrorCameraComponent.pMatrix = cameraComponent.pMatrix.copy();
 
 
-            //this.textureMatrix.set( 0.5, 0.0, 0.0, 0.5,
-            //    0.0, 0.5, 0.0, 0.5,
-            //    0.0, 0.0, 0.5, 0.5,
-            //    0.0, 0.0, 0.0, 1.0 );
-            //this.textureMatrix.multiply( this.mirrorCamera.projectionMatrix );
-            //this.textureMatrix.multiply( this.mirrorCamera.matrixWorldInverse );
+
 
             this.textureMatrix =
                 mirrorCameraViewMatrix.copy().applyMatrix(projectionMatrix.copy())
@@ -166,13 +186,6 @@ module dy {
                 0.0, 0.0, 0.5, 0.0,
                 0.5, 0.5, 0.5, 1.0
             ])));
-
-
-            //    mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
-            //mirrorCameraComponent.pMatrix = projectionMatrix.copy();
-            //
-            //    mirrorCameraViewMatrix.applyMatrix(projectionMatrix);
-
 
 
 

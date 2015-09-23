@@ -13,7 +13,7 @@
 
 @body
 
-			vec4 color = v_mirrorCoord.w < 0.0 ? vec4(0,0,0,1) :  texture2DProj(u_mirrorSampler, v_mirrorCoord);
+			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);
 
 			color = vec4(blendOverlay(u_mirrorColor.r, color.r), blendOverlay(u_mirrorColor.g, color.g), blendOverlay(u_mirrorColor.b, color.b), 1.0);
 

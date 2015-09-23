@@ -6,6 +6,7 @@ module dy{
     export class Matrix{
         public static create(mat:Float32Array):Matrix;
         public static create():Matrix;
+
         public static create():Matrix {
             var m = null;
 
@@ -21,6 +22,7 @@ module dy{
 
         constructor(mat:Float32Array);
         constructor();
+
         constructor() {
             if (arguments.length === 1) {
                 this.values = arguments[0];
@@ -103,6 +105,10 @@ module dy{
 
             det = s[0]*inv[0] + s[1]*inv[4] + s[2]*inv[8] + s[3]*inv[12];
             if (det === 0) {
+                dyCb.Log.warn("can't invert matrix, determinant is 0");
+
+                this.setIdentity();
+
                 return this;
             }
 

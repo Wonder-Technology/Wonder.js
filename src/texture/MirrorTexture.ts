@@ -80,7 +80,9 @@ module dy {
 
             //todo +?-?
             //var plane = Plane.create(0, 1, 0, -5);
-            var plane = Plane.create(0, 1, 0, 5);
+
+            //d = -pn
+            var plane = Plane.create(0, 1, 0, 10);
 
             //var currentCamera = stage.camera;
 
