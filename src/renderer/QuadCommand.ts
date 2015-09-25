@@ -1,5 +1,8 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
+    //todo remove
+    declare var window;
+
     export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();
@@ -93,7 +96,30 @@ module dy {
 
             deviceManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
             deviceManager.polygonOffsetMode = this.material.polygonOffsetMode;
-            deviceManager.cullMode = this.material.cullMode;
+
+            //todo refactor
+            if(window.isRenderTarget){
+                var result = null;
+                switch(this.material.cullMode){
+                    case CullMode.BACK:
+                        result = CullMode.FRONT;
+                        break;
+                    case CullMode.FRONT:
+                        result = CullMode.BACK;
+                        break;
+                    default:
+                        result = this.material.cullMode;
+                        break;
+                }
+
+                deviceManager.cullMode = result;
+
+
+                window.isRenderTarget = false;
+            }
+            else{
+                deviceManager.cullMode = this.material.cullMode;
+            }
 
             deviceManager.blend = this.material.blend;
             deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);

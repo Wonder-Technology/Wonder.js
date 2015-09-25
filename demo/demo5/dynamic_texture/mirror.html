@@ -36,8 +36,16 @@
             var director = dy.Director.getInstance();
 
 
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#123fff");
+            var material = dy.MapMaterial.create();
+
+
+            var texture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
+
+            material.addMap(texture);
+
+
+
+
 
             var sphereGeometry = dy.SphereGeometry.create();
             sphereGeometry.material = material;
@@ -52,6 +60,7 @@
             sphere.addComponent(sphereGeometry);
 
 
+            sphere.transform.translate(dy.Vector3.create(0, 10, 0));
 
 
 
@@ -109,7 +118,7 @@
             box.addComponent(boxGeometry);
 
 
-            box.transform.translate(dy.Vector3.create(0, -13, 0));
+            box.transform.translate(dy.Vector3.create(0, -3, 0));
 
 
 
@@ -125,6 +134,7 @@
             texture.size = 512;
             ////todo set renderList
             texture.renderList = [sphere, box];
+//            texture.renderList = [sphere];
 
 
 //            var texture = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
@@ -181,7 +191,8 @@
 //
 //            rect.transform.translate(0, -10, 0);
 
-            mirrorObj.transform.translate(dy.Vector3.create(0, -10, 0));
+
+            mirrorObj.transform.translate(dy.Vector3.create(0, -0, 0));
 
 
             console.log(mirrorObj.transform.localToWorldMatrix.values);
@@ -227,9 +238,9 @@
 
 
 //            camera.transform.translateLocal(dy.Vector3.create(0, -10, 0.0000));
-            camera.transform.translateLocal(dy.Vector3.create(0, 0, 20));
+            camera.transform.translateLocal(dy.Vector3.create(0, 10, 20));
 
-//            camera.transform.lookAt(dy.Vector3.create(0, 1, 0), dy.Vector3.forward);
+            camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
 //            camera.transform.lookAt(dy.Vector3.create(0, 5, 0));
 
             var script = dy.Script.create();

@@ -1,5 +1,8 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
+    //todo remove
+    declare var window;
+
     export class GameObject extends Entity{
         public static create() {
         	var obj = new this();
@@ -378,6 +381,7 @@ module dy {
 
             //todo refactor
             if(renderList){
+                window.isRenderTarget = true;
                 renderList.forEach((child:GameObject) => {
                     child.render(renderer, camera);
                 });

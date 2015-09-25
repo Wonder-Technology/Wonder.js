@@ -181,7 +181,6 @@ module dy{
             }
             gl.bindTexture(gl.TEXTURE_2D, texture); // Bind the object to target
 
-
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._width, this._height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
             //todo read MirrorTexture's attri to set

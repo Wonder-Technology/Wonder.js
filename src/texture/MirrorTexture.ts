@@ -82,7 +82,7 @@ module dy {
             //var plane = Plane.create(0, 1, 0, -5);
 
             //d = -pn
-            var plane = Plane.create(0, 1, 0, 10);
+            var plane = Plane.create(0, 1, 0, 0);
 
             //var currentCamera = stage.camera;
 

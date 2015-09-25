@@ -103,7 +103,6 @@ module dy {
             //todo not copy
             var mirrorCameraViewMatrix =
                 this.mirrorPlane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
-                //cameracomponent.worldtocameramatrix.copy().applyMatrix(this.mirrorPlane.getReflectionMatrix());
 
                 //this.camera.transform.localToWorldMatrix.copy().applyMatrix(this.mirrorPlane.getReflectionMatrix()).applyMatrix(cameraComponent.worldToCameraMatrix.copy());
 
@@ -116,20 +115,27 @@ module dy {
             //change clip plane
 
             var clipPlane = Vector4.create();
-            var clipBias = 0.3;
+            //var clipBias = 0;
             var projectMatrix = cameraComponent.pMatrix.copy();
+
+
+            var q = Vector4.create();
+            var projectionMatrix = projectMatrix;
+
+
 
 
 
             //todo get mirror model matrix
             var model = Matrix.create();
             //model.values[13] = -10;
-            model.values[13] = 10;
+            //model.values[13] = 10;
+            model.values[13] = 0;
             var modelview =
                 model.applyMatrix( mirrorCameraViewMatrix.copy());
 
             //todo get mirror position as the point in mirrorPlane
-            var p = modelview.multiplyVector3(Vector3.create(0, -10, 0));
+            var p = modelview.multiplyVector3(Vector3.create(0, -0, 0));
 
             var n = modelview.invert().transpose().multiplyVector3(this.mirrorPlane.normal).normalize();
 
@@ -143,8 +149,6 @@ module dy {
 
 
 
-            var q = Vector4.create();
-            var projectionMatrix = projectMatrix;
 
 
             q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.values[ 8 ] ) / projectionMatrix.values[ 0 ];
@@ -159,14 +163,15 @@ module dy {
             // Replacing the third row of the projection matrix
             projectionMatrix.values[ 2 ] = c.x;
             projectionMatrix.values[ 6 ] = c.y;
-            projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
+            //projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
+            projectionMatrix.values[ 10 ] = c.z + 1.0;
             projectionMatrix.values[ 14 ] = c.w;
 
 
-
-
-
-
+            //
+            //
+            //
+            //
 
 
 
@@ -176,16 +181,17 @@ module dy {
 
 
 
+            //todo optimize in glsl
 
             this.textureMatrix =
                 mirrorCameraViewMatrix.copy().applyMatrix(projectionMatrix.copy())
                     .applyMatrix(
-            Matrix.create(new Float32Array([
-                0.5, 0.0, 0.0, 0.0,
-                0.0, 0.5, 0.0, 0.0,
-                0.0, 0.0, 0.5, 0.0,
-                0.5, 0.5, 0.5, 1.0
-            ])));
+                    Matrix.create(new Float32Array([
+                        0.5, 0.0, 0.0, 0.0,
+                        0.0, 0.5, 0.0, 0.0,
+                        0.0, 0.0, 0.5, 0.0,
+                        0.5, 0.5, 0.5, 1.0
+                    ])));
 
 
 
