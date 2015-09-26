@@ -7,14 +7,11 @@ module dy {
         	return obj;
         }
 
-        //todo add it
         private _renderList:dyCb.Collection<GameObject> = null;
         get renderList(){
             return this._renderList;
         }
-        //todo if is null,then render all
-        //todo pass type check
-        //set renderList(renderList:[GameObject]){
+
         set renderList(renderList:any) {
             if (JudgeUtils.isArray(renderList)) {
                 this._renderList = dyCb.Collection.create<GameObject>(renderList);
@@ -29,6 +26,8 @@ module dy {
 
         public width:number = 256;
         public height:number = 256;
+
+        private _plane:Plane = null;
 
         public init(){
             //todo support mipmap?
@@ -50,14 +49,19 @@ module dy {
                 normal = null,
                 p = null;
 
+            if(this._plane && !this.geometry.gameObject.transform.dirtyLocal){
+                return this._plane;
+            }
+
             dyCb.Log.error(!(this.geometry instanceof PlaneGeometry), dyCb.Log.info.FUNC_MUST_BE("geometry", "PlaneGeometry"));
 
-            //todo add dirty
             normalData = this.geometry.normals.data;
             normal = this.geometry.gameObject.transform.localRotation.multiplyVector3(Vector3.create(normalData[0], normalData[1], normalData[2])).normalize();
             p = this.getPosition();
 
-            return Plane.create(normal.x, normal.y, normal.z, -p.dot(normal));
+            this._plane = Plane.create(normal.x, normal.y, normal.z, -p.dot(normal));
+
+            return this._plane;
         }
 
         public getPosition(){

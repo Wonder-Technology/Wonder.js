@@ -181,6 +181,7 @@
             material.color = dy.Color.create("#889999");
 
 
+            material.cullMode = dy.CullMode.NONE;
 
             //todo refactor:reflectionTexture attri?
             material.reflectionMap = texture;
@@ -229,6 +230,19 @@
 
             mirrorObj.transform.translate(dy.Vector3.create(0, -0, 0));
 
+            var tween1 = dy.Tween.create();
+
+            tween1.from({x:0}).to({x: 360}, 10000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        mirrorObj.transform.rotateLocal(dy.Vector3.create(0, 0, 1));
+                    });
+
+            var action1 = dy.RepeatForever.create(tween1);
+
+
+
+            mirrorObj.addComponent(action1);
 
 
 

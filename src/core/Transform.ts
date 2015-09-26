@@ -16,10 +16,10 @@ module dy{
         private _localToParentMatrix:Matrix = Matrix.create();
         get localToParentMatrix(){
             //return this._localToParentMatrix;
-            if (this._dirtyLocal) {
+            if (this.dirtyLocal) {
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
-                this._dirtyLocal = false;
+                this.dirtyLocal = false;
                 this.dirtyWorld = true;
             }
             return this._localToParentMatrix;
@@ -81,7 +81,7 @@ module dy{
                 this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(position);
             }
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _rotation:Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -98,7 +98,7 @@ module dy{
                 this._localRotation = this._parent.rotation.copy().invert().multiply(rotation);
             }
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _scale:Vector3 = Vector3.create(1, 1, 1);
@@ -115,7 +115,7 @@ module dy{
                 this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
             }
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _eulerAngles:Vector3 = null;
@@ -132,7 +132,7 @@ module dy{
                 this._localRotation = this._parent.rotation.copy().invert().multiply(this._localRotation);
             }
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _localPosition:Vector3 = Vector3.create(0, 0, 0);
@@ -144,7 +144,7 @@ module dy{
         set localPosition(position:Vector3){
             this._localPosition = position.copy();
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _localRotation:Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -157,7 +157,7 @@ module dy{
         set localRotation(rotation:Quaternion){
             this._localRotation = rotation.copy();
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _localEulerAngles:Vector3 = null;
@@ -170,7 +170,7 @@ module dy{
             //this._localEulerAngles = localEulerAngles;
             this._localRotation.setFromEulerAngles(localEulerAngles);
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         private _localScale:Vector3 = Vector3.create(1, 1, 1);
@@ -183,7 +183,7 @@ module dy{
         set localScale(scale:Vector3){
             this._localScale = scale.copy();
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         get up(){
@@ -201,8 +201,8 @@ module dy{
         }
 
         public dirtyWorld:boolean = null;
+        public dirtyLocal:boolean = true;
 
-        private _dirtyLocal:boolean = true;
         private _children:dyCb.Collection<Transform> = dyCb.Collection.create<Transform>();
         private _gameObject:GameObject = null;
 
@@ -223,10 +223,10 @@ module dy{
         }
 
         public sync(){
-            if (this._dirtyLocal) {
+            if (this.dirtyLocal) {
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
-                this._dirtyLocal = false;
+                this.dirtyLocal = false;
                 this.dirtyWorld = true;
             }
 
@@ -251,7 +251,7 @@ module dy{
         public translateLocal(translation:Vector3) {
             this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         public translate(translation:Vector3){
@@ -272,7 +272,7 @@ module dy{
                 this._localRotation = quaternion.multiply(this.rotation);
             }
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         public rotateLocal(eulerAngles:Vector3) {
@@ -282,7 +282,7 @@ module dy{
 
             this._localRotation.multiply(quaternion);
 
-            this._dirtyLocal = true;
+            this.dirtyLocal = true;
         }
 
         public rotateAround(angle:number, center:Vector3, axis:Vector3){
