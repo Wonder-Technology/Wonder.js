@@ -18,6 +18,7 @@ module dy {
         }
 
         private _texture:MirrorTexture = null;
+        private _frameBufferManager:FrameBufferManager = null;
 
         public init(){
             if(this._isTextureSizeExceedCanvasSize()){
@@ -30,56 +31,33 @@ module dy {
             return this;
         }
 
-        private _isTextureSizeExceedCanvasSize(){
-            var view = Director.getInstance().getView();
-
-            return this._texture.width > view.width || this._texture.height > view.height;
-        }
-
-        private _frameBufferManager:FrameBufferManager = null;
-
         //todo extract RenderTargetTexture
         public render(renderer:Renderer, camera:GameObject){
+            var plane = null,
+                cameraComponent = null,
+                mirrorCameraViewMatrix = null,
+                projectionMatrix = null,
+                mirrorCameraComponent = null;
+
             this._texture.setTexture(this._frameBufferManager.texture);
-            var cameraComponent = camera.getComponent<Camera>(Camera);
 
+            cameraComponent = camera.getComponent<Camera>(Camera);
 
+            plane =this._texture.getPlane();
 
-
-            var plane =this._texture.getPlane();
-
-
-
-            var mirrorCameraViewMatrix =
-               plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
-
-
+            mirrorCameraViewMatrix =
+                plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
 
             //todo optimize(dirty)
-            var projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
-            //var projectionMatrix = cameraComponent.pMatrix;
-
-
-
-
-
-
-
-
-
+            projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
 
             this._frameBufferManager.bind();
 
-
-
-            var mirrorCameraComponent = Camera.create();
+            mirrorCameraComponent = Camera.create();
 
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix.copy();
 
-
-            var mirrorCamera = GameObject.create();
-            mirrorCamera.addComponent(mirrorCameraComponent);
 
 
 
@@ -91,7 +69,7 @@ module dy {
             //todo refactor
             window.isRenderTarget = true;
             this._texture.renderList.forEach((child:GameObject) => {
-                child.render(renderer, mirrorCamera);
+                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent));
             });
 
 
@@ -102,23 +80,9 @@ module dy {
         }
 
         private _getClipPlaneInCameraSpace(vMatrix:Matrix, plane:Plane){
-            var clipPlane = Vector4.create();
-
-            //todo optimize(copy)
-            //var model = this._texture.getModelMatrix().copy();
-            //var modelview =
-            //    model.copy().applyMatrix(vMatrix);
-
-            //todo remove copy
-            //var p = modelview.copy().multiplyVector3(this._texture.getPosition());
-            var p = vMatrix.multiplyVector3(this._texture.getPosition());
-
-            var n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
-            //var n = model.copy().invert().transpose().applyMatrix(vMatrix).multiplyVector3(plane.normal)
-            //    .normalize();
-
-
-
+            var clipPlane = Vector4.create(),
+                p = vMatrix.multiplyVector3(this._texture.getPosition()),
+                n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
 
             clipPlane.set(n.x, n.y, n.z, -p.dot(n));
 
@@ -126,22 +90,10 @@ module dy {
         }
 
         private _setClipPlane(vMatrix:Matrix, pMatrix:Matrix, plane:Plane):Matrix{
-            //var clipBias = 0;
-            var projectMatrix = pMatrix.copy();
-
-
-            var q = Vector4.create();
-            var projectionMatrix = projectMatrix;
-
-
-
-
-            var clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane);
-
-
-
-
-
+            var projectionMatrix = pMatrix.copy(),
+                q = Vector4.create(),
+                clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane),
+                c = Vector4.create();
 
             q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.values[ 8 ] ) / projectionMatrix.values[ 0 ];
             q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.values[ 9 ] ) / projectionMatrix.values[ 5 ];
@@ -149,7 +101,6 @@ module dy {
             q.w = ( 1.0 + projectionMatrix.values[ 10 ] ) / projectionMatrix.values[ 14 ];
 
             // Calculate the scaled plane vector
-            var c = Vector4.create();
             c = clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
 
             // Replacing the third row of the projection matrix
@@ -161,6 +112,12 @@ module dy {
             projectionMatrix.values[ 14 ] = c.w;
 
             return projectionMatrix;
+        }
+
+        private _isTextureSizeExceedCanvasSize(){
+            var view = Director.getInstance().getView();
+
+            return this._texture.width > view.width || this._texture.height > view.height;
         }
     }
 }
