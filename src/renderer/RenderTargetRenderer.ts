@@ -25,7 +25,7 @@ module dy {
             }
 
             this._frameBufferManager = FrameBufferManager.create(this._texture.width, this._texture.height);
-            this._frameBufferManager.init();
+            this._frameBufferManager.init(this._texture.createEmptyTexture());
 
             return this;
         }

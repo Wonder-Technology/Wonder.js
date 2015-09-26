@@ -51,7 +51,7 @@ module dy{
         public needUpdate:boolean = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_2D;
-        protected glTexture:any = null;
+        protected glTexture:WebGLTexture = null;
 
         public init(){
             var gl = Director.getInstance().gl;
@@ -82,7 +82,7 @@ module dy{
                 this.clampToMaxSize();
             }
 
-            this._setTextureParameters( gl[this.target], isSourcePowerOfTwo);
+            this.setTextureParameters( gl[this.target], isSourcePowerOfTwo);
 
             this.allocateSourceToTexture(isSourcePowerOfTwo);
 
@@ -210,7 +210,7 @@ module dy{
             return canvas;
         }
 
-        private _setTextureParameters(textureType, isSourcePowerOfTwo){
+        protected setTextureParameters(textureType, isSourcePowerOfTwo){
             var gl = Director.getInstance().gl;
 
             if (isSourcePowerOfTwo){

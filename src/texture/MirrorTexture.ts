@@ -32,35 +32,12 @@ module dy {
         public textureMatrix:Matrix = null;
 
         public init(){
-            //var self = this;
-
-            super.init();
-
-            //EventManager.on("dy_startLoop", () => {
-            //    if(self._video.isStop){
-            //        self.needUpdate = false;
-            //    }
-            //    else{
-            //        self.needUpdate = true;
-            //    }
-            //});
-            //this.source = null;
-
             //todo support mipmap?
-            //not support mipmap now
             this.generateMipmaps = false;
             this.minFilter = TextureFilterMode.LINEAR;
             this.magFilter = TextureFilterMode.LINEAR;
 
-
-
-
-
-
-
-            var stage = Director.getInstance().stage;
-
-            stage.addRenderTargetRenderer(this);
+            Director.getInstance().stage.addRenderTargetRenderer(this);
 
             return this;
         }
@@ -86,6 +63,25 @@ module dy {
 
         public getPosition(){
             return this.geometry.gameObject.transform.position;
+        }
+
+        public createEmptyTexture(){
+            var gl = Director.getInstance().gl,
+                texture = gl.createTexture();
+
+            dyCb.Log.error(!texture, "Failed to create texture object");
+
+            gl.bindTexture(gl[this.target], texture);
+
+            gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+            this.setTextureParameters(gl[this.target], this.isSourcePowerOfTwo());
+            //todo support mipmap?
+            //if (this.generateMipmaps && isSourcePowerOfTwo) {
+            //    gl.generateMipmap(gl[this.target]);
+            //}
+
+            return texture;
         }
 
         public update(index:number){
