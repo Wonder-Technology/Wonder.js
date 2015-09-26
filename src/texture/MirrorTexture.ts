@@ -32,7 +32,8 @@ module dy {
             }
         }
 
-        public size:number = 256;
+        public width:number = 256;
+        public height:number = 256;
 
         public initWhenCreate(){
         }
@@ -50,9 +51,6 @@ module dy {
             //        self.needUpdate = true;
             //    }
             //});
-
-            this.width = this.size;
-            this.height = this.size;
             //this.source = null;
 
             //todo support mipmap?

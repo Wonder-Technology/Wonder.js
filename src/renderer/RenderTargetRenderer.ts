@@ -20,13 +20,20 @@ module dy {
         private _texture:MirrorTexture = null;
 
         public init(){
-            //todo move to DeviceManager
+            if(this._isTextureSizeExceedCanvasSize()){
+                dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
+            }
 
-            //todo size should not exceed canvas's size!(viewport)
-            this._frameBufferManager = FrameBufferManager.create(this._texture.size, this._texture.size);
+            this._frameBufferManager = FrameBufferManager.create(this._texture.width, this._texture.height);
             this._frameBufferManager.init();
 
             return this;
+        }
+
+        private _isTextureSizeExceedCanvasSize(){
+            var view = Director.getInstance().getView();
+
+            return this._texture.width > view.width || this._texture.height > view.height;
         }
 
         public textureMatrix:Matrix = null;

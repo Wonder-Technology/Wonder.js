@@ -131,7 +131,8 @@
 
 
             var texture = dy.MirrorTexture.create();
-            texture.size = 256;
+            texture.width = 1024;
+            texture.height = 256;
             ////todo set renderList
             texture.renderList = [sphere, box];
 //            texture.renderList = [sphere];
@@ -195,7 +196,6 @@
             mirrorObj.transform.translate(dy.Vector3.create(0, -0, 0));
 
 
-            console.log(mirrorObj.transform.localToWorldMatrix.values);
 
 
 
