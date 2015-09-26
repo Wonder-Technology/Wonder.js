@@ -64,20 +64,6 @@ module dy {
 
 
 
-            //todo optimize in glsl
-
-            this._texture.textureMatrix =
-                mirrorCameraViewMatrix.copy().applyMatrix(projectionMatrix)
-                    .applyMatrix(
-                    Matrix.create(new Float32Array([
-                        0.5, 0.0, 0.0, 0.0,
-                        0.0, 0.5, 0.0, 0.0,
-                        0.0, 0.0, 0.5, 0.0,
-                        0.5, 0.5, 0.5, 1.0
-                    ])));
-
-
-
 
 
 

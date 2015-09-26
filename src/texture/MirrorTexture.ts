@@ -29,7 +29,6 @@ module dy {
 
         public width:number = 256;
         public height:number = 256;
-        public textureMatrix:Matrix = null;
 
         public init(){
             //todo support mipmap?

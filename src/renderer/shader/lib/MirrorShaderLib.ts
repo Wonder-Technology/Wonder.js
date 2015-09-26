@@ -14,23 +14,13 @@ module dy{
         public type:string = "mirror";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MirrorMaterial){
-            //todo refactor
-            program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, material.reflectionMap.textureMatrix);
             program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
         }
 
-        //todo refactor
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            //this.addAttributeVariable(["a_texCoord"]);
-
-            this.addUniformVariable(["u_textureMatrix", "u_mirrorColor", "u_mirrorSampler"]);
-
-
-            //var vs = this.getVsChunk();
-            //
-            //this.vsSourceBody = ShaderSnippet.setPos_mvp + vs.body;
+            this.addUniformVariable(["u_mirrorColor", "u_mirrorSampler"]);
         }
     }
 }
