@@ -2,7 +2,6 @@
 module dy {
     declare var Math:any;
 
-    //todo default render direction is up?
     export class RenderTargetRenderer{
         //todo change element to be RenderTargetTexture
         public static create(mirrorTexture:MirrorTexture) {
@@ -46,7 +45,7 @@ module dy {
 
             cameraComponent = camera.getComponent<Camera>(Camera);
 
-            plane =this._texture.getPlane();
+            plane = this._texture.getPlane();
 
             mirrorCameraViewMatrix =
                 plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
@@ -60,18 +59,12 @@ module dy {
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix.copy();
 
-
-
-
-            //todo if null, draw all
+            //todo if renderList is null, draw all
             //todo optimize:if renderObject is behind plane, not render it!
             this._texture.renderList.forEach((child:GameObject) => {
                 child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent), true);
             });
-
-
             renderer.render();
-
 
             this._frameBufferManager.unBind();
         }
@@ -97,15 +90,11 @@ module dy {
             q.z = - 1.0;
             q.w = ( 1.0 + projectionMatrix.values[ 10 ] ) / projectionMatrix.values[ 14 ];
 
-            // Calculate the scaled plane vector
             c = clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
 
-            // Replacing the third row of the projection matrix
             projectionMatrix.values[ 2 ] = c.x;
             projectionMatrix.values[ 6 ] = c.y;
-            //projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
             projectionMatrix.values[ 10 ] = c.z + 1.0;
-            //projectionMatrix.values[ 10 ] = c.z + 1.0 - 0.3;
             projectionMatrix.values[ 14 ] = c.w;
 
             return projectionMatrix;

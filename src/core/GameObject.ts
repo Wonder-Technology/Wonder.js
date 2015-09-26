@@ -1,8 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    //todo remove
-    declare var window;
-
     export class GameObject extends Entity{
         public static create() {
         	var obj = new this();
@@ -344,7 +341,6 @@ module dy {
         }
 
         //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
-        //todo refactor
         public render(renderer:Renderer, camera:GameObject, isRenderTarget:boolean = false):void {
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {

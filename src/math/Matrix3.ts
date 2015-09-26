@@ -1,6 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    //todo refactor
     export class Matrix3 {
         public static create(mat:Float32Array):Matrix3;
         public static create():Matrix3;
@@ -48,13 +47,10 @@ module dy {
             return this;
         }
 
-        public getInverse(matrix:Matrix):Matrix3 {
-            //todo
-            //refer to threejs
-            // ( based on http://code.google.com/p/webgl-mjs/ )
-
-            var me = matrix.values;
-            var te = this.values;
+        public invert():Matrix3 {
+            var me = this.values,
+                te = new Float32Array(16),
+                d = this.values;
 
             te[0] = me[10] * me[5] - me[6] * me[9];
             te[1] = -me[10] * me[1] + me[2] * me[9];
@@ -77,9 +73,12 @@ module dy {
 
             }
 
-            this.multiplyScalar(1.0 / det);
+            det = 1 / det;
+            for (let i = 0; i < 9; i++) {
+                d[i] = te[i] * det;
+            }
 
-            return this;
+            return ;
         }
 
         public multiplyScalar(s:number) {
@@ -99,11 +98,11 @@ module dy {
         }
 
         public multiplyVector3( vector ) {
-            var x = vector.x;
-            var y = vector.y;
-            var z = vector.z;
-            var result = Vector3.create();
-            var e = this.values;
+            var x = vector.x,
+                y = vector.y,
+                z = vector.z,
+                result = Vector3.create(),
+                e = this.values;
 
             result.x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
             result.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
@@ -124,12 +123,6 @@ module dy {
             tmp = m[5];
             m[5] = m[7];
             m[7] = tmp;
-
-            return this;
-        }
-
-        public getNormalMatrix(m:Matrix):Matrix3 {
-            this.getInverse(m).transpose();
 
             return this;
         }

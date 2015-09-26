@@ -1,8 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    //todo remove
-    declare var window;
-
     export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();

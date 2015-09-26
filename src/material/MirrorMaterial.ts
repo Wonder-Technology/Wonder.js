@@ -1,6 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    //todo refactor?
     export class MirrorMaterial extends Material{
         public static create() {
             var obj = new this();

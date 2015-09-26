@@ -1,8 +1,5 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    //todo refactor
-    declare var Math;
-
     export class Stage extends GameObject{
         public static create() {
             var obj = new this();

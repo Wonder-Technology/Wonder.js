@@ -31,12 +31,6 @@ module dy {
             //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
             quadCmd.mMatrix = this.transform.localToWorldMatrix;
 
-
-            //todo refactor
-            //if(geometry instanceof PlaneGeometry){
-            //    cameraComponent = Director.getInstance().stage.mirrorCameraComponent;
-            //}
-
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
             quadCmd.pMatrix = cameraComponent.pMatrix;
 
