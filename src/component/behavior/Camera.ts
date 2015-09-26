@@ -14,16 +14,16 @@ module dy{
             return this.transform.localToWorldMatrix.copy();
         }
 
-        //todo refactor
-        private _ma = null;
+        private _worldToCameraMatrix = null;
         get worldToCameraMatrix(){
-            if(this._ma){
-                return this._ma;
+            if(this._worldToCameraMatrix){
+                return this._worldToCameraMatrix;
             }
+
             return this.cameraToWorldMatrix.invert();
         }
         set worldToCameraMatrix(matrix){
-            this._ma = matrix;
+            this._worldToCameraMatrix = matrix;
         }
 
         private _fovy:number= null;
@@ -66,22 +66,11 @@ module dy{
         //public vMatrix:Matrix = Matrix.create();
         //public eye:Vector3 = null;
         //public center:Vector3 = null;
-        public up:Vector3 = null;
 
         private _dirty:boolean = false;
 
         public init(){
             this.pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
-        }
-
-        //todo remove
-        public computeVpMatrix(){
-            var matrix = Matrix.create();
-
-            matrix.applyMatrix(this.worldToCameraMatrix);
-            matrix.applyMatrix(this.pMatrix);
-
-            return matrix;
         }
 
         public zoomIn(speed:number, min:number = 1){

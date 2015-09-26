@@ -34,6 +34,7 @@ module dy {
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
+        public isRenderTarget:boolean = false;
 
         public execute() {
             this.material.updateTexture();
@@ -97,25 +98,8 @@ module dy {
             deviceManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
             deviceManager.polygonOffsetMode = this.material.polygonOffsetMode;
 
-            //todo refactor
-            if(window.isRenderTarget){
-                var result = null;
-                switch(this.material.cullMode){
-                    case CullMode.BACK:
-                        result = CullMode.FRONT;
-                        break;
-                    case CullMode.FRONT:
-                        result = CullMode.BACK;
-                        break;
-                    default:
-                        result = this.material.cullMode;
-                        break;
-                }
-
-                deviceManager.cullMode = result;
-
-
-                window.isRenderTarget = false;
+            if(this.isRenderTarget){
+                deviceManager.cullMode = this._reverseCullMode(this.material.cullMode);
             }
             else{
                 deviceManager.cullMode = this.material.cullMode;
@@ -124,6 +108,24 @@ module dy {
             deviceManager.blend = this.material.blend;
             deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
             deviceManager.setBlendEquation(this.material.blendEquation);
+        }
+
+        private _reverseCullMode(cullMode:CullMode){
+            var result = null;
+
+            switch(cullMode){
+                case CullMode.BACK:
+                    result = CullMode.FRONT;
+                    break;
+                case CullMode.FRONT:
+                    result = CullMode.BACK;
+                    break;
+                default:
+                    result = cullMode;
+                    break;
+            }
+
+            return result;
         }
     }
 }

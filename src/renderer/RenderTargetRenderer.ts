@@ -1,14 +1,14 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    //todo remove
-    declare var window:any,
-        Math:any;
+    declare var Math:any;
 
     //todo default render direction is up?
     export class RenderTargetRenderer{
         //todo change element to be RenderTargetTexture
         public static create(mirrorTexture:MirrorTexture) {
             var obj = new this(mirrorTexture);
+
+            obj.initWhenCreate();
 
             return obj;
         }
@@ -20,12 +20,15 @@ module dy {
         private _texture:MirrorTexture = null;
         private _frameBufferManager:FrameBufferManager = null;
 
-        public init(){
+        public initWhenCreate(){
             if(this._isTextureSizeExceedCanvasSize()){
                 dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
             }
 
             this._frameBufferManager = FrameBufferManager.create(this._texture.width, this._texture.height);
+        }
+
+        public init(){
             this._frameBufferManager.init(this._texture.createEmptyTexture());
 
             return this;
@@ -54,22 +57,16 @@ module dy {
             this._frameBufferManager.bind();
 
             mirrorCameraComponent = Camera.create();
-
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix.copy();
 
 
 
 
-            //todo not render reflector!
             //todo if null, draw all
-
-
             //todo optimize:if renderObject is behind plane, not render it!
-            //todo refactor
-            window.isRenderTarget = true;
             this._texture.renderList.forEach((child:GameObject) => {
-                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent));
+                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent), true);
             });
 
 

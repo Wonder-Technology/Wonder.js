@@ -345,7 +345,7 @@ module dy {
 
         //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
         //todo refactor
-        public render(renderer:Renderer, camera:GameObject, renderList?:dyCb.Collection<GameObject>):void{
+        public render(renderer:Renderer, camera:GameObject, isRenderTarget:boolean = false):void {
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {
             //    if(transformDirty) {
@@ -377,21 +377,12 @@ module dy {
             //}
 
             if(this.rendererComponent && this.geometry){
-                this.rendererComponent.render(renderer, this.geometry,  camera);
+                this.rendererComponent.render(renderer, this.geometry,  camera, isRenderTarget);
             }
 
-            ////todo refactor
-            //if(renderList){
-            //    window.isRenderTarget = true;
-            //    renderList.forEach((child:GameObject) => {
-            //        child.render(renderer, camera);
-            //    });
-            //}
-            //else{
-                this._children.forEach((child:GameObject) => {
-                    child.render(renderer, camera);
-                });
-            //}
+            this._children.forEach((child:GameObject) => {
+                child.render(renderer, camera);
+            });
         }
 
         public update(time:number):void {

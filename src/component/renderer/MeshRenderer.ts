@@ -7,11 +7,11 @@ module dy {
         	return obj;
         }
 
-        public render(renderer:Renderer, geometry:Geometry, camera:GameObject):void {
-            renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
+        public render(renderer:Renderer, geometry:Geometry, camera:GameObject, isRenderTarget:boolean){
+            renderer.addCommand(this.createDrawCommand(renderer, geometry, camera, isRenderTarget));
         }
 
-        protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject){
+        protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject, isRenderTarget:boolean){
              var quadCmd = renderer.createQuadCommand(),
                 cameraComponent = camera.getComponent<Camera>(Camera),
                 material:Material = geometry.material;
@@ -43,6 +43,8 @@ module dy {
             quadCmd.material = material;
 
             quadCmd.z = this.gameObject.transform.position.z;
+
+            quadCmd.isRenderTarget = isRenderTarget;
 
             return quadCmd;
         }
