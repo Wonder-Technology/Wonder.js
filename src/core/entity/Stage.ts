@@ -24,7 +24,6 @@ module dy {
 
         public camera:GameObject = null;
         //public lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
-        public currentRenderTargetRenderer:RenderTargetRenderer = null;
 
 
         private _lightManager:LightManager = LightManager.create();
@@ -61,7 +60,6 @@ module dy {
             dyCb.Log.error(!this.camera, "stage must add camera");
 
             this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
-                self.currentRenderTargetRenderer = target;
                 target.render(renderer, self.camera);
             });
 

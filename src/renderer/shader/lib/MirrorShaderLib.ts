@@ -13,15 +13,9 @@ module dy{
 
         public type:string = "mirror";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-            var stage = Director.getInstance().stage;
-
-            //if (quadCmd.buffers.hasChild("texCoordsBuffer")) {
-            //    program.sendAttributeData("a_texCoord", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("texCoordsBuffer"));
-            //}
-
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MirrorMaterial){
             //todo refactor
-            program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, stage.currentRenderTargetRenderer.textureMatrix);
+            program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, material.reflectionMap.textureMatrix);
             program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
         }
 

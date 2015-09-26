@@ -129,8 +129,8 @@ module dy {
 
         public addMap(asset:TextureAsset);
         public addMap(asset:TextureAsset, option:MapVariableData);
-        public addMap(map:CommonTexture|CompressedTexture);
-        public addMap(map:CommonTexture|CompressedTexture, option:MapVariableData);
+        public addMap(map:Texture);
+        public addMap(map:Texture, option:MapVariableData);
 
         public addMap(arg){
             this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));

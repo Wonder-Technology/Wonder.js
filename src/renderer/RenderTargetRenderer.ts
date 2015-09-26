@@ -36,8 +36,6 @@ module dy {
             return this._texture.width > view.width || this._texture.height > view.height;
         }
 
-        public textureMatrix:Matrix = null;
-
         private _frameBufferManager:FrameBufferManager = null;
 
         //todo extract RenderTargetTexture
@@ -68,8 +66,8 @@ module dy {
 
             //todo optimize in glsl
 
-            this.textureMatrix =
-                mirrorCameraViewMatrix.copy().applyMatrix(projectionMatrix.copy())
+            this._texture.textureMatrix =
+                mirrorCameraViewMatrix.copy().applyMatrix(projectionMatrix)
                     .applyMatrix(
                     Matrix.create(new Float32Array([
                         0.5, 0.0, 0.0, 0.0,

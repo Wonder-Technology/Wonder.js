@@ -183,9 +183,7 @@
 
 
             //todo refactor:reflectionTexture attri?
-            material.addMap(texture, {
-                samplerVariableName: "u_mirrorSampler"
-            });
+            material.reflectionMap = texture;
 
 
 
@@ -257,9 +255,10 @@
 
 
             //todo refactor:reflectionTexture attri?
-            material.addMap(texture2, {
-                samplerVariableName: "u_mirrorSampler"
-            });
+            material.reflectionMap = texture2;
+//            material.addMap(texture2, {
+//                samplerVariableName: "u_mirrorSampler"
+//            });
 
 
 
@@ -295,7 +294,7 @@
             director.stage.addChild(box);
             director.stage.addChild(box2);
 //            director.stage.addChild(rect);
-//            director.stage.addChild(mirrorObj);
+            director.stage.addChild(mirrorObj);
             director.stage.addChild(mirrorObj2);
 
 
@@ -330,7 +329,7 @@
 
 
 //            camera.transform.translateLocal(dy.Vector3.create(0, -10, 0.0000));
-            camera.transform.translateLocal(dy.Vector3.create(10, 10, 20));
+            camera.transform.translateLocal(dy.Vector3.create(10, 10, 30));
 
             camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
 //            camera.transform.lookAt(dy.Vector3.create(0, 5, 0));

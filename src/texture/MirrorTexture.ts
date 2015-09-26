@@ -4,8 +4,6 @@ module dy {
         public static create() {
         	var obj = new this();
 
-        	obj.initWhenCreate();
-
         	return obj;
         }
 
@@ -31,9 +29,7 @@ module dy {
 
         public width:number = 256;
         public height:number = 256;
-
-        public initWhenCreate(){
-        }
+        public textureMatrix:Matrix = null;
 
         public init(){
             //var self = this;
