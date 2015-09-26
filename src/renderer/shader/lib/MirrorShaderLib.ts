@@ -21,7 +21,7 @@ module dy{
             //}
 
             //todo refactor
-            program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, stage.textureMatrix);
+            program.sendUniformData("u_textureMatrix", VariableType.FLOAT_MAT4, stage.currentRenderTargetRenderer.textureMatrix);
             program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
         }
 

@@ -1,12 +1,17 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     export class TextureManager{
-        public static create() {
-        	var obj = new this();
+        public static create(material:Material) {
+        	var obj = new this(material);
 
         	return obj;
         }
 
+        constructor(material:Material){
+            this._material = material;
+        }
+
+        private _material:Material = null;
         private _textures:dyCb.Hash<any> = dyCb.Hash.create<any>();
 
         public init(){
@@ -37,6 +42,7 @@ module dy{
                 map.variableData = option;
             }
 
+            map.material = this._material;
             this._textures.appendChild("map", map);
         }
 
@@ -45,6 +51,7 @@ module dy{
         }
 
         public setEnvMap(envMap:CubemapTexture){
+            envMap.material = this._material;
             this._textures.addChild("envMap", envMap);
         }
 

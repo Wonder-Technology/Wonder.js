@@ -70,6 +70,7 @@ module dy {
             this._execScript("onDispose");
         }
 
+        //todo test in memory management
         public dispose() {
             var self = this;
 
@@ -379,18 +380,18 @@ module dy {
                 this.rendererComponent.render(renderer, this.geometry,  camera);
             }
 
-            //todo refactor
-            if(renderList){
-                window.isRenderTarget = true;
-                renderList.forEach((child:GameObject) => {
-                    child.render(renderer, camera);
-                });
-            }
-            else{
+            ////todo refactor
+            //if(renderList){
+            //    window.isRenderTarget = true;
+            //    renderList.forEach((child:GameObject) => {
+            //        child.render(renderer, camera);
+            //    });
+            //}
+            //else{
                 this._children.forEach((child:GameObject) => {
                     child.render(renderer, camera);
                 });
-            }
+            //}
         }
 
         public update(time:number):void {

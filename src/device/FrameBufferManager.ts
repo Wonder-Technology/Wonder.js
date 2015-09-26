@@ -1,8 +1,14 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
     //todo refactor
-    export class Texture2DFrameBuffer{
-        constructor(width, height){
+    export class FrameBufferManager{
+        public static create(width:number, height:number) {
+        	var obj = new this(width, height);
+
+        	return obj;
+        }
+
+        constructor(width:number, height:number){
             this._width = width;
             this._height = height;
         }
@@ -188,17 +194,6 @@ module dy{
 
 
             this._texture = texture;
-        }
-
-        initWhenCreate(){
-        }
-
-        public static create(width, height){
-            var obj = new this(width, height);
-
-            obj.initWhenCreate();
-
-            return obj;
         }
     }
 }

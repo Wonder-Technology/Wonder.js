@@ -71,6 +71,7 @@
 /// <reference path="utils/time/DirectorTimeController"/>
 /// <reference path="utils/time/CommonTimeController"/>
 
+/// <reference path="renderer/RenderTargetRenderer"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
 /// <reference path="renderer/BufferType"/>
@@ -180,6 +181,7 @@
 /// <reference path="structure/View"/>
 
 /// <reference path="texture/Texture"/>
+/// <reference path="texture/MirrorTexture"/>
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>

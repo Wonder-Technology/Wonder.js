@@ -22,7 +22,14 @@ module dy{
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
+        get geometry(){
+            return this.material.geometry;
+        }
+
+
+        public material:Material = null;
         public variableData:MapVariableData = null;
+
         public generateMipmaps:boolean = null;
         public width:number = null;
         public height:number = null;
@@ -44,15 +51,13 @@ module dy{
         public needUpdate:boolean = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_2D;
-
-        //todo refactor
-        public _texture:any = null;
+        protected glTexture:any = null;
 
         public init(){
             var gl = Director.getInstance().gl;
             //texture.addEventListener( "dispose", onTextureDispose );
 
-            this._texture = gl.createTexture();
+            this.glTexture = gl.createTexture();
 
             //_this.info.memory.textures ++;
 
@@ -117,7 +122,7 @@ module dy{
             }
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
-            gl.bindTexture(gl[this.target], this._texture);
+            gl.bindTexture(gl[this.target], this.glTexture);
 
             return this;
         }
@@ -125,8 +130,8 @@ module dy{
         public dispose(){
             var gl = Director.getInstance().gl;
 
-            gl.deleteTexture(this._texture);
-            delete this._texture;
+            gl.deleteTexture(this.glTexture);
+            delete this.glTexture;
         }
 
         public filterFallback(filter:TextureFilterMode) {

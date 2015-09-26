@@ -1,15 +1,21 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export abstract class Geometry extends Component{
+        private _material:Material = null;
+        get material(){
+            return this._material;
+        }
+        set material(material:Material){
+            this._material = material;
+            this._material.geometry = this;
+        }
+
         public vertices:ArrayBuffer = null;
         public indices:ElementBuffer = null;
         public texCoords:ArrayBuffer = null;
         public normals:ArrayBuffer = null;
         public tangents:ArrayBuffer = null;
         public colors:ArrayBuffer = null;
-        public material:Material = null;
-
-        private _data:GeometryData = null;
 
         public init(){
             var {
@@ -26,9 +32,9 @@ module dy{
             this.tangents = tangents;
 
             //todo compute from vertexColors(refer to threejs)
-            this.colors = this._computeColorsBuffer(this.material);
+            this.colors = this._computeColorsBuffer(this._material);
 
-            this.material.init();
+            this._material.init();
         }
 
         public dispose(){
@@ -37,7 +43,7 @@ module dy{
             this.texCoords.dispose();
             this.colors.dispose();
 
-            this.material.dispose();
+            this._material.dispose();
         }
 
         public addToGameObject(gameObject:GameObject){

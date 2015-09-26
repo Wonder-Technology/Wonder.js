@@ -1,7 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
     //todo add more attribute refer to unity
-
     export class Material {
         get program(){
             return this.shader.program;
@@ -114,7 +113,8 @@ module dy {
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
-        public textureManager:TextureManager = TextureManager.create();
+        public textureManager:TextureManager = TextureManager.create(this);
+        public geometry:Geometry = null;
 
 
         public init(){

@@ -1,7 +1,8 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
+    declare var window:any;
+
     //todo default render direction is up?
-    import JudgeUtils = dyRt.JudgeUtils;
     export class MirrorTexture extends Texture {
         public static create() {
         	var obj = new this();
@@ -16,21 +17,22 @@ module dy {
         get renderList(){
             return this._renderList;
         }
+        //todo if is null,then render all
         //todo pass type check
         //set renderList(renderList:[GameObject]){
-        set renderList(renderList:any){
-            if(JudgeUtils.isArray(renderList)){
+        set renderList(renderList:any) {
+            if (JudgeUtils.isArray(renderList)) {
                 this._renderList = dyCb.Collection.create<GameObject>(renderList);
             }
-            else if(renderList instanceof dyCb.Collection){
+            else if (renderList instanceof dyCb.Collection) {
                 this._renderList = renderList;
             }
-            else{
+            else {
                 dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("renderList", "array or dyCb.Collection"));
             }
         }
 
-        public size:number = 512;
+        public size:number = 256;
 
         public initWhenCreate(){
         }
@@ -67,39 +69,21 @@ module dy {
 
             var stage = Director.getInstance().stage;
 
-            //stage.renderTargets = this.renderList;
-            //stage
-            stage.mirrorTexture = this;
-
-
-            //var mirrorCamera = Camera.create();
-
-            //todo how to get real-time plane data?
-
-            //todo -2?+2? difference?
-
-            //todo +?-?
-            //var plane = Plane.create(0, 1, 0, -5);
-
-            //d = -pn
-            var plane = Plane.create(0, 1, 0, 0);
-
-            //var currentCamera = stage.camera;
-
-
-
-            //var cameraComponent = currentCamera.getComponent<Camera>(Camera);
-            //
-            //plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
-            //
-            //stage.mirrorCamera = mirrorCamera;
-            stage.mirrorPlane = plane;
-
-
-
-
+            stage.addRenderTargetRenderer(this);
 
             return this;
+        }
+
+        public setTexture(texture:any){
+            this.glTexture = texture;
+        }
+
+        //todo move to MirrorRenderTarget?
+        public getPlane(){
+            dyCb.Log.error(!(this.geometry instanceof PlaneGeometry), dyCb.Log.info.FUNC_MUST_BE("geometry", "PlaneGeometry"));
+
+            //todo change
+            return Plane.create(0, 1, 0, 0);
         }
 
         public update(index:number){
@@ -107,18 +91,6 @@ module dy {
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-                //var noMipmapCmd:DrawNoMipmapTwoDTextureCommand = null,
-                //gl = Director.getInstance().gl;
-                //
-                //noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create();
-                //noMipmapCmd.source = null;
-                //noMipmapCmd.format = this.format;
-                //noMipmapCmd.type = this.type;
-                //noMipmapCmd.sourceRegion = null;
-                //noMipmapCmd.sourceRegionMethod = null;
-                //noMipmapCmd.glTarget = gl.TEXTURE_2D;
-                //
-                //noMipmapCmd.execute();
         }
     }
 }
