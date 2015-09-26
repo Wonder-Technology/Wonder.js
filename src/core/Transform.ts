@@ -22,7 +22,7 @@ module dy{
                 this._dirtyLocal = false;
                 this.dirtyWorld = true;
             }
-            return this.localToParentMatrix;
+            return this._localToParentMatrix;
         }
 
         private _localToWorldMatrix:Matrix = null;

@@ -52,13 +52,14 @@ module dy {
 
 
 
-            //todo not copy
             var mirrorCameraViewMatrix =
                plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
 
 
 
+            //todo optimize(dirty)
             var projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
+            //var projectionMatrix = cameraComponent.pMatrix;
 
 
 
@@ -116,8 +117,31 @@ module dy {
             this._frameBufferManager.unBind();
         }
 
-        private _setClipPlane(vMatrix:Matrix, pMatrix:Matrix, plane:Plane):Matrix{
+        private _getClipPlaneInCameraSpace(vMatrix:Matrix, plane:Plane){
             var clipPlane = Vector4.create();
+
+            //todo optimize(copy)
+            //var model = this._texture.getModelMatrix().copy();
+            //var modelview =
+            //    model.copy().applyMatrix(vMatrix);
+
+            //todo remove copy
+            //var p = modelview.copy().multiplyVector3(this._texture.getPosition());
+            var p = vMatrix.multiplyVector3(this._texture.getPosition());
+
+            var n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
+            //var n = model.copy().invert().transpose().applyMatrix(vMatrix).multiplyVector3(plane.normal)
+            //    .normalize();
+
+
+
+
+            clipPlane.set(n.x, n.y, n.z, -p.dot(n));
+
+            return clipPlane;
+        }
+
+        private _setClipPlane(vMatrix:Matrix, pMatrix:Matrix, plane:Plane):Matrix{
             //var clipBias = 0;
             var projectMatrix = pMatrix.copy();
 
@@ -128,26 +152,7 @@ module dy {
 
 
 
-
-            //todo get mirror model matrix
-            var model = Matrix.create();
-            //model.values[13] = -10;
-            //model.values[13] = 10;
-            model.values[13] = 0;
-            var modelview =
-                model.applyMatrix(vMatrix);
-
-            //todo get mirror position as the point in mirrorPlane
-            var p = modelview.multiplyVector3(Vector3.create(0, -0, 0));
-
-            var n = modelview.invert().transpose().multiplyVector3(plane.normal).normalize();
-
-
-
-
-            clipPlane.set(n.x, n.y, n.z, -p.dot(n));
-
-
+            var clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane);
 
 
 
@@ -168,6 +173,7 @@ module dy {
             projectionMatrix.values[ 6 ] = c.y;
             //projectionMatrix.values[ 10 ] = c.z + 1.0 - clipBias;
             projectionMatrix.values[ 10 ] = c.z + 1.0;
+            //projectionMatrix.values[ 10 ] = c.z + 1.0 - 0.3;
             projectionMatrix.values[ 14 ] = c.w;
 
             return projectionMatrix;

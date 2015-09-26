@@ -60,7 +60,7 @@
             sphere.addComponent(sphereGeometry);
 
 
-            sphere.transform.translate(dy.Vector3.create(0, 10, 0));
+            sphere.transform.translate(dy.Vector3.create(0, 10, 10));
 
 
 
@@ -130,11 +130,47 @@
 
 
 
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(0, 100, 255)");
+
+            var boxGeometry = dy.BoxGeometry.create();
+            boxGeometry.material = material;
+            boxGeometry.width = 2;
+            boxGeometry.height = 2;
+            boxGeometry.depth = 2;
+
+
+
+
+            var box2 = dy.GameObject.create();
+
+            box2.addComponent(dy.MeshRenderer.create());
+            box2.addComponent(boxGeometry);
+
+
+            box2.transform.translate(dy.Vector3.create(0, 0, -33));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             var texture = dy.MirrorTexture.create();
-            texture.width = 1024;
+            texture.width = 256;
             texture.height = 256;
             ////todo set renderList
-            texture.renderList = [sphere, box];
+            texture.renderList = [sphere, box, box2];
 //            texture.renderList = [sphere];
 
 
@@ -201,10 +237,66 @@
 
 
 
+
+
+
+
+            var texture2 = dy.MirrorTexture.create();
+            texture2.width = 256;
+            texture2.height = 256;
+            texture2.renderList = [sphere, box, box2];
+//            texture2.renderList = [sphere];
+
+
+//            var texture2 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture2"));
+
+
+            var material = dy.MirrorMaterial.create();
+            material.color = dy.Color.create("#889999");
+
+
+
+            //todo refactor:reflectionTexture attri?
+            material.addMap(texture2, {
+                samplerVariableName: "u_mirrorSampler"
+            });
+
+
+
+            var plane2 = dy.PlaneGeometry.create();
+            plane2.width = 20;
+            plane2.height = 20;
+
+
+            plane2.material = material;
+
+
+
+            var mirrorObj2 = dy.GameObject.create();
+
+            mirrorObj2.addComponent(dy.MeshRenderer.create());
+            mirrorObj2.addComponent(plane2);
+
+
+            mirrorObj2.transform.rotate(dy.Vector3.create(90, 0, 0));
+            mirrorObj2.transform.translate(dy.Vector3.create(0, 0, -30));
+
+
+
+
+
+
+
+
+
+
+
             director.stage.addChild(sphere);
             director.stage.addChild(box);
+            director.stage.addChild(box2);
 //            director.stage.addChild(rect);
-            director.stage.addChild(mirrorObj);
+//            director.stage.addChild(mirrorObj);
+            director.stage.addChild(mirrorObj2);
 
 
 
@@ -238,7 +330,7 @@
 
 
 //            camera.transform.translateLocal(dy.Vector3.create(0, -10, 0.0000));
-            camera.transform.translateLocal(dy.Vector3.create(0, 10, 20));
+            camera.transform.translateLocal(dy.Vector3.create(10, 10, 20));
 
             camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
 //            camera.transform.lookAt(dy.Vector3.create(0, 5, 0));

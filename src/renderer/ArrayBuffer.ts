@@ -10,6 +10,7 @@ module dy{
         }
 
         public count:number = null;
+        public data:any = null;
 
         public initWhenCreate(data, num, type:BufferType) {
             var gl = Director.getInstance().gl;
@@ -31,6 +32,8 @@ module dy{
             this.num = num;
             this.type = gl[type];
             this.count = data.length / num;
+
+            this.data = data;
 
             return this.buffer;
         }
