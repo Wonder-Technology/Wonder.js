@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>mirror light</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+            {url: "../../res/1.jpg", id:"texture"}
+
+        ]).subscribe(null, function(e){
+            throw e;
+        },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        function _initScene() {
+            var director = dy.Director.getInstance();
+
+
+//            var material = dy.MapMaterial.create();
+//
+//
+//            var texture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
+//
+//            material.addMap(texture);
+
+
+
+
+
+//            var sphereGeometry = dy.SphereGeometry.create();
+//            sphereGeometry.material = material;
+//            sphereGeometry.radius = 5;
+//            sphereGeometry.segments = 50;
+//
+//
+//
+//            var sphere = dy.GameObject.create();
+//
+//            sphere.addComponent(dy.MeshRenderer.create());
+//            sphere.addComponent(sphereGeometry);
+//
+//
+//            sphere.transform.translate(dy.Vector3.create(0, 10, 10));
+
+
+
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+
+            var directionLightComponent = dy.DirectionLight.create();
+            directionLightComponent.color = dy.Color.create("#389999");
+            directionLightComponent.intensity = 1;
+
+            var directionLight = dy.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+
+            var tween1 = dy.Tween.create();
+
+            tween1.from({x:0}).to({x: 360}, 10000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+//                        directionLight.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
+//                        directionLight.transform.eulerAngles = dy.Vector3.create(0, this.x, 0);
+//                        console.log(directionLight.transform.eulerAngles.values);
+//                        directionLight.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+                    });
+
+
+            directionLight.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
+            console.log(directionLight.transform.eulerAngles.values);
+
+
+
+            var action1 = dy.RepeatForever.create(tween1);
+
+
+
+            directionLight.addComponent(action1);
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(ambientLight);
+            director.stage.addChild(directionLight);
+
+
+
+
+
+
+
+
+
+            var pointLightComponent = dy.PointLight.create();
+            pointLightComponent.color = dy.Color.create("#1f89ca");
+            pointLightComponent.intensity = 1;
+            pointLightComponent.rangeLevel = 10;
+
+            var pointLight = dy.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+
+
+            var pointMaterial = dy.BasicMaterial.create();
+            pointMaterial.color = dy.Color.create("#222222");
+            var geometry = dy.SphereGeometry.create();
+            geometry.material = pointMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(dy.MeshRenderer.create());
+
+
+
+
+            var tween2 = dy.Tween.create();
+
+            tween2.from({x:0}).to({x: 360}, 10000)
+                    .easing( dy.Tween.Easing.Cubic.InOut )
+                    .onUpdate(function(){
+                        pointLight.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 10), dy.Vector3.up);
+                    });
+
+            var action2 = dy.RepeatForever.create(tween2);
+
+
+
+            pointLight.addComponent(action2);
+
+            pointLight.transform.translate(dy.Vector3.create(0, 10, 20));
+
+
+
+
+
+
+            director.stage.addChild(pointLight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var material = dy.LightMaterial.create();
+            material.color = dy.Color.create("rgb(100, 255, 100)");
+            material.specular = dy.Color.create("rgb(0, 255, 0)");
+            material.shininess = 32;
+
+            material.diffuseMap = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+
+
+
+
+            var geometry = dy.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+            geometry.segment = 20;
+
+
+
+            var sphere = dy.GameObject.create();
+
+            sphere.addComponent(dy.MeshRenderer.create());
+            sphere.addComponent(geometry);
+
+
+
+            sphere.transform.translate(dy.Vector3.create(0, 10, 10));
+
+
+
+
+
+
+
+
+
+//            sphereGroup.rotation.y -= 0.002;
+
+            //todo use it
+//            director.scheduler.scheduleLoop(function(){
+//                var time = director.gameTime * 0.1;
+//
+//                sphere.transform.translate(
+//                        dy.Vector3.create(
+//                                Math.cos( time * 0.1 ) * 30,
+//                                Math.abs( Math.cos( time * 0.2 ) ) * 20 + 5,
+//                                Math.sin( time * 0.1 ) * 30
+//                        )
+//                );
+//            });
+//            smallSphere.rotation.y = ( Math.PI / 2 ) - time * 0.1;
+//            smallSphere.rotation.z = time * 0.8;
+
+
+
+
+
+
+
+//            var mirrorMaterial = new BABYLON.StandardMaterial("texture4", scene);
+//            mirrorMaterial.reflectionTexture = new BABYLON.MirrorTexture("mirror", 512, scene, true);
+//            mirrorMaterial.reflectionTexture.mirrorPlane = new BABYLON.Plane(0, -1.0, 0, -10.0);
+//            mirrorMaterial.reflectionTexture.renderList = [sphere1, sphere2];
+//
+
+
+
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(100, 0, 255)");
+
+            var boxGeometry = dy.BoxGeometry.create();
+            boxGeometry.material = material;
+            boxGeometry.width = 2;
+            boxGeometry.height = 2;
+            boxGeometry.depth = 2;
+
+
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(boxGeometry);
+
+
+            box.transform.translate(dy.Vector3.create(0, -3, 0));
+
+
+
+
+
+
+
+
+
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(0, 100, 255)");
+
+            var boxGeometry = dy.BoxGeometry.create();
+            boxGeometry.material = material;
+            boxGeometry.width = 2;
+            boxGeometry.height = 2;
+            boxGeometry.depth = 2;
+
+
+
+
+            var box2 = dy.GameObject.create();
+
+            box2.addComponent(dy.MeshRenderer.create());
+            box2.addComponent(boxGeometry);
+
+
+            box2.transform.translate(dy.Vector3.create(0, 0, -33));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var texture = dy.MirrorTexture.create();
+            texture.width = 256;
+            texture.height = 256;
+            ////todo set renderList
+            texture.renderList = [sphere, box, box2];
+//            texture.renderList = [sphere];
+
+
+//            var texture = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+
+
+            var material = dy.MirrorMaterial.create();
+            material.color = dy.Color.create("#889999");
+
+
+            material.cullMode = dy.CullMode.NONE;
+
+            //todo refactor:reflectionTexture attri?
+            material.reflectionMap = texture;
+
+
+
+            var plane = dy.PlaneGeometry.create();
+            plane.width = 20;
+            plane.height = 20;
+
+
+            plane.material = material;
+
+
+
+            var mirrorObj = dy.GameObject.create();
+
+            mirrorObj.addComponent(dy.MeshRenderer.create());
+            mirrorObj.addComponent(plane);
+
+
+
+
+            //todo add rect
+
+//            var geometry = dy.RectGeometry.create();
+//            geometry.material = material;
+//            geometry.width = 10;
+//            geometry.height = 10;
+
+
+
+//            var rect = dy.GameObject.create();
+//
+//            rect.addComponent(dy.MeshRenderer.create());
+//            rect.addComponent(geometry);
+//
+//
+//
+//            plane.transform.parent = rect;
+//
+//
+//
+//            rect.transform.translate(0, -10, 0);
+
+
+            mirrorObj.transform.translate(dy.Vector3.create(0, -0, 0));
+
+//            var tween1 = dy.Tween.create();
+//
+//            tween1.from({x:0}).to({x: 360}, 10000)
+//                    .easing( dy.Tween.Easing.Cubic.InOut )
+//                    .onUpdate(function(){
+//                        mirrorObj.transform.rotateLocal(dy.Vector3.create(0, 0, 1));
+//                    });
+//
+//            var action1 = dy.RepeatForever.create(tween1);
+//
+//
+//
+//            mirrorObj.addComponent(action1);
+
+
+
+
+
+
+
+
+
+
+            var texture2 = dy.MirrorTexture.create();
+            texture2.width = 256;
+            texture2.height = 256;
+            texture2.renderList = [sphere, box, box2];
+//            texture2.renderList = [sphere];
+
+
+//            var texture2 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture2"));
+
+
+            var material = dy.MirrorMaterial.create();
+            material.color = dy.Color.create("#889999");
+
+
+
+            //todo refactor:reflectionTexture attri?
+            material.reflectionMap = texture2;
+//            material.addMap(texture2, {
+//                samplerVariableName: "u_mirrorSampler"
+//            });
+
+
+
+            var plane2 = dy.PlaneGeometry.create();
+            plane2.width = 20;
+            plane2.height = 20;
+
+
+            plane2.material = material;
+
+
+
+            var mirrorObj2 = dy.GameObject.create();
+
+            mirrorObj2.addComponent(dy.MeshRenderer.create());
+            mirrorObj2.addComponent(plane2);
+
+
+            mirrorObj2.transform.rotate(dy.Vector3.create(90, 0, 0));
+            mirrorObj2.transform.translate(dy.Vector3.create(0, 0, -30));
+
+
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(sphere);
+            director.stage.addChild(box);
+            director.stage.addChild(box2);
+//            director.stage.addChild(rect);
+            director.stage.addChild(mirrorObj);
+            director.stage.addChild(mirrorObj2);
+
+
+
+
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.Camera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+
+//            camera.transform.translateLocal(dy.Vector3.create(0, -10, 0.0000));
+            camera.transform.translateLocal(dy.Vector3.create(10, 10, 30));
+
+            camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
+//            camera.transform.lookAt(dy.Vector3.create(0, 5, 0));
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera;
+        }
+
+    };
+</script>
+</body>
+</html>
