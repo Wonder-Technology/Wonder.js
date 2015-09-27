@@ -81,6 +81,7 @@
 /// <reference path="renderer/ArrayBuffer"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
+/// <reference path="renderer/FrameBufferManager"/>
 
 /// <reference path="renderer/shader/Shader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
@@ -173,7 +174,6 @@
 /// <reference path="event/EventManager"/>
 
 /// <reference path="device/DeviceManager"/>
-/// <reference path="device/FrameBufferManager"/>
 /// <reference path="device/GPUDetector"/>
 
 /// <reference path="structure/Point"/>
