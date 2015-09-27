@@ -7,19 +7,19 @@ module dy{
             return obj;
         }
 
-        private _program:any = Director.getInstance().gl.createProgram();
+        private _program:any = DeviceManager.getInstance().gl.createProgram();
         private _shader:Shader = null;
 
         public use(){
-            Director.getInstance().gl.useProgram(this._program);
+            DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
         public getUniformLocation(name:string){
-            return Director.getInstance().gl.getUniformLocation(this._program, name);
+            return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
         }
 
         public sendUniformData(name:string, type:VariableType, data:any){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 pos= null;
 
             pos= gl.getUniformLocation(this._program, name);
@@ -85,7 +85,7 @@ module dy{
         }
 
         public sendAttributeData(name:string, type:VariableType, data:any){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 pos = null;
 
             pos= gl.getAttribLocation(this._program, name);
@@ -127,7 +127,7 @@ module dy{
         }
 
         public initWithShader(shader:Shader){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 vs = null,
                 fs = null;
 

@@ -13,7 +13,7 @@ module dy{
         get typeSize() { return this._typeSize; }
 
         public initWhenCreate(data, type:BufferType) {
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             if(!data || !this._checkDataType(data, type)){
                 return null;

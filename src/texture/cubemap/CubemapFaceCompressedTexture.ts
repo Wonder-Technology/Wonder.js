@@ -19,7 +19,7 @@ module dy{
         //cube compressed texture not support sourceRegion
         public draw(index:number){
             var compressedCmd = DrawCompressedTextureCommand.create(),
-            gl = Director.getInstance().gl;
+            gl = DeviceManager.getInstance().gl;
 
             compressedCmd.glTarget = gl.TEXTURE_CUBE_MAP_POSITIVE_X + index;
             compressedCmd.type = this.type;

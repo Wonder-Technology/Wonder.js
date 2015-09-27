@@ -21,7 +21,7 @@ describe("Stage", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         Stage = dy.Stage;
         stage = Stage.create();
         gameObject1 = dy.GameObject.create();

@@ -20,7 +20,7 @@ module dy{
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 compressedCmd = DrawCompressedTextureCommand.create();
 
             compressedCmd.glTarget = gl.TEXTURE_2D;

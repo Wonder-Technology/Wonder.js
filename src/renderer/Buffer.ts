@@ -6,7 +6,7 @@ module dy{
         public num:number = null;
 
         public dispose(){
-            Director.getInstance().gl.deleteBuffer(this.buffer);
+            DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
             delete this.buffer;
         }
     }

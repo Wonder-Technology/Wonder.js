@@ -101,7 +101,7 @@ module dy {
         }
 
         private _isTextureSizeExceedCanvasSize(){
-            var view = Director.getInstance().getView();
+            var view = DeviceManager.getInstance().view;
 
             return this._texture.width > view.width || this._texture.height > view.height;
         }

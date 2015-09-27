@@ -22,8 +22,6 @@ module dy{
         public stage:Stage = Stage.create();
         public scheduler:Scheduler = Scheduler.create();
         public renderer:Renderer= null;
-        public view:IView = null;
-        public gl:WebGLRenderingContext = null;
 
         get gameTime(){
             return this._timeController.gameTime;
@@ -51,6 +49,10 @@ module dy{
 
         get elapsed(){
             return this._timeController.elapsed;
+        }
+
+        get view(){
+            return DeviceManager.getInstance().view;
         }
 
         public scriptStreams:dyCb.Hash<dyRt.Stream> = dyCb.Hash.create<dyRt.Stream>();
@@ -96,11 +98,6 @@ module dy{
 
         //todo add dispose
 
-        //todo remove?
-        public getView():IView{
-            return this.view;
-        }
-
         public getTopUnderPoint(point:Point):GameObject{
             //if(!this.scene){
             //    return null;
@@ -111,9 +108,10 @@ module dy{
         }
 
         public createGL(canvasId:string){
-            this.view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
-            //todo delete Director->gl
-            this.gl = this.view.getContext();
+            var deviceManager = DeviceManager.getInstance();
+
+            deviceManager.view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
+            deviceManager.gl = deviceManager.view.getContext();
         }
 
         private startLoop() {

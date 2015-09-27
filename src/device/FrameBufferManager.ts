@@ -11,6 +11,10 @@ module dy{
             this._width = width;
             this._height = height;
         }
+        
+        get gl(){
+            return DeviceManager.getInstance().gl;
+        }
 
         public texture:WebGLTexture = null;
 
@@ -19,29 +23,33 @@ module dy{
         private _buffer = null;
 
         public bind(){
+            var gl = this.gl;
+            
             if(this._buffer){
-                Director.getInstance().gl.bindFramebuffer(Director.getInstance().gl.FRAMEBUFFER, this._buffer);
-                Director.getInstance().gl.viewport(0, 0, this._width, this._height);
+                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
+                gl.viewport(0, 0, this._width, this._height);
             }
         }
 
         public unBind(){
-            var director = Director.getInstance();
+            var view = DeviceManager.getInstance().view,
+                gl = this.gl;
 
-            Director.getInstance().gl.bindFramebuffer(Director.getInstance().gl.FRAMEBUFFER, null);
-            Director.getInstance().gl.bindTexture(Director.getInstance().gl.TEXTURE_2D, null);
-            Director.getInstance().gl.bindRenderbuffer(Director.getInstance().gl.RENDERBUFFER, null);
-            Director.getInstance().gl.viewport(
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+            gl.viewport(
                 0, 0,
-                director.view.width, director.view.height);
+                view.width, view.height);
         }
 
         public init(texture:WebGLTexture){
-            var fb = Director.getInstance().gl.createFramebuffer();
+            var gl = this.gl,
+                fb = gl.createFramebuffer();
 
             this.texture = texture;
 
-            Director.getInstance().gl.bindFramebuffer(Director.getInstance().gl.FRAMEBUFFER, fb);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 
             this._attachTexture(this.texture);
 
@@ -51,38 +59,44 @@ module dy{
 
             this._buffer = fb;
 
-            Director.getInstance().gl.bindFramebuffer(Director.getInstance().gl.FRAMEBUFFER, null);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         }
 
         private _createRenderBuffer(){
-            var renderBuffer = Director.getInstance().gl.createRenderbuffer();
+            var gl = this.gl,
+                renderBuffer = gl.createRenderbuffer();
 
             dyCb.Log.error(!renderBuffer, "Failed to create renderbuffer object");
 
-            Director.getInstance().gl.bindRenderbuffer(Director.getInstance().gl.RENDERBUFFER, renderBuffer);
-            Director.getInstance().gl.renderbufferStorage(Director.getInstance().gl.RENDERBUFFER, Director.getInstance().gl.DEPTH_COMPONENT16, this._width, this._height);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, renderBuffer);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this._width, this._height);
 
             return renderBuffer;
         }
 
         private _attachTexture(texture:WebGLTexture){
+            var gl = this.gl;
+            
             //todo support mipmap?
-            Director.getInstance().gl.framebufferTexture2D(
-                Director.getInstance().gl.FRAMEBUFFER,
-                Director.getInstance().gl.COLOR_ATTACHMENT0,
-                Director.getInstance().gl.TEXTURE_2D,
+            gl.framebufferTexture2D(
+                gl.FRAMEBUFFER,
+                gl.COLOR_ATTACHMENT0,
+                gl.TEXTURE_2D,
                 texture,
                 0);
         }
 
         private _attachRenderBuffer(type:string, renderBuffer){
-            Director.getInstance().gl.framebufferRenderbuffer(Director.getInstance().gl.FRAMEBUFFER, Director.getInstance().gl[type], Director.getInstance().gl.RENDERBUFFER, renderBuffer);
+            var gl = this.gl;
+
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
         }
 
         private _check(){
-            var e = Director.getInstance().gl.checkFramebufferStatus(Director.getInstance().gl.FRAMEBUFFER);
+            var gl = this.gl,
+                e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 
-            if (e !== Director.getInstance().gl.FRAMEBUFFER_COMPLETE) {
+            if (e !== gl.FRAMEBUFFER_COMPLETE) {
                 dyCb.Log.error(true, `Frame buffer object is incomplete:${e.toString()}`);
             }
         }

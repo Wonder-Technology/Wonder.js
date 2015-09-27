@@ -4,14 +4,14 @@ describe("renderWebGL", function() {
     var deviceManager = null;
 
     function getGL(){
-        return dy.Director.getInstance().gl;
+        return dy.DeviceManager.getInstance().gl;
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         renderer = dy.WebGLRenderer.create();
         deviceManager = dy.DeviceManager.getInstance();
-        sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -119,7 +119,7 @@ describe("renderWebGL", function() {
                 drawArrays:sandbox.stub(),
                 createBuffer:sandbox.stub().returns({})
             };
-            testTool.extend(dy.Director.getInstance().gl, gl);
+            testTool.extend(dy.DeviceManager.getInstance().gl, gl);
             program = {
                 setAttributeData:sandbox.stub(),
                 setUniformData:sandbox.stub(),

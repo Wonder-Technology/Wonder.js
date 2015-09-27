@@ -11,7 +11,7 @@ module dy{
         //public texture:Texture = null;
 
         public execute(){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 self = this;
 
             dyCb.Log.error(this.format === null, dyCb.Log.info.FUNC_NOT_SUPPORT(this.format));

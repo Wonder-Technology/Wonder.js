@@ -20,13 +20,13 @@ module dy{
 
 
         public createVsShader(){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             return this._initShader(gl.createShader(gl.VERTEX_SHADER), this.vsSource);
         }
 
         public createFsShader(){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
         }
@@ -83,7 +83,7 @@ module dy{
         }
 
         private _initShader(shader, source){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             gl.shaderSource(shader, source);
             gl.compileShader(shader);

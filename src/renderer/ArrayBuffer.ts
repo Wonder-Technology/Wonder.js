@@ -13,7 +13,7 @@ module dy{
         public data:any = null;
 
         public initWhenCreate(data, num, type:BufferType) {
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             if(!data){
                 return null;

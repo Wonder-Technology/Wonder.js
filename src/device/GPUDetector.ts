@@ -12,7 +12,7 @@ module dy {
         }
 
         get gl() {
-            return Director.getInstance().gl;
+            return DeviceManager.getInstance().gl;
         }
 
         public maxTextureUnit:number = null;

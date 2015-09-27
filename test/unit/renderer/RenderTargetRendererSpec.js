@@ -5,7 +5,7 @@ describe("RenderTargetRenderer", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Renderer = dy.RenderTargetRenderer;
-        sandbox.stub(dy.Director.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();

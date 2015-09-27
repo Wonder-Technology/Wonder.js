@@ -23,7 +23,7 @@ module dy{
         //todo support manual mipmap
         public draw(index:number){
             var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create(),
-            gl = Director.getInstance().gl;
+            gl = DeviceManager.getInstance().gl;
 
             noMipmapCmd.source = this.source;
             noMipmapCmd.sourceRegion = this.sourceRegion;

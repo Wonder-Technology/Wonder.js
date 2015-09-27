@@ -15,9 +15,8 @@ module dy {
             return this._instance;
         }
 
-        get gl(){
-            return Director.getInstance().gl;
-        }
+        public view:IView = null;
+        public gl:WebGLRenderingContext = null;
 
         /*!
         test order:

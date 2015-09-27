@@ -8,7 +8,7 @@ module dy{
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             var mipmapCmd:DrawMipmapTwoDTextureCommand = null,
                 noMipmapCmd:DrawNoMipmapTwoDTextureCommand = null,
-                gl = Director.getInstance().gl;
+                gl = DeviceManager.getInstance().gl;
 
             if(isSourcePowerOfTwo && this.mipmaps.getCount() > 0) {
                 mipmapCmd = DrawMipmapTwoDTextureCommand.create();

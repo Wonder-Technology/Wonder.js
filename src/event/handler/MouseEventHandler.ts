@@ -55,7 +55,7 @@ module dy {
         }
 
         protected getDom() {
-            return Director.getInstance().getView().dom;
+            return DeviceManager.getInstance().view.dom;
         }
 
         protected buildWrapHandler(target:GameObject, eventName:EventName){

@@ -71,7 +71,7 @@ module dy {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
-                gl = Director.getInstance().gl;
+                gl = DeviceManager.getInstance().gl;
 
             this._setEffects();
 

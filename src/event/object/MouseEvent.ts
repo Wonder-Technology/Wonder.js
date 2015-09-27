@@ -76,7 +76,7 @@ module dy {
 
 
             //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
-            viewOffset = Director.getInstance().getView().offset;
+            viewOffset = DeviceManager.getInstance().view.offset;
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
         }

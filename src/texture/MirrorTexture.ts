@@ -69,7 +69,7 @@ module dy {
         }
 
         public createEmptyTexture(){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 texture = gl.createTexture();
 
             dyCb.Log.error(!texture, "Failed to create texture object");

@@ -54,7 +54,7 @@ module dy{
         protected glTexture:WebGLTexture = null;
 
         public init(){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
             //texture.addEventListener( "dispose", onTextureDispose );
 
             this.glTexture = gl.createTexture();
@@ -65,7 +65,7 @@ module dy{
         }
 
         public update(index:number){
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 isSourcePowerOfTwo = this.isSourcePowerOfTwo();
 
             this.bindToUnit(index);
@@ -114,7 +114,7 @@ module dy{
         }
 
         public bindToUnit (unit:number) {
-            var gl = Director.getInstance().gl,
+            var gl = DeviceManager.getInstance().gl,
                 maxUnit = GPUDetector.getInstance().maxTextureUnit;
 
             if(unit >= maxUnit){
@@ -128,7 +128,7 @@ module dy{
         }
 
         public dispose(){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             gl.deleteTexture(this.glTexture);
             delete this.glTexture;
@@ -211,7 +211,7 @@ module dy{
         }
 
         protected setTextureParameters(textureType, isSourcePowerOfTwo){
-            var gl = Director.getInstance().gl;
+            var gl = DeviceManager.getInstance().gl;
 
             if (isSourcePowerOfTwo){
                 gl.texParameteri(textureType, gl.TEXTURE_WRAP_S, gl[this.wrapS]);
@@ -233,7 +233,7 @@ module dy{
 
         private _setAnisotropy(textureType){
             var gpu = GPUDetector.getInstance(),
-                gl = Director.getInstance().gl;
+                gl = DeviceManager.getInstance().gl;
 
             if(!gpu.extensionTextureFilterAnisotropic){
                 return;
