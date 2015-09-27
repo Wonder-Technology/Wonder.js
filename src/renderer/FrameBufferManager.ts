@@ -20,9 +20,10 @@ module dy{
 
         private _width:number = null;
         private _height:number = null;
-        private _buffer = null;
+        private _buffer:WebGLFramebuffer = null;
+        private _renderBuffer:WebGLRenderbuffer = null;
 
-        public bind(){
+        public bindAndSetViewport(){
             var gl = this.gl;
             
             if(this._buffer){
@@ -31,13 +32,11 @@ module dy{
             }
         }
 
-        public unBind(){
+        public unBindAndRestoreViewport(){
             var view = DeviceManager.getInstance().view,
                 gl = this.gl;
 
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            gl.bindTexture(gl.TEXTURE_2D, null);
-            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+            this._unBind();
             gl.viewport(
                 0, 0,
                 view.width, view.height);
@@ -60,6 +59,21 @@ module dy{
             this._buffer = fb;
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        }
+
+        public dispose(){
+            var gl = this.gl;
+
+            this._unBind();
+            gl.deleteFramebuffer(this._buffer);
+            gl.deleteRenderbuffer(this._renderBuffer);
+        }
+
+        private _unBind(){
+            var gl = this.gl;
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         }
 
         private _createRenderBuffer(){
@@ -90,6 +104,8 @@ module dy{
             var gl = this.gl;
 
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
+
+            this._renderBuffer = renderBuffer;
         }
 
         private _check(){

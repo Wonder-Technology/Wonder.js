@@ -53,7 +53,7 @@ module dy {
             //todo optimize(dirty)
             projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
 
-            this._frameBufferManager.bind();
+            this._frameBufferManager.bindAndSetViewport();
 
             mirrorCameraComponent = Camera.create();
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
@@ -66,7 +66,12 @@ module dy {
             });
             renderer.render();
 
-            this._frameBufferManager.unBind();
+            this._frameBufferManager.unBindAndRestoreViewport();
+        }
+
+        public dispose(){
+            this._frameBufferManager.dispose();
+            this._texture.dispose();
         }
 
         private _getClipPlaneInCameraSpace(vMatrix:Matrix, plane:Plane){
