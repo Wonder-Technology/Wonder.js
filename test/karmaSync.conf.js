@@ -41,8 +41,8 @@ module.exports = function(config) {
     exclude: [
         '**/temp/*',
         'test/unit/asset/*.js',
-        'test/unit/component/script/*.js',
-        'test/unit/renderer/texture/*.js'
+        'test/unit/component/script/*.js'
+        //'test/unit/renderer/texture/*.js'
     ],
 
 
