@@ -6,7 +6,7 @@ describe("Color", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         manager = dy.DeviceManager.getInstance();
-        dy.Director.getInstance().gl = testTool.buildFakeGl(sandbox);
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         gl = manager.gl;
     });
     afterEach(function () {

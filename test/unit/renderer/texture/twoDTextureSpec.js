@@ -45,7 +45,7 @@ describe("twoD texture", function() {
 
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(director, "gl", gl);
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
         dy.Director._instance = null;

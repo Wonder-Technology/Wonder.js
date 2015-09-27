@@ -94,7 +94,7 @@ describe("loader", function () {
 
             dy.LoaderManager.getInstance().load([
                 {url: [testTool.resPath + "test/res/sintel.mp4",testTool.resPath + "test/res/sintel.ogv"], id: "video1"},
-                {url: testTool.resPath + "test/res/kinect.webm", id: "video2"}
+                {url: testTool.resPath + "test/res/sintel.webm", id: "video2"}
             ]).subscribe(function(data){
                 current.push(data.currentLoadedCount);
                 total.push(data.assetCount);

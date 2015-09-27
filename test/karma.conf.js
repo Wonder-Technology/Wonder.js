@@ -31,8 +31,8 @@ module.exports = function(config) {
         'test/unit/testTool.js',
         'test/unit/rendererTool.js',
 
-        //'test/unit/**/*.js',
-      'test/unit/renderer/RenderTarget*',
+        'test/unit/**/*.js',
+      //'test/unit/renderer/RenderTarget*',
       //'test/unit/core/Tran*.js',
         //'test/unit/asset/*.js',
         //'test/unit/math/*.js',
