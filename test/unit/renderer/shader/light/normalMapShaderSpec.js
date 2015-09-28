@@ -76,7 +76,7 @@ describe("normal map shader", function () {
                 expect(quadCmd.buffers.getChild).toCalledWith("normalBuffer");
 
                 expect(program.sendAttributeData).toCalledWith("a_texCoord");
-                expect(quadCmd.buffers.getChild).toCalledWith("texCoordsBuffer");
+                expect(quadCmd.buffers.getChild).toCalledWith("texCoordBuffer");
 
                 expect(program.sendAttributeData).toCalledWith("a_tangent");
                 expect(quadCmd.buffers.getChild).toCalledWith("tangentBuffer");

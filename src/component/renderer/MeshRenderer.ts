@@ -21,7 +21,7 @@ module dy {
 
             quadCmd.buffers = {
                 vertexBuffer: geometry.vertices,
-                texCoordsBuffer: geometry.texCoords,
+                texCoordBuffer: geometry.texCoords,
                 indexBuffer: geometry.indices,
                 normalBuffer: geometry.normals,
                 tangentBuffer:geometry.tangents,
