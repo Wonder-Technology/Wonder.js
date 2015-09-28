@@ -43,10 +43,7 @@ module dy {
             return super.addChild(child);
         }
 
-        //todo change element to be RenderTargetRendererTexture
-        public addRenderTargetRenderer(mirrorTexture:MirrorTexture){
-            var renderTargetRenderer = RenderTargetRenderer.create(mirrorTexture);
-
+        public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
             this._renderTargetRenderers.addChild(renderTargetRenderer);
             renderTargetRenderer.init();
         }

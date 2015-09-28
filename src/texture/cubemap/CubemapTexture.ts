@@ -60,6 +60,7 @@ module dy{
                     texture.draw(i);
                 });
             }
+            //all twoD textures
             else{
 
                 this.textures.forEach((texture:CubemapFaceTwoDTexture, i:number) => {

@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    export class MirrorTexture extends Texture {
+    export class MirrorTexture extends RenderTargetTexture {
         public static create() {
         	var obj = new this();
 
@@ -30,18 +30,11 @@ module dy {
         private _plane:Plane = null;
 
         public init(){
-            //todo support mipmap?
-            this.generateMipmaps = false;
-            this.minFilter = TextureFilterMode.LINEAR;
-            this.magFilter = TextureFilterMode.LINEAR;
+            super.init();
 
-            Director.getInstance().stage.addRenderTargetRenderer(this);
+            Director.getInstance().stage.addRenderTargetRenderer(MirrorRenderTargetRenderer.create(this));
 
             return this;
-        }
-
-        public setTexture(texture:any){
-            this.glTexture = texture;
         }
 
         public getPlane(){
@@ -64,34 +57,15 @@ module dy {
             return this._plane;
         }
 
-        public getPosition(){
-            return this.geometry.gameObject.transform.position;
-        }
-
         public createEmptyTexture(){
             var gl = DeviceManager.getInstance().gl,
                 texture = gl.createTexture();
 
-            dyCb.Log.error(!texture, "Failed to create texture object");
-
-            gl.bindTexture(gl[this.target], texture);
+            this.setEmptyTexture(texture);
 
             gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-            this.setTextureParameters(gl[this.target], this.isSourcePowerOfTwo());
-            //todo support mipmap?
-            //if (this.generateMipmaps && isSourcePowerOfTwo) {
-            //    gl.generateMipmap(gl[this.target]);
-            //}
-
             return texture;
-        }
-
-        public update(index:number){
-            return this;
-        }
-
-        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
         }
     }
 }

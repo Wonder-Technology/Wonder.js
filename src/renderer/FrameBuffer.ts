@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class FrameBufferManager{
+    export class FrameBuffer{
         public static create(width:number, height:number) {
         	var obj = new this(width, height);
 
@@ -16,67 +16,58 @@ module dy{
             return DeviceManager.getInstance().gl;
         }
 
-        public texture:WebGLTexture = null;
-
         private _width:number = null;
         private _height:number = null;
         private _buffer:WebGLFramebuffer = null;
         private _renderBuffer:WebGLRenderbuffer = null;
 
-        public bindAndSetViewport(){
+        public createFrameBuffer(){
+            return this.gl.createFramebuffer();
+        }
+
+        //public bind(){
+        //    if(this._buffer){
+        //        this.bindFrameBuffer(this._buffer);
+        //    }
+        //}
+
+        public bindFrameBuffer(buffer:WebGLFramebuffer){
             var gl = this.gl;
-            
-            if(this._buffer){
-                gl.bindFramebuffer(gl.FRAMEBUFFER, this._buffer);
-                gl.viewport(0, 0, this._width, this._height);
-            }
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, buffer);
         }
 
-        public unBindAndRestoreViewport(){
-            var view = DeviceManager.getInstance().view,
-                gl = this.gl;
-
-            this._unBind();
-            gl.viewport(
-                0, 0,
-                view.width, view.height);
+        public setViewport(){
+            DeviceManager.getInstance().setViewport(0, 0, this._width, this._height);
         }
 
-        public init(texture:WebGLTexture){
-            var gl = this.gl,
-                fb = gl.createFramebuffer();
+        public restoreViewport(){
+            var deviceManager = DeviceManager.getInstance(),
+                view = deviceManager.view;
 
-            this.texture = texture;
-
-            gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-
-            this._attachTexture(this.texture);
-
-            this._attachRenderBuffer("DEPTH_ATTACHMENT", this._createRenderBuffer());
-
-            this._check();
-
-            this._buffer = fb;
-
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            deviceManager.setViewport(0, 0, view.width, view.height);
         }
+        //
+        //public setBuffer(buffer:WebGLFramebuffer){
+        //    this._buffer = buffer;
+        //}
 
         public dispose(){
             var gl = this.gl;
 
-            this._unBind();
+            this.unBind();
             gl.deleteFramebuffer(this._buffer);
             gl.deleteRenderbuffer(this._renderBuffer);
         }
 
-        private _unBind(){
+        public unBind(){
             var gl = this.gl;
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         }
 
-        private _createRenderBuffer(){
+        public createRenderBuffer(){
             var gl = this.gl,
                 renderBuffer = gl.createRenderbuffer();
 
@@ -88,19 +79,19 @@ module dy{
             return renderBuffer;
         }
 
-        private _attachTexture(texture:WebGLTexture){
+        public attachTexture(glTarget:any, texture:WebGLTexture){
             var gl = this.gl;
             
             //todo support mipmap?
             gl.framebufferTexture2D(
                 gl.FRAMEBUFFER,
                 gl.COLOR_ATTACHMENT0,
-                gl.TEXTURE_2D,
+                glTarget,
                 texture,
                 0);
         }
 
-        private _attachRenderBuffer(type:string, renderBuffer){
+        public attachRenderBuffer(type:string, renderBuffer){
             var gl = this.gl;
 
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
@@ -108,7 +99,7 @@ module dy{
             this._renderBuffer = renderBuffer;
         }
 
-        private _check(){
+        public check(){
             var gl = this.gl,
                 e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 

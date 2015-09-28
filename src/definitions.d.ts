@@ -72,6 +72,8 @@
 /// <reference path="utils/time/CommonTimeController"/>
 
 /// <reference path="renderer/RenderTargetRenderer"/>
+/// <reference path="renderer/MirrorRenderTargetRenderer"/>
+/// <reference path="renderer/CubemapRenderTargetRenderer"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
 /// <reference path="renderer/BufferType"/>
@@ -81,7 +83,7 @@
 /// <reference path="renderer/ArrayBuffer"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
-/// <reference path="renderer/FrameBufferManager"/>
+/// <reference path="renderer/FrameBuffer"/>
 
 /// <reference path="renderer/shader/Shader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
@@ -181,7 +183,9 @@
 /// <reference path="structure/View"/>
 
 /// <reference path="texture/Texture"/>
+/// <reference path="texture/RenderTargetTexture"/>
 /// <reference path="texture/MirrorTexture"/>
+/// <reference path="texture/DynamicCubemapTexture"/>
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>

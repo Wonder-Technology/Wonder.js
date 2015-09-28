@@ -1,114 +1,51 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    declare var Math:any;
-
-    export class RenderTargetRenderer{
-        //todo change element to be RenderTargetTexture
-        public static create(mirrorTexture:MirrorTexture) {
-            var obj = new this(mirrorTexture);
-
-            obj.initWhenCreate();
-
-            return obj;
+    export abstract class RenderTargetRenderer{
+        constructor(renderTargetTexture:RenderTargetTexture){
+            this.texture = renderTargetTexture;
         }
 
-        constructor(mirrorTexture:MirrorTexture){
-            this._texture = mirrorTexture;
-        }
-
-        private _texture:MirrorTexture = null;
-        private _frameBufferManager:FrameBufferManager = null;
+        protected texture:RenderTargetTexture = null;
+        protected frameBuffer:FrameBuffer = null;
 
         public initWhenCreate(){
             if(this._isTextureSizeExceedCanvasSize()){
                 dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
             }
 
-            this._frameBufferManager = FrameBufferManager.create(this._texture.width, this._texture.height);
+            this.frameBuffer = FrameBuffer.create(this.texture.width, this.texture.height);
         }
 
         public init(){
-            this._frameBufferManager.init(this._texture.createEmptyTexture());
-
-            return this;
+            this.initFrameBuffer();
         }
 
-        //todo extract RenderTargetTexture
         public render(renderer:Renderer, camera:GameObject){
             var plane = null,
                 cameraComponent = null,
                 mirrorCameraViewMatrix = null,
-                projectionMatrix = null,
-                mirrorCameraComponent = null;
+                projectionMatrix = null;
 
-            this._texture.setTexture(this._frameBufferManager.texture);
+            this.attachTexture();
 
-            cameraComponent = camera.getComponent<Camera>(Camera);
 
-            plane = this._texture.getPlane();
-
-            mirrorCameraViewMatrix =
-                plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix);
-
-            //todo optimize(dirty)
-            projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
-
-            this._frameBufferManager.bindAndSetViewport();
-
-            mirrorCameraComponent = Camera.create();
-            mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
-            mirrorCameraComponent.pMatrix = projectionMatrix.copy();
-
-            //todo if renderList is null, draw all
-            //todo optimize:if renderObject is behind plane, not render it!
-            this._texture.renderList.forEach((child:GameObject) => {
-                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent), true);
-            });
-            renderer.render();
-
-            this._frameBufferManager.unBindAndRestoreViewport();
+            this.renderFrameBufferTexture(renderer, camera);
         }
 
         public dispose(){
-            this._frameBufferManager.dispose();
-            this._texture.dispose();
+            this.frameBuffer.dispose();
+            this.texture.dispose();
         }
 
-        private _getClipPlaneInCameraSpace(vMatrix:Matrix4, plane:Plane){
-            var clipPlane = Vector4.create(),
-                p = vMatrix.multiplyVector3(this._texture.getPosition()),
-                n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
 
-            clipPlane.set(n.x, n.y, n.z, -p.dot(n));
-
-            return clipPlane;
-        }
-
-        private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{
-            var projectionMatrix = pMatrix.copy(),
-                q = Vector4.create(),
-                clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane),
-                c = Vector4.create();
-
-            q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.values[ 8 ] ) / projectionMatrix.values[ 0 ];
-            q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.values[ 9 ] ) / projectionMatrix.values[ 5 ];
-            q.z = - 1.0;
-            q.w = ( 1.0 + projectionMatrix.values[ 10 ] ) / projectionMatrix.values[ 14 ];
-
-            c = clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
-
-            projectionMatrix.values[ 2 ] = c.x;
-            projectionMatrix.values[ 6 ] = c.y;
-            projectionMatrix.values[ 10 ] = c.z + 1.0;
-            projectionMatrix.values[ 14 ] = c.w;
-
-            return projectionMatrix;
-        }
+        protected abstract attachTexture();
+        protected abstract initFrameBuffer();
+        protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
 
         private _isTextureSizeExceedCanvasSize(){
             var view = DeviceManager.getInstance().view;
 
-            return this._texture.width > view.width || this._texture.height > view.height;
+            return this.texture.width > view.width || this.texture.height > view.height;
         }
     }
 }
