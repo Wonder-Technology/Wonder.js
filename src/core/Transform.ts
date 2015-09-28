@@ -248,18 +248,54 @@ module dy{
 
         //private _flags:dyCb.Collection<Flag> = dyCb.Collection.create<Flag>();
 
-        public translateLocal(translation:Vector3) {
+        public translateLocal(translation:Vector3);
+        public translateLocal(x:number, y:number, z:number);
+
+
+        public translateLocal(arg) {
+            var translation = null;
+
+            if(arguments.length === 3){
+                translation = Vector3.create(arguments[0], arguments[1], arguments[2]);
+            }
+            else{
+                translation = arguments[0];
+            }
+
             this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
 
             this.dirtyLocal = true;
         }
 
-        public translate(translation:Vector3){
+        public translate(translation:Vector3);
+        public translate(x:number, y:number, z:number);
+
+        public translate(arg){
+            var translation = null;
+
+            if(arguments.length === 3){
+                translation = Vector3.create(arguments[0], arguments[1], arguments[2]);
+            }
+            else{
+                translation = arguments[0];
+            }
+
             this.position = translation.add(this.position);
         }
 
-        public rotate(eulerAngles:Vector3){
-            var quaternion = Quaternion.create();
+        public rotate(eulerAngles:Vector3);
+        public rotate(x:number, y:number, z:number);
+
+        public rotate(arg){
+            var eulerAngles = null,
+                quaternion = Quaternion.create();
+
+            if(arguments.length === 3){
+                eulerAngles = Vector3.create(arguments[0], arguments[1], arguments[2]);
+            }
+            else{
+                eulerAngles = arguments[0];
+            }
 
             quaternion.setFromEulerAngles(eulerAngles);
 
@@ -275,8 +311,19 @@ module dy{
             this.dirtyLocal = true;
         }
 
-        public rotateLocal(eulerAngles:Vector3) {
-            var quaternion = Quaternion.create();
+        public rotateLocal(eulerAngles:Vector3);
+        public rotateLocal(x:number, y:number, z:number);
+
+        public rotateLocal(arg){
+            var eulerAngles = null,
+                quaternion = Quaternion.create();
+
+            if(arguments.length === 3){
+                eulerAngles = Vector3.create(arguments[0], arguments[1], arguments[2]);
+            }
+            else{
+                eulerAngles = arguments[0];
+            }
 
             quaternion.setFromEulerAngles(eulerAngles);
 
@@ -285,9 +332,29 @@ module dy{
             this.dirtyLocal = true;
         }
 
-        public rotateAround(angle:number, center:Vector3, axis:Vector3){
-            var rot:Quaternion = Quaternion.create().setFromAxisAngle(angle, axis),
-                dir:Vector3 = this.position.copy().sub(center); // find current direction relative to center
+        public rotateAround(angle:number, center:Vector3, axis:Vector3);
+        public rotateAround(angle:number, centerX:number, centerY:number, centerZ:number, axisX:number, axisY:number, axisZ:number);
+
+        public rotateAround(arg){
+            var angle = null,
+                center = null,
+                axis = null,
+                rot:Quaternion = null,
+                dir:Vector3 = null;
+
+            if(arguments.length === 3){
+                angle = arguments[0];
+                center = arguments[1];
+                axis = arguments[2];
+            }
+            else{
+                angle = arguments[0];
+                center = Vector3.create(arguments[1], arguments[2], arguments[3]);
+                axis = Vector3.create(arguments[4], arguments[5], arguments[6]);
+            }
+
+            rot = Quaternion.create().setFromAxisAngle(angle, axis);
+            dir = this.position.copy().sub(center); // find current direction relative to center
 
             dir = rot.multiplyVector3(dir); // rotate the direction
 
@@ -297,17 +364,29 @@ module dy{
         }
 
         public lookAt(target:Vector3);
+        public lookAt(targetX:number, targetY:number, targetZ:number);
         public lookAt(target:Vector3, up:Vector3);
+        public lookAt(targetX:number, targetY:number, targetZ:number, upX:number, upY:number, upZ:number);
 
         public lookAt(args){
-            var target = arguments[0],
+            var target = null,
                 up = null;
 
             if(arguments.length === 1){
+                target = arguments[0];
                 up = Vector3.up;
             }
             else if(arguments.length === 2){
+                target = arguments[0];
                 up = arguments[1];
+            }
+            else if(arguments.length === 3){
+                target = Vector3.create(arguments[0], arguments[1], arguments[2]);
+                up = Vector3.up;
+            }
+            else{
+                target = Vector3.create(arguments[0], arguments[1], arguments[2]);
+                up = Vector3.create(arguments[3], arguments[4], arguments[5]);
             }
 
             this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
