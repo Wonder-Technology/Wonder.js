@@ -65,7 +65,7 @@ describe("RenderTargetRenderer", function() {
             };
 
             plane = {
-                getReflectionMatrix: sandbox.stub().returns(dy.Matrix.create())
+                getReflectionMatrix: sandbox.stub().returns(dy.Matrix4.create())
             };
 
             renderTargetTexture = {
@@ -88,8 +88,8 @@ describe("RenderTargetRenderer", function() {
             };
 
             cameraComponent = {
-                worldToCameraMatrix: dy.Matrix.create(),
-                pMatrix: dy.Matrix.create()
+                worldToCameraMatrix: dy.Matrix4.create(),
+                pMatrix: dy.Matrix4.create()
             };
             camera = {
                 getComponent: sandbox.stub().returns(cameraComponent)
@@ -106,7 +106,7 @@ describe("RenderTargetRenderer", function() {
         it("set clip plane", function(){
             renderTargetRenderer.render(renderer, camera);
 
-            expect(renderTargetRenderer._setClipPlane).toCalledWith(sinon.match.instanceOf(dy.Matrix), cameraComponent.pMatrix, plane);
+            expect(renderTargetRenderer._setClipPlane).toCalledWith(sinon.match.instanceOf(dy.Matrix4), cameraComponent.pMatrix, plane);
         });
         it("bind frameBuffer and set viewport", function(){
             renderTargetRenderer.render(renderer, camera);

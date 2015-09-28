@@ -1,5 +1,5 @@
 var mathTestUtils = (function () {
-    var Matrix = dy.Matrix;
+    var Matrix4 = dy.Matrix4;
 
     return {
         getValues: function (values, digit) {
@@ -24,7 +24,7 @@ var mathTestUtils = (function () {
             return Object.prototype.toString.call(val) === "[object Float32Array]";
         },
         isMatrix: function(val){
-            return val instanceof Matrix;
+            return val instanceof Matrix4;
         },
         isMatrixEqual: function(mat1, target){
             if(this.isFloat32Array(target)){

@@ -23,7 +23,7 @@
 /// <reference path="math/Vector2"/>
 /// <reference path="math/Vector3"/>
 /// <reference path="math/Vector4"/>
-/// <reference path="math/Matrix"/>
+/// <reference path="math/Matrix4"/>
 /// <reference path="math/Matrix3"/>
 /// <reference path="math/Quaternion"/>
 /// <reference path="math/Plane"/>

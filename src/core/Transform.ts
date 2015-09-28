@@ -13,7 +13,7 @@ module dy{
             return obj;
         }
 
-        private _localToParentMatrix:Matrix = Matrix.create();
+        private _localToParentMatrix:Matrix4 = Matrix4.create();
         get localToParentMatrix(){
             //return this._localToParentMatrix;
             if (this.dirtyLocal) {
@@ -25,7 +25,7 @@ module dy{
             return this._localToParentMatrix;
         }
 
-        private _localToWorldMatrix:Matrix = null;
+        private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
             var syncList = dyCb.Collection.create<Transform>(),
                 current = this;
@@ -41,7 +41,7 @@ module dy{
 
             return this._localToWorldMatrix;
         }
-        set localToWorldMatrix(localToWorldMatrix:Matrix){
+        set localToWorldMatrix(localToWorldMatrix:Matrix4){
             this._localToWorldMatrix = localToWorldMatrix;
         }
 
@@ -310,7 +310,7 @@ module dy{
                 up = arguments[1];
             }
 
-            this.rotation = Quaternion.create().setFromMatrix(Matrix.create().setLookAt(this.position, target, up));
+            this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
         }
     }
 }

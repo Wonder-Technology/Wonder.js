@@ -3,11 +3,11 @@ module dy{
     /*!
      注意：矩阵元素是按列主序存储在数组中的。
      */
-    export class Matrix{
-        public static create(mat:Float32Array):Matrix;
-        public static create():Matrix;
+    export class Matrix4{
+        public static create(mat:Float32Array):Matrix4;
+        public static create():Matrix4;
 
-        public static create():Matrix {
+        public static create():Matrix4 {
             var m = null;
 
             if(arguments.length === 0){
@@ -46,7 +46,7 @@ module dy{
             this.values = this._matrixArr.pop();
         }
 
-        public setIdentity (): Matrix {
+        public setIdentity (): Matrix4 {
             var e = this.values;
             e[0] = 1;   e[4] = 0;   e[8]  = 0;   e[12] = 0;
             e[1] = 0;   e[5] = 1;   e[9]  = 0;   e[13] = 0;
@@ -60,7 +60,7 @@ module dy{
          * @param other The source matrix
          * @return this
          */
-        public invert ():Matrix {
+        public invert ():Matrix4 {
             var i, s, d, inv, det;
 
             s = this.values;
@@ -124,7 +124,7 @@ module dy{
          * Transpose the matrix.
          * @return this
          */
-        public transpose ():Matrix {
+        public transpose ():Matrix4 {
             var e, t;
 
             e = this.values;
@@ -146,7 +146,7 @@ module dy{
          * @param z The Z value of a translation.
          * @return this
          */
-        public setTranslate (x, y, z): Matrix {
+        public setTranslate (x, y, z): Matrix4 {
             var e = this.values;
             e[0] = 1;  e[4] = 0;  e[8]  = 0;  e[12] = x;
             e[1] = 0;  e[5] = 1;  e[9]  = 0;  e[13] = y;
@@ -162,8 +162,8 @@ module dy{
          * @param z The Z value of a translation.
          * @return this
          */
-        public translate (x, y, z): Matrix {
-            this.applyMatrix(Matrix.create().setTranslate(x, y, z));
+        public translate (x, y, z): Matrix4 {
+            this.applyMatrix(Matrix4.create().setTranslate(x, y, z));
 
             return this;
         }
@@ -177,7 +177,7 @@ module dy{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        public setRotate (angle: number, x: number, y: number, z:number): Matrix {
+        public setRotate (angle: number, x: number, y: number, z:number): Matrix4 {
             var e, s, c, len, rlen, nc, xy, yz, zx, xs, ys, zs;
 
             var angle = Math.PI * angle / 180;
@@ -265,23 +265,23 @@ module dy{
          * @param z The Z coordinate of vector of rotation axis.
          * @return this
          */
-        public rotate (angle, vector3:Vector3): Matrix;
-        public rotate (angle, x, y, z): Matrix;
+        public rotate (angle, vector3:Vector3): Matrix4;
+        public rotate (angle, x, y, z): Matrix4;
 
-        public rotate (args): Matrix {
+        public rotate (args): Matrix4 {
             var angle = arguments[0];
 
             if(arguments.length === 2){
                 let vector3 = arguments[1];
 
-                this.applyMatrix(Matrix.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
+                this.applyMatrix(Matrix4.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
             }
             else if(arguments.length === 4){
                 let x = arguments[1],
                     y = arguments[2],
                     z = arguments[3];
 
-                this.applyMatrix(Matrix.create().setRotate(angle, x, y, z));
+                this.applyMatrix(Matrix4.create().setRotate(angle, x, y, z));
             }
 
             return this;
@@ -294,7 +294,7 @@ module dy{
          * @param z The scale factor along the Z axis
          * @return this
          */
-        public setScale (x, y, z):Matrix {
+        public setScale (x, y, z):Matrix4 {
             var e = this.values;
             e[0] = x;  e[4] = 0;  e[8]  = 0;  e[12] = 0;
             e[1] = 0;  e[5] = y;  e[9]  = 0;  e[13] = 0;
@@ -310,16 +310,16 @@ module dy{
          * @param z The scale factor along the Z axis
          * @return this
          */
-        public scale (x, y, z):Matrix {
-            this.applyMatrix(Matrix.create().setScale(x, y, z));
+        public scale (x, y, z):Matrix4 {
+            this.applyMatrix(Matrix4.create().setScale(x, y, z));
 
             return this;
         }
 
-        public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix;
-        public setLookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix;
+        public setLookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix4;
+        public setLookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix4;
 
-        //public setLookAt (args):Matrix {
+        //public setLookAt (args):Matrix4 {
         //    var e, fx, fy, fz, rlf, sx, sy, sz, rls, ux, uy, uz,
         //        eye = null,
         //        center = null,
@@ -390,7 +390,7 @@ module dy{
         //    e[15] = 1;
         //    //Translate.
         //    //this.translate(-eye.x, -eye.y, -eye.z);
-        //    //this.values = this.multiply(Matrix.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
+        //    //this.values = this.multiply(Matrix4.create().setTranslate(-eye.x, -eye.y, -eye.z)).values;
         //
         //    return this;
         //}
@@ -464,11 +464,11 @@ module dy{
          * @param upX, upY, upZ The direction of the up vector.
          * @return this
          */
-        public lookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix;
-        public lookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix;
+        public lookAt (eye:Vector3, center:Vector3, up:Vector3):Matrix4;
+        public lookAt (eyeX:number, eyeY:number, eyeZ:number, centerX:number, centerY:number, centerZ:number, upX:number, upY:number, upZ:number):Matrix4;
 
-        public lookAt (args):Matrix {
-            var matrix = Matrix.create();
+        public lookAt (args):Matrix4 {
+            var matrix = Matrix4.create();
 
             this.applyMatrix(matrix.setLookAt.apply(matrix, Array.prototype.slice.call(arguments, 0)));
 
@@ -476,7 +476,7 @@ module dy{
         }
 
 
-        public setOrtho (near, far):Matrix {
+        public setOrtho (near, far):Matrix4 {
             var e = this.values;
 
             e[0] = 1;
@@ -499,8 +499,8 @@ module dy{
             return this;
         }
 
-        public ortho (n, f):Matrix{
-            this.applyMatrix(Matrix.create().setOrtho(n, f));
+        public ortho (n, f):Matrix4{
+            this.applyMatrix(Matrix4.create().setOrtho(n, f));
 
             return this;
         }
@@ -513,7 +513,7 @@ module dy{
          * @param far The distances to the farther depth clipping plane. This value must be plus value.
          * @return this
          */
-        public setPerspective (fovy: number, aspect, near, far):Matrix {
+        public setPerspective (fovy: number, aspect, near, far):Matrix4 {
             var e, rd, s, ct,
                 log = dyCb.Log,
                 info = log.info;
@@ -556,13 +556,13 @@ module dy{
             return this;
         }
 
-        public perspective (fovy, aspect, near, far):Matrix{
-            this.applyMatrix(Matrix.create().setPerspective(fovy, aspect, near, far));
+        public perspective (fovy, aspect, near, far):Matrix4{
+            this.applyMatrix(Matrix4.create().setPerspective(fovy, aspect, near, far));
 
             return this;
         }
 
-        public applyMatrix (other:Matrix):Matrix{
+        public applyMatrix (other:Matrix4):Matrix4{
             var a = this,
                 b = other.copy();
 
@@ -575,10 +575,10 @@ module dy{
             return this;
         }
 
-        public multiply(matrix2:Matrix):Matrix;
-        public multiply(matrix1:Matrix, matrix2:Matrix):Matrix;
+        public multiply(matrix2:Matrix4):Matrix4;
+        public multiply(matrix1:Matrix4, matrix2:Matrix4):Matrix4;
 
-        public multiply(args):Matrix {
+        public multiply(args):Matrix4 {
             var mat1 = null,
                 mat2 = null,
                 result = null;
@@ -649,8 +649,8 @@ module dy{
             return Vector3.create(result[0], result[1], result[2]);
         }
 
-        public copy(): Matrix{
-            var result = Matrix.create(),
+        public copy(): Matrix4{
+            var result = Matrix4.create(),
                 i = 0,
                 len = this.values.length;
 

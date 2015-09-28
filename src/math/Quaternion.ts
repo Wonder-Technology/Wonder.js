@@ -107,7 +107,7 @@ module dy {
          * // Convert to a quaternion
          * var q = new pc.Quat().setFromMat4(rot);
          */
-        public setFromMatrix(matrix:Matrix) {
+        public setFromMatrix(matrix:Matrix4) {
             var m00, m01, m02, m10, m11, m12, m20, m21, m22,
                 tr, s, rs, lx, ly, lz, m;
 

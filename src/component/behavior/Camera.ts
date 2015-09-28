@@ -62,8 +62,8 @@ module dy{
             this._dirty = true;
         }
 
-        public pMatrix:Matrix = Matrix.create();
-        //public vMatrix:Matrix = Matrix.create();
+        public pMatrix:Matrix4 = Matrix4.create();
+        //public vMatrix:Matrix4 = Matrix4.create();
         //public eye:Vector3 = null;
         //public center:Vector3 = null;
 

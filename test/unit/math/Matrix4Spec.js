@@ -1,5 +1,5 @@
-describe("matrix", function(){
-    var Matrix = dy.Matrix;
+describe("Matrix4", function(){
+    var Matrix4 = dy.Matrix4;
     var matrix = dy.matrix;
     var Vector4 = dy.Vector4;
 
@@ -17,7 +17,7 @@ describe("matrix", function(){
     }
 
     beforeEach(function(){
-        matrix = new Matrix();
+        matrix = new Matrix4();
     });
 
     describe("push", function(){
@@ -57,7 +57,7 @@ describe("matrix", function(){
 
     describe("invert", function(){
         it("设置为逆矩阵", function(){
-            var mat = Matrix.create();
+            var mat = Matrix4.create();
             mat.values = new Float32Array([
                 0, 0, 1, 1,
                 0, 0, -2, 1,
@@ -235,7 +235,7 @@ describe("matrix", function(){
     describe("applyMatrix", function(){
        it("应用矩阵变化。" +
        "b*a，而不是a*b.此处希望坐标向量先进行this._values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec", function(){
-            var mat = Matrix.create();
+            var mat = Matrix4.create();
            mat.setTranslate(1,2,3);
            matrix.setTranslate(10,11,12);
            var matrixCopy = matrix.copy();
@@ -248,14 +248,14 @@ describe("matrix", function(){
 
     describe("multiply", function(){
         it("matrix * matrix", function(){
-            var mat1 = Matrix.create();
-            var mat2 = Matrix.create();
+            var mat1 = Matrix4.create();
+            var mat2 = Matrix4.create();
             mat1.setTranslate(1,2,3);
             mat2.setTranslate(2,3,4);
 
             var result = mat1.multiply(mat2);
 
-            mathTestUtils.isMatrixEqual(result, Matrix.create(new Float32Array([
+            mathTestUtils.isMatrixEqual(result, Matrix4.create(new Float32Array([
                 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 5, 7, 1
             ])));
         });
@@ -263,13 +263,13 @@ describe("matrix", function(){
 
     describe("multiplyVector4", function(){
         it("matrix * vector4", function(){
-            var mat1 = Matrix.create();
+            var mat1 = Matrix4.create();
             var vec = Vector4.create(2,3,4, 5);
             mat1.setTranslate(1,2,3);
 
             var result = mat1.multiplyVector4(vec);
 
-            mathTestUtils.isMatrixEqual(result, Matrix.create(new Float32Array([
+            mathTestUtils.isMatrixEqual(result, Matrix4.create(new Float32Array([
                 7, 13, 19, 5
             ])));
         });
@@ -281,7 +281,7 @@ describe("matrix", function(){
 
            matrix.translate(10,11,12);
 
-           mathTestUtils.isMatrixEqual(copy, Matrix.create());
+           mathTestUtils.isMatrixEqual(copy, Matrix4.create());
        });
     });
 

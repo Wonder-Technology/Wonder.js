@@ -74,7 +74,7 @@ module dy {
             this._texture.dispose();
         }
 
-        private _getClipPlaneInCameraSpace(vMatrix:Matrix, plane:Plane){
+        private _getClipPlaneInCameraSpace(vMatrix:Matrix4, plane:Plane){
             var clipPlane = Vector4.create(),
                 p = vMatrix.multiplyVector3(this._texture.getPosition()),
                 n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
@@ -84,7 +84,7 @@ module dy {
             return clipPlane;
         }
 
-        private _setClipPlane(vMatrix:Matrix, pMatrix:Matrix, plane:Plane):Matrix{
+        private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{
             var projectionMatrix = pMatrix.copy(),
                 q = Vector4.create(),
                 clipPlane = this._getClipPlaneInCameraSpace(vMatrix, plane),

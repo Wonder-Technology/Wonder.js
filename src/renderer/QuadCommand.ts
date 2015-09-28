@@ -25,9 +25,9 @@ module dy {
             return this.material.program;
         }
 
-        public mMatrix:Matrix = null;
-        public vMatrix:Matrix = null;
-        public pMatrix:Matrix = null;
+        public mMatrix:Matrix4 = null;
+        public vMatrix:Matrix4 = null;
+        public pMatrix:Matrix4 = null;
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;

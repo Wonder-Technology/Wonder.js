@@ -103,9 +103,9 @@ describe("renderWebGL", function() {
         }
 
         beforeEach(function(){
-            mMatrix = dy.Matrix.create();
-            vMatrix = dy.Matrix.create();
-            pMatrix = dy.Matrix.create();
+            mMatrix = dy.Matrix4.create();
+            vMatrix = dy.Matrix4.create();
+            pMatrix = dy.Matrix4.create();
 
             gl = {
                 TRIANGLES:"TRIANGLES",

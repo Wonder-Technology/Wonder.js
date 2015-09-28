@@ -146,9 +146,9 @@ describe("custom shader", function () {
                     sandbox.stub(quadCmd.buffers, "getChild");
 
 
-                    quadCmd.mMatrix = dy.Matrix.create();
-                    quadCmd.vMatrix = dy.Matrix.create();
-                    quadCmd.pMatrix = dy.Matrix.create();
+                    quadCmd.mMatrix = dy.Matrix4.create();
+                    quadCmd.vMatrix = dy.Matrix4.create();
+                    quadCmd.pMatrix = dy.Matrix4.create();
 
 
                     shader.read(shaderDefinitionData);

@@ -15,7 +15,7 @@ module dy {
         public normal:Vector3 = Vector3.create(0, 1, 0);
         public d:number = 0;
 
-        public getReflectionMatrix():Matrix {
+        public getReflectionMatrix():Matrix4 {
             this.normalize();
             var x = this.normal.x;
             var y = this.normal.y;
@@ -23,7 +23,7 @@ module dy {
             var temp = -2 * x;
             var temp2 = -2 * y;
             var temp3 = -2 * z;
-            var result = Matrix.create();
+            var result = Matrix4.create();
 
             result.values[0] = (temp * x) + 1;
             result.values[1] = temp2 * x;
