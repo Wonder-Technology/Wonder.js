@@ -7,6 +7,7 @@ module dy {
 
         protected texture:RenderTargetTexture = null;
         protected frameBuffer:FrameBuffer = null;
+        protected frameBufferTexture:WebGLTexture = null;
 
         public initWhenCreate(){
             if(this._isTextureSizeExceedCanvasSize()){
@@ -17,11 +18,13 @@ module dy {
         }
 
         public init(){
+            this.frameBufferTexture = this.texture.createEmptyTexture();
             this.initFrameBuffer();
         }
 
         public render(renderer:Renderer, camera:GameObject){
-            this.attachTexture();
+            this.texture.setTexture(this.frameBufferTexture);
+
             this.renderFrameBufferTexture(renderer, camera);
         }
 
@@ -32,7 +35,6 @@ module dy {
         }
 
 
-        protected abstract attachTexture();
         protected abstract initFrameBuffer();
         protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
         protected abstract disposeFrameBuffer();

@@ -1,6 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class RenderTargetTexture extends Texture {
+    export abstract class RenderTargetTexture extends Texture {
+        public abstract createEmptyTexture();
+
         public init(){
             //todo support mipmap?
             this.generateMipmaps = false;

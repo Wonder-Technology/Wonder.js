@@ -11,12 +11,12 @@ describe("cubemap texture", function() {
         texture = new Texture();
         director = dy.Director.getInstance();
         gl = {
-            TEXTURE_CUBE_MAP_POSITIVE_X:1,
-            TEXTURE_CUBE_MAP_NEGATIVE_X:2,
-            TEXTURE_CUBE_MAP_POSITIVE_Y:3,
-            TEXTURE_CUBE_MAP_NEGATIVE_Y:4,
-            TEXTURE_CUBE_MAP_POSITIVE_Z:5,
-            TEXTURE_CUBE_MAP_NEGATIVE_Z:6,
+            TEXTURE_CUBE_MAP_POSITIVE_X:0,
+            TEXTURE_CUBE_MAP_NEGATIVE_X:1,
+            TEXTURE_CUBE_MAP_POSITIVE_Y:2,
+            TEXTURE_CUBE_MAP_NEGATIVE_Y:3,
+            TEXTURE_CUBE_MAP_POSITIVE_Z:4,
+            TEXTURE_CUBE_MAP_NEGATIVE_Z:5,
 
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
             TEXTURE_WRAP_T: "TEXTURE_WRAP_T",

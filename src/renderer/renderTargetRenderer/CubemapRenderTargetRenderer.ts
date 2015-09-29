@@ -13,18 +13,11 @@ module dy {
 
         private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
-        private _frameBufferTexture:WebGLTexture = null;
-
-        protected attachTexture(){
-            this.texture.setTexture(this._frameBufferTexture);
-        }
 
         protected initFrameBuffer(){
             var frameBufferOperator = this.frameBuffer,
                 gl = DeviceManager.getInstance().gl,
                 i = null;
-
-            this._frameBufferTexture = this.texture.createEmptyTexture();
 
             for(i = 0; i < 6; i++){
                 let frameBuffer = frameBufferOperator.createFrameBuffer(),
@@ -34,7 +27,7 @@ module dy {
                 this._renderBuffers.addChild(renderBuffer);
 
                 frameBufferOperator.bindFrameBuffer(frameBuffer);
-                frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this._frameBufferTexture);
+                frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.frameBufferTexture);
                 frameBufferOperator.attachRenderBuffer("DEPTH_ATTACHMENT", renderBuffer);
                 frameBufferOperator.check();
             }

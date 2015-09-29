@@ -457,17 +457,13 @@ describe("Stage", function() {
 
     describe("addRenderTargetRenderer", function(){
         it("add renderTargetRenderer with renderTargetTexture", function(){
-            var texture = new dy.MirrorTexture();
             var renderer = {
                 init: sandbox.stub()
             };
-            sandbox.stub(dy.RenderTargetRenderer, "create").returns(renderer);
 
-            stage.addRenderTargetRenderer(texture);
+            stage.addRenderTargetRenderer(renderer);
 
-            expect(dy.RenderTargetRenderer.create).toCalledWith(texture);
-            expect(stage._renderTargetRenderers.getChild(0)).toEqual(renderer);
-            expect(renderer.init).toCalled();
+            expect(renderer.init).toCalledOnce();
         });
     });
 
@@ -485,10 +481,7 @@ describe("Stage", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-
-            var texture = new dy.MirrorTexture();
-            sandbox.stub(dy.RenderTargetRenderer, "create").returns(renderTargetRenderer);
-            stage.addRenderTargetRenderer(texture);
+            stage.addRenderTargetRenderer(renderTargetRenderer);
 
             stage.render(renderer);
 
@@ -513,10 +506,7 @@ describe("Stage", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-
-            var texture = new dy.MirrorTexture();
-            sandbox.stub(dy.RenderTargetRenderer, "create").returns(renderTargetRenderer);
-            stage.addRenderTargetRenderer(texture);
+            stage.addRenderTargetRenderer(renderTargetRenderer);
 
             var gameObject1 = dy.GameObject.create();
             sandbox.stub(gameObject1, "render");

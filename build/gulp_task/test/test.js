@@ -19,3 +19,10 @@ gulp.task("testSync", function (done) {
         configFile: karmaSyncConfPath
     }, done);
 });
+
+
+gulp.task("testRenderer", function (done) {
+    karma.start({
+        configFile: path.join(process.cwd(), "test/karmaRenderer.conf.js")
+    }, done);
+});
