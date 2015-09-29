@@ -19,7 +19,6 @@ module dy {
             this.texture.setTexture(this._frameBufferTexture);
         }
 
-        //todo one renderBuffer
         protected initFrameBuffer(){
             var frameBufferOperator = this.frameBuffer,
                 gl = DeviceManager.getInstance().gl,
@@ -121,7 +120,6 @@ module dy {
         }
 
         private _lookAtFace(camera:GameObject, position:Vector3, index:number){
-            camera.transform.lookAt(position.x, position.y, position.z + 1, 0, -1, 0);
             switch (index){
                 case 0:
                     camera.transform.lookAt(position.x + 1, position.y, position.z, 0, -1, 0);
