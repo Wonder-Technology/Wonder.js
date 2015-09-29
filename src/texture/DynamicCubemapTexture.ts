@@ -27,6 +27,7 @@ module dy {
         public size:number = 256;
         public near:number = 0.1;
         public far:number = 100;
+        public mode:EnvMapMode = null;
 
         public target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 
@@ -36,15 +37,9 @@ module dy {
             this.width = this.size;
             this.height = this.size;
 
-            this._sortRenderList();
-
             Director.getInstance().stage.addRenderTargetRenderer(CubemapRenderTargetRenderer.create(this));
 
             return this;
-        }
-
-        private _sortRenderList() {
-            //todo
         }
 
         public sendData(program:Program, index:number) {

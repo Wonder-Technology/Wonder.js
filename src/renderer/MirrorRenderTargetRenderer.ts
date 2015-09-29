@@ -14,6 +14,7 @@ module dy {
         protected texture:MirrorTexture;
 
         private _frameBuffer:WebGLFramebuffer = null;
+        private _renderBuffer:WebGLRenderbuffer= null;
         private _frameBufferTexture:WebGLTexture = null;
 
         protected attachTexture(){
@@ -25,11 +26,12 @@ module dy {
                 gl = DeviceManager.getInstance().gl;
 
             this._frameBuffer = frameBuffer.createFrameBuffer();
+            this._renderBuffer = frameBuffer.createRenderBuffer();
             this._frameBufferTexture = this.texture.createEmptyTexture();
 
             frameBuffer.bindFrameBuffer(this._frameBuffer);
             frameBuffer.attachTexture(gl.TEXTURE_2D, this._frameBufferTexture);
-            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", frameBuffer.createRenderBuffer());
+            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this._renderBuffer);
             frameBuffer.check();
             frameBuffer.unBind();
         }
@@ -65,6 +67,13 @@ module dy {
 
             this.frameBuffer.unBind();
             this.frameBuffer.restoreViewport();
+        }
+
+        protected disposeFrameBuffer(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.deleteFramebuffer(this._frameBuffer);
+            gl.deleteRenderbuffer(this._renderBuffer);
         }
 
         private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{

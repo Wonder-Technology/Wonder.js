@@ -12,32 +12,35 @@ module dy {
         protected texture:DynamicCubemapTexture;
 
         private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
+        private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
         private _frameBufferTexture:WebGLTexture = null;
 
         protected attachTexture(){
             this.texture.setTexture(this._frameBufferTexture);
         }
 
+        //todo one renderBuffer
         protected initFrameBuffer(){
-            var frameBuffer = this.frameBuffer,
+            var frameBufferOperator = this.frameBuffer,
                 gl = DeviceManager.getInstance().gl,
-                i = null,
-                depthBuffer = frameBuffer.createRenderBuffer();
+                i = null;
 
             this._frameBufferTexture = this.texture.createEmptyTexture();
 
             for(i = 0; i < 6; i++){
-                let buffer = frameBuffer.createFrameBuffer();
+                let frameBuffer = frameBufferOperator.createFrameBuffer(),
+                    renderBuffer = frameBufferOperator.createRenderBuffer();
 
-                this._frameBuffers.addChild(buffer);
+                this._frameBuffers.addChild(frameBuffer);
+                this._renderBuffers.addChild(renderBuffer);
 
-                frameBuffer.bindFrameBuffer(buffer);
-                frameBuffer.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this._frameBufferTexture);
-                frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", depthBuffer);
-                frameBuffer.unBind();
+                frameBufferOperator.bindFrameBuffer(frameBuffer);
+                frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this._frameBufferTexture);
+                frameBufferOperator.attachRenderBuffer("DEPTH_ATTACHMENT", renderBuffer);
+                frameBufferOperator.check();
             }
 
-            frameBuffer.check();
+            frameBufferOperator.unBind();
         }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
@@ -50,9 +53,7 @@ module dy {
 
                 //todo if renderList is null, draw all
                 //todo optimize:if renderObject is behind plane, not render it!
-                this.texture.renderList.forEach((list:Array<GameObject>, face:string) => {
-                    list.forEach((child:GameObject) => child.render(renderer, this._createCamera(i), true));
-                });
+                this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, this._createCamera(i), true));
                 renderer.render();
             }
 
@@ -60,42 +61,89 @@ module dy {
             this.frameBuffer.restoreViewport();
         }
 
+        protected disposeFrameBuffer(){
+            var gl = DeviceManager.getInstance().gl;
+
+            this._frameBuffers.forEach((buffer:WebGLFramebuffer) => gl.deleteFramebuffer(buffer));
+            this._renderBuffers.forEach((buffer:WebGLRenderbuffer) => gl.deleteRenderbuffer(buffer));
+        }
+
+        private _convertIndexToFaceKey(index:number){
+            var face = null;
+
+            switch (index){
+                case 0:
+                    face = "px";
+                    break;
+                case 1:
+                    face = "nx";
+                    break;
+                case 2:
+                    face = "py";
+                    break;
+                case 3:
+                    face = "ny";
+                    break;
+                case 4:
+                    face = "pz";
+                    break;
+                case 5:
+                    face = "nz";
+                    break;
+                default :
+                    break;
+            }
+
+            return face;
+        }
+
+
         private _createCamera(index:number){
             var cubeCameraComponent = Camera.create(),
-                camera = GameObject.create();
+                camera = GameObject.create(),
+                pos = this.texture.getPosition();
 
             cubeCameraComponent.fovy = 90;
             cubeCameraComponent.aspect = 1;
             cubeCameraComponent.near = this.texture.near;
             cubeCameraComponent.far = this.texture.far;
 
-            camera.transform.translate(this.texture.getPosition());
 
-            //todo any problem?
+            camera.addComponent(cubeCameraComponent);
+
+            camera.transform.translate(pos);
+
+            this._lookAtFace(camera, pos, index);
+
+            camera.init();
+
+            return camera;
+        }
+
+        private _lookAtFace(camera:GameObject, position:Vector3, index:number){
+            camera.transform.lookAt(position.x, position.y, position.z + 1, 0, -1, 0);
             switch (index){
                 case 0:
-                    camera.transform.lookAt(1, 0, 0, 0, -1, 0);
+                    camera.transform.lookAt(position.x + 1, position.y, position.z, 0, -1, 0);
                     break;
                 case 1:
-                    camera.transform.lookAt(-1, 0, 0, 0, -1, 0);
+                    camera.transform.lookAt(position.x-1, position.y, position.z, 0, -1, 0);
                     break;
                 case 2:
-                    camera.transform.lookAt(0, 1, 0, 0, 0, 1);
+                    camera.transform.lookAt(position.x, position.y + 1, position.z, 0, 0, 1);
                     break;
                 case 3:
-                    camera.transform.lookAt(0, -1, 0, 0, 0, 1);
+                    camera.transform.lookAt(position.x, position.y-1, position.z, 0, 0, -1);
                     break;
                 case 4:
-                    camera.transform.lookAt(0, 0, 1, 0, -1, 0);
+                    camera.transform.lookAt(position.x, position.y, position.z + 1, 0, -1, 0);
                     break;
                 case 5:
-                    camera.transform.lookAt(0, 0, -1, 0, -1, 0);
+                    camera.transform.lookAt(position.x, position.y, position.z-1, 0, -1, 0);
                     break;
                 default:
                     break;
             }
-
-            return camera.addComponent(cubeCameraComponent);
         }
     }
 }

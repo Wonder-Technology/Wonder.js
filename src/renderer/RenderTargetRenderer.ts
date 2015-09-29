@@ -21,19 +21,13 @@ module dy {
         }
 
         public render(renderer:Renderer, camera:GameObject){
-            var plane = null,
-                cameraComponent = null,
-                mirrorCameraViewMatrix = null,
-                projectionMatrix = null;
-
             this.attachTexture();
-
-
             this.renderFrameBufferTexture(renderer, camera);
         }
 
         public dispose(){
             this.frameBuffer.dispose();
+            this.disposeFrameBuffer();
             this.texture.dispose();
         }
 
@@ -41,6 +35,7 @@ module dy {
         protected abstract attachTexture();
         protected abstract initFrameBuffer();
         protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
+        protected abstract disposeFrameBuffer();
 
         private _isTextureSizeExceedCanvasSize(){
             var view = DeviceManager.getInstance().view;

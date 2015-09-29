@@ -18,18 +18,10 @@ module dy{
 
         private _width:number = null;
         private _height:number = null;
-        private _buffer:WebGLFramebuffer = null;
-        private _renderBuffer:WebGLRenderbuffer = null;
 
         public createFrameBuffer(){
             return this.gl.createFramebuffer();
         }
-
-        //public bind(){
-        //    if(this._buffer){
-        //        this.bindFrameBuffer(this._buffer);
-        //    }
-        //}
 
         public bindFrameBuffer(buffer:WebGLFramebuffer){
             var gl = this.gl;
@@ -47,17 +39,9 @@ module dy{
 
             deviceManager.setViewport(0, 0, view.width, view.height);
         }
-        //
-        //public setBuffer(buffer:WebGLFramebuffer){
-        //    this._buffer = buffer;
-        //}
 
         public dispose(){
-            var gl = this.gl;
-
             this.unBind();
-            gl.deleteFramebuffer(this._buffer);
-            gl.deleteRenderbuffer(this._renderBuffer);
         }
 
         public unBind(){
@@ -72,9 +56,6 @@ module dy{
                 renderBuffer = gl.createRenderbuffer();
 
             dyCb.Log.error(!renderBuffer, "Failed to create renderbuffer object");
-
-            gl.bindRenderbuffer(gl.RENDERBUFFER, renderBuffer);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this._width, this._height);
 
             return renderBuffer;
         }
@@ -91,12 +72,13 @@ module dy{
                 0);
         }
 
-        public attachRenderBuffer(type:string, renderBuffer){
+        public attachRenderBuffer(type:string, renderBuffer:WebGLRenderbuffer){
             var gl = this.gl;
 
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
 
-            this._renderBuffer = renderBuffer;
+            gl.bindRenderbuffer(gl.RENDERBUFFER, renderBuffer);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this._width, this._height);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
         }
 
         public check(){

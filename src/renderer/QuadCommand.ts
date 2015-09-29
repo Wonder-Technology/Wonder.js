@@ -114,9 +114,12 @@ module dy {
                 case CullMode.BACK:
                     result = CullMode.FRONT;
                     break;
-                case CullMode.FRONT:
-                    result = CullMode.BACK;
-                    break;
+                /*!skybox's cullMode is FRONT, and it should still be FRONT when renderTarget
+
+                //case CullMode.FRONT:
+                //    result = CullMode.BACK;
+                //    break;
+                */
                 default:
                     result = cullMode;
                     break;
