@@ -18,7 +18,7 @@ float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){
     vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);
     vec4 refractColor = textureCube(u_samplerCube0, refractDir);
 
-	if(u_reflectivity != -1.0){
+	if(u_reflectivity != NULL){
         gl_FragColor = mix(reflectColor, refractColor, u_reflectivity);
 	}
 	else{

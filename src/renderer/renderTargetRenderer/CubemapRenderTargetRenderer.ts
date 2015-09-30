@@ -15,7 +15,7 @@ module dy {
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
 
         protected initFrameBuffer(){
-            var frameBufferOperator = this.frameBuffer,
+            var frameBufferOperator = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl,
                 i = null;
 
@@ -39,8 +39,8 @@ module dy {
             var i = null;
 
             for(i = 0; i < 6; i++){
-                this.frameBuffer.bindFrameBuffer(this._frameBuffers.getChild(i));
-                this.frameBuffer.setViewport();
+                this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
+                this.frameBufferOperator.setViewport();
 
 
                 //todo if renderList is null, draw all
@@ -49,8 +49,8 @@ module dy {
                 renderer.render();
             }
 
-            this.frameBuffer.unBind();
-            this.frameBuffer.restoreViewport();
+            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.restoreViewport();
         }
 
         protected disposeFrameBuffer(){
@@ -91,7 +91,7 @@ module dy {
 
 
         private _createCamera(index:number){
-            var cubeCameraComponent = Camera.create(),
+            var cubeCameraComponent = PerspectiveCamera.create(),
                 camera = GameObject.create(),
                 pos = this.texture.getPosition();
 

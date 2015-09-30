@@ -152,6 +152,21 @@ module dy{
             type:VariableType.STRUCTURES,
             value:VariableCategory.ENGINE
         };
+
+        public static u_mvpMatrixFromLight:ShaderVariable = {
+            type:VariableType.FLOAT_MAT4,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_shadowBias:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_shadowDarkness:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

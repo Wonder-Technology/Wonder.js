@@ -4,6 +4,8 @@ module dy {
         public abstract createEmptyTexture();
 
         public init(){
+            super.init();
+
             //todo support mipmap?
             this.generateMipmaps = false;
             this.minFilter = TextureFilterMode.LINEAR;

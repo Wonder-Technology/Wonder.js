@@ -38,6 +38,8 @@
 /// <reference path="component/geometry/TriangleGeometry"/>
 /// <reference path="component/behavior/Behavior"/>
 /// <reference path="component/behavior/Camera"/>
+/// <reference path="component/behavior/OrthographicCamera"/>
+/// <reference path="component/behavior/PerspectiveCamera"/>
 /// <reference path="component/behavior/action/Action"/>
 /// <reference path="component/behavior/action/ActionInstant"/>
 /// <reference path="component/behavior/action/CallFunc"/>
@@ -72,7 +74,9 @@
 /// <reference path="utils/time/CommonTimeController"/>
 
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/TwoDRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/MirrorRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/ShadowMapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapRenderTargetRenderer"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
@@ -112,8 +116,11 @@
 /// <reference path="renderer/shader/lib/light/SpecularMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NormalMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/BuildShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/ShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoNormalMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/NoShadowMapShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>
@@ -184,7 +191,9 @@
 
 /// <reference path="texture/Texture"/>
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
+/// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
+/// <reference path="texture/renderTargetTexture/ShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>

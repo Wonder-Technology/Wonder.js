@@ -43,6 +43,33 @@ module dy{
             this._normalMap = normalMap;
         }
 
+        private _shadowMap:CommonTexture|CompressedTexture = null;
+        get shadowMap(){
+            return this._shadowMap;
+        }
+        set shadowMap(shadowMap:CommonTexture|CompressedTexture){
+            this.addMap(shadowMap, {
+                samplerVariableName: VariableNameTable.getVariableName("shadowMap")
+            });
+
+            this._shadowMap = shadowMap;
+        }
+
+        //todo support multi shadows
+        private _shadowMapData:ShadowMapData = null;
+        get shadowMapData(){
+            return this._shadowMapData;
+        }
+        set shadowMapData(shadowMapData:ShadowMapData){
+            this.addMap(shadowMapData.shadowMap, {
+                samplerVariableName: VariableNameTable.getVariableName("shadowMap")
+            });
+
+            this._shadowMapData = shadowMapData;
+        }
+
+        public shadowMapLight:DirectionLight = null;
+
 
         public specular:Color = Color.create("0x111111");
         public shininess:number = 32;
@@ -75,7 +102,21 @@ module dy{
             else{
                 this.shader.addLib(NoNormalMapShaderLib.getInstance());
             }
+
+            if(this._shadowMap){
+                this.shader.addLib(ShadowMapShaderLib.getInstance());
+            }
+            else{
+                this.shader.addLib(NoShadowMapShaderLib.getInstance());
+            }
         }
+    }
+
+    export type ShadowMapData = {
+        shadowMap:ShadowMapTexture,
+        shadowBias:number,
+        shadowDarkness:number,
+        mvpMatrixFromLight:Matrix4
     }
 }
 

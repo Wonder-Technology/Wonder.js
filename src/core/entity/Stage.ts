@@ -19,8 +19,15 @@ module dy {
             return this._lightManager.pointLights;
         }
 
+        get program():Program{
+            //todo combine selfProgram,program?
+            return this.shader.selfProgram;
+        }
+
+        public isUseProgram:boolean = false;
+        public shader:Shader = null;
+
         public camera:GameObject = null;
-        //public lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
 
 
         private _lightManager:LightManager = LightManager.create();
@@ -29,7 +36,12 @@ module dy {
         public init(){
             this.addComponent(TopCollider.create());
 
+            this.shader = Shader.create();
+
             super.init();
+
+
+            this._renderTargetRenderers.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
         }
 
         public addChild(child:GameObject):GameObject{
@@ -45,7 +57,6 @@ module dy {
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
             this._renderTargetRenderers.addChild(renderTargetRenderer);
-            renderTargetRenderer.init();
         }
 
         public render(renderer:Renderer) {
@@ -59,6 +70,24 @@ module dy {
 
             super.render(renderer, this.camera);
         }
+
+        public useProgram(lib:ShaderLib){
+            this.isUseProgram = true;
+
+            this.shader.addLib(lib);
+            this.shader.initProgram();
+            this.shader.program.use();
+        }
+
+        public clearProgram(){
+            this.isUseProgram = false;
+
+            //this.shader.removeLib((lib:ShaderLib) =>{
+            //    return !(lib instanceof CommonShaderLib);
+            //});
+            this.shader.removeAllLibs();
+        }
+
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);

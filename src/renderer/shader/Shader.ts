@@ -9,7 +9,24 @@ module dy{
         	return obj;
         }
 
-        public program:Program = Program.create();
+        private _program:Program = Program.create();
+        get program():Program{
+            var stage:Stage = Director.getInstance().stage;
+
+            if(stage.isUseProgram){
+                return stage.program;
+            }
+
+            return this._program;
+        }
+        set program(program:Program){
+            this._program = program;
+        }
+
+        get selfProgram(){
+            return this._program;
+        }
+
         public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public vsSource:string = "";
@@ -41,6 +58,10 @@ module dy{
         }
 
         public init(){
+            this.initProgram();
+        }
+
+        public initProgram(){
             this.buildDefinitionData();
 
             //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
@@ -63,6 +84,13 @@ module dy{
 
         public addLib(lib:ShaderLib){
             this._libs.addChild(lib);
+        }
+
+        public removeLib(lib:ShaderLib);
+        public removeLib(func:Function);
+
+        public removeLib(arg){
+            return this._libs.removeChild(arguments[0]);
         }
 
         public removeAllLibs(){

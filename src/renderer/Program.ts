@@ -24,7 +24,7 @@ module dy{
 
             pos= gl.getUniformLocation(this._program, name);
 
-            if (pos === null) {
+            if (pos === null || data === null) {
                 return;
             }
 
@@ -90,7 +90,7 @@ module dy{
 
             pos= gl.getAttribLocation(this._program, name);
 
-            if (pos === -1) {
+            if (pos === -1 || data === null) {
                 return;
             }
 

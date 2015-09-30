@@ -475,32 +475,43 @@ module dy{
             return this;
         }
 
+        public setOrtho (left, right, bottom, top, near, far):Matrix4 {
+            var e = this.values,
+                rw,
+                rh,
+                rd;
 
-        public setOrtho (near, far):Matrix4 {
-            var e = this.values;
+            dyCb.Log.error(left === right || bottom === top || near === far, dyCb.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
 
-            e[0] = 1;
-            e[1] = 0;
-            e[2] = 0;
-            e[3] = 0;
-            e[4] = 0;
-            e[5] = 1;
-            e[6] = 0;
-            e[7] = 0;
-            e[8] = 0;
-            e[9] = 0;
-            e[10] = 2 / (near - far);
+            rw = 1 / (right - left);
+            rh = 1 / (top - bottom);
+            rd = 1 / (far - near);
+
+            e[0]  = 2 * rw;
+            e[1]  = 0;
+            e[2]  = 0;
+            e[3]  = 0;
+
+            e[4]  = 0;
+            e[5]  = 2 * rh;
+            e[6]  = 0;
+            e[7]  = 0;
+
+            e[8]  = 0;
+            e[9]  = 0;
+            e[10] = -2 * rd;
             e[11] = 0;
-            e[12] = 0;
-            e[13] = 0;
-            e[14] = (near + far) / (near - far);
+
+            e[12] = -(right + left) * rw;
+            e[13] = -(top + bottom) * rh;
+            e[14] = -(far + near) * rd;
             e[15] = 1;
 
             return this;
         }
 
-        public ortho (n, f):Matrix4{
-            this.applyMatrix(Matrix4.create().setOrtho(n, f));
+        public ortho (left, right, bottom, top, near, far):Matrix4{
+            this.applyMatrix(Matrix4.create().setOrtho(left, right, bottom, top, near, far));
 
             return this;
         }

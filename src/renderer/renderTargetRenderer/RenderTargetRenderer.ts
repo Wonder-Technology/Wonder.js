@@ -6,15 +6,13 @@ module dy {
         }
 
         protected texture:RenderTargetTexture = null;
-        protected frameBuffer:FrameBuffer = null;
+        protected frameBufferOperator:FrameBuffer = null;
         protected frameBufferTexture:WebGLTexture = null;
 
         public initWhenCreate(){
             if(this._isTextureSizeExceedCanvasSize()){
-                dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
+                this.warnTextureSizeExceedCanvasSize();
             }
-
-            this.frameBuffer = FrameBuffer.create(this.texture.width, this.texture.height);
         }
 
         public init(){
@@ -29,7 +27,7 @@ module dy {
         }
 
         public dispose(){
-            this.frameBuffer.dispose();
+            this.frameBufferOperator.dispose();
             this.disposeFrameBuffer();
             this.texture.dispose();
         }
@@ -38,6 +36,10 @@ module dy {
         protected abstract initFrameBuffer();
         protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
         protected abstract disposeFrameBuffer();
+
+        protected warnTextureSizeExceedCanvasSize(){
+            dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
+        }
 
         private _isTextureSizeExceedCanvasSize(){
             var view = DeviceManager.getInstance().view;

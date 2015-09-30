@@ -56,7 +56,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
     vec3 specularColor = spec * materialSpecular * intensity;
 
-    return  ambientColor + attenuation * (diffuseColor + specularColor);
+    return  ambientColor + getShadowVisibility(lightDir) * attenuation * (diffuseColor + specularColor);
 }
 
 

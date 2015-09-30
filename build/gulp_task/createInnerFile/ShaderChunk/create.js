@@ -19,6 +19,10 @@ gulp.task("createShaderChunk", function(){
         return 'public static empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""}\n';
     }
 
+    function buildDefine(){
+        return 'public static NULL:number = -1.0;\n';
+    }
+
     //todo typescript refactor
     result = [
         '/// <reference path="../../../definitions.d.ts"/>',
@@ -29,6 +33,7 @@ gulp.task("createShaderChunk", function(){
 
 
     result += buildEmpty();
+    result += buildDefine();
 
 
     return gulp.src(glslPath)

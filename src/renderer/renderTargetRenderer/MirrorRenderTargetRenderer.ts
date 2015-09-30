@@ -2,7 +2,7 @@
 module dy {
     declare var Math:any;
 
-    export class MirrorRenderTargetRenderer extends RenderTargetRenderer{
+    export class MirrorRenderTargetRenderer extends TwoDRenderTargetRenderer{
         public static create(mirrorTexture:MirrorTexture) {
             var obj = new this(mirrorTexture);
 
@@ -12,23 +12,6 @@ module dy {
         }
 
         protected texture:MirrorTexture;
-
-        private _frameBuffer:WebGLFramebuffer = null;
-        private _renderBuffer:WebGLRenderbuffer= null;
-
-        protected initFrameBuffer(){
-            var frameBuffer = this.frameBuffer,
-                gl = DeviceManager.getInstance().gl;
-
-            this._frameBuffer = frameBuffer.createFrameBuffer();
-            this._renderBuffer = frameBuffer.createRenderBuffer();
-
-            frameBuffer.bindFrameBuffer(this._frameBuffer);
-            frameBuffer.attachTexture(gl.TEXTURE_2D, this.frameBufferTexture);
-            frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this._renderBuffer);
-            frameBuffer.check();
-            frameBuffer.unBind();
-        }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var mirrorCameraComponent = null,
@@ -45,10 +28,10 @@ module dy {
             //todo optimize(dirty)
             projectionMatrix = this._setClipPlane(mirrorCameraViewMatrix, cameraComponent.pMatrix, plane);
 
-            this.frameBuffer.bindFrameBuffer(this._frameBuffer);
-            this.frameBuffer.setViewport();
+            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
+            this.frameBufferOperator.setViewport();
 
-            mirrorCameraComponent = Camera.create();
+            mirrorCameraComponent = PerspectiveCamera.create();
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
@@ -59,15 +42,8 @@ module dy {
             });
             renderer.render();
 
-            this.frameBuffer.unBind();
-            this.frameBuffer.restoreViewport();
-        }
-
-        protected disposeFrameBuffer(){
-            var gl = DeviceManager.getInstance().gl;
-
-            gl.deleteFramebuffer(this._frameBuffer);
-            gl.deleteRenderbuffer(this._renderBuffer);
+            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.restoreViewport();
         }
 
         private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{

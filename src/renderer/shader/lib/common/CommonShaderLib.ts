@@ -28,7 +28,10 @@ module dy{
             this.addAttributeVariable(["a_position"]);
             this.addUniformVariable(["u_mMatrix", "u_vMatrix", "u_pMatrix"]);
 
+            this.vsSourceDefine = ShaderChunk.common_define.define + ShaderChunk.common_vertex.define;
             this.vsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_vertex.funcDefine;
+
+            this.fsSourceDefine = ShaderChunk.common_define.define + ShaderChunk.common_fragment.define;
             this.fsSourceFuncDefine = ShaderChunk.common_function.funcDefine + ShaderChunk.common_fragment.funcDefine;
         }
 

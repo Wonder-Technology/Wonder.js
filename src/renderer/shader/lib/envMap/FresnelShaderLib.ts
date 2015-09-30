@@ -18,12 +18,7 @@ module dy{
 
             program.sendUniformData("u_refractionRatio", VariableType.FLOAT_1, material.refractionRatio);
 
-            if(material.reflectivity !== null){
-                program.sendUniformData("u_reflectivity", VariableType.FLOAT_1, material.reflectivity);
-            }
-            else{
-                program.sendUniformData("u_reflectivity", VariableType.FLOAT_1, -1);
-            }
+            program.sendUniformData("u_reflectivity", VariableType.FLOAT_1, material.reflectivity);
         }
 
         protected setShaderDefinition(){

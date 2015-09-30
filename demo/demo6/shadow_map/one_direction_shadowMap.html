@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>one direction shadowMap</title>
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+            {url: "../../res/1.jpg", id:"texture"},
+            {url: "../../res/crate.gif", id:"ground"}
+
+        ]).subscribe(null, function(e){
+            throw e;
+        },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        function _initScene() {
+            var director = dy.Director.getInstance();
+
+
+
+
+
+
+
+            var material = dy.LightMaterial.create();
+            material.specular = dy.Color.create("#ffdd99");
+            material.shininess = 16;
+
+            material.diffuseMap = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+
+
+
+
+            var geometry = dy.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+            geometry.segment = 20;
+
+
+
+            var sphere = dy.GameObject.create();
+
+            sphere.addComponent(dy.MeshRenderer.create());
+            sphere.addComponent(geometry);
+
+
+
+            sphere.transform.translate(dy.Vector3.create(0, 10, 0));
+
+
+
+
+
+
+
+
+            var material = dy.LightMaterial.create();
+            material.specular = dy.Color.create("#ffdd99");
+            material.shininess = 32;
+
+            var map1 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("ground"));
+            map1.wrapS = dy.TextureWrapMode.REPEAT;
+            map1.wrapT = dy.TextureWrapMode.REPEAT;
+            map1.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
+            map1.needUpdate = true;
+
+            material.diffuseMap = map1;
+
+            var plane = dy.PlaneGeometry.create();
+            plane.width = 50;
+            plane.height = 50;
+
+
+            plane.material = material;
+
+
+
+            var ground = dy.GameObject.create();
+
+            ground.addComponent(dy.MeshRenderer.create());
+            ground.addComponent(plane);
+
+
+
+
+
+
+
+
+
+
+
+            var SHADOW_MAP_WIDTH = 1024,
+                    SHADOW_MAP_HEIGHT = 1024;
+
+
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("#444444");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+
+            var directionLightComponent = dy.DirectionLight.create();
+            directionLightComponent.color = dy.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+            directionLightComponent.castShadow = true;
+
+            //todo set left...
+
+            directionLightComponent.shadowCameraNear = 0.1;
+            directionLightComponent.shadowCameraFar = 1000;
+            //todo need it?
+            directionLightComponent.shadowPosition = dy.Vector3.create(-10, 10, 0);
+//            directionLightComponent.shadowCameraFov = 50;
+
+            //directionLightComponent.shadowCameraVisible = true;
+
+            directionLightComponent.shadowBias = 0.0005;
+            directionLightComponent.shadowDarkness = 0.5;
+
+            directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
+
+            //todo if null, render all scene
+            directionLightComponent.shadowRenderList = [sphere, ground];
+
+
+
+
+            var directionLight = dy.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.rotate(0, -90, -45);
+
+
+//            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){
+//                directionLight.transform.rotateAround(1, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+//            }));
+//
+//
+//
+//            directionLight.addComponent(action1);
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(ambientLight);
+            director.stage.addChild(directionLight);
+
+
+
+
+
+
+
+
+
+
+
+
+            //todo stage add shadowmap config
+
+
+
+
+
+            director.stage.addChild(sphere);
+            director.stage.addChild(ground);
+
+
+
+
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.PerspectiveCamera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+
+            camera.addComponent(cameraComponent);
+
+
+            camera.transform.translateLocal(dy.Vector3.create(0, 10, 30));
+
+            camera.transform.lookAt(dy.Vector3.create(0, 10, 0));
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera;
+        }
+
+    };
+</script>
+</body>
+</html>
