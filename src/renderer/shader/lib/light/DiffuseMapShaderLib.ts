@@ -17,7 +17,8 @@ module dy{
             super.setShaderDefinition();
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("diffuseMap")
+                VariableNameTable.getVariableName("diffuseMap"),
+                "u_sourceRegion", "u_repeatRegion"
             ]);
         }
     }
