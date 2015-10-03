@@ -191,27 +191,28 @@
 
 
 /// <reference path="texture/Texture"/>
+/// <reference path="texture/TextureManager"/>
+
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
 /// <reference path="texture/renderTargetTexture/ShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 
-/// <reference path="texture/BasicTexture"/>
-/// <reference path="texture/CommonTexture"/>
-/// <reference path="texture/TwoDTexture"/>
-/// <reference path="texture/VideoTexture"/>
-/// <reference path="texture/cubemap/CubemapTexture"/>
-/// <reference path="texture/cubemap/CubemapFaceTexture"/>
-/// <reference path="texture/cubemap/CubemapFaceTwoDTexture"/>
-/// <reference path="texture/cubemap/CubemapFaceCompressedTexture"/>
-/// <reference path="texture/CompressedTexture"/>
-/// <reference path="texture/TextureManager"/>
-/// <reference path="texture/command/DrawTextureCommand"/>
-/// <reference path="texture/command/DrawCompressedTextureCommand"/>
-/// <reference path="texture/command/DrawTwoDTextureCommand"/>
-/// <reference path="texture/command/DrawMipmapTwoDTextureCommand"/>
-/// <reference path="texture/command/DrawNoMipmapTwoDTextureCommand"/>
+/// <reference path="texture/basicTexture/BasicTexture"/>
+/// <reference path="texture/basicTexture/CommonTexture"/>
+/// <reference path="texture/basicTexture/TwoDTexture"/>
+/// <reference path="texture/basicTexture/VideoTexture"/>
+/// <reference path="texture/basicTexture/cubemap/CubemapTexture"/>
+/// <reference path="texture/basicTexture/cubemap/CubemapFaceTexture"/>
+/// <reference path="texture/basicTexture/cubemap/CubemapFaceTwoDTexture"/>
+/// <reference path="texture/basicTexture/cubemap/CubemapFaceCompressedTexture"/>
+/// <reference path="texture/basicTexture/CompressedTexture"/>
+/// <reference path="texture/basicTexture/command/DrawTextureCommand"/>
+/// <reference path="texture/basicTexture/command/DrawCompressedTextureCommand"/>
+/// <reference path="texture/basicTexture/command/DrawTwoDTextureCommand"/>
+/// <reference path="texture/basicTexture/command/DrawMipmapTwoDTextureCommand"/>
+/// <reference path="texture/basicTexture/command/DrawNoMipmapTwoDTextureCommand"/>
 
 
 /// <reference path="video/Video"/>

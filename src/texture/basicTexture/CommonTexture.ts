@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export abstract class CommonTexture extends BasicTexture{
         public initWhenCreate(asset:TwoDTextureAsset){
