@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class CompressedTexture extends Texture {
+    export class CompressedTexture extends BasicTexture {
         public static create(asset:CompressedTextureAsset) {
             var obj = new this();
 

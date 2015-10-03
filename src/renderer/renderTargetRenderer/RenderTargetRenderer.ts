@@ -19,11 +19,11 @@ module dy {
 
         public init(){
             this.frameBufferTexture = this.texture.createEmptyTexture();
+            this.texture.setTexture(this.frameBufferTexture);
             this.initFrameBuffer();
         }
 
         public render(renderer:Renderer, camera:GameObject){
-            this.texture.setTexture(this.frameBufferTexture);
 
             this.renderFrameBufferTexture(renderer, camera);
         }

@@ -4,10 +4,10 @@ module dy {
         public abstract createEmptyTexture();
 
         public init(){
-            super.init();
+            //super.init();
 
             //todo support mipmap?
-            this.generateMipmaps = false;
+            //this.generateMipmaps = false;
             this.minFilter = TextureFilterMode.LINEAR;
             this.magFilter = TextureFilterMode.LINEAR;
             this.wrapS = TextureWrapMode.CLAMP_TO_EDGE;
@@ -24,7 +24,11 @@ module dy {
             return this.geometry.gameObject.transform.position;
         }
 
-        public update(index:number){
+        public sendData(program:Program, unit:number){
+            this.sendSamplerVariable(VariableType.SAMPLER_2D, program, unit);
+
+            //todo repeat?
+
             return this;
         }
 
@@ -41,9 +45,6 @@ module dy {
             //if (this.generateMipmaps && isSourcePowerOfTwo) {
             //    gl.generateMipmap(gl[this.target]);
             //}
-        }
-
-        protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
         }
     }
 }

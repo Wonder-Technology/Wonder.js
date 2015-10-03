@@ -189,12 +189,15 @@
 /// <reference path="structure/RectRegion"/>
 /// <reference path="structure/View"/>
 
+
 /// <reference path="texture/Texture"/>
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
 /// <reference path="texture/renderTargetTexture/ShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
+
+/// <reference path="texture/BasicTexture"/>
 /// <reference path="texture/CommonTexture"/>
 /// <reference path="texture/TwoDTexture"/>
 /// <reference path="texture/VideoTexture"/>
@@ -209,6 +212,7 @@
 /// <reference path="texture/command/DrawTwoDTextureCommand"/>
 /// <reference path="texture/command/DrawMipmapTwoDTextureCommand"/>
 /// <reference path="texture/command/DrawNoMipmapTwoDTextureCommand"/>
+
 
 /// <reference path="video/Video"/>
 /// <reference path="video/VideoManager"/>

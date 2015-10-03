@@ -74,9 +74,9 @@ module dy{
         public update(){
             this._getTextureList()
                 .filter((texture:Texture) => {
-                    return texture.needUpdate;
+                    return texture instanceof BasicTexture && texture.needUpdate;
                 })
-                .forEach((texture:Texture, index:number) => {
+                .forEach((texture:BasicTexture, index:number) => {
                     texture.update(index);
                 });
         }

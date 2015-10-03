@@ -70,7 +70,7 @@ module dy{
             cubemapFaceTexture.mode = EnvMapMode.NORMAL;
         }
 
-        public copyTo(texture:Texture){
+        public copyTo(texture:BasicTexture){
             dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
 
             texture.source = this.source;

@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class CubemapTexture extends Texture{
+    export class CubemapTexture extends BasicTexture{
         public static create(assets:Array<CubemapData>){
             var obj = new this(assets);
 
