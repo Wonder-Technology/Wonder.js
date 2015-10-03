@@ -9,23 +9,26 @@ module dy{
         	return obj;
         }
 
-        private _program:Program = Program.create();
-        get program():Program{
-            var stage:Stage = Director.getInstance().stage;
-
-            if(stage.isUseProgram){
-                return stage.program;
-            }
-
-            return this._program;
-        }
-        set program(program:Program){
-            this._program = program;
-        }
-
-        get selfProgram(){
-            return this._program;
-        }
+        //private _program:Program = Program.create();
+        ////todo refactor?
+        //get program():Program{
+        //    var stage:Stage = Director.getInstance().stage;
+        //
+        //    if(stage.isUseProgram){
+        //        return stage.program;
+        //    }
+        //
+        //    return this._program;
+        //}
+        //set program(program:Program){
+        //    this._program = program;
+        //}
+        public program:Program = Program.create();
+        //
+        ////todo remove
+        //get selfProgram(){
+        //    return this._program;
+        //}
 
         public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
@@ -74,12 +77,17 @@ module dy{
             this._libs.forEach((lib:ShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
+            //todo not send other data when use stage's program?
 
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
 
             material.textureManager.sendData(program);
 
+        }
+
+        public hasLib(lib:ShaderLib){
+            return this._libs.hasChild(lib);
         }
 
         public addLib(lib:ShaderLib){
@@ -95,6 +103,18 @@ module dy{
 
         public removeAllLibs(){
             this._libs.removeAllChildren();
+        }
+
+        public sortLib(func:(a:ShaderLib, b:ShaderLib) => any){
+            this._libs = this._libs.sort(func);
+        }
+
+        public clearSource(){
+            this.vsSource = "";
+            this.fsSource = "";
+
+            //todo refactor? invoke "clear" method?
+            this._sourceBuilder = ShaderSourceBuilder.create();
         }
 
         public read(definitionData:ShaderDefinitionData){

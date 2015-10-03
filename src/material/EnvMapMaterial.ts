@@ -7,8 +7,8 @@ module dy{
             return obj;
         }
 
-        public refractionRatio:number = null;
-        public reflectivity:number = null;
+        public refractionRatio:number = ShaderChunk.NULL;
+        public reflectivity:number = ShaderChunk.NULL;
 
         public init(){
             var envMap = this.envMap;

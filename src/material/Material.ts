@@ -141,7 +141,20 @@ module dy {
         }
 
         public updateShader(quadCmd:QuadCommand){
-            this.shader.update(quadCmd, this);
+            var shader = this._getShader();
+
+            shader.program.use();
+            shader.update(quadCmd, this);
+        }
+
+        private _getShader(){
+            var stage:Stage = Director.getInstance().stage;
+
+            if(stage.isUseProgram){
+                return stage.shader;
+            }
+
+            return this.shader;
         }
     }
 

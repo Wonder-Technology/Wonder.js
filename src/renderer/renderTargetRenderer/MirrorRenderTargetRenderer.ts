@@ -18,7 +18,8 @@ module dy {
                 plane = null,
                 cameraComponent:Camera = camera.getComponent<Camera>(Camera),
                 mirrorCameraViewMatrix = null,
-                projectionMatrix = null;
+                projectionMatrix = null,
+                stage = Director.getInstance().stage;
 
             plane = this.texture.getPlane();
 
@@ -38,9 +39,11 @@ module dy {
             //todo if renderList is null, draw all
             //todo optimize:if renderObject is behind plane, not render it!
             this.texture.renderList.forEach((child:GameObject) => {
-                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent), true);
+                child.render(renderer, GameObject.create().addComponent(mirrorCameraComponent));
             });
+            stage.cullMode = CullMode.FRONT;
             renderer.render();
+            stage.cullMode = null;
 
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();

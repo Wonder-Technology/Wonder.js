@@ -6,12 +6,6 @@ module dy {
         protected frameBuffer:WebGLFramebuffer = null;
         protected renderBuffer:WebGLRenderbuffer= null;
 
-        public initWhenCreate(){
-            super.initWhenCreate();
-
-            this.frameBufferOperator = FrameBuffer.create(this.texture.width, this.texture.height);
-        }
-
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl;

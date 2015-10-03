@@ -14,7 +14,7 @@ module dy{
         public type:string = "shadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_mvpMatrixFromLight", VariableType.FLOAT_MAT4, material.shadowMapData.mvpMatrixFromLight);
+            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.shadowMapData.vpMatrixFromLight);
             program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.shadowMapData.shadowBias);
             program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.shadowMapData.shadowDarkness);
         }
@@ -24,7 +24,7 @@ module dy{
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("shadowMap"),
-                "u_shadowBias", "u_shadowDarkness", "u_mvpMatrixFromLight"
+                "u_shadowBias", "u_shadowDarkness", "u_vpMatrixFromLight"
             ]);
         }
     }

@@ -31,13 +31,9 @@ module dy {
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
-        public isRenderTarget:boolean = false;
 
         public execute() {
             this.material.updateTexture();
-
-            dyCb.Log.error(!this.program, dyCb.Log.info.FUNC_MUST_DEFINE("program"));
-            this.program.use();
 
             this.material.updateShader(this);
 
@@ -95,37 +91,17 @@ module dy {
             deviceManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
             deviceManager.polygonOffsetMode = this.material.polygonOffsetMode;
 
-            if(this.isRenderTarget){
-                deviceManager.cullMode = this._reverseCullMode(this.material.cullMode);
-            }
-            else{
-                deviceManager.cullMode = this.material.cullMode;
-            }
+            deviceManager.cullMode = this._getCullMode();
 
             deviceManager.blend = this.material.blend;
             deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
             deviceManager.setBlendEquation(this.material.blendEquation);
         }
 
-        private _reverseCullMode(cullMode:CullMode){
-            var result = null;
+        private _getCullMode(){
+            var stage:Stage = Director.getInstance().stage;
 
-            switch(cullMode){
-                case CullMode.BACK:
-                    result = CullMode.FRONT;
-                    break;
-                /*!skybox's cullMode is FRONT, and it should still be FRONT when renderTarget
-
-                //case CullMode.FRONT:
-                //    result = CullMode.BACK;
-                //    break;
-                */
-                default:
-                    result = cullMode;
-                    break;
-            }
-
-            return result;
+            return stage.cullMode ? stage.cullMode : this.material.cullMode;
         }
     }
 }

@@ -12,6 +12,11 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 
 @end
 
+@funcDeclare
+vec3 getNormal();
+
+@end
+
 
 @funcDefine
 #if POINT_LIGHTS_COUNT > 0

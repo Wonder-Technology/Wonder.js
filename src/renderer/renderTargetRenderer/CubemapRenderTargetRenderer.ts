@@ -45,7 +45,7 @@ module dy {
 
                 //todo if renderList is null, draw all
                 //todo optimize:if renderObject is behind plane, not render it!
-                this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, this._createCamera(i), true));
+                this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, this._createCamera(i)));
                 renderer.render();
             }
 

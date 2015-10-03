@@ -13,6 +13,8 @@ module dy {
             if(this._isTextureSizeExceedCanvasSize()){
                 this.warnTextureSizeExceedCanvasSize();
             }
+
+            this.frameBufferOperator = FrameBuffer.create(this.texture.width, this.texture.height);
         }
 
         public init(){

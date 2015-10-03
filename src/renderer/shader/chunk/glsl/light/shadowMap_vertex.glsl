@@ -3,5 +3,5 @@
 @end
 
 @body
-    v_positionFromLight = u_mvpMatrixFromLight * a_position;
+    v_positionFromLight = u_vpMatrixFromLight * u_mMatrix * vec4(a_position, 1.0);
 @end

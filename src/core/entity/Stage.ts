@@ -20,13 +20,12 @@ module dy {
         }
 
         get program():Program{
-            //todo combine selfProgram,program?
-            return this.shader.selfProgram;
+            return this.shader.program
         }
 
+        public cullMode:CullMode = null;
         public isUseProgram:boolean = false;
         public shader:Shader = null;
-
         public camera:GameObject = null;
 
 
@@ -36,10 +35,7 @@ module dy {
         public init(){
             this.addComponent(TopCollider.create());
 
-            this.shader = Shader.create();
-
             super.init();
-
 
             this._renderTargetRenderers.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
         }
@@ -70,24 +66,25 @@ module dy {
 
             super.render(renderer, this.camera);
         }
+        public createShaderOnlyOnce(lib:ShaderLib){
+            if(this.shader && this.shader.hasLib(lib)){
+                return;
+            }
 
-        public useProgram(lib:ShaderLib){
-            this.isUseProgram = true;
-
+            this.shader = Shader.create();
             this.shader.addLib(lib);
             this.shader.initProgram();
+        }
+
+        public useProgram(){
+            this.isUseProgram = true;
+
             this.shader.program.use();
         }
 
-        public clearProgram(){
+        public unUseProgram(){
             this.isUseProgram = false;
-
-            //this.shader.removeLib((lib:ShaderLib) =>{
-            //    return !(lib instanceof CommonShaderLib);
-            //});
-            this.shader.removeAllLibs();
         }
-
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);

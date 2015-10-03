@@ -342,7 +342,7 @@ module dy {
         }
 
         //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
-        public render(renderer:Renderer, camera:GameObject, isRenderTarget:boolean = false):void {
+        public render(renderer:Renderer, camera:GameObject):void {
             //var i, len;
             //if(!this._active || !this._initialized || this._destroyed) {
             //    if(transformDirty) {
@@ -374,7 +374,7 @@ module dy {
             //}
 
             if(this.rendererComponent && this.geometry){
-                this.rendererComponent.render(renderer, this.geometry,  camera, isRenderTarget);
+                this.rendererComponent.render(renderer, this.geometry,  camera);
             }
 
             this._children.forEach((child:GameObject) => {

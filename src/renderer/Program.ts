@@ -96,6 +96,8 @@ module dy{
 
             if(JudgeUtils.isFunction(data)){
                 data = data();
+
+                dyCb.Log.error(!(data instanceof ArrayBuffer), dyCb.Log.info.FUNC_MUST_BE("ArrayBuffer"));
             }
 
             switch (type){
@@ -182,6 +184,13 @@ module dy{
             gl.deleteShader(fs);
 
             return this;
+        }
+
+        public dispose(){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.deleteProgram(this._program);
+            this._program = undefined;
         }
 
         private _convertAttributeDataType(val:ShaderData){

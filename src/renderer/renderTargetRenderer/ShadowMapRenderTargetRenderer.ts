@@ -10,7 +10,7 @@ module dy {
         }
 
         constructor(light:DirectionLight){
-            super(ShadowMapTexture.create());
+            super(light.shadowMap);
 
             this.light = light;
         }
@@ -21,14 +21,25 @@ module dy {
         protected texture:ShadowMapTexture;
 
         public initWhenCreate(){
+            var self = this;
+
             this.texture.width = this.light.shadowMapWidth;
             this.texture.height = this.light.shadowMapHeight;
+
+
+            //todo if renderList is null, draw all
+            this.light.shadowRenderList.forEach((child:GameObject) => {
+                //todo support multi shadowMap
+                self._setShadowMap(child, self.texture);
+            });
 
             super.initWhenCreate();
         }
 
         public init(){
             this.texture.init();
+
+            Director.getInstance().stage.createShaderOnlyOnce(BuildShadowMapShaderLib.getInstance());
 
             super.init();
         }
@@ -38,25 +49,23 @@ module dy {
                 shadowMapCamera = this.light.createShadowMapCamera(),
                 stage:Stage = Director.getInstance().stage;
 
-
+            //todo No color buffer is drawn to(webgl not support yet)
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();
 
-            stage.useProgram(BuildShadowMapShaderLib.getInstance());
+            stage.useProgram();
 
             //todo if renderList is null, draw all
             this.light.shadowRenderList.forEach((child:GameObject) => {
-                //todo support multi shadowMap
-                self._setShadowMap(child, self.texture);
-                child.render(renderer, shadowMapCamera, true);
+                self._setShadowData(child, shadowMapCamera);
+                child.render(renderer, shadowMapCamera);
             });
             renderer.render();
 
-            stage.clearProgram();
+            stage.unUseProgram();
 
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
-
         }
 
         protected warnTextureSizeExceedCanvasSize(){
@@ -68,12 +77,23 @@ module dy {
 
             dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
+
+            material.shadowMap = shadowMap;
+        }
+
+        private _setShadowData(target:GameObject, shadowMapCamera:GameObject){
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
+                cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
+            //cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
             //todo refactor
             material.shadowMapData = {
-                shadowMap: shadowMap,
                 shadowBias: this.light.shadowBias,
                 shadowDarkness: this.light.shadowDarkness,
-                mvpMatrixFromLight: this.light.getShadowMapMvpMatrix()
+                //todo optimize: compute vpMatrix once here or when render shadowRenderList
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
             };
         }
     }

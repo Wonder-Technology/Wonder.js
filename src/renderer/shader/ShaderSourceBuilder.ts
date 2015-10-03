@@ -61,7 +61,7 @@ module dy{
 
             this.attributes
                 .filter((data:ShaderData) => {
-                    return JudgeUtils.isArray(data.value) && data.value !== VariableCategory.ENGINE;
+                    return (JudgeUtils.isArray(data.value) || JudgeUtils.isFloatArray(data.value)) && data.value !== VariableCategory.ENGINE;
                 })
                 .forEach((data:ShaderData, key:string) => {
                     data.value = self._convertArrayToArrayBuffer(data.type, data.value);
@@ -244,9 +244,15 @@ module dy{
             return source.indexOf(key) !== -1;
         }
 
-        private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>) {
-            //todo get BufferType from val.type?
-            return ArrayBuffer.create(new Float32Array(value), this._getBufferNum(type), BufferType.FLOAT);
+        private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>|Float32Array|Float64Array) {
+            var num = this._getBufferNum(type);
+
+            if(JudgeUtils.isArray(value)){
+                return ArrayBuffer.create(new Float32Array(value), num, BufferType.FLOAT);
+            }
+            else if(JudgeUtils.isFloatArray(value)){
+                return ArrayBuffer.create(value, num, BufferType.FLOAT);
+            }
         }
 
         private _getBufferNum(type:VariableType){

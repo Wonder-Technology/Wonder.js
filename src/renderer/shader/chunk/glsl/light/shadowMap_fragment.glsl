@@ -3,7 +3,7 @@
 @end
 
 @funcDefine
-    vec3 _getShadowBias(vec3 lightDir){
+    float _getShadowBias(vec3 lightDir){
         if(u_shadowBias != NULL){
             return u_shadowBias;
         }
@@ -14,6 +14,7 @@
         */
         return max(0.05 * (1.0 - dot(getNormal(), lightDir)), 0.005);
     }
+
     vec3 getShadowVisibility(vec3 lightDir) {
         //project texture
         vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
@@ -22,5 +23,6 @@
         float depth = rgbaDepth.r;
 
         return vec3(shadowCoord.z > depth + _getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
+        //return vec3(shadowCoord.z > 0.0 ? u_shadowDarkness : 1.0);
     }
 @end
