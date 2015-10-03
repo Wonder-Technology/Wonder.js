@@ -56,7 +56,7 @@ module dy{
             deviceManager.setColorWrite(true, true, true, true);
             deviceManager.cullMode = CullMode.BACK;
             deviceManager.depthWrite = true;
-            deviceManager.scissorTest = true;
+            deviceManager.scissorTest = false;
         }
 
         public setClearColor(color:Color){
