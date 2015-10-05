@@ -3,6 +3,11 @@ varying vec3 v_normal;
 varying vec3 v_worldPosition;
 @end
 
+@funcDeclare
+vec3 getNormal();
+
+@end
+
 @funcDefine
 #if POINT_LIGHTS_COUNT > 0
 vec3 getPointLightDir(int index){

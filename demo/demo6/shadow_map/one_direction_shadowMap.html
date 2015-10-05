@@ -31,6 +31,7 @@
         function init() {
             _initScene();
         }
+        var directionLightComponent = dy.DirectionLight.create();
 
         function _initScene() {
             var director = dy.Director.getInstance();
@@ -53,7 +54,7 @@
 
             var geometry = dy.SphereGeometry.create();
             geometry.material = material;
-            geometry.radius = 5;
+            geometry.radius = 20;
             geometry.segment = 20;
 
 
@@ -65,7 +66,7 @@
 
 
 
-            sphere.transform.translate(dy.Vector3.create(0, 10, 0));
+            sphere.transform.translate(dy.Vector3.create(-30, 20, 0));
 
 
 
@@ -123,8 +124,8 @@
             material.diffuseMap = map1;
 
             var plane = dy.PlaneGeometry.create();
-            plane.width = 50;
-            plane.height = 50;
+            plane.width = 100;
+            plane.height = 100;
 
 
             plane.material = material;
@@ -159,7 +160,7 @@
 
 
 
-            var directionLightComponent = dy.DirectionLight.create();
+//            var directionLightComponent = dy.DirectionLight.create();
             directionLightComponent.color = dy.Color.create("#ffffff");
             directionLightComponent.intensity = 1;
 
@@ -173,9 +174,9 @@
             directionLightComponent.shadowCameraNear = 0.1;
             directionLightComponent.shadowCameraFar = 1000;
             //todo need it?
-            directionLightComponent.shadowPosition = dy.Vector3.create(-20, 50, 0);
+            directionLightComponent.shadowPosition = dy.Vector3.create(-20, 70, 0);
 
-            directionLightComponent.shadowBias = 0.005;
+            directionLightComponent.shadowBias = 0.0001;
             directionLightComponent.shadowDarkness = 0.2;
 
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
@@ -192,7 +193,7 @@
             var directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.rotate(0, -90, -45);
+            directionLight.transform.rotate(0, -90, -80);
 
 
 //            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){
@@ -356,7 +357,8 @@
             //make camera to be the same as shadowMapCamera(DirectionLight) for testing
 
             var pos =dy.Vector3.create(-20, 50, 0);
-
+//            var pos = directionLightComponent.shadowPosition;
+//
 
 
 
@@ -382,6 +384,7 @@
 
             camera.transform.lookAt(1, -1, 0);
             camera.transform.translate(pos);
+//            camera.transform.lookAt(0, 0, 0);
 
 
 //

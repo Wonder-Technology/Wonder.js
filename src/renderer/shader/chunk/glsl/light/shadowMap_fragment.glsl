@@ -1,28 +1,34 @@
 @varDeclare
-	varying vec4 v_positionFromLight;
+varying vec4 v_positionFromLight;
 @end
 
 @funcDefine
-    float _getShadowBias(vec3 lightDir){
-        if(u_shadowBias != NULL){
-            return u_shadowBias;
-        }
-
-        //todo need verify
-        /*!
-        A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:
-        */
-        return max(0.05 * (1.0 - dot(getNormal(), lightDir)), 0.005);
+float getShadowBias(vec3 lightDir){
+    if(u_shadowBias != NULL){
+        return u_shadowBias;
     }
 
-    vec3 getShadowVisibility(vec3 lightDir) {
-        //project texture
-        vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
-        vec4 rgbaDepth = texture2D(u_shadowMapSampler, shadowCoord.xy);
+    //todo need verify
+    /*!
+     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:
+     */
+    return max(0.05 * (1.0 - dot(getNormal(), lightDir)), 0.005);
+}
 
-        float depth = rgbaDepth.r;
+float unpackDepth(vec4 rgbaDepth) {
+    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);
+    return dot(rgbaDepth, bitShift);
+}
 
-        return vec3(shadowCoord.z > depth + _getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
-        //return vec3(shadowCoord.z > 0.0 ? u_shadowDarkness : 1.0);
-    }
+
+
+vec3 getShadowVisibility(vec3 lightDir) {
+    //project texture
+    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
+    vec4 rgbaDepth = texture2D(u_shadowMapSampler, shadowCoord.xy);
+
+    return vec3(shadowCoord.z > unpackDepth(rgbaDepth) + getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
+    //return vec3(shadowCoord.z > 0.0 ? u_shadowDarkness : 1.0);
+}
 @end
+
