@@ -327,8 +327,13 @@
 
 
 
-            //todo stage add shadowmap config
+            director.stage.shadowMap.enable = false;
+            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
 
+
+            director.scheduler.scheduleTime(function(){
+                director.stage.shadowMap.enable = true;
+            }, 2000);
 
 
 

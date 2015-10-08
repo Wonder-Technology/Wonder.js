@@ -14,6 +14,12 @@ module dy{
         public type:string = "shadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+            var stage = Director.getInstance().stage;
+
+            if(!stage.shadowMap.enable){
+                return;
+            }
+
             program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.shadowMapData.vpMatrixFromLight);
             program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.shadowMapData.shadowBias);
             program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.shadowMapData.shadowDarkness);
@@ -27,6 +33,18 @@ module dy{
                 VariableNameTable.getVariableName("shadowMap"),
                 "u_shadowBias", "u_shadowDarkness", "u_shadowMapSize", "u_vpMatrixFromLight"
             ]);
+
+            this._setShadowMapSource();
+        }
+
+        private _setShadowMapSource(){
+            var stage:Stage = Director.getInstance().stage;
+
+            if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
+                this.fsSourceDefineList.addChildren([{
+                    name: "SHADOWMAP_TYPE_PCF_SOFT"
+                }]);
+            }
         }
     }
 }

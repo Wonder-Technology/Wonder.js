@@ -49,6 +49,10 @@ module dy {
                 shadowMapCamera = this.light.createShadowMapCamera(),
                 stage:Stage = Director.getInstance().stage;
 
+            if(!stage.shadowMap.enable){
+                return;
+            }
+
             //todo No color buffer is drawn to(webgl not support yet)
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();

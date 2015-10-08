@@ -50,15 +50,15 @@ vec3 getShadowVisibility(vec3 lightDir) {
     //project texture
     vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
 
-    //#if defined( SHADOWMAP_TYPE_PCF_SOFT )
+    #if defined(SHADOWMAP_TYPE_PCF_SOFT)
     // Percentage-close filtering
     // (9 pixel kernel)
     return getShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, getShadowBias(lightDir));
 
-    //#else
-    //return vec3(shadowCoord.z > unpackDepth(texture2D(u_shadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
+    #else
+    return vec3(shadowCoord.z > unpackDepth(texture2D(u_shadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
 
-    //#endif
+    #endif
 }
 @end
 

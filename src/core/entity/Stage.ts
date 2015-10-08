@@ -25,6 +25,11 @@ module dy {
 
         public cullMode:CullMode = null;
         public isUseProgram:boolean = false;
+        public shadowMap = {
+            enable: true,
+            softType: ShadowMapSoftType.NONE
+        };
+
         public shader:Shader = null;
         public camera:GameObject = null;
 
@@ -93,5 +98,15 @@ module dy {
         private _isLight(child:GameObject){
             return child.hasComponent(Light);
         }
+    }
+
+    export type ShadowMapConfig = {
+        enable:boolean;
+        softType:ShadowMapSoftType
+    }
+
+    export enum ShadowMapSoftType{
+        NONE,
+        PCF
     }
 }
