@@ -2,10 +2,7 @@
 module dy{
     export class DirectionLight extends Light{
         public static type:string = "directionLight";
-        ////default direction is negative z(origin point to [0, 0, -1] point)
-        //default direction is positive z([0, 0, -1] point to origin point)
-        //(note:after perspective transform, the positive z axis is towards into screen)
-        public static defaultDirection:Vector3 = Vector3.create(0, 0, -1);
+        public static defaultPosition:Vector3 = Vector3.create(0, 0, 1);
 
         public static create() {
             var obj = new this();
@@ -38,8 +35,6 @@ module dy{
         public shadowCameraBottom:number = -1000;
         public shadowCameraNear:number = 0.1;
         public shadowCameraFar:number = 5000;
-        //todo no need it?
-        public shadowPosition:Vector3 = Vector3.create(0, 0, 0);
         public shadowBias:number = ShaderChunk.NULL;
         public shadowDarkness:number = 0;
         public shadowMapWidth:number = 1024;
@@ -73,13 +68,8 @@ module dy{
             camera.addComponent(orthoCameraComponent);
 
             //todo optimize:dirty?
-            //todo verify lookAt direction?
-            camera.transform.lookAt(this.getDirection());
-            //camera.transform.lookAt(1, -1, 0);
-            //camera.transform.translate(pos);
-            camera.transform.translate(this.shadowPosition);
-            //camera.transform.lookAt(0, 0, 0);
-            //camera.transform.lookAt(1, -1, 0);
+            camera.transform.translate(this.gameObject.transform.position);
+            camera.transform.lookAt(0, 0, 0);
 
             camera.init();
 
@@ -110,15 +100,9 @@ module dy{
             return camera;
         }
 
-        //todo optimize:u_mvpMatrixFromLight->vpMatrix is the same as build depth map->vpMatrix
-        //public getShadowMapVPMatrix(){
-        //    var cameraComponent = this.createShadowMapCamera().getComponent<OrthographicCamera>(OrthographicCamera);
-        //
-        //    return cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix);
-        //}
-
         public getDirection(){
-            return this.gameObject.transform.rotation.multiplyVector3(DirectionLight.defaultDirection);
+            //return this.gameObject.transform.position.sub(Vector3.create(0, 0, 0));
+            return Vector3.create(0, 0, 0).sub(this.gameObject.transform.position);
         }
     }
 }

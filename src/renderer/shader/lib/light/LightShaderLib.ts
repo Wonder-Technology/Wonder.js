@@ -76,8 +76,6 @@ module dy{
         }
 
         private _sendDirectionLightVariables(program: Program, directionLights:dyCb.Collection<GameObject> ){
-            var self = this;
-
             directionLights.forEach((directionLight:GameObject, index:number) => {
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
 

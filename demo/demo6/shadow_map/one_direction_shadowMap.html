@@ -32,6 +32,7 @@
             _initScene();
         }
         var directionLightComponent = dy.DirectionLight.create();
+        var directionLight;
 
         function _initScene() {
             var director = dy.Director.getInstance();
@@ -173,8 +174,6 @@
             directionLightComponent.shadowCameraBottom = -100;
             directionLightComponent.shadowCameraNear = 0.1;
             directionLightComponent.shadowCameraFar = 1000;
-            //todo need it?
-            directionLightComponent.shadowPosition = dy.Vector3.create(-20, 70, 0);
 
             directionLightComponent.shadowBias = 0.002;
             directionLightComponent.shadowDarkness = 0.2;
@@ -190,10 +189,12 @@
 
 
 
-            var directionLight = dy.GameObject.create();
+            directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.rotate(0, -90, -45);
+            directionLight.transform.translate(dy.Vector3.create(0, 50, 30));
+//
+//            directionLight.transform.rotate(0, -90, -45);
 
 
 //            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){
@@ -327,13 +328,13 @@
 
 
 
-            director.stage.shadowMap.enable = false;
-            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
-
-
-            director.scheduler.scheduleTime(function(){
-                director.stage.shadowMap.enable = true;
-            }, 2000);
+//            director.stage.shadowMap.enable = false;
+//            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+//
+//
+//            director.scheduler.scheduleTime(function(){
+//                director.stage.shadowMap.enable = true;
+//            }, 2000);
 
 
 
@@ -361,9 +362,7 @@
         function _createCamera() {
             //make camera to be the same as shadowMapCamera(DirectionLight) for testing
 
-            var pos =dy.Vector3.create(-20, 50, 0);
-//            var pos = directionLightComponent.shadowPosition;
-//
+            var pos = directionLight.transform.position;
 
 
 
@@ -387,9 +386,9 @@
 //            camera.transform.translate(dy.Vector3.create(0, 30, 30));
 
 
-            camera.transform.lookAt(1, -1, 0);
+//            camera.transform.lookAt(1, -1, 0);
             camera.transform.translate(pos);
-//            camera.transform.lookAt(0, 0, 0);
+            camera.transform.lookAt(0, 0, 0);
 
 
 //
