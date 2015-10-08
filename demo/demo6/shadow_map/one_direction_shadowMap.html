@@ -176,7 +176,7 @@
             //todo need it?
             directionLightComponent.shadowPosition = dy.Vector3.create(-20, 70, 0);
 
-            directionLightComponent.shadowBias = 0.0001;
+            directionLightComponent.shadowBias = 0.002;
             directionLightComponent.shadowDarkness = 0.2;
 
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
@@ -193,7 +193,7 @@
             var directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.rotate(0, -90, -80);
+            directionLight.transform.rotate(0, -90, -45);
 
 
 //            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){

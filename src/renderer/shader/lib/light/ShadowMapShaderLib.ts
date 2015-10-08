@@ -17,6 +17,7 @@ module dy{
             program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.shadowMapData.vpMatrixFromLight);
             program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.shadowMapData.shadowBias);
             program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.shadowMapData.shadowDarkness);
+            program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.shadowMapData.shadowMapSize);
         }
 
         protected setShaderDefinition(){
@@ -24,7 +25,7 @@ module dy{
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("shadowMap"),
-                "u_shadowBias", "u_shadowDarkness", "u_vpMatrixFromLight"
+                "u_shadowBias", "u_shadowDarkness", "u_shadowMapSize", "u_vpMatrixFromLight"
             ]);
         }
     }

@@ -168,6 +168,11 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
+        public static u_shadowMapSize:ShaderVariable = {
+            type:VariableType.FLOAT_2,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_shadowMapSampler:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE

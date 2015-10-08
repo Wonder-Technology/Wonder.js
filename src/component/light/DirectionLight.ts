@@ -79,6 +79,7 @@ module dy{
             //camera.transform.translate(pos);
             camera.transform.translate(this.shadowPosition);
             //camera.transform.lookAt(0, 0, 0);
+            //camera.transform.lookAt(1, -1, 0);
 
             camera.init();
 

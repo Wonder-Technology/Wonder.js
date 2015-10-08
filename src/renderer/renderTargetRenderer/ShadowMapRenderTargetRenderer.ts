@@ -92,6 +92,7 @@ module dy {
             material.shadowMapData = {
                 shadowBias: this.light.shadowBias,
                 shadowDarkness: this.light.shadowDarkness,
+                shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
                 //todo optimize: compute vpMatrix once here or when render shadowRenderList
                 vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
             };

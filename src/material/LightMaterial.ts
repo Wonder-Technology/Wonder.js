@@ -109,6 +109,7 @@ module dy{
     export type ShadowMapData = {
         shadowBias:number,
         shadowDarkness:number,
+        shadowMapSize:Array<number>,
         vpMatrixFromLight:Matrix4
     }
 }
