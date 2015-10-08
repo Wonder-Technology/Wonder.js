@@ -14,6 +14,5 @@ vec4 packDepth(in float depth) {
 @end
 
 @body
-//gl_FragColor = vec4(gl_FragCoord.z, 0.0, 0.0, 0.0);
-gl_FragColor = packDepth(gl_FragCoord.z);
+gl_FragData[0] = packDepth(gl_FragCoord.z);
 @end
