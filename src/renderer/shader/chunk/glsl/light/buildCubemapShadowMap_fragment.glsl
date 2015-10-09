@@ -1,6 +1,7 @@
 @varDeclare
-	varying vec3 v_position;
+    varying vec3 v_worldPosition;
 @end
+
 //todo dry
 @funcDefine
 // Packing a float in GLSL with multiplication and mod
@@ -20,7 +21,7 @@ vec4 packDepth(in float depth) {
 @body
 
 // get distance between fragment and light source
-    float lightDistance = length(v_position - u_lightPos);
+    float lightDistance = length(v_worldPosition - u_lightPos);
 
     // map to [0,1] range by dividing by farPlane
     lightDistance = lightDistance / u_farPlane;

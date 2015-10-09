@@ -1,7 +1,3 @@
-@varDeclare
-	varying vec3 v_position;
-@end
-
 //todo dry
 @funcDefine
 float getShadowBias(vec3 lightDir){
@@ -42,7 +38,7 @@ float VectorToDepthValue(vec3 Vec)
 
 vec3 getShadowVisibility(vec3 lightDir) {
 // Get vector between fragment position and light position
-    vec3 fragToLight= v_position - u_lightPos;
+    vec3 fragToLight= v_worldPosition - u_lightPos;
     // Use the light to fragment vector to sample from the depth map
     float closestDepth = unpackDepth(textureCube(u_cubemapShadowMapSampler, fragToLight));
     //float closestDepth = textureCube(u_cubemapShadowMapSampler, fragToLight).r;

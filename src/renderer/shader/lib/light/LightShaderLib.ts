@@ -37,8 +37,6 @@ module dy{
 
             this._setLightDefinition();
 
-            this.vsSourceBody = ShaderSnippet.setPos_mvp;
-
             this.setFsSource(this.getFsChunk("light_common.glsl"));
             this.setFsSource(this.getFsChunk(), "+");
         }
