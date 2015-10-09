@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>one point shadowMap</title>
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+            {url: "../../res/1.jpg", id:"texture"},
+            {url: "../../res/crate.gif", id:"ground"}
+
+        ]).subscribe(null, function(e){
+            throw e;
+        },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+        var pointLightComponent = dy.PointLight.create();
+        var pointLight;
+
+        function _initScene() {
+            var director = dy.Director.getInstance();
+
+
+
+
+
+            var boxArr = [
+                    createBox(dy.Vector3.create(20, 0, 0)),
+                createBox(dy.Vector3.create(-20, 0, 0)),
+                createBox(dy.Vector3.create(0, 20, 0)),
+                createBox(dy.Vector3.create(0, -20, 0)),
+                createBox(dy.Vector3.create(0, 0, 20)),
+                createBox(dy.Vector3.create(0, 0, -20))
+            ]
+
+
+
+
+            var xzEu = dy.Vector3.create(0, 0, 0);
+            var xzNeEu = dy.Vector3.create(0, 0, 180);
+            var xyEu = dy.Vector3.create(90, 0, 0);
+            var xyNeEu = dy.Vector3.create(-90, 0, 0);
+            var yzEu = dy.Vector3.create(0, 0, 90);
+            var yzNeEu = dy.Vector3.create(0, 0, -90);
+            var groundArr =
+                    [
+                    createGround(dy.Vector3.create(30, 0, 0), yzEu),
+                        createGround(dy.Vector3.create(-30, 0, 0), yzNeEu),
+                        createGround(dy.Vector3.create(0, 30, 0), xzNeEu),
+                        createGround(dy.Vector3.create(0, -30, 0), xzEu),
+                        createGround(dy.Vector3.create(0, 0, 30), xyNeEu),
+                        createGround(dy.Vector3.create(0, 0, -30), xyEu)
+            ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var SHADOW_MAP_WIDTH = 1024,
+                    SHADOW_MAP_HEIGHT = 1024;
+
+
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("#444444");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+
+            pointLightComponent.color = dy.Color.create("#ffffff");
+            pointLightComponent.intensity = 1;
+            pointLightComponent.rangeLevel = 10;
+
+            pointLightComponent.castShadow = true;
+
+
+//            pointLightComponent.shadowCameraLeft = -100;
+//            pointLightComponent.shadowCameraRight = 100;
+//            pointLightComponent.shadowCameraTop = 100;
+//            pointLightComponent.shadowCameraBottom = -100;
+            pointLightComponent.shadowCameraNear = 0.1;
+            pointLightComponent.shadowCameraFar = 1000;
+
+            pointLightComponent.shadowBias = 0.002;
+            pointLightComponent.shadowDarkness = 0.2;
+
+            pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
+            pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
+
+
+            //todo some face to be null
+            //todo specify exact object to draw
+            pointLightComponent.shadowRenderList = {
+                px:boxArr,
+                nx:boxArr,
+                py:boxArr,
+                ny:boxArr,
+                pz:boxArr,
+                nz:boxArr
+            };
+
+
+
+
+            pointLight = dy.GameObject.create();
+            pointLight.addComponent(pointLightComponent);
+
+            pointLight.transform.translate(dy.Vector3.create(0, 0, 0));
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(ambientLight);
+            director.stage.addChild(pointLight);
+
+
+
+
+
+
+
+
+//            var rect;
+//            rect = dy.RectGeometry.create();
+//            rect.width = 20;
+//            rect.height = 20;
+//
+//
+//
+//            var debugMaterial = dy.CustomMaterial.create();
+//
+//            debugMaterial.cullMode = dy.CullMode.NONE;
+//
+//
+//            //todo add to debug shader lib in engine
+//            var shaderDefinitionData = {
+//                attributes:  {
+//                    "a_texCoord": {
+//                        type:dy.VariableType.FLOAT_2,
+//                        value: function(){
+//                            return rect.texCoords;
+//                        }
+//                    }
+//                },
+//                uniforms: {
+//                    "u_sampler2D0": {
+//                        type:dy.VariableType.SAMPLER_2D,
+//                        value: dy.VariableCategory.ENGINE
+//                    }
+//                },
+//                vsSourceVarDeclare: [
+//                    "varying vec2 v_texCoord;"
+//                ].join("\n"),
+//                vsSourceBody: [
+//                    "v_texCoord = a_texCoord;",
+//                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
+//                ].join("\n"),
+//                fsSourceVarDeclare: [
+//                    "varying vec2 v_texCoord;"
+//                ].join("\n"),
+//                fsSourceBody: [
+//                    " float depthValue = texture2D(u_sampler2D0, v_texCoord).r;",
+//                    "if(depthValue < 0.1) depthValue = depthValue * 3.0;",
+//                    "gl_FragColor = vec4(vec3(depthValue), 1.0);"
+////                    "gl_FragColor = texture2D(u_sampler2D0, v_texCoord);"
+////                    "gl_FragColor = vec4(v_texCoord, 1.0, 1.0);"
+//                ].join("\n")
+//            };
+//
+//
+////
+////@funcDefine
+////            float linearizeDepth(float depth){
+////
+////                float near = 0.1;
+////                float far = 1000.0;
+////                float z = depth * 2.0 - 1.0;
+////
+////                return (2.0 * near * far) / (far + near - z * (far - near));
+////            }
+////
+////@end
+//
+//
+//
+//
+//            debugMaterial.shader.read(shaderDefinitionData);
+//
+//
+//
+//
+//
+//            rect.material = debugMaterial;
+//
+//
+//
+//            var debugQuad = dy.GameObject.create();
+//
+//            debugQuad.addComponent(dy.MeshRenderer.create());
+//            debugQuad.addComponent(rect);
+//
+//            debugQuad.transform.translate(0, 30, 0);
+//            debugQuad.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
+//
+//
+//            var isAdded = false;
+//
+//            //todo add to script?
+//            debugQuad.onStartLoop = function(){
+//                if(!isAdded){
+//                    debugMaterial.addMap(directionLightComponent.shadowMap);
+//
+//                    isAdded = true;
+//                }
+//            };
+//
+//
+//
+//            director.stage.addChild(debugQuad);
+
+
+
+
+
+
+
+
+//            director.stage.shadowMap.enable = false;
+//            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+//
+//
+//            director.scheduler.scheduleTime(function(){
+//                director.stage.shadowMap.enable = true;
+//            }, 2000);
+
+
+
+
+            boxArr.forEach(function(box){
+                director.stage.addChild(box);
+            });
+            groundArr.forEach(function(ground){
+                director.stage.addChild(ground);
+            });
+
+
+
+
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function createBox(position){
+            var material = dy.LightMaterial.create();
+            material.specular = dy.Color.create("#ffdd99");
+            material.color = dy.Color.create("#666666");
+            material.shininess = 16;
+
+            material.cullMode = dy.CullMode.NONE;
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry);
+
+            box.transform.translate(position);
+
+            return box;
+        }
+
+        function createGround(position, eulerAngles){
+            var material = dy.LightMaterial.create();
+            material.specular = dy.Color.create("#ffdd99");
+            material.shininess = 32;
+
+            material.cullMode = dy.CullMode.NONE;
+
+            var map1 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("ground"));
+            map1.wrapS = dy.TextureWrapMode.REPEAT;
+            map1.wrapT = dy.TextureWrapMode.REPEAT;
+            map1.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
+            map1.needUpdate = true;
+
+            material.diffuseMap = map1;
+
+            var plane = dy.PlaneGeometry.create();
+            plane.width = 100;
+            plane.height = 100;
+
+
+            plane.material = material;
+
+
+
+            var ground = dy.GameObject.create();
+
+            ground.addComponent(dy.MeshRenderer.create());
+            ground.addComponent(plane);
+
+            ground.transform.eulerAngles = eulerAngles;
+            ground.transform.translate(position);
+
+            return ground;
+        }
+
+        function _createCamera() {
+            //make camera to be the same as shadowMapCamera(DirectionLight) for testing
+
+            var pos = pointLight.transform.position;
+
+
+
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.PerspectiveCamera.create();
+
+
+            cameraComponent.fovy = 90;
+//            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.aspect = 1.0;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+
+            camera.addComponent(cameraComponent);
+//
+//
+//            camera.transform.lookAt(dy.Vector3.create(0, -1, 0), dy.Vector3.forward);
+//            camera.transform.lookAt(dy.Vector3.create(0, -1, 0), dy.Vector3.forward);
+//            camera.transform.translate(dy.Vector3.create(0, 30, 30));
+
+
+//            camera.transform.lookAt(1, -1, 0);
+//            camera.transform.translate(pos);
+            camera.transform.translate(0, 0, 10);
+            camera.transform.lookAt(0, 0, 0);
+
+
+//
+//            camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
+//
+
+
+//            var camera = dy.GameObject.create();
+//
+////            var cameraComponent = dy.PerspectiveCamera.create();
+//            var cameraComponent = dy.OrthographicCamera.create();
+//
+//
+////            cameraComponent.fovy = 60;
+////            cameraComponent.aspect = canvas.width / canvas.height;
+//            cameraComponent.left = -100;
+//            cameraComponent.right = 100;
+//            cameraComponent.top = 100;
+//            cameraComponent.bottom = -100;
+//            cameraComponent.near = 0.1;
+//            cameraComponent.far = 1000;
+//
+//
+//            camera.addComponent(cameraComponent);
+//
+//
+//            camera.transform.translate(pos);
+//            camera.transform.lookAt(0, 0, 0);
+
+
+
+
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera;
+        }
+
+    };
+</script>
+</body>
+</html>

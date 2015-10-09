@@ -56,6 +56,19 @@ module dy{
             this._shadowMap = shadowMap;
         }
 
+        //todo refactor?
+        private _cubemapShadowMap:CubemapShadowMapTexture = null;
+        get cubemapShadowMap(){
+            return this._cubemapShadowMap;
+        }
+        set cubemapShadowMap(cubemapShadowMap:CubemapShadowMapTexture){
+            this.addMap(cubemapShadowMap, {
+                samplerVariableName: VariableNameTable.getVariableName("cubemapShadowMap")
+            });
+
+            this._cubemapShadowMap = cubemapShadowMap;
+        }
+
         private _shadowMapData:ShadowMapData = null;
         get shadowMapData(){
             return this._shadowMapData;
@@ -100,6 +113,10 @@ module dy{
             if(this._shadowMap){
                 this.shader.addLib(ShadowMapShaderLib.getInstance());
             }
+            //todo refactor?
+            else if(this._cubemapShadowMap){
+                this.shader.addLib(CubemapShadowMapShaderLib.getInstance());
+            }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.getInstance());
             }
@@ -110,7 +127,11 @@ module dy{
         shadowBias:number,
         shadowDarkness:number,
         shadowMapSize:Array<number>,
-        vpMatrixFromLight:Matrix4
+        //todo refactor
+        vpMatrixFromLight?:Matrix4,
+        //todo refactor
+        lightPos?:Vector3,
+        farPlane?: number
     }
 }
 

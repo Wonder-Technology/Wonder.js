@@ -46,7 +46,7 @@ module dy {
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var self = this,
-                shadowMapCamera = this.light.createShadowMapCamera(),
+                shadowMapCamera = this.createCamera(),
                 stage:Stage = Director.getInstance().stage;
 
             if(!stage.shadowMap.enable){
@@ -74,6 +74,29 @@ module dy {
 
         protected warnTextureSizeExceedCanvasSize(){
             //not warn
+        }
+
+        protected createCamera():GameObject{
+            var orthoCameraComponent = OrthographicCamera.create(),
+                light:DirectionLight = this.light,
+                camera = GameObject.create();
+
+            orthoCameraComponent.left = light.shadowCameraLeft;
+            orthoCameraComponent.right = light.shadowCameraRight;
+            orthoCameraComponent.top = light.shadowCameraTop;
+            orthoCameraComponent.bottom = light.shadowCameraBottom;
+            orthoCameraComponent.near = light.shadowCameraNear;
+            orthoCameraComponent.far = light.shadowCameraFar;
+
+            camera.addComponent(orthoCameraComponent);
+
+            //todo optimize:dirty?
+            camera.transform.translate(light.position);
+            camera.transform.lookAt(0, 0, 0);
+
+            camera.init();
+
+            return camera;
         }
 
         private _setShadowMap(target:GameObject, shadowMap:ShadowMapTexture){

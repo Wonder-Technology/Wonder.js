@@ -1,18 +1,55 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class CubemapRenderTargetRenderer extends RenderTargetRenderer{
-        public static create(texture:DynamicCubemapTexture) {
-            var obj = new this(texture);
+    export class CubemapShadowMapRenderTargetRenderer extends RenderTargetRenderer{
+        public static create(light:PointLight) {
+            var obj = new this(light);
 
             obj.initWhenCreate();
 
             return obj;
         }
 
-        protected texture:DynamicCubemapTexture;
+        constructor(light:PointLight){
+            super(light.shadowMap);
+
+            this.light = light;
+        }
+
+        //todo private?
+        public light:PointLight = null;
+
+        protected texture:CubemapShadowMapTexture;
 
         private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
+
+        //todo dry
+        public initWhenCreate(){
+            var self = this;
+
+            this.texture.width = this.light.shadowMapWidth;
+            this.texture.height = this.light.shadowMapHeight;
+
+
+            this.light.shadowRenderList.forEach((child:GameObject) => {
+                //todo support multi shadowMap
+                self._setCubemapShadowMap(child, self.texture);
+            });
+
+            super.initWhenCreate();
+        }
+
+        public init(){
+            this.texture.init();
+
+            Director.getInstance().stage.createShaderOnlyOnce(BuildCubemapShadowMapShaderLib.getInstance());
+
+            super.init();
+        }
+
+
+
+
 
         //todo can one frameBuffer bind six faces of cubemap?
         protected initFrameBuffer(){
@@ -38,16 +75,31 @@ module dy {
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var i = null,
+                stage:Stage = Director.getInstance().stage,
+                renderCamera = null,
                 self = this;
+
+            //todo dry
+            if(!stage.shadowMap.enable){
+                return;
+            }
 
             //todo judge renderList.length
             for(i = 0; i < 6; i++){
+                renderCamera = self.createCamera(i);
+
                 this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
                 this.frameBufferOperator.setViewport();
 
 
                 //todo if renderList is null, draw all
-                this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, self.createCamera(i)));
+                //this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, self.createCamera(i)));
+                this.light.shadowRenderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) =>{
+                    //todo dry
+                    self._setCubemapShadowData(child, renderCamera);
+                    child.render(renderer, renderCamera)
+                });
+
                 renderer.render();
             }
 
@@ -65,12 +117,16 @@ module dy {
         protected createCamera(index:number){
             var cubeCameraComponent = PerspectiveCamera.create(),
                 camera = GameObject.create(),
-                pos = this.texture.getPosition();
+                light:PointLight = this.light,
+                pos = light.position;
 
             cubeCameraComponent.fovy = 90;
-            cubeCameraComponent.aspect = 1;
-            cubeCameraComponent.near = this.texture.near;
-            cubeCameraComponent.far = this.texture.far;
+
+            //cubeCameraComponent.aspect = 1;
+            cubeCameraComponent.aspect = light.shadowMapWidth / light.shadowMapHeight;
+            cubeCameraComponent.near = light.shadowCameraNear;
+            cubeCameraComponent.far = light.shadowCameraFar;
+
 
 
             camera.addComponent(cubeCameraComponent);
@@ -137,6 +193,33 @@ module dy {
                     break;
             }
         }
+
+        private _setCubemapShadowMap(target:GameObject, shadowMap:CubemapShadowMapTexture){
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
+
+            material.cubemapShadowMap = shadowMap;
+        }
+
+        private _setCubemapShadowData(target:GameObject, shadowMapCamera:GameObject){
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
+                //cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
+            cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
+            //todo refactor
+            material.shadowMapData = {
+                shadowBias: this.light.shadowBias,
+                shadowDarkness: this.light.shadowDarkness,
+                shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
+                //vpMatrixFromLight: null,
+
+                lightPos: this.light.position,
+                farPlane: cameraComponent.far
+            };
+        }
     }
 }
-

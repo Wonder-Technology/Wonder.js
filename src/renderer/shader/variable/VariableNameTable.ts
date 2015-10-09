@@ -6,6 +6,7 @@ module dy{
     _table.addChild("specularMap", "u_specularMapSampler");
     _table.addChild("normalMap", "u_normalMapSampler");
     _table.addChild("shadowMap", "u_shadowMapSampler");
+    _table.addChild("cubemapShadowMap", "u_cubemapShadowMapSampler");
     _table.addChild("mirrorReflectionMap", "u_mirrorSampler");
 
     export class VariableNameTable{

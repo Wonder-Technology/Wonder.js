@@ -48,58 +48,6 @@ module dy{
             }
         }
 
-        public createShadowMapCamera():GameObject{
-            //var pos =Vector3.create(-20, 50, 0);
-
-
-
-
-
-            var orthoCameraComponent = OrthographicCamera.create(),
-                camera = GameObject.create();
-
-            orthoCameraComponent.left = this.shadowCameraLeft;
-            orthoCameraComponent.right = this.shadowCameraRight;
-            orthoCameraComponent.top = this.shadowCameraTop;
-            orthoCameraComponent.bottom = this.shadowCameraBottom;
-            orthoCameraComponent.near = this.shadowCameraNear;
-            orthoCameraComponent.far = this.shadowCameraFar;
-
-            camera.addComponent(orthoCameraComponent);
-
-            //todo optimize:dirty?
-            camera.transform.translate(this.gameObject.transform.position);
-            camera.transform.lookAt(0, 0, 0);
-
-            camera.init();
-
-
-            //var orthoCameraComponent = PerspectiveCamera.create(),
-            //    camera = GameObject.create();
-            //
-            //orthoCameraComponent.fovy = 90;
-            //orthoCameraComponent.aspect = 1.0;
-            //orthoCameraComponent.near = this.shadowCameraNear;
-            //orthoCameraComponent.far = this.shadowCameraFar;
-            //
-            //camera.addComponent(orthoCameraComponent);
-            //
-            ////todo optimize:dirty?
-            ////camera.transform.lookAt(this.getDirection());
-            ////camera.transform.lookAt(-1, -1, 0);
-            ////camera.transform.translate(this.shadowPosition);
-            //camera.transform.translate(pos);
-            //camera.transform.lookAt(0, 0, 0);
-            //
-            //camera.init();
-
-
-
-
-
-            return camera;
-        }
-
         public getDirection(){
             //return this.gameObject.transform.position.sub(Vector3.create(0, 0, 0));
             return Vector3.create(0, 0, 0).sub(this.gameObject.transform.position);
