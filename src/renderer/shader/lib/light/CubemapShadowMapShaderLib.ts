@@ -26,6 +26,7 @@ module dy{
             //program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.shadowMapData.shadowMapSize);
 
             program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.shadowMapData.lightPos);
+            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.shadowMapData.farPlane);
         }
 
         protected setShaderDefinition(){
@@ -33,7 +34,7 @@ module dy{
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("cubemapShadowMap"),
-                "u_shadowBias", "u_shadowDarkness", "u_lightPos"
+                "u_shadowBias", "u_shadowDarkness", "u_lightPos", "u_farPlane"
             ]);
 
             //this._setShadowMapSource();

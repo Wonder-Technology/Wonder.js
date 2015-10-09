@@ -177,6 +177,22 @@ module dy{
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };
+
+        //todo refactor?
+        public static u_lightPos:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_farPlane:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_cubemapShadowMapSampler:ShaderVariable = {
+            type:VariableType.SAMPLER_CUBE,
+            value:VariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

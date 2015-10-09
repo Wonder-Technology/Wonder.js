@@ -73,6 +73,10 @@
 
 
 
+//            var listArr = boxArr;
+//            var listArr = groundArr;
+//            var listArr = [];
+            var listArr = boxArr.concat(groundArr);
 
 
 
@@ -104,10 +108,6 @@
             pointLightComponent.castShadow = true;
 
 
-//            pointLightComponent.shadowCameraLeft = -100;
-//            pointLightComponent.shadowCameraRight = 100;
-//            pointLightComponent.shadowCameraTop = 100;
-//            pointLightComponent.shadowCameraBottom = -100;
             pointLightComponent.shadowCameraNear = 0.1;
             pointLightComponent.shadowCameraFar = 1000;
 
@@ -121,19 +121,37 @@
             //todo some face to be null
             //todo specify exact object to draw
             pointLightComponent.shadowRenderList = {
-                px:boxArr,
-                nx:boxArr,
-                py:boxArr,
-                ny:boxArr,
-                pz:boxArr,
-                nz:boxArr
+                px:listArr,
+                nx:listArr,
+                py:listArr,
+                ny:listArr,
+                pz:listArr,
+                nz:listArr
             };
+
+
+
+            var pointMaterial = dy.BasicMaterial.create();
+            pointMaterial.color = dy.Color.create("#ffffff");
+
+            var geometry = dy.SphereGeometry.create();
+            geometry.material = pointMaterial;
+            geometry.radius = 1;
+            geometry.segment = 20;
+
+
 
 
 
 
             pointLight = dy.GameObject.create();
             pointLight.addComponent(pointLightComponent);
+
+
+            pointLight.addComponent(geometry);
+            pointLight.addComponent(dy.MeshRenderer.create());
+
+
 
             pointLight.transform.translate(dy.Vector3.create(0, 0, 0));
 
@@ -170,51 +188,52 @@
 //            //todo add to debug shader lib in engine
 //            var shaderDefinitionData = {
 //                attributes:  {
-//                    "a_texCoord": {
-//                        type:dy.VariableType.FLOAT_2,
-//                        value: function(){
-//                            return rect.texCoords;
-//                        }
-//                    }
+////                    "a_texCoord": {
+////                        type:dy.VariableType.FLOAT_2,
+////                        value: function(){
+////                            return rect.texCoords;
+////                        }
+////                    }
 //                },
 //                uniforms: {
-//                    "u_sampler2D0": {
-//                        type:dy.VariableType.SAMPLER_2D,
+//                    //todo change value?
+//                    "u_lightPos": {
+//                        type:dy.VariableType.FLOAT_3,
+//                        value: dy.Vector3.create(0, 0, 0)
+//                    },
+////                    "u_farPlane": {
+////                        type:dy.VariableType.FLOAT_1,
+////                        value: pointLightComponent.shadowCameraFar
+////                    },
+//                    "u_samplerCube0": {
+//                        type:dy.VariableType.SAMPLER_CUBE,
 //                        value: dy.VariableCategory.ENGINE
 //                    }
 //                },
 //                vsSourceVarDeclare: [
-//                    "varying vec2 v_texCoord;"
+//                    "varying vec3 v_position;"
 //                ].join("\n"),
 //                vsSourceBody: [
-//                    "v_texCoord = a_texCoord;",
+//                    "v_position= a_position;",
 //                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
 //                ].join("\n"),
 //                fsSourceVarDeclare: [
-//                    "varying vec2 v_texCoord;"
+//                    "varying vec3 v_position;"
 //                ].join("\n"),
+//                fsSourceFuncDefine: [
+//                    "float unpackDepth(vec4 rgbaDepth) { const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0); return dot(rgbaDepth, bitShift); }"
+//                ],
 //                fsSourceBody: [
-//                    " float depthValue = texture2D(u_sampler2D0, v_texCoord).r;",
-//                    "if(depthValue < 0.1) depthValue = depthValue * 3.0;",
-//                    "gl_FragColor = vec4(vec3(depthValue), 1.0);"
-////                    "gl_FragColor = texture2D(u_sampler2D0, v_texCoord);"
-////                    "gl_FragColor = vec4(v_texCoord, 1.0, 1.0);"
+//                    "vec3 fragToLight= v_position - u_lightPos;",
+//            "float closestDepth = unpackDepth(textureCube(u_samplerCube0, fragToLight));",
+////            "gl_FragColor =vec4(vec3(closestDepth), 1.0); "
+////                        "if(closestDepth > 1.0)",
+////                    "gl_FragColor =vec4(0.0, 0.0, 0.0, 1.0); ",
+//                        "gl_FragColor =vec4(vec3(closestDepth), 1.0); "
+////                    "gl_FragColor =vec4(vec3(length(fragToLight)), 1.0); "
 //                ].join("\n")
 //            };
 //
-//
-////
-////@funcDefine
-////            float linearizeDepth(float depth){
-////
-////                float near = 0.1;
-////                float far = 1000.0;
-////                float z = depth * 2.0 - 1.0;
-////
-////                return (2.0 * near * far) / (far + near - z * (far - near));
-////            }
-////
-////@end
 //
 //
 //
@@ -234,8 +253,8 @@
 //            debugQuad.addComponent(dy.MeshRenderer.create());
 //            debugQuad.addComponent(rect);
 //
-//            debugQuad.transform.translate(0, 30, 0);
-//            debugQuad.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
+//            debugQuad.transform.translate(0, 0, -30);
+////            debugQuad.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
 //
 //
 //            var isAdded = false;
@@ -243,7 +262,7 @@
 //            //todo add to script?
 //            debugQuad.onStartLoop = function(){
 //                if(!isAdded){
-//                    debugMaterial.addMap(directionLightComponent.shadowMap);
+//                    debugMaterial.addMap(pointLightComponent.shadowMap);
 //
 //                    isAdded = true;
 //                }
@@ -300,7 +319,7 @@
             material.color = dy.Color.create("#666666");
             material.shininess = 16;
 
-            material.cullMode = dy.CullMode.NONE;
+//            material.cullMode = dy.CullMode.NONE;
 
 
             var geometry = dy.BoxGeometry.create();
@@ -376,47 +395,9 @@
 
 
             camera.addComponent(cameraComponent);
-//
-//
-//            camera.transform.lookAt(dy.Vector3.create(0, -1, 0), dy.Vector3.forward);
-//            camera.transform.lookAt(dy.Vector3.create(0, -1, 0), dy.Vector3.forward);
-//            camera.transform.translate(dy.Vector3.create(0, 30, 30));
-
-
-//            camera.transform.lookAt(1, -1, 0);
-//            camera.transform.translate(pos);
-            camera.transform.translate(0, 0, 10);
+            camera.transform.translate(20, 0, 20);
+//            camera.transform.lookAt(0, 0, -1, 0, -1, 0);
             camera.transform.lookAt(0, 0, 0);
-
-
-//
-//            camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
-//
-
-
-//            var camera = dy.GameObject.create();
-//
-////            var cameraComponent = dy.PerspectiveCamera.create();
-//            var cameraComponent = dy.OrthographicCamera.create();
-//
-//
-////            cameraComponent.fovy = 60;
-////            cameraComponent.aspect = canvas.width / canvas.height;
-//            cameraComponent.left = -100;
-//            cameraComponent.right = 100;
-//            cameraComponent.top = 100;
-//            cameraComponent.bottom = -100;
-//            cameraComponent.near = 0.1;
-//            cameraComponent.far = 1000;
-//
-//
-//            camera.addComponent(cameraComponent);
-//
-//
-//            camera.transform.translate(pos);
-//            camera.transform.lookAt(0, 0, 0);
-
-
 
 
 

@@ -25,6 +25,19 @@ float unpackDepth(vec4 rgbaDepth) {
     return dot(rgbaDepth, bitShift);
 }
 
+//todo remove?
+/*
+float VectorToDepthValue(vec3 Vec)
+{
+    vec3 AbsVec = abs(Vec);
+    float LocalZcomp = max(AbsVec.x, max(AbsVec.y, AbsVec.z));
+
+    const float f = 1000.0;
+    const float n = 0.1;
+    float NormZComp = (f+n) / (f-n) - (2.0*f*n)/(f-n)/LocalZcomp;
+    return (NormZComp + 1.0) * 0.5;
+}
+*/
 
 
 vec3 getShadowVisibility(vec3 lightDir) {
@@ -32,15 +45,16 @@ vec3 getShadowVisibility(vec3 lightDir) {
     vec3 fragToLight= v_position - u_lightPos;
     // Use the light to fragment vector to sample from the depth map
     float closestDepth = unpackDepth(textureCube(u_cubemapShadowMapSampler, fragToLight));
+    //float closestDepth = textureCube(u_cubemapShadowMapSampler, fragToLight).r;
 
     // It is currently in linear range between [0,1]. Re-transform back to original value
-    closestDepth *= far_plane;
+    closestDepth *= u_farPlane;
     // Now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
-    // Now test for shadows
-    float bias = 0.05;
+    //todo remove?
+    //float currentDepth = VectorToDepthValue(fragToLight);
 
-    return currentDepth > closestDepth + getShadowBias(lightDir) ? u_shadowDarkness : 1.0;
+    return vec3(currentDepth > closestDepth + getShadowBias(lightDir) ? u_shadowDarkness : 1.0);
 }
 @end
 

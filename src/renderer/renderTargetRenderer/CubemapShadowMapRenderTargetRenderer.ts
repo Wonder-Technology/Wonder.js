@@ -31,9 +31,11 @@ module dy {
             this.texture.height = this.light.shadowMapHeight;
 
 
-            this.light.shadowRenderList.forEach((child:GameObject) => {
-                //todo support multi shadowMap
-                self._setCubemapShadowMap(child, self.texture);
+            this.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
+                childList.forEach((child:GameObject) => {
+                    //todo support multi shadowMap
+                    self._setCubemapShadowMap(child, self.texture);
+                })
             });
 
             super.initWhenCreate();
@@ -59,6 +61,7 @@ module dy {
 
             for(i = 0; i < 6; i++){
                 let frameBuffer = frameBufferOperator.createFrameBuffer(),
+                    //todo use one renderBuffer?
                     renderBuffer = frameBufferOperator.createRenderBuffer();
 
                 this._frameBuffers.addChild(frameBuffer);
@@ -77,6 +80,7 @@ module dy {
             var i = null,
                 stage:Stage = Director.getInstance().stage,
                 renderCamera = null,
+                faceRenderList = null,
                 self = this;
 
             //todo dry
@@ -84,24 +88,36 @@ module dy {
                 return;
             }
 
-            //todo judge renderList.length
+            stage.useProgram();
+
             for(i = 0; i < 6; i++){
+                faceRenderList = this.light.shadowRenderList.getChild(this._convertIndexToFaceKey(i));
+                //faceRenderList can be array or collection
+                if(!faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0)){
+                    continue;
+                }
+
+                //todo optimize:create six camera once
                 renderCamera = self.createCamera(i);
 
                 this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
                 this.frameBufferOperator.setViewport();
 
 
+
                 //todo if renderList is null, draw all
                 //this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, self.createCamera(i)));
-                this.light.shadowRenderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) =>{
+                faceRenderList.forEach((child:GameObject) =>{
                     //todo dry
                     self._setCubemapShadowData(child, renderCamera);
                     child.render(renderer, renderCamera)
                 });
 
+                //todo render once?
                 renderer.render();
             }
+
+            stage.unUseProgram();
 
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
@@ -197,8 +213,13 @@ module dy {
         private _setCubemapShadowMap(target:GameObject, shadowMap:CubemapShadowMapTexture){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
+            //todo refactor?
+            if(material.cubemapShadowMap){
+                return;
+            }
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             material.cubemapShadowMap = shadowMap;
         }
