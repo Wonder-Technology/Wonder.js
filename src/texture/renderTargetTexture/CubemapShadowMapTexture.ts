@@ -43,17 +43,18 @@ module dy {
             return texture;
         }
 
-        //protected setTextureParameters(textureType, isSourcePowerOfTwo){
-        //    var gl = DeviceManager.getInstance().gl,
-        //        stage:Stage = Director.getInstance().stage;
-        //
-        //    super.setTextureParameters(textureType, isSourcePowerOfTwo);
-        //    //
-        //    //if(stage.shadowMap.softType === CubemapShadowMapSoftType.PCF) {
-        //    //    gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        //    //    gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        //    //}
-        //}
+        //todo dry
+        protected setTextureParameters(textureType, isSourcePowerOfTwo){
+            var gl = DeviceManager.getInstance().gl,
+                stage:Stage = Director.getInstance().stage;
+
+            super.setTextureParameters(textureType, isSourcePowerOfTwo);
+
+            if(stage.shadowMap.softType === ShadowMapSoftType.PCF) {
+                gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            }
+        }
     }
 }
 

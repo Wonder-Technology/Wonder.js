@@ -46,7 +46,7 @@
                 createBox(dy.Vector3.create(-20, 0, 0)),
                 createBox(dy.Vector3.create(0, 20, 0)),
                 createBox(dy.Vector3.create(0, -20, 0)),
-                createBox(dy.Vector3.create(0, 0, 20)),
+                createBox(dy.Vector3.create(10, 0, 25)),
                 createBox(dy.Vector3.create(0, 0, -20))
             ]
 
@@ -111,7 +111,7 @@
             pointLightComponent.shadowCameraNear = 0.1;
             pointLightComponent.shadowCameraFar = 1000;
 
-            pointLightComponent.shadowBias = 0.002;
+            pointLightComponent.shadowBias = 0.07;
             pointLightComponent.shadowDarkness = 0.2;
 
             pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
@@ -280,9 +280,9 @@
 
 
 //            director.stage.shadowMap.enable = false;
-//            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
-//
-//
+            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+
+
 //            director.scheduler.scheduleTime(function(){
 //                director.stage.shadowMap.enable = true;
 //            }, 2000);
@@ -395,9 +395,9 @@
 
 
             camera.addComponent(cameraComponent);
-            camera.transform.translate(20, 0, 20);
+            camera.transform.translate(0, 0, -19);
 //            camera.transform.lookAt(0, 0, -1, 0, -1, 0);
-            camera.transform.lookAt(0, 0, 0);
+            camera.transform.lookAt(0, 0, -40);
 
 
 

@@ -37,18 +37,18 @@ module dy{
                 "u_shadowBias", "u_shadowDarkness", "u_lightPos", "u_farPlane"
             ]);
 
-            //this._setShadowMapSource();
+            this._setShadowMapSource();
         }
-        //
-        //private _setShadowMapSource(){
-        //    var stage:Stage = Director.getInstance().stage;
-        //
-        //    if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
-        //        this.fsSourceDefineList.addChildren([{
-        //            name: "SHADOWMAP_TYPE_PCF_SOFT"
-        //        }]);
-        //    }
-        //}
+
+        private _setShadowMapSource(){
+            var stage:Stage = Director.getInstance().stage;
+
+            if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
+                this.fsSourceDefineList.addChildren([{
+                    name: "SHADOWMAP_TYPE_PCF_SOFT"
+                }]);
+            }
+        }
     }
 }
 
