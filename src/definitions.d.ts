@@ -123,6 +123,7 @@
 /// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildTwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildCubemapShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/ShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/TwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/CubemapShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>

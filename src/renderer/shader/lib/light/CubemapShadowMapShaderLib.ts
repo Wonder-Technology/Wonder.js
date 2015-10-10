@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class CubemapShadowMapShaderLib extends ShaderLib{
+    export class CubemapShadowMapShaderLib extends ShadowMapShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -13,39 +13,20 @@ module dy{
 
         public type:string = "cubemapShadowMap";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var stage = Director.getInstance().stage;
+        protected getShadowMapData(material:LightMaterial):CubemapShadowMapData{
+            return material.cubemapShadowMapData;
+        }
 
-            //todo refactor?
-            if(!stage.shadowMap.enable){
-                return;
-            }
-
-            program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.cubemapShadowMapData.shadowBias);
-            program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.cubemapShadowMapData.shadowDarkness);
+        protected sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.cubemapShadowMapData.lightPos);
             program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.cubemapShadowMapData.farPlane);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
-
+        protected addShadowMapUniformVariable(){
             this.addUniformVariable([
                 VariableNameTable.getVariableName("cubemapShadowMap"),
-                "u_shadowBias", "u_shadowDarkness", "u_lightPos", "u_farPlane"
+                "u_lightPos", "u_farPlane"
             ]);
-
-            this._setShadowMapSource();
-        }
-
-        private _setShadowMapSource(){
-            var stage:Stage = Director.getInstance().stage;
-
-            if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
-                this.fsSourceDefineList.addChildren([{
-                    name: "SHADOWMAP_TYPE_PCF_SOFT"
-                }]);
-            }
         }
     }
 }
