@@ -35,13 +35,9 @@ module dy {
         protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
             var cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
 
-            //todo refactor
-            material.shadowMapData = {
+            material.cubemapShadowMapData = {
                 shadowBias: this.light.shadowBias,
                 shadowDarkness: this.light.shadowDarkness,
-                shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-                //vpMatrixFromLight: null,
-
                 lightPos: this.light.position,
                 farPlane: cameraComponent.far
             };

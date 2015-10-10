@@ -69,13 +69,8 @@ module dy{
             this._cubemapShadowMap = cubemapShadowMap;
         }
 
-        private _shadowMapData:ShadowMapData = null;
-        get shadowMapData(){
-            return this._shadowMapData;
-        }
-        set shadowMapData(shadowMapData:ShadowMapData){
-            this._shadowMapData = shadowMapData;
-        }
+        public twoDShadowMapData:TwoDShadowMapData = null;
+        public cubemapShadowMapData:CubemapShadowMapData = null;
 
 
         public specular:Color = Color.create("0x111111");
@@ -123,15 +118,18 @@ module dy{
         }
     }
 
-    export type ShadowMapData = {
+    export type TwoDShadowMapData = {
         shadowBias:number,
         shadowDarkness:number,
         shadowMapSize:Array<number>,
-        //todo refactor
-        vpMatrixFromLight?:Matrix4,
-        //todo refactor
-        lightPos?:Vector3,
-        farPlane?: number
+        vpMatrixFromLight:Matrix4,
+    }
+
+    export type CubemapShadowMapData = {
+        shadowBias:number,
+        shadowDarkness:number,
+        lightPos:Vector3,
+        farPlane: number
     }
 }
 

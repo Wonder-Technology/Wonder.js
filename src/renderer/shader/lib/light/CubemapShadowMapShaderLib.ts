@@ -21,12 +21,10 @@ module dy{
                 return;
             }
 
-            program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.shadowMapData.shadowBias);
-            program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.shadowMapData.shadowDarkness);
-            //program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.shadowMapData.shadowMapSize);
-
-            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.shadowMapData.lightPos);
-            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.shadowMapData.farPlane);
+            program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.cubemapShadowMapData.shadowBias);
+            program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.cubemapShadowMapData.shadowDarkness);
+            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.cubemapShadowMapData.lightPos);
+            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.cubemapShadowMapData.farPlane);
         }
 
         protected setShaderDefinition(){

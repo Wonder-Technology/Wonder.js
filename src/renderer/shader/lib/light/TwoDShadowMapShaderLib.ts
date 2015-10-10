@@ -20,10 +20,10 @@ module dy{
                 return;
             }
 
-            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.shadowMapData.vpMatrixFromLight);
-            program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.shadowMapData.shadowBias);
-            program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.shadowMapData.shadowDarkness);
-            program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.shadowMapData.shadowMapSize);
+            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.twoDShadowMapData.vpMatrixFromLight);
+            program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, material.twoDShadowMapData.shadowBias);
+            program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, material.twoDShadowMapData.shadowDarkness);
+            program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.twoDShadowMapData.shadowMapSize);
         }
 
         protected setShaderDefinition(){

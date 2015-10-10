@@ -14,8 +14,8 @@ module dy{
         public type:string = "buildCubemapShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.shadowMapData.lightPos);
-            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.shadowMapData.farPlane);
+            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.cubemapShadowMapData.lightPos);
+            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.cubemapShadowMapData.farPlane);
         }
 
         protected setShaderDefinition(){
