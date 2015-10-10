@@ -9,27 +9,7 @@ module dy{
         	return obj;
         }
 
-        //private _program:Program = Program.create();
-        ////todo refactor?
-        //get program():Program{
-        //    var stage:Stage = Director.getInstance().stage;
-        //
-        //    if(stage.isUseProgram){
-        //        return stage.program;
-        //    }
-        //
-        //    return this._program;
-        //}
-        //set program(program:Program){
-        //    this._program = program;
-        //}
         public program:Program = Program.create();
-        //
-        ////todo remove
-        //get selfProgram(){
-        //    return this._program;
-        //}
-
         public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
         public vsSource:string = "";

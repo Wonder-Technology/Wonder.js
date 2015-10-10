@@ -56,7 +56,6 @@ module dy{
             this._twoDShadowMap = twoDShadowMap;
         }
 
-        //todo refactor?
         private _cubemapShadowMap:CubemapShadowMapTexture = null;
         get cubemapShadowMap(){
             return this._cubemapShadowMap;
@@ -108,7 +107,6 @@ module dy{
             if(this._twoDShadowMap){
                 this.shader.addLib(TwoDShadowMapShaderLib.getInstance());
             }
-            //todo refactor?
             else if(this._cubemapShadowMap){
                 this.shader.addLib(CubemapShadowMapShaderLib.getInstance());
             }

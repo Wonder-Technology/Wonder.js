@@ -178,7 +178,6 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
-        //todo refactor?
         public static u_lightPos:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
