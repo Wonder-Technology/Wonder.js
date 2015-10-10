@@ -28,14 +28,13 @@ module dy {
         public init(){
             super.init();
 
-            Director.getInstance().stage.createShaderOnlyOnce(BuildShadowMapShaderLib.getInstance());
+            Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
         }
 
         protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
             var cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
 
-            //todo refactor
-            material.shadowMapData = {
+            material.twoDShadowMapData = {
                 shadowBias: this.light.shadowBias,
                 shadowDarkness: this.light.shadowDarkness,
                 shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],

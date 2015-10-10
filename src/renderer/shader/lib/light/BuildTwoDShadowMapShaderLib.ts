@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class BuildShadowMapShaderLib extends ShaderLib{
+    export class BuildTwoDShadowMapShaderLib extends ShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,7 +11,7 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "buildShadowMap";
+        public type:string = "buildTwoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.twoDShadowMapData.vpMatrixFromLight);
