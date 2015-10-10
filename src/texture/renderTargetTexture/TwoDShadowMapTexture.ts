@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class CubemapShadowMapTexture extends CubemapRenderTargetTexture {
+    export class TwoDShadowMapTexture extends TwoDRenderTargetTexture{
         public static create() {
             var obj = new this();
 

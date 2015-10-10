@@ -173,7 +173,7 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
-        public static u_shadowMapSampler:ShaderVariable = {
+        public static u_twoDShadowMapSampler:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
         };

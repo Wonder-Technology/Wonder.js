@@ -1,26 +1,24 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class CubemapRenderTargetRenderer extends RenderTargetRenderer{
-        public static create(texture:DynamicCubemapTexture) {
-            var obj = new this(texture);
-
-            obj.initWhenCreate();
-
-            return obj;
-        }
-
-        protected texture:DynamicCubemapTexture;
+    export abstract class CubemapRenderTargetRenderer extends RenderTargetRenderer{
+        protected texture:CubemapRenderTargetTexture;
 
         private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
 
+        protected abstract getRenderList():dyCb.Hash<GameObject>;
+        protected abstract renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer);
+        protected abstract beforeRenderSixFaces();
+        protected abstract afterRenderSixFaces();
+        protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
+        protected abstract getPosition():Vector3;
+
         //todo can one frameBuffer bind six faces of cubemap?
         protected initFrameBuffer(){
             var frameBufferOperator = this.frameBufferOperator,
-                gl = DeviceManager.getInstance().gl,
-                i = null;
+                gl = DeviceManager.getInstance().gl;
 
-            for(i = 0; i < 6; i++){
+            for(let i = 0; i < 6; i++){
                 let frameBuffer = frameBufferOperator.createFrameBuffer(),
                     renderBuffer = frameBufferOperator.createRenderBuffer();
 
@@ -38,18 +36,33 @@ module dy {
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var i = null,
-                self = this;
+                renderCamera = null,
+                faceRenderList = null,
+                renderList = null;
+
+            this.beforeRenderSixFaces();
+
+            renderList = this.getRenderList();
 
             //todo judge renderList.length
             for(i = 0; i < 6; i++){
+                faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
+                //faceRenderList can be array or collection
+                if(!faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0)) {
+                    continue;
+                }
+
+                //todo optimize:create six camera once
+                renderCamera = this.createCamera(i);
+
                 this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
                 this.frameBufferOperator.setViewport();
 
-
-                //todo if renderList is null, draw all
-                this.texture.renderList.getChild(this._convertIndexToFaceKey(i)).forEach((child:GameObject) => child.render(renderer, self.createCamera(i)));
+                this.renderFace(faceRenderList, renderCamera, renderer);
                 renderer.render();
             }
+
+            this.afterRenderSixFaces();
 
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
@@ -65,12 +78,10 @@ module dy {
         protected createCamera(index:number){
             var cubeCameraComponent = PerspectiveCamera.create(),
                 camera = GameObject.create(),
-                pos = this.texture.getPosition();
+                pos = this.getPosition();
 
             cubeCameraComponent.fovy = 90;
-            cubeCameraComponent.aspect = 1;
-            cubeCameraComponent.near = this.texture.near;
-            cubeCameraComponent.far = this.texture.far;
+            this.setCamera(cubeCameraComponent);
 
 
             camera.addComponent(cubeCameraComponent);

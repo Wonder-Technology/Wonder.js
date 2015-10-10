@@ -76,9 +76,13 @@
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/MirrorRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/ShadowMapRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/CubemapShadowMapRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/TwoDShadowMapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/CubemapShadowMapRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/DynamicCubemapRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/utils/ShadowMapRenderTargetRendererUtils"/>
+/// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
+/// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
 /// <reference path="renderer/BufferType"/>
@@ -119,7 +123,7 @@
 /// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildCubemapShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/ShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/TwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/CubemapShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/NoNormalMapShaderLib"/>
@@ -198,8 +202,10 @@
 
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
+/// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
-/// <reference path="texture/renderTargetTexture/ShadowMapTexture"/>
+/// <reference path="texture/renderTargetTexture/TwoDShadowMapTexture"/>
+/// <reference path="texture/renderTargetTexture/CubemapRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 

@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class ShadowMapRenderTargetRenderer extends TwoDRenderTargetRenderer{
+    export class TwoDShadowMapRenderTargetRenderer extends TwoDRenderTargetRenderer{
         public static create(light:DirectionLight) {
             var obj = new this(light);
 
@@ -18,28 +18,18 @@ module dy {
         //todo private?
         public light:DirectionLight = null;
 
-        protected texture:ShadowMapTexture;
+        protected texture:TwoDShadowMapTexture;
+
+        private _shadowMapRendererUtils:ShadowMapRenderTargetRendererUtils = null;
 
         public initWhenCreate(){
-            var self = this;
-
-            this.texture.width = this.light.shadowMapWidth;
-            this.texture.height = this.light.shadowMapHeight;
-
-
-            //todo if renderList is null, draw all
-            this.light.shadowRenderList.forEach((child:GameObject) => {
-                //todo support multi shadowMap
-                self._setShadowMap(child, self.texture);
-            });
+            this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this.light, this.texture);
 
             super.initWhenCreate();
         }
 
         public init(){
-            this.texture.init();
-
-            Director.getInstance().stage.createShaderOnlyOnce(BuildShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.init();
 
             super.init();
         }
@@ -61,7 +51,8 @@ module dy {
 
             //todo if renderList is null, draw all
             this.light.shadowRenderList.forEach((child:GameObject) => {
-                self._setShadowData(child, shadowMapCamera);
+                self._shadowMapRendererUtils.setShadowData(child, shadowMapCamera);
+                //self._setShadowData(child, shadowMapCamera);
                 child.render(renderer, shadowMapCamera);
             });
             renderer.render();
@@ -97,32 +88,6 @@ module dy {
             camera.init();
 
             return camera;
-        }
-
-        private _setShadowMap(target:GameObject, shadowMap:ShadowMapTexture){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
-
-            material.shadowMap = shadowMap;
-        }
-
-        private _setShadowData(target:GameObject, shadowMapCamera:GameObject){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
-                cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
-            //cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
-            //todo refactor
-            material.shadowMapData = {
-                shadowBias: this.light.shadowBias,
-                shadowDarkness: this.light.shadowDarkness,
-                shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-                //todo optimize: compute vpMatrix once here or when render shadowRenderList
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
-            };
         }
     }
 }

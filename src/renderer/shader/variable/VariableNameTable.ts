@@ -5,7 +5,7 @@ module dy{
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
     _table.addChild("specularMap", "u_specularMapSampler");
     _table.addChild("normalMap", "u_normalMapSampler");
-    _table.addChild("shadowMap", "u_shadowMapSampler");
+    _table.addChild("twoDShadowMap", "u_twoDShadowMapSampler");
     _table.addChild("cubemapShadowMap", "u_cubemapShadowMapSampler");
     _table.addChild("mirrorReflectionMap", "u_mirrorSampler");
 

@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class ShadowMapShaderLib extends ShaderLib{
+    export class TwoDShadowMapShaderLib extends ShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,7 +11,7 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "shadowMap";
+        public type:string = "twoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             var stage = Director.getInstance().stage;
@@ -30,7 +30,7 @@ module dy{
             super.setShaderDefinition();
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("shadowMap"),
+                VariableNameTable.getVariableName("twoDShadowMap"),
                 "u_shadowBias", "u_shadowDarkness", "u_shadowMapSize", "u_vpMatrixFromLight"
             ]);
 

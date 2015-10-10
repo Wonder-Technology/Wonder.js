@@ -1,17 +1,9 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy {
-    export class ShadowMapTexture extends TwoDRenderTargetTexture {
-        public static create() {
-            var obj = new this();
-
-            return obj;
-        }
-
-        protected setTextureParameters(textureType, isSourcePowerOfTwo){
+    export class ShadowMapTextureUtils{
+        public static setTextureParameters(textureType){
             var gl = DeviceManager.getInstance().gl,
                 stage:Stage = Director.getInstance().stage;
-
-            super.setTextureParameters(textureType, isSourcePowerOfTwo);
 
             if(stage.shadowMap.softType === ShadowMapSoftType.PCF) {
                 gl.texParameteri(textureType, gl.TEXTURE_MAG_FILTER, gl.NEAREST);

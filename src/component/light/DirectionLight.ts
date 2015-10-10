@@ -33,18 +33,12 @@ module dy{
         public shadowCameraRight:number = 1000;
         public shadowCameraTop:number = 1000;
         public shadowCameraBottom:number = -1000;
-        public shadowCameraNear:number = 0.1;
-        public shadowCameraFar:number = 5000;
-        public shadowBias:number = ShaderChunk.NULL;
-        public shadowDarkness:number = 0;
-        public shadowMapWidth:number = 1024;
-        public shadowMapHeight:number = 1024;
-        public shadowMap:ShadowMapTexture = null;
+        public shadowMap:TwoDShadowMapTexture;
 
         public init(){
             if(this.castShadow){
-                this.shadowMap = ShadowMapTexture.create();
-                Director.getInstance().stage.addRenderTargetRenderer(ShadowMapRenderTargetRenderer.create(this));
+                this.shadowMap = TwoDShadowMapTexture.create();
+                Director.getInstance().stage.addRenderTargetRenderer(TwoDShadowMapRenderTargetRenderer.create(this));
             }
         }
 

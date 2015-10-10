@@ -44,16 +44,16 @@ module dy{
         }
 
         //todo support multi shadows
-        private _shadowMap:ShadowMapTexture = null;
-        get shadowMap(){
-            return this._shadowMap;
+        private _twoDShadowMap:TwoDShadowMapTexture = null;
+        get twoDShadowMap(){
+            return this._twoDShadowMap;
         }
-        set shadowMap(shadowMap:ShadowMapTexture){
-            this.addMap(shadowMap, {
-                samplerVariableName: VariableNameTable.getVariableName("shadowMap")
+        set twoDShadowMap(twoDShadowMap:TwoDShadowMapTexture){
+            this.addMap(twoDShadowMap, {
+                samplerVariableName: VariableNameTable.getVariableName("twoDShadowMap")
             });
 
-            this._shadowMap = shadowMap;
+            this._twoDShadowMap = twoDShadowMap;
         }
 
         //todo refactor?
@@ -110,8 +110,8 @@ module dy{
                 this.shader.addLib(NoNormalMapShaderLib.getInstance());
             }
 
-            if(this._shadowMap){
-                this.shader.addLib(ShadowMapShaderLib.getInstance());
+            if(this._twoDShadowMap){
+                this.shader.addLib(TwoDShadowMapShaderLib.getInstance());
             }
             //todo refactor?
             else if(this._cubemapShadowMap){
