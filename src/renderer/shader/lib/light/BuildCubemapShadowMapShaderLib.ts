@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class BuildCubemapShadowMapShaderLib extends ShaderLib{
+    export class BuildCubemapShadowMapShaderLib extends BuildShadowMapShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -24,8 +24,6 @@ module dy{
             this.addUniformVariable([
                 "u_lightPos", "u_farPlane"
             ]);
-
-            //this.vsSourceBody = ShaderSnippet.setPos_mvp;
         }
     }
 }

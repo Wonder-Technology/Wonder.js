@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class BuildTwoDShadowMapShaderLib extends ShaderLib{
+    export class BuildTwoDShadowMapShaderLib extends BuildShadowMapShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -23,8 +23,6 @@ module dy{
             this.addUniformVariable([
                 "u_vpMatrixFromLight"
             ]);
-
-            //this.vsSourceBody = ShaderSnippet.setPos_mvp;
         }
     }
 }
