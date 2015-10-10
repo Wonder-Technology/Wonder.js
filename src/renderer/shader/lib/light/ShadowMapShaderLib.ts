@@ -34,6 +34,9 @@ module dy{
         private _setShadowMapSource(){
             var stage:Stage = Director.getInstance().stage;
 
+            this.setFsSource(this.getFsChunk("shadowMap_fragment.glsl"));
+            this.setFsSource(this.getFsChunk(), "+");
+
             if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
                     name: "SHADOWMAP_TYPE_PCF_SOFT"

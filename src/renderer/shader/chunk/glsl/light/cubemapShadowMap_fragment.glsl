@@ -1,40 +1,4 @@
-//todo dry
 @funcDefine
-float getShadowBias(vec3 lightDir){
-    if(u_shadowBias != NULL){
-        return u_shadowBias;
-    }
-
-    /*!
-     //todo need verify
-
-     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:
-
-     return max(0.005 * (1.0 - dot(normalize(getNormal()), lightDir)), 0.001);
-     */
-
-    return 0.001;
-}
-
-float unpackDepth(vec4 rgbaDepth) {
-    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);
-    return dot(rgbaDepth, bitShift);
-}
-
-//todo remove?
-/*
-float VectorToDepthValue(vec3 Vec)
-{
-    vec3 AbsVec = abs(Vec);
-    float LocalZcomp = max(AbsVec.x, max(AbsVec.y, AbsVec.z));
-
-    const float f = 1000.0;
-    const float n = 0.1;
-    float NormZComp = (f+n) / (f-n) - (2.0*f*n)/(f-n)/LocalZcomp;
-    return (NormZComp + 1.0) * 0.5;
-}
-*/
-
 // PCF
 vec3 getShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, float bias){
     //only support in opengl es 3.0+
@@ -106,9 +70,6 @@ vec3 getShadowVisibility(vec3 lightDir) {
     closestDepth *= u_farPlane;
     // Now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
-    //todo remove?
-    //float currentDepth = VectorToDepthValue(fragToLight);
-
 
 
     #if defined(SHADOWMAP_TYPE_PCF_SOFT)
