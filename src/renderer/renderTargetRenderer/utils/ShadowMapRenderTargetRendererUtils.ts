@@ -19,15 +19,18 @@ module dy {
             this.texture.init();
         }
 
+        //todo remove
         public setShadowData(target:GameObject, shadowMapCamera:GameObject){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
-            this.setMaterialShadowMapData(material, target, shadowMapCamera);
+            //var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+            //
+            //dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            //
+            //this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }
 
-        protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
+
+
+        //protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
     }
 }
 

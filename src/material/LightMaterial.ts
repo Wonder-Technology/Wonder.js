@@ -56,24 +56,39 @@ module dy{
             this._twoDShadowMap = twoDShadowMap;
         }
 
-        private _cubemapShadowMap:CubemapShadowMapTexture = null;
-        get cubemapShadowMap(){
-            return this._cubemapShadowMap;
-        }
-        set cubemapShadowMap(cubemapShadowMap:CubemapShadowMapTexture){
-            this.addMap(cubemapShadowMap, {
-                samplerVariableName: VariableNameTable.getVariableName("cubemapShadowMap")
-            });
-
-            this._cubemapShadowMap = cubemapShadowMap;
-        }
+        //private _cubemapShadowMap:CubemapShadowMapTexture = null;
+        //get cubemapShadowMap(){
+        //    return this._cubemapShadowMap;
+        //}
+        //set cubemapShadowMap(cubemapShadowMap:CubemapShadowMapTexture){
+        //    this.addMap(cubemapShadowMap, {
+        //        samplerVariableName: VariableNameTable.getVariableName("cubemapShadowMap")
+        //    });
+        //
+        //    this._cubemapShadowMap = cubemapShadowMap;
+        //}
 
         public twoDShadowMapData:TwoDShadowMapData = null;
-        public cubemapShadowMapData:CubemapShadowMapData = null;
+        //public cubemapShadowMapData:CubemapShadowMapData = null;
+        public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
 
 
         public specular:Color = Color.create("0x111111");
         public shininess:number = 32;
+
+        private _shadowMapIndex:number = 0;
+
+
+        public addCubemapShadowMap(cubemapShadowMap:CubemapShadowMapTexture){
+            this.addMap(cubemapShadowMap, {
+                samplerData: this._shadowMapIndex
+            });
+            this._shadowMapIndex++;
+        }
+
+        public hasShadowMap(map:TwoDShadowMapTexture|CubemapShadowMapTexture){
+            return this.textureManager.hasMap(map);
+        }
 
         public init(){
             this._setPhongMapShaderLib();
@@ -107,15 +122,23 @@ module dy{
             if(this._twoDShadowMap){
                 this.shader.addLib(TwoDShadowMapShaderLib.getInstance());
             }
-            else if(this._cubemapShadowMap){
+            //todo remove else?
+            else if(this._hasCubemapShadowMap()){
                 this.shader.addLib(CubemapShadowMapShaderLib.getInstance());
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.getInstance());
             }
         }
+
+        private _hasCubemapShadowMap(){
+            return this.textureManager.hasMap((map:Texture) => {
+                return map instanceof CubemapShadowMapTexture;
+            });
+        }
     }
 
+    //todo
     export type TwoDShadowMapData = {
         shadowBias:number,
         shadowDarkness:number,
@@ -123,9 +146,7 @@ module dy{
         vpMatrixFromLight:Matrix4,
     }
 
-    export type CubemapShadowMapData = {
-        shadowBias:number,
-        shadowDarkness:number,
+    export type BuildCubemapShadowMapData = {
         lightPos:Vector3,
         farPlane: number
     }

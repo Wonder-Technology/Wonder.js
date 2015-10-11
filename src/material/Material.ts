@@ -161,5 +161,6 @@ module dy {
     export type MapVariableData = {
         samplerVariablePrefix?:string;
         samplerVariableName?: string;
+        samplerData?:any
     }
 }

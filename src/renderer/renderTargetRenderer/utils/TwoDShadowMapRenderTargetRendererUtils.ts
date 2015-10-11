@@ -31,17 +31,17 @@ module dy {
             Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
         }
 
-        protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-            var cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
-
-            material.twoDShadowMapData = {
-                shadowBias: this.light.shadowBias,
-                shadowDarkness: this.light.shadowDarkness,
-                shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-                //todo optimize: compute vpMatrix once here or when render shadowRenderList
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
-            };
-        }
+        //protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
+        //    var cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
+        //
+        //    material.twoDShadowMapData = {
+        //        shadowBias: this.light.shadowBias,
+        //        shadowDarkness: this.light.shadowDarkness,
+        //        shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
+        //        //todo optimize: compute vpMatrix once here or when render shadowRenderList
+        //        vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+        //    };
+        //}
 
         private _setShadowMap(target:GameObject, shadowMap:TwoDShadowMapTexture){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;

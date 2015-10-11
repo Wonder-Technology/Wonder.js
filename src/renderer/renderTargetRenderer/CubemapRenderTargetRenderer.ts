@@ -44,7 +44,6 @@ module dy {
 
             renderList = this.getRenderList();
 
-            //todo judge renderList.length
             for(i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
                 //faceRenderList can be array or collection

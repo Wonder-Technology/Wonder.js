@@ -13,21 +13,30 @@ module dy{
 
         public type:string = "cubemapShadowMap";
 
-        protected getShadowMapData(material:LightMaterial):CubemapShadowMapData{
-            return material.cubemapShadowMapData;
-        }
+        //protected getShadowMapData(material:LightMaterial):CubemapShadowMapData{
+        //    return material.cubemapShadowMapData;
+        //}
 
         protected sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.cubemapShadowMapData.lightPos);
-            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.cubemapShadowMapData.farPlane);
+            var stage = Director.getInstance().stage,
+                shadowMapData = stage.cubemapShadowMaps;
+
+            shadowMapData.forEach((data:CubemapShadowMapData, index:number) => {
+                program.sendUniformData(`u_lightPos[${index}]`, VariableType.FLOAT_3, data.lightPos);
+                program.sendUniformData(`u_farPlane[${index}]`, VariableType.FLOAT_1, data.farPlane);
+                program.sendUniformData(`u_shadowBias[${index}]`, VariableType.FLOAT_1, data.shadowBias);
+                program.sendUniformData(`u_shadowDarkness[${index}]`, VariableType.FLOAT_1, data.shadowDarkness);
+            });
         }
 
+        //todo remove
         protected addShadowMapUniformVariable(){
-            this.addUniformVariable([
-                VariableNameTable.getVariableName("cubemapShadowMap"),
-                "u_lightPos", "u_farPlane"
-            ]);
+            //this.addUniformVariable([
+            //    VariableNameTable.getVariableName("cubemapShadowMap"),
+            //    "u_lightPos", "u_farPlane"
+            //]);
         }
+
     }
 }
 

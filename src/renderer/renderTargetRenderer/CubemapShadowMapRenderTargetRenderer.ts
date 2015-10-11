@@ -51,13 +51,12 @@ module dy {
             return this.light.shadowRenderList;
         }
 
+        //todo combine to parent class?
         protected  renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer){
             var utils:CubemapShadowMapRenderTargetRendererUtils = this._shadowMapRendererUtils;
 
-            faceRenderList.forEach((child:GameObject) => child.render(renderer, renderCamera));
-
             faceRenderList.forEach((child:GameObject) => {
-                utils.setShadowData(child, renderCamera);
+                utils.setBuildShadowData(child);
                 child.render(renderer, renderCamera)
             });
         }

@@ -20,7 +20,6 @@ module dy {
 
             this.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
                 childList.forEach((child:GameObject) => {
-                    //todo support multi shadowMap
                     self._setCubemapShadowMap(child, self.texture);
                 })
             });
@@ -32,29 +31,45 @@ module dy {
             Director.getInstance().stage.createShaderOnlyOnce(BuildCubemapShadowMapShaderLib.getInstance());
         }
 
-        protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-            var cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
 
-            material.cubemapShadowMapData = {
-                shadowBias: this.light.shadowBias,
-                shadowDarkness: this.light.shadowDarkness,
+        public setBuildShadowData(target:GameObject){
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            //
+            //this.setMaterialShadowMapData(material, target, shadowMapCamera);
+
+
+
+            material.buildCubemapShadowMapData = {
                 lightPos: this.light.position,
-                farPlane: cameraComponent.far
+                farPlane: this.light.shadowCameraFar
             };
         }
+        //
+        //protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
+        //    var cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
+        //
+        //    material.cubemapShadowMapData = {
+        //        shadowBias: this.light.shadowBias,
+        //        shadowDarkness: this.light.shadowDarkness,
+        //        lightPos: this.light.position,
+        //        farPlane: cameraComponent.far
+        //    };
+        //}
 
         private _setCubemapShadowMap(target:GameObject, shadowMap:CubemapShadowMapTexture){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
 
-            //todo refactor?
-            if(material.cubemapShadowMap){
+            //if(material.cubemapShadowMap){
+            if(material.hasShadowMap(shadowMap)){
                 return;
             }
 
             dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
-            material.cubemapShadowMap = shadowMap;
+            material.addCubemapShadowMap(shadowMap);
         }
     }
 }

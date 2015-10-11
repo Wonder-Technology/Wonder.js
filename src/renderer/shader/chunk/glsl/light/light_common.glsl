@@ -29,9 +29,16 @@ uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 @end
 
 
+@funcDeclare
+vec3 getLightDir(vec3 lightPos);
+@end
 
 
 @funcDefine
+vec3 getLightDir(vec3 lightPos){
+    return lightPos - v_worldPosition;
+}
+
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
     vec3 materialDiffuse = getMaterialDiffuse();
@@ -56,7 +63,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
     vec3 specularColor = spec * materialSpecular * intensity;
 
-    return  ambientColor + getShadowVisibility(lightDir) * attenuation * (diffuseColor + specularColor);
+    return  ambientColor + attenuation * (diffuseColor + specularColor);
 }
 
 

@@ -50,6 +50,16 @@ module dy{
             return this._textures.getChild("map").getChild(index);
         }
 
+
+        public hasMap(func:(...args)=>boolean);
+        public hasMap(map:Texture);
+
+        public hasMap(arg){
+            var maps = this._textures.getChild("map");
+
+            return maps && maps.hasChild(arguments[0]);
+        }
+
         public setEnvMap(envMap:CubemapTexture){
             envMap.material = this._material;
             this._textures.addChild("envMap", envMap);

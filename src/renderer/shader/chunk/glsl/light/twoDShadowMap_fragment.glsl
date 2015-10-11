@@ -24,7 +24,7 @@ vec3 getShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, float bias){
 
 
 
-vec3 getShadowVisibility(vec3 lightDir) {
+vec3 getTwoDShadowVisibility(vec3 lightDir) {
     //project texture
     vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
 

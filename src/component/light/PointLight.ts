@@ -50,6 +50,15 @@ module dy{
             }
         }
 
+        get shadowMapData():CubemapShadowMapData{
+            return {
+                shadowBias: this.shadowBias,
+                shadowDarkness: this.shadowDarkness,
+                lightPos: this.position,
+                farPlane: this.shadowCameraFar
+            }
+        }
+
         public intensity:number = 1;
 
         public castShadow:boolean = false;
@@ -63,5 +72,12 @@ module dy{
                 Director.getInstance().stage.addRenderTargetRenderer(CubemapShadowMapRenderTargetRenderer.create(this));
             }
         }
+    }
+
+    export type CubemapShadowMapData = {
+        shadowBias:number,
+        shadowDarkness:number,
+        lightPos:Vector3,
+        farPlane:number
     }
 }
