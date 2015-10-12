@@ -15,16 +15,6 @@ module dy {
          return this.texture.renderList;
         }
 
-        //protected  renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer){
-        //    faceRenderList.forEach((child:GameObject) => child.render(renderer, renderCamera));
-        //}
-
-        protected  beforeRenderSixFaces(){
-        }
-
-        protected  afterRenderSixFaces(){
-        }
-
         protected setCamera(camera:PerspectiveCamera){
             camera.aspect = 1;
             camera.near = this.texture.near;

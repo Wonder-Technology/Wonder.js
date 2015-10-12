@@ -41,9 +41,8 @@ module dy {
         }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var self = this,
-                shadowMapCamera = this.createCamera(),
-                stage:Stage = Director.getInstance().stage;
+            var shadowMapCamera = this.createCamera(),
+                self = this;
 
             //here need removeRepeatItems
             this._light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
@@ -54,8 +53,6 @@ module dy {
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();
 
-            Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
-            stage.useProgram();
 
             //todo if renderList is null, draw all
             //here not need removeRepeatItems
@@ -64,10 +61,21 @@ module dy {
             });
             renderer.render();
 
-            stage.unUseProgram();
-
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
+        }
+
+        protected  beforeRender(){
+            var stage:Stage = Director.getInstance().stage;
+
+            stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
+            stage.useProgram();
+        }
+
+        protected afterRender(){
+            var stage:Stage = Director.getInstance().stage;
+
+            stage.unUseProgram();
         }
 
         protected warnTextureSizeExceedCanvasSize(){

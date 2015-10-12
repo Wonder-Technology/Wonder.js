@@ -50,7 +50,7 @@ module dy {
             return this._light.shadowRenderList;
         }
 
-        protected beforeRenderSixFaces(){
+        protected beforeRender(){
             var utils:CubemapShadowMapRenderTargetRendererUtils = this._shadowMapRendererUtils;
 
             this._convertRenderListToCollection(this.getRenderList()).removeRepeatItems().forEach((child:GameObject) => {
@@ -63,7 +63,7 @@ module dy {
             Director.getInstance().stage.useProgram();
         }
 
-        protected afterRenderSixFaces(){
+        protected afterRender(){
             Director.getInstance().stage.unUseProgram();
         }
 

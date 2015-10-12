@@ -13,6 +13,7 @@ module dy {
 
         protected texture:MirrorTexture;
 
+
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var stage = Director.getInstance().stage,
                 renderCamera = this.createCamera(camera);

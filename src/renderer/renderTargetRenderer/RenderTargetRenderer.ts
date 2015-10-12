@@ -24,8 +24,9 @@ module dy {
         }
 
         public render(renderer:Renderer, camera:GameObject){
-
+            this.beforeRender();
             this.renderFrameBufferTexture(renderer, camera);
+            this.afterRender();
         }
 
         public dispose(){
@@ -39,6 +40,12 @@ module dy {
         protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
         protected abstract disposeFrameBuffer();
         protected abstract createCamera(...args):GameObject;
+
+        protected  beforeRender(){
+        }
+
+        protected  afterRender(){
+        }
 
         protected warnTextureSizeExceedCanvasSize(){
             dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");

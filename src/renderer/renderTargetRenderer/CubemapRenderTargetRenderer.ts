@@ -8,8 +8,6 @@ module dy {
 
         protected abstract getRenderList():dyCb.Hash<any>;
         //protected abstract renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer);
-        protected abstract beforeRenderSixFaces();
-        protected abstract afterRenderSixFaces();
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 
@@ -40,8 +38,6 @@ module dy {
                 faceRenderList = null,
                 renderList = null;
 
-            this.beforeRenderSixFaces();
-
             renderList = this.getRenderList();
 
             for(i = 0; i < 6; i++){
@@ -63,8 +59,6 @@ module dy {
                 });
                 renderer.render();
             }
-
-            this.afterRenderSixFaces();
 
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
