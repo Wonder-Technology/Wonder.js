@@ -205,6 +205,7 @@
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>
+/// <reference path="texture/renderTargetTexture/utils/IShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapRenderTargetTexture"/>

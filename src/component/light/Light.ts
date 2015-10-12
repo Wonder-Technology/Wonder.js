@@ -14,7 +14,7 @@ module dy {
         public shadowDarkness:number = 0;
         public shadowMapWidth:number = 1024;
         public shadowMapHeight:number = 1024;
-        public shadowMap:Texture = null;
+        public shadowMap:IShadowMapTexture = null;
     }
 }
 

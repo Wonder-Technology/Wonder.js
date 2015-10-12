@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class TwoDShadowMapTexture extends TwoDRenderTargetTexture{
+    export class TwoDShadowMapTexture extends TwoDRenderTargetTexture implements IShadowMapTexture{
         public static create() {
             var obj = new this();
 

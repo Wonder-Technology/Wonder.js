@@ -9,9 +9,9 @@ module dy {
             return obj;
         }
 
-        //todo private?
-        public light:PointLight;
         public texture:CubemapShadowMapTexture;
+
+        protected light:PointLight;
 
         public initWhenCreate(){
             var self = this;
@@ -20,7 +20,7 @@ module dy {
 
             this.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
                 childList.forEach((child:GameObject) => {
-                    self._setCubemapShadowMap(child, self.texture);
+                    self.setShadowMap(child, self.texture);
                 })
             });
         }
@@ -49,15 +49,8 @@ module dy {
             };
         }
 
-        private _setCubemapShadowMap(target:GameObject, shadowMap:CubemapShadowMapTexture){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
-            if(material.hasShadowMap(shadowMap)){
-                return;
-            }
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
+        protected addShadowMap(material:LightMaterial, shadowMap:CubemapShadowMapTexture){
             material.addCubemapShadowMap(shadowMap);
         }
     }

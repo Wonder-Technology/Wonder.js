@@ -9,9 +9,9 @@ module dy {
             return obj;
         }
 
-        //todo private?
-        public light:DirectionLight;
         public texture:TwoDShadowMapTexture;
+
+        protected light:DirectionLight;
 
         public initWhenCreate(){
             var self = this;
@@ -20,8 +20,7 @@ module dy {
 
             //todo if renderList is null, draw all
             this.light.shadowRenderList.forEach((child:GameObject) => {
-                //todo support multi shadowMap
-                self._setTwoDShadowMap(child, self.texture);
+                self.setShadowMap(child, self.texture);
             });
         }
 
@@ -52,15 +51,7 @@ module dy {
             };
         }
 
-        private _setTwoDShadowMap(target:GameObject, shadowMap:TwoDShadowMapTexture){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-            if(material.hasShadowMap(shadowMap)){
-                return;
-            }
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
+        protected addShadowMap(material:LightMaterial, shadowMap:TwoDShadowMapTexture){
             material.addTwoDShadowMap(shadowMap);
         }
     }

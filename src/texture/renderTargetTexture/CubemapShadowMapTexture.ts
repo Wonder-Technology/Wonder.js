@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class CubemapShadowMapTexture extends CubemapRenderTargetTexture {
+    export class CubemapShadowMapTexture extends CubemapRenderTargetTexture implements IShadowMapTexture{
         public static create() {
             var obj = new this();
 

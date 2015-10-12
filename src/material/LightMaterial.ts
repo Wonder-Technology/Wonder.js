@@ -71,8 +71,8 @@ module dy{
             this._cubemapShadowMapSamplerIndex++;
         }
 
-        public hasShadowMap(map:TwoDShadowMapTexture|CubemapShadowMapTexture){
-            return this.textureManager.hasMap(map);
+        public hasShadowMap(map:IShadowMapTexture){
+            return this.textureManager.hasMap(<Texture>map);
         }
 
         public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
