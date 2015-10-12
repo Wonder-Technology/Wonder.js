@@ -20,7 +20,7 @@ module dy {
 
         protected texture:TwoDShadowMapTexture;
 
-        private _shadowMapRendererUtils:ShadowMapRenderTargetRendererUtils = null;
+        private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
         public initWhenCreate(){
             this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this.light, this.texture);
@@ -31,12 +31,10 @@ module dy {
         public init(){
             var self = this;
 
-            this._shadowMapRendererUtils.init();
-
             EventManager.on("dy_endLoop", () => {
                 //here not need removeRepeatItems
-                this.light.shadowRenderList.forEach((child:GameObject) => {
-                    self._shadowMapRendererUtils.clearShadowData(child);
+                self.light.shadowRenderList.forEach((child:GameObject) => {
+                    self._shadowMapRendererUtils.clearTwoDShadowData(child);
                 });
             });
 
@@ -61,6 +59,7 @@ module dy {
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();
 
+            Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
             stage.useProgram();
 
             //todo if renderList is null, draw all

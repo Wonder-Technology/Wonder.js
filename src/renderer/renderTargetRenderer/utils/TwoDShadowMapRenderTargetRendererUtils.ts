@@ -25,10 +25,14 @@ module dy {
             });
         }
 
-        public init(){
-            super.init();
+        public clearTwoDShadowData(target:GameObject){
+            var target:GameObject = arguments[0],
+                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
-            Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
+            material.clearTwoDShadowMapData();
         }
 
         protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){

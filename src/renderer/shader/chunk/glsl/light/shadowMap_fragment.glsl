@@ -18,7 +18,7 @@ float getShadowBias(vec3 lightDir, float shadowBias){
 
      return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);
 
-    return bias;
+    //return bias;
 }
 
 float unpackDepth(vec4 rgbaDepth) {

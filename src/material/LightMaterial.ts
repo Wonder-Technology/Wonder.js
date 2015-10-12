@@ -83,8 +83,11 @@ module dy{
             this.cubemapShadowMapDatas.addChild(shadowMapData);
         }
 
-        public clearShadowMapData(){
+        public clearTwoDShadowMapData(){
             this.twoDShadowMapDatas.removeAllChildren();
+        }
+
+        public clearCubemapShadowMapData(){
             this.cubemapShadowMapDatas.removeAllChildren();
         }
 

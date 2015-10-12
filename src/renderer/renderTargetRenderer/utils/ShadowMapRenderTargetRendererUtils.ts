@@ -37,16 +37,6 @@ module dy {
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }
 
-        public clearShadowData(target:GameObject){
-            var target:GameObject = arguments[0],
-                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-
-            material.clearShadowMapData();
-        }
-
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
     }
 }

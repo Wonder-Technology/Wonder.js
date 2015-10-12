@@ -30,7 +30,15 @@ module dy {
         }
 
         public init(){
-            this._shadowMapRendererUtils.init();
+            var self = this;
+
+            EventManager.on("dy_endLoop", () => {
+                self.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
+                    childList.forEach((child:GameObject) => {
+                        self._shadowMapRendererUtils.clearCubemapShadowData(child);
+                    });
+                });
+            });
 
             super.init();
         }
@@ -57,6 +65,9 @@ module dy {
             this._convertRenderListToCollection(this.getRenderList()).removeRepeatItems().forEach((child:GameObject) => {
                 utils.setShadowData(child);
             });
+
+
+            Director.getInstance().stage.createShaderOnlyOnce(BuildCubemapShadowMapShaderLib.getInstance());
 
             Director.getInstance().stage.useProgram();
         }
