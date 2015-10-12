@@ -1,14 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
     export abstract class ShadowMapShaderLib extends ShaderLib{
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var stage = Director.getInstance().stage;
-
-            this.sendShadowMapShaderVariables(program, quadCmd, material);
-        }
-
-        protected abstract sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial);
-
         protected setShaderDefinition(){
             super.setShaderDefinition();
 

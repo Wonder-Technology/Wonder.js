@@ -13,7 +13,7 @@ module dy{
 
         public type:string = "cubemapShadowMap";
 
-        protected sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             material.cubemapShadowMapDatas.forEach((data:CubemapShadowMapData, index:number) => {
                 program.sendUniformData(`u_cubemapLightPos[${index}]`, VariableType.FLOAT_3, data.lightPos);
                 program.sendUniformData(`u_farPlane[${index}]`, VariableType.FLOAT_1, data.farPlane);

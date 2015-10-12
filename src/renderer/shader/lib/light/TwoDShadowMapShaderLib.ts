@@ -13,7 +13,7 @@ module dy{
 
         public type:string = "twoDShadowMap";
 
-        protected sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             material.twoDShadowMapDatas.forEach((data:TwoDShadowMapData, index:number) => {
                 program.sendUniformData(`u_vpMatrixFromLight[${index}]`, VariableType.FLOAT_MAT4, data.vpMatrixFromLight);
                 program.sendUniformData(`u_twoDShadowSize[${index}]`, VariableType.FLOAT_2, data.shadowSize);

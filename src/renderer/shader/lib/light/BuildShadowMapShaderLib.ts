@@ -4,7 +4,7 @@ module dy{
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.setFsSource(this.getFsChunk("buildShadowMap_fragment.glsl"));
+            this.setFsSource(this.getFsChunk("commonBuildShadowMap_fragment.glsl"));
             this.setFsSource(this.getFsChunk(), "+");
         }
     }

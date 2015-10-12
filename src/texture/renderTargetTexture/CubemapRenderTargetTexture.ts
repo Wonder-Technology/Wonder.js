@@ -6,9 +6,6 @@ module dy {
         public sendData(program:Program, index:number) {
             this.sendSamplerVariable(VariableType.SAMPLER_CUBE, program, index);
 
-            //todo repeat?
-            //program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
-
             return this;
         }
 
