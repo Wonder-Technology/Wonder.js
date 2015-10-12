@@ -38,7 +38,7 @@ vec3 getShadowVisibility() {
 	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {
         twoDLightDir = getDirectionLightDir(u_twoDLightPos[i]);
 
-	//if is opposite to direction of light rays, no shadow
+	////if is opposite to direction of light rays, no shadow
 
         shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);
 	}
@@ -49,7 +49,7 @@ vec3 getShadowVisibility() {
 	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
         cubemapLightDir = getPointLightDir(u_cubemapLightPos[i]);
 
-	//if is opposite to direction of light rays, no shadow
+	////if is opposite to direction of light rays, no shadow
 
         shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);
 	}

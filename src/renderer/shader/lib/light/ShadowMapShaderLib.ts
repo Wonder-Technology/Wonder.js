@@ -4,10 +4,6 @@ module dy{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             var stage = Director.getInstance().stage;
 
-            if(!stage.shadowMap.enable){
-                return;
-            }
-
             this.sendShadowMapShaderVariables(program, quadCmd, material);
         }
 
@@ -27,6 +23,8 @@ module dy{
                 cubemapShadowMapCount = stage.pointLights ? stage.pointLights.filter((light:GameObject) => {
                     return light.getComponent<PointLight>(PointLight).castShadow;
                 }).getCount() : 0;
+
+
 
             if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{

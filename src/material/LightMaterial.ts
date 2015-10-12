@@ -100,6 +100,8 @@ module dy{
         }
 
         private _setPhongMapShaderLib(){
+            var stage:Stage = Director.getInstance().stage;
+
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.getInstance());
             }
@@ -121,13 +123,15 @@ module dy{
                 this.shader.addLib(NoNormalMapShaderLib.getInstance());
             }
 
-            if(this._hasTwoDShadowMap() || this._hasCubemapShadowMap()){
+            if(stage.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
                 if(this._hasTwoDShadowMap()){
                     this.shader.addLib(TwoDShadowMapShaderLib.getInstance());
                 }
                 if(this._hasCubemapShadowMap()){
                     this.shader.addLib(CubemapShadowMapShaderLib.getInstance());
                 }
+
+                this.shader.addLib(TotalShadowMapShaderLib.getInstance());
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.getInstance());

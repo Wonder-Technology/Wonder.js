@@ -36,9 +36,6 @@ module dy{
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient"]);
 
             this._setLightDefinition();
-
-            this.setFsSource(this.getFsChunk("shadowMap_fragment.glsl"));
-            this.setFsSource(this.getFsChunk(), "+");
         }
 
         private _sendLightVariables(program:Program){

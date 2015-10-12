@@ -12,19 +12,18 @@ module dy {
         constructor(light:PointLight){
             super(light.shadowMap);
 
-            this.light = light;
+            this._light = light;
         }
 
-        //todo private?
-        public light:PointLight = null;
-
         protected texture:CubemapShadowMapTexture;
+
+        private _light:PointLight = null;
 
         private _shadowMapRendererUtils:CubemapShadowMapRenderTargetRendererUtils = null;
 
 
         public initWhenCreate(){
-            this._shadowMapRendererUtils = CubemapShadowMapRenderTargetRendererUtils.create(this.light, this.texture);
+            this._shadowMapRendererUtils = CubemapShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
             super.initWhenCreate();
         }
@@ -33,7 +32,7 @@ module dy {
             var self = this;
 
             EventManager.on("dy_endLoop", () => {
-                self.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
+                self._light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
                     childList.forEach((child:GameObject) => {
                         self._shadowMapRendererUtils.clearCubemapShadowData(child);
                     });
@@ -47,16 +46,8 @@ module dy {
             //not warn
         }
 
-        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            if(!Director.getInstance().stage.shadowMap.enable){
-                return;
-            }
-
-            super.renderFrameBufferTexture(renderer, camera);
-        }
-
         protected  getRenderList():dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>{
-            return this.light.shadowRenderList;
+            return this._light.shadowRenderList;
         }
 
         protected beforeRenderSixFaces(){
@@ -77,7 +68,7 @@ module dy {
         }
 
         protected setCamera(camera:PerspectiveCamera){
-            var light:PointLight = this.light;
+            var light:PointLight = this._light;
 
             camera.aspect = light.shadowMapWidth / light.shadowMapHeight;
             camera.near = light.shadowCameraNear;
@@ -85,7 +76,7 @@ module dy {
         }
 
         protected getPosition(){
-            return this.light.position;
+            return this._light.position;
         }
 
         private _convertRenderListToCollection(renderList:dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>):dyCb.Collection<GameObject>{

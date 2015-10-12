@@ -115,6 +115,7 @@
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
 /// <reference path="renderer/shader/lib/MirrorShaderLib"/>
 
+/// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/DiffuseMapShaderLib"/>
@@ -124,6 +125,7 @@
 /// <reference path="renderer/shader/lib/light/BuildShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildTwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/BuildCubemapShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/TotalShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/ShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/TwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/CubemapShadowMapShaderLib"/>

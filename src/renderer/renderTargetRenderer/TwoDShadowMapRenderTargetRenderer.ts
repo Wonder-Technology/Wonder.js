@@ -12,18 +12,17 @@ module dy {
         constructor(light:DirectionLight){
             super(light.shadowMap);
 
-            this.light = light;
+            this._light = light;
         }
 
-        //todo private?
-        public light:DirectionLight = null;
-
         protected texture:TwoDShadowMapTexture;
+
+        private _light:DirectionLight = null;
 
         private _shadowMapRendererUtils:TwoDShadowMapRenderTargetRendererUtils = null;
 
         public initWhenCreate(){
-            this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this.light, this.texture);
+            this._shadowMapRendererUtils = TwoDShadowMapRenderTargetRendererUtils.create(this._light, this.texture);
 
             super.initWhenCreate();
         }
@@ -33,7 +32,7 @@ module dy {
 
             EventManager.on("dy_endLoop", () => {
                 //here not need removeRepeatItems
-                self.light.shadowRenderList.forEach((child:GameObject) => {
+                self._light.shadowRenderList.forEach((child:GameObject) => {
                     self._shadowMapRendererUtils.clearTwoDShadowData(child);
                 });
             });
@@ -46,12 +45,8 @@ module dy {
                 shadowMapCamera = this.createCamera(),
                 stage:Stage = Director.getInstance().stage;
 
-            if(!stage.shadowMap.enable){
-                return;
-            }
-
             //here need removeRepeatItems
-            this.light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
+            this._light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
                 self._shadowMapRendererUtils.setShadowData(child, shadowMapCamera);
             });
 
@@ -64,7 +59,7 @@ module dy {
 
             //todo if renderList is null, draw all
             //here not need removeRepeatItems
-            this.light.shadowRenderList.forEach((child:GameObject) => {
+            this._light.shadowRenderList.forEach((child:GameObject) => {
                 child.render(renderer, shadowMapCamera);
             });
             renderer.render();
@@ -81,7 +76,7 @@ module dy {
 
         protected createCamera():GameObject{
             var orthoCameraComponent = OrthographicCamera.create(),
-                light:DirectionLight = this.light,
+                light:DirectionLight = this._light,
                 camera = GameObject.create();
 
             orthoCameraComponent.left = light.shadowCameraLeft;
