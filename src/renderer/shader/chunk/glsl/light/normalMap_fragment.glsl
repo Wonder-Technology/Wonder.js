@@ -15,6 +15,8 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 @funcDeclare
 vec3 getNormal();
 
+vec3 getLightDir(vec3 lightPos);
+
 @end
 
 

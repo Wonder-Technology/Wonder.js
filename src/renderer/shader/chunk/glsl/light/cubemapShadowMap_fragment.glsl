@@ -1,15 +1,15 @@
 @varDeclare
-	uniform samplerCube u_cubemapShadowMapSampler[ SHADOWMAP_COUNT ];
-	uniform float u_shadowDarkness[ SHADOWMAP_COUNT ];
-	uniform float u_shadowBias[ SHADOWMAP_COUNT ];
-	uniform float u_farPlane[ SHADOWMAP_COUNT ];
-	uniform vec3 u_lightPos[ SHADOWMAP_COUNT ];
+	uniform samplerCube u_cubemapShadowMapSampler[ CUBEMAP_SHADOWMAP_COUNT ];
+	uniform float u_cubemapShadowDarkness[ CUBEMAP_SHADOWMAP_COUNT ];
+	uniform float u_cubemapShadowBias[ CUBEMAP_SHADOWMAP_COUNT ];
+	uniform float u_farPlane[ CUBEMAP_SHADOWMAP_COUNT ];
+	uniform vec3 u_cubemapLightPos[ CUBEMAP_SHADOWMAP_COUNT ];
 @end
 
 
 @funcDefine
 // PCF
-float getShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float bias, float farPlane, float shadowMapDarkness){
+float getCubemapShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube cubemapShadowMapSampler, float shadowBias, float farPlane, float shadowDarkness){
     //only support in opengl es 3.0+
     //vec3 sampleOffsetDirections[20] = vec3[]
     //(
@@ -50,7 +50,7 @@ float getShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube
     float shadow = 0.0;
     int samples = 20;
 
-    //float diskRadius = 0.05;
+    //float diskRadius = 0.00000;
     //Another interesting trick we can apply here is that we can change the diskRadius based on how far the viewer is away from a fragment; this way we can increase the offset radius by the distance to the viewer, making the shadows softer when far away and sharper when close by.
     float viewDistance = length(u_cameraPos - v_worldPosition);
     float diskRadius = (1.0 + (viewDistance / farPlane)) / 25.0;
@@ -60,7 +60,7 @@ float getShadowVisibilityByPCF(float currentDepth, vec3 fragToLight, samplerCube
     {
         float pcfDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight + sampleOffsetDirections[i] * diskRadius));
         pcfDepth *= farPlane;   // Undo mapping [0;1]
-        shadow += currentDepth - bias > pcfDepth  ? shadowMapDarkness : 1.0;
+        shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;
     }
     shadow /= float(samples);
 
@@ -72,19 +72,20 @@ float getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSamp
 // Get vector between fragment position and light position
     vec3 fragToLight= v_worldPosition - lightPos;
     // Use the light to fragment vector to sample from the depth map
+    // Now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+
+    #if defined(SHADOWMAP_TYPE_PCF_SOFT)
+    return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);
+    #endif
+
     float closestDepth = unpackDepth(textureCube(cubemapShadowMapSampler, fragToLight));
 
     // It is currently in linear range between [0,1]. Re-transform back to original value
     closestDepth *= farPlane;
-    // Now get current linear depth as the length between the fragment and light position
-    float currentDepth = length(fragToLight);
 
 
-    #if defined(SHADOWMAP_TYPE_PCF_SOFT)
-    //return getShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);
-    #else
     return float(currentDepth > closestDepth + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0);
-    #endif
 }
 @end
 

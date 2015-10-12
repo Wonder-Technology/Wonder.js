@@ -111,7 +111,7 @@
             pointLightComponent.shadowCameraNear = 0.1;
             pointLightComponent.shadowCameraFar = 1000;
 
-            pointLightComponent.shadowBias = 0.05;
+            pointLightComponent.shadowBias = 0.08;
             pointLightComponent.shadowDarkness = 0.2;
 
             pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
@@ -178,7 +178,7 @@
             pointLight2Component2.shadowCameraNear = 0.1;
             pointLight2Component2.shadowCameraFar = 1000;
 
-            pointLight2Component2.shadowBias = 0.007;
+            pointLight2Component2.shadowBias = 0.08;
             pointLight2Component2.shadowDarkness = 0.2;
 
             pointLight2Component2.shadowMapWidth = SHADOW_MAP_WIDTH;
@@ -350,7 +350,7 @@
 
 
 //            director.stage.shadowMap.enable = false;
-//            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
 
 
 //            director.scheduler.scheduleTime(function(){

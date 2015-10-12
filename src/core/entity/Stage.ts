@@ -19,19 +19,6 @@ module dy {
             return this._lightManager.pointLights;
         }
 
-        get cubemapShadowMaps(): dyCb.Collection<CubemapShadowMapData>{
-            return this._lightManager.pointLights
-                .map((light:GameObject) => {
-                    return light.getComponent<PointLight>(PointLight);
-                })
-                .filter((light:PointLight) => {
-                    return light.castShadow;
-                })
-                .map((light:PointLight) => {
-                    return light.shadowMapData;
-                });
-        }
-
         get program():Program{
             return this.shader.program
         }

@@ -2,40 +2,31 @@
 module dy{
     export abstract class ShadowMapShaderLib extends ShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            //var stage = Director.getInstance().stage,
-            //    //shadowMapData = this.getShadowMapData(material);
-            //
-            //if(!stage.shadowMap.enable){
-            //    return;
-            //}
-            //
-            //program.sendUniformData("u_shadowBias", VariableType.FLOAT_1, shadowMapData.shadowBias);
-            //program.sendUniformData("u_shadowDarkness", VariableType.FLOAT_1, shadowMapData.shadowDarkness);
+            var stage = Director.getInstance().stage;
+
+            if(!stage.shadowMap.enable){
+                return;
+            }
 
             this.sendShadowMapShaderVariables(program, quadCmd, material);
         }
 
-        //protected abstract getShadowMapData(material:LightMaterial):TwoDShadowMapData|CubemapShadowMapData;
         protected abstract sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial);
-        protected abstract addShadowMapUniformVariable();
 
         protected setShaderDefinition(){
             super.setShaderDefinition();
-
-            //this.addUniformVariable([
-            //    "u_shadowBias", "u_shadowDarkness"
-            //]);
-
-            this.addShadowMapUniformVariable();
 
             this._setShadowMapSource();
         }
 
         private _setShadowMapSource(){
-            var stage:Stage = Director.getInstance().stage;
-
-            //this.setFsSource(this.getFsChunk("shadowMap_fragment.glsl"));
-            //this.setFsSource(this.getFsChunk(), "+");
+            var stage:Stage = Director.getInstance().stage,
+                twoDShadowMapCount = stage.directionLights? stage.directionLights.filter((light:GameObject) => {
+                    return light.getComponent<DirectionLight>(DirectionLight).castShadow;
+                }).getCount() : 0,
+                cubemapShadowMapCount = stage.pointLights ? stage.pointLights.filter((light:GameObject) => {
+                    return light.getComponent<PointLight>(PointLight).castShadow;
+                }).getCount() : 0;
 
             if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
@@ -43,21 +34,22 @@ module dy{
                 }]);
             }
 
-            //todo refactor
-            var stage:Stage = Director.getInstance().stage,
-                shadowMapData = stage.cubemapShadowMaps,
-                count = shadowMapData.getCount();
-
-            this._addDefine(this.fsSourceDefineList, count);
-        }
-
-        private _addDefine(list, cubemap_shadowMap_count){
-            list.addChildren([
+            this.vsSourceDefineList.addChild(
                 {
-                    //todo rename
-                    name: "SHADOWMAP_COUNT",
-                    value: cubemap_shadowMap_count
-                }]);
+                    name: "TWOD_SHADOWMAP_COUNT",
+                    value: twoDShadowMapCount
+                });
+
+            this.fsSourceDefineList.addChildren([
+                {
+                    name: "TWOD_SHADOWMAP_COUNT",
+                    value: twoDShadowMapCount
+                },
+                {
+                    name: "CUBEMAP_SHADOWMAP_COUNT",
+                    value: cubemapShadowMapCount
+                },
+            ]);
         }
     }
 }

@@ -34,13 +34,13 @@ module dy{
             return this._attenuation.quadratic;
         }
 
-        private _shadowRenderList:dyCb.Hash<GameObject> = null;
+        private _shadowRenderList:dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>> = null;
         get shadowRenderList(){
             return this._shadowRenderList;
         }
         set shadowRenderList(shadowRenderList:any) {
             if (JudgeUtils.isDirectObject(shadowRenderList)) {
-                this._shadowRenderList = dyCb.Hash.create<GameObject>(shadowRenderList);
+                this._shadowRenderList = dyCb.Hash.create<Array<GameObject>|dyCb.Collection<GameObject>>(shadowRenderList);
             }
             else if (shadowRenderList instanceof dyCb.Hash) {
                 this._shadowRenderList = shadowRenderList;
@@ -50,18 +50,8 @@ module dy{
             }
         }
 
-        get shadowMapData():CubemapShadowMapData{
-            return {
-                shadowBias: this.shadowBias,
-                shadowDarkness: this.shadowDarkness,
-                lightPos: this.position,
-                farPlane: this.shadowCameraFar
-            }
-        }
-
         public intensity:number = 1;
 
-        public castShadow:boolean = false;
         public shadowMap:CubemapShadowMapTexture;
 
         private _attenuation:Attenuation = Attenuation.create();
@@ -72,12 +62,5 @@ module dy{
                 Director.getInstance().stage.addRenderTargetRenderer(CubemapShadowMapRenderTargetRenderer.create(this));
             }
         }
-    }
-
-    export type CubemapShadowMapData = {
-        shadowBias:number,
-        shadowDarkness:number,
-        lightPos:Vector3,
-        farPlane:number
     }
 }

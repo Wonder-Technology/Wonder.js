@@ -15,9 +15,9 @@ module dy {
          return this.texture.renderList;
         }
 
-        protected  renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer){
-            faceRenderList.forEach((child:GameObject) => child.render(renderer, renderCamera));
-        }
+        //protected  renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer){
+        //    faceRenderList.forEach((child:GameObject) => child.render(renderer, renderCamera));
+        //}
 
         protected  beforeRenderSixFaces(){
         }

@@ -29,8 +29,6 @@ module dy{
             this.addUniformVariable([
                 VariableNameTable.getVariableName("normalMap")
             ]);
-
-            this.vsSourceVarDeclare += this.getVsChunk("light_common.glsl").varDeclare;
         }
     }
 }

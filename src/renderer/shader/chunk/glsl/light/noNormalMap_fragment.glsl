@@ -13,7 +13,7 @@ vec3 getPointLightDir(int index){
     //workaround '[] : Index expression must be constant' error
     for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {
         if(x == index){
-            return u_pointLights[x].position - v_worldPosition;
+            return getPointLightDir(u_pointLights[x].position - v_worldPosition);
         }
     }
 }
@@ -24,7 +24,7 @@ vec3 getDirectionLightDir(int index){
     //workaround '[] : Index expression must be constant' error
     for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {
         if(x == index){
-            return u_directionLights[x].direction;
+            return getDirectionLightDirByDirection(u_directionLights[x].direction);
         }
     }
 }

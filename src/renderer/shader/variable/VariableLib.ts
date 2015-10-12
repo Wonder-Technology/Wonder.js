@@ -158,26 +158,6 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
-        public static u_shadowBias:ShaderVariable = {
-            type:VariableType.FLOAT_1,
-            value:VariableCategory.ENGINE
-        };
-
-        public static u_shadowDarkness:ShaderVariable = {
-            type:VariableType.FLOAT_1,
-            value:VariableCategory.ENGINE
-        };
-
-        public static u_shadowMapSize:ShaderVariable = {
-            type:VariableType.FLOAT_2,
-            value:VariableCategory.ENGINE
-        };
-
-        public static u_twoDShadowMapSampler:ShaderVariable = {
-            type:VariableType.SAMPLER_2D,
-            value:VariableCategory.ENGINE
-        };
-
         public static u_lightPos:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
@@ -185,11 +165,6 @@ module dy{
 
         public static u_farPlane:ShaderVariable = {
             type:VariableType.FLOAT_1,
-            value:VariableCategory.ENGINE
-        };
-
-        public static u_cubemapShadowMapSampler:ShaderVariable = {
-            type:VariableType.SAMPLER_CUBE,
             value:VariableCategory.ENGINE
         };
     }

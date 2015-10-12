@@ -31,38 +31,23 @@ module dy {
             Director.getInstance().stage.createShaderOnlyOnce(BuildCubemapShadowMapShaderLib.getInstance());
         }
 
-
-        public setBuildShadowData(target:GameObject){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            //
-            //this.setMaterialShadowMapData(material, target, shadowMapCamera);
-
-
+        public setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
+            material.addCubemapShadowMapData({
+                shadowBias:this.light.shadowBias,
+                shadowDarkness:this.light.shadowDarkness,
+                lightPos:this.light.position,
+                farPlane:this.light.shadowCameraFar
+            });
 
             material.buildCubemapShadowMapData = {
                 lightPos: this.light.position,
                 farPlane: this.light.shadowCameraFar
             };
         }
-        //
-        //protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-        //    var cameraComponent = shadowMapCamera.getComponent<PerspectiveCamera>(PerspectiveCamera);
-        //
-        //    material.cubemapShadowMapData = {
-        //        shadowBias: this.light.shadowBias,
-        //        shadowDarkness: this.light.shadowDarkness,
-        //        lightPos: this.light.position,
-        //        farPlane: cameraComponent.far
-        //    };
-        //}
 
         private _setCubemapShadowMap(target:GameObject, shadowMap:CubemapShadowMapTexture){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
-
-            //if(material.cubemapShadowMap){
             if(material.hasShadowMap(shadowMap)){
                 return;
             }

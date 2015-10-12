@@ -38,7 +38,6 @@ module dy{
             this._setLightDefinition();
 
             this.setFsSource(this.getFsChunk("shadowMap_fragment.glsl"));
-            this.setFsSource(this.getFsChunk("light_common.glsl"), "+");
             this.setFsSource(this.getFsChunk(), "+");
         }
 

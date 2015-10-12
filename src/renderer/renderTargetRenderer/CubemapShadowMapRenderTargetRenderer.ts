@@ -47,21 +47,17 @@ module dy {
             super.renderFrameBufferTexture(renderer, camera);
         }
 
-        protected  getRenderList():dyCb.Hash<GameObject>{
+        protected  getRenderList():dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>{
             return this.light.shadowRenderList;
         }
 
-        //todo combine to parent class?
-        protected  renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer){
+        protected beforeRenderSixFaces(){
             var utils:CubemapShadowMapRenderTargetRendererUtils = this._shadowMapRendererUtils;
 
-            faceRenderList.forEach((child:GameObject) => {
-                utils.setBuildShadowData(child);
-                child.render(renderer, renderCamera)
+            this._convertRenderListToCollection(this.getRenderList()).removeRepeatItems().forEach((child:GameObject) => {
+                utils.setShadowData(child);
             });
-        }
 
-        protected beforeRenderSixFaces(){
             Director.getInstance().stage.useProgram();
         }
 
@@ -79,6 +75,21 @@ module dy {
 
         protected getPosition(){
             return this.light.position;
+        }
+
+        private _convertRenderListToCollection(renderList:dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>):dyCb.Collection<GameObject>{
+            var resultList = dyCb.Collection.create<GameObject>();
+
+            renderList.forEach((list) => {
+                if(list instanceof dyCb.Collection || JudgeUtils.isArray(list)){
+                    resultList.addChildren(list);
+                }
+                else{
+                    dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("array or collection"));
+                }
+            });
+
+            return resultList;
         }
     }
 }

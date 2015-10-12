@@ -21,7 +21,7 @@ module dy {
             //todo if renderList is null, draw all
             this.light.shadowRenderList.forEach((child:GameObject) => {
                 //todo support multi shadowMap
-                self._setShadowMap(child, self.texture);
+                self._setTwoDShadowMap(child, self.texture);
             });
         }
 
@@ -31,24 +31,33 @@ module dy {
             Director.getInstance().stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
         }
 
-        //protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-        //    var cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
-        //
-        //    material.twoDShadowMapData = {
-        //        shadowBias: this.light.shadowBias,
-        //        shadowDarkness: this.light.shadowDarkness,
-        //        shadowMapSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
-        //        //todo optimize: compute vpMatrix once here or when render shadowRenderList
-        //        vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
-        //    };
-        //}
+        protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
+            var cameraComponent = shadowMapCamera.getComponent<OrthographicCamera>(OrthographicCamera);
 
-        private _setShadowMap(target:GameObject, shadowMap:TwoDShadowMapTexture){
+            material.addTwoDShadowMapData({
+                shadowBias: this.light.shadowBias,
+                shadowDarkness: this.light.shadowDarkness,
+                shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
+                lightPos: this.light.position,
+                //todo optimize: compute vpMatrix once here or when render shadowRenderList
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+            });
+
+            material.buildTwoDShadowMapData = {
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+            };
+        }
+
+        private _setTwoDShadowMap(target:GameObject, shadowMap:TwoDShadowMapTexture){
             var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+
+            if(material.hasShadowMap(shadowMap)){
+                return;
+            }
 
             dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
-            material.twoDShadowMap = shadowMap;
+            material.addTwoDShadowMap(shadowMap);
         }
     }
 }

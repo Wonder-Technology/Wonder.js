@@ -22,8 +22,8 @@
             {url: "../../res/crate.gif", id:"ground"}
 
         ]).subscribe(null, function(e){
-            throw e;
-        },
+                    throw e;
+                },
                 function(){
                     init();
                 });
@@ -42,7 +42,7 @@
 
 
             var boxArr = [
-                    createBox(dy.Vector3.create(20, 0, 0)),
+                createBox(dy.Vector3.create(20, 0, 0)),
                 createBox(dy.Vector3.create(-20, 0, 0)),
                 createBox(dy.Vector3.create(0, 20, 0)),
                 createBox(dy.Vector3.create(0, -20, 0)),
@@ -61,13 +61,13 @@
             var yzNeEu = dy.Vector3.create(0, 0, -90);
             var groundArr =
                     [
-                    createGround(dy.Vector3.create(30, 0, 0), yzEu),
+                        createGround(dy.Vector3.create(30, 0, 0), yzEu),
                         createGround(dy.Vector3.create(-30, 0, 0), yzNeEu),
                         createGround(dy.Vector3.create(0, 30, 0), xzNeEu),
                         createGround(dy.Vector3.create(0, -30, 0), xzEu),
                         createGround(dy.Vector3.create(0, 0, 30), xyNeEu),
                         createGround(dy.Vector3.create(0, 0, -30), xyEu)
-            ];
+                    ];
 
 
 
@@ -413,3 +413,4 @@
 </script>
 </body>
 </html>
+

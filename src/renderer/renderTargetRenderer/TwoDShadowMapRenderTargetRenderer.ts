@@ -29,7 +29,16 @@ module dy {
         }
 
         public init(){
+            var self = this;
+
             this._shadowMapRendererUtils.init();
+
+            EventManager.on("dy_endLoop", () => {
+                //here not need removeRepeatItems
+                this.light.shadowRenderList.forEach((child:GameObject) => {
+                    self._shadowMapRendererUtils.clearShadowData(child);
+                });
+            });
 
             super.init();
         }
@@ -43,6 +52,11 @@ module dy {
                 return;
             }
 
+            //here need removeRepeatItems
+            this.light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
+                self._shadowMapRendererUtils.setShadowData(child, shadowMapCamera);
+            });
+
             //todo No color buffer is drawn to(webgl not support yet)
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
             this.frameBufferOperator.setViewport();
@@ -50,9 +64,8 @@ module dy {
             stage.useProgram();
 
             //todo if renderList is null, draw all
+            //here not need removeRepeatItems
             this.light.shadowRenderList.forEach((child:GameObject) => {
-                self._shadowMapRendererUtils.setShadowData(child, shadowMapCamera);
-                //self._setShadowData(child, shadowMapCamera);
                 child.render(renderer, shadowMapCamera);
             });
             renderer.render();

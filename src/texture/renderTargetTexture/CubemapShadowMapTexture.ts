@@ -15,11 +15,17 @@ module dy {
             return this;
         }
 
-        protected setTextureParameters(textureType, isSourcePowerOfTwo){
-            super.setTextureParameters(textureType, isSourcePowerOfTwo);
+        /*!
+        And again, as for two-dimensional shadow maps, it's possible to configure cube texture in such a way that single sampling from shadow cube map will return a result of a comparison for four texels. That is, sampling function will return following shadow factor values: 0.0, 0.25, 0.5, 0.75, 1.0. Set minifying and magnifying filters of the texture to GL_LINEAR to enable such sampling.
 
-            ShadowMapTextureUtils.setTextureParameters(textureType);
-        }
+         //
+         //protected setTextureParameters(textureType, isSourcePowerOfTwo){
+         //    super.setTextureParameters(textureType, isSourcePowerOfTwo);
+         //
+         //    ShadowMapTextureUtils.setTextureParameters(textureType);
+         //}
+        */
+
     }
 }
 

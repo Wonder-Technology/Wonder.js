@@ -6,8 +6,8 @@ module dy {
         private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
 
-        protected abstract getRenderList():dyCb.Hash<GameObject>;
-        protected abstract renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer);
+        protected abstract getRenderList():dyCb.Hash<any>;
+        //protected abstract renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer);
         protected abstract beforeRenderSixFaces();
         protected abstract afterRenderSixFaces();
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
@@ -57,7 +57,10 @@ module dy {
                 this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
                 this.frameBufferOperator.setViewport();
 
-                this.renderFace(faceRenderList, renderCamera, renderer);
+                //this.renderFace(faceRenderList, renderCamera, renderer);
+                faceRenderList.forEach((child:GameObject) => {
+                    child.render(renderer, renderCamera)
+                });
                 renderer.render();
             }
 

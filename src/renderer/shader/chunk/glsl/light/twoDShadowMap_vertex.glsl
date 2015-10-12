@@ -1,7 +1,11 @@
 @varDeclare
-	varying vec4 v_positionFromLight;
+varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];
+
+uniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];
 @end
 
 @body
-    v_positionFromLight = u_vpMatrixFromLight * u_mMatrix * vec4(a_position, 1.0);
+	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {
+    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);
+	}
 @end

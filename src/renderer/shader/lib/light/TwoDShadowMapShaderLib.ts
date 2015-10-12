@@ -13,20 +13,14 @@ module dy{
 
         public type:string = "twoDShadowMap";
 
-        protected getShadowMapData(material:LightMaterial):TwoDShadowMapData{
-            return material.twoDShadowMapData;
-        }
-
         protected sendShadowMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.twoDShadowMapData.vpMatrixFromLight);
-            program.sendUniformData("u_shadowMapSize", VariableType.FLOAT_2, material.twoDShadowMapData.shadowMapSize);
-        }
-
-        protected addShadowMapUniformVariable(){
-            this.addUniformVariable([
-                VariableNameTable.getVariableName("twoDShadowMap"),
-                "u_shadowMapSize", "u_vpMatrixFromLight"
-            ]);
+            material.twoDShadowMapDatas.forEach((data:TwoDShadowMapData, index:number) => {
+                program.sendUniformData(`u_vpMatrixFromLight[${index}]`, VariableType.FLOAT_MAT4, data.vpMatrixFromLight);
+                program.sendUniformData(`u_twoDShadowSize[${index}]`, VariableType.FLOAT_2, data.shadowSize);
+                program.sendUniformData(`u_twoDShadowBias[${index}]`, VariableType.FLOAT_1, data.shadowBias);
+                program.sendUniformData(`u_twoDShadowDarkness[${index}]`, VariableType.FLOAT_1, data.shadowDarkness);
+                program.sendUniformData(`u_twoDLightPos[${index}]`, VariableType.FLOAT_3, data.lightPos);
+            });
         }
     }
 }

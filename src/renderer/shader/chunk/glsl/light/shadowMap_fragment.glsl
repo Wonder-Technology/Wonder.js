@@ -5,19 +5,20 @@ float unpackDepth(vec4 rgbaDepth);
 
 @funcDefine
 float getShadowBias(vec3 lightDir, float shadowBias){
-    if(shadowBias != NULL){
-        return shadowBias;
+    float bias = shadowBias;
+
+    if(shadowBias == NULL){
+        bias = 0.005;
     }
 
-    /*!
-     //todo need verify
 
+     /*!
      A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:
-
-     return max(0.005 * (1.0 - dot(normalize(getNormal()), lightDir)), 0.001);
      */
 
-    return 0.001;
+     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);
+
+    return bias;
 }
 
 float unpackDepth(vec4 rgbaDepth) {
@@ -27,12 +28,32 @@ float unpackDepth(vec4 rgbaDepth) {
 
 vec3 getShadowVisibility() {
     vec3 shadowColor = vec3(1.0);
+    vec3 twoDLightDir = vec3(0.0);
+    vec3 cubemapLightDir = vec3(0.0);
 
-//todo add twoD
-	for( int i = 0; i < SHADOWMAP_COUNT; i ++ ) {
-        shadowColor *= getCubemapShadowVisibility(getLightDir(u_lightPos[i]), u_cubemapShadowMapSampler[i], u_lightPos[i], u_farPlane[i], u_shadowBias[i], u_shadowDarkness[i]);
+
+    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)
+
+    #if TWOD_SHADOWMAP_COUNT > 0
+	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {
+        twoDLightDir = getDirectionLightDir(u_twoDLightPos[i]);
+
+	//if is opposite to direction of light rays, no shadow
+
+        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);
 	}
+	#endif
 
+
+	#if CUBEMAP_SHADOWMAP_COUNT > 0
+	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {
+        cubemapLightDir = getPointLightDir(u_cubemapLightPos[i]);
+
+	//if is opposite to direction of light rays, no shadow
+
+        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);
+	}
+	#endif
 
 	return shadowColor;
 }

@@ -19,18 +19,35 @@ module dy {
             this.texture.init();
         }
 
-        //todo remove
-        public setShadowData(target:GameObject, shadowMapCamera:GameObject){
-            //var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-            //
-            //dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-            //
-            //this.setMaterialShadowMapData(material, target, shadowMapCamera);
+
+        public setShadowData(target:GameObject);
+        public setShadowData(target:GameObject, shadowMapCamera:GameObject);
+
+        public setShadowData(arg){
+            var target:GameObject = arguments[0],
+                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
+          shadowMapCamera = null;
+
+            if(arguments.length === 2){
+                shadowMapCamera = arguments[1];
+            }
+
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
+            this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }
 
+        public clearShadowData(target:GameObject){
+            var target:GameObject = arguments[0],
+                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
 
-        //protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
+            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+
+            material.clearShadowMapData();
+        }
+
+        protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
     }
 }
 
