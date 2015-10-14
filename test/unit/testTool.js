@@ -89,6 +89,29 @@ var testTool = (function(){
             dy.SkyboxShaderLib._instance = null;
 
             //todo add more
+        },
+
+        multiIt: function(its, getArgs){
+            if(!its || !its.forEach){
+                return;
+            }
+
+            its.forEach(function(test){
+                if(test.body.forEach){
+                    describe(test.explain, function(){
+                        test.body.forEach(function(secondItem){
+                            it(secondItem.explain, function(){
+                                secondItem.body.apply(null, getArgs())
+                            });
+                        });
+                    });
+                }
+                else{
+                    it(test.explain, function(){
+                        test.body.apply(null, getArgs())
+                    });
+                }
+            });
         }
     }
 }());

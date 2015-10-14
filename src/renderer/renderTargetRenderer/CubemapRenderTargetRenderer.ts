@@ -7,7 +7,6 @@ module dy {
         private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
 
         protected abstract getRenderList():dyCb.Hash<any>;
-        //protected abstract renderFace(faceRenderList:Array<GameObject>|dyCb.Collection<GameObject>, renderCamera:GameObject, renderer:Renderer);
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 
@@ -43,7 +42,7 @@ module dy {
             for(i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
                 //faceRenderList can be array or collection
-                if(!faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0)) {
+                if(this._isEmpty(faceRenderList)) {
                     continue;
                 }
 
@@ -53,7 +52,6 @@ module dy {
                 this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
                 this.frameBufferOperator.setViewport();
 
-                //this.renderFace(faceRenderList, renderCamera, renderer);
                 faceRenderList.forEach((child:GameObject) => {
                     child.render(renderer, renderCamera)
                 });
@@ -79,7 +77,6 @@ module dy {
             cubeCameraComponent.fovy = 90;
             this.setCamera(cubeCameraComponent);
 
-
             camera.addComponent(cubeCameraComponent);
 
             camera.transform.translate(pos);
@@ -89,6 +86,10 @@ module dy {
             camera.init();
 
             return camera;
+        }
+
+        private _isEmpty(faceRenderList){
+            return !faceRenderList || (faceRenderList.length && faceRenderList.length === 0) || (faceRenderList.getCount && faceRenderList.getCount() === 0);
         }
 
         private _convertIndexToFaceKey(index:number){

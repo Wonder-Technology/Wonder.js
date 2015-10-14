@@ -20,10 +20,10 @@ module dy {
         }
 
 
-        public setShadowData(target:GameObject);
-        public setShadowData(target:GameObject, shadowMapCamera:GameObject);
+        public setShadowMapData(target:GameObject);
+        public setShadowMapData(target:GameObject, shadowMapCamera:GameObject);
 
-        public setShadowData(arg){
+        public setShadowMapData(arg){
             var target:GameObject = arguments[0],
                 material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
           shadowMapCamera = null;

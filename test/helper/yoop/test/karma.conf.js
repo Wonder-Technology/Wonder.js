@@ -1,4 +1,4 @@
-﻿// Karma configuration
+// Karma configuration
 // Generated on Wed Nov 05 2014 07:16:09 GMT+0800 (中国标准时间)
 
 module.exports = function(config) {
@@ -14,33 +14,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/yyctoolbox/tool/yTool.js',
+        'test/hepler/**',
 
+        'yOOP.js',
 
-        "reference/playCanvas/build/output/playcanvas-latest.js",
-        "reference/three.js.sourcecode/Three.js",
-
-        //'src/math/*.js',
-        'dist/dy.innerLib.js',
-        'dist/dy.debug.js',
-
-        'test/helper/jsExtend.js',
-        'test/helper/jasmine/**',
-        'test/helper/sinonJs/*.js',
-        'test/helper/yoop/yOOP.js',
-        'test/unit/testTool.js',
-        'test/unit/rendererTool.js',
-
-        'test/unit/renderer/**',
-
-        {pattern: 'test/res/*', watched: false, included: false, served: true}
+        'test/unit/**'
     ],
 
 
     // list of files to exclude
     exclude: [
-        '**/temp/*'
     ],
 
 
@@ -75,7 +58,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'IE'],
 
 
     // Continuous Integration mode

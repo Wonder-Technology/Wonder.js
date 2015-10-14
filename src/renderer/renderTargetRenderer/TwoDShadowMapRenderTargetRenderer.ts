@@ -46,7 +46,7 @@ module dy {
 
             //here need removeRepeatItems
             this._light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
-                self._shadowMapRendererUtils.setShadowData(child, shadowMapCamera);
+                self._shadowMapRendererUtils.setShadowMapData(child, shadowMapCamera);
             });
 
             //todo No color buffer is drawn to(webgl not support yet)

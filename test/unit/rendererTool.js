@@ -134,13 +134,11 @@ judge_sendLibVariable_texture && judge_sendLibVariable_texture(program, quadCmd,
                     });
 
                     if(moreTests){
-                        moreTests.forEach(function(test){
-                            it(test.explain, function(){
-                                test.body(function(){
+                        testTool.multiIt(moreTests, function(){
+                            return [function(){
                                     material.init();
                                     material.updateShader(quadCmd);
-                                },quadCmd, program, material);
-                            });
+                                },quadCmd, program, material];
                         });
                     }
                 });

@@ -18,7 +18,6 @@ module dy {
         protected texture:CubemapShadowMapTexture;
 
         private _light:PointLight = null;
-
         private _shadowMapRendererUtils:CubemapShadowMapRenderTargetRendererUtils = null;
 
 
@@ -34,7 +33,7 @@ module dy {
             EventManager.on("dy_endLoop", () => {
                 self._light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
                     childList.forEach((child:GameObject) => {
-                        self._shadowMapRendererUtils.clearCubemapShadowData(child);
+                        self._shadowMapRendererUtils.clearCubemapShadowMapData(child);
                     });
                 });
             });
@@ -54,7 +53,7 @@ module dy {
             var utils:CubemapShadowMapRenderTargetRendererUtils = this._shadowMapRendererUtils;
 
             this._convertRenderListToCollection(this.getRenderList()).removeRepeatItems().forEach((child:GameObject) => {
-                utils.setShadowData(child);
+                utils.setShadowMapData(child);
             });
 
 
