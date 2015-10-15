@@ -140,21 +140,25 @@ module dy {
             this.textureManager.update();
         }
 
-        public updateShader(quadCmd:QuadCommand){
-            var shader = this._getShader();
-
-            shader.program.use();
-            shader.update(quadCmd, this);
-        }
-
-        private _getShader(){
+        public useProgram(){
             var stage:Stage = Director.getInstance().stage;
 
             if(stage.isUseProgram){
-                return stage.shader;
+                return;
             }
 
-            return this.shader;
+            this.shader.program.use();
+        }
+
+        public updateShader(quadCmd:QuadCommand){
+            var stage:Stage = Director.getInstance().stage;
+
+            if(stage.isUseProgram){
+                stage.shader.update(quadCmd, this);
+            }
+            else{
+                this.shader.update(quadCmd, this);
+            }
         }
     }
 

@@ -23,14 +23,17 @@ module dy {
             return this.shader.program
         }
 
+        get isUseProgram():boolean{
+            return this.program.isUse;
+        }
+
         public cullMode:CullMode = null;
-        public isUseProgram:boolean = false;
         public shadowMap = {
             enable: true,
             softType: ShadowMapSoftType.NONE
         };
 
-        public shader:Shader = null;
+        public shader:Shader = Shader.create();
         public camera:GameObject = null;
 
 
@@ -43,6 +46,8 @@ module dy {
             super.init();
 
             this._renderTargetRenderers.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
+
+            return this;
         }
 
         public addChild(child:GameObject):GameObject{
@@ -60,6 +65,10 @@ module dy {
             this._renderTargetRenderers.addChild(renderTargetRenderer);
         }
 
+        public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
+            this._renderTargetRenderers.removeChild(renderTargetRenderer);
+        }
+
         public render(renderer:Renderer) {
             var self = this;
 
@@ -72,23 +81,20 @@ module dy {
             super.render(renderer, this.camera);
         }
         public createShaderOnlyOnce(lib:ShaderLib){
-            if(this.shader && this.shader.hasLib(lib)){
+            if(this.shader.hasLib(lib)){
                 return;
             }
 
-            this.shader = Shader.create();
             this.shader.addLib(lib);
             this.shader.initProgram();
         }
 
         public useProgram(){
-            this.isUseProgram = true;
-
             this.shader.program.use();
         }
 
         public unUseProgram(){
-            this.isUseProgram = false;
+            this.shader.program.unUse();
         }
 
         private _isCamera(child:GameObject){

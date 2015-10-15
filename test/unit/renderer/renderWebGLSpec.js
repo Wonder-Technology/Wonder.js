@@ -39,7 +39,7 @@ describe("renderWebGL", function() {
             expect(deviceManager.cullMode).toEqual(dy.CullMode.BACK);
             expect(gl.cullFace).toCalledWith(gl.BACK);
             expect(deviceManager.depthWrite).toBeTruthy();
-            expect(deviceManager.scissorTest).toBeTruthy();
+            expect(deviceManager.scissorTest).toBeFalsy();
         });
     });
 
@@ -90,8 +90,8 @@ describe("renderWebGL", function() {
 
             sandbox.stub(material.textureManager, "update");
             sandbox.stub(material.textureManager, "sendData");
-            sandbox.stub(material.program, "use");
             sandbox.stub(material, "updateTexture");
+            sandbox.stub(material, "useProgram");
             sandbox.stub(material, "updateShader");
 
             return {
@@ -127,7 +127,6 @@ describe("renderWebGL", function() {
                 isChangeShader:sandbox.stub(),
                 use:sandbox.stub()
             };
-            sandbox.stub(dy.Director.getInstance().stage, "program", program);
         });
 
         it("clear by clearOptions", function(){
@@ -220,8 +219,10 @@ describe("renderWebGL", function() {
 
                 renderer.render();
 
-                expect(result.material.program.use).toCalledOnce();
+                expect(result.material.useProgram).toCalledOnce();
             });
+
+
             //it("send vertex,color,mMatrix,vMatrix,pMatrix to program", function(){
             //    var result = addCommand();
             //    var geometry = result.geometry;

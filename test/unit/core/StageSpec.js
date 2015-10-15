@@ -26,6 +26,7 @@ describe("Stage", function() {
         stage = Stage.create();
     });
     afterEach(function () {
+        testTool.clearInstance();
         sandbox.restore();
     });
 
@@ -458,12 +459,11 @@ describe("Stage", function() {
     describe("addRenderTargetRenderer", function(){
         it("add renderTargetRenderer with renderTargetTexture", function(){
             var renderer = {
-                init: sandbox.stub()
             };
 
             stage.addRenderTargetRenderer(renderer);
 
-            expect(renderer.init).toCalledOnce();
+            expect(stage._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
         });
     });
 
@@ -499,7 +499,7 @@ describe("Stage", function() {
 
             stage.render(renderer);
 
-            expect(rendererComponent.render).toCalledWith(renderer, geometry, camera, false);
+            expect(rendererComponent.render).toCalledWith(renderer, geometry, camera);
         });
         it("render children", function(){
             var renderTargetRenderer = {
@@ -517,6 +517,40 @@ describe("Stage", function() {
 
             expect(gameObject1.render).toCalledWith(renderer, camera);
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
+        });
+    });
+
+    describe("createShaderOnlyOnce", function(){
+        var shader;
+
+        beforeEach(function(){
+            shader = {
+                addLib: sandbox.stub(),
+                initProgram: sandbox.stub()
+            };
+            //stage.shader =  shader;
+            sandbox.spy(stage.shader, "addLib");
+            sandbox.stub(stage.shader, "initProgram");
+        });
+
+        it("create shader and add shader lib to stage's shader", function(){
+            var lib = {
+            };
+
+            stage.createShaderOnlyOnce(lib);
+
+            expect(stage.shader.addLib).toCalledWith(lib);
+            expect(stage.shader.initProgram).toCalledOnce();
+        });
+        it("can add only one shader lib", function () {
+            var lib = {
+            };
+
+            stage.createShaderOnlyOnce(lib);
+            stage.createShaderOnlyOnce(lib);
+
+            expect(stage.shader.addLib).toCalledOnce();
+            expect(stage.shader.initProgram).toCalledOnce();
         });
     });
 });

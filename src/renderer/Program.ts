@@ -7,11 +7,19 @@ module dy{
             return obj;
         }
 
-        private _program:any = DeviceManager.getInstance().gl.createProgram();
+        public isUse:boolean = false;
+
+        private _program:any = null;
         private _shader:Shader = null;
 
         public use(){
+            this.isUse= true;
+
             DeviceManager.getInstance().gl.useProgram(this._program);
+        }
+
+        public unUse(){
+            this.isUse = false;
         }
 
         public getUniformLocation(name:string){
@@ -132,6 +140,8 @@ module dy{
             var gl = DeviceManager.getInstance().gl,
                 vs = null,
                 fs = null;
+
+            this._program = DeviceManager.getInstance().gl.createProgram();
 
             vs = shader.createVsShader();
             fs = shader.createFsShader();

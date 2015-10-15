@@ -12,9 +12,7 @@ module dy {
             return this._buffers;
         }
         set buffers(buffers:any) {
-            var i = null;
-
-            for (i in buffers) {
+            for (let i in buffers) {
                 if (buffers.hasOwnProperty(i)) {
                     this._buffers.addChild(i, buffers[i]);
                 }
@@ -34,10 +32,10 @@ module dy {
 
         public execute() {
             this.material.updateTexture();
-
+            this.material.useProgram();
             this.material.updateShader(this);
 
-            this.draw();
+            this._draw();
         }
 
         public init() {
@@ -63,7 +61,7 @@ module dy {
         //    );
         //}
 
-        private draw() {
+        private _draw() {
             var totalNum = 0,
                 startOffset = 0,
                 vertexBuffer = this._buffers.getChild("vertexBuffer"),
