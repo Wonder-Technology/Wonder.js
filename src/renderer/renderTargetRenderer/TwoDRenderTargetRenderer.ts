@@ -6,6 +6,10 @@ module dy {
         protected frameBuffer:WebGLFramebuffer = null;
         protected renderBuffer:WebGLRenderbuffer= null;
 
+        protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
+        protected abstract getRenderList():dyCb.Collection<GameObject>;
+        protected abstract renderRenderer(renderer:Renderer);
+
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl;
@@ -18,6 +22,27 @@ module dy {
             frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
             frameBuffer.check();
             frameBuffer.unBind();
+        }
+
+        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
+            var renderCamera = this.createCamera(camera);
+
+            this.beforeRenderFrameBufferTexture(renderCamera);
+
+            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
+            this.frameBufferOperator.setViewport();
+
+
+            //todo if renderList is null, draw all
+            //todo optimize:if renderObject is behind plane, not render it!
+            this.getRenderList().forEach((child:GameObject) => {
+                child.render(renderer, renderCamera);
+            });
+
+            this.renderRenderer(renderer);
+
+            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.restoreViewport();
         }
 
         protected disposeFrameBuffer(){

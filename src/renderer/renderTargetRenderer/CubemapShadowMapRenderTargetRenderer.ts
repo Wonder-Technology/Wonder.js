@@ -30,7 +30,7 @@ module dy {
         public init(){
             var self = this;
 
-            EventManager.on("dy_endLoop", () => {
+            this._shadowMapRendererUtils.bindEndLoop(() => {
                 self._light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
                     childList.forEach((child:GameObject) => {
                         self._shadowMapRendererUtils.clearCubemapShadowMapData(child);
@@ -39,6 +39,12 @@ module dy {
             });
 
             super.init();
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._shadowMapRendererUtils.unBindEndLoop();
         }
 
         protected warnTextureSizeExceedCanvasSize(){

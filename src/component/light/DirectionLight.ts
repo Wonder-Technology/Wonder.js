@@ -32,12 +32,16 @@ module dy{
         public shadowCameraRight:number = 1000;
         public shadowCameraTop:number = 1000;
         public shadowCameraBottom:number = -1000;
+
         public shadowMap:TwoDShadowMapTexture;
+        public shadowMapRenderer:TwoDShadowMapRenderTargetRenderer;
 
         public init(){
             if(this.castShadow){
                 this.shadowMap = TwoDShadowMapTexture.create();
-                Director.getInstance().stage.addRenderTargetRenderer(TwoDShadowMapRenderTargetRenderer.create(this));
+
+                this.shadowMapRenderer = TwoDShadowMapRenderTargetRenderer.create(this);
+                Director.getInstance().stage.addRenderTargetRenderer(this.shadowMapRenderer);
             }
         }
 
@@ -45,6 +49,14 @@ module dy{
             //todo change?
             //return this.gameObject.transform.position.sub(Vector3.create(0, 0, 0));
             return Vector3.create(0, 0, 0).sub(this.gameObject.transform.position);
+        }
+
+        public dispose(){
+            if(this.castShadow){
+                this.shadowMap.dispose();
+
+                Director.getInstance().stage.removeRenderTargetRenderer(this.shadowMapRenderer);
+            }
         }
     }
 }

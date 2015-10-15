@@ -1,6 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class EventListenerMap{
+        public static eventSeparator = "@";
+
         public static create() {
         	var obj = new this();
 
@@ -172,11 +174,15 @@ module dy{
         }
 
         public getEventNameFromKey(key:string):EventName{
-            return key.indexOf("_") > -1 ? <any>key.split("_")[1] : key;
+            var separator = `${EventListenerMap.eventSeparator}`;
+
+            return key.indexOf(separator) > -1 ? <any>key.split(separator)[1] : key;
         }
 
         public getUidFromKey(key:string):number{
-            return key.indexOf("_") > -1 ? Number(<any>key.split("_")[0]) : null;
+            var separator = `${EventListenerMap.eventSeparator}`;
+
+            return key.indexOf(separator) > -1 ? Number(<any>key.split(separator)[0]) : null;
         }
 
         public isTarget(key:string, target:GameObject, list:dyCb.Collection<EventRegisterData>){
@@ -202,7 +208,7 @@ module dy{
         }
 
         private _buildKeyWithUid(uid:number, eventName:EventName){
-            return `${String(uid)}_${eventName}`;
+            return `${String(uid)}${EventListenerMap.eventSeparator}${eventName}`;
         }
     }
 

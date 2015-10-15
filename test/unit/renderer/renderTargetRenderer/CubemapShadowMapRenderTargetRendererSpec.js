@@ -5,13 +5,13 @@ describe("CubemapShadowRenderTargetRenderer", function() {
 
     tool.RenderTargetRenderer = dy.CubemapShadowMapRenderTargetRenderer;
 
-
+tool.init_beforeEach = function(self){
+    self.renderTargetRenderer._shadowMapRendererUtils = new dy.CubemapShadowMapRenderTargetRendererUtils();
+}
 
     tool.init_body = function(self) {
         it("clear cubemap shadow data when endLoop", function () {
-            self.renderTargetRenderer._shadowMapRendererUtils = {
-                clearCubemapShadowMapData: self.sandbox.stub()
-            };
+            self.sandbox.stub(self.renderTargetRenderer._shadowMapRendererUtils, "clearCubemapShadowMapData");
             var renderObj1 = {};
             var renderObj2 = {};
             var renderObj3 = {};
@@ -38,6 +38,10 @@ describe("CubemapShadowRenderTargetRenderer", function() {
                 })
 
             };
+
+
+            self.renderTargetRenderer.init();
+
             dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
 
             expect(self.renderTargetRenderer._shadowMapRendererUtils.clearCubemapShadowMapData.callCount).toEqual(6);
@@ -47,7 +51,8 @@ describe("CubemapShadowRenderTargetRenderer", function() {
 
 
     tool.initWhenCreate_beforeEach = function(){
-        self.sandbox.stub(dy.CubemapShadowMapRenderTargetRendererUtils, "create");
+        self.sandbox.stub(dy
+.CubemapShadowMapRenderTargetRendererUtils, "create");
     }
 
 

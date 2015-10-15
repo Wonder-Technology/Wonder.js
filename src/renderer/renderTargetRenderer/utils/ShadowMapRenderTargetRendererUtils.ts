@@ -10,6 +10,8 @@ module dy {
 
         protected light:Light = null;
 
+        private _endLoopHandler:Function = null;
+
         public initWhenCreate(){
             this.texture.width = this.light.shadowMapWidth;
             this.texture.height = this.light.shadowMapHeight;
@@ -35,6 +37,16 @@ module dy {
             dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
+        }
+
+        public bindEndLoop(func:Function){
+            this._endLoopHandler = func;
+
+            EventManager.on("dy_endLoop",this._endLoopHandler);
+        }
+
+        public unBindEndLoop(){
+            EventManager.off("dy_endLoop", this._endLoopHandler);
         }
 
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);

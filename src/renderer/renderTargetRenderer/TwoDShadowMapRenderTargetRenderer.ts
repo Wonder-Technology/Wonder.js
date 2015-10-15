@@ -27,42 +27,39 @@ module dy {
             super.initWhenCreate();
         }
 
+
         public init(){
             var self = this;
 
-            EventManager.on("dy_endLoop", () => {
+            this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
                 self._light.shadowRenderList.forEach((child:GameObject) => {
-                    self._shadowMapRendererUtils.clearTwoDShadowData(child);
+                    self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
                 });
             });
 
             super.init();
         }
 
-        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var shadowMapCamera = this.createCamera(),
-                self = this;
+        public dispose(){
+            super.dispose();
+
+            this._shadowMapRendererUtils.unBindEndLoop();
+        }
+
+        protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
+            var self = this;
 
             //here need removeRepeatItems
             this._light.shadowRenderList.removeRepeatItems().forEach((child:GameObject) => {
-                self._shadowMapRendererUtils.setShadowMapData(child, shadowMapCamera);
+                self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
             });
-
-            //todo No color buffer is drawn to(webgl not support yet)
-            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
-            this.frameBufferOperator.setViewport();
-
-
-            //todo if renderList is null, draw all
-            //here not need removeRepeatItems
-            this._light.shadowRenderList.forEach((child:GameObject) => {
-                child.render(renderer, shadowMapCamera);
-            });
+        }
+        protected getRenderList():dyCb.Collection<GameObject>{
+            return this._light.shadowRenderList;
+        }
+        protected renderRenderer(renderer){
             renderer.render();
-
-            this.frameBufferOperator.unBind();
-            this.frameBufferOperator.restoreViewport();
         }
 
         protected  beforeRender(){

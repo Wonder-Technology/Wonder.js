@@ -4,6 +4,8 @@ var testTool = (function(){
 
         buildFakeGl: function(sandbox){
             return {
+                bindFramebuffer: sandbox.stub(),
+                bindRenderbuffer: sandbox.stub(),
                 createTexture: sandbox.stub(),
                 texImage2D: sandbox.stub(),
                 activeTexture: sandbox.stub(),

@@ -15,6 +15,9 @@ module dy {
         public shadowMapWidth:number = 1024;
         public shadowMapHeight:number = 1024;
         public shadowMap:IShadowMapTexture = null;
+        public shadowMapRenderer:RenderTargetRenderer = null;
+
+        public abstract dispose();
     }
 }
 

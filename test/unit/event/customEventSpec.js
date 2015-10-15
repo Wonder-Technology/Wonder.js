@@ -16,6 +16,14 @@ describe("custom event", function () {
 
     describe("bind/unbind custom event", function () {
         describe("on/off", function () {
+            it("if eventName contain EventListenerMap->eventSeparator, error", function(){
+                sandbox.stub(dy.EventListenerMap, "eventSeparator", "%");
+
+                expect(function(){
+                    manager.on("dy%endLoop", function (e) {
+                    });
+                }).toThrow();
+            });
             it("eventName", function () {
                 var eventTarget = null;
                 var sum = 0;

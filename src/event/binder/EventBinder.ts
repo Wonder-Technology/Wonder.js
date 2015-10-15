@@ -21,6 +21,7 @@ module dy {
         public on(target:GameObject, listener:{}|EventListener):void;
         public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
 
+        //todo use code contract to refactor
         public on(args) {
             if(arguments.length === 1){
                 let listener:EventListener = !(arguments[0] instanceof EventListener) ?  EventListener.create(arguments[0]): arguments[0];
@@ -44,6 +45,8 @@ module dy {
                     handler = arguments[1],
                     priority = arguments[2];
 
+                this._checkEventSeparator(eventName);
+
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
@@ -52,6 +55,8 @@ module dy {
                     eventName = arguments[1],
                     handler = arguments[2],
                     priority = arguments[3];
+
+                this._checkEventSeparator(eventName);
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .on(target, eventName, handler, priority);
@@ -125,6 +130,10 @@ module dy {
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName, handler);
             }
+        }
+
+        private _checkEventSeparator(eventName:string){
+            dyCb.Log.error( eventName.indexOf(EventListenerMap.eventSeparator) > -1, dyCb.Log.info.FUNC_SHOULD_NOT("eventName", `contain ${EventListenerMap.eventSeparator}`));
         }
     }
 }

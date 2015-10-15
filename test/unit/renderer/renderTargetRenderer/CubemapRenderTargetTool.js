@@ -8,6 +8,7 @@ var CubemapRenderTargetTool = YYC.Class({
 
         initWhenCreate_beforeEach:function(){},
         initWhenCreate_body:function(){},
+        init_beforeEach:function(){},
         init_body:function(){},
         render:{},
         createCamera_beforeEach:function(){},
@@ -20,7 +21,8 @@ var CubemapRenderTargetTool = YYC.Class({
 
             beforeEach(function () {
                 self.sandbox = sinon.sandbox.create();
-                self.renderTargetRenderer = new self.RenderTargetRenderer({});
+                self.renderTargetRenderer = new self.RenderTargetRenderer({
+                });
                 self.sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
                 testTool.extend(dy.DeviceManager.getInstance().gl, {
                     TEXTURE_CUBE_MAP_POSITIVE_X:0,
@@ -35,6 +37,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 gl = dy.DeviceManager.getInstance().gl;
             });
             afterEach(function () {
+                dy.EventManager.off();
                 testTool.clearInstance();
                 self.sandbox.restore();
             });
@@ -91,7 +94,7 @@ var CubemapRenderTargetTool = YYC.Class({
                     };
                     self.renderTargetRenderer.texture = texture;
 
-                    self.renderTargetRenderer.init();
+                    self.init_beforeEach(self);
                 });
 
 
@@ -99,19 +102,27 @@ var CubemapRenderTargetTool = YYC.Class({
 
 
                 it("create empty texture", function(){
+                    self.renderTargetRenderer.init();
+
                     expect(texture.createEmptyTexture).toCalledOnce();
                     expect(self.renderTargetRenderer.frameBufferTexture).toEqual(frameBufferTexture);
                 });
                 it("bind frame buffer texture to renderTargetTexture", function(){
+                    self.renderTargetRenderer.init();
+
                     expect(texture.setTexture).toCalledWith(self.renderTargetRenderer.frameBufferTexture);
                 });
 
                 describe("init six faces", function(){
                     it("bind frame buffer", function(){
+                        self.renderTargetRenderer.init();
+
                         expect(frameBufferOperator.bindFrameBuffer).toCalledWith(frameBuffer);
                         expect(frameBufferOperator.bindFrameBuffer.callCount).toEqual(6);
                     });
                     it("attact texture", function(){
+                        self.renderTargetRenderer.init();
+
                         expect(frameBufferOperator.attachTexture.getCall(0)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, frameBufferTexture);
                         expect(frameBufferOperator.attachTexture.getCall(1)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, frameBufferTexture);
                         expect(frameBufferOperator.attachTexture.getCall(2)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, frameBufferTexture);
@@ -122,19 +133,27 @@ var CubemapRenderTargetTool = YYC.Class({
                         expect(frameBufferOperator.attachTexture.callCount).toEqual(6);
                     });
                     it("attach render buffer", function(){
+                        self.renderTargetRenderer.init();
+
                         expect(frameBufferOperator.attachRenderBuffer).toCalledWith("DEPTH_ATTACHMENT", renderBuffer);
                         expect(frameBufferOperator.attachRenderBuffer.callCount).toEqual(6);
                     });
                     it("check frame buffer", function(){
+                        self.renderTargetRenderer.init();
+
                         expect(frameBufferOperator.check.callCount).toEqual(6);
                     });
                     it("has totally 6 frameBuffers and 6 renderBuffers", function(){
+                        self.renderTargetRenderer.init();
+
                         expect(self.renderTargetRenderer._frameBuffers.getCount()).toEqual(6);
                         expect(self.renderTargetRenderer._renderBuffers.getCount()).toEqual(6);
                     });
                 });
 
                 it("unBind frame buffer", function(){
+                    self.renderTargetRenderer.init();
+
                     expect(frameBufferOperator.unBind).toCalledOnce();
                 });
             });

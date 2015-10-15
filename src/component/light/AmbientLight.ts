@@ -8,6 +8,9 @@ module dy{
 
             return obj;
         }
+
+        public dispose(){
+        }
     }
 }
 

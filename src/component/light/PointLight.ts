@@ -53,13 +53,24 @@ module dy{
         public intensity:number = 1;
 
         public shadowMap:CubemapShadowMapTexture;
+        public shadowMapRenderer:CubemapShadowMapRenderTargetRenderer;
 
         private _attenuation:Attenuation = Attenuation.create();
 
         public init(){
             if(this.castShadow){
                 this.shadowMap = CubemapShadowMapTexture.create();
-                Director.getInstance().stage.addRenderTargetRenderer(CubemapShadowMapRenderTargetRenderer.create(this));
+
+                this.shadowMapRenderer = CubemapShadowMapRenderTargetRenderer.create(this);
+                Director.getInstance().stage.addRenderTargetRenderer(this.shadowMapRenderer);
+            }
+        }
+
+        public dispose(){
+            if(this.castShadow){
+                this.shadowMap.dispose();
+
+                Director.getInstance().stage.removeRenderTargetRenderer(this.shadowMapRenderer);
             }
         }
     }

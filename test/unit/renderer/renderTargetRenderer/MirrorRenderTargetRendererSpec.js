@@ -1,194 +1,119 @@
-describe("MirrorRenderTargetRenderer", function() {
-    var sandbox = null;
-    var RenderTargetRenderer = null;
-    var renderTargetRenderer = null;
-    var gl = null;
+describe("MirrorRenderTargetRenderer", function () {
+    var tool = new TwoDRenderTargetTool();
+    var self = tool;
 
-    beforeEach(function () {
-        sandbox = sinon.sandbox.create();
-        RenderTargetRenderer = dy.MirrorRenderTargetRenderer;
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+    tool.RenderTargetRenderer = dy.MirrorRenderTargetRenderer;
 
-        gl = dy.DeviceManager.getInstance().gl;
-    });
-    afterEach(function () {
-        testTool.clearInstance();
-        sandbox.restore();
-    });
 
-    describe("_setClipPlane", function(){
-        describe("set clip plane by Oblique frustum clipping", function(){
-            it("set clip plane in camera space", function(){
-                var geometry = dy.PlaneGeometry.create();
-                geometry.width = 10;
-                geometry.height = 10;
-                geometry.material = {
-                    color: "#ffffff",
+    tool.initWhenCreate_body = [
+        {
+            explain: "if texture size is exceed canvas size, warn",
+            body: function (texture) {
+                texture.width = 100;
+                texture.height = 200;
+                self.sandbox.stub(dyCb.Log, "warn");
+                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                    width: 101,
+                    height: 100
+                });
 
-                    init:sandbox.stub()
+                self.renderTargetRenderer.initWhenCreate();
+
+                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                    width: 99,
+                    height: 201
+                });
+
+                self.renderTargetRenderer.initWhenCreate();
+
+                expect(dyCb.Log.warn).toCalledTwice();
+            }
+        }
+    ]
+
+
+    tool.render = (function () {
+        var plane;
+
+        return {
+            beforeEach: function (self, renderObj1, renderObj2, renderTargetTexture) {
+
+                plane = {
+                    getReflectionMatrix: self.sandbox.stub().returns(dy.Matrix4.create())
                 };
-                geometry.init();
+                renderTargetTexture.getPlane = self.sandbox.stub().returns(plane);
 
-                var mirrorTexture = dy.MirrorTexture.create();
-                mirrorTexture.material = {
-                    geometry: geometry
-                };
-                var mirror = dy.GameObject.create();
-                mirror.addComponent(geometry);
+                renderTargetTexture.renderList = dyCb.Collection.create([renderObj1, renderObj2])
+            },
+            pre_render: null,
+            invoke_renderer_render: [
+                {
+                    explain: "1.set Stage's cullMode to be FRONT, 2.invoke renderer's render method, 3.not use Stage's cullMode",
+                    body: function (renderer, camera, renderObj1, renderObj2) {
+                        self.sandbox.stub(self.renderTargetRenderer, "_setStageCullMode");
 
-                mirror.transform.rotateLocal(dy.Vector3.create(90, 0, 0));
-                mirror.transform.translateLocal(dy.Vector3.create(0, 0, -10));
+                        self.renderTargetRenderer.render(renderer, camera);
 
-                var camera = dy.GameObject.create();
-                camera.transform.translateLocal(dy.Vector3.create(0, 10, 10));
-                camera.transform.lookAt(dy.Vector3.create(0, 10, 0));
+                        expect(self.renderTargetRenderer._setStageCullMode.firstCall).toCalledWith(dy.CullMode.FRONT);
+                        expect(self.renderTargetRenderer._setStageCullMode.secondCall).toCalledWith(null);
+                        expect(renderer.render).toCalledOnce();
+                        expect(renderer.render).toCalledAfter(renderObj2.render);
+                    }
+                }
+            ],
+            post_render: null
+        }
+    }());
 
-                var renderer = new RenderTargetRenderer(mirrorTexture);
 
-                var clipPlane = renderer._getClipPlaneInCameraSpace(camera.transform.localToWorldMatrix, mirrorTexture.getPlane());
+    tool.test();
 
-                expect(testTool.getValues(clipPlane.values)).toEqual(
-                    [0, 0, 1, -10]
-                );
-            });
 
-            //todo test more
-        });
-    });
 
-    describe("init", function(){
-        var renderTargetTexture,frameBufferOperator,emptyTexture,frameBuffer,renderBuffer;
+    describe("create camera", function(){
+        var camera,cameraComponent;
+        var texture;
+        var plane;
 
         beforeEach(function(){
-            emptyTexture = {};
-            frameBuffer = {};
-            renderBuffer = {};
-
-            renderTargetTexture = {
-                createEmptyTexture: sandbox.stub().returns(emptyTexture)
-            };
-
-            frameBufferOperator = {
-                createFrameBuffer: sandbox.stub().returns(frameBuffer),
-                createRenderBuffer: sandbox.stub().returns(renderBuffer),
-                bindFrameBuffer: sandbox.stub(),
-                attachTexture: sandbox.stub(),
-                attachRenderBuffer: sandbox.stub(),
-                check: sandbox.stub(),
-                unBind: sandbox.stub()
-            };
-
-            renderTargetRenderer = new RenderTargetRenderer(renderTargetTexture);
-            renderTargetRenderer.frameBuffer = frameBufferOperator;
-
-
-
-            renderTargetRenderer.init();
-        });
-
-        it("create empty texture", function(){
-            expect(renderTargetRenderer.frameBufferTexture).toEqual(emptyTexture);
-        });
-        it("bind frame buffer", function(){
-            expect(frameBufferOperator.bindFrameBuffer).toCalledWith(frameBuffer);
-        });
-        it("attact texture", function(){
-            expect(frameBufferOperator.attachTexture).toCalledWith(gl.TEXTURE_2D, emptyTexture);
-        });
-        it("attach render buffer", function(){
-            expect(frameBufferOperator.attachRenderBuffer).toCalledWith("DEPTH_ATTACHMENT", renderBuffer);
-        });
-        it("check frame buffer", function(){
-            expect(frameBufferOperator.check).toCalledOnce();
-        });
-        it("unBind frame buffer", function(){
-            expect(frameBufferOperator.unBind).toCalledOnce();
-        });
-    });
-    
-    describe("render", function(){
-        var renderTargetTexture,renderer,camera,cameraComponent, frameBufferOperator,renderObj1, renderObj2,plane,frameBufferTexture;
-
-        beforeEach(function(){
-            renderObj1 = {
-                render: sandbox.stub()
-            };
-            renderObj2 = {
-                render: sandbox.stub()
-            };
-
-            plane = {
-                getReflectionMatrix: sandbox.stub().returns(dy.Matrix4.create())
-            };
-
-            renderTargetTexture = {
-                setTexture: sandbox.stub(),
-                getPlane: sandbox.stub().returns(plane),
-                renderList: dyCb.Collection.create([renderObj1, renderObj2])
-            };
-
-            frameBufferOperator = {
-                bindFrameBuffer: sandbox.stub(),
-                setViewport: sandbox.stub(),
-                unBind: sandbox.stub(),
-                restoreViewport: sandbox.stub()
-            };
-
-            frameBufferTexture = {};
-
-            renderTargetRenderer = new RenderTargetRenderer(renderTargetTexture);
-            renderTargetRenderer.frameBuffer = frameBufferOperator;
-            renderTargetRenderer.frameBufferTexture = frameBufferTexture;
-
-            renderer = {
-                render: sandbox.stub()
-            };
-
             cameraComponent = {
                 worldToCameraMatrix: dy.Matrix4.create().rotate(45, 0, 1, 0),
                 pMatrix: dy.Matrix4.create()
             };
             camera = {
-                getComponent: sandbox.stub().returns(cameraComponent)
+                getComponent: self.sandbox.stub().returns(cameraComponent)
             };
 
-            sandbox.stub(renderTargetRenderer, "_setClipPlane").returns(cameraComponent.pMatrix);
+            self.sandbox.stub(self.renderTargetRenderer, "_setClipPlane").returns(cameraComponent.pMatrix);
+
+            plane = {
+                getReflectionMatrix:self.sandbox.stub().returns(dy.Matrix4.create())
+            }
+
+            texture = {
+                getPlane:self.sandbox.stub().returns(plane)
+            }
+
+            self.renderTargetRenderer.texture = texture;
+
         });
 
-        it("attach renderTargetTexture and frameBuffer's texture", function(){
-            renderTargetRenderer.render(renderer, camera);
-
-            expect(renderTargetTexture.setTexture).toCalledWith(frameBufferTexture);
-        });
         it("set clip plane(viewMatrix is reflectionMatrix * worldToCameraMatrix)", function(){
-            renderTargetRenderer.render(renderer, camera);
+            self.renderTargetRenderer.createCamera(camera);
 
-            expect(renderTargetRenderer._setClipPlane).toCalledWith(plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix), cameraComponent.pMatrix, plane);
+            expect(self.renderTargetRenderer._setClipPlane).toCalledWith(plane.getReflectionMatrix().applyMatrix(cameraComponent.worldToCameraMatrix), cameraComponent.pMatrix, plane);
         });
-        it("bind frameBuffer and set viewport", function(){
-            renderTargetRenderer.render(renderer, camera);
+        it("init camera(not updateProjectionMatrix)", function(){
+            var firstCallCamera = self.renderTargetRenderer.createCamera(camera);
+            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
 
-            expect(frameBufferOperator.bindFrameBuffer).toCalledBefore(frameBufferOperator.setViewport);
-            expect(frameBufferOperator.bindFrameBuffer).toCalledWith(renderTargetRenderer._frameBuffer);
-        });
-        it("render renderTargetTexture's renderList", function(){
-            renderTargetRenderer.render(renderer, camera);
+            expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
 
-            expect(renderObj1.render).toCalledWith(renderer, sinon.match.instanceOf(dy.GameObject), true);
-            expect(renderObj2.render).toCalledWith(renderer, sinon.match.instanceOf(dy.GameObject), true);
-            expect(renderObj1.render).toCalledBefore(renderObj2.render);
-        });
-        it("invoke renderer's render method", function(){
-            renderTargetRenderer.render(renderer, camera);
-
-            expect(renderer.render).toCalledOnce();
-            expect(renderer.render).toCalledAfter(renderObj2.render);
-        });
-        it("unbind frameBuffer and restore viewport", function(){
-            renderTargetRenderer.render(renderer, camera);
-
-            expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
-        });
+                testTool.getValues(
+                    cameraComponent.pMatrix.values
+                )
+            );
+        })
     });
 });
 

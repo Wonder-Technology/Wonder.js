@@ -25,7 +25,10 @@ module dy{
         protected dirty:boolean = false;
 
         public init(){
-            this.updateProjectionMatrix();
+            if(this.dirty) {
+                this.updateProjectionMatrix();
+                this.dirty = false;
+            }
         }
 
 

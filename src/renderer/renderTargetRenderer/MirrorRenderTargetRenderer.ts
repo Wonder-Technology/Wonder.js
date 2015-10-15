@@ -14,25 +14,16 @@ module dy {
         protected texture:MirrorTexture;
 
 
-        protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var stage = Director.getInstance().stage,
-                renderCamera = this.createCamera(camera);
+        protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
+        }
 
-            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
-            this.frameBufferOperator.setViewport();
-
-
-            //todo if renderList is null, draw all
-            //todo optimize:if renderObject is behind plane, not render it!
-            this.texture.renderList.forEach((child:GameObject) => {
-                child.render(renderer, renderCamera);
-            });
-            stage.cullMode = CullMode.FRONT;
+        protected getRenderList():dyCb.Collection<GameObject>{
+            return this.texture.renderList;
+        }
+        protected renderRenderer(renderer){
+            this._setStageCullMode(CullMode.FRONT);
             renderer.render();
-            stage.cullMode = null;
-
-            this.frameBufferOperator.unBind();
-            this.frameBufferOperator.restoreViewport();
+            this._setStageCullMode(null);
         }
 
         protected createCamera(camera:GameObject):GameObject{
@@ -53,7 +44,13 @@ module dy {
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
-            return GameObject.create().addComponent(mirrorCameraComponent)
+             return GameObject.create().addComponent(mirrorCameraComponent).init();
+        }
+
+        private _setStageCullMode(cullMode:CullMode){
+            var stage = Director.getInstance().stage;
+
+            stage.cullMode = cullMode;
         }
 
         private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{

@@ -24,7 +24,7 @@ module dy {
             });
         }
 
-        public clearTwoDShadowData(target:GameObject){
+        public clearTwoDShadowMapData(target:GameObject){
             var target:GameObject = arguments[0],
                 material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
