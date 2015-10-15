@@ -1,4 +1,4 @@
-describe("renderWebGL", function() {
+describe("SkyboxMaterial", function() {
     var sandbox = null;
     var material = null;
 
