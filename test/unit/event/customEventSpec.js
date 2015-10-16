@@ -23,6 +23,10 @@ describe("custom event", function () {
                     manager.on("dy%endLoop", function (e) {
                     });
                 }).toThrow();
+                expect(function(){
+                    manager.on(new dy.GameObject(), "dy%endLoop", function (e) {
+                    }, 10);
+                }).toThrow();
             });
             it("eventName", function () {
                 var eventTarget = null;

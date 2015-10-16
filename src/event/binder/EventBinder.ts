@@ -21,7 +21,27 @@ module dy {
         public on(target:GameObject, listener:{}|EventListener):void;
         public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
 
-        //todo use code contract to refactor
+        @In(function(args){
+            if(arguments.length === 1){
+            }
+            else if(arguments.length === 2){
+            }
+            else if(arguments.length === 3){
+                let eventName = arguments[0],
+                    handler = arguments[1],
+                    priority = arguments[2];
+
+                this._checkEventSeparator(eventName);
+            }
+            else if(arguments.length === 4) {
+                let target = arguments[0],
+                    eventName = arguments[1],
+                    handler = arguments[2],
+                    priority = arguments[3];
+
+                this._checkEventSeparator(eventName);
+            }
+        })
         public on(args) {
             if(arguments.length === 1){
                 let listener:EventListener = !(arguments[0] instanceof EventListener) ?  EventListener.create(arguments[0]): arguments[0];
@@ -45,8 +65,6 @@ module dy {
                     handler = arguments[1],
                     priority = arguments[2];
 
-                this._checkEventSeparator(eventName);
-
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
@@ -55,8 +73,6 @@ module dy {
                     eventName = arguments[1],
                     handler = arguments[2],
                     priority = arguments[3];
-
-                this._checkEventSeparator(eventName);
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .on(target, eventName, handler, priority);
@@ -133,7 +149,7 @@ module dy {
         }
 
         private _checkEventSeparator(eventName:string){
-            dyCb.Log.error( eventName.indexOf(EventListenerMap.eventSeparator) > -1, dyCb.Log.info.FUNC_SHOULD_NOT("eventName", `contain ${EventListenerMap.eventSeparator}`));
+            assert(eventName.indexOf(EventListenerMap.eventSeparator) === -1, dyCb.Log.info.FUNC_SHOULD_NOT("eventName", `contain ${EventListenerMap.eventSeparator}`));
         }
     }
 }

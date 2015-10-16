@@ -4,6 +4,7 @@
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
 /// <reference path="extend/dyRt"/>
+/// <reference path="extend/typescript/contract"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>

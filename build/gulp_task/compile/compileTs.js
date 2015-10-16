@@ -25,6 +25,7 @@ gulp.task("compileTs", function() {
             sortOutput:true,
             noEmitOnError: true,
             removeComments:true,
+            experimentalDecorators: true,
             //noExternalResolve: true
             //out: "dyR.js"
             typescript: require("typescript")
@@ -47,6 +48,7 @@ gulp.task("compileTsDebug", function() {
         .pipe(gulpTs({
             declarationFiles: true,
             target: "ES5",
+            experimentalDecorators: true,
             sortOutput:true,
             noEmitOnError: true,
             removeComments:true,
