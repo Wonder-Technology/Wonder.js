@@ -44,7 +44,9 @@ module dy{
                 ambientLight:GameObject =stage.ambientLight,
                 pointLights:dyCb.Collection<GameObject> = stage.pointLights;
 
-            program.sendUniformData("u_ambient", VariableType.FLOAT_3, ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
+            if(ambientLight){
+                program.sendUniformData("u_ambient", VariableType.FLOAT_3, ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
+            }
 
             if(pointLights){
                 this._sendPointLightVariables(program, pointLights);
@@ -59,7 +61,7 @@ module dy{
             pointLights.forEach((pointLight:GameObject, index:number) => {
                 var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
 
-                program.sendStructureData(`u_pointLights[${index}].position`, VariableType.FLOAT_3, pointLight.transform.position);
+                program.sendStructureData(`u_pointLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
                 program.sendStructureData(`u_pointLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
 
                 program.sendStructureData(`u_pointLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
@@ -71,14 +73,28 @@ module dy{
         }
 
         private _sendDirectionLightVariables(program: Program, directionLights:dyCb.Collection<GameObject> ){
+            var self = this;
+
             directionLights.forEach((directionLight:GameObject, index:number) => {
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
 
-                program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
+                if(self._isZero(lightComponent.position)){
+                    program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, DirectionLight.defaultPosition);
+                }
+                else{
+                    program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
+                }
+
                 program.sendStructureData(`u_directionLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
 
                 program.sendStructureData(`u_directionLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
             });
+        }
+
+        private _isZero(position:Vector3){
+            var val = position.values;
+
+            return val[0] === 0 && val[1] === 0 && val[2] === 0;
         }
 
         private _setLightDefinition(){

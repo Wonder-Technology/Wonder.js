@@ -58,7 +58,7 @@
             tween1.from({x:0}).to({x: 360}, 10000)
                     .easing( dy.Tween.Easing.Cubic.InOut )
                     .onUpdate(function(){
-                        directionLight.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
+//                        directionLight.transform.rotateLocal(dy.Vector3.create(0, 1, 0));
                     });
 
             var action1 = dy.RepeatForever.create(tween1);
