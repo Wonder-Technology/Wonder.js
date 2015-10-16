@@ -4,15 +4,14 @@ describe("custom shader", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        testTool.clearInstance();
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(dy.GPUDetector.getInstance(), "precision", dy.GPUPrecision.HIGHP);
 
         material = new dy.CustomMaterial();
     });
     afterEach(function () {
-        sandbox.restore();
         testTool.clearInstance();
+        sandbox.restore();
     });
 
     describe("integration test", function() {
