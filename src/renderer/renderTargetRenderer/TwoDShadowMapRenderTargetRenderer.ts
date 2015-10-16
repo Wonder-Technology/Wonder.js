@@ -38,6 +38,8 @@ module dy {
                 });
             });
 
+            this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.getInstance());
+
             super.init();
         }
 
@@ -63,11 +65,11 @@ module dy {
         }
 
         protected beforeRender(){
-            this._shadowMapRendererUtils.beforeRender(BuildTwoDShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.beforeRender();
         }
 
         protected afterRender(){
-            this._shadowMapRendererUtils.afterRender(BuildTwoDShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.afterRender();
         }
 
         protected warnTextureSizeExceedCanvasSize(){

@@ -78,32 +78,32 @@
 
 
 
-
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
-            material.color = dy.Color.create("#666666");
-            material.shininess = 16;
-
-
-
-            var geometry = dy.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 10;
-            geometry.height = 10;
-            geometry.depth = 10;
-
-
-
-            var box = dy.GameObject.create();
-
-            box.addComponent(dy.MeshRenderer.create());
-            box.addComponent(geometry);
-
-
-
-            box.transform.translate(dy.Vector3.create(20, 10, 30));
-
-            box.transform.eulerAngles = dy.Vector3.create(0, 45, 0);
+//
+//            var material = dy.LightMaterial.create();
+//            material.specular = dy.Color.create("#ffdd99");
+//            material.color = dy.Color.create("#666666");
+//            material.shininess = 16;
+//
+//
+//
+//            var geometry = dy.BoxGeometry.create();
+//            geometry.material = material;
+//            geometry.width = 10;
+//            geometry.height = 10;
+//            geometry.depth = 10;
+//
+//
+//
+//            var box = dy.GameObject.create();
+//
+//            box.addComponent(dy.MeshRenderer.create());
+//            box.addComponent(geometry);
+//
+//
+//
+//            box.transform.translate(dy.Vector3.create(20, 10, 30));
+//
+//            box.transform.eulerAngles = dy.Vector3.create(0, 45, 0);
 
 
 
@@ -182,8 +182,8 @@
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
             //todo if null, render all scene
-//            directionLightComponent.shadowRenderList = [sphere, ground];
-            directionLightComponent.shadowRenderList = [sphere, box, ground];
+            directionLightComponent.shadowRenderList = [sphere, ground];
+//            directionLightComponent.shadowRenderList = [sphere, box, ground];
 //            directionLightComponent.shadowRenderList = [sphere];
 
 
@@ -223,103 +223,103 @@
 
 
 
-            var rect;
-            rect = dy.RectGeometry.create();
-            rect.width = 20;
-            rect.height = 20;
-
-
-
-            var debugMaterial = dy.CustomMaterial.create();
-
-            debugMaterial.cullMode = dy.CullMode.NONE;
-
-
-            //todo add to debug shader lib in engine
-            var shaderDefinitionData = {
-                attributes:  {
-                    "a_texCoord": {
-                        type:dy.VariableType.FLOAT_2,
-                        value: function(){
-                            return rect.texCoords;
-                        }
-                    }
-                },
-                uniforms: {
-                    "u_sampler2D0": {
-                        type:dy.VariableType.SAMPLER_2D,
-                        value: dy.VariableCategory.ENGINE
-                    }
-                },
-                vsSourceVarDeclare: [
-                    "varying vec2 v_texCoord;"
-                ].join("\n"),
-                vsSourceBody: [
-                    "v_texCoord = a_texCoord;",
-                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
-                ].join("\n"),
-                fsSourceVarDeclare: [
-                    "varying vec2 v_texCoord;"
-                ].join("\n"),
-                fsSourceBody: [
-                    " float depthValue = texture2D(u_sampler2D0, v_texCoord).r;",
-                        "if(depthValue < 0.1) depthValue = depthValue * 3.0;",
-                    "gl_FragColor = vec4(vec3(depthValue), 1.0);"
-//                    "gl_FragColor = texture2D(u_sampler2D0, v_texCoord);"
-//                    "gl_FragColor = vec4(v_texCoord, 1.0, 1.0);"
-                ].join("\n")
-            };
-
-
+//            var rect;
+//            rect = dy.RectGeometry.create();
+//            rect.width = 20;
+//            rect.height = 20;
 //
-//@funcDefine
-//            float linearizeDepth(float depth){
 //
-//                float near = 0.1;
-//                float far = 1000.0;
-//                float z = depth * 2.0 - 1.0;
 //
-//                return (2.0 * near * far) / (far + near - z * (far - near));
-//            }
+//            var debugMaterial = dy.CustomMaterial.create();
 //
-//@end
+//            debugMaterial.cullMode = dy.CullMode.NONE;
+//
+//
+//            //todo add to debug shader lib in engine
+//            var shaderDefinitionData = {
+//                attributes:  {
+//                    "a_texCoord": {
+//                        type:dy.VariableType.FLOAT_2,
+//                        value: function(){
+//                            return rect.texCoords;
+//                        }
+//                    }
+//                },
+//                uniforms: {
+//                    "u_sampler2D0": {
+//                        type:dy.VariableType.SAMPLER_2D,
+//                        value: dy.VariableCategory.ENGINE
+//                    }
+//                },
+//                vsSourceVarDeclare: [
+//                    "varying vec2 v_texCoord;"
+//                ].join("\n"),
+//                vsSourceBody: [
+//                    "v_texCoord = a_texCoord;",
+//                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
+//                ].join("\n"),
+//                fsSourceVarDeclare: [
+//                    "varying vec2 v_texCoord;"
+//                ].join("\n"),
+//                fsSourceBody: [
+//                    " float depthValue = texture2D(u_sampler2D0, v_texCoord).r;",
+//                        "if(depthValue < 0.1) depthValue = depthValue * 3.0;",
+//                    "gl_FragColor = vec4(vec3(depthValue), 1.0);"
+////                    "gl_FragColor = texture2D(u_sampler2D0, v_texCoord);"
+////                    "gl_FragColor = vec4(v_texCoord, 1.0, 1.0);"
+//                ].join("\n")
+//            };
+//
+//
+////
+////@funcDefine
+////            float linearizeDepth(float depth){
+////
+////                float near = 0.1;
+////                float far = 1000.0;
+////                float z = depth * 2.0 - 1.0;
+////
+////                return (2.0 * near * far) / (far + near - z * (far - near));
+////            }
+////
+////@end
+//
+//
+//
+//
+//            debugMaterial.shader.read(shaderDefinitionData);
+//
+//
+//
+//
+//
+//            rect.material = debugMaterial;
+//
+//
+//
+//            var debugQuad = dy.GameObject.create();
+//
+//            debugQuad.addComponent(dy.MeshRenderer.create());
+//            debugQuad.addComponent(rect);
+//
+//            debugQuad.transform.translate(0, 30, 0);
+//            debugQuad.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
+//
+//
+//            var isAdded = false;
+//
+//            //todo add to script?
+//            debugQuad.onStartLoop = function(){
+//                if(!isAdded){
+//                    debugMaterial.addMap(directionLightComponent.shadowMap);
+//
+//                    isAdded = true;
+//                }
+//            };
 
 
 
-
-            debugMaterial.shader.read(shaderDefinitionData);
-
-
-
-
-
-            rect.material = debugMaterial;
-
-
-
-            var debugQuad = dy.GameObject.create();
-
-            debugQuad.addComponent(dy.MeshRenderer.create());
-            debugQuad.addComponent(rect);
-
-            debugQuad.transform.translate(0, 30, 0);
-            debugQuad.transform.eulerAngles = dy.Vector3.create(0, 90, 0);
-
-
-            var isAdded = false;
-
-            //todo add to script?
-            debugQuad.onStartLoop = function(){
-                if(!isAdded){
-                    debugMaterial.addMap(directionLightComponent.shadowMap);
-
-                    isAdded = true;
-                }
-            };
-
-
-
-            director.stage.addChild(debugQuad);
+//            director.stage.addChild(debugQuad);
 
 
 
@@ -340,7 +340,7 @@
 
 
             director.stage.addChild(sphere);
-            director.stage.addChild(box);
+//            director.stage.addChild(box);
             director.stage.addChild(ground);
 
 

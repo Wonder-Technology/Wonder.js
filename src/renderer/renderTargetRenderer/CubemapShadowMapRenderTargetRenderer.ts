@@ -38,8 +38,12 @@ module dy {
                 });
             });
 
+            this._shadowMapRendererUtils.createShaderWithShaderLib(BuildCubemapShadowMapShaderLib.getInstance());
+
             super.init();
         }
+
+        private _shader:Shader = null;
 
         public dispose(){
             super.dispose();
@@ -63,11 +67,11 @@ module dy {
             });
 
 
-            utils.beforeRender(BuildCubemapShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.beforeRender();
         }
 
         protected afterRender(){
-            this._shadowMapRendererUtils.afterRender(BuildCubemapShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.afterRender();
         }
 
         protected setCamera(camera:PerspectiveCamera){

@@ -7,19 +7,14 @@ module dy{
             return obj;
         }
 
-        public isUse:boolean = false;
-
         private _program:any = null;
         private _shader:Shader = null;
 
         public use(){
-            this.isUse= true;
-
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
         public unUse(){
-            this.isUse = false;
         }
 
         public getUniformLocation(name:string){
@@ -79,17 +74,17 @@ module dy{
                 })
                 .forEach((val:ShaderData, key:string) => {
 
-                if(val.type === VariableType.STRUCTURE){
-                    Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
+                    if(val.type === VariableType.STRUCTURE){
+                        Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
 
-                    for(let i in val.value){
-                        self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
+                        for(let i in val.value){
+                            self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
+                        }
                     }
-                }
-                else{
-                    self.sendUniformData(key, val.type, val.value);
-                }
-            });
+                    else{
+                        self.sendUniformData(key, val.type, val.value);
+                    }
+                });
         }
 
         public sendAttributeData(name:string, type:VariableType, data:any){
@@ -128,8 +123,8 @@ module dy{
                     return val.value !== VariableCategory.ENGINE;
                 })
                 .forEach((val:ShaderData, key:string) => {
-                self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
-            });
+                    self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
+                });
         }
 
         public sendStructureData(name:string, type:VariableType, data:any){
@@ -153,8 +148,8 @@ module dy{
 
 
             /*!
-            if bower warn:"Attribute 0 is disabled. This has significant performance penalty",
-            then do this before linkProgram:
+             if bower warn:"Attribute 0 is disabled. This has significant performance penalty",
+             then do this before linkProgram:
              gl.bindAttribLocation( this._program, 0, "a_position");
 
 
@@ -165,7 +160,7 @@ module dy{
 
              OpenGL requires attribute zero to be enabled otherwise it will not render anything.
              On the other hand OpenGL ES 2.0 on which WebGL is based does not. So, to emulate OpenGL ES 2.0 on top of OpenGL if you don't enable attribute 0 the browser has to make a buffer for you large enough for the number of vertices you've requested to be drawn, fill it with the correct value (see gl.vertexAttrib),
-              attach it to attribute zero, and enable it.
+             attach it to attribute zero, and enable it.
 
              It does all this behind the scenes but it's important for you to know that it takes time to create and fill that buffer. There are optimizations the browser can make but in the general case,
              if you were to assume you were running on OpenGL ES 2.0 and used attribute zero as a constant like you are supposed to be able to do, without the warning you'd have no idea of the work the browser is doing on your behalf to emulate that feature of OpenGL ES 2.0 that is different from OpenGL.
@@ -230,3 +225,4 @@ module dy{
         }
     }
 }
+

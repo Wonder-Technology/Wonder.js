@@ -19,28 +19,22 @@ module dy {
             return this._lightManager.pointLights;
         }
 
-        get program():Program{
-            return this.shader.program
-        }
-
-        get isUseProgram():boolean{
-            return this.program.isUse;
-        }
-
         public cullMode:CullMode = null;
         public shadowMap = {
             enable: true,
             softType: ShadowMapSoftType.NONE
         };
 
-        public shader:Shader = Shader.create();
+        public shader:Shader = null;
         public camera:GameObject = null;
-
+        public isUseProgram:Boolean = false;
 
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRenderers:dyCb.Collection<RenderTargetRenderer> = dyCb.Collection.create<RenderTargetRenderer>();
 
         public init(){
+            this.shader = Shader.create();
+
             this.addComponent(TopCollider.create());
 
             super.init();
@@ -48,6 +42,18 @@ module dy {
             this._renderTargetRenderers.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
 
             return this;
+        }
+
+        public useProgram(shader:Shader){
+            this.isUseProgram = true;
+
+            this.shader = shader;
+            this.shader.program.use();
+        }
+
+        public unUseProgram(){
+            this.isUseProgram = false;
+            this.shader.program.unUse();
         }
 
         public addChild(child:GameObject):GameObject{
@@ -100,3 +106,4 @@ module dy {
         PCF
     }
 }
+

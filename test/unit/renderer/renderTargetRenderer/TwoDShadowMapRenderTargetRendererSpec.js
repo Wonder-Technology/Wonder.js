@@ -71,6 +71,18 @@ tool.init_beforeEach = function(self){
 
             expect(self.renderTargetRenderer._shadowMapRendererUtils.clearTwoDShadowMapData.callCount).toEqual(6);
         });
+        it("create shader with BuildTwoDShadowMapShaderLib", function () {
+            self.sandbox.stub(self.renderTargetRenderer._shadowMapRendererUtils, "createShaderWithShaderLib");
+
+            self.renderTargetRenderer._light = {
+                shadowRenderList: dyCb.Collection.create()
+
+            };
+
+            self.renderTargetRenderer.init();
+
+            expect(self.renderTargetRenderer._shadowMapRendererUtils.createShaderWithShaderLib).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
+        });
     };
 
 
@@ -123,7 +135,7 @@ tool.init_beforeEach = function(self){
                     body: function(list1, renderObj1, renderer, camera){
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(utils.beforeRender).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
+                        expect(utils.beforeRender).toCalledOnce();
                     }
                 }
             ],
@@ -142,7 +154,7 @@ tool.init_beforeEach = function(self){
                     body: function(renderer, camera){
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(utils.afterRender).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
+                        expect(utils.afterRender).toCalledOnce();
                     }
                 }
             ]

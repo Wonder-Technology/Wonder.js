@@ -4,8 +4,8 @@ describe("Material", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        material = new dy.Material();
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        material = new dy.Material();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -21,8 +21,7 @@ describe("Material", function() {
         });
 
         it("if Stage use program, return", function(){
-            stage.shader = dy.Shader.create();
-            stage.shader.program.use();
+            stage.useProgram(dy.Shader.create());
 
             material.useProgram();
 
@@ -45,9 +44,8 @@ describe("Material", function() {
         });
 
         it("if Stage use program, update Stage's shader", function(){
-            stage.shader = dy.Shader.create();
+            stage.useProgram(dy.Shader.create());
             sandbox.stub(stage.shader, "update");
-            stage.shader.program.use();
             var quadCmd = {};
 
             material.updateShader(quadCmd);

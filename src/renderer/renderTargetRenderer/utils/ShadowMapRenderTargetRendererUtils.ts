@@ -11,6 +11,7 @@ module dy {
         protected light:Light = null;
 
         private _endLoopHandler:Function = null;
+        private _shader:Shader = null;
 
         public initWhenCreate(){
             this.texture.width = this.light.shadowMapWidth;
@@ -49,20 +50,22 @@ module dy {
             EventManager.off("dy_endLoop", this._endLoopHandler);
         }
 
-        public beforeRender(lib:BuildShadowMapShaderLib){
+        public beforeRender(){
             var stage:Stage = Director.getInstance().stage;
 
-            stage.shader.addLib(lib);
-            stage.shader.initProgram();
-            stage.shader.program.use();
+            stage.useProgram(this._shader);
         }
 
-        public afterRender(lib:BuildShadowMapShaderLib){
+        public afterRender(){
             var stage:Stage = Director.getInstance().stage;
 
-            stage.shader.program.unUse();
-            stage.shader.removeLib(lib);
-            stage.shader.clearSource();
+            stage.unUseProgram();
+        }
+
+        public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
+            this._shader = Shader.create();
+            this._shader.addLib(lib);
+            this._shader.initProgram();
         }
 
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
