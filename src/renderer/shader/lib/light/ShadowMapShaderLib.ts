@@ -20,7 +20,7 @@ module dy{
 
             if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
-                    name: "SHADOWMAP_TYPE_PCF_SOFT"
+                    name: "SHADOWMAP_TYPE_PCF"
                 }]);
             }
 

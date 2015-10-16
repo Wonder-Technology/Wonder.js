@@ -75,7 +75,7 @@ float getCubemapShadowVisibility(vec3 lightDir, samplerCube cubemapShadowMapSamp
     // Now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
 
-    #if defined(SHADOWMAP_TYPE_PCF_SOFT)
+    #if defined(SHADOWMAP_TYPE_PCF)
     return getCubemapShadowVisibilityByPCF(currentDepth, fragToLight, cubemapShadowMapSampler, getShadowBias(lightDir, shadowBias), farPlane, shadowDarkness);
     #endif
 
