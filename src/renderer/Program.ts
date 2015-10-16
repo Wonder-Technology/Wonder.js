@@ -64,7 +64,7 @@ module dy{
                     gl.uniform1i(pos, data);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("VariableType:", type));
+                    Log.error(true, Log.info.FUNC_INVALID("VariableType:", type));
                     break;
             }
         }
@@ -80,7 +80,7 @@ module dy{
                 .forEach((val:ShaderData, key:string) => {
 
                 if(val.type === VariableType.STRUCTURE){
-                    dyCb.Log.error(!JudgeUtils.isDirectObject(val.value), dyCb.Log.info.FUNC_MUST_BE("value's type", "object{}"));
+                    Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
 
                     for(let i in val.value){
                         self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
@@ -105,7 +105,7 @@ module dy{
             if(JudgeUtils.isFunction(data)){
                 data = data();
 
-                dyCb.Log.error(!(data instanceof ArrayBuffer), dyCb.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+                Log.error(!(data instanceof ArrayBuffer), Log.info.FUNC_MUST_BE("ArrayBuffer"));
             }
 
             switch (type){
@@ -115,7 +115,7 @@ module dy{
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("VariableType:", type));
+                    Log.error(true, Log.info.FUNC_INVALID("VariableType:", type));
                     break;
             }
         }
@@ -180,7 +180,7 @@ module dy{
 
             gl.linkProgram(this._program);
 
-            dyCb.Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
+            Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
 
             /*!
              should detach and delete shaders after linking the program
@@ -215,7 +215,7 @@ module dy{
                 return data;
             }
 
-            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+            Log.error(true, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
         }
 
         private _convertToVector4(data:any){
@@ -226,7 +226,7 @@ module dy{
                 return data;
             }
 
-            dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
+            Log.error(true, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
         }
     }
 }

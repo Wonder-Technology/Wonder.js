@@ -14,7 +14,7 @@ module dy{
             var asset = VideoLoader.getInstance().get(id),
                 video:Video = null;
 
-            dyCb.Log.error(!asset, dyCb.Log.info.FUNC_NOT_EXIST("video asset which id is " + id));
+            Log.error(!asset, Log.info.FUNC_NOT_EXIST("video asset which id is " + id));
 
             video = asset.video;
 

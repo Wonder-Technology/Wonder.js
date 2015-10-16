@@ -20,7 +20,7 @@ module dy {
                 this._renderList = renderList;
             }
             else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("renderList", "array or dyCb.Collection"));
+                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or dyCb.Collection"));
             }
         }
 

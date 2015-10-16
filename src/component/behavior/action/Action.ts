@@ -6,11 +6,11 @@ module dy{
         }
 
         get isStop() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
+            return Log.error(true, Log.info.ABSTRACT_ATTRIBUTE);
         }
 
         get isPause() {
-            return dyCb.Log.error(true, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
+            return Log.error(true, Log.info.ABSTRACT_ATTRIBUTE);
         }
 
         protected p_target:GameObject = null;

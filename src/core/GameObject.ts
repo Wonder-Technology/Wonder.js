@@ -320,8 +320,6 @@ module dy {
         }
 
         public addComponent(component:Component){
-            var Log = dyCb.Log;
-
             if(this.hasComponent(component)){
                 Log.assert(false, "the component already exist");
                 return this;

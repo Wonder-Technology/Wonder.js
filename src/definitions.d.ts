@@ -70,6 +70,7 @@
 
 /// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
+/// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
 /// <reference path="utils/time/CommonTimeController"/>

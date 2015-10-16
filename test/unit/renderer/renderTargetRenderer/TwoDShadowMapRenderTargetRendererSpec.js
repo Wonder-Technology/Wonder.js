@@ -24,7 +24,7 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
             body: function(texture){
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dyCb.Log, "warn");
+                self.sandbox.stub(dy.Log, "warn");
                 self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height:100
@@ -39,7 +39,7 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                expect(dyCb.Log.warn).not.toCalled();
+                expect(dy.Log.warn).not.toCalled();
             }
         }
         ]

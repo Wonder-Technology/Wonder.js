@@ -4,7 +4,7 @@ module dy {
         public static create() {
             var spawn = null;
 
-            dyCb.Log.assert(arguments.length >= 2, "应该有2个及以上动作");
+            Log.assert(arguments.length >= 2, "应该有2个及以上动作");
 
             spawn = new this(Array.prototype.slice.call(arguments, 0));
 

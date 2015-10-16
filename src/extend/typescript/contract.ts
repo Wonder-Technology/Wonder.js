@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export function assert(cond:boolean, message:string="contract error"){
-        dyCb.Log.error(!cond, message);
+        Log.error(!cond, message);
     }
 
 

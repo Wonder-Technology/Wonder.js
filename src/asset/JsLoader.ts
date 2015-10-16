@@ -17,7 +17,7 @@ module dy{
             var self = this,
                 url = arguments[0];
 
-            dyCb.Log.error(JudgeUtils.isArray(url), dyCb.Log.info.FUNC_MUST_BE("js's url", "string"));
+            Log.error(JudgeUtils.isArray(url), Log.info.FUNC_MUST_BE("js's url", "string"));
 
             return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();

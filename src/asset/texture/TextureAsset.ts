@@ -71,7 +71,7 @@ module dy{
         }
 
         public copyTo(texture:BasicTexture){
-            dyCb.Log.error(!texture, dyCb.Log.info.FUNC_MUST_DEFINE("texture"));
+            Log.error(!texture, Log.info.FUNC_MUST_DEFINE("texture"));
 
             texture.source = this.source;
 

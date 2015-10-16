@@ -70,12 +70,12 @@ module dy{
             var header:Int32Array = new Int32Array( buffer, 0, headerLengthInt );
 
             if ( header[ off_magic ] !== DDS_MAGIC ) {
-                dyCb.Log.error(true, "Invalid magic number in DDS header." );
+                Log.error(true, "Invalid magic number in DDS header." );
                 return dds;
             }
 
             if ( <any>(!header[ off_pfFlags ]) & DDPF_FOURCC ) {
-                dyCb.Log.error(true, "Unsupported format, must contain a FourCC code." );
+                Log.error(true, "Unsupported format, must contain a FourCC code." );
                 return dds;
             }
 
@@ -109,7 +109,7 @@ module dy{
                         dds.format = TextureFormat.RGBA;
                     }
                     else {
-                        dyCb.Log.error(true, "Unsupported FourCC code " + this._int32ToFourCC( fourCC ) );
+                        Log.error(true, "Unsupported FourCC code " + this._int32ToFourCC( fourCC ) );
                         return dds;
                     }
             }

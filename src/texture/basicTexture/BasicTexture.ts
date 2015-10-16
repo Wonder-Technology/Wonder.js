@@ -127,7 +127,7 @@ module dy{
             ctx = canvas.getContext( "2d" );
             ctx.drawImage( source, 0, 0, source.width, source.height, 0, 0, newWidth, newHeight );
 
-            dyCb.Log.log(`source is too big (${source.width}x${source.height}). Resized to ${canvas.width}x${canvas.height}.`);
+            Log.log(`source is too big (${source.width}x${source.height}). Resized to ${canvas.width}x${canvas.height}.`);
 
             return canvas;
         }

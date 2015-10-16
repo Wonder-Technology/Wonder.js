@@ -48,29 +48,29 @@ module dy {
 
             //if ( this.extensionTextureFloat === null ) {
             //
-            //    dyCb.Log.log( "Float textures not supported." );
+            //    Log.log( "Float textures not supported." );
             //
             //}
             //
             //if ( this.extensionStandardDerivatives === null ) {
             //
-            //    dyCb.Log.log( "Standard derivatives not supported." );
+            //    Log.log( "Standard derivatives not supported." );
             //
             //}
             //
             //if ( this.extensionTextureFilterAnisotropic === null ) {
             //
-            //    dyCb.Log.log( "Anisotropic texture filtering not supported." );
+            //    Log.log( "Anisotropic texture filtering not supported." );
             //
             //}
 
             //if ( this.extensionCompressedTextureS3TC === null ) {
-            //    dyCb.Log.log( "S3TC compressed textures not supported." );
+            //    Log.log( "S3TC compressed textures not supported." );
             //}
 
             //if ( this.extensionElementIndexUint === null ) {
             //
-            //    dyCb.Log.log( "elementindex as unsigned integer not supported." );
+            //    Log.log( "elementindex as unsigned integer not supported." );
             //
             //}
             //
@@ -162,11 +162,11 @@ module dy {
             if (!highpAvailable) {
                 if (mediumpAvailable) {
                     this.precision = GPUPrecision.MEDIUMP;
-                    dyCb.Log.warn(dyCb.Log.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
+                    Log.warn(Log.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
                 }
                 else {
                     this.precision = GPUPrecision.LOWP;
-                    dyCb.Log.warn(dyCb.Log.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
+                    Log.warn(Log.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
                 }
             }
             else{

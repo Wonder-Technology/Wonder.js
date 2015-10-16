@@ -55,7 +55,7 @@ module dy{
             var gl = this.gl,
                 renderBuffer = gl.createRenderbuffer();
 
-            dyCb.Log.error(!renderBuffer, "Failed to create renderbuffer object");
+            Log.error(!renderBuffer, "Failed to create renderbuffer object");
 
             return renderBuffer;
         }
@@ -86,7 +86,7 @@ module dy{
                 e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
 
             if (e !== gl.FRAMEBUFFER_COMPLETE) {
-                dyCb.Log.error(true, `Frame buffer object is incomplete:${e.toString()}`);
+                Log.error(true, `Frame buffer object is incomplete:${e.toString()}`);
             }
         }
     }

@@ -49,7 +49,7 @@ module dy{
         public addToGameObject(gameObject:GameObject){
             super.addToGameObject(gameObject);
 
-            dyCb.Log.assert(!gameObject.geometry, "renderer is overwrite");
+            Log.assert(!gameObject.geometry, "renderer is overwrite");
 
             gameObject.geometry = this;
         }

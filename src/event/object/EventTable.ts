@@ -35,7 +35,7 @@ module dy {
         //            result = true;
         //            break;
         //        default:
-        //            dyCb.Log.assert(false, dyCb.Log.info.FUNC_UNKNOW("eventName"));
+        //            Log.assert(false, Log.info.FUNC_UNKNOW("eventName"));
         //            result = false;
         //            break;
         //    }

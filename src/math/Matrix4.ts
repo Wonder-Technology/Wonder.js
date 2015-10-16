@@ -105,7 +105,7 @@ module dy{
 
             det = s[0]*inv[0] + s[1]*inv[4] + s[2]*inv[8] + s[3]*inv[12];
             if (det === 0) {
-                dyCb.Log.warn("can't invert matrix, determinant is 0");
+                Log.warn("can't invert matrix, determinant is 0");
 
                 this.setIdentity();
 
@@ -481,7 +481,7 @@ module dy{
                 rh,
                 rd;
 
-            dyCb.Log.error(left === right || bottom === top || near === far, dyCb.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+            Log.error(left === right || bottom === top || near === far, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
 
             rw = 1 / (right - left);
             rh = 1 / (top - bottom);
@@ -526,7 +526,7 @@ module dy{
          */
         public setPerspective (fovy: number, aspect, near, far):Matrix4 {
             var e, rd, s, ct,
-                log = dyCb.Log,
+                log = Log,
                 info = log.info;
 
             log.error(near === far || aspect === 0, info.FUNC_MUST_NOT_BE("frustum", "null"));

@@ -15,7 +15,7 @@ module dy {
         }
 
         public on(target:GameObject, eventName:EventName, handler:Function, priority:number) {
-            dyCb.Log.error(!(target instanceof GameObject), dyCb.Log.info.FUNC_MUST_BE("target", "GameObject"));
+            Log.error(!(target instanceof GameObject), Log.info.FUNC_MUST_BE("target", "GameObject"));
 
             this.handler(target, eventName, handler, priority);
         }
@@ -28,7 +28,7 @@ module dy {
                 self = this;
 
             if (!(target instanceof GameObject)) {
-                dyCb.Log.log("target is not GameObject, can't trigger event");
+                Log.log("target is not GameObject, can't trigger event");
                 return;
             }
 

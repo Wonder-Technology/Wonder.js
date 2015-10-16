@@ -25,7 +25,7 @@ module dy{
 
 
         public initWhenCreate(assets:Array<CubemapData>){
-            dyCb.Log.error(assets.length !== 6, dyCb.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
+            Log.error(assets.length !== 6, Log.info.FUNC_MUST("cubemap", "has 6 assets"));
             this._judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets);
 
             this._createTextures(assets);
@@ -127,7 +127,7 @@ module dy{
                 }
             });
 
-            dyCb.Log.error(isCommonAssets.length > 0 && isCompressedAssets.length > 0, dyCb.Log.info.FUNC_MUST_BE("cubemap's six face's assets", "all TwoDTextureAsset or all CompressedTextureAsset"));
+            Log.error(isCommonAssets.length > 0 && isCompressedAssets.length > 0, Log.info.FUNC_MUST_BE("cubemap's six face's assets", "all TwoDTextureAsset or all CompressedTextureAsset"));
 
             if(isCompressedAssets.length === 6){
                 this._isAllCompressedAsset = true;

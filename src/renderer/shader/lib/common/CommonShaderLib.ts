@@ -40,7 +40,7 @@ module dy{
                 program.sendAttributeData("a_position", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
             }
             else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST("has vertexBuffer"));
+                Log.error(true, Log.info.FUNC_MUST("has vertexBuffer"));
             }
         }
     }

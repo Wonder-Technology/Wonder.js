@@ -152,13 +152,13 @@ describe("loader", function () {
     //        reject(err);
     //    });
     //    sandbox.stub(dy.GLSLLoader.getInstance(), "_loadText").returns(promise);
-    //    sandbox.stub(dyCb.Log, "log");
+    //    sandbox.stub(dy.Log, "log");
     //
     //    manager.load([
     //        {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
     //    ]).subscribe(function(data){}, function(error){
     //        expect(error).toEqual(err);
-    //        expect(dyCb.Log.log).toCalledOnce();
+    //        expect(dy.Log.log).toCalledOnce();
     //
     //        done();
     //    }, function(){

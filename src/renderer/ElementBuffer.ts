@@ -21,7 +21,7 @@ module dy{
 
             this.buffer = gl.createBuffer();   // Create a buffer object
             if (!this.buffer) {
-                dyCb.Log.log('Failed to create the this.buffer object');
+                Log.log('Failed to create the this.buffer object');
                 return null;
             }
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
@@ -84,7 +84,7 @@ module dy{
                     };
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("BufferType"));
+                    Log.error(true, Log.info.FUNC_INVALID("BufferType"));
                     break;
             }
 

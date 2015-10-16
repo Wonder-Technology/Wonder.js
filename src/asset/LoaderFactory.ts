@@ -25,7 +25,7 @@ module dy{
                     loader = VideoLoader.getInstance();
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT(extname));
+                    Log.error(true, Log.info.FUNC_UNEXPECT(extname));
                     break;
             }
 

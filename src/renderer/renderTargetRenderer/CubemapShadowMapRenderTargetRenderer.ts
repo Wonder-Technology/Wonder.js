@@ -90,7 +90,7 @@ module dy {
                     resultList.addChildren(list);
                 }
                 else{
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("array or collection"));
+                    Log.error(true, Log.info.FUNC_MUST_BE("array or collection"));
                 }
             });
 

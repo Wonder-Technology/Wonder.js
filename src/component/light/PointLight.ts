@@ -46,7 +46,7 @@ module dy{
                 this._shadowRenderList = shadowRenderList;
             }
             else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shadowRenderList", "object or dyCb.Hash"));
+                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object or dyCb.Hash"));
             }
         }
 

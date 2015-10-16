@@ -29,7 +29,7 @@ module dy {
                 material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
 
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             material.clearTwoDShadowMapData();
         }

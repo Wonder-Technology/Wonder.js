@@ -111,14 +111,14 @@ module dy{
                     this[`${sourceType}SourceBody`] = chunk.body;
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("opertor:", operator));
+                    Log.error(true, Log.info.FUNC_INVALID("opertor:", operator));
                     break;
             }
         }
 
         private _addVariable(target:dyCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
-                dyCb.Log.assert(VariableLib[variable], dyCb.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
+                Log.assert(VariableLib[variable], Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
 
                 target.addChild(variable, VariableLib[variable]);
             });

@@ -26,7 +26,7 @@ module dy{
                 maxUnit = GPUDetector.getInstance().maxTextureUnit;
 
             if(unit >= maxUnit){
-                dyCb.Log.warn("trying to use %d texture units, but GPU only supports %d units", unit, maxUnit);
+                Log.warn("trying to use %d texture units, but GPU only supports %d units", unit, maxUnit);
             }
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);

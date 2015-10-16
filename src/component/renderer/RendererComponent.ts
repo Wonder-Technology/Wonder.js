@@ -8,7 +8,7 @@ module dy {
         public addToGameObject(gameObject:GameObject){
             super.addToGameObject(gameObject);
 
-            dyCb.Log.assert(!gameObject.rendererComponent, "rendererComponent is overwrite");
+            Log.assert(!gameObject.rendererComponent, "rendererComponent is overwrite");
 
             gameObject.rendererComponent = this;
         }

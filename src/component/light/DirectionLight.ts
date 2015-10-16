@@ -22,7 +22,7 @@ module dy{
                 this._shadowRenderList = shadowRenderList;
             }
             else {
-                dyCb.Log.error(true, dyCb.Log.info.FUNC_MUST_BE("shadowRenderList", "array or dyCb.Collection"));
+                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "array or dyCb.Collection"));
             }
         }
 

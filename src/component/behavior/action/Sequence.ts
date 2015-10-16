@@ -5,7 +5,7 @@ module dy {
             var actionArr = null,
                 sequence = null;
 
-            dyCb.Log.assert(arguments.length >= 2, "应该有2个及以上动作");
+            Log.assert(arguments.length >= 2, "应该有2个及以上动作");
 
             actionArr = Array.prototype.slice.call(arguments, 0);
 

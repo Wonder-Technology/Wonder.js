@@ -59,7 +59,7 @@ module dy{
             }
             err = arguments[1];
 
-            dyCb.Log.log(`加载${path} 资源失败:${err}`);
+            Log.log(`加载${path} 资源失败:${err}`);
         }
     }
 }

@@ -207,7 +207,7 @@ module dy{
                     result = ShaderChunk.lowp_fragment.top;
                     break;
                 default:
-                    //dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("precision"));
+                    //Log.error(true, Log.info.FUNC_INVALID("precision"));
                     result = "";
                     break;
             }
@@ -270,7 +270,7 @@ module dy{
                     num = 4;
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT("VariableType", type));
+                    Log.error(true, Log.info.FUNC_UNEXPECT("VariableType", type));
                     break;
             }
 

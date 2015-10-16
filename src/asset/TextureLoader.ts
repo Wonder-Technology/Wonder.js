@@ -18,7 +18,7 @@ module dy{
                 stream = null,
                 url = arguments[0];
 
-            dyCb.Log.error(JudgeUtils.isArray(url), dyCb.Log.info.FUNC_MUST_BE("texture's url", "string"));
+            Log.error(JudgeUtils.isArray(url), Log.info.FUNC_MUST_BE("texture's url", "string"));
 
             extname = dyCb.PathUtils.extname(url).toLowerCase();
 
@@ -46,7 +46,7 @@ module dy{
                     stream = CompressedTextureLoader.load(url);
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT(extname));
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(extname));
                     break;
             }
 

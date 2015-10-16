@@ -19,7 +19,7 @@ module dy{
 
         protected p_type:EventType = null;
         get type(){
-            dyCb.Log.error(this.p_type === null, dyCb.Log.info.ABSTRACT_ATTRIBUTE);
+            Log.error(this.p_type === null, Log.info.ABSTRACT_ATTRIBUTE);
 
             return this.p_type;
         }

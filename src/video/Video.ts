@@ -66,7 +66,7 @@ module dy{
                 }
             });
 
-            dyCb.Log.error(canPlayUrl === null, dyCb.Log.info.FUNC_NOT_SUPPORT("browser", extnameArr.join(",")));
+            Log.error(canPlayUrl === null, Log.info.FUNC_NOT_SUPPORT("browser", extnameArr.join(",")));
 
             return canPlayUrl;
         }
@@ -86,7 +86,7 @@ module dy{
                     mimeStr = 'video/webm; codecs="vp8, vorbis"';
                     break;
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT(extname));
+                    Log.error(true, Log.info.FUNC_UNEXPECT(extname));
                     break;
             }
 

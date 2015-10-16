@@ -17,7 +17,7 @@ module dy{
             //todo remove <any>
             var result = _table.getChild(<any>type);
 
-            dyCb.Log.error(result === void 0, dyCb.Log.info.FUNC_NOT_EXIST(type, "in VariableTypeTable"));
+            Log.error(result === void 0, Log.info.FUNC_NOT_EXIST(type, "in VariableTypeTable"));
 
             return result;
         }

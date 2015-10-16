@@ -105,7 +105,7 @@ module dy {
                         mouseButton = MouseButton.CENTER;
                         break;
                     default:
-                        dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
                         //mouseButton = e.button;
                         break;
                 }
@@ -122,7 +122,7 @@ module dy {
                         mouseButton = MouseButton.CENTER;
                         break;
                     default:
-                        dyCb.Log.error(true, dyCb.Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
                         //mouseButton = e.button;
                         break;
                 }

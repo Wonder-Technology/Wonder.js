@@ -125,11 +125,11 @@ describe("compressed texture", function() {
                         loadCompressedTexture(function(texture){
                             texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
                             texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
-                            sandbox.stub(dyCb.Log, "assert");
+                            sandbox.stub(dy.Log, "assert");
 
                             texture.update(0);
 
-                            expect(dyCb.Log.assert).toCalled();
+                            expect(dy.Log.assert).toCalled();
                             expect(texture.sourceRegionMethod).toEqual(dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
 
                             done();

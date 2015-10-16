@@ -16,7 +16,7 @@ module dy{
         protected loadAsset(arg):dyRt.Stream {
             var url = arguments[0];
 
-            dyCb.Log.error(JudgeUtils.isArray(url), dyCb.Log.info.FUNC_MUST_BE("glsl's url", "string"));
+            Log.error(JudgeUtils.isArray(url), Log.info.FUNC_MUST_BE("glsl's url", "string"));
 
             return AjaxLoader.load(url, "text");
         }

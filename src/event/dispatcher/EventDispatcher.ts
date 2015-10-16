@@ -34,7 +34,7 @@ module dy {
                 let event = arguments[0],
                     eventType = event.type;
 
-                //dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                //Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
@@ -44,7 +44,7 @@ module dy {
                     userData = arguments[1],
                     eventType = event.type;
 
-                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event, userData);
@@ -65,7 +65,7 @@ module dy {
                     notSetTarget = arguments[3] === void 0 ? false : arguments[3],
                     eventType = event.type;
 
-                dyCb.Log.error(eventType !== EventType.CUSTOM, dyCb.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, userData, notSetTarget);

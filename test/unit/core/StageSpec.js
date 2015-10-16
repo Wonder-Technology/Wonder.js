@@ -278,12 +278,12 @@ describe("Stage", function() {
     describe("addComponent", function(){
         it("if component exist, return", function(){
             var component = new dy.Action();
-            sandbox.stub(dyCb.Log, "assert");
+            sandbox.stub(dy.Log, "assert");
 
             stage.addComponent(component);
             var result = stage.addComponent(component);
 
-            expect(dyCb.Log.assert).toCalledOnce();
+            expect(dy.Log.assert).toCalledOnce();
             expect(result).toEqual(stage);
         });
         it("set component's gameObject", function(){

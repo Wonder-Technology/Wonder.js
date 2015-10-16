@@ -162,7 +162,7 @@ describe("Texture", function() {
             });
             it("texture unit shouldn't exceed maxTextureUnit", function(done){
                 gpuDetector.maxTextureUnit = 1;
-                sandbox.stub(dyCb.Log, "warn");
+                sandbox.stub(dy.Log, "warn");
 
                 loadMultiTexture(function(texture1, texture2){
                     textureManager.addMap(texture1);
@@ -170,7 +170,7 @@ describe("Texture", function() {
 
                     textureManager.update();
 
-                    expect(dyCb.Log.warn).toCalledOnce();
+                    expect(dy.Log.warn).toCalledOnce();
 
                     done();
                 });

@@ -12,7 +12,7 @@ module dy {
         public addToGameObject(gameObject:GameObject){
             super.addToGameObject(gameObject);
 
-            dyCb.Log.assert(!gameObject.collider, "renderer is overwrite");
+            Log.assert(!gameObject.collider, "renderer is overwrite");
 
             gameObject.collider = this;
         }

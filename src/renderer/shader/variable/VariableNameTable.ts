@@ -11,7 +11,7 @@ module dy{
         public static getVariableName(name: string){
             var result = _table.getChild(name);
 
-            dyCb.Log.error(result === void 0, dyCb.Log.info.FUNC_NOT_EXIST(name, "in VariableNameTable"));
+            Log.error(result === void 0, Log.info.FUNC_NOT_EXIST(name, "in VariableNameTable"));
 
             return result;
         }

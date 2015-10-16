@@ -99,7 +99,7 @@ module dy {
                     this._quadratic = 0.000007;
                     break;
                 default :
-                    dyCb.Log.error(true, "over light range");
+                    Log.error(true, "over light range");
                     break;
             }
         }

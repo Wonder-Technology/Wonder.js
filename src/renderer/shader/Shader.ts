@@ -120,10 +120,10 @@ module dy{
                 return shader;
             }
             else{
-                dyCb.Log.log(gl.getShaderInfoLog(shader));
-                dyCb.Log.log("attributes:\n", this.attributes);
-                dyCb.Log.log("uniforms:\n", this.uniforms);
-                dyCb.Log.log("source:\n", source);
+                Log.log(gl.getShaderInfoLog(shader));
+                Log.log("attributes:\n", this.attributes);
+                Log.log("uniforms:\n", this.uniforms);
+                Log.log("source:\n", source);
             }
         }
     }

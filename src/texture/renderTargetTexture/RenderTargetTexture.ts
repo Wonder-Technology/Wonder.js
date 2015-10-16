@@ -35,7 +35,7 @@ module dy {
         protected setEmptyTexture(texture){
             var gl = DeviceManager.getInstance().gl;
 
-            dyCb.Log.error(!texture, "Failed to create texture object");
+            Log.error(!texture, "Failed to create texture object");
 
             gl.bindTexture(gl[this.target], texture);
 

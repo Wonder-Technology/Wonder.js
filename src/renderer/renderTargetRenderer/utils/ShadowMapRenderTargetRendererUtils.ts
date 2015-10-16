@@ -34,7 +34,7 @@ module dy {
                 shadowMapCamera = arguments[1];
             }
 
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
         }
@@ -75,7 +75,7 @@ module dy {
                 return;
             }
 
-            dyCb.Log.error(!(material instanceof LightMaterial), dyCb.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
 
             this.addShadowMap(material, shadowMap);
         }

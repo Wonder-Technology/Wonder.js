@@ -16,8 +16,8 @@ module dy {
                 cameraComponent = camera.getComponent<Camera>(Camera),
                 material:Material = geometry.material;
 
-            dyCb.Log.error(!cameraComponent, "camera must add Camera Component");
-            dyCb.Log.error(!geometry, dyCb.Log.info.FUNC_MUST("Mesh", "add geometry component"));
+            Log.error(!cameraComponent, "camera must add Camera Component");
+            Log.error(!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
 
             quadCmd.buffers = {
                 vertexBuffer: geometry.vertices,

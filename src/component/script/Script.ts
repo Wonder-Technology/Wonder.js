@@ -38,7 +38,7 @@ module dy{
         public url:string = null;
 
         public createLoadJsStream(){
-            dyCb.Log.error(!this.url, dyCb.Log.info.FUNC_MUST_DEFINE("url"));
+            Log.error(!this.url, Log.info.FUNC_MUST_DEFINE("url"));
 
             return LoaderManager.getInstance().load(this.url)
             .map(() => {

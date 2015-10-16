@@ -72,7 +72,7 @@ module dy {
         public render(renderer:Renderer) {
             var self = this;
 
-            dyCb.Log.error(!this.camera, "stage must add camera");
+            Log.error(!this.camera, "stage must add camera");
 
             this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.camera);

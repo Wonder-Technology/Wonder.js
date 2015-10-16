@@ -32,7 +32,7 @@ module dy {
                 this._lights.appendChild(PointLight.type, light);
             }
             else{
-                 dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("light"));
+                 Log.error(true, Log.info.FUNC_INVALID("light"));
             }
         }
     }

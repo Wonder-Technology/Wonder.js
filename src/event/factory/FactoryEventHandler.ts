@@ -16,7 +16,7 @@ module dy{
                     break;
                 //todo more type
                 default :
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
+                    Log.error(true, Log.info.FUNC_INVALID("eventType"));
                     break;
             }
 
@@ -32,7 +32,7 @@ module dy{
         //            break;
         //        //todo more type
         //        default :
-        //            dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("eventType"));
+        //            Log.error(true, Log.info.FUNC_INVALID("eventType"));
         //            break;
         //    }
         //

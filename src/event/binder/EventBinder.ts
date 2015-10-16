@@ -149,7 +149,7 @@ module dy {
         }
 
         private _checkEventSeparator(eventName:string){
-            assert(eventName.indexOf(EventListenerMap.eventSeparator) === -1, dyCb.Log.info.FUNC_SHOULD_NOT("eventName", `contain ${EventListenerMap.eventSeparator}`));
+            assert(eventName.indexOf(EventListenerMap.eventSeparator) === -1, Log.info.FUNC_SHOULD_NOT("eventName", `contain ${EventListenerMap.eventSeparator}`));
         }
     }
 }

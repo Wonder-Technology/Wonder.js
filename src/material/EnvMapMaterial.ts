@@ -27,7 +27,7 @@ module dy{
                     this.shader.addLib(FresnelShaderLib.getInstance());
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_INVALID("EnvMapMode"));
+                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
                     break;
             }
 

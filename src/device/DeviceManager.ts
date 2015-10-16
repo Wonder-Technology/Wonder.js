@@ -154,7 +154,7 @@ module dy {
                         gl.cullFace(gl.FRONT_AND_BACK);
                         break;
                     default :
-                        dyCb.Log.error(true, dyCb.Log.info.FUNC_UNEXPECT("cullMode"));
+                        Log.error(true, Log.info.FUNC_UNEXPECT("cullMode"));
                         break;
                 }
 
@@ -194,7 +194,7 @@ module dy {
                         break;
                     case PolygonOffsetMode.CUSTOM:
                         gl.enable(gl.POLYGON_OFFSET_FILL);
-                        dyCb.Log.error(!this.polygonOffset, dyCb.Log.info.FUNC_MUST_DEFINE("polygonOffset"));
+                        Log.error(!this.polygonOffset, Log.info.FUNC_MUST_DEFINE("polygonOffset"));
                         gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
                         break;
                     default:

@@ -65,7 +65,7 @@ module dy {
             var det = me[0] * te[0] + me[1] * te[3] + me[2] * te[6];
 
             if (det === 0) {
-                dyCb.Log.warn("can't invert matrix, determinant is 0");
+                Log.warn("can't invert matrix, determinant is 0");
 
                 this.setIdentity();
 

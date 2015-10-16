@@ -49,7 +49,7 @@ module dy {
         }
 
         protected warnTextureSizeExceedCanvasSize(){
-            dyCb.Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
+            Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
         }
 
         private _isTextureSizeExceedCanvasSize(){
