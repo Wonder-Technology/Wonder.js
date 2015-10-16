@@ -35,6 +35,8 @@ module.exports = function(config) {
         'test/unit/renderer/renderTargetRenderer/CubemapRenderTargetTool.js',
 
         'test/unit/renderer/**',
+        //'test/unit/renderer/texture/*',
+        //'test/unit/renderer/texture/**',
 
         {pattern: 'test/res/*', watched: false, included: false, served: true}
     ],

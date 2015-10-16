@@ -46,6 +46,8 @@ module dy {
             this.forEach((child:GameObject) => {
                 child.init();
             });
+
+            return this;
         }
 
         public onStartLoop() {

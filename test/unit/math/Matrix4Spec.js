@@ -193,16 +193,17 @@ describe("Matrix4", function(){
 
     describe("setOrtho", function(){
         it("根据近裁剪平面距离和远裁剪平面距离，给出正交投影矩阵", function(){
-            var n = 0.1,
+            var l = -10,
+                r = 10,
+                b = -20,
+                t = 20,
+                n = 0.1,
                 f = 10;
 
-            matrix.setOrtho(n, f);
+            matrix.setOrtho(l, r, b, t, n, f);
 
             expect(getValues()).toEqual(
-                [1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, mathTestUtils.toFixed(2 / (n - f)), 0,
-                0, 0, mathTestUtils.toFixed((n + f) / (n - f)), 1]
+                [0.1, 0, 0, 0, 0, 0.05, 0, 0, 0, 0, -0.2020202, 0, 0, 0, -1.020202, 1]
             )
         })
 
@@ -325,16 +326,16 @@ describe("Matrix4", function(){
             var v2 =Vector4.create(1, 1, -5, 1);
 
             matrix.lookAt(0, 0, 0, 0, 0, -1, 0, 1, 0);
-            matrix.ortho(0.1,10);
+            matrix.ortho(-10, 10, -10, 10, 0.1,10);
             var result1 = matrix.multiplyVector4(v1);
             var result2 = matrix.multiplyVector4(v2);
 
             //v2不在cvv中，而v1在cvv中
             expect(getValues(result1)).toEqual(
-                [ 1, 1, -1.2222222, 1 ]
+                [ 0.1, 0.1, -1.2222222, 1 ]
             );
             expect(getValues(result2)).toEqual(
-                [ 1, 1, -0.0101011, 1 ]
+                [ 0.1, 0.1, -0.0101011, 1 ]
             );
         });
         it("视图变换->透视投影变换", function(){

@@ -265,6 +265,8 @@ module dy{
             this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
 
             this.dirtyLocal = true;
+
+            return this;
         }
 
         public translate(translation:Vector3);
@@ -281,6 +283,8 @@ module dy{
             }
 
             this.position = translation.add(this.position);
+
+            return this;
         }
 
         public rotate(eulerAngles:Vector3);
@@ -309,6 +313,8 @@ module dy{
             }
 
             this.dirtyLocal = true;
+
+            return this;
         }
 
         public rotateLocal(eulerAngles:Vector3);
@@ -330,6 +336,8 @@ module dy{
             this._localRotation.multiply(quaternion);
 
             this.dirtyLocal = true;
+
+            return this;
         }
 
         public rotateAround(angle:number, center:Vector3, axis:Vector3);
@@ -361,6 +369,8 @@ module dy{
             this.position = center.add(dir); // define new position
             //todo why "this.rotation = this.rotation.multiply(rot)" will cause gameobject rotate direction is around self?
             this.rotation = rot.multiply(this.rotation);
+
+            return this;
         }
 
         public lookAt(target:Vector3);
@@ -390,6 +400,8 @@ module dy{
             }
 
             this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
+
+            return this;
         }
     }
 }

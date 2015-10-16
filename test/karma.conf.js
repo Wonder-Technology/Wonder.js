@@ -31,6 +31,8 @@ module.exports = function(config) {
         'test/helper/yoop/yOOP.js',
         'test/unit/testTool.js',
         'test/unit/rendererTool.js',
+        'test/unit/renderer/renderTargetRenderer/TwoDRenderTargetTool.js',
+        'test/unit/renderer/renderTargetRenderer/CubemapRenderTargetTool.js',
 
         'test/unit/**/*.js',
       //'test/unit/renderer/RenderTarget*',

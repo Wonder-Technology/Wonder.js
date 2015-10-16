@@ -4,7 +4,7 @@ describe("Director", function () {
 
     function createCamera(){
         var camera = dy.GameObject.create(),
-            cameraComponent = dy.Camera.create();
+            cameraComponent = dy.PerspectiveCamera.create();
 
         cameraComponent.fovy = 60;
         cameraComponent.aspect = 1;

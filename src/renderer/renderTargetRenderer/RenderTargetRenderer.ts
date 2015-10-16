@@ -19,6 +19,7 @@ module dy {
 
         public init(){
             this.frameBufferTexture = this.texture.createEmptyTexture();
+
             this.texture.setTexture(this.frameBufferTexture);
             this.initFrameBuffer();
         }

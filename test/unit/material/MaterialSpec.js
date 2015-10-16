@@ -22,7 +22,7 @@ describe("Material", function() {
 
         it("if Stage use program, return", function(){
             stage.shader = dy.Shader.create();
-            stage.useProgram();
+            stage.shader.program.use();
 
             material.useProgram();
 
@@ -47,7 +47,7 @@ describe("Material", function() {
         it("if Stage use program, update Stage's shader", function(){
             stage.shader = dy.Shader.create();
             sandbox.stub(stage.shader, "update");
-            stage.useProgram();
+            stage.shader.program.use();
             var quadCmd = {};
 
             material.updateShader(quadCmd);

@@ -30,20 +30,7 @@ describe("DynamicCubemapTexture", function() {
     afterEach(function () {
         sandbox.restore();
     });
-    
-    describe("sendData", function(){
-        it("send cube sampler", function(){
-            var program = {
-                sendUniformData: sandbox.stub()
-            };
-            sandbox.stub(texture, "sendSamplerVariable");
 
-            texture.sendData(program, 0);
-
-            expect(texture.sendSamplerVariable).toCalledWith(dy.VariableType.SAMPLER_CUBE, program, 0);
-        });
-    });
-    
     describe("createEmptyTexture", function(){
         var glTexture;
 
@@ -74,6 +61,26 @@ describe("DynamicCubemapTexture", function() {
         });
         it("return webglTexture", function(){
             expect(texture.createEmptyTexture()).toEqual(glTexture);
+        });
+    });
+
+    describe("sendData", function () {
+        var program;
+
+        beforeEach(function () {
+            program = {
+                sendUniformData: sandbox.stub()
+            };
+        });
+
+        it("send texture sampler", function () {
+            texture.mode = dy.EnvMapMode.REFLECTION;
+            var material = dy.EnvMapMaterial.create();
+            material.envMap = texture;
+
+            material.textureManager.sendData(program);
+
+            expect(program.sendUniformData).toCalledWith("u_samplerCube0", dy.VariableType.SAMPLER_CUBE, 0);
         });
     });
 });
