@@ -113,21 +113,11 @@ tool.init_beforeEach = function(self){
                 self.renderTargetRenderer._light = light;
 
 
+                utils = self.sandbox.createStubObj("setShadowMapData", "beforeRender", "afterRender");
 
-                utils = {}
                 self.renderTargetRenderer._shadowMapRendererUtils = utils;
-
-                utils.setShadowMapData = self.sandbox.stub();
-
-                stage = {
-                    createShaderOnlyOnce: self.sandbox.stub(),
-                    useProgram: self.sandbox.stub(),
-                    unUseProgram: self.sandbox.stub()
-                };
-
-                self.sandbox.stub(dy.Director.getInstance(), "stage", stage);
             },
-            pre_render_six_faces: [
+            before_render_six_faces: [
                     {
                         explain: "set shadow map data",
                         body:
@@ -146,25 +136,15 @@ tool.init_beforeEach = function(self){
                                 }
                             ]
                     },
-                    {
-                        explain: "set Stage's shader to be BuildCubemapShadowMapShaderLib",
-                        body: function(list1, renderObj1, renderer, camera){
-                            self.renderTargetRenderer.render(renderer, camera);
+                {
+                    explain: "invoke shadowMap utils's beforeRender",
+                    body: function(list1, renderObj1, renderer, camera){
+                        self.renderTargetRenderer.render(renderer, camera);
 
-                            expect(stage.createShaderOnlyOnce).toCalledWith(sinon.match.instanceOf(dy.BuildCubemapShadowMapShaderLib));
-
-                        }
-                    },
-                    {
-                        explain: "use Stage's program",
-                        body: function(list1, renderObj1, renderer, camera){
-                            self.renderTargetRenderer.render(renderer, camera);
-
-                            expect(stage.useProgram).toCalledOnce();
-
-                        }
+                        expect(utils.beforeRender).toCalledWith(sinon.match.instanceOf(dy.BuildCubemapShadowMapShaderLib));
                     }
-                ],
+                }
+            ],
             render_six_faces: [
                     {
                         explain: "if face's renderList is empty, not render the face",
@@ -181,7 +161,17 @@ tool.init_beforeEach = function(self){
                             expect(renderObj6.render).toCalledOnce();
                         }
                     }
-                ]
+                ],
+            after_render_six_faces:[
+                {
+                    explain: "invoke shadowMap utils's afterRender",
+                    body: function(renderer, camera){
+                        self.renderTargetRenderer.render(renderer, camera);
+
+                        expect(utils.afterRender).toCalledWith(sinon.match.instanceOf(dy.BuildCubemapShadowMapShaderLib));
+                    }
+                }
+            ]
         }
     }());
 

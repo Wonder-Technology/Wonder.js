@@ -88,22 +88,12 @@ tool.init_beforeEach = function(self){
                 self.renderTargetRenderer._light = light;
 
 
+                utils = self.sandbox.createStubObj("setShadowMapData", "beforeRender", "afterRender");
 
-                utils = {
-                    setShadowMapData:self.sandbox.stub()
-                }
                 self.renderTargetRenderer._shadowMapRendererUtils = utils;
 
-
-                stage = {
-                    createShaderOnlyOnce: self.sandbox.stub(),
-                    useProgram: self.sandbox.stub(),
-                    unUseProgram: self.sandbox.stub()
-                };
-
-                self.sandbox.stub(dy.Director.getInstance(), "stage", stage);
             },
-            pre_render: [
+            before_render: [
                 {
                     explain: "set shadow map data",
                     body:
@@ -129,21 +119,11 @@ tool.init_beforeEach = function(self){
                         ]
                 },
                 {
-                    explain: "set Stage's shader to be BuildTwoDShadowMapShaderLib",
+                    explain: "invoke shadowMap utils's beforeRender",
                     body: function(list1, renderObj1, renderer, camera){
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(stage.createShaderOnlyOnce).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
-
-                    }
-                },
-                {
-                    explain: "use Stage's program",
-                    body: function(list1, renderObj1, renderer, camera){
-                        self.renderTargetRenderer.render(renderer, camera);
-
-                        expect(stage.useProgram).toCalledOnce();
-
+                        expect(utils.beforeRender).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
                     }
                 }
             ],
@@ -156,13 +136,13 @@ tool.init_beforeEach = function(self){
                     }
                 }
             ],
-            post_render:[
+            after_render:[
                 {
-                    explain: "not use Stage's program",
+                    explain: "invoke shadowMap utils's afterRender",
                     body: function(renderer, camera){
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(stage.unUseProgram).toCalledAfter(renderer.render);
+                        expect(utils.afterRender).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
                     }
                 }
             ]

@@ -77,21 +77,11 @@ var testTool = (function(){
             });
         },
         clearInstance: function(){
-            dy.Director._instance = null;
-            dy.GPUDetector._instance = null;
-            dy.DeviceManager._instance = null;
-
-            dy.CommonShaderLib._instance = null;
-            dy.BasicShaderLib._instance = null;
-            dy.BasicEnvMapShaderLib._instance = null;
-            dy.FresnelShaderLib._instance = null;
-            dy.ReflectionShaderLib._instance = null;
-            dy.RefractionShaderLib._instance = null;
-            dy.BasicMapShaderLib._instance = null;
-            dy.MultiMapShaderLib._instance = null;
-            dy.SkyboxShaderLib._instance = null;
-
-            //todo add more
+            for(var i in dy){
+                if(dy.hasOwnProperty(i)){
+                    dy[i]._instance = null;
+                }
+            }
         },
 
         multiIt: function(its, getArgs){

@@ -63,13 +63,11 @@ module dy {
             });
 
 
-            Director.getInstance().stage.createShaderOnlyOnce(BuildCubemapShadowMapShaderLib.getInstance());
-
-            Director.getInstance().stage.useProgram();
+            utils.beforeRender(BuildCubemapShadowMapShaderLib.getInstance());
         }
 
         protected afterRender(){
-            Director.getInstance().stage.unUseProgram();
+            this._shadowMapRendererUtils.afterRender(BuildCubemapShadowMapShaderLib.getInstance());
         }
 
         protected setCamera(camera:PerspectiveCamera){

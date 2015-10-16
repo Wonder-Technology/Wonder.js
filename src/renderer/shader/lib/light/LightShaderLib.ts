@@ -74,7 +74,7 @@ module dy{
             directionLights.forEach((directionLight:GameObject, index:number) => {
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
 
-                program.sendStructureData(`u_directionLights[${index}].direction`, VariableType.FLOAT_3, lightComponent.getDirection());
+                program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
                 program.sendStructureData(`u_directionLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
 
                 program.sendStructureData(`u_directionLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);

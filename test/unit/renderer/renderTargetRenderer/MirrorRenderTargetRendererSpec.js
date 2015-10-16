@@ -45,7 +45,7 @@ describe("MirrorRenderTargetRenderer", function () {
 
                 renderTargetTexture.renderList = dyCb.Collection.create([renderObj1, renderObj2])
             },
-            pre_render: null,
+            before_render: null,
             invoke_renderer_render: [
                 {
                     explain: "1.set Stage's cullMode to be FRONT, 2.invoke renderer's render method, 3.not use Stage's cullMode",
@@ -61,7 +61,7 @@ describe("MirrorRenderTargetRenderer", function () {
                     }
                 }
             ],
-            post_render: null
+            after_render: null
         }
     }());
 

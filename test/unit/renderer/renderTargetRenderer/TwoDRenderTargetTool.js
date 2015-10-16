@@ -180,7 +180,7 @@ renderCamera = {};
 
 
 
-                testTool.multiIt(self.render.pre_render, function(){
+                testTool.multiIt(self.render.before_render, function(){
                     return [renderObj1, renderObj2, renderer, camera];
                 });
 
@@ -206,7 +206,7 @@ renderCamera = {};
 
 
 
-                testTool.multiIt(self.render.post_render, function(){
+                testTool.multiIt(self.render.after_render, function(){
                     return [renderer, camera];
                 });
 

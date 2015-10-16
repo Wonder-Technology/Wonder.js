@@ -519,38 +519,4 @@ describe("Stage", function() {
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
         });
     });
-
-    describe("createShaderOnlyOnce", function(){
-        var shader;
-
-        beforeEach(function(){
-            shader = {
-                addLib: sandbox.stub(),
-                initProgram: sandbox.stub()
-            };
-            //stage.shader =  shader;
-            sandbox.spy(stage.shader, "addLib");
-            sandbox.stub(stage.shader, "initProgram");
-        });
-
-        it("create shader and add shader lib to stage's shader", function(){
-            var lib = {
-            };
-
-            stage.createShaderOnlyOnce(lib);
-
-            expect(stage.shader.addLib).toCalledWith(lib);
-            expect(stage.shader.initProgram).toCalledOnce();
-        });
-        it("can add only one shader lib", function () {
-            var lib = {
-            };
-
-            stage.createShaderOnlyOnce(lib);
-            stage.createShaderOnlyOnce(lib);
-
-            expect(stage.shader.addLib).toCalledOnce();
-            expect(stage.shader.initProgram).toCalledOnce();
-        });
-    });
 });

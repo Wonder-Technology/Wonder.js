@@ -241,7 +241,7 @@ var CubemapRenderTargetTool = YYC.Class({
 
 
 
-                testTool.multiIt(self.render.pre_render_six_faces, function(){
+                testTool.multiIt(self.render.before_render_six_faces, function(){
                     return [list1, renderObj1, renderer, camera];
                 });
 
@@ -285,6 +285,12 @@ var CubemapRenderTargetTool = YYC.Class({
                         expect(renderer.render.callCount).toEqual(6);
                     });
                 });
+
+
+                testTool.multiIt(self.render.after_render_six_faces, function(){
+                    return [renderer, camera];
+                });
+
 
                 it("unbind frameBuffer and restore viewport", function(){
                     self.renderTargetRenderer.render(renderer, camera);

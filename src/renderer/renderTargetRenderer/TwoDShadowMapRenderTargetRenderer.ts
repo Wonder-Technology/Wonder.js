@@ -62,17 +62,12 @@ module dy {
             renderer.render();
         }
 
-        protected  beforeRender(){
-            var stage:Stage = Director.getInstance().stage;
-
-            stage.createShaderOnlyOnce(BuildTwoDShadowMapShaderLib.getInstance());
-            stage.useProgram();
+        protected beforeRender(){
+            this._shadowMapRendererUtils.beforeRender(BuildTwoDShadowMapShaderLib.getInstance());
         }
 
         protected afterRender(){
-            var stage:Stage = Director.getInstance().stage;
-
-            stage.unUseProgram();
+            this._shadowMapRendererUtils.afterRender(BuildTwoDShadowMapShaderLib.getInstance());
         }
 
         protected warnTextureSizeExceedCanvasSize(){

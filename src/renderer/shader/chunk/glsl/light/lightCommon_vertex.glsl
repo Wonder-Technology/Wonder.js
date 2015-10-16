@@ -19,7 +19,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
-    vec3 direction;
+    vec3 position;
 
     float intensity;
 
@@ -29,7 +29,11 @@ uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 @end
 
+
+
+
+
+
 @body
     v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));
 @end
-

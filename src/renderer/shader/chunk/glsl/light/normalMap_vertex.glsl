@@ -55,13 +55,13 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
 #if POINT_LIGHTS_COUNT > 0
        for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
             //not normalize for computing distance
-            v_pointLightDir[i] = TBN * u_pointLights[i].position - tangentPosition;
+            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);
        }
 #endif
 
 #if DIRECTION_LIGHTS_COUNT > 0
        for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
-            v_directionLightDir[i] = normalize(- TBN * u_directionLights[i].direction);
+            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));
        }
 #endif
 

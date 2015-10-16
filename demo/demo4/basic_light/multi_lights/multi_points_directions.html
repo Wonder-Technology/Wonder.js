@@ -51,6 +51,8 @@
             var directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
+            directionLight.transform.translate(dy.Vector3.create(0, 0, -1));
+
 
 
             var directionLightComponent2 = dy.DirectionLight.create();
@@ -61,7 +63,7 @@
             directionLight2.addComponent(directionLightComponent2);
 
 
-            directionLight2.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
+            directionLight2.transform.translate(dy.Vector3.create(0, 0, 10));
 
 
 

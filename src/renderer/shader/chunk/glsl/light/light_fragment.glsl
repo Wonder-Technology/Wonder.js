@@ -55,7 +55,7 @@ vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 v
 {
     float attenuation = 1.0;
 
-    lightDir = normalize(-lightDir);
+    lightDir = normalize(lightDir);
 
     return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }

@@ -45,12 +45,13 @@
 
 
             var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.direction = dy.Vector3.create(0, 0, -1);
             directionLightComponent.color = dy.Color.create("#222222");
             directionLightComponent.intensity = 0.5;
 
             var directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(0, 0, 1);
 
 
 

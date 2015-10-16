@@ -18,6 +18,7 @@ module dy{
 
             program.sendUniformData("u_refractionRatio", VariableType.FLOAT_1, material.refractionRatio);
 
+
             program.sendUniformData("u_reflectivity", VariableType.FLOAT_1, material.reflectivity);
         }
 

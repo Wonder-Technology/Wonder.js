@@ -49,6 +49,22 @@ module dy {
             EventManager.off("dy_endLoop", this._endLoopHandler);
         }
 
+        public beforeRender(lib:BuildShadowMapShaderLib){
+            var stage:Stage = Director.getInstance().stage;
+
+            stage.shader.addLib(lib);
+            stage.shader.initProgram();
+            stage.shader.program.use();
+        }
+
+        public afterRender(lib:BuildShadowMapShaderLib){
+            var stage:Stage = Director.getInstance().stage;
+
+            stage.shader.program.unUse();
+            stage.shader.removeLib(lib);
+            stage.shader.clearSource();
+        }
+
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
         protected abstract addShadowMap(material:LightMaterial, shadowMap:IShadowMapTexture);
 

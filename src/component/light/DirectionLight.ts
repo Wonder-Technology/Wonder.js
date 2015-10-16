@@ -44,12 +44,12 @@ module dy{
                 Director.getInstance().stage.addRenderTargetRenderer(this.shadowMapRenderer);
             }
         }
-
-        public getDirection(){
-            //todo change?
-            //return this.gameObject.transform.position.sub(Vector3.create(0, 0, 0));
-            return Vector3.create(0, 0, 0).sub(this.gameObject.transform.position);
-        }
+        //
+        //public getDirection(){
+        //    //todo change?
+        //    return this.gameObject.transform.position.sub(Vector3.create(0, 0, 0));
+        //    //return Vector3.create(0, 0, 0).sub(this.gameObject.transform.position);
+        //}
 
         public dispose(){
             if(this.castShadow){

@@ -82,8 +82,12 @@ var rendererTool = {
 
                         expect(shader.attributes.getChildren()).toEqual( attributes );
                         expect(shader.uniforms.getChildren()).toEqual( uniforms );
-                        expect(shader.vsSource.split("\n").join("")).toEqual( definitionData_vsSource );
-                        expect(shader.fsSource.split("\n").join("")).toEqual( definitionData_fsSource )
+                        if(definitionData_vsSource){
+                            expect(shader.vsSource.split("\n").join("")).toEqual( definitionData_vsSource );
+                        }
+                        if(definitionData_fsSource){
+                            expect(shader.fsSource.split("\n").join("")).toEqual( definitionData_fsSource )
+                        }
                     });
                     it("program init with shader", function () {
                         expect(shader.program.initWithShader).toCalledWith(shader);

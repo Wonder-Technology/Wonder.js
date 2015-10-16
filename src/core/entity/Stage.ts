@@ -80,22 +80,6 @@ module dy {
 
             super.render(renderer, this.camera);
         }
-        public createShaderOnlyOnce(lib:ShaderLib){
-            if(this.shader.hasLib(lib)){
-                return;
-            }
-
-            this.shader.addLib(lib);
-            this.shader.initProgram();
-        }
-
-        public useProgram(){
-            this.shader.program.use();
-        }
-
-        public unUseProgram(){
-            this.shader.program.unUse();
-        }
 
         private _isCamera(child:GameObject){
             return child.hasComponent(Camera);
