@@ -132,8 +132,13 @@ describe("MirrorTexture", function () {
 
             expect(texture.setTextureParameters).toCalledWith(gl.TEXTURE_2D, true);
         });
-        it("return webglTexture", function () {
-            expect(texture.createEmptyTexture()).toEqual(glTexture);
+        it("set glTexture", function(){
+            var webGlTexture = {};
+            gl.createTexture.returns(webGlTexture);
+
+            texture.createEmptyTexture();
+
+            expect(texture.glTexture).toEqual(webGlTexture);
         });
     });
 
@@ -142,17 +147,22 @@ describe("MirrorTexture", function () {
 
         beforeEach(function () {
             program = {
-                sendUniformData: sandbox.stub()
+                sendUniformData: sandbox.stub(),
+                getUniformLocation: sandbox.stub(),
+                isUniformDataNotExistByLocation: sandbox.stub().returns(false)
             };
         });
 
         it("send mirror sampler", function () {
+            var pos1 = 100;
+            program.getUniformLocation.onCall(0).returns(pos1);
             var material = dy.MirrorMaterial.create();
             material.reflectionMap = texture;
 
             material.textureManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith(dy.VariableNameTable.getVariableName("mirrorReflectionMap"), dy.VariableType.SAMPLER_2D, 0);
+            expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
+            expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_2D, 0);
         });
     });
 });

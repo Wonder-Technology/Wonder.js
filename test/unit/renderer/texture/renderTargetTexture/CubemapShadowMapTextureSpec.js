@@ -19,11 +19,17 @@ describe("CubemapShadowMapTexture", function() {
 
         beforeEach(function () {
             program = {
-                sendUniformData: sandbox.stub()
+                sendUniformData: sandbox.stub(),
+                getUniformLocation: sandbox.stub(),
+                isUniformDataNotExistByLocation: sandbox.stub().returns(false)
             };
         });
 
         it("send map sampler to array", function () {
+            var pos1 = 100,
+                pos2 = 200;
+            program.getUniformLocation.onCall(1).returns(pos1);
+            program.getUniformLocation.onCall(2).returns(pos2);
             var map = new dy.TwoDTexture();
             var material = dy.LightMaterial.create();
             material.diffuseMap = map;
@@ -33,12 +39,13 @@ describe("CubemapShadowMapTexture", function() {
             var texture2 = new Texture();
             material.addCubemapShadowMap(texture2);
 
-
-
             material.textureManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[0]", dy.VariableType.SAMPLER_CUBE, 1);
-            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[1]", dy.VariableType.SAMPLER_CUBE, 2);
+            expect(program.getUniformLocation.secondCall).toCalledWith("u_cubemapShadowMapSampler[0]");
+            expect(program.getUniformLocation.thirdCall).toCalledWith("u_cubemapShadowMapSampler[1]");
+
+            expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_CUBE, 1);
+            expect(program.sendUniformData).toCalledWith(pos2, dy.VariableType.SAMPLER_CUBE, 2);
         });
     });
 });

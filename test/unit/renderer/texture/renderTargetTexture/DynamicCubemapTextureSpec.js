@@ -4,12 +4,6 @@ describe("DynamicCubemapTexture", function() {
     var texture = null;
     var gl;
 
-    function setGeometry(texture, geometry){
-        texture.material = {
-            geometry: geometry
-        };
-    }
-
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Texture = dy.DynamicCubemapTexture;
@@ -59,8 +53,13 @@ describe("DynamicCubemapTexture", function() {
             expect(gl.texImage2D.getCall(4)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, 100, 200, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             expect(gl.texImage2D.getCall(5)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, 100, 200, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         });
-        it("return webglTexture", function(){
-            expect(texture.createEmptyTexture()).toEqual(glTexture);
+        it("set glTexture", function(){
+            var webGlTexture = {};
+            gl.createTexture.returns(webGlTexture);
+
+            texture.createEmptyTexture();
+
+            expect(texture.glTexture).toEqual(webGlTexture);
         });
     });
 
@@ -69,18 +68,23 @@ describe("DynamicCubemapTexture", function() {
 
         beforeEach(function () {
             program = {
-                sendUniformData: sandbox.stub()
+                sendUniformData: sandbox.stub(),
+                getUniformLocation: sandbox.stub(),
+                isUniformDataNotExistByLocation: sandbox.stub().returns(false)
             };
         });
 
         it("send texture sampler", function () {
+            var pos1 = 100;
+            program.getUniformLocation.onCall(0).returns(pos1);
             texture.mode = dy.EnvMapMode.REFLECTION;
             var material = dy.EnvMapMaterial.create();
             material.envMap = texture;
 
             material.textureManager.sendData(program);
 
-            expect(program.sendUniformData).toCalledWith("u_samplerCube0", dy.VariableType.SAMPLER_CUBE, 0);
+            expect(program.getUniformLocation).toCalledWith("u_samplerCube0");
+            expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_CUBE, 0);
         });
     });
 });

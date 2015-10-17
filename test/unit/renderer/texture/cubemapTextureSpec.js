@@ -308,9 +308,16 @@ describe("cubemap texture", function() {
             });
 
             it("send cube texture unit index", function () {
-                texture.sendData(program, 1);
+                texture.sendData(program, 100, 1);
 
-                expect(program.sendUniformData.firstCall).toCalledWith("u_samplerCube1", dy.VariableType.SAMPLER_CUBE, 1);
+                expect(program.sendUniformData.firstCall).toCalledWith(100, dy.VariableType.SAMPLER_CUBE, 1);
+            });
+            it("send u_repeatRegion", function(){
+                texture.repeatRegion = dy.RectRegion.create(0, 1, 2, 3);
+
+                texture.sendData(program, 100, 1);
+
+                expect(program.sendUniformData).toCalledWith("u_repeatRegion", dy.VariableType.FLOAT_4, texture.repeatRegion);
             });
         });
 

@@ -4,6 +4,7 @@ var testTool = (function(){
 
         buildFakeGl: function(sandbox){
             return {
+                getUniformLocation: sandbox.stub(),
                 useProgram: sandbox.stub(),
                 bindFramebuffer: sandbox.stub(),
                 bindRenderbuffer: sandbox.stub(),

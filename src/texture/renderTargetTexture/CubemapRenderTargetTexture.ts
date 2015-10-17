@@ -1,7 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
-        public target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
+        protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 
         public createEmptyTexture() {
             var gl = DeviceManager.getInstance().gl,

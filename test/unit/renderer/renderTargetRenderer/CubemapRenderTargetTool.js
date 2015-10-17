@@ -68,7 +68,7 @@ var CubemapRenderTargetTool = YYC.Class({
             });
 
             describe("init", function(){
-                var frameBufferOperator,frameBuffer,renderBuffer, frameBufferTexture, texture;
+                var frameBufferOperator,frameBuffer,renderBuffer, texture,glTexture;
 
                 beforeEach(function(){
                     frameBuffer = {};
@@ -84,13 +84,13 @@ var CubemapRenderTargetTool = YYC.Class({
                         unBind: self.sandbox.stub()
                     };
 
-                    frameBufferTexture = {};
+                    glTexture = {};
 
                     self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
 
                     texture = {
-                        createEmptyTexture: self.sandbox.stub().returns(frameBufferTexture),
-                        setTexture: self.sandbox.stub()
+                        createEmptyTexture: self.sandbox.stub(),
+                        glTexture:glTexture
                     };
                     self.renderTargetRenderer.texture = texture;
 
@@ -105,12 +105,6 @@ var CubemapRenderTargetTool = YYC.Class({
                     self.renderTargetRenderer.init();
 
                     expect(texture.createEmptyTexture).toCalledOnce();
-                    expect(self.renderTargetRenderer.frameBufferTexture).toEqual(frameBufferTexture);
-                });
-                it("bind frame buffer texture to renderTargetTexture", function(){
-                    self.renderTargetRenderer.init();
-
-                    expect(texture.setTexture).toCalledWith(self.renderTargetRenderer.frameBufferTexture);
                 });
 
                 describe("init six faces", function(){
@@ -120,15 +114,15 @@ var CubemapRenderTargetTool = YYC.Class({
                         expect(frameBufferOperator.bindFrameBuffer).toCalledWith(frameBuffer);
                         expect(frameBufferOperator.bindFrameBuffer.callCount).toEqual(6);
                     });
-                    it("attact texture", function(){
+                    it("attacth texture", function(){
                         self.renderTargetRenderer.init();
 
-                        expect(frameBufferOperator.attachTexture.getCall(0)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, frameBufferTexture);
-                        expect(frameBufferOperator.attachTexture.getCall(1)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, frameBufferTexture);
-                        expect(frameBufferOperator.attachTexture.getCall(2)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, frameBufferTexture);
-                        expect(frameBufferOperator.attachTexture.getCall(3)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, frameBufferTexture);
-                        expect(frameBufferOperator.attachTexture.getCall(4)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, frameBufferTexture);
-                        expect(frameBufferOperator.attachTexture.getCall(5)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, frameBufferTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(0)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, glTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(1)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, glTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(2)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, glTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(3)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, glTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(4)).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, glTexture);
+                        expect(frameBufferOperator.attachTexture.getCall(5)).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, glTexture);
 
                         expect(frameBufferOperator.attachTexture.callCount).toEqual(6);
                     });
@@ -159,7 +153,7 @@ var CubemapRenderTargetTool = YYC.Class({
             });
 
             describe("render", function(){
-                var renderer, camera, frameBufferOperator,renderObj1, renderObj2,renderObj3,renderObj4,renderObj5,renderObj6,targetPosition,frameBufferTexture, frameBuffers, frameBuffer;
+                var renderer, camera, frameBufferOperator,renderObj1, renderObj2,renderObj3,renderObj4,renderObj5,renderObj6,targetPosition,texture, frameBuffers, frameBuffer;
 
 
 
@@ -208,10 +202,12 @@ var CubemapRenderTargetTool = YYC.Class({
                         restoreViewport: self.sandbox.stub()
                     };
 
-                    frameBufferTexture = {};
+                    texture = {
+                        bindToUnit: self.sandbox.stub()
+                    };
 
                     self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
-                    self.renderTargetRenderer.frameBufferTexture = frameBufferTexture;
+                    self.renderTargetRenderer.texture = texture;
 
                     frameBuffer = {};
                     frameBuffers = dyCb.Collection.create([
@@ -227,7 +223,7 @@ var CubemapRenderTargetTool = YYC.Class({
 
 
 
-                    self.render.beforeEach(self, list1, list2, list3, list4, list5, list6);
+                    self.render.beforeEach(self, list1, list2, list3, list4, list5, list6, texture);
 
 
 
@@ -246,10 +242,15 @@ var CubemapRenderTargetTool = YYC.Class({
                 });
 
 
+                it("bind texture", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
+
+                    expect(texture.bindToUnit).toCalledWith(0);
+                });
 
                 describe("render six faces", function(){
                     testTool.multiIt(self.render.render_six_faces, function(){
-                        return [list6, renderObj1, renderObj2, renderObj6, renderer, camera];
+                        return [list6, renderObj1, renderObj2, renderObj6, renderer, camera, texture];
                     });
 
                     it("bind frameBuffer and set viewport", function(){

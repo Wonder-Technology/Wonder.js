@@ -59,29 +59,12 @@ module dy{
         protected sendOtherData(program:Program, unit:number){
         }
 
-        protected sendSamplerVariable(type:VariableType, program:Program, unit:number){
-            if(this.variableData){
-                if(this.variableData.samplerVariableName){
-                    program.sendUniformData(this.variableData.samplerVariableName, type, unit);
-                }
-                else if(this.variableData.samplerVariablePrefix){
-                    program.sendUniformData(`${this.variableData.samplerVariablePrefix}${unit}`, type, unit);
-                }
-            }
-            else{
-                program.sendUniformData(type === VariableType.SAMPLER_2D ? `u_sampler2D${unit}` : `u_samplerCube${unit}`, type, unit);
-            }
-        }
-
         protected getSamplerNameByVariableData(unit:number, type?:VariableType){
             var samplerName:string = null;
 
             if(this.variableData){
                 if(this.variableData.samplerVariableName){
                     samplerName = this.variableData.samplerVariableName;
-                }
-                else if(this.variableData.samplerVariablePrefix){
-                    samplerName = `${this.variableData.samplerVariablePrefix}${unit}`;
                 }
             }
             else{

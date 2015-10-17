@@ -60,7 +60,7 @@ var TwoDRenderTargetTool = YYC.Class({
             });
 
             describe("init", function(){
-                var frameBufferOperator,frameBuffer,renderBuffer, frameBufferTexture, texture;
+                var frameBufferOperator,frameBuffer,renderBuffer, glTexture, texture;
 
                 beforeEach(function(){
                     frameBuffer = {};
@@ -76,13 +76,13 @@ var TwoDRenderTargetTool = YYC.Class({
                         unBind: self.sandbox.stub()
                     };
 
-                    frameBufferTexture = {};
+                    glTexture = {};
 
                     self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
 
                     texture = {
-                        createEmptyTexture: self.sandbox.stub().returns(frameBufferTexture),
-                        setTexture: self.sandbox.stub()
+                        createEmptyTexture: self.sandbox.stub(),
+                        glTexture:glTexture
                     };
                     self.renderTargetRenderer.texture = texture;
 
@@ -98,18 +98,12 @@ var TwoDRenderTargetTool = YYC.Class({
                     self.renderTargetRenderer.init();
 
                     expect(texture.createEmptyTexture).toCalledOnce();
-                    expect(self.renderTargetRenderer.frameBufferTexture).toEqual(frameBufferTexture);
-                });
-                it("bind frame buffer texture to renderTargetTexture", function(){
-                    self.renderTargetRenderer.init();
-
-                    expect(texture.setTexture).toCalledWith(self.renderTargetRenderer.frameBufferTexture);
                 });
 
-                it("attact texture", function(){
+                it("attach texture", function(){
                     self.renderTargetRenderer.init();
 
-                    expect(frameBufferOperator.attachTexture).toCalledWith(gl.TEXTURE_2D, frameBufferTexture);
+                    expect(frameBufferOperator.attachTexture).toCalledWith(gl.TEXTURE_2D, glTexture);
                 });
                 it("attach render buffer", function(){
                     self.renderTargetRenderer.init();
@@ -131,7 +125,7 @@ var TwoDRenderTargetTool = YYC.Class({
             });
 
             describe("render", function(){
-                    var renderTargetTexture,renderer,camera,renderCamera, frameBufferOperator,renderObj1, renderObj2,frameBufferTexture;
+                    var renderer,camera,renderCamera, frameBufferOperator,renderObj1, renderObj2,texture;
 
 
 
@@ -144,10 +138,6 @@ var TwoDRenderTargetTool = YYC.Class({
                                 render: self.sandbox.stub()
                             };
 
-                            renderTargetTexture = {
-                                setTexture: self.sandbox.stub()
-                            };
-
                             frameBufferOperator = {
                                 bindFrameBuffer: self.sandbox.stub(),
                                 setViewport: self.sandbox.stub(),
@@ -155,18 +145,22 @@ var TwoDRenderTargetTool = YYC.Class({
                                 restoreViewport: self.sandbox.stub()
                             };
 
-                            frameBufferTexture = {};
 
                             self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
-                            self.renderTargetRenderer.frameBufferTexture = frameBufferTexture;
 
-                    self.renderTargetRenderer.texture = renderTargetTexture;
+
+                    texture = {
+                        bindToUnit: self.sandbox.stub()
+                    };
+
+                    self.renderTargetRenderer.texture = texture;
+
 
                             renderer = {
                                 render: self.sandbox.stub()
                             };
 
-                    self.render.beforeEach(self, renderObj1, renderObj2, renderTargetTexture);
+                    self.render.beforeEach(self, renderObj1, renderObj2, texture);
 
 
 
@@ -184,6 +178,11 @@ renderCamera = {};
                     return [renderObj1, renderObj2, renderer, camera];
                 });
 
+                it("bind texture", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
+
+                    expect(texture.bindToUnit).toCalledWith(0);
+                });
 
                     it("bind frameBuffer and set viewport", function(){
                         self.renderTargetRenderer.render(renderer, camera);
