@@ -7,12 +7,10 @@ module dy {
             return obj;
         }
 
-        public sendData(program:Program, index:number) {
+        public getSamplerName(unit:number){
             Log.error(!JudgeUtils.isNumber(this.variableData.samplerData), Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
 
-            program.sendUniformData(`u_twoDShadowMapSampler[${this.variableData.samplerData}]`, VariableType.SAMPLER_2D, index);
-
-            return this;
+            return `u_twoDShadowMapSampler[${this.variableData.samplerData}]`;
         }
 
         protected setTextureParameters(textureType, isSourcePowerOfTwo){

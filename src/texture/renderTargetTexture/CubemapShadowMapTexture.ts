@@ -7,12 +7,10 @@ module dy {
             return obj;
         }
 
-        public sendData(program:Program, index:number) {
+        public getSamplerName(unit:number){
             Log.error(!JudgeUtils.isNumber(this.variableData.samplerData), Log.info.FUNC_MUST_BE("shadowMapTexture->variableData.samplerData", "samplerIndex"));
 
-            program.sendUniformData(`u_cubemapShadowMapSampler[${this.variableData.samplerData}]`, VariableType.SAMPLER_CUBE, index);
-
-            return this;
+            return `u_cubemapShadowMapSampler[${this.variableData.samplerData}]`;
         }
 
         /*!

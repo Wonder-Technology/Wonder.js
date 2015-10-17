@@ -46,9 +46,11 @@ module dy{
             this.flipY = false;
         }
 
-        public sendData(program:Program, index:number){
-            this.sendSamplerVariable(VariableType.SAMPLER_CUBE, program, index);
+        public getSamplerName(unit:number){
+            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_CUBE);
+        }
 
+        protected sendOtherData(program:Program, unit:number){
             program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
 
             return this;

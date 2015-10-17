@@ -93,8 +93,15 @@ module dy{
 
         public sendData(program:Program){
             this._getTextureList().forEach((texture:Texture, index:number) => {
+                var samplerName = texture.getSamplerName(index),
+                    pos = program.getUniformLocation(samplerName);
+
+                if(program.isUniformDataNotExistByLocation(pos)){
+                    return;
+                }
+
                 texture.bindToUnit(index);
-                texture.sendData(program, index);
+                texture.sendData(program, pos, index);
             });
         }
 

@@ -24,14 +24,6 @@ module dy {
             return this.geometry.gameObject.transform.position;
         }
 
-        public sendData(program:Program, unit:number){
-            this.sendSamplerVariable(VariableType.SAMPLER_2D, program, unit);
-
-            //todo repeat?
-
-            return this;
-        }
-
         protected setEmptyTexture(texture){
             var gl = DeviceManager.getInstance().gl;
 

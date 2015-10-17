@@ -19,7 +19,7 @@ module dy{
 
 
         public abstract init();
-        public abstract sendData(program:Program, unit:number);
+        public abstract getSamplerName(unit:number):string;
 
         public bindToUnit (unit:number) {
             var gl = DeviceManager.getInstance().gl,
@@ -33,6 +33,12 @@ module dy{
             gl.bindTexture(gl[this.target], this.glTexture);
 
             return this;
+        }
+
+        public sendData(program:Program, pos:WebGLUniformLocation, unit:number){
+            program.sendUniformData(pos, this.getSamplerType(), unit);
+
+            this.sendOtherData(program, unit);
         }
 
         public dispose(){
@@ -50,6 +56,9 @@ module dy{
             return TextureFilterMode.LINEAR;
         }
 
+        protected sendOtherData(program:Program, unit:number){
+        }
+
         protected sendSamplerVariable(type:VariableType, program:Program, unit:number){
             if(this.variableData){
                 if(this.variableData.samplerVariableName){
@@ -62,6 +71,41 @@ module dy{
             else{
                 program.sendUniformData(type === VariableType.SAMPLER_2D ? `u_sampler2D${unit}` : `u_samplerCube${unit}`, type, unit);
             }
+        }
+
+        protected getSamplerNameByVariableData(unit:number, type?:VariableType){
+            var samplerName:string = null;
+
+            if(this.variableData){
+                if(this.variableData.samplerVariableName){
+                    samplerName = this.variableData.samplerVariableName;
+                }
+                else if(this.variableData.samplerVariablePrefix){
+                    samplerName = `${this.variableData.samplerVariablePrefix}${unit}`;
+                }
+            }
+            else{
+                samplerName = type === VariableType.SAMPLER_2D ? `u_sampler2D${unit}` : `u_samplerCube${unit}`;
+            }
+
+            return samplerName;
+        }
+
+        protected getSamplerType():VariableType{
+            var type = null;
+
+            switch(this.target){
+                case TextureTarget.TEXTURE_2D:
+                    type = VariableType.SAMPLER_2D;
+                    break;
+                case TextureTarget.TEXTURE_CUBE_MAP:
+                    type = VariableType.SAMPLER_CUBE;
+                    break;
+                default:
+                    break;
+            }
+
+            return type;
         }
 
         protected isSourcePowerOfTwo(){

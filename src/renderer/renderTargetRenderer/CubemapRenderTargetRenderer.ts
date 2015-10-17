@@ -38,6 +38,7 @@ module dy {
                 renderList = null;
 
             renderList = this.getRenderList();
+            this.texture.bindToUnit(0);
 
             for(i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));

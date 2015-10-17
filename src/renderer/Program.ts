@@ -21,13 +21,30 @@ module dy{
             return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public sendUniformData(name:string, type:VariableType, data:any){
+
+        public sendUniformData(name:string, type:VariableType, data:any);
+        public sendUniformData(pos:WebGLUniformLocation, type:VariableType, data:any);
+
+        public sendUniformData(...args){
             var gl = DeviceManager.getInstance().gl,
-                pos= null;
+                pos = null,
+                type:VariableType = null,
+                data:any = null;
 
-            pos= gl.getUniformLocation(this._program, name);
+            if(args[0] === null || args[0] instanceof WebGLUniformLocation){
+                pos = args[0];
+            }
+            else{
+                let name:string = args[0];
 
-            if (pos === null || data === null) {
+                pos = this.getUniformLocation(name);
+            }
+
+            type = args[1];
+            data = args[2];
+
+
+            if (this.isUniformDataNotExistByLocation(pos) || data === null) {
                 return;
             }
 
@@ -196,6 +213,10 @@ module dy{
 
             gl.deleteProgram(this._program);
             this._program = undefined;
+        }
+
+        public isUniformDataNotExistByLocation(pos:any){
+            return pos === null;
         }
 
         private _convertAttributeDataType(val:ShaderData){

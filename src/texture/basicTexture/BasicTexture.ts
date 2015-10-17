@@ -68,10 +68,12 @@ module dy{
             return this;
         }
 
-        public sendData(program:Program, unit:number){
-            var sourceRegion = null;
+        public getSamplerName(unit:number){
+            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_2D);
+        }
 
-            this.sendSamplerVariable(VariableType.SAMPLER_2D, program, unit);
+        protected sendOtherData(program:Program, unit:number){
+            var sourceRegion = null;
 
             if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();

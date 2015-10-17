@@ -39,6 +39,10 @@ module dy {
 
             return this;
         }
+
+        public getSamplerName(unit:number){
+            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_CUBE);
+        }
     }
 }
 

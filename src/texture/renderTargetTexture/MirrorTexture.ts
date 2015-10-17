@@ -17,6 +17,10 @@ module dy {
             return this;
         }
 
+        public getSamplerName(unit:number){
+            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_2D);
+        }
+
         public getPlane(){
             var normalData = null,
                 normal = null,

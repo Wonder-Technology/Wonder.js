@@ -3,12 +3,6 @@ module dy {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
         public target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 
-        public sendData(program:Program, index:number) {
-            this.sendSamplerVariable(VariableType.SAMPLER_CUBE, program, index);
-
-            return this;
-        }
-
         public createEmptyTexture() {
             var gl = DeviceManager.getInstance().gl,
                 texture = gl.createTexture(),

@@ -20,6 +20,7 @@ module dy {
         public width:number = 256;
         public height:number = 256;
 
+
         public createEmptyTexture(){
             var gl = DeviceManager.getInstance().gl,
                 texture = gl.createTexture();

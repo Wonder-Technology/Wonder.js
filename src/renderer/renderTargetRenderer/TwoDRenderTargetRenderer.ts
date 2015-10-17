@@ -30,6 +30,7 @@ module dy {
             this.beforeRenderFrameBufferTexture(renderCamera);
 
             this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
+            this.texture.bindToUnit(0);
             this.frameBufferOperator.setViewport();
 
 
