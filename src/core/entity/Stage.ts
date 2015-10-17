@@ -24,7 +24,6 @@ module dy {
             enable: true,
             softType: ShadowMapSoftType.NONE
         };
-
         public shader:Shader = null;
         public camera:GameObject = null;
         public isUseProgram:Boolean = false;
@@ -33,8 +32,6 @@ module dy {
         private _renderTargetRenderers:dyCb.Collection<RenderTargetRenderer> = dyCb.Collection.create<RenderTargetRenderer>();
 
         public init(){
-            this.shader = Shader.create();
-
             this.addComponent(TopCollider.create());
 
             super.init();
