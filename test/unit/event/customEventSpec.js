@@ -17,6 +17,7 @@ describe("custom event", function () {
     describe("bind/unbind custom event", function () {
         describe("on/off", function () {
             it("if eventName contain EventListenerMap->eventSeparator, error", function(){
+                testTool.openContractCheck(sandbox);
                 sandbox.stub(dy.EventListenerMap, "eventSeparator", "%");
 
                 expect(function(){

@@ -105,6 +105,16 @@ var testTool = (function(){
                     });
                 }
             });
+        },
+
+
+
+        /*!
+        can only affect In,Out check
+        Invariant check will be invoked when load the file
+         */
+        openContractCheck: function(sandbox){
+            sandbox.stub(dy.Main, "isTest", true);
         }
     }
 }());

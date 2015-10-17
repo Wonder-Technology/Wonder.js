@@ -1,7 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy {
-    //todo add more attribute refer to unity
-    export class Material {
+    export abstract class Material {
         get program(){
             return this.shader.program;
         }

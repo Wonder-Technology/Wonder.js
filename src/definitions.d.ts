@@ -3,6 +3,8 @@
 /// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
 /// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
 
+/// <reference path="Config"/>
+
 /// <reference path="extend/dyRt"/>
 /// <reference path="extend/typescript/contract"/>
 
