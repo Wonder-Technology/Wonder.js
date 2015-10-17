@@ -7,7 +7,6 @@ module dy {
 
         protected texture:RenderTargetTexture = null;
         protected frameBufferOperator:FrameBuffer = null;
-        protected frameBufferTexture:WebGLTexture = null;
 
         public initWhenCreate(){
             if(this._isTextureSizeExceedCanvasSize()){
@@ -18,9 +17,10 @@ module dy {
         }
 
         public init(){
-            this.frameBufferTexture = this.texture.createEmptyTexture();
+            //this.frameBufferTexture = this.texture.createEmptyTexture();
+            this.texture.createEmptyTexture();
 
-            this.texture.setTexture(this.frameBufferTexture);
+            //this.texture.setTexture(this.frameBufferTexture);
             this.initFrameBuffer();
         }
 

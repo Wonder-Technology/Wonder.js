@@ -23,9 +23,6 @@ module dy{
         public anisotropy:number = null;
         public needUpdate:boolean = null;
 
-        protected target:TextureTarget = TextureTarget.TEXTURE_2D;
-        protected glTexture:WebGLTexture = null;
-
         public init(){
             var gl = DeviceManager.getInstance().gl;
             //texture.addEventListener( "dispose", onTextureDispose );

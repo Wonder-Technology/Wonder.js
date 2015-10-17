@@ -13,9 +13,9 @@ module dy{
         public wrapT:TextureWrapMode = null;
         public magFilter:TextureFilterMode = null;
         public minFilter:TextureFilterMode = null;
+        public glTexture:WebGLTexture = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_2D;
-        protected glTexture:WebGLTexture = null;
 
 
         public abstract init();

@@ -23,7 +23,7 @@ module dy {
                 this._renderBuffers.addChild(renderBuffer);
 
                 frameBufferOperator.bindFrameBuffer(frameBuffer);
-                frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.frameBufferTexture);
+                frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.texture.glTexture);
                 frameBufferOperator.attachRenderBuffer("DEPTH_ATTACHMENT", renderBuffer);
                 frameBufferOperator.check();
             }

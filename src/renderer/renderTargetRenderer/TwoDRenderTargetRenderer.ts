@@ -18,7 +18,7 @@ module dy {
             this.renderBuffer = frameBuffer.createRenderBuffer();
 
             frameBuffer.bindFrameBuffer(this.frameBuffer);
-            frameBuffer.attachTexture(gl.TEXTURE_2D, this.frameBufferTexture);
+            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
             frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
             frameBuffer.check();
             frameBuffer.unBind();

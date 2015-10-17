@@ -16,10 +16,6 @@ module dy {
             return this;
         }
 
-        public setTexture(texture:any){
-            this.glTexture = texture;
-        }
-
         public getPosition(){
             return this.geometry.gameObject.transform.position;
         }

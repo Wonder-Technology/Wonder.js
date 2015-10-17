@@ -14,7 +14,7 @@ module dy {
                 gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             }
 
-            return texture;
+            this.glTexture = texture;
         }
     }
 }

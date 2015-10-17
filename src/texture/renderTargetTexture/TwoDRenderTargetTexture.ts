@@ -29,7 +29,7 @@ module dy {
 
             gl.texImage2D(gl[this.target], 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-            return texture;
+            this.glTexture = texture;
         }
     }
 }
