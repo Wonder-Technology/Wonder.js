@@ -15,14 +15,14 @@ module dy{
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             if(quadCmd.buffers.hasChild("normalBuffer")){
-                program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
 
-            program.sendUniformData("u_normalMatrix", VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose());
-            program.sendUniformData("u_cameraPos", VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
+            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invert().transpose());
+            this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
 
 
-            program.sendUniformData("u_shininess", VariableType.FLOAT_1, material.shininess);
+            this.sendUniformData(program, "u_shininess", material.shininess);
 
 
             this._sendLightVariables(program);
@@ -45,7 +45,7 @@ module dy{
                 pointLights:dyCb.Collection<GameObject> = stage.pointLights;
 
             if(ambientLight){
-                program.sendUniformData("u_ambient", VariableType.FLOAT_3, ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
+                this.sendUniformData(program, "u_ambient", ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
             }
 
             if(pointLights){

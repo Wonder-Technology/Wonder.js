@@ -1,4 +1,4 @@
-describe("LightShadperLib", function () {
+describe("LightShaderLib", function () {
         var sandbox = null;
         var Lib = null;
         var lib = null;
@@ -15,6 +15,7 @@ describe("LightShadperLib", function () {
     describe("sendShaderVariables", function(){
         var quadCmd,program,material;
         var stage,camera;
+        var mMatrix;
 
         function createDirectionLight(onSetLight){
             var light = new dy.GameObject();
@@ -35,10 +36,29 @@ describe("LightShadperLib", function () {
 
             quadCmd = new dy.QuadCommand();
             sandbox.stub(quadCmd.buffers, "hasChild").returns(false);
-            sandbox.stub(quadCmd, "mMatrix", new dy.Matrix4());
+
+            mMatrix = dy.Matrix4.create().translate(1, 2, 3);
+
+            sandbox.stub(quadCmd, "mMatrix", mMatrix);
 
             program = new dy.Program();
+            sandbox.stub(program, "sendAttributeData");
             sandbox.stub(program, "sendUniformData");
+        });
+
+        it("send a_normal if has buffer", function(){
+            var normalBuffer = {};
+            quadCmd.buffers.hasChild.withArgs("normalBuffer").returns(true);
+            sandbox.stub(quadCmd.buffers, "getChild").withArgs("normalBuffer").returns(normalBuffer);
+
+            lib.sendShaderVariables(program, quadCmd, material);
+
+            expect(program.sendAttributeData).toCalledWith("a_normal", dy.VariableType.BUFFER, normalBuffer);
+        });
+        it("send u_normalMatrix", function(){
+            lib.sendShaderVariables(program, quadCmd, material);
+
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT4, mMatrix.copy().invert().transpose());
         });
 
         describe("send direction light's position", function(){

@@ -78,36 +78,40 @@
 
 
 
-//
-//            var material = dy.LightMaterial.create();
-//            material.specular = dy.Color.create("#ffdd99");
-//            material.color = dy.Color.create("#666666");
-//            material.shininess = 16;
-//
-//
-//
-//            var geometry = dy.BoxGeometry.create();
-//            geometry.material = material;
-//            geometry.width = 10;
-//            geometry.height = 10;
-//            geometry.depth = 10;
-//
-//
-//
-//            var box = dy.GameObject.create();
-//
-//            box.addComponent(dy.MeshRenderer.create());
-//            box.addComponent(geometry);
-//
-//
-//
-//            box.transform.translate(dy.Vector3.create(20, 10, 30));
-//
-//            box.transform.eulerAngles = dy.Vector3.create(0, 45, 0);
+
+            var material = dy.LightMaterial.create();
+            material.specular = dy.Color.create("#ffdd99");
+            material.color = dy.Color.create("#666666");
+            material.shininess = 16;
 
 
 
+            var geometry = dy.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
 
+
+
+            var box = dy.GameObject.create();
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry);
+
+
+
+            box.transform.translate(dy.Vector3.create(20, 10, 30));
+
+            box.transform.eulerAngles = dy.Vector3.create(0, 45, 0);
+
+
+            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){
+                box.transform.rotateLocal(0, 1, 0);
+            }));
+
+
+            box.addComponent(action1);
 
 
 
@@ -182,8 +186,8 @@
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
             //todo if null, render all scene
-            directionLightComponent.shadowRenderList = [sphere, ground];
-//            directionLightComponent.shadowRenderList = [sphere, box, ground];
+//            directionLightComponent.shadowRenderList = [sphere, ground];
+            directionLightComponent.shadowRenderList = [sphere, box, ground];
 //            directionLightComponent.shadowRenderList = [sphere];
 
 
@@ -340,7 +344,7 @@
 
 
             director.stage.addChild(sphere);
-//            director.stage.addChild(box);
+            director.stage.addChild(box);
             director.stage.addChild(ground);
 
 
