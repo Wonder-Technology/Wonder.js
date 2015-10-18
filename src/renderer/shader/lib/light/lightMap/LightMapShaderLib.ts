@@ -1,4 +1,4 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
     export abstract class LightMapShaderLib extends ShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){

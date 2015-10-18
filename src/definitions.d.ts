@@ -121,21 +121,21 @@
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
-/// <reference path="renderer/shader/lib/light/LightMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/DiffuseMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/SpecularMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/NormalMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/NoDiffuseMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/BuildShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/BuildTwoDShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/BuildCubemapShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/TotalShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/ShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/TwoDShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/CubemapShadowMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/NoSpecularMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/NoNormalMapShaderLib"/>
-/// <reference path="renderer/shader/lib/light/NoShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/LightMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/DiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/SpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/NormalMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/NoDiffuseMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/NoSpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/NoNormalMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/BuildShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/BuildTwoDShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/BuildCubemapShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/TotalShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/ShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/TwoDShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/CubemapShadowMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/shadowMap/NoShadowMapShaderLib"/>
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>

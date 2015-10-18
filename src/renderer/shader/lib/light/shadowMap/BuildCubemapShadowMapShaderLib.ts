@@ -1,6 +1,6 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class NormalMapShaderLib extends LightMapShaderLib{
+    export class BuildCubemapShadowMapShaderLib extends BuildShadowMapShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,23 +11,18 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "normalMap";
+        public type:string = "buildCubemapShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            super.sendShaderVariables(program, quadCmd, material);
-
-            if(quadCmd.buffers.hasChild("tangentBuffer")){
-                program.sendAttributeData("a_tangent", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("tangentBuffer"));
-            }
+            program.sendUniformData("u_lightPos", VariableType.FLOAT_3, material.buildCubemapShadowMapData.lightPos);
+            program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.buildCubemapShadowMapData.farPlane);
         }
 
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.addAttributeVariable(["a_tangent"]);
-
             this.addUniformVariable([
-                VariableNameTable.getVariableName("normalMap")
+                "u_lightPos", "u_farPlane"
             ]);
         }
     }

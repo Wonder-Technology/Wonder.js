@@ -1,6 +1,6 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class BuildTwoDShadowMapShaderLib extends BuildShadowMapShaderLib{
+    export class NoSpecularMapShaderLib extends ShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,18 +11,16 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "buildTwoDShadowMap";
+        public type:string = "noSpecularMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.buildTwoDShadowMapData.vpMatrixFromLight);
+            program.sendUniformData("u_specular", VariableType.FLOAT_3, material.specular.toVector3());
         }
 
         protected setShaderDefinition(){
             super.setShaderDefinition();
 
-            this.addUniformVariable([
-                "u_vpMatrixFromLight"
-            ]);
+            this.addUniformVariable(["u_specular"]);
         }
     }
 }

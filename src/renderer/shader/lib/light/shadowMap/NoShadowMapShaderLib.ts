@@ -1,6 +1,6 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class TotalShadowMapShaderLib extends ShaderLib{
+    export class NoShadowMapShaderLib extends ShaderLib{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,7 +11,7 @@ module dy{
             return this._instance;
         }
 
-        public type:string = "totalShadowMap";
+        public type:string = "noShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
         }
