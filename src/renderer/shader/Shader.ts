@@ -57,7 +57,6 @@ module dy{
             this._libs.forEach((lib:ShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
-            //todo not send other data when use stage's program?
 
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
