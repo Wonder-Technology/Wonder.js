@@ -175,6 +175,11 @@
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
+/// <reference path="asset/obj/OBJLoader"/>
+/// <reference path="asset/obj/OBJParser"/>
+/// <reference path="asset/obj/MTLParser"/>
+
+
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventName"/>

@@ -24,6 +24,8 @@ module dy{
                 case ".webm":
                     loader = VideoLoader.getInstance();
                     break;
+                case ".obj":
+                    loader = OBJLoader.getInstance();
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(extname));
                     break;
@@ -33,7 +35,7 @@ module dy{
         }
 
         public static createAllLoader():dyCb.Collection<Loader>{
-            return dyCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance()]);
+            return dyCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance(), OBJLoader.getInstance()]);
         }
     }
 }

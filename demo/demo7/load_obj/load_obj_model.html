@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>load obj model</title>
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+//            {url: "../../res/1.jpg", id:"texture"},
+//            {url: "../../res/crate.gif", id:"ground"},
+            {url: "../../res/model/butterfly.obj", id:"model"}
+
+        ]).subscribe(null, function(e){
+            throw e;
+        },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+        var directionLightComponent = dy.DirectionLight.create();
+        var directionLight;
+
+        function _initScene() {
+            var director = dy.Director.getInstance();
+
+
+
+
+            var model = dy.ObjLoader.getInstance().get("model");
+
+            director.stage.addChild(model);
+
+//            var loader = new THREE.OBJMTLLoader();
+//            loader.load( 'obj/male02/male02.obj', function ( object ) {
+//
+//                object.position.y = - 80;
+//                scene.add( object );
+//
+//            }, onProgress, onError );
+
+
+
+
+
+
+
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("#444444");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+
+            directionLightComponent.color = dy.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+
+
+
+            directionLight = dy.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(ambientLight);
+            director.stage.addChild(directionLight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+            director.stage.addChild(_createCamera());
+
+
+
+
+            director.stage.addComponent(dy.Script.create("../stage.js"));
+
+
+
+            director.start();
+        }
+
+        function _createCamera() {
+            //make camera to be the same as shadowMapCamera(DirectionLight) for testing
+
+//            var pos = directionLight.transform.position;
+
+
+
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.PerspectiveCamera.create();
+
+
+            cameraComponent.fovy = 90;
+//            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.aspect = 1.0;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+
+            camera.addComponent(cameraComponent);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+            camera.transform.lookAt(0, 0, 0);
+
+
+
+
+            var script = dy.Script.create();
+
+            script.url = "../camera.js";
+
+            camera.addComponent(script);
+
+            return camera;
+        }
+
+    };
+</script>
+</body>
+</html>
