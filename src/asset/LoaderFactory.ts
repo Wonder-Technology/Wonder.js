@@ -26,6 +26,7 @@ module dy{
                     break;
                 case ".obj":
                     loader = OBJLoader.getInstance();
+                    break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(extname));
                     break;

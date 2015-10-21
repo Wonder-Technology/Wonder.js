@@ -1,5 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
+    //todo support multi materials
     export class OBJLoader extends Loader{
         private static _instance = null;
 
@@ -10,9 +11,10 @@ module dy{
             return this._instance;
         }
 
-        private _mtlFileLoader:MTLLoader = MTLLoader.create();
-        private _mtlFileUrlArr:Array<string> = null;
-        private _objParser:OBJParser = OBJParser.create();
+        //private _mtlFileLoader:MTLLoader = MTLLoader.create();
+        private _mtlFileLoader:MTLLoader = null;
+        //private _objParser:OBJParser = OBJParser.create();
+        private _objParser:OBJParser = null;
 
 
         protected loadAsset(url:string):dyRt.Stream;
@@ -32,9 +34,11 @@ module dy{
                 }, null, null)
                 .concat(
                     dyRt.judge(
-                        () => { return self._mtlFileUrlArr.length > 0; },
+                        () => { return self._objParser.mtlFilePath !== null},
                         () => {
-                            return self._mtlFileLoader.load(self._mtlFileUrlArr);
+                            self._mtlFileLoader = MTLLoader.create();
+
+                            return self._mtlFileLoader.load(self._objParser.mtlFilePath).concat(self._mtlFileLoader.createMapStream())
                         },
                         () => {
                             return dyRt.empty();
@@ -46,16 +50,74 @@ module dy{
                 });
         }
 
+        //todo remove
         private _read(data:string){
+            this._objParser = OBJParser.create();
+
             //parse
+            this._objParser.parse(data);
         }
 
         private _createModel():GameObject{
-            //clear obj and mtl data
+            var result = GameObject.create(),
+                materials = this._mtlFileLoader.materials;
+
+            //todo clear obj and mtl data
 
 
-            return GameObject.create();
+            this._objParser.objects.forEach((object:ObjectModel) => {
+                var geometry = ModelGeometry.create(),
+                    material:LightMaterial = null,
+                    materialModel:MaterialModel = null,
+                    model = null;
+
+                geometry.vertices = object.vertices;
+                geometry.indices = object.indices;
+                geometry.normals = object.normals;
+                geometry.texCoords = object.texCoords;
+
+                materialModel = materials.findOne((material:MaterialModel) => {
+                    return material.name === object.materialName;
+                });
+
+                dyCb.Log.error(!materialModel, `can't find material:${object.materialName} in mtl`);
+
+                material = LightMaterial.create();
+                if(materialModel.diffuseColor){
+                    material.color = materialModel.diffuseColor;
+                }
+                if(materialModel.specularColor){
+                    material.specular = materialModel.specularColor;
+                }
+
+                if(materialModel.diffuseMap){
+                    material.diffuseMap = materialModel.diffuseMap;
+                }
+                if(materialModel.specularMap){
+                    material.specularMap = materialModel.specularMap;
+                }
+                if(materialModel.bumpMap){
+                    material.normalMap = materialModel.bumpMap;
+                }
+
+                geometry.material = material;
+
+                model = GameObject.create();
+                model.addComponent(MeshRenderer.create());
+                model.addComponent(geometry);
+
+                result.addChild(model);
+            });
+
+            //this._clearData();
+
+
+            return result;
         }
+
+        //private _clearData(){
+        //
+        //}
     }
 
     class MTLLoader{
@@ -65,41 +127,51 @@ module dy{
         	return obj;
         }
 
+        get materials(){
+            return this._mtlParser.materials;
+        }
+
         private _mtlParser:MTLParser = MTLParser.create();
 
-        public load(urlArr:Array<string>):dyRt.Stream{
+        public load(url:string):dyRt.Stream{
             var self = this;
 
-            return dyRt.fromArray(urlArr)
-                .flatMap((url:string) => {
-                    return AjaxLoader.load(url, "text");
-                })
+            return AjaxLoader.load(url, "text")
                 .do((data:string) => {
                     self._read(data);
-                }, null, null)
-                .concat(
-                    dyRt.judge(
-                        () => {
-                            //return self._mtlFileUrlArr.length > 0;
-                            //todo if has map url or not
-                        },
-                        () => {
-                            //return self._mtlFileLoader.load(self._mtlFileUrlArr);
-                            //todo load map
-                        },
-                        () => {
-                            return dyRt.empty();
-                        }
-                    )
-                )
-
+                }, null, null);
         }
 
-        public clearData(){
+        public createMapStream(){
+            this._mtlParser.materials.map((material:MaterialModel) => {
+                var mapUrlArr = [];
+
+                if(material.diffuseMapUrl){
+                    mapUrlArr.push(["diffuseMap", material.diffuseMapUrl]);
+                }
+                if(material.specularMapUrl){
+                    mapUrlArr.push(["specularMap", material.specularMapUrl]);
+                }
+                if(material.bumpMapUrl){
+                    mapUrlArr.push(["bumpMap", material.bumpMapUrl]);
+                }
+
+                return dyRt.fromArray(mapUrlArr)
+                    .flatMap(([type, url]) => {
+                        return TextureLoader.getInstance().load(url)
+                            .do((url:string) => {
+                                material[type] = TextureLoader.getInstance().get(url);
+                            }, null, null);
+                    });
+            });
         }
 
+        //public clearData(){
+        //}
+
+        //todo remove
         private _read(data:string){
-            //read
+            this._mtlParser.parse(data);
         }
     }
 }

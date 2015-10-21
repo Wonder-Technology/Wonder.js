@@ -20,12 +20,12 @@ module dy {
             Log.error(!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
 
             quadCmd.buffers = {
-                vertexBuffer: geometry.vertices,
-                texCoordBuffer: geometry.texCoords,
-                indexBuffer: geometry.indices,
-                normalBuffer: geometry.normals,
-                tangentBuffer:geometry.tangents,
-                colorBuffer: geometry.colors
+                vertexBuffer: geometry.verticeBuffer,
+                texCoordBuffer: geometry.texCoordBuffer,
+                indexBuffer: geometry.indiceBuffer,
+                normalBuffer: geometry.normalBuffer,
+                tangentBuffer:geometry.tangentBuffer,
+                colorBuffer: geometry.colorBuffer
             };
 
             //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();

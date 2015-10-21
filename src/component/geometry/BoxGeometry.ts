@@ -100,15 +100,15 @@ module dy{
             generateFace(sides.LEFT, depthSegments, heightSegments);
 
             return {
-                vertices: ArrayBuffer.create(new Float32Array(vertices),
+                verticeBuffer: ArrayBuffer.create(new Float32Array(vertices),
                     3, BufferType.FLOAT),
-                indices: ElementBuffer.create(new Uint16Array(indices),
+                indiceBuffer: ElementBuffer.create(new Uint16Array(indices),
                     BufferType.UNSIGNED_SHORT),
-                normals: ArrayBuffer.create(new Float32Array(normals),
+                normalBuffer: ArrayBuffer.create(new Float32Array(normals),
                     3, BufferType.FLOAT),
-                texCoords: ArrayBuffer.create(new Float32Array(texCoords),
+                texCoordBuffer: ArrayBuffer.create(new Float32Array(texCoords),
                     2, BufferType.FLOAT),
-                tangents: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
+                tangentBuffer: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
                     3, BufferType.FLOAT),
             };
         }

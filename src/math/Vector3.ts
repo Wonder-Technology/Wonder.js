@@ -62,6 +62,9 @@ module dy{
             );
 
             if(d === 0){
+                v[0] = 0;
+                v[1] = 0;
+                v[2] = 0;
                 return this;
             }
 
@@ -70,6 +73,12 @@ module dy{
             v[2] = v[2] / d;
 
             return this;
+        }
+
+        public isZero(){
+            var v = this.values;
+
+            return v[0] === 0 && v[1] === 0 && v[2] === 0;
         }
 
         public scale(scalar:number) {

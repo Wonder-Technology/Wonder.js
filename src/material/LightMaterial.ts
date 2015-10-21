@@ -7,11 +7,11 @@ module dy{
             return obj;
         }
 
-        private _diffuseMap:CommonTexture|CompressedTexture = null;
+        private _diffuseMap:Texture = null;
         get diffuseMap(){
             return this._diffuseMap;
         }
-        set diffuseMap(diffuseMap:CommonTexture|CompressedTexture){
+        set diffuseMap(diffuseMap:Texture){
             this.addMap(diffuseMap, {
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
             });
@@ -19,11 +19,11 @@ module dy{
             this._diffuseMap = diffuseMap;
         }
 
-        private _specularMap:CommonTexture|CompressedTexture = null;
+        private _specularMap:Texture = null;
         get specularMap(){
             return this._specularMap;
         }
-        set specularMap(specularMap:CommonTexture|CompressedTexture){
+        set specularMap(specularMap:Texture){
             this.addMap(specularMap, {
                 samplerVariableName: VariableNameTable.getVariableName("specularMap")
             });
@@ -31,11 +31,11 @@ module dy{
             this._specularMap = specularMap;
         }
 
-        private _normalMap:CommonTexture|CompressedTexture = null;
+        private _normalMap:Texture = null;
         get normalMap(){
             return this._normalMap;
         }
-        set normalMap(normalMap:CommonTexture|CompressedTexture){
+        set normalMap(normalMap:Texture){
             this.addMap(normalMap, {
                 samplerVariableName: VariableNameTable.getVariableName("normalMap")
             });

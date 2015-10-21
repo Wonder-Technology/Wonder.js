@@ -33,6 +33,7 @@
 
 
 /// <reference path="component/geometry/Geometry"/>
+/// <reference path="component/geometry/ModelGeometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
 /// <reference path="component/geometry/PlaneGeometry"/>
