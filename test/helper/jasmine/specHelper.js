@@ -194,9 +194,18 @@ beforeEach(function () {
                     }
                 }
             };
+        },
+        toFail: function () {
+            return {
+                compare: function (actual, expected) {
+                    return {
+                        pass: false,
+                        message: expected || "fail"
+                    }
+                }
+            };
         }
-    })
-    ;
+    });
 
 
 //* sinon matcher

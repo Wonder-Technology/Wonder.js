@@ -66,7 +66,7 @@ module dy {
                     //color = [r,g,b]
                     //Set tghe color into the material
                     //material.diffuseColor = BABYLON.Color3.FromArray(color);
-                    this._setColor(this._currentMaterial.diffuseColor, value.split(delimiter_pattern, 3));
+                    this._setColor("diffuseColor", value.split(delimiter_pattern, 3));
                 } else if (key === "ka") {
                     // Ambient color (color under shadow) using RGB values
 
@@ -89,7 +89,7 @@ module dy {
                     ////Set the color into the material
                     //material.specularColor = BABYLON.Color3.FromArray(color);
 
-                    this._setColor(this._currentMaterial.specularColor, value.split(delimiter_pattern, 3));
+                    this._setColor("specularColor", value.split(delimiter_pattern, 3));
                 } else if (key === "ns") {
 
                     //value = "Integer"
@@ -178,11 +178,14 @@ module dy {
             //this.materials.push(material);
         }
 
-        private _setColor(targetColor:Color, colorStrArr:Array<string>){
-            targetColor.r = parseFloat(colorStrArr[0]);
-            targetColor.g = parseFloat(colorStrArr[1]);
-            targetColor.b = parseFloat(colorStrArr[2]);
+        private _setColor(colorType:string, colorStrArr:Array<string>){
+            var color = Color.create(`rgb(${colorStrArr[0]},${colorStrArr[1]},${colorStrArr[2]}`);
+            color.r = parseFloat(colorStrArr[0]);
+            color.g = parseFloat(colorStrArr[1]);
+            color.b = parseFloat(colorStrArr[2]);
+            color.a = 1.0;
 
+            this._currentMaterial[colorType] = color;
         }
     }
 

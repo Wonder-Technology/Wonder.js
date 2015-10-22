@@ -34,10 +34,11 @@ module.exports = function(config) {
         'test/unit/renderer/renderTargetRenderer/TwoDRenderTargetTool.js',
         'test/unit/renderer/renderTargetRenderer/CubemapRenderTargetTool.js',
 
-        'test/unit/**/*.js',
+        //'test/unit/**/*.js',
       //'test/unit/renderer/RenderTarget*',
       //'test/unit/core/Tran*.js',
-        //'test/unit/asset/*.js',
+      //  'test/unit/asset/*.js',
+        'test/unit/asset/obj/*.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/*.js',
         //

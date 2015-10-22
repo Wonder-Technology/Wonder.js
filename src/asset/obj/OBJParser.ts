@@ -14,6 +14,7 @@ module dy {
         private _normals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         private _texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
         private _currentObject:ObjectModel = null;
+        private _currentObjectName:string = null;
         private _isFirstMaterial:boolean = false;
 
 
@@ -41,19 +42,19 @@ module dy {
 
             // f vertex vertex vertex ...
 
-            var face_pattern1 = /f( +\d+)( +\d+)( +\d+)( +\d+)?/;
+            var face_pattern1 = /f\s(([\d]{1,}[\s]?){3,})+/;
 
             // f vertex/uv vertex/uv vertex/uv ...
 
-            var face_pattern2 = /f( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))?/;
+            var face_pattern2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]?){3,})+)/;
 
             // f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
 
-            var face_pattern3 = /f( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))?/;
+            var face_pattern3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?){3,})+)/;
 
             // f vertex//normal vertex//normal vertex//normal ...
 
-            var face_pattern4 = /f( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))?/;
+            var face_pattern4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]?){3,})+)/;
 
             //var comment_pattern = /# /;
 
@@ -155,26 +156,43 @@ module dy {
                     this._setDataForCurrentFaceWithPattern4(face, 1);
 
                 } else if (group_pattern.test(line) || obj_pattern.test(line)) {
-                    this._currentObject = ObjectModel.create();
-                    this._currentObject.name = line.substring(2).trim();
+                    //this._currentObject = ObjectModel.create();
+                    //this._currentObject.name = line.substring(2).trim();
+                    this._currentObjectName = line.substring(2).trim();
 
-                    this.objects.addChild(this._currentObject);
+                    //this.objects.addChild(this._currentObject);
 
-                    this._isFirstMaterial = true;
+                    //this._isFirstMaterial = true;
 
 
                 } else if (usemtl_pattern.test(line)) {
-                    var materialName = line.substring(7).trim();
-                    if(this._isFirstMaterial){
-                        this._currentObject.materialName = materialName;
+                    //var materialName = line.substring(7).trim();
+                    //
+                    //
+                    //if(this._isFirstMaterial){
+                    //    this._currentObject.materialName = materialName;
+                    //
+                    //    this._isFirstMaterial = false;
+                    //}
+                    //else{
+                    //    this._currentObject = ObjectModel.create();
+                    //    this._currentObject.materialName = materialName;
+                    //    this.objects.addChild(this._currentObject);
+                    //}
 
-                        this._isFirstMaterial = false;
+
+
+
+
+                    this._currentObject = ObjectModel.create();
+                    this._currentObject.materialName = line.substring(7).trim();
+
+                    if(this._currentObjectName){
+                        this._currentObject.name = this._currentObjectName;
+                        this._currentObjectName = null;
                     }
-                    else{
-                        this._currentObject = ObjectModel.create();
-                        this._currentObject.materialName = materialName;
-                        this.objects.addChild(this._currentObject);
-                    }
+
+                    this.objects.addChild(this._currentObject);
 
                 } else if (mtllib_pattern.test(line)) {
                     this.mtlFilePath = line.substring(7).trim();
@@ -210,7 +228,7 @@ module dy {
 
                     face.verticeIndices.forEach((vIdx:number, k:number) => {
                             // Set index
-                            indices[index_indices] = index_indices;
+                            indices.addChild(index_indices);
                             // Copy vertex
                             var vertex = self._vertices.getChild(vIdx);
                             //vertices[index_indices * 3 + 0] = vertex.x;
@@ -224,13 +242,15 @@ module dy {
                             //colors[index_indices * 4 + 3] = color.a;
 
                         //copy texCoords
-                        var tIdx = face.texCoordIndices.getChild(k);
+                        if(face.texCoordIndices.getCount() > 0){
+                            var tIdx = face.texCoordIndices.getChild(k);
 
-                        texCoords.addChild(self._texCoords.getChild(tIdx));
+                            texCoords.addChild(self._texCoords.getChild(tIdx));
+                        }
 
                             // Copy normal
                             var nIdx = face.normalIndices.getChild(k);
-                            if (nIdx && nIdx >= 0) {
+                            if (nIdx >= 0) {
                                 var normal = self._normals.getChild(nIdx);
                                 //normals[index_indices * 3 + 0] = normal.x;
                                 //normals[index_indices * 3 + 1] = normal.y;
@@ -300,8 +320,9 @@ module dy {
             for (var k of triangles) {
                 faceModel.verticeIndices.addChild(parseInt(k) - 1);
 
-                faceModel.computeNormal(this._vertices);
             }
+
+            faceModel.computeNormal(this._vertices);
 
             this._currentObject.addFace(faceModel);
             //Reset variable for the next line
@@ -331,8 +352,8 @@ module dy {
                 faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
                 faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
 
-                faceModel.computeNormal(this._vertices);
             }
+            faceModel.computeNormal(this._vertices);
 
             this._currentObject.addFace(faceModel);
         }
@@ -377,14 +398,14 @@ module dy {
             for (var k of triangles) {
                 //triangle[k] = "1//1"
                 //Split the data for getting position and uv
-                var point = k.split("/"); // ["1", "1"]
+                var point = k.split("//"); // ["1", "1"]
 
 
                 faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
                 faceModel.normalIndices.addChild(parseInt(point[1]) - 1);
-
-                //faceModel.computeNormal(this._vertices);
             }
+
+            //faceModel.computeNormal(this._vertices);
 
             this._currentObject.addFace(faceModel);
         }
@@ -402,7 +423,7 @@ module dy {
         public vertices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public normals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
-        public indices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
+        public indices:dyCb.Collection<number> = dyCb.Collection.create<number>();
         public materialName:string = null;
         public name:string = null;
         public faces:dyCb.Collection<FaceModel> = dyCb.Collection.create<FaceModel>();
@@ -452,7 +473,7 @@ module dy {
         public normal:Vector3 = null;
 
         @In(function () {
-            assert(this.verticeIndices.getCount() >= 3);
+            assert(this.verticeIndices.getCount() >= 3, `verticesIndices.getCount() should >= 3, but actual is ${this.verticeIndices.getCount()}`);
         })
         public computeNormal(vertices:dyCb.Collection<Vector3>) {
             var count = this.verticeIndices.getCount();
@@ -469,7 +490,7 @@ module dy {
                 result = Vector3.create().cross(v0, v1).normalize();
 
                 if (result.isZero()) {
-                    if (count <= startIndex + 6) {
+                    if (count <= startIndex + 5) {
                         return Vector3.create(0, 1, 0);
                     }
 

@@ -10,12 +10,12 @@ module dy{
         public vertices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public normals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
-        public indices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
+        public indices:dyCb.Collection<number> = dyCb.Collection.create<number>();
 
 
         protected computeData(){
             var vertices = this._convertVector3ToArray(this.vertices),
-                indices = this._convertVector3ToArray(this.indices),
+                indices = this.indices.toArray(),
                 normals = this._convertVector3ToArray(this.normals),
                 texCoords = this._convertVector2ToArray(this.texCoords);
 

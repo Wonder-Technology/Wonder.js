@@ -32,6 +32,7 @@ module dy{
         private _setColor(colorVal:string) {
             var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
                 REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
+                REGEX_RGB_2 = /^rgb\(([01]\.\d+),\s*([01]\.\d+),\s*([01]\.\d+)\)$/i,
                 REGEX_NUM = /^\#([0-9a-f]{6})$/i;
             var color = null;
 
@@ -69,6 +70,24 @@ module dy{
                 return this; //返回颜色对象。
 
             }
+
+            //todo test
+
+            // rgba(0.0,0.1,1,0)
+            //
+            if ( REGEX_RGB_2.test( colorVal ) ) {
+                color = REGEX_RGB_2.exec( colorVal );
+
+                this.r = parseFloat(color[1]);
+                this.g = parseFloat(color[2]);
+                this.b = parseFloat(color[3]);
+
+                this.a = 1;
+
+                return this; //返回颜色对象。
+
+            }
+
             //
             //// rgb(100%,0%,0%)
             ////将我们平常习惯的颜色值表达形式rgb(100%,0%,0%)-百分比型，转换成THREE.JS认识的形式0.0-1.0，
