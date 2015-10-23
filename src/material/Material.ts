@@ -100,6 +100,8 @@ module dy {
 
         public shader:Shader = Shader.create();
         public color:Color = Color.create("0xffffff");
+        //todo make it run
+        public alpha:number = 1.0;
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;

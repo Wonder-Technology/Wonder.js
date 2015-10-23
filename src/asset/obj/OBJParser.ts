@@ -211,14 +211,14 @@ module dy {
         private _parseFromFaces() {
             //todo check repeat(refer to babylon.objFileLoader.ts->setData-> judge isInArray)?
 
-            var index_indices = 0,
-                self = this;
+            var self = this;
 
             this.objects.forEach((object:ObjectModel) => {
                 var indices = object.indices,
                     vertices = object.vertices,
                     normals = object.normals,
                     texCoords = object.texCoords;
+                var index_indices = 0;
 
                 object.faces.forEach((face:FaceModel) => {
                     //todo add setting color?

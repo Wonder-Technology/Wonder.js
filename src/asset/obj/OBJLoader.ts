@@ -11,11 +11,6 @@ module dy{
             return this._instance;
         }
 
-        //private _mtlFileLoader:MTLLoader = MTLLoader.create();
-        private _mtlFileLoader:MTLLoader = null;
-        //private _objParser:OBJParser = OBJParser.create();
-        private _objParser:OBJParser = null;
-
 
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
@@ -25,35 +20,79 @@ module dy{
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("js's url", "string"));
         })
         protected loadAsset(...args):dyRt.Stream {
-            var self = this,
-                url = args[0];
+            var url = args[0];
+
+            return OBJFileLoader.create().load(url);
+        }
+    }
+
+    class OBJFileLoader{
+        public static create() {
+            var obj = new this();
+
+            return obj;
+        }
+
+        private _mtlFileLoader:MTLLoader = MTLLoader.create();
+        private _objParser:OBJParser = OBJParser.create();
+
+
+        public load(url:string):dyRt.Stream {
+            var self = this;
 
             return AjaxLoader.load(url, "text")
                 .do((data:any) => {
                     self._read(data);
                 }, null, null)
                 .concat(
-                    dyRt.judge(
-                        () => { return self._objParser.mtlFilePath !== null},
-                        () => {
-                            self._mtlFileLoader = MTLLoader.create();
-
-                            return self._mtlFileLoader.load(self._objParser.mtlFilePath).concat(self._mtlFileLoader.createMapStream())
-                        },
-                        () => {
-                            return dyRt.empty();
-                        }
-                    )
+                    [
+                        //dyRt.callFunc((data:any) => {
+                        //    return self._read(data);
+                        //}),
+                        dyRt.defer(() => {
+                            return self._mtlFileLoader.load(self._getMtlFilePath(url));
+                        }),
+                        dyRt.callFunc(()=>{
+                            return self._createModel();
+                        })
+                    ]
                 )
-                .map((data:any)=> {
-                    return self._createModel();
-                });
+            //.map((data:string) => {
+            //    self._mtlFileLoader = MTLLoader.create();
+            //    return self._mtlFileLoader.load(self._getMtlFilePath(url)).map(()=>{self._createModel();});
+            //}).mergeAll();
+            //.concat(
+            //    dyRt.defer(() => {
+            //            return dyRt.judge(
+            //                () => { return this._getMtlFilePath(url) !== null},
+            //                () => {
+            //                    self._mtlFileLoader = MTLLoader.create();
+            //
+            //                    //return self._mtlFileLoader.load(self._getMtlFilePath(url)).concat(self._mtlFileLoader.createMapStream())
+            //                    return self._mtlFileLoader.load(self._getMtlFilePath(url));
+            //                },
+            //                () => {
+            //                    return dyRt.empty();
+            //                }
+            //            )
+            //        }
+            //        )
+            //        .map((data:any)=> {
+            //            return self._createModel();
+            //        })
+            //)
+        }
+
+        private _getMtlFilePath(objFilePath:string){
+            if(this._objParser.mtlFilePath === null){
+                return null;
+            }
+
+            return `${dyCb.PathUtils.dirname(objFilePath)}/${this._objParser.mtlFilePath}`;
         }
 
         //todo remove
         private _read(data:string){
-            this._objParser = OBJParser.create();
-
             //parse
             this._objParser.parse(data);
         }
@@ -100,6 +139,15 @@ module dy{
                     material.normalMap = materialModel.bumpMap;
                 }
 
+                if(materialModel.shininess !== null){
+                    material.shininess = materialModel.shininess;
+                }
+
+                if(materialModel.alpha !== null){
+                    material.alpha = materialModel.alpha;
+                }
+
+
                 geometry.material = material;
 
                 model = GameObject.create();
@@ -114,10 +162,6 @@ module dy{
 
             return result;
         }
-
-        //private _clearData(){
-        //
-        //}
     }
 
     class MTLLoader{
@@ -137,13 +181,51 @@ module dy{
             var self = this;
 
             return AjaxLoader.load(url, "text")
-                .do((data:string) => {
-                    self._read(data);
-                }, null, null);
+            .do((data:string) => {
+
+                self._read(data);
+            })
+                //.map((data:string) => {
+                //    self._read(data);
+                //
+                //    return self.createMapStream(url);
+                //}).mergeAll();
+                .concat(
+                    [
+                        //dyRt.callFunc((data:any) => {
+                        //    return self._read(data);
+                        //}),
+                        dyRt.defer(() => {
+                            return self.createMapStream(url)
+                        })
+                    ]
+                )
+            //    .do((data:string) => {
+            //        self._read(data);
+            //    })
+            //.concat(
+            //dyRt.defer(() => {
+            //        //return dyRt.judge(
+            //        //    () => { return this._mtlParser.materials.getCount() > 0},
+            //        //    () => {
+            //        //        return self.createMapStream(url);
+            //        //    },
+            //        //    () => {
+            //        //        return dyRt.empty();
+            //        //    }
+            //        //)
+            //        return self.createMapStream(url);
+            //    }
+            //    )
+        //)
+
         }
 
-        public createMapStream(){
-            this._mtlParser.materials.map((material:MaterialModel) => {
+        public createMapStream(mtlFilePath:string){
+            var streamArr = [],
+                self = this;
+
+            this.materials.map((material:MaterialModel) => {
                 var mapUrlArr = [];
 
                 if(material.diffuseMapUrl){
@@ -156,18 +238,29 @@ module dy{
                     mapUrlArr.push(["bumpMap", material.bumpMapUrl]);
                 }
 
-                return dyRt.fromArray(mapUrlArr)
-                    .flatMap(([type, url]) => {
-                        return TextureLoader.getInstance().load(url)
-                            .do((url:string) => {
-                                material[type] = TextureLoader.getInstance().get(url);
-                            }, null, null);
-                    });
+                streamArr.push(
+                    dyRt.fromArray(mapUrlArr)
+                        .flatMap(([type, mapUrl]) => {
+                            return TextureLoader.getInstance().load(self._getPath(mtlFilePath, mapUrl))
+                                .do((asset:TextureAsset) => {
+                                    material[type] = asset.toTexture();
+                                }, null, null);
+                                //.concat(
+                                //    dyRt.callFunc((asset:TextureAsset) => {
+                                //        material[type] = asset.toTexture();
+                                //    })
+                                //)
+                        })
+                )
             });
+
+            return dyRt.fromArray(streamArr).mergeAll();
         }
 
-        //public clearData(){
-        //}
+        //todo move to utils
+        private _getPath(mtlFilePath:string, mapUrl:string){
+            return `${dyCb.PathUtils.dirname(mtlFilePath)}/${mapUrl}`;
+        }
 
         //todo remove
         private _read(data:string){

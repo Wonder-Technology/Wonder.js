@@ -38,6 +38,7 @@ module.exports = function(config) {
       //'test/unit/renderer/RenderTarget*',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
+        'test/unit/asset/*.js',
         'test/unit/asset/obj/*.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/*.js',
@@ -51,7 +52,8 @@ module.exports = function(config) {
 
         //{pattern: 'src/**/*.js.map', watched: false, included: false, served: true},
         //{pattern: 'src/**/*.ts', watched: false, included: false, served: true}
-        {pattern: 'test/res/*', watched: false, included: false, served: true}
+        {pattern: 'test/res/*', watched: false, included: false, served: true},
+    {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],
 
 

@@ -321,9 +321,19 @@ describe("OBJParser", function () {
                     var obj1 = parser.objects.getChild(0);
                     expect(obj1.name).toEqual("group1");
                     expect(obj1.materialName).toEqual("material1");
+                    expect(obj1.indices.getChildren()).toEqual(
+                        [
+                            0, 1, 2, 3, 4, 5
+                        ]
+                    );
                     var obj2 = parser.objects.getChild(1);
                     expect(obj2.name).toEqual("group2");
                     expect(obj2.materialName).toEqual("material2");
+                    expect(obj2.indices.getChildren()).toEqual(
+                        [
+                            0, 1, 2, 3, 4, 5
+                        ]
+                    );
                 });
                 it("usemtl->g->usemtl", function(){
                     var str = v + vn + vt +

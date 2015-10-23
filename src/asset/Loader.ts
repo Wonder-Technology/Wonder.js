@@ -3,18 +3,35 @@ module dy{
     export abstract class Loader{
         private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
 
+        public load(url:string):dyRt.Stream;
+        public load(url:Array<string>):dyRt.Stream;
         public load(url:string, id:string):dyRt.Stream;
         public load(url:Array<string>, id:string):dyRt.Stream;
 
 
-        public load(args):dyRt.Stream{
-            var url = arguments[0],
-                id = arguments[1],
+        public load(...args):dyRt.Stream{
+            var url = args[0],
+                id = null,
                 self = this,
+                data = null,
                 stream = null;
 
-            if(this._container.getChild(id)){
-                stream = dyRt.empty();
+            if(args.length === 1){
+                if(JudgeUtils.isArray(url)){
+                    id = url.join("-");
+                }
+                else{
+                    id = url;
+                }
+            }
+            else{
+                id = args[1];
+            }
+
+            data = this._container.getChild(id);
+
+            if(data){
+                stream = dyRt.just(data);
             }
             else{
                 stream = this.loadAsset(url)
