@@ -12,6 +12,14 @@ module dy{
         }
 
 
+        public get(id:string):GameObject{
+            var obj:GameObject = super.get(id);
+
+            obj.name = id;
+
+            return obj;
+        }
+
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
 
@@ -35,7 +43,6 @@ module dy{
 
         private _mtlFileLoader:MTLLoader = MTLLoader.create();
         private _objParser:OBJParser = OBJParser.create();
-
 
         public load(url:string):dyRt.Stream {
             var self = this;
@@ -151,6 +158,7 @@ module dy{
                 geometry.material = material;
 
                 model = GameObject.create();
+                model.name = object.name;
                 model.addComponent(MeshRenderer.create());
                 model.addComponent(geometry);
 

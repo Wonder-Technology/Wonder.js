@@ -26,6 +26,7 @@ module dy{
                 case ".jpg":
                 case ".jpeg":
                 case ".gif":
+                    case ".bmp":
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {

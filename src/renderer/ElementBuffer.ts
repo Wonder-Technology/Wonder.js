@@ -12,6 +12,8 @@ module dy{
         private _typeSize:number = null;
         get typeSize() { return this._typeSize; }
 
+        public data:any = null;
+
         public initWhenCreate(data, type:BufferType) {
             var gl = DeviceManager.getInstance().gl;
 
@@ -31,6 +33,7 @@ module dy{
 
             this.type = gl[type];
             this.num = data.length;
+            this.data = data;
             this._typeSize = this._getInfo(type).size;
 
             return this.buffer;

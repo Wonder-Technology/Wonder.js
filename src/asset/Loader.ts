@@ -45,7 +45,7 @@ module dy{
             return stream;
         }
 
-        public get(id:string):string{
+        public get(id:string):any{
             return this._container.getChild(id);
         }
 

@@ -4,6 +4,7 @@ module dy{
         FLOAT_2,
         FLOAT_3,
         FLOAT_4,
+        FLOAT_MAT3,
         FLOAT_MAT4,
         BUFFER,
         SAMPLER_CUBE,

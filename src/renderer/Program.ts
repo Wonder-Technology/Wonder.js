@@ -67,6 +67,9 @@ module dy{
                     data = this._convertToVector4(data);
                     gl.uniform4f(pos, data.x, data.y, data.z, data.w);
                     break;
+                case VariableType.FLOAT_MAT3:
+                    gl.uniformMatrix3fv(pos,false, data.values);
+                    break;
                 case VariableType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;

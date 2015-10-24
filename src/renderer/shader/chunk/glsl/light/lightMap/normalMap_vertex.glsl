@@ -24,8 +24,8 @@ varying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];
             //vec3 B = normalize(normalMatrix * bitangent);
             //vec3 N = normalize(normalMatrix * normal);
 
-            vec3 T = normalize(vec3(u_normalMatrix * vec4(a_tangent, 1.0)));
-            vec3 N = normalize(vec3(u_normalMatrix * vec4(a_normal, 1.0)));
+            vec3 T = normalize(u_normalMatrix * a_tangent);
+            vec3 N = normalize(u_normalMatrix * a_normal);
             // re-orthogonalize T with respect to N
             T = normalize(T - dot(T, N) * N);
             // then retrieve perpendicular vector B with the cross product of T and N

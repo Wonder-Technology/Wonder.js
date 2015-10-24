@@ -21,6 +21,9 @@
 //            {url: "../../res/1.jpg", id:"texture"},
 //            {url: "../../res/crate.gif", id:"ground"},
             {url: "../../res/model/butterfly.obj", id:"model"}
+//            {url: "../../res/model/dodge-viper-gts-obj/dodge-viper-gts.obj", id:"model"}
+//            {url: "../../res/model/vegetation-obj/vegetation.obj", id:"model"}
+//            {url: "../../res/model/cube.obj", id:"model"}
 
         ]).subscribe(null, function(e){
             throw e;
@@ -38,12 +41,54 @@
         function _initScene() {
             var director = dy.Director.getInstance();
 
+            director.renderer.setClearColor(dy.Color.create("#aaaaff"));
 
 
 
-            var model = dy.ObjLoader.getInstance().get("model");
+            var model = dy.OBJLoader.getInstance().get("model");
 
-            director.stage.addChild(model);
+//            model.getChildren().forEach(function(ob){
+//                director.stage.addChild(ob);
+//            })
+//
+//            var obj1 =model.getChild(0);
+//            var obj1 = model;
+
+
+
+            //todo
+//            model = model.getChild(0);
+
+            model.transform.scale = dy.Vector3.create(140, 140, 140);
+
+
+
+
+            // configure the wings
+//            var wing1 = model.getChild(4);
+//            var wing2 = model.getChild(5);
+//
+//            wing1.getComponent(dy.Geometry).material.cullMode = dy.CullMode.NONE;
+//            wing2.getComponent(dy.Geometry).material.cullMode = dy.CullMode.NONE;
+
+//            wing1.material.opacity = 0.6;
+//            wing1.material.transparent = true;
+//            wing1.material.depthTest = false;
+//            wing1.material.side = THREE.DoubleSide;
+//
+//            wing2.material.opacity = 0.6;
+//            wing2.material.depthTest = false;
+//            wing2.material.transparent = true;
+//            wing2.material.side = THREE.DoubleSide;
+
+
+                    director.stage.addChild(model);
+
+
+
+
+
+//            director.stage.addChild(model);
 
 //            var loader = new THREE.OBJMTLLoader();
 //            loader.load( 'obj/male02/male02.obj', function ( object ) {
@@ -69,7 +114,7 @@
 
 
             directionLightComponent.color = dy.Color.create("#ffffff");
-            directionLightComponent.intensity = 1;
+            directionLightComponent.intensity = 2;
 
 
 
@@ -79,15 +124,106 @@
             directionLight.addComponent(directionLightComponent);
 
 
+            directionLight.transform.translate(30, 0, 0);
 
 
 
 
 
 
+//           console.log(
+//                   dy.Matrix4.create(
+//                    [ 140.0000000,  0.000000000,  0.000000000,  0.000000000,
+//                        0.000000000,  140.0000000,  0.000000000,  0.000000000,
+//                        0.000000000,  0.000000000,  140.0000000,  0.000000000,
+//                        0.000000000,  0.000000000,  0.000000000,  1.000000000 ]
+////            ).invert().transpose()
+//           ).invertTo3x3().transpose()
+//
+////                   dy.Matrix3.create(
+////                           [ 1.586032901,  0.000000000,  0.007142857,
+////                               0.000000000,  0.007142857,  0.000000000,
+////                               -0.007142857,  0.000000000,  1.586032901 ]
+////                   )
+//
+////                           dy.Matrix3.create(
+////                           [ 1.586032901,  0.000000000,  0.007142857,
+////                           0.000000000,  0.007142857,  0.000000000,
+////                           -0.007142857,  0.000000000,  1.586032901 ]
+////                           )
+//
+//
+////                           .multiplyVector4(
+//                           .multiplyVector3(
+//                                   dy.Vector3.create(
+//                                           -0.39,-0.66, 0.63
+////                                   ).toVector4()
+//                           )
+//                           )
+////                           .toVector3()
+//                           .values
+//           );
 
-            director.stage.addChild(ambientLight);
+
+
+            console.log(
+                    dy.Matrix4.create(
+                            [ 140.0000000,  0.000000000,  0.000000000,  0.000000000,
+                                0.000000000,  140.0000000,  0.000000000,  0.000000000,
+                                0.000000000,  0.000000000,  140.0000000,  0.000000000,
+                                0.000000000,  0.000000000,  0.000000000,  1.000000000 ]
+
+
+//                                    [0, 0, 140, 0,
+//                                        0, 140, 0, 0,
+//                                        -140, 0, 0, 0,
+//                                        0, 0, -30, 1]
+//            ).invert().transpose()
+//                    ).invertTo3x3().transpose()
+            )
+                            .applyMatrix(dy.Matrix4.create(
+//
+                            [ 0,  0.000000000,  1.000000000,  0.000000000,
+                            0.000000000,  1.000000000,  0.000000000,  0.000000000,
+                            -1.000000000,  0.000000000,  0,  0.000000000,
+                            0,  0.000000000, -30.00000000,  1.000000000 ]
+                            ))
+                            .invert().transpose()
+//
+//                            .invertTo3x3().transpose()
+                            .values
+            )
+
+//            0.0071428571827709675, 0, 0,
+//                    0, 0.0071428571827709675, 0,
+//                    0, 0, 0.0071428571827709675
+
+//            mine: [-0.0027857141103595495, -0.004714285954833031, 0.0044999998062849045]
+
+
+//            three: -0.6230528354644775, -0.004714285954833031, 0.9964150190353394
+
+
+//            v_normal = vec3(u_normalMatrix * vec4(a_normal, 1.0));
+
+
+
+//            var pointLightComponent = dy.PointLight.create();
+//            pointLightComponent.color = dy.Color.create("#ffffff");
+//            pointLightComponent.intensity = 2;
+//            pointLightComponent.rangeLevel = 10;
+//
+//            var pointLight = dy.GameObject.create();
+//            pointLight.addComponent(pointLightComponent);
+//
+//
+//            pointLight.transform.translate(dy.Vector3.create(-0, 40, 30));
+
+
+
+//            director.stage.addChild(ambientLight);
             director.stage.addChild(directionLight);
+//            director.stage.addChild(pointLight);
 
 
 
@@ -125,16 +261,18 @@
             var cameraComponent = dy.PerspectiveCamera.create();
 
 
-            cameraComponent.fovy = 90;
-//            cameraComponent.aspect = canvas.width / canvas.height;
-            cameraComponent.aspect = 1.0;
+            cameraComponent.fovy = 45;
+            cameraComponent.aspect = canvas.width / canvas.height;
+//            cameraComponent.aspect = 1.0;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
 
             camera.addComponent(cameraComponent);
 
-            camera.transform.translate(dy.Vector3.create(0, 0, 10));
+//            camera.transform.translate(dy.Vector3.create(30, 40, 50));
+            camera.transform.translate(dy.Vector3.create(30, 0, 0));
+//            camera.transform.lookAt(0, 10, 0);
             camera.transform.lookAt(0, 0, 0);
 
 

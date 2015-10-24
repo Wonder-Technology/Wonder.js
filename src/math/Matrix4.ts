@@ -61,80 +61,256 @@ module dy{
          * @return this
          */
         public invert ():Matrix4 {
-            var i, s, d, inv, det;
+            //var i, s, d, inv, det;
+            //
+            //s = this.values;
+            //inv = new Float32Array(16);
+            //d = this.values;
+            //
+            //inv[0]  =   s[5]*s[10]*s[15] - s[5] *s[11]*s[14] - s[9] *s[6]*s[15]
+            //    + s[9]*s[7] *s[14] + s[13]*s[6] *s[11] - s[13]*s[7]*s[10];
+            //inv[4]  = - s[4]*s[10]*s[15] + s[4] *s[11]*s[14] + s[8] *s[6]*s[15]
+            //    - s[8]*s[7] *s[14] - s[12]*s[6] *s[11] + s[12]*s[7]*s[10];
+            //inv[8]  =   s[4]*s[9] *s[15] - s[4] *s[11]*s[13] - s[8] *s[5]*s[15]
+            //    + s[8]*s[7] *s[13] + s[12]*s[5] *s[11] - s[12]*s[7]*s[9];
+            //inv[12] = - s[4]*s[9] *s[14] + s[4] *s[10]*s[13] + s[8] *s[5]*s[14]
+            //    - s[8]*s[6] *s[13] - s[12]*s[5] *s[10] + s[12]*s[6]*s[9];
+            //
+            //inv[1]  = - s[1]*s[10]*s[15] + s[1] *s[11]*s[14] + s[9] *s[2]*s[15]
+            //    - s[9]*s[3] *s[14] - s[13]*s[2] *s[11] + s[13]*s[3]*s[10];
+            //inv[5]  =   s[0]*s[10]*s[15] - s[0] *s[11]*s[14] - s[8] *s[2]*s[15]
+            //    + s[8]*s[3] *s[14] + s[12]*s[2] *s[11] - s[12]*s[3]*s[10];
+            //inv[9]  = - s[0]*s[9] *s[15] + s[0] *s[11]*s[13] + s[8] *s[1]*s[15]
+            //    - s[8]*s[3] *s[13] - s[12]*s[1] *s[11] + s[12]*s[3]*s[9];
+            //inv[13] =   s[0]*s[9] *s[14] - s[0] *s[10]*s[13] - s[8] *s[1]*s[14]
+            //    + s[8]*s[2] *s[13] + s[12]*s[1] *s[10] - s[12]*s[2]*s[9];
+            //
+            //inv[2]  =   s[1]*s[6]*s[15] - s[1] *s[7]*s[14] - s[5] *s[2]*s[15]
+            //    + s[5]*s[3]*s[14] + s[13]*s[2]*s[7]  - s[13]*s[3]*s[6];
+            //inv[6]  = - s[0]*s[6]*s[15] + s[0] *s[7]*s[14] + s[4] *s[2]*s[15]
+            //    - s[4]*s[3]*s[14] - s[12]*s[2]*s[7]  + s[12]*s[3]*s[6];
+            //inv[10] =   s[0]*s[5]*s[15] - s[0] *s[7]*s[13] - s[4] *s[1]*s[15]
+            //    + s[4]*s[3]*s[13] + s[12]*s[1]*s[7]  - s[12]*s[3]*s[5];
+            //inv[14] = - s[0]*s[5]*s[14] + s[0] *s[6]*s[13] + s[4] *s[1]*s[14]
+            //    - s[4]*s[2]*s[13] - s[12]*s[1]*s[6]  + s[12]*s[2]*s[5];
+            //
+            //inv[3]  = - s[1]*s[6]*s[11] + s[1]*s[7]*s[10] + s[5]*s[2]*s[11]
+            //    - s[5]*s[3]*s[10] - s[9]*s[2]*s[7]  + s[9]*s[3]*s[6];
+            //inv[7]  =   s[0]*s[6]*s[11] - s[0]*s[7]*s[10] - s[4]*s[2]*s[11]
+            //    + s[4]*s[3]*s[10] + s[8]*s[2]*s[7]  - s[8]*s[3]*s[6];
+            //inv[11] = - s[0]*s[5]*s[11] + s[0]*s[7]*s[9]  + s[4]*s[1]*s[11]
+            //    - s[4]*s[3]*s[9]  - s[8]*s[1]*s[7]  + s[8]*s[3]*s[5];
+            //inv[15] =   s[0]*s[5]*s[10] - s[0]*s[6]*s[9]  - s[4]*s[1]*s[10]
+            //    + s[4]*s[2]*s[9]  + s[8]*s[1]*s[6]  - s[8]*s[2]*s[5];
+            //
+            //det = s[0]*inv[0] + s[1]*inv[4] + s[2]*inv[8] + s[3]*inv[12];
+            //if (det === 0) {
+            //    Log.warn("can't invert matrix, determinant is 0");
+            //
+            //    this.setIdentity();
+            //
+            //    return this;
+            //}
+            //
+            //det = 1 / det;
+            //for (i = 0; i < 16; i++) {
+            //    d[i] = inv[i] * det;
+            //}
+            //
+            //return this;
 
-            s = this.values;
-            inv = new Float32Array(16);
-            d = this.values;
 
-            inv[0]  =   s[5]*s[10]*s[15] - s[5] *s[11]*s[14] - s[9] *s[6]*s[15]
-                + s[9]*s[7] *s[14] + s[13]*s[6] *s[11] - s[13]*s[7]*s[10];
-            inv[4]  = - s[4]*s[10]*s[15] + s[4] *s[11]*s[14] + s[8] *s[6]*s[15]
-                - s[8]*s[7] *s[14] - s[12]*s[6] *s[11] + s[12]*s[7]*s[10];
-            inv[8]  =   s[4]*s[9] *s[15] - s[4] *s[11]*s[13] - s[8] *s[5]*s[15]
-                + s[8]*s[7] *s[13] + s[12]*s[5] *s[11] - s[12]*s[7]*s[9];
-            inv[12] = - s[4]*s[9] *s[14] + s[4] *s[10]*s[13] + s[8] *s[5]*s[14]
-                - s[8]*s[6] *s[13] - s[12]*s[5] *s[10] + s[12]*s[6]*s[9];
+            var a00, a01, a02, a03,
+                a10, a11, a12, a13,
+                a20, a21, a22, a23,
+                a30, a31, a32, a33,
+                b00, b01, b02, b03,
+                b04, b05, b06, b07,
+                b08, b09, b10, b11,
+                invDet, m;
 
-            inv[1]  = - s[1]*s[10]*s[15] + s[1] *s[11]*s[14] + s[9] *s[2]*s[15]
-                - s[9]*s[3] *s[14] - s[13]*s[2] *s[11] + s[13]*s[3]*s[10];
-            inv[5]  =   s[0]*s[10]*s[15] - s[0] *s[11]*s[14] - s[8] *s[2]*s[15]
-                + s[8]*s[3] *s[14] + s[12]*s[2] *s[11] - s[12]*s[3]*s[10];
-            inv[9]  = - s[0]*s[9] *s[15] + s[0] *s[11]*s[13] + s[8] *s[1]*s[15]
-                - s[8]*s[3] *s[13] - s[12]*s[1] *s[11] + s[12]*s[3]*s[9];
-            inv[13] =   s[0]*s[9] *s[14] - s[0] *s[10]*s[13] - s[8] *s[1]*s[14]
-                + s[8]*s[2] *s[13] + s[12]*s[1] *s[10] - s[12]*s[2]*s[9];
+            m = this.values;
+            a00 = m[0];
+            a01 = m[1];
+            a02 = m[2];
+            a03 = m[3];
+            a10 = m[4];
+            a11 = m[5];
+            a12 = m[6];
+            a13 = m[7];
+            a20 = m[8];
+            a21 = m[9];
+            a22 = m[10];
+            a23 = m[11];
+            a30 = m[12];
+            a31 = m[13];
+            a32 = m[14];
+            a33 = m[15];
 
-            inv[2]  =   s[1]*s[6]*s[15] - s[1] *s[7]*s[14] - s[5] *s[2]*s[15]
-                + s[5]*s[3]*s[14] + s[13]*s[2]*s[7]  - s[13]*s[3]*s[6];
-            inv[6]  = - s[0]*s[6]*s[15] + s[0] *s[7]*s[14] + s[4] *s[2]*s[15]
-                - s[4]*s[3]*s[14] - s[12]*s[2]*s[7]  + s[12]*s[3]*s[6];
-            inv[10] =   s[0]*s[5]*s[15] - s[0] *s[7]*s[13] - s[4] *s[1]*s[15]
-                + s[4]*s[3]*s[13] + s[12]*s[1]*s[7]  - s[12]*s[3]*s[5];
-            inv[14] = - s[0]*s[5]*s[14] + s[0] *s[6]*s[13] + s[4] *s[1]*s[14]
-                - s[4]*s[2]*s[13] - s[12]*s[1]*s[6]  + s[12]*s[2]*s[5];
+            b00 = a00 * a11 - a01 * a10;
+            b01 = a00 * a12 - a02 * a10;
+            b02 = a00 * a13 - a03 * a10;
+            b03 = a01 * a12 - a02 * a11;
+            b04 = a01 * a13 - a03 * a11;
+            b05 = a02 * a13 - a03 * a12;
+            b06 = a20 * a31 - a21 * a30;
+            b07 = a20 * a32 - a22 * a30;
+            b08 = a20 * a33 - a23 * a30;
+            b09 = a21 * a32 - a22 * a31;
+            b10 = a21 * a33 - a23 * a31;
+            b11 = a22 * a33 - a23 * a32;
 
-            inv[3]  = - s[1]*s[6]*s[11] + s[1]*s[7]*s[10] + s[5]*s[2]*s[11]
-                - s[5]*s[3]*s[10] - s[9]*s[2]*s[7]  + s[9]*s[3]*s[6];
-            inv[7]  =   s[0]*s[6]*s[11] - s[0]*s[7]*s[10] - s[4]*s[2]*s[11]
-                + s[4]*s[3]*s[10] + s[8]*s[2]*s[7]  - s[8]*s[3]*s[6];
-            inv[11] = - s[0]*s[5]*s[11] + s[0]*s[7]*s[9]  + s[4]*s[1]*s[11]
-                - s[4]*s[3]*s[9]  - s[8]*s[1]*s[7]  + s[8]*s[3]*s[5];
-            inv[15] =   s[0]*s[5]*s[10] - s[0]*s[6]*s[9]  - s[4]*s[1]*s[10]
-                + s[4]*s[2]*s[9]  + s[8]*s[1]*s[6]  - s[8]*s[2]*s[5];
+            invDet = 1 / (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
 
-            det = s[0]*inv[0] + s[1]*inv[4] + s[2]*inv[8] + s[3]*inv[12];
-            if (det === 0) {
-                Log.warn("can't invert matrix, determinant is 0");
-
-                this.setIdentity();
-
-                return this;
-            }
-
-            det = 1 / det;
-            for (i = 0; i < 16; i++) {
-                d[i] = inv[i] * det;
-            }
+            m[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+            m[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+            m[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+            m[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+            m[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+            m[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+            m[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+            m[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+            m[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+            m[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+            m[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+            m[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+            m[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+            m[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+            m[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+            m[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
 
             return this;
+
+
+
+            //// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+            ////var te = this.values;
+            //var te = new Float32Array(16);
+            //var me = this.values;
+            //
+            //var n11 = me[ 0 ], n12 = me[ 4 ], n13 = me[ 8 ], n14 = me[ 12 ];
+            //var n21 = me[ 1 ], n22 = me[ 5 ], n23 = me[ 9 ], n24 = me[ 13 ];
+            //var n31 = me[ 2 ], n32 = me[ 6 ], n33 = me[ 10 ], n34 = me[ 14 ];
+            //var n41 = me[ 3 ], n42 = me[ 7 ], n43 = me[ 11 ], n44 = me[ 15 ];
+            //
+            //te[ 0 ] = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
+            //te[ 4 ] = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
+            //te[ 8 ] = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44;
+            //te[ 12 ] = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
+            //te[ 1 ] = n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44;
+            //te[ 5 ] = n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44;
+            //te[ 9 ] = n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44;
+            //te[ 13 ] = n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34;
+            //te[ 2 ] = n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44;
+            //te[ 6 ] = n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44;
+            //te[ 10 ] = n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44;
+            //te[ 14 ] = n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34;
+            //te[ 3 ] = n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43;
+            //te[ 7 ] = n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43;
+            //te[ 11 ] = n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43;
+            //te[ 15 ] = n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33;
+            //
+            //var det = n11 * te[ 0 ] + n21 * te[ 4 ] + n31 * te[ 8 ] + n41 * te[ 12 ];
+            //
+            //if ( det === 0 ) {
+            //
+            //    var msg = "THREE.Matrix4.getInverse(): can't invert matrix, determinant is 0";
+            //
+            //    //if ( throwOnInvertible || false ) {
+            //    //
+            //    //    throw new Error( msg );
+            //    //
+            //    //} else {
+            //
+            //        console.warn( msg );
+            //
+            //    //}
+            //
+            //        this.setIdentity();
+            //
+            //    return this;
+            //
+            //}
+            //
+            //
+            //var d = this.values;
+            //
+            ////this.multiplyScalar( 1 / det );
+            //det = 1 / det;
+            //for (var i = 0; i < 16; i++) {
+            //    d[i] = d[i] * det;
+            //}
+            //
+            //return this;
         }
+
+        public invertTo3x3():Matrix3 {
+        var a11, a21, a31, a12, a22, a32, a13, a23, a33,
+            m, r, det, idet;
+            var mat3 = Matrix3.create();
+
+        m = this.values;
+
+        r = mat3.values;
+
+        a11 =  m[10] * m[5] - m[6] * m[9];
+        a21 = -m[10] * m[1] + m[2] * m[9];
+        a31 =  m[6]  * m[1] - m[2] * m[5];
+        a12 = -m[10] * m[4] + m[6] * m[8];
+        a22 =  m[10] * m[0] - m[2] * m[8];
+        a32 = -m[6]  * m[0] + m[2] * m[4];
+        a13 =  m[9]  * m[4] - m[5] * m[8];
+        a23 = -m[9]  * m[0] + m[1] * m[8];
+        a33 =  m[5]  * m[0] - m[1] * m[4];
+
+        det =  m[0] * a11 + m[1] * a12 + m[2] * a13;
+        if (det === 0) { // no inverse
+                Log.warn("can't invert matrix, determinant is 0");
+
+            return mat3;
+        }
+
+        idet = 1 / det;
+
+        r[0] = idet * a11;
+        r[1] = idet * a21;
+        r[2] = idet * a31;
+        r[3] = idet * a12;
+        r[4] = idet * a22;
+        r[5] = idet * a32;
+        r[6] = idet * a13;
+        r[7] = idet * a23;
+        r[8] = idet * a33;
+
+        return mat3;
+    }
 
         /**
          * Transpose the matrix.
          * @return this
          */
         public transpose ():Matrix4 {
-            var e, t;
+            //var e, t;
 
-            e = this.values;
+            //e = this.values;
 
-            t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
-            t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
-            t = e[ 3];  e[ 3] = e[12];  e[12] = t;
-            t = e[ 6];  e[ 6] = e[ 9];  e[ 9] = t;
-            t = e[ 7];  e[ 7] = e[13];  e[13] = t;
-            t = e[11];  e[11] = e[14];  e[14] = t;
+            //t = e[ 1];  e[ 1] = e[ 4];  e[ 4] = t;
+            //t = e[ 2];  e[ 2] = e[ 8];  e[ 8] = t;
+            //t = e[ 3];  e[ 3] = e[12];  e[12] = t;
+            //t = e[ 6];  e[ 6] = e[ 9];  e[ 9] = t;
+            //t = e[ 7];  e[ 7] = e[13];  e[13] = t;
+            //t = e[11];  e[11] = e[14];  e[14] = t;
+
+            var te = this.values;
+            var tmp;
+
+            tmp = te[ 1 ]; te[ 1 ] = te[ 4 ]; te[ 4 ] = tmp;
+            tmp = te[ 2 ]; te[ 2 ] = te[ 8 ]; te[ 8 ] = tmp;
+            tmp = te[ 6 ]; te[ 6 ] = te[ 9 ]; te[ 9 ] = tmp;
+
+            tmp = te[ 3 ]; te[ 3 ] = te[ 12 ]; te[ 12 ] = tmp;
+            tmp = te[ 7 ]; te[ 7 ] = te[ 13 ]; te[ 13 ] = tmp;
+            tmp = te[ 11 ]; te[ 11 ] = te[ 14 ]; te[ 14 ] = tmp;
 
             return this;
         }

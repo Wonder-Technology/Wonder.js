@@ -44,7 +44,7 @@ module dy{
         };
 
         public static u_normalMatrix:ShaderVariable = {
-            type:VariableType.FLOAT_MAT4,
+            type:VariableType.FLOAT_MAT3,
             value:VariableCategory.ENGINE
         };
 

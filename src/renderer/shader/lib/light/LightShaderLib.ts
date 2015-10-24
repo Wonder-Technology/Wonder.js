@@ -18,7 +18,7 @@ module dy{
                 this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
 
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invert().transpose());
+            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
 
 

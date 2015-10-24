@@ -42,19 +42,19 @@ module dy {
 
             // f vertex vertex vertex ...
 
-            var face_pattern1 = /f\s(([\d]{1,}[\s]?){3,})+/;
+            var face_pattern1 = /f\s(([\d]{1,}[\s]+){2,}([\d]{1,}[\s]?))+/;
 
             // f vertex/uv vertex/uv vertex/uv ...
 
-            var face_pattern2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]?){3,})+)/;
+            var face_pattern2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}[\s]?))+)/;
 
             // f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
 
-            var face_pattern3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?){3,})+)/;
+            var face_pattern3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?))+)/;
 
             // f vertex//normal vertex//normal vertex//normal ...
 
-            var face_pattern4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]?){3,})+)/;
+            var face_pattern4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]+){2,}([\d]{1,}\/\/[\d]{1,}[\s]?))+)/;
 
             //var comment_pattern = /# /;
 
@@ -221,10 +221,15 @@ module dy {
                 var index_indices = 0;
 
                 object.faces.forEach((face:FaceModel) => {
+
+                    face.computeNormal(self._vertices);
+
+
                     //todo add setting color?
                     //var color = this.findColor(face.materialName);
 
-                    var faceNormal = face.normal;
+                    var faceNormal1 = face.normal1;
+                    var faceNormal2 = face.normal2;
 
                     face.verticeIndices.forEach((vIdx:number, k:number) => {
                             // Set index
@@ -248,21 +253,42 @@ module dy {
                             texCoords.addChild(self._texCoords.getChild(tIdx));
                         }
 
-                            // Copy normal
+                        // Copy normal
+                        //todo refactor
+
+                        if(face.normalIndices.getCount() === 3 || face.normalIndices.getCount() === 6){
                             var nIdx = face.normalIndices.getChild(k);
-                            if (nIdx >= 0) {
+                            //if (nIdx >= 0) {
                                 var normal = self._normals.getChild(nIdx);
                                 //normals[index_indices * 3 + 0] = normal.x;
                                 //normals[index_indices * 3 + 1] = normal.y;
                                 //normals[index_indices * 3 + 2] = normal.z;
                                 normals.addChild(normal);
+                            //}
+                        }
+                        else{
+                            if(k < 3){
+                                normals.addChild(faceNormal1);
                             }
-                            else {
-                                //normals[index_indices * 3 + 0] = faceNormal.x;
-                                //normals[index_indices * 3 + 1] = faceNormal.y;
-                                //normals[index_indices * 3 + 2] = faceNormal.z;
-                                normals.addChild(faceNormal);
+                            else{
+                                normals.addChild(faceNormal2);
                             }
+                        }
+                            //
+                            //var nIdx = face.normalIndices.getChild(k);
+                            //if (nIdx >= 0) {
+                            //    var normal = self._normals.getChild(nIdx);
+                            //    //normals[index_indices * 3 + 0] = normal.x;
+                            //    //normals[index_indices * 3 + 1] = normal.y;
+                            //    //normals[index_indices * 3 + 2] = normal.z;
+                            //    normals.addChild(normal);
+                            //}
+                            //else {
+                            //    //normals[index_indices * 3 + 0] = faceNormal.x;
+                            //    //normals[index_indices * 3 + 1] = faceNormal.y;
+                            //    //normals[index_indices * 3 + 2] = faceNormal.z;
+                            //    normals.addChild(faceNormal);
+                            //}
 
                             index_indices++;
                         });
@@ -285,15 +311,22 @@ module dy {
          * @param face Array[String] The indices of elements
          * @param v Integer The variable to increment
          */
+        //todo restore?
         private _getTriangles(face:Array<string>, v:number, triangles:Array<string>) {
             //Work for each element of the array
-            if (v + 1 < face.length) {
-                //Add on the triangle variable the indexes to obtain triangles
-                triangles.push(face[0], face[v], face[v + 1]);
-                //Incrementation for recursion
-                v++;
-                //Recursion
-                this._getTriangles(face, v, triangles);
+            //if (v + 1 < face.length) {
+            //    //Add on the triangle variable the indexes to obtain triangles
+            //    triangles.push(face[0], face[v], face[v + 1]);
+            //    //Incrementation for recursion
+            //    v++;
+            //    //Recursion
+            //    this._getTriangles(face, v, triangles);
+            //}
+            if(face.length === 3){
+                triangles.push(face[0], face[1], face[2]);
+            }
+            else{
+                triangles.push(face[0], face[1], face[3], face[1], face[2], face[3]);
             }
 
             //Result obtained after 2 iterations:
@@ -313,6 +346,10 @@ module dy {
             var triangles = [],
                 faceModel:FaceModel = FaceModel.create();
 
+            if(!this._currentObject || face.length < 3){
+                return;
+            }
+
             //Get the indices of triangles for each polygon
             this._getTriangles(face, v, triangles);
             //For each element in the triangles array.
@@ -322,7 +359,7 @@ module dy {
 
             }
 
-            faceModel.computeNormal(this._vertices);
+            //faceModel.computeNormal(self._vertices);
 
             this._currentObject.addFace(faceModel);
             //Reset variable for the next line
@@ -339,6 +376,10 @@ module dy {
             var triangles = [],
                 faceModel:FaceModel = FaceModel.create();
 
+            if(!this._currentObject || face.length < 3){
+                return;
+            }
+
             //Get the indices of triangles for each polygon
             this._getTriangles(face, v, triangles);
             //For each element in the triangles array.
@@ -353,7 +394,7 @@ module dy {
                 faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
 
             }
-            faceModel.computeNormal(this._vertices);
+            //faceModel.computeNormal(this._vertices);
 
             this._currentObject.addFace(faceModel);
         }
@@ -361,6 +402,10 @@ module dy {
         private _setDataForCurrentFaceWithPattern3(face:Array<string>, v:number) {
             var triangles = [],
                 faceModel:FaceModel = FaceModel.create();
+
+            if(!this._currentObject || face.length < 3){
+                return;
+            }
 
             //Get the indices of triangles for each polygon
             this._getTriangles(face, v, triangles);
@@ -390,6 +435,10 @@ module dy {
         private _setDataForCurrentFaceWithPattern4(face:Array<string>, v:number) {
             var triangles = [],
                 faceModel:FaceModel = FaceModel.create();
+
+            if(!this._currentObject || face.length < 3){
+                return;
+            }
 
             //Get the indices of triangles for each polygon
             this._getTriangles(face, v, triangles);
@@ -470,37 +519,46 @@ module dy {
         public verticeIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
         public normalIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
         public texCoordIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
-        public normal:Vector3 = null;
+        public normal1:Vector3 = null;
+        public normal2:Vector3 = null;
 
         @In(function () {
             assert(this.verticeIndices.getCount() >= 3, `verticesIndices.getCount() should >= 3, but actual is ${this.verticeIndices.getCount()}`);
         })
+        //todo extract Face3
         public computeNormal(vertices:dyCb.Collection<Vector3>) {
             var count = this.verticeIndices.getCount();
+            var self = this;
 
             var compute = (startIndex:number) => {
-                var p0 = vertices.getChild(this.verticeIndices.getChild(startIndex));
-                var p1 = vertices.getChild(this.verticeIndices.getChild(startIndex + 1));
-                var p2 = vertices.getChild(this.verticeIndices.getChild(startIndex + 2));
+                var p0 = vertices.getChild(self.verticeIndices.getChild(startIndex));
+                var p1 = vertices.getChild(self.verticeIndices.getChild(startIndex + 1));
+                var p2 = vertices.getChild(self.verticeIndices.getChild(startIndex + 2));
 
-                var v0 = Vector3.create().sub2(p0, p1),
-                    v1 = Vector3.create().sub2(p2, p1),
+                //var v0 = Vector3.create().sub2(p0, p1),
+                //    v1 = Vector3.create().sub2(p2, p1),
+                    var v0 = Vector3.create().sub2(p2, p1),
+                    v1 = Vector3.create().sub2(p0, p1),
                     result = null;
 
                 result = Vector3.create().cross(v0, v1).normalize();
 
-                if (result.isZero()) {
-                    if (count <= startIndex + 5) {
-                        return Vector3.create(0, 1, 0);
-                    }
-
-                    return compute(startIndex + 3);
-                }
+                //if (result.isZero()) {
+                //    //if (count <= startIndex + 5) {
+                //    //    return Vector3.create(0, 1, 0);
+                //    //}
+                //    //
+                //    //return compute(startIndex + 3);
+                //}
 
                 return result;
             };
 
-            this.normal = compute(0);
+            this.normal1 = compute(0);
+            if(count === 6){
+                this.normal2 = compute(3);
+            }
+            //this.normal = Vector3.create(-this.normal.x, -this.normal.y, -this.normal.z);
         }
     }
 }

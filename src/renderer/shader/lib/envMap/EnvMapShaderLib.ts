@@ -6,7 +6,7 @@ module dy{
                 program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
 
-            program.sendUniformData("u_normalMatrix", VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose());
+            program.sendUniformData("u_normalMatrix", VariableType.FLOAT_MAT3, quadCmd.mMatrix.copy().invertTo3x3().transpose());
             program.sendUniformData("u_cameraPos", VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
         }
 

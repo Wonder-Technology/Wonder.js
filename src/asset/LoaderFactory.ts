@@ -16,7 +16,7 @@ module dy{
                 case ".png":
                 case ".dds":
                 case ".gif":
-                //case ".bmp":
+                case ".bmp":
                     loader = TextureLoader.getInstance();
                     break;
                 case ".mp4":
