@@ -63,23 +63,29 @@
 
 
 
+            model.getChildren().filter(function(subModel, i){
+                return subModel.name.indexOf("wing") > -1;
+            })
+                    .forEach(function(wing){
+                        var wingMaterial = wing.getComponent(dy.Geometry).material;
+                        wingMaterial.cullMode = dy.CullMode.NONE;
+//                        wingMaterial.blendSrc = dy.BlendFunction.SRC_ALPHA;
+//                        wingMaterial.blendDst = dy.BlendFunction.ONE;
 
-            // configure the wings
-//            var wing1 = model.getChild(4);
-//            var wing2 = model.getChild(5);
-//
-//            wing1.getComponent(dy.Geometry).material.cullMode = dy.CullMode.NONE;
-//            wing2.getComponent(dy.Geometry).material.cullMode = dy.CullMode.NONE;
+                        wingMaterial.blendFuncSeparate = [dy.BlendFunction.SRC_ALPHA, dy.BlendFunction.ONE_MINUS_SRC_ALPHA, dy.BlendFunction.ONE, dy.BlendFunction.ONE_MINUS_SRC_ALPHA];
+                    });
 
-//            wing1.material.opacity = 0.6;
-//            wing1.material.transparent = true;
-//            wing1.material.depthTest = false;
-//            wing1.material.side = THREE.DoubleSide;
-//
-//            wing2.material.opacity = 0.6;
-//            wing2.material.depthTest = false;
-//            wing2.material.transparent = true;
-//            wing2.material.side = THREE.DoubleSide;
+
+
+            var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
+                model.transform.rotate(0, 1, 0);
+            }));
+
+
+            model.transform.rotate(0, 0, 0);
+
+            model.addComponent(action);
+
 
 
                     director.stage.addChild(model);
@@ -124,7 +130,7 @@
             directionLight.addComponent(directionLightComponent);
 
 
-            directionLight.transform.translate(30, 0, 0);
+            directionLight.transform.translate(30, -30, 0);
 
 
 

@@ -285,6 +285,25 @@ module dy {
             }
         }
 
+        public setBlendFunctionSeparate(blendFuncSeparate:Array<BlendFunction>) {
+            var gl = this.gl;
+
+            if (!this._blendFuncSeparate || this._blendFuncSeparate[0] !== blendFuncSeparate[0] || this._blendFuncSeparate[1] !== blendFuncSeparate[1]) {
+                this._blend && gl.blendFuncSeparate(gl[blendFuncSeparate[0]], gl[blendFuncSeparate[1]], gl[blendFuncSeparate[2]], gl[blendFuncSeparate[3]]);
+                this._blendFuncSeparate = blendFuncSeparate;
+            }
+        }
+
+        public setBlendEquationSeparate(blendEquationSeparate:Array<BlendEquation>) {
+            var gl = this.gl;
+
+            if (!this._blendEquationSeparate || this._blendEquationSeparate[0] !== blendEquationSeparate[0] || this._blendEquationSeparate[1] !== blendEquationSeparate[1]) {
+                this._blend && gl.blendEquationSeparate(gl[blendEquationSeparate[0]], gl[blendEquationSeparate[1]]);
+                this._blendEquationSeparate = blendEquationSeparate;
+            }
+        }
+
+
         /**
          * @function
          * @name pc.GraphicsDevice#setColorWrite
@@ -320,6 +339,8 @@ module dy {
         private _blendSrc:BlendFunction = null;
         private _blendDst:BlendFunction = null;
         private _blendEquation: BlendEquation = null;
+        private _blendFuncSeparate:Array<BlendFunction> = null;
+        private _blendEquationSeparate:Array<BlendEquation> = null;
 
         public clear(options:any) {
          //   /**

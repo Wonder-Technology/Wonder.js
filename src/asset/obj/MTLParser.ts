@@ -97,10 +97,10 @@ module dy {
 
                     this._currentMaterial.shininess = parseFloat(value);
                 } else if (key === "d") {
-                    //d is dissolve for current material. It mean alpha for BABYLON
-                    //material.alpha = value;
+                    //d is dissolve for current material. It mean opacity for BABYLON
+                    //material.opacity = value;
 
-                    this._currentMaterial.alpha = parseFloat(value);
+                    this._currentMaterial.opacity = parseFloat(value);
                     //Texture
                     //This part can be improved by adding the possible options of texture
                 }
@@ -200,7 +200,7 @@ module dy {
         public diffuseColor:Color = null;
         public specularColor:Color = null;
         //public ambientColor:Color = null;
-        public alpha:number = null;
+        public opacity:number = null;
         public shininess:number = null;
         public diffuseMapUrl:string = null;
         public diffuseMap:Texture = null;

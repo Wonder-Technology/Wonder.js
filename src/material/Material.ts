@@ -100,8 +100,7 @@ module dy {
 
         public shader:Shader = Shader.create();
         public color:Color = Color.create("0xffffff");
-        //todo make it run
-        public alpha:number = 1.0;
+
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;
         public redWrite:boolean = true;
@@ -114,7 +113,12 @@ module dy {
         public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
         public blendDst:BlendFunction = BlendFunction.DST_COLOR;
         public blendEquation:BlendEquation = BlendEquation.ADD;
-        public textureManager:TextureManager = TextureManager.create(this);
+        public blendFuncSeparate:Array<BlendFunction> = null;
+        public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
+
+
+
+            public textureManager:TextureManager = TextureManager.create(this);
         public geometry:Geometry = null;
 
 

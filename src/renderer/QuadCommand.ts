@@ -92,8 +92,14 @@ module dy {
             deviceManager.cullMode = this._getCullMode();
 
             deviceManager.blend = this.material.blend;
-            deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
-            deviceManager.setBlendEquation(this.material.blendEquation);
+            if(this.material.blendFuncSeparate && this.material.blendEquationSeparate){
+                deviceManager.setBlendFunctionSeparate(this.material.blendFuncSeparate);
+                deviceManager.setBlendEquationSeparate(this.material.blendEquationSeparate);
+            }
+            else{
+                deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
+                deviceManager.setBlendEquation(this.material.blendEquation);
+            }
         }
 
         private _getCullMode(){

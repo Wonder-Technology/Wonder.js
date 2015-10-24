@@ -150,8 +150,8 @@ module dy{
                     material.shininess = materialModel.shininess;
                 }
 
-                if(materialModel.alpha !== null){
-                    material.alpha = materialModel.alpha;
+                if(materialModel.opacity !== null){
+                    material.opacity = materialModel.opacity;
                 }
 
 

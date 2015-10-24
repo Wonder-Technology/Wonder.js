@@ -138,6 +138,16 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
+        public static u_isBothSide:ShaderVariable = {
+            type:VariableType.NUMBER_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_opacity:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_ambient:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE

@@ -187,9 +187,12 @@ module dy {
                     this._currentObject = ObjectModel.create();
                     this._currentObject.materialName = line.substring(7).trim();
 
-                    if(this._currentObjectName){
+                    if(this._currentObjectName !== null){
                         this._currentObject.name = this._currentObjectName;
                         this._currentObjectName = null;
+                    }
+                    else{
+                        this._currentObject.name = this._currentObject.materialName;
                     }
 
                     this.objects.addChild(this._currentObject);

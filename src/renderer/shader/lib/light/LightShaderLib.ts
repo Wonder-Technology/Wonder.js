@@ -23,7 +23,9 @@ module dy{
 
 
             this.sendUniformData(program, "u_shininess", material.shininess);
+            this.sendUniformData(program, "u_opacity", material.opacity);
 
+            this.sendUniformData(program, "u_isBothSide", material.cullMode === CullMode.NONE ? 1 : -1);
 
             this._sendLightVariables(program);
         }
@@ -33,7 +35,7 @@ module dy{
 
             this.addAttributeVariable(["a_normal"]);
 
-            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient"]);
+            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide"]);
 
             this._setLightDefinition();
         }
@@ -128,6 +130,8 @@ module dy{
                 name: "POINT_LIGHTS_COUNT",
                 value: point_lights_count
             }]);
+
+
         }
     }
 }

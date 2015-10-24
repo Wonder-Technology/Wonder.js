@@ -1,8 +1,7 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
     export abstract class ShaderLib{
-        //abstract attribute
-        public type:string = null;
+        public type:string = ABSTRACT_ATTRIBUTE;
 
         public attributes:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
         public uniforms:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();

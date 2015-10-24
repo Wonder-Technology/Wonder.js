@@ -86,14 +86,21 @@ void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
 
 
 @body
-    vec3 norm = normalize(getNormal());
+    vec3 normal = normalize(getNormal());
+
+	//#ifdef DOUBLE_SIDED
+	if(u_isBothSide > 0){
+		normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));
+		}
+	//#endif
+
     vec3 viewDir = normalize(getViewDir());
 
     vec3 totalLight = vec3(0, 0, 0);
 
-    calcTotalLight(totalLight, norm, viewDir);
+    calcTotalLight(totalLight, normal, viewDir);
 
     totalLight = getShadowVisibility() * totalLight;
 
-    gl_FragColor = vec4(totalLight, 1.0);
+    gl_FragColor = vec4(totalLight, u_opacity);
 @end
