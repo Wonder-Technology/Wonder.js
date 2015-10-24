@@ -25,6 +25,8 @@ module dy{
 
 
         public initWhenCreate(assets:Array<CubemapData>){
+            super.initWhenCreate();
+
             Log.error(assets.length !== 6, Log.info.FUNC_MUST("cubemap", "has 6 assets"));
             this._judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets);
 

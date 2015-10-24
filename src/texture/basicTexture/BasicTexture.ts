@@ -23,15 +23,16 @@ module dy{
         public anisotropy:number = null;
         public needUpdate:boolean = null;
 
-        public init(){
+        public initWhenCreate(...args){
             var gl = DeviceManager.getInstance().gl;
             //texture.addEventListener( "dispose", onTextureDispose );
 
             this.glTexture = gl.createTexture();
 
             //_this.info.memory.textures ++;
+        }
 
-            return this;
+        public init(){
         }
 
         public update(index:number){

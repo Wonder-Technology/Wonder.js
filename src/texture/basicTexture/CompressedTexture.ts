@@ -16,6 +16,8 @@ module dy{
         }
 
         public initWhenCreate(asset:CompressedTextureAsset){
+            super.initWhenCreate();
+
             asset.copyTo(this);
         }
 

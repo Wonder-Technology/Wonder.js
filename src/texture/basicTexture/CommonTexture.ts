@@ -2,6 +2,8 @@
 module dy{
     export abstract class CommonTexture extends BasicTexture{
         public initWhenCreate(asset:TwoDTextureAsset){
+            super.initWhenCreate();
+
             asset.copyTo(this);
         }
 
