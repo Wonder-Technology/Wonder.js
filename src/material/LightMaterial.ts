@@ -43,6 +43,17 @@ module dy{
             this._normalMap = normalMap;
         }
 
+        private _shininess:number = 32;
+        get shininess(){
+            if(Number(this._shininess) <= 0){
+                return 32;
+            }
+            return this._shininess;
+        }
+        set shininess(shininess:number){
+            this._shininess = shininess;
+        }
+
         public twoDShadowMapDatas:dyCb.Collection<TwoDShadowMapData> = dyCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:dyCb.Collection<CubemapShadowMapData> = dyCb.Collection.create<CubemapShadowMapData>();
 
@@ -51,7 +62,6 @@ module dy{
 
 
         public specular:Color = Color.create("0x111111");
-        public shininess:number = 32;
 
         private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;

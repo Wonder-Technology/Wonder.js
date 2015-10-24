@@ -1,4 +1,16 @@
 @funcDefine
+float getBlinnPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
+    vec3 halfAngle = normalize(lightDir + viewDir);
+
+    float blinnTerm = dot(normal, halfAngle);
+
+    blinnTerm = clamp(blinnTerm, 0.0, 1.0);
+    blinnTerm = dotResultBetweenNormAndLight < 0.0 ? 0.0 : blinnTerm;
+    blinnTerm = pow(blinnTerm, shininess);
+
+	return blinnTerm;
+}
+
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
     vec3 materialDiffuse = getMaterialDiffuse();
@@ -7,19 +19,13 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
     float dotResultBetweenNormAndLight = dot(normal, lightDir);
     float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-    float spec = 0.0;
-    //背面（指立方体中与当前面对应的背面，而不是当前面的反面）没有当前面反射光
-    if(dotResultBetweenNormAndLight < 0.0){
-        spec = 0.0;
-    }
-    else{
-        vec3 reflectDir = reflect(-lightDir, normal);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
-    }
 
     vec3 ambientColor = u_ambient * materialDiffuse;
 
     vec3 diffuseColor = diff * color * materialDiffuse * intensity;
+
+
+    float spec = getBlinnPhongShininess(u_shininess, normal, lightDir, viewDir, dotResultBetweenNormAndLight);
 
     vec3 specularColor = spec * materialSpecular * intensity;
 
