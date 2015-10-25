@@ -255,7 +255,7 @@ module dy {
          * @param {pc.BLENDMODE} blendSrc The source blend function.
          * @param {pc.BLENDMODE} blendDst The destination blend function.
          */
-        public setBlendFunction(blendSrc:BlendFunction, blendDst:BlendFunction) {
+        public setBlendFunc(blendSrc:BlendFunc, blendDst:BlendFunc) {
             if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
                 this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
                 this._blendSrc = blendSrc;
@@ -285,7 +285,7 @@ module dy {
             }
         }
 
-        public setBlendFunctionSeparate(blendFuncSeparate:Array<BlendFunction>) {
+        public setBlendFuncSeparate(blendFuncSeparate:Array<BlendFunc>) {
             var gl = this.gl;
 
             if (!this._blendFuncSeparate || this._blendFuncSeparate[0] !== blendFuncSeparate[0] || this._blendFuncSeparate[1] !== blendFuncSeparate[1]) {
@@ -336,10 +336,10 @@ module dy {
         private _writeGreen:boolean = null;
         private _writeBlue:boolean = null;
         private _writeAlpha:boolean = null;
-        private _blendSrc:BlendFunction = null;
-        private _blendDst:BlendFunction = null;
+        private _blendSrc:BlendFunc = null;
+        private _blendDst:BlendFunc = null;
         private _blendEquation: BlendEquation = null;
-        private _blendFuncSeparate:Array<BlendFunction> = null;
+        private _blendFuncSeparate:Array<BlendFunc> = null;
         private _blendEquationSeparate:Array<BlendEquation> = null;
 
         public clear(options:any) {
@@ -439,7 +439,7 @@ module dy {
         CUSTOM
     }
 
-    export enum BlendFunction{
+    export enum BlendFunc{
         ZERO = <any>"ZEOR",
         ONE = <any>"ONE",
         SRC_COLOR = <any>"SRC_COLOR",

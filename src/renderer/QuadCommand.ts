@@ -84,21 +84,24 @@ module dy {
         }
 
         private _setEffects(){
-            var deviceManager = DeviceManager.getInstance();
+            var deviceManager = DeviceManager.getInstance(),
+                material = this.material;
 
-            deviceManager.setColorWrite(this.material.redWrite, this.material.greenWrite, this.material.blueWrite, this.material.alphaWrite);
-            deviceManager.polygonOffsetMode = this.material.polygonOffsetMode;
+            deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
+            deviceManager.polygonOffsetMode = material.polygonOffsetMode;
 
             deviceManager.cullMode = this._getCullMode();
 
-            deviceManager.blend = this.material.blend;
-            if(this.material.blendFuncSeparate && this.material.blendEquationSeparate){
-                deviceManager.setBlendFunctionSeparate(this.material.blendFuncSeparate);
-                deviceManager.setBlendEquationSeparate(this.material.blendEquationSeparate);
+            deviceManager.blend = material.blend;
+            if(material.blendFuncSeparate && material.blendEquationSeparate){
+                deviceManager.setBlendFuncSeparate(material.blendFuncSeparate);
+                deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
             }
             else{
-                deviceManager.setBlendFunction(this.material.blendSrc, this.material.blendDst);
-                deviceManager.setBlendEquation(this.material.blendEquation);
+                dyCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, dyCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
+
+                deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
+                deviceManager.setBlendEquation(material.blendEquation);
             }
         }
 

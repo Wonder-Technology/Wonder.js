@@ -11,33 +11,33 @@ module dy {
                 return this._blendType;
             }
 
-            if ( (this.blendSrc === BlendFunction.ONE)
-                && (this.blendDst === BlendFunction.ZERO)
+            if ( (this.blendSrc === BlendFunc.ONE)
+                && (this.blendDst === BlendFunc.ZERO)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.NONE;
             }
-            else if ((this.blendSrc === BlendFunction.SRC_ALPHA)
-                && (this.blendDst === BlendFunction.ONE_MINUS_SRC_ALPHA)
+            else if ((this.blendSrc === BlendFunc.SRC_ALPHA)
+                && (this.blendDst === BlendFunc.ONE_MINUS_SRC_ALPHA)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.NORMAL;
             }
-            else if ((this.blendSrc === BlendFunction.ONE)
-                && (this.blendDst === BlendFunction.ONE)
+            else if ((this.blendSrc === BlendFunc.ONE)
+                && (this.blendDst === BlendFunc.ONE)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.ADDITIVE;
             }
-            else if ((this.blendSrc === BlendFunction.SRC_ALPHA)
-                && (this.blendDst === BlendFunction.ONE)
+            else if ((this.blendSrc === BlendFunc.SRC_ALPHA)
+                && (this.blendDst === BlendFunc.ONE)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.ADDITIVEALPHA;
             }
-            else if ((this.blendSrc === BlendFunction.DST_COLOR)
-                && (this.blendDst === BlendFunction.ZERO)
+            else if ((this.blendSrc === BlendFunc.DST_COLOR)
+                && (this.blendDst === BlendFunc.ZERO)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.MULTIPLICATIVE;
             }
-            else if ((this.blendSrc === BlendFunction.ONE)
-                && (this.blendDst === BlendFunction.ONE_MINUS_SRC_ALPHA)
+            else if ((this.blendSrc === BlendFunc.ONE)
+                && (this.blendDst === BlendFunc.ONE_MINUS_SRC_ALPHA)
                 && (this.blendEquation === BlendEquation.ADD)) {
                 return BlendType.PREMULTIPLIED;
             }
@@ -49,38 +49,38 @@ module dy {
             switch (blendType) {
                 case BlendType.NONE:
                     this.blend = false;
-                    this.blendSrc = BlendFunction.ONE;
-                    this.blendDst = BlendFunction.ZERO;
+                    this.blendSrc = BlendFunc.ONE;
+                    this.blendDst = BlendFunc.ZERO;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 case BlendType.NORMAL:
                     this.blend = true;
-                    this.blendSrc = BlendFunction.SRC_ALPHA;
-                    this.blendDst = BlendFunction.ONE_MINUS_SRC_ALPHA;
+                    this.blendSrc = BlendFunc.SRC_ALPHA;
+                    this.blendDst = BlendFunc.ONE_MINUS_SRC_ALPHA;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 case BlendType.PREMULTIPLIED:
                     this.blend = true;
-                    this.blendSrc = BlendFunction.ONE;
-                    this.blendDst = BlendFunction.ONE_MINUS_SRC_ALPHA;
+                    this.blendSrc = BlendFunc.ONE;
+                    this.blendDst = BlendFunc.ONE_MINUS_SRC_ALPHA;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 case BlendType.ADDITIVE:
                     this.blend = true;
-                    this.blendSrc = BlendFunction.ONE;
-                    this.blendDst = BlendFunction.ONE;
+                    this.blendSrc = BlendFunc.ONE;
+                    this.blendDst = BlendFunc.ONE;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 case BlendType.ADDITIVEALPHA:
                     this.blend = true;
-                    this.blendSrc = BlendFunction.SRC_ALPHA;
-                    this.blendDst = BlendFunction.ONE;
+                    this.blendSrc = BlendFunc.SRC_ALPHA;
+                    this.blendDst = BlendFunc.ONE;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 case BlendType.MULTIPLICATIVE:
                     this.blend = true;
-                    this.blendSrc = BlendFunction.DST_COLOR;
-                    this.blendDst = BlendFunction.ZERO;
+                    this.blendSrc = BlendFunc.DST_COLOR;
+                    this.blendDst = BlendFunc.ZERO;
                     this.blendEquation = BlendEquation.ADD;
                     break;
                 default:
@@ -98,6 +98,33 @@ module dy {
             this.textureManager.setEnvMap(envMap);
         }
 
+        private _blendSrc:BlendFunc= BlendFunc.ONE;
+        get blendSrc(){
+            return this._blendSrc;
+        }
+        set blendSrc(blendSrc:BlendFunc){
+            this._blendSrc = blendSrc;
+            this.blendFuncSeparate = null;
+        }
+
+        private _blendDst:BlendFunc= BlendFunc.ZERO;
+        get blendDst(){
+            return this._blendDst;
+        }
+        set blendDst(blendDst:BlendFunc){
+            this._blendDst = blendDst;
+            this.blendFuncSeparate = null;
+        }
+
+        private _blendEquation:BlendEquation = BlendEquation.ADD;
+        get blendEquation(){
+            return this._blendEquation;
+        }
+        set blendEquation(blendEquation:BlendEquation){
+            this._blendEquation = blendEquation;
+            this.blendEquationSeparate = null;
+        }
+
         public shader:Shader = Shader.create();
         public color:Color = Color.create("0xffffff");
 
@@ -110,10 +137,7 @@ module dy {
         public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
         public cullMode:CullMode = CullMode.BACK;
         public blend:boolean = false;
-        public blendSrc:BlendFunction = BlendFunction.SRC_COLOR;
-        public blendDst:BlendFunction = BlendFunction.DST_COLOR;
-        public blendEquation:BlendEquation = BlendEquation.ADD;
-        public blendFuncSeparate:Array<BlendFunction> = null;
+        public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
 
 

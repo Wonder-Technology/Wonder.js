@@ -22,7 +22,6 @@
 //            {url: "../../res/crate.gif", id:"ground"},
             {url: "../../res/model/butterfly.obj", id:"model"}
 //            {url: "../../res/model/dodge-viper-gts-obj/dodge-viper-gts.obj", id:"model"}
-//            {url: "../../res/model/vegetation-obj/vegetation.obj", id:"model"}
 //            {url: "../../res/model/cube.obj", id:"model"}
 
         ]).subscribe(null, function(e){
@@ -47,17 +46,6 @@
 
             var model = dy.OBJLoader.getInstance().get("model");
 
-//            model.getChildren().forEach(function(ob){
-//                director.stage.addChild(ob);
-//            })
-//
-//            var obj1 =model.getChild(0);
-//            var obj1 = model;
-
-
-
-            //todo
-//            model = model.getChild(0);
 
             model.transform.scale = dy.Vector3.create(140, 140, 140);
 
@@ -69,10 +57,10 @@
                     .forEach(function(wing){
                         var wingMaterial = wing.getComponent(dy.Geometry).material;
                         wingMaterial.cullMode = dy.CullMode.NONE;
-//                        wingMaterial.blendSrc = dy.BlendFunction.SRC_ALPHA;
-//                        wingMaterial.blendDst = dy.BlendFunction.ONE;
+//                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
+//                        wingMaterial.blendDst = dy.BlendFunc.ONE;
 
-                        wingMaterial.blendFuncSeparate = [dy.BlendFunction.SRC_ALPHA, dy.BlendFunction.ONE_MINUS_SRC_ALPHA, dy.BlendFunction.ONE, dy.BlendFunction.ONE_MINUS_SRC_ALPHA];
+                        wingMaterial.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
                     });
 
 
@@ -130,7 +118,7 @@
             directionLight.addComponent(directionLightComponent);
 
 
-            directionLight.transform.translate(30, -30, 0);
+            directionLight.transform.translate(30, 30, 0);
 
 
 
