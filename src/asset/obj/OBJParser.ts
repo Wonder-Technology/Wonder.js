@@ -1,5 +1,27 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
+    //todo handle x,y,z,w case?
+    const VERTEX_PATTERN = /v\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
+    // vn float float float
+        NORMAL_PATTERN = /vn\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
+    // vt float float
+        UV_PATTERN = /vt\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
+        FACE_PATTERN = /f\s(.+)/,
+    // f vertex vertex vertex ...
+        FACE_PATTERN1 = /f\s(([\d]{1,}[\s]+){2,}([\d]{1,}[\s]?))+/,
+    // f vertex/uv vertex/uv vertex/uv ...
+        FACE_PATTERN2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}[\s]?))+)/,
+    // f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
+        FACE_PATTERN3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?))+)/,
+    // f vertex//normal vertex//normal vertex//normal ...
+        FACE_PATTERN4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]+){2,}([\d]{1,}\/\/[\d]{1,}[\s]?))+)/,
+    //var comment_pattern = /# /;
+        OBJ_PATTERN = /^o /,
+        GROUP_PATTERN = /^g /,
+        USEMTL_PATTERN = /^usemtl /,
+        MTLLIB_PATTERN = /^mtllib /,
+        SMOOTH_PATTERN = /^s /;
+
     export class OBJParser {
         public static create() {
             var obj = new this();
@@ -15,70 +37,24 @@ module dy {
         private _texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
         private _currentObject:ObjectModel = null;
         private _currentObjectName:string = null;
-        private _isFirstMaterial:boolean = false;
 
 
         public parse(fileContent:string) {
-            var lines = fileContent.split('\n');  // Break up into lines and store them as array
+            var lines = fileContent.split('\n');
 
             this._parseFromObj(lines)._parseFromFaces();
-
         }
 
         private _parseFromObj(lines:Array<string>) {
-            // v float float float
+            lines.forEach((line:string, i:number) => {
+                var result = null;
 
-            //todo upper case
-            //todo handle x,y,z,w case?
-            var vertex_pattern = /v( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
-
-            // vn float float float
-
-            var normal_pattern = /vn( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
-
-            // vt float float
-
-            var uv_pattern = /vt( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
-
-            // f vertex vertex vertex ...
-
-            var face_pattern1 = /f\s(([\d]{1,}[\s]+){2,}([\d]{1,}[\s]?))+/;
-
-            // f vertex/uv vertex/uv vertex/uv ...
-
-            var face_pattern2 = /f\s((([\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}[\s]?))+)/;
-
-            // f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
-
-            var face_pattern3 = /f\s((([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]+){2,}([\d]{1,}\/[\d]{1,}\/[\d]{1,}[\s]?))+)/;
-
-            // f vertex//normal vertex//normal vertex//normal ...
-
-            var face_pattern4 = /f\s((([\d]{1,}\/\/[\d]{1,}[\s]+){2,}([\d]{1,}\/\/[\d]{1,}[\s]?))+)/;
-
-            //var comment_pattern = /# /;
-
-            var obj_pattern = /^o /;
-            var group_pattern = /^g /;
-
-            var usemtl_pattern = /^usemtl /;
-            var mtllib_pattern = /^mtllib /;
-            var smooth_pattern = /^s /;
-
-
-            var result = null;
-
-            //for (var [line, i] of lines) {
-                lines.forEach((line, i) => {
                 line = line.trim();
 
                 if (line.length === 0 || line.charAt(0) === '#') {
-
-                    //continue;
                     return;
-
-                } else if (( result = vertex_pattern.exec(line) ) !== null) {
-
+                }
+                else if (( result = VERTEX_PATTERN.exec(line) ) !== null) {
                     // ["v 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
 
                     this._vertices.addChild(
@@ -88,9 +64,8 @@ module dy {
                             parseFloat(result[3])
                         )
                     );
-
-                } else if (( result = normal_pattern.exec(line) ) !== null) {
-
+                }
+                else if (( result = NORMAL_PATTERN.exec(line) ) !== null) {
                     // ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
 
                     this._normals.addChild(
@@ -100,9 +75,8 @@ module dy {
                             parseFloat(result[3])
                         )
                     );
-
-                } else if (( result = uv_pattern.exec(line) ) !== null) {
-
+                }
+                else if (( result = UV_PATTERN.exec(line) ) !== null) {
                     // ["vt 0.1 0.2", "0.1", "0.2"]
 
                     this._texCoords.addChild(
@@ -111,99 +85,22 @@ module dy {
                             parseFloat(result[2])
                         )
                     );
-
-                } else if (( result = face_pattern1.exec(line) ) !== null) {
-
-                    // ["f 1 2 3", "1", "2", "3", undefined]
-
-                    result = result[1].trim();
-                    var face = result.split(" "); // ["1", "2", "3"]
-
-                    //Set the data for this face
-                    this._setDataForCurrentFaceWithPattern1(face, 1);
-
-                    //Define a mesh or an object
-                    //Each time this keyword is analysed, create a new Object with all data for creating a babylonMesh
-
-                } else if (( result = face_pattern2.exec(line) ) !== null) {
-
-                    // ["f 1/1 2/2 3/3", " 1/1", "1", "1", " 2/2", "2", "2", " 3/3", "3", "3", undefined, undefined, undefined]
-
-                    result = result[1].trim();
-                    var face = result.split(" "); // ["1", "2", "3"]
-
-                    //Set the data for this face
-                    this._setDataForCurrentFaceWithPattern2(face, 1);
-
-                } else if (( result = face_pattern3.exec(line) ) !== null) {
-
-                    // ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3", undefined, undefined, undefined, undefined]
-
-                    result = result[1].trim();
-                    var face = result.split(" "); // ["1", "2", "3"]
-
-                    //Set the data for this face
-                    this._setDataForCurrentFaceWithPattern3(face, 1);
-
-                } else if (( result = face_pattern4.exec(line) ) !== null) {
-
-                    // ["f 1//1 2//2 3//3", " 1//1", "1", "1", " 2//2", "2", "2", " 3//3", "3", "3", undefined, undefined, undefined]
-
-                    result = result[1].trim();
-                    var face = result.split(" "); // ["1", "2", "3"]
-
-                    //Set the data for this face
-                    this._setDataForCurrentFaceWithPattern4(face, 1);
-
-                } else if (group_pattern.test(line) || obj_pattern.test(line)) {
-                    //this._currentObject = ObjectModel.create();
-                    //this._currentObject.name = line.substring(2).trim();
+                }
+                else if ((result = FACE_PATTERN.exec(line)) !== null) {
+                    this._parseFace(result);
+                }
+                else if (GROUP_PATTERN.test(line) || OBJ_PATTERN.test(line)) {
                     this._currentObjectName = line.substring(2).trim();
-
-                    //this.objects.addChild(this._currentObject);
-
-                    //this._isFirstMaterial = true;
-
-
-                } else if (usemtl_pattern.test(line)) {
-                    //var materialName = line.substring(7).trim();
-                    //
-                    //
-                    //if(this._isFirstMaterial){
-                    //    this._currentObject.materialName = materialName;
-                    //
-                    //    this._isFirstMaterial = false;
-                    //}
-                    //else{
-                    //    this._currentObject = ObjectModel.create();
-                    //    this._currentObject.materialName = materialName;
-                    //    this.objects.addChild(this._currentObject);
-                    //}
-
-
-
-
-
-                    this._currentObject = ObjectModel.create();
-                    this._currentObject.materialName = line.substring(7).trim();
-
-                    if(this._currentObjectName !== null){
-                        this._currentObject.name = this._currentObjectName;
-                        this._currentObjectName = null;
-                    }
-                    else{
-                        this._currentObject.name = this._currentObject.materialName;
-                    }
-
-                    this.objects.addChild(this._currentObject);
-
-                } else if (mtllib_pattern.test(line)) {
+                }
+                else if (USEMTL_PATTERN.test(line)) {
+                    this._parseUsemtl(line);
+                }
+                else if (MTLLIB_PATTERN.test(line)) {
                     this.mtlFilePath = line.substring(7).trim();
-
-                } else if (smooth_pattern.test(line)) {
-                    //todo implement it
-
-                } else {
+                } else if (SMOOTH_PATTERN.test(line)) {
+                    //todo support
+                }
+                else {
                     Log.log(`Unhandled expression at line : ${i}\nvalue:${line}`);
                 }
             });
@@ -211,96 +108,73 @@ module dy {
             return this;
         }
 
-        private _parseFromFaces() {
-            //todo check repeat(refer to babylon.objFileLoader.ts->setData-> judge isInArray)?
+        private _parseUsemtl(line){
+            this._currentObject = ObjectModel.create();
+            this._currentObject.materialName = line.substring(7).trim();
 
-            var self = this;
+            if (this._currentObjectName !== null) {
+                this._currentObject.name = this._currentObjectName;
+                this._currentObjectName = null;
+            }
+            else {
+                this._currentObject.name = this._currentObject.materialName;
+            }
 
-            this.objects.forEach((object:ObjectModel) => {
-                var indices = object.indices,
-                    vertices = object.vertices,
-                    normals = object.normals,
-                    texCoords = object.texCoords;
-                var index_indices = 0;
+            this.objects.addChild(this._currentObject);
+        }
 
-                object.faces.forEach((face:FaceModel) => {
+        private _parseFace(lineResult:string) {
+            var face = lineResult[1].trim().split(" "),
+                line = lineResult[0],
+                triangles = [],
+                result = null,
+                k = null,
+                faceModel:FaceModel = FaceModel.create();
 
-                    face.computeNormal(self._vertices);
+            if (!this._currentObject || face.length < 3) {
+                return;
+            }
 
+            this._getTriangles(face, triangles);
 
-                    //todo add setting color?
-                    //var color = this.findColor(face.materialName);
+            if (( result = FACE_PATTERN1.exec(line) ) !== null) {
+                for (k of triangles) {
+                    faceModel.verticeIndices.addChild(parseInt(k) - 1);
+                }
+            }
+            else if (( result = FACE_PATTERN2.exec(line) ) !== null) {
+                for (k of triangles) {
+                    //triangle[k] = "1/1"
+                    let point = k.split("/"); // ["1", "1"]
 
-                    var faceNormals = face.normals;
-                    //var faceNormal2 = face.normal2;
+                    faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
+                    faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
+                }
+            }
+            else if (( result = FACE_PATTERN3.exec(line) ) !== null) {
+                for (k of triangles) {
+                    //triangle[k] = "1/1/1"
+                    let point = k.split("/"); // ["1", "1"]
 
-                    face.verticeIndices.forEach((vIdx:number, k:number) => {
-                            // Set index
-                            indices.addChild(index_indices);
-                            // Copy vertex
-                            var vertex = self._vertices.getChild(vIdx);
-                            //vertices[index_indices * 3 + 0] = vertex.x;
-                            //vertices[index_indices * 3 + 1] = vertex.y;
-                            //vertices[index_indices * 3 + 2] = vertex.z;
-                        vertices.addChild(vertex);
-                            //// Copy color
-                            //colors[index_indices * 4 + 0] = color.r;
-                            //colors[index_indices * 4 + 1] = color.g;
-                            //colors[index_indices * 4 + 2] = color.b;
-                            //colors[index_indices * 4 + 3] = color.a;
+                    faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
+                    faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
+                    faceModel.normalIndices.addChild(parseInt(point[2]) - 1);
+                }
+            }
+            else if (( result = FACE_PATTERN4.exec(line) ) !== null) {
+                for (k of triangles) {
+                    //triangle[k] = "1//1"
+                    let point = k.split("//"); // ["1", "1"]
 
-                        //copy texCoords
-                        if(face.texCoordIndices.getCount() > 0){
-                            var tIdx = face.texCoordIndices.getChild(k);
+                    faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
+                    faceModel.normalIndices.addChild(parseInt(point[1]) - 1);
+                }
+            }
+            else {
+                dyCb.Log.error(true, dyCb.Log.info.FUNC_UNKNOW(lineResult));
+            }
 
-                            texCoords.addChild(self._texCoords.getChild(tIdx));
-                        }
-
-                        // Copy normal
-                        //todo refactor
-
-                        //if(face.normalIndices.getCount() === 3 || face.normalIndices.getCount() === 6){
-                            var nIdx = face.normalIndices.getChild(k);
-                            if (nIdx >= 0) {
-                                var normal = self._normals.getChild(nIdx);
-                                //normals[index_indices * 3 + 0] = normal.x;
-                                //normals[index_indices * 3 + 1] = normal.y;
-                                //normals[index_indices * 3 + 2] = normal.z;
-                                normals.addChild(normal);
-                            }
-                        //}
-                        else{
-                                normals.addChild(faceNormals[Math.floor(k / 3)])
-                                //faceNormals[k / 3][k % 3]
-                            //if(k < 3){
-                            //    normals.addChild(faceNormal1);
-                            //}
-                            //else{
-                            //    normals.addChild(faceNormal2);
-                            //}
-                        }
-                            //
-                            //var nIdx = face.normalIndices.getChild(k);
-                            //if (nIdx >= 0) {
-                            //    var normal = self._normals.getChild(nIdx);
-                            //    //normals[index_indices * 3 + 0] = normal.x;
-                            //    //normals[index_indices * 3 + 1] = normal.y;
-                            //    //normals[index_indices * 3 + 2] = normal.z;
-                            //    normals.addChild(normal);
-                            //}
-                            //else {
-                            //    //normals[index_indices * 3 + 0] = faceNormal.x;
-                            //    //normals[index_indices * 3 + 1] = faceNormal.y;
-                            //    //normals[index_indices * 3 + 2] = faceNormal.z;
-                            //    normals.addChild(faceNormal);
-                            //}
-
-                            index_indices++;
-                        });
-                });
-            });
-
-            return this;
+            this._currentObject.addFace(faceModel);
         }
 
         /**
@@ -316,152 +190,93 @@ module dy {
          * @param face Array[String] The indices of elements
          * @param v Integer The variable to increment
          */
-        //todo restore?
-        private _getTriangles(face:Array<string>, v:number, triangles:Array<string>) {
-            //Work for each element of the array
-            if (v + 1 < face.length) {
-                //Add on the triangle variable the indexes to obtain triangles
-                triangles.push(face[0], face[v], face[v + 1]);
-                //Incrementation for recursion
-                v++;
-                //Recursion
-                this._getTriangles(face, v, triangles);
-            }
-            //if(face.length === 3){
-            //    triangles.push(face[0], face[1], face[2]);
-            //}
-            //else{
-            //    triangles.push(face[0], face[1], face[2], face[0], face[2], face[3]);
-            //}
+        private _getTriangles(face:Array<string>, triangles:Array<string>) {
+            var getTriangles = (v:number) => {
+                //Work for each element of the array
+                if (v + 1 < face.length) {
+                    //Add on the triangle variable the indexes to obtain triangles
+                    triangles.push(face[0], face[v], face[v + 1]);
+                    //Incrementation for recursion
+                    v++;
+                    //Recursion
+                    getTriangles(v);
+                }
+            };
 
-            //Result obtained after 2 iterations:
-            //Pattern1 => triangle = ["1","2","3","1","3","4"];
-            //Pattern2 => triangle = ["1/1","2/2","3/3","1/1","3/3","4/4"];
-            //Pattern3 => triangle = ["1/1/1","2/2/2","3/3/3","1/1/1","3/3/3","4/4/4"];
-            //Pattern4 => triangle = ["1//1","2//2","3//3","1//1","3//3","4//4"];
+            getTriangles(1);
         }
 
-        /**
-         * Create triangles and push the data for each polygon for the pattern 1
-         * In this pattern we get vertice positions
-         * @param face
-         * @param v
-         */
-        private _setDataForCurrentFaceWithPattern1(face:Array<string>, v:number) {
-            var triangles = [],
-                faceModel:FaceModel = FaceModel.create();
+        //todo check repeat(refer to babylon.objFileLoader.ts->setData-> judge isInArray)?
+        private _parseFromFaces() {
+            var self = this;
 
-            if(!this._currentObject || face.length < 3){
-                return;
-            }
+            this.objects.forEach((object:ObjectModel) => {
+                var indices = object.indices,
+                    vertices = object.vertices,
+                    normals = object.normals,
+                    texCoords = object.texCoords,
+                    index_indices = 0;
 
-            //Get the indices of triangles for each polygon
-            this._getTriangles(face, v, triangles);
-            //For each element in the triangles array.
-            //This var could contains 1 to an infinity of triangles
-            for (var k of triangles) {
-                faceModel.verticeIndices.addChild(parseInt(k) - 1);
+                object.faces.forEach((face:FaceModel) => {
 
-            }
+                    face.computeNormal(self._vertices);
 
-            //faceModel.computeNormal(self._vertices);
+                    //todo add setting color?
+                    //var color = this.findColor(face.materialName);
 
-            this._currentObject.addFace(faceModel);
-            //Reset variable for the next line
-            //triangles = [];
+                    face.verticeIndices.forEach((vIdx:number, k:number) => {
+                        self._setIndices(indices, index_indices);
+                        self._setVertices(vertices, vIdx);
+                        self._setTexCoords(texCoords, face, k);
+                        self._setNormals(normals, face, k);
+
+                        index_indices++;
+                    });
+                });
+            });
+
+            return this;
         }
 
-        /**
-         * Create triangles and push the data for each polygon for the pattern 1
-         * In this pattern we get vertice positions
-         * @param face
-         * @param v
-         */
-        private _setDataForCurrentFaceWithPattern2(face:Array<string>, v:number) {
-            var triangles = [],
-                faceModel:FaceModel = FaceModel.create();
-
-            if(!this._currentObject || face.length < 3){
-                return;
-            }
-
-            //Get the indices of triangles for each polygon
-            this._getTriangles(face, v, triangles);
-            //For each element in the triangles array.
-            //This var could contains 1 to an infinity of triangles
-            for (var k of triangles) {
-                //triangle[k] = "1/1"
-                //Split the data for getting position and uv
-                var point = k.split("/"); // ["1", "1"]
-
-
-                faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
-                faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
-
-            }
-            //faceModel.computeNormal(this._vertices);
-
-            this._currentObject.addFace(faceModel);
+        private _setIndices(indices, index_indices){
+            indices.addChild(index_indices);
         }
 
-        private _setDataForCurrentFaceWithPattern3(face:Array<string>, v:number) {
-            var triangles = [],
-                faceModel:FaceModel = FaceModel.create();
-
-            if(!this._currentObject || face.length < 3){
-                return;
-            }
-
-            //Get the indices of triangles for each polygon
-            this._getTriangles(face, v, triangles);
-            //For each element in the triangles array.
-            //This var could contains 1 to an infinity of triangles
-            for (var k of triangles) {
-                //triangle[k] = "1/1/1"
-                //Split the data for getting position and uv
-                var point = k.split("/"); // ["1", "1"]
-
-
-                faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
-                faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
-                faceModel.normalIndices.addChild(parseInt(point[2]) - 1);
-
-                //faceModel.computeNormal(this._vertices);
-            }
-
-            this._currentObject.addFace(faceModel);
+        private _setVertices(vertices, vIdx){
+            vertices.addChild(this._vertices.getChild(vIdx));
         }
 
+        private _setTexCoords(texCoords, face, k){
+            var tIdx = null;
 
-        //todo refactor other ones
-        @In(function () {
-            assert(this._currentObject, Log.info.FUNC_SHOULD("currentObject", "exist"));
-        })
-        private _setDataForCurrentFaceWithPattern4(face:Array<string>, v:number) {
-            var triangles = [],
-                faceModel:FaceModel = FaceModel.create();
+            if (face.texCoordIndices.getCount() > 0) {
+                tIdx = face.texCoordIndices.getChild(k);
 
-            if(!this._currentObject || face.length < 3){
-                return;
+                texCoords.addChild(this._texCoords.getChild(tIdx));
             }
+        }
 
-            //Get the indices of triangles for each polygon
-            this._getTriangles(face, v, triangles);
-            //For each element in the triangles array.
-            //This var could contains 1 to an infinity of triangles
-            for (var k of triangles) {
-                //triangle[k] = "1//1"
-                //Split the data for getting position and uv
-                var point = k.split("//"); // ["1", "1"]
+        private _setNormals(normals, face, k){
+            var nIdx = face.normalIndices.getChild(k);
 
-
-                faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
-                faceModel.normalIndices.addChild(parseInt(point[1]) - 1);
+            if (this._hasNormalDataFromFile(nIdx)){
+                this._setNormalsFromFileData(normals, nIdx);
             }
+            else {
+                this._setNormalsFromFaceNormal(normals, face, k);
+            }
+        }
 
-            //faceModel.computeNormal(this._vertices);
+        private _hasNormalDataFromFile(nIdx){
+            return nIdx >= 0;
+        }
 
-            this._currentObject.addFace(faceModel);
+        private _setNormalsFromFileData(normals, nIdx){
+            normals.addChild(this._normals.getChild(nIdx));
+        }
+
+        private _setNormalsFromFaceNormal(normals, face, k){
+            normals.addChild(face.normals[Math.floor(k / 3)]);
         }
     }
 
@@ -490,12 +305,6 @@ module dy {
         }
     }
 
-    //export type FaceModel = {
-    //    verticeIndices:dyCb.Collection<number>;
-    //    normalIndices:dyCb.Collection<number>;
-    //    texCoordIndices:dyCb.Collection<number>;
-    //}
-
     //todo use Array instead of Collection, to reduce memory size
     export class FaceModel {
         public static create() {
@@ -503,19 +312,6 @@ module dy {
 
             return obj;
         }
-
-
-        //private _normalIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
-        //get normalIndices(){
-        //    if(this._normalIndices.getCount() === 0){
-        //        return
-        //    }
-        //
-        //    return this._normalIndices;
-        //}
-        //set normalIndices(normalIndices:dyCb.Collection<number>){
-        //    this._normalIndices = normalIndices;
-        //}
 
         get indicesCount() {
             return this.verticeIndices.getCount();
@@ -539,21 +335,11 @@ module dy {
                 var p1 = vertices.getChild(self.verticeIndices.getChild(startIndex + 1));
                 var p2 = vertices.getChild(self.verticeIndices.getChild(startIndex + 2));
 
-                //var v0 = Vector3.create().sub2(p0, p1),
-                //    v1 = Vector3.create().sub2(p2, p1),
-                    var v0 = Vector3.create().sub2(p2, p1),
+                var v0 = Vector3.create().sub2(p2, p1),
                     v1 = Vector3.create().sub2(p0, p1),
                     result = null;
 
                 result = Vector3.create().cross(v0, v1).normalize();
-
-                //if (result.isZero()) {
-                //    //if (count <= startIndex + 5) {
-                //    //    return Vector3.create(0, 1, 0);
-                //    //}
-                //    //
-                //    //return compute(startIndex + 3);
-                //}
 
                 self.normals.push(result);
 
@@ -563,10 +349,6 @@ module dy {
             };
 
             compute(0);
-            //if(count === 6){
-            //    this.normal2 = compute(3);
-            //}
-            //this.normal = Vector3.create(-this.normal.x, -this.normal.y, -this.normal.z);
         }
     }
 }
