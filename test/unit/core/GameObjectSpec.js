@@ -38,6 +38,60 @@ describe("GameObject", function() {
         });
     });
 
+    describe("findChildByUid", function(){
+        it("match uid, return the first result. uid can be string/regex", function(){
+            var parent = GameObject.create();
+            var child1 = GameObject.create();
+            child1.uid = 1;
+            var child2 = GameObject.create();
+            child2.uid = 2;
+            var child3 = GameObject.create();
+            child3.uid = 3;
+            parent.addChild(child1);
+            parent.addChild(child2);
+            parent.addChild(child3);
+
+            expect(parent.findChildByUid(2)).toEqual(child2);
+            expect(parent.findChildByUid(3)).toEqual(child3);
+        });
+    });
+
+    describe("findChildByName", function(){
+        it("partial match name, return the first result. name can be string/regex", function(){
+            var parent = GameObject.create();
+            var child1 = GameObject.create();
+            child1.name = "gogogo";
+            var child2 = GameObject.create();
+            child2.name = "hello";
+            var child3 = GameObject.create();
+            child3.name = "hello world";
+            parent.addChild(child1);
+            parent.addChild(child2);
+            parent.addChild(child3);
+
+            expect(parent.findChildByName("hello")).toEqual(child2);
+            expect(parent.findChildByName(/go/)).toEqual(child1);
+        });
+    });
+
+    describe("findChildrenByName", function(){
+        it("partial match name, return the all matched results. name can be string/regex", function(){
+            var parent = GameObject.create();
+            var child1 = GameObject.create();
+            child1.name = "hello";
+            var child2 = GameObject.create();
+            child2.name = "hello world";
+            var child3 = GameObject.create();
+            child3.name = "gogogo";
+            parent.addChild(child1);
+            parent.addChild(child2);
+            parent.addChild(child3);
+
+            expect(parent.findChildrenByName("hello").getChildren()).toEqual([child1, child2]);
+            expect(parent.findChildrenByName(/go/).getChildren()).toEqual([child3]);
+        });
+    });
+
     describe("getTopUnderPoint", function(){
         //todo add Collider to test
     });

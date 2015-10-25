@@ -261,11 +261,11 @@ describe("Stage", function() {
                 expect(gameObject2.onExit).toCalledOnce();
             });
             it("remove target", function(){
-                expect(stage.getChildByUid(gameObject2.uid)).toEqual(gameObject2);
+                expect(stage.findChildByUid(gameObject2.uid)).toEqual(gameObject2);
 
                 stage.removeChild(gameObject2);
 
-                expect(stage.getChildByUid(gameObject2)).toBeNull();
+                expect(stage.findChildByUid(gameObject2)).toBeNull();
             });
             it("set target's parent to be null", function(){
                 stage.removeChild(gameObject2);
@@ -298,7 +298,7 @@ describe("Stage", function() {
 
             stage.addComponent(component);
 
-            expect(stage.getComponentByUid(component.uid)).toEqual(component);
+            expect(stage.findComponentByUid(component.uid)).toEqual(component);
         });
 
         describe("if component is Action", function(){
@@ -374,7 +374,7 @@ describe("Stage", function() {
 
             stage.removeComponent(component);
 
-            expect(stage.getComponentByUid(component.uid)).toBeNull();
+            expect(stage.findComponentByUid(component.uid)).toBeNull();
         });
         it("set component's gameObject to be null", function(){
             var component = new dy.Action();

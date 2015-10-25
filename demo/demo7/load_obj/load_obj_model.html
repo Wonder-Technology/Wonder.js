@@ -51,9 +51,7 @@
 
 
 
-            model.getChildren().filter(function(subModel, i){
-                return subModel.name.indexOf("wing") > -1;
-            })
+            model.findChildrenByName("wing")
                     .forEach(function(wing){
                         var wingMaterial = wing.getComponent(dy.Geometry).material;
                         wingMaterial.cullMode = dy.CullMode.NONE;

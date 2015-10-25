@@ -172,15 +172,21 @@ module dy {
             return this._children.getChild(index);
         }
 
-        public getChildByUid(uid:number){
+        public findChildByUid(uid:number){
             return this._children.findOne((child:GameObject) => {
                 return child.uid === uid;
             });
         }
 
-        public getChildByName(name:string){
+        public findChildByName(name:string){
             return this._children.findOne((child:GameObject) => {
-                return child.name === name;
+                return child.name.search(name) > -1;
+            });
+        }
+
+        public findChildrenByName(name:string):dyCb.Collection<GameObject>{
+            return this._children.filter((child:GameObject) => {
+                return child.name.search(name) > -1;
             });
         }
 
@@ -190,7 +196,7 @@ module dy {
             });
         }
 
-        public getComponentByUid(uid:number){
+        public findComponentByUid(uid:number){
             return this._components.findOne((component:Component) => {
                 return component.uid === uid;
             });
