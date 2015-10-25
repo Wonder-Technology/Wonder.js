@@ -128,37 +128,37 @@ module dy {
         }
 
 
-        private _cullMode:CullMode = null;
-        get cullMode() {
-            return this._cullMode;
+        private _side:Side = null;
+        get side() {
+            return this._side;
         }
 
-        set cullMode(cullMode:CullMode) {
+        set side(side:Side) {
             var gl = this.gl;
 
-            if (this._cullMode !== cullMode) {
-                switch (cullMode) {
-                    case CullMode.NONE:
-                        gl.disable(gl.CULL_FACE);
-                        break;
-                    case CullMode.FRONT:
-                        gl.enable(gl.CULL_FACE);
-                        gl.cullFace(gl.FRONT);
-                        break;
-                    case CullMode.BACK:
-                        gl.enable(gl.CULL_FACE);
-                        gl.cullFace(gl.BACK);
-                        break;
-                    case CullMode.FRONT_AND_BACK:
+            if (this._side !== side) {
+                switch (side) {
+                    case Side.NONE:
                         gl.enable(gl.CULL_FACE);
                         gl.cullFace(gl.FRONT_AND_BACK);
                         break;
+                    case Side.BOTH:
+                        gl.disable(gl.CULL_FACE);
+                        break;
+                    case Side.FRONT:
+                        gl.enable(gl.CULL_FACE);
+                        gl.cullFace(gl.BACK);
+                        break;
+                    case Side.BACK:
+                        gl.enable(gl.CULL_FACE);
+                        gl.cullFace(gl.FRONT);
+                        break;
                     default :
-                        Log.error(true, Log.info.FUNC_UNEXPECT("cullMode"));
+                        Log.error(true, Log.info.FUNC_UNEXPECT("side", side));
                         break;
                 }
 
-                this._cullMode = cullMode;
+                this._side = side;
             }
         }
 
@@ -423,13 +423,13 @@ module dy {
     }
 
     /*!default is BACK*/
-    export enum CullMode{
+    export enum Side{
         NONE,
+        BOTH,
         //CCW
-        FRONT,
-        //CW
         BACK,
-        FRONT_AND_BACK
+        //CW
+        FRONT
     }
 
     export enum PolygonOffsetMode{

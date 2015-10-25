@@ -19,7 +19,7 @@ module dy {
             return this._lightManager.pointLights;
         }
 
-        public cullMode:CullMode = null;
+        public side:Side = null;
         public shadowMap = {
             enable: true,
             softType: ShadowMapSoftType.NONE

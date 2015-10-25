@@ -10,7 +10,7 @@ module dy{
         }
 
         public initWhenCreate(){
-            this.cullMode = CullMode.FRONT;
+            this.side = Side.BACK;
         }
 
         public init(){

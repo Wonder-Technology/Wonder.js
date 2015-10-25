@@ -64,6 +64,8 @@
             var action1 = dy.RepeatForever.create(tween1);
 
 
+            directionLight.transform.translate(30, 0, 0);
+
 
             directionLight.addComponent(action1);
 
@@ -75,7 +77,7 @@
 
 
 
-            director.stage.addChild(ambientLight);
+//            director.stage.addChild(ambientLight);
             director.stage.addChild(directionLight);
 
 
@@ -126,13 +128,14 @@
 
 
 
-            director.stage.addChild(pointLight);
+//            director.stage.addChild(pointLight);
 
 
 
 
 
 
+            director.renderer.setClearColor(dy.Color.create("#aaaaff"));
 
 
 
@@ -140,9 +143,9 @@
             var material = dy.LightMaterial.create();
             material.color = dy.Color.create("rgb(100, 255, 100)");
             material.specular = dy.Color.create("rgb(0, 255, 0)");
-            material.shininess = 32;
+            material.shininess = 10;
 
-            material.diffuseMap = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("diffuseMap"));
+//            material.diffuseMap = dy.TextureLoader.getInstance().get("diffuseMap").toTexture();
 
 
 

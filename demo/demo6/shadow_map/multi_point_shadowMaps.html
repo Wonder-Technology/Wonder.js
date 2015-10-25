@@ -415,7 +415,7 @@
             material.specular = dy.Color.create("#ffdd99");
             material.shininess = 32;
 
-            material.cullMode = dy.CullMode.NONE;
+            material.side = dy.Side.BOTH;
 
             var map1 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("ground"));
             map1.wrapS = dy.TextureWrapMode.REPEAT;

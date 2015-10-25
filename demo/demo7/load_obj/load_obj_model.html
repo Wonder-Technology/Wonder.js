@@ -54,7 +54,7 @@
             model.findChildrenByName("wing")
                     .forEach(function(wing){
                         var wingMaterial = wing.getComponent(dy.Geometry).material;
-                        wingMaterial.cullMode = dy.CullMode.NONE;
+                        wingMaterial.side = dy.Side.BOTH;
 //                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
 //                        wingMaterial.blendDst = dy.BlendFunc.ONE;
 

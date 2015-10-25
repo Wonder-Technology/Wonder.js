@@ -135,7 +135,7 @@ module dy {
         public blueWrite:boolean = true;
         public alphaWrite:boolean = true;
         public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
-        public cullMode:CullMode = CullMode.BACK;
+        public side:Side = Side.FRONT;
         public blend:boolean = false;
         public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];

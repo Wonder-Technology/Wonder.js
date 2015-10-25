@@ -90,7 +90,7 @@ module dy {
             deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
             deviceManager.polygonOffsetMode = material.polygonOffsetMode;
 
-            deviceManager.cullMode = this._getCullMode();
+            deviceManager.side = this._getSide();
 
             deviceManager.blend = material.blend;
             if(material.blendFuncSeparate && material.blendEquationSeparate){
@@ -105,10 +105,10 @@ module dy {
             }
         }
 
-        private _getCullMode(){
+        private _getSide(){
             var stage:Stage = Director.getInstance().stage;
 
-            return stage.cullMode ? stage.cullMode : this.material.cullMode;
+            return stage.side ? stage.side : this.material.side;
         }
     }
 }

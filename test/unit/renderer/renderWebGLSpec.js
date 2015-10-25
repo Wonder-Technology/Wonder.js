@@ -26,7 +26,7 @@ describe("renderWebGL", function() {
                 dy.Color.create("#000000")
             );
         });
-        it("init depthTest, blend, colorWrite, cullMode, depthWrite, scissorTest", function(){
+        it("init depthTest, blend, colorWrite, side, depthWrite, scissorTest", function(){
             var gl = getGL();
 
             renderer.init();
@@ -36,7 +36,7 @@ describe("renderWebGL", function() {
             expect(gl.blendFunc).not.toCalled();
             expect(gl.blendEquation).not.toCalled();
             expect(gl.colorMask).toCalledOnce();
-            expect(deviceManager.cullMode).toEqual(dy.CullMode.BACK);
+            expect(deviceManager.side).toEqual(dy.Side.FRONT);
             expect(gl.cullFace).toCalledWith(gl.BACK);
             expect(deviceManager.depthWrite).toBeTruthy();
             expect(deviceManager.scissorTest).toBeFalsy();
@@ -274,19 +274,19 @@ describe("renderWebGL", function() {
                         expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
                         expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
                     });
-                    it("set cullMode:if set Stage->cullMode, use it", function(){
-                        dy.Director.getInstance().stage.cullMode = dy.CullMode.FRONT;
+                    it("set side:if set Stage->side, use it", function(){
+                        dy.Director.getInstance().stage.side = dy.Side.BACK;
 
                         renderer.render();
 
-                        expect(deviceManager.cullMode).toEqual(dy.CullMode.FRONT);
+                        expect(deviceManager.side).toEqual(dy.Side.BACK);
                     });
-                    it("else, use material->cullMode", function () {
-                        material.cullMode = dy.CullMode.FRONT_AND_BACK;
+                    it("else, use material->side", function () {
+                        material.side = dy.Side.BOTH;
 
                         renderer.render();
 
-                        expect(deviceManager.cullMode).toEqual(dy.CullMode.FRONT_AND_BACK);
+                        expect(deviceManager.side).toEqual(dy.Side.BOTH);
                     });
                     it("if set material->blendSrc/Dst,blendEquation, use it", function () {
                         material.blend = true;

@@ -52,7 +52,7 @@ module dy{
             deviceManager.depthTest = true;
             deviceManager.blend = false;
             deviceManager.setColorWrite(true, true, true, true);
-            deviceManager.cullMode = CullMode.BACK;
+            deviceManager.side = Side.FRONT;
             deviceManager.depthWrite = true;
             deviceManager.scissorTest = false;
         }

@@ -44,12 +44,12 @@
             var material = dy.Material.create();
             material.color= dy.Color.create("#FFCDff");
             material.shader = shader;
-            material.cullMode = dy.CullMode.NONE;
+            material.side = dy.Side.BOTH;
 
             var material2 = dy.Material.create();
             material2.color= dy.Color.create("#FFFFFF");
             material2.shader = shader;
-            material2.cullMode = dy.CullMode.BACK;
+            material2.side = dy.Side.FRONT;
 
 
             var geometry = dy.TriangleGeometry.create();

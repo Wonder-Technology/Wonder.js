@@ -10,10 +10,10 @@ describe("SkyboxMaterial", function() {
         sandbox.restore();
     });
 
-    it("set cullMode to be FRONT", function(){
+    it("set side to be BACK", function(){
         material = dy.SkyboxMaterial.create();
 
-        expect(material.cullMode).toEqual(dy.CullMode.FRONT);
+        expect(material.side).toEqual(dy.Side.BACK);
     });
 });
 

@@ -41,7 +41,7 @@
 
             material1.addMap(map1);
 
-            material1.cullMode = dy.CullMode.NONE;
+            material1.side = dy.Side.BOTH;
 
 
 
@@ -82,7 +82,7 @@
 
 
             material2.addMap(map2);
-            material2.cullMode = dy.CullMode.NONE;
+            material2.side = dy.Side.BOTH;
 
 
             /*!
@@ -125,7 +125,7 @@
 
 
             material3.addMap(map3);
-            material3.cullMode = dy.CullMode.NONE;
+            material3.side = dy.Side.BOTH;
 
 
             map3.sourceRegion = dy.RectRegion.create(0, 0, 256, 256);

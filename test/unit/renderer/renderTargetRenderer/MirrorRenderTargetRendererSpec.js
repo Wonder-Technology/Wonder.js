@@ -48,14 +48,14 @@ describe("MirrorRenderTargetRenderer", function () {
             before_render: null,
             invoke_renderer_render: [
                 {
-                    explain: "1.set Stage's cullMode to be FRONT, 2.invoke renderer's render method, 3.not use Stage's cullMode",
+                    explain: "1.set Stage's side to be FRONT, 2.invoke renderer's render method, 3.not use Stage's side",
                     body: function (renderer, camera, renderObj1, renderObj2) {
-                        self.sandbox.stub(self.renderTargetRenderer, "_setStageCullMode");
+                        self.sandbox.stub(self.renderTargetRenderer, "_setStageSide");
 
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(self.renderTargetRenderer._setStageCullMode.firstCall).toCalledWith(dy.CullMode.FRONT);
-                        expect(self.renderTargetRenderer._setStageCullMode.secondCall).toCalledWith(null);
+                        expect(self.renderTargetRenderer._setStageSide.firstCall).toCalledWith(dy.Side.BACK);
+                        expect(self.renderTargetRenderer._setStageSide.secondCall).toCalledWith(null);
                         expect(renderer.render).toCalledOnce();
                         expect(renderer.render).toCalledAfter(renderObj2.render);
                     }

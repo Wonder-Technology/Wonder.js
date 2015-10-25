@@ -25,7 +25,7 @@ module dy{
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
 
-            this.sendUniformData(program, "u_isBothSide", material.cullMode === CullMode.NONE ? 1 : -1);
+            this.sendUniformData(program, "u_isBothSide", material.side === Side.BOTH ? 1 : -1);
 
             this._sendLightVariables(program);
         }
