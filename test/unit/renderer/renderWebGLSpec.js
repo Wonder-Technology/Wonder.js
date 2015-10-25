@@ -69,9 +69,12 @@ describe("renderWebGL", function() {
 
 
             quadCmd.buffers = {
-                vertexBuffer: geometry.vertices,
-                indexBuffer: geometry.indices,
-                colorBuffer: geometry.colors
+                vertexBuffer: geometry.verticeBuffer,
+                texCoordBuffer: geometry.texCoordBuffer,
+                indexBuffer: geometry.indiceBuffer,
+                normalBuffer: geometry.normalBuffer,
+                tangentBuffer:geometry.tangentBuffer,
+                colorBuffer: geometry.colorBuffer
             };
 
             if(isNoIndexBuffer){
@@ -251,21 +254,75 @@ describe("renderWebGL", function() {
             });
 
             describe("draw", function(){
-                it("set effects", function(){
-                    sandbox.stub(deviceManager, "setColorWrite");
-                    sandbox.stub(deviceManager, "setBlendFunction");
-                    sandbox.stub(deviceManager, "setBlendEquation");
-                    var result = addCommand();
-                    var material = result.material;
+                describe("set effects", function(){
+                    var material,result;
 
-                    renderer.render();
+                    beforeEach(function(){
+                        sandbox.stub(deviceManager, "setColorWrite");
+                        sandbox.stub(deviceManager, "setBlendFunc");
+                        sandbox.stub(deviceManager, "setBlendEquation");
+                        sandbox.stub(deviceManager, "setBlendFuncSeparate");
+                        sandbox.stub(deviceManager, "setBlendEquationSeparate");
 
-                    expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
-                    expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
-                    expect(deviceManager.cullMode).toEqual(material.cullMode);
-                    expect(deviceManager.blend).toEqual(material.blend);
-                    expect(deviceManager.setBlendFunction).toCalledWith(material.blendSrc, material.blendDst);
-                    expect(deviceManager.setBlendEquation).toCalledWith(material.blendEquation);
+                        result = addCommand();
+                        material = result.material;
+                    });
+
+                    it("set colorWrite,polygonOffsetMode", function(){
+                        renderer.render();
+
+                        expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
+                        expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
+                    });
+                    it("set cullMode:if set Stage->cullMode, use it", function(){
+                        dy.Director.getInstance().stage.cullMode = dy.CullMode.FRONT;
+
+                        renderer.render();
+
+                        expect(deviceManager.cullMode).toEqual(dy.CullMode.FRONT);
+                    });
+                    it("else, use material->cullMode", function () {
+                        material.cullMode = dy.CullMode.FRONT_AND_BACK;
+
+                        renderer.render();
+
+                        expect(deviceManager.cullMode).toEqual(dy.CullMode.FRONT_AND_BACK);
+                    });
+                    it("if set material->blendSrc/Dst,blendEquation, use it", function () {
+                        material.blend = true;
+                        material.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [dy.BlendEquation.ADD, dy.BlendEquation.ADD];
+                        material.blendSrc = dy.BlendFunc.SRC_ALPHA;
+                        material.blendDst = dy.BlendFunc.ONE;
+
+                        renderer.render();
+
+                        expect(deviceManager.blend).toBeTruthy();
+                        expect(deviceManager.setBlendFunc).toCalledWith(material.blendSrc, material.blendDst);
+                        expect(deviceManager.setBlendEquation).toCalledWith(material.blendEquation);
+                        expect(deviceManager.setBlendFuncSeparate).not.toCalled();
+                    });
+                    it("if set material->blendFuncSeparate && blendEquationSeparate, use it", function(){
+                        material.blend = true;
+                        material.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [dy.BlendEquation.ADD, dy.BlendEquation.ADD];
+
+                        renderer.render();
+
+                        expect(deviceManager.blend).toBeTruthy();
+                        expect(deviceManager.setBlendFuncSeparate).toCalledWith(material.blendFuncSeparate);
+                        expect(deviceManager.setBlendEquationSeparate).toCalledWith(material.blendEquationSeparate);
+                    });
+                    it("else use material->default blendSrc/Dst,blendEquation", function(){
+                        material.blend = true;
+
+                        renderer.render();
+
+                        expect(deviceManager.blend).toBeTruthy();
+                        expect(deviceManager.setBlendFunc).toCalledWith(material.blendSrc, material.blendDst);
+                        expect(deviceManager.setBlendEquation).toCalledWith(material.blendEquation);
+                        expect(deviceManager.setBlendFuncSeparate).not.toCalled();
+                    });
                 });
                 it("if geometry has no index buffer, then drawArray", function(){
                     var result = addCommand(true);

@@ -58,7 +58,7 @@ describe("LightShaderLib", function () {
         it("send u_normalMatrix", function(){
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT4, mMatrix.copy().invert().transpose());
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
         });
 
         describe("send direction light's position", function(){

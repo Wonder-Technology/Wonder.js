@@ -5,8 +5,10 @@ describe("loader", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         manager = dy.LoaderManager.getInstance();
+        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
+        testTool.clearInstance();
         manager.dispose();
         sandbox.restore();
     });
@@ -146,7 +148,9 @@ describe("loader", function () {
         });
 
         describe("test load model", function () {
-            function assertFirstGeometryAndMaterial(model) {
+            function assertFirstModel(model) {
+                expect(model.getChild(0).name).toEqual("model1");
+
                 var geo1 = model.getChild(0).getComponent(dy.Geometry);
                 expect(geo1.vertices.getChildren()).toEqual(
                     [
@@ -155,7 +159,7 @@ describe("loader", function () {
                 );
                 expect(geo1.normals.getChildren()).toEqual(
                     [
-                        getV3(-1, 0, 0), getV3(-1, 0, 0), getV3(-1, 0, 0), getV3(-1, 0, 0), getV3(-1, 0, 0), getV3(-1, 0, 0), getV3(0, 1, 0), getV3(0, 1, 0), getV3(0, 1, 0), getV3(0, 1, 0), getV3(0, 1, 0), getV3(0, 1, 0)
+                        getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0)
                     ]
                 );
                 expect(geo1.texCoords.getChildren()).toEqual(
@@ -179,11 +183,13 @@ describe("loader", function () {
                 expect(mat1.specularMap).toBeNull();
                 expect(mat1.normalMap).toBeNull();
                 expect(mat1.shininess).toEqual(96.078431);
-                expect(mat1.alpha).toEqual(0.1);
+                expect(mat1.opacity).toEqual(0.1);
 
             }
 
-            function assertSecondGeometryAndMaterial(model) {
+            function assertSecondModel(model) {
+                expect(model.getChild(1).name).toEqual("model2");
+
                 var geo2 = model.getChild(1).getComponent(dy.Geometry);
                 expect(geo2.vertices.getChildren()).toEqual(
                     [
@@ -216,7 +222,7 @@ describe("loader", function () {
                 expect(mat2.specularMap).toBeInstanceOf(dy.TwoDTexture);
                 expect(mat2.normalMap).toBeNull();
                 expect(mat2.shininess).toEqual(80.078431);
-                expect(mat2.alpha).toEqual(0.5);
+                expect(mat2.opacity).toEqual(0.5);
             }
 
             it("load one obj file", function (done) {
@@ -230,16 +236,17 @@ describe("loader", function () {
                     var model = dy.OBJLoader.getInstance().get("model");
 
                     expect(model).toBeInstanceOf(dy.GameObject);
+                    expect(model.name).toEqual("model");
                     expect(model.getChildren().getCount()).toEqual(2);
-                    assertFirstGeometryAndMaterial(model);
-                    assertSecondGeometryAndMaterial(model);
+                    assertFirstModel(model);
+                    assertSecondModel(model);
 
                     done();
                 });
             });
             it("when load multi obj files, each one should be independent", function (done) {
                 dy.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/obj/test2.obj", id: "model1"},
+                    {url: testTool.resPath + "test/res/obj/test.obj", id: "model1"},
                     {url: testTool.resPath + "test/res/obj/test.obj", id: "model2"}
                 ]).subscribe(function (data) {
                 }, function (err) {
@@ -250,17 +257,21 @@ describe("loader", function () {
 
                     expect(model1).toBeInstanceOf(dy.GameObject);
                     expect(model1.getChildren().getCount()).toEqual(2);
+                    expect(model1.name).toEqual("model1");
+                    expect(model1.getChildren().getCount()).toEqual(2);
 
-                    assertFirstGeometryAndMaterial(model1);
-                    assertSecondGeometryAndMaterial(model1);
+                    assertFirstModel(model1);
+                    assertSecondModel(model1);
 
 
                     var model2 = dy.OBJLoader.getInstance().get("model2");
 
                     expect(model2).toBeInstanceOf(dy.GameObject);
                     expect(model2.getChildren().getCount()).toEqual(2);
-                    assertFirstGeometryAndMaterial(model2);
-                    assertSecondGeometryAndMaterial(model2);
+                    expect(model2.name).toEqual("model2");
+                    expect(model2.getChildren().getCount()).toEqual(2);
+                    assertFirstModel(model2);
+                    assertSecondModel(model2);
 
                     done();
                 });

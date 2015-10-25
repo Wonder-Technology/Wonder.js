@@ -231,8 +231,8 @@ module dy {
                     //todo add setting color?
                     //var color = this.findColor(face.materialName);
 
-                    var faceNormal1 = face.normal1;
-                    var faceNormal2 = face.normal2;
+                    var faceNormals = face.normals;
+                    //var faceNormal2 = face.normal2;
 
                     face.verticeIndices.forEach((vIdx:number, k:number) => {
                             // Set index
@@ -259,23 +259,25 @@ module dy {
                         // Copy normal
                         //todo refactor
 
-                        if(face.normalIndices.getCount() === 3 || face.normalIndices.getCount() === 6){
+                        //if(face.normalIndices.getCount() === 3 || face.normalIndices.getCount() === 6){
                             var nIdx = face.normalIndices.getChild(k);
-                            //if (nIdx >= 0) {
+                            if (nIdx >= 0) {
                                 var normal = self._normals.getChild(nIdx);
                                 //normals[index_indices * 3 + 0] = normal.x;
                                 //normals[index_indices * 3 + 1] = normal.y;
                                 //normals[index_indices * 3 + 2] = normal.z;
                                 normals.addChild(normal);
-                            //}
-                        }
+                            }
+                        //}
                         else{
-                            if(k < 3){
-                                normals.addChild(faceNormal1);
-                            }
-                            else{
-                                normals.addChild(faceNormal2);
-                            }
+                                normals.addChild(faceNormals[Math.floor(k / 3)])
+                                //faceNormals[k / 3][k % 3]
+                            //if(k < 3){
+                            //    normals.addChild(faceNormal1);
+                            //}
+                            //else{
+                            //    normals.addChild(faceNormal2);
+                            //}
                         }
                             //
                             //var nIdx = face.normalIndices.getChild(k);
@@ -317,20 +319,20 @@ module dy {
         //todo restore?
         private _getTriangles(face:Array<string>, v:number, triangles:Array<string>) {
             //Work for each element of the array
-            //if (v + 1 < face.length) {
-            //    //Add on the triangle variable the indexes to obtain triangles
-            //    triangles.push(face[0], face[v], face[v + 1]);
-            //    //Incrementation for recursion
-            //    v++;
-            //    //Recursion
-            //    this._getTriangles(face, v, triangles);
+            if (v + 1 < face.length) {
+                //Add on the triangle variable the indexes to obtain triangles
+                triangles.push(face[0], face[v], face[v + 1]);
+                //Incrementation for recursion
+                v++;
+                //Recursion
+                this._getTriangles(face, v, triangles);
+            }
+            //if(face.length === 3){
+            //    triangles.push(face[0], face[1], face[2]);
             //}
-            if(face.length === 3){
-                triangles.push(face[0], face[1], face[2]);
-            }
-            else{
-                triangles.push(face[0], face[1], face[3], face[1], face[2], face[3]);
-            }
+            //else{
+            //    triangles.push(face[0], face[1], face[2], face[0], face[2], face[3]);
+            //}
 
             //Result obtained after 2 iterations:
             //Pattern1 => triangle = ["1","2","3","1","3","4"];
@@ -522,8 +524,7 @@ module dy {
         public verticeIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
         public normalIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
         public texCoordIndices:dyCb.Collection<number> = dyCb.Collection.create<number>();
-        public normal1:Vector3 = null;
-        public normal2:Vector3 = null;
+        public normals:Array<Vector3> = [];
 
         @In(function () {
             assert(this.verticeIndices.getCount() >= 3, `verticesIndices.getCount() should >= 3, but actual is ${this.verticeIndices.getCount()}`);
@@ -554,13 +555,17 @@ module dy {
                 //    //return compute(startIndex + 3);
                 //}
 
-                return result;
+                self.normals.push(result);
+
+                if (count > startIndex + 3) {
+                    compute(startIndex + 3);
+                }
             };
 
-            this.normal1 = compute(0);
-            if(count === 6){
-                this.normal2 = compute(3);
-            }
+            compute(0);
+            //if(count === 6){
+            //    this.normal2 = compute(3);
+            //}
             //this.normal = Vector3.create(-this.normal.x, -this.normal.y, -this.normal.z);
         }
     }

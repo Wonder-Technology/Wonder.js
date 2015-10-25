@@ -38,13 +38,13 @@ describe("OBJParser", function () {
 
             v = "v 1.0 2.0 3.0\n" +
                 "v 2.0 3.0 4.0\n" +
-                "v 3.0 4.0 5.0\n" +
+                "v 3.0 4.0 -5.0\n" +
                 "v 6.0 8.0 10.0\n" +
                 "v 5.0 6.0 7.0\n";
 
             v1 = getV3(1, 2, 3);
             v2 = getV3(2, 3, 4);
-            v3 = getV3(3, 4, 5);
+            v3 = getV3(3, 4, -5);
             v4 = getV3(6, 8, 10);
             v5 = getV3(5, 6, 7);
 
@@ -143,6 +143,25 @@ describe("OBJParser", function () {
                 //"f 2//5 3//4 4//3 5//2\n";
             });
 
+            it("if f->data's count < 3, skip", function(){
+                var f = o1 +
+                    v + vn + vt +
+                    usemtl1 +
+                    "f 1 2\n";
+
+                parser.parse(f);
+
+                expect(parser.objects.getChild(0).faces.getCount()).toEqual(0);
+            });
+            it("if not meet usemtl before, skip", function(){
+                var f = o1 +
+                    v + vn + vt +
+                    "f 1/1 2/2 3/3\n";
+
+                parser.parse(f);
+
+                expect(parser.objects.getCount()).toEqual(0);
+            });
             it("parse 'f x x x x'", function(){
                 parser.parse(f1);
 
@@ -156,10 +175,15 @@ describe("OBJParser", function () {
                 );
 
                 var normals = obj.normals.getChildren();
-                expect(normals.length).toEqual(6)
-                expect(normals[0]).toEqual(
-                    getV3(-0.40824830532073975,0.8164966106414795,-0.40824830532073975)
-                );
+                var normal1 = getV3(-0.7071067690849304,0.7071067690849304,0);
+                var normal2 = getV3(0.7538585662841797,-0.6565865278244019,0.024318018928170204);
+                expect(normals.length).toEqual(6);
+                for(var i = 0; i <= 2; i++){
+                    expect(normals[i]).toEqual( normal1 );
+                }
+                for(var i = 3; i <= 5; i++){
+                    expect(normals[i]).toEqual( normal2 );
+                }
 
                 expect(obj.texCoords.getCount()).toEqual(0);
 
@@ -183,9 +207,15 @@ describe("OBJParser", function () {
 
                 var normals = obj.normals.getChildren();
                 expect(normals.length).toEqual(6)
-                expect(normals[0]).toEqual(
-                    getV3(-0.40824830532073975,0.8164966106414795,-0.40824830532073975)
-                );
+                var normal1 = getV3(-0.7071067690849304,0.7071067690849304,0);
+                var normal2 = getV3(0.7538585662841797,-0.6565865278244019,0.024318018928170204);
+                expect(normals.length).toEqual(6);
+                for(var i = 0; i <= 2; i++){
+                    expect(normals[i]).toEqual( normal1 );
+                }
+                for(var i = 3; i <= 5; i++){
+                    expect(normals[i]).toEqual( normal2 );
+                }
 
                 expect(obj.texCoords.getChildren()).toEqual(
                     [
@@ -254,6 +284,163 @@ describe("OBJParser", function () {
                         0, 1, 2, 3, 4, 5
                     ]
                 );
+            });
+
+            describe("bug test", function(){
+                it("test when face's indiceIndex >= 100", function(){
+                    var vStr = "";
+                    var vnStr = "";
+                    for (var i = 0; i < 5 * 21; i++ ){
+                        vStr += v;
+                        vnStr += vn;
+                    }
+                    var f = o1 +
+                        vStr + vnStr +
+                        usemtl1 +
+                        "f 102//1 103//101 104//102 105//103\n";
+
+                    parser.parse(f);
+
+                    expect(parser.objects.getCount()).toEqual(1);
+
+                    var obj = parser.objects.getChild(0);
+                    expect(obj.vertices.getChildren()).toEqual(
+                        [
+                            v2, v3, v4, v2, v4, v5
+                        ]
+                    );
+
+                    expect(obj.normals.getChildren()).toEqual(
+                        [
+                            vn1, vn1, vn2, vn1, vn2, vn3
+                        ]
+                    );
+
+                    expect(obj.texCoords.getCount()).toEqual(0);
+
+                    expect(obj.indices.getChildren()).toEqual(
+                        [
+                            0, 1, 2, 3, 4, 5
+                        ]
+                    );
+                });
+
+                describe("test handle three component", function(){
+                    it("test handle f x x x", function(){
+                        var f = o1 +
+                            v +
+                            usemtl1 +
+                            "f 1 2 3";
+
+                            parser.parse(f);
+
+                            expect(parser.objects.getCount()).toEqual(1);
+
+                            var obj = parser.objects.getChild(0);
+                            expect(obj.vertices.getChildren()).toEqual(
+                                [
+                                    v1, v2, v3
+                            ]
+                            );
+
+                        var normals = obj.normals.getChildren();
+                        var normal = getV3(-0.7071067690849304,0.7071067690849304,0);
+                        expect(normals.length).toEqual(3);
+                        expect(normals[0]).toEqual( normal );
+                        expect(normals[1]).toEqual( normal );
+                        expect(normals[2]).toEqual( normal );
+
+                        expect(obj.texCoords.getCount()).toEqual(0);
+
+                        expect(obj.indices.getChildren()).toEqual(
+                            [
+                                0, 1, 2
+                            ]
+                        );
+                    });
+                    it("test handle f x/x x/x x/x", function(){
+                        var f = o1 +
+                            v + vt +
+                            usemtl1 +
+                            "f 1/2 2/3 3/4";
+
+                        parser.parse(f);
+
+                        expect(parser.objects.getCount()).toEqual(1);
+
+                        var obj = parser.objects.getChild(0);
+                        expect(obj.vertices.getChildren()).toEqual(
+                            [
+                                v1, v2, v3
+                            ]
+                        );
+
+                        var normals = obj.normals.getChildren();
+                        var normal = getV3(-0.7071067690849304,0.7071067690849304,0);
+                        expect(normals.length).toEqual(3);
+                        expect(normals[0]).toEqual( normal );
+                        expect(normals[1]).toEqual( normal );
+                        expect(normals[2]).toEqual( normal );
+                            expect(obj.texCoords.getChildren()).toEqual(
+                                [
+                                    vt2, vt3, vt4
+                                ]
+                            );
+
+                        expect(obj.indices.getChildren()).toEqual(
+                            [
+                                0, 1, 2
+                            ]
+                        );
+                    });
+                });
+
+                describe("test handle five component", function(){
+                    it("test handle f x/x x/x x/x x/x x/x", function(){
+                        var f = o1 +
+                            v + vt +
+                            usemtl1 +
+                            "f 1/2 2/3 3/4 4/5 5/1";
+
+                        parser.parse(f);
+
+                        expect(parser.objects.getCount()).toEqual(1);
+                        var obj = parser.objects.getChild(0);
+
+                        expect(obj.vertices.getChildren()).toEqual(
+                            [
+                                v1, v2, v3, v1, v3, v4, v1, v4, v5
+                            ]
+                        );
+
+                        expect(obj.texCoords.getChildren()).toEqual(
+                            [
+                                vt2, vt3, vt4, vt2, vt4, vt5, vt2, vt5, vt1
+                            ]
+                        );
+
+                        expect(obj.indices.getChildren()).toEqual(
+                            [
+                                0, 1, 2, 3, 4, 5, 6, 7, 8
+                            ]
+                        );
+
+                        var normals = obj.normals.getChildren();
+                        var normal1 = getV3(-0.7071067690849304,0.7071067690849304,0);
+                        var normal2 = getV3(0.7538585662841797,-0.6565865278244019,0.024318018928170204);
+                        var normal3 = getV3(-0.40824830532073975,0.8164966106414795,-0.40824830532073975);
+                        expect(normals.length).toEqual(9);
+                        for(var i = 0; i <= 2; i++){
+                            expect(normals[i]).toEqual( normal1 );
+                        }
+                        for(var i = 3; i <= 5; i++){
+                            expect(normals[i]).toEqual( normal2 );
+                        }
+                        for(var i = 6; i <= 8; i++){
+                            expect(normals[i]).toEqual( normal3 );
+                        }
+                    });
+                });
             });
         });
 
@@ -348,7 +535,7 @@ describe("OBJParser", function () {
                     expect(parser.objects.getCount()).toEqual(2);
 
                     var obj1 = parser.objects.getChild(0);
-                    expect(obj1.name).toBeNull();
+                    expect(obj1.name).toEqual(obj1.materialName);
                     expect(obj1.materialName).toEqual("material1");
                     var obj2 = parser.objects.getChild(1);
                     expect(obj2.name).toEqual("group1");

@@ -86,7 +86,7 @@ describe("MTLParser", function () {
                     getColor("0.0", "0.1", "0.2")
                 );
 
-                expect(mtl.alpha).toEqual(1);
+                expect(mtl.opacity).toEqual(1);
                 expect(mtl.shininess).toEqual(154.901961);
                 expect(mtl.diffuseMapUrl).toEqual("1.JPG");
                 expect(mtl.specularMapUrl).toBeNull();
@@ -120,7 +120,7 @@ describe("MTLParser", function () {
                     getColor("0.0", "0.1", "0.2")
                 );
 
-                expect(mtl1.alpha).toEqual(1);
+                expect(mtl1.opacity).toEqual(1);
                 expect(mtl1.shininess).toEqual(154.901961);
                 expect(mtl1.diffuseMapUrl).toEqual("1.JPG");
                 expect(mtl1.specularMapUrl).toBeNull();
@@ -136,7 +136,7 @@ describe("MTLParser", function () {
                     getColor("0.8", "0.0", "0.3")
                 );
 
-                expect(mtl2.alpha).toEqual(0.7);
+                expect(mtl2.opacity).toEqual(0.7);
                 expect(mtl2.shininess).toEqual(90.901961);
                 expect(mtl2.diffuseMapUrl).toEqual("2.JPG");
                 expect(mtl2.specularMapUrl).toEqual("2.JPG");

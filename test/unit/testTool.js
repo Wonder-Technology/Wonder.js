@@ -33,6 +33,8 @@ var testTool = (function(){
                 cullFace:sandbox.stub(),
                 blendFunc:sandbox.stub(),
                 blendEquation:sandbox.stub(),
+                blendFuncSeparate:sandbox.stub(),
+                blendEquationSeparate:sandbox.stub(),
                 createProgram:sandbox.stub(),
                 clearColor:sandbox.stub(),
                 clear:sandbox.stub()
@@ -80,7 +82,9 @@ var testTool = (function(){
         clearInstance: function(){
             for(var i in dy){
                 if(dy.hasOwnProperty(i)){
-                    dy[i]._instance = null;
+                    if(dy[i]){
+                      dy[i]._instance = null;
+                    }
                 }
             }
         },
