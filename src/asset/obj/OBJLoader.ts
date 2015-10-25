@@ -25,7 +25,7 @@ module dy {
 
         //todo all Loader use the contract
         @In(function (...args) {
-            assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("js's url", "string"));
+            assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
         protected loadAsset(...args):dyRt.Stream {
             var url = args[0];

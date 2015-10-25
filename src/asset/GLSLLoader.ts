@@ -13,10 +13,11 @@ module dy{
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
 
+        @In(function (...args) {
+            assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
+        })
         protected loadAsset(arg):dyRt.Stream {
             var url = arguments[0];
-
-            Log.error(JudgeUtils.isArray(url), Log.info.FUNC_MUST_BE("glsl's url", "string"));
 
             return AjaxLoader.load(url, "text");
         }

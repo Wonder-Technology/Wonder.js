@@ -13,12 +13,13 @@ module dy{
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
 
+        @In(function (...args) {
+            assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
+        })
         protected loadAsset(arg):dyRt.Stream {
             var extname = null,
                 stream = null,
                 url = arguments[0];
-
-            Log.error(JudgeUtils.isArray(url), Log.info.FUNC_MUST_BE("texture's url", "string"));
 
             extname = dyCb.PathUtils.extname(url).toLowerCase();
 
