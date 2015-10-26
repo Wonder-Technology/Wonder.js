@@ -17,12 +17,12 @@ describe("shaderLibSpec", function () {
         });
 
         describe("use shadowMap->pcf as example", function () {
-            var stage;
+            var scene;
             var quadCmd, program, material;
             var shader;
 
             beforeEach(function () {
-                stage = dy.Director.getInstance().stage;
+                scene = dy.Director.getInstance().scene;
 
                 material = new dy.LightMaterial();
 
@@ -40,7 +40,7 @@ describe("shaderLibSpec", function () {
 
 
 
-                stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+                scene.shadowMap.softType = dy.ShadowMapSoftType.PCF;
                 shader = new dy.Shader();
                 shader.program = program;
                 Lib = dy.TwoDShadowMapShaderLib;
@@ -49,7 +49,7 @@ describe("shaderLibSpec", function () {
                 shader.init();
             });
 
-            it("if Stage.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
+            it("if Scene.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
                 shader.update(quadCmd, material);
 
                 expect(shader.fsSource).toContain("define SHADOWMAP_TYPE_PCF");
@@ -57,7 +57,7 @@ describe("shaderLibSpec", function () {
             it("pcf can be opened or closed in runtime", function () {
                 shader.update(quadCmd, material);
 
-                stage.shadowMap.softType = dy.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = dy.ShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 
@@ -68,7 +68,7 @@ describe("shaderLibSpec", function () {
 
                 shader.update(quadCmd, material);
 
-                stage.shadowMap.softType = dy.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = dy.ShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 

@@ -13,15 +13,15 @@ describe("Material", function() {
     });
 
     //describe("useProgram", function(){
-    //    var stage;
+    //    var scene;
     //
     //    beforeEach(function(){
-    //        stage = dy.Director.getInstance().stage;
+    //        scene = dy.Director.getInstance().scene;
     //        sandbox.stub(material.shader.program, "use");
     //    });
     //
-    //    it("if Stage use program, return", function(){
-    //        stage.useProgram(dy.Shader.create());
+    //    it("if Scene use program, return", function(){
+    //        scene.useProgram(dy.Shader.create());
     //
     //        material.useProgram();
     //
@@ -36,21 +36,21 @@ describe("Material", function() {
     //});
 
     describe("updateShader", function(){
-        var stage;
+        var scene;
 
         beforeEach(function(){
-            stage = dy.Director.getInstance().stage;
+            scene = dy.Director.getInstance().scene;
             sandbox.stub(material.shader, "update");
         });
 
-        it("if Stage use program, update Stage's shader", function(){
-            stage.useProgram(dy.Shader.create());
-            sandbox.stub(stage.shader, "update");
+        it("if Scene use program, update Scene's shader", function(){
+            scene.useProgram(dy.Shader.create());
+            sandbox.stub(scene.shader, "update");
             var quadCmd = {};
 
             material.updateShader(quadCmd);
 
-            expect(stage.shader.update).toCalledWith(quadCmd, material);
+            expect(scene.shader.update).toCalledWith(quadCmd, material);
         });
         it("else, update material's shader", function () {
             var quadCmd = {};

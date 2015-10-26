@@ -12,14 +12,14 @@ describe("LightMaterial", function() {
 
     describe("init", function(){
         var map,
-            stage;
+            scene;
 
         beforeEach(function(){
             sandbox.stub(material.textureManager, "init");
             sandbox.stub(material.shader, "init");
             map = dy.TwoDTexture.create();
 
-            stage = dy.Director.getInstance().stage;
+            scene = dy.Director.getInstance().scene;
         });
 
         it("add LightCommonShaderLib", function(){
@@ -65,9 +65,9 @@ describe("LightMaterial", function() {
             expect(material.shader.getLib(dy.NoNormalMapShaderLib)).toBeTruthy();
         });
 
-        describe("if Stage enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
-            it("if Stage not enable shadowMap, add NoShadowMapShaderLib", function () {
-                sandbox.stub(stage.shadowMap, "enable", false);
+        describe("if Scene enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
+            it("if Scene not enable shadowMap, add NoShadowMapShaderLib", function () {
+                sandbox.stub(scene.shadowMap, "enable", false);
 
                 material.init();
 
@@ -76,7 +76,7 @@ describe("LightMaterial", function() {
 
             describe("else", function(){
                 beforeEach(function(){
-                    sandbox.stub(stage.shadowMap, "enable", true);
+                    sandbox.stub(scene.shadowMap, "enable", true);
                 });
 
                 it("else, if not has twoD shadowMap && not has cubemap shadowMap, add NoShadowMapShaderLib", function () {

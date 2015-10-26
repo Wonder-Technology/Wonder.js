@@ -1,7 +1,7 @@
-describe("Stage", function() {
+describe("Scene", function() {
     var sandbox = null;
-    var stage = null;
-    var Stage = null;
+    var scene = null;
+    var Scene = null;
     var gameObject1,
         gameObject2,
         gameObject3;
@@ -22,8 +22,8 @@ describe("Stage", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        Stage = dy.Stage;
-        stage = Stage.create();
+        Scene = dy.Scene;
+        scene = Scene.create();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -38,15 +38,15 @@ describe("Stage", function() {
 
             gameObject2.addChild(gameObject1);
 
-            stage.addChild(gameObject2);
-            stage.addChild(gameObject3);
+            scene.addChild(gameObject2);
+            scene.addChild(gameObject3);
 
             script1 = buildScript();
             script2 = buildScript();
             script3 = buildScript();
             script4 = buildScript();
 
-            stage._script.addChild("customScript1", script1);
+            scene._script.addChild("customScript1", script1);
             gameObject1._script.addChild("customScript2", script2);
             gameObject2._script.addChild("customScript3", script3);
             gameObject3._script.addChild("customScript4", script4);
@@ -64,7 +64,7 @@ describe("Stage", function() {
 
         describe("init", function(){
             it("bind global hook", function(){
-                stage.init();
+                scene.init();
 
                 dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
                 dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
@@ -85,17 +85,17 @@ describe("Stage", function() {
                 sandbox.spy(material, "init");
                 sandbox.spy(material.textureManager, "init");
                 sandbox.stub(material.shader, "init");
-                stage.addComponent(geometry);
+                scene.addComponent(geometry);
 
-                stage.init();
+                scene.init();
 
                 expect(geometry.init).toCalledOnce();
                 expect(material.init).toCalledOnce();
                 expect(material.textureManager.init).toCalledOnce();
                 expect(material.shader.init).toCalledOnce();
             });
-            it("invoke stage and it's children's script->init", function(){
-                stage.init();
+            it("invoke scene and it's children's script->init", function(){
+                scene.init();
 
                 expect(script1.init).toCalledOnce();
                 expect(script2.init).toCalledOnce();
@@ -108,8 +108,8 @@ describe("Stage", function() {
         });
 
         describe("onEnter", function(){
-            it("invoke stage's script->onEnter", function(){
-                stage.onEnter();
+            it("invoke scene's script->onEnter", function(){
+                scene.onEnter();
 
                 expect(script1.onEnter).toCalledOnce();
                 expect(script2.onEnter).not.toCalled();
@@ -119,8 +119,8 @@ describe("Stage", function() {
         });
 
         describe("onExit", function(){
-            it("invoke stage's script->onExit", function(){
-                stage.onExit();
+            it("invoke scene's script->onExit", function(){
+                scene.onExit();
 
                 expect(script1.onExit).toCalledOnce();
                 expect(script2.onExit).not.toCalled();
@@ -153,21 +153,21 @@ describe("Stage", function() {
                 behavior4 = buildBehavior();
                 behavior5 = buildBehavior();
 
-                sandbox.stub(stage.actionManager, "update");
+                sandbox.stub(scene.actionManager, "update");
             });
 
-            it("invoke stage and it's children's all behavior->update and all action->update", function(){
-                stage.addComponent(behavior1);
+            it("invoke scene and it's children's all behavior->update and all action->update", function(){
+                scene.addComponent(behavior1);
                 gameObject1.addComponent(behavior2);
                 gameObject2.addComponent(behavior3);
                 gameObject3.addComponent(behavior4);
                 gameObject3.addComponent(behavior5);
 
-                stage.update(time);
+                scene.update(time);
 
                 expect(behavior1.update).toCalledWith(time);
                 expect(behavior1.update).toCalledOnce();
-                expect(behavior1.update).toCalledBefore(stage.actionManager.update);
+                expect(behavior1.update).toCalledBefore(scene.actionManager.update);
                 expect(behavior1.update).toCalledBefore(behavior3.update);
                 expect(behavior3.update).toCalledWith(time);
                 expect(behavior3.update).toCalledOnce();
@@ -181,8 +181,8 @@ describe("Stage", function() {
                 expect(behavior5.update).toCalledWith(time);
                 expect(behavior5.update).toCalledOnce();
             });
-            it("invoke stage and it's children's script->update", function(){
-                stage.update(time);
+            it("invoke scene and it's children's script->update", function(){
+                scene.update(time);
 
                 expect(script1.update).toCalledOnce();
                 expect(script1.update).toCalledWith(time);
@@ -228,27 +228,27 @@ describe("Stage", function() {
             it("if target's parent exist, remove target from it's parent", function(){
                 child.parent = oldParent;
 
-                stage.addChild(child);
+                scene.addChild(child);
 
                 expect(oldParent.removeChild).toCalledWith(child);
             });
-            it("set target's parent to be stage", function(){
-                stage.addChild(child);
+            it("set target's parent to be scene", function(){
+                scene.addChild(child);
 
-                expect(child.parent).toEqual(stage);
+                expect(child.parent).toEqual(scene);
             });
-            it("set target's transform's parent to be stage's transform", function(){
-                stage.addChild(child);
+            it("set target's transform's parent to be scene's transform", function(){
+                scene.addChild(child);
 
-                expect(child.transform.parent).toEqual(stage.transform);
+                expect(child.transform.parent).toEqual(scene.transform);
             });
-            it("add target into stage", function(){
-                stage.addChild(child);
+            it("add target into scene", function(){
+                scene.addChild(child);
 
-                expect(stage.getChild(2)).toEqual(child);
+                expect(scene.getChild(2)).toEqual(child);
             });
             it("invoke child's onEnter", function(){
-                stage.addChild(child);
+                scene.addChild(child);
 
                 expect(child.onEnter).toCalledOnce();
             });
@@ -256,19 +256,19 @@ describe("Stage", function() {
 
         describe("removeChild", function(){
             it("invoke target's onExit", function(){
-                stage.removeChild(gameObject2);
+                scene.removeChild(gameObject2);
 
                 expect(gameObject2.onExit).toCalledOnce();
             });
             it("remove target", function(){
-                expect(stage.findChildByUid(gameObject2.uid)).toEqual(gameObject2);
+                expect(scene.findChildByUid(gameObject2.uid)).toEqual(gameObject2);
 
-                stage.removeChild(gameObject2);
+                scene.removeChild(gameObject2);
 
-                expect(stage.findChildByUid(gameObject2)).toBeNull();
+                expect(scene.findChildByUid(gameObject2)).toBeNull();
             });
             it("set target's parent to be null", function(){
-                stage.removeChild(gameObject2);
+                scene.removeChild(gameObject2);
 
                 expect(gameObject2.parent).toBeNull();
             });
@@ -280,35 +280,35 @@ describe("Stage", function() {
             var component = new dy.Action();
             sandbox.stub(dy.Log, "assert");
 
-            stage.addComponent(component);
-            var result = stage.addComponent(component);
+            scene.addComponent(component);
+            var result = scene.addComponent(component);
 
             expect(dy.Log.assert).toCalledOnce();
-            expect(result).toEqual(stage);
+            expect(result).toEqual(scene);
         });
         it("set component's gameObject", function(){
             var component = new dy.Action();
 
-            stage.addComponent(component);
+            scene.addComponent(component);
 
-            expect(component.gameObject).toEqual(stage);
+            expect(component.gameObject).toEqual(scene);
         });
         it("add component to container", function(){
             var component = new dy.Action();
 
-            stage.addComponent(component);
+            scene.addComponent(component);
 
-            expect(stage.findComponentByUid(component.uid)).toEqual(component);
+            expect(scene.findComponentByUid(component.uid)).toEqual(component);
         });
 
         describe("if component is Action", function(){
             it("set action's target and add it to actionManager", function(){
                 var component = new dy.Action();
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                expect(component.target).toEqual(stage);
-                expect(stage.actionManager.hasChild(component)).toBeTruthy();
+                expect(component.target).toEqual(scene);
+                expect(scene.actionManager.hasChild(component)).toBeTruthy();
             });
         });
 
@@ -316,9 +316,9 @@ describe("Stage", function() {
             it("add it to behaviors", function(){
                 var component = new dy.Behavior();
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                expect(stage.behaviors.hasChild(component)).toBeTruthy();
+                expect(scene.behaviors.hasChild(component)).toBeTruthy();
             });
         });
 
@@ -326,9 +326,9 @@ describe("Stage", function() {
             it("set geometry to be it", function(){
                 var component = new dy.Geometry();
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                expect(stage.geometry).toEqual(component);
+                expect(scene.geometry).toEqual(component);
             });
         });
 
@@ -336,9 +336,9 @@ describe("Stage", function() {
             it("set rendererComponent to be it", function(){
                 var component = new dy.RendererComponent();
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                expect(stage.rendererComponent).toEqual(component);
+                expect(scene.rendererComponent).toEqual(component);
             });
         });
 
@@ -346,9 +346,9 @@ describe("Stage", function() {
             it("set collider to be it", function(){
                 var component = new dy.Collider();
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                expect(stage.collider).toEqual(component);
+                expect(scene.collider).toEqual(component);
             });
         });
 
@@ -360,7 +360,7 @@ describe("Stage", function() {
                     do:sandbox.stub().returns(stream)
                 });
 
-                stage.addComponent(component);
+                scene.addComponent(component);
 
                 expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeTruthy();
             });
@@ -370,17 +370,17 @@ describe("Stage", function() {
     describe("removeComponent", function(){
         it("remove component from container", function(){
             var component = new dy.Action();
-            stage.addComponent(component);
+            scene.addComponent(component);
 
-            stage.removeComponent(component);
+            scene.removeComponent(component);
 
-            expect(stage.findComponentByUid(component.uid)).toBeNull();
+            expect(scene.findComponentByUid(component.uid)).toBeNull();
         });
         it("set component's gameObject to be null", function(){
             var component = new dy.Action();
-            stage.addComponent(component);
+            scene.addComponent(component);
 
-            stage.removeComponent(component);
+            scene.removeComponent(component);
 
             expect(component.gameObject).toBeNull();
         });
@@ -388,55 +388,55 @@ describe("Stage", function() {
         describe("if component is Action", function(){
             it("remove it from actionManager", function(){
                 var component = new dy.Action();
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
-                expect(stage.actionManager.hasChild(component)).toBeFalsy();
+                expect(scene.actionManager.hasChild(component)).toBeFalsy();
             });
         });
 
         describe("if component is other Behavior", function(){
             it("remove it from behaviors", function(){
                 var component = new dy.Behavior();
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
-                expect(stage.behaviors.hasChild(component)).toBeFalsy();
+                expect(scene.behaviors.hasChild(component)).toBeFalsy();
             });
         });
 
         describe("if component is Geometry", function(){
             it("set geometry to be null", function(){
                 var component = new dy.Geometry();
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
-                expect(stage.geometry).toBeNull();
+                expect(scene.geometry).toBeNull();
             });
         });
 
         describe("if component is RendererComponent", function(){
             it("set rendererComponent to be null", function(){
                 var component = new dy.RendererComponent();
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
-                expect(stage.rendererComponent).toBeNull();
+                expect(scene.rendererComponent).toBeNull();
             });
         });
 
         describe("if component is Collider", function(){
             it("set collider to be null", function(){
                 var component = new dy.Collider();
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
-                expect(stage.collider).toBeNull();
+                expect(scene.collider).toBeNull();
             });
         });
 
@@ -447,9 +447,9 @@ describe("Stage", function() {
                 sandbox.stub(component, "createLoadJsStream").returns({
                     do:sandbox.stub().returns(stream)
                 });
-                stage.addComponent(component);
+                scene.addComponent(component);
 
-                stage.removeComponent(component);
+                scene.removeComponent(component);
 
                 expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeFalsy();
             });
@@ -461,9 +461,9 @@ describe("Stage", function() {
             var renderer = {
             };
 
-            stage.addRenderTargetRenderer(renderer);
+            scene.addRenderTargetRenderer(renderer);
 
-            expect(stage._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
+            expect(scene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
         });
     });
 
@@ -473,7 +473,7 @@ describe("Stage", function() {
         beforeEach(function(){
             renderer = {};
             camera = {};
-            stage.camera = camera;
+            scene.camera = camera;
         });
 
         it("render renderTargetRenderers", function(){
@@ -481,9 +481,9 @@ describe("Stage", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-            stage.addRenderTargetRenderer(renderTargetRenderer);
+            scene.addRenderTargetRenderer(renderTargetRenderer);
 
-            stage.render(renderer);
+            scene.render(renderer);
 
             expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
         });
@@ -494,10 +494,10 @@ describe("Stage", function() {
                 geometry = {
                 };
 
-            stage.rendererComponent = rendererComponent;
-            stage.geometry = geometry;
+            scene.rendererComponent = rendererComponent;
+            scene.geometry = geometry;
 
-            stage.render(renderer);
+            scene.render(renderer);
 
             expect(rendererComponent.render).toCalledWith(renderer, geometry, camera);
         });
@@ -506,14 +506,14 @@ describe("Stage", function() {
                 init: sandbox.stub(),
                 render: sandbox.stub()
             };
-            stage.addRenderTargetRenderer(renderTargetRenderer);
+            scene.addRenderTargetRenderer(renderTargetRenderer);
 
             var gameObject1 = dy.GameObject.create();
             sandbox.stub(gameObject1, "render");
-            stage.addChild(gameObject1);
+            scene.addChild(gameObject1);
 
 
-            stage.render(renderer);
+            scene.render(renderer);
 
             expect(gameObject1.render).toCalledWith(renderer, camera);
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);

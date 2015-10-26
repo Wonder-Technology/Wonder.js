@@ -127,9 +127,9 @@
 //
 //
 //
-//                director.stage.addChild(ambientLight);
-//                director.stage.addChild(directionLight);
-//                director.stage.addChild(directionLight2);
+//                director.scene.addChild(ambientLight);
+//                director.scene.addChild(directionLight);
+//                director.scene.addChild(directionLight2);
 //
 //
 //
@@ -162,8 +162,8 @@
 //
 //
 //
-//                director.stage.addChild(pointLight);
-//                director.stage.addChild(pointLight2);
+//                director.scene.addChild(pointLight);
+//                director.scene.addChild(pointLight2);
 //
 //
 //

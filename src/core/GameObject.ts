@@ -361,9 +361,9 @@ module dy {
             //}
             //if(transformDirty) {
             //    if(this.transform instanceof RectTransform) {
-            //        this.transform.transform(this._stage.viewRectTransform, parentTransform);
+            //        this.transform.transform(this._scene.viewRectTransform, parentTransform);
             //    } else {
-            //        this.transform.transform(this._stage.rootTransform, parentTransform);
+            //        this.transform.transform(this._scene.rootTransform, parentTransform);
             //    }
             //}
             //

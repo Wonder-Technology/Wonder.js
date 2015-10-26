@@ -7,7 +7,7 @@ module dy{
             }
 
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
-            this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
+            this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.camera.transform.position);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

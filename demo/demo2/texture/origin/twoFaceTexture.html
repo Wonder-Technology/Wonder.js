@@ -92,14 +92,14 @@
 
             var director = dy.Director.getInstance();
 
-            director.stage.addChild(mesh);
+            director.scene.addChild(mesh);
 
-            director.stage.addChild(_createCamera());
-
-
+            director.scene.addChild(_createCamera());
 
 
-            director.stage.addComponent(dy.Script.create("./stage.js"));
+
+
+            director.scene.addComponent(dy.Script.create("./scene.js"));
 
 
 

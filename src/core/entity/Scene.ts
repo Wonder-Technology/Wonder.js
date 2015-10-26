@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class Stage extends GameObject{
+    export class Scene extends GameObject{
         public static create() {
             var obj = new this();
 
@@ -74,7 +74,7 @@ module dy {
         public render(renderer:Renderer) {
             var self = this;
 
-            Log.error(!this.camera, "stage must add camera");
+            Log.error(!this.camera, "scene must add camera");
 
             this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.camera);

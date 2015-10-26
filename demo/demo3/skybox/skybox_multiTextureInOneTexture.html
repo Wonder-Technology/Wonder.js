@@ -97,14 +97,14 @@
             var director = dy.Director.getInstance();
 
 
-            director.stage.addChild(skybox);
+            director.scene.addChild(skybox);
 
-            director.stage.addChild(_createCamera());
-
-
+            director.scene.addChild(_createCamera());
 
 
-            director.stage.addComponent(dy.Script.create("./stage.js"));
+
+
+            director.scene.addComponent(dy.Script.create("./scene.js"));
 
 
 

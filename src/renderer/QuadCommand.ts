@@ -106,9 +106,9 @@ module dy {
         }
 
         private _getSide(){
-            var stage:Stage = Director.getInstance().stage;
+            var scene:Scene = Director.getInstance().scene;
 
-            return stage.side ? stage.side : this.material.side;
+            return scene.side ? scene.side : this.material.side;
         }
     }
 }

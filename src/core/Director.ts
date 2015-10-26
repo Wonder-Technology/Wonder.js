@@ -6,7 +6,7 @@ module dy{
         PAUSE
     }
 
-    //todo invoke stage.onExit
+    //todo invoke scene.onExit
 
     export class Director{
         private static _instance = null;
@@ -19,7 +19,7 @@ module dy{
             return this._instance;
         }
 
-        public stage:Stage = Stage.create();
+        public scene:Scene = Scene.create();
         public scheduler:Scheduler = Scheduler.create();
         public renderer:Renderer= null;
 
@@ -104,7 +104,7 @@ module dy{
             //}
 
             //return this.scene.getTopUnderPoint(point);
-            return this.stage.getTopUnderPoint(point);
+            return this.scene.getTopUnderPoint(point);
         }
 
         public createGL(canvasId:string){
@@ -149,8 +149,8 @@ module dy{
             return dyRt.callFunc(() => {
                 this._isFirstStart = false;
 
-                this.stage.onEnter();
-                this.stage.init();
+                this.scene.onEnter();
+                this.scene.init();
 
                 //todo not put here?
                 this.renderer.init();
@@ -175,7 +175,7 @@ module dy{
 
             this._timeController.tick(elapseTime);
 
-            //todo invoke stage->syncHierarchy()
+            //todo invoke scene->syncHierarchy()
 
             EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
 
@@ -197,11 +197,11 @@ module dy{
         private _run(time:number) {
             //Time.update(timeScale);
             //update children's behaviour
-            this.stage.update(time);
+            this.scene.update(time);
             //invoke children's tranform(update modelMatrix, rotate,translate,scale)
             // and render(send vertice and indice datas to this.render, do other render work)
-            //this.stage.visitStage(this.renderer);
-            this.stage.render(this.renderer);
+            //this.scene.visitScene(this.renderer);
+            this.scene.render(this.renderer);
             //operate vertice and indice data, draw them(drawArray or drawElement)
             this.renderer.render();
             //do task?

@@ -16,7 +16,7 @@ module dy{
             }
 
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
-            this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
+            this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.camera.transform.position);
 
 
             this.sendUniformData(program, "u_shininess", material.shininess);
@@ -36,10 +36,10 @@ module dy{
         }
 
         private _sendLightVariables(program:Program){
-            var stage:Stage = dy.Director.getInstance().stage,
-                directionLights:dyCb.Collection<GameObject> = stage.directionLights,
-                ambientLight:GameObject =stage.ambientLight,
-                pointLights:dyCb.Collection<GameObject> = stage.pointLights;
+            var scene:Scene = dy.Director.getInstance().scene,
+                directionLights:dyCb.Collection<GameObject> = scene.directionLights,
+                ambientLight:GameObject =scene.ambientLight,
+                pointLights:dyCb.Collection<GameObject> = scene.pointLights;
 
             if(ambientLight){
                 this.sendUniformData(program, "u_ambient", ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
@@ -95,9 +95,9 @@ module dy{
         }
 
         private _setLightDefinition(material:Material){
-            var stage:Stage = dy.Director.getInstance().stage,
-                directionLights:dyCb.Collection<GameObject> = stage.directionLights,
-                pointLights:dyCb.Collection<GameObject> = stage.pointLights,
+            var scene:Scene = dy.Director.getInstance().scene,
+                directionLights:dyCb.Collection<GameObject> = scene.directionLights,
+                pointLights:dyCb.Collection<GameObject> = scene.pointLights,
                 direction_lights_count = 0,
                 point_lights_count = 0;
 

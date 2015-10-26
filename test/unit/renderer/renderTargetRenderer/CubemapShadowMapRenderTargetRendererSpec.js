@@ -107,7 +107,7 @@ tool.init_beforeEach = function(self){
     tool.render = (function(){
         var light;
         var utils;
-        var stage;
+        var scene;
 
 
         return {

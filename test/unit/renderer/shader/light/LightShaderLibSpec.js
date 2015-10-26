@@ -14,7 +14,7 @@ describe("LightShaderLib", function () {
 
     describe("sendShaderVariables", function(){
         var quadCmd,program,material;
-        var stage,camera;
+        var scene,camera;
         var mMatrix;
 
         function createDirectionLight(onSetLight){
@@ -27,10 +27,10 @@ describe("LightShaderLib", function () {
         }
 
         beforeEach(function(){
-            stage = dy.Director.getInstance().stage;
+            scene = dy.Director.getInstance().scene;
 
             camera = new dy.GameObject();
-            sandbox.stub(stage, "camera", camera);
+            sandbox.stub(scene, "camera", camera);
 
             material = new dy.LightMaterial();
 
@@ -70,8 +70,8 @@ describe("LightShaderLib", function () {
                     light.transform.translate(1, 0, 0);
                 })
 
-                stage.addChild(light1);
-                stage.addChild(light2);
+                scene.addChild(light1);
+                scene.addChild(light2);
 
 
                 lib.sendShaderVariables(program, quadCmd, material);

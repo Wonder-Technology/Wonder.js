@@ -51,15 +51,15 @@ module dy {
         }
 
         public beforeRender(){
-            var stage:Stage = Director.getInstance().stage;
+            var scene:Scene = Director.getInstance().scene;
 
-            stage.useProgram(this._shader);
+            scene.useProgram(this._shader);
         }
 
         public afterRender(){
-            var stage:Stage = Director.getInstance().stage;
+            var scene:Scene = Director.getInstance().scene;
 
-            stage.unUseProgram();
+            scene.unUseProgram();
         }
 
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){

@@ -23,7 +23,7 @@ describe("Director", function () {
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         //sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(dy.GPUDetector.getInstance(), "detect");
-        director.stage.addChild(createCamera());
+        director.scene.addChild(createCamera());
     });
     afterEach(function () {
         testTool.clearInstance();

@@ -376,22 +376,22 @@
             var director = dy.Director.getInstance();
 
 
-            director.stage.addChild(skybox);
-            director.stage.addChild(box);
-            director.stage.addChild(box2);
-            director.stage.addChild(box3);
-            director.stage.addChild(box4);
-            director.stage.addChild(box5);
-            director.stage.addChild(box6);
-            director.stage.addChild(sphere);
+            director.scene.addChild(skybox);
+            director.scene.addChild(box);
+            director.scene.addChild(box2);
+            director.scene.addChild(box3);
+            director.scene.addChild(box4);
+            director.scene.addChild(box5);
+            director.scene.addChild(box6);
+            director.scene.addChild(sphere);
 
 
-            director.stage.addChild(_createCamera());
+            director.scene.addChild(_createCamera());
 
 
 
 
-            director.stage.addComponent(dy.Script.create("../stage.js"));
+            director.scene.addComponent(dy.Script.create("../scene.js"));
 
 
 

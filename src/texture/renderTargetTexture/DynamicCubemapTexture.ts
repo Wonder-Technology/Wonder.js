@@ -35,7 +35,7 @@ module dy {
             this.width = this.size;
             this.height = this.size;
 
-            Director.getInstance().stage.addRenderTargetRenderer(DynamicCubemapRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addRenderTargetRenderer(DynamicCubemapRenderTargetRenderer.create(this));
 
             return this;
         }

@@ -74,13 +74,13 @@
 
 
 
-                    director.stage.addChild(model);
+                    director.scene.addChild(model);
 
 
 
 
 
-//            director.stage.addChild(model);
+//            director.scene.addChild(model);
 
 //            var loader = new THREE.OBJMTLLoader();
 //            loader.load( 'obj/male02/male02.obj', function ( object ) {
@@ -213,9 +213,9 @@
 
 
 
-//            director.stage.addChild(ambientLight);
-            director.stage.addChild(directionLight);
-//            director.stage.addChild(pointLight);
+//            director.scene.addChild(ambientLight);
+            director.scene.addChild(directionLight);
+//            director.scene.addChild(pointLight);
 
 
 
@@ -229,12 +229,12 @@
 
 
 
-            director.stage.addChild(_createCamera());
+            director.scene.addChild(_createCamera());
 
 
 
 
-            director.stage.addComponent(dy.Script.create("../stage.js"));
+            director.scene.addComponent(dy.Script.create("../scene.js"));
 
 
 

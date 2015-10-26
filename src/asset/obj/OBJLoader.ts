@@ -23,7 +23,6 @@ module dy {
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
 
-        //todo all Loader use the contract
         @In(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })

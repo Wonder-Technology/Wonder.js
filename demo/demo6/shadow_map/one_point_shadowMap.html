@@ -162,8 +162,8 @@
 
 
 
-            director.stage.addChild(ambientLight);
-            director.stage.addChild(pointLight);
+            director.scene.addChild(ambientLight);
+            director.scene.addChild(pointLight);
 
 
 
@@ -269,7 +269,7 @@
 //
 //
 //
-//            director.stage.addChild(debugQuad);
+//            director.scene.addChild(debugQuad);
 
 
 
@@ -278,34 +278,34 @@
 
 
 
-//            director.stage.shadowMap.enable = false;
-//            director.stage.shadowMap.softType = dy.ShadowMapSoftType.PCF;
+//            director.scene.shadowMap.enable = false;
+//            director.scene.shadowMap.softType = dy.ShadowMapSoftType.PCF;
 
 
 //            director.scheduler.scheduleTime(function(){
-//                director.stage.shadowMap.enable = true;
+//                director.scene.shadowMap.enable = true;
 //            }, 2000);
 
 
 
 
             boxArr.forEach(function(box){
-                director.stage.addChild(box);
+                director.scene.addChild(box);
             });
             groundArr.forEach(function(ground){
-                director.stage.addChild(ground);
+                director.scene.addChild(ground);
             });
 
 
 
 
 
-            director.stage.addChild(_createCamera());
+            director.scene.addChild(_createCamera());
 
 
 
 
-            director.stage.addComponent(dy.Script.create("../stage.js"));
+            director.scene.addComponent(dy.Script.create("../scene.js"));
 
 
 

@@ -304,23 +304,23 @@
 
 
 
-            director.stage.addChild(sphere);
-            director.stage.addChild(box);
-            director.stage.addChild(box2);
-//            director.stage.addChild(rect);
-            director.stage.addChild(mirrorObj);
-            director.stage.addChild(mirrorObj2);
+            director.scene.addChild(sphere);
+            director.scene.addChild(box);
+            director.scene.addChild(box2);
+//            director.scene.addChild(rect);
+            director.scene.addChild(mirrorObj);
+            director.scene.addChild(mirrorObj2);
 
 
 
 
 
-            director.stage.addChild(_createCamera());
+            director.scene.addChild(_createCamera());
 
 
 
 
-            director.stage.addComponent(dy.Script.create("../stage.js"));
+            director.scene.addComponent(dy.Script.create("../scene.js"));
 
 
 

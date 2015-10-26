@@ -21,9 +21,9 @@ module dy {
             return this.texture.renderList;
         }
         protected renderRenderer(renderer){
-            this._setStageSide(Side.BACK);
+            this._setSceneSide(Side.BACK);
             renderer.render();
-            this._setStageSide(null);
+            this._setSceneSide(null);
         }
 
         protected createCamera(camera:GameObject):GameObject{
@@ -47,10 +47,10 @@ module dy {
              return GameObject.create().addComponent(mirrorCameraComponent).init();
         }
 
-        private _setStageSide(side:Side){
-            var stage = Director.getInstance().stage;
+        private _setSceneSide(side:Side){
+            var scene = Director.getInstance().scene;
 
-            stage.side = side;
+            scene.side = side;
         }
 
         private _setClipPlane(vMatrix:Matrix4, pMatrix:Matrix4, plane:Plane):Matrix4{

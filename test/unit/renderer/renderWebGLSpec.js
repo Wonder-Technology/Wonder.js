@@ -165,7 +165,7 @@ describe("renderWebGL", function() {
             material3.blend = false;
             material4.blend = false;
 
-            sandbox.stub(dy.Director.getInstance().stage, "camera", {
+            sandbox.stub(dy.Director.getInstance().scene, "camera", {
                     transform:{
                         position:{
                             z: 10
@@ -274,8 +274,8 @@ describe("renderWebGL", function() {
                         expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
                         expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
                     });
-                    it("set side:if set Stage->side, use it", function(){
-                        dy.Director.getInstance().stage.side = dy.Side.BACK;
+                    it("set side:if set Scene->side, use it", function(){
+                        dy.Director.getInstance().scene.side = dy.Side.BACK;
 
                         renderer.render();
 

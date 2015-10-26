@@ -27,14 +27,14 @@ describe("script", function () {
         gameObject.addComponent(script);
 
         var test = null;
-        var onEnter = director.stage.onEnter;
-        director.stage.onEnter = function(){
+        var onEnter = director.scene.onEnter;
+        director.scene.onEnter = function(){
             test = gameObject.script.getChild("test");
             judgeOnEnter(test, gameObject);
-            onEnter.call(director.stage);
+            onEnter.call(director.scene);
         };
 
-        director.stage.addChild(gameObject);
+        director.scene.addChild(gameObject);
 
         var loopBody = director._loopBody;
         director._loopBody = function(){
@@ -66,17 +66,17 @@ describe("script", function () {
 
         var test = null;
         var test2 = null;
-        var onEnter = director.stage.onEnter;
-        director.stage.onEnter = function(){
+        var onEnter = director.scene.onEnter;
+        director.scene.onEnter = function(){
             test = gameObject.script.getChild("test");
             test2 = gameObject.script.getChild("test2");
 
             judgeOnEnter(test, test2, gameObject);
 
-            onEnter.call(director.stage);
+            onEnter.call(director.scene);
         };
 
-        director.stage.addChild(gameObject);
+        director.scene.addChild(gameObject);
 
         var loopBody = director._loopBody;
         director._loopBody = function(){
@@ -97,28 +97,28 @@ describe("script", function () {
     }
 
 
-    function testStageScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+    function testSceneScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         script.url = url1;
 
-        director.stage.addComponent(script);
+        director.scene.addComponent(script);
 
         var test = null;
-        var onEnter = director.stage.onEnter;
-        director.stage.onEnter = function(){
+        var onEnter = director.scene.onEnter;
+        director.scene.onEnter = function(){
             test = this.script.getChild("test");
             judgeOnEnter(test, this);
-            onEnter.call(director.stage);
+            onEnter.call(director.scene);
         };
 
         var loopBody = director._loopBody;
         director._loopBody = function(){
             var time = 100;
 
-            judgeBeforeLoopBody(test, director.stage);
+            judgeBeforeLoopBody(test, director.scene);
 
             loopBody.call(director, time);
 
-            judgeAfterLoopBody(test, time, director.stage);
+            judgeAfterLoopBody(test, time, director.scene);
 
             director.stop();
 
@@ -136,7 +136,7 @@ describe("script", function () {
         sandbox.stub(window.performance, "now").returns(0);
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(dy.GPUDetector.getInstance(), "detect");
-        director.stage.addChild(createCamera());
+        director.scene.addChild(createCamera());
 
         url1 = testTool.resPath + "test/res/test.js";
         url2 = testTool.resPath + "test/res/test2.js";
@@ -173,13 +173,13 @@ describe("script", function () {
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
             //expect(test.b).toEqual(-1);
 
-            director.stage.removeChild(gameObject);
+            director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
             //expect(test.b).toEqual(-1);
         }, done);
     });
-    it("test director->stage's script", function(done){
-        testStageScript(function(test){
+    it("test director->scene's script", function(done){
+        testSceneScript(function(test){
             sandbox.spy(test, "init");
             sandbox.spy(test, "update");
             sandbox.spy(test, "onStartLoop");
@@ -188,7 +188,7 @@ describe("script", function () {
             sandbox.spy(test, "onExit");
         }, function(test){
             /*!
-                stage->onEnter will be called, because it's invoked after the script is loaded
+                scene->onEnter will be called, because it's invoked after the script is loaded
              */
             expect(test.onEnter).toCalledBefore(test.init);
         }, function(test, time, gameObject){
@@ -197,7 +197,7 @@ describe("script", function () {
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
             //expect(test.b).toEqual(-1);
 
-            director.stage.removeChild(gameObject);
+            director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
             //expect(test.b).toEqual(-1);
         }, done);
@@ -213,7 +213,7 @@ describe("script", function () {
 
         script.url = url1;
 
-        director.stage.addChild(gameObject);
+        director.scene.addChild(gameObject);
 
         director.start();
         director.stop();
@@ -256,7 +256,7 @@ describe("script", function () {
             expect(test2.update).toCalledWith(time);
             expect(test2.onStartLoop).toCalledBefore(test2.onEndLoop);
 
-            director.stage.removeChild(gameObject);
+            director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
             //expect(test.b).toEqual(-1);
 
@@ -285,7 +285,7 @@ describe("script", function () {
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
             //expect(test.b).toEqual(-1);
 
-            director.stage.removeChild(gameObject);
+            director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
             //expect(test.b).toEqual(-1);
         }, done);

@@ -5,43 +5,43 @@ dy.Script.create("camera", function (director) {
 
 
     Camera.prototype.onStartLoop = function () {
-        var stage = director.stage.script.getChild("stage"),
+        var scene = director.scene.script.getChild("scene"),
             cameraComponent = this.gameObject.getComponent(dy.Camera);
 
         this.move();
-        if (stage.isRotate) {
-            this.gameObject.transform.eulerAngles = dy.Vector3.create(stage.rotateX, stage.rotateY, 0);
-            stage.isRotate = false;
+        if (scene.isRotate) {
+            this.gameObject.transform.eulerAngles = dy.Vector3.create(scene.rotateX, scene.rotateY, 0);
+            scene.isRotate = false;
         }
         this.zoom(cameraComponent);
     };
 
     Camera.prototype.move = function() {
-        var stage = director.stage.script.getChild("stage");
+        var scene = director.scene.script.getChild("scene");
         var speed = 1.2;
 
-        if (stage.keyState["a"]) {
+        if (scene.keyState["a"]) {
             this.gameObject.transform.translateLocal(dy.Vector3.create(-speed, 0, 0));
         }
-        else if (stage.keyState["d"]) {
+        else if (scene.keyState["d"]) {
             this.gameObject.transform.translateLocal(dy.Vector3.create(speed, 0, 0));
         }
-        else if (stage.keyState["w"]) {
+        else if (scene.keyState["w"]) {
             this.gameObject.transform.translateLocal(dy.Vector3.create(0, 0, -speed));
         }
-        else if (stage.keyState["s"]) {
+        else if (scene.keyState["s"]) {
             this.gameObject.transform.translateLocal(dy.Vector3.create(0, 0, speed));
         }
     };
 
     Camera.prototype.zoom = function(cameraComponent) {
-        var stage = director.stage.script.getChild("stage");
+        var scene = director.scene.script.getChild("scene");
         var speed = 10;
 
-        if (stage.keyState["g"]) {
+        if (scene.keyState["g"]) {
             cameraComponent.zoomIn(speed);
         }
-        else if (stage.keyState["h"]) {
+        else if (scene.keyState["h"]) {
             cameraComponent.zoomOut(speed);
         }
     };

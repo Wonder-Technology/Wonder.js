@@ -41,7 +41,7 @@ module dy{
                 this.shadowMap = TwoDShadowMapTexture.create();
 
                 this.shadowMapRenderer = TwoDShadowMapRenderTargetRenderer.create(this);
-                Director.getInstance().stage.addRenderTargetRenderer(this.shadowMapRenderer);
+                Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
             }
         }
 
@@ -49,7 +49,7 @@ module dy{
             if(this.castShadow){
                 this.shadowMap.dispose();
 
-                Director.getInstance().stage.removeRenderTargetRenderer(this.shadowMapRenderer);
+                Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
             }
         }
     }

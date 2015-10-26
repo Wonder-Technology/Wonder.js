@@ -69,9 +69,9 @@
 
 
 
-            director.stage.addChild(ambientLight);
-            director.stage.addChild(pointLight);
-            director.stage.addChild(pointLight2);
+            director.scene.addChild(ambientLight);
+            director.scene.addChild(pointLight);
+            director.scene.addChild(pointLight2);
 
 
 
@@ -105,14 +105,14 @@
 
 
 
-            director.stage.addChild(box);
+            director.scene.addChild(box);
 
-            director.stage.addChild(_createCamera());
-
-
+            director.scene.addChild(_createCamera());
 
 
-            director.stage.addComponent(dy.Script.create("../../stage.js"));
+
+
+            director.scene.addComponent(dy.Script.create("../../scene.js"));
 
 
 

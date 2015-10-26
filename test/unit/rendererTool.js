@@ -28,7 +28,7 @@ var rendererTool = {
 
 
 
-            dy.Director.getInstance().stage.camera = {
+            dy.Director.getInstance().scene.camera = {
                 transform:{
                     position: dy.Vector3.create(1, 2, 3)
                 }

@@ -8,17 +8,17 @@ module dy{
         }
 
         private _setShadowMapSource(){
-            var stage:Stage = Director.getInstance().stage,
-                twoDShadowMapCount = stage.directionLights? stage.directionLights.filter((light:GameObject) => {
+            var scene:Scene = Director.getInstance().scene,
+                twoDShadowMapCount = scene.directionLights? scene.directionLights.filter((light:GameObject) => {
                     return light.getComponent<DirectionLight>(DirectionLight).castShadow;
                 }).getCount() : 0,
-                cubemapShadowMapCount = stage.pointLights ? stage.pointLights.filter((light:GameObject) => {
+                cubemapShadowMapCount = scene.pointLights ? scene.pointLights.filter((light:GameObject) => {
                     return light.getComponent<PointLight>(PointLight).castShadow;
                 }).getCount() : 0;
 
 
 
-            if(stage.shadowMap.softType === ShadowMapSoftType.PCF){
+            if(scene.shadowMap.softType === ShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
                     name: "SHADOWMAP_TYPE_PCF"
                 }]);

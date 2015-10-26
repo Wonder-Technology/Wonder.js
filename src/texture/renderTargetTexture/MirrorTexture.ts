@@ -12,7 +12,7 @@ module dy {
         public init(){
             super.init();
 
-            Director.getInstance().stage.addRenderTargetRenderer(MirrorRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addRenderTargetRenderer(MirrorRenderTargetRenderer.create(this));
 
             return this;
         }

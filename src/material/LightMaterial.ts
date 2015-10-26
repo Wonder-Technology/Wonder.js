@@ -126,7 +126,7 @@ module dy{
         }
 
         private _setPhongMapShaderLib(){
-            var stage:Stage = Director.getInstance().stage;
+            var scene:Scene = Director.getInstance().scene;
 
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.create());
@@ -149,7 +149,7 @@ module dy{
                 this.shader.addLib(NoNormalMapShaderLib.create());
             }
 
-            if(stage.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
+            if(scene.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
                 if(this._hasTwoDShadowMap()){
                     this.shader.addLib(TwoDShadowMapShaderLib.create());
                 }

@@ -33,7 +33,7 @@
 //                        ["u_normalMatrix", dy.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose()]
 //                    );
 //                    expect(program.sendUniformData.getCall(4).args).toEqual(
-//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().stage.camera.transform.position]
+//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().scene.camera.transform.position]
 //                    );
 //                },
 //                judge_sendLibVariable_texture: function (program, quadCmd, material) {
@@ -104,7 +104,7 @@
 //                        ["u_normalMatrix", dy.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose()]
 //                    );
 //                    expect(program.sendUniformData.getCall(4).args).toEqual(
-//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().stage.camera.transform.position]
+//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().scene.camera.transform.position]
 //                    );
 //                },
 //                judge_sendLibVariable_texture: function (program, quadCmd, material) {
@@ -141,7 +141,7 @@
 //
 //
 //
-//                    dy.Director.getInstance().stage.camera = {
+//                    dy.Director.getInstance().scene.camera = {
 //                        transform:{
 //                            position: dy.Vector3.create(1, 2, 3)
 //                        }
@@ -189,7 +189,7 @@
 //                        ["u_normalMatrix", dy.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose()]
 //                    );
 //                    expect(program.sendUniformData.getCall(4).args).toEqual(
-//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().stage.camera.transform.position]
+//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().scene.camera.transform.position]
 //                    );
 //                    expect(program.sendUniformData.getCall(5).args).toEqual(
 //                        ["u_refractionRatio", dy.VariableType.FLOAT_1, 0.1]
@@ -231,7 +231,7 @@
 //
 //
 //
-//                    dy.Director.getInstance().stage.camera = {
+//                    dy.Director.getInstance().scene.camera = {
 //                        transform:{
 //                            position: dy.Vector3.create(1, 2, 3)
 //                        }
@@ -284,7 +284,7 @@
 //                        ["u_normalMatrix", dy.VariableType.FLOAT_MAT4, quadCmd.mMatrix.copy().invert().transpose()]
 //                    );
 //                    expect(program.sendUniformData.getCall(4).args).toEqual(
-//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().stage.camera.transform.position]
+//                        ["u_cameraPos", dy.VariableType.FLOAT_3, dy.Director.getInstance().scene.camera.transform.position]
 //                    );
 //                    expect(program.sendUniformData.getCall(5).args).toEqual(
 //                        ["u_refractionRatio", dy.VariableType.FLOAT_1, 0.1]
@@ -330,7 +330,7 @@
 //
 //
 //
-//                    dy.Director.getInstance().stage.camera = {
+//                    dy.Director.getInstance().scene.camera = {
 //                        transform:{
 //                            position: dy.Vector3.create(1, 2, 3)
 //                        }

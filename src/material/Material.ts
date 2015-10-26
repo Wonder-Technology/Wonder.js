@@ -170,9 +170,9 @@ module dy {
         }
 
         //public useProgram(){
-        //    var stage:Stage = Director.getInstance().stage;
+        //    var scene:Scene = Director.getInstance().scene;
         //
-        //    if(stage.isUseProgram){
+        //    if(scene.isUseProgram){
         //        return;
         //    }
         //
@@ -180,10 +180,10 @@ module dy {
         //}
 
         public updateShader(quadCmd:QuadCommand){
-            var stage:Stage = Director.getInstance().stage;
+            var scene:Scene = Director.getInstance().scene;
 
-            if(stage.isUseProgram){
-                stage.shader.update(quadCmd, this);
+            if(scene.isUseProgram){
+                scene.shader.update(quadCmd, this);
             }
             else{
                 this.shader.update(quadCmd, this);

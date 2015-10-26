@@ -1,5 +1,5 @@
-dy.Script.create("stage", function (director) {
-    function Stage(gameObject){
+dy.Script.create("scene", function (director) {
+    function Scene(gameObject){
         this.gameObject = gameObject;
         this.rotateX = 0;
         this.rotateY = 0;
@@ -7,20 +7,20 @@ dy.Script.create("stage", function (director) {
         this.keyState = {};
     }
 
-    Stage.prototype.onEnter = function () {
+    Scene.prototype.onEnter = function () {
         this.bindCanvasEvent(director.view);
     };
 
-    Stage.prototype.onEndLoop = function () {
+    Scene.prototype.onEndLoop = function () {
         this.setAllFalse();
         this.isRotate = false;
     };
 
-    Stage.prototype.onExit = function () {
+    Scene.prototype.onExit = function () {
         this.removeEvent();
     };
 
-    Stage.prototype.setAllFalse = function() {
+    Scene.prototype.setAllFalse = function() {
         var i = null;
 
         for (i in this.keyState) {
@@ -30,14 +30,14 @@ dy.Script.create("stage", function (director) {
         }
     };
 
-    Stage.prototype.bindCanvasEvent = function(canvas) {
-        var stage = director.stage,
+    Scene.prototype.bindCanvasEvent = function(canvas) {
+        var scene = director.scene,
             self = this;
 
         // Get the three major events
-        var mouseup = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEUP);
-        var mousemove = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEMOVE);
-        var mousedown = dy.EventManager.fromEvent(stage, dy.EventName.MOUSEDOWN);
+        var mouseup = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEUP);
+        var mousemove = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEMOVE);
+        var mousedown = dy.EventManager.fromEvent(scene, dy.EventName.MOUSEDOWN);
 
         var mousedrag = mousedown.flatMap(function (e) {
             // calculate offsets when mouse down
@@ -84,10 +84,10 @@ dy.Script.create("stage", function (director) {
 
     };
 
-    Stage.prototype.removeEvent = function() {
+    Scene.prototype.removeEvent = function() {
         dy.EventManager.off(scene);
         //document.querySelector("body").off("keydown");
     };
 
-    return Stage;
+    return Scene;
 });

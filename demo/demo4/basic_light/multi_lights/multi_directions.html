@@ -65,9 +65,9 @@
             directionLight2.transform.translate(dy.Vector3.create(0, 10, 0));
 
 
-            director.stage.addChild(ambientLight);
-            director.stage.addChild(directionLight);
-            director.stage.addChild(directionLight2);
+            director.scene.addChild(ambientLight);
+            director.scene.addChild(directionLight);
+            director.scene.addChild(directionLight2);
 
 
 
@@ -101,14 +101,14 @@
 
 
 
-            director.stage.addChild(box);
+            director.scene.addChild(box);
 
-            director.stage.addChild(_createCamera());
-
-
+            director.scene.addChild(_createCamera());
 
 
-            director.stage.addComponent(dy.Script.create("../../stage.js"));
+
+
+            director.scene.addComponent(dy.Script.create("../../scene.js"));
 
 
 

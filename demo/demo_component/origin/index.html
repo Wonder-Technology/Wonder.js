@@ -176,13 +176,13 @@
             var director = dy.Director.getInstance();
 
 
-            director.stage.addChild(mesh);
-            director.stage.addChild(mesh2);
+            director.scene.addChild(mesh);
+            director.scene.addChild(mesh2);
 
-            director.stage.addComponent(action);
+            director.scene.addComponent(action);
             action.start();
 
-            director.stage.addChild(_createCamera());
+            director.scene.addChild(_createCamera());
 
 
 //            director.scheduler.scheduleTime(function(){
@@ -195,7 +195,7 @@
 
 
 
-            director.stage.addComponent(dy.Script.create("./stage.js"));
+            director.scene.addComponent(dy.Script.create("./scene.js"));
 
 
 
@@ -206,7 +206,7 @@
             var camera = dy.GameObject.create();
 
 //            //todo move to GameObject->addChild
-//            camera.transform.parent = dy.Director.getInstance().stage;
+//            camera.transform.parent = dy.Director.getInstance().scene;
 
 
             var cameraComponent = dy.PerspectiveCamera.create();
