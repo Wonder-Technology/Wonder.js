@@ -35,7 +35,7 @@ float getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec
     vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;
     //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);
 
-    #if defined(SHADOWMAP_TYPE_PCF)
+    #ifdef SHADOWMAP_TYPE_PCF
     // Percentage-close filtering
     // (9 pixel kernel)
     return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);

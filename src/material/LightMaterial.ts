@@ -118,9 +118,9 @@ module dy{
         }
 
         public init(){
-            this.shader.addLib(LightCommonShaderLib.getInstance());
+            this.shader.addLib(LightCommonShaderLib.create());
             this._setPhongMapShaderLib();
-            this.shader.addLib(LightShaderLib.getInstance());
+            this.shader.addLib(LightShaderLib.create());
 
             super.init();
         }
@@ -129,38 +129,38 @@ module dy{
             var stage:Stage = Director.getInstance().stage;
 
             if(this._diffuseMap){
-                this.shader.addLib(DiffuseMapShaderLib.getInstance());
+                this.shader.addLib(DiffuseMapShaderLib.create());
             }
             else{
-                this.shader.addLib(NoDiffuseMapShaderLib.getInstance());
+                this.shader.addLib(NoDiffuseMapShaderLib.create());
             }
 
             if(this._specularMap){
-                this.shader.addLib(SpecularMapShaderLib.getInstance());
+                this.shader.addLib(SpecularMapShaderLib.create());
             }
             else{
-                this.shader.addLib(NoSpecularMapShaderLib.getInstance());
+                this.shader.addLib(NoSpecularMapShaderLib.create());
             }
 
             if(this._normalMap){
-                this.shader.addLib(NormalMapShaderLib.getInstance());
+                this.shader.addLib(NormalMapShaderLib.create());
             }
             else{
-                this.shader.addLib(NoNormalMapShaderLib.getInstance());
+                this.shader.addLib(NoNormalMapShaderLib.create());
             }
 
             if(stage.shadowMap.enable && (this._hasTwoDShadowMap() || this._hasCubemapShadowMap())){
                 if(this._hasTwoDShadowMap()){
-                    this.shader.addLib(TwoDShadowMapShaderLib.getInstance());
+                    this.shader.addLib(TwoDShadowMapShaderLib.create());
                 }
                 if(this._hasCubemapShadowMap()){
-                    this.shader.addLib(CubemapShadowMapShaderLib.getInstance());
+                    this.shader.addLib(CubemapShadowMapShaderLib.create());
                 }
 
-                this.shader.addLib(TotalShadowMapShaderLib.getInstance());
+                this.shader.addLib(TotalShadowMapShaderLib.create());
             }
             else{
-                this.shader.addLib(NoShadowMapShaderLib.getInstance());
+                this.shader.addLib(NoShadowMapShaderLib.create());
             }
         }
 

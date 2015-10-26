@@ -38,7 +38,7 @@ module dy {
                 });
             });
 
-            this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.getInstance());
+            this._shadowMapRendererUtils.createShaderWithShaderLib(BuildTwoDShadowMapShaderLib.create());
 
             super.init();
         }

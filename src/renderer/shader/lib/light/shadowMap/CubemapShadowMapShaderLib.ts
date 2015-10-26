@@ -1,15 +1,12 @@
 /// <reference path="../../../../../definitions.d.ts"/>
 module dy{
     export class CubemapShadowMapShaderLib extends ShadowMapShaderLib{
-        private static _instance = null;
+        public static create() {
+            var obj = new this();
 
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
-            }
-            return this._instance;
+            return obj;
         }
+
 
         public type:string = "cubemapShadowMap";
 

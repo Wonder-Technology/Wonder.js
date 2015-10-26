@@ -20,7 +20,7 @@ module dy{
         }
 
         public init(){
-            this.shader.addLib(dy.MirrorShaderLib.getInstance());
+            this.shader.addLib(dy.MirrorShaderLib.create());
 
             super.init();
         }

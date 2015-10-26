@@ -40,7 +40,7 @@
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
 
 
-            material.setEnvMap(dy.CubemapTexture.create([
+            material.envMap = dy.CubemapTexture.create([
                 {
                     asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
@@ -66,9 +66,9 @@
                     asset:dy.TextureLoader.getInstance().get("texture1"),
                     sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
                 }
-                    ]));
+                    ]);
 //
-            var map1 = material.getEnvMap();
+            var map1 = material.envMap;
             map1.textures.getChild(1).sourceRegion = dy.RectRegion.create(128, 128, 512, 512);
 
             //method is DRAW_IN_CANVAS default

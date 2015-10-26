@@ -20,16 +20,21 @@ module dy{
         public vsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
         public fsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
 
-        public initWhenCreate(){
-            //todo rename?
+        public update(program: Program, quadCmd:QuadCommand, material:Material){
             this.setShaderDefinition();
+            this.sendShaderVariables(program, quadCmd, material);
         }
 
         public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
 
         protected setShaderDefinition(){
-            var vs = this.getVsChunk(),
-                fs = this.getFsChunk();
+            var vs = null,
+                fs = null;
+
+            this._clearShaderDefinition();
+
+            vs = this.getVsChunk();
+            fs = this.getFsChunk();
 
             vs && this.setVsSource(vs);
             fs && this.setFsSource(fs);
@@ -78,6 +83,26 @@ module dy{
         })
         protected sendUniformData(program:Program, name:string, data:any){
             program.sendUniformData(name, VariableLib[name].type, data);
+        }
+
+        private _clearShaderDefinition(){
+            this.attributes.removeAllChildren();
+            this.uniforms.removeAllChildren();
+            this.vsSourceDefineList.removeAllChildren();
+            this.fsSourceDefineList.removeAllChildren();
+
+            this.vsSourceTop = "";
+            this.vsSourceDefine = "";
+            this.vsSourceVarDeclare = "";
+            this.vsSourceFuncDeclare = "";
+            this.vsSourceFuncDefine = "";
+            this.vsSourceBody = "";
+            this.fsSourceTop = "";
+            this.fsSourceDefine = "";
+            this.fsSourceVarDeclare = "";
+            this.fsSourceFuncDeclare = "";
+            this.fsSourceFuncDefine = "";
+            this.fsSourceBody = "";
         }
 
         private _getChunk(type:string, sourceType:ShaderLibType){

@@ -8,7 +8,7 @@ module dy{
         }
 
         public init(){
-            this.shader.addLib(BasicShaderLib.getInstance());
+            this.shader.addLib(BasicShaderLib.create());
 
             super.init();
         }

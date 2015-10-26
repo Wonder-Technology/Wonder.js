@@ -7,6 +7,7 @@
 
 /// <reference path="extend/dyRt"/>
 /// <reference path="extend/typescript/contract"/>
+/// <reference path="extend/Global"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
@@ -179,6 +180,7 @@
 /// <reference path="asset/obj/OBJLoader"/>
 /// <reference path="asset/obj/OBJParser"/>
 /// <reference path="asset/obj/MTLParser"/>
+/// <reference path="asset/obj/OBJLoaderUtils"/>
 
 
 /// <reference path="event/structure/EventListenerMap"/>

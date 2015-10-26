@@ -12,10 +12,10 @@ module dy{
 
         public init(){
             if(this._isMultiMap()){
-                this.shader.addLib(MultiMapShaderLib.getInstance());
+                this.shader.addLib(MultiMapShaderLib.create());
             }
             else{
-                this.shader.addLib(BasicMapShaderLib.getInstance());
+                this.shader.addLib(BasicMapShaderLib.create());
             }
 
             super.init();

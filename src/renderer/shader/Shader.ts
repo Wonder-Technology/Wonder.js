@@ -10,11 +10,56 @@ module dy{
         }
 
         public program:Program = Program.create();
-        public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
-        public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
-        public vsSource:string = "";
-        public fsSource:string = "";
+        //public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        //public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        //public vsSource:string = "";
+        //public fsSource:string = "";
 
+        private _attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        get attributes(){
+            return this._attributes;
+        }
+        set attributes(attributes:dyCb.Hash<ShaderData>){
+            if(this._isNotEqual(attributes, this._attributes)){
+                this._definitionDataDirty = true;
+            }
+            this._attributes = attributes;
+        }
+
+        private _uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        get uniforms(){
+            return this._uniforms;
+        }
+        set uniforms(uniforms:dyCb.Hash<ShaderData>){
+            if(this._isNotEqual(uniforms, this._uniforms)){
+                this._definitionDataDirty = true;
+            }
+            this._uniforms = uniforms;
+        }
+
+        private _vsSource:string = "";
+        get vsSource(){
+            return this._vsSource;
+        }
+        set vsSource(vsSource:string){
+            if(vsSource !== this._vsSource){
+                this._definitionDataDirty = true;
+            }
+            this._vsSource = vsSource;
+        }
+
+        private _fsSource:string = "";
+        get fsSource(){
+            return this._fsSource;
+        }
+        set fsSource(fsSource:string){
+            if(fsSource !== this._fsSource){
+                this._definitionDataDirty = true;
+            }
+            this._fsSource = fsSource;
+        }
+
+        private _definitionDataDirty:boolean = false;
         private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
         private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
@@ -37,31 +82,43 @@ module dy{
         }
 
         public initWhenCreate(){
-            this.addLib(CommonShaderLib.getInstance());
+            this.addLib(CommonShaderLib.create());
         }
 
         public init(){
-            this.initProgram();
+            //this.initProgram();
         }
 
-        public initProgram(){
-            this.buildDefinitionData();
-
-            //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-            this.program.initWithShader(this);
-        }
+        //public initProgram(){
+        //    //this.buildDefinitionData();
+        //
+        //    //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+        //    //this.program.initWithShader(this);
+        //}
 
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;
 
             this._libs.forEach((lib:ShaderLib) => {
-                lib.sendShaderVariables(program, quadCmd, material);
+                lib.update(program, quadCmd, material);
             });
+
+
+            this.buildDefinitionData();
+            if(this._definitionDataDirty){
+                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+                this.program.initWithShader(this);
+
+                this._definitionDataDirty = false;
+            }
 
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
 
             material.textureManager.sendData(program);
+        }
+
+        private _isDefinitionDataDirty(){
 
         }
 
@@ -71,6 +128,12 @@ module dy{
 
         public addLib(lib:ShaderLib){
             this._libs.addChild(lib);
+        }
+
+        public getLib(libClass:Function){
+            return this._libs.findOne((lib:ShaderLib) => {
+                return lib instanceof libClass;
+            });
         }
 
         public removeLib(lib:ShaderLib);
@@ -88,19 +151,24 @@ module dy{
             this._libs = this._libs.sort(func);
         }
 
-        public clearSource(){
-            this.vsSource = "";
-            this.fsSource = "";
+        //public clearSource(){
+        //    this.vsSource = "";
+        //    this.fsSource = "";
+        //
+        //    //todo refactor? invoke "clear" method?
+        //    //this._sourceBuilder = ShaderSourceBuilder.create();
+        //    this._sourceBuilder.clearShaderDefinition();
+        //}
 
-            //todo refactor? invoke "clear" method?
-            this._sourceBuilder = ShaderSourceBuilder.create();
-        }
 
         public read(definitionData:ShaderDefinitionData){
             this._sourceBuilder.read(definitionData);
         }
 
         public buildDefinitionData(){
+            //this.clearSource();
+            this._sourceBuilder.clearShaderDefinition();
+
             this._sourceBuilder.build(this._libs);
 
             this.attributes = this._sourceBuilder.attributes;
@@ -124,6 +192,21 @@ module dy{
                 Log.log("uniforms:\n", this.uniforms);
                 Log.log("source:\n", source);
             }
+        }
+
+        private _isNotEqual(list1:dyCb.Hash<ShaderData>, list2:dyCb.Hash<ShaderData>){
+            var result = false;
+
+            list1.forEach((data:ShaderData, key:string) => {
+                var list2Data = list2.getChild(key);
+
+                if(!list2Data || data.type !== list2Data.type || data.value !== list2Data.value){
+                    result = true;
+                    return dyCb.$BREAK;
+                }
+            });
+
+            return result;
         }
     }
 

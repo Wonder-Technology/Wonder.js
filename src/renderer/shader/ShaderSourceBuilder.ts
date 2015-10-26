@@ -27,28 +27,48 @@ module dy{
         public vsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
         public fsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
 
+        public attributesFromShaderLib:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        public uniformsFromShaderLib:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        public vsSourceFromShaderLib:string = "";
+        public vsSourceTopFromShaderLib:string = "";
+        public vsSourceDefineFromShaderLib:string = "";
+        public vsSourceVarDeclareFromShaderLib:string = "";
+        public vsSourceFuncDeclareFromShaderLib:string = "";
+        public vsSourceFuncDefineFromShaderLib:string = "";
+        public vsSourceBodyFromShaderLib:string = "";
+        public fsSourceFromShaderLib:string = "";
+        public fsSourceTopFromShaderLib:string = "";
+        public fsSourceDefineFromShaderLib:string = "";
+        public fsSourceVarDeclareFromShaderLib:string = "";
+        public fsSourceFuncDeclareFromShaderLib:string = "";
+        public fsSourceFuncDefineFromShaderLib:string = "";
+        public fsSourceBodyFromShaderLib:string = "";
+        public vsSourceDefineListFromShaderLib:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
+        public fsSourceDefineListFromShaderLib:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
+
+
         public read(definitionData:ShaderDefinitionData){
             if(definitionData.attributes){
-                this.attributes = <dyCb.Hash<ShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
+                this.attributesFromShaderLib = <dyCb.Hash<ShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
             }
 
             if(definitionData.uniforms){
-                this.uniforms = <dyCb.Hash<ShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
+                this.uniformsFromShaderLib = <dyCb.Hash<ShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
             }
 
-            this.vsSourceTop = definitionData.vsSourceTop || "";
-            this.vsSourceDefine = definitionData.vsSourceDefine || "";
-            this.vsSourceVarDeclare = definitionData.vsSourceVarDeclare || "";
-            this.vsSourceFuncDeclare = definitionData.vsSourceFuncDeclare || "";
-            this.vsSourceFuncDefine = definitionData.vsSourceFuncDefine || "";
-            this.vsSourceBody = definitionData.vsSourceBody || "";
+            this.vsSourceTopFromShaderLib = definitionData.vsSourceTop || "";
+            this.vsSourceDefineFromShaderLib = definitionData.vsSourceDefine || "";
+            this.vsSourceVarDeclareFromShaderLib = definitionData.vsSourceVarDeclare || "";
+            this.vsSourceFuncDeclareFromShaderLib = definitionData.vsSourceFuncDeclare || "";
+            this.vsSourceFuncDefineFromShaderLib = definitionData.vsSourceFuncDefine || "";
+            this.vsSourceBodyFromShaderLib = definitionData.vsSourceBody || "";
 
-            this.fsSourceTop = definitionData.fsSourceTop || "";
-            this.fsSourceDefine = definitionData.fsSourceDefine || "";
-            this.fsSourceVarDeclare = definitionData.fsSourceVarDeclare || "";
-            this.fsSourceFuncDeclare = definitionData.fsSourceFuncDeclare || "";
-            this.fsSourceFuncDefine = definitionData.fsSourceFuncDefine || "";
-            this.fsSourceBody = definitionData.fsSourceBody || "";
+            this.fsSourceTopFromShaderLib = definitionData.fsSourceTop || "";
+            this.fsSourceDefineFromShaderLib = definitionData.fsSourceDefine || "";
+            this.fsSourceVarDeclareFromShaderLib = definitionData.fsSourceVarDeclare || "";
+            this.fsSourceFuncDeclareFromShaderLib = definitionData.fsSourceFuncDeclare || "";
+            this.fsSourceFuncDefineFromShaderLib = definitionData.fsSourceFuncDefine || "";
+            this.fsSourceBodyFromShaderLib = definitionData.fsSourceBody || "";
         }
 
         public build(libs:dyCb.Collection<ShaderLib>){
@@ -66,6 +86,26 @@ module dy{
                 .forEach((data:ShaderData, key:string) => {
                     data.value = self._convertArrayToArrayBuffer(data.type, data.value);
             });
+        }
+
+        public clearShaderDefinition(){
+            this.attributes.removeAllChildren();
+            this.uniforms.removeAllChildren();
+            this.vsSourceDefineList.removeAllChildren();
+            this.fsSourceDefineList.removeAllChildren();
+
+            this.vsSourceTop = "";
+            this.vsSourceDefine = "";
+            this.vsSourceVarDeclare = "";
+            this.vsSourceFuncDeclare = "";
+            this.vsSourceFuncDefine = "";
+            this.vsSourceBody = "";
+            this.fsSourceTop = "";
+            this.fsSourceDefine = "";
+            this.fsSourceVarDeclare = "";
+            this.fsSourceFuncDeclare = "";
+            this.fsSourceFuncDefine = "";
+            this.fsSourceBody = "";
         }
 
         private _readLibSource(libs:dyCb.Collection<ShaderLib>){
@@ -106,19 +146,21 @@ module dy{
             });
 
             //ensure shader lib's code is before custom shader's source
-            this.vsSourceTop = vsSourceTop + this.vsSourceTop;
-            this.vsSourceDefine = vsSourceDefine + this.vsSourceDefine;
-            this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclare;
-            this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclare;
-            this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefine;
-            this.vsSourceBody = vsSourceBody + this.vsSourceBody;
+            this.attributes.addChildren(this.attributesFromShaderLib);
+            this.uniforms.addChildren(this.uniformsFromShaderLib);
+            this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
+            this.vsSourceDefine = vsSourceDefine + this.vsSourceDefineFromShaderLib;
+            this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclareFromShaderLib;
+            this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclareFromShaderLib;
+            this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefineFromShaderLib;
+            this.vsSourceBody = vsSourceBody + this.vsSourceBodyFromShaderLib;
 
-            this.fsSourceTop = fsSourceTop + this.fsSourceTop;
-            this.fsSourceDefine = fsSourceDefine + this.fsSourceDefine;
-            this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclare;
-            this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclare;
-            this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefine;
-            this.fsSourceBody = fsSourceBody + this.fsSourceBody;
+            this.fsSourceTop = fsSourceTop + this.fsSourceTopFromShaderLib;
+            this.fsSourceDefine = fsSourceDefine + this.fsSourceDefineFromShaderLib;
+            this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclareFromShaderLib;
+            this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclareFromShaderLib;
+            this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefineFromShaderLib;
+            this.fsSourceBody = fsSourceBody + this.fsSourceBodyFromShaderLib;
         }
 
         private _buildVsSource(){

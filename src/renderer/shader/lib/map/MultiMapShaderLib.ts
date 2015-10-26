@@ -2,15 +2,12 @@
 module dy{
     //todo support more than 2 maps
     export class MultiMapShaderLib extends MapShaderLib{
-        private static _instance = null;
+        public static create() {
+            var obj = new this();
 
-        public static getInstance() {
-            if (this._instance === null) {
-                this._instance = new this();
-                this._instance.initWhenCreate();
-            }
-            return this._instance;
+            return obj;
         }
+
 
         public type:string = "multi_map";
 

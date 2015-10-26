@@ -25,19 +25,19 @@ describe("LightMaterial", function() {
         it("add LightCommonShaderLib", function(){
             material.init();
 
-            expect(material.shader.hasLib(dy.LightCommonShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.LightCommonShaderLib)).toBeTruthy();
         });
         it("if diffuseMap exist, add its shader lib", function(){
             material.diffuseMap = map;
 
             material.init();
 
-            expect(material.shader.hasLib(dy.DiffuseMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.DiffuseMapShaderLib)).toBeTruthy();
         });
         it("else, add NoDiffuseMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.hasLib(dy.NoDiffuseMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.NoDiffuseMapShaderLib)).toBeTruthy();
 
         });
         it("if specularMap exist, add its shader lib", function(){
@@ -45,24 +45,24 @@ describe("LightMaterial", function() {
 
             material.init();
 
-            expect(material.shader.hasLib(dy.SpecularMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.SpecularMapShaderLib)).toBeTruthy();
         });
         it("else, add NoSpecularMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.hasLib(dy.NoSpecularMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.NoSpecularMapShaderLib)).toBeTruthy();
         });
         it("if normalMap exist, add its shader lib", function(){
             material.normalMap = map;
 
             material.init();
 
-            expect(material.shader.hasLib(dy.NormalMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.NormalMapShaderLib)).toBeTruthy();
         });
         it("else, add NoNormalMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.hasLib(dy.NoNormalMapShaderLib.getInstance())).toBeTruthy();
+            expect(material.shader.getLib(dy.NoNormalMapShaderLib)).toBeTruthy();
         });
 
         describe("if Stage enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
@@ -71,7 +71,7 @@ describe("LightMaterial", function() {
 
                 material.init();
 
-                expect(material.shader.hasLib(dy.NoShadowMapShaderLib.getInstance())).toBeTruthy();
+                expect(material.shader.getLib(dy.NoShadowMapShaderLib)).toBeTruthy();
             });
 
             describe("else", function(){
@@ -82,7 +82,7 @@ describe("LightMaterial", function() {
                 it("else, if not has twoD shadowMap && not has cubemap shadowMap, add NoShadowMapShaderLib", function () {
                     material.init();
 
-                    expect(material.shader.hasLib(dy.NoShadowMapShaderLib.getInstance())).toBeTruthy();
+                    expect(material.shader.getLib(dy.NoShadowMapShaderLib)).toBeTruthy();
                 });
 
                 it("else if has twoD shadowMap, add TwoDShadowMapShaderLib", function(){
@@ -90,14 +90,14 @@ describe("LightMaterial", function() {
 
                     material.init();
 
-                    expect(material.shader.hasLib(dy.TwoDShadowMapShaderLib.getInstance())).toBeTruthy();
+                    expect(material.shader.getLib(dy.TwoDShadowMapShaderLib)).toBeTruthy();
                 });
                 it("else if has cubemap shadowMap, add CubemapShadowMapShaderLib", function(){
                     material.addCubemapShadowMap(new dy.CubemapShadowMapTexture());
 
                     material.init();
 
-                    expect(material.shader.hasLib(dy.CubemapShadowMapShaderLib.getInstance())).toBeTruthy();
+                    expect(material.shader.getLib(dy.CubemapShadowMapShaderLib)).toBeTruthy();
                 });
             });
         });
