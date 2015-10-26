@@ -34,7 +34,26 @@ describe("Color", function() {
         expect(getValues(color3.b)).toEqual(0.04);
         expect(getValues(color3.a)).toEqual(0.5);
     });
+    it("parse color from rgb(xxx,xxx,xxx) string", function(){
+        var color1 = Color.create("rgb(255, 2, 0)");
+        var color2 = Color.create("rgb(300, 2, 0)");
+        var color3 = Color.create("rgb(200, 255, 10)");
 
+        expect(getValues(color1.r)).toEqual(1);
+        expect(getValues(color1.g)).toEqual(0.01);
+        expect(getValues(color1.b)).toEqual(0);
+        expect(getValues(color1.a)).toEqual(1);
+
+        expect(getValues(color2.r)).toEqual(1);
+        expect(getValues(color2.g)).toEqual(0.01);
+        expect(getValues(color2.b)).toEqual(0);
+        expect(getValues(color2.a)).toEqual(1);
+
+        expect(getValues(color3.r)).toEqual(0.78);
+        expect(getValues(color3.g)).toEqual(1);
+        expect(getValues(color3.b)).toEqual(0.04);
+        expect(getValues(color3.a)).toEqual(1);
+    });
     it("parse color from #xxxxxx string", function(){
         var color1 = Color.create("#ffffff");
         var color2 = Color.create("#000000");
