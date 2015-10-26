@@ -13,7 +13,7 @@ module dy{
             this.sendUniformData(program, "u_diffuse", material.color.toVector3());
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_diffuse"]);

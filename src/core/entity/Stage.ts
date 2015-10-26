@@ -45,12 +45,11 @@ module dy {
             this.isUseProgram = true;
 
             this.shader = shader;
-            this.shader.program.use();
         }
 
         public unUseProgram(){
             this.isUseProgram = false;
-            this.shader.program.unUse();
+            //this.shader.program.unUse();
         }
 
         public addChild(child:GameObject):GameObject{

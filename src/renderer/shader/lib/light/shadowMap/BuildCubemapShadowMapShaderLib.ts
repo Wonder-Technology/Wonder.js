@@ -14,7 +14,7 @@ module dy{
             this.sendUniformData(program, "u_farPlane", material.buildCubemapShadowMapData.farPlane);
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([

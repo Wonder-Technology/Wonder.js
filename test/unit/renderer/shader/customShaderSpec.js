@@ -98,6 +98,7 @@ describe("custom shader", function () {
                     sandbox.stub(material.textureManager, "sendData");
                     sandbox.stub(shader.program, "sendAttributeData");
                     sandbox.stub(shader.program, "sendUniformData");
+                    sandbox.stub(shader.program, "use");
 
                     quadCmd = dy.QuadCommand.create();
                     sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
@@ -126,18 +127,6 @@ describe("custom shader", function () {
                 //        }
                 //    )
                 //});
-                it("send CommonShaderLib->variables", function () {
-                    expect(program.sendAttributeData.firstCall.args[0]).toEqual("a_position");
-                    expect(quadCmd.buffers.getChild.firstCall).toCalledWith("vertexBuffer");
-
-                    expect(program.sendUniformData.firstCall.args[0]).toEqual("u_mMatrix");
-                    expect(program.sendUniformData.firstCall.args[2]).toEqual(quadCmd.mMatrix);
-                    expect(program.sendUniformData.secondCall.args[0]).toEqual("u_vMatrix");
-                    expect(program.sendUniformData.secondCall.args[2]).toEqual(quadCmd.vMatrix);
-                    expect(program.sendUniformData.thirdCall.args[0]).toEqual("u_pMatrix");
-                    expect(program.sendUniformData.thirdCall.args[2]).toEqual(quadCmd.pMatrix);
-                });
-
                 it("build definition data", function () {
                     var attributes = shaderDefinitionData.attributes;
                     var uniforms = shaderDefinitionData.uniforms;
@@ -169,6 +158,23 @@ describe("custom shader", function () {
                 it("if definition data change, program will reset shader", function () {
                     expect(gl.attachShader).toCalledTwice();
                 });
+                it("use program", function(){
+                    expect(program.use).toCalledAfter(gl.attachShader);
+                });
+                it("send CommonShaderLib->variables", function () {
+                    expect(program.sendAttributeData).toCalledAfter(program.use);
+
+                    expect(program.sendAttributeData.firstCall.args[0]).toEqual("a_position");
+                    expect(quadCmd.buffers.getChild.firstCall).toCalledWith("vertexBuffer");
+
+                    expect(program.sendUniformData.firstCall.args[0]).toEqual("u_mMatrix");
+                    expect(program.sendUniformData.firstCall.args[2]).toEqual(quadCmd.mMatrix);
+                    expect(program.sendUniformData.secondCall.args[0]).toEqual("u_vMatrix");
+                    expect(program.sendUniformData.secondCall.args[2]).toEqual(quadCmd.vMatrix);
+                    expect(program.sendUniformData.thirdCall.args[0]).toEqual("u_pMatrix");
+                    expect(program.sendUniformData.thirdCall.args[2]).toEqual(quadCmd.pMatrix);
+                });
+
                 it("send texture's variables", function () {
                     expect(material.textureManager.sendData).toCalledWith(shader.program);
                 });

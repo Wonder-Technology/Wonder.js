@@ -14,7 +14,7 @@ module dy{
 
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.setVsSource(this.getVsChunk("light_common.glsl"));

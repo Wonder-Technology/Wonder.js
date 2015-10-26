@@ -32,7 +32,7 @@ module dy {
 
         public execute() {
             this.material.updateTexture();
-            this.material.useProgram();
+            //this.material.useProgram();
             this.material.updateShader(this);
 
             this._draw();

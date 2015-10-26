@@ -16,7 +16,7 @@ module dy{
                 }
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_normal"]);

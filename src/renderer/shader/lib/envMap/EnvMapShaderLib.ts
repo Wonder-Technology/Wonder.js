@@ -10,7 +10,7 @@ module dy{
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_normal"]);

@@ -12,28 +12,28 @@ describe("Material", function() {
         sandbox.restore();
     });
 
-    describe("useProgram", function(){
-        var stage;
-
-        beforeEach(function(){
-            stage = dy.Director.getInstance().stage;
-            sandbox.stub(material.shader.program, "use");
-        });
-
-        it("if Stage use program, return", function(){
-            stage.useProgram(dy.Shader.create());
-
-            material.useProgram();
-
-            expect(material.shader.program.use).not.toCalled();
-        });
-        it("else, use material's shader's program", function () {
-            material.useProgram();
-
-            expect(material.shader.program.use).toCalledOnce();
-        });
-
-    });
+    //describe("useProgram", function(){
+    //    var stage;
+    //
+    //    beforeEach(function(){
+    //        stage = dy.Director.getInstance().stage;
+    //        sandbox.stub(material.shader.program, "use");
+    //    });
+    //
+    //    it("if Stage use program, return", function(){
+    //        stage.useProgram(dy.Shader.create());
+    //
+    //        material.useProgram();
+    //
+    //        expect(material.shader.program.use).not.toCalled();
+    //    });
+    //    it("else, use material's shader's program", function () {
+    //        material.useProgram();
+    //
+    //        expect(material.shader.program.use).toCalledOnce();
+    //    });
+    //
+    //});
 
     describe("updateShader", function(){
         var stage;

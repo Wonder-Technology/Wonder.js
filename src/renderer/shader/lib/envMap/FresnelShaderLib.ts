@@ -18,7 +18,7 @@ module dy{
             this.sendUniformData(program, "u_reflectivity", material.reflectivity);
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);

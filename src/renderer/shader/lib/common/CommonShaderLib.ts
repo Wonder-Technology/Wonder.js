@@ -17,7 +17,7 @@ module dy{
             this.sendUniformData(program, "u_pMatrix", quadCmd.pMatrix);
         }
 
-        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             //todo use VariableLib.xxx?

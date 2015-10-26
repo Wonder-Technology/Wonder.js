@@ -29,6 +29,7 @@ describe("shaderLibSpec", function () {
                 quadCmd = new dy.QuadCommand();
 
                 program = {
+                    use: sandbox.stub(),
                     initWithShader: sandbox.stub(),
                     sendUniformData: sandbox.stub(),
                     sendAttributeData: sandbox.stub(),

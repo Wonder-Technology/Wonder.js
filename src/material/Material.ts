@@ -169,15 +169,15 @@ module dy {
             this.textureManager.update();
         }
 
-        public useProgram(){
-            var stage:Stage = Director.getInstance().stage;
-
-            if(stage.isUseProgram){
-                return;
-            }
-
-            this.shader.program.use();
-        }
+        //public useProgram(){
+        //    var stage:Stage = Director.getInstance().stage;
+        //
+        //    if(stage.isUseProgram){
+        //        return;
+        //    }
+        //
+        //    this.shader.program.use();
+        //}
 
         public updateShader(quadCmd:QuadCommand){
             var stage:Stage = Director.getInstance().stage;

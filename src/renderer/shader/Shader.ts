@@ -59,7 +59,7 @@ module dy{
             this._fsSource = fsSource;
         }
 
-        private _definitionDataDirty:boolean = false;
+        private _definitionDataDirty:boolean = true;
         private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
         private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
@@ -86,25 +86,13 @@ module dy{
         }
 
         public init(){
-            //this.initProgram();
         }
-
-        //public initProgram(){
-        //    //this.buildDefinitionData();
-        //
-        //    //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-        //    //this.program.initWithShader(this);
-        //}
 
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;
 
-            this._libs.forEach((lib:ShaderLib) => {
-                lib.update(program, quadCmd, material);
-            });
+            this.buildDefinitionData(quadCmd, material);
 
-
-            this.buildDefinitionData();
             if(this._definitionDataDirty){
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
                 this.program.initWithShader(this);
@@ -112,14 +100,17 @@ module dy{
                 this._definitionDataDirty = false;
             }
 
+            this.program.use();
+
+            this._libs.forEach((lib:ShaderLib) => {
+                lib.sendShaderVariables(program, quadCmd, material);
+            });
+
+
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
 
             material.textureManager.sendData(program);
-        }
-
-        private _isDefinitionDataDirty(){
-
         }
 
         public hasLib(lib:ShaderLib){
@@ -151,22 +142,15 @@ module dy{
             this._libs = this._libs.sort(func);
         }
 
-        //public clearSource(){
-        //    this.vsSource = "";
-        //    this.fsSource = "";
-        //
-        //    //todo refactor? invoke "clear" method?
-        //    //this._sourceBuilder = ShaderSourceBuilder.create();
-        //    this._sourceBuilder.clearShaderDefinition();
-        //}
-
-
         public read(definitionData:ShaderDefinitionData){
             this._sourceBuilder.read(definitionData);
         }
 
-        public buildDefinitionData(){
-            //this.clearSource();
+        public buildDefinitionData(quadCmd:QuadCommand, material:Material){
+            this._libs.forEach((lib:ShaderLib) => {
+                lib.setShaderDefinition(quadCmd, material);
+            });
+
             this._sourceBuilder.clearShaderDefinition();
 
             this._sourceBuilder.build(this._libs);

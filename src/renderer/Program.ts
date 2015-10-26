@@ -14,8 +14,8 @@ module dy{
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
-        public unUse(){
-        }
+        //public unUse(){
+        //}
 
         public getUniformLocation(name:string){
             return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
@@ -196,6 +196,9 @@ module dy{
             gl.linkProgram(this._program);
 
             Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
+
+
+
 
             /*!
              should detach and delete shaders after linking the program

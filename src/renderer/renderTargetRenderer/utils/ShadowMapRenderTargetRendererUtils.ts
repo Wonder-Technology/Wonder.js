@@ -65,7 +65,7 @@ module dy {
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
             this._shader = Shader.create();
             this._shader.addLib(lib);
-            //this._shader.initProgram();
+            //this._shader.buildGLSLAndInitProgram();
         }
 
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
