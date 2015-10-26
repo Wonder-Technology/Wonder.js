@@ -15,8 +15,8 @@ module dy{
             program.sendUniformData("u_refractionRatio", VariableType.FLOAT_1, material.refractionRatio);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_refractionRatio"]);
 

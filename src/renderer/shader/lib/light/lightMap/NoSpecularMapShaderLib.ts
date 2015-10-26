@@ -13,8 +13,8 @@ module dy{
             program.sendUniformData("u_specular", VariableType.FLOAT_3, material.specular.toVector3());
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_specular"]);
         }

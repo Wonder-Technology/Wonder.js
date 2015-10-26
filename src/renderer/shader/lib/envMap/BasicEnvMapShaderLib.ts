@@ -9,8 +9,8 @@ module dy{
 
         public type:string = "basic_envMap";
         //
-        //protected setShaderDefinition(){
-        //    super.setShaderDefinition();
+        //protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        //    super.setShaderDefinition(quadCmd, material);
         //
         //    this.vsSourceHead = ShaderChunk.basic_envMap_head_vertex;
         //    this.vsSourceBody += ShaderChunk.basic_envMap_body_vertex;

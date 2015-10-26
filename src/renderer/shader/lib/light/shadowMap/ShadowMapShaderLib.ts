@@ -1,8 +1,8 @@
 /// <reference path="../../../../../definitions.d.ts"/>
 module dy{
     export abstract class ShadowMapShaderLib extends ShaderLib{
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this._setShadowMapSource();
         }

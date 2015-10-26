@@ -14,8 +14,8 @@ module dy{
             program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_mirrorColor", "u_mirrorSampler"]);
         }

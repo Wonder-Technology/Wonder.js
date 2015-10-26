@@ -14,8 +14,8 @@ module dy{
             program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.buildTwoDShadowMapData.vpMatrixFromLight);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
                 "u_vpMatrixFromLight"

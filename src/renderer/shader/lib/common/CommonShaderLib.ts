@@ -17,8 +17,8 @@ module dy{
             program.sendUniformData("u_pMatrix", VariableType.FLOAT_MAT4, quadCmd.pMatrix);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             //todo use VariableLib.xxx?
             this.addAttributeVariable(["a_position"]);

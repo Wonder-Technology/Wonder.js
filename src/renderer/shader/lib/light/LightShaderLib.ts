@@ -22,19 +22,17 @@ module dy{
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
 
-            this.sendUniformData(program, "u_isBothSide", material.side === Side.BOTH ? 1 : -1);
-
             this._sendLightVariables(program);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_normal"]);
 
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide"]);
 
-            this._setLightDefinition();
+            this._setLightDefinition(material);
         }
 
         private _sendLightVariables(program:Program){
@@ -96,7 +94,7 @@ module dy{
             return val[0] === 0 && val[1] === 0 && val[2] === 0;
         }
 
-        private _setLightDefinition(){
+        private _setLightDefinition(material:Material){
             var stage:Stage = dy.Director.getInstance().stage,
                 directionLights:dyCb.Collection<GameObject> = stage.directionLights,
                 pointLights:dyCb.Collection<GameObject> = stage.pointLights,
@@ -117,6 +115,12 @@ module dy{
 
             this._addDefine(this.vsSourceDefineList, direction_lights_count, point_lights_count);
             this._addDefine(this.fsSourceDefineList, direction_lights_count, point_lights_count);
+
+            if(material.side === Side.BOTH){
+                this.fsSourceDefineList.addChildren([{
+                    name: "BOTH_SIDE"
+                }]);
+            }
         }
 
         private _addDefine(list, direction_lights_count, point_lights_count){
@@ -127,8 +131,6 @@ module dy{
                 name: "POINT_LIGHTS_COUNT",
                 value: point_lights_count
             }]);
-
-
         }
     }
 }

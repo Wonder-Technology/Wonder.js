@@ -9,8 +9,8 @@ module dy{
 
         public type:string = "reflection";
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");

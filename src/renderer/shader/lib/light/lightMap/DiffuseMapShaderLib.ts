@@ -9,8 +9,8 @@ module dy{
 
         public type:string = "diffuseMap";
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("diffuseMap"),

@@ -14,8 +14,8 @@ module dy{
             program.sendUniformData("u_farPlane", VariableType.FLOAT_1, material.buildCubemapShadowMapData.farPlane);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
                 "u_lightPos", "u_farPlane"

@@ -18,8 +18,8 @@ module dy{
             program.sendUniformData("u_mixRatio", VariableType.FLOAT_1, material.mixRatio);
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_sampler2D1", "u_combineMode", "u_mixRatio"]);
 

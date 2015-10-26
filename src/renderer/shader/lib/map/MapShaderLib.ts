@@ -7,8 +7,8 @@ module dy{
             }
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_texCoord"]);
 

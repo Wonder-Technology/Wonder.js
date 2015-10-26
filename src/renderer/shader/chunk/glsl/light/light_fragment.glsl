@@ -88,11 +88,9 @@ void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
 @body
     vec3 normal = normalize(getNormal());
 
-	//#ifdef DOUBLE_SIDED
-	if(u_isBothSide > 0){
+	#ifdef BOTH_SIDE
 		normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));
-		}
-	//#endif
+	#endif
 
     vec3 viewDir = normalize(getViewDir());
 

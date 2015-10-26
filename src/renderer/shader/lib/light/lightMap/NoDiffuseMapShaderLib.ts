@@ -13,8 +13,8 @@ module dy{
             program.sendUniformData("u_diffuse", VariableType.FLOAT_3, material.color.toVector3());
         }
 
-        protected setShaderDefinition(){
-            super.setShaderDefinition();
+        protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
+            super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_diffuse"]);
         }
