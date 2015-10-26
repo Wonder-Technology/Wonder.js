@@ -3,11 +3,11 @@ module dy{
     export abstract class EnvMapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             if (quadCmd.buffers.hasChild("normalBuffer")) {
-                program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
             }
 
-            program.sendUniformData("u_normalMatrix", VariableType.FLOAT_MAT3, quadCmd.mMatrix.copy().invertTo3x3().transpose());
-            program.sendUniformData("u_cameraPos", VariableType.FLOAT_3, Director.getInstance().stage.camera.transform.position);
+            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
+            this.sendUniformData(program, "u_cameraPos", Director.getInstance().stage.camera.transform.position);
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

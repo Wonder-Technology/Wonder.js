@@ -11,7 +11,7 @@ module dy{
         public type:string = "mirror";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MirrorMaterial){
-            program.sendUniformData("u_mirrorColor", VariableType.FLOAT_3, material.color.toVector3());
+            this.sendUniformData(program, "u_mirrorColor", material.color.toVector3());
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

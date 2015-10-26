@@ -14,8 +14,8 @@ module dy{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
-            program.sendUniformData("u_combineMode", VariableType.NUMBER_1, material.combineMode);
-            program.sendUniformData("u_mixRatio", VariableType.FLOAT_1, material.mixRatio);
+            this.sendUniformData(program, "u_combineMode", material.combineMode);
+            this.sendUniformData(program, "u_mixRatio", material.mixRatio);
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

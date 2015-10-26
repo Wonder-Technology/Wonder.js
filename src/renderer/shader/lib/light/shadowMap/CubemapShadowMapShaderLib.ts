@@ -12,10 +12,10 @@ module dy{
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             material.cubemapShadowMapDatas.forEach((data:CubemapShadowMapData, index:number) => {
-                program.sendUniformData(`u_cubemapLightPos[${index}]`, VariableType.FLOAT_3, data.lightPos);
-                program.sendUniformData(`u_farPlane[${index}]`, VariableType.FLOAT_1, data.farPlane);
-                program.sendUniformData(`u_cubemapShadowBias[${index}]`, VariableType.FLOAT_1, data.shadowBias);
-                program.sendUniformData(`u_cubemapShadowDarkness[${index}]`, VariableType.FLOAT_1, data.shadowDarkness);
+                program.sendStructureData(`u_cubemapLightPos[${index}]`, VariableType.FLOAT_3, data.lightPos);
+                program.sendStructureData(`u_farPlane[${index}]`, VariableType.FLOAT_1, data.farPlane);
+                program.sendStructureData(`u_cubemapShadowBias[${index}]`, VariableType.FLOAT_1, data.shadowBias);
+                program.sendStructureData(`u_cubemapShadowDarkness[${index}]`, VariableType.FLOAT_1, data.shadowDarkness);
             });
         }
     }

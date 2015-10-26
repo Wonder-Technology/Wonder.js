@@ -11,7 +11,7 @@ module dy{
         public type:string = "buildTwoDShadowMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_vpMatrixFromLight", VariableType.FLOAT_MAT4, material.buildTwoDShadowMapData.vpMatrixFromLight);
+            this.sendUniformData(program, "u_vpMatrixFromLight", material.buildTwoDShadowMapData.vpMatrixFromLight);
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

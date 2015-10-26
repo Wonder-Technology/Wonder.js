@@ -12,7 +12,7 @@ module dy{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EnvMapMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
 
-            program.sendUniformData("u_refractionRatio", VariableType.FLOAT_1, material.refractionRatio);
+            this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

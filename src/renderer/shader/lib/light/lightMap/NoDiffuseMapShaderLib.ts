@@ -10,7 +10,7 @@ module dy{
         public type:string = "noDiffuseMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_diffuse", VariableType.FLOAT_3, material.color.toVector3());
+            this.sendUniformData(program, "u_diffuse", material.color.toVector3());
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

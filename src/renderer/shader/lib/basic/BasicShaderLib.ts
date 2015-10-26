@@ -19,7 +19,7 @@ module dy{
                  */
 
 
-                program.sendAttributeData("a_color", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
+                this.sendAttributeData(program, "a_color", <ArrayBuffer>quadCmd.buffers.getChild("colorBuffer"));
             }
         }
 

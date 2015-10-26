@@ -10,7 +10,7 @@ module dy{
         public type:string = "noSpecularMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            program.sendUniformData("u_specular", VariableType.FLOAT_3, material.specular.toVector3());
+            this.sendUniformData(program, "u_specular", material.specular.toVector3());
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){

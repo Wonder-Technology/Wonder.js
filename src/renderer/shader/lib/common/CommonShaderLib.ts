@@ -12,9 +12,9 @@ module dy{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
             this._sendAttributeVariables(program, quadCmd);
 
-            program.sendUniformData("u_mMatrix", VariableType.FLOAT_MAT4, quadCmd.mMatrix);
-            program.sendUniformData("u_vMatrix", VariableType.FLOAT_MAT4, quadCmd.vMatrix);
-            program.sendUniformData("u_pMatrix", VariableType.FLOAT_MAT4, quadCmd.pMatrix);
+            this.sendUniformData(program, "u_mMatrix", quadCmd.mMatrix);
+            this.sendUniformData(program, "u_vMatrix", quadCmd.vMatrix);
+            this.sendUniformData(program, "u_pMatrix", quadCmd.pMatrix);
         }
 
         protected setShaderDefinition(quadCmd:QuadCommand, material:Material){
@@ -33,7 +33,7 @@ module dy{
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
             if (quadCmd.buffers.hasChild("vertexBuffer")) {
-                program.sendAttributeData("a_position", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
+                this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
             }
             else {
                 Log.error(true, Log.info.FUNC_MUST("has vertexBuffer"));
