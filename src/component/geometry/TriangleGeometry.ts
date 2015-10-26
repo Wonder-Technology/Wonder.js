@@ -45,16 +45,10 @@ module dy{
             ];
 
             return {
-                verticeBuffer: ArrayBuffer.create(new Float32Array(vertices),
-                    3, BufferType.FLOAT),
-                indiceBuffer: ElementBuffer.create(new Uint16Array(indices),
-                    BufferType.UNSIGNED_SHORT),
-                normalBuffer: ArrayBuffer.create(new Float32Array(normals),
-                    3, BufferType.FLOAT),
-                texCoordBuffer: ArrayBuffer.create(new Float32Array(texCoords),
-                    2, BufferType.FLOAT),
-                tangentBuffer: ArrayBuffer.create(new Float32Array(this.calculateTangents(vertices, normals, texCoords, indices)),
-                    3, BufferType.FLOAT),
+                vertices: vertices,
+                indices: indices,
+                normals: normals,
+                texCoords: texCoords
             };
         }
     }

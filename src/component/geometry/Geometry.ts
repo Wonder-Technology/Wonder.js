@@ -19,17 +19,17 @@ module dy{
 
         public init(){
             var {
-                verticeBuffer,
-                indiceBuffer,
-                normalBuffer,
-                texCoordBuffer,
-                tangentBuffer
+                vertices,
+                indices,
+                normals,
+                texCoords,
                 } = this.computeData();
-            this.verticeBuffer = verticeBuffer;
-            this.indiceBuffer = indiceBuffer;
-            this.normalBuffer = normalBuffer;
-            this.texCoordBuffer = texCoordBuffer;
-            this.tangentBuffer = tangentBuffer;
+
+            this.verticeBuffer = ArrayBuffer.create(new Float32Array(vertices), 3, BufferType.FLOAT);
+            this.indiceBuffer = ElementBuffer.create(new Uint16Array(indices), BufferType.UNSIGNED_SHORT);
+            this.normalBuffer = ArrayBuffer.create(new Float32Array(normals), 3, BufferType.FLOAT);
+            this.texCoordBuffer = ArrayBuffer.create(new Float32Array(texCoords), 2, BufferType.FLOAT);
+            this.tangentBuffer = ArrayBuffer.create(new Float32Array( this.calculateTangents(vertices, normals, texCoords, indices)), 3, BufferType.FLOAT);
 
             //todo compute from vertexColors(refer to threejs)
             this.colorBuffer = this._computeColorsBuffer(this._material);
@@ -193,11 +193,10 @@ module dy{
     }
 
     export type GeometryData = {
-        verticeBuffer:ArrayBuffer;
-        indiceBuffer:ElementBuffer;
-        normalBuffer:ArrayBuffer;
-        texCoordBuffer:ArrayBuffer;
-        tangentBuffer:ArrayBuffer;
+        vertices:Array<number>;
+        indices:Array<number>;
+        normals:Array<number>;
+        texCoords:Array<number>;
     };
 }
 
