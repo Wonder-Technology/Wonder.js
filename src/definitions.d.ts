@@ -182,6 +182,9 @@
 /// <reference path="asset/obj/MTLParser"/>
 /// <reference path="asset/obj/OBJLoaderUtils"/>
 
+/// <reference path="asset/dy/DYLoader"/>
+/// <reference path="asset/dy/DYParser"/>
+
 
 /// <reference path="event/structure/EventListenerMap"/>
 /// <reference path="event/object/EventType"/>
