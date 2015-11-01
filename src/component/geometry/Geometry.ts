@@ -23,6 +23,7 @@ module dy{
                 indices,
                 normals,
                 texCoords,
+                colors
                 } = this.computeData();
 
             this.verticeBuffer = ArrayBuffer.create(new Float32Array(vertices), 3, BufferType.FLOAT);
@@ -31,8 +32,13 @@ module dy{
             this.texCoordBuffer = ArrayBuffer.create(new Float32Array(texCoords), 2, BufferType.FLOAT);
             this.tangentBuffer = ArrayBuffer.create(new Float32Array( this.calculateTangents(vertices, normals, texCoords, indices)), 3, BufferType.FLOAT);
 
-            //todo compute from vertexColors(refer to threejs)
-            this.colorBuffer = this._computeColorsBuffer(this._material);
+            if(colors){
+                this.colorBuffer = ArrayBuffer.create(new Float32Array(colors), 3, BufferType.FLOAT);
+            }
+            else{
+                //todo compute from vertexColors(refer to threejs)
+                this.colorBuffer = this._computeColorsBuffer(this._material);
+            }
 
             this._material.init();
         }
@@ -197,6 +203,7 @@ module dy{
         indices:Array<number>;
         normals:Array<number>;
         texCoords:Array<number>;
+        colors?:Array<number>;
     };
 }
 

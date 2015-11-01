@@ -1,19 +1,7 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
     export type DYFileJsonData = {
-        metadata:{
-            formatVersion:number,
-            description?:string,
-            sourceFile:string,
-            generatedBy:string
-            //verticeCount: number,
-            //faceCount: number,
-            //normalCount: number,
-            //colorCount: number,
-            //uvCount: number,
-            //materialCount: number,
-            //morphTargetCount: number
-        },
+        metadata:DYFileMetadata,
         scene:{
             ambientColor?:Array<number>
         },
@@ -22,11 +10,11 @@ module dy {
                 type: string,
                 diffuseColor?: Array<number>,
                 specularColor?: Array<number>,
-                illumination?: number,
+                //illumination?: number,
                 //url is related to this file
-                diffuseMap?: string,
-                specularMap?: string,
-                normalMap?: string,
+                diffuseMapUrl?: string,
+                specularMapUrl?: string,
+                normalMapUrl?: string,
                 shininess?: number,
                 opacity?: number
             }
@@ -65,9 +53,7 @@ module dy {
         //        url:string
         //    }
         //}
-        objects:{
-            [name: string]: DYFileJsonObjectData
-        }
+        objects:DYFileJsonObjectData
     }
 
     export type DYFileJsonObjectData = {
@@ -77,7 +63,7 @@ module dy {
             //visible: boolean,
 
 
-            geometryType:string,
+            //geometryType:string,
             //todo support multi materials
             material:string,
             //todo
@@ -99,13 +85,11 @@ module dy {
             //"faces": []
             indices?: Array<number>,
 
-            /*!for other geometry*/
-            [otherParam:string]:any
+        //todo /*!for other geometry*/
+        //[otherParam:string]:any
 
 
-            children: {
-                [name: string]: DYFileParseObjectData
-            }
+            children: DYFileParseObjectData
     }
     //export type DYFileData = {
     //    scene: dyCb.Hash<DYFileSceneData>,
@@ -117,32 +101,25 @@ module dy {
     //}
 
     export type DYFileParseData = {
-        metadata:{
-            formatVersion:number,
-            description?:string,
-            sourceFile:string,
-            generatedBy:string
-        },
+        metadata:DYFileMetadata,
         scene:{
             ambientColor?: Color
         },
-        materials:{
-            [name:string]:{
-                type: string,
-                diffuseColor?: Color,
-                specularColor?: Color,
-                illumination?: number,
-                //url is related to this file
-                diffuseMap?: string,
-                specularMap?: string,
-                normalMap?: string,
-                shininess?: number,
-                opacity?: number
-            }
-        },
-        objects:{
-            [name: string]: DYFileParseObjectData
-        }
+        materials:dyCb.Hash<DYFileParseMaterialData>,
+        objects: DYFileParseObjectData
+    }
+
+    export type DYFileParseMaterialData = {
+        type: string,
+        diffuseColor?: Color,
+        specularColor?: Color,
+        //illumination?: number,
+        //url is related to this file
+        diffuseMapUrl?: string,
+        specularMapUrl?: string,
+        normalMapUrl?: string,
+        shininess?: number,
+        opacity?: number
     }
 
     export type DYFileParseObjectData = {
@@ -150,10 +127,10 @@ module dy {
         //rotation: Array<number>,
         //scale: Array<number>,
         //visible: boolean,
-        geometryType:string,
+        //todo now only support ModelGeometry, should support other geometry
+        //geometryType:string,
 
 
-        type:string,
         //todo support multi materials
         material:string,
         //todo
@@ -175,12 +152,25 @@ module dy {
         //"faces": []
         indices: dyCb.Collection<number>,
 
-        /*!for other geometry*/
-        [otherParam:string]:any
+        //todo /*!for other geometry*/
+        //[otherParam:string]:any
 
         parent:DYFileParseObjectData,
-        children:{
-            [name: string]: DYFileParseObjectData
-        }
+        children:DYFileParseObjectData
+    }
+
+    export type DYFileResult = {
+        metadata:dyCb.Hash<DYFileMetadata>,
+        scene:dyCb.Hash<{
+            ambientColor:Color
+        }>,
+        models:dyCb.Collection<GameObject>
+    }
+
+    export type DYFileMetadata = {
+        formatVersion:number,
+        description?:string,
+        sourceFile:string,
+        generatedBy:string
     }
 }

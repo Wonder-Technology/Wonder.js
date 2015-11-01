@@ -158,6 +158,7 @@
 /// <reference path="asset/TextureLoader"/>
 /// <reference path="asset/utils/ImgLoader"/>
 /// <reference path="asset/utils/AjaxLoader"/>
+/// <reference path="asset/utils/ModelLoaderUtils"/>
 /// <reference path="asset/texture/ITextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
@@ -180,10 +181,11 @@
 /// <reference path="asset/obj/OBJLoader"/>
 /// <reference path="asset/obj/OBJParser"/>
 /// <reference path="asset/obj/MTLParser"/>
-/// <reference path="asset/obj/OBJLoaderUtils"/>
 
+/// <reference path="asset/dy/DYFileType"/>
 /// <reference path="asset/dy/DYLoader"/>
 /// <reference path="asset/dy/DYParser"/>
+/// <reference path="asset/dy/DYBuilder"/>
 
 
 /// <reference path="event/structure/EventListenerMap"/>

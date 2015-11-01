@@ -33,6 +33,7 @@ module dy{
             var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
                 REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
                 REGEX_RGB_2 = /^rgb\(([01]\.\d+),\s*([01]\.\d+),\s*([01]\.\d+)\)$/i,
+                //REGEX_RGB_2 = /^rgb\((([01]\.\d+)|([01])),\s*(([01]\.\d+)|([01])),\s*(([01]\.\d+)|([01]))\)$/i,
                 REGEX_NUM = /^\#([0-9a-f]{6})$/i;
             var color = null;
 
@@ -71,9 +72,9 @@ module dy{
 
             }
 
-            //todo test
-
-            // rgba(0.0,0.1,1,0)
+            /*! it will cause ambiguity.
+            e.g. rgba(0,0, */
+            // rgba(0.0,0.1,1.0)
             //
             if ( REGEX_RGB_2.test( colorVal ) ) {
                 color = REGEX_RGB_2.exec( colorVal );

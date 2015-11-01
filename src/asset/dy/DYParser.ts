@@ -10,9 +10,17 @@ module dy {
         private _data:DYFileParseData = <any>{};
 
         public parse(json:DYFileJsonData):DYFileParseData {
-            this.parseScene(json).parseMaterial(json).parseObject(json);
+            //todo private
+            this.parseMetadata(json);
+            this.parseScene(json);
+            this.parseMaterial(json);
+            this.parseObject(json);
 
             return this._data;
+        }
+
+        public parseMetadata(json:DYFileJsonData){
+            this._data.metadata = <any>json.metadata;
         }
 
         public parseObject(json:DYFileJsonData) {
@@ -29,75 +37,25 @@ module dy {
             }
         }
 
-        private _parseObject(object:DYFileParseObjectData) {
-            object.vertices = this._findAndConvertData(object, "vertices");
-            object.indices = this._findAndConvertData(object, "indices");
-
-            for (let m of object.morphTargets) {
-                m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
-
-                this._parseMorphTargetNormal(m, object.indices);
-            }
-
-            object.colors = this._findAndConvertData(object, "colors");
-            object.uvs = this._findAndConvertData(object, "uvs");
-
-            this._parseObjectNormal(object);
-
-            if(object.children){
-                for(let i in object.children){
-                    if(object.children.hasOwnProperty(i)){
-                        let child = <any>object.children[i];
-
-                        child.parent = object;
-                        this._parseObject(child);
-                    }
-                }
-            }
-        }
-
-        private _findAndConvertData(object:DYFileParseObjectData, dataName:string){
-            var data = null;
-
-            do{
-                data = object[dataName];
-            }
-            while(!data && (object = object.parent) !== null);
-
-            if(data instanceof dyCb.Collection){
-                return data;
-            }
-
-            return dyCb.Collection.create<number>(data);
-        }
-
         public parseScene(json:DYFileJsonData) {
             this._data.scene = <any>json.scene;
 
             if (json.scene.ambientColor) {
                 this._data.scene.ambientColor = this._createColor(json.scene.ambientColor);
             }
-
-            return this;
         }
 
         public parseMaterial(json:DYFileJsonData) {
-            this._data.materials = <any>json.materials;
+            this._data.materials = dyCb.Hash.create<any>(json.materials);
 
-            for (let i in this._data.materials) {
-                if (this._data.materials.hasOwnProperty(i)) {
-                    let material:any = this._data.materials[i];
-
-                    if (material.diffuseColor) {
-                        material.diffuseColor = this._createColor(material.diffuseColor);
-                    }
-                    if (material.specularColor) {
-                        material.specularColor = this._createColor(material.specularColor);
-                    }
+            this._data.materials.forEach((material:any) => {
+                if (material.diffuseColor) {
+                    material.diffuseColor = this._createColor(material.diffuseColor);
                 }
-            }
-
-            return this;
+                if (material.specularColor) {
+                    material.specularColor = this._createColor(material.specularColor);
+                }
+            });
         }
 
         private _createColor(colorArr:Array<number>) {
@@ -108,7 +66,12 @@ module dy {
             m.normals = <any>this._parseNormal(m.vertices, indices, m.normals);
         }
 
-        private _parseObjectNormal(object) {
+        private _parseObjectNormal(object, hasVertices:boolean) {
+            if(!hasVertices){
+                object.normals = this._findAndConvertData(object, "normals");
+                return;
+            }
+
             object.normals = this._parseNormal(object.vertices, object.indices, object.normals);
         }
 
@@ -147,6 +110,54 @@ module dy {
             compute(0);
 
             return normals;
+        }
+
+        private _parseObject(object:DYFileParseObjectData) {
+            var hasVertices = true;
+
+            if(!object.vertices){
+                hasVertices = false;
+            }
+
+            object.vertices = this._findAndConvertData(object, "vertices");
+            object.indices = this._findAndConvertData(object, "indices");
+
+            this._parseObjectNormal(object, hasVertices);
+
+            for (let m of object.morphTargets) {
+                m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
+                //morphTargets should only come from local, not from parent
+                this._parseMorphTargetNormal(m, object.indices);
+            }
+
+            object.colors = this._findAndConvertData(object, "colors");
+            object.uvs = this._findAndConvertData(object, "uvs");
+
+            if(object.children){
+                for(let i in object.children){
+                    if(object.children.hasOwnProperty(i)){
+                        let child = <any>object.children[i];
+
+                        child.parent = object;
+                        this._parseObject(child);
+                    }
+                }
+            }
+        }
+
+        private _findAndConvertData(object:DYFileParseObjectData, dataName:string){
+            var data = null;
+
+            do{
+                data = object[dataName];
+            }
+            while(!data && (object = object.parent) !== null);
+
+            if(data instanceof dyCb.Collection){
+                return data;
+            }
+
+            return dyCb.Collection.create<number>(data);
         }
     }
 }

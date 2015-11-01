@@ -11,6 +11,8 @@ module dy {
         }
 
         private _dyParser:DYParser = DYParser.create();
+        private _dyBuilder:DYBuilder = DYBuilder.create();
+        private _parseData:DYFileParseData = null;
 
 
         protected loadAsset(url:string):dyRt.Stream;
@@ -24,87 +26,51 @@ module dy {
                 self = this;
 
             return AjaxLoader.load(url, "json")
-                .map((json:DYFileJsonData) => {
-                    return self._dyParser.parse(json);
-                });
+                .flatMap((json:DYFileJsonData) => {
+                    self._parseData = self._dyParser.parse(json);
+
+                    return this._createLoadMapStream(url);
+                })
+            .concat(
+                //[
+                //this._createLoadMapStream(),
+                dyRt.callFunc(()=> {
+                    return self._dyBuilder.build(self._parseData);
+                })
+                    //]
+            );
         }
-    }
 
-    export type DYFileJsonData = {
-        metadata:{
-            formatVersion:number,
-            description?:string,
-            sourceFile:string,
-            generatedBy:string
-            //verticeCount: number,
-            //faceCount: number,
-            //normalCount: number,
-            //colorCount: number,
-            //uvCount: number,
-            //materialCount: number,
-            //morphTargetCount: number
-        },
-        scene:{
-            ambientColor?:Array<number>
-        },
-        materials:{
-            [name:string]:{
-                type: string,
-                diffuseColor?: Array<number>,
-                specularColor?: Array<number>,
-                illumination?: number,
-                diffuseMapName?: string,
-                specularMapName?: string,
-                normalMapName?: string,
-                shininess?: number,
-                opacity?: number
-            }
-        },
-        geometrys:{
-            [name:string]:{
-                type:string,
-                //todo support multi materials
-                material:string,
-                //todo
-                //smoothShading?: boolean,
+        private _createLoadMapStream(filePath:string):dyRt.Stream{
+            var streamArr = [],
+                parseData = this._parseData,
+                i = null;
 
+            parseData.materials.forEach((material:DYFileParseMaterialData) => {
+                var mapUrlArr = [];
 
-                /*!for model geometry*/
-                vertices?: Array<number>,
-                morphTargets?: Array<{
-                    name:string,
-                    vertices:Array<number>,
-                    normals?:Array<number>
-                }>,
-                //"morphColors": [],
-                normals?: Array<number>,
-                colors?: Array<number>,
-                //"uvs": [[]],
-                uvs?: Array<number>,
-                //"faces": []
-                indices?: Array<number>,
+                if (material.diffuseMapUrl) {
+                    mapUrlArr.push(["diffuseMap", material.diffuseMapUrl]);
+                }
+                if (material.specularMapUrl) {
+                    mapUrlArr.push(["specularMap", material.specularMapUrl]);
+                }
+                if (material.normalMapUrl) {
+                    mapUrlArr.push(["normalMap", material.normalMapUrl]);
+                }
 
-                /*!for other geometry*/
-                [otherParam:string]:any
-            }
-        },
-        textures:{
-            [name:string]:{
-                //url is related to this file
-                url:string
-            }
-        }
-        objects:DYFileJsonObjectData
-    }
+                streamArr.push(
+                    dyRt.fromArray(mapUrlArr)
+                        .flatMap(([type, mapUrl]) => {
+                            return TextureLoader.getInstance().load(ModelLoaderUtils.getPath(filePath, mapUrl))
+                                .do((asset:TextureAsset) => {
+                                    material[type] = asset.toTexture();
+                                }, null, null);
+                        })
+                )
+            })
 
-    export type DYFileJsonObjectData = {
-        [name: string]: {
-            //position: Array<number>,
-            //rotation: Array<number>,
-            //scale: Array<number>,
-            //visible: boolean,
-            geometry:string,
-            children: DYFileJsonObjectData
+            return dyRt.fromArray(streamArr).mergeAll();
         }
     }
 }

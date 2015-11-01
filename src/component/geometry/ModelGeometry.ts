@@ -9,22 +9,37 @@ module dy{
 
         public vertices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public normals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
+        public colors:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
         public indices:dyCb.Collection<number> = dyCb.Collection.create<number>();
+
+        public isDY:boolean = false;
 
 
         protected computeData(){
             var vertices = this._convertVector3ToArray(this.vertices),
                 indices = this.indices.toArray(),
                 normals = this._convertVector3ToArray(this.normals),
-                texCoords = this._convertVector2ToArray(this.texCoords);
+                texCoords = this._convertVector2ToArray(this.texCoords),
+            colors = this._convertVector3ToArray(this.colors);
 
+            //todo refacto OBJParser-> Collection<Vector3> to Collection<number>
+            if(this.isDY){
+                return <any>{
+                    vertices: this.vertices.toArray(),
+                    indices: this.indices.toArray(),
+                    normals: this.normals.toArray(),
+                    texCoords: this.texCoords.toArray(),
+                    colors: this.colors.toArray()
+                };
+            }
 
             return {
                 vertices: vertices,
                 indices: indices,
                 normals: normals,
-                texCoords: texCoords
+                texCoords: texCoords,
+                colors: colors
             };
         }
 

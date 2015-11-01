@@ -74,10 +74,10 @@ describe("DYParser", function () {
 
             var result = parser.parse(json);
 
-            expect(result.materials.a.diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.a.specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
-            expect(result.materials.b.diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.b.specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
+            expect(result.materials.getChild("a").diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
+            expect(result.materials.getChild("a").specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
+            expect(result.materials.getChild("b").diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
+            expect(result.materials.getChild("b").specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
         });
     });
 
@@ -306,35 +306,89 @@ describe("DYParser", function () {
                 });
             });
 
-            it("if child's geometry data is null, use its parent's data", function(){
-                var copy = setObject({
-                    a:{
-                        morphTargets:[],
-                        vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
-                        indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
+            describe("if child's geometry data is null, use its parent's data", function(){
+                it("test", function(){
+                    var copy = setObject({
+                        a:{
+                            morphTargets:[],
+                            vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
+                            indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                            uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
 
-                        children: {
-                            aa: {
-                                morphTargets: [],
-                                uvs:[1.0,0.1,0.1,0.2,0.2,0.2],
-                            }
-                        }}
-                })
-                var result = parser.parse(json);
+                            children: {
+                                aa: {
+                                    morphTargets: [],
+                                    uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
+                                }
+                            }}
+                    })
+                    var result = parser.parse(json);
 
-                expect(result.objects.a.children.aa.vertices.getChildren()).toEqual(
-                    copy.objects.a.vertices
-                );
-                expect(result.objects.a.children.aa.indices.getChildren()).toEqual(
-                    copy.objects.a.indices
-                );
-                expect(result.objects.a.children.aa.uvs.getChildren()).toEqual(
-                    copy.objects.a.children.aa.uvs
-                );
-                expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
-                    [-0.7071067690849304,0.7071067690849304,0]
-                );
+                    expect(result.objects.a.children.aa.vertices.getChildren()).toEqual(
+                        copy.objects.a.vertices
+                    );
+                    expect(result.objects.a.children.aa.indices.getChildren()).toEqual(
+                        copy.objects.a.indices
+                    );
+                    expect(result.objects.a.children.aa.uvs.getChildren()).toEqual(
+                        copy.objects.a.children.aa.uvs
+                    );
+                    expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                        [-0.7071067690849304,0.7071067690849304,0]
+                    );
+                });
+
+                describe("test normals", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("if child don't has vertices and normals, use its parent's normals", function(){
+                        var copy = setObject({
+                            a:{
+                                morphTargets:[],
+                                vertices: [3, -2, 3, 2, 3, 4, 3, 4, -5],
+                                indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                                uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
+
+                                children: {
+                                    aa: {
+                                        indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                                        morphTargets: [],
+                                        uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
+                                    }
+                                }}
+                        })
+                        var result = parser.parse(json);
+
+                        expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                            [-0.9771763682365417, -0.16994372010231018, -0.12745778262615204]
+                        );
+                    });
+                    it("else if child don't has normals but has vertices, compute child normals", function(){
+                        var copy = setObject({
+                            a:{
+                                morphTargets:[],
+                                vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
+                                indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                                uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
+
+                                children: {
+                                    aa: {
+                                        vertices: [3, -2, 3, 2, 3, 4, 3, 4, -5],
+                                        indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                                        morphTargets: [],
+                                        uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
+                                    }
+                                }}
+                        })
+                        var result = parser.parse(json);
+
+                        expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                            [-0.9771763682365417, -0.16994372010231018, -0.12745778262615204]
+                        );
+                    })
+                });
             });
         });
     });

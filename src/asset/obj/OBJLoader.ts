@@ -67,7 +67,7 @@ module dy {
                 return null;
             }
 
-            return OBJLoaderUtils.getPath(objFilePath, this._objParser.mtlFilePath);
+            return ModelLoaderUtils.getPath(objFilePath, this._objParser.mtlFilePath);
         }
 
         private _buildModel():GameObject {
@@ -154,6 +154,7 @@ module dy {
             var self = this;
 
             return AjaxLoader.load(url, "text")
+                //todo flatMap?
                 .do((data:string) => {
                     self._mtlParser.parse(data);
                 })
@@ -183,7 +184,7 @@ module dy {
                 streamArr.push(
                     dyRt.fromArray(mapUrlArr)
                         .flatMap(([type, mapUrl]) => {
-                            return TextureLoader.getInstance().load(OBJLoaderUtils.getPath(mtlFilePath, mapUrl))
+                            return TextureLoader.getInstance().load(ModelLoaderUtils.getPath(mtlFilePath, mapUrl))
                                 .do((asset:TextureAsset) => {
                                     material[type] = asset.toTexture();
                                 }, null, null);
