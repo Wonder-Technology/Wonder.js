@@ -12,18 +12,6 @@ module dy {
         private _currentMaterial:MaterialModel;
 
 
-        private _parseKey(line, pos){
-            var key = (pos >= 0) ? line.substring(0, pos) : line;
-
-            return key.toLowerCase();
-        }
-
-        private _parseValue(line, pos){
-            var value = (pos >= 0) ? line.substring(pos + 1) : "";
-
-            return value.trim();
-        }
-
         public parse(fileContent:string) {
             const DELIMITER_PATTERN = /\s+/;
             var lines = fileContent.split('\n'),
@@ -98,6 +86,18 @@ module dy {
                     Log.log(`Unhandled expression at line : ${i}\nvalue:${line}`);
                 }
             });
+        }
+
+        private _parseKey(line, pos){
+            var key = (pos >= 0) ? line.substring(0, pos) : line;
+
+            return key.toLowerCase();
+        }
+
+        private _parseValue(line, pos){
+            var value = (pos >= 0) ? line.substring(pos + 1) : "";
+
+            return value.trim();
         }
 
         private _setColor(colorType:string, colorStrArr:Array<string>) {

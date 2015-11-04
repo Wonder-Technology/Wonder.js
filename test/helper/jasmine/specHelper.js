@@ -204,6 +204,16 @@ beforeEach(function () {
                     }
                 }
             };
+        },
+        toPass: function(){
+            return {
+                compare: function (actual, expected) {
+                    return {
+                        pass: true,
+                        message: expected || "pass"
+                    }
+                }
+            };
         }
     });
 

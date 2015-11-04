@@ -1,46 +1,46 @@
-///<reference path='../../node_modules/dyrt/dist/dyRt.node.d.ts' />
-var through = require("through-gulp");
+/// <reference path="../../node_modules/dyrt/dist/dyRt.node.d.ts"/>
+var fs = require("fs");
+var through = require("through2");
 var gutil = require("gulp-util");
-//path = require("path"),
-//fs = require("fs"),
-//buildConfigOperator = require("../lib/buildConfigOperator"),
-//mapOperator = require("../lib/resourceMapOperator"),
-//parse = require("../lib/parse");
-//var PLUGIN_NAME = "createBuildMap";
 var dyRt = require("dyrt");
+var MaterialsConverter = require("./MaterialsConverter");
+var ObjectsConverter = require("./ObjectsConverter");
+var ModelLoaderUtils = require("../common/ModelLoaderUtils");
 module.exports = (function () {
-    function Convert() {
+    function OBJToDY(version) {
         this.name = "OBJToDY";
+        this.version = null;
+        //todo why "_objectsConverter:ObjectsConverter" can't find ObjectsConverter?
+        //private _objectsConverter:ObjectsConverter = ObjectsConverter.create();
+        this._objectsConverter = ObjectsConverter.create();
+        this._materialsConverter = MaterialsConverter.create();
+        this.version = version;
     }
-    Convert.create = function () {
-        var obj = new this();
+    OBJToDY.create = function (version) {
+        var obj = new this(version);
         return obj;
     };
-    Convert.prototype.convert = function () {
-        //var result = {},
-        //    buildConfig = null;
-        //
-        //buildConfig = buildConfigOperator.read();
+    OBJToDY.prototype.convert = function () {
         var self = this;
-        return through(function (file, encoding, callback) {
-            var fileContent = null, filePath = null;
+        return through.obj(function (file, encoding, callback) {
+            var fileContent = null, filePath = null, that = this, resultJson = {};
             if (file.isNull()) {
                 this.emit("error", new gutil.PluginError(self.name, 'Streaming not supported'));
                 return callback();
             }
             if (file.isBuffer()) {
-                //fileContent = file.contents.toString();
-                //filePath = file.path;
-                //
-                //result[filePath] = new parse.ParseCss(this, PLUGIN_NAME, file.path).parse(fileContent, buildConfig)
-                //    .concat(new parse.ParseJs(this, this.name, file.path).parse(fileContent, buildConfig));
-                var that = this;
-                var a = [];
-                var stream = dyRt.fromArray(["aaa"]).subscribe(function (data) {
-                    a.push(data);
-                }, null, function () {
-                    that.push(new Buffer(a[0]));
-                    return callback();
+                fileContent = file.contents.toString();
+                filePath = file.path;
+                resultJson.metadata = self._convertMetadata(filePath);
+                resultJson.scene = self._convertScene(fileContent, filePath);
+                resultJson.objects = self._convertObjects(fileContent, filePath);
+                dyRt.fromNodeCallback(fs.readFile, self)(ModelLoaderUtils.getPath(self._objectsConverter.mtlFilePath, filePath)).subscribe(function (data) {
+                    resultJson.materials = self._convertMaterials(data);
+                }, function (err) {
+                    console.log(err);
+                }, function () {
+                    that.push(JSON.stringify(resultJson));
+                    callback();
                 });
             }
             if (file.isStream()) {
@@ -48,9 +48,28 @@ module.exports = (function () {
                 return callback();
             }
         }, function (callback) {
-            //mapOperator.write(JSON.stringify(result));
             callback();
         });
     };
-    return Convert;
+    OBJToDY.prototype._convertMetadata = function (filePath) {
+        var result = {};
+        result.formatVersion = this.version;
+        result.description = "";
+        result.sourceFile = filePath;
+        result.generatedBy = this.name;
+        return result;
+    };
+    OBJToDY.prototype._convertScene = function (fileContent, filePath) {
+        var result = {};
+        /*!every material has one ambientColor, i don't know use which one, so just set it to be black*/
+        result.ambientColor = [0.0, 0.0, 0.0];
+        return result;
+    };
+    OBJToDY.prototype._convertObjects = function (fileContent, filePath) {
+        return this._objectsConverter.convert(fileContent, filePath);
+    };
+    OBJToDY.prototype._convertMaterials = function (mtlFileContent) {
+        return this._materialsConverter.convert(mtlFileContent);
+    };
+    return OBJToDY;
 })();

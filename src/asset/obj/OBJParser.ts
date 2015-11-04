@@ -42,7 +42,8 @@ module dy {
         public parse(fileContent:string) {
             var lines = fileContent.split('\n');
 
-            this._parseFromObj(lines)._parseFromFaces();
+            this._parseFromObj(lines);
+            this._parseFromFaces();
         }
 
         private _parseFromObj(lines:Array<string>) {
@@ -104,8 +105,6 @@ module dy {
                     Log.log(`Unhandled expression at line : ${i}\nvalue:${line}`);
                 }
             });
-
-            return this;
         }
 
         private _parseUsemtl(line){
@@ -218,9 +217,6 @@ module dy {
                     index_indices = 0;
 
                 object.faces.forEach((face:FaceModel) => {
-
-                    face.computeNormal(self._vertices);
-
                     //todo add setting color?
                     //var color = this.findColor(face.materialName);
 
@@ -234,8 +230,6 @@ module dy {
                     });
                 });
             });
-
-            return this;
         }
 
         private _setIndices(indices, index_indices){
@@ -276,6 +270,8 @@ module dy {
         }
 
         private _setNormalsFromFaceNormal(normals, face, k){
+            face.computeNormal(this._vertices);
+
             normals.addChild(face.normals[Math.floor(k / 3)]);
         }
     }

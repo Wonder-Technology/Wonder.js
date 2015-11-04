@@ -3,6 +3,8 @@ var gulp = require("gulp");
 var gulpTs = require("gulp-typescript");
 var merge = require("merge2");
 var gulpConcat = require("gulp-concat");
+var del = require("del");
+var gulpSync = require("gulp-sync")(gulp);
 //var plumber = require("gulp-plumber");
 //var Converter = require("Converter");
 
@@ -19,7 +21,7 @@ var tsFilePaths = [
     "*.ts",
     "**/*.ts"
 ];
-//var distFilePaths = [
+var distPath = "./dist/";
 //    'dist/*.ts',
 //    'dist/*.js'
 //];
@@ -44,8 +46,8 @@ gulp.task("compileTs", function() {
 
 
 
-    var tsResult = gulp.src(tsFilePaths)
-    //return gulp.src(tsFilePaths)
+    //var tsResult = gulp.src(tsFilePaths)
+    return gulp.src(tsFilePaths)
         //.pipe(gulpSourcemaps.init())
         .pipe(gulpTs({
             "experimentalDecorators": true,
@@ -59,26 +61,37 @@ gulp.task("compileTs", function() {
             "suppressImplicitAnyIndexErrors": true,
             target: "ES5",
             module: "commonjs",
-            moduleResolution: "node",
-            sortOutput:true,
+            //moduleResolution: "node",
+            //sortOutput:true,
             noEmitOnError: true,
             //out: "converter.js",
             //"isolatedModules": true,
             typescript: require("typescript")
         }))
-        //.pipe(gulp.dest("./dist"))
+        .pipe(gulp.dest("./dist"))
 
 
 
-    return merge([
-        tsResult.js
-            .pipe(gulpConcat("converter.js"))
-            //.pipe(gulpSourcemaps.write())
-            .pipe(gulp.dest("dist"))
-    ])
+    //return merge([
+    //    tsResult.js
+    //        //.pipe(gulpConcat("converter.js"))
+    //        //.pipe(gulpSourcemaps.write())
+    //        .pipe(gulp.dest("dist"))
+    //])
 });
 
+
+gulp.task("clean", function() {
+    return del.sync([distPath], {
+        force: true
+    });
+});
+
+
+gulp.task("build", gulpSync.sync(["clean", "compileTs"]));
+
+
 gulp.task("watch", function(){
-    gulp.watch(tsFilePaths, gulpSync.sync(["compileTs"]));
+    gulp.watch(tsFilePaths, ["build"]);
 });
 
