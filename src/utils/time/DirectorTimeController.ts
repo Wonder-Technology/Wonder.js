@@ -38,7 +38,7 @@ module dy{
         }
 
         protected getNow(){
-            return window.performance.now();
+            return root.performance.now();
         }
 
         private _updateFps(time) {

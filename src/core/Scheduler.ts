@@ -190,7 +190,7 @@ module dy{
         public pause() {
             this.isPause = true;
             this.timeController.pause();
-            //this.pauseTime = window.performance.now();
+            //this.pauseTime = root.performance.now();
         }
 
         /**
@@ -199,7 +199,7 @@ module dy{
          */
         public resume(){
             this.isPause = false;
-            //this.pauseElapsed = window.performance.now() - this.pauseTime;
+            //this.pauseElapsed = root.performance.now() - this.pauseTime;
             //this.pauseTime = null;
             this.timeController.resume();
         }

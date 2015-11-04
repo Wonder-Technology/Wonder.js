@@ -12,7 +12,7 @@ module dy {
         constructor(func:Function, context:any, dataArr:Array<any>){
             super();
 
-            this._context = context || window;
+            this._context = context || root;
             this._callFunc = func;
             this._dataArr = dyCb.Collection.create<any>(dataArr);
         }

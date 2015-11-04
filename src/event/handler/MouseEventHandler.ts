@@ -60,7 +60,7 @@ module dy {
 
         protected buildWrapHandler(target:GameObject, eventName:EventName){
             var self = this,
-                context = window;
+                context = root;
 
             return dyCb.EventUtils.bindEvent(context, function (event) {
                 var eventObject:MouseEvent = self._createEventObject(event, eventName, target),
@@ -75,7 +75,7 @@ module dy {
         }
 
         private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
-            var obj = MouseEvent.create(event ? event : window.event, eventName);
+            var obj = MouseEvent.create(event ? event : root.event, eventName);
 
             obj.currentTarget = currentTarget;
 

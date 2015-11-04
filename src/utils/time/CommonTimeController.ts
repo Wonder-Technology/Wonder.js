@@ -12,7 +12,7 @@ module dy {
                 return Director.getInstance().elapsed;
             }
 
-            return window.performance.now();
+            return root.performance.now();
         }
     }
 }

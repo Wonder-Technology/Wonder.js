@@ -1,7 +1,5 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
-    declare var window;
-
     export class DelayTime extends ActionInterval {
         public static create(delayTime:number) {
             var action = new this(delayTime);

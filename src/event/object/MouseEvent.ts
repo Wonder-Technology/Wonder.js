@@ -31,7 +31,7 @@ module dy {
             return this._event;
         }
         set event(event:any) {
-            this._event = event || window.event;
+            this._event = event || root.event;
         }
 
         private _location:Point = null;

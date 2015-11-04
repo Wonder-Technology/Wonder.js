@@ -44,7 +44,7 @@ module dy {
 
         protected buildWrapHandler(target:GameObject, eventName:EventName){
             var self = this,
-                context = window;
+                context = root;
 
             return dyCb.EventUtils.bindEvent(context, function (event) {
                 EventManager.trigger(self._createEventObject(event, eventName));
@@ -57,7 +57,7 @@ module dy {
         }
 
         private _createEventObject(event:any, eventName:EventName) {
-            var obj = KeyboardEvent.create(event ? event : window.event, eventName);
+            var obj = KeyboardEvent.create(event ? event : root.event, eventName);
 
             return obj;
         }

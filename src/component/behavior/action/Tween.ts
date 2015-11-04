@@ -1,7 +1,5 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy {
-    declare var window;
-
     /*! referenced from:
      https://github.com/tweenjs/tween.js
      */
@@ -424,7 +422,7 @@ module dy {
                 else {
                     // Parses relative end values with start as base (e.g.: +10, -3)
                     if (JudgeUtils.isString(end)) {
-                        end = start + window.parseFloat(end, 10);
+                        end = start + root.parseFloat(end, 10);
                     }
 
                     // protect against non numeric properties.
@@ -449,7 +447,7 @@ module dy {
 
             // Set all starting values present on the target object
             this._object.forEach((value:any, key:string) => {
-                self._valuesStart.addChild(key, window.parseFloat(value, 10));
+                self._valuesStart.addChild(key, root.parseFloat(value, 10));
             });
 
             return this;
