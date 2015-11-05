@@ -1,4 +1,5 @@
 /// <reference path="../../node_modules/dyrt/dist/dyRt.node.d.ts"/>
+/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
 import fs = require("fs");
 import path = require("path");
 import through = require("through2");
@@ -10,14 +11,22 @@ import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import Log = require("../common/Log");
 
 export = class OBJToDY{
-    public static create(version:string) {
-    	var obj = new this(version);
+    public static create(version:string, converterName?:string) {
+        var obj = null;
+
+        if(arguments.length === 1){
+            obj = new this(version);
+        }
+        else if(arguments.length === 2){
+            obj = new this(version, converterName);
+        }
 
     	return obj;
     }
 
-    constructor(version:string){
+    constructor(version:string, converterName?:string){
         this.version = version;
+        this._converterName = converterName || this.name;
     }
 
     public name:string = "OBJToDY";
@@ -26,50 +35,63 @@ export = class OBJToDY{
     //todo why "_objectsConverter:ObjectsConverter" can't find ObjectsConverter?
     //private _objectsConverter:ObjectsConverter = ObjectsConverter.create();
 
+    private _converterName:string = null;
+
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();
 
 
-    public convert(){
+    public convert(fileContent:string, filePath:string):dyRt.Stream{
         var self = this;
 
-        return through.obj(function (file, encoding, callback) {
-            var fileContent:string = null,
-                filePath = null,
-                that = this,
-                resultJson:any = {};
+        //return through.obj(function (file, encoding, callback) {
+        //    var fileContent:string = null,
+        //        filePath:string = null,
+        //        that = this,
+                var resultJson:any = {};
 
-            if (file.isNull()) {
-                this.emit("error", new gutil.PluginError(self.name, 'Streaming not supported'));
-                return callback();
-            }
-            if (file.isBuffer()) {
-                fileContent = file.contents.toString();
-                filePath = file.path;
+            //if (file.isNull()) {
+            //    this.emit("error", new gutil.PluginError(self.name, 'Streaming not supported'));
+            //    return callback();
+            //}
+            //if (file.isBuffer()) {
+            //    fileContent = file.contents.toString();
+            //    filePath = file.path;
 
                 resultJson.metadata = self._convertMetadata(filePath);
 
                 resultJson.scene = self._convertScene(fileContent, filePath);
                 resultJson.objects = self._convertObjects(fileContent, filePath);
 
-                dyRt.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath)).subscribe((data:string) => {
-                    resultJson.materials = self._convertMaterials(data.toString());
-                }, (err) => {
-                    Log.log(err)
-                }, () => {
-                    that.push(JSON.stringify(resultJson));
+                //dyRt.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath)).subscribe((data:string) => {
+                //    resultJson.materials = self._convertMaterials(data.toString());
+                //}, (err) => {
+                //    Log.log(err)
+                //}, () => {
+                //    that.push(JSON.stringify(resultJson));
+                //
+                //    //callback();
+                //});
 
-                    callback();
-                });
 
-            }
-            if (file.isStream()) {
-                this.emit("error", new gutil.PluginError(self.name, 'Streaming not supported'));
-                return callback();
-            }
-        }, function (callback) {
-            callback();
-        });
+        return dyRt.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
+            .map((data:string) => {
+                resultJson.materials = self._convertMaterials(data.toString());
+
+                return resultJson;
+            });
+
+            //);
+
+
+            //}
+            //if (file.isStream()) {
+            //    this.emit("error", new gutil.PluginError(self.name, 'Streaming not supported'));
+            //    return callback();
+            //}
+        //}, function (callback) {
+        //    callback();
+        //});
     }
 
     private _convertMetadata(filePath:string){
@@ -78,7 +100,7 @@ export = class OBJToDY{
         result.formatVersion = this.version;
         result.description = "";
         result.sourceFile = filePath;
-        result.generatedBy = this.name;
+        result.generatedBy = this._converterName;
 
         return result;
     }
