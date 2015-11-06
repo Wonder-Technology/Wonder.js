@@ -8,6 +8,7 @@
 /// <reference path="extend/dyRt"/>
 /// <reference path="extend/typescript/contract"/>
 /// <reference path="extend/Global"/>
+/// <reference path="extend/Variable"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>

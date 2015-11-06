@@ -90,15 +90,16 @@ export = class ObjectsConverter {
     //todo remove objects?
     public convert(fileContent:string, filePath:string) {
         var lines = fileContent.split('\n'),
-            topObject = {children:{}},
-            result:any = {};
+            topObject = {name:null, children:[]},
+            result = [];
 
         this._convertFromObj(lines);
         this._convertFromFaces();
 
         this.objects.forEach((objectModel:ObjectModel) => {
-            var object:any = DYOB
+            var object:any = {};
 
+            object.name = objectModel.name;
             object.material = objectModel.materialName;
 
             object.vertices = objectModel.vertices.toArray();
@@ -109,11 +110,13 @@ export = class ObjectsConverter {
             object.colors = [];
             object.morphTargets = [];
 
-            topObject.children[objectModel.name] = object;
+            //topObject.children[objectModel.name] = object;
+            topObject.children.push(object);
         });
 
+        topObject.name = dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath));
 
-        result[dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath))] = topObject;
+        result.push(topObject);
 
         return result;
     }

@@ -53,7 +53,7 @@ module dy {
         //        url:string
         //    }
         //}
-        objects:DYFileJsonObjectData
+        objects:Array<DYFileJsonObjectData>
     }
 
     export type DYFileJsonObjectData = {
@@ -68,6 +68,8 @@ module dy {
             material:string,
             //todo
             //smoothShading?: boolean,
+
+        name:string,
 
 
             /*!for model geometry*/
@@ -89,7 +91,7 @@ module dy {
         //[otherParam:string]:any
 
 
-            children: DYFileParseObjectData
+            children: Array<DYFileParseObjectData>
     }
     //export type DYFileData = {
     //    scene: dyCb.Hash<DYFileSceneData>,
@@ -106,7 +108,7 @@ module dy {
             ambientColor?: Color
         },
         materials:dyCb.Hash<DYFileParseMaterialData>,
-        objects: DYFileParseObjectData
+        objects: dyCb.Collection<DYFileParseObjectData>
     }
 
     export type DYFileParseMaterialData = {
@@ -136,6 +138,8 @@ module dy {
         //todo
         //smoothShading?: boolean,
 
+        name:string,
+
 
         /*!for model geometry*/
         vertices: dyCb.Collection<number>,
@@ -156,7 +160,7 @@ module dy {
         //[otherParam:string]:any
 
         parent:DYFileParseObjectData,
-        children:DYFileParseObjectData
+        children: dyCb.Collection<DYFileParseObjectData>
     }
 
     export type DYFileResult = {

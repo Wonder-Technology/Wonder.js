@@ -45,58 +45,61 @@ module dy {
                 self = this,
                 build = null;
 
-            build = (objects:DYFileParseObjectData, models:{addChild:Function}) => {
-                //for(let i in parseData.objects){
-                for(let name in objects){
-                    if(objects.hasOwnProperty(name)){
-                        let object = objects[name],
-                            geometry = null,
-                            model = null;
+            build = (objects:dyCb.Collection<DYFileParseObjectData>, models:{addChild:Function}) => {
+                objects.forEach((object:DYFileParseObjectData) => {
+                    var geometry = null,
+                        model = null;
 
-                        model = GameObject.create();
+                    model = GameObject.create();
 
-                        if(!self._isModelContainer(object)){
-                            geometry = ModelGeometry.create();
-                            //geometry.vertices = object.vertices;
-                            //geometry.indices = object.indices;
-                            //geometry.normals = object.normals;
-                            //geometry.texCoords = object.uvs;
-                            //geometry.colors = object.colors;
-                            geometry.vertices = self._findData(object, "vertices");
-                            geometry.indices = self._findData(object, "indices");
-                            geometry.normals = self._findData(object, "normals");
-                            geometry.texCoords = self._findData(object, "uvs");
-                            geometry.colors = self._findData(object, "colors");
+                    if(!self._isModelContainer(object)){
+                        geometry = ModelGeometry.create();
+                        //geometry.vertices = object.vertices;
+                        //geometry.indices = object.indices;
+                        //geometry.normals = object.normals;
+                        //geometry.texCoords = object.uvs;
+                        //geometry.colors = object.colors;
+                        geometry.vertices = self._findData(object, "vertices");
+                        geometry.indices = self._findData(object, "indices");
+                        geometry.normals = self._findData(object, "normals");
+                        geometry.texCoords = self._findData(object, "uvs");
+                        geometry.colors = self._findData(object, "colors");
 
-                            //todo remove
-                            geometry.isDY = true;
+                        //todo remove
+                        geometry.isDY = true;
 
-                            geometry.material = self._buildMaterial(object.material, parseData.materials);
+                        geometry.material = self._buildMaterial(object.material, parseData.materials);
 
-                            //todo build animation
+                        //todo build animation
 
 
-                            model.addComponent(geometry);
-                        }
-
-                        //model.name = object.name;
-                        model.name = name;
-                        model.addComponent(MeshRenderer.create());
-                        //
-                        models.addChild(model);
-
-                        if(object.children){
-                            build(object.children, model);
-                            //for(let j in object.children){
-                            //    if(object.children.hasOwnProperty(j)){
-                            //        let child = <any>object.children[j];
-                            //
-                            //        //child.parent = object;
-                            //    }
-                            //}
-                        }
+                        model.addComponent(geometry);
                     }
-                }
+
+                    model.name = object.name;
+                    model.addComponent(MeshRenderer.create());
+                    //
+                    models.addChild(model);
+
+                    if(object.children){
+                        build(object.children, model);
+                        //for(let j in object.children){
+                        //    if(object.children.hasOwnProperty(j)){
+                        //        let child = <any>object.children[j];
+                        //
+                        //        //child.parent = object;
+                        //    }
+                        //}
+                    }
+                });
+
+
+                ////for(let i in parseData.objects){
+                //for(let name in objects){
+                //    if(objects.hasOwnProperty(name)){
+                //
+                //    }
+                //}
             };
 
             build(parseData.objects, models);

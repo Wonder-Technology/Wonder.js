@@ -24,17 +24,33 @@ module dy {
         }
 
         public parseObject(json:DYFileJsonData) {
-            this._data.objects = <any>json.objects;
+            //this._data.objects = <any>json.objects;
+            this._data.objects = dyCb.Collection.create<any>(json.objects);
 
-            for (let i in this._data.objects) {
-                if (this._data.objects.hasOwnProperty(i)) {
-                    let object:any = this._data.objects[i];
-                    //top's parent is null
-                    object.parent = null;
+            this._data.objects.forEach((object:any) => {
+                //top's parent is null
+                object.parent = null;
 
-                    this._parseObject(object);
-                }
-            }
+                this._parseObject(object);
+            });
+
+            //for(let [i, object] of json.objects){
+            //    //let object:any = this._data.objects[i];
+            //    //top's parent is null
+            //    object.parent = null;
+            //
+            //    this._parseObject(object);
+            //}
+            //
+            //for (let i in this._data.objects) {
+            //    if (this._data.objects.hasOwnProperty(i)) {
+            //        let object:any = this._data.objects[i];
+            //        //top's parent is null
+            //        object.parent = null;
+            //
+            //        this._parseObject(object);
+            //    }
+            //}
         }
 
         public parseScene(json:DYFileJsonData) {
@@ -58,8 +74,9 @@ module dy {
             });
         }
 
+        //todo test over 1
         private _createColor(colorArr:Array<number>) {
-            return Color.create(`rgb(${colorArr.join(",").replace(/^([01]),/g, "$1.0,").replace(/,([01]),/g, ",$1.0,").replace(/,([01])$/g, ",$1.0")})`);
+            return Color.create(`rgb(${colorArr.join(",").replace(/^(\d),/g, "$1.0,").replace(/,(\d),/g, ",$1.0,").replace(/,(\d)$/g, ",$1.0")})`);
         }
 
         private _parseMorphTargetNormal(m:{vertices;normals?}, indices) {
@@ -112,7 +129,7 @@ module dy {
             return normals;
         }
 
-        private _parseObject(object:DYFileParseObjectData) {
+        private _parseObject(object:any) {
             var hasVertices = true;
 
             if(!object.vertices){
@@ -136,18 +153,24 @@ module dy {
             object.uvs = this._findAndConvertData(object, "uvs");
 
             if(object.children){
-                for(let i in object.children){
-                    if(object.children.hasOwnProperty(i)){
-                        let child = <any>object.children[i];
+                object.children = dyCb.Collection.create<any>(object.children);
+                //for(let i in object.children){
+                //    if(object.children.hasOwnProperty(i)){
+                //        let child = <any>object.children[i];
+                //
+                //        child.parent = object;
+                //        this._parseObject(child);
+                //    }
+                //}
+                object.children.forEach((child:any) => {
+                    child.parent = object;
 
-                        child.parent = object;
-                        this._parseObject(child);
-                    }
-                }
+                    this._parseObject(child);
+                })
             }
         }
 
-        private _findAndConvertData(object:DYFileParseObjectData, dataName:string){
+        private _findAndConvertData(object:any, dataName:string){
             var data = null;
 
             do{

@@ -29,10 +29,12 @@ module dy{
             return Vector4.create(this.r, this.g, this.b, this.a);
         }
 
+        //todo test over 1
         private _setColor(colorVal:string) {
             var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
                 REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
-                REGEX_RGB_2 = /^rgb\(([01]\.\d+),\s*([01]\.\d+),\s*([01]\.\d+)\)$/i,
+                //REGEX_RGB_2 = /^rgb\(([01]\.\d+),\s*([01]\.\d+),\s*([01]\.\d+)\)$/i,
+                REGEX_RGB_2 = /^rgb\((\d\.\d+),\s*(\d\.\d+),\s*(\d\.\d+)\)$/i,
                 //REGEX_RGB_2 = /^rgb\((([01]\.\d+)|([01])),\s*(([01]\.\d+)|([01])),\s*(([01]\.\d+)|([01]))\)$/i,
                 REGEX_NUM = /^\#([0-9a-f]{6})$/i;
             var color = null;
