@@ -9,8 +9,6 @@ import dyCb = require("dycb");
 import Log = require("./common/Log");
 import OBJToDY = require("./obj/OBJToDY");
 
-//todo copy resource(img...) to dest dir?
-
 export = class Converter {
     public static create() {
         var obj = new this();
@@ -29,11 +27,9 @@ export = class Converter {
         switch (fileExtname) {
             case ".obj":
                 result = OBJToDY.create(this.version, this.name).convert(fileContent, filePath);
-                //console.log(result)
                 break;
             default:
                 result = dyRt.empty();
-                //Log.error(true, Log.info.FUNC_UNKNOW(fileExtname));
                 break;
         }
 
@@ -46,22 +42,18 @@ export = class Converter {
         return fileContentStream.flatMap(([fileJson, resourceUrlArr]) => {
             var resultFilePath = self._getDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname));
 
-            //console.log(resourceUrlArr)
-            console.log(self._getDestFilePath(sourceDir, destDir, resourceUrlArr[0]))
-
-            //fs.copySync(resourceUrlArr[0], self._getDestFilePath(sourceDir, destDir, resourceUrlArr[0]));
-            //fs.copySync(resourceUrlArr[1], self._getDestFilePath(sourceDir, destDir, resourceUrlArr[1]));
-
-            //return dyRt.fromNodeCallback(fs.copy)(resultFilePath, self._getDestFilePath(sourceDir, destDir, resourceUrl));
-
             return dyRt.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson)
             .merge(
-                dyRt.fromArray(resourceUrlArr)
-                .flatMap((resourceUrl:string) => {
-                    return dyRt.fromNodeCallback(fs.copy)(resourceUrl, self._getDestFilePath(sourceDir, destDir, resourceUrl));
-                })
+                self._createCopyResourceStream(resourceUrlArr, sourceDir, destDir)
             )
         })
+    }
+
+    private _createCopyResourceStream(resourceUrlArr, sourceDir, destDir){
+        return dyRt.fromArray(resourceUrlArr)
+            .flatMap((resourceUrl:string) => {
+                return dyRt.fromNodeCallback(fs.copy)(resourceUrl, this._getDestFilePath(sourceDir, destDir, resourceUrl));
+            })
     }
 
     private _getDestFilePath(sourceDir:string, destDir:string, sourceFilePath:string){

@@ -18,12 +18,8 @@
         });
 
         dy.LoaderManager.getInstance().load([
-//            {url: "../../res/1.jpg", id:"texture"},
-//            {url: "../../res/crate.gif", id:"ground"},
-//            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
             {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"}
-//            {url: "../../res/model/dodge-viper-gts-obj/dodge-viper-gts.obj", id:"model"}
-//            {url: "../../res/model/cube.obj", id:"model"}
+//            {url: "../../res/model/dy/male02/male02.dy", id:"sceneModel"}
 
         ]).subscribe(null, function(e){
             throw e;
@@ -47,6 +43,11 @@
             var sceneModel = dy.DYLoader.getInstance().get("sceneModel");
 
             var model = sceneModel.getChild("models").getChild(0);
+
+
+
+//            model.transform.translate(0, -80, 0);
+
 
             model.transform.scale = dy.Vector3.create(140, 140, 140);
 
@@ -75,7 +76,7 @@
 
 
 
-                    director.scene.addChild(model);
+            director.scene.addChild(model);
 
 
 

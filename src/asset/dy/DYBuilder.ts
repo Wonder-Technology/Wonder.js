@@ -54,11 +54,6 @@ module dy {
 
                     if(!self._isModelContainer(object)){
                         geometry = ModelGeometry.create();
-                        //geometry.vertices = object.vertices;
-                        //geometry.indices = object.indices;
-                        //geometry.normals = object.normals;
-                        //geometry.texCoords = object.uvs;
-                        //geometry.colors = object.colors;
                         geometry.vertices = self._findData(object, "vertices");
                         geometry.indices = self._findData(object, "indices");
                         geometry.normals = self._findData(object, "normals");
@@ -78,28 +73,12 @@ module dy {
 
                     model.name = object.name;
                     model.addComponent(MeshRenderer.create());
-                    //
                     models.addChild(model);
 
                     if(object.children){
                         build(object.children, model);
-                        //for(let j in object.children){
-                        //    if(object.children.hasOwnProperty(j)){
-                        //        let child = <any>object.children[j];
-                        //
-                        //        //child.parent = object;
-                        //    }
-                        //}
                     }
                 });
-
-
-                ////for(let i in parseData.objects){
-                //for(let name in objects){
-                //    if(objects.hasOwnProperty(name)){
-                //
-                //    }
-                //}
             };
 
             build(parseData.objects, models);
@@ -119,11 +98,7 @@ module dy {
             }
             while(!data && (object = object.parent) !== null);
 
-            //if(data instanceof dyCb.Collection){
             return data;
-            //}
-            //
-            //return dyCb.Collection.create<number>(data);
         }
 
         private _buildMaterial(materialName:string, materials: dyCb.Hash<DYFileParseMaterialData>){

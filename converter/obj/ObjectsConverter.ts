@@ -70,14 +70,6 @@ export = class ObjectsConverter {
 
     public objects:dyCb.Collection<ObjectModel> = dyCb.Collection.create<ObjectModel>();
     public mtlFilePath:string = null;
-
-    private _vertices:dyCb.Collection<number> = dyCb.Collection.create<number>();
-    private _normals:dyCb.Collection<number> = dyCb.Collection.create<number>();
-    private _texCoords:dyCb.Collection<number> = dyCb.Collection.create<number>();
-    private _currentObject:ObjectModel = null;
-    private _currentObjectName:string = null;
-
-
     public vertices:dyCb.Collection<number> = dyCb.Collection.create<number>();
     public normals:dyCb.Collection<number> = dyCb.Collection.create<number>();
     public texCoords:dyCb.Collection<number> = dyCb.Collection.create<number>();
@@ -86,6 +78,12 @@ export = class ObjectsConverter {
     public name:string = null;
     public faces:dyCb.Collection<FaceModel> = dyCb.Collection.create<FaceModel>();
     public indicesCount:number = 0;
+
+    private _vertices:dyCb.Collection<number> = dyCb.Collection.create<number>();
+    private _normals:dyCb.Collection<number> = dyCb.Collection.create<number>();
+    private _texCoords:dyCb.Collection<number> = dyCb.Collection.create<number>();
+    private _currentObject:ObjectModel = null;
+    private _currentObjectName:string = null;
 
     //todo remove objects?
     public convert(fileContent:string, filePath:string) {
@@ -110,7 +108,6 @@ export = class ObjectsConverter {
             object.colors = [];
             object.morphTargets = [];
 
-            //topObject.children[objectModel.name] = object;
             topObject.children.push(object);
         });
 
@@ -173,7 +170,8 @@ export = class ObjectsConverter {
             }
             else if (MTLLIB_PATTERN.test(line)) {
                 this.mtlFilePath = line.substring(7).trim();
-            } else if (SMOOTH_PATTERN.test(line)) {
+            }
+            else if (SMOOTH_PATTERN.test(line)) {
                 //todo support
             }
             else {
@@ -218,8 +216,7 @@ export = class ObjectsConverter {
         }
         else if (( result = FACE_PATTERN2.exec(line) ) !== null) {
             for (k of triangles) {
-                //triangle[k] = "1/1"
-                let point = k.split("/"); // ["1", "1"]
+                let point = k.split("/");
 
                 faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
                 faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
@@ -227,8 +224,7 @@ export = class ObjectsConverter {
         }
         else if (( result = FACE_PATTERN3.exec(line) ) !== null) {
             for (k of triangles) {
-                //triangle[k] = "1/1/1"
-                let point = k.split("/"); // ["1", "1"]
+                let point = k.split("/");
 
                 faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
                 faceModel.texCoordIndices.addChild(parseInt(point[1]) - 1);
@@ -237,8 +233,7 @@ export = class ObjectsConverter {
         }
         else if (( result = FACE_PATTERN4.exec(line) ) !== null) {
             for (k of triangles) {
-                //triangle[k] = "1//1"
-                let point = k.split("//"); // ["1", "1"]
+                let point = k.split("//");
 
                 faceModel.verticeIndices.addChild(parseInt(point[0]) - 1);
                 faceModel.normalIndices.addChild(parseInt(point[1]) - 1);
@@ -266,13 +261,10 @@ export = class ObjectsConverter {
      */
     private _getTriangles(face:Array<string>, triangles:Array<string>) {
         var getTriangles = (v:number) => {
-            //Work for each element of the array
             if (v + 1 < face.length) {
-                //Add on the triangle variable the indexes to obtain triangles
                 triangles.push(face[0], face[v], face[v + 1]);
-                //Incrementation for recursion
                 v++;
-                //Recursion
+
                 getTriangles(v);
             }
         };
@@ -321,7 +313,6 @@ export = class ObjectsConverter {
                 data = null;
 
             tIdx = face.texCoordIndices.getChild(k);
-            //texCoords.addChild(this._texCoords.getChild(tIdx));
 
             _setTwoComponentData(this._texCoords, texCoords, tIdx);
         }

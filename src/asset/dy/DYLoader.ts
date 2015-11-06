@@ -32,12 +32,9 @@ module dy {
                     return this._createLoadMapStream(url);
                 })
             .concat(
-                //[
-                //this._createLoadMapStream(),
                 dyRt.callFunc(()=> {
                     return self._dyBuilder.build(self._parseData);
                 })
-                    //]
             );
         }
 

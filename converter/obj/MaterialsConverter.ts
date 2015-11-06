@@ -127,12 +127,6 @@ export = class MaterialsConverter {
     }
 
     private _setColor(colorType:string, colorStrArr:Array<string>) {
-        //var color = Color.create(`rgb(${colorStrArr[0]},${colorStrArr[1]},${colorStrArr[2]}`);
-        //color.r = parseFloat(colorStrArr[0]);
-        //color.g = parseFloat(colorStrArr[1]);
-        //color.b = parseFloat(colorStrArr[2]);
-        //color.a = 1.0;
-
         this._currentMaterial[colorType] = colorStrArr;
     }
 }
@@ -150,10 +144,7 @@ class MaterialModel {
     public opacity:number = null;
     public shininess:number = null;
     public diffuseMapUrl:string = null;
-    //public diffuseMap:Texture = null;
     public specularMapUrl:string = null;
-    //public specularMap:Texture = null;
     public bumpMapUrl:string = null;
-    //public bumpMap:Texture = null;
 }
 

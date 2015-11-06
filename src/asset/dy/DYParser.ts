@@ -10,50 +10,67 @@ module dy {
         private _data:DYFileParseData = <any>{};
 
         public parse(json:DYFileJsonData):DYFileParseData {
-            //todo private
-            this.parseMetadata(json);
-            this.parseScene(json);
-            this.parseMaterial(json);
-            this.parseObject(json);
+            this._parseMetadata(json);
+            this._parseScene(json);
+            this._parseMaterial(json);
+            this._parseObject(json);
 
             return this._data;
         }
 
-        public parseMetadata(json:DYFileJsonData){
+        private _parseMetadata(json:DYFileJsonData) {
             this._data.metadata = <any>json.metadata;
         }
 
-        public parseObject(json:DYFileJsonData) {
-            //this._data.objects = <any>json.objects;
+        private _parseObject(json:DYFileJsonData) {
+            var parse = null,
+                self = this;
+
             this._data.objects = dyCb.Collection.create<any>(json.objects);
+
+            parse = (object:any) => {
+                var hasVertices = true;
+
+                if (!object.vertices) {
+                    hasVertices = false;
+                }
+
+                object.vertices = self._findAndConvertData(object, "vertices");
+                object.indices = self._findAndConvertData(object, "indices");
+
+                self._parseObjectNormal(object, hasVertices);
+
+                if (object.morphTargets) {
+                    for (let m of object.morphTargets) {
+                        m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
+                        //morphTargets should only come from local, not from parent
+                        self._parseMorphTargetNormal(m, object.indices);
+                    }
+                }
+
+                object.colors = self._findAndConvertData(object, "colors");
+                object.uvs = self._findAndConvertData(object, "uvs");
+
+                if (object.children) {
+                    object.children = dyCb.Collection.create<any>(object.children);
+                    object.children.forEach((child:any) => {
+                        child.parent = object;
+
+                        parse(child);
+                    })
+                }
+            }
+
 
             this._data.objects.forEach((object:any) => {
                 //top's parent is null
                 object.parent = null;
 
-                this._parseObject(object);
+                parse(object);
             });
-
-            //for(let [i, object] of json.objects){
-            //    //let object:any = this._data.objects[i];
-            //    //top's parent is null
-            //    object.parent = null;
-            //
-            //    this._parseObject(object);
-            //}
-            //
-            //for (let i in this._data.objects) {
-            //    if (this._data.objects.hasOwnProperty(i)) {
-            //        let object:any = this._data.objects[i];
-            //        //top's parent is null
-            //        object.parent = null;
-            //
-            //        this._parseObject(object);
-            //    }
-            //}
         }
 
-        public parseScene(json:DYFileJsonData) {
+        private _parseScene(json:DYFileJsonData) {
             this._data.scene = <any>json.scene;
 
             if (json.scene.ambientColor) {
@@ -61,7 +78,7 @@ module dy {
             }
         }
 
-        public parseMaterial(json:DYFileJsonData) {
+        private _parseMaterial(json:DYFileJsonData) {
             this._data.materials = dyCb.Hash.create<any>(json.materials);
 
             this._data.materials.forEach((material:any) => {
@@ -83,7 +100,7 @@ module dy {
         }
 
         private _parseObjectNormal(object, hasVertices:boolean) {
-            if(!hasVertices){
+            if (!hasVertices) {
                 object.normals = this._findAndConvertData(object, "normals");
                 return;
             }
@@ -128,56 +145,16 @@ module dy {
             return normals;
         }
 
-        private _parseObject(object:any) {
-            var hasVertices = true;
-
-            if(!object.vertices){
-                hasVertices = false;
-            }
-
-            object.vertices = this._findAndConvertData(object, "vertices");
-            object.indices = this._findAndConvertData(object, "indices");
-
-            this._parseObjectNormal(object, hasVertices);
-
-            if(object.morphTargets){
-                for (let m of object.morphTargets) {
-                    m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
-                    //morphTargets should only come from local, not from parent
-                    this._parseMorphTargetNormal(m, object.indices);
-                }
-            }
-
-            object.colors = this._findAndConvertData(object, "colors");
-            object.uvs = this._findAndConvertData(object, "uvs");
-
-            if(object.children){
-                object.children = dyCb.Collection.create<any>(object.children);
-                //for(let i in object.children){
-                //    if(object.children.hasOwnProperty(i)){
-                //        let child = <any>object.children[i];
-                //
-                //        child.parent = object;
-                //        this._parseObject(child);
-                //    }
-                //}
-                object.children.forEach((child:any) => {
-                    child.parent = object;
-
-                    this._parseObject(child);
-                })
-            }
-        }
-
-        private _findAndConvertData(object:any, dataName:string){
+        //todo not come from parent,only come from local?
+        private _findAndConvertData(object:any, dataName:string) {
             var data = null;
 
-            do{
+            do {
                 data = object[dataName];
             }
-            while(!data && (object = object.parent) !== null);
+            while (!data && (object = object.parent) !== null);
 
-            if(data instanceof dyCb.Collection){
+            if (data instanceof dyCb.Collection) {
                 return data;
             }
 

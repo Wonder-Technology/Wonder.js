@@ -10,6 +10,7 @@ Ni 1.000000
 d 0.100000
 illum 2
 map_Kd 1.jpg
+map_bump ./resource/2.png
 
 newmtl material2
 Ns 80.078431
