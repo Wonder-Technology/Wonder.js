@@ -12,22 +12,16 @@ import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import Log = require("../common/Log");
 
 export = class OBJToDY {
-    public static create(version:string, converterName?:string) {
+    public static create(version:string) {
         var obj = null;
 
-        if (arguments.length === 1) {
-            obj = new this(version);
-        }
-        else if (arguments.length === 2) {
-            obj = new this(version, converterName);
-        }
+        obj = new this(version);
 
         return obj;
     }
 
-    constructor(version:string, converterName?:string) {
+    constructor(version:string) {
         this.version = version;
-        this._converterName = converterName || this.name;
     }
 
     public name:string = "OBJToDY";
@@ -36,7 +30,6 @@ export = class OBJToDY {
     //todo why "_objectsConverter:ObjectsConverter" can't find ObjectsConverter?
     //private _objectsConverter:ObjectsConverter = ObjectsConverter.create();
 
-    private _converterName:string = null;
     private _objectsConverter:any = ObjectsConverter.create();
     private _materialsConverter:any = MaterialsConverter.create();
 
@@ -89,7 +82,7 @@ export = class OBJToDY {
         result.formatVersion = this.version;
         result.description = "";
         result.sourceFile = filePath;
-        result.generatedBy = this._converterName;
+        result.generatedBy = this.name;
 
         return result;
     }

@@ -16,7 +16,7 @@ export = class Converter {
         return obj;
     }
 
-    public name:string = "DYConverter";
+    //public name:string = "DYConverter";
     public version:string = "0.1.0";
     public extname:string = ".dy";
 
@@ -26,7 +26,7 @@ export = class Converter {
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToDY.create(this.version, this.name).convert(fileContent, filePath);
+                result = OBJToDY.create(this.version).convert(fileContent, filePath);
                 break;
             default:
                 result = dyRt.empty();

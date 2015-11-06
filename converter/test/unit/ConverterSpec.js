@@ -56,7 +56,7 @@ describe("Converter", function () {
                         formatVersion: converter.version,
                         description: '',
                         sourceFile: testPath1,
-                        generatedBy: converter.name
+                        generatedBy: "OBJToDY"
                     });
 
                     //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
