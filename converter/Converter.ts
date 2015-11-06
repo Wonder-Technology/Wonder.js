@@ -43,16 +43,29 @@ export = class Converter {
     public write(fileContentStream:dyRt.Stream, sourceDir:string, destDir:string, filePath:string):dyRt.Stream {
         var self = this;
 
-        //console.log(fileContentStream)
-        return fileContentStream.flatMap((fileJson:{any}) => {
-            //return fileContentStream.do((fileJson:{any}) => {
-            var resultFilePath = path.join(destDir, path.relative(sourceDir, filePath))
-            .replace(/\.\w+$/, self.extname);
+        return fileContentStream.flatMap(([fileJson, resourceUrlArr]) => {
+            var resultFilePath = self._getDestFilePath(sourceDir, destDir, filePath.replace(/\.\w+$/, self.extname));
 
-            //console.log(resultFilePath)
+            //console.log(resourceUrlArr)
+            console.log(self._getDestFilePath(sourceDir, destDir, resourceUrlArr[0]))
 
-            return dyRt.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson);
+            //fs.copySync(resourceUrlArr[0], self._getDestFilePath(sourceDir, destDir, resourceUrlArr[0]));
+            //fs.copySync(resourceUrlArr[1], self._getDestFilePath(sourceDir, destDir, resourceUrlArr[1]));
+
+            //return dyRt.fromNodeCallback(fs.copy)(resultFilePath, self._getDestFilePath(sourceDir, destDir, resourceUrl));
+
+            return dyRt.fromNodeCallback(fs.outputJson)(resultFilePath, fileJson)
+            .merge(
+                dyRt.fromArray(resourceUrlArr)
+                .flatMap((resourceUrl:string) => {
+                    return dyRt.fromNodeCallback(fs.copy)(resourceUrl, self._getDestFilePath(sourceDir, destDir, resourceUrl));
+                })
+            )
         })
+    }
+
+    private _getDestFilePath(sourceDir:string, destDir:string, sourceFilePath:string){
+        return path.join(destDir, path.relative(sourceDir, sourceFilePath));
     }
 }
 

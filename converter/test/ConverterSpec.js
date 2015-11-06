@@ -43,10 +43,11 @@ describe("Converter", function () {
             return JSON.parse(fs.readFileSync(resultFilePath).toString());
         }
 
-        it("convert one file", function (done) {
+        it("convert one file, get the .dy file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
             converter.write(converter.convert(testFile.toString(), testPath1), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
+                    console.log(data)
                 }, null, function () {
                     var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
                     var resultJson = readJSON(resultFilePath);
@@ -58,13 +59,16 @@ describe("Converter", function () {
                         generatedBy: converter.name
                     });
 
+                    //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
+                    //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "./resource/2.png"))).toBeTruthy();
+
                     fs.removeSync(destDir);
 
                     done();
                 })
         });
 
-        it("convert multi files", function (done) {
+        it("convert multi files, get the .dy file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
             converter.write(converter.convert(testFile.toString(), testPath1), sourceDir, destDir, testPath1)
                 .merge(
@@ -81,6 +85,12 @@ describe("Converter", function () {
                     expect(resultJson1.materials).toBeDefined();
                     expect(resultJson2.objects).toBeDefined();
                     expect(resultJson2.materials).toBeDefined();
+
+
+                    expect(fs.existsSync(path.resolve(path.dirname(resultFilePath1), "1.jpg"))).toBeTruthy();
+                    expect(fs.existsSync(path.resolve(path.dirname(resultFilePath1), "./resource/2.png"))).toBeTruthy();
+
+                    expect(fs.existsSync(path.resolve(path.dirname(resultFilePath2), "1.jpg"))).toBeTruthy();
 
                     fs.removeSync(destDir);
 

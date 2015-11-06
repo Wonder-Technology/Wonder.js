@@ -5,6 +5,7 @@ import path = require("path");
 import through = require("through2");
 import gutil = require("gulp-util");
 import dyRt = require("dyrt");
+import dyCb = require("dycb");
 import MaterialsConverter = require("./MaterialsConverter");
 import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
@@ -78,7 +79,7 @@ export = class OBJToDY{
             .map((data:string) => {
                 resultJson.materials = self._convertMaterials(data.toString());
 
-                return resultJson;
+                return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
             });
 
             //);
@@ -92,6 +93,32 @@ export = class OBJToDY{
         //}, function (callback) {
         //    callback();
         //});
+    }
+
+    private _getResourceUrlArr(materials, filePath){
+        var urlArr = [];
+
+        for(let name in materials){
+            if(materials.hasOwnProperty(name)){
+                let material = materials[name];
+
+                if(material.diffuseMapUrl){
+                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.diffuseMapUrl));
+                }
+                if(material.specularMapUrl){
+                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.specularMapUrl));
+                }
+                if(material.normalMapUrl){
+                    urlArr.push(this._getAbsoluteResourceUrl(filePath, material.normalMapUrl));
+                }
+            }
+        }
+
+        return dyCb.ArrayUtils.removeRepeatItems(urlArr);
+    }
+
+    private _getAbsoluteResourceUrl(filePath, resourceRelativeUrl){
+        return path.resolve(path.dirname(filePath), resourceRelativeUrl);
     }
 
     private _convertMetadata(filePath:string){

@@ -44,8 +44,11 @@ describe("OBJToDY", function () {
 
     function judge(file, filePath, assertion, done){
         converter.convert(file.toString(), filePath)
-            .subscribe(function(json){
-                assertion(json);
+            .subscribe(function(arr){
+                var json = arr[0],
+                    sourceUrlArr = arr[1];
+
+                assertion(json, sourceUrlArr);
             }, null, function(){
                 done();
             })
@@ -131,7 +134,7 @@ describe("OBJToDY", function () {
     });
 
     it("convert materials", function(done){
-        judge(testFile, filePath1, function(json){
+        judge(testFile, filePath1, function(json, resourceUrlArr){
             expect(json.materials).toEqual(
                 {
                     material1: {
@@ -140,7 +143,7 @@ describe("OBJToDY", function () {
                         specularColor: ['0.500000', '0.500000', '0.500000'],
                         diffuseMapUrl: '1.jpg',
                         specularMapUrl: null,
-                        normalMapUrl: null,
+                        normalMapUrl: './resource/2.png',
                         shininess: 96.078431,
                         opacity: 0.1
                     },
@@ -155,6 +158,14 @@ describe("OBJToDY", function () {
                         opacity: 0.5
                     }
                 }
+            );
+            filePath1 = path.join(process.cwd(), "converter/test/res/test.obj");
+
+            expect(resourceUrlArr).toEqual(
+                [
+                    path.resolve(path.dirname(filePath1), "1.jpg"),
+                    path.resolve(path.dirname(filePath1), "./resource/2.png")
+                ]
             );
 
             done();
