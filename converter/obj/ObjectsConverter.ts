@@ -97,7 +97,7 @@ export = class ObjectsConverter {
         this._convertFromFaces();
 
         this.objects.forEach((objectModel:ObjectModel) => {
-            var object:any = {};
+            var object:any = DYOB
 
             object.material = objectModel.materialName;
 

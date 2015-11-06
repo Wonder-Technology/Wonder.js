@@ -124,10 +124,12 @@ module dy {
 
             this._parseObjectNormal(object, hasVertices);
 
-            for (let m of object.morphTargets) {
-                m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
-                //morphTargets should only come from local, not from parent
-                this._parseMorphTargetNormal(m, object.indices);
+            if(object.morphTargets){
+                for (let m of object.morphTargets) {
+                    m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
+                    //morphTargets should only come from local, not from parent
+                    this._parseMorphTargetNormal(m, object.indices);
+                }
             }
 
             object.colors = this._findAndConvertData(object, "colors");

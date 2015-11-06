@@ -42,38 +42,46 @@ module dy {
 
         private _buildModels(parseData:DYFileParseData){
             var models = dyCb.Collection.create<GameObject>(),
+                self = this,
                 build = null;
 
             build = (objects:DYFileParseObjectData, models:{addChild:Function}) => {
                 //for(let i in parseData.objects){
-                    for(let i in objects){
-                    if(objects.hasOwnProperty(i)){
-                        let object = objects[i],
-                            geometry = ModelGeometry.create(),
-                            model = GameObject.create();
+                for(let name in objects){
+                    if(objects.hasOwnProperty(name)){
+                        let object = objects[name],
+                            geometry = null,
+                            model = null;
 
-                        //geometry.vertices = object.vertices;
-                        //geometry.indices = object.indices;
-                        //geometry.normals = object.normals;
-                        //geometry.texCoords = object.uvs;
-                        //geometry.colors = object.colors;
-                        geometry.vertices = this._findData(object, "vertices");
-                        geometry.indices = this._findData(object, "indices");
-                        geometry.normals = this._findData(object, "normals");
-                        geometry.texCoords = this._findData(object, "uvs");
-                        geometry.colors = this._findData(object, "colors");
+                        model = GameObject.create();
 
-                        //todo remove
-                        geometry.isDY = true;
+                        if(!self._isModelContainer(object)){
+                            geometry = ModelGeometry.create();
+                            //geometry.vertices = object.vertices;
+                            //geometry.indices = object.indices;
+                            //geometry.normals = object.normals;
+                            //geometry.texCoords = object.uvs;
+                            //geometry.colors = object.colors;
+                            geometry.vertices = self._findData(object, "vertices");
+                            geometry.indices = self._findData(object, "indices");
+                            geometry.normals = self._findData(object, "normals");
+                            geometry.texCoords = self._findData(object, "uvs");
+                            geometry.colors = self._findData(object, "colors");
 
-                        geometry.material = this._buildMaterial(object.material, parseData.materials);
+                            //todo remove
+                            geometry.isDY = true;
 
-                        //todo build animation
+                            geometry.material = self._buildMaterial(object.material, parseData.materials);
 
-                        //model = GameObject.create();
-                        model.name = object.name;
+                            //todo build animation
+
+
+                            model.addComponent(geometry);
+                        }
+
+                        //model.name = object.name;
+                        model.name = name;
                         model.addComponent(MeshRenderer.create());
-                        model.addComponent(geometry);
                         //
                         models.addChild(model);
 
@@ -94,6 +102,10 @@ module dy {
             build(parseData.objects, models);
 
             this._result.addChild("models", models);
+        }
+
+        private _isModelContainer(object:DYFileParseObjectData){
+            return object.material === void 0;
         }
 
         private _findData(object:DYFileParseObjectData, dataName:string){
