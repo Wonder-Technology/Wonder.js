@@ -10,20 +10,20 @@ describe("DYParser", function () {
     }
 
     function setObject(data){
-        for(var i in data){
-            if (data.hasOwnProperty(i)) {
-                data[i] = testTool.extend({
+        //for(var i in data){
+        //    if (data.hasOwnProperty(i)) {
+                data = testTool.extend({
                     vertices: [],
                     morphTargets: [],
                     normals: [],
                     colors: [],
                     uvs: [],
                     indices: []
-                }, data[i]);
-            }
-        }
+                }, data);
+            //}
+        //}
 
-        json.objects = data;
+        json.objects.push(data);
 
         return testTool.extendDeep(json);
     }
@@ -35,8 +35,7 @@ describe("DYParser", function () {
         json = {
             scene:{},
             materials:{},
-            objects:{
-            }
+            objects:[]
         }
     });
     afterEach(function () {
@@ -58,7 +57,7 @@ describe("DYParser", function () {
     });
 
     describe("parse material", function(){
-        it("parse ambientColor", function(){
+        it("parse diffuseColor,specularColor", function(){
             setJson({
                 materials: {
                     a: {
@@ -79,16 +78,49 @@ describe("DYParser", function () {
             expect(result.materials.getChild("b").diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
             expect(result.materials.getChild("b").specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
         });
+        it("color's rgb can exceed 1", function(){
+            setJson({
+                materials: {
+                    a: {
+                        diffuseColor: [2, 2, 2],
+                        specularColor: [10,10,10]
+                    }
+                }
+            })
+
+            var result = parser.parse(json);
+
+            expect(result.materials.getChild("a").diffuseColor).toEqual(dy.Color.create("rgb(2.0,2.0,2.0)"));
+            expect(result.materials.getChild("a").specularColor.r).toEqual(10);
+            expect(result.materials.getChild("a").specularColor.g).toEqual(10);
+            expect(result.materials.getChild("a").specularColor.b).toEqual(10);
+        });
     });
 
     describe("parseObject", function(){
+        function getObject(result, index){
+            if(result.objects instanceof dyCb.Collection){
+                return result.objects.getChild(index);
+            }
+
+            return result.objects[index];
+        }
+
+        function getObjectChild(result, firstIndex, secondIndex){
+            if(result.objects instanceof dyCb.Collection){
+                return result.objects.getChild(firstIndex).children.getChild(secondIndex);
+            }
+
+            return result.objects[firstIndex].children[secondIndex];
+        }
+
         beforeEach(function(){
 
         });
 
         it("parse vertices,morphTargets->vertices,colors,uvs,indices", function(){
             var copy = setObject({
-                    a:{
+                name:"a",
                         vertices:[1, 2, 3, 4, -1, -2],
                         morphTargets: [
                             {vertices: [1, 2, 3, 4, -1, -2] }
@@ -96,24 +128,23 @@ describe("DYParser", function () {
                         colors: [1.0,0.1,0.1,0.2,0.2,0.2],
                         uvs:[1.0,0.1,0.1,0.2,0.2,0.2],
                         indices:[1,2,3,5,4,6]
-                    }
             })
             var result = parser.parse(json);
 
-            expect(result.objects.a.vertices.getChildren()).toEqual(
-                copy.objects.a.vertices
+            expect(getObject(result, 0).vertices.getChildren()).toEqual(
+                getObject(copy, 0).vertices
             )
-            expect(result.objects.a.morphTargets[0].vertices.getChildren()).toEqual(
-                copy.objects.a.morphTargets[0].vertices
+            expect(getObject(result, 0).morphTargets[0].vertices.getChildren()).toEqual(
+                getObject(copy, 0).morphTargets[0].vertices
             )
-            expect(result.objects.a.colors.getChildren()).toEqual(
-                copy.objects.a.colors
+            expect(getObject(result, 0).colors.getChildren()).toEqual(
+                getObject(copy, 0).colors
             )
-            expect(result.objects.a.uvs.getChildren()).toEqual(
-                copy.objects.a.uvs
+            expect(getObject(result, 0).uvs.getChildren()).toEqual(
+                getObject(copy, 0).uvs
             )
-            expect(result.objects.a.indices.getChildren()).toEqual(
-                copy.objects.a.indices
+            expect(getObject(result, 0).indices.getChildren()).toEqual(
+                getObject(copy, 0).indices
             )
         });
 
@@ -124,26 +155,25 @@ describe("DYParser", function () {
 
             it("if normals exist, parse it", function(){
                 var copy = setObject({
-                        a: {
+                    name:"a",
                             normals: [1, 2, 3, 4, -1, -2]
-                        }
                 })
                 var result = parser.parse(json);
 
-                expect(result.objects.a.normals.getChildren()).toEqual(
-                    copy.objects.a.normals
+                expect(getObject(result, 0).normals.getChildren()).toEqual(
+                    getObject(copy, 0).normals
                 );
+
             });
             it("else, compute it", function(){
                 var copy = setObject({
-                        a:{
+                    name:"a",
                             vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
                             indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-                        }
                 })
                 var result = parser.parse(json);
 
-                expect(result.objects.a.normals.getChildren()).toEqual(
+                expect(getObject(result, 0).normals.getChildren()).toEqual(
 [-0.7071067690849304,0.7071067690849304,0]
                 );
             });
@@ -156,30 +186,28 @@ describe("DYParser", function () {
 
             it("if normals exist, parse it", function(){
                 var copy = setObject({
-                        a:{
+                    name:"a",
                             morphTargets: [
                                 {normals: [1, 2, 3, 4, -1, -2] }
                             ]
-                        }
                 })
                 var result = parser.parse(json);
 
-                expect(result.objects.a.morphTargets[0].normals.getChildren()).toEqual(
-                    copy.objects.a.morphTargets[0].normals
+                expect(getObject(result, 0).morphTargets[0].normals.getChildren()).toEqual(
+                    getObject(copy, 0).morphTargets[0].normals
                 );
             });
             it("else, compute it", function(){
                 var copy = setObject({
-                        a:{
+                    name:"a",
                             morphTargets: [
                                 {vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5] }
                             ],
                             indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-                        }
                 })
                 var result = parser.parse(json);
 
-                expect(result.objects.a.morphTargets[0].normals.getChildren()).toEqual(
+                expect(getObject(result, 0).morphTargets[0].normals.getChildren()).toEqual(
                     [-0.7071067690849304,0.7071067690849304,0]
                 );
             });
@@ -188,9 +216,10 @@ describe("DYParser", function () {
         describe("parse children", function(){
             it("parse vertices,morphTargets->vertices,colors,uvs,indices", function(){
             var copy = setObject({
-                    a:{
-                        children:{
-                            aa:{
+                name:"a",
+                        children:[
+                            {
+                            name:"aa",
                                 vertices:[1, 2, 3, 4, -1, -2],
                                 morphTargets: [
                                     {vertices: [1, 2, 3, 4, -1, -2] }
@@ -199,25 +228,24 @@ describe("DYParser", function () {
                                 uvs:[1.0,0.1,0.1,0.2,0.2,0.2],
                                 indices:[1,2,3,5,4,6]
                             }
-                        }
-                    }
+                            ]
             })
             var result = parser.parse(json);
 
-            expect(result.objects.a.children.aa.vertices.getChildren()).toEqual(
-                copy.objects.a.children.aa.vertices
+            expect(getObjectChild(result, 0, 0).vertices.getChildren()).toEqual(
+                getObjectChild(copy, 0, 0).vertices
             )
-            expect(result.objects.a.children.aa.morphTargets[0].vertices.getChildren()).toEqual(
-                copy.objects.a.children.aa.morphTargets[0].vertices
+            expect(getObjectChild(result, 0, 0).morphTargets[0].vertices.getChildren()).toEqual(
+                getObjectChild(copy, 0, 0).morphTargets[0].vertices
             )
-            expect(result.objects.a.children.aa.colors.getChildren()).toEqual(
-                copy.objects.a.children.aa.colors
+            expect(getObjectChild(result, 0, 0).colors.getChildren()).toEqual(
+                getObjectChild(copy, 0, 0).colors
             )
-            expect(result.objects.a.children.aa.uvs.getChildren()).toEqual(
-                copy.objects.a.children.aa.uvs
+            expect(getObjectChild(result, 0, 0).uvs.getChildren()).toEqual(
+                getObjectChild(copy, 0, 0).uvs
             )
-            expect(result.objects.a.children.aa.indices.getChildren()).toEqual(
-                copy.objects.a.children.aa.indices
+            expect(getObjectChild(result, 0, 0).indices.getChildren()).toEqual(
+                getObjectChild(copy, 0, 0).indices
             )
             });
 
@@ -228,37 +256,37 @@ describe("DYParser", function () {
 
                 it("if normals exist, parse it", function(){
                     var copy = setObject({
-                        a: {
-                            children: {
-                                aa: {
+                        name:"a",
+                            children: [
+                                {
+                                    name:"aa",
                                     morphTargets:[],
                                     normals: [1, 2, 3, 4, -1, -2]
                                 }
-                            }
-                        }
+                            ]
                     })
                     var result = parser.parse(json);
 
-                    expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
-                        copy.objects.a.children.aa.normals
+                    expect(getObjectChild(result, 0, 0).normals.getChildren()).toEqual(
+                        getObjectChild(copy, 0, 0).normals
                     );
 
                 });
                 it("else, compute it", function(){
                 var copy = setObject({
-                        a: {
-                            children: {
-                                aa: {
+                    name:"a",
+                            children: [
+                                {
+                                    name:"aa",
                                     morphTargets:[],
                                     vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
                                     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                                 }
-                            }
-                        }
+                                ]
                 })
                 var result = parser.parse(json);
 
-                expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                expect(getObjectChild(result, 0, 0).normals.getChildren()).toEqual(
 [-0.7071067690849304,0.7071067690849304,0]
                 );
                 });
@@ -271,36 +299,38 @@ describe("DYParser", function () {
 
                 it("if normals exist, parse it", function(){
                     var copy = setObject({
-                        a: {
-                            children: {
-                                aa: {
+                        name:"a",
+                            children: [
+                                {
+                                    name:"aa",
                                     morphTargets: [
                                         {normals: [1, 2, 3, 4, -1, -2]}
-                                    ]
+                                        ]
                                 }
-                            }}
+                                ]
                     })
                     var result = parser.parse(json);
 
-                    expect(result.objects.a.children.aa.morphTargets[0].normals.getChildren()).toEqual(
-                        copy.objects.a.children.aa.morphTargets[0].normals
+                    expect(getObjectChild(result, 0, 0).morphTargets[0].normals.getChildren()).toEqual(
+                        getObjectChild(copy, 0, 0).morphTargets[0].normals
                     );
                 });
                 it("else, compute it", function(){
                     var copy = setObject({
-                        a:{
-                                children: {
-                                    aa: {
+                        name:"a",
+                                children: [
+                                    {
+                                        name:"aa",
                                         morphTargets: [
                                             {vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5]}
                                         ],
                                         indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                                     }
-                                }}
+                                    ]
                     })
                     var result = parser.parse(json);
 
-                    expect(result.objects.a.children.aa.morphTargets[0].normals.getChildren()).toEqual(
+                    expect(getObjectChild(result, 0, 0).morphTargets[0].normals.getChildren()).toEqual(
                         [-0.7071067690849304,0.7071067690849304,0]
                     );
                 });
@@ -309,31 +339,32 @@ describe("DYParser", function () {
             describe("if child's geometry data is null, use its parent's data", function(){
                 it("test", function(){
                     var copy = setObject({
-                        a:{
+                        name:"a",
                             morphTargets:[],
                             vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
                             indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                             uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
 
-                            children: {
-                                aa: {
+                            children: [
+                                {
+                                    name:"aa",
                                     morphTargets: [],
                                     uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
                                 }
-                            }}
+                                ]
                     })
                     var result = parser.parse(json);
 
-                    expect(result.objects.a.children.aa.vertices.getChildren()).toEqual(
-                        copy.objects.a.vertices
+                    expect(getObjectChild(result, 0, 0).vertices.getChildren()).toEqual(
+                        getObject(copy, 0).vertices
                     );
-                    expect(result.objects.a.children.aa.indices.getChildren()).toEqual(
-                        copy.objects.a.indices
+                    expect(getObjectChild(result, 0, 0).indices.getChildren()).toEqual(
+                        getObject(copy, 0).indices
                     );
-                    expect(result.objects.a.children.aa.uvs.getChildren()).toEqual(
-                        copy.objects.a.children.aa.uvs
+                    expect(getObjectChild(result, 0, 0).uvs.getChildren()).toEqual(
+                        getObjectChild(copy, 0, 0).uvs
                     );
-                    expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                    expect(getObjectChild(result, 0, 0).normals.getChildren()).toEqual(
                         [-0.7071067690849304,0.7071067690849304,0]
                     );
                 });
@@ -345,46 +376,48 @@ describe("DYParser", function () {
 
                     it("if child don't has vertices and normals, use its parent's normals", function(){
                         var copy = setObject({
-                            a:{
+                            name:"a",
                                 morphTargets:[],
                                 vertices: [3, -2, 3, 2, 3, 4, 3, 4, -5],
                                 indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                 uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
 
-                                children: {
-                                    aa: {
+                                children: [
+                                    {
+                                        name:"aa",
                                         indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                         morphTargets: [],
                                         uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
                                     }
-                                }}
+                                    ]
                         })
                         var result = parser.parse(json);
 
-                        expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                        expect(getObjectChild(result, 0, 0).normals.getChildren()).toEqual(
                             [-0.9771763682365417, -0.16994372010231018, -0.12745778262615204]
                         );
                     });
                     it("else if child don't has normals but has vertices, compute child normals", function(){
                         var copy = setObject({
-                            a:{
+                            name:"a",
                                 morphTargets:[],
                                 vertices: [1, 2, 3, 2, 3, 4, 3, 4, -5],
                                 indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                 uvs:[0.0,1.1,0.1,0.2,0.2,0.2],
 
-                                children: {
-                                    aa: {
+                                children: [
+                                    {
+                                        name:"aa",
                                         vertices: [3, -2, 3, 2, 3, 4, 3, 4, -5],
                                         indices: [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                         morphTargets: [],
                                         uvs:[1.0,0.1,0.1,0.2,0.2,0.2]
                                     }
-                                }}
+                                    ]
                         })
                         var result = parser.parse(json);
 
-                        expect(result.objects.a.children.aa.normals.getChildren()).toEqual(
+                        expect(getObjectChild(result, 0, 0).normals.getChildren()).toEqual(
                             [-0.9771763682365417, -0.16994372010231018, -0.12745778262615204]
                         );
                     })

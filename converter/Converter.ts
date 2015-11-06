@@ -9,9 +9,6 @@ import dyCb = require("dycb");
 import Log = require("./common/Log");
 import OBJToDY = require("./obj/OBJToDY");
 
-const VERSION = "0.1.0",
-    EXTNAME = ".dy";
-
 //todo copy resource(img...) to dest dir?
 
 export = class Converter {
@@ -22,6 +19,8 @@ export = class Converter {
     }
 
     public name:string = "DYConverter";
+    public version:string = "0.1.0";
+    public extname:string = ".dy";
 
     public convert(fileContent:string, filePath:string):dyRt.Stream {
         var fileExtname = path.extname(filePath),
@@ -29,8 +28,7 @@ export = class Converter {
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToDY.create(VERSION, this.name).convert(fileContent, filePath);
-                console.log(".obj", filePath)
+                result = OBJToDY.create(this.version, this.name).convert(fileContent, filePath);
                 //console.log(result)
                 break;
             default:
@@ -43,11 +41,13 @@ export = class Converter {
     }
 
     public write(fileContentStream:dyRt.Stream, sourceDir:string, destDir:string, filePath:string):dyRt.Stream {
+        var self = this;
+
         //console.log(fileContentStream)
         return fileContentStream.flatMap((fileJson:{any}) => {
             //return fileContentStream.do((fileJson:{any}) => {
             var resultFilePath = path.join(destDir, path.relative(sourceDir, filePath))
-            .replace(/\.\w+$/, EXTNAME);
+            .replace(/\.\w+$/, self.extname);
 
             //console.log(resultFilePath)
 

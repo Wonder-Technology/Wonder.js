@@ -73,60 +73,56 @@ describe("OBJToDY", function () {
         it("read normals from file", function (done) {
             judge(testFile, filePath1, function(json){
                 expect(json.objects).toEqual(
-                    {
-                        test: {
-                            children: {
-                                model1: {
-                                    material: 'material1',
-                                    vertices: [1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
-                                    normals: [-1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
-                                    uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                                    indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                                    colors: [],
-                                    morphTargets: []
-                                },
-                                model2: {
-                                    material: 'material2',
-                                    vertices: [1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1],
-                                    normals: [1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
-                                    uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
-                                    indices: [0, 1, 2, 3, 4, 5],
-                                    colors: [],
-                                    morphTargets: []
-                                }
-                            }
-                        }
-                    }
+                    [{
+                        name: 'test',
+                        children: [{
+                            name: 'model1',
+                            material: 'material1',
+                            vertices: [1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
+                            normals: [-1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
+                            uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+                            indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                            colors: [],
+                            morphTargets: []
+                        }, {
+                            name: 'model2',
+                            material: 'material2',
+                            vertices: [1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1],
+                            normals: [1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
+                            uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
+                            indices: [0, 1, 2, 3, 4, 5],
+                            colors: [],
+                            morphTargets: []
+                        }]
+                    }]
                 );
             }, done);
         });
         it("compute normals", function (done) {
             judge(testFile2, filePath2, function(json){
                 expect(json.objects).toEqual(
-                    {
-                        test2: {
-                            children: {
-                                model1: {
-                                    material: 'material1',
-                                    vertices: [10, -1, -1, -1, -1, -1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, 1],
-                                    normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-                                    uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-                                    indices: [0, 1, 2, 3, 4, 5],
-                                    colors: [],
-                                    morphTargets: []
-                                },
-                                model3: {
-                                    material: 'material3',
-                                    vertices: [10, -1, -1, -1, -1, 1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, -1],
-                                    normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-                                    uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
-                                    indices: [0, 1, 2, 3, 4, 5],
-                                    colors: [],
-                                    morphTargets: []
-                                }
-                            }
-                        }
-                    }
+                    [{
+                        name: 'test2',
+                        children: [{
+                            name: 'model1',
+                            material: 'material1',
+                            vertices: [10, -1, -1, -1, -1, -1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, 1],
+                            normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
+                            uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+                            indices: [0, 1, 2, 3, 4, 5],
+                            colors: [],
+                            morphTargets: []
+                        }, {
+                            name: 'model3',
+                            material: 'material3',
+                            vertices: [10, -1, -1, -1, -1, 1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, -1],
+                            normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
+                            uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
+                            indices: [0, 1, 2, 3, 4, 5],
+                            colors: [],
+                            morphTargets: []
+                        }]
+                    }]
                 );
 
                 done();

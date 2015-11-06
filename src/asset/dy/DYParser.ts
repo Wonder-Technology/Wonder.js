@@ -74,9 +74,8 @@ module dy {
             });
         }
 
-        //todo test over 1
         private _createColor(colorArr:Array<number>) {
-            return Color.create(`rgb(${colorArr.join(",").replace(/^(\d),/g, "$1.0,").replace(/,(\d),/g, ",$1.0,").replace(/,(\d)$/g, ",$1.0")})`);
+            return Color.create(`rgb(${colorArr.join(",").replace(/^(\d+),/g, "$1.0,").replace(/,(\d+),/g, ",$1.0,").replace(/,(\d+)$/g, ",$1.0")})`);
         }
 
         private _parseMorphTargetNormal(m:{vertices;normals?}, indices) {

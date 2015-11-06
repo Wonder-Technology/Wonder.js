@@ -20,7 +20,7 @@ describe("DYBuilder", function () {
         json = {
             scene: {},
             materials: {},
-            objects: {}
+            objects: []
         }
 
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));

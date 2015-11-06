@@ -32,19 +32,30 @@ describe("Converter", function () {
             testFile2 = fs.readFileSync(testPath2);
         });
 
+        function readJSON(resultFilePath){
+            var EXTNAME = ".dy";
+            var resultFilePath = resultFilePath.replace(/\.\w+$/, EXTNAME);
+
+            if(!fs.existsSync(resultFilePath)){
+                throw new Error(resultFilePath+" not exist");
+            }
+
+            return JSON.parse(fs.readFileSync(resultFilePath).toString());
+        }
+
         it("convert one file", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
             converter.write(converter.convert(testFile.toString(), testPath1), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
                 }, null, function () {
                     var resultFilePath = path.join(destDir, path.relative(sourceDir, testPath1));
-                    var resultJson = JSON.parse(fs.readFileSync(resultFilePath).toString());
+                    var resultJson = readJSON(resultFilePath);
 
                     expect(resultJson.metadata).toEqual({
-                        formatVersion: '0.1.0',
+                        formatVersion: converter.version,
                         description: '',
                         sourceFile: testPath1,
-                        generatedBy: 'DYConverter'
+                        generatedBy: converter.name
                     });
 
                     fs.removeSync(destDir);
@@ -63,8 +74,8 @@ describe("Converter", function () {
                 }, null, function () {
                     var resultFilePath1 = path.join(destDir, path.relative(sourceDir, testPath1));
                     var resultFilePath2 = path.join(destDir, path.relative(sourceDir, testPath2));
-                    var resultJson1 = JSON.parse(fs.readFileSync(resultFilePath1).toString());
-                    var resultJson2 = JSON.parse(fs.readFileSync(resultFilePath2).toString());
+                    var resultJson1 = readJSON(resultFilePath1);
+                    var resultJson2 = readJSON(resultFilePath2);
 
                     expect(resultJson1.objects).toBeDefined();
                     expect(resultJson1.materials).toBeDefined();
