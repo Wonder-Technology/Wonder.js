@@ -20,16 +20,16 @@ export = class Converter {
     public version:string = "0.1.0";
     public extname:string = ".dy";
 
-    public convert(fileBuffer:Buffer, filePath:string):dyRt.Stream {
+    public convert(fileBuffer:Buffer, filePath:string, isComputeNormals:boolean):dyRt.Stream {
         var fileExtname = path.extname(filePath),
             result:dyRt.Stream = null;
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToDY.create(this.version).convert(fileBuffer.toString(), filePath);
+                result = OBJToDY.create(this.version).convert(fileBuffer.toString(), filePath, isComputeNormals);
                 break;
             case ".md2":
-                result = MD2ToDY.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToDY.create(this.version).convert(fileBuffer, filePath, isComputeNormals);
                 break;
             default:
                 result = dyRt.empty();

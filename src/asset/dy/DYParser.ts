@@ -224,9 +224,9 @@ module dy {
                 compute = null;
 
             compute = (startIndex:number) => {
-                var p0 = Vector3.create(vertices.getChild(indices.getChild(startIndex)), vertices.getChild(indices.getChild(startIndex + 1)), vertices.getChild(indices.getChild(startIndex + 2))),
-                    p1 = Vector3.create(vertices.getChild(indices.getChild(startIndex + 3)), vertices.getChild(indices.getChild(startIndex + 4)), vertices.getChild(indices.getChild(startIndex + 5))),
-                    p2 = Vector3.create(vertices.getChild(indices.getChild(startIndex + 6)), vertices.getChild(indices.getChild(startIndex + 7)), vertices.getChild(indices.getChild(startIndex + 8))),
+                var p0 = Vector3.create(vertices.getChild(indices.getChild(startIndex) * 3), vertices.getChild(indices.getChild(startIndex) * 3 + 1), vertices.getChild(indices.getChild(startIndex) * 3 + 2)),
+                    p1 = Vector3.create(vertices.getChild(indices.getChild(startIndex + 1) * 3), vertices.getChild(indices.getChild(startIndex + 1) * 3 + 1), vertices.getChild(indices.getChild(startIndex + 1) * 3 + 2)),
+                    p2 = Vector3.create(vertices.getChild(indices.getChild(startIndex + 2) * 3), vertices.getChild(indices.getChild(startIndex + 2) * 3 + 1), vertices.getChild(indices.getChild(startIndex + 2) * 3 + 2)),
                     v0 = Vector3.create().sub2(p2, p1),
                     v1 = Vector3.create().sub2(p0, p1),
                     result = null;
@@ -236,9 +236,15 @@ module dy {
                 normals.addChild(result.x);
                 normals.addChild(result.y);
                 normals.addChild(result.z);
+                normals.addChild(result.x);
+                normals.addChild(result.y);
+                normals.addChild(result.z);
+                normals.addChild(result.x);
+                normals.addChild(result.y);
+                normals.addChild(result.z);
 
-                if (count > startIndex + 9) {
-                    compute(startIndex + 9);
+                if (count > startIndex + 3) {
+                    compute(startIndex + 3);
                 }
             };
 

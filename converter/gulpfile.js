@@ -18,7 +18,9 @@ gulp.task("convert", function (done) {
 
     var sourceDir = parseOption("--sourceDir") || "./source/",
         destDir = parseOption("--destDir") || "./dest/",
+        isComputeNormals = parseOption("--isComputeNormals") ? Boolean(parseOption("--isComputeNormals")) : false,
         converter = Converter.create();
+
 
     dyRt.fromNodeCallback(fs.remove)(destDir)
         .concat(
@@ -28,7 +30,7 @@ gulp.task("convert", function (done) {
                         .flatMap(function (fileBuffer) {
                             var filePath = data.path;
 
-                            return converter.write(converter.convert(fileBuffer, filePath), sourceDir, destDir, filePath);
+                            return converter.write(converter.convert(fileBuffer, filePath, isComputeNormals), sourceDir, destDir, filePath);
                         })
                 })
         )

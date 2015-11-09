@@ -40,7 +40,7 @@ export = class MD2ObjectsConverter {
     //private _currentObject:ObjectModel = null;
     //private _currentObjectName:string = null;
 
-    public convert(fileBuffer:Buffer, filePath:string) {
+    public convert(fileBuffer:Buffer, filePath:string, isComputeNormals:boolean) {
         var result:any = [],
             object:any = {};
 
@@ -274,7 +274,6 @@ export = class MD2ObjectsConverter {
                 var x = fileBuffer.readUInt8( offset ++, true );
                 var y = fileBuffer.readUInt8( offset ++, true );
                 var z = fileBuffer.readUInt8( offset ++, true );
-                var n = normalTable[ fileBuffer.readUInt8( offset ++, true ) ];
 
                 //var vertex = Vector3.create(
                 //    x * scale.x + translation.x,
@@ -293,7 +292,13 @@ export = class MD2ObjectsConverter {
                 //frame.vertices.push( vertex );
                 //frame.normals.push( normal );
                 frame.vertices = frame.vertices.concat( vertex );
-                frame.normals = frame.normals.concat( n );
+                if(isComputeNormals){
+                    var n = normalTable[ fileBuffer.readUInt8( offset ++, true ) ];
+                    frame.normals = frame.normals.concat( n );
+                }
+                else{
+                    offset ++;
+                }
             }
 
 
