@@ -32,8 +32,8 @@ module dy{
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
-            if (quadCmd.buffers.hasChild("vertexBuffer")) {
-                this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild("vertexBuffer"));
+            if (quadCmd.buffers.hasChild(BufferDataType.VERTICE)) {
+                this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.VERTICE));
             }
             else {
                 Log.error(true, Log.info.FUNC_MUST("has vertexBuffer"));

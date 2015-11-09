@@ -2,8 +2,8 @@
 module dy{
     export abstract class LightMapShaderLib extends ShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            if (quadCmd.buffers.hasChild("texCoordBuffer")) {
-                this.sendAttributeData(program, "a_texCoord", <ArrayBuffer>quadCmd.buffers.getChild("texCoordBuffer"));
+            if (quadCmd.buffers.hasChild(BufferDataType.TEXCOORD)) {
+                this.sendAttributeData(program, "a_texCoord", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.TEXCOORD));
             }
         }
 

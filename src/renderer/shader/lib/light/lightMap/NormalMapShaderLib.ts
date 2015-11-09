@@ -12,8 +12,8 @@ module dy{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             super.sendShaderVariables(program, quadCmd, material);
 
-            if(quadCmd.buffers.hasChild("tangentBuffer")){
-                this.sendAttributeData(program, "a_tangent", <ArrayBuffer>quadCmd.buffers.getChild("tangentBuffer"));
+            if(quadCmd.buffers.hasChild(BufferDataType.TANGENT)){
+                this.sendAttributeData(program, "a_tangent", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.TANGENT));
             }
         }
 

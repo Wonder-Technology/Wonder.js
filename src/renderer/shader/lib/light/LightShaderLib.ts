@@ -11,8 +11,8 @@ module dy{
         public type:string = "light";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            if(quadCmd.buffers.hasChild("normalBuffer")){
-                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+            if(quadCmd.buffers.hasChild(BufferDataType.NORMAL)){
+                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.NORMAL));
             }
 
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());

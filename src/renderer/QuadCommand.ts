@@ -7,22 +7,11 @@ module dy {
             return obj;
         }
 
-        private _buffers:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
-        get buffers() {
-            return this._buffers;
-        }
-        set buffers(buffers:any) {
-            for (let i in buffers) {
-                if (buffers.hasOwnProperty(i)) {
-                    this._buffers.addChild(i, buffers[i]);
-                }
-            }
-        }
-
         get program(){
             return this.material.program;
         }
 
+        public buffers:BufferContainer = null;
         public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
@@ -39,38 +28,18 @@ module dy {
         }
 
         public init() {
-            //this._initBuffer();
-            //this.material.textureManager.init();
         }
-
-        //private _initBuffer(){
-        //    this._buffers.addChild("vertexBuffer",
-        //        this._bufferData.vertices? ArrayBuffer.create(this._bufferData.vertices, 3, BufferType.FLOAT) : null
-        //    );
-        //    this._buffers.addChild("texCoordBuffer",
-        //        this._bufferData.texCoords? ArrayBuffer.create(this._bufferData.texCoords, 2, BufferType.FLOAT) : null
-        //    );
-        //    this._buffers.addChild("normalBuffer",
-        //        this._bufferData.normals? ArrayBuffer.create(this._bufferData.normals, 3, BufferType.FLOAT) : null
-        //    );
-        //    this._buffers.addChild("indexBuffer",
-        //        this._bufferData.indices? ElementBuffer.create(this._bufferData.indices, BufferType.UNSIGNED_SHORT) : null
-        //    );
-        //    this._buffers.addChild("colorBuffer",
-        //        this._bufferData.colors? ArrayBuffer.create(this._bufferData.colors, 3, BufferType.FLOAT) : null
-        //    );
-        //}
 
         private _draw() {
             var totalNum = 0,
                 startOffset = 0,
-                vertexBuffer = this._buffers.getChild("vertexBuffer"),
+                vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE),
                 gl = DeviceManager.getInstance().gl;
 
             this._setEffects();
 
-            if (this._buffers.hasChild("indexBuffer")) {
-                let indexBuffer:ElementBuffer = <ElementBuffer>this._buffers.getChild("indexBuffer");
+            if (this.buffers.hasChild(BufferDataType.INDICE)) {
+                let indexBuffer:ElementBuffer = <ElementBuffer>this.buffers.getChild(BufferDataType.INDICE);
 
                 totalNum = indexBuffer.num;
 

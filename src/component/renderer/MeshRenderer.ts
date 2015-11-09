@@ -19,14 +19,18 @@ module dy {
             Log.error(!cameraComponent, "camera must add Camera Component");
             Log.error(!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
 
-            quadCmd.buffers = {
-                vertexBuffer: geometry.verticeBuffer,
-                texCoordBuffer: geometry.texCoordBuffer,
-                indexBuffer: geometry.indiceBuffer,
-                normalBuffer: geometry.normalBuffer,
-                tangentBuffer:geometry.tangentBuffer,
-                colorBuffer: geometry.colorBuffer
-            };
+            //quadCmd.buffers = {
+            //    vertexBuffer: geometry.verticeBuffer,
+            //    texCoordBuffer: geometry.texCoordBuffer,
+            //    indexBuffer: geometry.indiceBuffer,
+            //    normalBuffer: geometry.normalBuffer,
+            //    tangentBuffer:geometry.tangentBuffer,
+            //    colorBuffer: geometry.colorBuffer
+            //};
+
+            //quadCmd.geometryData = geometry.geometryData;
+            quadCmd.buffers = geometry.buffers;
+
 
             //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
             quadCmd.mMatrix = this.transform.localToWorldMatrix;

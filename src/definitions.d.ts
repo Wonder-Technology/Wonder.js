@@ -35,6 +35,7 @@
 
 
 /// <reference path="component/geometry/Geometry"/>
+/// <reference path="component/geometry/GeometryData"/>
 /// <reference path="component/geometry/ModelGeometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
@@ -92,11 +93,14 @@
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
-/// <reference path="renderer/BufferType"/>
 /// <reference path="renderer/DrawMode"/>
+/// <reference path="renderer/BufferType"/>
+/// <reference path="renderer/BufferDataType"/>
 /// <reference path="renderer/Buffer"/>
 /// <reference path="renderer/ElementBuffer"/>
 /// <reference path="renderer/ArrayBuffer"/>
+/// <reference path="renderer/BufferContainer"/>
+/// <reference path="renderer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
 /// <reference path="renderer/FrameBuffer"/>

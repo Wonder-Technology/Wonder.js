@@ -11,8 +11,8 @@ module dy{
         public type:string = "skybox";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-                if (quadCmd.buffers.hasChild("normalBuffer")) {
-                    program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild("normalBuffer"));
+                if (quadCmd.buffers.hasChild(BufferDataType.NORMAL)) {
+                    program.sendAttributeData("a_normal", VariableType.BUFFER, <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.NORMAL));
                 }
         }
 
