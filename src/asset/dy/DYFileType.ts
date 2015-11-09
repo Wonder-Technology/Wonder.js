@@ -140,6 +140,8 @@ module dy {
 
         name:string,
 
+        isContainer:boolean,
+
 
         /*!for model geometry*/
         vertices: dyCb.Collection<number>,

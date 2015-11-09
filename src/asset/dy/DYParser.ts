@@ -1,5 +1,56 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
+    var _setTwoComponentData = (sourceData:dyCb.Collection<number>, targetData:dyCb.Collection<number>|Array<number>, index:number) => {
+        var data = _getTwoComponentData(sourceData, index);
+
+        if(targetData instanceof dyCb.Collection){
+            targetData.addChild(data.x);
+            targetData.addChild(data.y);
+        }
+        else{
+            let target:Array<number> = <Array<number>>targetData;
+
+            target.push(data.x);
+            target.push(data.y);
+        }
+    }
+
+    var _getTwoComponentData = (sourceData:dyCb.Collection<number>, index:number) => {
+        var startIndex = 2 * index;
+
+        return Vector2.create(
+            sourceData.getChild(startIndex),
+            sourceData.getChild(startIndex + 1)
+        );
+    }
+
+    var _setThreeComponentData = (sourceData:dyCb.Collection<number>, targetData:dyCb.Collection<number>|Array<number>, index:number) => {
+        var data = _getThreeComponentData(sourceData, index);
+
+        if(targetData instanceof dyCb.Collection){
+            targetData.addChild(data.x);
+            targetData.addChild(data.y);
+            targetData.addChild(data.z);
+        }
+        else{
+            let target:Array<number> = <Array<number>>targetData;
+
+            target.push(data.x);
+            target.push(data.y);
+            target.push(data.z);
+        }
+    }
+
+    var _getThreeComponentData = (sourceData:dyCb.Collection<number>, index:number) => {
+        var startIndex = 3 * index;
+
+        return Vector3.create(
+            sourceData.getChild(startIndex),
+            sourceData.getChild(startIndex + 1),
+            sourceData.getChild(startIndex + 2)
+        );
+    }
+
     export class DYParser {
         public static create() {
             var obj = new this();
@@ -29,27 +80,34 @@ module dy {
             this._data.objects = dyCb.Collection.create<any>(json.objects);
 
             parse = (object:any) => {
-                var hasVertices = true;
+                self._convertVNCUData(object);
 
-                if (!object.vertices) {
-                    hasVertices = false;
+                if(self._isObjectContainer(object)){
+                    object.isContainer = true;
                 }
+                else{
+                    object.isContainer = false;
 
-                object.vertices = self._findAndConvertData(object, "vertices");
-                object.indices = self._findAndConvertData(object, "indices");
+                    self._parseFromIndices(object);
 
-                self._parseObjectNormal(object, hasVertices);
-
-                if (object.morphTargets) {
-                    for (let m of object.morphTargets) {
-                        m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
-                        //morphTargets should only come from local, not from parent
-                        self._parseMorphTargetNormal(m, object.indices);
+                    if(!self._hasNormals(object)){
+                        object.normals = this._computeNormal(object.vertices, object.indices);
                     }
                 }
 
-                object.colors = self._findAndConvertData(object, "colors");
-                object.uvs = self._findAndConvertData(object, "uvs");
+                //todo parse morphTargets later
+
+                //if (object.morphTargets) {
+                //    for (let m of object.morphTargets) {
+                //        m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
+                //        //morphTargets should only come from local, not from parent
+                //        self._parseMorphTargetNormal(m, object.indices);
+                //    }
+                //}
+
+                //object.colors = self._findAndConvertData(object, "colors");
+                //object.uvs = self._findAndConvertData(object, "uvs");
+
 
                 if (object.children) {
                     object.children = dyCb.Collection.create<any>(object.children);
@@ -68,6 +126,50 @@ module dy {
 
                 parse(object);
             });
+        }
+
+        private _isObjectContainer(object:any){
+            return !object.indices || object.indices.length === 0;
+        }
+
+        private _parseFromIndices(object:any){
+            this._addDuplicateVertexToMakeItIndependent(object);
+        }
+
+        private _addDuplicateVertexToMakeItIndependent(object:any){
+            var vertices = [],
+                uvs = [],
+                normals = [],
+                indices = [];
+
+            for(let i = 0,len = object.indices.length; i < len; i++){
+                let indice = object.indices[i];
+
+                _setThreeComponentData(object.vertices, vertices, indice);
+                this._setUV(uvs, object.uvs, object.uvIndices[i]);
+
+                indices.push(i);
+
+                if(this._hasNormals(object)){
+                    _setThreeComponentData(object.normals, normals, indice);
+                }
+            }
+
+            object.vertices = dyCb.Collection.create<number>(vertices);
+            object.uvs = dyCb.Collection.create<number>(uvs);
+            object.indices = dyCb.Collection.create<number>(indices);
+
+            if(this._hasNormals(object)) {
+                object.normals = dyCb.Collection.create<number>(normals);
+            }
+        }
+
+        private _setUV(targetUVs, sourceUVs, uvIndice){
+            targetUVs.push(sourceUVs.getChild(uvIndice*2), sourceUVs.getChild(uvIndice*2 + 1));
+        }
+
+        private _hasNormals(object:DYFileParseObjectData){
+            return object.normals && object.normals.getCount() > 0;
         }
 
         private _parseScene(json:DYFileJsonData) {
@@ -99,14 +201,14 @@ module dy {
             m.normals = <any>this._parseNormal(m.vertices, indices, m.normals);
         }
 
-        private _parseObjectNormal(object, hasVertices:boolean) {
-            if (!hasVertices) {
-                object.normals = this._findAndConvertData(object, "normals");
-                return;
-            }
-
-            object.normals = this._parseNormal(object.vertices, object.indices, object.normals);
-        }
+        //private _parseObjectNormal(object, hasVertices:boolean) {
+        //    //if (!hasVertices) {
+        //    //    object.normals = this._findAndConvertData(object, "normals");
+        //    //    return;
+        //    //}
+        //
+        //    object.normals = this._parseNormal(object.vertices, object.indices, object.normals);
+        //}
 
         private _parseNormal(vertices:dyCb.Collection<number>, indices:dyCb.Collection<number>, normals:Array<number>) {
             if (normals && normals.length > 0) {
@@ -145,20 +247,42 @@ module dy {
             return normals;
         }
 
-        //todo not come from parent,only come from local?
-        private _findAndConvertData(object:any, dataName:string) {
-            var data = null;
+        private _convertVNCUData(object:any) {
+            //var data = null;
+            var currentObject = object,
+                dataNameArr = ["vertices", "uvs", "colors", "normals"];
 
-            do {
-                data = object[dataName];
+            //do {
+                //data = object.vertices;
+            //}
+            while (!object.vertices && currentObject !== null){
+                currentObject = currentObject.parent;
             }
-            while (!data && (object = object.parent) !== null);
 
-            if (data instanceof dyCb.Collection) {
-                return data;
+
+            
+            if(!currentObject.uvs || !currentObject.colors){
+                dyCb.Log.error(true, dyCb.Log.info.FUNC_SHOULD("object", "has uvs,colors with vertices"));
             }
 
-            return dyCb.Collection.create<number>(data);
+            this._makeObjectHaveVertexData(object, currentObject, dataNameArr);
+            this._convertData(object, dataNameArr);
+        }
+
+        private _makeObjectHaveVertexData(targetObject:any, sourceObject:any, dataNameArr:Array<string>){
+            dataNameArr.forEach((name:string) => {
+                targetObject[name] = sourceObject[name];
+            });
+        }
+
+        private _convertData(object:any, dataNameArr:Array<string>){
+            dataNameArr.forEach((name:string) => {
+                let data:any = object[name];
+
+                if (!(data instanceof dyCb.Collection)) {
+                    object[name] = dyCb.Collection.create<number>(data);
+                }
+            });
         }
     }
 }

@@ -63,7 +63,10 @@ module dy {
                         //todo remove
                         geometry.isDY = true;
 
-                        geometry.material = self._buildMaterial(object.material, parseData.materials);
+
+                        if(object.material){
+                            geometry.material = self._buildMaterial(object.material, parseData.materials);
+                        }
 
                         //todo build animation
 
@@ -87,7 +90,8 @@ module dy {
         }
 
         private _isModelContainer(object:DYFileParseObjectData){
-            return object.material === void 0;
+            //return object.material === void 0 && object.vertices.getCount() === 0;
+            return object.isContainer;
         }
 
         private _findData(object:DYFileParseObjectData, dataName:string){

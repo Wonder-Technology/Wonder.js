@@ -2,8 +2,6 @@
 /// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
 import fs = require("fs");
 import path = require("path");
-import through = require("through2");
-import gutil = require("gulp-util");
 import dyRt = require("dyrt");
 import dyCb = require("dycb");
 import MaterialsConverter = require("./MaterialsConverter");

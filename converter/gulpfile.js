@@ -24,11 +24,11 @@ gulp.task("convert", function (done) {
         .concat(
             dyRt.fromStream(gs.create([path.join(sourceDir, "*"), path.join(sourceDir, "**")], {nodir: true}))
                 .flatMap(function (data) {
-                    return dyRt.fromNodeCallback(fs.readFile)(data.path, "utf8")
-                        .flatMap(function (fileContent) {
+                    return dyRt.fromNodeCallback(fs.readFile)(data.path)
+                        .flatMap(function (fileBuffer) {
                             var filePath = data.path;
 
-                            return converter.write(converter.convert(fileContent, filePath), sourceDir, destDir, filePath);
+                            return converter.write(converter.convert(fileBuffer, filePath), sourceDir, destDir, filePath);
                         })
                 })
         )
