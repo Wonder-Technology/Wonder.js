@@ -3,6 +3,7 @@ import dyCb = require("dycb");
 import Log = require("../common/Log");
 import Vector2 = require("../common/Vector2");
 import Vector3 = require("../common/Vector3");
+import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 
 //todo handle x,y,z,w case?
 const VERTEX_PATTERN = /v\s([\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/,
@@ -67,7 +68,7 @@ export = class ObjectsConverter {
             topObject.children.push(object);
         });
 
-        topObject.name = dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath));
+        topObject.name = ModelLoaderUtils.getNameByPath(filePath);
 
         topObject.vertices = this._vertices;
         topObject.normals = this._normals;
