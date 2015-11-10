@@ -359,8 +359,8 @@ var CubemapRenderTargetTool = YYC.Class({
                 });
                 it("init camera", function(){
                     var firstCallCamera = self.renderTargetRenderer.createCamera(0);
-                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
 
+                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
                     expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
                         [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1.020202, -1, 0, 0, -0.2020202, 0 ]
                     );

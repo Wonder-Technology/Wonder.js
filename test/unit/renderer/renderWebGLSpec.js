@@ -68,17 +68,18 @@ describe("renderWebGL", function() {
             geometry.init();
 
 
-            quadCmd.buffers = {
-                vertexBuffer: geometry.verticeBuffer,
-                texCoordBuffer: geometry.texCoordBuffer,
-                indexBuffer: geometry.indiceBuffer,
-                normalBuffer: geometry.normalBuffer,
-                tangentBuffer:geometry.tangentBuffer,
-                colorBuffer: geometry.colorBuffer
-            };
+            //quadCmd.buffers = {
+            //    vertexBuffer: geometry.verticeBuffer,
+            //    texCoordBuffer: geometry.texCoordBuffer,
+            //    indexBuffer: geometry.indiceBuffer,
+            //    normalBuffer: geometry.normalBuffer,
+            //    tangentBuffer:geometry.tangentBuffer,
+            //    colorBuffer: geometry.colorBuffer
+            //};
+            quadCmd.buffers = geometry.buffers;
 
             if(isNoIndexBuffer){
-                quadCmd.buffers.setValue("indexBuffer", null);
+                quadCmd.buffers.geometryData.indices = null;
             }
 
             quadCmd.shader = geometry.material.shader;
@@ -330,7 +331,7 @@ describe("renderWebGL", function() {
 
                     renderer.render();
 
-                    expect(gl.drawArrays).toCalledWith(gl.TRIANGLES, 0, quadCmd.buffers.getChild("vertexBuffer").num);
+                    expect(gl.drawArrays).toCalledWith("TRIANGLES",0,3);
                 });
                 it("else, drawElements", function(){
                     var result = addCommand();
@@ -338,7 +339,7 @@ describe("renderWebGL", function() {
 
                     renderer.render();
 
-                    var indexBuffer = quadCmd.buffers.getChild("indexBuffer");
+                    var indexBuffer = quadCmd.buffers.getChild(dy.BufferDataType.INDICE);
 
                     expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
                     expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);

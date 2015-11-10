@@ -15,12 +15,21 @@ module dy {
         );
     }
 
-    var _setThreeComponentData = (targetData:Array<number>, sourceData:Array<number>, index:number) => {
+    var _setThreeComponentData = (targetData:Array<number>|dyCb.Collection<number>, sourceData:Array<number>, index:number) => {
         var data = _getThreeComponentData(sourceData, index);
 
-        targetData.push(data.x);
-        targetData.push(data.y);
-        targetData.push(data.z);
+        if(targetData instanceof dyCb.Collection){
+            targetData.addChild(data.x);
+            targetData.addChild(data.y);
+            targetData.addChild(data.z);
+        }
+        else{
+            let target = <Array<number>>targetData;
+
+            target.push(data.x);
+            target.push(data.y);
+            target.push(data.z);
+        }
     }
 
     var _getThreeComponentData = (sourceData:Array<number>, index:number) => {
@@ -70,27 +79,17 @@ module dy {
 
                     self._parseFromIndices(object);
 
-                    object.colors = dyCb.Collection.create<number>([]);
-
                     if(!self._hasData(object.normals)) {
                         object.normals = this._computeNormal(object.vertices, object.indices);
                     }
+                    if(self._hasData(object.morphTargets)){
+                        object.morphTargets.forEach((target:{name:string,vertices:dyCb.Collection<number>,normals?:dyCb.Collection<number>}) => {
+                            if(!self._hasData(target.normals)){
+                                target.normals = this._computeNormal(target.vertices, object.indices);
+                            }
+                        })
+                    }
                 }
-
-
-                //todo parse morphTargets later
-
-                //if (object.morphTargets) {
-                //    for (let m of object.morphTargets) {
-                //        m.vertices = dyCb.Collection.create<number>(<any>m.vertices);
-                //        //morphTargets should only come from local, not from parent
-                //        self._parseMorphTargetNormal(m, object.indices);
-                //    }
-                //}
-
-                //object.colors = self._findAndConvertData(object, "colors");
-                //object.uvs = self._findAndConvertData(object, "uvs");
-
 
                 if (object.children) {
                     object.children = dyCb.Collection.create<any>(object.children);
@@ -100,7 +99,7 @@ module dy {
                         parse(child);
                     })
                 }
-            }
+            };
 
 
             this._data.objects.forEach((object:any) => {
@@ -108,6 +107,8 @@ module dy {
                 object.parent = null;
 
                 parse(object);
+
+                self._removeObjectContainerData(object);
             });
         }
 
@@ -132,11 +133,19 @@ module dy {
             var vertices = [],
                 uvs = [],
                 normals = [],
+                colors = [],
+                morphTargets = [],
                 verticeIndices = [],
                 objectVertices = this._findData(object, "vertices"),
                 objectUVs = this._findData(object, "uvs"),
-                objectNormals = this._findData(object, "normals");
+                objectNormals = this._findData(object, "normals"),
+                objectColors = this._findData(object, "colors"),
+                objectMorphTargets = this._findData(object, "morphTargets");
 
+
+            if(this._hasData(objectMorphTargets)){
+                this._initMorphTargets(morphTargets, objectMorphTargets);
+            }
 
             for(let i = 0,len = object.verticeIndices.length; i < len; i++){
                 let verticeIndice = object.verticeIndices[i];
@@ -151,16 +160,28 @@ module dy {
                     this._setNormal(normals, objectNormals, object.normalIndices, i);
                 }
 
+
+                if(this._hasData(objectColors)) {
+                    _setThreeComponentData(colors, objectColors, verticeIndice);
+                }
+
+                if(this._hasData(objectMorphTargets)){
+                    this._setMorphTargets(morphTargets, objectMorphTargets, verticeIndice, object.normalIndices, i);
+                }
+
                 verticeIndices.push(i);
             }
 
             object.vertices = dyCb.Collection.create<number>(vertices);
             object.uvs = dyCb.Collection.create<number>(uvs);
+            object.colors = dyCb.Collection.create<number>(colors);
             object.indices = dyCb.Collection.create<number>(verticeIndices);
 
             if(this._hasData(normals)) {
                 object.normals = dyCb.Collection.create<number>(normals);
             }
+
+            object.morphTargets = dyCb.Collection.create<any>(morphTargets);
         }
 
         @Out(function(returnValue, object){
@@ -174,6 +195,27 @@ module dy {
             delete object.normalIndices;
         }
 
+        private _removeObjectContainerData(object:DYFileParseObjectData){
+            var remove = null;
+
+            remove = (object:DYFileParseObjectData) => {
+                if(object.isContainer){
+                    delete object.vertices;
+                    delete object.uvs;
+                    delete object.normals;
+                    delete object.colors;
+                }
+
+                if(object.children){
+                    object.children.forEach((child:any) => {
+                        remove(child);
+                    })
+                }
+            };
+
+            remove(object);
+        }
+
         private _findData(object:DYFileParseObjectData, dataName:string){
             var data = null;
 
@@ -183,6 +225,19 @@ module dy {
             while(!data && (object = object.parent) !== null);
 
             return data;
+        }
+
+
+        private _initMorphTargets(targetMorphTargets:Array<any>, sourceMorphTargets:Array<any>){
+            for(let frame of sourceMorphTargets){
+                targetMorphTargets.push({
+                    name: frame.name,
+                    vertices: dyCb.Collection.create<number>(),
+                    normals: dyCb.Collection.create<number>()
+                });
+            }
+
+            return targetMorphTargets;
         }
 
         private _setUV(targetUVs:Array<number>, sourceUVs:Array<number>, uvIndices:Array<number>, index:number, verticeIndice:number){
@@ -198,17 +253,39 @@ module dy {
             targetUVs.push(sourceUVs[uvIndice*2], sourceUVs[uvIndice*2 + 1]);
         }
 
-        private _setNormal(targetNormals:Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, index:number){
-            var normalIndice = null;
+        private _setNormal(targetNormals:Array<number>|dyCb.Collection<number>, sourceNormals:Array<number>, normalIndices:Array<number>, index:number){
+            var normalIndice = null,
+                normals = null;
 
             if(!normalIndices || normalIndices.length === 0){
-                _setTwoComponentData(targetNormals, sourceNormals, normalIndice);
+                _setThreeComponentData(targetNormals, sourceNormals, normalIndice);
                 return;
             }
 
             normalIndice = normalIndices[index];
 
-            targetNormals.push(sourceNormals[normalIndice * 3], sourceNormals[normalIndice * 3 + 1], sourceNormals[normalIndice * 3 + 2]);
+            normals = [sourceNormals[normalIndice * 3], sourceNormals[normalIndice * 3 + 1], sourceNormals[normalIndice * 3 + 2]];
+
+            if(targetNormals instanceof dyCb.Collection){
+                targetNormals.addChildren(normals);
+            }
+            else{
+                let target = <Array<number>>targetNormals;
+
+                target.push(normals[0], normals[1], normals[2]);
+            }
+        }
+
+        private _setMorphTargets(targetMorphTargets:Array<any>, sourceMorphTargets:Array<any>, verticeIndice:number, normalIndices:Array<number>, index:number){
+            for (let i = 0, len = sourceMorphTargets.length; i < len; i++){
+                let sourceFrame = sourceMorphTargets[i];
+
+                _setThreeComponentData(targetMorphTargets[i].vertices, sourceFrame.vertices, verticeIndice);
+
+                if(this._hasData(sourceFrame.normals)){
+                    this._setNormal(targetMorphTargets[i].normals, sourceFrame.normals, normalIndices, index);
+                }
+            }
         }
 
         @In(function(data){

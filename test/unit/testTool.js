@@ -109,7 +109,7 @@ var testTool = (function () {
         },
         getValues: function (values) {
             if (values) {
-                if (mathTestUtils.isFloat32Array(values)) {
+                if (mathTestUtils.isArray(values) || mathTestUtils.isFloat32Array(values)) {
                     return mathTestUtils.getValues(values);
                 }
                 else {

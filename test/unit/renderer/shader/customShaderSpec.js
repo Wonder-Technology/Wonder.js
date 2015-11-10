@@ -101,8 +101,10 @@ describe("custom shader", function () {
                     sandbox.stub(shader.program, "use");
 
                     quadCmd = dy.QuadCommand.create();
-                    sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
-                    sandbox.stub(quadCmd.buffers, "getChild");
+                    sandbox.stub(quadCmd, "buffers", {
+                        hasChild:sandbox.stub().returns(true),
+                        getChild:sandbox.stub()
+                    });
 
 
                     quadCmd.mMatrix = dy.Matrix4.create();
@@ -165,7 +167,7 @@ describe("custom shader", function () {
                     expect(program.sendAttributeData).toCalledAfter(program.use);
 
                     expect(program.sendAttributeData.firstCall.args[0]).toEqual("a_position");
-                    expect(quadCmd.buffers.getChild.firstCall).toCalledWith("vertexBuffer");
+                    expect(quadCmd.buffers.getChild.firstCall).toCalledWith("VERTICE");
 
                     expect(program.sendUniformData.firstCall.args[0]).toEqual("u_mMatrix");
                     expect(program.sendUniformData.firstCall.args[2]).toEqual(quadCmd.mMatrix);

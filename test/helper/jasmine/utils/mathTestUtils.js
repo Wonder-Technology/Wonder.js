@@ -23,6 +23,9 @@ var mathTestUtils = (function () {
         isFloat32Array: function(val){
             return Object.prototype.toString.call(val) === "[object Float32Array]";
         },
+        isArray: function(val){
+            return Object.prototype.toString.call(val) === "[object Array]";
+        },
         isMatrix: function(val){
             return val instanceof Matrix4;
         },

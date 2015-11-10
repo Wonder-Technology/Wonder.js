@@ -147,7 +147,7 @@ module dy {
 
         /*!for model geometry*/
         vertices: dyCb.Collection<number>,
-        morphTargets: Array<{
+        morphTargets: dyCb.Collection<{
             name:string,
             vertices:dyCb.Collection<number>,
             normals:dyCb.Collection<number>

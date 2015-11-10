@@ -99,7 +99,10 @@ describe("shaderLibSpec", function () {
 
 
         var quadCmd = new dy.QuadCommand();
-        sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
+        sandbox.stub(quadCmd, "buffers", {
+            hasChild:sandbox.stub().returns(true),
+            getChild:sandbox.stub()
+        });
         //quadCmd.mMatrix = dy.Matrix4.create();
         //quadCmd.vMatrix = dy.Matrix4.create();
         //quadCmd.pMatrix = dy.Matrix4.create();

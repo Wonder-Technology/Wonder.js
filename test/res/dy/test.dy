@@ -1,191 +1,71 @@
-{
-  "metadata": {
-    formatVersion: "0.1.0",
-    description: "aaa",
-    sourceFile: "b.dy",
-    generatedBy: "DYConverter"
-  },
-  "scene": {
-    ambientColor: [
-      1.0,
-      0,
-      0.5
-    ]
-  },
-  "materials": {
-    aa: {
-      type: "LightMaterial",
-      diffuseColor: [
-        1.0,
-        0.1,
-        0
-      ],
-      specularColor: [
-        0.0,
-        0.1,
-        0
-      ],
-      diffuseMapUrl: "1.jpg",
-      specularMapUrl: "1.jpg",
-      normalMapUrl: "1.jpg",
-      shininess: 32,
-      opacity: 1.0
-    },
-    bb: {
-      type: "LightMaterial",
-      diffuseColor: [
-        0.0,
-        0.1,
-        0
-      ],
-      specularColor: [
-        0.0,
-        0.2,
-        0
-      ],
-      normalMapUrl: "1.jpg",
-      shininess: 10,
-      opacity: 0.1
-    }
-  },
-  "objects": [
-      {
-        name: "a",
-        material: "aa",
-        vertices: [
-          1,
-          2,
-          3,
-          2,
-          3,
-          4,
-          2,
-          3,
-          4
-        ],
-        normals: [
-          1,
-          2,
-          3,
-          -2,
-          3,
-          4,
-          -2,
-          3,
-          4
-        ],
-        morphTargets: [],
-        colors: [
-          0.1,
-          0.2,
-          0,
-          0.1,
-          0.2,
-          1,
-          0.1,
-          0.2,
-          1
-        ],
-        uvs: [
-          0.1,
-          0.2,
-          0.1,
-          0.2,
-          0.1,
-          0.2
-        ],
-        indices: [
-          1,
-          2,
-          3
-        ]
-      },
-      {
-        name: "b",
-        material: "bb",
-        vertices: [
-          2,
-          2,
-          3,
-          2,
-          3,
-          4,
-          2,
-          3,
-          4
-        ],
-        normals: [
-          -1,
-          2,
-          3,
-          -2,
-          3,
-          4,
-          -2,
-          3,
-          4
-        ],
-        morphTargets: [],
-        colors: [
-          0.5,
-          0.2,
-          0,
-          0.1,
-          0.2,
-          1,
-          0.1,
-          0.2,
-          1
-        ],
-        uvs: [
-          0.5,
-          0.2,
-          0.1,
-          0.2,
-          0.1,
-          0.2
-        ],
-        indices: [
-          3,
-          2,
-          1
-        ],
-        children: [
             {
-              name: "bb",
-              material: "aa",
-              morphTargets: [],
-              colors: [
-                1.0,
-                0.3,
-                0,
-                0.1,
-                0.2,
-                1,
-                0.1,
-                0.2,
-                1
-              ],
-              indices: [
-                2,
-                3,
-                1
-              ],
-              children: [
-                  {
-                    name: "bbb",
-                    material: "bb",
+                "metadata" : {
+                    formatVersion:"0.1.0",
+                    description:"aaa",
+                    sourceFile:"b.dy",
+                    generatedBy:"DYConverter"
+                },
+
+                "scene":{
+                    ambientColor: [1.0, 0, 0.5]
+                },
+
+                "materials": {
+                    aa:{
+                        type: "LightMaterial",
+                        diffuseColor: [1.0, 0.1, 0],
+                        specularColor: [0.0, 0.1, 0],
+                        diffuseMapUrl: "1.jpg",
+                        specularMapUrl: "1.jpg",
+                        normalMapUrl: "1.jpg",
+                        shininess: 32,
+                        opacity: 1.0
+                    },
+                    bb:{
+                        type: "LightMaterial",
+                        diffuseColor: [0.0, 0.1, 0],
+                        specularColor: [0.0, 0.2, 0],
+                        normalMapUrl: "1.jpg",
+                        shininess: 10,
+                        opacity: 0.1
+                    }
+                },
+
+                "objects":[
+                    {
+                        name:"a",
+                material:"aa",
+                    vertices:[-1, 2, 1, 2, -3, 4, 2, 3, 4],
                     morphTargets: [],
-                    indices: [
-                      1,
-                      3,
-                      2
-                    ]
-                  }
-              ]
+                    colors: [0.1, 0.2, 0, 0.1, 0.2, 1, 0.1, 0.2, 1],
+                    uvs:[0.1,0.2,0.1,0.2, 0.1,0.2],
+                    verticeIndices:[0,1,2]
+            },
+                    {
+                        name:"b",
+                    vertices:[2, 2, 3, 2, 3, 4, 2, 3, 4],
+                    normals:[-1, 2, 3, -2, 3, 4, -2, 3, 4],
+                    colors: [0.5, 0.2, 0, 0.1, 0.2, 1, 0.1, 0.2, 1],
+                    uvs:[0.5,0.2,0.1,0.2, 0.1,0.2],
+
+                    children:[
+                        {
+                            name:"bb",
+                        material: "aa",
+                            morphTargets: [],
+                            colors: [1.0, 0.3, 0, 0.1, 0.2, 1, 0.1, 0.2, 1],
+                            verticeIndices: [2, 1, 0]
+                    },
+                        {
+                            name:"cc",
+                        material:"bb",
+                            morphTargets: [],
+                            verticeIndices:[0,2,1],
+                            uvIndices:[1,0,2],
+                            normalIndices:[2,1,0]
+                    }
+                ]
             }
-        ]
-      }
-  ]
-}
+            ]
+        }
 

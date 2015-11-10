@@ -35,7 +35,10 @@ describe("LightShaderLib", function () {
             material = new dy.LightMaterial();
 
             quadCmd = new dy.QuadCommand();
-            sandbox.stub(quadCmd.buffers, "hasChild").returns(false);
+            sandbox.stub(quadCmd, "buffers", {
+                hasChild:sandbox.stub().returns(false),
+                getChild:sandbox.stub()
+            });
 
             mMatrix = dy.Matrix4.create().translate(1, 2, 3);
 
@@ -48,8 +51,8 @@ describe("LightShaderLib", function () {
 
         it("send a_normal if has buffer", function(){
             var normalBuffer = {};
-            quadCmd.buffers.hasChild.withArgs("normalBuffer").returns(true);
-            sandbox.stub(quadCmd.buffers, "getChild").withArgs("normalBuffer").returns(normalBuffer);
+            quadCmd.buffers.hasChild.withArgs(dy.BufferDataType.NORMAL).returns(true);
+            quadCmd.buffers.getChild.withArgs(dy.BufferDataType.NORMAL).returns(normalBuffer);
 
             lib.sendShaderVariables(program, quadCmd, material);
 
