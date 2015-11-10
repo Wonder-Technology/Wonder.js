@@ -54,11 +54,11 @@ module dy {
 
                     if(!self._isModelContainer(object)){
                         geometry = ModelGeometry.create();
-                        geometry.vertices = self._findData(object, "vertices");
-                        geometry.indices = self._findData(object, "indices");
-                        geometry.normals = self._findData(object, "normals");
-                        geometry.texCoords = self._findData(object, "uvs");
-                        geometry.colors = self._findData(object, "colors");
+                        geometry.vertices = object.vertices;
+                        geometry.normals = object.normals;
+                        geometry.indices = object.indices;
+                        geometry.texCoords = object.uvs;
+                        geometry.colors = object.colors;
 
                         //todo remove
                         geometry.isDY = true;
@@ -90,19 +90,7 @@ module dy {
         }
 
         private _isModelContainer(object:DYFileParseObjectData){
-            //return object.material === void 0 && object.vertices.getCount() === 0;
             return object.isContainer;
-        }
-
-        private _findData(object:DYFileParseObjectData, dataName:string){
-            var data = null;
-
-            do{
-                data = object[dataName];
-            }
-            while(!data && (object = object.parent) !== null);
-
-            return data;
         }
 
         private _buildMaterial(materialName:string, materials: dyCb.Hash<DYFileParseMaterialData>){

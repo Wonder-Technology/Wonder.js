@@ -73,19 +73,21 @@ module dy {
 
 
             /*!for model geometry*/
-            vertices: Array<number>,
+            vertices?: Array<number>,
             morphTargets: Array<{
                 name:string,
                 vertices:Array<number>,
                 normals?:Array<number>
             }>,
             //"morphColors": [],
-            normals: Array<number>,
-            colors: Array<number>,
+            normals?: Array<number>,
+            colors?: Array<number>,
             //"uvs": [[]],
             uvs?: Array<number>,
             //"faces": []
-            indices?: Array<number>,
+        verticeIndices?: Array<number>,
+        normalIndices?: Array<number>,
+        uvIndices?: Array<number>,
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any
@@ -152,11 +154,11 @@ module dy {
         }>,
         //"morphColors": [],
         normals: dyCb.Collection<number>,
-        colors: dyCb.Collection<number>,
+        colors?: dyCb.Collection<number>,
         //"uvs": [[]],
-        uvs: dyCb.Collection<number>,
+        uvs?: dyCb.Collection<number>,
         //"faces": []
-        indices: dyCb.Collection<number>,
+        indices?: dyCb.Collection<number>,
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any

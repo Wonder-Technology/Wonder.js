@@ -18,9 +18,9 @@
         });
 
         dy.LoaderManager.getInstance().load([
-//            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"}
-            {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
-            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
+            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"},
+//            {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
+//            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/skin.jpg", id:"skin"},
 //            {url: "../../res/model/dy/ogro.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/male02/male02.dy", id:"sceneModel"}
@@ -48,51 +48,57 @@
 
             var model = sceneModel.getChild("models").getChild(0);
 
-            var geo = model.getComponent(dy.Geometry);
-
-            var material = dy.LightMaterial.create();
-//            material.color = dy.Color.create("rgb(100, 255, 100)");
-            material.diffuseMap = dy.TextureLoader.getInstance().get("skin");
-            material.diffuseMap.generateMipmaps = false;
-//            material.specular = dy.Color.create("rgb(0, 255, 0)");
-            material.specular = dy.Color.create("rgb(0, 0, 0)");
-            material.shininess = 32;
-
-            geo.material = material;
 
 
 
-console.log(
-)
+
+
+
+//            var geo = model.getComponent(dy.Geometry);
+//
+//            var material = dy.LightMaterial.create();
+////            material.color = dy.Color.create("rgb(100, 255, 100)");
+//            material.diffuseMap = dy.TextureLoader.getInstance().get("skin");
+//            material.diffuseMap.generateMipmaps = false;
+////            material.specular = dy.Color.create("rgb(0, 255, 0)");
+//            material.specular = dy.Color.create("rgb(0, 0, 0)");
+//            material.shininess = 32;
+//
+//            geo.material = material;
+//
+
+
+
+
 
 
 //            model.transform.translate(0, -80, 0);
 
 
-//            model.transform.scale = dy.Vector3.create(140, 140, 140);
+            model.transform.scale = dy.Vector3.create(140, 140, 140);
 
-//            model.findChildrenByName("wing")
-//                    .forEach(function(wing){
-//                        var wingMaterial = wing.getComponent(dy.Geometry).material;
-//                        wingMaterial.side = dy.Side.BOTH;
-////                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
-////                        wingMaterial.blendDst = dy.BlendFunc.ONE;
-//
-//                        wingMaterial.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
-//                    });
-//
-//
-//
-//            var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
-//                model.transform.rotate(0, 1, 0);
-//            }));
-//
-//
-//
-//
-//            model.transform.rotate(0, 0, 0);
-//
-//            model.addComponent(action);
+            model.findChildrenByName("wing")
+                    .forEach(function(wing){
+                        var wingMaterial = wing.getComponent(dy.Geometry).material;
+                        wingMaterial.side = dy.Side.BOTH;
+//                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
+//                        wingMaterial.blendDst = dy.BlendFunc.ONE;
+
+                        wingMaterial.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                    });
+
+
+
+            var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
+                model.transform.rotate(0, 1, 0);
+            }));
+
+
+
+
+            model.transform.rotate(0, 0, 0);
+
+            model.addComponent(action);
 
 
 

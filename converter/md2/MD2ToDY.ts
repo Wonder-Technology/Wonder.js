@@ -27,13 +27,13 @@ export = class MD2ToDY {
 
     private _objectsConverter:any = ObjectsConverter.create();
 
-    public convert(fileBuffer:Buffer, filePath:string, isComputeNormals:boolean):dyRt.Stream {
+    public convert(fileBuffer:Buffer, filePath:string):dyRt.Stream {
         var self = this,
             resultJson:any = {};
 
         resultJson.metadata = self._convertMetadata(filePath);
         resultJson.scene = {};
-        resultJson.objects = self._convertObjects(fileBuffer, filePath, isComputeNormals);
+        resultJson.objects = self._convertObjects(fileBuffer, filePath);
         resultJson.materials = {};
 
         //return dyRt.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
@@ -83,8 +83,8 @@ export = class MD2ToDY {
         return result;
     }
 
-    private _convertObjects(fileBuffer:Buffer, filePath:string, isComputeNormals:boolean) {
-        return this._objectsConverter.convert(fileBuffer, filePath, isComputeNormals);
+    private _convertObjects(fileBuffer:Buffer, filePath:string) {
+        return this._objectsConverter.convert(fileBuffer, filePath);
     }
 }
 
