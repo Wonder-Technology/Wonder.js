@@ -45,7 +45,7 @@ describe("Converter", function () {
 
         it("convert one file, get the .dy file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
-            converter.write(converter.convert(testFile.toString(), testPath1), sourceDir, destDir, testPath1)
+            converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
                     console.log(data)
                 }, null, function () {
@@ -70,9 +70,9 @@ describe("Converter", function () {
 
         it("convert multi files, get the .dy file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
-            converter.write(converter.convert(testFile.toString(), testPath1), sourceDir, destDir, testPath1)
+            converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .merge(
-                    converter.write(converter.convert(testFile2.toString(), testPath2), sourceDir, destDir, testPath2)
+                    converter.write(converter.convert(testFile2, testPath2), sourceDir, destDir, testPath2)
                 )
                 .subscribe(function (data) {
                 }, null, function () {

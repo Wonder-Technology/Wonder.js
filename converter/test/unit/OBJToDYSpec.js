@@ -1,16 +1,12 @@
 var fs = require("fs-extra"),
     Converter = require("../../dist/obj/OBJToDY"),
-    Vinyl = require("vinyl"),
     path = require("path"),
     sinon = require("sinon");
 
 require("jasmine-before-all");
 
-
-
 describe("OBJToDY", function () {
     var sandbox = null;
-    //var stream = null;
     var converter = null;
     var testFile, testFile2;
     var filePath1,filePath2;
@@ -19,17 +15,6 @@ describe("OBJToDY", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         converter = Converter.create("0.1.0");
-
-        //stream = converter.create("0.1.0").convert();
-        //
-        //
-        ////attach data event listener can switch the stream into flowing mode,
-        //// which will trigger the end event!
-        //
-        ////Attaching a data event listener to a stream that has not been explicitly paused will switch the stream into flowing mode.
-        ////Note that the end event will not fire unless the data is completely consumed. This can be done by switching into flowing mode,
-        //stream.on("data", function () {
-        //});
     });
     afterEach(function () {
         sandbox.restore();
@@ -59,7 +44,7 @@ describe("OBJToDY", function () {
             expect(json.metadata).toEqual({
                 formatVersion: '0.1.0',
                 description: '',
-                sourceFile: '/Users/y/Github/DYEngine/converter/test/res/test.obj',
+                sourceFile: filePath1,
                 generatedBy: 'OBJToDY'
             });
         }, done);
@@ -72,59 +57,59 @@ describe("OBJToDY", function () {
         }, done);
     });
 
-    describe("convert objects", function () {
+    describe("convert objects. object container has whole vertex data, each object has verticeIndices and normalIndices? , uvIndices?", function () {
         it("read normals from file", function (done) {
             judge(testFile, filePath1, function(json){
                 expect(json.objects).toEqual(
                     [{
-                        name: 'test',
                         children: [{
                             name: 'model1',
                             material: 'material1',
-                            vertices: [1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
-                            normals: [-1, -1, 1, 1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
-                            uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                            indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                            colors: [],
+                            verticeIndices: [0, 3, 1, 0, 1, 2, 0, 1, 2, 0, 2, 3],
+                            normalIndices: [1, 2, 3, 1, 3, 0, 5, 2, 1, 5, 1, 0],
+                            uvIndices: [2, 1, 0, 2, 0, 3, 2, 0, 2, 2, 2, 3],
                             morphTargets: []
                         }, {
                             name: 'model2',
                             material: 'material2',
-                            vertices: [1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1],
-                            normals: [1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1],
-                            uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
-                            indices: [0, 1, 2, 3, 4, 5],
-                            colors: [],
+                            verticeIndices: [0, 2, 1, 0, 1, 3],
+                            normalIndices: [3, 2, 1, 3, 1, 0],
+                            uvIndices: [0, 1, 2, 0, 2, 3],
                             morphTargets: []
-                        }]
+                        }],
+                        name: 'test',
+                        vertices: [1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
+                        normals: [-1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
+                        uvs: [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1],
+                        colors: []
                     }]
                 );
             }, done);
         });
-        it("compute normals", function (done) {
+        it("if no normals, not compute it", function (done) {
             judge(testFile2, filePath2, function(json){
                 expect(json.objects).toEqual(
                     [{
-                        name: 'test2',
                         children: [{
                             name: 'model1',
                             material: 'material1',
-                            vertices: [10, -1, -1, -1, -1, -1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, 1],
-                            normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-                            uvs: [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-                            indices: [0, 1, 2, 3, 4, 5],
-                            colors: [],
+                            verticeIndices: [0, 3, 1, 0, 1, 2],
+                            normalIndices: [],
+                            uvIndices: [2, 1, 0, 2, 0, 3],
                             morphTargets: []
                         }, {
                             name: 'model3',
                             material: 'material3',
-                            vertices: [10, -1, -1, -1, -1, 1, 1, -1, 1, 10, -1, -1, 1, -1, 1, -1, -1, -1],
-                            normals: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-                            uvs: [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
-                            indices: [0, 1, 2, 3, 4, 5],
-                            colors: [],
+                            verticeIndices: [0, 2, 1, 0, 1, 3],
+                            normalIndices: [],
+                            uvIndices: [0, 1, 2, 0, 2, 3],
                             morphTargets: []
-                        }]
+                        }],
+                        name: 'test2',
+                        vertices: [10, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1],
+                        normals: [],
+                        uvs: [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1],
+                        colors: []
                     }]
                 );
 
