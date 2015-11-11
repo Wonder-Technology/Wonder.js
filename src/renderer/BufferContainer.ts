@@ -15,7 +15,7 @@ module dy {
             var geometryData= null,
                 result:Buffer = null;
 
-            if(this._cache.hasChild(type)){
+            if(!this._needReCalcuteTangent(type) && this._cache.hasChild(type)){
                 return this._cache.getChild(<any>type);
             }
 
@@ -28,9 +28,6 @@ module dy {
                 case BufferDataType.COLOR:
                     result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
                     break;
-                //case BufferDataType.COLOR:
-                //    result = this._createColorBuffer();
-                //    break;
                 case BufferDataType.INDICE:
                     result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
                     break;
@@ -57,6 +54,10 @@ module dy {
             this._cache.forEach((buffer:Buffer) => {
                 buffer.dispose();
             });
+        }
+
+        private _needReCalcuteTangent(type:BufferDataType){
+            return this.geometryData.isTangentDirty && type === BufferDataType.TANGENT;
         }
     }
 }

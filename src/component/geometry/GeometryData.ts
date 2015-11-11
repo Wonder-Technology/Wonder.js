@@ -18,7 +18,7 @@ module dy {
 
         set vertices(vertices:Array<number>) {
             this._vertices = vertices;
-            this._isTangentDirty = true;
+            this.isTangentDirty = true;
         }
 
         private _normals:Array<number> = null;
@@ -28,7 +28,7 @@ module dy {
 
         set normals(normals:Array<number>) {
             this._normals = normals;
-            this._isTangentDirty = true;
+            this.isTangentDirty = true;
         }
 
         private _indices:Array<number> = null;
@@ -38,7 +38,7 @@ module dy {
 
         set indices(indices:Array<number>) {
             this._indices = indices;
-            this._isTangentDirty = true;
+            this.isTangentDirty = true;
         }
 
         private _texCoords:Array<number> = null;
@@ -48,7 +48,7 @@ module dy {
 
         set texCoords(texCoords:Array<number>) {
             this._texCoords = texCoords;
-            this._isTangentDirty = true;
+            this.isTangentDirty = true;
         }
 
         private _colors:Array<number> = null;
@@ -62,8 +62,8 @@ module dy {
 
         private _tangents:Array<number> = null;
         get tangents() {
-            if (this._isTangentDirty) {
-                this._isTangentDirty = false;
+            if (this.isTangentDirty) {
+                this.isTangentDirty = false;
 
                 this._tangents = this._calculateTangents(this._vertices, this._normals, this.texCoords, this._indices);
             }
@@ -71,9 +71,9 @@ module dy {
             return this._tangents;
         }
 
+        public isTangentDirty:boolean = true;
 
         private _geometry:Geometry = null;
-        private _isTangentDirty:boolean = false;
 
 
         private _getColors(colors:Array<number>, vertices:Array<number>){
