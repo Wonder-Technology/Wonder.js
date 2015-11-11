@@ -17,11 +17,7 @@ module dy {
         public bubbleParent:GameObject = null;
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
-        public rendererComponent:RendererComponent = null;
-        public collider:Collider = null;
-        public geometry:Geometry = null;
         public actionManager:ActionManager = ActionManager.create();
-        public behaviors:dyCb.Collection<Behavior> = dyCb.Collection.create<Behavior>();
 
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
@@ -72,8 +68,6 @@ module dy {
 
         //todo test in memory management
         public dispose() {
-            var self = this;
-
             this._execScript("onDispose");
 
             if(this.parent){
@@ -87,12 +81,10 @@ module dy {
             EventManager.off("dy_endLoop", this.onEndLoop);
 
             this._components.forEach((component:Component) => {
-                //self.removeComponent(component);
                 component.dispose();
             });
 
             this.forEach((child:GameObject) => {
-                //self.removeChild(child);
                 child.dispose();
             });
         }
@@ -304,7 +296,9 @@ module dy {
         }
 
         public isHit(locationInView:Point):boolean {
-            return this.collider ? this.collider.collideXY(locationInView.x, locationInView.y) : false;
+            var collider = this._getCollider();
+
+            return collider? collider.collideXY(locationInView.x, locationInView.y) : false;
         }
 
         public hasComponent(component:Component):boolean;
@@ -379,8 +373,11 @@ module dy {
             //    this._children[i].visit(renderer, this.transform, transformDirty, visibleFlag);
             //}
 
-            if(this.rendererComponent && this.geometry){
-                this.rendererComponent.render(renderer, this.geometry,  camera);
+            var geometry = this._getGeometry(),
+                rendererComponent = this._getRendererComponent();
+
+            if(rendererComponent && geometry){
+                rendererComponent.render(renderer, geometry,  camera);
             }
 
             this._children.forEach((child:GameObject) => {
@@ -389,9 +386,12 @@ module dy {
         }
 
         public update(time:number):void {
-            this.behaviors.forEach((behavior:Behavior) => {
-                behavior.update(time);
-            });
+            var camera = this._getCamera();
+
+            if(camera){
+                camera.update(time);
+            }
+
             this.actionManager.update(time);
 
             this._execScript("update", time);
@@ -410,6 +410,40 @@ module dy {
             this._script.forEach((script:IScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
+        }
+
+        @In(function(){
+            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry"));
+        })
+        private _getGeometry():Geometry{
+            return this.getComponent<Geometry>(Geometry);
+        }
+
+        @In(function(){
+            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider"));
+        })
+        private _getCollider():Collider{
+            return this.getComponent<Collider>(Collider);
+        }
+
+        @In(function(){
+            assert(this._getComponentCount(Camera) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera"));
+        })
+        private _getCamera():Camera{
+            return this.getComponent<Camera>(Camera);
+        }
+
+        @In(function(){
+            assert(this._getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
+        })
+        private _getRendererComponent():RendererComponent{
+            return this.getComponent<RendererComponent>(RendererComponent);
+        }
+
+        private _getComponentCount(_class:Function){
+            return this._components.filter((component:Component) => {
+                return component instanceof _class;
+            }).getCount();
         }
     }
 }

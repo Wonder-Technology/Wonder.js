@@ -46,20 +46,6 @@ module dy{
             this._material.dispose();
         }
 
-        public addToGameObject(gameObject:GameObject){
-            super.addToGameObject(gameObject);
-
-            Log.assert(!gameObject.geometry, "renderer is overwrite");
-
-            gameObject.geometry = this;
-        }
-
-        public removeFromGameObject(gameObject:GameObject){
-            super.removeFromGameObject(gameObject);
-
-            gameObject.geometry = null;
-        }
-
         protected abstract computeData(): GeometryDataType;
     }
 

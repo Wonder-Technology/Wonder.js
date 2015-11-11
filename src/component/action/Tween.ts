@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy {
     /*! referenced from:
      https://github.com/tweenjs/tween.js
@@ -462,6 +462,8 @@ module dy {
 
         public init(){
             var self = this;
+
+            super.init();
 
             this._valuesEnd.forEach((value:any, key:string) => {
                 // check if an Array was provided as property value

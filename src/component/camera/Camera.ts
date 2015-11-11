@@ -3,7 +3,7 @@ module dy{
     //todo add backgroundColor
     //todo add Frustum?
 
-    export abstract class Camera extends Behavior{
+    export abstract class Camera extends Component{
         get cameraToWorldMatrix(){
             return this.transform.localToWorldMatrix.copy();
         }
@@ -16,7 +16,7 @@ module dy{
 
             return this.cameraToWorldMatrix.invert();
         }
-        set worldToCameraMatrix(matrix){
+        set worldToCameraMatrix(matrix:Matrix4){
             this._worldToCameraMatrix = matrix;
         }
 
@@ -31,8 +31,7 @@ module dy{
             }
         }
 
-
-        public update(time){
+        public update(time:number){
             if(this.dirty){
                 this.updateProjectionMatrix();
 

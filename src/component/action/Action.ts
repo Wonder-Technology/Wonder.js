@@ -1,6 +1,6 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
-    export abstract class Action extends Behavior{
+    export abstract class Action extends Component{
         get isStart() {
             return !this.isStop;
         }
@@ -52,6 +52,10 @@ module dy{
             super.removeFromGameObject(gameObject);
 
             gameObject.actionManager.removeChild(this);
+        }
+
+        public init(){
+            this.start();
         }
 
         protected finish(){

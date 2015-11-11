@@ -8,20 +8,6 @@ module dy {
         public collide(collider:Collider):boolean {
             return false;
         }
-
-        public addToGameObject(gameObject:GameObject){
-            super.addToGameObject(gameObject);
-
-            Log.assert(!gameObject.collider, "renderer is overwrite");
-
-            gameObject.collider = this;
-        }
-
-        public removeFromGameObject(gameObject:GameObject){
-            super.removeFromGameObject(gameObject);
-
-            gameObject.collider = null;
-        }
     }
 }
 

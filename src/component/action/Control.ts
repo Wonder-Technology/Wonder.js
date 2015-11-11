@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy {
     export abstract class Control extends ActionInterval{
         set target(target:GameObject){
@@ -12,6 +12,8 @@ module dy {
         public abstract getInnerActions();
 
         public init() {
+            super.init();
+
             this.iterate("init");
         }
         //public onEnter() {

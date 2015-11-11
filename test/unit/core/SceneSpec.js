@@ -131,55 +131,56 @@ describe("Scene", function() {
 
         describe("update", function(){
             var time;
-            var behavior1,
-                behavior2,
-                behavior3,
-                behavior4,
-                behavior5;
+            var action1,
+                action2,
+                action3,
+                action4,
+                action5;
 
-            function buildBehavior(){
-                var behavior = new dy.Behavior();
+            function buildAction(){
+                var action = new dy.Repeat(new dy.CallFunc(), 10);
 
-                behavior.update = sandbox.stub();
+                sandbox.stub(action, "update");
 
-                return behavior;
+                return action;
             }
 
             beforeEach(function(){
                 time = 100;
-                behavior1 = buildBehavior();
-                behavior2 = buildBehavior();
-                behavior3 = buildBehavior();
-                behavior4 = buildBehavior();
-                behavior5 = buildBehavior();
+                action1 = buildAction();
+                action2 = buildAction();
+                action3 = buildAction();
+                action4 = buildAction();
+                action5 = buildAction();
 
-                sandbox.stub(scene.actionManager, "update");
+                //sandbox.stub(scene.actionManager, "update");
             });
 
-            it("invoke scene and it's children's all behavior->update and all action->update", function(){
-                scene.addComponent(behavior1);
-                gameObject1.addComponent(behavior2);
-                gameObject2.addComponent(behavior3);
-                gameObject3.addComponent(behavior4);
-                gameObject3.addComponent(behavior5);
+            it("invoke scene's and it's children's all action->update", function(){
+                scene.addComponent(action1);
+                gameObject1.addComponent(action2);
+                gameObject2.addComponent(action3);
+                gameObject3.addComponent(action4);
+                gameObject3.addComponent(action5);
+                scene.init();
 
                 scene.update(time);
 
-                expect(behavior1.update).toCalledWith(time);
-                expect(behavior1.update).toCalledOnce();
-                expect(behavior1.update).toCalledBefore(scene.actionManager.update);
-                expect(behavior1.update).toCalledBefore(behavior3.update);
-                expect(behavior3.update).toCalledWith(time);
-                expect(behavior3.update).toCalledOnce();
-                expect(behavior3.update).toCalledBefore(behavior2.update);
-                expect(behavior2.update).toCalledWith(time);
-                expect(behavior2.update).toCalledOnce();
-                expect(behavior2.update).toCalledBefore(behavior4.update);
-                expect(behavior4.update).toCalledWith(time);
-                expect(behavior4.update).toCalledOnce();
-                expect(behavior4.update).toCalledBefore(behavior5.update);
-                expect(behavior5.update).toCalledWith(time);
-                expect(behavior5.update).toCalledOnce();
+                expect(action1.update).toCalledWith(time);
+                expect(action1.update).toCalledOnce();
+                expect(action1.update).toCalledBefore(scene.actionManager.update);
+                expect(action1.update).toCalledBefore(action3.update);
+                expect(action3.update).toCalledWith(time);
+                expect(action3.update).toCalledOnce();
+                expect(action3.update).toCalledBefore(action2.update);
+                expect(action2.update).toCalledWith(time);
+                expect(action2.update).toCalledOnce();
+                expect(action2.update).toCalledBefore(action4.update);
+                expect(action4.update).toCalledWith(time);
+                expect(action4.update).toCalledOnce();
+                expect(action4.update).toCalledBefore(action5.update);
+                expect(action5.update).toCalledWith(time);
+                expect(action5.update).toCalledOnce();
             });
             it("invoke scene and it's children's script->update", function(){
                 scene.update(time);
@@ -312,46 +313,6 @@ describe("Scene", function() {
             });
         });
 
-        describe("if component is other Behavior", function(){
-            it("add it to behaviors", function(){
-                var component = new dy.Behavior();
-
-                scene.addComponent(component);
-
-                expect(scene.behaviors.hasChild(component)).toBeTruthy();
-            });
-        });
-
-        describe("if component is Geometry", function(){
-            it("set geometry to be it", function(){
-                var component = new dy.Geometry();
-
-                scene.addComponent(component);
-
-                expect(scene.geometry).toEqual(component);
-            });
-        });
-
-        describe("if component is RendererComponent", function(){
-            it("set rendererComponent to be it", function(){
-                var component = new dy.RendererComponent();
-
-                scene.addComponent(component);
-
-                expect(scene.rendererComponent).toEqual(component);
-            });
-        });
-
-        describe("if component is Collider", function(){
-            it("set collider to be it", function(){
-                var component = new dy.Collider();
-
-                scene.addComponent(component);
-
-                expect(scene.collider).toEqual(component);
-            });
-        });
-
         describe("if component is Script", function(){
             it("add load stream to Director->scriptStreams", function(){
                 var stream = new dyRt.Stream();
@@ -393,50 +354,6 @@ describe("Scene", function() {
                 scene.removeComponent(component);
 
                 expect(scene.actionManager.hasChild(component)).toBeFalsy();
-            });
-        });
-
-        describe("if component is other Behavior", function(){
-            it("remove it from behaviors", function(){
-                var component = new dy.Behavior();
-                scene.addComponent(component);
-
-                scene.removeComponent(component);
-
-                expect(scene.behaviors.hasChild(component)).toBeFalsy();
-            });
-        });
-
-        describe("if component is Geometry", function(){
-            it("set geometry to be null", function(){
-                var component = new dy.Geometry();
-                scene.addComponent(component);
-
-                scene.removeComponent(component);
-
-                expect(scene.geometry).toBeNull();
-            });
-        });
-
-        describe("if component is RendererComponent", function(){
-            it("set rendererComponent to be null", function(){
-                var component = new dy.RendererComponent();
-                scene.addComponent(component);
-
-                scene.removeComponent(component);
-
-                expect(scene.rendererComponent).toBeNull();
-            });
-        });
-
-        describe("if component is Collider", function(){
-            it("set collider to be null", function(){
-                var component = new dy.Collider();
-                scene.addComponent(component);
-
-                scene.removeComponent(component);
-
-                expect(scene.collider).toBeNull();
             });
         });
 
@@ -488,14 +405,11 @@ describe("Scene", function() {
             expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
         });
         it("render rendererComponent", function(){
-            var rendererComponent ={
-                    render: sandbox.stub()
-                },
-                geometry = {
-                };
-
-            scene.rendererComponent = rendererComponent;
-            scene.geometry = geometry;
+            var rendererComponent = new dy.RendererComponent();
+                geometry = new dy.Geometry();
+            rendererComponent.render = sandbox.stub();
+            scene.addComponent(geometry);
+            scene.addComponent(rendererComponent);
 
             scene.render(renderer);
 
