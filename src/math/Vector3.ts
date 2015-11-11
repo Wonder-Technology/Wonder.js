@@ -53,7 +53,7 @@ module dy{
             this.values[2] = z;
         }
 
-        public values: Float32Array;
+        public values: Float32Array = null;
 
         public normalize(): Vector3{
             var v = this.values;
@@ -253,6 +253,10 @@ module dy{
                 b = rhs.values;
 
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        public isEqual(v:Vector3){
+            return this.x === v.x && this.y === v.y && this.z === v.z;
         }
     }
 }

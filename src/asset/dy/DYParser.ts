@@ -79,16 +79,16 @@ module dy {
 
                     self._parseFromIndices(object);
 
-                    if(!self._hasData(object.normals)) {
-                        object.normals = this._computeNormal(object.vertices, object.indices);
-                    }
-                    if(self._hasData(object.morphTargets)){
-                        object.morphTargets.forEach((target:{name:string,vertices:dyCb.Collection<number>,normals?:dyCb.Collection<number>}) => {
-                            if(!self._hasData(target.normals)){
-                                target.normals = this._computeNormal(target.vertices, object.indices);
-                            }
-                        })
-                    }
+                    //if(!self._hasData(object.normals)) {
+                    //    object.normals = this._computeNormal(object.vertices, object.indices);
+                    //}
+                    //if(self._hasData(object.morphTargets)){
+                    //    object.morphTargets.forEach((target:{name:string,vertices:dyCb.Collection<number>,normals?:dyCb.Collection<number>}) => {
+                    //        if(!self._hasData(target.normals)){
+                    //            target.normals = this._computeNormal(target.vertices, object.indices);
+                    //        }
+                    //    })
+                    //}
                 }
 
                 if (object.children) {
@@ -125,9 +125,9 @@ module dy {
             assert(object.vertices && object.vertices instanceof dyCb.Collection && object.vertices.getCount() > 0, Log.info.FUNC_MUST_NOT_BE("vertices", "empty"));
             assert(object.indices && object.indices instanceof dyCb.Collection && object.indices.getCount() > 0, Log.info.FUNC_MUST_NOT_BE("indices", "empty"));
             assert(object.uvs && object.uvs instanceof dyCb.Collection, Log.info.FUNC_SHOULD("uvs", "be Collection"));
-            if(this._hasData(object.normals)){
-                assert(object.normals instanceof dyCb.Collection, Log.info.FUNC_SHOULD("if object has normals, then it", "be Collection"));
-            }
+            //if(this._hasData(object.normals)){
+            assert(object.normals instanceof dyCb.Collection, Log.info.FUNC_SHOULD("if object has normals, then it", "be Collection"));
+            //}
         })
         private _addDuplicateVertexDataToMakeItIndependent(object:any){
             var vertices = [],
@@ -177,9 +177,9 @@ module dy {
             object.colors = dyCb.Collection.create<number>(colors);
             object.indices = dyCb.Collection.create<number>(verticeIndices);
 
-            if(this._hasData(normals)) {
-                object.normals = dyCb.Collection.create<number>(normals);
-            }
+            //if(this._hasData(normals)) {
+            object.normals = dyCb.Collection.create<number>(normals);
+            //}
 
             object.morphTargets = dyCb.Collection.create<any>(morphTargets);
         }
@@ -322,17 +322,17 @@ module dy {
             return Color.create(`rgb(${colorArr.join(",").replace(/^(\d+),/g, "$1.0,").replace(/,(\d+),/g, ",$1.0,").replace(/,(\d+)$/g, ",$1.0")})`);
         }
 
-        private _parseMorphTargetNormal(m:{vertices;normals?}, indices) {
-            m.normals = <any>this._parseNormal(m.vertices, indices, m.normals);
-        }
-
-        private _parseNormal(vertices:dyCb.Collection<number>, indices:dyCb.Collection<number>, normals:Array<number>) {
-            if (normals && normals.length > 0) {
-                return dyCb.Collection.create<number>(normals);
-            }
-
-            return this._computeNormal(vertices, indices);
-        }
+        //private _parseMorphTargetNormal(m:{vertices;normals?}, indices) {
+        //    m.normals = <any>this._parseNormal(m.vertices, indices, m.normals);
+        //}
+        //
+        //private _parseNormal(vertices:dyCb.Collection<number>, indices:dyCb.Collection<number>, normals:Array<number>) {
+        //    if (normals && normals.length > 0) {
+        //        return dyCb.Collection.create<number>(normals);
+        //    }
+        //
+        //    return this._computeNormal(vertices, indices);
+        //}
 
         private _computeNormal(vertices:dyCb.Collection<number>, indices:dyCb.Collection<number>) {
             var count = indices.getCount(),

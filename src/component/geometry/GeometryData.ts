@@ -21,23 +21,67 @@ module dy {
             this.isTangentDirty = true;
         }
 
-        private _normals:Array<number> = null;
+        @InGetter(function(){
+            var self = this;
+
+            assert(this.faces.getCount() > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
+
+            this.faces.forEach((face:Face3) => {
+                if(self._geometry.isSmoothShading()) {
+                    assert(face.vertexNormals && face.vertexNormals.getCount() === 3, Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
+                }
+                else{
+                    assert(!face.faceNormal.isZero(), Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
+                }
+            });
+        })
+        @OutGetter(function(normals){
+            assert(normals.length > 0, Log.info.FUNC_MUST("geometry", "contain normals data"));
+        })
         get normals() {
-            return this._normals;
+            var normals = [],
+                self = this;
+
+            this.faces.forEach((face:Face3) => {
+                if(self._geometry.isSmoothShading()){
+                    face.vertexNormals.forEach((normal:Vector3) => {
+                        normals.push(normal.x, normal.y, normal.z);
+                    })
+                }
+                else{
+                    let normal = face.faceNormal;
+
+                    normals.push(normal.x, normal.y, normal.z);
+                    normals.push(normal.x, normal.y, normal.z);
+                    normals.push(normal.x, normal.y, normal.z);
+                }
+            });
+
+            return normals;
         }
 
-        set normals(normals:Array<number>) {
-            this._normals = normals;
-            this.isTangentDirty = true;
+        @InGetter(function(){
+            assert(this.faces.getCount() > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
+        })
+        @OutGetter(function(indices){
+            assert(indices.length > 0, Log.info.FUNC_MUST("geometry", "contain indices data"));
+        })
+        get indices():Array<number> {
+            var indices = [];
+
+            this.faces.forEach((face:Face3) => {
+                indices.push(face.aIndex, face.bIndex, face.cIndex);
+            });
+
+            return indices;
         }
 
-        private _indices:Array<number> = null;
-        get indices() {
-            return this._indices;
+        private _faces:dyCb.Collection<Face3> = null;
+        get faces(){
+            return this._faces;
         }
-
-        set indices(indices:Array<number>) {
-            this._indices = indices;
+        set faces(faces:dyCb.Collection<Face3>){
+            this._faces = faces;
             this.isTangentDirty = true;
         }
 
@@ -65,7 +109,7 @@ module dy {
             if (this.isTangentDirty) {
                 this.isTangentDirty = false;
 
-                this._tangents = this._calculateTangents(this._vertices, this._normals, this.texCoords, this._indices);
+                this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
             }
 
             return this._tangents;
@@ -75,6 +119,96 @@ module dy {
 
         private _geometry:Geometry = null;
 
+        public computeFaceNormals() {
+            var vertices = this._vertices,
+                self = this;
+
+            this._faces.forEach((face:Face3) => {
+                var p0 = self._getThreeComponent(vertices, face.aIndex),
+                    p1 = self._getThreeComponent(vertices, face.bIndex),
+                    p2 = self._getThreeComponent(vertices, face.cIndex),
+                    v0 = Vector3.create().sub2(p2, p1),
+                    v1 = Vector3.create().sub2(p0, p1);
+
+                face.faceNormal = Vector3.create().cross(v0, v1).normalize();
+            });
+        }
+
+        //todo refactor
+        public computeVertexNormals(){
+            var v, vl, normals, self = this;
+
+            normals = new Array( this.vertices.length );
+
+            for ( v = 0, vl = this.vertices.length; v < vl; v ++ ) {
+
+                normals[ v ] = Vector3.create();
+
+            }
+
+            //todo
+            //if ( areaWeighted ) {
+            //
+            //    // vertex normals weighted by triangle areas
+            //    // http://www.iquilezles.org/www/articles/normals/normals.htm
+            //
+            //    var vA, vB, vC;
+            //    var cb = Vector3.create(),
+            //        ab = Vector3.create();
+            //
+            //    this.faces.forEach((face:Face3) => {
+            //        vA = self._getThreeComponent(self.vertices, face.aIndex);
+            //        vB = self._getThreeComponent(self.vertices, face.bIndex);
+            //        vC = self._getThreeComponent(self.vertices, face.cIndex);
+            //
+            //        cb.sub2( vC, vB );
+            //        ab.sub2( vA, vB );
+            //        cb.cross(cb, ab );
+            //
+            //        normals[ face.aIndex ].add( cb );
+            //        normals[ face.bIndex ].add( cb );
+            //        normals[ face.cIndex ].add( cb );
+            //    });
+            //
+            //}
+            //else {
+
+            this.faces.forEach((face:Face3) => {
+                normals[face.aIndex].add(face.faceNormal);
+                normals[face.bIndex].add(face.faceNormal);
+                normals[face.cIndex].add(face.faceNormal);
+            });
+
+            //}
+
+            for ( v = 0, vl = this.vertices.length; v < vl; v ++ ) {
+
+                normals[ v ].normalize();
+
+            }
+
+            this.faces.forEach((face:Face3) => {
+                face.vertexNormals = dyCb.Collection.create<Vector3>([
+                    normals[face.aIndex],
+                    normals[face.bIndex],
+                    normals[face.cIndex]
+                ]);
+                //if ( vertexNormals.getCount() === 3 ) {
+                //
+                //    vertexNormals[ 0 ].copy( vertices[ face.a ] );
+                //    vertexNormals[ 1 ].copy( vertices[ face.b ] );
+                //    vertexNormals[ 2 ].copy( vertices[ face.c ] );
+                //
+                //}
+                //else {
+                //
+                //    vertexNormals[ 0 ] = vertices[ face.a ].clone();
+                //    vertexNormals[ 1 ] = vertices[ face.b ].clone();
+                //    vertexNormals[ 2 ] = vertices[ face.c ].clone();
+                //
+                //}
+            });
+        }
 
         private _getColors(colors:Array<number>, vertices:Array<number>){
             if(colors && colors.length > 0){
@@ -201,6 +335,22 @@ module dy {
             }
 
             return tangents;
+        }
+
+        //todo move to utils?
+        private _hasData(data:Array<number>){
+            return data && data.length > 0;
+        }
+
+        //todo move to utils?
+        private _getThreeComponent(sourceData:Array<number>, index:number){
+            var startIndex = 3 * index;
+
+            return Vector3.create(
+                sourceData[startIndex],
+                sourceData[startIndex + 1],
+                sourceData[startIndex + 2]
+            );
         }
     }
 }

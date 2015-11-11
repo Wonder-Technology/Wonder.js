@@ -153,12 +153,11 @@ module dy {
             normals:dyCb.Collection<number>
         }>,
         //"morphColors": [],
-        normals: dyCb.Collection<number>,
         colors?: dyCb.Collection<number>,
-        //"uvs": [[]],
         uvs?: dyCb.Collection<number>,
-        //"faces": []
+        normals: dyCb.Collection<number>,
         indices?: dyCb.Collection<number>,
+        //faces:dyCb.Collection<Face3>,
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any

@@ -139,6 +139,7 @@ module dy {
         public blend:boolean = false;
         public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
+        public shading = Shading.FLAT;
 
 
 

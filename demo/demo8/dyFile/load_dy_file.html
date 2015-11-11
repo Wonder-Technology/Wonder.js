@@ -88,6 +88,13 @@
                     });
 
 
+            model.getChildren()
+                    .forEach(function(child){
+                        var material = child.getComponent(dy.Geometry).material;
+                        material.shading = dy.Shading.SMOOTH;
+                    });
+
+
 
             var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
                 model.transform.rotate(0, 1, 0);
@@ -135,14 +142,6 @@
             directionLight.transform.translate(100, 30, 0);
 
 
-
-
-            console.log(
-
-
-
-
-            )
 
 
 
