@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     export class ArrayBuffer extends Buffer{
         public static create(data, num, type:BufferType):ArrayBuffer {

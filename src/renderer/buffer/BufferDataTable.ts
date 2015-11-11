@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../../definitions.d.ts"/>
 module dy{
     const _table = dyCb.Hash.create<string>();
 

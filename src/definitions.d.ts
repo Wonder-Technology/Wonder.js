@@ -74,7 +74,6 @@
 /// <reference path="component/light/Attenuation"/>
 
 
-/// <reference path="utils/Color"/>
 /// <reference path="utils/JudgeUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
@@ -94,16 +93,16 @@
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
 /// <reference path="renderer/DrawMode"/>
-/// <reference path="renderer/BufferType"/>
-/// <reference path="renderer/BufferDataType"/>
-/// <reference path="renderer/Buffer"/>
-/// <reference path="renderer/ElementBuffer"/>
-/// <reference path="renderer/ArrayBuffer"/>
-/// <reference path="renderer/BufferContainer"/>
-/// <reference path="renderer/BufferDataTable"/>
+/// <reference path="renderer/buffer/BufferType"/>
+/// <reference path="renderer/buffer/BufferDataType"/>
+/// <reference path="renderer/buffer/Buffer"/>
+/// <reference path="renderer/buffer/ElementBuffer"/>
+/// <reference path="renderer/buffer/ArrayBuffer"/>
+/// <reference path="renderer/buffer/BufferContainer"/>
+/// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
-/// <reference path="renderer/FrameBuffer"/>
+/// <reference path="renderer/buffer/FrameBuffer"/>
 
 /// <reference path="renderer/shader/Shader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
@@ -221,6 +220,7 @@
 /// <reference path="structure/Point"/>
 /// <reference path="structure/RectRegion"/>
 /// <reference path="structure/View"/>
+/// <reference path="structure/Color"/>
 
 
 /// <reference path="texture/Texture"/>
