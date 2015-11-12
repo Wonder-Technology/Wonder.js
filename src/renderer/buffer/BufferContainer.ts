@@ -11,13 +11,16 @@ module dy {
 
         private _cache:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
 
+        @cache(function(type){
+            return !this._needReCalcuteTangent(type) && this._cache.hasChild(type);
+        }, function(type){
+            return this._cache.getChild(<any>type);
+        }, function(result, type){
+            this._cache.addChild(<any>type, result);
+        })
         public getChild(type:BufferDataType) {
             var geometryData= null,
                 result:Buffer = null;
-
-            if(!this._needReCalcuteTangent(type) && this._cache.hasChild(type)){
-                return this._cache.getChild(<any>type);
-            }
 
             geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
@@ -38,8 +41,6 @@ module dy {
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_UNKNOW(`BufferDataType: ${type}`));
                     break;
             }
-
-            this._cache.addChild(<any>type, result);
 
             return result;
         }

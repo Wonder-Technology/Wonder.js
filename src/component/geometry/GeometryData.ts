@@ -21,6 +21,12 @@ module dy {
             this.isTangentDirty = true;
         }
 
+
+        private _normalCache:Array<number> = null;
+        private _indiceCache:Array<number> = null;
+        private _normalDirty:boolean = true;
+        private _indiceDirty:boolean = true;
+
         @InGetter(function () {
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
 
@@ -36,25 +42,25 @@ module dy {
         @OutGetter(function (normals) {
             assert(normals.length > 0, Log.info.FUNC_MUST("geometry", "contain normals data"));
         })
+        @cacheGetter(function(){
+            return !this._normalDirty && this._normalCache;
+        }, function(){
+            return this._normalCache;
+        }, function(result){
+            this._normalCache = result;
+        })
         get normals() {
             var normals = [],
                 geometry = this._geometry;
 
-            //todo optimize:add cache
-            //move cache to decorator
+            this._normalDirty = false;
+
             if (geometry.isSmoothShading()) {
                 if (!geometry.hasVertexNormals()) {
                     geometry.computeVertexNormals();
                 }
 
                 this._faces.forEach((face:Face3) => {
-                    //        face.vertexNormals.forEach((normal:Vector3) => {
-                    //            normals.push(normal.x, normal.y, normal.z);
-                    //            normals[face.aIndex] = normal.toArray();
-                    //        })
-                    //normals[face.aIndex] = face.vertexNormals.getChild(0).toArray();
-                    //normals[face.bIndex] = face.vertexNormals.getChild(1).toArray();
-                    //normals[face.cIndex] = face.vertexNormals.getChild(2).toArray();
                     GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(0), face.aIndex);
                     GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
                     GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
@@ -71,29 +77,24 @@ module dy {
                     GeometryUtils.setThreeComponent(normals, normal, face.aIndex);
                     GeometryUtils.setThreeComponent(normals, normal, face.bIndex);
                     GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
-                    //normals[face.aIndex] = normal.toArray();
-                    //normals[face.bIndex] = normal.toArray();
-                    //normals[face.cIndex] = normal.toArray();
-                    //normals.push(normal.x, normal.y, normal.z);
-                    //normals.push(normal.x, normal.y, normal.z);
-                    //normals.push(normal.x, normal.y, normal.z);
                 });
             }
-
 
             return normals;
         }
 
-        //@InGetter(function () {
-        //    assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
-        //})
-        @OutGetter(function (indices) {
-            //assert(indices.length > 0, Log.info.FUNC_MUST("geometry", "contain indices data"));
+        @cacheGetter(function(){
+            return !this._indiceDirty && this._indiceCache;
+        }, function(){
+            return this._indiceCache;
+        }, function(result){
+            this._indiceCache = result;
         })
         get indices():Array<number> {
             var indices = [];
 
-            //todo optimize:add cache
+            this._indiceDirty = false;
+
             for (let face of this._faces) {
                 indices.push(face.aIndex, face.bIndex, face.cIndex);
             }
@@ -109,6 +110,8 @@ module dy {
         set faces(faces:Array<Face3>) {
             this._faces = faces;
             this.isTangentDirty = true;
+            this._normalDirty = true;
+            this._indiceDirty = true;
         }
 
         private _texCoords:Array<number> = null;
@@ -146,11 +149,10 @@ module dy {
         private _geometry:Geometry = null;
 
         public computeFaceNormals() {
-            var vertices = this._vertices,
-                self = this;
+            var vertices = this._vertices;
 
             for (let face of this._faces) {
-                var p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
+                let p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
                     p1 = GeometryUtils.getThreeComponent(vertices, face.bIndex),
                     p2 = GeometryUtils.getThreeComponent(vertices, face.cIndex),
                     v0 = Vector3.create().sub2(p2, p1),
@@ -162,7 +164,7 @@ module dy {
 
         //todo refactor
         public computeVertexNormals() {
-            var v, vl, normals, self = this;
+            var v, vl, normals;
 
             normals = new Array(this._vertices.length);
 
