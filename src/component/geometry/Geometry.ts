@@ -35,24 +35,17 @@ module dy{
         public init(){
             var geometryData = null,
                 {
-                vertices,
-                //indices,
-                //normals,
+                    vertices,
                     faces,
-                texCoords,
-                colors
-                } = this.computeData();
+                    texCoords,
+                    colors
+                    } = this.computeData();
 
             this.buffers = BufferContainer.create();
 
             geometryData = GeometryData.create(this);
             geometryData.vertices = vertices;
-
-            //geometryData.indices = indices;
-            //geometryData.normals = normals;
-            //this._addFaces(geometryData, indices, normals);
             geometryData.faces = faces;
-
             geometryData.texCoords = texCoords;
             geometryData.colors = colors;
 
@@ -60,16 +53,14 @@ module dy{
 
             this._material.init();
 
-            //if(!this.hasNormals()){
-                if(this.isSmoothShading() && !this.hasVertexNormals()){
-                    //todo only compute vertex normals?
-                    this.computeFaceNormals();
-                    this.computeVertexNormals();
-                }
-                else if(!this.hasFaceNormals()){
-                    this.computeFaceNormals();
-                }
-            //}
+            if(this.isSmoothShading() && !this.hasVertexNormals()){
+                //todo only compute vertex normals?
+                this.computeFaceNormals();
+                this.computeVertexNormals();
+            }
+            else if(!this.hasFaceNormals()){
+                this.computeFaceNormals();
+            }
 
             //todo compute morphTarget normal
         }
@@ -143,7 +134,6 @@ module dy{
             this.buffers.geometryData.computeFaceNormals();
         }
 
-        //todo
         public computeVertexNormals(){
             this.buffers.geometryData.computeVertexNormals();
         }
@@ -153,9 +143,6 @@ module dy{
 
     export type GeometryDataType = {
         vertices:Array<number>;
-        //todo change
-        //indices?:Array<number>;
-        //normals?:Array<number>;
         faces?:Array<Face3>;
         texCoords:Array<number>;
         colors?:Array<number>;

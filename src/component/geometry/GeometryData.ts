@@ -21,12 +21,6 @@ module dy {
             this.isTangentDirty = true;
         }
 
-
-        private _normalCache:Array<number> = null;
-        private _indiceCache:Array<number> = null;
-        private _normalDirty:boolean = true;
-        private _indiceDirty:boolean = true;
-
         @InGetter(function () {
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
 
@@ -147,6 +141,10 @@ module dy {
         public isTangentDirty:boolean = true;
 
         private _geometry:Geometry = null;
+        private _normalCache:Array<number> = null;
+        private _indiceCache:Array<number> = null;
+        private _normalDirty:boolean = true;
+        private _indiceDirty:boolean = true;
 
         public computeFaceNormals() {
             var vertices = this._vertices;
@@ -162,16 +160,14 @@ module dy {
             }
         }
 
-        //todo refactor
         public computeVertexNormals() {
-            var v, vl, normals;
+            var vl = this._vertices.length,
+                normals;
 
-            normals = new Array(this._vertices.length);
+            normals = new Array(vl);
 
-            for (v = 0, vl = this._vertices.length; v < vl; v++) {
-
+            for (let v = 0; v < vl; v++) {
                 normals[v] = Vector3.create();
-
             }
 
             //todo
@@ -209,10 +205,8 @@ module dy {
 
             //}
 
-            for (v = 0, vl = this._vertices.length; v < vl; v++) {
-
+            for (let v = 0; v < vl; v++) {
                 normals[v].normalize();
-
             }
 
             for (let face of this._faces) {
@@ -266,23 +260,24 @@ module dy {
         }
 
         private _calculateTangents(vertices:Array<number>, normals:Array<number>, texCoords:Array<number>, indices:Array<number>) {
-            var triangleCount = indices.length / 3;
-            var vertexCount = vertices.length / 3;
-            var i1, i2, i3;
-            var x1, x2, y1, y2, z1, z2, s1, s2, t1, t2, r;
-            var sdir = Vector3.create();
-            var tdir = Vector3.create();
-            var v1 = Vector3.create();
-            var v2 = Vector3.create();
-            var v3 = Vector3.create();
-            var w1 = Vector2.create();
-            var w2 = Vector2.create();
-            var w3 = Vector2.create();
-            var i; // Loop counter
-            var tan1 = new Float32Array(vertexCount * 3);
-            var tan2 = new Float32Array(vertexCount * 3);
-
-            var tangents = [];
+            var triangleCount = indices.length / 3,
+                vertexCount = vertices.length / 3,
+                i1, i2, i3,
+                x1, x2, y1, y2, z1, z2, s1, s2, t1, t2, r,
+                sdir = Vector3.create(),
+                tdir = Vector3.create(),
+                v1 = Vector3.create(),
+                v2 = Vector3.create(),
+                v3 = Vector3.create(),
+                w1 = Vector2.create(),
+                w2 = Vector2.create(),
+                w3 = Vector2.create(),
+                i, // Loop counte
+                tan1 = new Float32Array(vertexCount * 3),
+                tan2 = new Float32Array(vertexCount * 3),
+                n = Vector3.create(),
+                temp = Vector3.create(),
+                tangents = [];
 
             for (i = 0; i < triangleCount; i++) {
                 i1 = indices[i * 3];
@@ -340,16 +335,16 @@ module dy {
 
             t1 = Vector3.create();
             t2 = Vector3.create();
-            var n = Vector3.create();
-            var temp = Vector3.create();
 
             for (i = 0; i < vertexCount; i++) {
+                let ndott = null;
+
                 n.set(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]);
                 t1.set(tan1[i * 3], tan1[i * 3 + 1], tan1[i * 3 + 2]);
                 t2.set(tan2[i * 3], tan2[i * 3 + 1], tan2[i * 3 + 2]);
 
                 // Gram-Schmidt orthogonalize
-                var ndott = n.dot(t1);
+                ndott = n.dot(t1);
                 temp = n.copy().scale(ndott);
                 temp.sub2(t1, temp).normalize();
 
