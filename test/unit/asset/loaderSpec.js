@@ -123,167 +123,6 @@ describe("loader", function () {
         //});
     });
 
-    describe("load obj model", function () {
-        function getV2(x, y) {
-            return dy.Vector2.create(x, y);
-        }
-
-        function getV3(x, y, z) {
-            return dy.Vector3.create(x, y, z);
-        }
-
-        function getColor(r, g, b) {
-            return dy.Color.create("rgb(" + r + "," + g + "," + b + ")");
-        }
-
-        it("if url is array, contract error", function(done){
-            dy.LoaderManager.getInstance().load([
-                {url: [testTool.resPath + "test/res/obj/test.obj"], id: "model"}
-            ]).subscribe(function (data) {
-            }, function (err) {
-                expect(err).toBeDefined();
-                //console.log(err);
-                done();
-            }, function () {
-                expect().toFail();
-            });
-        });
-
-        describe("test load model", function () {
-            function assertFirstModel(model) {
-                expect(model.getChild(0).name).toEqual("model1");
-
-                var geo1 = model.getChild(0).getComponent(dy.Geometry);
-                expect(geo1.vertices.getChildren()).toEqual(
-                    [
-                        getV3(1, -1, -1), getV3(1, 1, -1), getV3(1, 1, 1), getV3(1, -1, -1), getV3(1, 1, 1), getV3(1, -1, 1), getV3(1, -1, -1), getV3(1, -1, 1), getV3(-1, -1, 1), getV3(1, -1, -1), getV3(-1, -1, 1), getV3(-1, -1, -1)
-                    ]
-                );
-                expect(geo1.normals.getChildren()).toEqual(
-                    [
-                        getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(1,0,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0), getV3(0,-1,0)
-                    ]
-                );
-                expect(geo1.texCoords.getChildren()).toEqual(
-                    [
-                        getV2(0, 0), getV2(1, 0), getV2(1, 1), getV2(0, 0), getV2(1, 1), getV2(0, 1), getV2(0, 0), getV2(1, 0), getV2(1, 1), getV2(0, 0), getV2(1, 1), getV2(0, 1)
-                    ]
-                );
-                expect(geo1.indices.getChildren()).toEqual(
-                    [
-                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-                    ]
-                );
-                var mat1 = geo1.material;
-                expect(mat1.color).toEqual(
-                    getColor(0.1, 0.2, 0.3)
-                );
-                expect(mat1.specular).toEqual(
-                    getColor(0.5, 0.5, 0.5)
-                );
-                expect(mat1.diffuseMap).toBeInstanceOf(dy.TwoDTexture);
-                expect(mat1.specularMap).toBeNull();
-                expect(mat1.normalMap).toBeNull();
-                expect(mat1.shininess).toEqual(96.078431);
-                expect(mat1.opacity).toEqual(0.1);
-
-            }
-
-            function assertSecondModel(model) {
-                expect(model.getChild(1).name).toEqual("model2");
-
-                var geo2 = model.getChild(1).getComponent(dy.Geometry);
-                expect(geo2.vertices.getChildren()).toEqual(
-                    [
-                        getV3(1, -1, -1), getV3(-1, -1, 1), getV3(1, -1, 1), getV3(1, -1, -1), getV3(1, -1, 1), getV3(-1, -1, -1)
-                    ]
-                );
-                expect(geo2.normals.getChildren()).toEqual(
-                    [
-                        getV3(-1, -1, -1), getV3(-1, -1, 1), getV3(1, -1, 1), getV3(-1, -1, -1), getV3(1, -1, 1), getV3(1, -1, -1)
-                    ]
-                );
-                expect(geo2.texCoords.getChildren()).toEqual(
-                    [
-                        getV2(0, 0), getV2(1, 0), getV2(1, 1), getV2(0, 0), getV2(1, 1), getV2(0, 1)
-                    ]
-                );
-                expect(geo2.indices.getChildren()).toEqual(
-                    [
-                        0, 1, 2, 3, 4, 5
-                    ]
-                );
-                var mat2 = geo2.material;
-                expect(mat2.color).toEqual(
-                    getColor(0.3, 0.2, 0.1)
-                );
-                expect(mat2.specular).toEqual(
-                    getColor(0.8, 0.5, 0.6)
-                );
-                expect(mat2.diffuseMap).toBeNull();
-                expect(mat2.specularMap).toBeInstanceOf(dy.TwoDTexture);
-                expect(mat2.normalMap).toBeNull();
-                expect(mat2.shininess).toEqual(80.078431);
-                expect(mat2.opacity).toEqual(0.5);
-            }
-
-            it("load one obj file", function (done) {
-                dy.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/obj/test.obj", id: "model"}
-                ]).subscribe(function (data) {
-                }, function (err) {
-                    expect().toFail(err.message);
-                    done();
-                }, function () {
-                    var model = dy.OBJLoader.getInstance().get("model");
-
-                    expect(model).toBeInstanceOf(dy.GameObject);
-                    expect(model.name).toEqual("model");
-                    expect(model.getChildren().getCount()).toEqual(2);
-                    assertFirstModel(model);
-                    assertSecondModel(model);
-
-                    done();
-                });
-            });
-            it("when load multi obj files, each one should be independent", function (done) {
-                dy.LoaderManager.getInstance().load([
-                    {url: testTool.resPath + "test/res/obj/test.obj", id: "model1"},
-                    {url: testTool.resPath + "test/res/obj/test.obj", id: "model2"}
-                ]).subscribe(function (data) {
-                }, function (err) {
-                    expect().toFail(err.message);
-                    done();
-                }, function () {
-                    var model1 = dy.OBJLoader.getInstance().get("model1");
-
-                    expect(model1).toBeInstanceOf(dy.GameObject);
-                    expect(model1.getChildren().getCount()).toEqual(2);
-                    expect(model1.name).toEqual("model1");
-                    expect(model1.getChildren().getCount()).toEqual(2);
-
-                    assertFirstModel(model1);
-                    assertSecondModel(model1);
-
-
-                    var model2 = dy.OBJLoader.getInstance().get("model2");
-
-                    expect(model2).toBeInstanceOf(dy.GameObject);
-                    expect(model2.getChildren().getCount()).toEqual(2);
-                    expect(model2.name).toEqual("model2");
-                    expect(model2.getChildren().getCount()).toEqual(2);
-                    assertFirstModel(model2);
-                    assertSecondModel(model2);
-
-                    done();
-                });
-            });
-            it("load obj with no mtl", function () {
-                //todo
-            });
-        });
-    });
-
     describe("load dy file", function(){
         var json;
 
@@ -309,27 +148,19 @@ describe("loader", function () {
 
             var geo = result.getChild("models").getChild(0).getComponent(dy.Geometry);
             var model1 = json.objects[0];
-            expect(geo.vertices.getChildren()).toEqual(
+            expect(geo.vertices).toEqual(
                 model1.vertices
             );
-            expect(geo.normals.getChildren()).toEqual(
-                model1.normals
-            );
-            expect(geo.texCoords.getChildren()).toEqual(
+            expect(geo.faces[0].vertexNormals.getCount()).toEqual(0);
+            expect(geo.texCoords).toEqual(
                 model1.uvs
             );
-            expect(geo.colors.getChildren()).toEqual(
+            expect(geo.colors).toEqual(
                 model1.colors
             );
-            expect(geo.indices.getChildren()).toEqual(
-                model1.indices
-            );
+            dyTool.judgeFaceIndices(geo.faces, model1.indices);
 
-            //geo.init();
-            //expect(testTool.getValues(geo.colorBuffer.data)).toEqual(
-            //    model1.colors
-            //);
-
+            geo.init();
 
 
 
@@ -373,21 +204,17 @@ describe("loader", function () {
             expect(m21.getChildren().getCount()).toEqual(0);
 
             var geo21 = m21.getComponent(dy.Geometry);
-            expect(geo21.colors.getChildren()).toEqual(
+            expect(geo21.colors).toEqual(
                 model2.children[0].colors
             )
-            expect(geo21.indices.getChildren()).toEqual(
-                model2.children[0].indices
-            )
-            expect(geo21.vertices.getChildren()).toEqual(
+            dyTool.judgeFaceIndices(geo21.faces, model2.children[0].indices);
+            expect(geo21.vertices).toEqual(
                 model2.children[0].vertices
             )
-            expect(geo21.texCoords.getChildren()).toEqual(
+            expect(geo21.texCoords).toEqual(
                 model2.children[0].uvs
             )
-            expect(geo21.normals.getChildren()).toEqual(
-                model2.children[0].normals
-            )
+            dyTool.judgeFaceVertexNormals(geo21.faces, model2.children[0].normals);
             var mat21 = geo21.material;
             assertColor(mat21.color, materialData1.diffuseColor);
 
@@ -397,21 +224,17 @@ describe("loader", function () {
             expect(m22.getChildren().getCount()).toEqual(0);
 
             var geo22 = m22.getComponent(dy.Geometry);
-            expect(geo22.colors.getChildren()).toEqual(
+            expect(geo22.colors).toEqual(
                 model2.children[1].colors
             )
-            expect(geo22.indices.getChildren()).toEqual(
-                model2.children[1].indices
-            )
-            expect(geo22.vertices.getChildren()).toEqual(
+            dyTool.judgeFaceIndices(geo22.faces, model2.children[1].indices);
+            expect(geo22.vertices).toEqual(
                 model2.children[1].vertices
             )
-            expect(geo22.texCoords.getChildren()).toEqual(
+            expect(geo22.texCoords).toEqual(
                 model2.children[1].uvs
             )
-            expect(geo22.normals.getChildren()).toEqual(
-                model2.children[1].normals
-            )
+            dyTool.judgeFaceVertexNormals(geo22.faces, model2.children[1].normals);
             var mat22 = geo22.material;
             assertColor(mat22.color, materialData2.diffuseColor);
 
@@ -474,7 +297,7 @@ describe("loader", function () {
                                 colors: [0.10000000149011612, 0.20000000298023224, 1, 0.10000000149011612, 0.20000000298023224, 1, 1, 0.30000001192092896, 0 ],
                                 vertices: [2, 3, 4, 2, 3, 4, 2, 2, 3],
                                 uvs:[0.10000000149011612, 0.20000000298023224, 0.10000000149011612, 0.20000000298023224, 0.5, 0.20000000298023224],
-                                normals:[-1, 2, 3, -1, 2, 3, -1, 2, 3 ],
+                                normals:[-2, 3, 4, -2, 3, 4, -1, 2, 3 ],
                                 material: "aa",
                                 morphTargets: [],
                                 indices:[0,1,2]
@@ -540,8 +363,8 @@ describe("loader", function () {
             });
         });
     });
-    
-    
+
+
     //it("if already load the same id, not load it again", function(done){
     //    sandbox.spy(dyCb.AjaxUtils, "ajax");
     //    var current = [],

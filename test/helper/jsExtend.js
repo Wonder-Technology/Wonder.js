@@ -90,14 +90,14 @@
             return false;
         };
 
-        Array.prototype.map = function (func, valueArr) {
-            if (valueArr && !_isArray(valueArr)) {
-                throw new Error("参数必须为数组");
-            }
+        Array.prototype.map = function (func) {
+            var result = [];
 
             this.forEach(function (e) {
-                e && e[func] && e[func].apply(e, valueArr);
-            })
+                result.push(func(e));
+            });
+
+            return result;
         };
 
         /**

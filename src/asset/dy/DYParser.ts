@@ -176,6 +176,7 @@ module dy {
                 }
 
                 if(this._hasData(objectMorphTargets)){
+                    face.morphVertexNormals = dyCb.Collection.create<dyCb.Collection<Vector3>>();
                     this._setMorphTargets(morphTargets, objectMorphTargets, face.morphVertexNormals, object.normalIndices, i, [aIndice, bIndice, cIndice]);
                 }
 
@@ -300,7 +301,11 @@ module dy {
                 _setThreeComponentData(targetMorphTargets[i].vertices, sourceFrame.vertices, cIndice);
 
                 if(this._hasData(sourceFrame.normals)){
-                    this._setNormal(morphVertexNormals.getChild(i), sourceFrame.normals, normalIndices, index, indiceArr);
+                    let vertexNormals = dyCb.Collection.create<Vector3>();
+
+                    this._setNormal(vertexNormals, sourceFrame.normals, normalIndices, index, indiceArr);
+
+                    morphVertexNormals.addChild(vertexNormals);
                 }
             }
         }

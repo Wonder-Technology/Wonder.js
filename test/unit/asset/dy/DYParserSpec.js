@@ -5,23 +5,24 @@ describe("DYParser", function () {
 
     function setJson(data) {
         testTool.extend(json, data);
-
-        return testTool.extendDeep(json);
+        //
+        //return testTool.extendDeep(json);
     }
 
     function setObject(data) {
-        data = testTool.extend({
-            vertices: [],
-            morphTargets: [],
-            normals: [],
-            colors: [],
-            uvs: [],
-            indices: []
-        }, data);
+        //data = testTool.extend({
+        //    //vertices: [],
+        //    //morphTargets: [],
+        //    ////normals: [],
+        //    //colors: [],
+        //    //uvs: [],
+        //    ////indices: []
+        //    //faces:[]
+        //}, data);
 
         json.objects.push(data);
 
-        return testTool.extendDeep(json);
+        //return testTool.extendDeep(json);
     }
 
     beforeEach(function () {
@@ -102,14 +103,6 @@ describe("DYParser", function () {
             return result.objects[index];
         }
 
-        function getObjectChild(result, firstIndex, secondIndex) {
-            if (result.objects instanceof dyCb.Collection) {
-                return result.objects.getChild(firstIndex).children.getChild(secondIndex);
-            }
-
-            return result.objects[firstIndex].children[secondIndex];
-        }
-
         beforeEach(function () {
 
         });
@@ -132,21 +125,19 @@ describe("DYParser", function () {
                 })
                 var result = parser.parse(json);
 
-                expect(getObject(result, 0).vertices.getChildren()).toEqual(
+                expect(getObject(result, 0).vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 4, -1, -4, 3, 2, 3]
                 )
-                expect(getObject(result, 0).morphTargets.getChild(0).vertices.getChildren()).toEqual(
+                expect(getObject(result, 0).morphTargets[0].vertices).toEqual(
                     [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 4, -1, -2, 2, 2, 3]
                 )
-                expect(testTool.getValues(getObject(result, 0).colors.getChildren())).toEqual(
+                expect(testTool.getValues(getObject(result, 0).colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.3, 1, 0.2, 0.1]
                 )
-                expect(testTool.getValues(getObject(result, 0).uvs.getChildren())).toEqual(
+                expect(testTool.getValues(getObject(result, 0).uvs)).toEqual(
                     [0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.3, 0.5, 0.2, 0.2]
                 )
-                expect(getObject(result, 0).indices.getChildren()).toEqual(
-                    [0, 1, 2, 3, 4, 5]
-                )
+                dyTool.judgeFaceIndices(getObject(result, 0).faces, [0, 1, 2, 3, 4, 5]);
             });
             it("parse files which's format likes the one converted from .obj", function () {
                 setObject({
@@ -185,50 +176,43 @@ describe("DYParser", function () {
                 var objectContainer = getObject(result, 0);
                 expect(objectContainer.vertices).toBeUndefined();
                 expect(objectContainer.uvs).toBeUndefined();
-                expect(objectContainer.normals).toBeUndefined();
                 expect(objectContainer.colors).toBeUndefined();
 
 
                 var object1 = objectContainer.children.getChild(0);
-                expect(object1.vertices.getChildren()).toEqual(
+                expect(object1.vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 4, -1, -4, 3, 2, 3]
                 )
-                expect(object1.morphTargets.getChild(0).vertices.getChildren()).toEqual(
+                expect(object1.morphTargets[0].vertices).toEqual(
                     [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 4, -1, -2, 2, 2, 3]
                 )
-                expect(testTool.getValues(object1.colors.getChildren())).toEqual(
+                expect(testTool.getValues(object1.colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.3, 1, 0.2, 0.1]
                 )
-                expect(testTool.getValues(object1.uvs.getChildren())).toEqual(
+                expect(testTool.getValues(object1.uvs)).toEqual(
                     [0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.3, 0.5, 0.2, 0.2]
                 )
-                expect(object1.indices.getChildren()).toEqual(
-                    [0, 1, 2, 3, 4, 5]
-                )
-
+                dyTool.judgeFaceIndices(object1.faces, [0, 1, 2, 3, 4, 5]);
 
                 var object2 = objectContainer.children.getChild(1);
-                expect(object2.vertices.getChildren()).toEqual(
+                expect(object2.vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
                 )
-                expect(object2.morphTargets.getChild(0).vertices.getChildren()).toEqual(
+                expect(object2.morphTargets[0].vertices).toEqual(
                     [-1, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2]
                 )
-                expect(testTool.getValues(object2.colors.getChildren())).toEqual(
+                expect(testTool.getValues(object2.colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.3]
                 )
-                expect(testTool.getValues(object2.uvs.getChildren())).toEqual(
+                expect(testTool.getValues(object2.uvs)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5]
                 )
-                expect(object2.indices.getChildren()).toEqual(
-                    [0, 1, 2, 3, 4, 5]
-                )
+                dyTool.judgeFaceIndices(object2.faces, [0, 1, 2, 3, 4, 5]);
             });
         });
 
         describe("parse normals", function () {
             beforeEach(function () {
-
             });
 
             describe("if normals exist, parse it", function () {
@@ -236,7 +220,7 @@ describe("DYParser", function () {
                     setObject({
                         name: "a",
                         vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
-                        normals: [1, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4],
+                        normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
                         morphTargets: [
                             {
                                 name: "frame",
@@ -252,10 +236,10 @@ describe("DYParser", function () {
                     })
                     var result = parser.parse(json);
 
-                    expect(getObject(result, 0).normals.getChildren()).toEqual(
-                        [4, -1, -2, 3, 2, 3, -2, 0, -4, 1, 1, 2, -2, 0, -4, 3, 2, 3]
-                    )
-                    expect(getObject(result, 0).morphTargets.getChild(0).normals.getChildren()).toEqual(
+                    dyTool.judgeFaceVertexNormals(getObject(result, 0).faces,
+                        [ 6, -1, -2, 1, 2, -1, -2, 0, -4, 1, 1, 1, -2, 0, -4, 1, 2, -1 ]
+                    );
+                    dyTool.judgeMorphVertexNormals(getObject(result, 0).faces, 0,
                         [4, -1, -2, 3, 2, 3, -2, 0, -4, 5, 1, 2, -2, 0, -4, 3, 2, 3]
                     )
                 });
@@ -263,6 +247,7 @@ describe("DYParser", function () {
                     setObject({
                         name: "object container",
                         vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                        normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
                         colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
                         uvs: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5],
                         children: [
@@ -271,7 +256,8 @@ describe("DYParser", function () {
                                 morphTargets: [
                                     {
                                         name: "frame",
-                                        vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
+                                        vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
+                                        normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
                                     }
                                 ],
                                 verticeIndices: [0, 1, 2, 1, 3, 2],
@@ -285,11 +271,11 @@ describe("DYParser", function () {
 
                     var objectContainer = result.objects.getChild(0);
                     var object1 = objectContainer.children.getChild(0);
-                    expect(object1.normals.getChildren()).toEqual(
-                        [0, -0.8574929237365723, 0.5144957304000854, 0, -0.8574929237365723, 0.5144957304000854, 0, -0.8574929237365723, 0.5144957304000854, 0.9486833214759827, 0.3162277638912201, 0, 0.9486833214759827, 0.3162277638912201, 0, 0.9486833214759827, 0.3162277638912201, 0]
-                    )
-                    expect(object1.morphTargets.getChild(0).normals.getChildren()).toEqual(
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9486833214759827, 0.3162277638912201, 0, 0.9486833214759827, 0.3162277638912201, 0, 0.9486833214759827, 0.3162277638912201, 0]
+                    dyTool.judgeFaceVertexNormals(object1.faces,
+                        [ 1, 1, 1, 6, -1, -2, 1, 2, -1, 6, -1, -2, -2, 0, -4, 1, 2, -1 ]
+                    );
+                    dyTool.judgeMorphVertexNormals(object1.faces, 0,
+                        [ 5, 1, 2, 4, -1, -2, 3, 2, 3, 4, -1, -2, -2, 0, -4, 3, 2, 3 ]
                     )
                 });
             });
