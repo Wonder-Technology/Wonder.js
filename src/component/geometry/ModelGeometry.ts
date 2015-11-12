@@ -8,18 +8,15 @@ module dy{
         }
 
         public vertices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
-        public normals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public colors:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
         public texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
-        public indices:dyCb.Collection<number> = dyCb.Collection.create<number>();
+        public faces:dyCb.Collection<Face3> = dyCb.Collection.create<Face3>();
 
         public isDY:boolean = false;
 
 
         protected computeData(){
             var vertices = this._convertVector3ToArray(this.vertices),
-                indices = this.indices.toArray(),
-                normals = this._convertVector3ToArray(this.normals),
                 texCoords = this._convertVector2ToArray(this.texCoords),
             colors = this._convertVector3ToArray(this.colors);
 
@@ -27,8 +24,7 @@ module dy{
             if(this.isDY){
                 return <any>{
                     vertices: this.vertices.toArray(),
-                    indices: this.indices.toArray(),
-                    normals: this.normals.toArray(),
+                    faces: this.faces.toArray(),
                     texCoords: this.texCoords.toArray(),
                     colors: this.colors.toArray()
                 };
@@ -36,8 +32,8 @@ module dy{
 
             return {
                 vertices: vertices,
-                indices: indices,
-                normals: normals,
+                //indices: indices,
+                //normals: normals,
                 texCoords: texCoords,
                 colors: colors
             };

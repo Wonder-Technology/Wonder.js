@@ -77,9 +77,10 @@ module dy {
                 var geometry = ModelGeometry.create(),
                     model = null;
 
+                //todo
                 geometry.vertices = object.vertices;
-                geometry.indices = object.indices;
-                geometry.normals = object.normals;
+                //geometry.indices = object.indices;
+                //geometry.normals = object.normals;
                 geometry.texCoords = object.texCoords;
 
 

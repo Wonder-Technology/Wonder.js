@@ -23,7 +23,7 @@ module dy{
 
             assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
             assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
-            assert(geometryData.faces.getCount() * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.getCount()}`));
+            assert(geometryData.faces.length * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`));
 
             //if(geometryData.normals && geometryData.normals.length > 0){
             //    geometryData.faces.forEach((face:Face3, index:number) => {
@@ -36,8 +36,9 @@ module dy{
             var geometryData = null,
                 {
                 vertices,
-                indices,
-                normals,
+                //indices,
+                //normals,
+                    faces,
                 texCoords,
                 colors
                 } = this.computeData();
@@ -46,9 +47,12 @@ module dy{
 
             geometryData = GeometryData.create(this);
             geometryData.vertices = vertices;
+
             //geometryData.indices = indices;
             //geometryData.normals = normals;
-            this._addFaces(geometryData, indices, normals);
+            //this._addFaces(geometryData, indices, normals);
+            geometryData.faces = faces;
+
             geometryData.texCoords = texCoords;
             geometryData.colors = colors;
 
@@ -56,7 +60,7 @@ module dy{
 
             this._material.init();
 
-            if(!this._hasData(normals)){
+            if(!this.hasNormals()){
                 if(this.isSmoothShading()){
                     //todo only compute vertex normals?
                     this.computeFaceNormals();
@@ -65,9 +69,27 @@ module dy{
                 else{
                     this.computeFaceNormals();
                 }
-
-                //todo compute morphTarget normal
             }
+
+            //todo compute morphTarget normal
+        }
+
+        @In(function(){
+            var hasNormal = this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
+
+            if(hasNormal){
+                for(let face of this.buffers.geometryData.faces){
+                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has normal data or all not"));
+                }
+            }
+            else{
+                for(let face of this.buffers.geometryData.faces){
+                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has normal data or all not"));
+                }
+            }
+        })
+        public hasNormals(){
+            return this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
         }
 
         public isSmoothShading(){
@@ -95,9 +117,9 @@ module dy{
         @Out(function(){
             var geometryData:GeometryData = this.buffers.geometryData;
 
-            geometryData.faces.forEach((face:Face3) => {
+            for(let face of geometryData.faces) {
                 assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
-            });
+            }
         })
         public computeFaceNormals() {
             this.buffers.geometryData.computeFaceNormals();
@@ -110,57 +132,59 @@ module dy{
 
         protected abstract computeData(): GeometryDataType;
 
-        @In(function(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
-            assert(indices.length > 0 && indices.length % 3 === 0, Log.info.FUNC_SHOULD("indices.count", "be 3 times"));
-
-            if(normals && normals.length > 0){
-                assert(normals.length === indices.length * 3, Log.info.FUNC_SHOULD("normals.count", `be ${indices.length * 3}, but actual is ${normals.length}`));
-            }
-        })
-        private _addFaces(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
-            var hasData = this._hasData(normals);
-
-            geometryData.faces = dyCb.Collection.create<Face3>();
-
-            for(let i = 0, len = indices.length; i < len; i+=3){
-                let a = indices[i],
-                    b = indices[i + 1],
-                    c = indices[i + 2],
-                    face = Face3.create(a, b, c);
-
-                if(hasData){
-                    face.vertexNormals = dyCb.Collection.create<Vector3>([
-                        this._getThreeComponent(normals, a),
-                        this._getThreeComponent(normals, b),
-                        this._getThreeComponent(normals, c)
-                    ]);
-                }
-
-                geometryData.faces.addChild(face);
-            }
-        }
+        //@In(function(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
+        //    assert(indices.length > 0 && indices.length % 3 === 0, Log.info.FUNC_SHOULD("indices.count", "be 3 times"));
+        //
+        //    if(normals && normals.length > 0){
+        //        assert(normals.length === indices.length * 3, Log.info.FUNC_SHOULD("normals.count", `be ${indices.length * 3}, but actual is ${normals.length}`));
+        //    }
+        //})
+        //private _addFaces(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
+        //    var hasData = this._hasData(normals);
+        //
+        //    geometryData.faces = dyCb.Collection.create<Face3>();
+        //
+        //    for(let i = 0, len = indices.length; i < len; i+=3){
+        //        let a = indices[i],
+        //            b = indices[i + 1],
+        //            c = indices[i + 2],
+        //            face = Face3.create(a, b, c);
+        //
+        //        if(hasData){
+        //            face.vertexNormals = dyCb.Collection.create<Vector3>([
+        //                this._getThreeComponent(normals, a),
+        //                this._getThreeComponent(normals, b),
+        //                this._getThreeComponent(normals, c)
+        //            ]);
+        //        }
+        //
+        //        geometryData.faces.addChild(face);
+        //    }
+        //}
 
         //todo move to utils?
         private _hasData(data:Array<number>){
             return data && data.length > 0;
         }
 
-        //todo move to utils?
-        private _getThreeComponent(sourceData:Array<number>, index:number){
-            var startIndex = 3 * index;
-
-            return Vector3.create(
-                sourceData[startIndex],
-                sourceData[startIndex + 1],
-                sourceData[startIndex + 2]
-            );
-        }
+        ////todo move to utils?
+        //private _getThreeComponent(sourceData:Array<number>, index:number){
+        //    var startIndex = 3 * index;
+        //
+        //    return Vector3.create(
+        //        sourceData[startIndex],
+        //        sourceData[startIndex + 1],
+        //        sourceData[startIndex + 2]
+        //    );
+        //}
     }
 
     export type GeometryDataType = {
         vertices:Array<number>;
+        //todo change
         indices:Array<number>;
         normals:Array<number>;
+        faces?:Array<Face3>;
         texCoords:Array<number>;
         colors?:Array<number>;
     };

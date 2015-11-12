@@ -103,10 +103,22 @@ module dy{
             return this;
         }
 
-        public set(x:number, y:number, z:number){
-            this.x = x;
-            this.y = y;
-            this.z = z;
+        public set(v:Vector3);
+        public set(x:number, y:number, z:number);
+
+        public set(...args){
+            if(args.length === 3){
+                this.x = args[0];
+                this.y = args[1];
+                this.z = args[2];
+            }
+            else{
+                let v:Vector3 = args[0];
+
+                this.x = v.x;
+                this.y = v.y;
+                this.z = v.z;
+            }
         }
 
         public sub(v:Vector3):Vector3 {
