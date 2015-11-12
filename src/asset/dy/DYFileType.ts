@@ -146,18 +146,15 @@ module dy {
 
 
         /*!for model geometry*/
-        vertices: dyCb.Collection<number>,
-        morphTargets: dyCb.Collection<{
+        vertices: Array<number>,
+        morphTargets: Array<{
             name:string,
-            vertices:dyCb.Collection<number>,
-            normals:dyCb.Collection<number>
+            vertices:Array<number>
         }>,
         //"morphColors": [],
-        colors?: dyCb.Collection<number>,
-        uvs?: dyCb.Collection<number>,
-        //normals: dyCb.Collection<number>,
-        //indices?: dyCb.Collection<number>,
-        faces:dyCb.Collection<Face3>,
+        colors?: Array<number>,
+        uvs?: Array<number>,
+        faces:Array<Face3>,
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any

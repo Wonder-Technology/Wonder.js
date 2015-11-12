@@ -128,15 +128,12 @@ module dy {
             assert(object.verticeIndices.length % 3 === 0, Log.info.FUNC_SHOULD("object->verticeIndices.count", `be 3 times, but actual it is ${object.verticeIndices.length}`));
         })
         @Out(function(returnValue, object){
-            assert(object.vertices && object.vertices instanceof dyCb.Collection && object.vertices.getCount() > 0, Log.info.FUNC_MUST_NOT_BE("vertices", "empty"));
-            assert(object.uvs && object.uvs instanceof dyCb.Collection, Log.info.FUNC_SHOULD("uvs", "be Collection"));
-            assert(object.faces instanceof dyCb.Collection && object.faces.getCount() * 3 === object.verticeIndices.length, Log.info.FUNC_SHOULD("faces.count * 3", `verticeIndices.count(${object.verticeIndices.length}), but actual is ${object.faces.getCount() * 3}`));
+            assert(object.vertices && object.vertices.length > 0, Log.info.FUNC_MUST_NOT_BE("vertices", "empty"));
+            assert(object.faces && object.faces.length * 3 === object.verticeIndices.length, Log.info.FUNC_SHOULD("faces.count * 3", `verticeIndices.count(${object.verticeIndices.length}), but actual is ${object.faces.length * 3}`));
         })
         private _addDuplicateVertexDataAndAddFaces(object:any){
             var vertices = [],
                 uvs = [],
-                //normals = [],
-                //verticeIndices = [],
                 faces = [],
                 face:Face3 = null,
                 colors = [],
@@ -185,18 +182,11 @@ module dy {
                 faces.push(face);
             }
 
-            object.vertices = dyCb.Collection.create<number>(vertices);
-            object.uvs = dyCb.Collection.create<number>(uvs);
-            object.colors = dyCb.Collection.create<number>(colors);
-            //object.indices = dyCb.Collection.create<number>(verticeIndices);
-
-            //if(this._hasData(normals)) {
-            //object.normals = dyCb.Collection.create<number>(normals);
-            //}
-
-            object.faces = dyCb.Collection.create<Face3>(faces);
-
-            object.morphTargets = dyCb.Collection.create<any>(morphTargets);
+            object.vertices = vertices;
+            object.uvs = uvs;
+            object.colors = colors;
+            object.faces = faces;
+            object.morphTargets = morphTargets;
         }
 
 
@@ -247,7 +237,7 @@ module dy {
             for(let frame of sourceMorphTargets){
                 targetMorphTargets.push({
                     name: frame.name,
-                    vertices: dyCb.Collection.create<number>()
+                    vertices: []
                 });
             }
 

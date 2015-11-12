@@ -7,18 +7,17 @@ module dy{
             return geom;
         }
 
-        public vertices:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
-        public colors:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>();
-        public texCoords:dyCb.Collection<Vector2> = dyCb.Collection.create<Vector2>();
-        public faces:dyCb.Collection<Face3> = dyCb.Collection.create<Face3>();
-
+        public vertices:Array<Vector3> = null;
+        public colors:Array<Vector3> = null;
+        public texCoords:Array<Vector2> = null;
+        public faces:Array<Face3> = null;
 
         protected computeData(){
             return <any>{
-                vertices: this.vertices.toArray(),
-                faces: this.faces.toArray(),
-                texCoords: this.texCoords.toArray(),
-                colors: this.colors.toArray()
+                vertices: this.vertices,
+                faces: this.faces,
+                texCoords: this.texCoords,
+                colors: this.colors
             };
         }
     }
