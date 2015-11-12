@@ -61,9 +61,6 @@ module dy {
                         geometry.texCoords = object.uvs;
                         geometry.colors = object.colors;
 
-                        //todo remove
-                        geometry.isDY = true;
-
 
                         if(object.material){
                             geometry.material = self._buildMaterial(object.material, parseData.materials);
