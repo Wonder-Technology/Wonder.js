@@ -18,6 +18,10 @@ module dy{
 
             super.init();
         }
+
+        protected initEnvMap(){
+            //do nothing
+        }
     }
 }
 

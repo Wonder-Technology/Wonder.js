@@ -58,7 +58,7 @@
 //            };
 
 
-            var material = dy.Material.create();
+            var material = dy.BasicMaterial.create();
             material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material.shader = shader;
 
@@ -90,7 +90,7 @@
             ]
             );
 
-            material.setEnvMap(cubemap);
+            material.envMap = cubemap;
 
 
 
@@ -137,7 +137,7 @@
             });
 
 
-            var material2 = dy.Material.create();
+            var material2 = dy.BasicMaterial.create();
             material2.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
             material2.shader = shader2;
 

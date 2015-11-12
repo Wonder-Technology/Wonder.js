@@ -140,17 +140,47 @@ module dy {
         public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
         public shading = Shading.FLAT;
+        public refractionRatio:number = ShaderChunk.NULL;
+        public reflectivity:number = ShaderChunk.NULL;
 
 
 
-            public textureManager:TextureManager = TextureManager.create(this);
+        public textureManager:TextureManager = TextureManager.create(this);
         public geometry:Geometry = null;
 
 
         public init(){
+            this.initEnvMap();
+
             this.textureManager.init();
 
             this.shader.init();
+        }
+
+        protected initEnvMap(){
+            var envMap = this.envMap;
+
+            if(!envMap){
+                return;
+            }
+
+            switch (envMap.mode){
+                case EnvMapMode.NORMAL:
+                    this.shader.addLib(BasicEnvMapShaderLib.create());
+                    break;
+                case EnvMapMode.REFLECTION:
+                    this.shader.addLib(ReflectionShaderLib.create());
+                    break;
+                case EnvMapMode.REFRACTION:
+                    this.shader.addLib(RefractionShaderLib.create());
+                    break;
+                case EnvMapMode.FRESNEL:
+                    this.shader.addLib(FresnelShaderLib.create());
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
+                    break;
+            }
         }
 
         public dispose(){

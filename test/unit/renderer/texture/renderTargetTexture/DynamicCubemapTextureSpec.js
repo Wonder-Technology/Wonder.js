@@ -78,7 +78,7 @@ describe("DynamicCubemapTexture", function() {
             var pos1 = 100;
             program.getUniformLocation.onCall(0).returns(pos1);
             texture.mode = dy.EnvMapMode.REFLECTION;
-            var material = dy.EnvMapMaterial.create();
+            var material = dy.BasicMaterial.create();
             material.envMap = texture;
 
             material.textureManager.sendData(program);

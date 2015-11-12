@@ -9,7 +9,7 @@ module dy{
 
         public type:string = "refraction";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EnvMapMaterial) {
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
 
             this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
