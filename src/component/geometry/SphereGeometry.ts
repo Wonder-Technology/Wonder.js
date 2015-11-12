@@ -22,8 +22,7 @@ module dy{
 
                 return {
                     vertices: vertices,
-                    indices: indices,
-                    normals: normals,
+                    faces: GeometryUtils.convertToFaces(indices, normals),
                     texCoords: texCoords
                 }
             }

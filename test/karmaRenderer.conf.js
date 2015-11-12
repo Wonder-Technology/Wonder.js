@@ -33,7 +33,7 @@ module.exports = function(config) {
         'test/unit/rendererTool.js',
         'test/unit/renderer/renderTargetRenderer/TwoDRenderTargetTool.js',
         'test/unit/renderer/renderTargetRenderer/CubemapRenderTargetTool.js',
-        'test/unit/asset/dyTool.js',
+        'test/unit/geometryTool.js',
 
         'test/unit/renderer/**',
         //'test/unit/renderer/shader/*',

@@ -137,7 +137,7 @@ describe("DYParser", function () {
                 expect(testTool.getValues(getObject(result, 0).uvs)).toEqual(
                     [0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.3, 0.5, 0.2, 0.2]
                 )
-                dyTool.judgeFaceIndices(getObject(result, 0).faces, [0, 1, 2, 3, 4, 5]);
+                geometryTool.judgeFaceIndices(getObject(result, 0).faces, [0, 1, 2, 3, 4, 5]);
             });
             it("parse files which's format likes the one converted from .obj", function () {
                 setObject({
@@ -192,7 +192,7 @@ describe("DYParser", function () {
                 expect(testTool.getValues(object1.uvs)).toEqual(
                     [0.2, 0.2, 1, 0.1, 0.1, 0.2, 0.1, 0.2, 0.3, 0.5, 0.2, 0.2]
                 )
-                dyTool.judgeFaceIndices(object1.faces, [0, 1, 2, 3, 4, 5]);
+                geometryTool.judgeFaceIndices(object1.faces, [0, 1, 2, 3, 4, 5]);
 
                 var object2 = objectContainer.children.getChild(1);
                 expect(object2.vertices).toEqual(
@@ -207,7 +207,7 @@ describe("DYParser", function () {
                 expect(testTool.getValues(object2.uvs)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.2, 0.3, 0.5]
                 )
-                dyTool.judgeFaceIndices(object2.faces, [0, 1, 2, 3, 4, 5]);
+                geometryTool.judgeFaceIndices(object2.faces, [0, 1, 2, 3, 4, 5]);
             });
         });
 
@@ -236,10 +236,10 @@ describe("DYParser", function () {
                     })
                     var result = parser.parse(json);
 
-                    dyTool.judgeFaceVertexNormals(getObject(result, 0).faces,
+                    geometryTool.judgeFaceVertexNormals(getObject(result, 0).faces,
                         [ 6, -1, -2, 1, 2, -1, -2, 0, -4, 1, 1, 1, -2, 0, -4, 1, 2, -1 ]
                     );
-                    dyTool.judgeMorphVertexNormals(getObject(result, 0).faces, 0,
+                    geometryTool.judgeMorphVertexNormals(getObject(result, 0).faces, 0,
                         [4, -1, -2, 3, 2, 3, -2, 0, -4, 5, 1, 2, -2, 0, -4, 3, 2, 3]
                     )
                 });
@@ -271,10 +271,10 @@ describe("DYParser", function () {
 
                     var objectContainer = result.objects.getChild(0);
                     var object1 = objectContainer.children.getChild(0);
-                    dyTool.judgeFaceVertexNormals(object1.faces,
+                    geometryTool.judgeFaceVertexNormals(object1.faces,
                         [ 1, 1, 1, 6, -1, -2, 1, 2, -1, 6, -1, -2, -2, 0, -4, 1, 2, -1 ]
                     );
-                    dyTool.judgeMorphVertexNormals(object1.faces, 0,
+                    geometryTool.judgeMorphVertexNormals(object1.faces, 0,
                         [ 5, 1, 2, 4, -1, -2, 3, 2, 3, 4, -1, -2, -2, 0, -4, 3, 2, 3 ]
                     )
                 });

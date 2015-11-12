@@ -7,7 +7,7 @@ module dy {
             return obj;
         }
 
-        constructor(geometry:Geometry){
+        constructor(geometry:Geometry) {
             this._geometry = geometry;
         }
 
@@ -21,10 +21,10 @@ module dy {
             this.isTangentDirty = true;
         }
 
-        @InGetter(function(){
+        @InGetter(function () {
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
 
-            for(let face of this._faces) {
+            for (let face of this._faces) {
                 if (this._geometry.isSmoothShading()) {
                     assert(face.vertexNormals && face.vertexNormals.getCount() === 3, Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
                 }
@@ -33,41 +33,68 @@ module dy {
                 }
             }
         })
-        @OutGetter(function(normals){
+        @OutGetter(function (normals) {
             assert(normals.length > 0, Log.info.FUNC_MUST("geometry", "contain normals data"));
         })
         get normals() {
             var normals = [],
-                self = this;
+                geometry = this._geometry;
 
-            this._faces.forEach((face:Face3) => {
-                if(self._geometry.isSmoothShading()){
-                    face.vertexNormals.forEach((normal:Vector3) => {
-                        normals.push(normal.x, normal.y, normal.z);
-                    })
+            //todo optimize:add cache
+            //move cache to decorator
+            if (geometry.isSmoothShading()) {
+                if (!geometry.hasVertexNormals()) {
+                    geometry.computeVertexNormals();
                 }
-                else{
+
+                this._faces.forEach((face:Face3) => {
+                    //        face.vertexNormals.forEach((normal:Vector3) => {
+                    //            normals.push(normal.x, normal.y, normal.z);
+                    //            normals[face.aIndex] = normal.toArray();
+                    //        })
+                    //normals[face.aIndex] = face.vertexNormals.getChild(0).toArray();
+                    //normals[face.bIndex] = face.vertexNormals.getChild(1).toArray();
+                    //normals[face.cIndex] = face.vertexNormals.getChild(2).toArray();
+                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(0), face.aIndex);
+                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
+                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
+                });
+            }
+            else {
+                if (!geometry.hasFaceNormals()) {
+                    geometry.computeFaceNormals();
+                }
+
+                this._faces.forEach((face:Face3) => {
                     let normal = face.faceNormal;
 
-                    normals.push(normal.x, normal.y, normal.z);
-                    normals.push(normal.x, normal.y, normal.z);
-                    normals.push(normal.x, normal.y, normal.z);
-                }
-            });
+                    GeometryUtils.setThreeComponent(normals, normal, face.aIndex);
+                    GeometryUtils.setThreeComponent(normals, normal, face.bIndex);
+                    GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
+                    //normals[face.aIndex] = normal.toArray();
+                    //normals[face.bIndex] = normal.toArray();
+                    //normals[face.cIndex] = normal.toArray();
+                    //normals.push(normal.x, normal.y, normal.z);
+                    //normals.push(normal.x, normal.y, normal.z);
+                    //normals.push(normal.x, normal.y, normal.z);
+                });
+            }
+
 
             return normals;
         }
 
-        @InGetter(function(){
-            assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
-        })
-        @OutGetter(function(indices){
-            assert(indices.length > 0, Log.info.FUNC_MUST("geometry", "contain indices data"));
+        //@InGetter(function () {
+        //    assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
+        //})
+        @OutGetter(function (indices) {
+            //assert(indices.length > 0, Log.info.FUNC_MUST("geometry", "contain indices data"));
         })
         get indices():Array<number> {
             var indices = [];
 
-            for(let face of this._faces) {
+            //todo optimize:add cache
+            for (let face of this._faces) {
                 indices.push(face.aIndex, face.bIndex, face.cIndex);
             }
 
@@ -75,10 +102,11 @@ module dy {
         }
 
         private _faces:Array<Face3> = null;
-        get faces(){
+        get faces() {
             return this._faces;
         }
-        set faces(faces:Array<Face3>){
+
+        set faces(faces:Array<Face3>) {
             this._faces = faces;
             this.isTangentDirty = true;
         }
@@ -121,10 +149,10 @@ module dy {
             var vertices = this._vertices,
                 self = this;
 
-            for(let face of this._faces){
-                var p0 = self._getThreeComponent(vertices, face.aIndex),
-                    p1 = self._getThreeComponent(vertices, face.bIndex),
-                    p2 = self._getThreeComponent(vertices, face.cIndex),
+            for (let face of this._faces) {
+                var p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
+                    p1 = GeometryUtils.getThreeComponent(vertices, face.bIndex),
+                    p2 = GeometryUtils.getThreeComponent(vertices, face.cIndex),
                     v0 = Vector3.create().sub2(p2, p1),
                     v1 = Vector3.create().sub2(p0, p1);
 
@@ -133,14 +161,14 @@ module dy {
         }
 
         //todo refactor
-        public computeVertexNormals(){
+        public computeVertexNormals() {
             var v, vl, normals, self = this;
 
-            normals = new Array( this._vertices.length );
+            normals = new Array(this._vertices.length);
 
-            for ( v = 0, vl = this._vertices.length; v < vl; v ++ ) {
+            for (v = 0, vl = this._vertices.length; v < vl; v++) {
 
-                normals[ v ] = Vector3.create();
+                normals[v] = Vector3.create();
 
             }
 
@@ -171,7 +199,7 @@ module dy {
             //}
             //else {
 
-            for(let face of this._faces) {
+            for (let face of this._faces) {
                 normals[face.aIndex].add(face.faceNormal);
                 normals[face.bIndex].add(face.faceNormal);
                 normals[face.cIndex].add(face.faceNormal);
@@ -179,13 +207,13 @@ module dy {
 
             //}
 
-            for ( v = 0, vl = this._vertices.length; v < vl; v ++ ) {
+            for (v = 0, vl = this._vertices.length; v < vl; v++) {
 
-                normals[ v ].normalize();
+                normals[v].normalize();
 
             }
 
-            for(let face of this._faces) {
+            for (let face of this._faces) {
                 face.vertexNormals = dyCb.Collection.create<Vector3>([
                     normals[face.aIndex],
                     normals[face.bIndex],
@@ -208,17 +236,17 @@ module dy {
             }
         }
 
-        private _getColors(colors:Array<number>, vertices:Array<number>){
-            if(colors && colors.length > 0){
+        private _getColors(colors:Array<number>, vertices:Array<number>) {
+            if (colors && colors.length > 0) {
                 return colors;
             }
-            else{
+            else {
                 //todo compute from vertexColors(refer to threejs)
                 return this._getColorsFromMaterial(vertices);
             }
         }
 
-        private _getColorsFromMaterial(vertices:Array<number>){
+        private _getColorsFromMaterial(vertices:Array<number>) {
             var arr = [],
                 i = 0,
                 material = this._geometry.material,
@@ -229,8 +257,8 @@ module dy {
 
             len = vertices.length;
 
-            for(i = 0; i < len; i++){
-                arr.push( color.r, color.g, color.b);
+            for (i = 0; i < len; i++) {
+                arr.push(color.r, color.g, color.b);
             }
             return arr;
         }
@@ -333,22 +361,6 @@ module dy {
             }
 
             return tangents;
-        }
-
-        ////todo move to utils?
-        //private _hasData(data:Array<number>){
-        //    return data && data.length > 0;
-        //}
-
-        //todo move to utils?
-        private _getThreeComponent(sourceData:Array<number>, index:number){
-            var startIndex = 3 * index;
-
-            return Vector3.create(
-                sourceData[startIndex],
-                sourceData[startIndex + 1],
-                sourceData[startIndex + 2]
-            );
         }
     }
 }

@@ -270,5 +270,9 @@ module dy{
         public isEqual(v:Vector3){
             return this.x === v.x && this.y === v.y && this.z === v.z;
         }
+
+        public toArray(){
+            return [this.x, this.y, this.z];
+        }
     }
 }

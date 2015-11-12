@@ -79,7 +79,7 @@ describe("renderWebGL", function() {
             quadCmd.buffers = geometry.buffers;
 
             if(isNoIndexBuffer){
-                quadCmd.buffers.geometryData.indices = null;
+                quadCmd.buffers.geometryData.faces = [];
             }
 
             quadCmd.shader = geometry.material.shader;

@@ -26,8 +26,8 @@ module dy{
                 j = null,
                 vertices = [],
                 texCoords = [],
-                indices = [],
-                normals = [];
+                normals = [],
+                indices = [];
 
             // Generate plane as follows (assigned UVs denoted at corners):
             // (0,1)x---------x(1,1)
@@ -40,6 +40,8 @@ module dy{
             //         width
             for (i = 0; i <= widthSegments; i++) {
                 for (j = 0; j <= heightSegments; j++) {
+                    let faceNormal = null;
+
                     x = -width + 2.0 * width * i / widthSegments;
                     y = 0.0;
                     z = -(-height + 2.0 * height * j / heightSegments);
@@ -59,8 +61,7 @@ module dy{
 
             return {
                 vertices: vertices,
-                indices: indices,
-                normals: normals,
+                faces: GeometryUtils.convertToFaces(indices, normals),
                 texCoords: texCoords
             };
         }

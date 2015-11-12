@@ -158,9 +158,15 @@ describe("loader", function () {
             expect(geo.colors).toEqual(
                 model1.colors
             );
-            dyTool.judgeFaceIndices(geo.faces, model1.indices);
+            geometryTool.judgeFaceIndices(geo.faces, model1.indices);
 
             geo.init();
+
+            var geometryData = geo.buffers.geometryData;
+            expect(geometryData.indices).toEqual(model1.indices);
+            //test computed normals
+            expect(geometryData.normals).toEqual(model1.normals);
+
 
 
 
@@ -207,14 +213,14 @@ describe("loader", function () {
             expect(geo21.colors).toEqual(
                 model2.children[0].colors
             )
-            dyTool.judgeFaceIndices(geo21.faces, model2.children[0].indices);
+            geometryTool.judgeFaceIndices(geo21.faces, model2.children[0].indices);
             expect(geo21.vertices).toEqual(
                 model2.children[0].vertices
             )
             expect(geo21.texCoords).toEqual(
                 model2.children[0].uvs
             )
-            dyTool.judgeFaceVertexNormals(geo21.faces, model2.children[0].normals);
+            geometryTool.judgeFaceVertexNormals(geo21.faces, model2.children[0].normals);
             var mat21 = geo21.material;
             assertColor(mat21.color, materialData1.diffuseColor);
 
@@ -227,14 +233,14 @@ describe("loader", function () {
             expect(geo22.colors).toEqual(
                 model2.children[1].colors
             )
-            dyTool.judgeFaceIndices(geo22.faces, model2.children[1].indices);
+            geometryTool.judgeFaceIndices(geo22.faces, model2.children[1].indices);
             expect(geo22.vertices).toEqual(
                 model2.children[1].vertices
             )
             expect(geo22.texCoords).toEqual(
                 model2.children[1].uvs
             )
-            dyTool.judgeFaceVertexNormals(geo22.faces, model2.children[1].normals);
+            geometryTool.judgeFaceVertexNormals(geo22.faces, model2.children[1].normals);
             var mat22 = geo22.material;
             assertColor(mat22.color, materialData2.diffuseColor);
 

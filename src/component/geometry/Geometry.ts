@@ -22,7 +22,7 @@ module dy{
             var geometryData = this.buffers.geometryData;
 
             assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
-            assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
+            //assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
             assert(geometryData.faces.length * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`));
 
             //if(geometryData.normals && geometryData.normals.length > 0){
@@ -60,35 +60,53 @@ module dy{
 
             this._material.init();
 
-            if(!this.hasNormals()){
-                if(this.isSmoothShading()){
+            //if(!this.hasNormals()){
+                if(this.isSmoothShading() && !this.hasVertexNormals()){
                     //todo only compute vertex normals?
                     this.computeFaceNormals();
                     this.computeVertexNormals();
                 }
-                else{
+                else if(!this.hasFaceNormals()){
                     this.computeFaceNormals();
                 }
-            }
+            //}
 
             //todo compute morphTarget normal
         }
 
         @In(function(){
-            var hasNormal = this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
+            var hasFaceNormal = !this.buffers.geometryData.faces[0].faceNormal.isZero();
 
-            if(hasNormal){
+            if(hasFaceNormal){
                 for(let face of this.buffers.geometryData.faces){
-                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has normal data or all not"));
+                    assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
                 }
             }
             else{
                 for(let face of this.buffers.geometryData.faces){
-                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has normal data or all not"));
+                    assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
                 }
             }
         })
-        public hasNormals(){
+        public hasFaceNormals(){
+            return !this.buffers.geometryData.faces[0].faceNormal.isZero();
+        }
+
+        @In(function(){
+            var hasVertexNormal = this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
+
+            if(hasVertexNormal){
+                for(let face of this.buffers.geometryData.faces) {
+                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+                }
+            }
+            else{
+                for(let face of this.buffers.geometryData.faces) {
+                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+                }
+            }
+        })
+        public hasVertexNormals(){
             return this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
         }
 
@@ -109,7 +127,7 @@ module dy{
 
             geometryData = this.buffers.geometryData;
 
-            assert(this._hasData(geometryData.vertices), Log.info.FUNC_MUST("geometry", "contain vertices"));
+            assert(GeometryUtils.hasData(geometryData.vertices), Log.info.FUNC_MUST("geometry", "contain vertices"));
             //assert(this._hasData(geometryData.indices), Log.info.FUNC_MUST("geometry", "contain indices"));
             //assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
             //assert(geometryData.faces.getCount() * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.getCount()}`));
@@ -131,59 +149,13 @@ module dy{
         }
 
         protected abstract computeData(): GeometryDataType;
-
-        //@In(function(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
-        //    assert(indices.length > 0 && indices.length % 3 === 0, Log.info.FUNC_SHOULD("indices.count", "be 3 times"));
-        //
-        //    if(normals && normals.length > 0){
-        //        assert(normals.length === indices.length * 3, Log.info.FUNC_SHOULD("normals.count", `be ${indices.length * 3}, but actual is ${normals.length}`));
-        //    }
-        //})
-        //private _addFaces(geometryData:GeometryData, indices:Array<number>, normals:Array<number>){
-        //    var hasData = this._hasData(normals);
-        //
-        //    geometryData.faces = dyCb.Collection.create<Face3>();
-        //
-        //    for(let i = 0, len = indices.length; i < len; i+=3){
-        //        let a = indices[i],
-        //            b = indices[i + 1],
-        //            c = indices[i + 2],
-        //            face = Face3.create(a, b, c);
-        //
-        //        if(hasData){
-        //            face.vertexNormals = dyCb.Collection.create<Vector3>([
-        //                this._getThreeComponent(normals, a),
-        //                this._getThreeComponent(normals, b),
-        //                this._getThreeComponent(normals, c)
-        //            ]);
-        //        }
-        //
-        //        geometryData.faces.addChild(face);
-        //    }
-        //}
-
-        //todo move to utils?
-        private _hasData(data:Array<number>){
-            return data && data.length > 0;
-        }
-
-        ////todo move to utils?
-        //private _getThreeComponent(sourceData:Array<number>, index:number){
-        //    var startIndex = 3 * index;
-        //
-        //    return Vector3.create(
-        //        sourceData[startIndex],
-        //        sourceData[startIndex + 1],
-        //        sourceData[startIndex + 2]
-        //    );
-        //}
     }
 
     export type GeometryDataType = {
         vertices:Array<number>;
         //todo change
-        indices:Array<number>;
-        normals:Array<number>;
+        //indices?:Array<number>;
+        //normals?:Array<number>;
         faces?:Array<Face3>;
         texCoords:Array<number>;
         colors?:Array<number>;

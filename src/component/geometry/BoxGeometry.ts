@@ -69,7 +69,7 @@ module dy{
 
                 for (i = 0; i <= uSegments; i++) {
                     for (j = 0; j <= vSegments; j++) {
-                        var temp1 = Vector3.create();
+                        let temp1 = Vector3.create()
                         var temp2 = Vector3.create();
                         var temp3 = Vector3.create();
                         var r = Vector3.create();
@@ -87,6 +87,7 @@ module dy{
                         if ((i < uSegments) && (j < vSegments)) {
                             indices.push(offset + j + i * (uSegments + 1),       offset + j + (i + 1) * (uSegments + 1),     offset + j + i * (uSegments + 1) + 1);
                             indices.push(offset + j + (i + 1) * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1) + 1, offset + j + i * (uSegments + 1) + 1);
+
                         }
                     }
                 }
@@ -101,8 +102,8 @@ module dy{
 
             return {
                 vertices: vertices,
-                indices: indices,
-                normals: normals,
+                //todo direct add to faces, remove indices,normals
+                faces: GeometryUtils.convertToFaces(indices, normals),
                 texCoords: texCoords
             };
         }

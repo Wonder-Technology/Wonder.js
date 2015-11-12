@@ -1,14 +1,30 @@
-var dyTool = {
+var geometryTool = {
     judgeFaceIndices: function (faces, indiceArr) {
-        var face;
+        var face,
+            indices = [];
 
         for (var i = 0, len = faces.length; i < len; i++) {
             face = faces[i];
 
-            expect(face.aIndex).toEqual(indiceArr[i * 3]);
-            expect(face.bIndex).toEqual(indiceArr[i * 3 + 1]);
-            expect(face.cIndex).toEqual(indiceArr[i * 3 + 2]);
+            indices.push(face.aIndex, face.bIndex, face.cIndex)
         }
+
+        expect(indices).toEqual(indiceArr);
+    },
+    judgeFaceNormals: function (faces, normalArr) {
+        var face, faceNormals = [];
+
+        for (var i = 0, len = faces.length; i < len; i++) {
+            face = faces[i];
+
+            faceNormals.push(
+                face.faceNormal.x,
+                face.faceNormal.y,
+                face.faceNormal.z
+            );
+        }
+
+        expect(faceNormals).toEqual(normalArr);
     },
     judgeFaceVertexNormals: function (faces, normalArr) {
         var face, faceVertexNormals = [];
