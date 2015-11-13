@@ -83,7 +83,7 @@ describe("Scene", function() {
 
                 sandbox.spy(geometry, "init");
                 sandbox.spy(material, "init");
-                sandbox.spy(material.textureManager, "init");
+                sandbox.spy(material.mapManager, "init");
                 sandbox.stub(material.shader, "init");
                 scene.addComponent(geometry);
 
@@ -91,7 +91,7 @@ describe("Scene", function() {
 
                 expect(geometry.init).toCalledOnce();
                 expect(material.init).toCalledOnce();
-                expect(material.textureManager.init).toCalledOnce();
+                expect(material.mapManager.init).toCalledOnce();
                 expect(material.shader.init).toCalledOnce();
             });
             it("invoke scene and it's children's script->init", function(){

@@ -41,7 +41,7 @@ describe("TwoDShadowMapTexture", function() {
 
 
 
-            material.textureManager.sendData(program);
+            material.mapManager.sendData(program);
 
             expect(program.getUniformLocation.secondCall).toCalledWith("u_twoDShadowMapSampler[0]");
             expect(program.getUniformLocation.thirdCall).toCalledWith("u_twoDShadowMapSampler[1]");

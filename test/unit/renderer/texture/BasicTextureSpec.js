@@ -2,7 +2,7 @@ describe("BasicTexture", function() {
     var sandbox = null;
     var Texture = null;
     var texture = null;
-    var textureManager = null;
+    var mapManager = null;
     var director = null;
     var gl = null;
 
@@ -18,7 +18,7 @@ describe("BasicTexture", function() {
         sandbox = sinon.sandbox.create();
         Texture = dy.BasicTexture;
         texture = buildTexture();
-        textureManager = dy.TextureManager.create();
+        mapManager = dy.MapManager.create();
         director = dy.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",

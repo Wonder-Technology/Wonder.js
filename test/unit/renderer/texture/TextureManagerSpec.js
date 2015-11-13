@@ -1,4 +1,4 @@
-describe("TextureManager", function() {
+describe("MapManager", function() {
     var sandbox = null;
     var Manager = null;
     var manager = null;
@@ -6,7 +6,7 @@ describe("TextureManager", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Manager = dy.TextureManager;
+        Manager = dy.MapManager;
         manager = new Manager();
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 

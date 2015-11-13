@@ -53,7 +53,7 @@ var rendererTool = {
                         return testTool.getValues(arr);
                     });
 
-                    sandbox.stub(material.textureManager, "init");
+                    sandbox.stub(material.mapManager, "init");
                     sandbox.stub(shader.program, "sendAttributeData");
                     sandbox.stub(shader.program, "sendUniformData");
                 });

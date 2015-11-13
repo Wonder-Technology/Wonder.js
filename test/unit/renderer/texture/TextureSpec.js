@@ -2,7 +2,7 @@ describe("Texture", function() {
     var sandbox = null;
     var Texture = null;
     var texture = null;
-    var textureManager = null;
+    var mapManager = null;
     var director = null;
     var gl = null;
 
@@ -18,7 +18,7 @@ describe("Texture", function() {
         sandbox = sinon.sandbox.create();
         Texture = dy.Texture;
         texture = buildTexture();
-        textureManager = dy.TextureManager.create();
+        mapManager = dy.MapManager.create();
         director = dy.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
@@ -145,10 +145,10 @@ describe("Texture", function() {
 
             it("one material can contain multi texture", function(done){
                 loadMultiTexture(function(texture1, texture2){
-                    textureManager.addMap(texture1);
-                    textureManager.addMap(texture2);
+                    mapManager.addMap(texture1);
+                    mapManager.addMap(texture2);
 
-                    textureManager.update();
+                    mapManager.update();
 
                     expect(gl.activeTexture.firstCall).toCalledWith(gl.TEXTURE0);
                     expect(gl.activeTexture.firstCall).toCalledBefore(gl.texImage2D.firstCall);
@@ -165,10 +165,10 @@ describe("Texture", function() {
                 sandbox.stub(dy.Log, "warn");
 
                 loadMultiTexture(function(texture1, texture2){
-                    textureManager.addMap(texture1);
-                    textureManager.addMap(texture2);
+                    mapManager.addMap(texture1);
+                    mapManager.addMap(texture2);
 
-                    textureManager.update();
+                    mapManager.update();
 
                     expect(dy.Log.warn).toCalledOnce();
 

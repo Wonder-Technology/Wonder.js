@@ -110,7 +110,7 @@ module dy{
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
 
-            material.textureManager.sendData(program);
+            material.mapManager.sendData(program);
         }
 
         public hasLib(lib:ShaderLib){

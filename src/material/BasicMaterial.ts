@@ -33,7 +33,7 @@ module dy{
         }
 
         private _initMap(){
-            var mapCount = this.textureManager.getMapCount();
+            var mapCount = this.mapManager.getMapCount();
 
             if(mapCount > 0){
                 if(mapCount > 1){

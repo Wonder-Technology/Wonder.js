@@ -81,7 +81,7 @@ describe("DynamicCubemapTexture", function() {
             var material = dy.BasicMaterial.create();
             material.envMap = texture;
 
-            material.textureManager.sendData(program);
+            material.mapManager.sendData(program);
 
             expect(program.getUniformLocation).toCalledWith("u_samplerCube0");
             expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_CUBE, 0);

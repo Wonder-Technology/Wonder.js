@@ -95,7 +95,7 @@ describe("custom shader", function () {
                 var quadCmd;
 
                 beforeEach(function () {
-                    sandbox.stub(material.textureManager, "sendData");
+                    sandbox.stub(material.mapManager, "sendData");
                     sandbox.stub(shader.program, "sendAttributeData");
                     sandbox.stub(shader.program, "sendUniformData");
                     sandbox.stub(shader.program, "use");
@@ -178,7 +178,7 @@ describe("custom shader", function () {
                 });
 
                 it("send texture's variables", function () {
-                    expect(material.textureManager.sendData).toCalledWith(shader.program);
+                    expect(material.mapManager.sendData).toCalledWith(shader.program);
                 });
                 it("send custom shader's attribute variables", function () {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_color");

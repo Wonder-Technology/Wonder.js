@@ -39,7 +39,7 @@ describe("CubemapShadowMapTexture", function() {
             var texture2 = new Texture();
             material.addCubemapShadowMap(texture2);
 
-            material.textureManager.sendData(program);
+            material.mapManager.sendData(program);
 
             expect(program.getUniformLocation.secondCall).toCalledWith("u_cubemapShadowMapSampler[0]");
             expect(program.getUniformLocation.thirdCall).toCalledWith("u_cubemapShadowMapSampler[1]");

@@ -92,17 +92,17 @@ module dy {
         }
 
         get envMap(){
-            return this.textureManager.getEnvMap();
+            return this.mapManager.getEnvMap();
         }
         set envMap(envMap:CubemapTexture){
-            this.textureManager.setEnvMap(envMap);
+            this.mapManager.setEnvMap(envMap);
         }
 
         get mirrorMap(){
-            return this.textureManager.getMirrorMap();
+            return this.mapManager.getMirrorMap();
         }
         set mirrorMap(mirrorMap:MirrorTexture){
-            this.textureManager.setMirrorMap(mirrorMap);
+            this.mapManager.setMirrorMap(mirrorMap);
         }
 
         private _blendSrc:BlendFunc= BlendFunc.ONE;
@@ -151,7 +151,7 @@ module dy {
         public reflectivity:number = ShaderChunk.NULL;
         public mapCombineMode:TextureCombineMode = TextureCombineMode.MIX;
         public mapMixRatio:number = 0.5;
-        public textureManager:TextureManager = TextureManager.create(this);
+        public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
 
 
@@ -163,7 +163,7 @@ module dy {
 
             this.initEnvMap();
 
-            this.textureManager.init();
+            this.mapManager.init();
 
             this.shader.init();
         }
@@ -195,11 +195,11 @@ module dy {
         }
 
         public dispose(){
-            this.textureManager.dispose();
+            this.mapManager.dispose();
         }
 
         public updateTexture(){
-            this.textureManager.update();
+            this.mapManager.update();
         }
 
         //public useProgram(){
@@ -229,7 +229,7 @@ module dy {
         protected addMap(map:Texture, option:MapVariableData);
 
         protected addMap(arg){
-            this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));
+            this.mapManager.addMap.apply(this.mapManager, Array.prototype.slice.call(arguments, 0));
         }
 
         private _initMirrorMap(){

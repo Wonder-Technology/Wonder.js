@@ -216,7 +216,7 @@
 
 
 /// <reference path="texture/Texture"/>
-/// <reference path="texture/TextureManager"/>
+/// <reference path="texture/MapManager"/>
 
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>

@@ -1,6 +1,6 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    export class TextureManager{
+    export class MapManager{
         public static create(material:Material) {
         	var obj = new this(material);
 

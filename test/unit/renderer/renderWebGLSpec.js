@@ -92,8 +92,8 @@ describe("renderWebGL", function() {
 
             renderer.addCommand(quadCmd);
 
-            sandbox.stub(material.textureManager, "update");
-            sandbox.stub(material.textureManager, "sendData");
+            sandbox.stub(material.mapManager, "update");
+            sandbox.stub(material.mapManager, "sendData");
             sandbox.stub(material, "updateTexture");
             //sandbox.stub(material, "useProgram");
             sandbox.stub(material, "updateShader");
@@ -244,7 +244,7 @@ describe("renderWebGL", function() {
             //
             //    renderer.render();
             //
-            //    expect(result.material.textureManager.sendData).toCalledOnce();
+            //    expect(result.material.mapManager.sendData).toCalledOnce();
             //});
             it("update shader", function(){
                 var result = addCommand();

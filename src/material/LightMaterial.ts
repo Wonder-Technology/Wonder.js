@@ -98,7 +98,7 @@ module dy{
         }
 
         public hasShadowMap(map:IShadowMapTexture){
-            return this.textureManager.hasMap(<Texture>map);
+            return this.mapManager.hasMap(<Texture>map);
         }
 
         public addTwoDShadowMapData(shadowMapData:TwoDShadowMapData){
@@ -165,13 +165,13 @@ module dy{
         }
 
         private _hasTwoDShadowMap(){
-            return this.textureManager.hasMap((map:Texture) => {
+            return this.mapManager.hasMap((map:Texture) => {
                 return map instanceof TwoDShadowMapTexture;
             });
         }
 
         private _hasCubemapShadowMap(){
-            return this.textureManager.hasMap((map:Texture) => {
+            return this.mapManager.hasMap((map:Texture) => {
                 return map instanceof CubemapShadowMapTexture;
             });
         }
