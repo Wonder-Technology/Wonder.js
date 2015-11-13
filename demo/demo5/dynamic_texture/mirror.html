@@ -35,13 +35,12 @@
         function _initScene() {
             var director = dy.Director.getInstance();
 
-
-            var material = dy.MapMaterial.create();
+            var material = dy.BasicMaterial.create();
 
 
             var texture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
 
-            material.addMap(texture);
+            material.map = texture;
 
 
 
@@ -239,7 +238,6 @@
                     });
 
             var action1 = dy.RepeatForever.create(tween1);
-
 
 
             mirrorObj.addComponent(action1);

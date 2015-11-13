@@ -35,35 +35,6 @@
         function _initScene() {
             var director = dy.Director.getInstance();
 
-
-//            var material = dy.MapMaterial.create();
-//
-//
-//            var texture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
-//
-//            material.addMap(texture);
-
-
-
-
-
-//            var sphereGeometry = dy.SphereGeometry.create();
-//            sphereGeometry.material = material;
-//            sphereGeometry.radius = 5;
-//            sphereGeometry.segments = 50;
-//
-//
-//
-//            var sphere = dy.GameObject.create();
-//
-//            sphere.addComponent(dy.MeshRenderer.create());
-//            sphere.addComponent(sphereGeometry);
-//
-//
-//            sphere.transform.translate(dy.Vector3.create(0, 10, 10));
-
-
-
             var ambientLightComponent = dy.AmbientLight.create();
             ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
 
@@ -425,9 +396,6 @@
 
             //todo refactor:reflectionTexture attri?
             material.reflectionMap = texture2;
-//            material.addMap(texture2, {
-//                samplerVariableName: "u_mirrorSampler"
-//            });
 
 
 

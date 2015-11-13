@@ -149,7 +149,6 @@
 /// <reference path="material/Material"/>
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
-/// <reference path="material/MapMaterial"/>
 /// <reference path="material/LightMaterial"/>
 /// <reference path="material/MirrorMaterial"/>
 

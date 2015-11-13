@@ -33,13 +33,13 @@
         }
 
         function _initScene() {
-            var material1 = dy.MapMaterial.create();
+            var material1 = dy.BasicMaterial.create();
 
 
             var map1 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("multiTexture"));
 
 
-            material1.addMap(map1);
+            material1.map = map1;
 
             material1.side = dy.Side.BOTH;
 
@@ -75,13 +75,13 @@
 
 
 
-            var material2 = dy.MapMaterial.create();
+            var material2 = dy.BasicMaterial.create();
 
 
             var map2 = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("multiTexture"));
 
 
-            material2.addMap(map2);
+            material2.map = map2;
             material2.side = dy.Side.BOTH;
 
 
@@ -118,13 +118,13 @@
 
 
 
-            var material3 = dy.MapMaterial.create();
+            var material3 = dy.BasicMaterial.create();
 
 
             var map3 = dy.CompressedTexture.create( dy.TextureLoader.getInstance().get("compressedTexture"));
 
 
-            material3.addMap(map3);
+            material3.map = map3;
             material3.side = dy.Side.BOTH;
 
 

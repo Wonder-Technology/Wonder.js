@@ -32,13 +32,13 @@
         }
 
         function _initScene() {
-            var material = dy.MapMaterial.create();
+            var material = dy.BasicMaterial.create();
 
 
             var map = dy.VideoTexture.create( dy.VideoLoader.getInstance().get("video"));
 
 
-            material.addMap(map);
+            material.map = map;
 
             dy.VideoManager.getInstance().play("video");
 

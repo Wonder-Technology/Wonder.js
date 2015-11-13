@@ -11,11 +11,11 @@ module dy{
 
         public type:string = "multi_map";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MapMaterial) {
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
 
-            this.sendUniformData(program, "u_combineMode", material.combineMode);
-            this.sendUniformData(program, "u_mixRatio", material.mixRatio);
+            this.sendUniformData(program, "u_combineMode", material.mapCombineMode);
+            this.sendUniformData(program, "u_mixRatio", material.mapMixRatio);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

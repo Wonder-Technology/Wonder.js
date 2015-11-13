@@ -32,13 +32,13 @@
         }
 
         function _initScene() {
-            var material = dy.MapMaterial.create();
+            var material = dy.BasicMaterial.create();
 
 
             var rectTexture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture1"));
 
 
-            material.addMap(rectTexture);
+            material.map = rectTexture;
 
 
 

@@ -20,8 +20,7 @@
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/1.jpg", id:"texture1"},
-            {url: "../../res/2.jpg", id:"texture2"},
-            {url: "../../../res/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
+            {url: "../../res/2.jpg", id:"texture2"}
         ]).subscribe(null, function(e){
                     throw e;
                 },
@@ -34,13 +33,13 @@
         }
 
         function _initScene() {
-            var material = dy.MapMaterial.create();
+            var material = dy.BasicMaterial.create();
 
 
             var rectTexture = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture1"));
 
 
-            material.addMap(rectTexture);
+            material.map = rectTexture;
 
 
 

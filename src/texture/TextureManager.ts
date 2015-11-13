@@ -15,7 +15,7 @@ module dy{
         private _textures:dyCb.Hash<any> = dyCb.Hash.create<any>();
 
         public init(){
-            this._getTextureList().forEach((texture:Texture) => {
+            this._getMapList().forEach((texture:Texture) => {
                 texture.init();
             });
         }
@@ -50,14 +50,21 @@ module dy{
             return this._textures.getChild("map").getChild(index);
         }
 
-
         public hasMap(func:(...args)=>boolean);
         public hasMap(map:Texture);
 
-        public hasMap(arg){
-            var maps = this._textures.getChild("map");
+        public hasMap(...args){
+            var maps = null;
+
+            maps = this._textures.getChild("map");
 
             return maps && maps.hasChild(arguments[0]);
+        }
+
+        public getMapCount(){
+            var map = this._textures.getChild("map");
+
+            return map ? map.getCount() : 0;
         }
 
         public setEnvMap(envMap:CubemapTexture){
@@ -74,7 +81,7 @@ module dy{
         }
 
         public dispose(){
-            this._getTextureList().forEach((texture:Texture) => {
+            this._getMapList().forEach((texture:Texture) => {
                 texture.dispose();
             });
 
@@ -82,7 +89,7 @@ module dy{
         }
 
         public update(){
-            this._getTextureList()
+            this._getMapList()
                 .filter((texture:Texture) => {
                     return texture instanceof BasicTexture && texture.needUpdate;
                 })
@@ -92,7 +99,7 @@ module dy{
         }
 
         public sendData(program:Program){
-            this._getTextureList().forEach((texture:Texture, index:number) => {
+            this._getMapList().forEach((texture:Texture, index:number) => {
                 var samplerName = texture.getSamplerName(index),
                     pos = program.getUniformLocation(samplerName);
 
@@ -105,11 +112,7 @@ module dy{
             });
         }
 
-        public hasMultiTextures(){
-            return this._getTextureList().getCount() > 1;
-        }
-
-        private _getTextureList(){
+        private _getMapList(){
             return this._textures.toCollection();
         }
     }

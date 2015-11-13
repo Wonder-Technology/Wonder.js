@@ -18,14 +18,14 @@ module dy{
 
         public initWhenCreate(arg){
             if(arguments[0] instanceof TwoDTextureAsset){
-                let asset = arguments[0];
+                let asset:TwoDTextureAsset = arguments[0];
 
                 super.initWhenCreate(asset);
             }
             else{
-                let canvas = arguments[0];
+                let canvas:HTMLCanvasElement = arguments[0];
 
-                TwoDTextureAsset.create(canvas).copyTo(this);
+                super.initWhenCreate(TwoDTextureAsset.create(canvas));
             }
         }
     }

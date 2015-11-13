@@ -34,12 +34,12 @@
         }
 
         function _initScene() {
-            var material1 = dy.MapMaterial.create();
+            var material1 = dy.BasicMaterial.create();
 
 
             var map1 = dy.CompressedTexture.create( dy.TextureLoader.getInstance().get("compressedTexture"));
 
-            material1.addMap(map1);
+            material1.map = map1;
 
 
 
@@ -59,11 +59,11 @@
 
 
 
-            var material2 = dy.MapMaterial.create();
+            var material2 = dy.BasicMaterial.create();
 
 
             var map2 = dy.CompressedTexture.create( dy.TextureLoader.getInstance().get("compressedTexture"));
-            material2.addMap(map2);
+            material2.map = map2;
 
             material2.side = dy.Side.BOTH;
 

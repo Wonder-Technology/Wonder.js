@@ -142,9 +142,8 @@ module dy {
         public shading = Shading.FLAT;
         public refractionRatio:number = ShaderChunk.NULL;
         public reflectivity:number = ShaderChunk.NULL;
-
-
-
+        public mapCombineMode:TextureCombineMode = TextureCombineMode.MIX;
+        public mapMixRatio:number = 0.5;
         public textureManager:TextureManager = TextureManager.create(this);
         public geometry:Geometry = null;
 

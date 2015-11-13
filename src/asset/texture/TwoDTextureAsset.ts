@@ -1,13 +1,13 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
     export class TwoDTextureAsset extends TextureAsset{
-        public static create(source:HTMLImageElement) {
+        public static create(source:HTMLImageElement|HTMLCanvasElement) {
         	var obj = new this(source);
 
         	return obj;
         }
 
-        constructor(source:HTMLImageElement){
+        constructor(source:HTMLImageElement|HTMLCanvasElement){
             super();
 
             this.source = source;

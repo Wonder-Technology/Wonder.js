@@ -124,7 +124,7 @@ describe("TextureManager", function() {
                 samplerData: 1
             });
 
-            manager._getTextureList().forEach(function(texture){
+            manager._getMapList().forEach(function(texture){
                 sandbox.stub(texture, "bindToUnit");
                 sandbox.stub(texture, "sendData");
             });

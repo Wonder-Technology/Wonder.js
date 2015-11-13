@@ -32,12 +32,12 @@
         }
 
         function _initScene() {
-            var material = dy.MapMaterial.create();
+            var material = dy.BasicMaterial.create();
 
 
             var map = dy.TwoDTexture.create( dy.TextureLoader.getInstance().get("texture"));
 
-            material.addMap(map);
+            material.map = map;
             /*!
              can comment this sentence to see the difference
              */
