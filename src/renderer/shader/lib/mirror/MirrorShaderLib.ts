@@ -10,7 +10,7 @@ module dy{
 
         public type:string = "mirror";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:MirrorMaterial){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
             this.sendUniformData(program, "u_mirrorColor", material.color.toVector3());
         }
 

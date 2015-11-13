@@ -176,14 +176,13 @@
 //            var texture = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
 
 
-            var material = dy.MirrorMaterial.create();
+            var material = dy.BasicMaterial.create();
             material.color = dy.Color.create("#889999");
 
 
             material.side = dy.Side.BOTH;
 
-            //todo refactor:reflectionTexture attri?
-            material.reflectionMap = texture;
+            material.mirrorMap = texture;
 
 
 
@@ -261,13 +260,12 @@
 //            var texture2 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture2"));
 
 
-            var material = dy.MirrorMaterial.create();
+            var material = dy.BasicMaterial.create();
             material.color = dy.Color.create("#889999");
 
 
 
-            //todo refactor:reflectionTexture attri?
-            material.reflectionMap = texture2;
+            material.mirrorMap = texture2;
 //            material.addMap(texture2, {
 //                samplerVariableName: "u_mirrorSampler"
 //            });

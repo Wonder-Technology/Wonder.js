@@ -98,6 +98,13 @@ module dy {
             this.textureManager.setEnvMap(envMap);
         }
 
+        get mirrorMap(){
+            return this.textureManager.getMirrorMap();
+        }
+        set mirrorMap(mirrorMap:MirrorTexture){
+            this.textureManager.setMirrorMap(mirrorMap);
+        }
+
         private _blendSrc:BlendFunc= BlendFunc.ONE;
         get blendSrc(){
             return this._blendSrc;
@@ -148,7 +155,12 @@ module dy {
         public geometry:Geometry = null;
 
 
+        @In(function(){
+            assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
+        })
         public init(){
+            this._initMirrorMap();
+
             this.initEnvMap();
 
             this.textureManager.init();
@@ -186,15 +198,6 @@ module dy {
             this.textureManager.dispose();
         }
 
-        public addMap(asset:TextureAsset);
-        public addMap(asset:TextureAsset, option:MapVariableData);
-        public addMap(map:Texture);
-        public addMap(map:Texture, option:MapVariableData);
-
-        public addMap(arg){
-            this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));
-        }
-
         public updateTexture(){
             this.textureManager.update();
         }
@@ -217,6 +220,21 @@ module dy {
             }
             else{
                 this.shader.update(quadCmd, this);
+            }
+        }
+
+        protected addMap(asset:TextureAsset);
+        protected addMap(asset:TextureAsset, option:MapVariableData);
+        protected addMap(map:Texture);
+        protected addMap(map:Texture, option:MapVariableData);
+
+        protected addMap(arg){
+            this.textureManager.addMap.apply(this.textureManager, Array.prototype.slice.call(arguments, 0));
+        }
+
+        private _initMirrorMap(){
+            if(this.mirrorMap){
+                this.shader.addLib(dy.MirrorShaderLib.create());
             }
         }
     }

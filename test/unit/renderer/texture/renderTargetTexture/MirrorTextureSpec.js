@@ -156,10 +156,10 @@ describe("MirrorTexture", function () {
         it("send mirror sampler", function () {
             var pos1 = 100;
             program.getUniformLocation.onCall(0).returns(pos1);
-            var material = dy.MirrorMaterial.create();
-            material.reflectionMap = texture;
+            var material = dy.BasicMaterial.create();
+            material.mirrorMap = texture;
 
-            material.textureManager.sendData(program);
+            material.mapManager.sendData(program);
 
             expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
             expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_2D, 0);

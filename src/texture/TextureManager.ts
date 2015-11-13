@@ -13,6 +13,7 @@ module dy{
 
         private _material:Material = null;
         private _textures:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        private _mirrorMap:MirrorTexture = null;
 
         public init(){
             this._getMapList().forEach((texture:Texture) => {
@@ -25,21 +26,21 @@ module dy{
         public addMap(map:Texture);
         public addMap(map:Texture, option:MapVariableData);
 
-        public addMap(arg){
+        public addMap(...args){
             var map = null;
-                if(arguments[0] instanceof TextureAsset){
-                    let asset:TextureAsset = arguments[0];
+                if(args[0] instanceof TextureAsset){
+                    let asset:TextureAsset = args[0];
 
                     map = asset.toTexture();
                 }
-                else if(arguments[0] instanceof Texture){
-                    map = arguments[0];
+                else if(args[0] instanceof Texture){
+                    map = args[0];
                 }
 
-            if(arguments.length === 2){
-                let option = arguments[1];
+            if(args.length === 2){
+                let option = args[1];
 
-                map.variableData = option;
+                this._setMapOption(map, option);
             }
 
             map.material = this._material;
@@ -67,13 +68,24 @@ module dy{
             return map ? map.getCount() : 0;
         }
 
-        public setEnvMap(envMap:CubemapTexture){
-            envMap.material = this._material;
-            this._textures.addChild("envMap", envMap);
+        public getEnvMap(){
+            return this._getMap<CubemapTexture>("envMap");
         }
 
-        public getEnvMap():CubemapTexture{
-            return <CubemapTexture>this._textures.getChild("envMap");
+        public setEnvMap(envMap:CubemapTexture){
+            this._setMap("envMap", envMap);
+        }
+
+        public getMirrorMap(){
+            return this._mirrorMap;
+        }
+
+        public setMirrorMap(mirrorMap:MirrorTexture){
+            this.addMap(mirrorMap, {
+                samplerVariableName: VariableNameTable.getVariableName("mirrorReflectionMap")
+            });
+
+            this._mirrorMap = mirrorMap;
         }
 
         public removeAllChildren(){
@@ -114,6 +126,32 @@ module dy{
 
         private _getMapList(){
             return this._textures.toCollection();
+        }
+
+        private _getMap<T>(key:string):T{
+            return this._textures.getChild(key);
+        }
+
+        private _setMap(key:string, map:Texture);
+        private _setMap(key:string, map:Texture, option:MapVariableData);
+
+        private _setMap(...args){
+            var key:string = args[0],
+                map:Texture = args[1];
+
+            if(arguments.length === 3){
+                let option:MapVariableData = args[1];
+
+                this._setMapOption(map, option);
+            }
+
+            map.material = this._material;
+
+            this._textures.addChild(key, map);
+        }
+
+        private _setMapOption(map:Texture, option:MapVariableData){
+            map.variableData = option;
         }
     }
 }
