@@ -54,8 +54,6 @@ module dy{
             this._material.init();
 
             if(this.isSmoothShading() && !this.hasVertexNormals()){
-                //todo only compute vertex normals?
-                this.computeFaceNormals();
                 this.computeVertexNormals();
             }
             else if(!this.hasFaceNormals()){
@@ -66,39 +64,17 @@ module dy{
         }
 
         @In(function(){
-            var hasFaceNormal = !this.buffers.geometryData.faces[0].faceNormal.isZero();
-
-            if(hasFaceNormal){
-                for(let face of this.buffers.geometryData.faces){
-                    assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-                }
-            }
-            else{
-                for(let face of this.buffers.geometryData.faces){
-                    assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-                }
-            }
+            assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasFaceNormals(){
-            return !this.buffers.geometryData.faces[0].faceNormal.isZero();
+            return this.buffers.geometryData.hasFaceNormals();
         }
 
         @In(function(){
-            var hasVertexNormal = this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
-
-            if(hasVertexNormal){
-                for(let face of this.buffers.geometryData.faces) {
-                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-                }
-            }
-            else{
-                for(let face of this.buffers.geometryData.faces) {
-                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-                }
-            }
+            assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasVertexNormals(){
-            return this.buffers.geometryData.faces[0].vertexNormals.getCount() > 0;
+            return this.buffers.geometryData.hasVertexNormals();
         }
 
         public isSmoothShading(){
@@ -112,23 +88,7 @@ module dy{
         }
 
         @In(function(){
-            var geometryData:GeometryData = null;
-
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-
-            geometryData = this.buffers.geometryData;
-
-            assert(GeometryUtils.hasData(geometryData.vertices), Log.info.FUNC_MUST("geometry", "contain vertices"));
-            //assert(this._hasData(geometryData.indices), Log.info.FUNC_MUST("geometry", "contain indices"));
-            //assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
-            //assert(geometryData.faces.getCount() * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.getCount()}`));
-        })
-        @Out(function(){
-            var geometryData:GeometryData = this.buffers.geometryData;
-
-            for(let face of geometryData.faces) {
-                assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
-            }
         })
         public computeFaceNormals() {
             this.buffers.geometryData.computeFaceNormals();

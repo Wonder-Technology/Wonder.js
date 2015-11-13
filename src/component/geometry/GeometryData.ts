@@ -146,6 +146,14 @@ module dy {
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
 
+        @In(function(){
+            assert(GeometryUtils.hasData(this.vertices), Log.info.FUNC_MUST("contain vertices"));
+        })
+        @Out(function(){
+            for(let face of this.faces) {
+                assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
+            }
+        })
         public computeFaceNormals() {
             var vertices = this._vertices;
 
@@ -163,6 +171,10 @@ module dy {
         public computeVertexNormals() {
             var vl = this._vertices.length,
                 normals;
+
+            if(!this.hasFaceNormals()){
+                this.computeFaceNormals();
+            }
 
             normals = new Array(vl);
 
@@ -230,6 +242,42 @@ module dy {
                 //
                 //}
             }
+        }
+
+        @In(function(){
+            var hasFaceNormal = !this.faces[0].faceNormal.isZero();
+
+            if(hasFaceNormal){
+                for(let face of this.faces){
+                    assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+                }
+            }
+            else{
+                for(let face of this.faces){
+                    assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+                }
+            }
+        })
+        public hasFaceNormals(){
+            return !this.faces[0].faceNormal.isZero();
+        }
+
+        @In(function(){
+            var hasVertexNormal = this.faces[0].vertexNormals.getCount() > 0;
+
+            if(hasVertexNormal){
+                for(let face of this.faces) {
+                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+                }
+            }
+            else{
+                for(let face of this.faces) {
+                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+                }
+            }
+        })
+        public hasVertexNormals(){
+            return this.faces[0].vertexNormals.getCount() > 0;
         }
 
         private _getColors(colors:Array<number>, vertices:Array<number>) {
