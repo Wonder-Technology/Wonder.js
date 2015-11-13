@@ -25,7 +25,7 @@
 //                expect(program.sendUniformData.getCall(3).args[0]).toEqual("u_samplerCube0");
 //            },
 //            setMaterial: function(material){
-//                    var asset = dy.TwoDTextureAsset.create({});
+//                    var asset = dy.ImageTextureAsset.create({});
 //                    var cubemap = dy.CubemapTexture.create(
 //                        [
 //                            {

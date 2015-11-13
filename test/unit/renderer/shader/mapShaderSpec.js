@@ -34,8 +34,8 @@
 //                    expect(program.sendUniformData.getCall(3).args[0]).toEqual("u_sampler2D0");
 //                },
 //                setMaterial: function(material){
-//                    var asset = dy.TwoDTextureAsset.create({});
-//                    var map = dy.TwoDTexture.create( asset );
+//                    var asset = dy.ImageTextureAsset.create({});
+//                    var map = dy.ImageTexture.create( asset );
 //
 //                    material.addMap(map);
 //                }
@@ -108,9 +108,9 @@
 //                    expect(program.sendUniformData.getCall(10).args[0]).toEqual("u_repeatRegion");
 //                },
 //                setMaterial: function(material){
-//                    var asset = dy.TwoDTextureAsset.create({});
-//                    var map1 = dy.TwoDTexture.create( asset );
-//                    var map2 = dy.TwoDTexture.create( asset );
+//                    var asset = dy.ImageTextureAsset.create({});
+//                    var map1 = dy.ImageTexture.create( asset );
+//                    var map2 = dy.ImageTexture.create( asset );
 //
 //                    material.addMap(map1);
 //                    material.addMap(map2);

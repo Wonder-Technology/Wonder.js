@@ -17,7 +17,7 @@ describe("LightMaterial", function() {
         beforeEach(function(){
             sandbox.stub(material.mapManager, "init");
             sandbox.stub(material.shader, "init");
-            map = dy.TwoDTexture.create();
+            map = dy.ImageTexture.create();
 
             scene = dy.Director.getInstance().scene;
         });

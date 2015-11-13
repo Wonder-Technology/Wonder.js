@@ -90,9 +90,9 @@ describe("DYBuilder", function () {
         //                        type: "LightMaterial",
         //                        diffuseColor: Color.create(1.0, 0.1, 0),
         //                        specularColor: Color.create(0.0, 0.1, 0),
-        //                        diffuseMap: new dy.TwoDTexture(),
+        //                        diffuseMap: new dy.ImageTexture(),
         //                        specularMap: new dy.CompressedTexture(),
-        //                        normalMap: new dy.TwoDTexture(),
+        //                        normalMap: new dy.ImageTexture(),
         //                        shininess: 32,
         //                        opacity: 1.0
         //                    }

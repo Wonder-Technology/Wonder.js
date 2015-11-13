@@ -30,7 +30,7 @@ describe("TwoDShadowMapTexture", function() {
                 pos2 = 200;
             program.getUniformLocation.onCall(1).returns(pos1);
             program.getUniformLocation.onCall(2).returns(pos2);
-            var map = new dy.TwoDTexture();
+            var map = new dy.ImageTexture();
             var material = dy.LightMaterial.create();
             material.diffuseMap = map;
 

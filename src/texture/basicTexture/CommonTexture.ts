@@ -1,12 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export abstract class CommonTexture extends BasicTexture{
-        public initWhenCreate(asset:TwoDTextureAsset){
-            super.initWhenCreate();
-
-            asset.copyTo(this);
-        }
-
+    export abstract class CommonTexture extends TwoDTexture{
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             var mipmapCmd:DrawMipmapTwoDTextureCommand = null,
                 noMipmapCmd:DrawNoMipmapTwoDTextureCommand = null,

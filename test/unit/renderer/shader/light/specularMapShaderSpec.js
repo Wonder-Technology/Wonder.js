@@ -162,9 +162,9 @@
 //                material.color = dy.Color.create("rgb(0, 255, 0)");
 //                material.shininess = 32;
 //
-//                var asset = dy.TwoDTextureAsset.create({});
-//                var map = dy.TwoDTexture.create( asset );
-//                material.specularMap = dy.TwoDTexture.create(map);
+//                var asset = dy.ImageTextureAsset.create({});
+//                var map = dy.ImageTexture.create( asset );
+//                material.specularMap = dy.ImageTexture.create(map);
 //            }
 //        }
 //    );

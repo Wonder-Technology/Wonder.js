@@ -163,7 +163,7 @@
             material.specular = dy.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
 
-            material.diffuseMap = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+            material.diffuseMap = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
 
 
 
@@ -300,7 +300,7 @@
 //            texture.renderList = [sphere];
 
 
-//            var texture = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+//            var texture = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
 
 
             var material = dy.BasicMaterial.create();
@@ -385,7 +385,7 @@
 //            texture2.renderList = [sphere];
 
 
-//            var texture2 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture2"));
+//            var texture2 = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture2"));
 
 
             var material = dy.BasicMaterial.create();

@@ -163,7 +163,7 @@
 /// <reference path="asset/texture/CompressedTextureLoader"/>
 /// <reference path="asset/texture/DDSParser"/>
 /// <reference path="asset/texture/TextureAsset"/>
-/// <reference path="asset/texture/TwoDTextureAsset"/>
+/// <reference path="asset/texture/ImageTextureAsset"/>
 /// <reference path="asset/texture/VideoTextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureAsset"/>
 /// <reference path="asset/texture/TextureFilterMode"/>
@@ -229,8 +229,9 @@
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 
 /// <reference path="texture/basicTexture/BasicTexture"/>
-/// <reference path="texture/basicTexture/CommonTexture"/>
 /// <reference path="texture/basicTexture/TwoDTexture"/>
+/// <reference path="texture/basicTexture/CommonTexture"/>
+/// <reference path="texture/basicTexture/ImageTexture"/>
 /// <reference path="texture/basicTexture/VideoTexture"/>
 /// <reference path="texture/basicTexture/cubemap/CubemapTexture"/>
 /// <reference path="texture/basicTexture/cubemap/CubemapFaceTexture"/>

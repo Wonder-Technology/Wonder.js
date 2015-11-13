@@ -19,12 +19,12 @@ describe("MapManager", function() {
 
     describe("addMap", function(){
         it("test add common texture asset", function(){
-            var asset = dy.TwoDTextureAsset.create({});
+            var asset = dy.ImageTextureAsset.create({});
             asset.format = dy.TextureFormat.RGBA;
 
             manager.addMap(asset);
 
-            expect(manager.getMap(0)).toBeInstanceOf(dy.TwoDTexture);
+            expect(manager.getMap(0)).toBeInstanceOf(dy.ImageTexture);
             expect(manager.getMap(0).format).toEqual(asset.format);
         });
         it("test add compressed texture asset", function(){
@@ -37,15 +37,15 @@ describe("MapManager", function() {
             expect(manager.getMap(0).format).toEqual(asset.format);
         });
         it("test add common texture and compressed texture", function(){
-            var asset1 = dy.TwoDTextureAsset.create({});
+            var asset1 = dy.ImageTextureAsset.create({});
             var asset2 = dy.CompressedTextureAsset.create({});
-            var twoTexture = dy.TwoDTexture.create(asset1);
+            var twoTexture = dy.ImageTexture.create(asset1);
             var compressedTexture = dy.CompressedTexture.create(asset2);
 
             manager.addMap(twoTexture);
             manager.addMap(compressedTexture);
 
-            expect(manager.getMap(0)).toBeInstanceOf(dy.TwoDTexture);
+            expect(manager.getMap(0)).toBeInstanceOf(dy.ImageTexture);
             expect(manager.getMap(1)).toBeInstanceOf(dy.CompressedTexture);
         });
     });
@@ -77,9 +77,9 @@ describe("MapManager", function() {
             );
             manager.setEnvMap(texture1);
 
-            var asset1 = dy.TwoDTextureAsset.create({});
+            var asset1 = dy.ImageTextureAsset.create({});
             var asset2 = dy.CompressedTextureAsset.create({});
-            var twoTexture = dy.TwoDTexture.create(asset1);
+            var twoTexture = dy.ImageTexture.create(asset1);
             var compressedTexture = dy.CompressedTexture.create(asset2);
 
             manager.addMap(twoTexture);
@@ -111,7 +111,7 @@ describe("MapManager", function() {
                 samplerVariableName: "diffuseSampler"
             });
 
-            twoDMap = dy.TwoDTexture.create();
+            twoDMap = dy.ImageTexture.create();
             manager.addMap(twoDMap);
 
             twoDShadowMap = dy.TwoDShadowMapTexture.create();

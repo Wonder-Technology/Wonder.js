@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class CompressedTexture extends BasicTexture {
+    export class CompressedTexture extends TwoDTexture {
         public static create(asset:CompressedTextureAsset) {
             var obj = new this();
 
@@ -13,12 +13,6 @@ module dy{
             Log.assert(this.p_sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS, will use TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
 
             return TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
-        }
-
-        public initWhenCreate(asset:CompressedTextureAsset){
-            super.initWhenCreate();
-
-            asset.copyTo(this);
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

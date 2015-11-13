@@ -1,7 +1,7 @@
 /// <reference path="../../../definitions.d.ts"/>
 module dy{
     export class CubemapFaceTwoDTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
-        public static create(asset:TwoDTextureAsset) {
+        public static create(asset:ImageTextureAsset) {
         	var obj = new this();
 
             obj.initWhenCreate(asset);
@@ -13,7 +13,7 @@ module dy{
         public sourceRegionMethod:TextureSourceRegionMethod = null;
         public source:any = null;
 
-        public initWhenCreate(asset:TwoDTextureAsset){
+        public initWhenCreate(asset:ImageTextureAsset){
             asset.copyToCubemapFaceTexture(this);
 
             //cube twoD texture only support DRAW_IN_CANVAS

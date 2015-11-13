@@ -48,7 +48,7 @@
             material.color = dy.Color.create("#666666");
             material.shininess = 16;
 
-            material.diffuseMap = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("texture"));
+            material.diffuseMap = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
 
 
 
@@ -120,7 +120,7 @@
             material.specular = dy.Color.create("#ffdd99");
             material.shininess = 32;
 
-            var map1 = dy.TwoDTexture.create(dy.TextureLoader.getInstance().get("ground"));
+            var map1 = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("ground"));
             map1.wrapS = dy.TextureWrapMode.REPEAT;
             map1.wrapT = dy.TextureWrapMode.REPEAT;
             map1.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);

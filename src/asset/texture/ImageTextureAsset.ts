@@ -1,6 +1,6 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    export class TwoDTextureAsset extends TextureAsset{
+    export class ImageTextureAsset extends TextureAsset{
         public static create(source:HTMLImageElement|HTMLCanvasElement) {
         	var obj = new this(source);
 
@@ -16,7 +16,7 @@ module dy{
         public mipmaps:dyCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
 
         public toTexture():Texture{
-            return TwoDTexture.create(this);
+            return ImageTexture.create(this);
         }
 
         public toCubemapFaceTexture():CubemapFaceTwoDTexture{

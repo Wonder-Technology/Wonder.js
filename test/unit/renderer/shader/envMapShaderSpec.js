@@ -40,7 +40,7 @@
 //                    expect(program.sendUniformData.getCall(5).args[0]).toEqual("u_samplerCube0");
 //                },
 //                setMaterial: function (material) {
-//                    var asset = dy.TwoDTextureAsset.create({});
+//                    var asset = dy.ImageTextureAsset.create({});
 //                    var cubemap = dy.CubemapTexture.create(
 //                        [
 //                            {
@@ -111,7 +111,7 @@
 //                    expect(program.sendUniformData.getCall(5).args[0]).toEqual("u_samplerCube0");
 //                },
 //                setMaterial: function (material) {
-//                    var asset = dy.TwoDTextureAsset.create({});
+//                    var asset = dy.ImageTextureAsset.create({});
 //                    var cubemap = dy.CubemapTexture.create(
 //                        [
 //                            {
@@ -199,7 +199,7 @@
 //                    expect(program.sendUniformData.getCall(6).args[0]).toEqual("u_samplerCube0");
 //                },
 //                setMaterial: function (material) {
-//                    var asset = dy.TwoDTextureAsset.create({});
+//                    var asset = dy.ImageTextureAsset.create({});
 //                    var cubemap = dy.CubemapTexture.create(
 //                        [
 //                            {
@@ -297,7 +297,7 @@
 //                    expect(program.sendUniformData.getCall(7).args[0]).toEqual("u_samplerCube0");
 //                },
 //                setMaterial: function (material) {
-//                    var asset = dy.TwoDTextureAsset.create({});
+//                    var asset = dy.ImageTextureAsset.create({});
 //                    var cubemap = dy.CubemapTexture.create(
 //                        [
 //                            {

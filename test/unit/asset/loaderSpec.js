@@ -57,9 +57,9 @@ describe("loader", function () {
                 var jpg = dy.TextureLoader.getInstance().get("jpg");
                 var png = dy.TextureLoader.getInstance().get("png");
 
-                expect(jpg).toBeInstanceOf(dy.TwoDTextureAsset);
+                expect(jpg).toBeInstanceOf(dy.ImageTextureAsset);
                 expect(jpg.format).toEqual(dy.TextureFormat.RGB);
-                expect(png).toBeInstanceOf(dy.TwoDTextureAsset);
+                expect(png).toBeInstanceOf(dy.ImageTextureAsset);
                 expect(png.format).toEqual(dy.TextureFormat.RGBA);
 
                 done();
@@ -174,9 +174,9 @@ describe("loader", function () {
             var mat = geo.material;
             assertColor(mat.color, materialData.diffuseColor);
             assertColor(mat.specular, materialData.specularColor);
-            expect(mat.diffuseMap).toBeInstanceOf(dy.TwoDTexture);
-            expect(mat.specularMap).toBeInstanceOf(dy.TwoDTexture);
-            expect(mat.normalMap).toBeInstanceOf(dy.TwoDTexture);
+            expect(mat.diffuseMap).toBeInstanceOf(dy.ImageTexture);
+            expect(mat.specularMap).toBeInstanceOf(dy.ImageTexture);
+            expect(mat.normalMap).toBeInstanceOf(dy.ImageTexture);
             expect(mat.shininess).toEqual(materialData.shininess);
             expect(mat.opacity).toEqual(materialData.opacity);
         }

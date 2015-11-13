@@ -31,7 +31,7 @@ module dy{
                     //todo is RGB?
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            var asset = TwoDTextureAsset.create(image);
+                            var asset = ImageTextureAsset.create(image);
 
                             asset.format = TextureFormat.RGB;
 
@@ -41,7 +41,7 @@ module dy{
                 case ".png":
                     stream =  ImgLoader.load(url)
                         .map((image:HTMLImageElement) => {
-                            return TwoDTextureAsset.create(image);
+                            return ImageTextureAsset.create(image);
                         });
                     break;
                 case ".dds":
