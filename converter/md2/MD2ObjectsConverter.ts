@@ -5,6 +5,7 @@ import Vector2 = require("../common/Vector2");
 import Vector3 = require("../common/Vector3");
 import BufferReader = require("../common/BufferReader");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
+import config = require("../common/Config");
 
 export = class MD2ObjectsConverter {
     public static create() {
@@ -27,7 +28,7 @@ export = class MD2ObjectsConverter {
             morphTargets:Array<any> = null,
             vertices:Array<number> = null,
             object:any = {},
-            reader:any = new BufferReader(fileBuffer.toString()),
+            reader:any = new BufferReader(fileBuffer),
             info:any = {},
             header:any = {};
 
@@ -35,12 +36,21 @@ export = class MD2ObjectsConverter {
         header.version = reader.readInt32();
 
         if (header.ident != "IDP2" || header.version != 8) {
-            info.status = "Not a valid MD2 file";
-            return result;
+            //info.status = "Not a valid MD2 file";
+            //return result;
+            dyCb.Log.error(true, "Not a valid MD2 file");
         }
 
         for (let i = 0; i < HEADERNAMES.length; i++) {
             header[HEADERNAMES[i]] = reader.readInt32();
+        }
+
+        //console.log(reader.getSize(), header.offset_end);
+        // faulty size
+        if (reader.getSize() != header.offset_end) {
+            //info.status = "Corrupted MD2 file";
+            //return returnObject;
+            dyCb.Log.error(true, "Corrupted MD2 file");
         }
 
         uvs = this._convertUVs(header, reader);
@@ -107,8 +117,8 @@ export = class MD2ObjectsConverter {
                 uvb_i = reader.readUInt16(),
                 uvc_i = reader.readUInt16();
 
-            verticeIndices.push(c, b, a);
-            uvIndices.push(uvc_i, uvb_i, uva_i);
+            verticeIndices.push(a, b, c);
+            uvIndices.push(uva_i, uvb_i, uvc_i);
         }
 
         return [verticeIndices, uvIndices];
@@ -116,9 +126,9 @@ export = class MD2ObjectsConverter {
 
     private  _convertMorphTargets(header:any, reader:any) {
         var morphTargets = [],
+            decimalPrecision = config.md2VerticeDecimalPrecision,
             translation = Vector3.create(),
-            scale = Vector3.create(),
-            string = [];
+            scale = Vector3.create();
 
         reader.seek(header.offset_frames);
 
@@ -140,21 +150,18 @@ export = class MD2ObjectsConverter {
                 reader.readFloat()
             );
 
-            for (let j = 0; j < 16; j++) {
-                string[j] = reader.readUInt8();
-            }
-
-            frame.name = String.fromCharCode.apply(null, string);
+            frame.name = reader.readString(16).replace(/[^a-z0-9]/gi,'');
 
             for (let j = 0; j < header.num_vertices; j++) {
                 let x = reader.readUInt8(),
                     y = reader.readUInt8(),
-                    z = reader.readUInt8();
+                    z = reader.readUInt8(),
+                    normal = reader.readUInt8();
 
                 frame.vertices.push(
-                    x * scale.x + translation.x,
-                    z * scale.z + translation.z,
-                    y * scale.y + translation.y
+                    (x * scale.x + translation.x).toFixed(decimalPrecision),
+                    (z * scale.z + translation.z).toFixed(decimalPrecision),
+                    (y * scale.y + translation.y).toFixed(decimalPrecision)
                 );
             }
 
