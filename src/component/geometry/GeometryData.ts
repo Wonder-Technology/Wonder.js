@@ -1,14 +1,8 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class GeometryData {
-        public static create(geometry:Geometry) {
-            var obj = new this(geometry);
-
-            return obj;
-        }
-
+    export abstract class GeometryData {
         constructor(geometry:Geometry) {
-            this._geometry = geometry;
+            this.geometry = geometry;
         }
 
         private _vertices:Array<number> = null;
@@ -25,7 +19,7 @@ module dy {
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
 
             for (let face of this._faces) {
-                if (this._geometry.isSmoothShading()) {
+                if (this.geometry.isSmoothShading()) {
                     assert(face.vertexNormals && face.vertexNormals.getCount() === 3, Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
                 }
                 else {
@@ -45,7 +39,7 @@ module dy {
         })
         get normals() {
             var normals = [],
-                geometry = this._geometry;
+                geometry = this.geometry;
 
             this._normalDirty = false;
 
@@ -103,9 +97,7 @@ module dy {
 
         set faces(faces:Array<Face3>) {
             this._faces = faces;
-            this.isTangentDirty = true;
-            this._normalDirty = true;
-            this._indiceDirty = true;
+            this.onChangeFace();
         }
 
         private _texCoords:Array<number> = null;
@@ -140,7 +132,8 @@ module dy {
 
         public isTangentDirty:boolean = true;
 
-        private _geometry:Geometry = null;
+        protected geometry:Geometry = null;
+
         private _normalCache:Array<number> = null;
         private _indiceCache:Array<number> = null;
         private _normalDirty:boolean = true;
@@ -158,22 +151,56 @@ module dy {
             var vertices = this._vertices;
 
             for (let face of this._faces) {
-                let p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
-                    p1 = GeometryUtils.getThreeComponent(vertices, face.bIndex),
-                    p2 = GeometryUtils.getThreeComponent(vertices, face.cIndex),
-                    v0 = Vector3.create().sub2(p2, p1),
-                    v1 = Vector3.create().sub2(p0, p1);
+                //let p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
+                //    p1 = GeometryUtils.getThreeComponent(vertices, face.bIndex),
+                //    p2 = GeometryUtils.getThreeComponent(vertices, face.cIndex),
+                //    v0 = Vector3.create().sub2(p2, p1),
+                //    v1 = Vector3.create().sub2(p0, p1);
 
-                face.faceNormal = Vector3.create().cross(v0, v1).normalize();
+                face.faceNormal = this.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);
             }
         }
 
+        protected computeFaceNormalsHelper(vertices:Array<number>, aIndex:number, bIndex:number, cIndex:number) {
+            var p0 = GeometryUtils.getThreeComponent(vertices, aIndex),
+                p1 = GeometryUtils.getThreeComponent(vertices, bIndex),
+                p2 = GeometryUtils.getThreeComponent(vertices, cIndex),
+                v0 = Vector3.create().sub2(p2, p1),
+                v1 = Vector3.create().sub2(p0, p1);
+
+            return Vector3.create().cross(v0, v1).normalize();
+        }
+
         public computeVertexNormals() {
-            var vl = this._vertices.length,
-                normals;
+            var normals = null;
 
             if(!this.hasFaceNormals()){
                 this.computeFaceNormals();
+            }
+
+            normals = this.computeVertexNormalsHelper(this._vertices);
+
+            for (let face of this._faces) {
+                face.vertexNormals = dyCb.Collection.create<Vector3>([
+                    normals[face.aIndex],
+                    normals[face.bIndex],
+                    normals[face.cIndex]
+                ]);
+            }
+        }
+
+        protected computeVertexNormalsHelper(vertices:Array<number>);
+        //protected computeVertexNormalsHelper(vertices:Array<number>, animName:string, faceNormalIndex:number);
+        protected computeVertexNormalsHelper(vertices:Array<number>, morphFaceNormals:Array<number>);
+
+        protected computeVertexNormalsHelper(...args) {
+            var vertices:Array<number> = args[0],
+                vl = vertices.length / 3,
+                morphFaceNormals = null,
+                normals = null;
+
+            if(args.length === 2){
+                morphFaceNormals = args[1];
             }
 
             normals = new Array(vl);
@@ -210,38 +237,36 @@ module dy {
             //else {
 
             for (let face of this._faces) {
-                normals[face.aIndex].add(face.faceNormal);
-                normals[face.bIndex].add(face.faceNormal);
-                normals[face.cIndex].add(face.faceNormal);
-            }
+                let faceNormal = null;
 
+                if(morphFaceNormals){
+                    //this.geometry.morphFaceNormals.getChild(animName).getChild(frameIndex)
+                    //faceNormal = face.morphFaceNormals.getChild(animName).getChild(faceNormalIndex);
+                    //faceNormal = GeometryUtils.getThreeComponent(morphFaceNormals, face.bIndex);
+
+                    normals[face.aIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.aIndex));
+                    normals[face.bIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.bIndex));
+                    normals[face.cIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.cIndex));
+                }
+                else{
+                    faceNormal = face.faceNormal;
+
+                    normals[face.aIndex].add(faceNormal);
+                    normals[face.bIndex].add(faceNormal);
+                    normals[face.cIndex].add(faceNormal);
+                }
+
+                //normals[face.aIndex].add(faceNormal);
+                //normals[face.bIndex].add(faceNormal);
+                //normals[face.cIndex].add(faceNormal);
+            }
             //}
 
             for (let v = 0; v < vl; v++) {
                 normals[v].normalize();
             }
 
-            for (let face of this._faces) {
-                face.vertexNormals = dyCb.Collection.create<Vector3>([
-                    normals[face.aIndex],
-                    normals[face.bIndex],
-                    normals[face.cIndex]
-                ]);
-                //if ( vertexNormals.getCount() === 3 ) {
-                //
-                //    vertexNormals[ 0 ].copy( vertices[ face.a ] );
-                //    vertexNormals[ 1 ].copy( vertices[ face.b ] );
-                //    vertexNormals[ 2 ].copy( vertices[ face.c ] );
-                //
-                //}
-                //else {
-                //
-                //    vertexNormals[ 0 ] = vertices[ face.a ].clone();
-                //    vertexNormals[ 1 ] = vertices[ face.b ].clone();
-                //    vertexNormals[ 2 ] = vertices[ face.c ].clone();
-                //
-                //}
-            }
+            return normals;
         }
 
         @In(function(){
@@ -262,6 +287,7 @@ module dy {
             return !this.faces[0].faceNormal.isZero();
         }
 
+
         @In(function(){
             var hasVertexNormal = this.faces[0].vertexNormals.getCount() > 0;
 
@@ -280,6 +306,13 @@ module dy {
             return this.faces[0].vertexNormals.getCount() > 0;
         }
 
+        //virtual
+        protected onChangeFace(){
+            this.isTangentDirty = true;
+            this._normalDirty = true;
+            this._indiceDirty = true;
+        }
+
         private _getColors(colors:Array<number>, vertices:Array<number>) {
             if (colors && colors.length > 0) {
                 return colors;
@@ -293,7 +326,7 @@ module dy {
         private _getColorsFromMaterial(vertices:Array<number>) {
             var arr = [],
                 i = 0,
-                material = this._geometry.material,
+                material = this.geometry.material,
                 color = material.color,
                 len = null;
 
