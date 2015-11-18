@@ -38,8 +38,8 @@ module dy {
             this._normalCache = result;
         })
         get normals() {
-            var normals = [],
-                geometry = this.geometry;
+            //var normals = [],
+            var geometry = this.geometry;
 
             this._normalDirty = false;
 
@@ -48,25 +48,49 @@ module dy {
                     geometry.computeVertexNormals();
                 }
 
-                this._faces.forEach((face:Face3) => {
-                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(0), face.aIndex);
-                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
-                    GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
-                });
+                return this.normalsFromVertexNormals;
             }
-            else {
-                if (!geometry.hasFaceNormals()) {
-                    geometry.computeFaceNormals();
-                }
-
-                this._faces.forEach((face:Face3) => {
-                    let normal = face.faceNormal;
-
-                    GeometryUtils.setThreeComponent(normals, normal, face.aIndex);
-                    GeometryUtils.setThreeComponent(normals, normal, face.bIndex);
-                    GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
-                });
+            if (!geometry.hasFaceNormals()) {
+                geometry.computeFaceNormals();
             }
+
+            return this.normalsFromFaceNormal;
+        }
+
+        get normalsFromFaceNormal(){
+            var normals = null;
+
+            if (!this.geometry.hasFaceNormals()) {
+                return [];
+            }
+
+            normals = [];
+
+            this._faces.forEach((face:Face3) => {
+                let normal = face.faceNormal;
+
+                GeometryUtils.setThreeComponent(normals, normal, face.aIndex);
+                GeometryUtils.setThreeComponent(normals, normal, face.bIndex);
+                GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
+            });
+
+            return normals;
+        }
+
+        get normalsFromVertexNormals(){
+            var normals = null;
+
+            if (!this.geometry.hasVertexNormals()) {
+                return [];
+            }
+
+            normals = [];
+
+            this._faces.forEach((face:Face3) => {
+                GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(0), face.aIndex);
+                GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
+                GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
+            });
 
             return normals;
         }
@@ -189,19 +213,10 @@ module dy {
             }
         }
 
-        protected computeVertexNormalsHelper(vertices:Array<number>);
-        //protected computeVertexNormalsHelper(vertices:Array<number>, animName:string, faceNormalIndex:number);
-        protected computeVertexNormalsHelper(vertices:Array<number>, morphFaceNormals:Array<number>);
-
-        protected computeVertexNormalsHelper(...args) {
-            var vertices:Array<number> = args[0],
-                vl = vertices.length / 3,
+        protected computeVertexNormalsHelper(vertices:Array<number>){
+            var vl = vertices.length / 3,
                 morphFaceNormals = null,
                 normals = null;
-
-            if(args.length === 2){
-                morphFaceNormals = args[1];
-            }
 
             normals = new Array(vl);
 
@@ -239,26 +254,11 @@ module dy {
             for (let face of this._faces) {
                 let faceNormal = null;
 
-                if(morphFaceNormals){
-                    //this.geometry.morphFaceNormals.getChild(animName).getChild(frameIndex)
-                    //faceNormal = face.morphFaceNormals.getChild(animName).getChild(faceNormalIndex);
-                    //faceNormal = GeometryUtils.getThreeComponent(morphFaceNormals, face.bIndex);
+                faceNormal = face.faceNormal;
 
-                    normals[face.aIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.aIndex));
-                    normals[face.bIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.bIndex));
-                    normals[face.cIndex].add(GeometryUtils.getThreeComponent(morphFaceNormals, face.cIndex));
-                }
-                else{
-                    faceNormal = face.faceNormal;
-
-                    normals[face.aIndex].add(faceNormal);
-                    normals[face.bIndex].add(faceNormal);
-                    normals[face.cIndex].add(faceNormal);
-                }
-
-                //normals[face.aIndex].add(faceNormal);
-                //normals[face.bIndex].add(faceNormal);
-                //normals[face.cIndex].add(faceNormal);
+                normals[face.aIndex].add(faceNormal);
+                normals[face.bIndex].add(faceNormal);
+                normals[face.cIndex].add(faceNormal);
             }
             //}
 

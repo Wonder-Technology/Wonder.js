@@ -52,82 +52,9 @@ module dy {
         private _morphNormalCache:Array<number> = null;
         private _morphNormalDirty:boolean = true;
 
-        //@In(function(){
-        //    assert(this.geometry instanceof ModelGeometry, Log.info.FUNC_SHOULD("geometry", "be ModelGeometry"));
-        //})
-        //public computeMorphFaceNormals() {
-        //    //var vertices = this._vertices,
-        //    var faces = this.faces,
-        //        geometry = this.geometry,
-        //        self = this;
-        //
-        //    this._morphTargets.forEach((frames:DYFileParseMorphTargetsData, animName) => {
-        //        var faceNormalList = dyCb.Collection.create<Array<number>>();
-        //
-        //        frames.vertices.forEach((vertices:Array<number>) => {
-        //            var normals = [];
-        //
-        //            for (let face of faces) {
-        //                let faceNormal = self.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);
-        //
-        //                //todo extract method of Face3
-        //                GeometryUtils.setThreeComponent(normals, faceNormal, face.aIndex);
-        //                GeometryUtils.setThreeComponent(normals, faceNormal, face.bIndex);
-        //                GeometryUtils.setThreeComponent(normals, faceNormal, face.cIndex);
-        //            }
-        //
-        //            faceNormalList.addChild(normals);
-        //        });
-        //
-        //        geometry.morphFaceNormals.addChild(animName, faceNormalList);
-        //    });
-        //}
-
-        private _computeMorphFrameFaceNormals(vertices:Array<number>){
-            var normals = [];
-
-            for (let face of this.faces) {
-                let faceNormal = this.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);
-
-                //todo extract method of Face3
-                GeometryUtils.setThreeComponent(normals, faceNormal, face.aIndex);
-                GeometryUtils.setThreeComponent(normals, faceNormal, face.bIndex);
-                GeometryUtils.setThreeComponent(normals, faceNormal, face.cIndex);
-            }
-
-            return normals;
-        }
-
-        private _computeMorphFrameVertexNormals(vertices:Array<number>, morphFaceNormals:Array<number>){
-            var normals = [],
-                vertexNormals = this.computeVertexNormalsHelper(vertices, morphFaceNormals);
-
-            //for (let face of this.faces) {
-            //    //    morphVertexNormals = dyCb.Collection.create<Vector3>([
-            //    //        vertexNormals[face.aIndex],
-            //    //        vertexNormals[face.bIndex],
-            //    //        vertexNormals[face.cIndex]
-            //    //    ]);
-            //
-            //    //GeometryUtils.setThreeComponent(normals, vertexNormals[0], face.aIndex);
-            //    //GeometryUtils.setThreeComponent(normals, vertexNormals[1], face.bIndex);
-            //    //GeometryUtils.setThreeComponent(normals, vertexNormals[2], face.cIndex);
-            //    GeometryUtils.setThreeComponent(normals, vertexNormals[face.aIndex], face.aIndex);
-            //    GeometryUtils.setThreeComponent(normals, vertexNormals[face.bIndex], face.bIndex);
-            //    GeometryUtils.setThreeComponent(normals, vertexNormals[face.cIndex], face.cIndex);
-            //}
-
-            for (let v of vertexNormals){
-                normals.push(v.x, v.y, v.z);
-            }
-
-            return normals;
-        }
 
         public computeMorphNormals() {
-            //var faces = this.faces,
                 var geometry = this.geometry,
-                //morphFaceNormals = this.geometry.morphFaceNormals,
                 self = this;
 
             this._morphTargets.forEach((frames:DYFileParseMorphTargetsData, animName) => {
@@ -135,91 +62,40 @@ module dy {
                 var vertexNormalList = dyCb.Collection.create<Array<number>>();
 
 
+                frames.vertices.forEach((vertices:Array<number>) => {
+                    var tempGeometryData = MorphGeometryData.create(geometry),
+                        faceNormalsOfEachFrame = null,
+                        vertexNormalsOfEachFrame = null;
 
-                //GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(0), face.aIndex);
-                //GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
-                //GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
+                    tempGeometryData.vertices = vertices;
+                    tempGeometryData.faces = self._copyFaces(geometry.faces);
 
-                frames.vertices.forEach((vertices:Array<number>, frameIndex:number) => {
-                    //var normals = [];
-                    //
-                    //for (let face of faces) {
-                    //    let faceNormal = self.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);
-                    //
-                    //    //todo extract method of Face3
-                    //    GeometryUtils.setThreeComponent(normals, faceNormal, face.aIndex);
-                    //    GeometryUtils.setThreeComponent(normals, faceNormal, face.bIndex);
-                    //    GeometryUtils.setThreeComponent(normals, faceNormal, face.cIndex);
-                    //}
-                    //
-                    //faceNormalList.addChild(normals);
+                    tempGeometryData.computeFaceNormals();
+                    tempGeometryData.computeVertexNormals();
 
+                    [faceNormalsOfEachFrame, vertexNormalsOfEachFrame] = self._getMorphNormals(tempGeometryData);
 
-                    var morphFaceNormals = self._computeMorphFrameFaceNormals(vertices);
-
-                    faceNormalList.addChild(morphFaceNormals);
-                    //
-                    //var normals = [];
-                    //
-                    //
-                    //var vertexNormals = self.computeVertexNormalsHelper(vertices, morphFaceNormals);
-                    //    //morphVertexNormals = null;
-                    //
-                    //for (let face of faces) {
-                    ////    morphVertexNormals = dyCb.Collection.create<Vector3>([
-                    ////        vertexNormals[face.aIndex],
-                    ////        vertexNormals[face.bIndex],
-                    ////        vertexNormals[face.cIndex]
-                    ////    ]);
-                    //
-                    //    GeometryUtils.setThreeComponent(normals, vertexNormals.getChild(0), face.aIndex);
-                    //    GeometryUtils.setThreeComponent(normals, vertexNormals.getChild(1), face.bIndex);
-                    //    GeometryUtils.setThreeComponent(normals, vertexNormals.getChild(2), face.cIndex);
-                    //}
-                    //
-                    //vertexNormalList.addChild(normals);
-                    vertexNormalList.addChild(self._computeMorphFrameVertexNormals(vertices, morphFaceNormals));
+                    faceNormalList.addChild(faceNormalsOfEachFrame);
+                    vertexNormalList.addChild(vertexNormalsOfEachFrame);
                 });
-
 
                 geometry.morphFaceNormals.addChild(animName, faceNormalList);
                 geometry.morphVertexNormals.addChild(animName, vertexNormalList);
-
-
-
-
-                //frames.vertices.forEach((vertice:Array<number>, index:number) => {
-                //    var normals = vertexNormalList.addChild(self._computeVertexNormals(vertice, animName, index));
-                //
-                //
-                //    for (let face of this._faces) {
-                //        face.vertexNormals = dyCb.Collection.create<Vector3>([
-                //            normals[face.aIndex],
-                //            normals[face.bIndex],
-                //            normals[face.cIndex]
-                //        ]);
-                //    }
-                //}
-                //
-                //
-                //
-                //for (let face of faces) {
-                //    face.morphVertexNormals.addChild(animName, vertexNormalList);
-                //
-                //    frames.vertices.forEach((vertice:Array<number>, index:number) => {
-                //        var normals = vertexNormalList.addChild(self._computeVertexNormals(vertice, animName, index));
-                //
-                //
-                //        for (let face of this._faces) {
-                //            face.vertexNormals = dyCb.Collection.create<Vector3>([
-                //                normals[face.aIndex],
-                //                normals[face.bIndex],
-                //                normals[face.cIndex]
-                //            ]);
-                //        }
-                //    });
-                //}
             });
+        }
+
+        private _copyFaces(faces:Array<Face3>){
+            var copyFaces = [];
+
+            for (let face of faces){
+                copyFaces.push(face.copy());
+            }
+
+            return copyFaces;
+        }
+
+        private _getMorphNormals(geometryData:MorphGeometryData){
+            return [geometryData.normalsFromFaceNormal, geometryData.normalsFromVertexNormals];
         }
 
         @In(function(){
