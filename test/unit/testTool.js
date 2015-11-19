@@ -183,6 +183,37 @@ var testTool = (function () {
          */
         openContractCheck: function (sandbox) {
             sandbox.stub(dy.Main, "isTest", true);
+        },
+
+
+
+        createFaces: function(indices, normals){
+            return dy.GeometryUtils.convertToFaces(indices, normals);
+        },
+        createCamera:function () {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.PerspectiveCamera.create();
+
+
+            cameraComponent.fovy = 60;
+            //cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.aspect = 1;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(cameraComponent);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 20));
+
+            //var script = dy.Script.create();
+            //
+            //script.url = "../camera.js";
+            //
+            //camera.addComponent(script);
+
+            return camera
         }
     }
 }());

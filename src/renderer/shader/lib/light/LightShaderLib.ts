@@ -4,17 +4,10 @@ module dy{
         public static create() {
             var obj = new this();
 
-            //obj.initWhenCreate();
-
             return obj;
         }
 
-
         public type:string = "light";
-
-        //public initWhenCreate(){
-        //    this.needSendNormal = true;
-        //}
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());

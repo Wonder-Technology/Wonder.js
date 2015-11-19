@@ -217,6 +217,8 @@ module dy {
                 return;
             }
 
+            this.addNormalShaderLib();
+
             switch (envMap.mode){
                 case EnvMapMode.NORMAL:
                     this.shader.addLib(BasicEnvMapShaderLib.create());
@@ -248,18 +250,11 @@ module dy {
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
 
-            //todo normal shader lib?
             if(this._hasAnimation()){
                 this.shader.addLib(MorphVerticeShaderLib.create());
-                if(this._needSendNormal()){
-                    this.shader.addLib(MorphNormalShaderLib.create());
-                }
             }
             else{
                 this.shader.addLib(CommonVerticeShaderLib.create());
-                if(this._needSendNormal()){
-                    this.shader.addLib(CommonNormalShaderLib.create());
-                }
             }
         }
 
@@ -277,11 +272,11 @@ module dy {
             return false;
         }
 
-        private _needSendNormal(){
-            return !!this.shader.getLibs().findOne((lib:ShaderLib) => {
-                return lib.needSendNormal;
-            });
-        }
+        //private _needSendNormal(){
+        //    return !!this.shader.getLibs().findOne((lib:ShaderLib) => {
+        //        return lib.needSendNormal;
+        //    });
+        //}
 
         private _initMirrorMap(){
             if(this.mirrorMap){

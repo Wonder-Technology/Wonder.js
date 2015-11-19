@@ -82,7 +82,6 @@ module dy{
         private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;
 
-
         public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
             this.addMap(shadowMap, {
                 samplerData: this._twoDShadowMapSamplerIndex

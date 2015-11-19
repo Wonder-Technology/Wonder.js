@@ -13,10 +13,8 @@ module dy{
             this.side = Side.BACK;
         }
 
-        public init(){
+        protected addShaderLib(){
             this.shader.addLib(SkyboxShaderLib.create());
-
-            super.init();
         }
 
         protected initEnvMap(){
