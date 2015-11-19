@@ -74,11 +74,7 @@ module dy {
 
             /*!for model geometry*/
             vertices?: Array<number>,
-            morphTargets: Array<{
-                name:string,
-                vertices:Array<number>,
-                normals?:Array<number>
-            }>,
+            morphTargets: Array<DYFileJsonFrameData>,
             //"morphColors": [],
             normals?: Array<number>,
             colors?: Array<number>,
@@ -94,6 +90,12 @@ module dy {
 
 
             children: Array<DYFileParseObjectData>
+    }
+
+    export type DYFileJsonFrameData = {
+        name:string,
+        vertices:Array<number>,
+        normals?:Array<number>
     }
     //export type DYFileData = {
     //    scene: dyCb.Hash<DYFileSceneData>,
@@ -147,10 +149,12 @@ module dy {
 
         /*!for model geometry*/
         vertices: Array<number>,
-        morphTargets: Array<{
-            name:string,
-            vertices:Array<number>
-        }>,
+        //morphTargets: Array<{
+        //    name:string,
+        //    vertices:Array<number>
+        //}>,
+        morphTargets: dyCb.Hash<dyCb.Collection<Array<number>>>,
+        morphNormals:dyCb.Hash<dyCb.Collection<Array<number>>>,
         //"morphColors": [],
         colors?: Array<number>,
         uvs?: Array<number>,
@@ -162,6 +166,12 @@ module dy {
         parent:DYFileParseObjectData,
         children: dyCb.Collection<DYFileParseObjectData>
     }
+
+    //export type DYFileParseMorphTargetsData = dyCb.Collection<{
+    //    vertices: Array<number>,
+    //    normals?: Array<number>
+    //}>
+    export type DYFileParseMorphTargetsData = dyCb.Collection<Array<number>>
 
     export type DYFileResult = {
         metadata:dyCb.Hash<DYFileMetadata>,

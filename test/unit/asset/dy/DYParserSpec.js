@@ -114,8 +114,16 @@ describe("DYParser", function () {
                     vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                     morphTargets: [
                         {
-                            name: "frame",
+                            name: "stand001",
+                            vertices: [-3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
+                        },
+                        {
+                            name: "play001",
                             vertices: [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2]
+                        },
+                        {
+                            name: "play002",
+                            vertices: [0, 5, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2]
                         }
                     ],
                     colors: [1.0, 0.1, 0.1, 0.2, 0.2, 0.2, 1.0, 0.2, 0.1, 0.2, 0.2, 0.3],
@@ -128,9 +136,19 @@ describe("DYParser", function () {
                 expect(getObject(result, 0).vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 4, -1, -4, 3, 2, 3]
                 )
-                expect(getObject(result, 0).morphTargets[0].vertices).toEqual(
-                    [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 4, -1, -2, 2, 2, 3]
+
+                expect(getObject(result, 0).morphTargets.getChild("stand").getChild(0)).toEqual(
+                    [-3, 2, 3, 2, -1, -2, 2, 2, 3, 2, -1, -2, 4, -1, -2, 2, 2, 3]
                 )
+                expect(getObject(result, 0).morphTargets.getChild("play").getChild(0)).toEqual(
+                    [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 4, -1, -2, 2, 2, 3 ]
+                )
+                expect(getObject(result, 0).morphTargets.getChild("play").getChild(1)).toEqual(
+                    [ 0, 5, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 1, -1, -2, 2, 2, 3 ]
+                )
+                expect(getObject(result, 0).morphNormals.getCount()).toEqual(0);
+
+
                 expect(testTool.getValues(getObject(result, 0).colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.3, 1, 0.2, 0.1]
                 )
@@ -150,8 +168,8 @@ describe("DYParser", function () {
                             name: "child1",
                             morphTargets: [
                                 {
-                                    name: "frame1",
-                                    vertices: [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2]
+                                    name: "stand001",
+                                    vertices: [-3, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
                                 }
                             ],
                             verticeIndices: [0, 1, 2, 1, 3, 2],
@@ -162,8 +180,8 @@ describe("DYParser", function () {
                             name: "child2",
                             morphTargets: [
                                 {
-                                    name: "frame1",
-                                    vertices: [-1, 2, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2]
+                                    name: "stand001",
+                                    vertices: [1, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2]
                                 }
                             ],
                             verticeIndices: [0, 1, 2, 1, 2, 3]
@@ -183,9 +201,11 @@ describe("DYParser", function () {
                 expect(object1.vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 4, -1, -4, 3, 2, 3]
                 )
-                expect(object1.morphTargets[0].vertices).toEqual(
-                    [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 4, -1, -2, 2, 2, 3]
+
+                expect(object1.morphTargets.getChild("stand").getChild(0)).toEqual(
+                    [ -3, 2, 3, 2, -1, -2, 2, 2, 3, 2, -1, -2, 4, -1, -2, 2, 2, 3 ]
                 )
+
                 expect(testTool.getValues(object1.colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.3, 1, 0.2, 0.1]
                 )
@@ -198,9 +218,11 @@ describe("DYParser", function () {
                 expect(object2.vertices).toEqual(
                     [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4]
                 )
-                expect(object2.morphTargets[0].vertices).toEqual(
-                    [-1, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2, 2, 2, 3, 1, -1, -2]
+
+                expect(object2.morphTargets.getChild("stand").getChild(0)).toEqual(
+                    [ 1, 2, 3, 2, -1, -2, 2, 2, 3, 2, -1, -2, 2, 2, 3, 4, -1, -2 ]
                 )
+
                 expect(testTool.getValues(object2.colors)).toEqual(
                     [1, 0.1, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.2, 1, 0.2, 0.1, 0.2, 0.2, 0.3]
                 )
@@ -223,7 +245,7 @@ describe("DYParser", function () {
                         normals: [1, 1, 1, 6, -1, -2, 1, 2, -1, -2, 0, -4],
                         morphTargets: [
                             {
-                                name: "frame",
+                                name: "stand_001",
                                 vertices: [2, 2, 3, 4, -1, -2, 2, 2, 3, 4, -1, -2],
                                 normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
                             }
@@ -239,9 +261,13 @@ describe("DYParser", function () {
                     geometryTool.judgeFaceVertexNormals(getObject(result, 0).faces,
                         [ 6, -1, -2, 1, 2, -1, -2, 0, -4, 1, 1, 1, -2, 0, -4, 1, 2, -1 ]
                     );
-                    geometryTool.judgeMorphVertexNormals(getObject(result, 0).faces, 0,
-                        [4, -1, -2, 3, 2, 3, -2, 0, -4, 5, 1, 2, -2, 0, -4, 3, 2, 3]
-                    )
+
+                    expect(getObject(result, 0).morphNormals.getChild("stand").getCount()).toEqual(1)
+                    expect(getObject(result, 0).morphNormals.getChild("stand").getChild(0)).toEqual(
+                        [
+                            4, -1, -2, 3, 2, 3, -2, 0, -4, 5, 1, 2, -2, 0, -4, 3, 2, 3
+                        ]
+                    );
                 });
                 it("parse files which's format likes the one converted from .obj", function () {
                     setObject({
@@ -255,7 +281,7 @@ describe("DYParser", function () {
                                 name: "child1",
                                 morphTargets: [
                                     {
-                                        name: "frame",
+                                        name: "stand001",
                                         vertices: [3, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],
                                         normals: [5, 1, 2, 4, -1, -2, 3, 2, 3, -2, 0, -4]
                                     }
@@ -274,9 +300,12 @@ describe("DYParser", function () {
                     geometryTool.judgeFaceVertexNormals(object1.faces,
                         [ 1, 1, 1, 6, -1, -2, 1, 2, -1, 6, -1, -2, -2, 0, -4, 1, 2, -1 ]
                     );
-                    geometryTool.judgeMorphVertexNormals(object1.faces, 0,
-                        [ 5, 1, 2, 4, -1, -2, 3, 2, 3, 4, -1, -2, -2, 0, -4, 3, 2, 3 ]
-                    )
+                    expect(object1.morphNormals.getChild("stand").getCount()).toEqual(1)
+                    expect(object1.morphNormals.getChild("stand").getChild(0)).toEqual(
+                        [
+                            5, 1, 2, 4, -1, -2, 3, 2, 3, 4, -1, -2, -2, 0, -4, 3, 2, 3
+                        ]
+                    );
                 });
             });
         });

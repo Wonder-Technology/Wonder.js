@@ -66,8 +66,14 @@ module dy {
                             geometry.material = self._buildMaterial(object.material, parseData.materials);
                         }
 
-                        //todo build animation
+                        //todo test in loaderSpec
+                        geometry.morphTargets = object.morphTargets;
+                        geometry.morphFaceNormals = object.morphNormals;
+                        geometry.morphVertexNormals = object.morphNormals;
 
+                        if(GeometryUtils.hasData(geometry.morphTargets)){
+                            model.addComponent(MorphAnimation.create());
+                        }
 
                         model.addComponent(geometry);
                     }
