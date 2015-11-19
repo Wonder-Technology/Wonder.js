@@ -132,9 +132,8 @@ module dy{
                 .subscribe((time) => {
                     //todo need polyfill
                     /*!
-                     i consider that the time is DOMHighResTimeStamp(从页面导航开始时测量的高精确度时间),
-                     but it may be DOMTimeStamp in some browser!
-                     so it may need polyfill!
+                     I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
+                     so it need polyfill!
                      */
                     self._loopBody(time);
                 });
@@ -147,17 +146,21 @@ module dy{
 
         private _buildInitStream(){
             return dyRt.callFunc(() => {
-                this._isFirstStart = false;
-
-                this.scene.onEnter();
-                this.scene.init();
-
-                //todo not put here?
-                this.renderer.init();
-
-                this._timeController.start();
-                this.scheduler.start();
+                this._init();
             }, this);
+        }
+
+        private _init(){
+            this._isFirstStart = false;
+
+            this.scene.onEnter();
+            this.scene.init();
+
+            //todo not put here?
+            this.renderer.init();
+
+            this._timeController.start();
+            this.scheduler.start();
         }
 
         private _buildLoopStream(){

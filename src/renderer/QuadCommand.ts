@@ -18,6 +18,7 @@ module dy {
         public drawMode:DrawMode = DrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
+        public animation:Animation = null;
 
         public execute() {
             this.material.updateTexture();
@@ -33,7 +34,7 @@ module dy {
         private _draw() {
             var totalNum = 0,
                 startOffset = 0,
-                vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE),
+                vertexBuffer = null,
                 gl = DeviceManager.getInstance().gl;
 
             this._setEffects();
@@ -47,6 +48,7 @@ module dy {
                 gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
+                vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE);
                 totalNum = vertexBuffer.num;
                 gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }

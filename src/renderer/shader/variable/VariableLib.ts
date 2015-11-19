@@ -8,7 +8,27 @@ module dy{
             value:VariableCategory.ENGINE
         };
 
+        public static a_currentFramePosition:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static a_nextFramePosition:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
         public static a_normal:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static a_currentFrameNormal:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static a_nextFrameNormal:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };
@@ -174,6 +194,11 @@ module dy{
         };
 
         public static u_farPlane:ShaderVariable = {
+            type:VariableType.FLOAT_1,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_interpolation:ShaderVariable = {
             type:VariableType.FLOAT_1,
             value:VariableCategory.ENGINE
         };

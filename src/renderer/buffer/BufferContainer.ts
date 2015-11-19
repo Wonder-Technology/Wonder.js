@@ -1,41 +1,57 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy {
-    export class BufferContainer {
-        public static create() {
-        	var obj = new this();
-
-        	return obj;
-        }
-
+    export abstract class BufferContainer {
         public geometryData:GeometryData = null;
 
-        private _cache:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
+        //virtual
+        //todo remove?
+        public init(){
+        }
 
-        @cache(function(type){
-            return !this._needReCalcuteTangent(type) && this._cache.hasChild(type);
-        }, function(type){
-            return this._cache.getChild(<any>type);
-        }, function(result, type){
-            this._cache.addChild(<any>type, result);
-        })
         public getChild(type:BufferDataType) {
-            var geometryData= null,
-                result:Buffer = null;
-
-            geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
+            var result:any = null;
+                //geometryData = null;
 
             switch (type) {
                 case BufferDataType.VERTICE:
+                    result = this.getVertice(type);
+                    break;
                 case BufferDataType.NORMAL:
+                    result = this.getNormal(type);
+                    break;
+
+
+
+                //case BufferDataType.TANGENT:
+                //
+                //    break;
+                //case BufferDataType.COLOR:
+                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+                //    result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+                //    break;
+                //case BufferDataType.INDICE:
+                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+                //    result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
+                //    break;
+                //case BufferDataType.TEXCOORD:
+                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+                //    result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
+                //    break;
+
+
+
+
                 case BufferDataType.TANGENT:
+                    result = this._getTangent(type);
+                    break;
                 case BufferDataType.COLOR:
-                    result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+                    result = this._getColor(type);
                     break;
                 case BufferDataType.INDICE:
-                    result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
+                    result = this._getIndice(type);
                     break;
                 case BufferDataType.TEXCOORD:
-                    result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
+                    result = this._getTexCoord(type);
                     break;
                 default:
                     dyCb.Log.error(true, dyCb.Log.info.FUNC_UNKNOW(`BufferDataType: ${type}`));
@@ -43,6 +59,7 @@ module dy {
             }
 
             return result;
+
         }
 
         public hasChild(type:BufferDataType) {
@@ -52,9 +69,83 @@ module dy {
         }
 
         public dispose(){
-            this._cache.forEach((buffer:Buffer) => {
+            this.container.forEach((buffer:Buffer) => {
                 buffer.dispose();
             });
+        }
+
+        protected abstract getVertice(type);
+        protected abstract getNormal(type);
+
+        protected container:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
+
+        //todo refactor
+        private _getTangent(type){
+            var cacheData = this.container.getChild(type),
+                geometryData = null,
+                result = null;
+
+            if(!this._needReCalcuteTangent(type) && cacheData){
+                return cacheData;
+            }
+
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+            result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+
+            this.container.addChild(<any>type, result);
+
+            return result;
+        }
+
+        private _getColor(type) {
+            var cacheData = this.container.getChild(type),
+                geometryData = null,
+                result = null;
+
+            if (cacheData) {
+                return cacheData;
+            }
+
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+            result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+
+            this.container.addChild(<any>type, result);
+
+            return result;
+        }
+
+        private _getIndice(type){
+            var cacheData = this.container.getChild(type),
+                geometryData = null,
+                result = null;
+
+            if (cacheData) {
+                return cacheData;
+            }
+
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+            result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
+
+            this.container.addChild(<any>type, result);
+
+            return result;
+        }
+
+        private _getTexCoord(type){
+            var cacheData = this.container.getChild(type),
+                geometryData = null,
+                result = null;
+
+            if (cacheData) {
+                return cacheData;
+            }
+
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+            result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
+
+            this.container.addChild(<any>type, result);
+
+            return result;
         }
 
         private _needReCalcuteTangent(type:BufferDataType){

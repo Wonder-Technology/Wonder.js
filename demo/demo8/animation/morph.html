@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>keyframe animation</title>
+    <title>morph animation</title>
     <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
     <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
     <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
@@ -18,8 +18,8 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../../res/model/md2/ratamahatta.md2", id:"model"},
-            {url: "../../res/model/md2/skins/ratamahatta.png", id:"skin"}
+            {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
+            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
 
         ]).subscribe(null, function(e){
                     throw e;
@@ -31,25 +31,54 @@
         function init() {
             _initScene();
         }
+        var directionLightComponent = dy.DirectionLight.create();
+        var directionLight;
 
         function _initScene() {
             var director = dy.Director.getInstance();
 
+            director.renderer.setClearColor(dy.Color.create("#aaaaff"));
 
 
-            var model = dy.MD2Loader.getInstance().get("model");
+            var sceneModel = dy.DYLoader.getInstance().get("sceneModel");
 
-            var skin = dy.TextureLoader.getInstance().get("skin");
+            var model = sceneModel.getChild("models").getChild(0);
 
-            model.geometry.material.addMap(skin);
 
-            model.transform.scale = dy.Vector3.create(3, 3, 3);
 
-//            var fps = 1;
-//            model.animation.play("stand", fps);
+
+
+
+
+            var geo = model.getComponent(dy.Geometry);
+
+            var material = dy.LightMaterial.create();
+            material.diffuseMap = dy.TextureLoader.getInstance().get("skin");
+            material.diffuseMap.generateMipmaps = false;
+            material.specular = dy.Color.create("rgb(0, 0, 0)");
+            material.shininess = 32;
+
+            geo.material = material;
+
+
+            var anim = model.getComponent(dy.Animation);
+            anim.play("stand", 10);
+
+
+
+            director.scheduler.scheduleTime(function(){
+                anim.pause();
+            }, 1000);
+            director.scheduler.scheduleTime(function(){
+                anim.resume();
+            }, 2500);
+
 
 
             director.scene.addChild(model);
+
+
+
 
 
 
@@ -62,9 +91,6 @@
             var ambientLight = dy.GameObject.create();
             ambientLight.addComponent(ambientLightComponent);
 
-
-            var directionLightComponent = dy.DirectionLight.create();
-            var directionLight;
 
 
 
@@ -79,13 +105,25 @@
             directionLight.addComponent(directionLightComponent);
 
 
-            directionLight.transform.translate(30, 30, 0);
+            directionLight.transform.translate(100, 30, 0);
+
+
+
 
 
 
 
             director.scene.addChild(ambientLight);
             director.scene.addChild(directionLight);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -103,6 +141,12 @@
         }
 
         function _createCamera() {
+            //make camera to be the same as shadowMapCamera(DirectionLight) for testing
+
+//            var pos = directionLight.transform.position;
+
+
+
             var camera = dy.GameObject.create();
 
             var cameraComponent = dy.PerspectiveCamera.create();
@@ -110,13 +154,16 @@
 
             cameraComponent.fovy = 45;
             cameraComponent.aspect = canvas.width / canvas.height;
+//            cameraComponent.aspect = 1.0;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
 
             camera.addComponent(cameraComponent);
 
+//            camera.transform.translate(dy.Vector3.create(30, 40, 50));
             camera.transform.translate(dy.Vector3.create(30, 0, 0));
+//            camera.transform.lookAt(0, 10, 0);
             camera.transform.lookAt(0, 0, 0);
 
 
@@ -135,3 +182,4 @@
 </script>
 </body>
 </html>
+

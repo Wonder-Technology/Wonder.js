@@ -4,7 +4,16 @@ var testTool = (function () {
 
         buildFakeGl: function (sandbox) {
             return {
+                uniformMatrix4fv: sandbox.stub(),
                 getUniformLocation: sandbox.stub(),
+                getAttribLocation: sandbox.stub(),
+                vertexAttribPointer: sandbox.stub(),
+                enableVertexAttribArray: sandbox.stub(),
+                uniform3f: sandbox.stub(),
+                uniformMatrix3fv: sandbox.stub(),
+                uniform1f: sandbox.stub(),
+                drawElements: sandbox.stub(),
+
                 useProgram: sandbox.stub(),
                 bindFramebuffer: sandbox.stub(),
                 bindRenderbuffer: sandbox.stub(),

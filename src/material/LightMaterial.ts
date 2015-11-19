@@ -117,12 +117,11 @@ module dy{
             this.cubemapShadowMapDatas.removeAllChildren();
         }
 
-        public init(){
+        protected addShaderLib(){
+            this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
             this._setPhongMapShaderLib();
             this.shader.addLib(LightShaderLib.create());
-
-            super.init();
         }
 
         private _setPhongMapShaderLib(){

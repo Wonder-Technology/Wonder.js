@@ -31,6 +31,8 @@ module dy {
             //quadCmd.geometryData = geometry.geometryData;
             quadCmd.buffers = geometry.buffers;
 
+            quadCmd.animation = geometry.gameObject.getComponent(Animation);
+
 
             //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
             quadCmd.mMatrix = this.transform.localToWorldMatrix;

@@ -35,8 +35,13 @@
 /// <reference path="math/Plane"/>
 
 
+/// <reference path="component/animation/Animation"/>
+/// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/geometry/Geometry"/>
+/// <reference path="component/geometry/GeometryUtils"/>
 /// <reference path="component/geometry/GeometryData"/>
+/// <reference path="component/geometry/CommonGeometryData"/>
+/// <reference path="component/geometry/MorphGeometryData"/>
 /// <reference path="component/geometry/ModelGeometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
@@ -95,10 +100,13 @@
 /// <reference path="renderer/DrawMode"/>
 /// <reference path="renderer/buffer/BufferType"/>
 /// <reference path="renderer/buffer/BufferDataType"/>
+/// <reference path="renderer/buffer/BufferUsage"/>
 /// <reference path="renderer/buffer/Buffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>
 /// <reference path="renderer/buffer/ArrayBuffer"/>
 /// <reference path="renderer/buffer/BufferContainer"/>
+/// <reference path="renderer/buffer/CommonBufferContainer"/>
+/// <reference path="renderer/buffer/MorphBufferContainer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
@@ -113,7 +121,11 @@
 /// <reference path="renderer/shader/variable/VariableNameTable"/>
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>
+/// <reference path="renderer/shader/lib/common/CommonVerticeShaderLib"/>
+/// <reference path="renderer/shader/lib/common/CommonNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/MorphVerticeShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/EnvMapShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/BasicEnvMapShaderLib"/>
@@ -151,6 +163,7 @@
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
+/// <reference path="material/Shading"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
@@ -211,6 +224,7 @@
 /// <reference path="device/GPUDetector"/>
 
 /// <reference path="structure/Point"/>
+/// <reference path="structure/Face3"/>
 /// <reference path="structure/RectRegion"/>
 /// <reference path="structure/View"/>
 /// <reference path="structure/Color"/>

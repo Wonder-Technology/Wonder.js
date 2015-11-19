@@ -18,7 +18,7 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"},
+            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
 //            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/skin.jpg", id:"skin"},
@@ -66,7 +66,11 @@
 //
 //            geo.material = material;
 //
-
+//
+//            var anim = model.getComponent(dy.Animation);
+////            var animList = [["stand", 2]];
+//            anim.play("stand", 10);
+////            anim.play("attack", 10);
 
 
 
@@ -99,9 +103,6 @@
             var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
                 model.transform.rotate(0, 1, 0);
             }));
-
-
-
 
             model.transform.rotate(0, 0, 0);
 

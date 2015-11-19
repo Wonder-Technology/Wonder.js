@@ -26,8 +26,13 @@ module dy {
         return faces;
     }
 
-        public static hasData(data:Array<number>){
-            return data && data.length > 0;
+        @In(function(data){
+            if(data){
+                assert(data instanceof dyCb.Collection || data instanceof dyCb.Hash || JudgeUtils.isArray(data), Log.info.FUNC_SHOULD("data",  "be Array or Collection or Hash"));
+            }
+        })
+        public static hasData(data:any){
+            return data && ((data.length && data.length > 0) || (data.getCount && data.getCount() > 0));
         }
 
         public static getThreeComponent(sourceData:Array<number>, index:number) {

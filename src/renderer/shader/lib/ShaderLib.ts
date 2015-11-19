@@ -20,6 +20,9 @@ module dy{
         public vsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
         public fsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
 
+        //todo
+        public needSendNormal:boolean = false;
+
         public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

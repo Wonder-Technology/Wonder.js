@@ -83,12 +83,12 @@ module dy {
 
                     self._parseFromIndices(object);
 
-                    //if(!self._hasData(object.normals)) {
+                    //if(!GeometryUtils.hasData(object.normals)) {
                     //    object.normals = this._computeNormal(object.vertices, object.indices);
                     //}
-                    //if(self._hasData(object.morphTargets)){
+                    //if(GeometryUtils.hasData(object.morphTargets)){
                     //    object.morphTargets.forEach((target:{name:string,vertices:dyCb.Collection<number>,normals?:dyCb.Collection<number>}) => {
-                    //        if(!self._hasData(target.normals)){
+                    //        if(!GeometryUtils.hasData(target.normals)){
                     //            target.normals = this._computeNormal(target.vertices, object.indices);
                     //        }
                     //    })
@@ -117,7 +117,7 @@ module dy {
         }
 
         private _isObjectContainer(object:DYFileJsonObjectData){
-            return !this._hasData(object.verticeIndices);
+            return !GeometryUtils.hasData(object.verticeIndices);
         }
 
         private _parseFromIndices(object:any){
@@ -155,16 +155,16 @@ module dy {
                 _setThreeComponentData(vertices, objectVertices, bIndice);
                 _setThreeComponentData(vertices, objectVertices, cIndice);
 
-                if(this._hasData(objectUVs)) {
+                if(GeometryUtils.hasData(objectUVs)) {
                     this._setUV(uvs, objectUVs, object.uvIndices, i, [aIndice, bIndice, cIndice]);
                 }
 
-                if(this._hasData(objectNormals)) {
+                if(GeometryUtils.hasData(objectNormals)) {
                     this._setNormal(face.vertexNormals, objectNormals, object.normalIndices, [i, i + 1, i + 2], [aIndice, bIndice, cIndice]);
                 }
 
 
-                if(this._hasData(objectColors)) {
+                if(GeometryUtils.hasData(objectColors)) {
                     _setThreeComponentData(colors, objectColors, aIndice);
                     _setThreeComponentData(colors, objectColors, bIndice);
                     _setThreeComponentData(colors, objectColors, cIndice);
@@ -269,7 +269,7 @@ module dy {
         }
 
         private _setNormal(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, normalIndexArr:Array<number>, verticeIndiceArr:Array<number>){
-            if(!this._hasData(normalIndices)){
+            if(!GeometryUtils.hasData(normalIndices)){
                 this._addNormalData(targetNormals, sourceNormals, verticeIndiceArr);
 
                 return;
@@ -305,7 +305,7 @@ module dy {
                 morphNormals = null;
 
 
-            if(this._hasData(objectMorphTargets)){
+            if(GeometryUtils.hasData(objectMorphTargets)){
                 morphTargets = dyCb.Hash.create<dyCb.Hash<DYFileParseMorphTargetsData>>();
                 morphNormals = dyCb.Hash.create<dyCb.Collection<Array<number>>>();
 
@@ -325,7 +325,7 @@ module dy {
                         _setThreeComponentData(vertices, frameData.vertices, verticeIndices[cIndex]);
 
 
-                        if(this._hasData(frameData.normals)){
+                        if(GeometryUtils.hasData(frameData.normals)){
                             this._setNormal(normals, frameData.normals, normalIndices, [aIndex, bIndex, cIndex], [verticeIndices[aIndex], verticeIndices[bIndex], verticeIndices[cIndex]]);
                         }
 
@@ -334,7 +334,7 @@ module dy {
 
                     morphTargets.appendChild(animName, vertices);
 
-                    if(this._hasData(frameData.normals)){
+                    if(GeometryUtils.hasData(frameData.normals)){
                         morphNormals.appendChild(animName, normals);
                     }
                 }
@@ -342,15 +342,6 @@ module dy {
 
             object.morphTargets = morphTargets;
             object.morphNormals = morphNormals;
-        }
-
-        @In(function(data){
-            if(data){
-                assert(data instanceof dyCb.Collection || JudgeUtils.isArray(data), Log.info.FUNC_SHOULD("data",  "be Array or Collection"));
-            }
-        })
-        private _hasData(data:any){
-            return data && ((data.length && data.length > 0) || (data.getCount && data.getCount() > 0));
         }
 
         private _parseScene(json:DYFileJsonData) {

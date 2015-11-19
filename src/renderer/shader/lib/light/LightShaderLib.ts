@@ -4,17 +4,19 @@ module dy{
         public static create() {
             var obj = new this();
 
+            //obj.initWhenCreate();
+
             return obj;
         }
 
 
         public type:string = "light";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            if(quadCmd.buffers.hasChild(BufferDataType.NORMAL)){
-                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.NORMAL));
-            }
+        //public initWhenCreate(){
+        //    this.needSendNormal = true;
+        //}
 
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.camera.transform.position);
 
@@ -27,8 +29,6 @@ module dy{
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
-
-            this.addAttributeVariable(["a_normal"]);
 
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide"]);
 

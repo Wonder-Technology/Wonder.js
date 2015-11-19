@@ -38,29 +38,41 @@ module dy{
                     vertices,
                     faces,
                     texCoords,
-                    colors
+                    colors,
+                    morphTargets
                     } = this.computeData();
 
-            this.buffers = BufferContainer.create();
+            //this.buffers = BufferContainer.create();
+            this.buffers = this.createBufferContainer();
 
-            geometryData = GeometryData.create(this);
+            geometryData = this.createGeometryData();
             geometryData.vertices = vertices;
             geometryData.faces = faces;
             geometryData.texCoords = texCoords;
             geometryData.colors = colors;
+            geometryData.morphTargets = morphTargets;
 
             this.buffers.geometryData = geometryData;
 
+            this.buffers.init();
+
             this._material.init();
 
-            if(this.isSmoothShading() && !this.hasVertexNormals()){
-                this.computeVertexNormals();
-            }
-            else if(!this.hasFaceNormals()){
-                this.computeFaceNormals();
-            }
+            this.computeNormals();
+        }
 
-            //todo compute morphTarget normal
+        //virtual
+        protected computeNormals(){
+            if(this.isSmoothShading()){
+                if(!this.hasVertexNormals()){
+                    this.computeVertexNormals();
+                }
+            }
+            else{
+                if(!this.hasFaceNormals()){
+                    this.computeFaceNormals();
+                }
+            }
         }
 
         @In(function(){
@@ -99,6 +111,16 @@ module dy{
         }
 
         protected abstract computeData(): GeometryDataType;
+
+        //virtual
+        protected createBufferContainer():BufferContainer{
+            return CommonBufferContainer.create();
+        }
+
+        //virtual
+        protected createGeometryData():GeometryData{
+            return CommonGeometryData.create(this);
+        }
     }
 
     export type GeometryDataType = {
@@ -106,6 +128,7 @@ module dy{
         faces?:Array<Face3>;
         texCoords:Array<number>;
         colors?:Array<number>;
+        morphTargets?:Array<number>;
     };
 }
 

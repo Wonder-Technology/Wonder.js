@@ -62,7 +62,8 @@ module dy {
                 var vertexNormalList = dyCb.Collection.create<Array<number>>();
 
 
-                frames.vertices.forEach((vertices:Array<number>) => {
+                //todo change?
+                frames.forEach((vertices:Array<number>) => {
                     var tempGeometryData = MorphGeometryData.create(geometry),
                         faceNormalsOfEachFrame = null,
                         vertexNormalsOfEachFrame = null;

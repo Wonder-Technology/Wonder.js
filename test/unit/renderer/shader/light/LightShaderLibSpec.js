@@ -49,15 +49,15 @@ describe("LightShaderLib", function () {
             sandbox.stub(program, "sendUniformData");
         });
 
-        it("send a_normal if has buffer", function(){
-            var normalBuffer = {};
-            quadCmd.buffers.hasChild.withArgs(dy.BufferDataType.NORMAL).returns(true);
-            quadCmd.buffers.getChild.withArgs(dy.BufferDataType.NORMAL).returns(normalBuffer);
-
-            lib.sendShaderVariables(program, quadCmd, material);
-
-            expect(program.sendAttributeData).toCalledWith("a_normal", dy.VariableType.BUFFER, normalBuffer);
-        });
+        //it("send a_normal if has buffer", function(){
+        //    var normalBuffer = {};
+        //    quadCmd.buffers.hasChild.withArgs(dy.BufferDataType.NORMAL).returns(true);
+        //    quadCmd.buffers.getChild.withArgs(dy.BufferDataType.NORMAL).returns(normalBuffer);
+        //
+        //    lib.sendShaderVariables(program, quadCmd, material);
+        //
+        //    expect(program.sendAttributeData).toCalledWith("a_normal", dy.VariableType.BUFFER, normalBuffer);
+        //});
         it("send u_normalMatrix", function(){
             lib.sendShaderVariables(program, quadCmd, material);
 

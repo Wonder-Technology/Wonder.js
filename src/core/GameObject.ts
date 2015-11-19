@@ -304,14 +304,14 @@ module dy {
         public hasComponent(component:Component):boolean;
         public hasComponent(_class:Function):boolean;
 
-        public hasComponent(args){
-            if(arguments[0] instanceof Component){
-                let component = arguments[0];
+        public hasComponent(...args){
+            if(args[0] instanceof Component){
+                let component = args[0];
 
                 return this._components.hasChild(component);
             }
             else{
-                let _class = arguments[0];
+                let _class = args[0];
 
                 return this._components.hasChild((component) => {
                     return component instanceof _class;
@@ -386,10 +386,15 @@ module dy {
         }
 
         public update(time:number):void {
-            var camera = this._getCamera();
+            var camera = this._getCamera(),
+                animation = this._getAnimation();
 
             if(camera){
                 camera.update(time);
+            }
+
+            if(animation){
+                animation.update(time);
             }
 
             this.actionManager.update(time);
@@ -413,24 +418,31 @@ module dy {
         }
 
         @In(function(){
-            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry"));
+            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
         }
 
         @In(function(){
-            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider"));
+            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
         })
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
 
         @In(function(){
-            assert(this._getComponentCount(Camera) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera"));
+            assert(this._getComponentCount(Camera) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera component"));
         })
         private _getCamera():Camera{
             return this.getComponent<Camera>(Camera);
+        }
+
+        @In(function(){
+            assert(this._getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 animation component"));
+        })
+        private _getAnimation():Animation{
+            return this.getComponent<Animation>(Animation);
         }
 
         @In(function(){

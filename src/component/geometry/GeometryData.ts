@@ -60,7 +60,7 @@ module dy {
         get normalsFromFaceNormal(){
             var normals = null;
 
-            if (!this.geometry.hasFaceNormals()) {
+            if (!this.hasFaceNormals()) {
                 return [];
             }
 
@@ -80,7 +80,7 @@ module dy {
         get normalsFromVertexNormals(){
             var normals = null;
 
-            if (!this.geometry.hasVertexNormals()) {
+            if (!this.hasVertexNormals()) {
                 return [];
             }
 
@@ -167,7 +167,7 @@ module dy {
             assert(GeometryUtils.hasData(this.vertices), Log.info.FUNC_MUST("contain vertices"));
         })
         @Out(function(){
-            for(let face of this.faces) {
+            for(let face of this._faces) {
                 assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
             }
         })
@@ -234,7 +234,7 @@ module dy {
             //    var cb = Vector3.create(),
             //        ab = Vector3.create();
             //
-            //    this.faces.forEach((face:Face3) => {
+            //    this._faces.forEach((face:Face3) => {
             //        vA = self._getThreeComponent(self._vertices, face.aIndex);
             //        vB = self._getThreeComponent(self._vertices, face.bIndex);
             //        vC = self._getThreeComponent(self._vertices, face.cIndex);
@@ -270,40 +270,40 @@ module dy {
         }
 
         @In(function(){
-            var hasFaceNormal = !this.faces[0].faceNormal.isZero();
-
-            if(hasFaceNormal){
-                for(let face of this.faces){
-                    assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-                }
-            }
-            else{
-                for(let face of this.faces){
-                    assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-                }
-            }
+            //var hasFaceNormal = !this._faces[0].faceNormal.isZero();
+            //
+            //if(hasFaceNormal){
+            //    for(let face of this._faces){
+            //        assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+            //    }
+            //}
+            //else{
+            //    for(let face of this._faces){
+            //        assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+            //    }
+            //}
         })
         public hasFaceNormals(){
-            return !this.faces[0].faceNormal.isZero();
+            return !this._faces[0].faceNormal.isZero();
         }
 
 
         @In(function(){
-            var hasVertexNormal = this.faces[0].vertexNormals.getCount() > 0;
+            var hasVertexNormal = this._faces[0].vertexNormals.getCount() > 0;
 
             if(hasVertexNormal){
-                for(let face of this.faces) {
+                for(let face of this._faces) {
                     assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
                 }
             }
             else{
-                for(let face of this.faces) {
+                for(let face of this._faces) {
                     assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
                 }
             }
         })
         public hasVertexNormals(){
-            return this.faces[0].vertexNormals.getCount() > 0;
+            return this._faces[0].vertexNormals.getCount() > 0;
         }
 
         //virtual

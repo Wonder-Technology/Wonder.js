@@ -1,6 +1,5 @@
 /// <reference path="../definitions.d.ts"/>
 module dy{
-    import JudgeUtils = dyRt.JudgeUtils;
     export class BasicMaterial extends Material{
         public static create() {
             var obj = new this();
@@ -24,12 +23,10 @@ module dy{
             }
         }
 
-        public init(){
+        protected addShaderLib(){
             this.shader.addLib(BasicShaderLib.create());
-            
-            this._initMap();
 
-            super.init();
+            this._initMap();
         }
 
         private _initMap(){

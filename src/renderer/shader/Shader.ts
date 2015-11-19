@@ -4,7 +4,7 @@ module dy{
         public static create(){
         	var obj = new this();
 
-            obj.initWhenCreate();
+            //obj.initWhenCreate();
 
         	return obj;
         }
@@ -81,9 +81,8 @@ module dy{
             && this.fsSource === other.fsSource;
         }
 
-        public initWhenCreate(){
-            this.addLib(CommonShaderLib.create());
-        }
+        //public initWhenCreate(){
+        //}
 
         public init(){
         }
@@ -113,18 +112,40 @@ module dy{
             material.mapManager.sendData(program);
         }
 
-        public hasLib(lib:ShaderLib){
-            return this._libs.hasChild(lib);
+        public hasLib(lib:ShaderLib);
+        public hasLib(_class:Function);
+
+        public hasLib(...args){
+            if(args[0] instanceof ShaderLib){
+                let lib:ShaderLib = args[0];
+
+                return this._libs.hasChild(lib);
+            }
+            else{
+                let _class = arguments[0];
+
+                return this._libs.hasChild((lib:ShaderLib) => {
+                    return lib instanceof _class;
+                })
+            }
         }
 
         public addLib(lib:ShaderLib){
             this._libs.addChild(lib);
         }
 
+        public addShaderLibToTop(lib:ShaderLib){
+            this._libs.unShiftChild(lib);
+        }
+
         public getLib(libClass:Function){
             return this._libs.findOne((lib:ShaderLib) => {
                 return lib instanceof libClass;
             });
+        }
+
+        public getLibs(){
+            return this._libs;
         }
 
         public removeLib(lib:ShaderLib);
