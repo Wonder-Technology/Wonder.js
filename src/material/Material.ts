@@ -251,6 +251,7 @@ module dy {
             this.shader.addLib(CommonShaderLib.create());
 
             if(this._hasAnimation()){
+                this.shader.addLib(MorphCommonShaderLib.create());
                 this.shader.addLib(MorphVerticeShaderLib.create());
             }
             else{

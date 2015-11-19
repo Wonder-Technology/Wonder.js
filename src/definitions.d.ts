@@ -124,6 +124,7 @@
 /// <reference path="renderer/shader/lib/common/CommonVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
+/// <reference path="renderer/shader/lib/animation/morph/MorphCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
