@@ -80,70 +80,70 @@ module dy {
         protected container:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
 
         //todo refactor
+        @cache(function(type:BufferDataType){
+            return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
+        }, function(type){
+            return this.container.getChild(<any>type)
+        }, function(result, type){
+            this.container.addChild(<any>type, result);
+        })
         private _getTangent(type){
-            var cacheData = this.container.getChild(type),
-                geometryData = null,
+            var geometryData = null,
                 result = null;
-
-            if(!this._needReCalcuteTangent(type) && cacheData){
-                return cacheData;
-            }
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
 
-            this.container.addChild(<any>type, result);
-
             return result;
         }
 
+        @cache(function(type:BufferDataType){
+            return this.container.hasChild(<any>type);
+        }, function(type){
+            return this.container.getChild(<any>type)
+        }, function(result, type){
+            this.container.addChild(<any>type, result);
+        })
         private _getColor(type) {
-            var cacheData = this.container.getChild(type),
-                geometryData = null,
+            var geometryData = null,
                 result = null;
-
-            if (cacheData) {
-                return cacheData;
-            }
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
 
-            this.container.addChild(<any>type, result);
-
             return result;
         }
 
+        @cache(function(type:BufferDataType){
+            return this.container.hasChild(<any>type);
+        }, function(type){
+            return this.container.getChild(<any>type)
+        }, function(result, type){
+            this.container.addChild(<any>type, result);
+        })
         private _getIndice(type){
-            var cacheData = this.container.getChild(type),
-                geometryData = null,
+            var geometryData = null,
                 result = null;
-
-            if (cacheData) {
-                return cacheData;
-            }
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
 
-            this.container.addChild(<any>type, result);
-
             return result;
         }
 
+        @cache(function(type:BufferDataType){
+            return this.container.hasChild(<any>type);
+        }, function(type){
+            return this.container.getChild(<any>type)
+        }, function(result, type){
+            this.container.addChild(<any>type, result);
+        })
         private _getTexCoord(type){
-            var cacheData = this.container.getChild(type),
-                geometryData = null,
+            var geometryData = null,
                 result = null;
-
-            if (cacheData) {
-                return cacheData;
-            }
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
-
-            this.container.addChild(<any>type, result);
 
             return result;
         }
