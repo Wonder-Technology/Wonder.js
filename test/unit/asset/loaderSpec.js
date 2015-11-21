@@ -152,11 +152,11 @@ describe("loader", function () {
                 model1.vertices
             );
             expect(geo.faces[0].vertexNormals.getCount()).toEqual(0);
-            expect(geo.texCoords).toEqual(
-                model1.uvs
+            expect(testTool.getValues(geo.texCoords)).toEqual(
+                testTool.getValues(model1.uvs)
             );
-            expect(geo.colors).toEqual(
-                model1.colors
+            expect(testTool.getValues(geo.colors)).toEqual(
+                testTool.getValues(model1.colors)
             );
             geometryTool.judgeFaceIndices(geo.faces, model1.indices);
 
@@ -210,8 +210,8 @@ describe("loader", function () {
             expect(m21.getChildren().getCount()).toEqual(0);
 
             var geo21 = m21.getComponent(dy.Geometry);
-            expect(geo21.colors).toEqual(
-                model2.children[0].colors
+            expect(testTool.getValues(geo21.colors)).toEqual(
+                testTool.getValues(model2.children[0].colors)
             )
             geometryTool.judgeFaceIndices(geo21.faces, model2.children[0].indices);
             expect(geo21.vertices).toEqual(
@@ -300,23 +300,23 @@ describe("loader", function () {
                         children:[
                             {
                                 name:"bb",
-                                colors: [0.10000000149011612, 0.20000000298023224, 1, 0.10000000149011612, 0.20000000298023224, 1, 1, 0.30000001192092896, 0 ],
-                                vertices: [2, 3, 4, 2, 3, 4, 2, 2, 3],
-                                uvs:[0.10000000149011612, 0.20000000298023224, 0.10000000149011612, 0.20000000298023224, 0.5, 0.20000000298023224],
+                                colors: [1, 0.3, 0, 0.1, 0.2, 1, 0.1, 0.2, 1 ],
+                                vertices: [2, 2, 3, 2, 3, 4, 2, 3, 4 ],
+                                uvs:[0.5, 0.2, 0.1, 0.2, 0.1, 0.2],
                                 normals:[-2, 3, 4, -2, 3, 4, -1, 2, 3 ],
                                 material: "aa",
                                 morphTargets: [],
-                                indices:[0,1,2]
+                                indices:[2, 1, 0 ]
                             },
                             {
                                 name:"cc",
                                 material:"bb",
-                                colors:[0.5, 0.20000000298023224, 0, 0.10000000149011612, 0.20000000298023224, 1, 0.10000000149011612, 0.20000000298023224, 1 ],
+                                colors:[0.5, 0.2, 0, 0.1, 0.2, 1, 0.1, 0.2, 1 ],
                                 vertices:[ 2, 2, 3, 2, 3, 4, 2, 3, 4 ],
-                                uvs:[0.1, 0.2, 0.5, 0.2, 0.1, 0.2],
+                                uvs:[0.1, 0.2, 0.1, 0.2, 0.5, 0.2],
                                 normals:[-2, 3, 4, -2, 3, 4, -1, 2, 3],
                                 morphTargets: [],
-                                indices:[0,1,2]
+                                indices:[0, 2, 1 ]
                             }
                         ]
                     }
