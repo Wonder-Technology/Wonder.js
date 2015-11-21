@@ -273,12 +273,6 @@ module dy {
             return false;
         }
 
-        //private _needSendNormal(){
-        //    return !!this.shader.getLibs().findOne((lib:ShaderLib) => {
-        //        return lib.needSendNormal;
-        //    });
-        //}
-
         private _initMirrorMap(){
             if(this.mirrorMap){
                 this.shader.addLib(dy.MirrorShaderLib.create());

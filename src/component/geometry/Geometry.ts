@@ -16,21 +16,11 @@ module dy{
 
         public buffers:BufferContainer = null;
 
-
-
         @Out(function(){
             var geometryData = this.buffers.geometryData;
 
             assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
-            //assert(geometryData.indices.length * 3 === geometryData.vertices.length, Log.info.FUNC_SHOULD_NOT("vertices", "be duplicated"));
             assert(geometryData.faces.length * 3 === geometryData.indices.length, Log.info.FUNC_SHOULD("faces.count", `be ${geometryData.indices.length / 3}, but actual is ${geometryData.faces.length}`));
-
-            //if(geometryData.normals && geometryData.normals.length > 0){
-            //    geometryData.faces.forEach((face:Face3, index:number) => {
-            //        assert(face.vertexNormals.getCount() === 3 && face.vertexNormals.isEqual(), Log.info.FUNC_SHOULD())
-            //    })
-            //
-            //}
         })
         public init(){
             var geometryData = null,

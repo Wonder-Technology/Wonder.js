@@ -21,9 +21,6 @@ module dy {
         private _isCacheChangeFlag:any = {};
         private _isCacheChangeInLastLoop = {};
 
-        public init() {
-        }
-
         @In(function (type:BufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })

@@ -9,10 +9,6 @@ module dy{
 
         public type:string = "morphNormal";
 
-        //todo refactor
-        @In(function(program:Program, quadCmd:QuadCommand, material:Material){
-
-        })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
             if(quadCmd.buffers.hasChild(BufferDataType.NORMAL)){
                 let morphNormalData = quadCmd.buffers.getChild(BufferDataType.NORMAL);

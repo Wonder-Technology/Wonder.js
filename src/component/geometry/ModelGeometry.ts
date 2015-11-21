@@ -77,7 +77,6 @@ module dy{
             }
         })
         protected createBufferContainer():BufferContainer{
-            //todo refactor?
             if(this.hasAnimation()){
                 return MorphBufferContainer.create(this.gameObject.getComponent<MorphAnimation>(MorphAnimation));
             }

@@ -4,7 +4,6 @@ module dy {
         public geometryData:GeometryData = null;
 
         //virtual
-        //todo remove?
         public init(){
         }
 
@@ -79,7 +78,6 @@ module dy {
 
         protected container:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
 
-        //todo refactor
         @cache(function(type:BufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
         }, function(type){

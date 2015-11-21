@@ -20,9 +20,6 @@ module dy {
         public cIndex:number = null;
         public faceNormal:Vector3 = null;
         public vertexNormals:dyCb.Collection<Vector3> = null;
-        ////todo all init value?
-        //public morphFaceNormals:dyCb.Hash<dyCb.Collection<Vector3>> = dyCb.Hash.create<dyCb.Collection<Vector3>>();
-        //public morphVertexNormals:dyCb.Hash<dyCb.Collection<dyCb.Collection<Vector3>>> = dyCb.Hash.create<dyCb.Collection<dyCb.Collection<Vector3>>>();
 
         public copy(){
             var copyFaceNormal = this.faceNormal ? this.faceNormal.copy() : null,

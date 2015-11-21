@@ -66,7 +66,6 @@ module dy {
                             geometry.material = self._buildMaterial(object.material, parseData.materials);
                         }
 
-                        //todo test in loaderSpec
                         geometry.morphTargets = object.morphTargets;
                         geometry.morphFaceNormals = object.morphNormals;
                         geometry.morphVertexNormals = object.morphNormals;
