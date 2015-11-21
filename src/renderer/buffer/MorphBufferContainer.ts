@@ -17,7 +17,6 @@ module dy {
 
         protected container:dyCb.Hash<Buffer&Array<ArrayBuffer>>;
 
-        //private _cache:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
         private _animation:MorphAnimation = null;
         private _isCacheChangeFlag:any = {};
         private _isCacheChangeInLastLoop = {};
@@ -25,38 +24,21 @@ module dy {
         public init() {
         }
 
-        //todo
-        //@cache(function(type){
-        //    return !this._needReCalcuteTangent(type) && this._cache.hasChild(type) && !this._animation.isFrameChange;
-        //}, function(type){
-        //    return this._cache.getChild(<any>type);
-        //}, function(result, type){
-        //    this._cache.addChild(<any>type, result);
-        //})
-
-
-        //todo refactor
-        //@In(function (type:BufferDataType) {
-        //    assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
-        //})
+        @In(function (type:BufferDataType) {
+            assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
+        })
         protected getVertice(type:BufferDataType) {
-            //return this._getMorphData(type, this.geometryData.morphTargets.getChild(this._animation.currentAnimName));
-            //
-
-            //var animVertice = this._getMorphData(type, this.geometryData.morphTargets.getChild(this._animation.currentAnimName));
-
-            //return [animVertice.getChild(this._animation.currentFrame), animVertice.getChild(this._animation.nextFrame)];
             return this._getMorphData(type, this.geometryData.morphTargets);
         }
 
+        @In(function (type:BufferDataType) {
+            assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
+        })
         protected getNormal(type:BufferDataType) {
-            //var animNormals = this._getMorphData(type, this.geometryData.morphNormals.getChild(this._animation.currentAnimName));
-            //
-            //return [animNormals.getChild(this._animation.currentFrame), animNormals.getChild(this._animation.nextFrame)];
             return this._getMorphData(type, this.geometryData.morphNormals);
         }
 
-        private _getMorphData(type:BufferDataType, morphDataContainer:dyCb.Hash<dyCb.Collection<Array<number>>>):Array<ArrayBuffer> {
+        private _getMorphData(type:BufferDataType, morphDataTargets:dyCb.Hash<dyCb.Collection<Array<number>>>):Array<ArrayBuffer> {
             var cacheData = null,
                 frames = null,
                 result = null;
@@ -65,9 +47,9 @@ module dy {
                 return this._getStaticData(type);
             }
 
-            frames = morphDataContainer.getChild(this._animation.currentAnimName);
+            frames = morphDataTargets.getChild(this._animation.currentAnimName);
 
-            dyCb.Log.error(!frames, dyCb.Log.info.FUNC_NOT_EXIST(`"${this._animation.currentAnimName}" animation data`));
+            dyCb.Log.error(!frames, dyCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
 
             cacheData = this.container.getChild(<any>type);
 
@@ -81,7 +63,7 @@ module dy {
                 this._isCacheChangeInLastLoop[type] = false;
             }
             else {
-                if (this._animation.isFrameChange && (this._isCacheChangeInLastLoop[type] || !this._isCacheChange(type))) {
+                if (this._animation.isFrameChange && (this._isCacheChangeInLastLoop[type] || this._isCacheNotChange(type))) {
                     let [currentBuffer, nextBuffer] = cacheData,
                         newCurrentBuffer = null,
                         newNextBuffer = null;
@@ -89,7 +71,7 @@ module dy {
 
                     //todo use double-buffer cache?
                     newCurrentBuffer = nextBuffer;
-                    newNextBuffer = currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)))
+                    newNextBuffer = currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)));
 
                     result = [newCurrentBuffer, newNextBuffer];
 
@@ -109,27 +91,28 @@ module dy {
             return result;
         }
 
-        private _isCacheChange(type:BufferDataType){
-            return this._isCacheChangeFlag[type];
+        private _isCacheNotChange(type:BufferDataType){
+            return !this._isCacheChangeFlag[type];
         }
 
         private _isNotPlayAnimation(){
             return this._animation.currentAnimName === null;
         }
-        
+
+        @cache(function(type:BufferDataType){
+            return this.container.hasChild(this._getStaticDataCacheData(type));
+        }, function(type){
+            return this.container.getChild(this._getStaticDataCacheData(type))
+        }, function(result, type){
+            this.container.addChild(this._getStaticDataCacheData(type), result);
+        })
         @In(function(type:BufferDataType){
             
         })
         private _getStaticData(type:BufferDataType){
-            const CACHE_KEY = `static_${type}`;
-            var cacheData = this.container.getChild(CACHE_KEY),
-                data = null,
+            var data = null,
                 result = null;
-            
-            if(cacheData){
-                return cacheData;
-            }
-            
+
             switch(type){
                 case BufferDataType.VERTICE:
                     data = this.geometryData.vertices;
@@ -150,9 +133,11 @@ module dy {
                 ArrayBuffer.create(new Float32Array(data), 3, BufferType.FLOAT, BufferUsage.DYNAMIC_DRAW),
                 ];
 
-            this.container.addChild(CACHE_KEY, result);
-
             return result;
+        }
+
+        private _getStaticDataCacheData(type:BufferDataType){
+            return `static_${type}`;
         }
     }
 }
