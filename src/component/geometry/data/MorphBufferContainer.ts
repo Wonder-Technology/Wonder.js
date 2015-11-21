@@ -21,14 +21,14 @@ module dy {
         private _isCacheChangeFlag:any = {};
         private _isCacheChangeInLastLoop = {};
 
-        @In(function (type:BufferDataType) {
+        @require(function (type:BufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })
         protected getVertice(type:BufferDataType) {
             return this._getMorphData(type, this.geometryData.morphTargets);
         }
 
-        @In(function (type:BufferDataType) {
+        @require(function (type:BufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })
         protected getNormal(type:BufferDataType) {
@@ -103,7 +103,7 @@ module dy {
         }, function(result, type){
             this.container.addChild(this._getStaticDataCacheData(type), result);
         })
-        @In(function(type:BufferDataType){
+        @require(function(type:BufferDataType){
             
         })
         private _getStaticData(type:BufferDataType){

@@ -155,7 +155,7 @@ module dy {
         public geometry:Geometry = null;
 
 
-        @In(function(){
+        @require(function(){
             assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
         })
         public init(){

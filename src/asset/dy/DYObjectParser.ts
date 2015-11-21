@@ -150,7 +150,7 @@ module dy {
             });
         }
 
-        @In(function (container, targetVerticeIndex, targetUvIndex) {
+        @require(function (container, targetVerticeIndex, targetUvIndex) {
             assert(this._isUvIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetUvIndex), Log.info.FUNC_SHOULD("uvIndex", "equal the one of added vertex"))
         })
         private _getVerticeIndexOfAddedVertexByFindContainer(container, targetVerticeIndex, targetUvIndex) {
@@ -248,7 +248,7 @@ module dy {
         }
 
 
-        @Out(function (returnValue, object) {
+        @ensure(function (returnValue, object) {
             assert(!object.verticeIndices, Log.info.FUNC_SHOULD("object.verticeIndices", "be removed"));
             assert(!object.uvIndices, Log.info.FUNC_SHOULD("object.uvIndices", "be removed"));
             assert(!object.normalIndices, Log.info.FUNC_SHOULD("object.normalIndices", "be removed"));

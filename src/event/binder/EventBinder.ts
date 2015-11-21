@@ -21,7 +21,7 @@ module dy {
         public on(target:GameObject, listener:{}|EventListener):void;
         public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
 
-        @In(function(args){
+        @require(function(args){
             if(arguments.length === 1){
             }
             else if(arguments.length === 2){

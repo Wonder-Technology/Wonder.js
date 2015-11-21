@@ -22,21 +22,21 @@ module dy{
             return this._hasMorphTargets() && (this.gameObject && this.gameObject.hasComponent(MorphAnimation));
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasMorphFaceNormals(){
             return this.buffers.geometryData.hasMorphFaceNormals();
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasMorphVertexNormals(){
             return this.buffers.geometryData.hasMorphVertexNormals();
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public computeMorphNormals() {
@@ -71,7 +71,7 @@ module dy{
             };
         }
 
-        @In(function(){
+        @require(function(){
             if(this.hasAnimation()) {
                 assert(this.gameObject.getComponent(MorphAnimation), Log.info.FUNC_SHOULD("gameObject with ModelGeometry", "add MorphAnimation component"));
             }

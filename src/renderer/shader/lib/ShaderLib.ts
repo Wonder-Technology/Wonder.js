@@ -73,7 +73,7 @@ module dy{
             program.sendAttributeData(name, VariableType.BUFFER, data);
         }
 
-        @In(function(program:Program, name:string, data:any){
+        @require(function(program:Program, name:string, data:any){
             assert(!!VariableLib[name], `${name} should exist in VariableLib`);
         })
         protected sendUniformData(program:Program, name:string, data:any){

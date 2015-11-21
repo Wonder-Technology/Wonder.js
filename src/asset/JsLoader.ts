@@ -13,7 +13,7 @@ module dy{
         protected loadAsset(url:string):dyRt.Stream;
         protected loadAsset(url:Array<string>):dyRt.Stream;
 
-        @In(function (...args) {
+        @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
         protected loadAsset(arg):dyRt.Stream {

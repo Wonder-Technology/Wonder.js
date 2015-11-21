@@ -26,7 +26,7 @@ module dy {
         return faces;
     }
 
-        @In(function(data){
+        @require(function(data){
             if(data){
                 assert(data instanceof dyCb.Collection || data instanceof dyCb.Hash || JudgeUtils.isArray(data), Log.info.FUNC_SHOULD("data",  "be Array or Collection or Hash"));
             }

@@ -41,7 +41,7 @@ module dy{
             return this.buffer;
         }
 
-        @In(function(data:any, num:number = this.num, type:BufferType = this._type){
+        @require(function(data:any, num:number = this.num, type:BufferType = this._type){
             assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
         })
         public resetData(data:any, num:number = this.num, type:BufferType = this._type){

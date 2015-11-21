@@ -16,7 +16,7 @@ module dy{
 
         public buffers:BufferContainer = null;
 
-        @Out(function(){
+        @ensure(function(){
             var geometryData = this.buffers.geometryData;
 
             assert(geometryData.vertices.length > 0, Log.info.FUNC_MUST("vertices.count", "> 0"));
@@ -65,14 +65,14 @@ module dy{
             }
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasFaceNormals(){
             return this.buffers.geometryData.hasFaceNormals();
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public hasVertexNormals(){
@@ -89,7 +89,7 @@ module dy{
             this._material.dispose();
         }
 
-        @In(function(){
+        @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
         public computeFaceNormals() {

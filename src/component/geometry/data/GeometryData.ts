@@ -15,7 +15,7 @@ module dy {
             this.isTangentDirty = true;
         }
 
-        @InGetter(function () {
+        @requireGetter(function () {
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("faces.count", "> 0"));
 
             for (let face of this._faces) {
@@ -27,7 +27,7 @@ module dy {
                 }
             }
         })
-        @OutGetter(function (normals) {
+        @ensureGetter(function (normals) {
             assert(normals.length > 0, Log.info.FUNC_SHOULD("geometry", "contain normals data"));
         })
         @cacheGetter(function(){
@@ -184,10 +184,10 @@ module dy {
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
 
-        @In(function(){
+        @require(function(){
             assert(GeometryUtils.hasData(this.vertices), Log.info.FUNC_MUST("contain vertices"));
         })
-        @Out(function(){
+        @ensure(function(){
             for(let face of this._faces) {
                 assert(face.faceNormal instanceof Vector3, Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
             }
@@ -218,7 +218,7 @@ module dy {
             }
         }
 
-        //@In(function(){
+        //@require(function(){
         //    var hasFaceNormal = !this._faces[0].faceNormal.isZero() && !this._faces[1].faceNormal.isZero();
         //
         //    if(hasFaceNormal){
@@ -243,7 +243,7 @@ module dy {
         }
 
 
-        //@In(function(){
+        //@require(function(){
         //    var hasVertexNormal = this._faces[0].vertexNormals.getCount() > 0;
         //
         //    if(hasVertexNormal){

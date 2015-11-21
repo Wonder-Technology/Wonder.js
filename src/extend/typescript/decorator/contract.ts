@@ -4,7 +4,7 @@ module dy{
         Log.error(!cond, message);
     }
 
-    export function In(InFunc) {
+    export function require(InFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
 
@@ -20,7 +20,7 @@ module dy{
         }
     }
 
-    export function Out(OutFunc) {
+    export function ensure(OutFunc) {
         return function (target, name, descriptor) {
             var value = descriptor.value;
 
@@ -39,7 +39,7 @@ module dy{
         }
     }
 
-    export function InGetter(InFunc) {
+    export function requireGetter(InFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get,
                 setter = descriptor.set;
@@ -64,7 +64,7 @@ module dy{
         }
     }
 
-    export function OutGetter(OutFunc) {
+    export function ensureGetter(OutFunc) {
         return function (target, name, descriptor) {
             var getter = descriptor.get,
                 setter = descriptor.set;
@@ -92,7 +92,7 @@ module dy{
         }
     }
 
-    export function Invariant(func) {
+    export function invariant(func) {
         return function (target) {
             if(Main.isTest) {
                 func(target);

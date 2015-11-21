@@ -9,7 +9,7 @@ module dy{
 
         public type:string = "morphVertice";
 
-        @In(function(program:Program, quadCmd:QuadCommand, material:Material){
+        @require(function(program:Program, quadCmd:QuadCommand, material:Material){
             assert(!!quadCmd.animation, Log.info.FUNC_SHOULD("gameObject", "add MorphAnimation component"));
         })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){

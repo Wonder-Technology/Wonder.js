@@ -417,35 +417,35 @@ module dy {
             });
         }
 
-        @In(function(){
+        @require(function(){
             assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
         }
 
-        @In(function(){
+        @require(function(){
             assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
         })
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
 
-        @In(function(){
+        @require(function(){
             assert(this._getComponentCount(Camera) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera component"));
         })
         private _getCamera():Camera{
             return this.getComponent<Camera>(Camera);
         }
 
-        @In(function(){
+        @require(function(){
             assert(this._getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 animation component"));
         })
         private _getAnimation():Animation{
             return this.getComponent<Animation>(Animation);
         }
 
-        @In(function(){
+        @require(function(){
             assert(this._getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
         })
         private _getRendererComponent():RendererComponent{
