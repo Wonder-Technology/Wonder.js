@@ -5,24 +5,10 @@ describe("DYParser", function () {
 
     function setJson(data) {
         testTool.extend(json, data);
-        //
-        //return testTool.extendDeep(json);
     }
 
     function setObject(data) {
-        //data = testTool.extend({
-        //    //vertices: [],
-        //    //morphTargets: [],
-        //    ////normals: [],
-        //    //colors: [],
-        //    //uvs: [],
-        //    ////indices: []
-        //    //faces:[]
-        //}, data);
-
         json.objects.push(data);
-
-        //return testTool.extendDeep(json);
     }
 
     beforeEach(function () {
@@ -161,7 +147,7 @@ describe("DYParser", function () {
                         0, 1, 2, 4, 3, 2
                     ]);
                 });
-                it("test one vertex has multi different uvs", function() {
+                it("test one vertex has multi different uvs(only add vertex that has different uvs, not add it which's corresponding uvIndice is the same as the prev one)", function() {
                     setObject({
                         name: "a",
                         vertices: [1, 2, 3, 4, -1, -2, 3, 2, 3, 4, -1, -4],

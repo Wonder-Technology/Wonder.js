@@ -196,6 +196,7 @@
 /// <reference path="asset/dy/DYFileType"/>
 /// <reference path="asset/dy/DYLoader"/>
 /// <reference path="asset/dy/DYParser"/>
+/// <reference path="asset/dy/DYObjectParser"/>
 /// <reference path="asset/dy/DYBuilder"/>
 
 
