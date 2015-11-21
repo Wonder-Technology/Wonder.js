@@ -197,7 +197,7 @@ module dy {
             }
         }
 
-        //virtual
+        @virtual
         protected addShaderLib(){
         }
 

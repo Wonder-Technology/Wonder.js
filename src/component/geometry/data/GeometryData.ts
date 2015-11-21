@@ -267,7 +267,7 @@ module dy {
             return true;
         }
 
-        //virtual
+        @virtual
         protected onChangeFace(){
             this.isTangentDirty = true;
             this._normalDirty = true;

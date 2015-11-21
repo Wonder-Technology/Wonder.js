@@ -8,6 +8,7 @@
 /// <reference path="extend/dyRt"/>
 /// <reference path="extend/typescript/decorator/contract"/>
 /// <reference path="extend/typescript/decorator/cache"/>
+/// <reference path="extend/typescript/decorator/virtual"/>
 /// <reference path="extend/Global"/>
 /// <reference path="extend/Variable"/>
 

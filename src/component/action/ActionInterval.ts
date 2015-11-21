@@ -56,7 +56,7 @@ module dy {
             this._timeController.resume();
         }
 
-        /*! virtual method */
+        @virtual
         protected updateBody(time:number){
         }
 

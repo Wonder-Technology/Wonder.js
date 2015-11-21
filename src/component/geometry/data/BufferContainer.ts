@@ -3,7 +3,7 @@ module dy {
     export abstract class BufferContainer {
         public geometryData:GeometryData = null;
 
-        //virtual
+        @virtual
         public init(){
         }
 

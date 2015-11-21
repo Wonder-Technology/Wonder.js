@@ -51,7 +51,7 @@ module dy{
             this.computeNormals();
         }
 
-        //virtual
+        @virtual
         protected computeNormals(){
             if(this.isSmoothShading()){
                 if(!this.hasVertexNormals()){
@@ -102,12 +102,12 @@ module dy{
 
         protected abstract computeData(): GeometryDataType;
 
-        //virtual
+        @virtual
         protected createBufferContainer():BufferContainer{
             return CommonBufferContainer.create();
         }
 
-        //virtual
+        @virtual
         protected createGeometryData():GeometryData{
             return CommonGeometryData.create(this);
         }
