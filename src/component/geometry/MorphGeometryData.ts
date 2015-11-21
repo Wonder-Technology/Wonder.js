@@ -7,9 +7,6 @@ module dy {
             return obj;
         }
 
-        //@InGetter(function(){
-            //assert(this.geometry instanceof ModelGeometry, Log.info.FUNC_SHOULD("geometry", "be ModelGeometry"));
-        //})
         @cacheGetter(function(){
             return !this._morphNormalDirty && this._morphNormalCache;
         }, function(){
@@ -31,7 +28,6 @@ module dy {
             }
 
             if (!geometry.hasMorphFaceNormals()) {
-                //geometry.computeMorphFaceNormals();
                 geometry.computeMorphNormals();
             }
 
@@ -52,19 +48,16 @@ module dy {
         private _morphNormalCache:Array<number> = null;
         private _morphNormalDirty:boolean = true;
 
-
         public computeMorphNormals() {
                 var geometry = this.geometry,
                 self = this;
 
             this._morphTargets.forEach((frames:DYFileParseMorphTargetsData, animName) => {
-                var faceNormalList = dyCb.Collection.create<Array<number>>();
-                var vertexNormalList = dyCb.Collection.create<Array<number>>();
+                var faceNormalList = dyCb.Collection.create<Array<number>>(),
+                    vertexNormalList = dyCb.Collection.create<Array<number>>();
 
-
-                //todo change?
                 frames.forEach((vertices:Array<number>) => {
-                    var tempGeometryData = MorphGeometryData.create(geometry),
+                    let tempGeometryData = MorphGeometryData.create(geometry),
                         faceNormalsOfEachFrame = null,
                         vertexNormalsOfEachFrame = null;
 
@@ -85,6 +78,18 @@ module dy {
             });
         }
 
+        public hasMorphFaceNormals(){
+            return this.geometry.morphFaceNormals.getCount() > 0;
+        }
+
+        public hasMorphVertexNormals(){
+            return this.geometry.morphVertexNormals.getCount() > 0;
+        }
+
+        protected onChangeFace(){
+            this._morphNormalDirty = true;
+        }
+
         private _copyFaces(faces:Array<Face3>){
             var copyFaces = [];
 
@@ -97,63 +102,6 @@ module dy {
 
         private _getMorphNormals(geometryData:MorphGeometryData){
             return [geometryData.normalsFromFaceNormal, geometryData.normalsFromVertexNormals];
-        }
-
-        @In(function(){
-            //var hasFaceNormal = !this.faces[0].faceNormal.isZero();
-            //
-            //if(hasFaceNormal){
-            //    for(let face of this.faces){
-            //        assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-            //    }
-            //}
-            //else{
-            //    for(let face of this.faces){
-            //        assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-            //    }
-            //}
-            //todo
-        })
-        public hasMorphFaceNormals(){
-            return this.geometry.morphFaceNormals.getCount() > 0;
-            //return this.faces[0].morphFaceNormals.filter((faceNormal:Vector3) => {
-            //    return faceNormal.isZero();
-            //}).getCount() === 0;
-        }
-
-        @In(function(){
-            //var hasVertexNormal = this.faces[0].vertexNormals.getCount() > 0;
-            //
-            //if(hasVertexNormal){
-            //    for(let face of this.faces) {
-            //        assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-            //    }
-            //}
-            //else{
-            //    for(let face of this.faces) {
-            //        assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-            //    }
-            //}
-            //todo
-        })
-        public hasMorphVertexNormals(){
-            return this.geometry.morphVertexNormals.getCount() > 0;
-            //var result = false;
-            //
-            //this.faces[0].morphVertexNormals.forEach((vertexNormals:dyCb.Collection<dyCb.Collection<Vector3>>) => {
-            //    if(vertexNormals.filter((vertexNormal:dyCb.Collection<Vector3>) => {
-            //            return vertexNormal.getCount() > 0;
-            //        }).getCount() > 0){
-            //        result = true;
-            //        return dyCb.$BREAK;
-            //    }
-            //});
-            //
-            //return result;
-        }
-
-        protected onChangeFace(){
-            this._morphNormalDirty = true;
         }
     }
 }

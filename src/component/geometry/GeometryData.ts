@@ -28,7 +28,7 @@ module dy {
             }
         })
         @OutGetter(function (normals) {
-            assert(normals.length > 0, Log.info.FUNC_MUST("geometry", "contain normals data"));
+            assert(normals.length > 0, Log.info.FUNC_SHOULD("geometry", "contain normals data"));
         })
         @cacheGetter(function(){
             return !this._normalDirty && this._normalCache;
@@ -36,12 +36,10 @@ module dy {
             return this._normalCache;
         }, function(result){
             this._normalCache = result;
+            this._normalDirty = false;
         })
         get normals() {
-            //var normals = [],
             var geometry = this.geometry;
-
-            this._normalDirty = false;
 
             if (geometry.isSmoothShading()) {
                 if (!geometry.hasVertexNormals()) {
@@ -57,6 +55,14 @@ module dy {
             return this.normalsFromFaceNormal;
         }
 
+        @cacheGetter(function(){
+            return !this._normalDirty && this._normalFromFaceCache;
+        }, function(){
+            return this._normalFromFaceCache;
+        }, function(result){
+            this._normalFromFaceCache = result;
+            this._normalDirty = false;
+        })
         get normalsFromFaceNormal(){
             var normals = null;
 
@@ -74,12 +80,20 @@ module dy {
                 GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
             });
 
-            //todo optimize:not fill, remain NaN?
+            //todo optimize:not fill, keep NaN?
             this._fillEmptyData(normals);
 
             return normals;
         }
 
+        @cacheGetter(function(){
+            return !this._normalDirty && this._normalFromVertexCache;
+        }, function(){
+            return this._normalFromVertexCache;
+        }, function(result){
+            this._normalFromVertexCache = result;
+            this._normalDirty = false;
+        })
         get normalsFromVertexNormals(){
             var normals = null;
 
@@ -107,11 +121,10 @@ module dy {
             return this._indiceCache;
         }, function(result){
             this._indiceCache = result;
+            this._indiceDirty = false;
         })
         get indices():Array<number> {
             var indices = [];
-
-            this._indiceDirty = false;
 
             for (let face of this._faces) {
                 indices.push(face.aIndex, face.bIndex, face.cIndex);
@@ -165,6 +178,8 @@ module dy {
         protected geometry:Geometry = null;
 
         private _normalCache:Array<number> = null;
+        private _normalFromFaceCache:Array<number> = null;
+        private _normalFromVertexCache:Array<number> = null;
         private _indiceCache:Array<number> = null;
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
@@ -181,24 +196,8 @@ module dy {
             var vertices = this._vertices;
 
             for (let face of this._faces) {
-                //let p0 = GeometryUtils.getThreeComponent(vertices, face.aIndex),
-                //    p1 = GeometryUtils.getThreeComponent(vertices, face.bIndex),
-                //    p2 = GeometryUtils.getThreeComponent(vertices, face.cIndex),
-                //    v0 = Vector3.create().sub2(p2, p1),
-                //    v1 = Vector3.create().sub2(p0, p1);
-
                 face.faceNormal = this.computeFaceNormalsHelper(vertices, face.aIndex, face.bIndex, face.cIndex);
             }
-        }
-
-        protected computeFaceNormalsHelper(vertices:Array<number>, aIndex:number, bIndex:number, cIndex:number) {
-            var p0 = GeometryUtils.getThreeComponent(vertices, aIndex),
-                p1 = GeometryUtils.getThreeComponent(vertices, bIndex),
-                p2 = GeometryUtils.getThreeComponent(vertices, cIndex),
-                v0 = Vector3.create().sub2(p2, p1),
-                v1 = Vector3.create().sub2(p0, p1);
-
-            return Vector3.create().cross(v0, v1).normalize();
         }
 
         public computeVertexNormals() {
@@ -219,9 +218,74 @@ module dy {
             }
         }
 
+        //@In(function(){
+        //    var hasFaceNormal = !this._faces[0].faceNormal.isZero() && !this._faces[1].faceNormal.isZero();
+        //
+        //    if(hasFaceNormal){
+        //        for(let face of this._faces){
+        //            assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+        //        }
+        //    }
+        //    else{
+        //        for(let face of this._faces){
+        //            assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
+        //        }
+        //    }
+        //})
+        public hasFaceNormals(){
+            for(let face of this._faces){
+                if(face.faceNormal.isZero()){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        //@In(function(){
+        //    var hasVertexNormal = this._faces[0].vertexNormals.getCount() > 0;
+        //
+        //    if(hasVertexNormal){
+        //        for(let face of this._faces) {
+        //            assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+        //        }
+        //    }
+        //    else{
+        //        for(let face of this._faces) {
+        //            assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
+        //        }
+        //    }
+        //})
+        public hasVertexNormals(){
+            for(let face of this._faces){
+                if(face.vertexNormals.getCount() === 0){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        //virtual
+        protected onChangeFace(){
+            this.isTangentDirty = true;
+            this._normalDirty = true;
+            this._indiceDirty = true;
+        }
+
+        protected computeFaceNormalsHelper(vertices:Array<number>, aIndex:number, bIndex:number, cIndex:number) {
+            var p0 = GeometryUtils.getThreeComponent(vertices, aIndex),
+                p1 = GeometryUtils.getThreeComponent(vertices, bIndex),
+                p2 = GeometryUtils.getThreeComponent(vertices, cIndex),
+                v0 = Vector3.create().sub2(p2, p1),
+                v1 = Vector3.create().sub2(p0, p1);
+
+            return Vector3.create().cross(v0, v1).normalize();
+        }
+
         protected computeVertexNormalsHelper(vertices:Array<number>){
             var vl = vertices.length / 3,
-                morphFaceNormals = null,
                 normals = null;
 
             normals = new Array(vl);
@@ -229,33 +293,6 @@ module dy {
             for (let v = 0; v < vl; v++) {
                 normals[v] = Vector3.create();
             }
-
-            //todo
-            //if ( areaWeighted ) {
-            //
-            //    // vertex normals weighted by triangle areas
-            //    // http://www.iquilezles.org/www/articles/normals/normals.htm
-            //
-            //    var vA, vB, vC;
-            //    var cb = Vector3.create(),
-            //        ab = Vector3.create();
-            //
-            //    this._faces.forEach((face:Face3) => {
-            //        vA = self._getThreeComponent(self._vertices, face.aIndex);
-            //        vB = self._getThreeComponent(self._vertices, face.bIndex);
-            //        vC = self._getThreeComponent(self._vertices, face.cIndex);
-            //
-            //        cb.sub2( vC, vB );
-            //        ab.sub2( vA, vB );
-            //        cb.cross(cb, ab );
-            //
-            //        normals[ face.aIndex ].add( cb );
-            //        normals[ face.bIndex ].add( cb );
-            //        normals[ face.cIndex ].add( cb );
-            //    });
-            //
-            //}
-            //else {
 
             for (let face of this._faces) {
                 let faceNormal = null;
@@ -266,7 +303,6 @@ module dy {
                 normals[face.bIndex].add(faceNormal);
                 normals[face.cIndex].add(faceNormal);
             }
-            //}
 
             for (let v = 0; v < vl; v++) {
                 normals[v].normalize();
@@ -275,56 +311,11 @@ module dy {
             return normals;
         }
 
-        @In(function(){
-            //var hasFaceNormal = !this._faces[0].faceNormal.isZero();
-            //
-            //if(hasFaceNormal){
-            //    for(let face of this._faces){
-            //        assert(!face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-            //    }
-            //}
-            //else{
-            //    for(let face of this._faces){
-            //        assert(face.faceNormal.isZero(), Log.info.FUNC_MUST_BE("faces", "either all has face normal data or all not"));
-            //    }
-            //}
-        })
-        public hasFaceNormals(){
-            return !this._faces[0].faceNormal.isZero();
-        }
-
-
-        @In(function(){
-            var hasVertexNormal = this._faces[0].vertexNormals.getCount() > 0;
-
-            if(hasVertexNormal){
-                for(let face of this._faces) {
-                    assert(face.vertexNormals.getCount() > 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-                }
-            }
-            else{
-                for(let face of this._faces) {
-                    assert(face.vertexNormals.getCount() === 0, Log.info.FUNC_MUST_BE("faces", "either all has vertex normal data or all not"));
-                }
-            }
-        })
-        public hasVertexNormals(){
-            return this._faces[0].vertexNormals.getCount() > 0;
-        }
-
-        //virtual
-        protected onChangeFace(){
-            this.isTangentDirty = true;
-            this._normalDirty = true;
-            this._indiceDirty = true;
-        }
-
         private _getColors(colors:Array<number>, vertices:Array<number>) {
             if (colors && colors.length > 0) {
                 return colors;
             }
             else {
-                //todo compute from vertexColors(refer to threejs)
                 return this._getColorsFromMaterial(vertices);
             }
         }

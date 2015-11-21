@@ -17,13 +17,8 @@ describe("ModelGeometry", function() {
         return dy.GeometryUtils.convertToFaces(indices, normals);
     }
 
-    function createAnimation(animName, currentFrame, nextFrame){
-        var animation = dy.MorphAnimation.create();
-        animation.currentFrame = currentFrame || 0;
-        animation.nextFrame = nextFrame || 1;
-        animation.currentAnimName = animName;
-
-        return animation;
+    function createAnimation(){
+        return dy.MorphAnimation.create();
     }
 
     beforeEach(function () {
@@ -35,6 +30,88 @@ describe("ModelGeometry", function() {
         testTool.clearInstance();
         sandbox.restore();
     });
+    
+    describe("get normalsFromFaceNormal", function(){
+        var model;
+        var geometryData;
+
+        beforeEach(function(){
+            model = dy.GameObject.create();
+            geo = createGeometry(Geometry);
+            model.addComponent(geo);
+            model.addComponent(createAnimation());
+
+            geo.vertices = [1,-1,0, 0,1,0,0,0,1];
+            geo.faces = createFaces([0,2,1]);
+
+
+            geo.init();
+
+
+            geometryData = geo.buffers.geometryData;
+        });
+        
+        it("if cached, return cache data", function(){
+            var normals1 = geometryData.normalsFromFaceNormal;
+            var normals2 = geometryData.normalsFromFaceNormal;
+
+            expect(normals2 === normals1).toBeTruthy();
+        });
+        it("if change normal, not use cache data", function(){
+            var normals1 = geometryData.normalsFromFaceNormal;
+            geometryData.faces = geometryData.faces;
+            var normals2 = geometryData.normalsFromFaceNormal;
+
+            expect(normals2 === normals1).toBeFalsy();
+
+
+            var normals3 = geometryData.normalsFromFaceNormal;
+
+            expect(normals3 === normals2).toBeTruthy();
+        });
+
+    });
+
+    describe("get normalsFromVertexNormals", function(){
+        var model;
+        var geometryData;
+
+        beforeEach(function(){
+            model = dy.GameObject.create();
+            geo = createGeometry(Geometry);
+            model.addComponent(geo);
+            model.addComponent(createAnimation());
+
+            geo.vertices = [1,-1,0, 0,1,0,0,0,1];
+            geo.faces = createFaces([0,2,1]);
+
+
+            geo.init();
+
+
+            geometryData = geo.buffers.geometryData;
+        });
+
+        it("if cached, return cache data", function(){
+            var normals1 = geometryData.normalsFromVertexNormals;
+            var normals2 = geometryData.normalsFromVertexNormals;
+
+            expect(normals2 === normals1).toBeTruthy();
+        });
+        it("if change normal, not use cache data", function(){
+            var normals1 = geometryData.normalsFromVertexNormals;
+            geometryData.faces = geometryData.faces;
+            var normals2 = geometryData.normalsFromVertexNormals;
+
+            expect(normals2 === normals1).toBeFalsy();
+
+
+            var normals3 = geometryData.normalsFromVertexNormals;
+
+            expect(normals3 === normals2).toBeTruthy();
+        });
+    });
+
 
     describe("computeMorphNormals", function(){
         describe("compute morph face normals", function(){
@@ -42,7 +119,7 @@ describe("ModelGeometry", function() {
                 var model = dy.GameObject.create();
                 geo = createGeometry(Geometry);
                 model.addComponent(geo);
-                model.addComponent(createAnimation("play"));
+                model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.morphTargets = dyCb.Hash.create({
@@ -83,7 +160,7 @@ describe("ModelGeometry", function() {
                 var model = dy.GameObject.create();
                 geo = createGeometry(Geometry, dy.Shading.SMOOTH);
                 model.addComponent(geo);
-                model.addComponent(createAnimation("play"));
+                model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1, 2,3,-2];
                 geo.morphTargets = dyCb.Hash.create({
