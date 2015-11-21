@@ -64,6 +64,8 @@ module dy {
 
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
             this._shader = Shader.create();
+            this._shader.addLib(CommonShaderLib.create());
+            this._shader.addLib(CommonVerticeShaderLib.create());
             this._shader.addLib(lib);
             //this._shader.buildGLSLAndInitProgram();
         }
