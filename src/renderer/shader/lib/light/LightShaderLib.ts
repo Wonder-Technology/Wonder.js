@@ -109,6 +109,7 @@ module dy{
             this._addDefine(this.vsSourceDefineList, direction_lights_count, point_lights_count);
             this._addDefine(this.fsSourceDefineList, direction_lights_count, point_lights_count);
 
+            //todo if "both side" logic become complex or be used in many places, then it should extract BothSideShaderLib and NoBothSideShaderLib
             if(material.side === Side.BOTH){
                 this.fsSourceDefineList.addChildren([{
                     name: "BOTH_SIDE"

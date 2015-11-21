@@ -247,6 +247,10 @@ module dy {
             }
         }
 
+        protected addUniqueShaderLib(lib:ShaderLib){
+
+        }
+
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
 
