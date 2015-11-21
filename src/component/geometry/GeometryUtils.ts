@@ -45,10 +45,21 @@ module dy {
             );
         }
 
-        public static setThreeComponent(targetData:Array<number>, sourceData:Vector3, index:number) {
-            targetData[index * 3] = sourceData.x;
-            targetData[index * 3 + 1] = sourceData.y;
-            targetData[index * 3 + 2] = sourceData.z;
+
+        public static setThreeComponent(targetData:Array<number>, sourceData:Vector3, index:number);
+        public static setThreeComponent(targetData:Array<number>, sourceData:Array<number>, index:number);
+
+        public static setThreeComponent(targetData:Array<number>, sourceData:any, index:number) {
+            if(sourceData instanceof Vector3){
+                targetData[index * 3] = sourceData.x;
+                targetData[index * 3 + 1] = sourceData.y;
+                targetData[index * 3 + 2] = sourceData.z;
+            }
+            else{
+                targetData[index * 3] = sourceData[0];
+                targetData[index * 3 + 1] = sourceData[1];
+                targetData[index * 3 + 2] = sourceData[2];
+            }
         }
     }
 }

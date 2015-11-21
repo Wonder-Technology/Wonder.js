@@ -66,12 +66,22 @@
 
 
 
-            director.scheduler.scheduleTime(function(){
-                anim.pause();
-            }, 1000);
-            director.scheduler.scheduleTime(function(){
-                anim.resume();
-            }, 2500);
+            var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
+                model.transform.rotate(0, 1, 0);
+            }));
+
+            model.transform.rotate(0, 0, 0);
+
+            model.addComponent(action);
+
+
+
+//            director.scheduler.scheduleTime(function(){
+//                anim.pause();
+//            }, 1000);
+//            director.scheduler.scheduleTime(function(){
+//                anim.resume();
+//            }, 2500);
 
 
 

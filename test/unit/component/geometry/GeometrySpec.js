@@ -250,6 +250,21 @@ describe("Geometry", function() {
                     -0.8164966, -0.4082483, -0.4082483]
             )
         });
+        it("if faces not use all vertices data, then the normals will has empty data which are filled with 0", function(){
+            geo = createGeometry(dy.ModelGeometry);
+            geo.vertices = [1,-1,0, 0,1,0,0,0,1, 1, 2, 3];
+            geo.faces = createFaces([3,2,1]);
+
+            geo.init();
+
+            expect(testTool.getValues(
+                geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+            )).toEqual(
+                [
+                    0, 0, 0, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023
+                ]
+            )
+        });
     });
 
     describe("computeVertexNormals", function(){
@@ -270,6 +285,21 @@ describe("Geometry", function() {
                     -0.8880739, 0.3250575, 0.3250575,
                     0, 0.7071068, 0.7071068 ]
             );
+        });
+        it("if faces not use all vertices data, then the normals will has empty data which are filled with 0", function(){
+            geo = createGeometry(dy.ModelGeometry, dy.Shading.SMOOTH);
+            geo.vertices = [1,-1,0, 0,1,0,0,0,1, 1, 2, 3, 10, 20, 30];
+            geo.faces = createFaces([3,2,1, 4,3,1]);
+
+            geo.init();
+
+            expect(testTool.getValues(
+                geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+            )).toEqual(
+                [
+                    0, 0, 0, 0.953171, -0.1187764, -0.2781315, 0.942809, -0.2357023, -0.2357023, 0.953171, -0.1187764, -0.2781315, 0.9486833, 0, -0.3162278
+                ]
+            )
         });
     });
 });

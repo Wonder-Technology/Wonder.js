@@ -18,12 +18,12 @@
         });
 
         dy.LoaderManager.getInstance().load([
-            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"}
+//            {url: "../../res/model/dy/butterfly.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
 //            {url: "../../res/model/dy/ratamahatta.dy", id:"sceneModel"}
 //            {url: "../../res/model/dy/skin.jpg", id:"skin"},
 //            {url: "../../res/model/dy/ogro.dy", id:"sceneModel"}
-//            {url: "../../res/model/dy/male02/male02.dy", id:"sceneModel"}
+            {url: "../../res/model/dy/male02/male02.dy", id:"sceneModel"}
 
         ]).subscribe(null, function(e){
             throw e;
@@ -76,30 +76,32 @@
 
 
 
-//            model.transform.translate(0, -80, 0);
+            model.transform.translate(0, -80, 0);
 
+//            model.transform.scale = dy.Vector3.create(0.2,0.2,0.2);
 
-            model.transform.scale = dy.Vector3.create(140, 140, 140);
-
-            model.findChildrenByName("wing")
-                    .forEach(function(wing){
-                        var wingMaterial = wing.getComponent(dy.Geometry).material;
-                        wingMaterial.side = dy.Side.BOTH;
-//                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
-//                        wingMaterial.blendDst = dy.BlendFunc.ONE;
-
-                        wingMaterial.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
-                    });
-
-
+//            model.transform.scale = dy.Vector3.create(140, 140, 140);
+//
+//            model.findChildrenByName("wing")
+//                    .forEach(function(wing){
+//                        var wingMaterial = wing.getComponent(dy.Geometry).material;
+//                        wingMaterial.side = dy.Side.BOTH;
+////                        wingMaterial.blendSrc = dy.BlendFunc.SRC_ALPHA;
+////                        wingMaterial.blendDst = dy.BlendFunc.ONE;
+//
+//                        wingMaterial.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
+//                    });
+////
+////
             model.getChildren()
                     .forEach(function(child){
                         var material = child.getComponent(dy.Geometry).material;
                         material.shading = dy.Shading.SMOOTH;
+//                        material.shading = dy.Shading.FLAT;
                     });
-
-
-
+//
+//
+//
             var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
                 model.transform.rotate(0, 1, 0);
             }));

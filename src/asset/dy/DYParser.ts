@@ -121,7 +121,9 @@ module dy {
         }
 
         private _parseFromIndices(object:any){
-            this._addDuplicateVertexDataAndAddFaces(object);
+            this._duplicateVertexWithDifferentUvs(object);
+            //this._addDuplicateVertexDataAndAddFaces(object);
+            this._parseObjectFromIndices(object);
             this._removeRebundantIndiceData(object);
         }
 
@@ -145,29 +147,29 @@ module dy {
                 objectColors = this._findData(object, "colors");
 
             for(let i = 0,len = object.verticeIndices.length; i < len; i += 3){
-                let aIndice = object.verticeIndices[i],
-                    bIndice = object.verticeIndices[i + 1],
-                    cIndice = object.verticeIndices[i + 2];
+                let aIndex = object.verticeIndices[i],
+                    bIndex = object.verticeIndices[i + 1],
+                    cIndex = object.verticeIndices[i + 2];
 
                 face = Face3.create(i, i + 1, i + 2);
 
-                _setThreeComponentData(vertices, objectVertices, aIndice);
-                _setThreeComponentData(vertices, objectVertices, bIndice);
-                _setThreeComponentData(vertices, objectVertices, cIndice);
+                _setThreeComponentData(vertices, objectVertices, aIndex);
+                _setThreeComponentData(vertices, objectVertices, bIndex);
+                _setThreeComponentData(vertices, objectVertices, cIndex);
 
                 if(GeometryUtils.hasData(objectUVs)) {
-                    this._setUV(uvs, objectUVs, object.uvIndices, i, [aIndice, bIndice, cIndice]);
+                    this._setUV(uvs, objectUVs, object.uvIndices, i, [aIndex, bIndex, cIndex]);
                 }
 
                 if(GeometryUtils.hasData(objectNormals)) {
-                    this._setNormal(face.vertexNormals, objectNormals, object.normalIndices, [i, i + 1, i + 2], [aIndice, bIndice, cIndice]);
+                    this._setNormal(face.vertexNormals, objectNormals, object.normalIndices, [i, i + 1, i + 2], [aIndex, bIndex, cIndex]);
                 }
 
 
                 if(GeometryUtils.hasData(objectColors)) {
-                    _setThreeComponentData(colors, objectColors, aIndice);
-                    _setThreeComponentData(colors, objectColors, bIndice);
-                    _setThreeComponentData(colors, objectColors, cIndice);
+                    _setThreeComponentData(colors, objectColors, aIndex);
+                    _setThreeComponentData(colors, objectColors, bIndex);
+                    _setThreeComponentData(colors, objectColors, cIndex);
                 }
 
 
@@ -181,6 +183,211 @@ module dy {
 
             this._setMorphTargets(object, object.verticeIndices, object.normalIndices);
         }
+
+        //todo consider same vertex different normals?
+        private _duplicateVertexWithDifferentUvs(object:any){
+            var arr = [],
+                container = dyCb.Hash.create<dyCb.Collection<Array<number>>>(),
+                verticeIndices = object.verticeIndices,
+                uvIndices = object.uvIndices,
+                normalIndices = object.normalIndices,
+                vertices = this._findData(object, "vertices"),
+                normals = this._findData(object, "normals"),
+                morphTargets = this._findData(object, "morphTargets");
+
+            if (!GeometryUtils.hasData(uvIndices)) {
+                return;
+            }
+
+            for (var i = 0, len = verticeIndices.length; i < len; i++) {
+                var verticeIndex = verticeIndices[i];
+
+                if (arr[verticeIndex] !== void 0 && arr[verticeIndex] !== uvIndices[i]) {
+                    if(this._isEqualAddedVertex(container, verticeIndex, uvIndices[i])){
+                        verticeIndices[i] = this._getVerticeIndexOfAddedVertex(container, verticeIndex, uvIndices[i]);
+                    }
+                    else{
+                        this._addThreeComponent(vertices, verticeIndex);
+
+                        verticeIndices[i] = vertices.length / 3 - 1;
+
+
+                        if (GeometryUtils.hasData(morphTargets)) {
+                            for (let frame of morphTargets) {
+                                this._addThreeComponent(frame.vertices, verticeIndex);
+
+                                if(GeometryUtils.hasData(frame.normals)){
+                                    //this._addDuplicateNormalOfAddedVertex(frame.normals, normalIndices, verticeIndex, verticeIndices[i], i);
+                                    this._addDuplicateNormalOfAddedVertex(frame.normals, normalIndices, i, verticeIndex);
+                                }
+                            }
+                        }
+
+                        if(GeometryUtils.hasData(normals)){
+                            //this._addDuplicateNormalOfAddedVertex(normals, normalIndices, verticeIndex, verticeIndices[i], i);
+                            this._addDuplicateNormalOfAddedVertex(normals, normalIndices, i, verticeIndex);
+                            if(GeometryUtils.hasData(normalIndices)){
+                                normalIndices[i] = verticeIndices[i];
+                            }
+                        }
+
+
+                        container.appendChild(String(verticeIndex), [uvIndices[i], verticeIndices[i]]);
+                    }
+
+                    verticeIndex = verticeIndices[i];
+                }
+
+
+                arr[verticeIndex] = uvIndices[i];
+
+            }
+        }
+
+        private _addDuplicateNormalOfAddedVertex(normals, normalIndices, index, oldVerticeIndex){
+            if(!GeometryUtils.hasData(normalIndices)){
+                //this._addThreeComponent(normals, verticeIndex);
+                //GeometryUtils.setThreeComponent(normals, normals[oldVerticeIndex], newVerticeIndex);
+
+                this._addThreeComponent(normals, normals, oldVerticeIndex);
+                //targetData[index * 3] = sourceData[0];
+                //targetData[index * 3 + 1] = sourceData[1];
+                //targetData[index * 3 + 2] = sourceData[2];
+
+                return;
+            }
+
+
+            this._addThreeComponent(normals, normals, normalIndices[index]);
+        }
+
+
+        //    if(dataArr){
+        //        //verticeIndex = dataArr[1];
+        //        verticeIndices[i] = dataArr[1];
+        //        verticeIndex = dataArr[1];
+        //    }
+        //}
+        private _isEqualAddedVertex(container, targetVerticeIndex, targetUvIndex)
+    {
+        var data = container.getChild(String(targetVerticeIndex));
+
+        if (!data) {
+            return false;
+        }
+
+        return data.hasChild(([uvIndex, verticeIndex]) => {
+            return uvIndex === targetUvIndex;
+        });
+            //let dataArr = data.findOne(([uvIndex, index]) => {
+            //    return uvIndex === uvIndices[i];
+            //});
+    }
+
+        @In(function(container, targetVerticeIndex, targetUvIndex){
+            assert(this._isEqualAddedVertex(container, targetVerticeIndex, targetUvIndex), Log.info.FUNC_SHOULD("uvIndex", "equal the one of added vertex"))
+        })
+        private _getVerticeIndexOfAddedVertex(container, targetVerticeIndex, targetUvIndex){
+            var data = container.getChild(String(targetVerticeIndex));
+
+            return data.findOne(([uvIndex, verticeIndex]) => {
+                return uvIndex === targetUvIndex;
+            })[1];
+    }
+
+
+        private _addThreeComponent(data:Array<number>, index:number);
+        private _addThreeComponent(targetData:Array<number>, sourceData:Array<number>, index:number);
+
+        private _addThreeComponent(...args){
+            if(args.length === 2){
+                let data = args[0],
+                    index = args[1];
+
+                data.push(
+                    data[index * 3],
+                    data[index * 3 + 1],
+                    data[index * 3 + 2]
+                );
+            }
+            else{
+                let targetData = args[0],
+                    sourceData = args[1],
+                    index = args[2];
+
+                targetData.push(
+                    sourceData[index * 3],
+                    sourceData[index * 3 + 1],
+                    sourceData[index * 3 + 2]
+                );
+            }
+        }
+
+        private _parseObjectFromIndices(object:any){
+            var vertices = [],
+                uvs = [],
+                faces = [],
+                face:Face3 = null,
+                colors = [],
+                objectVertices = this._findData(object, "vertices"),
+                objectUVs = this._findData(object, "uvs"),
+                objectNormals = this._findData(object, "normals"),
+                objectColors = this._findData(object, "colors");
+
+            for(let i = 0,len = object.verticeIndices.length; i < len; i += 3){
+                let aIndex = object.verticeIndices[i],
+                    bIndex = object.verticeIndices[i + 1],
+                    cIndex = object.verticeIndices[i + 2],
+                    indexArr = [i, i + 1, i + 2],
+                verticeIndiceArr = [aIndex, bIndex, cIndex];
+
+                //face = Face3.create(i, i + 1, i + 2);
+                face = Face3.create(aIndex, bIndex, cIndex);
+
+                //_setThreeComponentData(vertices, objectVertices, aIndex);
+                //_setThreeComponentData(vertices, objectVertices, bIndex);
+                //_setThreeComponentData(vertices, objectVertices, cIndex);
+
+                if(GeometryUtils.hasData(object.uvIndices) && GeometryUtils.hasData(objectUVs)) {
+                    //this._setUV(uvs, objectUVs, object.uvIndices, i, [aIndex, bIndex, cIndex]);
+                    //this._setUV2(uvs, objectUVs, object.uvIndices, [aIndex, bIndex, cIndex]);
+                    this._setUV2(uvs, objectUVs, object.uvIndices, indexArr, verticeIndiceArr);
+                }
+
+                //if(GeometryUtils.hasData(object.normalIndices) && GeometryUtils.hasData(objectNormals)) {
+                    if(GeometryUtils.hasData(objectNormals)) {
+                    //this._setNormal(face.vertexNormals, objectNormals, object.normalIndices, [i, i + 1, i + 2], [aIndex, bIndex, cIndex]);
+                        this._setNormal2(face.vertexNormals, objectNormals, object.normalIndices, indexArr, verticeIndiceArr);
+                }
+
+
+                //if(GeometryUtils.hasData(objectColors)) {
+                //    _setThreeComponentData(colors, objectColors, aIndex);
+                //    _setThreeComponentData(colors, objectColors, bIndex);
+                //    _setThreeComponentData(colors, objectColors, cIndex);
+                //}
+
+
+                faces.push(face);
+            }
+
+            //object.vertices = vertices;
+            object.vertices = objectVertices;
+            if(!GeometryUtils.hasData(object.uvIndices)) {
+                object.uvs = objectUVs;
+            }
+            else{
+                object.uvs = uvs;
+            }
+            //object.colors = colors;
+            object.colors = objectColors;
+            object.faces = faces;
+
+            //this._setMorphTargets(object, object.verticeIndices, object.normalIndices);
+            this._setMorphTargets2(object, object.verticeIndices, object.normalIndices);
+        }
+
+
 
         private _getAnimName(frameName:string){
             const PATTERN = /([a-z]+)_?(\d+)/,
@@ -250,12 +457,12 @@ module dy {
             var uvIndice1 = null,
                 uvIndice2 = null,
                 uvIndice3 = null,
-                [aIndice, bIndice, cIndice] = indiceArr;
+                [aIndex, bIndex, cIndex] = indiceArr;
 
             if(!uvIndices || uvIndices.length === 0){
-                _setTwoComponentData(targetUVs, sourceUVs, aIndice);
-                _setTwoComponentData(targetUVs, sourceUVs, bIndice);
-                _setTwoComponentData(targetUVs, sourceUVs, cIndice);
+                _setTwoComponentData(targetUVs, sourceUVs, aIndex);
+                _setTwoComponentData(targetUVs, sourceUVs, bIndex);
+                _setTwoComponentData(targetUVs, sourceUVs, cIndex);
                 return;
             }
 
@@ -268,6 +475,62 @@ module dy {
             targetUVs.push(sourceUVs[uvIndice3 * 2], sourceUVs[uvIndice3 * 2 + 1]);
         }
 
+
+        private _setUV2(targetUVs:Array<number>, sourceUVs:Array<number>, uvIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>){
+            var uvIndice1 = null,
+                uvIndice2 = null,
+                uvIndice3 = null,
+                [index1, index2, index3] = indexArr,
+                [aIndex, bIndex, cIndex] = verticeIndiceArr;
+
+            //if(!uvIndices || uvIndices.length === 0){
+            ////    _setTwoComponentData(targetUVs, sourceUVs, aIndex);
+            ////    _setTwoComponentData(targetUVs, sourceUVs, bIndex);
+            ////    _setTwoComponentData(targetUVs, sourceUVs, cIndex);
+            //
+            ////    return;
+            //}
+
+
+
+
+            uvIndice1 = uvIndices[index1];
+            uvIndice2 = uvIndices[index2];
+            uvIndice3 = uvIndices[index3];
+
+
+            //targetUVs[aIndex * 2] = sourceUVs[uvIndice1 * 2];
+            //targetUVs[aIndex * 2 + 1] = sourceUVs[uvIndice1 * 2 + 1];
+            //
+            //
+            //targetUVs[bIndex * 2] = sourceUVs[uvIndice2 * 2];
+            //targetUVs[bIndex * 2 + 1] = sourceUVs[uvIndice2 * 2 + 1];
+            //
+            //targetUVs[cIndex * 2] = sourceUVs[uvIndice3 * 2];
+            //targetUVs[cIndex * 2 + 1] = sourceUVs[uvIndice3 * 2 + 1];
+
+
+            this._setTwoComponentData(targetUVs, sourceUVs, aIndex, uvIndice1);
+            this._setTwoComponentData(targetUVs, sourceUVs, bIndex, uvIndice2);
+            this._setTwoComponentData(targetUVs, sourceUVs, cIndex, uvIndice3);
+
+            //targetUVs.push(sourceUVs[uvIndice1 * 2], sourceUVs[uvIndice1 * 2 + 1]);
+            //targetUVs.push(sourceUVs[uvIndice2 * 2], sourceUVs[uvIndice2 * 2 + 1]);
+            //targetUVs.push(sourceUVs[uvIndice3 * 2], sourceUVs[uvIndice3 * 2 + 1]);
+        }
+
+        private _setTwoComponentData(targetData, sourceData, index, indice){
+            targetData[index * 2] = sourceData[indice * 2];
+            targetData[index * 2 + 1] = sourceData[indice * 2 + 1];
+        }
+
+        private _setThreeComponentData(targetData, sourceData, index, indice){
+            targetData[index * 3] = sourceData[indice * 3];
+            targetData[index * 3 + 1] = sourceData[indice * 3 + 1];
+            targetData[index * 3 + 2] = sourceData[indice * 3 + 2];
+        }
+
+
         private _setNormal(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, normalIndexArr:Array<number>, verticeIndiceArr:Array<number>){
             if(!GeometryUtils.hasData(normalIndices)){
                 this._addNormalData(targetNormals, sourceNormals, verticeIndiceArr);
@@ -277,6 +540,24 @@ module dy {
 
             this._addNormalData(targetNormals, sourceNormals, [normalIndices[normalIndexArr[0]], normalIndices[normalIndexArr[1]], normalIndices[normalIndexArr[2]]]);
         }
+
+
+        private _setNormal2(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>){
+            var [index1, index2, index3] = indexArr;
+
+            if(!GeometryUtils.hasData(normalIndices)){
+                //this._addNormalData(targetNormals, sourceNormals, indexArr);
+                this._addNormalData(targetNormals, sourceNormals, verticeIndiceArr);
+                //this._addNormalData(targetNormals, sourceNormals, indexArr);
+
+                return;
+            }
+
+            //this._addNormalData(targetNormals, sourceNormals, [normalIndices[normalIndexArr[0]], normalIndices[normalIndexArr[1]], normalIndices[normalIndexArr[2]]]);
+            this._addNormalData(targetNormals, sourceNormals, [normalIndices[index1], normalIndices[index2], normalIndices[index3]]);
+        }
+
+
 
         private _addNormalData(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals: Array<number>, normalIndiceArr:Array<number>){
             let [aIndex, bIndex, cIndex] = normalIndiceArr;
@@ -343,6 +624,45 @@ module dy {
             object.morphTargets = morphTargets;
             object.morphNormals = morphNormals;
         }
+
+
+        private _setMorphTargets2(object:DYFileParseObjectData, verticeIndices:Array<number>, normalIndices:Array<number>){
+            var objectMorphTargets = this._findData(object, "morphTargets"),
+                morphTargets = null,
+                morphNormals = null;
+
+
+            if(GeometryUtils.hasData(objectMorphTargets)){
+                morphTargets = dyCb.Hash.create<dyCb.Hash<DYFileParseMorphTargetsData>>();
+                morphNormals = dyCb.Hash.create<dyCb.Collection<Array<number>>>();
+
+                for(let frameData of objectMorphTargets){
+                    let animName = this._getAnimName(frameData.name);
+
+                    morphTargets.appendChild(animName, frameData.vertices);
+
+                    if(GeometryUtils.hasData(frameData.normals)){
+                        if(GeometryUtils.hasData(normalIndices)){
+                            let normals = [];
+
+                            for (let i = 0, len = verticeIndices.length; i < len; i++) {
+                                this._setThreeComponentData(normals, frameData.normals, verticeIndices[i], normalIndices[i]);
+                            }
+
+                            morphNormals.appendChild(animName, normals);
+                        }
+                        else{
+                            morphNormals.appendChild(animName, frameData.normals);
+                        }
+                    }
+                }
+            }
+
+            object.morphTargets = morphTargets;
+            object.morphNormals = morphNormals;
+        }
+
+
 
         private _parseScene(json:DYFileJsonData) {
             this._data.scene = <any>json.scene;

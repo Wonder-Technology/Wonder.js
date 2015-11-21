@@ -159,9 +159,9 @@ export = class MD2ObjectsConverter {
                     normal = reader.readUInt8();
 
                 frame.vertices.push(
-                    (x * scale.x + translation.x).toFixed(decimalPrecision),
-                    (z * scale.z + translation.z).toFixed(decimalPrecision),
-                    (y * scale.y + translation.y).toFixed(decimalPrecision)
+                    Number((x * scale.x + translation.x).toFixed(decimalPrecision)),
+                    Number((z * scale.z + translation.z).toFixed(decimalPrecision)),
+                    Number((y * scale.y + translation.y).toFixed(decimalPrecision))
                 );
             }
 

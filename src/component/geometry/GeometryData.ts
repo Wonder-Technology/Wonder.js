@@ -74,6 +74,9 @@ module dy {
                 GeometryUtils.setThreeComponent(normals, normal, face.cIndex);
             });
 
+            //todo optimize:not fill, remain NaN?
+            this._fillEmptyData(normals);
+
             return normals;
         }
 
@@ -91,6 +94,9 @@ module dy {
                 GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(1), face.bIndex);
                 GeometryUtils.setThreeComponent(normals, face.vertexNormals.getChild(2), face.cIndex);
             });
+
+            //todo optimize:not fill, remain NaN?
+            this._fillEmptyData(normals);
 
             return normals;
         }
@@ -338,6 +344,14 @@ module dy {
                 arr.push(color.r, color.g, color.b);
             }
             return arr;
+        }
+
+        private _fillEmptyData(data:Array<number>){
+            for(let i = 0,len = data.length; i < len; i++){
+                if(isNaN(data[i])){
+                    data[i] = 0;
+                }
+            }
         }
 
         private _calculateTangents(vertices:Array<number>, normals:Array<number>, texCoords:Array<number>, indices:Array<number>) {
