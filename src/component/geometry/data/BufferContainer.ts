@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy {
     export abstract class BufferContainer {
         public geometryData:GeometryData = null;

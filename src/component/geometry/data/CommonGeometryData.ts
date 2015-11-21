@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../../definitions.d.ts"/>
 module dy {
     export class CommonGeometryData extends GeometryData{
         public static create(geometry:Geometry) {

@@ -1,7 +1,4 @@
-﻿// Karma configuration
-// Generated on Wed Nov 05 2014 07:16:09 GMT+0800 (中国标准时间)
-
-module.exports = function(config) {
+﻿module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -36,7 +33,7 @@ module.exports = function(config) {
         'test/unit/geometryTool.js',
 
         'test/unit/**/*.js',
-      //'test/unit/renderer/RenderTarget*',
+      //'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
@@ -45,10 +42,15 @@ module.exports = function(config) {
         //'test/unit/asset/dy/DYParserSpec.js',
         //'test/unit/asset/dy/DYBuilderSpec.js',
         //'test/unit/math/*.js',
-        //'test/unit/component/**/*.js',
+        //'test/unit/component/**/GeometrySpec.js',
+        //'test/unit/component/**/ModelGeometrySpec.js',
+        //'test/unit/component/**/*Animation*.js',
+        //'test/unit/**/MaterialSpec.js',
+        //'test/unit/**/CommonBufferContainerSpec.js',
+        //'test/unit/**/MorphBufferContainerSpec.js',
         //
         //'test/unit/core/*.js',
-        //'test/unit/renderer/shader/**',
+        //'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/*.js',
         //'test/unit/utils/**',

@@ -39,9 +39,6 @@
 /// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/GeometryUtils"/>
-/// <reference path="component/geometry/GeometryData"/>
-/// <reference path="component/geometry/CommonGeometryData"/>
-/// <reference path="component/geometry/MorphGeometryData"/>
 /// <reference path="component/geometry/ModelGeometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
@@ -49,6 +46,13 @@
 /// <reference path="component/geometry/SphereDrawMode"/>
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>
+/// <reference path="component/geometry/data/GeometryData"/>
+/// <reference path="component/geometry/data/CommonGeometryData"/>
+/// <reference path="component/geometry/data/MorphGeometryData"/>
+/// <reference path="component/geometry/data/BufferContainer"/>
+/// <reference path="component/geometry/data/CommonBufferContainer"/>
+/// <reference path="component/geometry/data/MorphBufferContainer"/>
+
 /// <reference path="component/camera/Camera"/>
 /// <reference path="component/camera/OrthographicCamera"/>
 /// <reference path="component/camera/PerspectiveCamera"/>
@@ -104,9 +108,6 @@
 /// <reference path="renderer/buffer/Buffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>
 /// <reference path="renderer/buffer/ArrayBuffer"/>
-/// <reference path="renderer/buffer/BufferContainer"/>
-/// <reference path="renderer/buffer/CommonBufferContainer"/>
-/// <reference path="renderer/buffer/MorphBufferContainer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
