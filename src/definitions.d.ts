@@ -58,10 +58,11 @@
 /// <reference path="component/camera/OrthographicCamera"/>
 /// <reference path="component/camera/PerspectiveCamera"/>
 /// <reference path="component/camera/controller/CameraController"/>
-/// <reference path="component/camera/controller/FlyCameraController"/>
-/// <reference path="component/camera/controller/FlyCameraControl"/>
-/// <reference path="component/camera/controller/FlyPerspectiveCameraControl"/>
-/// <reference path="component/camera/controller/FlyOrthographicCameraControl"/>
+/// <reference path="component/camera/controller/basic/BasicCameraController"/>
+/// <reference path="component/camera/controller/fly/FlyCameraController"/>
+/// <reference path="component/camera/controller/fly/FlyCameraControl"/>
+/// <reference path="component/camera/controller/fly/FlyPerspectiveCameraControl"/>
+/// <reference path="component/camera/controller/fly/FlyOrthographicCameraControl"/>
 
 /// <reference path="component/action/Action"/>
 /// <reference path="component/action/ActionInstant"/>
