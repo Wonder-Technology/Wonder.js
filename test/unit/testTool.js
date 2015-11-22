@@ -213,7 +213,8 @@ var testTool = (function () {
             cameraComponent.far = 100;
 
 
-            camera.addComponent(cameraComponent);
+            var controller = dy.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
 
             camera.transform.translate(dy.Vector3.create(0, 0, 20));
 

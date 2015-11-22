@@ -3,8 +3,13 @@ module dy{
     export abstract class Component extends Entity{
         public gameObject:GameObject = null;
 
-        public init(){}
-        public dispose(){}
+        @virtual
+        public init(){
+        }
+
+        @virtual
+        public dispose(){
+        }
 
         public get transform():Transform {
             if(!this.gameObject) {

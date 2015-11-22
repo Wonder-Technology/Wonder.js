@@ -80,9 +80,11 @@ describe("MirrorRenderTargetRenderer", function () {
                 worldToCameraMatrix: dy.Matrix4.create().rotate(45, 0, 1, 0),
                 pMatrix: dy.Matrix4.create()
             };
-            camera = {
-                getComponent: self.sandbox.stub().returns(cameraComponent)
-            };
+            camera = dy.GameObject.create();
+            camera.addComponent(dy.BasicCameraController.create(cameraComponent));
+            //camera = {
+            //    getComponent: self.sandbox.stub().returns(cameraComponent)
+            //};
 
             self.sandbox.stub(self.renderTargetRenderer, "_setClipPlane").returns(cameraComponent.pMatrix);
 
@@ -105,7 +107,7 @@ describe("MirrorRenderTargetRenderer", function () {
         });
         it("init camera(not updateProjectionMatrix)", function(){
             var firstCallCamera = self.renderTargetRenderer.createCamera(camera);
-            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
+            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
 
             expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
 

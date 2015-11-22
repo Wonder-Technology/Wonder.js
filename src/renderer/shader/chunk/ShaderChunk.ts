@@ -2,8 +2,8 @@
 module dy{
 export class ShaderChunk{public static empty:GLSLChunk = {top:"", define:"", varDeclare:"", funcDeclare:"", funcDefine:"", body:""}
 public static NULL:number = -1.0;
-public static basic_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec4 v_color;\n",funcDeclare: "",funcDefine: "",body: "gl_FragColor = v_color;\n",}
-public static basic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec4 v_color;\n",funcDeclare: "",funcDefine: "",body: "v_color = vec4(a_color, 1.0);\n",}
+public static morphNormal_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n",}
+public static morphVertice_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n",}
 public static common_define:GLSLChunk = {top: "",define: "#define NULL -1.0\n",varDeclare: "",funcDeclare: "",funcDefine: "",body: "",}
 public static common_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "",}
 public static common_function:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n",body: "",}
@@ -11,6 +11,8 @@ public static common_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcD
 public static highp_fragment:GLSLChunk = {top: "precision highp float;\nprecision highp int;\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "",}
 public static lowp_fragment:GLSLChunk = {top: "precision lowp float;\nprecision lowp int;\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "",}
 public static mediump_fragment:GLSLChunk = {top: "precision mediump float;\nprecision mediump int;\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "",}
+public static basic_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec4 v_color;\n",funcDeclare: "",funcDefine: "",body: "gl_FragColor = v_color;\n",}
+public static basic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec4 v_color;\n",funcDeclare: "",funcDefine: "",body: "v_color = vec4(a_color, 1.0);\n",}
 public static basic_envMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec3 v_dir;\n",funcDeclare: "",funcDefine: "",body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n",}
 public static basic_envMap_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec3 v_dir;\n",funcDeclare: "",funcDefine: "",body: "v_dir = a_position;\n",}
 public static envMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n",funcDeclare: "",funcDefine: "",body: "vec3 inDir = normalize(v_position - u_cameraPos);\n",}

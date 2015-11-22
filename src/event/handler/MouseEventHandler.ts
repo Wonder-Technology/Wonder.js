@@ -14,9 +14,10 @@ module dy {
             return this._instance;
         }
 
+        @require(function(target:GameObject, eventName:EventName, handler:Function, priority:number){
+            assert(target instanceof GameObject, Log.info.FUNC_MUST_BE("target", "GameObject"));
+        })
         public on(target:GameObject, eventName:EventName, handler:Function, priority:number) {
-            Log.error(!(target instanceof GameObject), Log.info.FUNC_MUST_BE("target", "GameObject"));
-
             this.handler(target, eventName, handler, priority);
         }
 

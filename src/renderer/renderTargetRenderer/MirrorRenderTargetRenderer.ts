@@ -29,7 +29,7 @@ module dy {
         protected createCamera(camera:GameObject):GameObject{
             var mirrorCameraComponent = null,
                 plane = null,
-                cameraComponent:Camera = camera.getComponent<Camera>(Camera),
+                cameraComponent:Camera = camera.getComponent<CameraController>(CameraController).camera,
                 mirrorCameraViewMatrix = null,
                 projectionMatrix = null;
 
@@ -44,7 +44,7 @@ module dy {
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
-             return GameObject.create().addComponent(mirrorCameraComponent).init();
+            return GameObject.create().addComponent(dy.BasicCameraController.create(mirrorCameraComponent)).init();
         }
 
         private _setSceneSide(side:Side){

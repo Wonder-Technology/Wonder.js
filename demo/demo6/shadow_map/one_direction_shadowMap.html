@@ -356,10 +356,6 @@
 
 
 
-            director.scene.addComponent(dy.Script.create("../scene.js"));
-
-
-
             director.start();
         }
 
@@ -381,8 +377,10 @@
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
+            var controller = dy.FlyCameraController.create(cameraComponent);
+            camera.addComponent(controller);
 
-            camera.addComponent(cameraComponent);
+//            camera.addComponent(cameraComponent);
 //
 //
 //            camera.transform.lookAt(dy.Vector3.create(0, -1, 0), dy.Vector3.forward);
@@ -424,13 +422,6 @@
 
 
 
-
-
-            var script = dy.Script.create();
-
-            script.url = "../camera.js";
-
-            camera.addComponent(script);
 
             return camera;
         }

@@ -78,7 +78,7 @@ module dy {
             cubeCameraComponent.fovy = 90;
             this.setCamera(cubeCameraComponent);
 
-            camera.addComponent(cubeCameraComponent);
+            camera.addComponent(BasicCameraController.create(cubeCameraComponent));
 
             camera.transform.translate(pos);
 

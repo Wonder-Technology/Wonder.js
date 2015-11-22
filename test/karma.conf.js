@@ -33,6 +33,7 @@
         'test/unit/geometryTool.js',
 
         'test/unit/**/*.js',
+        //'test/unit/**/*ControllerSpec.js',
       //'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',

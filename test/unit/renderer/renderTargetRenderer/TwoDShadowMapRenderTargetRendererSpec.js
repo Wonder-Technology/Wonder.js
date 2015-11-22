@@ -211,10 +211,10 @@ tool.init_beforeEach = function(self){
         });
 
         it("create Ortho camera", function(){
-            expect(self.renderTargetRenderer.createCamera().getComponent(dy.Camera)).toBeInstanceOf(dy.OrthographicCamera);
+            expect(self.renderTargetRenderer.createCamera().getComponent(dy.CameraController).camera).toBeInstanceOf(dy.OrthographicCamera);
         });
         it("set camera component", function(){
-            var cameraComponent = self.renderTargetRenderer.createCamera().getComponent(dy.Camera);
+            var cameraComponent = self.renderTargetRenderer.createCamera().getComponent(dy.CameraController).camera;
 
             expect(cameraComponent.left).toEqual(light.shadowCameraLeft);
             expect(cameraComponent.right).toEqual(light.shadowCameraRight);
@@ -234,7 +234,7 @@ tool.init_beforeEach = function(self){
         });
         it("init camera", function(){
             var firstCallCamera = self.renderTargetRenderer.createCamera(camera);
-            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
+            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
 
             expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
                     [ 0.1, 0, 0, 0, 0, 0.05, 0, 0, 0, 0, -0.0400802, 0, 0, 0, -1.0040081, 1 ]

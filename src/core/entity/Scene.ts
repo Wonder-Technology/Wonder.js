@@ -71,10 +71,11 @@ module dy {
             this._renderTargetRenderers.removeChild(renderTargetRenderer);
         }
 
+        @require(function(renderer:Renderer){
+            assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
+        })
         public render(renderer:Renderer) {
             var self = this;
-
-            Log.error(!this.camera, "scene must add camera");
 
             this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.camera);
@@ -84,7 +85,7 @@ module dy {
         }
 
         private _isCamera(child:GameObject){
-            return child.hasComponent(Camera);
+            return child.hasComponent(CameraController);
         }
 
         private _isLight(child:GameObject){

@@ -11,13 +11,16 @@ module dy {
             renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
         }
 
+        @require(function(renderer:Renderer, geometry:Geometry, camera:GameObject){
+            var controller = camera.getComponent<CameraController>(CameraController);
+
+            assert(!!controller && !!controller.camera, Log.info.FUNC_MUST("camera" , "add Camera Component"));
+            assert(!!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
+        })
         protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject){
              var quadCmd = renderer.createQuadCommand(),
-                cameraComponent = camera.getComponent<Camera>(Camera),
+                cameraComponent = camera.getComponent<CameraController>(CameraController).camera,
                 material:Material = geometry.material;
-
-            Log.error(!cameraComponent, "camera must add Camera Component");
-            Log.error(!geometry, Log.info.FUNC_MUST("Mesh", "add geometry component"));
 
             //quadCmd.buffers = {
             //    vertexBuffer: geometry.verticeBuffer,

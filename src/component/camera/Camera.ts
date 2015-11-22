@@ -3,9 +3,12 @@ module dy{
     //todo add backgroundColor
     //todo add Frustum?
 
-    export abstract class Camera extends Component{
+    export abstract class Camera{
+        @requireGetter(function(){
+            assert(this.gameObject, Log.info.FUNC_MUST_DEFINE("gameObject"));
+        })
         get cameraToWorldMatrix(){
-            return this.transform.localToWorldMatrix.copy();
+            return this.gameObject.transform.localToWorldMatrix.copy();
         }
 
         private _worldToCameraMatrix = null;
@@ -21,14 +24,20 @@ module dy{
         }
 
         public pMatrix:Matrix4 = Matrix4.create();
+        public gameObject:GameObject = null;
 
         protected dirty:boolean = false;
 
+        @virtual
         public init(){
             if(this.dirty) {
                 this.updateProjectionMatrix();
                 this.dirty = false;
             }
+        }
+
+        @virtual
+        public dispose(){
         }
 
         public update(time:number){

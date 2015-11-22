@@ -6,17 +6,7 @@ describe("script", function () {
     var url2 = null;
 
     function createCamera(){
-        var camera = dy.GameObject.create(),
-            cameraComponent = dy.PerspectiveCamera.create();
-
-        cameraComponent.fovy = 60;
-        cameraComponent.aspect = 1;
-        cameraComponent.near = 0.1;
-        cameraComponent.far = 100;
-
-        camera.addComponent(cameraComponent);
-
-        return camera;
+        return testTool.createCamera();
     }
 
     function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){

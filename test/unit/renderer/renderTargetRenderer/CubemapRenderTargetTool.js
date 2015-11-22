@@ -338,7 +338,7 @@ var CubemapRenderTargetTool = YYC.Class({
 
                 it("set cameraComponent", function(){
                     var firstCallCamera = self.renderTargetRenderer.createCamera(0);
-                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
+                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
                     expect(firstCallCameraCompoment.fovy).toEqual(90);
                     expect(firstCallCameraCompoment.aspect).toEqual(1);
                     expect(firstCallCameraCompoment.near).toEqual(0.1);
@@ -360,7 +360,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 it("init camera", function(){
                     var firstCallCamera = self.renderTargetRenderer.createCamera(0);
 
-                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.Camera);
+                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
                     expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
                         [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1.020202, -1, 0, 0, -0.2020202, 0 ]
                     );

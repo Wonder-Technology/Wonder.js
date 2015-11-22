@@ -88,7 +88,7 @@ module dy {
             orthoCameraComponent.near = light.shadowCameraNear;
             orthoCameraComponent.far = light.shadowCameraFar;
 
-            camera.addComponent(orthoCameraComponent);
+            camera.addComponent(BasicCameraController.create(orthoCameraComponent));
 
             //todo optimize:dirty?
             camera.transform.translate(light.position);
