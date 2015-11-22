@@ -26,10 +26,11 @@ module dy{
         protected addShaderLib(){
             this.shader.addLib(BasicShaderLib.create());
 
-            this._initMap();
+            this._setMapShaderLib();
+            //this._setEnvMapShaderLib();
         }
 
-        private _initMap(){
+        private _setMapShaderLib(){
             var mapCount = this.mapManager.getMapCount();
 
             if(mapCount > 0){
@@ -41,6 +42,34 @@ module dy{
                 }
             }
         }
+
+        //private _setEnvMapShaderLib(){
+        //    var envMap = this.envMap;
+        //
+        //    if(!envMap){
+        //        return;
+        //    }
+        //
+        //    this.addNormalShaderLib();
+        //
+        //    switch (envMap.mode){
+        //        case EnvMapMode.NORMAL:
+        //            this.shader.addLib(BasicEnvMapForBasicShaderLib.create());
+        //            break;
+        //        case EnvMapMode.REFLECTION:
+        //            this.shader.addLib(ReflectionForBasicShaderLib.create());
+        //            break;
+        //        case EnvMapMode.REFRACTION:
+        //            this.shader.addLib(RefractionForBasicShaderLib.create());
+        //            break;
+        //        case EnvMapMode.FRESNEL:
+        //            this.shader.addLib(FresnelForBasicShaderLib.create());
+        //            break;
+        //        default:
+        //            Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
+        //            break;
+        //    }
+        //}
     }
 }
 

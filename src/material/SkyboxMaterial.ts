@@ -16,10 +16,6 @@ module dy{
         protected addShaderLib(){
             this.shader.addLib(SkyboxShaderLib.create());
         }
-
-        protected initEnvMap(){
-            //do nothing
-        }
     }
 }
 

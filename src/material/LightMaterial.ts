@@ -121,6 +121,10 @@ module dy{
             this.shader.addLib(LightCommonShaderLib.create());
             this._setPhongMapShaderLib();
             this.shader.addLib(LightShaderLib.create());
+
+            this._setEnvMapShaderLib();
+
+            this.shader.addLib(LightEndShaderLib.create());
         }
 
         private _setPhongMapShaderLib(){
@@ -159,6 +163,34 @@ module dy{
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.create());
+            }
+        }
+
+        private _setEnvMapShaderLib(){
+            var envMap = this.envMap;
+
+            if(!envMap){
+                return;
+            }
+
+            //this.addNormalShaderLib();
+
+            switch (envMap.mode){
+                case EnvMapMode.NORMAL:
+                    this.shader.addLib(BasicEnvMapForLightShaderLib.create());
+                    break;
+                case EnvMapMode.REFLECTION:
+                    this.shader.addLib(ReflectionForLightShaderLib.create());
+                    break;
+                case EnvMapMode.REFRACTION:
+                    this.shader.addLib(RefractionForLightShaderLib.create());
+                    break;
+                case EnvMapMode.FRESNEL:
+                    this.shader.addLib(FresnelForLightShaderLib.create());
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
+                    break;
             }
         }
 

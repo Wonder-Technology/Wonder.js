@@ -94,11 +94,9 @@ void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
 
     vec3 viewDir = normalize(getViewDir());
 
-    vec3 totalLight = vec3(0, 0, 0);
+    vec3 totalColor = vec3(0, 0, 0);
 
-    calcTotalLight(totalLight, normal, viewDir);
+    calcTotalLight(totalColor, normal, viewDir);
 
-    totalLight = getShadowVisibility() * totalLight;
-
-    gl_FragColor = vec4(totalLight, u_opacity);
+    totalColor = getShadowVisibility() * totalColor;
 @end

@@ -22,6 +22,7 @@ module dy{
 
         public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
 
+        @virtual
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             var vs = null,
                 fs = null;

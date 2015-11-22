@@ -162,7 +162,6 @@ module dy {
             this._addTopShaderLib();
             this.addShaderLib();
             this._initMirrorMap();
-            this.initEnvMap();
 
             this.mapManager.init();
             this.shader.init();
@@ -208,34 +207,6 @@ module dy {
 
         protected addMap(arg){
             this.mapManager.addMap.apply(this.mapManager, Array.prototype.slice.call(arguments, 0));
-        }
-
-        protected initEnvMap(){
-            var envMap = this.envMap;
-
-            if(!envMap){
-                return;
-            }
-
-            this.addNormalShaderLib();
-
-            switch (envMap.mode){
-                case EnvMapMode.NORMAL:
-                    this.shader.addLib(BasicEnvMapShaderLib.create());
-                    break;
-                case EnvMapMode.REFLECTION:
-                    this.shader.addLib(ReflectionShaderLib.create());
-                    break;
-                case EnvMapMode.REFRACTION:
-                    this.shader.addLib(RefractionShaderLib.create());
-                    break;
-                case EnvMapMode.FRESNEL:
-                    this.shader.addLib(FresnelShaderLib.create());
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
-                    break;
-            }
         }
 
         protected addNormalShaderLib(){

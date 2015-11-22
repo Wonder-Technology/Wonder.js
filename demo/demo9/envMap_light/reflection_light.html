@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>reflection and light</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+    <script src="/DYEngine/bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+<canvas id="canvas" width="600" height="400"></canvas>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            canvasId: "canvas"
+        });
+
+        dy.LoaderManager.getInstance().load([
+            {url: "../../res/cube/skybox/px.jpg", id:"texture1"},
+            {url: "../../res/cube/skybox/nx.jpg", id:"texture2"},
+            {url: "../../res/cube/skybox/py.jpg", id:"texture3"},
+            {url: "../../res/cube/skybox/ny.jpg", id:"texture4"},
+            {url: "../../res/cube/skybox/pz.jpg", id:"texture5"},
+            {url: "../../res/cube/skybox/nz.jpg", id:"texture6"},
+        ]).subscribe(null, function(e){
+                    throw e;
+                },
+                function(){
+                    init();
+                });
+
+        function init() {
+            _initScene();
+        }
+
+        var box, box2, box3, box4,box5, box6,sphere;
+        var skybox;
+
+        function _initScene() {
+
+            var material = dy.SkyboxMaterial.create();
+            material.color= dy.Color.create("rgba(255, 0, 0, 0.4)");
+
+
+            var cubemap = dy.CubemapTexture.create(
+                    [
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture1")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture2")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture3")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture4")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture5")
+                        },
+                        {
+                            asset:dy.TextureLoader.getInstance().get("texture6")
+                        }
+                    ]
+            );
+
+            material.envMap = cubemap;
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 100;
+            geometry.height = 100;
+            geometry.depth = 100;
+
+
+            skybox = dy.Skybox.create();
+            skybox.addComponent(geometry);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            _addBox();
+            _addSphere();
+
+            _addLight();
+
+
+
+
+
+            var director = dy.Director.getInstance();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            director.scene.addChild(skybox);
+            director.scene.addChild(box);
+            director.scene.addChild(box2);
+            director.scene.addChild(box3);
+            director.scene.addChild(box4);
+            director.scene.addChild(box5);
+            director.scene.addChild(box6);
+            director.scene.addChild(sphere);
+
+
+            director.scene.addChild(_createCamera());
+
+
+            director.start();
+
+        }
+
+        function _addBox(){
+            box = dy.GameObject.create();
+            box1 = dy.GameObject.create();
+            box2 = dy.GameObject.create();
+            box3 = dy.GameObject.create();
+            box4 = dy.GameObject.create();
+            box5 = dy.GameObject.create();
+            box6 = dy.GameObject.create();
+
+
+
+
+//            var texture = dy.DynamicCubemapTexture.create();
+////            texture.renderList = [skybox, sphere];
+//            var list = [skybox, sphere];
+//            texture.renderList = {
+//                px:list,
+//                nx:list,
+//                py:list,
+//                ny:list,
+//                pz:list,
+//                nz:list
+//            };
+//            texture.near = 0.1;
+//            texture.far = 1000;
+//            texture.size = 256;
+//
+//            texture.mode = dy.EnvMapMode.REFLECTION;
+//
+//
+//
+//
+//            var material = dy.BasicMaterial.create();
+//
+//
+//            material.envMap = texture;
+
+            var material = dy.LightMaterial.create();
+            material.color = dy.Color.create("#ffffff");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box.addComponent(dy.MeshRenderer.create());
+            box.addComponent(geometry);
+
+
+//            box.transform.translate(5, 0, 0);
+
+
+            var action1 = dy.RepeatForever.create(dy.CallFunc.create(function(){
+                box.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+            }));
+
+
+
+            box.addComponent(action1);
+
+
+
+
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(0, 255, 255)");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box2.addComponent(dy.MeshRenderer.create());
+            box2.addComponent(geometry);
+
+
+            box2.transform.translate(-40, 0, 40);
+
+
+
+
+
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(255, 0, 255)");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box3.addComponent(dy.MeshRenderer.create());
+            box3.addComponent(geometry);
+
+
+            box3.transform.translate(-80, 0, 0);
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(0, 0, 255)");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box4.addComponent(dy.MeshRenderer.create());
+            box4.addComponent(geometry);
+
+
+            box4.transform.translate(-40, 0, -40);
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("rgb(0, 255, 0)");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box5.addComponent(dy.MeshRenderer.create());
+            box5.addComponent(geometry);
+
+
+            box5.transform.translate(-40, 40, 0);
+
+
+
+            var material = dy.BasicMaterial.create();
+            material.color = dy.Color.create("#999999");
+
+
+
+            var geometry = dy.BoxGeometry.create();
+            geometry.width = 10;
+            geometry.height = 10;
+            geometry.depth = 10;
+
+
+            geometry.material = material;
+
+
+
+
+            box6.addComponent(dy.MeshRenderer.create());
+            box6.addComponent(geometry);
+
+
+            box6.transform.translate(-40, -40, 0);
+
+
+
+
+
+
+
+
+
+
+        }
+
+        function _addSphere(){
+            sphere = dy.GameObject.create();
+
+
+
+
+
+            var texture = dy.DynamicCubemapTexture.create();
+//            var list = [skybox];
+            var list = [skybox, box, box2, box3, box4, box5, box6];
+//            var list = [skybox, box];
+//            var list = [ box];
+            texture.renderList = {
+                px:list,
+                nx:list,
+                py:list,
+                ny:list,
+                pz:list,
+                nz:list
+            };
+//            texture.renderList = {
+//                px:list,
+//                nx:list,
+//                py:list,
+//                ny:list,
+//                pz:list,
+//                nz:list
+//            };
+            texture.near = 0.1;
+            texture.far = 1000;
+            texture.size = 256;
+
+            texture.mode = dy.EnvMapMode.REFLECTION;
+
+
+
+
+            var material = dy.LightMaterial.create();
+            material.envMap = texture;
+            material.color = dy.Color.create("#ffffff");
+            material.shading = dy.Shading.SMOOTH;
+
+
+
+
+            var geometry = dy.SphereGeometry.create();
+            geometry.radius = 10;
+            geometry.segments = 20;
+
+
+            geometry.material = material;
+
+
+
+
+            sphere.addComponent(dy.MeshRenderer.create());
+            sphere.addComponent(geometry);
+
+
+            sphere.transform.translate(-40, 0, 0);
+
+
+
+        }
+
+
+        function _addLight(){
+            var ambientLightComponent = dy.AmbientLight.create();
+            ambientLightComponent.color = dy.Color.create("#444444");
+
+            var ambientLight = dy.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+
+
+            var directionLightComponent = dy.DirectionLight.create();
+            directionLightComponent.color = dy.Color.create("#ffffff");
+            directionLightComponent.intensity = 2;
+
+
+
+
+
+            var directionLight = dy.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+
+            directionLight.transform.translate(100, 30, 0);
+
+
+            var director = dy.Director.getInstance();
+
+            director.scene.addChild(ambientLight);
+            director.scene.addChild(directionLight);
+        }
+
+        function _createCamera() {
+            var camera = dy.GameObject.create();
+
+            var cameraComponent = dy.PerspectiveCamera.create();
+
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = canvas.width / canvas.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            camera.addComponent(dy.FlyCameraController.create(cameraComponent));
+
+            camera.transform.translateLocal(dy.Vector3.create(0, 0, 30));
+            camera.transform.lookAt(dy.Vector3.create(-40, 0, 0));
+
+            return camera;
+        }
+
+    };
+</script
+</body>
+</html>
+

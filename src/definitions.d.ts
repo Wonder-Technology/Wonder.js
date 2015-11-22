@@ -142,6 +142,13 @@
 /// <reference path="renderer/shader/lib/envMap/ReflectionShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/RefractionShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/FresnelShaderLib"/>
+
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/BasicEnvMapForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/ReflectionForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/RefractionForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/FresnelForLightShaderLib"/>
+
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
