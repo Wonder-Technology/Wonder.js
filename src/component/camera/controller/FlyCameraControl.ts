@@ -18,7 +18,11 @@ module dy {
         private _keydownSubscription:dyRt.IDisposable = null;
 
         public init(gameObject:GameObject) {
-            var self = this;
+            var self = this,
+                eulerAngles = gameObject.transform.eulerAngles;
+
+            this._rotateX = eulerAngles.x;
+            this._rotateY = eulerAngles.y;
 
             this._bindCanvasEvent();
 
