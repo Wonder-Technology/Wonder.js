@@ -5,6 +5,7 @@ var fs = require("fs-extra");
 
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
+    "DYCommonLib",
     "DYReactive"
     ],
     combineContentList = [

@@ -1,12 +1,10 @@
 /// <reference path="../../definitions.d.ts"/>
 module dy{
-    //todo add expose attributes for editor(refer to playcanvas)
     export class Script extends Component{
         public static script:dyCb.Stack<ScriptFileData> = dyCb.Stack.create<ScriptFileData>();
 
         public static create():Script;
         public static create(url:string):Script;
-        public static create(scriptName:string, callback:Function):Script;
 
         public static create() {
             if(arguments.length === 0){
@@ -17,15 +15,13 @@ module dy{
 
                 return new this(url);
             }
-            else if(arguments.length === 2){
-                let scriptName = arguments[0],
-                    callback = arguments[1];
+        }
 
-                this.script.push(<ScriptFileData>{
-                    name: scriptName,
-                    class: callback(Director.getInstance())
-                });
-            }
+        public static addScript(scriptName:string, _class:Function){
+            this.script.push(<ScriptFileData>{
+                name: scriptName,
+                class: _class
+            });
         }
 
         constructor(url:string = null){

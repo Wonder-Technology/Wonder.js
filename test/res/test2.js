@@ -1,8 +1,16 @@
-dy.Script.create("test2", function (director) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
+};
+var Test2 = (function () {
     function Test2(gameObject) {
+        this.gameObject = null;
         this.gameObject = gameObject;
     }
-
     Test2.prototype.init = function () {
     };
     Test2.prototype.update = function (time) {
@@ -16,6 +24,8 @@ dy.Script.create("test2", function (director) {
     };
     Test2.prototype.onExit = function () {
     };
-
+    Test2 = __decorate([
+        dy.script("test2")
+    ], Test2);
     return Test2;
-});
+})();
