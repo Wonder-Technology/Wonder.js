@@ -138,7 +138,7 @@ describe("shadow map", function() {
                 director.scene.addChild(testTool.createCamera());
 
 
-                testTool.prepareForMap(sandbox);
+                prepareTool.prepareForMap(sandbox);
 
 
 

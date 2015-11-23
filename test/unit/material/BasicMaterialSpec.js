@@ -17,24 +17,24 @@ describe("BasicMaterial", function () {
         var vertice, normals;
 
         vertice = [1, -1, 0, 0, 1, 0, 0, 0, 1];
-        normals = [];
+        //normals = [];
 
         model = dy.GameObject.create();
         geo = dy.ModelGeometry.create();
+
+        geo.vertices = vertice;
+        geo.faces = testTool.createFaces([0,1,2]);
+
+
         material = dy.BasicMaterial.create();
 
-        materialTool.prepareMap(sandbox, vertice, normals, model, geo, material);
+        materialTool.prepareMap(sandbox, model, geo, material);
 
 
         director = dy.Director.getInstance();
 
 
-        program = material.shader.program;
-        sandbox.stub(program, "sendAttributeData");
-        sandbox.stub(program, "sendUniformData");
-
-
-        testTool.prepareForMap(sandbox);
+        prepareTool.prepareForMap(sandbox);
 
 
         director._init();
@@ -56,24 +56,25 @@ describe("BasicMaterial", function () {
 
             model = dy.GameObject.create();
             geo = dy.ModelGeometry.create();
+
+            geo.vertices = vertice;
+            geo.faces = testTool.createFaces([0,1,2]);
+            geo.texCoords = texCoords;
+
+
             material = dy.BasicMaterial.create();
 
-            materialTool.prepareMap(sandbox, vertice, normals,model, geo, material);
+            materialTool.prepareMap(sandbox, model, geo, material);
 
-            geo.texCoords = texCoords;
 
 
             director = dy.Director.getInstance();
 
 
             program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
 
 
-            testTool.prepareForMap(sandbox);
-
-            sandbox.stub(program, "getUniformLocation");
+            prepareTool.prepareForMap(sandbox);
         });
 
         it("if only has mirrorMap, not add map shader lib", function () {
@@ -138,24 +139,26 @@ describe("BasicMaterial", function () {
 
             model = dy.GameObject.create();
             geo = dy.PlaneGeometry.create();
+
+
+            geo.vertices = vertice;
+            geo.faces = testTool.createFaces([0,1,2]);
+
             material = dy.BasicMaterial.create();
 
-            materialTool.prepareMap(sandbox, vertice, normals, model, geo, material);
+            materialTool.prepareMap(sandbox, model, geo, material);
 
 
             director = dy.Director.getInstance();
 
 
             program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
 
 
-            testTool.prepareForMap(sandbox);
+            prepareTool.prepareForMap(sandbox);
         });
 
         it("if only has mirrorMap, add MirrorForBasicShaderLib", function () {
-            sandbox.stub(program, "getUniformLocation");
             var texture = dy.MirrorTexture.create();
             texture.width = 256;
             texture.height = 256;
@@ -187,18 +190,19 @@ describe("BasicMaterial", function () {
 
             model = dy.GameObject.create();
             geo = dy.ModelGeometry.create();
+            geo.vertices = vertice;
+            geo.faces = testTool.createFaces([0,1,2]);
+
             material = dy.BasicMaterial.create();
             envMap = dy.DynamicCubemapTexture.create();
 
-            materialTool.prepareEnvMap(sandbox, vertice, normals, model, geo, material, envMap);
+            materialTool.prepareEnvMap(sandbox, model, geo, material, envMap);
 
 
             director = dy.Director.getInstance();
 
 
             program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
         });
 
         it("if no envMap, return", function () {

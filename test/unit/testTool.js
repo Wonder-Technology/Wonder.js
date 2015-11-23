@@ -227,16 +227,6 @@ var testTool = (function () {
             //camera.addComponent(script);
 
             return camera
-        },
-        prepareForMap:function(sandbox){
-            sandbox.stub(dy.DeviceManager.getInstance(), "view", {
-                width:100,
-                height:100
-            });
-
-            var gl = dy.DeviceManager.getInstance().gl;
-            gl.createTexture.returns({});
-            gl.createRenderbuffer.returns({});
         }
     }
 }());

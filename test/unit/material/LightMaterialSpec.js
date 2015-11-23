@@ -116,18 +116,19 @@ describe("LightMaterial", function() {
 
             model = dy.GameObject.create();
             geo = dy.ModelGeometry.create();
+            geo.vertices = vertice;
+            geo.faces = testTool.createFaces([0,1,2]);
+
             material = dy.LightMaterial.create();
             envMap = dy.DynamicCubemapTexture.create();
 
-            materialTool.prepareEnvMap(sandbox, vertice, normals, model, geo, material, envMap);
+            materialTool.prepareEnvMap(sandbox, model, geo, material, envMap);
 
 
             director = dy.Director.getInstance();
 
 
             program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
         });
 
         it("if no envMap, return", function(){
