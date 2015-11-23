@@ -14,8 +14,8 @@ vec3 getEnvMapTotalColor(vec3 inDir){
     vec3 reflectDir = reflect(inDir, normal);
     vec3 refractDir = refract(inDir, normal, u_refractionRatio);
 
-    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);
-    vec4 refractColor = textureCube(u_samplerCube0, refractDir);
+    vec3 reflectColor = vec3(textureCube(u_samplerCube0, reflectDir));
+    vec3 refractColor = vec3(textureCube(u_samplerCube0, refractDir));
 
     vec3 totalColor = vec3(0, 0, 0);
 

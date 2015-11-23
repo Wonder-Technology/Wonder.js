@@ -39,7 +39,9 @@
         function _initScene() {
             tool.addSkybox();
             tool.addBox();
-            tool.addSphere(dy.EnvMapMode.REFLECTION);
+            tool.addSphere(dy.EnvMapMode.REFRACTION, function(material){
+                material.refractionRatio = 0.92;
+            });
             tool.addLight();
             tool.addCamera();
 
