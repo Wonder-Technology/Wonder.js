@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 
 //rich domain model
 

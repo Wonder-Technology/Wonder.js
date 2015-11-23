@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../filePath.d.ts"/>
 module dy{
     export function assert(cond:boolean, message:string="contract error"){
         Log.error(!cond, message);

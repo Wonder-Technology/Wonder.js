@@ -30,10 +30,6 @@ describe("morph animation", function () {
             return animation;
         }
 
-        function createCamera() {
-            return testTool.createCamera();
-        }
-
         function prepare(){
             model = dy.GameObject.create();
 
@@ -53,14 +49,12 @@ describe("morph animation", function () {
                     ]
                 )
             })
-            //todo not duplicate
-            //geo.faces = createFaces([0,2,1, 2,3,1]);
+
             geo.faces = createFaces([0,1,2,3,4,5],
                 normals
             );
 
-
-            model.addComponent(geo);
+            prepareTool.prepareGeo(sandbox, model,geo,material);
 
 
             anim = createAnimation("play");
@@ -70,20 +64,10 @@ describe("morph animation", function () {
             fps = 10;
 
 
-
-
-            model.addComponent(dy.MeshRenderer.create());
-
             director = dy.Director.getInstance();
-
-            director.scene.addChild(model);
-
-            director.scene.addChild(createCamera());
 
 
             program = material.shader.program;
-            sandbox.stub(program, "sendAttributeData");
-            sandbox.stub(program, "sendUniformData");
         }
 
 
@@ -341,5 +325,16 @@ describe("morph animation", function () {
             expect(vertices1[0].data).toEqual(vertices2[0].data);
             expect(vertices1[1].data).toEqual(vertices2[1].data);
         });
+
+        it("use Action to control animation", function(){
+            var action1 = dy.Repeat.create(dy.CallFunc.create(function(){
+                box.transform.rotateLocal(0, 1, 0);
+            }));
+            anim.play("play", fps);
+            director._init();
+
+
+            director._run(1);
+        })
     });
 });

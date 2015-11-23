@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy {
     const SPECIAL_KEY_MAP = {
             8: "backspace",

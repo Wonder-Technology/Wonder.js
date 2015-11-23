@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 
 //responsiblity:handle logic with specify event category
 //judge is under point

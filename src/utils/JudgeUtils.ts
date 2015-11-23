@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy {
     export class JudgeUtils extends dyCb.JudgeUtils{
         public static isView(obj) {

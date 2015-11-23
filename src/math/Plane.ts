@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy {
     export class Plane{
         public static create(a: number, b: number, c: number, d: number) {

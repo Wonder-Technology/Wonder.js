@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;

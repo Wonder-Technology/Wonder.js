@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy{
     export class Script extends Component{
         public static script:dyCb.Stack<ScriptFileData> = dyCb.Stack.create<ScriptFileData>();

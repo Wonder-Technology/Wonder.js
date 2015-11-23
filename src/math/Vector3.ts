@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy{
     export class Vector3{
         public static up = Vector3.create(0, 1, 0);

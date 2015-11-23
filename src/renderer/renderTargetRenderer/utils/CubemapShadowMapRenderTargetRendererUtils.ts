@@ -1,4 +1,4 @@
-/// <reference path="../../../definitions.d.ts"/>
+/// <reference path="../../../filePath.d.ts"/>
 module dy {
     export class CubemapShadowMapRenderTargetRendererUtils extends ShadowMapRenderTargetRendererUtils{
         public static create(light:PointLight, texture:CubemapShadowMapTexture) {

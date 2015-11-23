@@ -14,7 +14,7 @@ var combineDTsList = [
         "bowser",
         "rsvp"
     ];
-var definitionsPath = "src/definitions.d.ts";
+var definitionsPath = "src/filePath.d.ts";
 
 gulp.task("combineDefinitionFile", function(done){
     combineInnerLibDTs(
@@ -117,7 +117,7 @@ function getInnerLibDTsPathArr(definitionDTsPath){
         );
     }
 
-    //to make finial file is build based on definitions.d.ts's sequence
+    //to make finial file is build based on filePath.d.ts's sequence
     return resultArr.reverse();
 }
 

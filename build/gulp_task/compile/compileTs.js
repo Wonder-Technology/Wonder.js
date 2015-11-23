@@ -8,7 +8,7 @@ var fs = require("fs-extra");
 
 
 var tsFilePaths = [
-    "src/definitions.d.ts",
+    "src/filePath.d.ts",
     "src/*.ts",
     "src/**/*.ts"
 ];

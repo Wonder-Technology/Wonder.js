@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 //todo optimize:set vertice,normal presion?(use toFixed)
 module dy {
     export class DYParser {

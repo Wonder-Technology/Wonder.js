@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy{
     const STARTING_FPS = 60,
         GAMETIME_SCALE = 1000;

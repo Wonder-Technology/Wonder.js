@@ -1,4 +1,4 @@
-/// <reference path="../../../../../definitions.d.ts"/>
+/// <reference path="../../../../../filePath.d.ts"/>
 module dy{
     export class BuildTwoDShadowMapShaderLib extends BuildShadowMapShaderLib{
         public static create() {

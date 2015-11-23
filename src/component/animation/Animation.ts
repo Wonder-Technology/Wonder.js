@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy{
     export abstract class Animation extends Component{
         public abstract play(animName:string, fps:number);

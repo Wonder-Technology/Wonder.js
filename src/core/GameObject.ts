@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy {
     //todo add copy method(refer to unity:  http://docs.unity3d.com/ScriptReference/Object.Instantiate.html)
     export class GameObject extends Entity{

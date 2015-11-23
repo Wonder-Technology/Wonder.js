@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy{
     export class ArrayBuffer extends Buffer{
         public static create(data:any, num:number, type:BufferType, usage:BufferUsage = BufferUsage.STATIC_DRAW):ArrayBuffer {

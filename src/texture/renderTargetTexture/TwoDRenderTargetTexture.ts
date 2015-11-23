@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy {
     export abstract class TwoDRenderTargetTexture extends RenderTargetTexture {
         private _renderList:dyCb.Collection<GameObject> = null;

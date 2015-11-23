@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module dy {
     /*! referenced from:
      https://github.com/tweenjs/tween.js

@@ -25,7 +25,7 @@ gulp.task("createShaderChunk", function(){
 
     //todo typescript refactor
     result = [
-        '/// <reference path="../../../definitions.d.ts"/>',
+        '/// <reference path="../../../filePath.d.ts"/>',
         'module dy{',
     'export class ShaderChunk{'
     ].join("\n");

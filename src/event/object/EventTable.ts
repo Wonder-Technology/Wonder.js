@@ -1,4 +1,4 @@
-/// <reference path="../../definitions.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 //todo complete it(add more event type)
 module dy {
      const _table = dyCb.Hash.create<EventType>();

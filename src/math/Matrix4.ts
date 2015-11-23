@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy{
     /*!
      注意：矩阵元素是按列主序存储在数组中的。

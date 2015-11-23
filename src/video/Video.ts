@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy{
     //todo refer to video.js, mediaelement.js to enhance
     //todo unify with Audio

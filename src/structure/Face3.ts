@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy {
     export class Face3{
         public static create(aIndex:number, bIndex:number, cIndex:number, faceNormal:Vector3 = Vector3.create(), vertexNormals:dyCb.Collection<Vector3> = dyCb.Collection.create<Vector3>()) {

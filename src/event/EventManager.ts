@@ -1,4 +1,4 @@
-/// <reference path="../definitions.d.ts"/>
+/// <reference path="../filePath.d.ts"/>
 module dy {
 //    /*!
 //     it is designed as singleton, not static class, because it need maintain state(_instance attri).
