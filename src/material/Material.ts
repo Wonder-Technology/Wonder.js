@@ -98,13 +98,6 @@ module dy {
             this.mapManager.setEnvMap(envMap);
         }
 
-        get mirrorMap(){
-            return this.mapManager.getMirrorMap();
-        }
-        set mirrorMap(mirrorMap:MirrorTexture){
-            this.mapManager.setMirrorMap(mirrorMap);
-        }
-
         private _blendSrc:BlendFunc= BlendFunc.ONE;
         get blendSrc(){
             return this._blendSrc;
@@ -161,7 +154,6 @@ module dy {
         public init(){
             this._addTopShaderLib();
             this.addShaderLib();
-            this._initMirrorMap();
 
             this.mapManager.init();
             this.shader.init();
@@ -218,10 +210,6 @@ module dy {
             }
         }
 
-        protected addUniqueShaderLib(lib:ShaderLib){
-
-        }
-
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
 
@@ -246,12 +234,6 @@ module dy {
             }
 
             return false;
-        }
-
-        private _initMirrorMap(){
-            if(this.mirrorMap){
-                this.shader.addLib(dy.MirrorShaderLib.create());
-            }
         }
     }
 

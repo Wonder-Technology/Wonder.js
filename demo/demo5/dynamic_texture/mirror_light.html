@@ -382,14 +382,10 @@
             texture2.width = 256;
             texture2.height = 256;
             texture2.renderList = [sphere, box, box2];
-//            texture2.renderList = [sphere];
-
-
-//            var texture2 = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture2"));
 
 
             var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#889999");
+            material.color = dy.Color.create("#dddddd");
 
 
 
@@ -441,7 +437,6 @@
 
 
 
-            director.scene.addComponent(dy.Script.create("../scene.js"));
 
 
 
@@ -460,7 +455,7 @@
             cameraComponent.far = 100;
 
 
-            camera.addComponent(cameraComponent);
+            camera.addComponent(dy.FlyCameraController.create(cameraComponent));
 
 
 //            camera.transform.translateLocal(dy.Vector3.create(0, -10, 0.0000));
@@ -469,11 +464,6 @@
             camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
 //            camera.transform.lookAt(dy.Vector3.create(0, 5, 0));
 
-            var script = dy.Script.create();
-
-            script.url = "../camera.js";
-
-            camera.addComponent(script);
 
             return camera;
         }

@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        public type:string = "light_end";
+        public type:string = "lightEnd";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
         }

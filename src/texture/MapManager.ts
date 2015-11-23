@@ -51,7 +51,7 @@ module dy{
             return this._textures.getChild("map").getChild(index);
         }
 
-        public hasMap(func:(...args)=>boolean);
+        public hasMap(func:(...args) => boolean);
         public hasMap(map:Texture);
 
         public hasMap(...args){
@@ -62,10 +62,22 @@ module dy{
             return maps && maps.hasChild(arguments[0]);
         }
 
-        public getMapCount(){
-            var map = this._textures.getChild("map");
 
-            return map ? map.getCount() : 0;
+        public getMapCount();
+        public getMapCount(filterFunc:(map:Texture) => boolean);
+
+        public getMapCount(...args){
+            if(args.length === 0){
+                let map = this._textures.getChild("map");
+
+                return map ? map.getCount() : 0;
+            }
+            else{
+                let filterFunc = args[0],
+                    map = this._textures.getChild("map");
+
+                return map ? map.filter(filterFunc).getCount() : 0;
+            }
         }
 
         public getEnvMap(){
@@ -86,6 +98,10 @@ module dy{
             });
 
             this._mirrorMap = mirrorMap;
+        }
+
+        public isMirrorMap(map:Texture){
+            return map === this._mirrorMap;
         }
 
         public removeAllChildren(){

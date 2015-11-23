@@ -1,6 +1,6 @@
 /// <reference path="../../../../definitions.d.ts"/>
 module dy{
-    export class MirrorShaderLib extends ShaderLib{
+    export class MirrorForBasicShaderLib extends ShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,16 +8,15 @@ module dy{
         }
 
 
-        public type:string = "mirror";
+        public type:string = "mirror_forBasic";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-            this.sendUniformData(program, "u_mirrorColor", material.color.toVector3());
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
-            this.addUniformVariable(["u_mirrorColor", "u_mirrorSampler"]);
+            this.addUniformVariable(["u_mirrorSampler"]);
         }
     }
 }

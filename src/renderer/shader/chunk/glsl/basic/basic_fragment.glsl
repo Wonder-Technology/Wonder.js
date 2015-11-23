@@ -1,9 +1,9 @@
 @varDeclare
-varying vec4 v_color;
+varying vec3 v_color;
 @end
 
 
 @body
-    gl_FragColor = v_color;
+    vec3 totalColor = v_color;
 @end
 

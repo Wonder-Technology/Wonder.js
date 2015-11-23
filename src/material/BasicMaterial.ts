@@ -23,15 +23,28 @@ module dy{
             }
         }
 
+        get mirrorMap(){
+            return this.mapManager.getMirrorMap();
+        }
+        set mirrorMap(mirrorMap:MirrorTexture){
+            this.mapManager.setMirrorMap(mirrorMap);
+        }
+
         protected addShaderLib(){
             this.shader.addLib(BasicShaderLib.create());
 
             this._setMapShaderLib();
             this._setEnvMapShaderLib();
+            this._setMirrorMapShaderLib();
+
+            this.shader.addLib(BasicEndShaderLib.create());
         }
 
         private _setMapShaderLib(){
-            var mapCount = this.mapManager.getMapCount();
+            var mapManager = this.mapManager,
+                mapCount = mapManager.getMapCount((map:Texture) => {
+                return !mapManager.isMirrorMap(map);
+            });
 
             if(mapCount > 0){
                 if(mapCount > 1){
@@ -68,6 +81,12 @@ module dy{
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
                     break;
+            }
+        }
+
+        private _setMirrorMapShaderLib(){
+            if(this.mirrorMap){
+                this.shader.addLib(dy.MirrorForBasicShaderLib.create());
             }
         }
     }
