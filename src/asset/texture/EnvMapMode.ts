@@ -1,6 +1,6 @@
 module dy{
     export enum EnvMapMode{
-        NORMAL,
+        BASIC,
         REFLECTION,
         REFRACTION,
         FRESNEL

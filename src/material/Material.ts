@@ -140,7 +140,7 @@ module dy {
         public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
         public shading = Shading.FLAT;
-        public refractionRatio:number = ShaderChunk.NULL;
+        public refractionRatio:number = 0;
         public reflectivity:number = ShaderChunk.NULL;
         public mapCombineMode:TextureCombineMode = TextureCombineMode.MIX;
         public mapMixRatio:number = 0.5;

@@ -67,7 +67,7 @@ module dy{
             //todo test
             cubemapFaceTexture.needUpdate = this.needUpdate;
 
-            cubemapFaceTexture.mode = EnvMapMode.NORMAL;
+            cubemapFaceTexture.mode = EnvMapMode.BASIC;
         }
 
         public copyTo(texture:BasicTexture){

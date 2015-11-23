@@ -23,6 +23,8 @@ var testTool = (function () {
                 uniform1f: sandbox.stub(),
                 drawElements: sandbox.stub(),
 
+                generateMipmap:sandbox.stub(),
+                pixelStorei: sandbox.stub(),
                 texParameteri: sandbox.stub(),
                 useProgram: sandbox.stub(),
                 bindFramebuffer: sandbox.stub(),
@@ -225,6 +227,16 @@ var testTool = (function () {
             //camera.addComponent(script);
 
             return camera
+        },
+        prepareForMap:function(sandbox){
+            sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                width:100,
+                height:100
+            });
+
+            var gl = dy.DeviceManager.getInstance().gl;
+            gl.createTexture.returns({});
+            gl.createRenderbuffer.returns({});
         }
     }
 }());

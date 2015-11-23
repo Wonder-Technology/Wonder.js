@@ -29,11 +29,8 @@ module.exports = function(config) {
         'test/helper/jasmine/**',
         'test/helper/sinonJs/*.js',
         'test/helper/yoop/yOOP.js',
-        'test/unit/testTool.js',
-        'test/unit/rendererTool.js',
-        'test/unit/renderer/renderTargetRenderer/TwoDRenderTargetTool.js',
-        'test/unit/renderer/renderTargetRenderer/CubemapRenderTargetTool.js',
-        'test/unit/geometryTool.js',
+        'test/unit/**/*Tool.js',
+        'test/unit/*Tool.js',
 
         'test/unit/renderer/**',
         //'test/unit/renderer/shader/*',

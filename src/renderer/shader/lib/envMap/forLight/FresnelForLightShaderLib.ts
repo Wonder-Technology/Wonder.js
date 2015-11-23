@@ -11,11 +11,13 @@ module dy{
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
-
-            this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
-
-
-            this.sendUniformData(program, "u_reflectivity", material.reflectivity);
+            if(material.reflectivity !== ShaderChunk.NULL){
+                this.sendUniformData(program, "u_reflectivity", material.reflectivity);
+            }
+            else{
+                this.sendUniformData(program, "u_reflectivity", ShaderChunk.NULL);
+                this.sendUniformData(program, "u_refractionRatio", material.refractionRatio);
+            }
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

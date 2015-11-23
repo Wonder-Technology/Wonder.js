@@ -138,14 +138,7 @@ describe("shadow map", function() {
                 director.scene.addChild(testTool.createCamera());
 
 
-
-                sandbox.stub(dy.DeviceManager.getInstance(), "view", {
-                    width:100,
-                    height:100
-                });
-                var gl = dy.DeviceManager.getInstance().gl;
-                gl.createTexture.returns({});
-                gl.createRenderbuffer.returns({});
+                testTool.prepareForMap(sandbox);
 
 
 

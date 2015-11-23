@@ -155,6 +155,12 @@ module dy{
             var key:string = args[0],
                 map:Texture = args[1];
 
+            if(!map){
+                this._removeMap(key, map);
+
+                return;
+            }
+
             if(arguments.length === 3){
                 let option:MapVariableData = args[1];
 
@@ -164,6 +170,10 @@ module dy{
             map.material = this._material;
 
             this._textures.addChild(key, map);
+        }
+
+        private _removeMap(key:string, map:Texture){
+            this._textures.removeChild(key);
         }
 
         private _setMapOption(map:Texture, option:MapVariableData){

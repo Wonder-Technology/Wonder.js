@@ -173,10 +173,8 @@ module dy{
                 return;
             }
 
-            //this.addNormalShaderLib();
-
             switch (envMap.mode){
-                case EnvMapMode.NORMAL:
+                case EnvMapMode.BASIC:
                     this.shader.addLib(BasicEnvMapForLightShaderLib.create());
                     break;
                 case EnvMapMode.REFLECTION:
