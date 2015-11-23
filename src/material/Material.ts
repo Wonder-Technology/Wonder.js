@@ -126,7 +126,7 @@ module dy {
         }
 
         public shader:Shader = Shader.create();
-        public color:Color = Color.create("0xffffff");
+        public color:Color = Color.create("#ffffff");
 
         //public depthTest:boolean = true;
         //public depthWrite:boolean = true;

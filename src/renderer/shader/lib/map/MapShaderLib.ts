@@ -18,15 +18,16 @@ module dy{
         }
 
         private _setMapSource(){
-            var vs = this.getVsChunk("map"),
-                fs = this.getFsChunk("map");
+            var vs = this.getVsChunk("map_forBasic"),
+                fs = this.getFsChunk("map_forBasic");
 
             this.vsSourceTop= vs.top;
             this.vsSourceDefine= vs.define;
             this.vsSourceVarDeclare= vs.varDeclare;
             this.vsSourceFuncDeclare= vs.funcDeclare;
             this.vsSourceFuncDefine= vs.funcDefine;
-            this.vsSourceBody = ShaderSnippet.setPos_mvp + vs.body;
+            //this.vsSourceBody = ShaderSnippet.setPos_mvp + vs.body;
+            this.vsSourceBody = vs.body;
 
             this.setFsSource(fs);
             //this.vsSourceHead = ShaderChunk.map_head_vertex;

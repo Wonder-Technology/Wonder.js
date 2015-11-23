@@ -8,7 +8,7 @@ module dy{
         }
 
 
-        public type:string = "map";
+        public type:string = "map_forBasic";
     }
 }
 

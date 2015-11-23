@@ -9,7 +9,7 @@ module dy{
         }
 
 
-        public type:string = "multi_map";
+        public type:string = "multi_map_forBasic";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
@@ -23,6 +23,7 @@ module dy{
 
             this.addUniformVariable(["u_sampler2D1", "u_combineMode", "u_mixRatio"]);
 
+            this.fsSourceFuncDefine = this.getFsChunk().funcDefine;
             this.fsSourceBody = this.getFsChunk().body;
         }
     }

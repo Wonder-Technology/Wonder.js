@@ -40,6 +40,8 @@
 
             material.map = rectTexture;
 
+            material.color = dy.Color.create("#888888");
+
 
 
 
@@ -72,7 +74,6 @@
 
 
 
-            director.scene.addComponent(dy.Script.create("./scene.js"));
 
 
 
@@ -91,7 +92,7 @@
             cameraComponent.far = 100;
 
 
-            camera.addComponent(cameraComponent);
+            camera.addComponent(dy.FlyCameraController.create(cameraComponent));
 
 //            camera.transform.translate(dy.Vector3.create(0, 0, 0));
 //            camera.transform.translate(dy.Vector3.create(0, 0, -5));
@@ -101,12 +102,6 @@
 //            camera.transform.rotateLocal(dy.Vector3.create(35, 30, 0))
 //            camera.transform.translate(dy.Vector3.create(0, 0, 10));
             camera.transform.translate(dy.Vector3.create(0, 0, 10));
-
-            var script = dy.Script.create();
-
-            script.url = "./camera.js";
-
-            camera.addComponent(script);
 
             return camera
         }
