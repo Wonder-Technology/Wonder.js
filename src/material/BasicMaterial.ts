@@ -27,7 +27,7 @@ module dy{
             this.shader.addLib(BasicShaderLib.create());
 
             this._setMapShaderLib();
-            //this._setEnvMapShaderLib();
+            this._setEnvMapShaderLib();
         }
 
         private _setMapShaderLib(){
@@ -43,33 +43,33 @@ module dy{
             }
         }
 
-        //private _setEnvMapShaderLib(){
-        //    var envMap = this.envMap;
-        //
-        //    if(!envMap){
-        //        return;
-        //    }
-        //
-        //    this.addNormalShaderLib();
-        //
-        //    switch (envMap.mode){
-        //        case EnvMapMode.NORMAL:
-        //            this.shader.addLib(BasicEnvMapForBasicShaderLib.create());
-        //            break;
-        //        case EnvMapMode.REFLECTION:
-        //            this.shader.addLib(ReflectionForBasicShaderLib.create());
-        //            break;
-        //        case EnvMapMode.REFRACTION:
-        //            this.shader.addLib(RefractionForBasicShaderLib.create());
-        //            break;
-        //        case EnvMapMode.FRESNEL:
-        //            this.shader.addLib(FresnelForBasicShaderLib.create());
-        //            break;
-        //        default:
-        //            Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
-        //            break;
-        //    }
-        //}
+        private _setEnvMapShaderLib(){
+            var envMap = this.envMap;
+
+            if(!envMap){
+                return;
+            }
+
+            this.addNormalShaderLib();
+
+            switch (envMap.mode){
+                case EnvMapMode.NORMAL:
+                    this.shader.addLib(BasicEnvMapForBasicShaderLib.create());
+                    break;
+                case EnvMapMode.REFLECTION:
+                    this.shader.addLib(ReflectionForBasicShaderLib.create());
+                    break;
+                case EnvMapMode.REFRACTION:
+                    this.shader.addLib(RefractionForBasicShaderLib.create());
+                    break;
+                case EnvMapMode.FRESNEL:
+                    this.shader.addLib(FresnelForBasicShaderLib.create());
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
+                    break;
+            }
+        }
     }
 }
 

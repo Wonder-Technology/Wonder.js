@@ -7,7 +7,6 @@ float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){
 
     return ratio / 100.0;
 }
-
 vec3 getEnvMapTotalColor(vec3 inDir, vec3 normal){
     vec3 reflectDir = reflect(inDir, normal);
     vec3 refractDir = refract(inDir, normal, u_refractionRatio);
@@ -29,5 +28,6 @@ vec3 getEnvMapTotalColor(vec3 inDir, vec3 normal){
 @end
 
 @body
-	totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal());
+	gl_FragColor = vec4(getEnvMapTotalColor(inDir, normalize(v_normal)), 1.0);
+
 @end

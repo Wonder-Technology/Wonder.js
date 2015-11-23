@@ -1,13 +1,13 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class BasicEnvMapShaderLib extends EnvMapShaderLib{
+    export class BasicEnvMapForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "basic_envMap";
+        public type:string = "basic_envMap_forBasic";
         //
         //public setShaderDefinition(quadCmd:QuadCommand, material:Material){
         //    super.setShaderDefinition(quadCmd, material);

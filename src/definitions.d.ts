@@ -137,11 +137,11 @@
 /// <reference path="renderer/shader/lib/animation/morph/MorphVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/EnvMapShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/BasicEnvMapShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/ReflectionShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/RefractionShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/FresnelShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/BasicEnvMapForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/ReflectionForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/RefractionForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/FresnelForBasicShaderLib"/>
 
 /// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forLight/BasicEnvMapForLightShaderLib"/>

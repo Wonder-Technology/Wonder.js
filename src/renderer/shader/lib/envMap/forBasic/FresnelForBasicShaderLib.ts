@@ -1,13 +1,13 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class FresnelShaderLib extends EnvMapShaderLib{
+    export class FresnelForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "fresnel";
+        public type:string = "fresnel_forBasic";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);

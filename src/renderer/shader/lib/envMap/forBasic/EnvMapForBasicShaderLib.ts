@@ -1,6 +1,6 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export abstract class EnvMapShaderLib extends ShaderLib{
+    export abstract class EnvMapForBasicShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.camera.transform.position);
@@ -15,8 +15,8 @@ module dy{
         }
 
         protected setEnvMapSource(){
-            var vs = this.getVsChunk("envMap"),
-                fs = this.getFsChunk("envMap");
+            var vs = this.getVsChunk("envMap_forBasic"),
+                fs = this.getFsChunk("envMap_forBasic");
 
             this.vsSourceTop= vs.top;
             this.vsSourceDefine= vs.define;

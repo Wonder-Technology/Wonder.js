@@ -1,13 +1,13 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class ReflectionShaderLib extends EnvMapShaderLib{
+    export class ReflectionForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "reflection";
+        public type:string = "reflection_forBasic";
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);

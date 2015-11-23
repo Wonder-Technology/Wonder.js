@@ -1,13 +1,13 @@
-/// <reference path="../../../../definitions.d.ts"/>
+/// <reference path="../../../../../definitions.d.ts"/>
 module dy{
-    export class RefractionShaderLib extends EnvMapShaderLib{
+    export class RefractionForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "refraction";
+        public type:string = "refraction_forBasic";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
