@@ -17,8 +17,6 @@ module dy {
         public thetaMargin = 0.05;
         public minDistance:number = 0;
 
-        protected cameraComponent:Camera = null;
-
         private _mouseDragSubscription:dyRt.IDisposable = null;
         private _mouseWheelSubscription:dyRt.IDisposable = null;
         private _keydownSubscription:dyRt.IDisposable = null;
@@ -30,13 +28,13 @@ module dy {
 
             this._bindCanvasEvent();
 
-            EventManager.on("dy_startLoop", () => {
-                self._changeTarget();
-            });
-
-            EventManager.on("dy_endLoop", () => {
-                self._setAllFalse();
-            });
+            //EventManager.on("dy_startLoop", () => {
+            //    self._changeTarget();
+            //});
+            //
+            //EventManager.on("dy_endLoop", () => {
+            //    self._setAllFalse();
+            //});
         }
 
         public update(time:number) {
@@ -74,6 +72,7 @@ module dy {
                 mousemove = EventManager.fromEvent(scene, EventName.MOUSEMOVE),
                 mousedown = EventManager.fromEvent(scene, EventName.MOUSEDOWN),
                 mousewheel = EventManager.fromEvent(scene, EventName.MOUSEWHEEL),
+                keydown = EventManager.fromEvent(EventName.KEYDOWN),
                 mousedrag = null;
 
             mousedrag = mousedown.flatMap(function (e) {
@@ -91,22 +90,22 @@ module dy {
                 self._contrainDistance();
             });
 
-            this._keydownSubscription = EventManager.fromEvent(EventName.KEYDOWN)
-                .subscribe(function (e) {
-                    self._setAllFalse();
-                    self.keyState[e.key] = true;
-                });
+            this._keydownSubscription = keydown.subscribe(function (e) {
+                //self._setAllFalse();
+                //self.keyState[e.key] = true;
+                self._changeTarget(e);
+            });
         }
 
-        private _setAllFalse() {
-            for (let i in this.keyState) {
-                if (this.keyState.hasOwnProperty(i)) {
-                    this.keyState[i] = false;
-                }
-            }
-        }
-
-        public keyState:any = {};
+        //private _setAllFalse() {
+        //    for (let i in this.keyState) {
+        //        if (this.keyState.hasOwnProperty(i)) {
+        //            this.keyState[i] = false;
+        //        }
+        //    }
+        //}
+        //
+        //public keyState:any = {};
 
 
 
@@ -119,31 +118,29 @@ module dy {
             this._contrainTheta();
         }
 
-        private _changeTarget(){
+        private _changeTarget(e:KeyboardEvent){
             var moveSpeedX = this.moveSpeedX,
                 moveSpeedY = this.moveSpeedY,
                 dx = null,
                 dy = null,
+                keyState = e.keyState,
                 transform = this.gameObject.transform;
 
-            if (this.keyState["a"] || this.keyState["left"]) {
+            if (keyState["a"] || keyState["left"]) {
                 dx = -moveSpeedX;
             }
-            else if(this.keyState["d"] || this.keyState["right"]) {
+            else if(keyState["d"] || keyState["right"]) {
                 dx = moveSpeedX;
             }
-            else if(this.keyState["w"] || this.keyState["up"]) {
+            else if(keyState["w"] || keyState["up"]) {
                 dy = moveSpeedY;
             }
-            else if(this.keyState["s"] || this.keyState["down"]) {
+            else if(keyState["s"] || keyState["down"]) {
                 dy = -moveSpeedY;
             }
 
-            var right = Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx));
-            var up = Vector3.create(transform.up.x * dy, transform.up.y * dy, 0);
-
-            this.target.add(right);
-            this.target.add(up);
+            this.target.add(Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
+            this.target.add(Vector3.create(transform.up.x * dy, transform.up.y * dy, 0));
         }
 
         private _contrainDistance() {

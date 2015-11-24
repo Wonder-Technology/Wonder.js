@@ -6,5 +6,7 @@ module dy {
         public abstract off(...args);
 
         public abstract trigger(...args);
+
+
     }
 }

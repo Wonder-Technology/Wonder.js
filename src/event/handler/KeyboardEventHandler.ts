@@ -13,6 +13,8 @@ module dy {
             return this._instance;
         }
 
+        public keyState:any = {};
+
         public on(eventName:EventName, handler:Function, priority:number) {
             this.handler(null, eventName, handler, priority);
         }
@@ -42,24 +44,51 @@ module dy {
             return document;
         }
 
-        protected buildWrapHandler(target:GameObject, eventName:EventName){
-            var self = this,
-                context = root;
-
-            return dyCb.EventUtils.bindEvent(context, function (event) {
-                EventManager.trigger(self._createEventObject(event, eventName));
-            });
-        }
-
-
-        private _isTrigger(result){
-            return result && result.getCount() > 0;
-        }
-
-        private _createEventObject(event:any, eventName:EventName) {
+        protected createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
             var obj = KeyboardEvent.create(event ? event : root.event, eventName);
 
             return obj;
+        }
+
+        //todo test
+        protected handleEvent(eventName:EventName, event:KeyboardEvent){
+            if (!event.event) {
+                return;
+            }
+
+            switch (eventName){
+                case EventName.KEYDOWN:
+                    this._handleKeyDown(event);
+                    break;
+                case EventName.KEYUP:
+                    this._handleKeyUp(event);
+                    break;
+                //todo handle more key event
+                default:
+                    EventManager.trigger(event);
+                    break;
+            }
+        }
+
+        private _handleKeyDown(event:KeyboardEvent){
+            this._setKeyStateAllFalse();
+            this.keyState[event.key] = true;
+
+            EventManager.trigger(event);
+        }
+
+        private _handleKeyUp(event:KeyboardEvent){
+            this._setKeyStateAllFalse();
+
+            EventManager.trigger(event);
+        }
+
+        private _setKeyStateAllFalse() {
+            for (let i in this.keyState) {
+                if (this.keyState.hasOwnProperty(i)) {
+                    this.keyState[i] = false;
+                }
+            }
         }
     }
 }

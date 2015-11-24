@@ -73,6 +73,7 @@ module dy {
                 mouseup = EventManager.fromEvent(scene, EventName.MOUSEUP),
                 mousemove = EventManager.fromEvent(scene, EventName.MOUSEMOVE),
                 mousedown = EventManager.fromEvent(scene, EventName.MOUSEDOWN),
+                keydown = EventManager.fromEvent(EventName.KEYDOWN),
                 mousedrag = null,
                 canvas = Director.getInstance().view;
 
@@ -102,8 +103,7 @@ module dy {
                 self._rotateX -= pos.dy;
             });
 
-            this._keydownSubscription = EventManager.fromEvent(EventName.KEYDOWN)
-                .subscribe(function (e) {
+            this._keydownSubscription = keydown.subscribe(function (e) {
                     self._setAllFalse();
                     self.keyState[e.key] = true;
                 });

@@ -17,8 +17,19 @@ module dy {
         }
 
         protected abstract getDom();
+        protected abstract createEventObject(event:any, eventName:EventName, currentTarget:GameObject);
+        protected abstract handleEvent(eventName:EventName, event:Event);
 
-        protected abstract buildWrapHandler(target:GameObject, eventName:EventName);
+        protected buildWrapHandler(target:GameObject, eventName:EventName){
+            var self = this,
+                context = root;
+
+            return dyCb.EventUtils.bindEvent(context, function (event) {
+                let eventObject:Event = self.createEventObject(event, eventName, target);
+
+                self.handleEvent(eventName, eventObject);
+            });
+        }
 
         protected handler(target, eventName, handler, priority){
             var wrapHandler = null;

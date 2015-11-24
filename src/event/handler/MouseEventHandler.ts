@@ -62,40 +62,38 @@ module dy {
             return DeviceManager.getInstance().view.dom;
         }
 
-        protected buildWrapHandler(target:GameObject, eventName:EventName){
-            var self = this,
-                context = root;
+        protected createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
+            var obj = MouseEvent.create(event ? event : root.event, eventName);
 
-            return dyCb.EventUtils.bindEvent(context, function (event) {
-                var eventObject:MouseEvent = self._createEventObject(event, eventName, target);
+            obj.currentTarget = currentTarget;
 
-                self._handleEvent(eventName, eventObject);
-            });
+            return obj;
         }
+
+        //todo test
+        protected handleEvent(eventName:EventName, event:MouseEvent){
+            if (!event.event) {
+                return;
+            }
+
+            switch (eventName){
+                case EventName.MOUSEMOVE:
+                    this._handleMove(event);
+                    break;
+                //todo handle more mouse event
+                default:
+                    EventManager.emit(this._getTopTarget(event), event);
+                    break;
+            }
+        }
+
 
         private _getTopTarget(event:MouseEvent){
             return Director.getInstance().getTopUnderPoint(event.locationInView);
         }
 
-        //todo test
-        private _handleEvent(eventName:EventName, event:MouseEvent){
-            switch (eventName){
-                case EventName.MOUSEMOVE:
-                    this._handleMove(event);
-                    break;
-                default:
-                    EventManager.emit(this._getTopTarget(event), event);
-                    //todo handle more mouse event
-                    break;
-            }
-        }
-
         private _handleMove(event:MouseEvent){
             var location = null;
-
-            if (!event.event) {
-                return;
-            }
 
             EventManager.emit(this._getTopTarget(event), event);
 
@@ -103,18 +101,6 @@ module dy {
 
             this.lastX = location.x;
             this.lastY = location.y;
-        }
-
-        private _isTrigger(result){
-            return result && result.getCount() > 0;
-        }
-
-        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
-            var obj = MouseEvent.create(event ? event : root.event, eventName);
-
-            obj.currentTarget = currentTarget;
-
-            return obj;
         }
     }
 }

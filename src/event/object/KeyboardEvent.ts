@@ -175,6 +175,10 @@ module dy {
             return key;
         }
 
+        get keyState(){
+            return KeyboardEventHandler.getInstance().keyState;
+        }
+
         public copy(){
             var eventObj = KeyboardEvent.create(this._event, this.name);
 
