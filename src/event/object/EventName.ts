@@ -6,6 +6,7 @@ module dy{
         MOUSEOUT = <any>"mouseout",
         MOUSEMOVE = <any>"mousemove",
         MOUSEDOWN = <any>"mousedown",
+        MOUSEWHEEL = <any>"mousewheel",
 
         KEYDOWN = <any>"keydown",
         KEYUP = <any>"keyup",

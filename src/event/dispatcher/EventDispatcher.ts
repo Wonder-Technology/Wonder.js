@@ -130,7 +130,7 @@ module dy {
         }
 
         private _triggerWithUserData(target, event, userData, notSetTarget){
-            return userData ? this.trigger(target, event.copy(), userData, notSetTarget)
+            return userData ? this.trigger(target, event, userData, notSetTarget)
                 : this.trigger(target, event, notSetTarget);
         }
     }

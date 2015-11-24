@@ -77,24 +77,16 @@ module dy {
                 canvas = Director.getInstance().view;
 
             mousedrag = mousedown.flatMap(function (e) {
-                var startX = e.location.x,
-                    startY = e.location.y;
-
                 e.stopPropagation();
 
                 return mousemove.map(function (e) {
-                    var x = e.location.x,
-                        y = e.location.y,
+                    var movementDelta = e.movementDelta,
                         dx = null,
                         dy = null,
                         factor = rotateSpeed / canvas.height; // The rotation ratio
 
-//                    e.preventDefault();
-                    dx = factor * (x - startX);
-                    dy = factor * (y - startY);
-
-                    startX = x;
-                    startY = y;
+                    dx = factor * movementDelta.x;
+                    dy = factor * movementDelta.y;
 
                     self._isRotate = true;
 

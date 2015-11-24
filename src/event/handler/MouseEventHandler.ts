@@ -14,6 +14,9 @@ module dy {
             return this._instance;
         }
 
+        public lastX:number = null;
+        public lastY:number = null;
+
         @require(function(target:GameObject, eventName:EventName, handler:Function, priority:number){
             assert(target instanceof GameObject, Log.info.FUNC_MUST_BE("target", "GameObject"));
         })
@@ -64,11 +67,42 @@ module dy {
                 context = root;
 
             return dyCb.EventUtils.bindEvent(context, function (event) {
-                var eventObject:MouseEvent = self._createEventObject(event, eventName, target),
-                    topTarget = Director.getInstance().getTopUnderPoint(eventObject.locationInView);
+                var eventObject:MouseEvent = self._createEventObject(event, eventName, target);
 
-                EventManager.emit(topTarget, eventObject);
+                self._handleEvent(eventName, eventObject);
             });
+        }
+
+        private _getTopTarget(event:MouseEvent){
+            return Director.getInstance().getTopUnderPoint(event.locationInView);
+        }
+
+        //todo test
+        private _handleEvent(eventName:EventName, event:MouseEvent){
+            switch (eventName){
+                case EventName.MOUSEMOVE:
+                    this._handleMove(event);
+                    break;
+                default:
+                    EventManager.emit(this._getTopTarget(event), event);
+                    //todo handle more mouse event
+                    break;
+            }
+        }
+
+        private _handleMove(event:MouseEvent){
+            var location = null;
+
+            if (!event.event) {
+                return;
+            }
+
+            EventManager.emit(this._getTopTarget(event), event);
+
+            location = event.location;
+
+            this.lastX = location.x;
+            this.lastY = location.y;
         }
 
         private _isTrigger(result){

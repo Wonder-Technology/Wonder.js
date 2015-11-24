@@ -12,4 +12,15 @@ module dy{
             return window;
         }
     });
+
+    export var document:any;
+    Object.defineProperty(dy, "document", {
+        get: function() {
+            if(JudgeUtils.isNodeJs()){
+                return {};
+            }
+
+            return window.document;
+        }
+    });
 }
