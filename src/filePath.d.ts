@@ -66,6 +66,7 @@
 /// <reference path="component/camera/controller/fly/FlyCameraControl"/>
 /// <reference path="component/camera/controller/fly/FlyPerspectiveCameraControl"/>
 /// <reference path="component/camera/controller/fly/FlyOrthographicCameraControl"/>
+/// <reference path="component/camera/controller/arcball/ArcballCameraController"/>
 
 /// <reference path="component/action/Action"/>
 /// <reference path="component/action/ActionInstant"/>
@@ -95,6 +96,7 @@
 
 
 /// <reference path="utils/JudgeUtils"/>
+/// <reference path="utils/MathUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
