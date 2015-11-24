@@ -7,7 +7,8 @@ module dy {
             return obj;
         }
 
-        //public moveSpeed:number = 1.2;
+        public moveSpeedX:number = 1;
+        public moveSpeedY:number = 1;
         public rotateSpeed:number = 1;
         public distance:number = 10;
         public phi:number = Math.PI / 2;
@@ -20,11 +21,22 @@ module dy {
 
         private _mouseDragSubscription:dyRt.IDisposable = null;
         private _mouseWheelSubscription:dyRt.IDisposable = null;
+        private _keydownSubscription:dyRt.IDisposable = null;
 
         public init() {
+            var self = this;
+
             super.init();
 
             this._bindCanvasEvent();
+
+            EventManager.on("dy_startLoop", () => {
+                self._changeTarget();
+            });
+
+            EventManager.on("dy_endLoop", () => {
+                self._setAllFalse();
+            });
         }
 
         public update(time:number) {
@@ -78,7 +90,25 @@ module dy {
                 self.distance -= e.wheel;
                 self._contrainDistance();
             });
+
+            this._keydownSubscription = EventManager.fromEvent(EventName.KEYDOWN)
+                .subscribe(function (e) {
+                    self._setAllFalse();
+                    self.keyState[e.key] = true;
+                });
         }
+
+        private _setAllFalse() {
+            for (let i in this.keyState) {
+                if (this.keyState.hasOwnProperty(i)) {
+                    this.keyState[i] = false;
+                }
+            }
+        }
+
+        public keyState:any = {};
+
+
 
         private _changeOrbit(e:MouseEvent) {
             var movementDelta = e.movementDelta;
@@ -87,6 +117,33 @@ module dy {
             this.theta -= movementDelta.y / (100 / this.rotateSpeed);
 
             this._contrainTheta();
+        }
+
+        private _changeTarget(){
+            var moveSpeedX = this.moveSpeedX,
+                moveSpeedY = this.moveSpeedY,
+                dx = null,
+                dy = null,
+                transform = this.gameObject.transform;
+
+            if (this.keyState["a"] || this.keyState["left"]) {
+                dx = -moveSpeedX;
+            }
+            else if(this.keyState["d"] || this.keyState["right"]) {
+                dx = moveSpeedX;
+            }
+            else if(this.keyState["w"] || this.keyState["up"]) {
+                dy = moveSpeedY;
+            }
+            else if(this.keyState["s"] || this.keyState["down"]) {
+                dy = -moveSpeedY;
+            }
+
+            var right = Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx));
+            var up = Vector3.create(transform.up.x * dy, transform.up.y * dy, 0);
+
+            this.target.add(right);
+            this.target.add(up);
         }
 
         private _contrainDistance() {
@@ -100,6 +157,7 @@ module dy {
         private _removeEvent() {
             this._mouseDragSubscription.dispose();
             this._mouseWheelSubscription.dispose();
+            this._keydownSubscription.dispose();
         }
     }
 }
