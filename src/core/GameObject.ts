@@ -434,14 +434,8 @@ module dy {
         @require(function(){
             assert(this._getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
         })
-        private _getCamera():Camera{
-            var controller = this.getComponent<CameraController>(CameraController);
-
-            if(controller){
-                return controller.camera;
-            }
-
-            return null;
+        private _getCamera():CameraController{
+            return this.getComponent<CameraController>(CameraController);
         }
 
         @require(function(){

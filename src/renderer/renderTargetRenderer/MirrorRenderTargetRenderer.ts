@@ -29,7 +29,7 @@ module dy {
         protected createCamera(camera:GameObject):GameObject{
             var mirrorCameraComponent = null,
                 plane = null,
-                cameraComponent:Camera = camera.getComponent<CameraController>(CameraController).camera,
+                cameraComponent:CameraController = camera.getComponent<CameraController>(CameraController),
                 mirrorCameraViewMatrix = null,
                 projectionMatrix = null;
 

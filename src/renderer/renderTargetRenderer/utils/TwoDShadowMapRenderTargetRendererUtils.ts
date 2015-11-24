@@ -35,7 +35,7 @@ module dy {
         }
 
         protected setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject){
-            var cameraComponent = shadowMapCamera.getComponent<CameraController>(CameraController).camera;
+            var cameraComponent:CameraController = shadowMapCamera.getComponent<CameraController>(CameraController);
 
             material.addTwoDShadowMapData({
                 shadowBias: this.light.shadowBias,

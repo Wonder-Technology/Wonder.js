@@ -19,7 +19,7 @@ module dy {
         })
         protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject){
              var quadCmd = renderer.createQuadCommand(),
-                cameraComponent = camera.getComponent<CameraController>(CameraController).camera,
+                cameraComponent = camera.getComponent<CameraController>(CameraController),
                 material:Material = geometry.material;
 
             //quadCmd.buffers = {
