@@ -227,6 +227,13 @@ var testTool = (function () {
             //camera.addComponent(script);
 
             return camera
+        },
+        shouldExecRunTest: function(msg){
+            var str = !msg ? "should exec run test" : "should exec run test: " + msg;
+
+            it(str, function(){
+                expect().toPass();
+            })
         }
     }
 }());

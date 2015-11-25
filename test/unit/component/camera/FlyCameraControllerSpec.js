@@ -46,8 +46,6 @@ describe("FlyCameraController", function () {
         );
     });
 
-    /*!
-    use run test to test more
-     */
+    testTool.shouldExecRunTest("test more");
 });
 

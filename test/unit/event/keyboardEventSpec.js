@@ -33,9 +33,7 @@ describe("keyboard event", function () {
         sandbox.restore();
     });
 
-    it("run test to test event object's member when triggered", function(){
-        //run test
-    });
+    testTool.shouldExecRunTest("test event object's member when triggered");
 
     describe("bind/unbind keyboard event", function(){
         describe("bind on document", function(){
