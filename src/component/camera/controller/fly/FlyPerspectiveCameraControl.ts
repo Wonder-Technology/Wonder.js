@@ -11,13 +11,14 @@ module dy {
 
         protected cameraComponent:PerspectiveCamera;
 
-        protected zoom() {
-            var speed = this.zoomSpeed;
+        protected zoom(event:KeyboardEvent){
+            var speed = this.zoomSpeed,
+                keyState = event.keyState;
 
-            if (this.keyState["g"]) {
+            if (keyState["g"]) {
                 this.cameraComponent.zoomIn(speed);
             }
-            else if (this.keyState["h"]) {
+            else if (keyState["h"]) {
                 this.cameraComponent.zoomOut(speed);
             }
         }

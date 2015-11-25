@@ -26,6 +26,12 @@ module dy {
             this._control.init(this.gameObject);
         }
 
+        public update(time:number){
+            super.update(time);
+
+            this._control.update(time);
+        }
+
         public dispose() {
             super.dispose();
 

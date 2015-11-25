@@ -9,13 +9,13 @@ module dy {
         public rotateSpeed:number = 100;
 
         protected cameraComponent:Camera = null;
-        protected keyState:any = {};
 
         private _rotateX:number = 0;
         private _rotateY:number = 0;
         private _isRotate:boolean = false;
         private _mouseDragSubscription:dyRt.IDisposable = null;
         private _keydownSubscription:dyRt.IDisposable = null;
+        private _gameObject:GameObject = null;
 
         public init(gameObject:GameObject) {
             var self = this,
@@ -24,44 +24,42 @@ module dy {
             this._rotateX = eulerAngles.x;
             this._rotateY = eulerAngles.y;
 
+            this._gameObject = gameObject;
+
             this._bindCanvasEvent();
+        }
 
-            EventManager.on("dy_startLoop", () => {
-                self._move(gameObject);
+        public update(time:number){
+            if (!this._isRotate) {
+                return;
+            }
 
-                if (self._isRotate) {
-                    gameObject.transform.eulerAngles = Vector3.create(self._rotateX, self._rotateY, 0);
-                    self._isRotate = false;
-                }
+            this._isRotate = false;
 
-                self.zoom();
-            });
-
-            EventManager.on("dy_endLoop", () => {
-                self._setAllFalse();
-                self._isRotate = false;
-            });
+            this._gameObject.transform.eulerAngles = Vector3.create(this._rotateX, this._rotateY, 0);
         }
 
         public dispose() {
             this._removeEvent();
         }
 
-        protected abstract zoom();
+        protected abstract zoom(event:KeyboardEvent);
 
-        private _move(gameObject:GameObject) {
-            var speed = this.moveSpeed;
+        private _move(event:KeyboardEvent) {
+            var speed = this.moveSpeed,
+                gameObject = this._gameObject,
+                keyState = event.keyState;
 
-            if (this.keyState["a"]) {
+            if (keyState["a"]) {
                 gameObject.transform.translateLocal(Vector3.create(-speed, 0, 0));
             }
-            else if(this.keyState["d"]) {
+            else if(keyState["d"]) {
                 gameObject.transform.translateLocal(Vector3.create(speed, 0, 0));
             }
-            else if(this.keyState["w"]) {
+            else if(keyState["w"]) {
                 gameObject.transform.translateLocal(Vector3.create(0, 0, -speed));
             }
-            else if(this.keyState["s"]) {
+            else if(keyState["s"]) {
                 gameObject.transform.translateLocal(Vector3.create(0, 0, speed));
             }
         }
@@ -84,7 +82,7 @@ module dy {
                     var movementDelta = e.movementDelta,
                         dx = null,
                         dy = null,
-                        factor = rotateSpeed / canvas.height; // The rotation ratio
+                        factor = rotateSpeed / canvas.height;
 
                     dx = factor * movementDelta.x;
                     dy = factor * movementDelta.y;
@@ -104,17 +102,9 @@ module dy {
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {
-                    self._setAllFalse();
-                    self.keyState[e.key] = true;
-                });
-        }
-
-        private _setAllFalse() {
-            for (let i in this.keyState) {
-                if (this.keyState.hasOwnProperty(i)) {
-                    this.keyState[i] = false;
-                }
-            }
+                self._move(e);
+                self.zoom(e);
+            });
         }
 
         private _removeEvent() {

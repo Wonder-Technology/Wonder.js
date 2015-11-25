@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module dy {
-    export class MouseEvent extends Event{
+    export class MouseEvent extends DomEvent{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";
         //public static MOUSEOUT:string = "mouseout";
@@ -17,27 +17,13 @@ module dy {
             return obj;
         }
 
-        constructor(event:any, eventName:EventName) {
-            super(eventName);
-
-            this.event = event;
-        }
-
         protected p_type:EventType = EventType.MOUSE;
-
-        private _event:any = null;
-        get event() {
-            return this._event;
-        }
-        set event(event:any) {
-            this._event = event || root.event;
-        }
 
         private _location:Point = null;
         //Get cursor location(related to document)
         get location():Point {
             var point:Point = null,
-                e = this._event;
+                e = this.event;
 
             if (this._location) {
                 return this._location;
@@ -75,7 +61,7 @@ module dy {
             point = this.location;
 
 
-            //canvasOffset = this._getCanvasOffset(this._event.currentTarget);
+            //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
             viewOffset = DeviceManager.getInstance().view.offset;
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
@@ -86,7 +72,7 @@ module dy {
 
         private _button:number = null;
         get button() {
-            var e = this._event,
+            var e = this.event,
                 mouseButton:number = null;
 
             if (this._button) {
@@ -138,7 +124,7 @@ module dy {
         get wheel(){
             // FF uses 'detail' and returns a value in 'no. of lines' to scroll
             // WebKit and Opera use 'wheelDelta', WebKit goes in multiples of 120 per wheel notch
-            var e = this._event;
+            var e = this.event;
 
             if (e.detail) {
                 return -1 * e.detail;
@@ -153,7 +139,7 @@ module dy {
 
         //todo test
         get movementDelta(){
-            var e = this._event,
+            var e = this.event,
                 dx = null,
                 dy = null;
 
@@ -184,7 +170,7 @@ module dy {
         }
 
         public copy(){
-            var eventObj = MouseEvent.create(this._event, this.name);
+            var eventObj = MouseEvent.create(this.event, this.name);
 
             return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
         }

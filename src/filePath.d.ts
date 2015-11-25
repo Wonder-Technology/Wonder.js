@@ -227,6 +227,7 @@
 /// <reference path="event/object/EventPhase"/>
 /// <reference path="event/object/EventTable"/>
 /// <reference path="event/object/Event"/>
+/// <reference path="event/object/DomEvent"/>
 /// <reference path="event/object/MouseEvent"/>
 /// <reference path="event/object/KeyboardEvent"/>
 /// <reference path="event/object/CustomEvent"/>

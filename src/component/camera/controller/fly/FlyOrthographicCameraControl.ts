@@ -7,7 +7,7 @@ module dy {
             return obj;
         }
 
-        protected zoom(){
+        protected zoom(event:KeyboardEvent){
         }
     }
 }

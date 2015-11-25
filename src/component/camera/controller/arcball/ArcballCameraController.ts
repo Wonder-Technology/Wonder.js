@@ -17,38 +17,34 @@ module dy {
         public thetaMargin = 0.05;
         public minDistance:number = 0;
 
+        private _isChange:boolean = true;
         private _mouseDragSubscription:dyRt.IDisposable = null;
         private _mouseWheelSubscription:dyRt.IDisposable = null;
         private _keydownSubscription:dyRt.IDisposable = null;
 
         public init() {
-            var self = this;
-
             super.init();
 
             this._bindCanvasEvent();
-
-            //EventManager.on("dy_startLoop", () => {
-            //    self._changeTarget();
-            //});
-            //
-            //EventManager.on("dy_endLoop", () => {
-            //    self._setAllFalse();
-            //});
         }
 
         public update(time:number) {
-            /*
+            /*!
              X= r*cos(phi)*sin(theta);
              Z= r*sin(phi)*sin(theta);
              Y= r*cos(theta);
              */
-
             var x = null,
                 y = null,
                 z = null;
 
             super.update(time);
+
+            if(!this._isChange){
+                return;
+            }
+
+            this._isChange = false;
 
             x = ((this.distance) * Math.cos(this.phi) * Math.sin(this.theta) + this.target.x);
             z = ((this.distance) * Math.sin(this.phi) * Math.sin(this.theta) + this.target.z);
@@ -85,32 +81,21 @@ module dy {
                 self._changeOrbit(e);
             });
 
-            this._mouseWheelSubscription = mousewheel.subscribe((e:any) => {
-                self.distance -= e.wheel;
-                self._contrainDistance();
+            this._mouseWheelSubscription = mousewheel.subscribe((e:MouseEvent) => {
+                e.preventDefault();
+
+                self._changeDistance(e);
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {
-                //self._setAllFalse();
-                //self.keyState[e.key] = true;
                 self._changeTarget(e);
             });
         }
 
-        //private _setAllFalse() {
-        //    for (let i in this.keyState) {
-        //        if (this.keyState.hasOwnProperty(i)) {
-        //            this.keyState[i] = false;
-        //        }
-        //    }
-        //}
-        //
-        //public keyState:any = {};
-
-
-
         private _changeOrbit(e:MouseEvent) {
             var movementDelta = e.movementDelta;
+
+            this._isChange = true;
 
             this.phi += movementDelta.x / (100 / this.rotateSpeed);
             this.theta -= movementDelta.y / (100 / this.rotateSpeed);
@@ -125,6 +110,8 @@ module dy {
                 dy = null,
                 keyState = e.keyState,
                 transform = this.gameObject.transform;
+
+            this._isChange = true;
 
             if (keyState["a"] || keyState["left"]) {
                 dx = -moveSpeedX;
@@ -141,6 +128,13 @@ module dy {
 
             this.target.add(Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
             this.target.add(Vector3.create(transform.up.x * dy, transform.up.y * dy, 0));
+        }
+
+        private _changeDistance(e:MouseEvent){
+            this._isChange = true;
+
+            this.distance -= e.wheel;
+            this._contrainDistance();
         }
 
         private _contrainDistance() {

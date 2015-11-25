@@ -114,48 +114,34 @@ module dy {
             "\\": "|"
         };
 
-    export class KeyboardEvent extends Event{
+    export class KeyboardEvent extends DomEvent{
         public static create(event:any, eventName:EventName) {
             var obj = new this(event, eventName);
 
             return obj;
         }
 
-        constructor(event:any, eventName:EventName) {
-            super(eventName);
-
-            this._event = event;
-        }
-
         protected p_type:EventType = EventType.KEYBOARD;
 
-        private _event:any = null;
-        get event() {
-            return this._event;
-        }
-        set event(event:any) {
-            this._event = event || root.event;
-        }
-
         get ctrlKey(){
-            return this._event.ctrlKey;
+            return this.event.ctrlKey;
         }
 
         get altKey(){
-            return this._event.altKey;
+            return this.event.altKey;
         }
 
         get shiftKey(){
-            return this._event.shiftKey;
+            return this.event.shiftKey;
         }
 
         get metaKey(){
-            //return this._event.metaKey && !this.ctrlKey;
-            return this._event.metaKey;
+            //return this.event.metaKey && !this.ctrlKey;
+            return this.event.metaKey;
         }
 
         get keyCode(){
-            return this._event.keyCode;
+            return this.event.keyCode;
         }
 
         get key(){
@@ -180,7 +166,7 @@ module dy {
         }
 
         public copy(){
-            var eventObj = KeyboardEvent.create(this._event, this.name);
+            var eventObj = KeyboardEvent.create(this.event, this.name);
 
             return this.copyMember(eventObj, this, ["altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
         }
