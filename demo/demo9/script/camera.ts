@@ -1,7 +1,7 @@
 /// <reference path="../../../dist/dy.d.ts"/>
 module sample{
     @dy.script("camera")
-    export class Camera{
+    export class Camera implements dy.IScriptBehavior{
         constructor(gameObject:dy.GameObject){
             this._gameObject = gameObject;
         }
