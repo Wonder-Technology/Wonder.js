@@ -54,6 +54,9 @@
         //'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/*.js',
+        //'test/unit/event/mouseEv*.js',
+        //'test/unit/event/keyboardEv*.js',
+        //'test/unit/event/domEv*.js',
         //'test/unit/utils/**',
         //'test/unit/video/**',
 

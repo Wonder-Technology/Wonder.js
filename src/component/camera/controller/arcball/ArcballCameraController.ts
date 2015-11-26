@@ -15,7 +15,7 @@ module dy {
         public theta:number = Math.PI / 2;
         public target:Vector3 = Vector3.create(0, 0, 0);
         public thetaMargin = 0.05;
-        public minDistance:number = 0;
+        public minDistance:number = 0.05;
 
         private _isChange:boolean = true;
         private _mouseDragSubscription:dyRt.IDisposable = null;

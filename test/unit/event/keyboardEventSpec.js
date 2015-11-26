@@ -257,6 +257,4 @@ describe("keyboard event", function () {
             expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
     });
-
-//todo one target with one event can only be binded once
 });

@@ -56,23 +56,10 @@ module dy {
             var domHandler = null,
                 originHandler = handler;
 
-            console.log(eventName)
-            //if (EventRegister.getInstance().isBinded(target, eventName)) {
-            //    EventRegister.getInstance().update(
-            //        target,
-            //        eventName,
-            //        handler,
-            //        EventRegister.getInstance().getDomHandler(target, eventName),
-            //        priority
-            //    );
-            //    return;
-            //}
-
             handler = this.addEngineHandler(target, eventName, handler);
 
-            //todo allow bind dom multi times?
             if (!EventRegister.getInstance().isBinded(target, eventName)) {
-            domHandler = this._bind(this.getDom(), eventName, target);
+                domHandler = this._bind(this.getDom(), eventName, target);
             }
             else{
                 domHandler = EventRegister.getInstance().getDomHandler(target, eventName);

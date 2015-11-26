@@ -227,37 +227,11 @@ describe("mouse event", function () {
 
     it("use drag example to test", function(){
         var sum1 = 0;
-        var sum2 = 0;
         var stub = sandbox.stub();
-        //var target = document.getElementById("event-test");
         target = dy.Director.getInstance().scene;
 
         sandbox.stub(dy.MouseEventHandler.getInstance(), "_saveLocation");
 
-        //manager.on(target, dy.EventName.MOUSEMOVE,function (e) {
-        //    sum1++;
-        //});
-        //manager.on(target, dy.EventName.MOUSEWHEEL,function (e) {
-        //    sum2++;
-        //});
-        //manager.fromEvent(target, dy.EventName.MOUSEMOVE).subscribe(function (e) {
-        //    sum1++;
-        //});
-        //manager.fromEvent(target, dy.EventName.MOUSEWHEEL).subscribe(function (e) {
-        //    sum2++;
-        //});
-        //
-        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
-        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-        //
-        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
-        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEWHEEL));
-        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
-        //
-        //expect(dy.MouseEventHandler.getInstance()._saveLocation).toCalledTwice();
-        //expect(sum1).toEqual(2);
-        //expect(sum2).toEqual(1);
 
         manager.fromEvent(target, dy.EventName.MOUSEDOWN).flatMap(function(e){
                 return manager.fromEvent(target, dy.EventName.MOUSEMOVE).takeUntil(manager.fromEvent(target, dy.EventName.MOUSEUP));
@@ -267,12 +241,6 @@ describe("mouse event", function () {
                 stub();
             })
 
-        //manager.fromEvent(target, dy.EventName.MOUSEMOVE).subscribe(function (e) {
-        //    sum1++;
-        //});
-        //manager.fromEvent(target, dy.EventName.MOUSEWHEEL).subscribe(function (e) {
-        //    sum2++;
-        //});
 
         var _saveLocation = dy.MouseEventHandler.getInstance()._saveLocation;
 
@@ -360,21 +328,6 @@ describe("mouse event", function () {
             expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
     });
-
-    ////clear keyboardEventSpec
-
-
-    //todo can bind dom event multi times
-
-    //move to domEventSpec
-
-
-
-    ////todo trigger dom event
-
-    //off dom handler by fromEvent
-
-////todo one target with one event can only be binded once
 });
 
 

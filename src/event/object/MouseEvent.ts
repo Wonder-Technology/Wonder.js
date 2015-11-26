@@ -120,7 +120,6 @@ module dy {
             this._button = button;
         }
 
-        //todo test
         get wheel(){
             // FF uses 'detail' and returns a value in 'no. of lines' to scroll
             // WebKit and Opera use 'wheelDelta', WebKit goes in multiples of 120 per wheel notch
@@ -137,7 +136,6 @@ module dy {
             return 0;
         }
 
-        //todo test
         get movementDelta(){
             var e = this.event,
                 dx = null,
