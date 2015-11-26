@@ -752,7 +752,7 @@ beforeEach(function () {
                         var msg = null;
 
                         msg = "Expected to be called after, ";
-                        msg += _isCalled(actual) ? "but actual is be called after" : "but actual is not called";
+                        msg += _isCalled(actual) ? "but actual is be called before" : "but actual is not called";
 
                         return {
                             pass: actual.calledAfter(expected),
