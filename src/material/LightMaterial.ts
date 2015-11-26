@@ -117,12 +117,17 @@ module dy{
         }
 
         protected addShaderLib(){
+            var envMap = null;
+
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
             this._setPhongMapShaderLib();
             this.shader.addLib(LightShaderLib.create());
 
-            this._setEnvMapShaderLib();
+            envMap = this.envMap;
+            if(envMap){
+                this._setEnvMapShaderLib(envMap);
+            }
 
             this.shader.addLib(LightEndShaderLib.create());
         }
@@ -166,13 +171,7 @@ module dy{
             }
         }
 
-        private _setEnvMapShaderLib(){
-            var envMap = this.envMap;
-
-            if(!envMap){
-                return;
-            }
-
+        private _setEnvMapShaderLib(envMap:CubemapTexture){
             switch (envMap.mode){
                 case EnvMapMode.BASIC:
                     this.shader.addLib(BasicEnvMapForLightShaderLib.create());

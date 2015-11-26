@@ -31,10 +31,17 @@ module dy{
         }
 
         protected addShaderLib(){
+            var envMap = null;
+
             this.shader.addLib(BasicShaderLib.create());
 
             this._setMapShaderLib();
-            this._setEnvMapShaderLib();
+
+            envMap = this.envMap;
+            if(envMap){
+                this._setEnvMapShaderLib(envMap);
+            }
+
             this._setMirrorMapShaderLib();
 
             this.shader.addLib(BasicEndShaderLib.create());
@@ -56,13 +63,7 @@ module dy{
             }
         }
 
-        private _setEnvMapShaderLib(){
-            var envMap = this.envMap;
-
-            if(!envMap){
-                return;
-            }
-
+        private _setEnvMapShaderLib(envMap:CubemapTexture){
             this.addNormalShaderLib();
 
             switch (envMap.mode){
