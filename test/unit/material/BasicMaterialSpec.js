@@ -266,7 +266,7 @@ describe("BasicMaterial", function () {
         });
 
         describe("if mode is FRESNEL, add FresnelForBasicShaderLib", function () {
-            it("if set reflectivity, send it", function () {
+            it("if reflectivity is setted, send it", function () {
                 material.reflectivity = 0.5;
                 envMap.mode = dy.EnvMapMode.FRESNEL;
 

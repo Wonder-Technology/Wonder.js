@@ -30,6 +30,7 @@
         'test/unit/*Tool.js',
 
         'test/unit/**/*.js',
+        //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/scriptSpec.js',
 
