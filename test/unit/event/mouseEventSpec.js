@@ -28,6 +28,7 @@ describe("mouse event", function () {
     afterEach(function () {
         removeDom();
         manager.off();
+        testTool.clearInstance();
         sandbox.restore();
     });
 
@@ -206,4 +207,176 @@ describe("mouse event", function () {
             expect(fakeObj.a).toCalledBefore(fakeObj.c);
         });
     });
+
+    describe("handle mousemove event", function(){
+        it("save location after emit event", function(){
+            var eventTarget = null;
+
+            manager.on(target, dy.EventName.MOUSEMOVE,function (e) {
+                    eventTarget = e;
+                });
+
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+
+            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
+            var handler = dy.MouseEventHandler.getInstance();
+            expect(handler.lastX).toEqual(fakeEvent.pageX);
+            expect(handler.lastY).toEqual(fakeEvent.pageY);
+        });
+    });
+
+    it("use drag example to test", function(){
+        var sum1 = 0;
+        var sum2 = 0;
+        var stub = sandbox.stub();
+        //var target = document.getElementById("event-test");
+        target = dy.Director.getInstance().scene;
+
+        sandbox.stub(dy.MouseEventHandler.getInstance(), "_saveLocation");
+
+        //manager.on(target, dy.EventName.MOUSEMOVE,function (e) {
+        //    sum1++;
+        //});
+        //manager.on(target, dy.EventName.MOUSEWHEEL,function (e) {
+        //    sum2++;
+        //});
+        //manager.fromEvent(target, dy.EventName.MOUSEMOVE).subscribe(function (e) {
+        //    sum1++;
+        //});
+        //manager.fromEvent(target, dy.EventName.MOUSEWHEEL).subscribe(function (e) {
+        //    sum2++;
+        //});
+        //
+        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
+        //YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+        //
+        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEWHEEL));
+        ////manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+        //
+        //expect(dy.MouseEventHandler.getInstance()._saveLocation).toCalledTwice();
+        //expect(sum1).toEqual(2);
+        //expect(sum2).toEqual(1);
+
+        manager.fromEvent(target, dy.EventName.MOUSEDOWN).flatMap(function(e){
+                return manager.fromEvent(target, dy.EventName.MOUSEMOVE).takeUntil(manager.fromEvent(target, dy.EventName.MOUSEUP));
+            })
+            .subscribe(function(e){
+                sum1++;
+                stub();
+            })
+
+        //manager.fromEvent(target, dy.EventName.MOUSEMOVE).subscribe(function (e) {
+        //    sum1++;
+        //});
+        //manager.fromEvent(target, dy.EventName.MOUSEWHEEL).subscribe(function (e) {
+        //    sum2++;
+        //});
+
+        var _saveLocation = dy.MouseEventHandler.getInstance()._saveLocation;
+
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
+
+        expect(_saveLocation).toCalledOnce();
+        expect(_saveLocation).toCalledAfter(stub);
+
+
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+
+        expect(_saveLocation).toCalledOnce();
+
+
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
+
+
+        expect(_saveLocation).toCalledTwice();
+        expect(stub).toCalledTwice();
+        expect(_saveLocation.firstCall).toCalledAfter(stub.firstCall);
+        expect(_saveLocation.secondCall).toCalledAfter(stub.secondCall);
+        expect(sum1).toEqual(2);
+    });
+
+    describe("off event", function(){
+        var sum;
+        var subscription;
+
+        beforeEach(function(){
+            sum = 0;
+            sandbox.spy(dy.MouseEventHandler.getInstance(), "triggerDomEvent");
+            target = dy.Director.getInstance().scene;
+            subscription = manager.fromEvent(target, dy.EventName.MOUSEDOWN).subscribe(function(e){
+                sum++;
+            })
+        });
+
+        it("use subscription.dispose to off event binded by fromEvent", function(){
+            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+
+            subscription.dispose();
+
+
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+        });
+        it("use EventManager.off", function(){
+            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+
+            manager.off();
+
+
+            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+
+            expect(sum).toEqual(1);
+            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+        });
+    });
+
+    ////clear keyboardEventSpec
+
+
+    //todo can bind dom event multi times
+
+    //move to domEventSpec
+
+
+
+    ////todo trigger dom event
+
+    //off dom handler by fromEvent
+
+////todo one target with one event can only be binded once
 });
+
+
+
+

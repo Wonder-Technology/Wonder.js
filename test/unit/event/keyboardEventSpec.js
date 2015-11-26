@@ -200,4 +200,63 @@ describe("keyboard event", function () {
             });
         });
     });
+
+    describe("off event", function(){
+        var sum;
+        var subscription;
+
+        beforeEach(function(){
+            sum = 0;
+            sandbox.spy(dy.KeyboardEventHandler.getInstance(), "triggerDomEvent");
+            subscription = manager.fromEvent(dy.EventName.KEYUP).subscribe(function(e){
+                sum++;
+            })
+        });
+
+        it("use subscription.dispose to off event binded by fromEvent", function(){
+            YYC.Tool.event.triggerEvent(document, "keyup");
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+
+            subscription.dispose();
+
+
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+            YYC.Tool.event.triggerEvent(document, "keyup");
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+        });
+        it("use EventManager.off", function(){
+            YYC.Tool.event.triggerEvent(document, "keyup");
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+            manager.off();
+
+
+            manager.trigger(dy.KeyboardEvent.create(fakeEvent, dy.EventName.KEYDOWN));
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+
+
+            YYC.Tool.event.triggerEvent(document, "keyup");
+
+            expect(sum).toEqual(1);
+            expect(dy.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+        });
+    });
+
+//todo one target with one event can only be binded once
 });

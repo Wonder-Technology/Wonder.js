@@ -104,7 +104,9 @@ module dy{
             //}
 
             //return this.scene.getTopUnderPoint(point);
-            return this.scene.getTopUnderPoint(point);
+            var top = this.scene.getTopUnderPoint(point);
+
+            return top ? top : this.scene;
         }
 
         public createGL(canvasId:string){

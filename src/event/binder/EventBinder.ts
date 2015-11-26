@@ -98,12 +98,10 @@ module dy {
                     if(!targetUid){
                         FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
-
-                        return;
                     }
-
-                    FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
-                        .off(targetUid, eventName);
+                    else{
+                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName)).off(targetUid, eventName);
+                    }
                 });
             }
             else if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){

@@ -11,13 +11,27 @@ module dy{
 
         private _listenerMap:dyCb.Hash<dyCb.Collection<EventRegisterData>> = dyCb.Hash.create<dyCb.Collection<EventRegisterData>>();
 
-        public appendChild(eventName:EventName, data:EventRegisterData){
+        public appendChild(target:GameObject, eventName:EventName, data:EventRegisterData){
             this._listenerMap.appendChild(
                 //String(data.target.uid) + "_" + eventName,
-                this._buildKey(data.target, eventName),
+                this._buildKey(target, eventName),
                 data
             );
         }
+
+        //public update(target:GameObject, eventName:EventName, data:EventRegisterData){
+            //:dyCb.Collection<EventRegisterData>
+            //this._listenerMap.getChild(this._buildKey(target, eventName)).replace((data:EventRegisterData) => {
+            //
+            //});
+            //this._listenerMap.update(target, eventName,
+            //    <EventRegisterData>{
+            //        target: target,
+            //        handler: handler,
+            //        domHandler: domHandler,
+            //        priority: priority
+            //    });
+        //}
 
         public getChild(eventName:EventName):dyCb.Collection<EventRegisterData>;
         public getChild(target:GameObject):dyCb.Collection<EventRegisterData>;
@@ -50,15 +64,20 @@ module dy{
             }
         }
 
+
+        public hasChild(func:(...args) => boolean):boolean;
+        public hasChild(target:GameObject, eventName:EventName):boolean;
+
         public hasChild(...args){
             if(arguments.length === 1 && JudgeUtils.isFunction(arguments[0])){
                 return this._listenerMap.hasChild(arguments[0]);
             }
             else if(arguments.length === 2){
                 let target = arguments[0],
-                    eventName = arguments[1];
+                    eventName = arguments[1],
+                    list = this._listenerMap.getChild(this._buildKey(target, eventName));
 
-                return this._listenerMap.hasChild(this._buildKey(target, eventName));
+                return list && list.getCount() > 0;
             }
         }
 
@@ -70,20 +89,21 @@ module dy{
             return this._listenerMap.forEach(func);
         }
 
-        public removeChild(eventName:EventName):void;
-        public removeChild(eventName:EventName, handler:Function):void;
-        public removeChild(uid:number, eventName:EventName):void;
-        public removeChild(target:GameObject):void;
-        public removeChild(target:GameObject, eventName:EventName):void;
-        public removeChild(target:GameObject, eventName:EventName, handler:Function):void;
+        public removeChild(eventName:EventName):dyCb.Collection<dyCb.Collection<EventOffData>>;
+        public removeChild(eventName:EventName, handler:Function):dyCb.Collection<dyCb.Collection<EventOffData>>;
+        public removeChild(uid:number, eventName:EventName):dyCb.Collection<dyCb.Collection<EventOffData>>;
+        public removeChild(target:GameObject):dyCb.Collection<dyCb.Collection<EventOffData>>;
+        public removeChild(target:GameObject, eventName:EventName):dyCb.Collection<dyCb.Collection<EventOffData>>;
+        public removeChild(target:GameObject, eventName:EventName, handler:Function):dyCb.Collection<dyCb.Collection<EventOffData>>;
 
         public removeChild(args){
-            var self = this;
+            var self = this,
+                result = null;
 
             if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
                 let eventName = arguments[0];
 
-                this._listenerMap.removeChild(eventName);
+                result = this._listenerMap.removeChild(eventName);
             }
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
@@ -92,9 +112,9 @@ module dy{
 
                 list = this._listenerMap.getChild(eventName);
 
-                list.removeChild((val:EventRegisterData) => {
-                        return val.handler === handler;
-                    });
+                result = dyCb.Collection.create().addChild(list.removeChild((val:EventRegisterData) => {
+                    return val.originHandler === handler;
+                }));
 
                 if(list.getCount() === 0){
                     this._listenerMap.removeChild(eventName);
@@ -104,12 +124,12 @@ module dy{
                 let uid = arguments[0],
                     eventName = arguments[1];
 
-                this._listenerMap.removeChild(this._buildKey(uid, eventName));
+                result = this._listenerMap.removeChild(this._buildKey(uid, eventName));
             }
             else if(arguments.length === 1){
                 let target = arguments[0];
 
-                this._listenerMap.removeChild((list:dyCb.Collection<EventRegisterData>, key:string) => {
+                result = this._listenerMap.removeChild((list:dyCb.Collection<EventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -117,25 +137,32 @@ module dy{
                 let target = arguments[0],
                 eventName = arguments[1];
 
-                this._listenerMap.removeChild(this._buildKey(target, eventName));
+                result = this._listenerMap.removeChild(this._buildKey(target, eventName));
             }
             else if(arguments.length === 3){
                 let target = arguments[0],
                     eventName = arguments[1],
+                    resultList = dyCb.Collection.create(),
                     handler = arguments[2];
 
-                this._listenerMap.map((list:dyCb.Collection<EventRegisterData>, key:string) => {
-                    list.removeChild((val:EventRegisterData) => {
-                        return val.handler === handler;
+                this._listenerMap.forEach((list:dyCb.Collection<EventRegisterData>, key:string) => {
+                    let result = list.removeChild((val:EventRegisterData) => {
+                        return val.originHandler === handler;
                     });
+
+                    if(result.getCount() > 0){
+                        resultList.addChild(result);
+                    }
 
                     if(list.getCount() === 0){
                         return dyCb.$REMOVE;
                     }
-
-                    return [key, list];
                 });
+
+                result = resultList;
             }
+
+            return result;
         }
 
         public getEventOffDataList(target:GameObject, eventName?:EventName){
@@ -149,7 +176,7 @@ module dy{
                             result.addChild(
                                 <EventOffData>{
                                     eventName: self.getEventNameFromKey(key),
-                                    wrapHandler: list.getChild(0).wrapHandler
+                                    domHandler: list.getChild(0).domHandler
                                 }
                             );
                         }
@@ -164,7 +191,7 @@ module dy{
                     result.addChild(
                         <EventOffData>{
                             eventName: eventName,
-                            wrapHandler: list.getChild(0).wrapHandler
+                            domHandler: list.getChild(0).domHandler
                         }
                     );
                 }
@@ -214,6 +241,6 @@ module dy{
 
     export type EventOffData = {
         eventName:EventName,
-        wrapHandler:Function
+        domHandler:Function
     }
 }

@@ -17,10 +17,10 @@ module dy {
         public lastX:number = null;
         public lastY:number = null;
 
-        @require(function(target:GameObject, eventName:EventName, handler:Function, priority:number){
+        @require(function(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void, priority:number){
             assert(target instanceof GameObject, Log.info.FUNC_MUST_BE("target", "GameObject"));
         })
-        public on(target:GameObject, eventName:EventName, handler:Function, priority:number) {
+        public on(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void, priority:number) {
             this.handler(target, eventName, handler, priority);
         }
 
@@ -62,7 +62,50 @@ module dy {
             return DeviceManager.getInstance().view.dom;
         }
 
-        protected createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
+        protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
+            var eventObj = this._createEventObject(event, eventName, target);
+
+            //console.log("triggerDomEvent")
+
+            EventManager.emit(this._getTopTarget(eventObj), eventObj);
+        }
+
+        protected addEngineHandler(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void){
+            var resultHandler = null;
+
+            switch (eventName){
+                case EventName.MOUSEMOVE:
+                    resultHandler = this._handleMove(handler);
+                    break;
+                default:
+                    resultHandler = handler;
+                    break;
+            }
+
+            return resultHandler;
+        }
+
+        protected clearHandler(){
+            this.lastX = null;
+            this.lastY = null;
+        }
+
+        private _getTopTarget(event:MouseEvent){
+            return Director.getInstance().getTopUnderPoint(event.locationInView);
+        }
+
+        private _handleMove(handler:(event:MouseEvent) => void){
+            var self = this;
+
+            return (event:MouseEvent) => {
+                handler(event);
+
+                //console.log("_saveLocation");
+                self._saveLocation(event);
+            };
+        }
+
+        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
             var obj = MouseEvent.create(event ? event : root.event, eventName);
 
             obj.currentTarget = currentTarget;
@@ -70,32 +113,8 @@ module dy {
             return obj;
         }
 
-        //todo test
-        protected handleEvent(eventName:EventName, event:MouseEvent){
-            if (!event.event) {
-                return;
-            }
-
-            switch (eventName){
-                case EventName.MOUSEMOVE:
-                    this._handleMove(event);
-                    break;
-                //todo handle more mouse event
-                default:
-                    EventManager.emit(this._getTopTarget(event), event);
-                    break;
-            }
-        }
-
-
-        private _getTopTarget(event:MouseEvent){
-            return Director.getInstance().getTopUnderPoint(event.locationInView);
-        }
-
-        private _handleMove(event:MouseEvent){
+        private _saveLocation(event:MouseEvent){
             var location = null;
-
-            EventManager.emit(this._getTopTarget(event), event);
 
             location = event.location;
 
@@ -104,3 +123,4 @@ module dy {
         }
     }
 }
+

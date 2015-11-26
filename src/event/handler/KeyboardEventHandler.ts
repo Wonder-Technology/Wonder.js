@@ -15,7 +15,14 @@ module dy {
 
         public keyState:any = {};
 
-        public on(eventName:EventName, handler:Function, priority:number) {
+        //public off(eventName:EventName):void;
+        //public off(eventName:EventName, handler:Function):void;
+
+        //public off(...args) {
+        //    super.off.apply(super, args);
+        //}
+
+        public on(eventName:EventName, handler:(event:KeyboardEvent) => void, priority:number) {
             this.handler(null, eventName, handler, priority);
         }
 
@@ -44,43 +51,53 @@ module dy {
             return document;
         }
 
-        protected createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
-            var obj = KeyboardEvent.create(event ? event : root.event, eventName);
+        protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
+            var eventObj = this._createEventObject(event, eventName);
 
-            return obj;
+            EventManager.trigger(eventObj);
         }
 
-        //todo test
-        protected handleEvent(eventName:EventName, event:KeyboardEvent){
-            if (!event.event) {
-                return;
-            }
+        protected addEngineHandler(target:GameObject, eventName:EventName, handler:(event:KeyboardEvent) => void){
+            var resultHandler = null;
 
             switch (eventName){
                 case EventName.KEYDOWN:
-                    this._handleKeyDown(event);
+                    resultHandler = this._handleKeyDown(handler);
                     break;
                 case EventName.KEYUP:
-                    this._handleKeyUp(event);
+                    resultHandler = this._handleKeyUp(handler);
                     break;
-                //todo handle more key event
                 default:
-                    EventManager.trigger(event);
+                    resultHandler = handler;
                     break;
             }
+
+            return resultHandler;
         }
 
-        private _handleKeyDown(event:KeyboardEvent){
-            this._setKeyStateAllFalse();
-            this.keyState[event.key] = true;
-
-            EventManager.trigger(event);
+        protected clearHandler(){
+            this.keyState = {};
         }
 
-        private _handleKeyUp(event:KeyboardEvent){
-            this._setKeyStateAllFalse();
+        private _handleKeyDown(handler:(event:KeyboardEvent) => void){
+            var self = this;
 
-            EventManager.trigger(event);
+            return (event:KeyboardEvent) => {
+                self._setKeyStateAllFalse();
+                self.keyState[event.key] = true;
+
+                handler(event);
+            };
+        }
+
+        private _handleKeyUp(handler:(event:KeyboardEvent) => void){
+            var self = this;
+
+            return (event:KeyboardEvent) => {
+                self._setKeyStateAllFalse();
+
+                handler(event);
+            };
         }
 
         private _setKeyStateAllFalse() {
@@ -90,5 +107,12 @@ module dy {
                 }
             }
         }
+
+        private _createEventObject(event:any, eventName:EventName) {
+            var obj = KeyboardEvent.create(event ? event : root.event, eventName);
+
+            return obj;
+        }
     }
 }
+

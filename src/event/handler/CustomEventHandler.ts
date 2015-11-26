@@ -17,12 +17,14 @@ module dy {
             if(arguments.length === 3){
                 let eventName = arguments[0],
                     handler = arguments[1],
+                    originHandler = handler,
                     priority = arguments[2];
 
                 EventRegister.getInstance().register(
                     null,
                     <any>eventName,
                     handler,
+                    originHandler,
                     null,
                     priority
                 );
@@ -31,12 +33,14 @@ module dy {
                 let target = arguments[0],
                     eventName = arguments[1],
                     handler = arguments[2],
+                    originHandler = handler,
                     priority = arguments[3];
 
                 EventRegister.getInstance().register(
                     target,
                     <any>eventName,
                     handler,
+                    originHandler,
                     null,
                     priority
                 );
