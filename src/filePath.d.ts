@@ -186,6 +186,7 @@
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
 /// <reference path="material/Shading"/>
+/// <reference path="material/MapManager"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
@@ -255,7 +256,6 @@
 
 
 /// <reference path="texture/Texture"/>
-/// <reference path="texture/MapManager"/>
 
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
