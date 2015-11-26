@@ -29,8 +29,8 @@ module dy {
         public trigger(target:GameObject, event:Event, userData:any):boolean;
         public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
-        public trigger(args) {
-            if(arguments.length === 1){
+        public trigger(...args) {
+            if(args.length === 1){
                 let event = arguments[0],
                     eventType = event.type;
 
@@ -84,7 +84,7 @@ module dy {
             eventObject.target = target;
 
             do{
-                isStopPropagation = this._triggerWithUserData(target, eventObject.copy(), userData, true);
+                isStopPropagation = this._triggerWithUserData(target, eventObject, userData, true);
 
                 if(isStopPropagation){
                     break;
@@ -104,7 +104,7 @@ module dy {
             eventObject.phase = EventPhase.BROADCAST;
             eventObject.target = target;
 
-            this._triggerWithUserData(target, eventObject.copy(), userData, true);
+            this._triggerWithUserData(target, eventObject, userData, true);
 
             function iterator(obj:GameObject){
                 var children:dyCb.Collection<GameObject> = obj.getChildren();
@@ -123,7 +123,7 @@ module dy {
             iterator(target);
         }
 
-       private _getParent(target:GameObject):GameObject {
+        private _getParent(target:GameObject):GameObject {
             var parent = target.bubbleParent;
 
             return parent ? parent : target.parent;
@@ -135,3 +135,4 @@ module dy {
         }
     }
 }
+
