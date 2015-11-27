@@ -60,6 +60,10 @@ module dy {
          */
         public setScissor(x:number, y:number, width:number, height:number) {
             this.gl.scissor(x, y, width, height);
+
+            if (!this.scissorTest) {
+                this.scissorTest = true;
+            }
         }
 
         /*! Difference between viewports and scissor rectangles

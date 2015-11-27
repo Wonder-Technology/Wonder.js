@@ -8,16 +8,18 @@ module dy{
         }
 
         constructor(width:number, height:number){
-            this._width = width;
-            this._height = height;
+            this.width = width;
+            this.height = height;
         }
         
         get gl(){
             return DeviceManager.getInstance().gl;
         }
 
-        private _width:number = null;
-        private _height:number = null;
+        public width:number = null;
+        public height:number = null;
+
+        private _originScissorTest:boolean = null;
 
         public createFrameBuffer(){
             return this.gl.createFramebuffer();
@@ -30,7 +32,12 @@ module dy{
         }
 
         public setViewport(){
-            DeviceManager.getInstance().setViewport(0, 0, this._width, this._height);
+            var deviceManager = DeviceManager.getInstance();
+
+            deviceManager.setViewport(0, 0, this.width, this.height);
+
+            this._originScissorTest = deviceManager.scissorTest;
+            deviceManager.scissorTest = false;
         }
 
         public restoreViewport(){
@@ -38,6 +45,7 @@ module dy{
                 view = deviceManager.view;
 
             deviceManager.setViewport(0, 0, view.width, view.height);
+            deviceManager.scissorTest = this._originScissorTest;
         }
 
         public dispose(){
@@ -77,7 +85,7 @@ module dy{
 
 
             gl.bindRenderbuffer(gl.RENDERBUFFER, renderBuffer);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this._width, this._height);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl[type], gl.RENDERBUFFER, renderBuffer);
         }
 

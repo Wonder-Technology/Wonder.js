@@ -26,7 +26,7 @@ describe("renderWebGL", function() {
                 dy.Color.create("#000000")
             );
         });
-        it("init depthTest, blend, colorWrite, side, depthWrite, scissorTest", function(){
+        it("init depthTest, blend, colorWrite, side, depthWrite", function(){
             var gl = getGL();
 
             renderer.init();
@@ -39,7 +39,6 @@ describe("renderWebGL", function() {
             expect(deviceManager.side).toEqual(dy.Side.FRONT);
             expect(gl.cullFace).toCalledWith(gl.BACK);
             expect(deviceManager.depthWrite).toBeTruthy();
-            expect(deviceManager.scissorTest).toBeFalsy();
         });
     });
 
