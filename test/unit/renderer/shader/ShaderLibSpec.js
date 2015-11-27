@@ -22,6 +22,8 @@ describe("ShaderLib", function () {
         });
 
         it("if uniform name not exist in VariableLib, contract error", function(){
+            testTool.openContractCheck(sandbox);
+
             expect(function(){
                 lib.sendUniformData(program, "aaa", {});
             }).toThrow();

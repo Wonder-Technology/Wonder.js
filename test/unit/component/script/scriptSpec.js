@@ -254,7 +254,7 @@ describe("script", function () {
         }, done);
     });
     it("can load js file of relative or absolute path", function(done){
-        url1 = "http://localhost:9876/" + testTool.resPath + "test/res/test.js";
+        url1 = "http://" + location.host + "/" + testTool.resPath + "test/res/test.js";
 
         testScript(function(test){
             sandbox.spy(test, "init");

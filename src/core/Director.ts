@@ -109,13 +109,6 @@ module dy{
             return top ? top : this.scene;
         }
 
-        public createGL(canvasId:string){
-            var deviceManager = DeviceManager.getInstance();
-
-            deviceManager.view = ViewWebGL.create(dyCb.DomQuery.create(canvasId).get(0));
-            deviceManager.gl = deviceManager.view.getContext();
-        }
-
         private startLoop() {
             var self = this;
 

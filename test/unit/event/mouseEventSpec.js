@@ -16,7 +16,7 @@ describe("mouse event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        dy.Director.getInstance().createGL("#event-test");
+        dy.DeviceManager.getInstance().createGL("#event-test");
         fakeEvent = {
             pageX:10,
             pageY:10

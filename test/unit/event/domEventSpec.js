@@ -15,7 +15,7 @@ describe("dom event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        dy.Director.getInstance().createGL("#event-test");
+        dy.DeviceManager.getInstance().createGL("#event-test");
         target = dy.GameObject.create();
         manager = dy.EventManager;
         Listener = dy.EventListener;

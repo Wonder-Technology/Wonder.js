@@ -408,6 +408,53 @@ module dy {
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
         }
+
+        public createGL(canvasId:string){
+            var canvas = null;
+
+            if(canvasId){
+                canvas = dyCb.DomQuery.create(canvasId).get(0);
+            }
+            else{
+                canvas = dyCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+            }
+
+            this.view = ViewWebGL.create(canvas);
+            this.gl = this.view.getContext();
+        }
+
+        @require(function(){
+            assert(Main.screenSize !== null, Log.info.FUNC_NOT_EXIST("Main.screenSize"));
+        })
+        public setScreen(){
+            var screenSize = Main.screenSize,
+                x = null,
+                y = null,
+                width = null,
+                height = null;
+
+            if(screenSize === ScreenSize.FULL){
+                x = 0;
+                y = 0;
+                width = root.innerWidth;
+                height = root.innerHeight;
+
+                dyCb.DomQuery.create("body").css("margin", "0");
+            }
+            else{
+                x = screenSize.x || 0;
+                y = screenSize.y || 0;
+                width = screenSize.width || root.innerWidth;
+                height = screenSize.height || root.innerHeight;
+            }
+
+            this.view.x = x;
+            this.view.y = y;
+            this.view.width = width;
+            this.view.height = height;
+
+            this.setViewport(0, 0, width, height);
+        }
     }
 
     /*! default is LESS */

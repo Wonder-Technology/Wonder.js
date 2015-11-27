@@ -16,7 +16,7 @@ describe("event", function () {
         sandbox = sinon.sandbox.create();
 
         insertDom();
-        dy.Director.getInstance().createGL("#event-test");
+        dy.DeviceManager.getInstance().createGL("#event-test");
 
         manager = dy.EventManager;
         Listener = dy.EventListener;
