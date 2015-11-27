@@ -22,6 +22,13 @@ describe("deviceManager", function() {
 
             expect(gl.clearColor).toCalledWith(1, 1, 1, 1);
         });
+        it("enable all color and alpha write to ensure the clear buffer will not be affected by it", function(){
+            device.clear({
+                color:dy.Color.create("#ffffff")
+            });
+
+            expect(gl.colorMask).toCalledWith(true, true, true, true);
+        });
         it("clear buffer", function(){
             sandbox.stub(gl, "COLOR_BUFFER_BIT", 1);
             sandbox.stub(gl, "DEPTH_BUFFER_BIT", 10);

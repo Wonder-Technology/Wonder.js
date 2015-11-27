@@ -124,6 +124,8 @@ describe("renderWebGL", function() {
                 createBuffer:sandbox.stub().returns({})
             };
             testTool.extend(dy.DeviceManager.getInstance().gl, gl);
+            gl = dy.DeviceManager.getInstance().gl;
+
             program = {
                 setAttributeData:sandbox.stub(),
                 setUniformData:sandbox.stub(),
