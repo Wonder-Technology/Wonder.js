@@ -210,6 +210,15 @@ module dy {
             }
         }
 
+        protected setBlendByOpacity(opacity:number){
+            if(opacity < 1.0 && opacity > 0.0){
+                this.blend = true;
+            }
+            else{
+                this.blend = false;
+            }
+        }
+
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
 

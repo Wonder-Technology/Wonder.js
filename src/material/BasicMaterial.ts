@@ -30,6 +30,16 @@ module dy{
             this.mapManager.setMirrorMap(mirrorMap);
         }
 
+        private _opacity:number = 1.0;
+        get opacity(){
+            return this._opacity;
+        }
+        set opacity(opacity:number){
+            this.setBlendByOpacity(opacity);
+
+            this._opacity = opacity;
+        }
+
         protected addShaderLib(){
             var envMap = null;
 

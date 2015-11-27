@@ -12,6 +12,12 @@ describe("BasicMaterial", function () {
         sandbox.restore();
     });
 
+    describe("opacity attri", function(){
+        it("set opacity", function(){
+            materialTool.testOpacity(material);
+        });
+    });
+
     it("glsl only set glPosition,glFragColor once", function () {
         var model, geo, material, director, program;
         var vertice, normals;

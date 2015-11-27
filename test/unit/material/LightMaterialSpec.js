@@ -12,6 +12,12 @@ describe("LightMaterial", function() {
         sandbox.restore();
     });
 
+    describe("opacity attri", function(){
+        it("set opacity", function(){
+            materialTool.testOpacity(material);
+        });
+    });
+
     describe("init", function(){
         var map,
             scene;

@@ -10,7 +10,7 @@ module dy{
 
         public type:string = "basic";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:BasicMaterial){
             if(quadCmd.buffers.hasChild(BufferDataType.COLOR)){
                 /*!
                  this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
@@ -20,6 +20,7 @@ module dy{
 
 
                 this.sendAttributeData(program, "a_color", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.COLOR));
+                this.sendUniformData(program, "u_opacity", material.opacity);
             }
         }
 
@@ -27,6 +28,7 @@ module dy{
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_color"]);
+            this.addUniformVariable(["u_opacity"]);
 
             this.vsSourceBody = ShaderSnippet.setPos_mvp + ShaderChunk.basic_vertex.body;
         }

@@ -54,18 +54,12 @@ module dy{
             this._shininess = shininess;
         }
 
-        //todo make other Material can set opacity
         private _opacity:number = 1.0;
         get opacity(){
             return this._opacity;
         }
         set opacity(opacity:number){
-            if(opacity < 1.0 && opacity > 0.0){
-                this.blend = true;
-            }
-            else{
-                this.blend = false;
-            }
+            this.setBlendByOpacity(opacity);
 
             this._opacity = opacity;
         }

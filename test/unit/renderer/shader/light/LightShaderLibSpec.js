@@ -49,21 +49,6 @@ describe("LightShaderLib", function () {
             sandbox.stub(program, "sendUniformData");
         });
 
-        //it("send a_normal if has buffer", function(){
-        //    var normalBuffer = {};
-        //    quadCmd.buffers.hasChild.withArgs(dy.BufferDataType.NORMAL).returns(true);
-        //    quadCmd.buffers.getChild.withArgs(dy.BufferDataType.NORMAL).returns(normalBuffer);
-        //
-        //    lib.sendShaderVariables(program, quadCmd, material);
-        //
-        //    expect(program.sendAttributeData).toCalledWith("a_normal", dy.VariableType.BUFFER, normalBuffer);
-        //});
-        it("send u_normalMatrix", function(){
-            lib.sendShaderVariables(program, quadCmd, material);
-
-            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
-        });
-
         describe("send direction light's position", function(){
             it("if its position is zero point, send the default position; else, send it", function(){
                 var light1 = createDirectionLight(function(light){
@@ -82,6 +67,19 @@ describe("LightShaderLib", function () {
                 expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", dy.VariableType.FLOAT_3, dy.DirectionLight.defaultPosition);
                 expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", dy.VariableType.FLOAT_3, dy.Vector3.create(1, 0, 0));
             });
+        });
+
+        it("send u_normalMatrix", function(){
+            lib.sendShaderVariables(program, quadCmd, material);
+
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
+        });
+        it("send u_opacity", function(){
+            material.opacity = 0.1;
+
+            lib.sendShaderVariables(program, quadCmd, material);
+
+            expect(program.sendUniformData).toCalledWith("u_opacity", dy.VariableType.FLOAT_1, 0.1);
         });
     });
 });
