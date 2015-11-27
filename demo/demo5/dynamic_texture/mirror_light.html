@@ -16,7 +16,7 @@
     window.onload = function () {
         dy.Main.setConfig({
             canvasId: "canvas"
-        });
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/1.jpg", id:"texture"}
@@ -293,8 +293,8 @@
 
 
             var texture = dy.MirrorTexture.create();
-            texture.width = 256;
-            texture.height = 256;
+            texture.width = 1024;
+            texture.height = 1024;
             ////todo set renderList
             texture.renderList = [sphere, box, box2];
 //            texture.renderList = [sphere];
@@ -379,8 +379,8 @@
 
 
             var texture2 = dy.MirrorTexture.create();
-            texture2.width = 256;
-            texture2.height = 256;
+            texture2.width = 1024;
+            texture2.height = 1024;
             texture2.renderList = [sphere, box, box2];
 
 
@@ -452,7 +452,7 @@
             cameraComponent.fovy = 60;
             cameraComponent.aspect = canvas.width / canvas.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 100;
+            cameraComponent.far = 1000;
 
 
             camera.addComponent(dy.FlyCameraController.create(cameraComponent));

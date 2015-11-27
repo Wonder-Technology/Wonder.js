@@ -16,7 +16,7 @@
     window.onload = function () {
         dy.Main.setConfig({
             canvasId: "canvas"
-        });
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/cube/skybox/px.jpg", id:"texture1"},

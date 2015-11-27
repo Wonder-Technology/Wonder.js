@@ -69,7 +69,9 @@ vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 v
 
 
 
-void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
+vec3 calcTotalLight(vec3 norm, vec3 viewDir){
+    vec3 totalLight = vec3(0.0);
+
     #if POINT_LIGHTS_COUNT > 0
        for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
             totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);
@@ -81,6 +83,8 @@ void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
             totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);
        }
     #endif
+
+    return totalLight;
 }
 @end
 
@@ -94,9 +98,7 @@ void calcTotalLight(inout vec3 totalLight, vec3 norm, vec3 viewDir){
 
     vec3 viewDir = normalize(getViewDir());
 
-    vec3 totalColor = vec3(0, 0, 0);
+    vec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);
 
-    calcTotalLight(totalColor, normal, viewDir);
-
-    totalColor = getShadowVisibility() * totalColor;
+    totalColor *= vec4(getShadowVisibility(), 1.0);
 @end

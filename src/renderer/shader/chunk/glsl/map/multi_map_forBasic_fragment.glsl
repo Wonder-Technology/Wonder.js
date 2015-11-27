@@ -1,7 +1,7 @@
 @funcDefine
-		vec3 getMapColor(){
-            vec3 color0 = vec3(texture2D(u_sampler2D0, v_mapCoord));
-            vec3 color1 = vec3(texture2D(u_sampler2D1, v_mapCoord));
+		vec4 getMapColor(){
+            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);
+            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);
 
             if(u_combineMode == 0){
                 return mix(color0, color1, u_mixRatio);

@@ -14,8 +14,9 @@
 <script>
     window.onload = function () {
         dy.Main.setConfig({
-            canvasId: "canvas"
-        });
+            canvasId: "canvas",
+//            screenSize:{width:400,height:400}
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/1.jpg", id:"texture"},
@@ -209,6 +210,7 @@
 //
 //            directionLight.addComponent(action1);
 
+//            dy.DeviceManager.getInstance().setScissor(0, 0, 1000, 200);
 
 
 

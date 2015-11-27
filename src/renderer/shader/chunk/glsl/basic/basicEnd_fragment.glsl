@@ -1,3 +1,3 @@
 @body
-    gl_FragColor = vec4(totalColor, u_opacity);
+    gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);
 @end
