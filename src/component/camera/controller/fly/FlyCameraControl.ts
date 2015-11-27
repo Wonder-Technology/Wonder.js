@@ -18,8 +18,7 @@ module dy {
         private _gameObject:GameObject = null;
 
         public init(gameObject:GameObject) {
-            var self = this,
-                eulerAngles = gameObject.transform.eulerAngles;
+            var eulerAngles = gameObject.transform.eulerAngles;
 
             this._rotateX = eulerAngles.x;
             this._rotateY = eulerAngles.y;
@@ -50,16 +49,16 @@ module dy {
                 gameObject = this._gameObject,
                 keyState = event.keyState;
 
-            if (keyState["a"]) {
+            if (keyState["a"] || keyState["left"]) {
                 gameObject.transform.translateLocal(Vector3.create(-speed, 0, 0));
             }
-            else if(keyState["d"]) {
+            else if(keyState["d"] || keyState["right"]) {
                 gameObject.transform.translateLocal(Vector3.create(speed, 0, 0));
             }
-            else if(keyState["w"]) {
+            else if(keyState["w"] || keyState["up"]) {
                 gameObject.transform.translateLocal(Vector3.create(0, 0, -speed));
             }
-            else if(keyState["s"]) {
+            else if(keyState["s"] || keyState["down"]) {
                 gameObject.transform.translateLocal(Vector3.create(0, 0, speed));
             }
         }
