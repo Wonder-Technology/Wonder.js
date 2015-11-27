@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module dy {
     export class GeometryUtils{
-        public static convertToFaces(indices:Array<number>, normals?:Array<number>){
+        public static convertToFaces(indices:Array<number>, normals?:Array<number>):Array<Face3>{
         var hasNormals = this.hasData(normals),
             faces = [];
 

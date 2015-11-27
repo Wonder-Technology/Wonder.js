@@ -35,12 +35,7 @@ module dy{
             //this.buffers = BufferContainer.create();
             this.buffers = this.createBufferContainer();
 
-            geometryData = this.createGeometryData();
-            geometryData.vertices = vertices;
-            geometryData.faces = faces;
-            geometryData.texCoords = texCoords;
-            geometryData.colors = colors;
-            geometryData.morphTargets = morphTargets;
+            geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphTargets);
 
             this.buffers.geometryData = geometryData;
 
@@ -108,17 +103,28 @@ module dy{
         }
 
         @virtual
-        protected createGeometryData():GeometryData{
-            return CommonGeometryData.create(this);
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:dyCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
+            return this.createCommonGeometryData(vertices, faces, texCoords, colors);
+        }
+
+        protected createCommonGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>){
+            var geometryData = CommonGeometryData.create(this);
+
+            geometryData.vertices = vertices;
+            geometryData.faces = faces;
+            geometryData.texCoords = texCoords;
+            geometryData.colors = colors;
+
+            return geometryData;
         }
     }
 
     export type GeometryDataType = {
         vertices:Array<number>;
         faces?:Array<Face3>;
-        texCoords:Array<number>;
+        texCoords?:Array<number>;
         colors?:Array<number>;
-        morphTargets?:Array<number>;
+        morphTargets?:dyCb.Hash<DYFileParseMorphTargetsData>;
     };
 }
 

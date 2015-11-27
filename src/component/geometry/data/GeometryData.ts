@@ -320,6 +320,7 @@ module dy {
             }
         }
 
+        //todo optimize:add cache
         private _getColorsFromMaterial(vertices:Array<number>) {
             var arr = [],
                 i = 0,

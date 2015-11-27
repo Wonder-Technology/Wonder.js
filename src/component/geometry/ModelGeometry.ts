@@ -84,12 +84,20 @@ module dy{
             return CommonBufferContainer.create();
         }
 
-        protected createGeometryData():GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:dyCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
             if(this.hasAnimation()){
-                return MorphGeometryData.create(this);
+                let geometryData = MorphGeometryData.create(this);
+
+                geometryData.vertices = vertices;
+                geometryData.faces = faces;
+                geometryData.texCoords = texCoords;
+                geometryData.colors = colors;
+                geometryData.morphTargets = morphTargets;
+
+                return geometryData;
             }
 
-            return CommonGeometryData.create(this);
+            return this.createCommonGeometryData(vertices, faces, texCoords, colors);
         }
 
         private _hasMorphTargets(){
