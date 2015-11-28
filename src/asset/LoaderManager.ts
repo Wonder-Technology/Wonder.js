@@ -13,6 +13,8 @@ module dy{
         public assetCount:number = 0;
         public currentLoadedCount:number = 0;
 
+        private _assetTable:dyCb.Hash<any> = dyCb.Hash.create();
+
         public load(url:string):dyRt.Stream;
         public load(assetArr:Array<{url:string; id:string}>) :dyRt.Stream;
         public load(assetArr:Array<{url:Array<string>; id:string}>) :dyRt.Stream;
@@ -24,13 +26,13 @@ module dy{
                 let url:string = arguments[0],
                     id:string = url;
 
-                return this._createLoadStream(url, id);
+                return this._createLoadSingleAssetStream(url, id);
             }
             else{
                 let assetArr = arguments[0];
 
                 return dyRt.fromArray(assetArr).flatMap((asset) => {
-                    return self._createLoadAssetStream(asset.url, asset.id);
+                    return self._createLoadMultiAssetStream(asset.url, asset.id);
                 });
             }
         }
@@ -48,10 +50,14 @@ module dy{
             });
         }
 
-        private _createLoadAssetStream(url:string, id:string);
-        private _createLoadAssetStream(url:Array<string>, id:string);
+        public get(id:string):any{
+            return this._assetTable.getChild(id).get(id);
+        }
 
-        private _createLoadAssetStream(args){
+        private _createLoadMultiAssetStream(url:string, id:string);
+        private _createLoadMultiAssetStream(url:Array<string>, id:string);
+
+        private _createLoadMultiAssetStream(args){
             var url = arguments[0],
                 id = arguments[1],
                 loader = this._getLoader(url),
@@ -62,7 +68,7 @@ module dy{
                 self.assetCount ++;
             }
 
-            stream = loader.load(url, id)
+            return this._addToAssetTable(loader.load(url, id)
                 .map((data) => {
                     self.currentLoadedCount++;
 
@@ -70,13 +76,13 @@ module dy{
                         currentLoadedCount: self.currentLoadedCount,
                         assetCount:self.assetCount
                     }
-                });
-
-            return stream;
+                }), id, loader);
         }
 
-        private _createLoadStream(url, id){
-            return this._getLoader(url).load(url, id);
+        private _createLoadSingleAssetStream(url, id){
+            var loader = this._getLoader(url);
+
+            return this._addToAssetTable(loader.load(url, id), id, loader);
         }
 
         private _getLoader(url:string);
@@ -93,6 +99,14 @@ module dy{
             }
 
             return LoaderFactory.create(extname.toLowerCase());
+        }
+
+        private _addToAssetTable(loadStream:dyRt.Stream, id:string, loader:Loader):dyRt.Stream{
+            var self = this;
+
+            return loadStream.do(null, null, () => {
+                self._assetTable.addChild(id, loader);
+            });
         }
     }
 }

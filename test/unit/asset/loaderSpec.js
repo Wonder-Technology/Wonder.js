@@ -13,6 +13,32 @@ describe("loader", function () {
         sandbox.restore();
     });
 
+
+    describe("get asset", function(){
+        it("use LoaderManager.getInstance().get(id) to get loaded asset", function(done){
+            dy.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function(){
+                expect(manager.get("a1")).toEqual("test");
+
+                done();
+            });
+        });
+        it("use XXXLoader.getInstance().get(id) to get loaded asset", function(done){
+            dy.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
+            ]).subscribe(function(data){
+            }, function(err){
+            }, function(){
+                expect(dy.GLSLLoader.getInstance().get("a1")).toEqual("test");
+
+                done();
+            });
+        });
+    });
+
     it("load glsl", function(done){
         var current = [],
             total = [];
@@ -28,8 +54,8 @@ describe("loader", function () {
             expect(current).toEqual([1, 2]);
             expect(total).toEqual([2, 2]);
 
-            expect(dy.GLSLLoader.getInstance().get("a1")).toEqual("test");
-            expect(dy.GLSLLoader.getInstance().get("a2")).toEqual("test");
+            expect(dy.LoaderManager.getInstance().get("a1")).toEqual("test");
+            expect(dy.LoaderManager.getInstance().get("a2")).toEqual("test");
 
             done();
         });
@@ -54,8 +80,8 @@ describe("loader", function () {
                 expect(current).toEqual([1, 2]);
                 expect(total).toEqual([2, 2]);
 
-                var jpg = dy.TextureLoader.getInstance().get("jpg");
-                var png = dy.TextureLoader.getInstance().get("png");
+                var jpg = dy.LoaderManager.getInstance().get("jpg");
+                var png = dy.LoaderManager.getInstance().get("png");
 
                 expect(jpg).toBeInstanceOf(dy.ImageTextureAsset);
                 expect(jpg.format).toEqual(dy.TextureFormat.RGB);
@@ -77,7 +103,7 @@ describe("loader", function () {
                 console.log(err);
                 done();
             }, function () {
-                var dds = dy.TextureLoader.getInstance().get("dds");
+                var dds = dy.LoaderManager.getInstance().get("dds");
 
                 expect(dds).toBeInstanceOf(dy.CompressedTextureAsset);
                 expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
@@ -110,10 +136,10 @@ describe("loader", function () {
         //        expect(current).toEqual([1, 2]);
         //        expect(total).toEqual([2, 2]);
         //
-        //        expect(dy.VideoLoader.getInstance().get("video1")).toBeInstanceOf(dy.VideoTextureAsset);
-        //        expect(dy.VideoLoader.getInstance().get("video1").video).toBeInstanceOf(dy.Video);
-        //        expect(dy.VideoLoader.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
-        //        expect(dy.VideoLoader.getInstance().get("video2")).toBeInstanceOf(dy.VideoTextureAsset);
+        //        expect(dy.LoaderManager.getInstance().get("video1")).toBeInstanceOf(dy.VideoTextureAsset);
+        //        expect(dy.LoaderManager.getInstance().get("video1").video).toBeInstanceOf(dy.Video);
+        //        expect(dy.LoaderManager.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
+        //        expect(dy.LoaderManager.getInstance().get("video2")).toBeInstanceOf(dy.VideoTextureAsset);
         //
         //        done();
         //    });
@@ -332,7 +358,7 @@ describe("loader", function () {
                 expect().toFail(err.message);
                 done();
             }, function () {
-                var sceneModel = dy.DYLoader.getInstance().get("sceneModel");
+                var sceneModel = dy.LoaderManager.getInstance().get("sceneModel");
 
                 assertMetadata(sceneModel);
                 assertScene(sceneModel);
@@ -351,14 +377,14 @@ describe("loader", function () {
                 expect().toFail(err.message);
                 done();
             }, function () {
-                var sceneModel1 = dy.DYLoader.getInstance().get("sceneModel1");
+                var sceneModel1 = dy.LoaderManager.getInstance().get("sceneModel1");
 
                 assertMetadata(sceneModel1);
                 assertScene(sceneModel1);
                 assert1Obj(sceneModel1);
                 assert2Obj(sceneModel1);
 
-                var sceneModel2 = dy.DYLoader.getInstance().get("sceneModel2");
+                var sceneModel2 = dy.LoaderManager.getInstance().get("sceneModel2");
 
                 assertMetadata(sceneModel2);
                 assertScene(sceneModel2);
@@ -392,7 +418,7 @@ describe("loader", function () {
     //
     //            expect(dyCb.AjaxUtils.ajax).toCalledOnce();
     //
-    //            expect(dy.GLSLLoader.getInstance().get("a1")).toEqual("test");
+    //            expect(dy.LoaderManager.getInstance().get("a1")).toEqual("test");
     //
     //            done();
     //        });
@@ -403,7 +429,7 @@ describe("loader", function () {
     //    var promise = new RSVP.Promise(function (resolve, reject) {
     //        reject(err);
     //    });
-    //    sandbox.stub(dy.GLSLLoader.getInstance(), "_loadText").returns(promise);
+    //    sandbox.stub(dy.LoaderManager.getInstance(), "_loadText").returns(promise);
     //    sandbox.stub(dy.Log, "log");
     //
     //    manager.load([
