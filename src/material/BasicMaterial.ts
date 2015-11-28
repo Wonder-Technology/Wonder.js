@@ -7,13 +7,12 @@ module dy{
             return obj;
         }
         
-        private _map:Texture|Array<Texture> = null;
-        set map(map:Texture|Array<Texture>){
-            if(map instanceof Texture){
+        set map(map:any){
+            if(map instanceof Texture || map instanceof TextureAsset){
                 this.addMap(map);
             }
             else{
-                let mapArr:Array<Texture> = (arguments[0]);
+                let mapArr:Array<any> = (arguments[0]);
 
                 dyCb.Log.error(mapArr.length > 2, dyCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
 

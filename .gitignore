@@ -15,3 +15,5 @@ converter/**/*.js
 dist/
 src/**/ShaderChunk.ts
 demo/res/
+examples/**/forRunTest*
+examples/**/*forRunTest*
