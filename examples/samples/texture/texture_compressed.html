@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>compressed texture</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: dy.ScreenSize.FULL
+        }).init();
+
+        dy.LoaderManager.getInstance().load([
+            {url: "../asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = dy.Director.getInstance();
+
+            director.scene.addChild(createTriangle());
+            director.scene.addChild(createCamera());
+
+            director.start();
+        }
+
+        function createTriangle() {
+            var material = dy.BasicMaterial.create();
+
+            material.map = dy.TextureLoader.getInstance().get("texture").toTexture();
+
+
+            var geometry = dy.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var gameObject = dy.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(dy.MeshRenderer.create());
+
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = dy.GameObject.create(),
+                    view = dy.Director.getInstance().view,
+                    cameraComponent = dy.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 80;
+
+            var controller = dy.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            camera.transform.translate(0, 0, 5);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>
