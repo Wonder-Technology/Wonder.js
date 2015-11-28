@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module dy{
-    export class ImgLoader{
+    export class ImageLoader{
         public static load(url:string) {
             return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var img = null;

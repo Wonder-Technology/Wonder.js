@@ -193,7 +193,7 @@
 /// <reference path="asset/JsLoader"/>
 /// <reference path="asset/VideoLoader"/>
 /// <reference path="asset/TextureLoader"/>
-/// <reference path="asset/utils/ImgLoader"/>
+/// <reference path="asset/utils/ImageLoader"/>
 /// <reference path="asset/utils/AjaxLoader"/>
 /// <reference path="asset/utils/ModelLoaderUtils"/>
 /// <reference path="asset/texture/ITextureAsset"/>

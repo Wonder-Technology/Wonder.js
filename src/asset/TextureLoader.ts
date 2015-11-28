@@ -29,7 +29,7 @@ module dy{
                 case ".gif":
                     case ".bmp":
                     //todo is RGB?
-                    stream =  ImgLoader.load(url)
+                    stream =  ImageLoader.load(url)
                         .map((image:HTMLImageElement) => {
                             var asset = ImageTextureAsset.create(image);
 
@@ -39,7 +39,7 @@ module dy{
                         });
                     break;
                 case ".png":
-                    stream =  ImgLoader.load(url)
+                    stream =  ImageLoader.load(url)
                         .map((image:HTMLImageElement) => {
                             return ImageTextureAsset.create(image);
                         });
