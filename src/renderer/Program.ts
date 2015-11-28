@@ -168,7 +168,7 @@ module dy{
 
 
             /*!
-             if bower warn:"Attribute 0 is disabled. This has significant performance penalty",
+             if warn:"Attribute 0 is disabled. This has significant performance penalty" when run,
              then do this before linkProgram:
              gl.bindAttribLocation( this._program, 0, "a_position");
 
@@ -229,26 +229,26 @@ module dy{
             return VariableType.BUFFER;
         }
 
-        private _convertToVector3(data:any){
-            if(JudgeUtils.isArray(data)){
+        @require(function (data:any) {
+            assert(JudgeUtils.isArray(data) || data instanceof Vector3, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+        })
+        private _convertToVector3(data:any) {
+            if (JudgeUtils.isArray(data)) {
                 return Vector3.create(data[0], data[1], data[2]);
             }
-            else if(data instanceof Vector3){
-                return data;
-            }
 
-            Log.error(true, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+            return data;
         }
 
-        private _convertToVector4(data:any){
+        @require(function (data:any) {
+            assert(JudgeUtils.isArray(data) || data instanceof Vector4, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
+        })
+        private _convertToVector4(data:any) {
             if(JudgeUtils.isArray(data)){
                 return Vector4.create(data[0], data[1], data[2], data[3]);
             }
-            else if(data instanceof Vector4){
-                return data;
-            }
 
-            Log.error(true, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
+            return data;
         }
     }
 }
