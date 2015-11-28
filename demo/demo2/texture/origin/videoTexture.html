@@ -16,7 +16,7 @@
     window.onload = function () {
         dy.Main.setConfig({
             canvasId: "canvas"
-        });
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../../res/video/MaryOculus.webm", id: "video"}
@@ -69,10 +69,6 @@
 
 
 
-            director.scene.addComponent(dy.Script.create("./scene.js"));
-
-
-
             director.start();
         }
 
@@ -88,14 +84,12 @@
             cameraComponent.far = 100;
 
 
-            camera.addComponent(cameraComponent);
+            var controller = dy.ArcballCameraController.create(cameraComponent);
+
+            camera.addComponent(controller);
+
             camera.transform.translate(dy.Vector3.create(0, 0, 10));
 
-            var script = dy.Script.create();
-
-            script.url = "./camera.js";
-
-            camera.addComponent(script);
 
             return camera
         }
