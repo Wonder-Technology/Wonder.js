@@ -277,7 +277,7 @@
 /// <reference path="texture/basicTexture/VideoTexture"/>
 /// <reference path="texture/basicTexture/cubemap/CubemapTexture"/>
 /// <reference path="texture/basicTexture/cubemap/CubemapFaceTexture"/>
-/// <reference path="texture/basicTexture/cubemap/CubemapFaceTwoDTexture"/>
+/// <reference path="texture/basicTexture/cubemap/CubemapFaceImageTexture"/>
 /// <reference path="texture/basicTexture/cubemap/CubemapFaceCompressedTexture"/>
 /// <reference path="texture/basicTexture/CompressedTexture"/>
 /// <reference path="texture/basicTexture/command/DrawTextureCommand"/>

@@ -19,8 +19,8 @@ module dy{
             return ImageTexture.create(this);
         }
 
-        public toCubemapFaceTexture():CubemapFaceTwoDTexture{
-            return CubemapFaceTwoDTexture.create(this);
+        public toCubemapFaceTexture():CubemapFaceImageTexture{
+            return CubemapFaceImageTexture.create(this);
         }
 
         public copyToCubemapFaceTexture(cubemapFaceTexture:ICubemapFaceTwoDTextureAsset){

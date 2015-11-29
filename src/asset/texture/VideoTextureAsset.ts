@@ -33,7 +33,7 @@ module dy{
         }
 
         //todo support cubemap?
-        public toCubemapFaceTexture():CubemapFaceTwoDTexture{
+        public toCubemapFaceTexture():CubemapFaceImageTexture{
             return Log.error(true, Log.info.FUNC_NOT_SUPPORT("video texture", "cubemap"));
         }
 

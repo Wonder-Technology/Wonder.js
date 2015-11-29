@@ -78,7 +78,7 @@ module dy{
                 });
             }
             else{
-                this.textures.forEach((texture:CubemapFaceTwoDTexture, i:number) => {
+                this.textures.forEach((texture:CubemapFaceImageTexture, i:number) => {
                     texture.draw(i);
                 });
             }
@@ -166,8 +166,8 @@ module dy{
             for(let data of assets) {
                 let face = data.asset.toCubemapFaceTexture();
 
-                if (data.sourceRegion && face instanceof CubemapFaceTwoDTexture) {
-                    let twoDFace:CubemapFaceTwoDTexture = face;
+                if (data.sourceRegion && face instanceof CubemapFaceImageTexture) {
+                    let twoDFace:CubemapFaceImageTexture = face;
                     twoDFace.sourceRegion = data.sourceRegion;
                 }
                 if (data.type) {

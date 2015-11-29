@@ -167,7 +167,7 @@ describe("cubemap texture", function() {
             ]);
 
             expect(texture.textures.getCount()).toEqual(6);
-            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubemapFaceTwoDTexture);
+            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubemapFaceImageTexture);
             expect(texture.textures.getChild(1).sourceRegion).toEqual(region);
             expect(texture.textures.getChild(1).type).toEqual(type);
         });
@@ -287,7 +287,7 @@ describe("cubemap texture", function() {
             });
         });
 
-        describe("CubemapFaceTwoDTexture", function(){
+        describe("CubemapFaceImageTexture", function(){
             var texture;
 
             beforeEach(function(){

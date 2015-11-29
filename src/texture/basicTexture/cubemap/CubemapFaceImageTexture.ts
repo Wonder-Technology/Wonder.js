@@ -1,6 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module dy{
-    export class CubemapFaceTwoDTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
+    export class CubemapFaceImageTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
         public static create(asset:ImageTextureAsset) {
         	var obj = new this();
 
