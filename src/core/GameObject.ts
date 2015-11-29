@@ -144,6 +144,15 @@ module dy {
             return this;
         }
 
+        public addChildren(children:Array<GameObject>);
+        public addChildren(children:dyCb.Collection<GameObject>);
+
+        public addChildren(...args) {
+            this._children.addChildren(args[0]);
+
+            return this;
+        }
+
         public sort(){
             this._children = this._children.sort(this._ascendZ);
 

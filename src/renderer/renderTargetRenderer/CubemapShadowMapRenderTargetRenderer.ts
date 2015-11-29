@@ -51,10 +51,6 @@ module dy {
             this._shadowMapRendererUtils.unBindEndLoop();
         }
 
-        protected warnTextureSizeExceedCanvasSize(){
-            //not warn
-        }
-
         protected  getRenderList():dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>{
             return this._light.shadowRenderList;
         }

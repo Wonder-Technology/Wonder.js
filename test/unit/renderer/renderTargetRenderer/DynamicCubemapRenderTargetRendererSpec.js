@@ -8,11 +8,9 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
 
     tool.initWhenCreate_body = [
         {
-            explain: "if texture size is exceed canvas size, warn",
             body: function(texture){
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dy.Log, "warn");
                 self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height:100
@@ -26,8 +24,6 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
-
-                expect(dy.Log.warn).toCalledTwice();
             }
         }
     ]

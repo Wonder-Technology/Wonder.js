@@ -30,7 +30,7 @@ describe("Scene", function() {
         sandbox.restore();
     });
 
-    describe("", function(){
+    describe("test", function(){
         beforeEach(function(){
             gameObject1 = dy.GameObject.create();
             gameObject2 = dy.GameObject.create();
@@ -252,6 +252,51 @@ describe("Scene", function() {
                 scene.addChild(child);
 
                 expect(child.onEnter).toCalledOnce();
+            });
+        });
+
+        describe("addChildren", function(){
+            var oldParent,
+                newParent;
+            var child;
+
+            function buildParent(){
+                return {
+                    removeChild:sandbox.stub()
+                }
+            }
+
+            function buildChild(){
+                return {
+                    parent:null,
+                    transform:{
+                        parent:null
+                    },
+
+                    hasComponent:sandbox.stub(),
+                    onEnter:sandbox.stub()
+                }
+            }
+
+            beforeEach(function(){
+                oldParent = buildParent();
+                newParent = buildParent();
+                child = buildChild();
+            });
+
+            it("can add array", function(){
+                var children = [gameObject1, gameObject2];
+                scene.addChildren(children);
+
+                expect(scene.getChild(2)).toEqual(gameObject1);
+                expect(scene.getChild(3)).toEqual(gameObject2);
+            });
+            it("can add Collection", function(){
+                var children = dyCb.Collection.create([gameObject1, gameObject2]);
+                scene.addChildren(children);
+
+                expect(scene.getChild(2)).toEqual(gameObject1);
+                expect(scene.getChild(3)).toEqual(gameObject2);
             });
         });
 

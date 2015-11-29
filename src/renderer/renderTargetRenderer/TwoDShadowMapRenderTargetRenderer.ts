@@ -72,10 +72,6 @@ module dy {
             this._shadowMapRendererUtils.afterRender();
         }
 
-        protected warnTextureSizeExceedCanvasSize(){
-            //not warn
-        }
-
         protected createCamera():GameObject{
             var orthoCameraComponent = OrthographicCamera.create(),
                 light:DirectionLight = this._light,

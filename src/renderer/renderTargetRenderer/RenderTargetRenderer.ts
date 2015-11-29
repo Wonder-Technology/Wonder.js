@@ -9,10 +9,6 @@ module dy {
         protected frameBufferOperator:FrameBuffer = null;
 
         public initWhenCreate(){
-            if(this._isTextureSizeExceedCanvasSize()){
-                this.warnTextureSizeExceedCanvasSize();
-            }
-
             this.frameBufferOperator = FrameBuffer.create(this.texture.width, this.texture.height);
         }
 
@@ -46,16 +42,6 @@ module dy {
         }
 
         protected  afterRender(){
-        }
-
-        protected warnTextureSizeExceedCanvasSize(){
-            Log.warn("frameBuffer->viewport's size shouldn't exceed canvas's size");
-        }
-
-        private _isTextureSizeExceedCanvasSize(){
-            var view = DeviceManager.getInstance().view;
-
-            return this.texture.width > view.width || this.texture.height > view.height;
         }
     }
 }
