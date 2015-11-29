@@ -34,7 +34,7 @@ module dy{
             return this;
         }
 
-        protected isCheckMaxSize(){
+        protected needClampMaxSize(){
             return false;
         }
     }

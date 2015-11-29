@@ -48,7 +48,7 @@ describe("twoD texture", function() {
         sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
-        dy.Director._instance = null;
+        testTool.clearInstance();
         sandbox.restore();
     });
 
@@ -63,7 +63,7 @@ describe("twoD texture", function() {
                 function () {
                     var texture = dy.TextureLoader.getInstance().get("texture").toTexture();
 
-                    texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                    texture.sourceRegion = dy.RectRegion.create(12, 25, 64, 64);
                     texture.width = 128;
                     texture.height = 128;
 
@@ -73,7 +73,7 @@ describe("twoD texture", function() {
 
         beforeEach(function () {
             gpuDetector = {
-                maxTextureSize: 1000,
+                maxTextureSize: 1024,
                 maxTextureUnit: 16
             };
             sandbox.stub(dy.GPUDetector, "getInstance").returns(gpuDetector);
@@ -95,9 +95,7 @@ describe("twoD texture", function() {
                 canvas = {
                     getContext: sandbox.stub().returns(ctx)
                 };
-                sandbox.stub(document, "createElement").returns(canvas);
-                texture.width = 100;
-                texture.height = 100;
+                sandbox.stub(dy.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
 
                 program = {
                     sendUniformData: sandbox.stub()
@@ -120,7 +118,7 @@ describe("twoD texture", function() {
 
                     texture.sendData(program, 0);
 
-                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.09375, 0.3046875, 0.5, 0.5)));
 
                     done();
                 });

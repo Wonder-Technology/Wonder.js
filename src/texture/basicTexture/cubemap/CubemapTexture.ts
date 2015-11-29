@@ -21,20 +21,33 @@ module dy{
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 
-        private _isAllCompressedAsset:boolean = false;
+        private _areAllCompressedAsset:boolean = false;
 
+        @require(function(assets:Array<CubemapData>){
+            assert(assets.length === 6, Log.info.FUNC_MUST("cubemap", "has 6 assets"));
+            assert(this._areAssetsAllImageAssets(assets) || this._areAssetsAllCompressedAsset(assets), Log.info.FUNC_MUST_BE("cubemap six face's assets", "all ImageTextureAsset or all CompressedTextureAsset"));
 
+            if(this._areAssetsAllCompressedAsset(assets)){
+                assert(!this._hasSourceRegion(assets), Log.info.FUNC_SHOULD_NOT("compressed face", "contain sourceRegion data"));
+            }
+
+            assert(this._areTextureSizOfAllFaceseEqual(assets), Log.info.FUNC_MUST_BE("all cubemap faces' texture size", "equal"));
+        })
         public initWhenCreate(assets:Array<CubemapData>){
             super.initWhenCreate();
 
-            Log.error(assets.length !== 6, Log.info.FUNC_MUST("cubemap", "has 6 assets"));
-            this._judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets);
+            if(this._areAssetsAllCompressedAsset(assets)){
+                this._areAllCompressedAsset = true;
+            }
+            else{
+                this._areAllCompressedAsset = false;
+            }
 
             this._createTextures(assets);
 
             this._getRepresentAsset(assets).copyToCubemapTexture(this);
 
-            if(this._isAllCompressedAsset){
+            if(this._areAllCompressedAsset){
                 this.generateMipmaps = false;
 
                 if(this._hasNoMipmapCompressedAsset()){
@@ -59,49 +72,54 @@ module dy{
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
-            if(this._isAllCompressedAsset){
+            if(this._areAllCompressedAsset){
                 this.textures.forEach((texture:CubemapFaceCompressedTexture, i:number) => {
                     texture.draw(i);
                 });
             }
-            //all twoD textures
             else{
-
                 this.textures.forEach((texture:CubemapFaceTwoDTexture, i:number) => {
                     texture.draw(i);
                 });
             }
         }
 
-        protected isSourcePowerOfTwo(){
-            var isAllSourcePowerOfTwo = true,
-                self = this;
+        protected needClampMaxSize(){
+            var needAllClampMaxSize = false;
 
             this.textures.forEach((texture:CubemapFaceTexture) => {
-                if(!self.isPowerOfTwo(texture.width, texture.height)){
-                    isAllSourcePowerOfTwo = false;
+                if(texture.needClampMaxSize()){
+                    needAllClampMaxSize = true;
                     return dyCb.$BREAK;
                 }
             });
 
-            return isAllSourcePowerOfTwo;
+            return needAllClampMaxSize;
+        }
+
+        protected isSourcePowerOfTwo(){
+            var areAllSourcePowerOfTwo = true;
+
+            this.textures.forEach((texture:CubemapFaceTexture) => {
+                if(!texture.isSourcePowerOfTwo()){
+                    areAllSourcePowerOfTwo = false;
+                    return dyCb.$BREAK;
+                }
+            });
+
+            return areAllSourcePowerOfTwo;
         }
 
         protected clampToMaxSize(){
-            var self = this,
-                maxSize = GPUDetector.getInstance().maxCubemapTextureSize;
-
             this.textures.forEach((texture:any) => {
-                if(texture.source){
-                    texture.source = self.clampToMaxSizeHelper(texture.source, maxSize);
-                }
+                texture.clampToMaxSize();
             });
         }
 
         private _hasNoMipmapCompressedAsset(){
             var self = this;
 
-            if(!this._isAllCompressedAsset){
+            if(!this._areAllCompressedAsset){
                 return false;
             }
 
@@ -118,45 +136,86 @@ module dy{
             return assets[0].asset;
         }
 
-        private  _judgeAssetsAreAllCommonAssetsOrAllCompressedAssets(assets:Array<CubemapData>){
-            var isCompressedAssets = [],
-                isCommonAssets = [];
+        private  _areAssetsAllImageAssets(assets:Array<CubemapData>){
+            var areImageAssets = [];
 
-            assets.forEach((asset:CubemapData) => {
-                if(asset.asset instanceof ImageTextureAsset){
-                    isCommonAssets.push(asset);
+            for(let data of assets) {
+                if (data.asset instanceof ImageTextureAsset) {
+                    areImageAssets.push(data);
                 }
-                else if(asset.asset instanceof CompressedTextureAsset){
-                    isCompressedAssets.push(asset);
+            }
+
+            return areImageAssets.length === 6;
+        }
+
+        private  _areAssetsAllCompressedAsset(assets:Array<CubemapData>){
+            var areCompressedAssets = [];
+
+            for(let data of assets) {
+                if (data.asset instanceof CompressedTextureAsset) {
+                    areCompressedAssets.push(data);
                 }
-            });
-
-            Log.error(isCommonAssets.length > 0 && isCompressedAssets.length > 0, Log.info.FUNC_MUST_BE("cubemap's six face's assets", "all ImageTextureAsset or all CompressedTextureAsset"));
-
-            if(isCompressedAssets.length === 6){
-                this._isAllCompressedAsset = true;
             }
-            else{
-                this._isAllCompressedAsset = false;
-            }
+
+            return areCompressedAssets.length === 6;
         }
 
         private _createTextures(assets:Array<CubemapData>){
             var self = this;
 
-            assets.forEach((data:CubemapData) => {
-                var face = data.asset.toCubemapFaceTexture();
+            for(let data of assets) {
+                let face = data.asset.toCubemapFaceTexture();
 
-                if(data.sourceRegion && face instanceof CubemapFaceTwoDTexture){
+                if (data.sourceRegion && face instanceof CubemapFaceTwoDTexture) {
                     let twoDFace:CubemapFaceTwoDTexture = face;
                     twoDFace.sourceRegion = data.sourceRegion;
                 }
-                if(data.type){
+                if (data.type) {
                     face.type = data.type;
                 }
 
                 self.textures.addChild(face);
-            });
+            }
+        }
+
+        private _areTextureSizOfAllFaceseEqual(assets:Array<CubemapData>){
+            var textureWidthSizeArr = [],
+                textureHeightSizeArr = [];
+
+            for(let data of assets) {
+                if (data.sourceRegion) {
+                    textureWidthSizeArr.push(data.sourceRegion.width);
+                    textureHeightSizeArr.push(data.sourceRegion.height);
+                }
+                else{
+                    textureWidthSizeArr.push(data.asset.width);
+                    textureHeightSizeArr.push(data.asset.height);
+                }
+            }
+
+            return this._areAllElementsEqual(textureWidthSizeArr) && this._areAllElementsEqual(textureHeightSizeArr);
+        }
+
+        private _hasSourceRegion(assets:Array<CubemapData>){
+            for(let data of assets){
+                if(data.sourceRegion){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private _areAllElementsEqual(arr:Array<any>){
+            var lastEle = arr[0];
+
+            for(let ele of arr){
+                if(ele !== lastEle){
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 

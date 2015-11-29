@@ -16,6 +16,18 @@ module dy{
             asset.copyToCubemapFaceTexture(this);
         }
 
+        public isSourcePowerOfTwo():boolean{
+            return BasicTextureUtils.isSourcePowerOfTwo(null, null, this.width, this.height);
+        }
+
+        public needClampMaxSize(){
+            return BasicTextureUtils.needClampMaxSize(GPUDetector.getInstance().maxCubemapTextureSize, this.width, this.height);
+        }
+
+        public clampToMaxSize(){
+            Log.warn("CubemapFaceCompressedTexture's texture size is over maxCubemapTextureSize");
+        }
+
         //cube compressed texture not support sourceRegion
         public draw(index:number){
             var compressedCmd = DrawCompressedTextureCommand.create(),

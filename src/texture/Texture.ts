@@ -91,12 +91,9 @@ module dy{
             return type;
         }
 
+        @virtual
         protected isSourcePowerOfTwo(){
-            return this.isPowerOfTwo(this.width, this.height);
-        }
-
-        protected isPowerOfTwo(width:number, height:number){
-            return JudgeUtils.isPowerOfTwo(width) && JudgeUtils.isPowerOfTwo(height);
+            return TextureUtils.isPowerOfTwo(this.width, this.height)
         }
 
         protected setTextureParameters(textureType, isSourcePowerOfTwo){

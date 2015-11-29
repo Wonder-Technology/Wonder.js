@@ -257,6 +257,9 @@
 
 /// <reference path="texture/Texture"/>
 
+/// <reference path="texture/utils/TextureUtils"/>
+/// <reference path="texture/utils/BasicTextureUtils"/>
+
 /// <reference path="texture/renderTargetTexture/RenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>

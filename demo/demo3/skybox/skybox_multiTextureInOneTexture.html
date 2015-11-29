@@ -16,7 +16,7 @@
     window.onload = function () {
         dy.Main.setConfig({
             canvasId: "canvas"
-        });
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/cube/skybox/px.jpg", id:"texture1"},
@@ -104,7 +104,6 @@
 
 
 
-            director.scene.addComponent(dy.Script.create("./scene.js"));
 
 
 
@@ -123,7 +122,8 @@
             cameraComponent.far = 100;
 
 
-            camera.addComponent(cameraComponent);
+            var controller = dy.FlyCameraController.create(cameraComponent);
+            camera.addComponent(controller);
 
 //            camera.transform.translate(dy.Vector3.create(0, 0, 0));
 //            camera.transform.translate(dy.Vector3.create(0, 0, -5));
@@ -134,11 +134,6 @@
 //            camera.transform.translate(dy.Vector3.create(0, 0, 10));
             camera.transform.translate(dy.Vector3.create(0, 0, 10));
 
-            var script = dy.Script.create();
-
-            script.url = "./camera.js";
-
-            camera.addComponent(script);
 
             return camera
         }

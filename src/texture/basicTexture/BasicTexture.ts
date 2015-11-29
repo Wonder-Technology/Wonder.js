@@ -45,12 +45,17 @@ module dy{
 
 
             //todo not set UNPACK_PREMULTIPLY_ALPHA_WEBGL,UNPACK_ALIGNMENT when cubemap?
-            gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha );
-            gl.pixelStorei( gl.UNPACK_ALIGNMENT, this.unpackAlignment );
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
 
-
-            if(this.isCheckMaxSize()){
+            if(this.needClampMaxSize()){
                 this.clampToMaxSize();
+
+                isSourcePowerOfTwo = this.isSourcePowerOfTwo();
+
+                if(!isSourcePowerOfTwo){
+                    Log.warn("texture size is not power of two after clampToMaxSize()");
+                }
             }
 
             this.setTextureParameters( gl[this.target], isSourcePowerOfTwo);
@@ -88,54 +93,27 @@ module dy{
 
         protected abstract allocateSourceToTexture(isSourcePowerOfTwo:boolean);
 
-        protected isCheckMaxSize(){
-            return true;
+        @virtual
+        protected needClampMaxSize(){
+            if(!this.source){
+                return false;
+            }
+
+            return BasicTextureUtils.needClampMaxSize(GPUDetector.getInstance().maxTextureSize, this.source.width, this.source.height);
         }
 
         protected clampToMaxSize(){
-            this.source = this.clampToMaxSizeHelper(this.source, GPUDetector.getInstance().maxTextureSize);
-        }
-
-        protected clampToMaxSizeHelper (source:any, maxSize:number) {
-            var maxDimension = null,
-                newWidth = null,
-                newHeight = null,
-                canvas = null,
-                ctx = null;
-
-            if(!source){
-                return null;
-            }
-
-            if(source.width <= maxSize && source.height <= maxSize) {
-                return source;
-            }
-
-
-            // Warning: Scaling through the canvas will only work with sources that use
-            // premultiplied alpha.
-
-            maxDimension = Math.max( source.width, source.height );
-            newWidth = Math.floor( source.width * maxSize / maxDimension );
-            newHeight = Math.floor( source.height * maxSize / maxDimension );
-
-            canvas = this._createResizedCanvas();
-
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-
-            ctx = canvas.getContext( "2d" );
-            ctx.drawImage( source, 0, 0, source.width, source.height, 0, 0, newWidth, newHeight );
-
-            Log.log(`source is too big (${source.width}x${source.height}). Resized to ${canvas.width}x${canvas.height}.`);
-
-            return canvas;
+            this.source = BasicTextureUtils.clampToMaxSize(this.source, GPUDetector.getInstance().maxTextureSize);
         }
 
         protected setTextureParameters(textureType, isSourcePowerOfTwo){
             super.setTextureParameters(textureType, isSourcePowerOfTwo);
 
             this._setAnisotropy(textureType);
+        }
+
+        protected isSourcePowerOfTwo(){
+            return BasicTextureUtils.isSourcePowerOfTwo(this.sourceRegion, this.sourceRegionMethod, this.width, this.height);
         }
 
         private _setAnisotropy(textureType){
@@ -156,11 +134,6 @@ module dy{
 
                 //}
             }
-        }
-
-
-        private _createResizedCanvas(){
-            return document.createElement( "canvas" );
         }
 
         private _convertSourceRegionCanvasMapToUV(sourceRegion:RectRegion){

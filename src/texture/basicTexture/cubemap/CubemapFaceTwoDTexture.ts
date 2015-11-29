@@ -20,6 +20,24 @@ module dy{
             this.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
 
+        public isSourcePowerOfTwo():boolean{
+            return BasicTextureUtils.isSourcePowerOfTwo(this.sourceRegion, this.sourceRegionMethod, this.width, this.height);
+        }
+
+        public needClampMaxSize(){
+            if(!this.source){
+                return false;
+            }
+
+            return BasicTextureUtils.needClampMaxSize(GPUDetector.getInstance().maxCubemapTextureSize, this.source.width, this.source.height);
+        }
+
+        public clampToMaxSize(){
+            var maxSize = GPUDetector.getInstance().maxCubemapTextureSize;
+
+            this.source = BasicTextureUtils.clampToMaxSize(this.source, maxSize);
+        }
+
         //todo support manual mipmap
         public draw(index:number){
             var noMipmapCmd = DrawNoMipmapTwoDTextureCommand.create(),
