@@ -269,6 +269,58 @@ describe("cubemap texture", function() {
         });
     });
 
+    describe("sourceRegionMethod", function(){
+        it("CubemapFaceCompressedTexture not has sourceRegionMethod attri", function(){
+            var asset = dy.CompressedTextureAsset.create();
+
+            var texture = dy.CubemapTexture.create([
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset},
+                {asset:asset}
+            ]);
+
+            texture.textures.forEach(function(face){
+                expect(face.sourceRegionMethod).toBeUndefined();
+            });
+        });
+
+        describe("CubemapFaceTwoDTexture", function(){
+            var texture;
+
+            beforeEach(function(){
+                testTool.openContractCheck(sandbox);
+
+                var asset = dy.ImageTextureAsset.create();
+
+                texture = dy.CubemapTexture.create([
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset},
+                    {asset:asset}
+                ]);
+
+            });
+
+            it("only support DRAW_IN_CANVAS", function(){
+                texture.textures.forEach(function(face){
+                    expect(face.sourceRegionMethod).toEqual(dy.TextureSourceRegionMethod.DRAW_IN_CANVAS);
+                });
+            });
+            it("if set it to be not DRAW_IN_CANVAS, error", function(){
+                texture.textures.forEach(function(face){
+                    expect(function() {
+                        face.sourceRegionMethod = dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
+                    }).toThrow();
+                });
+            });
+        });
+    });
+
     describe("integration test", function(){
         var program = null;
         var canvas,ctx;

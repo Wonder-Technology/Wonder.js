@@ -30,7 +30,7 @@ module dy{
             cubemapFaceTexture.width = this.width;
             cubemapFaceTexture.height = this.height;
             cubemapFaceTexture.sourceRegion = this.sourceRegion;
-            cubemapFaceTexture.sourceRegionMethod = this.sourceRegionMethod;
+            cubemapFaceTexture.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
     }
 }

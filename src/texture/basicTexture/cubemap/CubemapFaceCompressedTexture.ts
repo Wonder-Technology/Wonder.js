@@ -28,7 +28,6 @@ module dy{
             Log.warn("CubemapFaceCompressedTexture's texture size is over maxCubemapTextureSize");
         }
 
-        //cube compressed texture not support sourceRegion
         public draw(index:number){
             var compressedCmd = DrawCompressedTextureCommand.create(),
             gl = DeviceManager.getInstance().gl;

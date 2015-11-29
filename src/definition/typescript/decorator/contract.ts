@@ -8,13 +8,13 @@ module dy{
         return function (target, name, descriptor) {
             var value = descriptor.value;
 
-                descriptor.value = function(...args){
-                    if(Main.isTest){
-                        InFunc.apply(this, args);
-                    }
+            descriptor.value = function(...args){
+                if(Main.isTest){
+                    InFunc.apply(this, args);
+                }
 
-                    return value.apply(this, arguments);
-                };
+                return value.apply(this, arguments);
+            };
 
             return descriptor;
         }
@@ -41,8 +41,7 @@ module dy{
 
     export function requireGetter(InFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get,
-                setter = descriptor.set;
+            var getter = descriptor.get;
 
             descriptor.get = function() {
                 if(Main.isTest){
@@ -51,6 +50,14 @@ module dy{
 
                 return getter.call(this);
             };
+
+            return descriptor;
+        }
+    }
+
+    export function requireSetter(InFunc) {
+        return function (target, name, descriptor) {
+            var setter = descriptor.set;
 
             descriptor.set = function(val) {
                 if(Main.isTest){
@@ -66,8 +73,7 @@ module dy{
 
     export function ensureGetter(OutFunc) {
         return function (target, name, descriptor) {
-            var getter = descriptor.get,
-                setter = descriptor.set;
+            var getter = descriptor.get;
 
             descriptor.get = function() {
                 var result = getter.call(this);
@@ -78,6 +84,14 @@ module dy{
 
                 return result;
             };
+
+            return descriptor;
+        }
+    }
+
+    export function ensureSetter(OutFunc) {
+        return function (target, name, descriptor) {
+            var setter = descriptor.set;
 
             descriptor.set = function(val) {
                 var result = setter.call(this, val),

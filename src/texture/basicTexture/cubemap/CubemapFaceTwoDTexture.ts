@@ -9,15 +9,21 @@ module dy{
         	return obj;
         }
 
+        @requireSetter(function(sourceRegionMethod:TextureSourceRegionMethod){
+            assert(sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, Log.info.FUNC_SUPPORT("cubemap twoD face texture->sourceRegionMethod only", "DRAW_IN_CANVAS"));
+        })
+        get sourceRegionMethod(){
+            return TextureSourceRegionMethod.DRAW_IN_CANVAS;
+        }
+        set sourceRegionMethod(sourceRegionMethod:TextureSourceRegionMethod){
+            var a = sourceRegionMethod;
+        }
+
         public sourceRegion:RectRegion = null;
-        public sourceRegionMethod:TextureSourceRegionMethod = null;
         public source:any = null;
 
         public initWhenCreate(asset:ImageTextureAsset){
             asset.copyToCubemapFaceTexture(this);
-
-            //cube twoD texture only support DRAW_IN_CANVAS
-            this.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
 
         public isSourcePowerOfTwo():boolean{
