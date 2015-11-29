@@ -6,6 +6,8 @@ module dy{
         public static create() {
             var obj = new this();
 
+            obj.initWhenCreate();
+
             return obj;
         }
 
@@ -56,14 +58,22 @@ module dy{
         public shadowMapRenderer:CubemapShadowMapRenderTargetRenderer;
 
         private _attenuation:Attenuation = Attenuation.create();
+        private _beforeInitHandler:() => void = null;
+
+        public initWhenCreate(){
+            this._beforeInitHandler = dyCb.FunctionUtils.bind(this, () => {
+                if(this.castShadow){
+                    this.shadowMap = CubemapShadowMapTexture.create();
+
+                    this.shadowMapRenderer = CubemapShadowMapRenderTargetRenderer.create(this);
+                    Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
+                }
+            });
+
+            EventManager.on("dy_beforeInit", this._beforeInitHandler);
+        }
 
         public init(){
-            if(this.castShadow){
-                this.shadowMap = CubemapShadowMapTexture.create();
-
-                this.shadowMapRenderer = CubemapShadowMapRenderTargetRenderer.create(this);
-                Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
-            }
         }
 
         public dispose(){

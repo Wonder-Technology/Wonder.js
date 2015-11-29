@@ -35,7 +35,7 @@
             director.scene.addChild(box);
             director.scene.addChild(ground);
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createDirectionLight(sphere, box, ground));
+            director.scene.addChild(createDirectionLight([sphere, box, ground]));
             director.scene.addChild(createCamera());
 
             director.start();
@@ -99,11 +99,10 @@
         }
 
         function createGround(){
-            var map = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("ground"));
+            var map = dy.LoaderManager.getInstance().get("ground").toTexture();
             map.wrapS = dy.TextureWrapMode.REPEAT;
             map.wrapT = dy.TextureWrapMode.REPEAT;
             map.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
-            map.needUpdate = true;
 
 
             var material = dy.LightMaterial.create();
@@ -135,7 +134,7 @@
             return ambientLight;
         }
 
-        function createDirectionLight(sphere, box, ground) {
+        function createDirectionLight(shadowList) {
             var SHADOW_MAP_WIDTH = 1024,
                     SHADOW_MAP_HEIGHT = 1024;
 
@@ -154,7 +153,7 @@
             directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
             directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
 
-            directionLightComponent.shadowRenderList = [sphere, box, ground];
+            directionLightComponent.shadowRenderList = shadowList;
 
             var directionLight = dy.GameObject.create();
             directionLight.addComponent(directionLightComponent);

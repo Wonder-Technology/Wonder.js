@@ -20,6 +20,7 @@ var testTool = (function () {
                 uniform1i: sandbox.stub(),
                 uniform2f: sandbox.stub(),
                 uniform3f: sandbox.stub(),
+                uniform4f: sandbox.stub(),
                 uniformMatrix3fv: sandbox.stub(),
                 uniform1f: sandbox.stub(),
                 drawElements: sandbox.stub(),
