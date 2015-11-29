@@ -18,6 +18,7 @@ var testTool = (function () {
                 vertexAttribPointer: sandbox.stub(),
                 enableVertexAttribArray: sandbox.stub(),
                 uniform1i: sandbox.stub(),
+                uniform2f: sandbox.stub(),
                 uniform3f: sandbox.stub(),
                 uniformMatrix3fv: sandbox.stub(),
                 uniform1f: sandbox.stub(),

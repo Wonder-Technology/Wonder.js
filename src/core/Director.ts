@@ -148,6 +148,8 @@ module dy{
         private _init(){
             this._isFirstStart = false;
 
+            EventManager.trigger(dy.CustomEvent.create("dy_beforeInit"));
+
             this.scene.onEnter();
             this.scene.init();
 
@@ -156,6 +158,8 @@ module dy{
 
             this._timeController.start();
             this.scheduler.start();
+
+            EventManager.trigger(dy.CustomEvent.create("dy_afterInit"));
         }
 
         private _buildLoopStream(){

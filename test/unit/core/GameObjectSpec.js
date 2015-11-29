@@ -95,4 +95,10 @@ describe("GameObject", function() {
     describe("getTopUnderPoint", function(){
         //todo add Collider to test
     });
+
+    describe("dispose", function(){
+
+    });
+
+    //todo move related SceneSpec here
 });

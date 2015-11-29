@@ -7,6 +7,8 @@ module dy{
         public static create() {
             var obj = new this();
 
+            obj.initWhenCreate();
+
             return obj;
         }
 
@@ -36,13 +38,22 @@ module dy{
         public shadowMap:TwoDShadowMapTexture;
         public shadowMapRenderer:TwoDShadowMapRenderTargetRenderer;
 
-        public init(){
-            if(this.castShadow){
-                this.shadowMap = TwoDShadowMapTexture.create();
+        private _beforeInitHandler:() => void = null;
 
-                this.shadowMapRenderer = TwoDShadowMapRenderTargetRenderer.create(this);
-                Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
-            }
+        public initWhenCreate(){
+            this._beforeInitHandler = dyCb.FunctionUtils.bind(this, () => {
+                if(this.castShadow){
+                    this.shadowMap = TwoDShadowMapTexture.create();
+
+                    this.shadowMapRenderer = TwoDShadowMapRenderTargetRenderer.create(this);
+                    Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
+                }
+            });
+
+            EventManager.on("dy_beforeInit", this._beforeInitHandler);
+        }
+
+        public init(){
         }
 
         public dispose(){
@@ -51,6 +62,8 @@ module dy{
 
                 Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
             }
+
+            EventManager.off("dy_beforeInit", this._beforeInitHandler);
         }
     }
 }
