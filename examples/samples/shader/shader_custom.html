@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>custom shader</title>
+
+    <script src="/DYEngine/dist/dy.innerLib.js" type="text/javascript"></script>
+    <script src="/DYEngine/dist/dy.debug.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        dy.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: dy.ScreenSize.FULL
+        }).init();
+
+        initSample();
+
+        function initSample() {
+            var director = dy.Director.getInstance();
+
+            director.scene.addChild(createRect());
+            director.scene.addChild(createCamera());
+
+            director.start();
+        }
+
+        function createRect() {
+            var shaderDefinitionData = {
+                attributes:  {
+                    "a_color": {
+                        type:dy.VariableType.FLOAT_4,
+                        value: [
+                            1, 0, 0, 1,
+                            1, 0, 0, 1,
+                            0, 1, 0, 1,
+                            0, 0, 1, 1
+                        ]
+                    }
+                },
+                vsSourceVarDeclare: [
+                    "varying vec4 v_color;"
+                ].join("\n"),
+                vsSourceBody: [
+                    "v_color = a_color;",
+                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
+                ].join("\n"),
+                fsSourceVarDeclare: [
+                    "varying vec4 v_color;"
+                ].join("\n"),
+                fsSourceBody: [
+                    "gl_FragColor = v_color;"
+                ].join("\n")
+            };
+
+            var material = dy.CustomMaterial.create();
+            material.shader.read(shaderDefinitionData);
+
+
+            var geometry = dy.RectGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var gameObject = dy.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(dy.MeshRenderer.create());
+
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = dy.GameObject.create(),
+                    view = dy.Director.getInstance().view,
+                    cameraComponent = dy.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 80;
+
+            var controller = dy.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            camera.transform.translate(dy.Vector3.create(0, 0, 5));
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>
