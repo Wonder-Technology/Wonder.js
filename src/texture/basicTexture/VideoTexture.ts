@@ -10,6 +10,7 @@ module dy{
         }
 
         private _video:Video = null;
+        private _startLoopHandler:() => void = null;
 
         public initWhenCreate(asset:VideoTextureAsset){
             super.initWhenCreate(asset);
@@ -22,7 +23,7 @@ module dy{
 
             super.init();
 
-            EventManager.on("dy_startLoop", () => {
+            this._startLoopHandler = dyCb.FunctionUtils.bind(this, () => {
                 if(self._video.isStop){
                     self.needUpdate = false;
                 }
@@ -31,7 +32,13 @@ module dy{
                 }
             });
 
+            EventManager.on("dy_startLoop", this._startLoopHandler);
+
             return this;
+        }
+
+        public dispose(){
+            EventManager.off("dy_startLoop", this._startLoopHandler);
         }
 
         protected needClampMaxSize(){

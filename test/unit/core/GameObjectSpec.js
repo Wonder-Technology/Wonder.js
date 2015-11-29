@@ -97,7 +97,47 @@ describe("GameObject", function() {
     });
 
     describe("dispose", function(){
+        it("off dy_startLoop,dy_endLoop event->exec script handler", function(){
+            var startLoopStub = sandbox.stub();
+            var endLoopStub = sandbox.stub();
 
+            var UserScript = function(){};
+            UserScript.prototype.onStartLoop = startLoopStub;
+            UserScript.prototype.onEndLoop = endLoopStub;
+            dy.Script.addScript("aaa", UserScript);
+
+            var script = dy.Script.create();
+            var stream = new dyRt.Stream();
+            sandbox.stub(script, "createLoadJsStream").returns({
+                do:sandbox.stub().returns(stream)
+            });
+
+            gameObject.addComponent(script);
+            //todo how to trigger stream in test?
+            //(here just invoke the method that contained in stream)
+            script._addScriptToGameObject(gameObject, {
+                class: UserScript
+            });
+
+
+            gameObject.init();
+
+            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
+            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+
+            expect(startLoopStub).toCalledOnce();
+            expect(endLoopStub).toCalledOnce();
+
+            gameObject.dispose();
+
+            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
+            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+
+
+            expect(startLoopStub).toCalledOnce();
+            expect(endLoopStub).toCalledOnce();
+        });
+        //todo more test
     });
 
     //todo move related SceneSpec here

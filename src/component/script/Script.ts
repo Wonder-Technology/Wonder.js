@@ -43,11 +43,13 @@ module dy{
         }
 
         public addToGameObject(gameObject:GameObject){
+            var self = this;
+
             super.addToGameObject(gameObject);
 
             Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
                     .do((data:ScriptFileData) => {
-                        gameObject.script.addChild(data.name, new data.class(gameObject));
+                        self._addScriptToGameObject(gameObject, data);
                     })
             );
         }
@@ -56,6 +58,10 @@ module dy{
             super.removeFromGameObject(gameObject);
 
             Director.getInstance().scriptStreams.removeChild(this.uid.toString());
+        }
+
+        private _addScriptToGameObject(gameObject:GameObject, data:ScriptFileData){
+            gameObject.script.addChild(data.name, new data.class(gameObject));
         }
     }
 

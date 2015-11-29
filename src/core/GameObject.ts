@@ -21,17 +21,22 @@ module dy {
 
         private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
         private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        private _startLoopHandler:() => void = null;
+        private _endLoopHandler:() => void = null;
 
         public init() {
             var self = this;
 
+            this._startLoopHandler = dyCb.FunctionUtils.bind(this, () => {
+               this.onStartLoop();
+            });
+            this._endLoopHandler = dyCb.FunctionUtils.bind(this, () => {
+                this.onEndLoop();
+            });
+
             /*! global event should add "dy_" prefix */
-            EventManager.on("dy_startLoop", () => {
-               self.onStartLoop();
-            });
-            EventManager.on("dy_endLoop", () => {
-                self.onEndLoop();
-            });
+            EventManager.on("dy_startLoop", this._startLoopHandler);
+            EventManager.on("dy_endLoop", this._endLoopHandler);
 
             this._components.forEach((component:Component) => {
                 component.init();
@@ -77,8 +82,8 @@ module dy {
 
             EventManager.off(this);
 
-            EventManager.off("dy_startLoop", this.onStartLoop);
-            EventManager.off("dy_endLoop", this.onEndLoop);
+            EventManager.off("dy_startLoop", this._startLoopHandler);
+            EventManager.off("dy_endLoop", this._endLoopHandler);
 
             this._components.forEach((component:Component) => {
                 component.dispose();
