@@ -7,21 +7,6 @@ module wd {
             return obj;
         }
 
-        //private _eventBinder: EventBinder = null;
-        //private _eventRegister:EventRegister = null;
-
-        constructor() {
-            //this._eventBinder = binder;
-            //EventRegister.getInstance() = register;
-        }
-
-        //dispatch in eventBinder->eventList
-
-
-        //public setBubbleParent(target:GameObject, parent:any) {
-        //    EventRegister.getInstance().setBubbleParent(target, parent);
-        //}
-
         public trigger(event:Event):boolean;
         public trigger(event:Event, userData:any):void;
         public trigger(target:GameObject, event:Event):boolean;
@@ -33,8 +18,6 @@ module wd {
             if(args.length === 1){
                 let event = arguments[0],
                     eventType = event.type;
-
-                //Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);

@@ -13,12 +13,12 @@ module wd {
         public on(eventName:string, handler:Function, priority:number):void;
         public on(target:GameObject, eventName:string, handler:Function, priority:number):void;
 
-        public on(args) {
-            if(arguments.length === 3){
-                let eventName = arguments[0],
-                    handler = arguments[1],
+        public on(...args) {
+            if(args.length === 3){
+                let eventName = args[0],
+                    handler = args[1],
                     originHandler = handler,
-                    priority = arguments[2];
+                    priority = args[2];
 
                 EventRegister.getInstance().register(
                     null,
@@ -29,12 +29,12 @@ module wd {
                     priority
                 );
             }
-            else if(arguments.length === 4){
-                let target = arguments[0],
-                    eventName = arguments[1],
-                    handler = arguments[2],
+            else if(args.length === 4){
+                let target = args[0],
+                    eventName = args[1],
+                    handler = args[2],
                     originHandler = handler,
-                    priority = arguments[3];
+                    priority = args[3];
 
                 EventRegister.getInstance().register(
                     target,
@@ -52,10 +52,10 @@ module wd {
         public off(eventName:string, handler:Function):void;
         public off(target:GameObject, eventName:string, handler:Function):void;
 
-        public off(args) {
+        public off(...args) {
             var eventRegister = EventRegister.getInstance();
 
-            eventRegister.remove.apply(eventRegister, Array.prototype.slice.call(arguments, 0));
+            eventRegister.remove.apply(eventRegister, args);
         }
 
         public trigger(event:Event):boolean;
@@ -63,37 +63,37 @@ module wd {
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
         public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
-        public trigger(args) {
+        public trigger(...args) {
             var event:Event = null;
 
-            if(arguments.length === 1 || arguments.length === 2){
+            if(args.length === 1 || args.length === 2){
                 let userData = null;
 
-                if(arguments.length === 1){
-                    event = arguments[0];
+                if(args.length === 1){
+                    event = args[0];
                 }
                 else{
-                    event = arguments[0];
-                    userData = arguments[1];
+                    event = args[0];
+                    userData = args[1];
                 }
 
                 return this._triggerEventHandler(event, userData);
             }
-            else if(arguments.length === 3 || arguments.length === 4){
+            else if(args.length === 3 || args.length === 4){
                 let target = null,
                     userData = null,
                     notSetTarget = null;
 
-                if(arguments.length === 3){
-                    target = arguments[0];
-                    event = arguments[1];
-                    notSetTarget = arguments[2];
+                if(args.length === 3){
+                    target = args[0];
+                    event = args[1];
+                    notSetTarget = args[2];
                 }
                 else{
-                    target = arguments[0];
-                    event = arguments[1];
-                    userData = arguments[2];
-                    notSetTarget = arguments[3];
+                    target = args[0];
+                    event = args[1];
+                    userData = args[2];
+                    notSetTarget = args[3];
                 }
 
                 return this._triggerTargetAndEventHandler(target, event, userData, notSetTarget);
@@ -103,7 +103,6 @@ module wd {
 
         private _triggerEventHandler(event, userData){
             var listenerDataList:wdCb.Collection<EventRegisterData> = null,
-                isStopPropagation = false,
                 self = this;
 
             listenerDataList = EventRegister.getInstance().getEventRegisterDataList(event.name);
@@ -121,13 +120,8 @@ module wd {
                 self._setUserData(eventCopy, userData);
 
                 listenerData.handler(eventCopy);
-
-                //if(eventCopy.isStopPropagation){
-                //    isStopPropagation = true;
-                //}
             });
 
-            //return isStopPropagation;
             return true;
         }
 

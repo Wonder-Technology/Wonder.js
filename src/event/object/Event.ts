@@ -1,15 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
 
-//rich domain model
-
-//event info:
-//control info(stop bubble...)
-//system data(system event, as clientX...)
-//event context(target, currentTarget...)
-//user data(custom event)
-//event type
-
-
 module wd{
     export abstract class Event{
         constructor(eventName:EventName) {

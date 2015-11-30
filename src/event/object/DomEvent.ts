@@ -1,6 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    //todo test
     export abstract class DomEvent extends Event{
         constructor(event:any, eventName:EventName) {
             super(eventName);

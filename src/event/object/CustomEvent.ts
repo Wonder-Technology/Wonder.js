@@ -13,7 +13,6 @@ module wd {
 
         public copyPublicAttri(destination, source:any){
             var property = null;
-                //destination = {};
 
             wdCb.ExtendUtils.extend(destination, function(item, property){
                 return property.slice(0, 1) !== "_"

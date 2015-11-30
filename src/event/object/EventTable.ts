@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-//todo complete it(add more event type)
+//todo add more event type
 module wd {
      const _table = wdCb.Hash.create<EventType>();
 
@@ -16,8 +16,6 @@ module wd {
     _table.addChild(<any>EventName.KEYUP, EventType.KEYBOARD);
 
     export class EventTable {
-        //getEventType should put here,
-        //it should not put in Event class, it's better to extract EventTable class to put in
         public static getEventType(eventName:EventName):EventType {
             var result = _table.getChild(<any>eventName);
 
@@ -27,21 +25,5 @@ module wd {
 
             return result;
         }
-
-        //public static isEventOnView(eventName:EventName){
-        //    var result = false;
-        //
-        //    switch(this.getEventType(eventName)){
-        //        case EventType.MOUSE:
-        //            result = true;
-        //            break;
-        //        default:
-        //            Log.assert(false, Log.info.FUNC_UNKNOW("eventName"));
-        //            result = false;
-        //            break;
-        //    }
-        //
-        //    return result;
-        //}
     }
 }

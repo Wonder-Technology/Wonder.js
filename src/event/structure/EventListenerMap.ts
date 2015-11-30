@@ -13,52 +13,33 @@ module wd{
 
         public appendChild(target:GameObject, eventName:EventName, data:EventRegisterData){
             this._listenerMap.appendChild(
-                //String(data.target.uid) + "_" + eventName,
                 this._buildKey(target, eventName),
                 data
             );
         }
 
-        //public update(target:GameObject, eventName:EventName, data:EventRegisterData){
-            //:wdCb.Collection<EventRegisterData>
-            //this._listenerMap.getChild(this._buildKey(target, eventName)).replace((data:EventRegisterData) => {
-            //
-            //});
-            //this._listenerMap.update(target, eventName,
-            //    <EventRegisterData>{
-            //        target: target,
-            //        handler: handler,
-            //        domHandler: domHandler,
-            //        priority: priority
-            //    });
-        //}
-
         public getChild(eventName:EventName):wdCb.Collection<EventRegisterData>;
         public getChild(target:GameObject):wdCb.Collection<EventRegisterData>;
         public getChild(target:GameObject, eventName:EventName):wdCb.Collection<EventRegisterData>;
 
-        public getChild(args):any{
+        public getChild(...args):any{
             var self = this;
-            //
-            //return this._listenerMap.filter((list:wdCb.Collection, key:string) => {
-            //    return key === self._buildKey(target, eventName);
-            //});
-            //
-            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventName = arguments[0];
+
+            if(args.length === 1 && JudgeUtils.isString(args[0])){
+                let eventName = args[0];
 
                 return this._listenerMap.getChild(eventName);
             }
-            else if(arguments.length === 1){
-                let target = arguments[0];
+            else if(args.length === 1){
+                let target = args[0];
 
                 return this._listenerMap.filter((list:wdCb.Collection<EventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
-            else if(arguments.length === 2){
-                let target = arguments[0],
-                    eventName = arguments[1];
+            else if(args.length === 2){
+                let target = args[0],
+                    eventName = args[1];
 
                 return this._listenerMap.getChild(this._buildKey(target, eventName));
             }
@@ -69,12 +50,12 @@ module wd{
         public hasChild(target:GameObject, eventName:EventName):boolean;
 
         public hasChild(...args){
-            if(arguments.length === 1 && JudgeUtils.isFunction(arguments[0])){
-                return this._listenerMap.hasChild(arguments[0]);
+            if(args.length === 1 && JudgeUtils.isFunction(args[0])){
+                return this._listenerMap.hasChild(args[0]);
             }
-            else if(arguments.length === 2){
-                let target = arguments[0],
-                    eventName = arguments[1],
+            else if(args.length === 2){
+                let target = args[0],
+                    eventName = args[1],
                     list = this._listenerMap.getChild(this._buildKey(target, eventName));
 
                 return list && list.getCount() > 0;
@@ -96,18 +77,18 @@ module wd{
         public removeChild(target:GameObject, eventName:EventName):wdCb.Collection<wdCb.Collection<EventOffData>>;
         public removeChild(target:GameObject, eventName:EventName, handler:Function):wdCb.Collection<wdCb.Collection<EventOffData>>;
 
-        public removeChild(args){
+        public removeChild(...args){
             var self = this,
                 result = null;
 
-            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventName = arguments[0];
+            if(args.length === 1 && JudgeUtils.isString(args[0])){
+                let eventName = args[0];
 
                 result = this._listenerMap.removeChild(eventName);
             }
-            else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
-                let eventName = arguments[0],
-                    handler = arguments[1],
+            else if(args.length === 2 && JudgeUtils.isFunction(args[1])){
+                let eventName = args[0],
+                    handler = args[1],
                     list:wdCb.Collection<EventRegisterData> = null;
 
                 list = this._listenerMap.getChild(eventName);
@@ -120,30 +101,30 @@ module wd{
                     this._listenerMap.removeChild(eventName);
                 }
             }
-            else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
-                let uid = arguments[0],
-                    eventName = arguments[1];
+            else if(args.length === 2 && JudgeUtils.isNumber(args[0])){
+                let uid = args[0],
+                    eventName = args[1];
 
                 result = this._listenerMap.removeChild(this._buildKey(uid, eventName));
             }
-            else if(arguments.length === 1){
-                let target = arguments[0];
+            else if(args.length === 1){
+                let target = args[0];
 
                 result = this._listenerMap.removeChild((list:wdCb.Collection<EventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
-            else if(arguments.length === 2){
-                let target = arguments[0],
-                eventName = arguments[1];
+            else if(args.length === 2){
+                let target = args[0],
+                eventName = args[1];
 
                 result = this._listenerMap.removeChild(this._buildKey(target, eventName));
             }
-            else if(arguments.length === 3){
-                let target = arguments[0],
-                    eventName = arguments[1],
+            else if(args.length === 3){
+                let target = args[0],
+                    eventName = args[1],
                     resultList = wdCb.Collection.create(),
-                    handler = arguments[2];
+                    handler = args[2];
 
                 this._listenerMap.forEach((list:wdCb.Collection<EventRegisterData>, key:string) => {
                     let result = list.removeChild((val:EventRegisterData) => {
@@ -165,13 +146,17 @@ module wd{
             return result;
         }
 
-        public getEventOffDataList(target:GameObject, eventName?:EventName){
+        public getEventOffDataList(target:GameObject);
+        public getEventOffDataList(target:GameObject, eventName:EventName);
+
+        public getEventOffDataList(...args){
             var result:wdCb.Collection<EventOffData> = wdCb.Collection.create<EventOffData>(),
+                target = args[0],
                 self = this;
 
-            if(arguments.length === 1){
+            if(args.length === 1){
                 this.getChild(target)
-                .forEach((list:wdCb.Collection<EventRegisterData>, key:string) => {
+                    .forEach((list:wdCb.Collection<EventRegisterData>, key:string) => {
                         if(list && list.getCount() > 0){
                             result.addChild(
                                 <EventOffData>{
@@ -184,8 +169,9 @@ module wd{
 
                 return result;
             }
-            else if(arguments.length === 2){
-                var list:wdCb.Collection<EventRegisterData> = this.getChild(target, eventName);
+            else if(args.length === 2){
+                let eventName:EventName = args[1],
+                    list:wdCb.Collection<EventRegisterData> = this.getChild(target, eventName);
 
                 if(list && list.getCount() > 0){
                     result.addChild(
@@ -219,16 +205,16 @@ module wd{
         private _buildKey(uid:number, eventName:EventName):string;
         private _buildKey(target:GameObject, eventName:EventName):string;
 
-        private _buildKey(args){
-            if(JudgeUtils.isNumber(arguments[0])){
-                let uid = arguments[0],
-                    eventName = arguments[1];
+        private _buildKey(...args){
+            if(JudgeUtils.isNumber(args[0])){
+                let uid = args[0],
+                    eventName = args[1];
 
                 return this._buildKeyWithUid(uid, eventName);
             }
             else{
-                let target = arguments[0],
-                    eventName = arguments[1];
+                let target = args[0],
+                    eventName = args[1];
 
                 return target ? this._buildKeyWithUid(target.uid, eventName) : <any>eventName;
             }

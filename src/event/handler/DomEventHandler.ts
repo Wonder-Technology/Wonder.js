@@ -26,18 +26,9 @@ module wd {
             this.clearHandler();
         }
 
-        //protected offHandler(eventName:EventName, handler:Function);
-        //
-        //@virtual
-        //protected offHandler(...args){
-        //}
-
         protected abstract getDom();
-        //protected abstract createEventObject(event:any, eventName:EventName, currentTarget:GameObject);
-        //protected abstract handleEvent(eventName:EventName, event:Event);
         protected abstract triggerDomEvent(event:Event, eventName:EventName, target:GameObject);
         protected abstract addEngineHandler(target:GameObject, eventName:EventName, handler:Function);
-
 
         @virtual
         protected clearHandler(){

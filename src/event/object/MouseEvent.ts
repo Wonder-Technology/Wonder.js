@@ -3,16 +3,6 @@ module wd {
     declare var document:any;
 
     export class MouseEvent extends DomEvent{
-        //public static CLICK:string = "click";
-        //public static MOUSEOVER:string = "mouseover";
-        //public static MOUSEOUT:string = "mouseout";
-        //public static MOUSEMOVE:string = "mousemove";
-
-        //public static create(eventName:EventName) {
-        //    var obj = new this(eventName);
-        //
-        //    return obj;
-        //}
         public static create(event:any, eventName:EventName) {
             var obj = new this(event, eventName);
 
@@ -52,7 +42,6 @@ module wd {
         private _locationInView:Point = null;
         //Returns the current cursor location in screen coordinates(related to canvas)
         get locationInView():Point {
-            //return this._locationInView;
             var point:Point = null,
                 viewOffset:any = null;
 
@@ -63,7 +52,6 @@ module wd {
             point = this.location;
 
 
-            //canvasOffset = this._getCanvasOffset(this.event.currentTarget);
             viewOffset = DeviceManager.getInstance().view.offset;
 
             return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
@@ -94,7 +82,6 @@ module wd {
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
-                        //mouseButton = e.button;
                         break;
                 }
             }
@@ -111,7 +98,6 @@ module wd {
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
-                        //mouseButton = e.button;
                         break;
                 }
             }
@@ -123,8 +109,10 @@ module wd {
         }
 
         get wheel(){
-            // FF uses 'detail' and returns a value in 'no. of lines' to scroll
-            // WebKit and Opera use 'wheelDelta', WebKit goes in multiples of 120 per wheel notch
+            /*!
+             FF uses 'detail' and returns a value in 'no. of lines' to scroll
+             WebKit and Opera use 'wheelDelta', WebKit goes in multiples of 120 per wheel notch
+             */
             var e = this.event;
 
             if (e.detail) {
@@ -178,17 +166,5 @@ module wd {
         private _isPointerLocked() {
             return !!(document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement);
         }
-
-        //private _getCanvasOffset(view:IView) {
-        //    return view.getOffset();
-        //    var offset = {x: canvas.offsetLeft, y: canvas.offsetTop};
-        //
-        //    while (canvas = canvas.offsetParent) {
-        //        offset.x += canvas.offsetLeft;
-        //        offset.y += canvas.offsetTop;
-        //    }
-        //
-        //    return offset;
-        //}
     }
 }

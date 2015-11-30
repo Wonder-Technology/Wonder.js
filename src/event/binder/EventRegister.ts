@@ -14,31 +14,6 @@ module wd {
         private _listenerMap:EventListenerMap = EventListenerMap.create();
 
         public register(target:GameObject, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
-            //var isBindEventOnView = false,
-            //var data = <EventRegisterData>{
-            //    target: target,
-            //    handler: handler,
-            //    domHandler: domHandler,
-            //    priority: priority
-            //};
-
-            //eventName = <string>eventName;
-            ////priority set in listener, not in this(binder)!
-            //if(priority){
-            //    listener.setPriority(priority);
-            //}
-
-
-            //if (this.isBindEventOnView(eventName)){
-            //    isBindEventOnView = true;
-            //    //this._listenerMap.appendChild(this._buildKey(target.uid, eventName), handler);
-            //}
-            //else {
-            //    isBindEventOnView = false;
-            //    //this._listenerMap.addChild(eventName, data);
-            //}
-
-
             this._listenerMap.appendChild(target, eventName, <EventRegisterData>{
                 target: target,
                 eventName: eventName,
@@ -47,25 +22,7 @@ module wd {
                 domHandler: domHandler,
                 priority: priority
             });
-
-
-            //this._listenerList.addChild(listener.eventType,  {
-            //    target:target,
-            //    listener:listener
-            //});
-
-            //return isBindEventOnView;
         }
-
-        //public update(target:GameObject, eventName:EventName, handler:Function, domHandler:Function, priority:number){
-            //this._listenerMap.update(target, eventName,
-            //    <EventRegisterData>{
-            //        target: target,
-            //        handler: handler,
-            //        domHandler: domHandler,
-            //        priority: priority
-            //    });
-        //}
 
         public remove(eventName:EventName):void;
         public remove(eventName:EventName, handler:Function):void;
@@ -82,46 +39,30 @@ module wd {
                 let eventName = arguments[0];
 
                 result = this._listenerMap.removeChild(eventName);
-
-                //return null;
             }
             else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
                 let eventName = arguments[0],
                     handler = arguments[1];
 
                 result = this._listenerMap.removeChild(eventName, handler);
-
-                //return null;
             }
             else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
                 let uid = arguments[0],
                     eventName = arguments[1];
 
                 result = this._listenerMap.removeChild(uid, eventName);
-
-                //return null;
             }
             else if(arguments.length === 1){
-                //let dataList = null;
-
-                //dataList = this._listenerMap.getEventOffDataList(target);
-
                 result = this._listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
             }
             else if(arguments.length === 2 || arguments.length === 3){
-                let eventName = arguments[1];
-
                 result = this._listenerMap.removeChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
 
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
-
-                    //return this._listenerMap.getEventOffDataList(target, eventName);
                 }
-
-                //return null;
             }
 
             return result;
@@ -131,16 +72,15 @@ module wd {
         public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
 
         public getEventRegisterDataList(args){
-            var result:wdCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
-                self = this;
+            var result:wdCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
 
             if(!result){
                 return null;
             }
 
             return result.sort(function (dataA, dataB) {
-                    return dataB.priority - dataA.priority;
-                });
+                return dataB.priority - dataA.priority;
+            });
         }
 
         public setBubbleParent(target:GameObject, parent:GameObject) {
@@ -186,30 +126,6 @@ module wd {
             return this._listenerMap.isTarget(key, target, list);
         }
 
-        //public copy(){
-        //
-        //}
-
-        //private _isContain(parentTarget:GameObject, childTarget:GameObject){
-        //    var parent = null;
-        //
-        //    parent = childTarget.parent;
-        //
-        //    while(parent){
-        //        if(JudgeUtils.isEqual(parent, parentTarget)){
-        //            return true;
-        //        }
-        //
-        //        parent = childTarget.parent;
-        //    }
-        //
-        //    return false;
-        //}
-
-
-        //private _removeFromMap(target:GameObject, eventName:EventName) {
-        //}
-
         private _isAllEventHandlerRemoved(target:GameObject){
             return !this._listenerMap.hasChild((list:wdCb.Collection<EventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
@@ -219,10 +135,6 @@ module wd {
         private _handleAfterAllEventHandlerRemoved(target:GameObject){
             this.setBubbleParent(target, null);
         }
-
-        //private _buildKey(uid, eventName){
-        //    return String(uid) + "_" + eventName;
-        //}
     }
 
     export type EventRegisterData = {

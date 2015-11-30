@@ -1,8 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
 
-//responsiblity:handle logic with specify event category
-//judge is under point
-//wrap event object
 module wd {
     export class MouseEventHandler extends DomEventHandler{
         private static _instance = null;
@@ -26,10 +23,8 @@ module wd {
 
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean{
             var eventName = event.name,
-                eventType = event.type,
                 registerDataList:wdCb.Collection<EventRegisterData> = null,
-                isStopPropagation = false,
-                self = this;
+                isStopPropagation = false;
 
             if (!(target instanceof GameObject)) {
                 Log.log("target is not GameObject, can't trigger event");
@@ -65,8 +60,6 @@ module wd {
         protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
             var eventObj = this._createEventObject(event, eventName, target);
 
-            //console.log("triggerDomEvent")
-
             EventManager.emit(this._getTopTarget(eventObj), eventObj);
         }
 
@@ -100,7 +93,6 @@ module wd {
             return (event:MouseEvent) => {
                 handler(event);
 
-                //console.log("_saveLocation");
                 self._saveLocation(event);
             };
         }

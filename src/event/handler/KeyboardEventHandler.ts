@@ -15,22 +15,13 @@ module wd {
 
         public keyState:any = {};
 
-        //public off(eventName:EventName):void;
-        //public off(eventName:EventName, handler:Function):void;
-
-        //public off(...args) {
-        //    super.off.apply(super, args);
-        //}
-
         public on(eventName:EventName, handler:(event:KeyboardEvent) => void, priority:number) {
             this.handler(null, eventName, handler, priority);
         }
 
         public trigger(event:Event):boolean{
             var eventName = event.name,
-                eventType = event.type,
-                registerDataList:wdCb.Collection<EventRegisterData> = null,
-                self = this;
+                registerDataList:wdCb.Collection<EventRegisterData> = null;
 
             registerDataList = EventRegister.getInstance().getEventRegisterDataList(eventName);
 
