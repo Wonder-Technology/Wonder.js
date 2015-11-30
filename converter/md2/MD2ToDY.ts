@@ -1,9 +1,9 @@
-/// <reference path="../../node_modules/dyrt/dist/dyRt.node.d.ts"/>
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
+/// <reference path="../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import fs = require("fs");
 import path = require("path");
-import dyRt = require("dyrt");
-import dyCb = require("dycb");
+import wdFrp = require("wdfrp");
+import wdCb = require("wdcb");
 import Log = require("../common/Log");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
@@ -27,7 +27,7 @@ export = class MD2ToDY {
 
     private _objectsConverter:any = ObjectsConverter.create();
 
-    public convert(fileBuffer:Buffer, filePath:string):dyRt.Stream {
+    public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var self = this,
             resultJson:any = {};
 
@@ -36,14 +36,14 @@ export = class MD2ToDY {
         resultJson.objects = self._convertObjects(fileBuffer, filePath);
         resultJson.materials = {};
 
-        //return dyRt.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
+        //return wdFrp.fromNodeCallback(fs.readFile)(ModelLoaderUtils.getPath(filePath, self._objectsConverter.mtlFilePath))
         //    .map((data:string) => {
         //        resultJson.materials = self._convertMaterials(data.toString());
         //
         //        return [resultJson, self._getResourceUrlArr(resultJson.materials, filePath)];
         //    });
 
-        return dyRt.just([resultJson]);
+        return wdFrp.just([resultJson]);
     }
 
     //private _getResourceUrlArr(materials, filePath) {
@@ -65,7 +65,7 @@ export = class MD2ToDY {
     //        }
     //    }
     //
-    //    return dyCb.ArrayUtils.removeRepeatItems(urlArr);
+    //    return wdCb.ArrayUtils.removeRepeatItems(urlArr);
     //}
     //
     //private _getAbsoluteResourceUrl(filePath, resourceRelativeUrl) {

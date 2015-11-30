@@ -594,7 +594,7 @@ describe("cubemap texture", function() {
 
                     done();
                 }, function(asset){
-                    asset.mipmaps = dyCb.Collection.create([mipmap1, mipmap2]);
+                    asset.mipmaps = wdCb.Collection.create([mipmap1, mipmap2]);
                 });
             });
         });

@@ -103,7 +103,7 @@ module dy{
         }
 
         @virtual
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:dyCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
             return this.createCommonGeometryData(vertices, faces, texCoords, colors);
         }
 
@@ -124,7 +124,7 @@ module dy{
         faces?:Array<Face3>;
         texCoords?:Array<number>;
         colors?:Array<number>;
-        morphTargets?:dyCb.Hash<DYFileParseMorphTargetsData>;
+        morphTargets?:wdCb.Hash<DYFileParseMorphTargetsData>;
     };
 }
 

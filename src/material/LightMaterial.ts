@@ -64,8 +64,8 @@ module dy{
             this._opacity = opacity;
         }
 
-        public twoDShadowMapDatas:dyCb.Collection<TwoDShadowMapData> = dyCb.Collection.create<TwoDShadowMapData>();
-        public cubemapShadowMapDatas:dyCb.Collection<CubemapShadowMapData> = dyCb.Collection.create<CubemapShadowMapData>();
+        public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
+        public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
 
         public buildTwoDShadowMapData:BuildTwoDShadowMapData = null;
         public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;

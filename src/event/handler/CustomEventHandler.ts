@@ -102,7 +102,7 @@ module dy {
         }
 
         private _triggerEventHandler(event, userData){
-            var listenerDataList:dyCb.Collection<EventRegisterData> = null,
+            var listenerDataList:wdCb.Collection<EventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 
@@ -132,7 +132,7 @@ module dy {
         }
 
         private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){
-            var listenerDataList:dyCb.Collection<EventRegisterData> = null,
+            var listenerDataList:wdCb.Collection<EventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 

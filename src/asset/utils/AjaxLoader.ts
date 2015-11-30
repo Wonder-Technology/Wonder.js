@@ -2,8 +2,8 @@
 module dy{
     export class AjaxLoader{
         public static load(url:string, dataType:string) {
-            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
-                dyCb.AjaxUtils.ajax({
+            return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
+                wdCb.AjaxUtils.ajax({
                     type: "get",
                     //async: true,
                     url: url,

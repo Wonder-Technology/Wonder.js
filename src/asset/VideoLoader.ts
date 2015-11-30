@@ -10,10 +10,10 @@ module dy{
             return this._instance;
         }
 
-        protected loadAsset(url:string):dyRt.Stream;
-        protected loadAsset(url:Array<string>):dyRt.Stream;
+        protected loadAsset(url:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>):wdFrp.Stream;
 
-        protected loadAsset(arg):dyRt.Stream {
+        protected loadAsset(arg):wdFrp.Stream {
             var urlArr = null;
 
             if(JudgeUtils.isString(arguments[0])){
@@ -23,7 +23,7 @@ module dy{
                 urlArr = arguments[0];
             }
 
-            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
+            return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 Video.create({
                     urlArr:urlArr,
                     onLoad: (video:Video) => {

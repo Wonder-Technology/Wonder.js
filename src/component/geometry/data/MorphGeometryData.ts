@@ -34,11 +34,11 @@ module dy {
             return geometry.morphFaceNormals;
         }
 
-        private _morphTargets:dyCb.Hash<DYFileParseMorphTargetsData> = null;
+        private _morphTargets:wdCb.Hash<DYFileParseMorphTargetsData> = null;
         get morphTargets(){
             return this._morphTargets;
         }
-        set morphTargets(morphTargets:dyCb.Hash<DYFileParseMorphTargetsData>){
+        set morphTargets(morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>){
             this._morphTargets = morphTargets;
             this._morphNormalDirty = true;
         }
@@ -53,8 +53,8 @@ module dy {
                 self = this;
 
             this._morphTargets.forEach((frames:DYFileParseMorphTargetsData, animName) => {
-                var faceNormalList = dyCb.Collection.create<Array<number>>(),
-                    vertexNormalList = dyCb.Collection.create<Array<number>>();
+                var faceNormalList = wdCb.Collection.create<Array<number>>(),
+                    vertexNormalList = wdCb.Collection.create<Array<number>>();
 
                 frames.forEach((vertices:Array<number>) => {
                     let tempGeometryData = MorphGeometryData.create(geometry),

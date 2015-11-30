@@ -42,7 +42,7 @@ module dy{
         public magFilter:TextureFilterMode = TextureFilterMode.LINEAR;
         public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
         public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
-        public mipmaps:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        public mipmaps:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public anisotropy:number = 0;
         public needUpdate:boolean = true;
 

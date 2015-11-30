@@ -9,7 +9,7 @@ module dy{
             return obj;
         }
 
-        public mipmaps:dyCb.Collection<CompressedTextureMipmap> = null;
+        public mipmaps:wdCb.Collection<CompressedTextureMipmap> = null;
         public minFilter:TextureFilterMode = null;
 
         public initWhenCreate(asset:CompressedTextureAsset){

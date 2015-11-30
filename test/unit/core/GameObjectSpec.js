@@ -107,7 +107,7 @@ describe("GameObject", function() {
             dy.Script.addScript("aaa", UserScript);
 
             var script = dy.Script.create();
-            var stream = new dyRt.Stream();
+            var stream = new wdFrp.Stream();
             sandbox.stub(script, "createLoadJsStream").returns({
                 do:sandbox.stub().returns(stream)
             });

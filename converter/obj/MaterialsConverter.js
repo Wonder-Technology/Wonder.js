@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-var dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+var wdCb = require("wdcb");
 var MaterialModel = (function () {
     function MaterialModel() {
         this.name = null;
@@ -21,7 +21,7 @@ var MaterialModel = (function () {
 })();
 module.exports = (function () {
     function MaterialsConverter() {
-        this.materials = dyCb.Collection.create();
+        this.materials = wdCb.Collection.create();
     }
     MaterialsConverter.create = function () {
         var obj = new this();
@@ -82,7 +82,7 @@ module.exports = (function () {
             else if (key === "illum") {
             }
             else {
-                dyCb.Log.log("Unhandled expression at line : " + i + "\nvalue:" + line);
+                wdCb.Log.log("Unhandled expression at line : " + i + "\nvalue:" + line);
             }
         });
         this.materials.forEach(function (material) {

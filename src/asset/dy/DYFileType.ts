@@ -98,8 +98,8 @@ module dy {
         normals?:Array<number>
     }
     //export type DYFileData = {
-    //    scene: dyCb.Hash<DYFileSceneData>,
-    //    models: dyCb.Collection<GameObject>
+    //    scene: wdCb.Hash<DYFileSceneData>,
+    //    models: wdCb.Collection<GameObject>
     //}
     //
     //export type DYFileSceneData = {
@@ -111,8 +111,8 @@ module dy {
         scene:{
             ambientColor?: Color
         },
-        materials:dyCb.Hash<DYFileParseMaterialData>,
-        objects: dyCb.Collection<DYFileParseObjectData>
+        materials:wdCb.Hash<DYFileParseMaterialData>,
+        objects: wdCb.Collection<DYFileParseObjectData>
     }
 
     export type DYFileParseMaterialData = {
@@ -153,8 +153,8 @@ module dy {
         //    name:string,
         //    vertices:Array<number>
         //}>,
-        morphTargets: dyCb.Hash<dyCb.Collection<Array<number>>>,
-        morphNormals:dyCb.Hash<dyCb.Collection<Array<number>>>,
+        morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>,
+        morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>,
         //"morphColors": [],
         colors?: Array<number>,
         uvs?: Array<number>,
@@ -164,21 +164,21 @@ module dy {
         //[otherParam:string]:any
 
         parent:DYFileParseObjectData,
-        children: dyCb.Collection<DYFileParseObjectData>
+        children: wdCb.Collection<DYFileParseObjectData>
     }
 
-    //export type DYFileParseMorphTargetsData = dyCb.Collection<{
+    //export type DYFileParseMorphTargetsData = wdCb.Collection<{
     //    vertices: Array<number>,
     //    normals?: Array<number>
     //}>
-    export type DYFileParseMorphTargetsData = dyCb.Collection<Array<number>>
+    export type DYFileParseMorphTargetsData = wdCb.Collection<Array<number>>
 
     export type DYFileResult = {
-        metadata:dyCb.Hash<DYFileMetadata>,
-        scene:dyCb.Hash<{
+        metadata:wdCb.Hash<DYFileMetadata>,
+        scene:wdCb.Hash<{
             ambientColor:Color
         }>,
-        models:dyCb.Collection<GameObject>
+        models:wdCb.Collection<GameObject>
     }
 
     export type DYFileMetadata = {

@@ -41,7 +41,7 @@ describe("CallFunc", function () {
         });
         it("deep copy the dataArr", function () {
             var data = {a: 1};
-            action._dataArr = dyCb.Collection.create([data]);
+            action._dataArr = wdCb.Collection.create([data]);
 
             var a = action.copy();
             a._dataArr.getChildren().a = 100;

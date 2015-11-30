@@ -13,8 +13,8 @@ module dy {
         private _rotateX:number = 0;
         private _rotateY:number = 0;
         private _isRotate:boolean = false;
-        private _mouseDragSubscription:dyRt.IDisposable = null;
-        private _keydownSubscription:dyRt.IDisposable = null;
+        private _mouseDragSubscription:wdFrp.IDisposable = null;
+        private _keydownSubscription:wdFrp.IDisposable = null;
         private _gameObject:GameObject = null;
 
         public init(gameObject:GameObject) {

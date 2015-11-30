@@ -14,7 +14,7 @@ module dy{
             else{
                 let mapArr:Array<any> = (arguments[0]);
 
-                dyCb.Log.error(mapArr.length > 2, dyCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
 
                 for(let m of mapArr){
                     this.addMap(m);

@@ -11,11 +11,11 @@ module dy {
             return this._lightManager.ambientLight;
         }
 
-        get directionLights(): dyCb.Collection<GameObject>{
+        get directionLights(): wdCb.Collection<GameObject>{
             return this._lightManager.directionLights;
         }
 
-        get pointLights(): dyCb.Collection<GameObject>{
+        get pointLights(): wdCb.Collection<GameObject>{
             return this._lightManager.pointLights;
         }
 
@@ -29,7 +29,7 @@ module dy {
         public isUseProgram:Boolean = false;
 
         private _lightManager:LightManager = LightManager.create();
-        private _renderTargetRenderers:dyCb.Collection<RenderTargetRenderer> = dyCb.Collection.create<RenderTargetRenderer>();
+        private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
 
         public init(){
             this.addComponent(TopCollider.create());

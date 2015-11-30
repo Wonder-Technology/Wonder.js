@@ -37,7 +37,7 @@ module dy {
         }
 
         private _parseMaterial(json:DYFileJsonData) {
-            this._data.materials = dyCb.Hash.create<any>(json.materials);
+            this._data.materials = wdCb.Hash.create<any>(json.materials);
 
             this._data.materials.forEach((material:any) => {
                 if (material.diffuseColor) {

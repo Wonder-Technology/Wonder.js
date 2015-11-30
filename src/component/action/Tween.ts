@@ -383,9 +383,9 @@ module dy {
             return obj;
         }
 
-        private _object:dyCb.Hash<any> = null;
-        private _valuesStart:dyCb.Hash<any> = dyCb.Hash.create<any>();
-        private _valuesEnd:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        private _object:wdCb.Hash<any> = null;
+        private _valuesStart:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _valuesEnd:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _easingFunction = Tween.Easing.Linear.None;
         private _interpolationFunction = Tween.Interpolation.Linear;
         private _onStartCallback = null;
@@ -443,7 +443,7 @@ module dy {
         public from(object:any) {
             var self = this;
 
-            this._object = dyCb.Hash.create<any>(object);
+            this._object = wdCb.Hash.create<any>(object);
 
             // Set all starting values present on the target object
             this._object.forEach((value:any, key:string) => {
@@ -455,7 +455,7 @@ module dy {
 
         public to(properties:any, duration:number = 1000) {
             this.duration = duration;
-            this._valuesEnd = dyCb.Hash.create<any>(properties);
+            this._valuesEnd = wdCb.Hash.create<any>(properties);
 
             return this;
         }

@@ -1,11 +1,11 @@
 /// <reference path="../lib/inner/bowser/bowser.d.ts"/>
 /// <reference path="../lib/inner/rsvp/rsvp.d.ts"/>
-/// <reference path="../lib/inner/DYCommonLib/dist/dyCb.d.ts"/>
-/// <reference path="../lib/inner/DYReactive/dist/dyRt.core.d.ts"/>
+/// <reference path="../lib/inner/Wonder-CommonLib/dist/wdCb.d.ts"/>
+/// <reference path="../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts"/>
 
 /// <reference path="Config"/>
 
-/// <reference path="extend/dyRt"/>
+/// <reference path="extend/wdFrp"/>
 
 
 /// <reference path="definition/typescript/decorator/contract"/>

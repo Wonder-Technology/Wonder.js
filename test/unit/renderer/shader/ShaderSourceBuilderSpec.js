@@ -64,8 +64,8 @@ describe("ShaderSourceBuilder", function () {
                 ].join("\n"),
 
 
-                vsSourceDefineList: dyCb.Collection.create(),
-                fsSourceDefineList: dyCb.Collection.create()
+                vsSourceDefineList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create()
             };
             lib2 = {
                 attributes: {
@@ -132,11 +132,11 @@ describe("ShaderSourceBuilder", function () {
 
 
 
-                vsSourceDefineList: dyCb.Collection.create(),
-                fsSourceDefineList: dyCb.Collection.create()
+                vsSourceDefineList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create()
             };
 
-            libs = dyCb.Collection.create([
+            libs = wdCb.Collection.create([
                 lib1, lib2
             ]);
 
@@ -234,11 +234,11 @@ describe("ShaderSourceBuilder", function () {
                 ].join("\n"),
 
 
-                vsSourceDefineList: dyCb.Collection.create(),
-                fsSourceDefineList: dyCb.Collection.create()
+                vsSourceDefineList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create()
             };
 
-            libs = dyCb.Collection.create([
+            libs = wdCb.Collection.create([
                 lib1
             ]);
 
@@ -288,11 +288,11 @@ describe("ShaderSourceBuilder", function () {
                     "gl_FragColor = vec4(1.0);"
                 ].join("\n"),
 
-                vsSourceDefineList: dyCb.Collection.create(),
-                fsSourceDefineList: dyCb.Collection.create()
+                vsSourceDefineList: wdCb.Collection.create(),
+                fsSourceDefineList: wdCb.Collection.create()
             };
 
-            libs = dyCb.Collection.create([
+            libs = wdCb.Collection.create([
                 lib1
             ]);
 

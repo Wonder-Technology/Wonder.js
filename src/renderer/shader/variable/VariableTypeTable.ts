@@ -1,6 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module dy{
-    const _table = dyCb.Hash.create<string>();
+    const _table = wdCb.Hash.create<string>();
 
     //todo remove <any>
     _table.addChild(<any>VariableType.FLOAT_1, "float");

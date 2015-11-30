@@ -42,7 +42,7 @@ module dy{
         //}
 
         //private static _createAllEventHandlers(){
-        //     return dyCb.Collection.create([MouseEventHandler.getInstance()]);
+        //     return wdCb.Collection.create([MouseEventHandler.getInstance()]);
         //}
     }
 }

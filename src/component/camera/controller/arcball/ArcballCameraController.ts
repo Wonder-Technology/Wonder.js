@@ -18,9 +18,9 @@ module dy {
         public minDistance:number = 0.05;
 
         private _isChange:boolean = true;
-        private _mouseDragSubscription:dyRt.IDisposable = null;
-        private _mouseWheelSubscription:dyRt.IDisposable = null;
-        private _keydownSubscription:dyRt.IDisposable = null;
+        private _mouseDragSubscription:wdFrp.IDisposable = null;
+        private _mouseWheelSubscription:wdFrp.IDisposable = null;
+        private _keydownSubscription:wdFrp.IDisposable = null;
 
         public init() {
             super.init();

@@ -1,6 +1,6 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
 import Log = require("../common/Log");
-import dyCb = require("dycb");
+import wdCb = require("wdcb");
 
 export = class MaterialsConverter {
     public static create() {
@@ -9,7 +9,7 @@ export = class MaterialsConverter {
         return obj;
     }
 
-    public materials:dyCb.Collection<MaterialModel> = dyCb.Collection.create<MaterialModel>();
+    public materials:wdCb.Collection<MaterialModel> = wdCb.Collection.create<MaterialModel>();
 
     private _currentMaterial:MaterialModel;
 

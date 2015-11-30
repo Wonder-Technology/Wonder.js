@@ -1,15 +1,15 @@
 /// <reference path="../filePath.d.ts"/>
 module dy{
     export abstract class Loader{
-        private _container:dyCb.Hash<string> = dyCb.Hash.create<string>();
+        private _container:wdCb.Hash<string> = wdCb.Hash.create<string>();
 
-        public load(url:string):dyRt.Stream;
-        public load(url:Array<string>):dyRt.Stream;
-        public load(url:string, id:string):dyRt.Stream;
-        public load(url:Array<string>, id:string):dyRt.Stream;
+        public load(url:string):wdFrp.Stream;
+        public load(url:Array<string>):wdFrp.Stream;
+        public load(url:string, id:string):wdFrp.Stream;
+        public load(url:Array<string>, id:string):wdFrp.Stream;
 
 
-        public load(...args):dyRt.Stream{
+        public load(...args):wdFrp.Stream{
             var url = args[0],
                 id = null,
                 self = this,
@@ -31,7 +31,7 @@ module dy{
             data = this._container.getChild(id);
 
             if(data){
-                stream = dyRt.just(data);
+                stream = wdFrp.just(data);
             }
             else{
                 stream = this.loadAsset(url)
@@ -57,8 +57,8 @@ module dy{
             this._container.removeAllChildren();
         }
 
-        protected abstract loadAsset(url:string):dyRt.Stream;
-        protected abstract loadAsset(url:Array<string>):dyRt.Stream;
+        protected abstract loadAsset(url:string):wdFrp.Stream;
+        protected abstract loadAsset(url:Array<string>):wdFrp.Stream;
 
         private _errorHandle(path:string, err:string);
         private _errorHandle(path:Array<string>, err:string);

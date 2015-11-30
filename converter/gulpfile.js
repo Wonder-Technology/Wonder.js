@@ -7,7 +7,7 @@ var merge = require("merge2");
 //var gulpConcat = require("gulp-concat");
 var del = require("del");
 var gulpSync = require("gulp-sync")(gulp);
-var dyRt = require("dyrt");
+var wdFrp = require("wdfrp");
 var path = require("path");
 //var plumber = require("gulp-plumber");
 
@@ -22,11 +22,11 @@ gulp.task("convert", function (done) {
         converter = Converter.create();
 
 
-    dyRt.fromNodeCallback(fs.remove)(destDir)
+    wdFrp.fromNodeCallback(fs.remove)(destDir)
         .concat(
-            dyRt.fromStream(gs.create([path.join(sourceDir, "*"), path.join(sourceDir, "**")], {nodir: true}))
+            wdFrp.fromStream(gs.create([path.join(sourceDir, "*"), path.join(sourceDir, "**")], {nodir: true}))
                 .flatMap(function (data) {
-                    return dyRt.fromNodeCallback(fs.readFile)(data.path)
+                    return wdFrp.fromNodeCallback(fs.readFile)(data.path)
                         .flatMap(function (fileBuffer) {
                             var filePath = data.path;
 

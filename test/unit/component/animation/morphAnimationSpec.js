@@ -40,8 +40,8 @@ describe("morph animation", function () {
             geo.material = material;
 
             geo.vertices = vertice;
-            geo.morphTargets = dyCb.Hash.create({
-                "play": dyCb.Collection.create(
+            geo.morphTargets = wdCb.Hash.create({
+                "play": wdCb.Collection.create(
                     [
                         frameVertice1,
                         frameVertice2,

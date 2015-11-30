@@ -292,7 +292,7 @@ describe("Scene", function() {
                 expect(scene.getChild(3)).toEqual(gameObject2);
             });
             it("can add Collection", function(){
-                var children = dyCb.Collection.create([gameObject1, gameObject2]);
+                var children = wdCb.Collection.create([gameObject1, gameObject2]);
                 scene.addChildren(children);
 
                 expect(scene.getChild(2)).toEqual(gameObject1);
@@ -360,7 +360,7 @@ describe("Scene", function() {
 
         describe("if component is Script", function(){
             it("add load stream to Director->scriptStreams", function(){
-                var stream = new dyRt.Stream();
+                var stream = new wdFrp.Stream();
                 var component = dy.Script.create("aaa.js");
                 sandbox.stub(component, "createLoadJsStream").returns({
                     do:sandbox.stub().returns(stream)
@@ -404,7 +404,7 @@ describe("Scene", function() {
 
         describe("if component is Script", function(){
             it("remove load stream to Director->scriptStreams", function(){
-                var stream = new dyRt.Stream();
+                var stream = new wdFrp.Stream();
                 var component = dy.Script.create("aaa.js");
                 sandbox.stub(component, "createLoadJsStream").returns({
                     do:sandbox.stub().returns(stream)

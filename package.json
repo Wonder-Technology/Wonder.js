@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "devDependencies": {
     "del": "^1.2.0",
-    "dycb": "^0.1.1",
-    "dyrt": "^0.1.3",
+    "wdcb": "^0.1.1",
+    "wdfrp": "^0.1.2",
     "fs-extra": "^0.22.1",
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",

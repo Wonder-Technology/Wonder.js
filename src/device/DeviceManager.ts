@@ -419,10 +419,10 @@ module dy {
             var canvas = null;
 
             if(canvasId){
-                canvas = dyCb.DomQuery.create(canvasId).get(0);
+                canvas = wdCb.DomQuery.create(canvasId).get(0);
             }
             else{
-                canvas = dyCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+                canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
             }
 
             this.view = ViewWebGL.create(canvas);
@@ -445,7 +445,7 @@ module dy {
                 width = root.innerWidth;
                 height = root.innerHeight;
 
-                dyCb.DomQuery.create("body").css("margin", "0");
+                wdCb.DomQuery.create("body").css("margin", "0");
             }
             else{
                 x = screenSize.x || 0;

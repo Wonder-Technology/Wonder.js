@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module dy{
     export class Script extends Component{
-        public static script:dyCb.Stack<ScriptFileData> = dyCb.Stack.create<ScriptFileData>();
+        public static script:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();
 
         public static create():Script;
         public static create(url:string):Script;

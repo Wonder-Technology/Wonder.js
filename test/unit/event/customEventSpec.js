@@ -122,7 +122,7 @@ describe("custom event", function () {
                     b:sandbox.stub(),
                     c:sandbox.stub()
                 };
-                var subject = dyRt.Subject.create();
+                var subject = wdFrp.Subject.create();
 
                 var subscription1 = manager.fromEvent(eventName, 1)
                     .subscribe(function (e) {
@@ -168,7 +168,7 @@ describe("custom event", function () {
                         b: sandbox.stub(),
                         c: sandbox.stub()
                     };
-                    subject = dyRt.Subject.create();
+                    subject = wdFrp.Subject.create();
 
                     subscription1 = manager.fromEvent(eventName, 1)
                         .subscribe(function (e) {

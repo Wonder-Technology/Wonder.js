@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        private _children:dyCb.Collection<Action> = dyCb.Collection.create<Action>();
+        private _children:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
 
         public addChild(action:Action){
             if(this.hasChild(action)){

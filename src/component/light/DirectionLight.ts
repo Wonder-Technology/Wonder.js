@@ -12,19 +12,19 @@ module dy{
             return obj;
         }
 
-        private _shadowRenderList:dyCb.Collection<GameObject> = null;
+        private _shadowRenderList:wdCb.Collection<GameObject> = null;
         get shadowRenderList(){
             return this._shadowRenderList;
         }
         set shadowRenderList(shadowRenderList:any) {
             if (JudgeUtils.isArray(shadowRenderList)) {
-                this._shadowRenderList = dyCb.Collection.create<GameObject>(shadowRenderList);
+                this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);
             }
-            else if (shadowRenderList instanceof dyCb.Collection) {
+            else if (shadowRenderList instanceof wdCb.Collection) {
                 this._shadowRenderList = shadowRenderList;
             }
             else {
-                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "array or dyCb.Collection"));
+                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "array or wdCb.Collection"));
             }
         }
 
@@ -41,7 +41,7 @@ module dy{
         private _beforeInitHandler:() => void = null;
 
         public initWhenCreate(){
-            this._beforeInitHandler = dyCb.FunctionUtils.bind(this, () => {
+            this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
                 if(this.castShadow){
                     this.shadowMap = TwoDShadowMapTexture.create();
 

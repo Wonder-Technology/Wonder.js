@@ -18,7 +18,7 @@ module dy{
         magFilter:TextureFilterMode;
         minFilter:TextureFilterMode;
         type:TextureType;
-        mipmaps:dyCb.Collection<any>;
+        mipmaps:wdCb.Collection<any>;
         anisotropy:number;
         needUpdate:boolean;
     }
@@ -43,7 +43,7 @@ module dy{
         format:TextureFormat;
         width:number;
         height:number;
-        mipmaps:dyCb.Collection<CompressedTextureMipmap>;
+        mipmaps:wdCb.Collection<CompressedTextureMipmap>;
         minFilter:TextureFilterMode;
     }
 

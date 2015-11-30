@@ -11,15 +11,15 @@ module dy {
             return this._lights.getChild(AmbientLight.type);
         }
 
-        get directionLights(): dyCb.Collection<GameObject>{
+        get directionLights(): wdCb.Collection<GameObject>{
             return this._lights.getChild(DirectionLight.type);
         }
 
-        get pointLights(): dyCb.Collection<GameObject>{
+        get pointLights(): wdCb.Collection<GameObject>{
             return this._lights.getChild(PointLight.type);
         }
 
-        private _lights:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        private _lights:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public addChild(light:GameObject){
             if(light.hasComponent(AmbientLight)){

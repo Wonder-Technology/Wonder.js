@@ -12,7 +12,7 @@ module dy {
             var parse = null,
                 self = this;
 
-            data.objects = dyCb.Collection.create<any>(json.objects);
+            data.objects = wdCb.Collection.create<any>(json.objects);
 
             parse = (object:any) => {
                 if (self._isObjectContainer(object)) {
@@ -25,7 +25,7 @@ module dy {
                 }
 
                 if (object.children) {
-                    object.children = dyCb.Collection.create<any>(object.children);
+                    object.children = wdCb.Collection.create<any>(object.children);
                     object.children.forEach((child:any) => {
                         child.parent = object;
 
@@ -58,7 +58,7 @@ module dy {
         //todo handle "same vertex different normals" situation?
         private _duplicateVertexWithDifferentUvs(object:any) {
             var arr = [],
-                container = dyCb.Hash.create<dyCb.Collection<Array<number>>>(),
+                container = wdCb.Hash.create<wdCb.Collection<Array<number>>>(),
                 verticeIndices = object.verticeIndices,
                 uvIndices = object.uvIndices;
 
@@ -328,7 +328,7 @@ module dy {
             );
         }
 
-        private _setNormal(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
+        private _setNormal(targetNormals:wdCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndices:Array<number>, indexArr:Array<number>, verticeIndiceArr:Array<number>) {
             var [index1, index2, index3] = indexArr;
 
             if (!GeometryUtils.hasData(normalIndices)) {
@@ -341,10 +341,10 @@ module dy {
         }
 
 
-        private _addNormalData(targetNormals:dyCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndiceArr:Array<number>) {
+        private _addNormalData(targetNormals:wdCb.Collection<Vector3>|Array<number>, sourceNormals:Array<number>, normalIndiceArr:Array<number>) {
             let [aIndex, bIndex, cIndex] = normalIndiceArr;
 
-            if (targetNormals instanceof dyCb.Collection) {
+            if (targetNormals instanceof wdCb.Collection) {
                 targetNormals.addChildren(
                     [
                         this._getThreeComponentData(sourceNormals, aIndex),
@@ -369,8 +369,8 @@ module dy {
 
 
             if (GeometryUtils.hasData(objectMorphTargets)) {
-                morphTargets = dyCb.Hash.create<dyCb.Hash<DYFileParseMorphTargetsData>>();
-                morphNormals = dyCb.Hash.create<dyCb.Collection<Array<number>>>();
+                morphTargets = wdCb.Hash.create<wdCb.Hash<DYFileParseMorphTargetsData>>();
+                morphNormals = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
                 for (let frameData of objectMorphTargets) {
                     let animName = this._getAnimName(frameData.name);

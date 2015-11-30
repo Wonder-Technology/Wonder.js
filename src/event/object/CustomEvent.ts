@@ -15,7 +15,7 @@ module dy {
             var property = null;
                 //destination = {};
 
-            dyCb.ExtendUtils.extend(destination, function(item, property){
+            wdCb.ExtendUtils.extend(destination, function(item, property){
                 return property.slice(0, 1) !== "_"
                     && !JudgeUtils.isFunction(item);
             });

@@ -17,7 +17,7 @@ module dy {
         protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
         }
 
-        protected getRenderList():dyCb.Collection<GameObject>{
+        protected getRenderList():wdCb.Collection<GameObject>{
             return this.texture.renderList;
         }
         protected renderRenderer(renderer){

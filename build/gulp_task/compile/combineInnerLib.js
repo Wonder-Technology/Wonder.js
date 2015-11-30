@@ -5,12 +5,12 @@ var fs = require("fs-extra");
 
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
-    "DYCommonLib",
-    "DYReactive"
+    "Wonder-CommonLib",
+    "Wonder-FRP"
     ],
     combineContentList = [
-        "DYCommonLib",
-        "DYReactive",
+        "Wonder-CommonLib",
+        "Wonder-FRP",
         "bowser",
         "rsvp"
     ];

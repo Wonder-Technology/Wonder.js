@@ -55,9 +55,9 @@ module dy{
             return DeviceManager.getInstance().view;
         }
 
-        public scriptStreams:dyCb.Hash<dyRt.Stream> = dyCb.Hash.create<dyRt.Stream>();
+        public scriptStreams:wdCb.Hash<wdFrp.Stream> = wdCb.Hash.create<wdFrp.Stream>();
 
-        private _gameLoop:dyRt.IDisposable = null;
+        private _gameLoop:wdFrp.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _isFirstStart:boolean = true;
@@ -112,13 +112,13 @@ module dy{
         private startLoop() {
             var self = this;
 
-            this._gameLoop = dyRt.judge(
+            this._gameLoop = wdFrp.judge(
                 () => { return self._isFirstStart; },
                 () => {
                     return self._buildLoadScriptStream();
                 },
                 () => {
-                    return dyRt.empty();
+                    return wdFrp.empty();
                 }
             )
             .concat(this._buildInitStream())
@@ -135,12 +135,12 @@ module dy{
         }
 
         private _buildLoadScriptStream(){
-            return dyRt.fromCollection(this.scriptStreams.getValues())
+            return wdFrp.fromCollection(this.scriptStreams.getValues())
                 .mergeAll();
         }
 
         private _buildInitStream(){
-            return dyRt.callFunc(() => {
+            return wdFrp.callFunc(() => {
                 this._init();
             }, this);
         }
@@ -163,7 +163,7 @@ module dy{
         }
 
         private _buildLoopStream(){
-            return dyRt.intervalRequest();
+            return wdFrp.intervalRequest();
         }
 
         private _loopBody(time) {

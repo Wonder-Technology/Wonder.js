@@ -8,7 +8,7 @@ module dy {
         	return obj;
         }
 
-        private _script:dyCb.Hash<IScriptBehavior> = dyCb.Hash.create<IScriptBehavior>();
+        private _script:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get script(){
             return this._script;
         }
@@ -19,18 +19,18 @@ module dy {
         public name:string = "gameObject" + String(this.uid);
         public actionManager:ActionManager = ActionManager.create();
 
-        private _children:dyCb.Collection<GameObject> = dyCb.Collection.create<GameObject>();
-        private _components:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _startLoopHandler:() => void = null;
         private _endLoopHandler:() => void = null;
 
         public init() {
             var self = this;
 
-            this._startLoopHandler = dyCb.FunctionUtils.bind(this, () => {
+            this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                this.onStartLoop();
             });
-            this._endLoopHandler = dyCb.FunctionUtils.bind(this, () => {
+            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.onEndLoop();
             });
 
@@ -150,7 +150,7 @@ module dy {
         }
 
         public addChildren(children:Array<GameObject>);
-        public addChildren(children:dyCb.Collection<GameObject>);
+        public addChildren(children:wdCb.Collection<GameObject>);
 
         public addChildren(...args) {
             this._children.addChildren(args[0]);
@@ -190,7 +190,7 @@ module dy {
             });
         }
 
-        public findChildrenByName(name:string):dyCb.Collection<GameObject>{
+        public findChildrenByName(name:string):wdCb.Collection<GameObject>{
             return this._children.filter((child:GameObject) => {
                 return child.name.search(name) > -1;
             });
@@ -294,7 +294,7 @@ module dy {
                 result = child.getTopUnderPoint(point);
 
                 if (result) {
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 

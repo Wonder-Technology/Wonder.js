@@ -14,12 +14,12 @@ module dy {
 
             this._context = context || root;
             this._callFunc = func;
-            this._dataArr = dyCb.Collection.create<any>(dataArr);
+            this._dataArr = wdCb.Collection.create<any>(dataArr);
         }
 
         private _context:any = null;
         private _callFunc:Function = null;
-        private _dataArr:dyCb.Collection<any> = null;
+        private _dataArr:wdCb.Collection<any> = null;
 
         public reverse() {
             return this;

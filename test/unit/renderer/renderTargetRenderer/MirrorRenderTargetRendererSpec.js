@@ -39,7 +39,7 @@ describe("MirrorRenderTargetRenderer", function () {
                 };
                 renderTargetTexture.getPlane = self.sandbox.stub().returns(plane);
 
-                renderTargetTexture.renderList = dyCb.Collection.create([renderObj1, renderObj2])
+                renderTargetTexture.renderList = wdCb.Collection.create([renderObj1, renderObj2])
             },
             before_render: null,
             invoke_renderer_render: [

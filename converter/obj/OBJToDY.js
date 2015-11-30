@@ -1,8 +1,8 @@
-/// <reference path="../../node_modules/dyrt/dist/dyRt.node.d.ts"/>
+/// <reference path="../../node_modules/wdfrp/dist/wdFrp.node.d.ts"/>
 var fs = require("fs");
 var through = require("through2");
 var gutil = require("gulp-util");
-var dyRt = require("dyrt");
+var wdFrp = require("wdfrp");
 var MaterialsConverter = require("./MaterialsConverter");
 var ObjectsConverter = require("./ObjectsConverter");
 var ModelLoaderUtils = require("../common/ModelLoaderUtils");
@@ -34,7 +34,7 @@ module.exports = (function () {
                 resultJson.metadata = self._convertMetadata(filePath);
                 resultJson.scene = self._convertScene(fileContent, filePath);
                 resultJson.objects = self._convertObjects(fileContent, filePath);
-                dyRt.fromNodeCallback(fs.readFile, self)(ModelLoaderUtils.getPath(self._objectsConverter.mtlFilePath, filePath)).subscribe(function (data) {
+                wdFrp.fromNodeCallback(fs.readFile, self)(ModelLoaderUtils.getPath(self._objectsConverter.mtlFilePath, filePath)).subscribe(function (data) {
                     resultJson.materials = self._convertMaterials(data);
                 }, function (err) {
                     console.log(err);

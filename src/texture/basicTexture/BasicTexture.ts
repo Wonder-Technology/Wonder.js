@@ -19,7 +19,7 @@ module dy{
         public premultiplyAlpha:boolean = null;
         public unpackAlignment:number = null;
         public type:TextureType = null;
-        public mipmaps:dyCb.Collection<any> = null;
+        public mipmaps:wdCb.Collection<any> = null;
         public anisotropy:number = null;
         public needUpdate:boolean = null;
 

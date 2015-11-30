@@ -194,8 +194,8 @@ describe("script", function () {
     });
 
     it("only load script once at first time of Director->start", function(){
-        sandbox.stub(dyRt, "intervalRequest").returns(
-            dyRt.empty()
+        sandbox.stub(wdFrp, "intervalRequest").returns(
+            wdFrp.empty()
         );
         sandbox.spy(director, "_buildLoadScriptStream");
         var script = dy.Script.create();

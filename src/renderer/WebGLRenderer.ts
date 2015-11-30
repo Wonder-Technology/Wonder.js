@@ -7,7 +7,7 @@ module dy{
             return obj;
         }
 
-        private _commandQueue:dyCb.Collection<QuadCommand> = dyCb.Collection.create<QuadCommand>();
+        private _commandQueue:wdCb.Collection<QuadCommand> = wdCb.Collection.create<QuadCommand>();
         private _clearOptions:any = {
             color:Color.create("#000000")
         };
@@ -94,7 +94,7 @@ module dy{
         }
 
         private _setClearOptions(clearOptions:any){
-            dyCb.ExtendUtils.extend(this._clearOptions, clearOptions);
+            wdCb.ExtendUtils.extend(this._clearOptions, clearOptions);
         }
     }
 }

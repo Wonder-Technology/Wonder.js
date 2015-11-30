@@ -11,7 +11,7 @@ module dy {
 
         protected texture:DynamicCubemapTexture;
 
-        protected  getRenderList():dyCb.Hash<GameObject>{
+        protected  getRenderList():wdCb.Hash<GameObject>{
          return this.texture.renderList;
         }
 

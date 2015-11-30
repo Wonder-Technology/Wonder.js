@@ -114,10 +114,10 @@ module dy {
             this._eventDispatcher.emit.apply(this._eventDispatcher, Array.prototype.slice.call(arguments, 0));
         }
 
-        public static fromEvent(eventName:EventName):dyRt.FromEventPatternStream;
-        public static fromEvent(eventName:EventName, priority:number):dyRt.FromEventPatternStream;
-        public static fromEvent(target:GameObject, eventName:EventName):dyRt.FromEventPatternStream;
-        public static fromEvent(target:GameObject, eventName:EventName, priority:number):dyRt.FromEventPatternStream;
+        public static fromEvent(eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:GameObject, eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:GameObject, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
 
         public static fromEvent(args):any {
             var addHandler = null,
@@ -168,7 +168,7 @@ module dy {
                 };
             }
 
-            return dyRt.fromEventPattern(addHandler, removeHandler);
+            return wdFrp.fromEventPattern(addHandler, removeHandler);
         }
 
         public static setBubbleParent(target:GameObject, parent:any) {

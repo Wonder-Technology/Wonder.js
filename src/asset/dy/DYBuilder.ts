@@ -7,9 +7,9 @@ module dy {
             return obj;
         }
 
-        private _result:dyCb.Hash<DYFileResult> = dyCb.Hash.create<DYFileResult>();
+        private _result:wdCb.Hash<DYFileResult> = wdCb.Hash.create<DYFileResult>();
 
-        public build(parseData:DYFileParseData):dyCb.Hash<DYFileResult>{
+        public build(parseData:DYFileParseData):wdCb.Hash<DYFileResult>{
             this._buildMetadata(parseData);
             this._buildScene(parseData);
             this._buildModels(parseData);
@@ -19,7 +19,7 @@ module dy {
 
 
         private _buildMetadata(parseData:DYFileParseData){
-            var metadata = dyCb.Hash.create<any>();
+            var metadata = wdCb.Hash.create<any>();
 
             for(let i in parseData.metadata){
                 if(parseData.metadata.hasOwnProperty(i)){
@@ -31,7 +31,7 @@ module dy {
         }
 
         private _buildScene(parseData:DYFileParseData){
-            var scene = dyCb.Hash.create<any>();
+            var scene = wdCb.Hash.create<any>();
 
             if(parseData.scene.ambientColor){
                 scene.addChild("ambientColor", parseData.scene.ambientColor);
@@ -41,11 +41,11 @@ module dy {
         }
 
         private _buildModels(parseData:DYFileParseData){
-            var models = dyCb.Collection.create<GameObject>(),
+            var models = wdCb.Collection.create<GameObject>(),
                 self = this,
                 build = null;
 
-            build = (objects:dyCb.Collection<DYFileParseObjectData>, models:{addChild:Function}) => {
+            build = (objects:wdCb.Collection<DYFileParseObjectData>, models:{addChild:Function}) => {
                 objects.forEach((object:DYFileParseObjectData) => {
                     var geometry = null,
                         model = null;
@@ -96,7 +96,7 @@ module dy {
             return object.isContainer;
         }
 
-        private _buildMaterial(materialName:string, materials: dyCb.Hash<DYFileParseMaterialData>){
+        private _buildMaterial(materialName:string, materials: wdCb.Hash<DYFileParseMaterialData>){
             const DEFAULTYPE = "LightMaterial";
             var materialData = null,
                 type = null,
@@ -108,7 +108,7 @@ module dy {
 
             type = materialData.type || DEFAULTYPE;
 
-            dyCb.Log.error(!dy[type], dyCb.Log.info.FUNC_NOT_EXIST(`materialClass:${type}`));
+            wdCb.Log.error(!dy[type], wdCb.Log.info.FUNC_NOT_EXIST(`materialClass:${type}`));
 
             material = dy[type].create();
 

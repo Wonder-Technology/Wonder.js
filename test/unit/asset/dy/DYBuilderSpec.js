@@ -14,8 +14,8 @@ describe("DYBuilder", function () {
         sandbox = sinon.sandbox.create();
         builder = new dy.DYBuilder();
         Color = dy.Color;
-        Collection = dyCb.Collection;
-        Hash = dyCb.Hash;
+        Collection = wdCb.Collection;
+        Hash = wdCb.Hash;
 
         json = {
             scene: {},

@@ -13,7 +13,7 @@ module dy{
             this.source = source;
         }
 
-        public mipmaps:dyCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
+        public mipmaps:wdCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
 
         public toTexture():Texture{
             return ImageTexture.create(this);

@@ -31,7 +31,7 @@ module dy {
             var self = this;
 
             this._shadowMapRendererUtils.bindEndLoop(() => {
-                self._light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
+                self._light.shadowRenderList.forEach((childList:Array<GameObject>|wdCb.Collection<GameObject>) => {
                     childList.forEach((child:GameObject) => {
                         self._shadowMapRendererUtils.clearCubemapShadowMapData(child);
                     });
@@ -51,7 +51,7 @@ module dy {
             this._shadowMapRendererUtils.unBindEndLoop();
         }
 
-        protected  getRenderList():dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>{
+        protected  getRenderList():wdCb.Hash<Array<GameObject>|wdCb.Collection<GameObject>>{
             return this._light.shadowRenderList;
         }
 
@@ -82,11 +82,11 @@ module dy {
             return this._light.position;
         }
 
-        private _convertRenderListToCollection(renderList:dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>>):dyCb.Collection<GameObject>{
-            var resultList = dyCb.Collection.create<GameObject>();
+        private _convertRenderListToCollection(renderList:wdCb.Hash<Array<GameObject>|wdCb.Collection<GameObject>>):wdCb.Collection<GameObject>{
+            var resultList = wdCb.Collection.create<GameObject>();
 
             renderList.forEach((list) => {
-                if(list instanceof dyCb.Collection || JudgeUtils.isArray(list)){
+                if(list instanceof wdCb.Collection || JudgeUtils.isArray(list)){
                     resultList.addChildren(list);
                 }
                 else{

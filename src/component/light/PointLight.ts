@@ -36,19 +36,19 @@ module dy{
             return this._attenuation.quadratic;
         }
 
-        private _shadowRenderList:dyCb.Hash<Array<GameObject>|dyCb.Collection<GameObject>> = null;
+        private _shadowRenderList:wdCb.Hash<Array<GameObject>|wdCb.Collection<GameObject>> = null;
         get shadowRenderList(){
             return this._shadowRenderList;
         }
         set shadowRenderList(shadowRenderList:any) {
             if (JudgeUtils.isDirectObject(shadowRenderList)) {
-                this._shadowRenderList = dyCb.Hash.create<Array<GameObject>|dyCb.Collection<GameObject>>(shadowRenderList);
+                this._shadowRenderList = wdCb.Hash.create<Array<GameObject>|wdCb.Collection<GameObject>>(shadowRenderList);
             }
-            else if (shadowRenderList instanceof dyCb.Hash) {
+            else if (shadowRenderList instanceof wdCb.Hash) {
                 this._shadowRenderList = shadowRenderList;
             }
             else {
-                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object or dyCb.Hash"));
+                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object or wdCb.Hash"));
             }
         }
 
@@ -61,7 +61,7 @@ module dy{
         private _beforeInitHandler:() => void = null;
 
         public initWhenCreate(){
-            this._beforeInitHandler = dyCb.FunctionUtils.bind(this, () => {
+            this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
                 if(this.castShadow){
                     this.shadowMap = CubemapShadowMapTexture.create();
 

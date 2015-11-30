@@ -7,20 +7,20 @@ module dy {
             return obj;
         }
 
-        private _renderList:dyCb.Hash<[string, Array<GameObject>]> = null;
+        private _renderList:wdCb.Hash<[string, Array<GameObject>]> = null;
         get renderList() {
             return this._renderList;
         }
 
         set renderList(renderList:any) {
             if (JudgeUtils.isDirectObject(renderList)) {
-                this._renderList = dyCb.Hash.create<[string, Array<GameObject>]>(renderList);
+                this._renderList = wdCb.Hash.create<[string, Array<GameObject>]>(renderList);
             }
-            else if (renderList instanceof dyCb.Hash) {
+            else if (renderList instanceof wdCb.Hash) {
                 this._renderList = renderList;
             }
             else {
-                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or dyCb.Collection"));
+                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
             }
         }
 

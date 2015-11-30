@@ -23,7 +23,7 @@ module dy{
 
             super.init();
 
-            this._startLoopHandler = dyCb.FunctionUtils.bind(this, () => {
+            this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 if(self._video.isStop){
                     self.needUpdate = false;
                 }

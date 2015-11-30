@@ -22,7 +22,7 @@ module dy{
             onLoad= (video:Video) => {},
             onError= (err:any) => {}
             }){
-            this._urlArr = dyCb.Collection.create<string>(urlArr);
+            this._urlArr = wdCb.Collection.create<string>(urlArr);
             this._onLoad = onLoad;
             this._onError = onError;
         }
@@ -31,7 +31,7 @@ module dy{
         public source:HTMLVideoElement = null;
         public isStop:boolean = false;
 
-        private _urlArr:dyCb.Collection<string> = null;
+        private _urlArr:wdCb.Collection<string> = null;
         private _onLoad:Function = null;
         private _onError:Function = null;
 
@@ -56,13 +56,13 @@ module dy{
                 extnameArr = [];
 
             this._urlArr.forEach((url) => {
-                var extname =  dyCb.PathUtils.extname(url);
+                var extname =  wdCb.PathUtils.extname(url);
 
                 extnameArr.push(extname);
 
                 if (self._canplay(extname)) {
                     canPlayUrl = url;
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 

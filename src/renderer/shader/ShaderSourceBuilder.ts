@@ -8,8 +8,8 @@ module dy{
         	return obj;
         }
 
-        public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
-        public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        public attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
+        public uniforms:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         public vsSource:string = "";
         public vsSourceTop:string = "";
         public vsSourceDefine:string = "";
@@ -24,11 +24,11 @@ module dy{
         public fsSourceFuncDeclare:string = "";
         public fsSourceFuncDefine:string = "";
         public fsSourceBody:string = "";
-        public vsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
-        public fsSourceDefineList:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
+        public vsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
+        public fsSourceDefineList:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
 
-        public attributesFromShaderLib:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
-        public uniformsFromShaderLib:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        public attributesFromShaderLib:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
+        public uniformsFromShaderLib:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         public vsSourceFromShaderLib:string = "";
         public vsSourceTopFromShaderLib:string = "";
         public vsSourceDefineFromShaderLib:string = "";
@@ -43,17 +43,17 @@ module dy{
         public fsSourceFuncDeclareFromShaderLib:string = "";
         public fsSourceFuncDefineFromShaderLib:string = "";
         public fsSourceBodyFromShaderLib:string = "";
-        public vsSourceDefineListFromShaderLib:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
-        public fsSourceDefineListFromShaderLib:dyCb.Collection<SourceDefine> = dyCb.Collection.create<SourceDefine>();
+        public vsSourceDefineListFromShaderLib:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
+        public fsSourceDefineListFromShaderLib:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
 
 
         public read(definitionData:ShaderDefinitionData){
             if(definitionData.attributes){
-                this.attributesFromShaderLib = <dyCb.Hash<ShaderData>>(definitionData.attributes instanceof dyCb.Hash ? definitionData.attributes : dyCb.Hash.create(definitionData.attributes));
+                this.attributesFromShaderLib = <wdCb.Hash<ShaderData>>(definitionData.attributes instanceof wdCb.Hash ? definitionData.attributes : wdCb.Hash.create(definitionData.attributes));
             }
 
             if(definitionData.uniforms){
-                this.uniformsFromShaderLib = <dyCb.Hash<ShaderData>>(definitionData.uniforms instanceof dyCb.Hash ? definitionData.uniforms : dyCb.Hash.create(definitionData.uniforms));
+                this.uniformsFromShaderLib = <wdCb.Hash<ShaderData>>(definitionData.uniforms instanceof wdCb.Hash ? definitionData.uniforms : wdCb.Hash.create(definitionData.uniforms));
             }
 
             this.vsSourceTopFromShaderLib = definitionData.vsSourceTop || "";
@@ -71,7 +71,7 @@ module dy{
             this.fsSourceBodyFromShaderLib = definitionData.fsSourceBody || "";
         }
 
-        public build(libs:dyCb.Collection<ShaderLib>){
+        public build(libs:wdCb.Collection<ShaderLib>){
             var self = this;
 
             this._readLibSource(libs);
@@ -108,7 +108,7 @@ module dy{
             this.fsSourceBody = "";
         }
 
-        private _readLibSource(libs:dyCb.Collection<ShaderLib>){
+        private _readLibSource(libs:wdCb.Collection<ShaderLib>){
             var self = this,
                 vsSourceTop = "",
                 vsSourceDefine = "",
@@ -219,7 +219,7 @@ module dy{
             return ShaderSnippet.main_begin + this.fsSourceBody + ShaderSnippet.main_end;
         }
 
-        private _buildSourceDefine(defineList:dyCb.Collection<SourceDefine>){
+        private _buildSourceDefine(defineList:wdCb.Collection<SourceDefine>){
             var result = "";
 
             defineList.forEach((define:SourceDefine) => {

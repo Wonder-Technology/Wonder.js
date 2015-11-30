@@ -6,7 +6,7 @@ module dy {
         }
 
         public static drawPartOfTextureByCanvas(source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, dy:number, dWidth:number, dHeight:number){
-            var canvas = dyCb.DomQuery.create("<canvas></canvas>").get(0),
+            var canvas = wdCb.DomQuery.create("<canvas></canvas>").get(0),
                 ctx = null;
 
             canvas.width = canvasWidth;

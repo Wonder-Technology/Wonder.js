@@ -22,7 +22,7 @@ module dy {
             this._actions.addChildren(actionArr);
         }
 
-        private _actions:dyCb.Collection<Action> = dyCb.Collection.create<Action>();
+        private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
         private _currentAction:Action = null;
         private _actionIndex:number = 0;
 

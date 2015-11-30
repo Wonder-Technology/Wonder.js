@@ -82,7 +82,7 @@ module dy {
         }
 
         public getInnerActions() {
-            return dyCb.Collection.create<Action>([this._innerAction]);
+            return wdCb.Collection.create<Action>([this._innerAction]);
         }
     }
 }

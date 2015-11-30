@@ -205,7 +205,7 @@ module dy{
     }
 
     export class DDSData{
-        public mipmaps:dyCb.Collection<CompressedTextureMipmap> = dyCb.Collection.create<CompressedTextureMipmap>();
+        public mipmaps:wdCb.Collection<CompressedTextureMipmap> = wdCb.Collection.create<CompressedTextureMipmap>();
         public width:number = 0;
         public height:number = 0;
         public format:TextureFormat = null;

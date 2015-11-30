@@ -30,9 +30,9 @@ module dy{
 
         private _sendLightVariables(program:Program){
             var scene:Scene = dy.Director.getInstance().scene,
-                directionLights:dyCb.Collection<GameObject> = scene.directionLights,
+                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 ambientLight:GameObject =scene.ambientLight,
-                pointLights:dyCb.Collection<GameObject> = scene.pointLights;
+                pointLights:wdCb.Collection<GameObject> = scene.pointLights;
 
             if(ambientLight){
                 this.sendUniformData(program, "u_ambient", ambientLight.getComponent<AmbientLight>(AmbientLight).color.toVector3());
@@ -47,7 +47,7 @@ module dy{
             }
         }
 
-        private _sendPointLightVariables(program: Program, pointLights:dyCb.Collection<GameObject> ){
+        private _sendPointLightVariables(program: Program, pointLights:wdCb.Collection<GameObject> ){
             pointLights.forEach((pointLight:GameObject, index:number) => {
                 var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
 
@@ -62,7 +62,7 @@ module dy{
             });
         }
 
-        private _sendDirectionLightVariables(program: Program, directionLights:dyCb.Collection<GameObject> ){
+        private _sendDirectionLightVariables(program: Program, directionLights:wdCb.Collection<GameObject> ){
             var self = this;
 
             directionLights.forEach((directionLight:GameObject, index:number) => {
@@ -89,8 +89,8 @@ module dy{
 
         private _setLightDefinition(material:Material){
             var scene:Scene = dy.Director.getInstance().scene,
-                directionLights:dyCb.Collection<GameObject> = scene.directionLights,
-                pointLights:dyCb.Collection<GameObject> = scene.pointLights,
+                directionLights:wdCb.Collection<GameObject> = scene.directionLights,
+                pointLights:wdCb.Collection<GameObject> = scene.pointLights,
                 direction_lights_count = 0,
                 point_lights_count = 0;
 

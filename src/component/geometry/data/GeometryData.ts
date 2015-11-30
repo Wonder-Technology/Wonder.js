@@ -210,7 +210,7 @@ module dy {
             normals = this.computeVertexNormalsHelper(this._vertices);
 
             for (let face of this._faces) {
-                face.vertexNormals = dyCb.Collection.create<Vector3>([
+                face.vertexNormals = wdCb.Collection.create<Vector3>([
                     normals[face.aIndex],
                     normals[face.bIndex],
                     normals[face.cIndex]
@@ -328,7 +328,7 @@ module dy {
                 color = material.color,
                 len = null;
 
-            dyCb.Log.error(!vertices || vertices.length === 0, dyCb.Log.info.FUNC_MUST("has vertice data"));
+            wdCb.Log.error(!vertices || vertices.length === 0, wdCb.Log.info.FUNC_MUST("has vertice data"));
 
             len = vertices.length;
 

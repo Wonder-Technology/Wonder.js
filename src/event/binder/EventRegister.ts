@@ -131,7 +131,7 @@ module dy {
         public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
 
         public getEventRegisterDataList(args){
-            var result:dyCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
+            var result:wdCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0)),
                 self = this;
 
             if(!result){
@@ -175,14 +175,14 @@ module dy {
         }
 
         public getDomHandler(target:GameObject, eventName:EventName){
-            var list:dyCb.Collection<EventOffData> = this.getChild(target, eventName);
+            var list:wdCb.Collection<EventOffData> = this.getChild(target, eventName);
 
             if(list && list.getCount() > 0){
                 return list.getChild(0).domHandler;
             }
         }
 
-        public isTarget(key:string, target:GameObject, list:dyCb.Collection<EventRegisterData>){
+        public isTarget(key:string, target:GameObject, list:wdCb.Collection<EventRegisterData>){
             return this._listenerMap.isTarget(key, target, list);
         }
 
@@ -211,7 +211,7 @@ module dy {
         //}
 
         private _isAllEventHandlerRemoved(target:GameObject){
-            return !this._listenerMap.hasChild((list:dyCb.Collection<EventRegisterData>, key:string) => {
+            return !this._listenerMap.hasChild((list:wdCb.Collection<EventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
             });
         }

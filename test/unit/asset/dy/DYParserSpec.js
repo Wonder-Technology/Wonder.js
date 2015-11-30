@@ -82,7 +82,7 @@ describe("DYParser", function () {
 
     describe("parseObject", function () {
         function getObject(result, index) {
-            if (result.objects instanceof dyCb.Collection) {
+            if (result.objects instanceof wdCb.Collection) {
                 return result.objects.getChild(index);
             }
 

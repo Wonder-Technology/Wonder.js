@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 //todo complete it(add more event type)
 module dy {
-     const _table = dyCb.Hash.create<EventType>();
+     const _table = wdCb.Hash.create<EventType>();
 
     //todo not declare "<any>"!
     _table.addChild(<any>EventName.CLICK, EventType.MOUSE);

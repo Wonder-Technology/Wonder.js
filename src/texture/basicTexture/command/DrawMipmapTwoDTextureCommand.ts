@@ -7,7 +7,7 @@ module dy{
         	return obj;
         }
 
-        public mipmaps:dyCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement> = null;
+        public mipmaps:wdCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement> = null;
 
         public execute(){
             var self = this;

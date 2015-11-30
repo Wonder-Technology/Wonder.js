@@ -3,8 +3,8 @@ module dy{
     export abstract class ShaderLib{
         public type:string = ABSTRACT_ATTRIBUTE;
 
-        public attributes:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
-        public uniforms:dyCb.Hash<ShaderVariable> = dyCb.Hash.create<ShaderVariable>();
+        public attributes:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
+        public uniforms:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
         public vsSourceTop:string = "";
         public vsSourceDefine:string = "";
         public vsSourceVarDeclare:string = "";
@@ -17,8 +17,8 @@ module dy{
         public fsSourceFuncDeclare:string = "";
         public fsSourceFuncDefine:string = "";
         public fsSourceBody:string = "";
-        public vsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
-        public fsSourceDefineList:dyCb.Collection<any> = dyCb.Collection.create<any>();
+        public vsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
+        public fsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
         public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
 
@@ -105,7 +105,7 @@ module dy{
             var key = null;
 
             if(type.indexOf(".glsl") > -1){
-                key =  `${dyCb.PathUtils.basename(type, ".glsl")}`;
+                key =  `${wdCb.PathUtils.basename(type, ".glsl")}`;
             }
             else{
                 if(sourceType === ShaderLibType.vs){
@@ -147,7 +147,7 @@ module dy{
             }
         }
 
-        private _addVariable(target:dyCb.Hash<ShaderVariable>, variableArr:Array<string>){
+        private _addVariable(target:wdCb.Hash<ShaderVariable>, variableArr:Array<string>){
             variableArr.forEach((variable:string) => {
                 Log.assert(VariableLib[variable], Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
 

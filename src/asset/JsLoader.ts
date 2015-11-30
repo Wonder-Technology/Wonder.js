@@ -10,17 +10,17 @@ module dy{
             return this._instance;
         }
 
-        protected loadAsset(url:string):dyRt.Stream;
-        protected loadAsset(url:Array<string>):dyRt.Stream;
+        protected loadAsset(url:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
-        protected loadAsset(arg):dyRt.Stream {
+        protected loadAsset(arg):wdFrp.Stream {
             var self = this,
                 url = arguments[0];
 
-            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
+            return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();
 
                 script.addEventListener("error", function (e) {

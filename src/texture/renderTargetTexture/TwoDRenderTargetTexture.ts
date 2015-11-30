@@ -1,19 +1,19 @@
 /// <reference path="../../filePath.d.ts"/>
 module dy {
     export abstract class TwoDRenderTargetTexture extends RenderTargetTexture {
-        private _renderList:dyCb.Collection<GameObject> = null;
+        private _renderList:wdCb.Collection<GameObject> = null;
         get renderList(){
             return this._renderList;
         }
         set renderList(renderList:any) {
             if (JudgeUtils.isArray(renderList)) {
-                this._renderList = dyCb.Collection.create<GameObject>(renderList);
+                this._renderList = wdCb.Collection.create<GameObject>(renderList);
             }
-            else if (renderList instanceof dyCb.Collection) {
+            else if (renderList instanceof wdCb.Collection) {
                 this._renderList = renderList;
             }
             else {
-                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or dyCb.Collection"));
+                Log.error(true, Log.info.FUNC_MUST_BE("renderList", "array or wdCb.Collection"));
             }
         }
 

@@ -16,7 +16,7 @@ module dy{
         }
 
         public assets:Array<CubemapData> = null;
-        public textures:dyCb.Collection<CubemapFaceTexture> = dyCb.Collection.create<CubemapFaceTexture>();
+        public textures:wdCb.Collection<CubemapFaceTexture> = wdCb.Collection.create<CubemapFaceTexture>();
         public mode:EnvMapMode = null;
 
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
@@ -90,7 +90,7 @@ module dy{
             this.textures.forEach((texture:CubemapFaceTexture) => {
                 if(texture.needClampMaxSize()){
                     needAllClampMaxSize = true;
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 
@@ -103,7 +103,7 @@ module dy{
             this.textures.forEach((texture:CubemapFaceTexture) => {
                 if(!texture.isSourcePowerOfTwo()){
                     areAllSourcePowerOfTwo = false;
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 

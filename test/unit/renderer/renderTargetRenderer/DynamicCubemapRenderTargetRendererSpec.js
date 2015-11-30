@@ -32,7 +32,7 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
     tool.render = (function(){
         return {
             beforeEach:function(self, list1, list2, list3, list4, list5, list6, texture){
-                texture.renderList = dyCb.Hash.create({
+                texture.renderList = wdCb.Hash.create({
                     px:list1,
                     nx:list2,
                     py:list3,
@@ -45,7 +45,7 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
                 {
                     explain: "if face's renderList is empty, not render the face",
                     body:function(list6, renderObj1, renderObj2, renderObj6, renderer, camera, texture){
-                        texture.renderList = dyCb.Hash.create({
+                        texture.renderList = wdCb.Hash.create({
                             nx:[],
                             nz:list6
                         });

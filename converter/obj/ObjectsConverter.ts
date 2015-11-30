@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-import dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+import wdCb = require("wdcb");
 import Log = require("../common/Log");
 import Vector2 = require("../common/Vector2");
 import Vector3 = require("../common/Vector3");
@@ -35,7 +35,7 @@ export = class ObjectsConverter {
         return obj;
     }
 
-    public objects:dyCb.Collection<ObjectModel> = dyCb.Collection.create<ObjectModel>();
+    public objects:wdCb.Collection<ObjectModel> = wdCb.Collection.create<ObjectModel>();
     public mtlFilePath:string = null;
     public materialName:string = null;
     public name:string = null;

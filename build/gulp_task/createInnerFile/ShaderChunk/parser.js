@@ -1,5 +1,3 @@
-//todo use yoop
-
 function GLSLParser(){
     this.fieldTable = {
         top: "@top",

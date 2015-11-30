@@ -10,27 +10,27 @@ module dy{
         }
 
         public program:Program = Program.create();
-        //public attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
-        //public uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        //public attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
+        //public uniforms:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         //public vsSource:string = "";
         //public fsSource:string = "";
 
-        private _attributes:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        private _attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get attributes(){
             return this._attributes;
         }
-        set attributes(attributes:dyCb.Hash<ShaderData>){
+        set attributes(attributes:wdCb.Hash<ShaderData>){
             if(this._isNotEqual(attributes, this._attributes)){
                 this._definitionDataDirty = true;
             }
             this._attributes = attributes;
         }
 
-        private _uniforms:dyCb.Hash<ShaderData> = dyCb.Hash.create<ShaderData>();
+        private _uniforms:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get uniforms(){
             return this._uniforms;
         }
-        set uniforms(uniforms:dyCb.Hash<ShaderData>){
+        set uniforms(uniforms:wdCb.Hash<ShaderData>){
             if(this._isNotEqual(uniforms, this._uniforms)){
                 this._definitionDataDirty = true;
             }
@@ -60,7 +60,7 @@ module dy{
         }
 
         private _definitionDataDirty:boolean = true;
-        private _libs: dyCb.Collection<ShaderLib> = dyCb.Collection.create<ShaderLib>();
+        private _libs: wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
 
@@ -199,7 +199,7 @@ module dy{
             }
         }
 
-        private _isNotEqual(list1:dyCb.Hash<ShaderData>, list2:dyCb.Hash<ShaderData>){
+        private _isNotEqual(list1:wdCb.Hash<ShaderData>, list2:wdCb.Hash<ShaderData>){
             var result = false;
 
             list1.forEach((data:ShaderData, key:string) => {
@@ -207,7 +207,7 @@ module dy{
 
                 if(!list2Data || data.type !== list2Data.type || data.value !== list2Data.value){
                     result = true;
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 
@@ -233,7 +233,7 @@ module dy{
         fsSourceFuncDeclare:string;
         fsSourceFuncDefine:string;
         fsSourceBody:string;
-        attributes:ShaderData|dyCb.Hash<ShaderData>;
-        uniforms:ShaderData|dyCb.Hash<ShaderData>;
+        attributes:ShaderData|wdCb.Hash<ShaderData>;
+        uniforms:ShaderData|wdCb.Hash<ShaderData>;
     }
 }

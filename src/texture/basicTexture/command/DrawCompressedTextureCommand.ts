@@ -8,7 +8,7 @@ module dy{
             return obj;
         }
 
-        public mipmaps:dyCb.Collection<CompressedTextureMipmap> = null;
+        public mipmaps:wdCb.Collection<CompressedTextureMipmap> = null;
         //public texture:Texture = null;
 
         public execute(){

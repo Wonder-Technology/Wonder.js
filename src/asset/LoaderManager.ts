@@ -13,11 +13,11 @@ module dy{
         public assetCount:number = 0;
         public currentLoadedCount:number = 0;
 
-        private _assetTable:dyCb.Hash<any> = dyCb.Hash.create();
+        private _assetTable:wdCb.Hash<any> = wdCb.Hash.create();
 
-        public load(url:string):dyRt.Stream;
-        public load(assetArr:Array<{url:string; id:string}>) :dyRt.Stream;
-        public load(assetArr:Array<{url:Array<string>; id:string}>) :dyRt.Stream;
+        public load(url:string):wdFrp.Stream;
+        public load(assetArr:Array<{url:string; id:string}>) :wdFrp.Stream;
+        public load(assetArr:Array<{url:Array<string>; id:string}>) :wdFrp.Stream;
 
         public load() {
             var self = this;
@@ -31,7 +31,7 @@ module dy{
             else{
                 let assetArr = arguments[0];
 
-                return dyRt.fromArray(assetArr).flatMap((asset) => {
+                return wdFrp.fromArray(assetArr).flatMap((asset) => {
                     return self._createLoadMultiAssetStream(asset.url, asset.id);
                 });
             }
@@ -92,16 +92,16 @@ module dy{
             var extname:string = null;
 
             if(JudgeUtils.isArray(arguments[0])){
-                extname = dyCb.PathUtils.extname(arguments[0][0]);
+                extname = wdCb.PathUtils.extname(arguments[0][0]);
             }
             else{
-                extname = dyCb.PathUtils.extname(arguments[0]);
+                extname = wdCb.PathUtils.extname(arguments[0]);
             }
 
             return LoaderFactory.create(extname.toLowerCase());
         }
 
-        private _addToAssetTable(loadStream:dyRt.Stream, id:string, loader:Loader):dyRt.Stream{
+        private _addToAssetTable(loadStream:wdFrp.Stream, id:string, loader:Loader):wdFrp.Stream{
             var self = this;
 
             return loadStream.do(null, null, () => {

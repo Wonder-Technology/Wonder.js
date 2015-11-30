@@ -17,7 +17,7 @@ module dy {
             this._actions.addChildren(actionArr);
         }
 
-        private _actions:dyCb.Collection<Action> = dyCb.Collection.create<Action>();
+        private _actions:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
 
         public update(time) {
             if (this._isFinish()) {
@@ -105,7 +105,7 @@ module dy {
             this._actions.forEach((action:Action) => {
                 if (!action.isFinish) {
                     isFinish = false;
-                    return dyCb.$BREAK;
+                    return wdCb.$BREAK;
                 }
             });
 

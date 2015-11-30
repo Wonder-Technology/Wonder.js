@@ -8,7 +8,7 @@ module dy{
         }
 
         private _scheduleCount = 0;
-        private _schedules:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        private _schedules:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public update(time:number) {
             this._schedules.forEach((scheduleItem:any, scheduleId:string) => {

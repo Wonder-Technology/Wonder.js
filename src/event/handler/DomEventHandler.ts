@@ -11,12 +11,12 @@ module dy {
             var self = this,
                 dom = this.getDom(),
                 eventRegister = EventRegister.getInstance(),
-                eventOffDataList:dyCb.Collection<EventOffData> = null;
+                eventOffDataList:wdCb.Collection<EventOffData> = null;
 
             eventOffDataList = eventRegister.remove.apply(eventRegister, args);
 
             if(eventOffDataList){
-                eventOffDataList.forEach((list:dyCb.Collection<EventOffData>) => {
+                eventOffDataList.forEach((list:wdCb.Collection<EventOffData>) => {
                     list.forEach((eventOffData:EventOffData) => {
                         self._unBind(dom, eventOffData.eventName, eventOffData.domHandler);
                     });
@@ -47,7 +47,7 @@ module dy {
             var self = this,
                 context = root;
 
-            return dyCb.EventUtils.bindEvent(context, function (event) {
+            return wdCb.EventUtils.bindEvent(context, function (event) {
                 self.triggerDomEvent(event, eventName, target);
             });
         }
@@ -80,7 +80,7 @@ module dy {
 
             domHandler = this.buildDomHandler(target, eventName);
 
-            dyCb.EventUtils.addEvent(
+            wdCb.EventUtils.addEvent(
                 dom,
                 eventName,
                 domHandler
@@ -90,7 +90,7 @@ module dy {
         }
 
         private _unBind(dom, eventName, handler){
-            dyCb.EventUtils.removeEvent(dom, eventName, handler);
+            wdCb.EventUtils.removeEvent(dom, eventName, handler);
         }
     }
 }

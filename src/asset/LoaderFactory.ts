@@ -35,8 +35,8 @@ module dy{
             return loader;
         }
 
-        public static createAllLoader():dyCb.Collection<Loader>{
-            return dyCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance()]);
+        public static createAllLoader():wdCb.Collection<Loader>{
+            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance()]);
         }
     }
 }

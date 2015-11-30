@@ -28,7 +28,7 @@ tool.init_beforeEach = function(self){
             var list6 = [renderObj6];
 
             self.renderTargetRenderer._light = {
-                shadowRenderList: dyCb.Hash.create({
+                shadowRenderList: wdCb.Hash.create({
                     px: list1,
                     nx: list2,
                     py: list3,
@@ -50,7 +50,7 @@ tool.init_beforeEach = function(self){
             self.sandbox.stub(self.renderTargetRenderer._shadowMapRendererUtils, "createShaderWithShaderLib");
 
             self.renderTargetRenderer._light = {
-                shadowRenderList: dyCb.Collection.create()
+                shadowRenderList: wdCb.Collection.create()
 
             };
 
@@ -113,7 +113,7 @@ tool.init_beforeEach = function(self){
         return {
             beforeEach:function(self, list1, list2, list3, list4, list5, list6){
                 light = {
-                    shadowRenderList: dyCb.Hash.create({
+                    shadowRenderList: wdCb.Hash.create({
                         px:list1,
                         nx:list2,
                         py:list3,
@@ -161,7 +161,7 @@ tool.init_beforeEach = function(self){
                     {
                         explain: "if face's renderList is empty, not render the face",
                         body:function(list6, renderObj1, renderObj2, renderObj6, renderer, camera){
-                            light.shadowRenderList = dyCb.Hash.create({
+                            light.shadowRenderList = wdCb.Hash.create({
                                 nx:[],
                                 nz:list6
                             });

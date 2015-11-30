@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-var dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+var wdCb = require("wdcb");
 var Vector2 = require("../common/Vector2");
 var Vector3 = require("../common/Vector3");
 //todo handle x,y,z,w case?
@@ -40,13 +40,13 @@ var _getThreeComponentData = function (sourceData, index) {
 var ObjectModel = (function () {
     function ObjectModel() {
         //todo add colors data?
-        this.vertices = dyCb.Collection.create();
-        this.normals = dyCb.Collection.create();
-        this.texCoords = dyCb.Collection.create();
-        this.indices = dyCb.Collection.create();
+        this.vertices = wdCb.Collection.create();
+        this.normals = wdCb.Collection.create();
+        this.texCoords = wdCb.Collection.create();
+        this.indices = wdCb.Collection.create();
         this.materialName = null;
         this.name = null;
-        this.faces = dyCb.Collection.create();
+        this.faces = wdCb.Collection.create();
         this.indicesCount = 0;
     }
     ObjectModel.create = function () {
@@ -62,10 +62,10 @@ var ObjectModel = (function () {
 //todo use Array instead of Collection, to reduce memory size
 var FaceModel = (function () {
     function FaceModel() {
-        this.verticeIndices = dyCb.Collection.create();
-        this.normalIndices = dyCb.Collection.create();
-        this.texCoordIndices = dyCb.Collection.create();
-        this.normals = dyCb.Collection.create();
+        this.verticeIndices = wdCb.Collection.create();
+        this.normalIndices = wdCb.Collection.create();
+        this.texCoordIndices = wdCb.Collection.create();
+        this.normals = wdCb.Collection.create();
     }
     FaceModel.create = function () {
         var obj = new this();
@@ -102,20 +102,20 @@ var FaceModel = (function () {
 })();
 module.exports = (function () {
     function ObjectsConverter() {
-        this.objects = dyCb.Collection.create();
+        this.objects = wdCb.Collection.create();
         this.mtlFilePath = null;
-        this._vertices = dyCb.Collection.create();
-        this._normals = dyCb.Collection.create();
-        this._texCoords = dyCb.Collection.create();
+        this._vertices = wdCb.Collection.create();
+        this._normals = wdCb.Collection.create();
+        this._texCoords = wdCb.Collection.create();
         this._currentObject = null;
         this._currentObjectName = null;
-        this.vertices = dyCb.Collection.create();
-        this.normals = dyCb.Collection.create();
-        this.texCoords = dyCb.Collection.create();
-        this.indices = dyCb.Collection.create();
+        this.vertices = wdCb.Collection.create();
+        this.normals = wdCb.Collection.create();
+        this.texCoords = wdCb.Collection.create();
+        this.indices = wdCb.Collection.create();
         this.materialName = null;
         this.name = null;
-        this.faces = dyCb.Collection.create();
+        this.faces = wdCb.Collection.create();
         this.indicesCount = 0;
     }
     ObjectsConverter.create = function () {
@@ -138,7 +138,7 @@ module.exports = (function () {
             object.morphTargets = [];
             topObject.children[objectModel.name] = object;
         });
-        result[dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath))] = topObject;
+        result[wdCb.PathUtils.basename(filePath, wdCb.PathUtils.extname(filePath))] = topObject;
         return result;
     };
     ObjectsConverter.prototype._convertFromObj = function (lines) {
@@ -207,7 +207,7 @@ module.exports = (function () {
             else if (SMOOTH_PATTERN.test(line)) {
             }
             else {
-                dyCb.Log.log("Unhandled expression at line : " + i + "\nvalue:" + line);
+                wdCb.Log.log("Unhandled expression at line : " + i + "\nvalue:" + line);
             }
         });
     };
@@ -264,7 +264,7 @@ module.exports = (function () {
             }
         }
         else {
-            dyCb.Log.error(true, dyCb.Log.info.FUNC_UNKNOW(lineResult));
+            wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(lineResult));
         }
         this._currentObject.addFace(faceModel);
     };

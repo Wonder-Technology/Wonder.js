@@ -69,7 +69,7 @@ module dy {
                 deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
             }
             else{
-                dyCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, dyCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
+                wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
 
                 deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
                 deviceManager.setBlendEquation(material.blendEquation);

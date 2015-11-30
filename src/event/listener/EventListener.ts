@@ -11,7 +11,7 @@ module dy {
 
         public eventType:EventType = null;
         public priority:number = null;
-        public handlerDataList:dyCb.Collection<EventHandlerData> = dyCb.Collection.create<EventHandlerData>();
+        public handlerDataList:wdCb.Collection<EventHandlerData> = wdCb.Collection.create<EventHandlerData>();
 
         constructor(option:any){
             this.eventType = option.eventType;

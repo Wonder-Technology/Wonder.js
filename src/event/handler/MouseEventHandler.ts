@@ -27,7 +27,7 @@ module dy {
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean{
             var eventName = event.name,
                 eventType = event.type,
-                registerDataList:dyCb.Collection<EventRegisterData> = null,
+                registerDataList:wdCb.Collection<EventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 

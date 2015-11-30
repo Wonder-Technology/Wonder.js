@@ -398,7 +398,7 @@ describe("loader", function () {
 
 
     //it("if already load the same id, not load it again", function(done){
-    //    sandbox.spy(dyCb.AjaxUtils, "ajax");
+    //    sandbox.spy(wdCb.AjaxUtils, "ajax");
     //    var current = [],
     //        total = [];
     //
@@ -416,7 +416,7 @@ describe("loader", function () {
     //            expect(manager.currentLoadedCount).toEqual(1);
     //            expect(manager.resCount).toEqual(1);
     //
-    //            expect(dyCb.AjaxUtils.ajax).toCalledOnce();
+    //            expect(wdCb.AjaxUtils.ajax).toCalledOnce();
     //
     //            expect(dy.LoaderManager.getInstance().get("a1")).toEqual("test");
     //

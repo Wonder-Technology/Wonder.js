@@ -1,6 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module dy{
-    const _table = dyCb.Hash.create<string>();
+    const _table = wdCb.Hash.create<string>();
 
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
     _table.addChild("specularMap", "u_specularMapSampler");

@@ -1,6 +1,6 @@
 /// <reference path="../filePath.d.ts"/>
 module dy {
-    export class JudgeUtils extends dyCb.JudgeUtils{
+    export class JudgeUtils extends wdCb.JudgeUtils{
         public static isView(obj) {
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
         }

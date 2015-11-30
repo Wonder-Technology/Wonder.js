@@ -3,10 +3,10 @@ module dy {
     export abstract class CubemapRenderTargetRenderer extends RenderTargetRenderer{
         protected texture:CubemapRenderTargetTexture;
 
-        private _frameBuffers:dyCb.Collection<WebGLFramebuffer> = dyCb.Collection.create<WebGLFramebuffer>();
-        private _renderBuffers:dyCb.Collection<WebGLRenderbuffer> = dyCb.Collection.create<WebGLRenderbuffer>();
+        private _frameBuffers:wdCb.Collection<WebGLFramebuffer> = wdCb.Collection.create<WebGLFramebuffer>();
+        private _renderBuffers:wdCb.Collection<WebGLRenderbuffer> = wdCb.Collection.create<WebGLRenderbuffer>();
 
-        protected abstract getRenderList():dyCb.Hash<any>;
+        protected abstract getRenderList():wdCb.Hash<any>;
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
         protected abstract getPosition():Vector3;
 

@@ -2,7 +2,7 @@
 module dy{
     export class ImageLoader{
         public static load(url:string) {
-            return dyRt.fromPromise(new RSVP.Promise((resolve, reject) => {
+            return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var img = null;
 
                 img = new Image();

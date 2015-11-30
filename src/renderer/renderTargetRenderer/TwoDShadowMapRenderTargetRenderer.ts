@@ -57,7 +57,7 @@ module dy {
                 self._shadowMapRendererUtils.setShadowMapData(child, renderCamera);
             });
         }
-        protected getRenderList():dyCb.Collection<GameObject>{
+        protected getRenderList():wdCb.Collection<GameObject>{
             return this._light.shadowRenderList;
         }
         protected renderRenderer(renderer){

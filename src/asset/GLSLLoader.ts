@@ -10,13 +10,13 @@ module dy{
             return this._instance;
         }
 
-        protected loadAsset(url:string):dyRt.Stream;
-        protected loadAsset(url:Array<string>):dyRt.Stream;
+        protected loadAsset(url:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
-        protected loadAsset(arg):dyRt.Stream {
+        protected loadAsset(arg):wdFrp.Stream {
             var url = arguments[0];
 
             return AjaxLoader.load(url, "text");

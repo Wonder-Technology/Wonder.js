@@ -122,8 +122,8 @@ describe("ModelGeometry", function() {
                 model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
-                geo.morphTargets = dyCb.Hash.create({
-                    "play": dyCb.Collection.create(
+                geo.morphTargets = wdCb.Hash.create({
+                    "play": wdCb.Collection.create(
                             [
                                 [1, -1, 0, 0, 1, 0, 0, 0, 1],
                                 [1, -1, 0, 0, 1, 0, 0, 0, 1],
@@ -163,8 +163,8 @@ describe("ModelGeometry", function() {
                 model.addComponent(createAnimation());
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1, 2,3,-2];
-                geo.morphTargets = dyCb.Hash.create({
-                    "play": dyCb.Collection.create(
+                geo.morphTargets = wdCb.Hash.create({
+                    "play": wdCb.Collection.create(
                         [
                             [1,-1,0, 0,1,0,0,0,1, 2,3,-2],
                             [1,-1,0, 0,1,0,0,0,1, 2,3,-2],

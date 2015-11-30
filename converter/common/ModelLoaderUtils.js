@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-var dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+var wdCb = require("wdcb");
 var path = require("path");
 module.exports = (function () {
     function ModelLoaderUtils() {
@@ -8,7 +8,7 @@ module.exports = (function () {
         return path.join(path.dirname(filePath), mapUrl);
     };
     ModelLoaderUtils.getNameByPath = function (filePath) {
-        return dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath));
+        return wdCb.PathUtils.basename(filePath, wdCb.PathUtils.extname(filePath));
     };
     return ModelLoaderUtils;
 })();

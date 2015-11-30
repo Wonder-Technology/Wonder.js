@@ -27,7 +27,7 @@ module dy{
 
         private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
-            var syncList = dyCb.Collection.create<Transform>(),
+            var syncList = wdCb.Collection.create<Transform>(),
                 current = this;
 
             while (current !== null) {
@@ -203,7 +203,7 @@ module dy{
         public dirtyWorld:boolean = null;
         public dirtyLocal:boolean = true;
 
-        private _children:dyCb.Collection<Transform> = dyCb.Collection.create<Transform>();
+        private _children:wdCb.Collection<Transform> = wdCb.Collection.create<Transform>();
         private _gameObject:GameObject = null;
 
 
@@ -246,7 +246,7 @@ module dy{
             }
         }
 
-        //private _flags:dyCb.Collection<Flag> = dyCb.Collection.create<Flag>();
+        //private _flags:wdCb.Collection<Flag> = wdCb.Collection.create<Flag>();
 
         public translateLocal(translation:Vector3);
         public translateLocal(x:number, y:number, z:number);

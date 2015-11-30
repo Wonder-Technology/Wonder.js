@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-import dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+import wdCb = require("wdcb");
 import path = require("path");
 
 export = class ModelLoaderUtils{
@@ -8,7 +8,7 @@ export = class ModelLoaderUtils{
     }
 
     public static getNameByPath(filePath:string){
-        return dyCb.PathUtils.basename(filePath, dyCb.PathUtils.extname(filePath));
+        return wdCb.PathUtils.basename(filePath, wdCb.PathUtils.extname(filePath));
     }
 }
 

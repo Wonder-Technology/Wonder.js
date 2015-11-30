@@ -12,7 +12,7 @@ module dy{
         }
 
         private _material:Material = null;
-        private _textures:dyCb.Hash<any> = dyCb.Hash.create<any>();
+        private _textures:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _mirrorMap:MirrorTexture = null;
 
         public init(){

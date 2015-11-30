@@ -11,10 +11,10 @@ module dy{
         public colors:Array<Vector3> = null;
         public texCoords:Array<Vector2> = null;
         public faces:Array<Face3> = null;
-        public morphTargets:dyCb.Hash<DYFileParseMorphTargetsData> = null;
-        public morphFaceNormals:dyCb.Hash<dyCb.Collection<Array<number>>> = dyCb.Hash.create<dyCb.Collection<Array<number>>>();
-        //public morphVertexNormals:dyCb.Hash<dyCb.Collection<dyCb.Collection<Vector3>>> = dyCb.Hash.create<dyCb.Collection<dyCb.Collection<Vector3>>>();
-        public morphVertexNormals:dyCb.Hash<dyCb.Collection<Array<number>>> = dyCb.Hash.create<dyCb.Collection<Array<number>>>();
+        public morphTargets:wdCb.Hash<DYFileParseMorphTargetsData> = null;
+        public morphFaceNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
+        //public morphVertexNormals:wdCb.Hash<wdCb.Collection<wdCb.Collection<Vector3>>> = wdCb.Hash.create<wdCb.Collection<wdCb.Collection<Vector3>>>();
+        public morphVertexNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
         public buffers:MorphBufferContainer;
 
@@ -84,7 +84,7 @@ module dy{
             return CommonBufferContainer.create();
         }
 
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:dyCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
             if(this.hasAnimation()){
                 let geometryData = MorphGeometryData.create(this);
 

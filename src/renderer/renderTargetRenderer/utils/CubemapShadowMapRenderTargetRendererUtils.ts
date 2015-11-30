@@ -18,7 +18,7 @@ module dy {
 
             super.initWhenCreate();
 
-            this.light.shadowRenderList.forEach((childList:Array<GameObject>|dyCb.Collection<GameObject>) => {
+            this.light.shadowRenderList.forEach((childList:Array<GameObject>|wdCb.Collection<GameObject>) => {
                 childList.forEach((child:GameObject) => {
                     self.setShadowMap(child, self.texture);
                 })

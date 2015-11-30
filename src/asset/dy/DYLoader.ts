@@ -15,13 +15,13 @@ module dy {
         private _parseData:DYFileParseData = null;
 
 
-        protected loadAsset(url:string):dyRt.Stream;
-        protected loadAsset(url:Array<string>):dyRt.Stream;
+        protected loadAsset(url:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
-        protected loadAsset(...args):dyRt.Stream {
+        protected loadAsset(...args):wdFrp.Stream {
             var url = args[0],
                 self = this;
 
@@ -32,13 +32,13 @@ module dy {
                     return this._createLoadMapStream(url);
                 })
             .concat(
-                dyRt.callFunc(()=> {
+                wdFrp.callFunc(()=> {
                     return self._dyBuilder.build(self._parseData);
                 })
             );
         }
 
-        private _createLoadMapStream(filePath:string):dyRt.Stream{
+        private _createLoadMapStream(filePath:string):wdFrp.Stream{
             var streamArr = [],
                 parseData = this._parseData,
                 i = null;
@@ -57,7 +57,7 @@ module dy {
                 }
 
                 streamArr.push(
-                    dyRt.fromArray(mapUrlArr)
+                    wdFrp.fromArray(mapUrlArr)
                         .flatMap(([type, mapUrl]) => {
                             return TextureLoader.getInstance().load(ModelLoaderUtils.getPath(filePath, mapUrl))
                                 .do((asset:TextureAsset) => {
@@ -67,7 +67,7 @@ module dy {
                 )
             })
 
-            return dyRt.fromArray(streamArr).mergeAll();
+            return wdFrp.fromArray(streamArr).mergeAll();
         }
     }
 }

@@ -15,7 +15,7 @@ module dy {
 
         public geometryData:MorphGeometryData;
 
-        protected container:dyCb.Hash<Buffer&Array<ArrayBuffer>>;
+        protected container:wdCb.Hash<Buffer&Array<ArrayBuffer>>;
 
         private _animation:MorphAnimation = null;
         private _isCacheChangeFlag:any = {};
@@ -35,7 +35,7 @@ module dy {
             return this._getMorphData(type, this.geometryData.morphNormals);
         }
 
-        private _getMorphData(type:BufferDataType, morphDataTargets:dyCb.Hash<dyCb.Collection<Array<number>>>):Array<ArrayBuffer> {
+        private _getMorphData(type:BufferDataType, morphDataTargets:wdCb.Hash<wdCb.Collection<Array<number>>>):Array<ArrayBuffer> {
             var cacheData = null,
                 frames = null,
                 result = null;
@@ -46,7 +46,7 @@ module dy {
 
             frames = morphDataTargets.getChild(this._animation.currentAnimName);
 
-            dyCb.Log.error(!frames, dyCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
+            wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
 
             cacheData = this.container.getChild(<any>type);
 
@@ -118,7 +118,7 @@ module dy {
                     data = this.geometryData.normals;
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+                    wdCb.Log.error(true, wdCb.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
                     break;
             }
 

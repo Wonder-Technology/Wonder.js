@@ -53,7 +53,7 @@ module dy {
                     result = this._getTexCoord(type);
                     break;
                 default:
-                    dyCb.Log.error(true, dyCb.Log.info.FUNC_UNKNOW(`BufferDataType: ${type}`));
+                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`BufferDataType: ${type}`));
                     break;
             }
 
@@ -76,7 +76,7 @@ module dy {
         protected abstract getVertice(type);
         protected abstract getNormal(type);
 
-        protected container:dyCb.Hash<Buffer> = dyCb.Hash.create<Buffer>();
+        protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
         @cache(function(type:BufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);

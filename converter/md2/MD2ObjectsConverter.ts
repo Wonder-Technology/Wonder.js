@@ -1,5 +1,5 @@
-/// <reference path="../../node_modules/dycb/dist/dyCb.node.d.ts"/>
-import dyCb = require("dycb");
+/// <reference path="../../node_modules/wdcb/dist/wdCb.node.d.ts"/>
+import wdCb = require("wdcb");
 import Log = require("../common/Log");
 import Vector2 = require("../common/Vector2");
 import Vector3 = require("../common/Vector3");
@@ -38,7 +38,7 @@ export = class MD2ObjectsConverter {
         if (header.ident != "IDP2" || header.version != 8) {
             //info.status = "Not a valid MD2 file";
             //return result;
-            dyCb.Log.error(true, "Not a valid MD2 file");
+            wdCb.Log.error(true, "Not a valid MD2 file");
         }
 
         for (let i = 0; i < HEADERNAMES.length; i++) {
@@ -50,7 +50,7 @@ export = class MD2ObjectsConverter {
         if (reader.getSize() != header.offset_end) {
             //info.status = "Corrupted MD2 file";
             //return returnObject;
-            dyCb.Log.error(true, "Corrupted MD2 file");
+            wdCb.Log.error(true, "Corrupted MD2 file");
         }
 
         uvs = this._convertUVs(header, reader);

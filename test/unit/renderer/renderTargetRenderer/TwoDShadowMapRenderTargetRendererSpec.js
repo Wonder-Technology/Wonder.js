@@ -61,7 +61,7 @@ tool.init_beforeEach = function(self){
 
 
             self.renderTargetRenderer._light = {
-                shadowRenderList: dyCb.Collection.create([renderObj1, renderObj2, renderObj3, renderObj4, renderObj5, renderObj6])
+                shadowRenderList: wdCb.Collection.create([renderObj1, renderObj2, renderObj3, renderObj4, renderObj5, renderObj6])
 
             };
 
@@ -75,7 +75,7 @@ tool.init_beforeEach = function(self){
             self.sandbox.stub(self.renderTargetRenderer._shadowMapRendererUtils, "createShaderWithShaderLib");
 
             self.renderTargetRenderer._light = {
-                shadowRenderList: dyCb.Collection.create()
+                shadowRenderList: wdCb.Collection.create()
 
             };
 
@@ -95,7 +95,7 @@ tool.init_beforeEach = function(self){
         return {
             beforeEach:function(self, renderObj1, renderObj2){
                 light = {
-                    shadowRenderList: dyCb.Collection.create([renderObj1, renderObj2])
+                    shadowRenderList: wdCb.Collection.create([renderObj1, renderObj2])
                 };
                 self.renderTargetRenderer._light = light;
 
@@ -117,7 +117,7 @@ tool.init_beforeEach = function(self){
                                         list1[1] = renderObj1;
 
                                         light = {
-                                            shadowRenderList: dyCb.Collection.create([renderObj1, renderObj2, renderObj2])
+                                            shadowRenderList: wdCb.Collection.create([renderObj1, renderObj2, renderObj2])
                                         };
 
 

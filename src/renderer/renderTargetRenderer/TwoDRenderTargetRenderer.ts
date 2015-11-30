@@ -7,7 +7,7 @@ module dy {
         protected renderBuffer:WebGLRenderbuffer= null;
 
         protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
-        protected abstract getRenderList():dyCb.Collection<GameObject>;
+        protected abstract getRenderList():wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer:Renderer);
 
         protected initFrameBuffer(){

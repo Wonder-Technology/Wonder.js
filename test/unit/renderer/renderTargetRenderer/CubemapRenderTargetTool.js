@@ -210,7 +210,7 @@ var CubemapRenderTargetTool = YYC.Class({
                     self.renderTargetRenderer.texture = texture;
 
                     frameBuffer = {};
-                    frameBuffers = dyCb.Collection.create([
+                    frameBuffers = wdCb.Collection.create([
                         frameBuffer, frameBuffer, frameBuffer, frameBuffer, frameBuffer, frameBuffer
                     ]);
                     self.renderTargetRenderer._frameBuffers = frameBuffers;
