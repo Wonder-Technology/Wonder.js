@@ -24,12 +24,13 @@ module wd {
             });
         }
 
+        @require(function(target:GameObject){
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+
+            assert(material instanceof LightMaterial, Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+        })
         public clearTwoDShadowMapData(target:GameObject){
-            var target:GameObject = arguments[0],
-                material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
-
-
-            Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
             material.clearTwoDShadowMapData();
         }

@@ -59,7 +59,7 @@ module wd{
 
             maps = this._textures.getChild("map");
 
-            return maps && maps.hasChild(arguments[0]);
+            return maps && maps.hasChild(args[0]);
         }
 
 

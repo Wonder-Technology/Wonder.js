@@ -13,14 +13,14 @@ module wd{
         protected loadAsset(url:string):wdFrp.Stream;
         protected loadAsset(url:Array<string>):wdFrp.Stream;
 
-        protected loadAsset(arg):wdFrp.Stream {
+        protected loadAsset(...args):wdFrp.Stream {
             var urlArr = null;
 
-            if(JudgeUtils.isString(arguments[0])){
-                urlArr = [arguments[0]];
+            if(JudgeUtils.isString(args[0])){
+                urlArr = [args[0]];
             }
             else{
-                urlArr = arguments[0];
+                urlArr = args[0];
             }
 
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {

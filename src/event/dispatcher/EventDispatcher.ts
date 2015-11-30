@@ -16,15 +16,15 @@ module wd {
 
         public trigger(...args) {
             if(args.length === 1){
-                let event = arguments[0],
+                let event = args[0],
                     eventType = event.type;
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
-            else if(arguments.length === 2 && !(arguments[1] instanceof Event)){
-                let event = arguments[0],
-                    userData = arguments[1],
+            else if(args.length === 2 && !(args[1] instanceof Event)){
+                let event = args[0],
+                    userData = args[1],
                     eventType = event.type;
 
                 Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
@@ -32,20 +32,20 @@ module wd {
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event, userData);
             }
-            else if(arguments.length === 2 || (arguments.length === 3 && JudgeUtils.isBoolean(arguments[2]))){
-                let target = arguments[0],
-                    event = arguments[1],
-                    notSetTarget = arguments[2] === void 0 ? false : arguments[2],
+            else if(args.length === 2 || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
+                let target = args[0],
+                    event = args[1],
+                    notSetTarget = args[2] === void 0 ? false : args[2],
                     eventType = event.type;
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
-            else if(arguments.length === 3 || arguments.length === 4){
-                let target = arguments[0],
-                    event = arguments[1],
-                    userData = arguments[2],
-                    notSetTarget = arguments[3] === void 0 ? false : arguments[3],
+            else if(args.length === 3 || args.length === 4){
+                let target = args[0],
+                    event = args[1],
+                    userData = args[2],
+                    notSetTarget = args[3] === void 0 ? false : args[3],
                     eventType = event.type;
 
                 Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));

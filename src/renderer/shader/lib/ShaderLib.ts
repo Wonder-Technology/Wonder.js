@@ -39,8 +39,8 @@ module wd{
         protected getVsChunk();
         protected getVsChunk(type:string);
 
-        protected getVsChunk(){
-            var type = arguments.length === 0 ? this.type : arguments[0];
+        protected getVsChunk(...args){
+            var type = args.length === 0 ? this.type : args[0];
 
             return this._getChunk(type, ShaderLibType.vs);
         }
@@ -48,8 +48,8 @@ module wd{
         protected getFsChunk();
         protected getFsChunk(type:string);
 
-        protected getFsChunk(){
-            var type = arguments.length === 0 ? this.type : arguments[0];
+        protected getFsChunk(...args){
+            var type = args.length === 0 ? this.type : args[0];
 
             return this._getChunk(type, ShaderLibType.fs);
         }

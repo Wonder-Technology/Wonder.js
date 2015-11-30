@@ -4,14 +4,14 @@ module wd {
         public static create(mat:Float32Array):Matrix3;
         public static create():Matrix3;
 
-        public static create():Matrix3 {
+        public static create(...args):Matrix3 {
             var m = null;
 
-            if (arguments.length === 0) {
+            if (args.length === 0) {
                 m = new this();
             }
             else {
-                m = new this(arguments[0]);
+                m = new this(args[0]);
             }
 
             return m;
@@ -20,9 +20,9 @@ module wd {
         constructor(mat:Float32Array);
         constructor();
 
-        constructor() {
-            if (arguments.length === 1) {
-                this.values = arguments[0];
+        constructor(...args) {
+            if (args.length === 1) {
+                this.values = args[0];
             }
             else {
                 this.values = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);

@@ -64,17 +64,17 @@ module wd{
         private _errorHandle(path:Array<string>, err:string);
 
 
-        private _errorHandle(args) {
+        private _errorHandle(...args) {
             var path = null,
                 err = null;
 
-            if(JudgeUtils.isArray(arguments[0])){
-                path = arguments[0].join(",");
+            if(JudgeUtils.isArray(args[0])){
+                path = args[0].join(",");
             }
             else{
-                path = arguments[0];
+                path = args[0];
             }
-            err = arguments[1];
+            err = args[1];
 
             Log.log(`load ${path} asset fail:${err}`);
         }

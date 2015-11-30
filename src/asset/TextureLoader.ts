@@ -16,10 +16,10 @@ module wd{
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
-        protected loadAsset(arg):wdFrp.Stream {
+        protected loadAsset(...args):wdFrp.Stream {
             var extname = null,
                 stream = null,
-                url = arguments[0];
+                url = args[0];
 
             extname = wdCb.PathUtils.extname(url).toLowerCase();
 

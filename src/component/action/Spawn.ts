@@ -1,12 +1,12 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export class Spawn extends Control{
-        public static create() {
+        public static create(...args) {
             var spawn = null;
 
-            Log.assert(arguments.length >= 2, "Sequence should has two actions at least");
+            Log.assert(args.length >= 2, "Sequence should has two actions at least");
 
-            spawn = new this(Array.prototype.slice.call(arguments, 0));
+            spawn = new this(args);
 
             return spawn;
         }

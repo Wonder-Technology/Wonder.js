@@ -113,7 +113,7 @@ module wd{
                 return this._libs.hasChild(lib);
             }
             else{
-                let _class = arguments[0];
+                let _class = args[0];
 
                 return this._libs.hasChild((lib:ShaderLib) => {
                     return lib instanceof _class;
@@ -142,8 +142,8 @@ module wd{
         public removeLib(lib:ShaderLib);
         public removeLib(func:Function);
 
-        public removeLib(arg){
-            return this._libs.removeChild(arguments[0]);
+        public removeLib(...args){
+            return this._libs.removeChild(args[0]);
         }
 
         public removeAllLibs(){

@@ -6,12 +6,12 @@ module wd{
         public static create():Script;
         public static create(url:string):Script;
 
-        public static create() {
-            if(arguments.length === 0){
+        public static create(...args) {
+            if(args.length === 0){
                 return new this();
             }
-            if(arguments.length === 1){
-                let url = arguments[0];
+            if(args.length === 1){
+                let url = args[0];
 
                 return new this(url);
             }

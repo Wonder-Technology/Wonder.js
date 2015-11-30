@@ -18,9 +18,9 @@ module wd{
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
-        protected loadAsset(arg):wdFrp.Stream {
+        protected loadAsset(...args):wdFrp.Stream {
             var self = this,
-                url = arguments[0];
+                url = args[0];
 
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();

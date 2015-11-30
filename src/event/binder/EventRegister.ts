@@ -31,34 +31,34 @@ module wd {
         public remove(target:GameObject, eventName:EventName):void;
         public remove(target:GameObject, eventName:EventName, handler:Function):void;
 
-        public remove(args) {
-            var target = arguments[0],
+        public remove(...args) {
+            var target = args[0],
                 result = null;
 
-            if(arguments.length === 1 && JudgeUtils.isString(arguments[0])){
-                let eventName = arguments[0];
+            if(args.length === 1 && JudgeUtils.isString(args[0])){
+                let eventName = args[0];
 
                 result = this._listenerMap.removeChild(eventName);
             }
-            else if(arguments.length === 2 && JudgeUtils.isFunction(arguments[1])){
-                let eventName = arguments[0],
-                    handler = arguments[1];
+            else if(args.length === 2 && JudgeUtils.isFunction(args[1])){
+                let eventName = args[0],
+                    handler = args[1];
 
                 result = this._listenerMap.removeChild(eventName, handler);
             }
-            else if(arguments.length === 2 && JudgeUtils.isNumber(arguments[0])){
-                let uid = arguments[0],
-                    eventName = arguments[1];
+            else if(args.length === 2 && JudgeUtils.isNumber(args[0])){
+                let uid = args[0],
+                    eventName = args[1];
 
                 result = this._listenerMap.removeChild(uid, eventName);
             }
-            else if(arguments.length === 1){
+            else if(args.length === 1){
                 result = this._listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
             }
-            else if(arguments.length === 2 || arguments.length === 3){
-                result = this._listenerMap.removeChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
+            else if(args.length === 2 || args.length === 3){
+                result = this._listenerMap.removeChild.apply(this._listenerMap, args);
 
                 if(this._isAllEventHandlerRemoved(target)){
                     this._handleAfterAllEventHandlerRemoved(target);
@@ -71,8 +71,8 @@ module wd {
         public getEventRegisterDataList(eventName:EventName):any;
         public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
 
-        public getEventRegisterDataList(args){
-            var result:wdCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
+        public getEventRegisterDataList(...args){
+            var result:wdCb.Collection<EventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, args);
 
             if(!result){
                 return null;

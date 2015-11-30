@@ -184,8 +184,8 @@ module wd {
         protected addMap(map:Texture);
         protected addMap(map:Texture, option:MapVariableData);
 
-        protected addMap(arg){
-            this.mapManager.addMap.apply(this.mapManager, Array.prototype.slice.call(arguments, 0));
+        protected addMap(...args){
+            this.mapManager.addMap.apply(this.mapManager, args);
         }
 
         protected addNormalShaderLib(){

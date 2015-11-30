@@ -7,12 +7,8 @@ module wd{
     //todo can fallback to flash
     //todo support loop
     export class Video{
-        public static create({
-            urlArr,
-            onLoad,
-            onError
-            }) {
-            var obj = new this(arguments[0]);
+        public static create(data:any) {
+            var obj = new this(data);
 
         	obj.initWhenCreate();
 

@@ -1,15 +1,12 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export class Sequence extends Control{
-        public static create(...actions) {
-            var actionArr = null,
-                sequence = null;
+        public static create(...args) {
+            var sequence = null;
 
-            Log.assert(arguments.length >= 2, "Sequence should has two actions at least");
+            Log.assert(args.length >= 2, "Sequence should has two actions at least");
 
-            actionArr = Array.prototype.slice.call(arguments, 0);
-
-            sequence = new this(actionArr);
+            sequence = new this(args);
 
             sequence.initWhenCreate();
 

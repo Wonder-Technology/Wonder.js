@@ -13,7 +13,7 @@ module wd{
                     InFunc.apply(this, args);
                 }
 
-                return value.apply(this, arguments);
+                return value.apply(this, args);
             };
 
             return descriptor;
