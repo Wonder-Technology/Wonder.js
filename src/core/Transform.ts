@@ -1,11 +1,6 @@
 /// <reference path="../filePath.d.ts"/>
 
-/*! referenced from:
- https://github.com/playcanvas/engine
- */
 module wd{
-    //todo addChildAndSaveTransform?(playCanvas->scene_graphnode.js)
-    //todo inherit from Component?
     export class Transform extends Entity{
         public static create(gameObject:GameObject) {
             var obj = new this(gameObject);
@@ -15,7 +10,6 @@ module wd{
 
         private _localToParentMatrix:Matrix4 = Matrix4.create();
         get localToParentMatrix(){
-            //return this._localToParentMatrix;
             if (this.dirtyLocal) {
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
@@ -71,7 +65,6 @@ module wd{
             this._position = this.localToWorldMatrix.getTranslation();
 
             return this._position;
-            //return this.getWorldTransform(this).getTranslation();
         }
         set position(position:Vector3){
             if (this._parent === null) {
@@ -122,10 +115,8 @@ module wd{
         get eulerAngles(){
             this._eulerAngles = this.localToWorldMatrix.getEulerAngles();
             return this._eulerAngles;
-            //return this._rotation.getEulerAngles();
         }
         set eulerAngles(eulerAngles:Vector3){
-            //this._eulerAngles = eulerAngles;
             this._localRotation.setFromEulerAngles(eulerAngles);
 
             if (this._parent !== null) {
@@ -138,8 +129,6 @@ module wd{
         private _localPosition:Vector3 = Vector3.create(0, 0, 0);
         get localPosition(){
             return this._localPosition;
-            //return this._parent ? this._parent.localToWorldMatrix.copy().inverseOf().multiplyVector3(this._position)
-            //return this._parent ? this._position.sub(this._parent.position) : this._position;
         }
         set localPosition(position:Vector3){
             this._localPosition = position.copy();
@@ -150,9 +139,6 @@ module wd{
         private _localRotation:Quaternion = Quaternion.create(0, 0, 0, 1);
         get localRotation(){
             return this._localRotation;
-            //return this._localRotationWithParent.multiply(this._localRotationWithoutParent);
-            //return this._parent ? this._parent.rotation.copy().invert().multiply(this._rotation)
-            //return this._parent ? this._rotation.sub(this._parent.rotation) : this._rotation;
         }
         set localRotation(rotation:Quaternion){
             this._localRotation = rotation.copy();
@@ -162,12 +148,10 @@ module wd{
 
         private _localEulerAngles:Vector3 = null;
         get localEulerAngles(){
-            //return this.localRotation.getEulerAngles();
             this._localEulerAngles = this._localRotation.getEulerAngles();
             return this._localEulerAngles;
         }
         set localEulerAngles(localEulerAngles:Vector3){
-            //this._localEulerAngles = localEulerAngles;
             this._localRotation.setFromEulerAngles(localEulerAngles);
 
             this.dirtyLocal = true;
@@ -176,9 +160,6 @@ module wd{
         private _localScale:Vector3 = Vector3.create(1, 1, 1);
         get localScale(){
             return this._localScale;
-            //return this._parent ? this._parent.localToWorldMatrix.copy().inverseOf().multiplyVector3(this._scale)
-            //    : this._scale;
-            //return this._parent ? this._scale.sub(this._parent.scale) : this._scale;
         }
         set localScale(scale:Vector3){
             this._localScale = scale.copy();
@@ -218,7 +199,6 @@ module wd{
         }
 
         public removeChild(child:Transform){
-            //this.removeFlag(child);
             this._children.removeChild(child);
         }
 
@@ -245,8 +225,6 @@ module wd{
                 });
             }
         }
-
-        //private _flags:wdCb.Collection<Flag> = wdCb.Collection.create<Flag>();
 
         public translateLocal(translation:Vector3);
         public translateLocal(x:number, y:number, z:number);
@@ -307,7 +285,7 @@ module wd{
                 this._localRotation = quaternion.multiply(this._localRotation);
             }
             else {
-                //todo understand why?
+                //todo why?
                 quaternion = this._parent.rotation.copy().invert().multiply(quaternion);
                 this._localRotation = quaternion.multiply(this.rotation);
             }
@@ -367,7 +345,7 @@ module wd{
             dir = rot.multiplyVector3(dir); // rotate the direction
 
             this.position = center.add(dir); // define new position
-            //todo why "this.rotation = this.rotation.multiply(rot)" will cause gameobject rotate direction is around self?
+            //todo why "this.rotation = this.rotation.multiply(rot)" will cause gameobject rotate direction around self?
             this.rotation = rot.multiply(this.rotation);
 
             return this;

@@ -156,8 +156,6 @@ module wd{
 
             this._schedules.setValue(scheduleId, _class.create.apply(_class, args));
 
-            //this.start(scheduleId);
-
             return scheduleId;
         }
 
@@ -190,7 +188,6 @@ module wd{
         public pause() {
             this.isPause = true;
             this.timeController.pause();
-            //this.pauseTime = root.performance.now();
         }
 
         /**
@@ -199,8 +196,6 @@ module wd{
          */
         public resume(){
             this.isPause = false;
-            //this.pauseElapsed = root.performance.now() - this.pauseTime;
-            //this.pauseTime = null;
             this.timeController.resume();
         }
 
@@ -235,7 +230,6 @@ module wd{
         private _time:number = null;
 
         public update(time:number){
-            //var elapsed = TimeUtils.computeElapseTime(time, this.startTime, this.pauseElapsed);
             var elapsed = this.timeController.computeElapseTime(time);
 
             if (elapsed >= this._time) {

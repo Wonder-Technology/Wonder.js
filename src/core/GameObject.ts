@@ -1,6 +1,6 @@
 /// <reference path="../filePath.d.ts"/>
 module wd {
-    //todo add copy method(refer to unity:  http://docs.unity3d.com/ScriptReference/Object.Instantiate.html)
+    //todo add copy method
     export class GameObject extends Entity{
         public static create() {
         	var obj = new this();
@@ -25,8 +25,6 @@ module wd {
         private _endLoopHandler:() => void = null;
 
         public init() {
-            var self = this;
-
             this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                this.onStartLoop();
             });
@@ -34,7 +32,6 @@ module wd {
                 this.onEndLoop();
             });
 
-            /*! global event should add "dy_" prefix */
             EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
             EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
@@ -71,7 +68,7 @@ module wd {
             this._execScript("onDispose");
         }
 
-        //todo test in memory management
+        //todo test memory management
         public dispose() {
             this._execScript("onDispose");
 
@@ -98,52 +95,21 @@ module wd {
             return this._children.hasChild(child);
         }
 
-        //public addChild(child:GameObject, sort:boolean=true):boolean {
         public addChild(child:GameObject):GameObject {
-            //need user judge it!
-            //if(this._children.hasChild(child)) {
-            //    return false;
-            //}
-
             if (child.parent) {
-                //will remove bind event,remove from parent ...
-                //child.removeMe();
                 child.parent.removeChild(child);
             }
 
             child.parent = this;
             child.transform.parent = this.transform;
 
-            //child.dispatchEvent(new CoreEvent('beforeadd', false, {
-            //    parent: this
-            //}));
-
-
             this._children.addChild(child);
-
-            //if(sort) {
 
             /*!
             no need to sort!
             because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
              */
 
-            ///*!
-            //sort when add child/children, not when get children.
-            //because each loop will get children(to render), so if using the latter, each loop should sort!
-            // */
-            //this.sort();
-            //}
-            //child.parent = this;
-            //child.setBubbleParent(this);
-            //child.transform.dirty = true;
-            //child.dispatchEvent(new CoreEvent('add', false));
-            //this.dispatchEvent(new CoreEvent('childadd', false, {
-            //    child: child
-            //}));
-
-
-            //child.init();
             child.onEnter();
 
             return this;
@@ -158,6 +124,7 @@ module wd {
             return this;
         }
 
+        //todo remove?
         public sort(){
             this._children = this._children.sort(this._ascendZ);
 
@@ -218,75 +185,11 @@ module wd {
             this._children.removeChild(child);
 
             child.parent = null;
-            //child.setBubbleParent(null);
-
-
-
-            //var idx = this._children.indexOf(child);
-            //if(idx !== -1) {
-            //    child.dispatchEvent(new CoreEvent('beforeremove', false));
-            //    this._children.splice(idx, 1);
-
-            //child.dispose();
-
-            //child.setBubbleParent(null);
-            //    child.dispatchEvent(new CoreEvent('remove', false, {
-            //        parent: this
-            //    }));
-            //    this.dispatchEvent(new CoreEvent('childremove', false, {
-            //        child: child
-            //    }));
-            //    return true;
-            //}
-            //return false;
-
 
             return this;
         }
 
-        ///**
-        // * remove this game object from parent.
-        // * @returns {boolean}
-        // */
-        //public removeMe():GameObject {
-        //    var parent = this.parent;
-        //
-        //    parent && parent.removeChild(this);
-        //
-        //    return this;
-        //}
-
         public getTopUnderPoint(point:Point):GameObject {
-            //var found, localP, child;
-            //var childrenArr;
-            //if(!this._active || !this._visible) return null;
-            //if(this._interactiveRect) {
-            //    localP = this.transform.globalToLocal(x, y);
-            //    if(!this._interactiveRect.containsXY(localP.x, localP.y)) {
-            //        return null;
-            //    }
-            //}
-            //childrenArr = this._children;
-            //if(childrenArr.length > 0) {
-            //    for(var i=childrenArr.length-1; i>=0; i--) {
-            //        child = childrenArr[i];
-            //        found = child.getUnderPoint(x, y, touchable);
-            //        if(found) {
-            //            return found;
-            //        }
-            //    }
-            //}
-            //
-            //if(!touchable || this._touchable) {
-            //    if(!localP) {
-            //        localP = this.transform.globalToLocal(x, y);
-            //    }
-            //    if(this.testHit(localP.x, localP.y)) {
-            //        return this;
-            //    }
-            //}
-            //return null;
-
             //todo judge position.z?
             var result = null;
 
@@ -340,7 +243,6 @@ module wd {
             }
 
             this._components.addChild(component);
-            //component.init();
 
             component.addToGameObject(this);
 
@@ -355,38 +257,7 @@ module wd {
             return this;
         }
 
-        //visit(renderer:rendering.Renderer, parentTransform:Transform, transformDirty:boolean, visibleFlag:boolean) {
         public render(renderer:Renderer, camera:GameObject):void {
-            //var i, len;
-            //if(!this._active || !this._initialized || this._destroyed) {
-            //    if(transformDirty) {
-            //        this.transform.dirty = true;
-            //    }
-            //    return;
-            //}
-            //if(this.transform.dirty) {
-            //    transformDirty = transformDirty || this.transform.dirty;
-            //}
-            //if(transformDirty) {
-            //    if(this.transform instanceof RectTransform) {
-            //        this.transform.transform(this._scene.viewRectTransform, parentTransform);
-            //    } else {
-            //        this.transform.transform(this._scene.rootTransform, parentTransform);
-            //    }
-            //}
-            //
-            //if(!this._visible) {
-            //    visibleFlag = visibleFlag && this._visible;
-            //}
-            //
-            //if(visibleFlag) {
-            //    this.render(renderer, transformDirty);
-            //}
-            //
-            //for(i=0,len=this._children.length; i<len; i++) {
-            //    this._children[i].visit(renderer, this.transform, transformDirty, visibleFlag);
-            //}
-
             var geometry = this._getGeometry(),
                 rendererComponent = this._getRendererComponent();
 
@@ -421,7 +292,6 @@ module wd {
         }
 
         private _ascendZ(a:GameObject, b:GameObject){
-                //return b.transform.position.z - a.transform.position.z;
             return a.transform.position.z - b.transform.position.z;
         }
 

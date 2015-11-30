@@ -49,7 +49,6 @@ module wd {
 
         public unUseProgram(){
             this.isUseProgram = false;
-            //this.shader.program.unUse();
         }
 
         public addChild(child:GameObject):GameObject{

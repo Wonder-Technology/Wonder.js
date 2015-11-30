@@ -1,9 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
 
-/*!
- referenced from:
- https://github.com/mrdoob/three.js
- */
 module wd{
     declare var Math:any;
 

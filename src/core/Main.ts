@@ -7,8 +7,8 @@ module wd{
         private static _canvasId:string = null;
 
         public static setConfig({
-            isTest = Config.isTest,
             canvasId,
+            isTest = Config.isTest,
             screenSize = ScreenSize.FULL
             }){
             this.isTest = isTest;

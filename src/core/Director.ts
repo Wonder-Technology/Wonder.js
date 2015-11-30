@@ -63,7 +63,6 @@ module wd{
         private _isFirstStart:boolean = true;
 
         public initWhenCreate(){
-            //todo detect to decide using which renderer
             this.renderer = WebGLRenderer.create();
         }
 
@@ -99,11 +98,6 @@ module wd{
         //todo add dispose
 
         public getTopUnderPoint(point:Point):GameObject{
-            //if(!this.scene){
-            //    return null;
-            //}
-
-            //return this.scene.getTopUnderPoint(point);
             var top = this.scene.getTopUnderPoint(point);
 
             return top ? top : this.scene;
@@ -128,7 +122,7 @@ module wd{
                     //todo need polyfill
                     /*!
                      I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
-                     so it need polyfill!
+                     so it need polyfill
                      */
                     self._loopBody(time);
                 });
@@ -177,38 +171,20 @@ module wd{
 
             this._timeController.tick(elapseTime);
 
-            //todo invoke scene->syncHierarchy()
-
             EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.STARTLOOP));
 
             this._run(elapseTime);
-            //this._run(time);
-
-            //this.renderer.render(this.scene);
 
             EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.ENDLOOP));
 
             return true;
         }
 
-        /**
-         * run one frame
-         * @param {number} [timeScale=1]
-         */
-        //private _run(timeScale=this._timeScale) {
         private _run(time:number) {
-            //Time.update(timeScale);
-            //update children's behaviour
             this.scene.update(time);
-            //invoke children's tranform(update modelMatrix, rotate,translate,scale)
-            // and render(send vertice and indice datas to this.render, do other render work)
-            //this.scene.visitScene(this.renderer);
             this.scene.render(this.renderer);
-            //operate vertice and indice data, draw them(drawArray or drawElement)
             this.renderer.render();
-            //do task?
             this.scheduler.update(time);
-            //WOZLLA.utils.Tween.tick(Time.delta);
         }
     }
 }
