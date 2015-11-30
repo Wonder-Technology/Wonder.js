@@ -36,8 +36,6 @@ export = class MD2ObjectsConverter {
         header.version = reader.readInt32();
 
         if (header.ident != "IDP2" || header.version != 8) {
-            //info.status = "Not a valid MD2 file";
-            //return result;
             wdCb.Log.error(true, "Not a valid MD2 file");
         }
 
@@ -45,11 +43,8 @@ export = class MD2ObjectsConverter {
             header[HEADERNAMES[i]] = reader.readInt32();
         }
 
-        //console.log(reader.getSize(), header.offset_end);
         // faulty size
         if (reader.getSize() != header.offset_end) {
-            //info.status = "Corrupted MD2 file";
-            //return returnObject;
             wdCb.Log.error(true, "Corrupted MD2 file");
         }
 
