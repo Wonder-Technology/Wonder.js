@@ -243,7 +243,9 @@
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/EventBinder"/>
 /// <reference path="event/factory/FactoryEventHandler"/>
+
 /// <reference path="event/EventManager"/>
+/// <reference path="event/EngineEvent"/>
 
 /// <reference path="device/DeviceManager"/>
 /// <reference path="device/GPUDetector"/>

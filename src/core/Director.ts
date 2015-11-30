@@ -148,7 +148,7 @@ module dy{
         private _init(){
             this._isFirstStart = false;
 
-            EventManager.trigger(dy.CustomEvent.create("dy_beforeInit"));
+            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
             this.scene.onEnter();
             this.scene.init();
@@ -159,7 +159,7 @@ module dy{
             this._timeController.start();
             this.scheduler.start();
 
-            EventManager.trigger(dy.CustomEvent.create("dy_afterInit"));
+            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.AFTER_INIT));
         }
 
         private _buildLoopStream(){
@@ -179,14 +179,14 @@ module dy{
 
             //todo invoke scene->syncHierarchy()
 
-            EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
+            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.STARTLOOP));
 
             this._run(elapseTime);
             //this._run(time);
 
             //this.renderer.render(this.scene);
 
-            EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.ENDLOOP));
 
             return true;
         }

@@ -32,13 +32,13 @@ module dy{
                 }
             });
 
-            EventManager.on("dy_startLoop", this._startLoopHandler);
+            EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
 
             return this;
         }
 
         public dispose(){
-            EventManager.off("dy_startLoop", this._startLoopHandler);
+            EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
         }
 
         protected needClampMaxSize(){

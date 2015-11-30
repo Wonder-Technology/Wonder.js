@@ -43,11 +43,11 @@ module dy {
         public bindEndLoop(func:Function){
             this._endLoopHandler = func;
 
-            EventManager.on("dy_endLoop",this._endLoopHandler);
+            EventManager.on(<any>EngineEvent.ENDLOOP,this._endLoopHandler);
         }
 
         public unBindEndLoop(){
-            EventManager.off("dy_endLoop", this._endLoopHandler);
+            EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public beforeRender(){

@@ -35,8 +35,8 @@ module dy {
             });
 
             /*! global event should add "dy_" prefix */
-            EventManager.on("dy_startLoop", this._startLoopHandler);
-            EventManager.on("dy_endLoop", this._endLoopHandler);
+            EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
+            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
             this._components.forEach((component:Component) => {
                 component.init();
@@ -82,8 +82,8 @@ module dy {
 
             EventManager.off(this);
 
-            EventManager.off("dy_startLoop", this._startLoopHandler);
-            EventManager.off("dy_endLoop", this._endLoopHandler);
+            EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
+            EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
             this._components.forEach((component:Component) => {
                 component.dispose();

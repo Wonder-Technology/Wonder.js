@@ -70,7 +70,7 @@ module dy{
                 }
             });
 
-            EventManager.on("dy_beforeInit", this._beforeInitHandler);
+            EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
         }
 
         public init(){
