@@ -1,5 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
+    declare var Math:any;
+
     /*! referenced from:
      https://github.com/tweenjs/tween.js
      */

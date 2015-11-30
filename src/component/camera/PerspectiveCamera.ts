@@ -1,5 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
+    declare var Math:any;
+
     export class PerspectiveCamera extends Camera{
         public static create() {
             var obj = new this();

@@ -1,5 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
+    declare var document:any;
+
     export class JsLoader extends Loader{
         private static _instance = null;
 

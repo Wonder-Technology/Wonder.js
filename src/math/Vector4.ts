@@ -1,5 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
+    declare var Math:any;
+
     export class Vector4{
         public static create(x, y, z, w);
         public static create();

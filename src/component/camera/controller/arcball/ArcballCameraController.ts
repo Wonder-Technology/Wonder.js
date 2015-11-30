@@ -1,5 +1,7 @@
 /// <reference path="../../../../filePath.d.ts"/>
 module wd {
+    declare var Math:any;
+
     export class ArcballCameraController extends CameraController {
         public static create(cameraComponent:Camera) {
             var obj = new this(cameraComponent);

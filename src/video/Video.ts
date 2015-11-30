@@ -1,5 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
+    declare var document:any;
+
     //todo refer to video.js, mediaelement.js to enhance
     //todo unify with Audio
     //todo can fallback to flash

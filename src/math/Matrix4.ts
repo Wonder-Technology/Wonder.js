@@ -1,5 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
+    declare var Math:any;
+
     /*!
      注意：矩阵元素是按列主序存储在数组中的。
      */

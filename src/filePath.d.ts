@@ -138,6 +138,7 @@
 /// <reference path="renderer/shader/lib/common/CommonVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/basic/BasicShaderLib"/>
+/// <reference path="renderer/shader/lib/basic/BasicEndShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
@@ -148,6 +149,7 @@
 /// <reference path="renderer/shader/lib/envMap/forBasic/RefractionForBasicShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/FresnelForBasicShaderLib"/>
 
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forLight/BasicEnvMapForLightShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forLight/ReflectionForLightShaderLib"/>
@@ -161,6 +163,7 @@
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
+/// <reference path="renderer/shader/lib/light/LightEndShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/DiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/SpecularMapShaderLib"/>
@@ -249,6 +252,7 @@
 
 /// <reference path="device/DeviceManager"/>
 /// <reference path="device/GPUDetector"/>
+/// <reference path="device/ScreenSize"/>
 
 /// <reference path="structure/Point"/>
 /// <reference path="structure/Face3"/>

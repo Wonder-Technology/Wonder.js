@@ -1,5 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
+    declare var Math:any;
+
     export abstract class BasicTexture extends Texture implements ITextureAsset{
         protected p_sourceRegionMethod:TextureSourceRegionMethod = null;
         get sourceRegionMethod(){

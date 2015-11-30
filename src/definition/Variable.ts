@@ -12,15 +12,4 @@ module wd{
             return window;
         }
     });
-
-    export var document:any;
-    Object.defineProperty(wd, "document", {
-        get: function() {
-            if(JudgeUtils.isNodeJs()){
-                return {};
-            }
-
-            return window.document;
-        }
-    });
 }

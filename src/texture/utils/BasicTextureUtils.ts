@@ -1,5 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
+    declare var Math:any;
+
     export class BasicTextureUtils extends TextureUtils{
         public static isDrawPartOfTexture(sourceRegion:RectRegion, sourceRegionMethod:TextureSourceRegionMethod){
             return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS;

@@ -1,5 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd {
+    declare var Math:any;
+
     export class Plane{
         public static create(a: number, b: number, c: number, d: number) {
         	var obj = new this(a, b, c, d);

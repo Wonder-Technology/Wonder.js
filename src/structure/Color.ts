@@ -1,5 +1,7 @@
 //reference to three.js->Color.js
 module wd{
+    declare var Math:any;
+
     export class Color {
         public static create(colorVal:string) {
             var obj = new this();

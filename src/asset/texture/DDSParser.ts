@@ -4,6 +4,8 @@
 https://github.com/mrdoob/three.js
 */
 module wd{
+    declare var Math:any;
+
     const DDS_MAGIC = 0x20534444;
     const DDSD_CAPS = 0x1,
         DDSD_HEIGHT = 0x2,

@@ -1,5 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
+    declare var document:any;
+
     export class MouseEvent extends DomEvent{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";
