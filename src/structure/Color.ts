@@ -1,4 +1,3 @@
-//reference to three.js->Color.js
 module wd{
     declare var Math:any;
 

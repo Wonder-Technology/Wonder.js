@@ -182,9 +182,6 @@ module wd{
              if you were to assume you were running on OpenGL ES 2.0 and used attribute zero as a constant like you are supposed to be able to do, without the warning you'd have no idea of the work the browser is doing on your behalf to emulate that feature of OpenGL ES 2.0 that is different from OpenGL.
 
              require your particular case the warning doesn't have much meaning. It looks like you are only drawing a single point. But it would not be easy for the browser to figure that out so it just warns you anytime you draw and attribute 0 is not enabled.
-
-
-             https://github.com/mrdoob/three.js/issues/3896
              */
             gl.bindAttribLocation( this._program, 0, "a_position");
 
