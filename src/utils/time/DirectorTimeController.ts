@@ -18,7 +18,6 @@ module wd{
 
         public tick(time:number) {
             this._updateFps(time);
-            //this.gameTime = (time - this.startTime) / 1000;
             this.gameTime = time / GAMETIME_SCALE;
 
             this._lastTime = time;
@@ -42,11 +41,6 @@ module wd{
         }
 
         private _updateFps(time) {
-            //if (this._loopType === YE.Director.LoopType.INTERVAL) {
-            //    this._fps = 1 / this._loopInterval;
-            //    return;
-            //}
-
             if (this._lastTime === null) {
                 this.fps = STARTING_FPS;
             }
