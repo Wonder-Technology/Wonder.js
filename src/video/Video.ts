@@ -43,7 +43,6 @@ module wd{
             this.source = document.createElement("video");
             this.source.src = this.url;
             this._bindEvent();
-            //this.source.load();
         }
 
         public play(){
@@ -109,10 +108,4 @@ module wd{
             }, false);
         }
     }
-
-    //export type VideoConfig = {
-    //    urlArr:Array<string>;
-    //    onLoad:Function;
-    //    onError:Function;
-    //}
 }
