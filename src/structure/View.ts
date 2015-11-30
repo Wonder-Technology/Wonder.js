@@ -28,7 +28,6 @@ module wd {
             return this._dom;
         }
 
-        //private _width:number = null;
         get width(){
             return this._dom.width;
         }
