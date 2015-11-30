@@ -1,0 +1,147 @@
+* Wonder.js
+Wonder.js is a 3D Javascript Game Engine.
+Wonder.js is currently in alpha, any contributions are very welcome.
+* Goal
+To build a elegant, beautiful 3D game engine with full functions.
+* Document
+Please learn samples in examples/samples/ to get more info.
+* Design
+- Component
+  use components to assemble game object.
+- Functional Reactive Programming
+  use Wonder-FRP library to handle async operation in frp way.
+- Code Contract
+  use it to improve code quality, help to debug.
+- Event Driven
+  use event system to bind dom/custom event or to implement observer design pattern in frp way.
+- Composable Shader
+  use shader libs to assemble glsl code.
+* Contributing
+Join us, We can create the amazing 3D world together!
+* Feature
+- Animation
+ - Morph
+- Camera
+ - Perspective,Orthographic Camera
+ - Arcball Control
+ - Fly Control
+- Light
+ - Direction,Point Light
+ - Diffuse Map
+ - Specular Map
+ - Normal Map
+ - Mirror
+ - Reflection,Refraction,Fresnel
+- Script
+ - User Script
+- Shader
+ - Custom Shader
+- Shadow
+ - Direction,Point Light ShadowMap
+- Skybox
+- Texture
+ - Canvas Texture
+ - Video Texture
+ - Compressed Texture(DDS) 
+ - Cubemap Texture
+- Converter
+ - OBJ Converter
+ - MD2 Converter
+* Usage
+Include library in your html:
+#+BEGIN_SRC html
+  <script src="js/wd.min.js"></script>
+#+END_SRC
+Here shows a spinning cube sample:
+#+BEGIN_SRC js
+  <script>
+      window.onload = function () {
+          //set full screen and init engine
+          wd.Main.setConfig({
+              screenSize: wd.ScreenSize.FULL
+          }).init();
+
+          initSample();
+
+          function initSample() {
+              var director = wd.Director.getInstance();
+
+              director.scene.addChild(createBox());
+              director.scene.addChild(createCamera());
+
+              director.start();
+          }
+
+          function createBox() {
+              var material = wd.BasicMaterial.create();
+              material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+              var geometry = wd.BoxGeometry.create();
+              geometry.material = material;
+              geometry.width = 5;
+              geometry.height = 5;
+              geometry.depth = 5;
+
+              var gameObject = wd.GameObject.create();
+              gameObject.addComponent(geometry);
+              gameObject.addComponent(wd.MeshRenderer.create());
+
+              var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+                  gameObject.transform.rotate(0, 1, 0);
+              }));
+
+              gameObject.addComponent(action);
+
+              return gameObject;
+          }
+
+          function createCamera() {
+              var camera = wd.GameObject.create(),
+                  view = wd.Director.getInstance().view,
+                  cameraComponent = wd.PerspectiveCamera.create();
+
+              cameraComponent.fovy = 60;
+              cameraComponent.aspect = view.width / view.height;
+              cameraComponent.near = 0.1;
+              cameraComponent.far = 100;
+
+              var controller = wd.BasicCameraController.create(cameraComponent);
+              camera.addComponent(controller);
+
+              camera.transform.translate(wd.Vector3.create(0, 0, 30));
+
+              return camera;
+          }
+      };
+  </script>
+#+END_SRC
+* How to build
+You can install engine by bower:
+#+BEGIN_SRC js
+  bower install wd
+#+END_SRC
+For node.js project, you can install engine by npm:
+#+BEGIN_SRC js
+  npm install wd
+#+END_SRC
+You can build engine by gulp task:
+#+BEGIN_SRC js
+  gulp build
+#+END_SRC
+* How to test
+- unit test
+  Wonder has complete unit test, you can run the unit test by gulp task:
+  
+#+BEGIN_SRC js
+  gulp test
+#+END_SRC
+- debug
+  You can first include wd.innerLib.js file, then include wd.debug.js file in your html, then you can debug in engine ts
+  file:
+  
+#+BEGIN_SRC html
+  <script src="js/wd.innerLib.js"></script>
+  <script src="js/wd.debug.js"></script>
+#+END_SRC
+* License 
+MIT Licence
