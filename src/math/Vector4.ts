@@ -5,14 +5,14 @@ module wd{
     export class Vector4{
         public static create(x, y, z, w);
         public static create();
-        public static create(){
+        public static create(...args){
             var m = null;
 
-            if(arguments.length === 0){
+            if(args.length === 0){
                 m = new this();
             }
             else{
-                m = new this(arguments[0], arguments[1], arguments[2], arguments[3]);
+                m = new this(args[0], args[1], args[2], args[3]);
             }
 
             return m;
@@ -20,14 +20,14 @@ module wd{
 
         constructor(x, y, z, w);
         constructor();
-        constructor(){
+        constructor(...args){
             this.values = new Float32Array(4);
 
-            if(arguments.length > 0){
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] =arguments[2];
-                this.values[3] =arguments[3];
+            if(args.length > 0){
+                this.values[0] = args[0];
+                this.values[1] = args[1];
+                this.values[2] =args[2];
+                this.values[3] =args[3];
             }
         }
 
@@ -87,8 +87,6 @@ module wd{
             return Vector3.create(this.values[0], this.values[1], this.values[2]);
         }
 
-
-        //todo refactor
         public multiplyScalar(scalar:number) {
             this.x *= scalar;
             this.y *= scalar;

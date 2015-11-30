@@ -3,14 +3,15 @@ module wd{
     export class Vector2{
         public static create(x, y):Vector2 ;
         public static create():Vector2 ;
-        public static create():Vector2 {
+
+        public static create(...args):Vector2 {
             var m = null;
 
-            if(arguments.length === 0){
+            if(args.length === 0){
                 m = new this();
             }
             else{
-                m = new this(arguments[0], arguments[1]);
+                m = new this(args[0], args[1]);
             }
 
             return m;
@@ -18,12 +19,12 @@ module wd{
 
         constructor(x, y);
         constructor();
-        constructor(){
+        constructor(...args){
             this.values = new Float32Array(2);
 
-            if(arguments.length > 0){
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
+            if(args.length > 0){
+                this.values[0] = args[0];
+                this.values[1] = args[1];
             }
         }
 

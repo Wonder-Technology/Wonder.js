@@ -9,14 +9,15 @@ module wd{
 
         public static create(x, y, z):Vector3 ;
         public static create():Vector3 ;
-        public static create():Vector3 {
+
+        public static create(...args):Vector3 {
             var m = null;
 
-            if(arguments.length === 0){
+            if(args.length === 0){
                 m = new this();
             }
             else{
-                m = new this(arguments[0], arguments[1], arguments[2]);
+                m = new this(args[0], args[1], args[2]);
             }
 
             return m;
@@ -24,13 +25,13 @@ module wd{
 
         constructor(x, y, z);
         constructor();
-        constructor(){
+        constructor(...args){
             this.values = new Float32Array(3);
 
-            if(arguments.length > 0){
-                this.values[0] = arguments[0];
-                this.values[1] = arguments[1];
-                this.values[2] =arguments[2];
+            if(args.length > 0){
+                this.values[0] = args[0];
+                this.values[1] = args[1];
+                this.values[2] =args[2];
             }
         }
 
@@ -187,13 +188,13 @@ module wd{
 
         /**
          * @function
-         * @name pc.Vec3#cross
+         * @name cross
          * @description Returns the result of a cross product operation performed on the two specified 3-dimensional vectors.
-         * @param {pc.Vec3} lhs The first 3-dimensional vector operand of the cross product.
-         * @param {pc.Vec3} rhs The second 3-dimensional vector operand of the cross product.
-         * @returns {pc.Vec3} Self for chaining.
+         * @param {Vec3} lhs The first 3-dimensional vector operand of the cross product.
+         * @param {Vec3} rhs The second 3-dimensional vector operand of the cross product.
+         * @returns {Vec3} Self for chaining.
          * @example
-         * var back = new pc.Vec3().cross(pc.Vec3.RIGHT, pc.Vec3.UP);
+         * var back = new Vec3().cross(Vec3.RIGHT, Vec3.UP);
          *
          * // Should print the Z axis (i.e. [0, 0, 1])
          * console.log("The result of the cross product is: " + back.toString());
@@ -221,18 +222,18 @@ module wd{
 
         /**
          * @function
-         * @name pc.Vec3#lerp
+         * @name lerp
          * @description Returns the result of a linear interpolation between two specified 3-dimensional vectors.
-         * @param {pc.Vec3} lhs The 3-dimensional to interpolate from.
-         * @param {pc.Vec3} rhs The 3-dimensional to interpolate to.
+         * @param {Vec3} lhs The 3-dimensional to interpolate from.
+         * @param {Vec3} rhs The 3-dimensional to interpolate to.
          * @param {Number} alpha The value controlling the point of interpolation. Between 0 and 1, the linear interpolant
          * will occur on a straight line between lhs and rhs. Outside of this range, the linear interpolant will occur on
          * a ray extrapolated from this line.
-         * @returns {pc.Vec3} Self for chaining.
+         * @returns {Vec3} Self for chaining.
          * @example
-         * var a = new pc.Vec3(0, 0, 0);
-         * var b = new pc.Vec3(10, 10, 10);
-         * var r = new pc.Vec3();
+         * var a = new Vec3(0, 0, 0);
+         * var b = new Vec3(10, 10, 10);
+         * var r = new Vec3();
          *
          * r.lerp(a, b, 0);   // r is equal to a
          * r.lerp(a, b, 0.5); // r is 5, 5, 5
@@ -252,13 +253,13 @@ module wd{
 
         /**
          * @function
-         * @name pc.Vec3#dot
+         * @name dot
          * @description Returns the result of a dot product operation performed on the two specified 3-dimensional vectors.
-         * @param {pc.Vec3} rhs The second 3-dimensional vector operand of the dot product.
+         * @param {Vec3} rhs The second 3-dimensional vector operand of the dot product.
          * @returns {Number} The result of the dot product operation.
          * @example
-         * var v1 = new pc.Vec3(5, 10, 20);
-         * var v2 = new pc.Vec3(10, 20, 40);
+         * var v1 = new Vec3(5, 10, 20);
+         * var v2 = new Vec3(10, 20, 40);
          * var v1dotv2 = v1.dot(v2);
          * console.log("The result of the dot product is: " + v1dotv2);
          */

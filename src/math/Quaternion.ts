@@ -23,14 +23,14 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#setFromEulerAngles
+         * @name setFromEulerAngles
          * @description Sets a quaternion from Euler angles specified in XYZ order.
          * @param {Number} ex Angle to rotate around X axis in degrees.
          * @param {Number} ey Angle to rotate around Y axis in degrees.
          * @param {Number} ez Angle to rotate around Z axis in degrees.
-         * @returns {pc.Quat} Self for chaining.
+         * @returns {Quat} Self for chaining.
          * @example
-         * var q = new pc.Quat();
+         * var q = new Quat();
          * q.setFromEulerAngles(45, 90, 180);
          */
         public setFromEulerAngles(eulerAngles:Vector3) {
@@ -62,18 +62,18 @@ module wd {
         public multiply(rhs:Quaternion);
         public multiply(rhs1:Quaternion, rhs2:Quaternion);
 
-        public multiply(args) {
+        public multiply(...args) {
             var q1x, q1y, q1z, q1w, q2x, q2y, q2z, q2w,
                 rhs1, rhs2,
                 result = this;
 
-            if(arguments.length === 1){
+            if(args.length === 1){
                 rhs1 = this;
-                rhs2 = arguments[0];
+                rhs2 = args[0];
             }
-            else if(arguments.length === 2){
-                rhs1 = arguments[0];
-                rhs2 = arguments[1];
+            else if(args.length === 2){
+                rhs1 = args[0];
+                rhs2 = args[1];
             }
 
             q1x = rhs1.x;
@@ -96,18 +96,18 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#setFromMat4
+         * @name setFromMat4
          * @description Converts the specified 4x4 matrix to a quaternion. Note that since
          * a quaternion is purely a representation for orientation, only the translational part
          * of the matrix is lost.
-         * @param {pc.Mat4} m The 4x4 matrix to convert.
-         * @returns {pc.Quat} Self for chaining.
+         * @param {Mat4} m The 4x4 matrix to convert.
+         * @returns {Quat} Self for chaining.
          * @example
          * // Create a 4x4 rotation matrix of 180 degrees around the y-axis
-         * var rot = new pc.Mat4().setFromAxisAngle(pc.Vec3.UP, 180);
+         * var rot = new Mat4().setFromAxisAngle(Vec3.UP, 180);
          *
          * // Convert to a quaternion
-         * var q = new pc.Quat().setFromMat4(rot);
+         * var q = new Quat().setFromMat4(rot);
          */
         public setFromMatrix(matrix:Matrix4) {
             var m00, m01, m02, m10, m11, m12, m20, m21, m22,
@@ -202,19 +202,19 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#setFromAxisAngle
+         * @name setFromAxisAngle
          * @description Sets a quaternion from an angular rotation around an axis.
-         * @param {pc.Vec3} axis World space axis around which to rotate.
+         * @param {Vec3} axis World space axis around which to rotate.
          * @param {Number} angle Angle to rotate around the given axis in degrees.
-         * @returns {pc.Quat} Self for chaining.
+         * @returns {Quat} Self for chaining.
          * @example
-         * var q = new pc.Quat();
-         * q.setFromAxisAngle(pc.Vec3.UP, 90);
+         * var q = new Quat();
+         * q.setFromAxisAngle(Vec3.UP, 90);
          */
         public setFromAxisAngle(angle:number, axis:Vector3) {
             var sa, ca;
 
-                axis = axis.normalize();
+            axis = axis.normalize();
 
             angle *= 0.5 * DEG_TO_RAD;
 
@@ -231,12 +231,12 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#invert
+         * @name invert
          * @description Generates the inverse of the specified quaternion.
-         * @returns {pc.Quat} Self for chaining.
+         * @returns {Quat} Self for chaining.
          * @example
          * // Create a quaternion rotated 180 degrees around the y-axis
-         * var rot = new pc.Quat().setFromEulerAngles(0, 180, 0);
+         * var rot = new Quat().setFromEulerAngles(0, 180, 0);
          *
          * // Invert in place
          * rot.invert();
@@ -255,11 +255,11 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#clone
+         * @name clone
          * @description Returns an identical copy of the specified quaternion.
-         * @returns {pc.Quat} A quaternion containing the result of the cloning.
+         * @returns {Quat} A quaternion containing the result of the cloning.
          * @example
-         * var q = new pc.Quat(-0.11, -0.15, -0.46, 0.87);
+         * var q = new Quat(-0.11, -0.15, -0.46, 0.87);
          * var qclone = q.clone();
          *
          * console.log("The result of the cloning is: " + q.toString());
@@ -274,11 +274,11 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#normalize
+         * @name normalize
          * @description Returns the specified quaternion converted in place to a unit quaternion.
-         * @returns {pc.Quat} The result of the normalization.
+         * @returns {Quat} The result of the normalization.
          * @example
-         * var v = new pc.Quat(0, 0, 0, 5);
+         * var v = new Quat(0, 0, 0, 5);
          *
          * v.normalize();
          *
@@ -303,11 +303,11 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#length
+         * @name length
          * @description Returns the magnitude of the specified quaternion.
          * @returns {Number} The magnitude of the specified quaternion.
          * @example
-         * var q = new pc.Quat(0, 0, 0, 5);
+         * var q = new Quat(0, 0, 0, 5);
          * var len = q.length();
          * // Should output 5
          * console.log("The length of the quaternion is: " + len);
@@ -324,50 +324,32 @@ module wd {
         }
 
 
-    /*
-     ///multiplyVector3方法用来将四元数变换应用到参数vector.
-     ///
-     */
-    ///<summary>multiplyVector3</summary>
-    ///<param name ="a" type="Vector3">三维向量</param>
-    ///<returns type="Quaternion">返回新的四元数</returns>
-    public multiplyVector3( vector:Vector3 ) {
-        //
-        ////这里实际上调用的是vector.applyQuaternion()方法,将四元数变换应用到三维向量vector.
-        //console.warn( 'THREE.Quaternion: .multiplyVector3() has been removed. Use is now vector.applyQuaternion( quaternion ) instead.' );
-        //return vector.applyQuaternion( this );
+        public multiplyVector3(vector:Vector3) {
+            var q = this;
+            var x = vector.x;
+            var y = vector.y;
+            var z = vector.z;
 
-        var q = this;
-        var x = vector.x;
-        var y = vector.y;
-        var z = vector.z;
+            var qx = q.x;
+            var qy = q.y;
+            var qz = q.z;
+            var qw = q.w;
 
-        var qx = q.x;
-        var qy = q.y;
-        var qz = q.z;
-        var qw = q.w;
+            // calculate quat * vector
 
-        // calculate quat * vector
+            var ix =  qw * x + qy * z - qz * y;
+            var iy =  qw * y + qz * x - qx * z;
+            var iz =  qw * z + qx * y - qy * x;
+            var iw = - qx * x - qy * y - qz * z;
 
-        var ix =  qw * x + qy * z - qz * y;
-        var iy =  qw * y + qz * x - qx * z;
-        var iz =  qw * z + qx * y - qy * x;
-        var iw = - qx * x - qy * y - qz * z;
+            // calculate result * inverse quat
 
-        // calculate result * inverse quat
-
-        return Vector3.create(
-            ix * qw + iw * - qx + iy * - qz - iz * - qy,
-            iy * qw + iw * - qy + iz * - qx - ix * - qz,
-            iz * qw + iw * - qz + ix * - qy - iy * - qx
-        );
-
-        //this.x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-        //this.y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-        //this.z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-        //return this;	//返回新坐标值的三维向量
-    }
+            return Vector3.create(
+                ix * qw + iw * - qx + iy * - qz - iz * - qy,
+                iy * qw + iw * - qy + iz * - qx - ix * - qz,
+                iz * qw + iw * - qz + ix * - qy - iy * - qx
+            );
+        }
 
         public set(x:number, y:number, z:number, w:number){
             this.x = x;
@@ -386,10 +368,10 @@ module wd {
 
         /**
          * @function
-         * @name pc.Quat#getEulerAngles
+         * @name getEulerAngles
          * @description Converts the supplied quaternion to Euler angles.
-         * @param {pc.Vec3} [eulers] The 3-dimensional vector to receive the Euler angles.
-         * @returns {pc.Vec3} The 3-dimensional vector holding the Euler angles that
+         * @param {Vec3} [eulers] The 3-dimensional vector to receive the Euler angles.
+         * @returns {Vec3} The 3-dimensional vector holding the Euler angles that
          * correspond to the supplied quaternion.
          */
         public getEulerAngles() {
