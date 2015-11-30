@@ -8,9 +8,6 @@ module wd{
 
             return obj;
         }
-
-        public dispose(){
-        }
     }
 }
 

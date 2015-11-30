@@ -53,9 +53,6 @@ module wd{
             EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
         }
 
-        public init(){
-        }
-
         public dispose(){
             if(this.castShadow){
                 this.shadowMap.dispose();

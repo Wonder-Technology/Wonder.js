@@ -16,8 +16,6 @@ module wd {
         public shadowMapHeight:number = 1024;
         public shadowMap:IShadowMapTexture = null;
         public shadowMapRenderer:RenderTargetRenderer = null;
-
-        public abstract dispose();
     }
 }
 

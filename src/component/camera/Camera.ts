@@ -2,7 +2,6 @@
 module wd{
     //todo add backgroundColor
     //todo add Frustum?
-
     export abstract class Camera{
         @requireGetter(function(){
             assert(this.gameObject, Log.info.FUNC_MUST_DEFINE("gameObject"));

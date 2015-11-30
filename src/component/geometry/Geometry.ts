@@ -32,7 +32,6 @@ module wd{
                     morphTargets
                     } = this.computeData();
 
-            //this.buffers = BufferContainer.create();
             this.buffers = this.createBufferContainer();
 
             geometryData = this.createGeometryData(vertices, faces, texCoords, colors, morphTargets);

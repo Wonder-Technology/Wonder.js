@@ -22,22 +22,10 @@ module wd {
                 cameraComponent = camera.getComponent<CameraController>(CameraController),
                 material:Material = geometry.material;
 
-            //quadCmd.buffers = {
-            //    vertexBuffer: geometry.verticeBuffer,
-            //    texCoordBuffer: geometry.texCoordBuffer,
-            //    indexBuffer: geometry.indiceBuffer,
-            //    normalBuffer: geometry.normalBuffer,
-            //    tangentBuffer:geometry.tangentBuffer,
-            //    colorBuffer: geometry.colorBuffer
-            //};
-
-            //quadCmd.geometryData = geometry.geometryData;
             quadCmd.buffers = geometry.buffers;
 
             quadCmd.animation = geometry.gameObject.getComponent(Animation);
 
-
-            //quadCmd.mMatrix = this.transform.localToWorldMatrix.copy();
             quadCmd.mMatrix = this.transform.localToWorldMatrix;
 
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
@@ -49,6 +37,5 @@ module wd {
 
             return quadCmd;
         }
-
     }
 }

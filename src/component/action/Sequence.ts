@@ -5,7 +5,7 @@ module wd {
             var actionArr = null,
                 sequence = null;
 
-            Log.assert(arguments.length >= 2, "应该有2个及以上动作");
+            Log.assert(arguments.length >= 2, "Sequence should has two actions at least");
 
             actionArr = Array.prototype.slice.call(arguments, 0);
 
@@ -75,7 +75,6 @@ module wd {
         public start() {
             super.start();
 
-            //this.startOnce(this._currentAction);
             this._currentAction.start();
 
             return this;
@@ -84,7 +83,6 @@ module wd {
         public stop() {
             super.stop();
 
-            //this.stopOnce(this._currentAction);
             this._currentAction.stop();
 
             return this;

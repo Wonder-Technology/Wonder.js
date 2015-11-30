@@ -9,7 +9,6 @@ module wd {
 
         public getChild(type:BufferDataType) {
             var result:any = null;
-                //geometryData = null;
 
             switch (type) {
                 case BufferDataType.VERTICE:
@@ -18,28 +17,6 @@ module wd {
                 case BufferDataType.NORMAL:
                     result = this.getNormal(type);
                     break;
-
-
-
-                //case BufferDataType.TANGENT:
-                //
-                //    break;
-                //case BufferDataType.COLOR:
-                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-                //    result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
-                //    break;
-                //case BufferDataType.INDICE:
-                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-                //    result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
-                //    break;
-                //case BufferDataType.TEXCOORD:
-                //    geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-                //    result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
-                //    break;
-
-
-
-
                 case BufferDataType.TANGENT:
                     result = this._getTangent(type);
                     break;

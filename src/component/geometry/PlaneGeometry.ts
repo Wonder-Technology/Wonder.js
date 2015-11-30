@@ -40,8 +40,6 @@ module wd{
             //         width
             for (i = 0; i <= widthSegments; i++) {
                 for (j = 0; j <= heightSegments; j++) {
-                    let faceNormal = null;
-
                     x = -width + 2.0 * width * i / widthSegments;
                     y = 0.0;
                     z = -(-height + 2.0 * height * j / heightSegments);

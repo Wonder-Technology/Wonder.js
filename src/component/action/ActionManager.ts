@@ -30,7 +30,7 @@ module wd{
                 removeQueue = [];
 
             this._children.forEach(function(child){
-                //修复“如果遍历的动作删除了动作序列中某个动作，则在后面的遍历中会报错”的bug
+                /*! fix "if remove other action of children when invoke "child.update", it will error in iteration after */
                 if (!child) {
                     return;
                 }

@@ -16,12 +16,6 @@ module wd {
 
             this.iterate("init");
         }
-        //public onEnter() {
-        //    this.iterate("onEnter");
-        //}
-        //public onExit() {
-        //    this.iterate("onExit");
-        //}
 
         public reverse() {
             this.iterate("reverse");

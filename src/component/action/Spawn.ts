@@ -4,7 +4,7 @@ module wd {
         public static create() {
             var spawn = null;
 
-            Log.assert(arguments.length >= 2, "应该有2个及以上动作");
+            Log.assert(arguments.length >= 2, "Sequence should has two actions at least");
 
             spawn = new this(Array.prototype.slice.call(arguments, 0));
 

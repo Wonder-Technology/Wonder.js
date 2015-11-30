@@ -62,6 +62,5 @@ module wd{
             this.isFinish = true;
             this.stop();
         }
-        //todo add hook method like onEnter/onExit?
     }
 }

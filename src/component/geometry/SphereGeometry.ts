@@ -59,13 +59,11 @@ module wd{
         }
 
         public getData(){
-            //维度
             for (var latNumber = 0; latNumber <= this._latitudeBands; latNumber++) {
                 var theta = latNumber * Math.PI / this._latitudeBands;
                 var sinTheta = Math.sin(theta);
                 var cosTheta = Math.cos(theta);
 
-                //经度
                 for (var longNumber = 0; longNumber <= this._longitudeBands; longNumber++) {
                     var phi = longNumber * 2 * Math.PI / this._longitudeBands;
                     var sinPhi = Math.sin(phi);
@@ -89,8 +87,6 @@ module wd{
             }
 
 
-
-            //this.一圈有经度点longitudeBands个
             for (var latNumber = 0; latNumber < this._latitudeBands; latNumber++) {
                 for (var longNumber = 0; longNumber < this._longitudeBands; longNumber++) {
                     var first = latNumber * (this._longitudeBands + 1) + longNumber;

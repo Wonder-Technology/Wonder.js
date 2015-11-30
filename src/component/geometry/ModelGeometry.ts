@@ -13,7 +13,6 @@ module wd{
         public faces:Array<Face3> = null;
         public morphTargets:wdCb.Hash<DYFileParseMorphTargetsData> = null;
         public morphFaceNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
-        //public morphVertexNormals:wdCb.Hash<wdCb.Collection<wdCb.Collection<Vector3>>> = wdCb.Hash.create<wdCb.Collection<wdCb.Collection<Vector3>>>();
         public morphVertexNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
         public buffers:MorphBufferContainer;
@@ -49,7 +48,6 @@ module wd{
             if(this._hasMorphTargets()){
                 if(this.isSmoothShading()){
                     if(!this.hasMorphVertexNormals()){
-                        //this.computeMorphVertexNormals();
                         this.computeMorphNormals();
                     }
                 }
