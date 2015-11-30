@@ -4,16 +4,8 @@ module wd{
         public static create(){
         	var obj = new this();
 
-            //obj.initWhenCreate();
-
         	return obj;
         }
-
-        public program:Program = Program.create();
-        //public attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
-        //public uniforms:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
-        //public vsSource:string = "";
-        //public fsSource:string = "";
 
         private _attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get attributes(){
@@ -59,6 +51,8 @@ module wd{
             this._fsSource = fsSource;
         }
 
+        public program:Program = Program.create();
+
         private _definitionDataDirty:boolean = true;
         private _libs: wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
@@ -80,9 +74,6 @@ module wd{
             return this.vsSource === other.vsSource
             && this.fsSource === other.fsSource;
         }
-
-        //public initWhenCreate(){
-        //}
 
         public init(){
         }

@@ -145,7 +145,7 @@ module wd{
                 self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
             });
 
-            //ensure shader lib's code is before custom shader's source
+            /*! ensure shader lib's code is before custom shader's source */
             this.attributes.addChildren(this.attributesFromShaderLib);
             this.uniforms.addChildren(this.uniformsFromShaderLib);
             this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
@@ -249,7 +249,6 @@ module wd{
                     result = ShaderChunk.lowp_fragment.top;
                     break;
                 default:
-                    //Log.error(true, Log.info.FUNC_INVALID("precision"));
                     result = "";
                     break;
             }

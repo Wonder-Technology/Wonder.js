@@ -21,7 +21,7 @@ module wd{
                 return null;
             }
 
-            this.buffer = gl.createBuffer();   // Create a buffer object
+            this.buffer = gl.createBuffer();
             if (!this.buffer) {
                 Log.log('Failed to create the this.buffer object');
                 return null;

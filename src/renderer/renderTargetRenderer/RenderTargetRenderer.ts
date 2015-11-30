@@ -13,10 +13,7 @@ module wd {
         }
 
         public init(){
-            //this.frameBufferTexture = this.texture.createEmptyTexture();
             this.texture.createEmptyTexture();
-
-            //this.texture.setTexture(this.frameBufferTexture);
             this.initFrameBuffer();
         }
 
@@ -38,10 +35,12 @@ module wd {
         protected abstract disposeFrameBuffer();
         protected abstract createCamera(...args):GameObject;
 
-        protected  beforeRender(){
+        @virtual
+        protected beforeRender(){
         }
 
-        protected  afterRender(){
+        @virtual
+        protected afterRender(){
         }
     }
 }

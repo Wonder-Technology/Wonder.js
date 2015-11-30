@@ -25,8 +25,6 @@ module wd{
 
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
-            //this.fsSourceHead = ShaderChunk.envMap_head_fragment + ShaderChunk.fresnel_head_fragment;
-            //this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.fresnel_body_fragment;
         }
     }
 }

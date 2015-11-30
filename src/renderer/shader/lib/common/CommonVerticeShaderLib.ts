@@ -23,9 +23,6 @@ module wd{
             if (quadCmd.buffers.hasChild(BufferDataType.VERTICE)) {
                 this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.VERTICE));
             }
-            //else {
-            //    Log.error(true, Log.info.FUNC_MUST("has vertexBuffer"));
-            //}
         }
     }
 }

@@ -26,13 +26,13 @@ module wd {
         public setShadowMapData(target:GameObject);
         public setShadowMapData(target:GameObject, shadowMapCamera:GameObject);
 
-        public setShadowMapData(arg){
-            var target:GameObject = arguments[0],
+        public setShadowMapData(...args){
+            var target:GameObject = args[0],
                 material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material,
           shadowMapCamera = null;
 
-            if(arguments.length === 2){
-                shadowMapCamera = arguments[1];
+            if(args.length === 2){
+                shadowMapCamera = args[1];
             }
 
             Log.error(!(material instanceof LightMaterial), Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
@@ -67,7 +67,6 @@ module wd {
             this._shader.addLib(CommonShaderLib.create());
             this._shader.addLib(CommonVerticeShaderLib.create());
             this._shader.addLib(lib);
-            //this._shader.buildGLSLAndInitProgram();
         }
 
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);

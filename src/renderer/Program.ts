@@ -14,13 +14,9 @@ module wd{
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
-        //public unUse(){
-        //}
-
         public getUniformLocation(name:string){
             return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
         }
-
 
         public sendUniformData(name:string, type:VariableType, data:any);
         public sendUniformData(pos:WebGLUniformLocation, type:VariableType, data:any);

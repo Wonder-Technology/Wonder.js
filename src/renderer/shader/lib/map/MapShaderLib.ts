@@ -26,14 +26,9 @@ module wd{
             this.vsSourceVarDeclare= vs.varDeclare;
             this.vsSourceFuncDeclare= vs.funcDeclare;
             this.vsSourceFuncDefine= vs.funcDefine;
-            //this.vsSourceBody = ShaderSnippet.setPos_mvp + vs.body;
             this.vsSourceBody = vs.body;
 
             this.setFsSource(fs);
-            //this.vsSourceHead = ShaderChunk.map_head_vertex;
-            //this.vsSourceBody += ShaderChunk.map_body_vertex;
-            //this.fsSourceHead = ShaderChunk.map_head_fragment;
-            //this.fsSourceBody = ShaderChunk.map_body_fragment;
         }
     }
 }

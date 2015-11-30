@@ -22,8 +22,6 @@ module wd{
 
             this.setEnvMapSource();
             this.setFsSource(this.getFsChunk(), "+");
-            //this.fsSourceHead = ShaderChunk.envMap_head_fragment;
-            //this.fsSourceBody = ShaderChunk.envMap_body_fragment + ShaderChunk.refraction_body_fragment;
         }
     }
 }
