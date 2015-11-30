@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class LightShaderLib extends ShaderLib{
         public static create() {
             var obj = new this();
@@ -29,7 +29,7 @@ module dy{
         }
 
         private _sendLightVariables(program:Program){
-            var scene:Scene = dy.Director.getInstance().scene,
+            var scene:Scene = wd.Director.getInstance().scene,
                 directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 ambientLight:GameObject =scene.ambientLight,
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights;
@@ -88,7 +88,7 @@ module dy{
         }
 
         private _setLightDefinition(material:Material){
-            var scene:Scene = dy.Director.getInstance().scene,
+            var scene:Scene = wd.Director.getInstance().scene,
                 directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights,
                 direction_lights_count = 0,

@@ -6,8 +6,8 @@
 //            definitionData_attributes:
 //            {
 //                a_color: {
-//                    type: dy.VariableType.FLOAT_3,
-//                    value: dy.VariableCategory.ENGINE
+//                    type: wd.VariableType.FLOAT_3,
+//                    value: wd.VariableCategory.ENGINE
 //                }
 //            },
 //            definitionData_uniforms: {

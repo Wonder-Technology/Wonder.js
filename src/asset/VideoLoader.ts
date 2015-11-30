@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class VideoLoader extends Loader{
         private static _instance = null;
 

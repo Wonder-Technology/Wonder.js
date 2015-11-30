@@ -23,8 +23,8 @@ var CubemapRenderTargetTool = YYC.Class({
                 self.sandbox = sinon.sandbox.create();
                 self.renderTargetRenderer = new self.RenderTargetRenderer({
                 });
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
-                testTool.extend(dy.DeviceManager.getInstance().gl, {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
+                testTool.extend(wd.DeviceManager.getInstance().gl, {
                     TEXTURE_CUBE_MAP_POSITIVE_X:0,
                     TEXTURE_CUBE_MAP_NEGATIVE_X:1,
                     TEXTURE_CUBE_MAP_POSITIVE_Y:2,
@@ -34,10 +34,10 @@ var CubemapRenderTargetTool = YYC.Class({
                     TEXTURE_2D: 100
                 });
 
-                gl = dy.DeviceManager.getInstance().gl;
+                gl = wd.DeviceManager.getInstance().gl;
             });
             afterEach(function () {
-                dy.EventManager.off();
+                wd.EventManager.off();
                 testTool.clearInstance();
                 self.sandbox.restore();
             });
@@ -50,7 +50,7 @@ var CubemapRenderTargetTool = YYC.Class({
                     texture = {};
                     self.renderTargetRenderer.texture = texture;
 
-                    self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                    self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     });
                 });
 
@@ -63,7 +63,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 it("create FrameBuffer instance", function(){
                     self.renderTargetRenderer.initWhenCreate();
 
-                    expect(self.renderTargetRenderer.frameBufferOperator).toBeInstanceOf(dy.FrameBuffer);
+                    expect(self.renderTargetRenderer.frameBufferOperator).toBeInstanceOf(wd.FrameBuffer);
                 });
             });
 
@@ -186,7 +186,7 @@ var CubemapRenderTargetTool = YYC.Class({
                         render: self.sandbox.stub()
                     };
 
-                    targetPosition = dy.Vector3.create(0, 1, 2);
+                    targetPosition = wd.Vector3.create(0, 1, 2);
 
                     list1 = [renderObj1];
                     list2 = [renderObj2];
@@ -306,7 +306,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 var position;
 
                 function createCameraLookAt(centerX, centerY, centerZ, upX, upY, upZ){
-                    var camera = dy.GameObject.create();
+                    var camera = wd.GameObject.create();
 
                     camera.transform.translate(position);
                     camera.transform.lookAt(centerX, centerY, centerZ, upX, upY, upZ);
@@ -323,7 +323,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 }
 
                 beforeEach(function(){
-                    position = dy.Vector3.create(10,10,10);
+                    position = wd.Vector3.create(10,10,10);
 
 
 
@@ -338,7 +338,7 @@ var CubemapRenderTargetTool = YYC.Class({
 
                 it("set cameraComponent", function(){
                     var firstCallCamera = self.renderTargetRenderer.createCamera(0);
-                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
+                    var firstCallCameraCompoment = firstCallCamera.getComponent(wd.CameraController).camera;
                     expect(firstCallCameraCompoment.fovy).toEqual(90);
                     expect(firstCallCameraCompoment.aspect).toEqual(1);
                     expect(firstCallCameraCompoment.near).toEqual(0.1);
@@ -360,7 +360,7 @@ var CubemapRenderTargetTool = YYC.Class({
                 it("init camera", function(){
                     var firstCallCamera = self.renderTargetRenderer.createCamera(0);
 
-                    var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
+                    var firstCallCameraCompoment = firstCallCamera.getComponent(wd.CameraController).camera;
                     expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
                         [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1.020202, -1, 0, 0, -0.2020202, 0 ]
                     );

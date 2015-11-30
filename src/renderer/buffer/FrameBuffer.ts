@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class FrameBuffer{
         public static create(width:number, height:number) {
         	var obj = new this(width, height);

@@ -4,16 +4,16 @@ describe("SkyboxMaterial", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        material = new dy.SkyboxMaterial();
+        material = new wd.SkyboxMaterial();
     });
     afterEach(function () {
         sandbox.restore();
     });
 
     it("set side to be BACK", function(){
-        material = dy.SkyboxMaterial.create();
+        material = wd.SkyboxMaterial.create();
 
-        expect(material.side).toEqual(dy.Side.BACK);
+        expect(material.side).toEqual(wd.Side.BACK);
     });
 });
 

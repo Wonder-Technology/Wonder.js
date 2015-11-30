@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class RendererComponent extends Component {
         //todo transformDirty?(wozlla)
         //public render(renderer:Renderer, transformDirty:boolean):void {

@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     //todo add custom define
     export class ShaderSourceBuilder{
         public static create() {

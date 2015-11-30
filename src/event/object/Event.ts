@@ -10,7 +10,7 @@
 //event type
 
 
-module dy{
+module wd{
     export abstract class Event{
         constructor(eventName:EventName) {
             this.name = eventName;

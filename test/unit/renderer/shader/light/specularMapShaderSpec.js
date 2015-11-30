@@ -5,8 +5,8 @@
 //
 //
 //
-//    var VariableType = dy.VariableType;
-//    var VariableCategory = dy.VariableCategory;
+//    var VariableType = wd.VariableType;
+//    var VariableCategory = wd.VariableCategory;
 //
 //
 //    rendererTool.shaderTest(
@@ -15,8 +15,8 @@
 //            shaderName: "phong shader",
 //            definitionData_attributes: {
 //                a_normal: {
-//                    type: dy.VariableType.FLOAT_3,
-//                    value: dy.VariableCategory.ENGINE
+//                    type: wd.VariableType.FLOAT_3,
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                a_texCoord: {
 //                    type:VariableType.FLOAT_2,
@@ -30,33 +30,33 @@
 //                },
 //                u_cameraPos: {
 //                    type:VariableType.FLOAT_3,
-//                    value: dy.VariableCategory.ENGINE
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                u_diffuse: {
 //                    type:VariableType.FLOAT_3,
-//                    value: dy.VariableCategory.ENGINE
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                u_specularMapSampler: {
 //                    type:VariableType.SAMPLER_2D,
-//                    value: dy.VariableCategory.ENGINE
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                u_shininess: {
-//                    type: dy.VariableType.FLOAT_1,
-//                    value: dy.VariableCategory.ENGINE
+//                    type: wd.VariableType.FLOAT_1,
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                u_ambient: {
-//                    type: dy.VariableType.FLOAT_3,
-//                    value: dy.VariableCategory.ENGINE
+//                    type: wd.VariableType.FLOAT_3,
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //
 //
 //                u_directionLights: {
 //                    type:VariableType.STRUCTURES,
-//                    value: dy.VariableCategory.ENGINE
+//                    value: wd.VariableCategory.ENGINE
 //                },
 //                u_pointLights: {
 //                    type:VariableType.STRUCTURES,
-//                    value: dy.VariableCategory.ENGINE
+//                    value: wd.VariableCategory.ENGINE
 //                }
 //            },
 //            judge_sendLibVariable_attributes: function(program, quadCmd, material){
@@ -68,12 +68,12 @@
 //            },
 //            judge_sendLibVariable_uniforms: function(program, quadCmd, material){
 //                expect(program.sendUniformData.getCall(3).args).toEqual(
-//                    ["u_diffuse", dy.VariableType.FLOAT_3, material.color.toVector3()]
+//                    ["u_diffuse", wd.VariableType.FLOAT_3, material.color.toVector3()]
 //                );
 //            },
 //            judge_sendLibVariable_texture: function(program, quadCmd, material){
 //                expect(program.sendUniformData).toCalledWith(
-//                    "u_specularMapSampler", dy.VariableType.SAMPLER_2D, 0
+//                    "u_specularMapSampler", wd.VariableType.SAMPLER_2D, 0
 //                );
 //                expect(program.sendUniformData).toCalledWith(
 //                    "u_sourceRegion"
@@ -83,38 +83,38 @@
 //                );
 //            },
 //            setMaterial: function(material){
-//                var director = dy.Director.getInstance();
+//                var director = wd.Director.getInstance();
 //
 //
-//                ambientLightComponent = dy.AmbientLight.create();
-//                ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+//                ambientLightComponent = wd.AmbientLight.create();
+//                ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
 //
-//                ambientLight = dy.GameObject.create();
+//                ambientLight = wd.GameObject.create();
 //                ambientLight.addComponent(ambientLightComponent);
 //
 //
 //
 //
-//                directionLightComponent = dy.DirectionLight.create();
-//                directionLightComponent.color = dy.Color.create("#000000");
+//                directionLightComponent = wd.DirectionLight.create();
+//                directionLightComponent.color = wd.Color.create("#000000");
 //                directionLightComponent.intensity = 1;
 //
-//                directionLight = dy.GameObject.create();
+//                directionLight = wd.GameObject.create();
 //                directionLight.addComponent(directionLightComponent);
 //
 //
 //
-//                directionLightComponent2 = dy.DirectionLight.create();
-//                directionLightComponent2.color = dy.Color.create("#222222");
+//                directionLightComponent2 = wd.DirectionLight.create();
+//                directionLightComponent2.color = wd.Color.create("#222222");
 //                directionLightComponent2.intensity = 1;
 //
-//                directionLight2 = dy.GameObject.create();
+//                directionLight2 = wd.GameObject.create();
 //                directionLight2.addComponent(directionLightComponent2);
 //
 //
-//                directionLight2.transform.translate(dy.Vector3.create(10, 0, 0));
+//                directionLight2.transform.translate(wd.Vector3.create(10, 0, 0));
 //
-//                directionLight2.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
+//                directionLight2.transform.rotateLocal(wd.Vector3.create(0, 90, 0));
 //
 //
 //
@@ -127,30 +127,30 @@
 //
 //
 //
-//                pointLightComponent = dy.PointLight.create();
-//                pointLightComponent.color = dy.Color.create("#1f89ca");
+//                pointLightComponent = wd.PointLight.create();
+//                pointLightComponent.color = wd.Color.create("#1f89ca");
 //                pointLightComponent.intensity = 1;
 //                pointLightComponent.rangeLevel = 10;
 //
-//                pointLight = dy.GameObject.create();
+//                pointLight = wd.GameObject.create();
 //                pointLight.addComponent(pointLightComponent);
 //
 //
-//                pointLight.transform.translate(dy.Vector3.create(0, 0, 10));
+//                pointLight.transform.translate(wd.Vector3.create(0, 0, 10));
 //
 //
 //
 //
 //
-//                pointLightComponent2 = dy.PointLight.create();
-//                pointLightComponent2.color = dy.Color.create("#f99981");
+//                pointLightComponent2 = wd.PointLight.create();
+//                pointLightComponent2.color = wd.Color.create("#f99981");
 //                pointLightComponent2.intensity = 0.5;
 //                pointLightComponent2.rangeLevel = 5;
 //
-//                pointLight2 = dy.GameObject.create();
+//                pointLight2 = wd.GameObject.create();
 //                pointLight2.addComponent(pointLightComponent2);
 //
-//                pointLight.transform.translate(dy.Vector3.create(0, 10, 0));
+//                pointLight.transform.translate(wd.Vector3.create(0, 10, 0));
 //
 //
 //
@@ -159,12 +159,12 @@
 //
 //
 //
-//                material.color = dy.Color.create("rgb(0, 255, 0)");
+//                material.color = wd.Color.create("rgb(0, 255, 0)");
 //                material.shininess = 32;
 //
-//                var asset = dy.ImageTextureAsset.create({});
-//                var map = dy.ImageTexture.create( asset );
-//                material.specularMap = dy.ImageTexture.create(map);
+//                var asset = wd.ImageTextureAsset.create({});
+//                var map = wd.ImageTexture.create( asset );
+//                material.specularMap = wd.ImageTexture.create(map);
 //            }
 //        }
 //    );

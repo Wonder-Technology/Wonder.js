@@ -5,7 +5,7 @@ describe("deviceManager", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        device = dy.DeviceManager.getInstance();
+        device = wd.DeviceManager.getInstance();
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));
         gl = device.gl;
     });
@@ -17,14 +17,14 @@ describe("deviceManager", function() {
     describe("clear", function(){
         it("clear color passed from options", function(){
             device.clear({
-                color:dy.Color.create("#ffffff")
+                color:wd.Color.create("#ffffff")
             });
 
             expect(gl.clearColor).toCalledWith(1, 1, 1, 1);
         });
         it("enable all color and alpha write to ensure the clear buffer will not be affected by it", function(){
             device.clear({
-                color:dy.Color.create("#ffffff")
+                color:wd.Color.create("#ffffff")
             });
 
             expect(gl.colorMask).toCalledWith(true, true, true, true);
@@ -34,7 +34,7 @@ describe("deviceManager", function() {
             sandbox.stub(gl, "DEPTH_BUFFER_BIT", 10);
 
             device.clear({
-                color:dy.Color.create("#ffffff")
+                color:wd.Color.create("#ffffff")
             });
 
             expect(gl.clear).toCalledWith(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -68,8 +68,8 @@ describe("deviceManager", function() {
         });
 
         it("support full screen", function(){
-            dy.Main.setConfig({
-                screenSize:dy.ScreenSize.FULL,
+            wd.Main.setConfig({
+                screenSize:wd.ScreenSize.FULL,
                 canvasId: "#event-test"
             }).init();
 
@@ -80,7 +80,7 @@ describe("deviceManager", function() {
             expect(device.gl.viewport).toCalledWith(0, 0, 100, 200);
         });
         it("support custom screen size and position", function(){
-            dy.Main.setConfig({
+            wd.Main.setConfig({
                 screenSize:{width:50, x:10},
                 canvasId: "#event-test"
             }).init();

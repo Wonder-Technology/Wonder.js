@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <title>orthographic camera</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
         initSample();
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle1());
             director.scene.addChild(createTriangle2());
@@ -30,42 +30,42 @@
         }
 
         function createTriangle1() {
-            var material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("rgb(255, 0, 0)");
-            material.side = dy.Side.BOTH;
+            var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(255, 0, 0)");
+            material.side = wd.Side.BOTH;
 
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 20;
             geometry.height = 20;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
         }
 
 
         function createTriangle2() {
-            var material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("rgb(255, 255, 0)");
-            material.side = dy.Side.BOTH;
+            var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(255, 255, 0)");
+            material.side = wd.Side.BOTH;
 
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 20;
             geometry.height = 20;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.translate(0, 0, 30);
 
@@ -73,8 +73,8 @@
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                cameraComponent = dy.OrthographicCamera.create();
+            var camera = wd.GameObject.create(),
+                cameraComponent = wd.OrthographicCamera.create();
 
             cameraComponent.left = -100;
             cameraComponent.right = 100;
@@ -83,7 +83,7 @@
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = dy.ArcballCameraController.create(cameraComponent);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 50;
             controller.phi = Math.PI / 2.5;
 

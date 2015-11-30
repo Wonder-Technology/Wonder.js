@@ -7,24 +7,24 @@ describe("ModelGeometry", function() {
         geo = new _class();
         geo.material = {
             init:sandbox.stub(),
-            shading: shading || dy.Shading.FLAT
+            shading: shading || wd.Shading.FLAT
         };
 
         return geo;
     }
 
     function createFaces(indices, normals){
-        return dy.GeometryUtils.convertToFaces(indices, normals);
+        return wd.GeometryUtils.convertToFaces(indices, normals);
     }
 
     function createAnimation(){
-        return dy.MorphAnimation.create();
+        return wd.MorphAnimation.create();
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Geometry = dy.ModelGeometry;
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        Geometry = wd.ModelGeometry;
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -36,7 +36,7 @@ describe("ModelGeometry", function() {
         var geometryData;
 
         beforeEach(function(){
-            model = dy.GameObject.create();
+            model = wd.GameObject.create();
             geo = createGeometry(Geometry);
             model.addComponent(geo);
             model.addComponent(createAnimation());
@@ -77,7 +77,7 @@ describe("ModelGeometry", function() {
         var geometryData;
 
         beforeEach(function(){
-            model = dy.GameObject.create();
+            model = wd.GameObject.create();
             geo = createGeometry(Geometry);
             model.addComponent(geo);
             model.addComponent(createAnimation());
@@ -116,7 +116,7 @@ describe("ModelGeometry", function() {
     describe("computeMorphNormals", function(){
         describe("compute morph face normals", function(){
             it("compute each frame's normal based on triangle point", function(){
-                var model = dy.GameObject.create();
+                var model = wd.GameObject.create();
                 geo = createGeometry(Geometry);
                 model.addComponent(geo);
                 model.addComponent(createAnimation());
@@ -137,7 +137,7 @@ describe("ModelGeometry", function() {
                 geo.init();
 
 
-                var normals = geo.buffers.getChild(dy.BufferDataType.NORMAL);
+                var normals = geo.buffers.getChild(wd.BufferDataType.NORMAL);
                 expect(normals.length).toEqual(2);
 
                 var currentBuffer = normals[0],
@@ -157,8 +157,8 @@ describe("ModelGeometry", function() {
 
         describe("compute morph vertexNormals", function(){
             it("compute each frame's average vertex normal", function(){
-                var model = dy.GameObject.create();
-                geo = createGeometry(Geometry, dy.Shading.SMOOTH);
+                var model = wd.GameObject.create();
+                geo = createGeometry(Geometry, wd.Shading.SMOOTH);
                 model.addComponent(geo);
                 model.addComponent(createAnimation());
 
@@ -178,7 +178,7 @@ describe("ModelGeometry", function() {
                 //geo.computeMorphVertexNormals();
 
 
-                var normals = geo.buffers.getChild(dy.BufferDataType.NORMAL);
+                var normals = geo.buffers.getChild(wd.BufferDataType.NORMAL);
                 expect(normals.length).toEqual(2);
 
                 var currentBuffer = normals[0],

@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     declare var document:any;
 
     //todo bind on GameObject which has the focus

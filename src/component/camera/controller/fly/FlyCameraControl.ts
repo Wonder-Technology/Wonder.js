@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class FlyCameraControl {
         constructor(cameraComponent:Camera) {
             this.cameraComponent = cameraComponent;
@@ -80,24 +80,24 @@ module dy {
                 return mousemove.map(function (e) {
                     var movementDelta = e.movementDelta,
                         dx = null,
-                        dy = null,
+                        wd = null,
                         factor = rotateSpeed / canvas.height;
 
                     dx = factor * movementDelta.x;
-                    dy = factor * movementDelta.y;
+                    wd = factor * movementDelta.y;
 
                     self._isRotate = true;
 
                     return {
                         dx: dx,
-                        dy: dy
+                        wd: wd
                     };
                 }).takeUntil(mouseup);
             });
 
             this._mouseDragSubscription = mousedrag.subscribe(function (pos) {
                 self._rotateY -= pos.dx;
-                self._rotateX -= pos.dy;
+                self._rotateX -= pos.wd;
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {

@@ -2,8 +2,8 @@
                 "metadata" : {
                     formatVersion:"0.1.0",
                     description:"aaa",
-                    sourceFile:"b.dy",
-                    generatedBy:"DYConverter"
+                    sourceFile:"b.wd",
+                    generatedBy:"WDConverter"
                 },
 
                 "scene":{

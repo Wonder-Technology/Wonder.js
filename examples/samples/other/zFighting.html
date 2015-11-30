@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <title>z fighting</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
         initSample();
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle1());
             director.scene.addChild(createTriangle2());
@@ -30,13 +30,13 @@
         }
 
         function createTriangle1() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("rgb(255, 0, 0)");
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(255, 0, 0)");
             /*!annotate this line to see z fighting*/
-            material.polygonOffsetMode = dy.PolygonOffsetMode.OUT;
+            material.polygonOffsetMode = wd.PolygonOffsetMode.OUT;
 
 
-            var geometry = dy.CustomGeometry.create();
+            var geometry = wd.CustomGeometry.create();
             geometry.material = material;
 
             geometry.vertices = [
@@ -49,10 +49,10 @@
             ];
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
 
             return gameObject;
@@ -60,11 +60,11 @@
 
 
         function createTriangle2() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#ffffff");
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("#ffffff");
 
 
-            var geometry = dy.CustomGeometry.create();
+            var geometry = wd.CustomGeometry.create();
             geometry.material = material;
             geometry.vertices = [
                 0.0, 3.0, -5.0,
@@ -76,29 +76,29 @@
             ];
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.FlyCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
             camera.transform.rotate(0, 20, 0);
-            camera.transform.translate(dy.Vector3.create(0, 0, 5));
+            camera.transform.translate(wd.Vector3.create(0, 0, 5));
 
             return camera;
         }

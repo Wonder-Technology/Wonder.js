@@ -1,7 +1,7 @@
 describe("Matrix4", function(){
-    var Matrix4 = dy.Matrix4;
-    var matrix = dy.matrix;
-    var Vector4 = dy.Vector4;
+    var Matrix4 = wd.Matrix4;
+    var matrix = wd.matrix;
+    var Vector4 = wd.Vector4;
 
     function getValues(values){
         if(values){

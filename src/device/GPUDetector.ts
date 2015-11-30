@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     //todo check extension/capability support
     export class GPUDetector {
         private static _instance = null;

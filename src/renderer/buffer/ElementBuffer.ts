@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ElementBuffer extends Buffer{
         public static create(data, type:BufferType):ElementBuffer {
             var obj = new this();

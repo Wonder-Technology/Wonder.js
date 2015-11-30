@@ -21,8 +21,8 @@ describe("Scene", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        Scene = dy.Scene;
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        Scene = wd.Scene;
         scene = Scene.create();
     });
     afterEach(function () {
@@ -32,9 +32,9 @@ describe("Scene", function() {
 
     describe("test", function(){
         beforeEach(function(){
-            gameObject1 = dy.GameObject.create();
-            gameObject2 = dy.GameObject.create();
-            gameObject3 = dy.GameObject.create();
+            gameObject1 = wd.GameObject.create();
+            gameObject2 = wd.GameObject.create();
+            gameObject3 = wd.GameObject.create();
 
             gameObject2.addChild(gameObject1);
 
@@ -66,8 +66,8 @@ describe("Scene", function() {
             it("bind global hook", function(){
                 scene.init();
 
-                dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
-                dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+                wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
+                wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
                 expect(gameObject1.onStartLoop).toCalledOnce();
                 expect(gameObject2.onStartLoop).toCalledOnce();
@@ -77,8 +77,8 @@ describe("Scene", function() {
                 expect(gameObject3.onEndLoop).toCalledOnce();
             });
             it("invoke components' init", function(){
-                var geometry = new dy.BoxGeometry();
-                var material = new dy.BasicMaterial();
+                var geometry = new wd.BoxGeometry();
+                var material = new wd.BasicMaterial();
                 geometry.material = material;
 
                 sandbox.spy(geometry, "init");
@@ -138,7 +138,7 @@ describe("Scene", function() {
                 action5;
 
             function buildAction(){
-                var action = new dy.Repeat(new dy.CallFunc(), 10);
+                var action = new wd.Repeat(new wd.CallFunc(), 10);
 
                 sandbox.stub(action, "update");
 
@@ -323,24 +323,24 @@ describe("Scene", function() {
 
     describe("addComponent", function(){
         it("if component exist, return", function(){
-            var component = new dy.Action();
-            sandbox.stub(dy.Log, "assert");
+            var component = new wd.Action();
+            sandbox.stub(wd.Log, "assert");
 
             scene.addComponent(component);
             var result = scene.addComponent(component);
 
-            expect(dy.Log.assert).toCalledOnce();
+            expect(wd.Log.assert).toCalledOnce();
             expect(result).toEqual(scene);
         });
         it("set component's gameObject", function(){
-            var component = new dy.Action();
+            var component = new wd.Action();
 
             scene.addComponent(component);
 
             expect(component.gameObject).toEqual(scene);
         });
         it("add component to container", function(){
-            var component = new dy.Action();
+            var component = new wd.Action();
 
             scene.addComponent(component);
 
@@ -349,7 +349,7 @@ describe("Scene", function() {
 
         describe("if component is Action", function(){
             it("set action's target and add it to actionManager", function(){
-                var component = new dy.Action();
+                var component = new wd.Action();
 
                 scene.addComponent(component);
 
@@ -361,21 +361,21 @@ describe("Scene", function() {
         describe("if component is Script", function(){
             it("add load stream to Director->scriptStreams", function(){
                 var stream = new wdFrp.Stream();
-                var component = dy.Script.create("aaa.js");
+                var component = wd.Script.create("aaa.js");
                 sandbox.stub(component, "createLoadJsStream").returns({
                     do:sandbox.stub().returns(stream)
                 });
 
                 scene.addComponent(component);
 
-                expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeTruthy();
+                expect(wd.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeTruthy();
             });
         });
     });
 
     describe("removeComponent", function(){
         it("remove component from container", function(){
-            var component = new dy.Action();
+            var component = new wd.Action();
             scene.addComponent(component);
 
             scene.removeComponent(component);
@@ -383,7 +383,7 @@ describe("Scene", function() {
             expect(scene.findComponentByUid(component.uid)).toBeNull();
         });
         it("set component's gameObject to be null", function(){
-            var component = new dy.Action();
+            var component = new wd.Action();
             scene.addComponent(component);
 
             scene.removeComponent(component);
@@ -393,7 +393,7 @@ describe("Scene", function() {
 
         describe("if component is Action", function(){
             it("remove it from actionManager", function(){
-                var component = new dy.Action();
+                var component = new wd.Action();
                 scene.addComponent(component);
 
                 scene.removeComponent(component);
@@ -405,7 +405,7 @@ describe("Scene", function() {
         describe("if component is Script", function(){
             it("remove load stream to Director->scriptStreams", function(){
                 var stream = new wdFrp.Stream();
-                var component = dy.Script.create("aaa.js");
+                var component = wd.Script.create("aaa.js");
                 sandbox.stub(component, "createLoadJsStream").returns({
                     do:sandbox.stub().returns(stream)
                 });
@@ -413,7 +413,7 @@ describe("Scene", function() {
 
                 scene.removeComponent(component);
 
-                expect(dy.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeFalsy();
+                expect(wd.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeFalsy();
             });
         });
     });
@@ -450,8 +450,8 @@ describe("Scene", function() {
             expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
         });
         it("render rendererComponent", function(){
-            var rendererComponent = new dy.RendererComponent();
-                geometry = new dy.Geometry();
+            var rendererComponent = new wd.RendererComponent();
+                geometry = new wd.Geometry();
             rendererComponent.render = sandbox.stub();
             scene.addComponent(geometry);
             scene.addComponent(rendererComponent);
@@ -467,7 +467,7 @@ describe("Scene", function() {
             };
             scene.addRenderTargetRenderer(renderTargetRenderer);
 
-            var gameObject1 = dy.GameObject.create();
+            var gameObject1 = wd.GameObject.create();
             sandbox.stub(gameObject1, "render");
             scene.addChild(gameObject1);
 

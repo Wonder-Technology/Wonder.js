@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>one direction shadowMap</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/1.jpg", id: "texture"},
             {url: "../asset/texture/crate.gif", id: "ground"}
         ]).subscribe(null, null, function () {
@@ -25,7 +25,7 @@
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             var boxArr = createBoxes();
             var groundArr = createGrounds();
@@ -41,31 +41,31 @@
 
         function createBoxes() {
             return [
-                createBox(dy.Vector3.create(20, 0, 0)),
-                createBox(dy.Vector3.create(-20, 0, 0)),
-                createBox(dy.Vector3.create(0, 20, 0)),
-                createBox(dy.Vector3.create(0, -20, 0)),
-                createBox(dy.Vector3.create(10, 0, 25)),
-                createBox(dy.Vector3.create(0, 0, -20))
+                createBox(wd.Vector3.create(20, 0, 0)),
+                createBox(wd.Vector3.create(-20, 0, 0)),
+                createBox(wd.Vector3.create(0, 20, 0)),
+                createBox(wd.Vector3.create(0, -20, 0)),
+                createBox(wd.Vector3.create(10, 0, 25)),
+                createBox(wd.Vector3.create(0, 0, -20))
             ];
         }
 
         function createBox(position) {
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
-            material.color = dy.Color.create("#666666");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
+            material.color = wd.Color.create("#666666");
             material.shininess = 16;
 
 
-            var geometry = dy.BoxGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
             geometry.depth = 5;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
             gameObject.transform.translate(position);
@@ -74,45 +74,45 @@
         }
 
         function createGrounds() {
-            var xzEu = dy.Vector3.create(0, 0, 0);
-            var xzNeEu = dy.Vector3.create(0, 0, 180);
-            var xyEu = dy.Vector3.create(90, 0, 0);
-            var xyNeEu = dy.Vector3.create(-90, 0, 0);
-            var yzEu = dy.Vector3.create(0, 0, 90);
-            var yzNeEu = dy.Vector3.create(0, 0, -90);
+            var xzEu = wd.Vector3.create(0, 0, 0);
+            var xzNeEu = wd.Vector3.create(0, 0, 180);
+            var xyEu = wd.Vector3.create(90, 0, 0);
+            var xyNeEu = wd.Vector3.create(-90, 0, 0);
+            var yzEu = wd.Vector3.create(0, 0, 90);
+            var yzNeEu = wd.Vector3.create(0, 0, -90);
 
             return [
-                createGround(dy.Vector3.create(30, 0, 0), yzEu),
-                createGround(dy.Vector3.create(-30, 0, 0), yzNeEu),
-                createGround(dy.Vector3.create(0, 30, 0), xzNeEu),
-                createGround(dy.Vector3.create(0, -30, 0), xzEu),
-                createGround(dy.Vector3.create(0, 0, 30), xyNeEu),
-                createGround(dy.Vector3.create(0, 0, -30), xyEu)
+                createGround(wd.Vector3.create(30, 0, 0), yzEu),
+                createGround(wd.Vector3.create(-30, 0, 0), yzNeEu),
+                createGround(wd.Vector3.create(0, 30, 0), xzNeEu),
+                createGround(wd.Vector3.create(0, -30, 0), xzEu),
+                createGround(wd.Vector3.create(0, 0, 30), xyNeEu),
+                createGround(wd.Vector3.create(0, 0, -30), xyEu)
             ];
         }
 
         function createGround(position, eulerAngles) {
-            var map = dy.TextureLoader.getInstance().get("ground").toTexture();
-            map.wrapS = dy.TextureWrapMode.REPEAT;
-            map.wrapT = dy.TextureWrapMode.REPEAT;
-            map.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
+            var map = wd.TextureLoader.getInstance().get("ground").toTexture();
+            map.wrapS = wd.TextureWrapMode.REPEAT;
+            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
             material.shininess = 32;
-            material.side = dy.Side.BOTH;
+            material.side = wd.Side.BOTH;
             material.diffuseMap = map;
 
 
-            var plane = dy.PlaneGeometry.create();
+            var plane = wd.PlaneGeometry.create();
             plane.width = 100;
             plane.height = 100;
             plane.material = material;
 
 
-            var ground = dy.GameObject.create();
-            ground.addComponent(dy.MeshRenderer.create());
+            var ground = wd.GameObject.create();
+            ground.addComponent(wd.MeshRenderer.create());
             ground.addComponent(plane);
 
             ground.transform.eulerAngles = eulerAngles;
@@ -122,10 +122,10 @@
         }
 
         function createAmbientLight() {
-            var ambientLightComponent = dy.AmbientLight.create();
-            ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
 
-            var ambientLight = dy.GameObject.create();
+            var ambientLight = wd.GameObject.create();
             ambientLight.addComponent(ambientLightComponent);
 
             return ambientLight;
@@ -136,8 +136,8 @@
                     SHADOW_MAP_HEIGHT = 1024;
             var listArr = boxArr.concat(groundArr);
 
-            var pointLightComponent = dy.PointLight.create();
-            pointLightComponent.color = dy.Color.create("#ffffff");
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#ffffff");
             pointLightComponent.intensity = 1;
             pointLightComponent.rangeLevel = 10;
             pointLightComponent.castShadow = true;
@@ -157,34 +157,34 @@
                 nz:listArr
             };
 
-            var pointMaterial = dy.BasicMaterial.create();
-            pointMaterial.color = dy.Color.create("#ffffff");
+            var pointMaterial = wd.BasicMaterial.create();
+            pointMaterial.color = wd.Color.create("#ffffff");
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = pointMaterial;
             geometry.radius = 1;
             geometry.segment = 20;
 
 
-            var pointLight = dy.GameObject.create();
+            var pointLight = wd.GameObject.create();
             pointLight.addComponent(pointLightComponent);
             pointLight.addComponent(geometry);
-            pointLight.addComponent(dy.MeshRenderer.create());
+            pointLight.addComponent(wd.MeshRenderer.create());
 
             return pointLight;
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = dy.FlyCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
 
             camera.addComponent(controller);
 

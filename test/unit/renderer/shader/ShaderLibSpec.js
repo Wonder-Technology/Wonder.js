@@ -5,7 +5,7 @@ describe("ShaderLib", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Lib = dy.ShaderLib;
+        Lib = wd.ShaderLib;
         lib = new Lib();
     });
     afterEach(function () {

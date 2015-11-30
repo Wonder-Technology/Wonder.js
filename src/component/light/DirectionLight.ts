@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class DirectionLight extends Light{
         public static type:string = "directionLight";
         public static defaultPosition:Vector3 = Vector3.create(0, 0, 1);

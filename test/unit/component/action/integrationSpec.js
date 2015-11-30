@@ -5,7 +5,7 @@ describe("action integration test", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -14,18 +14,18 @@ describe("action integration test", function () {
 
     it("Repeat,Sequence,Spawn", function () {
         var x;
-        var action1 = dy.Tween.create().from({x: 0}).to({x: 5}, 100)
+        var action1 = wd.Tween.create().from({x: 0}).to({x: 5}, 100)
             .onUpdate(function () {
                 x = this.x;
             });
-        var action2 = dy.DelayTime.create(50);
-        var action3 = dy.DelayTime.create(30);
+        var action2 = wd.DelayTime.create(50);
+        var action3 = wd.DelayTime.create(30);
         var sum = 0;
-        var action4 = dy.CallFunc.create(function () {
+        var action4 = wd.CallFunc.create(function () {
             sum = 100;
         });
 
-        action = dy.Repeat.create(dy.Spawn.create(dy.Repeat.create(action1, 2), dy.Sequence.create(dy.Sequence.create(action2, action3), action4)), 1);
+        action = wd.Repeat.create(wd.Spawn.create(wd.Repeat.create(action1, 2), wd.Sequence.create(wd.Sequence.create(action2, action3), action4)), 1);
 
         gameObject.addComponent(action);
 

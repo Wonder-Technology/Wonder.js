@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export function script(scriptName:string) {
         return function (target) {
             Script.addScript(scriptName, target);

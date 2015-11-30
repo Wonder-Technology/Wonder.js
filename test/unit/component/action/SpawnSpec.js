@@ -2,12 +2,12 @@ describe("Spawn", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var Spawn = dy.Spawn;
+    var Spawn = wd.Spawn;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new Spawn();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -17,15 +17,15 @@ describe("Spawn", function () {
     it("exec inner actions at the same time", function(){
         var x1 = null;
         var x2 = null;
-        var tween1 = dy.Tween.create();
+        var tween1 = wd.Tween.create();
         tween1.from({x:0}).to({x: 10}, 100)
-            .easing( dy.Tween.Easing.Linear.None)
+            .easing( wd.Tween.Easing.Linear.None)
             .onUpdate(function(){
                 x1 = this.x;
             });
-        var tween2 = dy.Tween.create();
+        var tween2 = wd.Tween.create();
         tween2.from({x:0}).to({x: -4}, 40)
-            .easing( dy.Tween.Easing.Linear.None)
+            .easing( wd.Tween.Easing.Linear.None)
             .onUpdate(function(){
                 x2 = this.x;
             });
@@ -73,15 +73,15 @@ describe("Spawn", function () {
         it("when start agian after stop, it will restart the action", function () {
             var x1 = null;
             var x2 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });
-            var tween2 = dy.Tween.create();
+            var tween2 = wd.Tween.create();
             tween2.from({x:0}).to({x: -4}, 40)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x2 = this.x;
                 });
@@ -129,15 +129,15 @@ describe("Spawn", function () {
         it("can pause action and continue action", function () {
             var x1 = null;
             var x2 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });
-            var tween2 = dy.Tween.create();
+            var tween2 = wd.Tween.create();
             tween2.from({x:0}).to({x: -4}, 40)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x2 = this.x;
                 });
@@ -184,10 +184,10 @@ describe("Spawn", function () {
             var context = {
                 name:""
             };
-            var action1 = dy.CallFunc.create(function(gameObject, dataArr){
+            var action1 = wd.CallFunc.create(function(gameObject, dataArr){
                 this.name += "a";
             }, context);
-            var action2 = dy.CallFunc.create(function(gameObject, dataArr){
+            var action2 = wd.CallFunc.create(function(gameObject, dataArr){
                 this.name += "b";
             }, context);
 

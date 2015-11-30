@@ -9,7 +9,7 @@ import ObjectsConverter = require("./ObjectsConverter");
 import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import Log = require("../common/Log");
 
-export = class OBJToDY {
+export = class OBJToWD {
     public static create(version:string) {
         var obj = null;
 
@@ -22,7 +22,7 @@ export = class OBJToDY {
         this.version = version;
     }
 
-    public name:string = "OBJToDY";
+    public name:string = "OBJToWD";
     public version:string = null;
 
     //todo why "_objectsConverter:ObjectsConverter" can't find ObjectsConverter?

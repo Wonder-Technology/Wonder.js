@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class CustomEvent extends Event{
         public static create(eventName:string) {
             var obj = new this(<any>eventName);

@@ -5,7 +5,7 @@ describe("ShaderSourceBuilder", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        builder = new dy.ShaderSourceBuilder();
+        builder = new wd.ShaderSourceBuilder();
     });
     afterEach(function () {
         sandbox.restore();
@@ -15,12 +15,12 @@ describe("ShaderSourceBuilder", function () {
         var libs,lib1,lib2;
 
         beforeEach(function(){
-            sandbox.stub(dy.ArrayBuffer, "create");
+            sandbox.stub(wd.ArrayBuffer, "create");
 
             lib1 = {
                 attributes: {
                     "a_color": {
-                        type: dy.VariableType.FLOAT_4,
+                        type: wd.VariableType.FLOAT_4,
                         value: [
                             1, 0, 0, 1,
                             1, 0, 0, 1,
@@ -31,7 +31,7 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test1": {
-                        type: dy.VariableType.FLOAT_1,
+                        type: wd.VariableType.FLOAT_1,
                         value: 1.0
                     }
                 },
@@ -70,7 +70,7 @@ describe("ShaderSourceBuilder", function () {
             lib2 = {
                 attributes: {
                     "a_position": {
-                        type: dy.VariableType.FLOAT_3,
+                        type: wd.VariableType.FLOAT_3,
                         value: [
                             0, 0, 0,
                             1, 0, 0,
@@ -81,10 +81,10 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test2": {
-                        type: dy.VariableType.STRUCTURE,
+                        type: wd.VariableType.STRUCTURE,
                         value: {
                             "b": {
-                                type:dy.VariableType.FLOAT_1,
+                                type:wd.VariableType.FLOAT_1,
                                 value: function(){
                                     return 3.0;
                                 }
@@ -157,21 +157,21 @@ describe("ShaderSourceBuilder", function () {
             )
         });
         it("combine attribute variables,convert it to ArrayBuffer", function(){
-            var buffer = new dy.ArrayBuffer();
+            var buffer = new wd.ArrayBuffer();
 
-            dy.ArrayBuffer.create.returns(buffer);
+            wd.ArrayBuffer.create.returns(buffer);
 
             builder.build(libs);
 
-            expect(dy.ArrayBuffer.create).toCalledTwice();
+            expect(wd.ArrayBuffer.create).toCalledTwice();
             expect(builder.attributes.getChildren()).toEqual(
                 {
                     "a_color": {
-                        type: dy.VariableType.FLOAT_4,
+                        type: wd.VariableType.FLOAT_4,
                         value: buffer
                     },
                     "a_position": {
-                        type: dy.VariableType.FLOAT_3,
+                        type: wd.VariableType.FLOAT_3,
                         value: buffer
                     }
                 }
@@ -200,7 +200,7 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test1": {
-                        type: dy.VariableType.FLOAT_1,
+                        type: wd.VariableType.FLOAT_1,
                         value: 1.0
                     }
                 },
@@ -252,10 +252,10 @@ describe("ShaderSourceBuilder", function () {
             lib1 = {
                 uniforms: {
                     "u_test2": {
-                        type: dy.VariableType.STRUCTURE,
+                        type: wd.VariableType.STRUCTURE,
                         value: {
                             "b": {
-                                type:dy.VariableType.FLOAT_1,
+                                type:wd.VariableType.FLOAT_1,
                                 value: function(){
                                     return 3.0;
                                 }

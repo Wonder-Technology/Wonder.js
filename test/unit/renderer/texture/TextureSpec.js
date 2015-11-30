@@ -16,10 +16,10 @@ describe("Texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.Texture;
+        Texture = wd.Texture;
         texture = buildTexture();
-        mapManager = dy.MapManager.create();
-        director = dy.Director.getInstance();
+        mapManager = wd.MapManager.create();
+        director = wd.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
@@ -55,7 +55,7 @@ describe("Texture", function() {
 
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -77,23 +77,23 @@ describe("Texture", function() {
         var gpuDetector = null;
 
         function load2DTexture(onload){
-                                dy.LoaderManager.getInstance().load([
+                                wd.LoaderManager.getInstance().load([
                         {url: testTool.resPath  + "test/res/1.jpg", id:"texture"}
                     ]).subscribe(null, null,
                         function(){
-                            var texture = dy.TextureLoader.getInstance().get("texture").toTexture();
+                            var texture = wd.TextureLoader.getInstance().get("texture").toTexture();
 
                             onload(texture);
                         });
         }
         function loadMultiTexture(onload){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath  + "test/res/1.jpg", id:"texture"},
                 {url: testTool.resPath  + "test/res/disturb_dxt1_mip.dds", id:"compressedTexture"}
             ]).subscribe(null, null,
                 function(){
-                    var texture1 = dy.TextureLoader.getInstance().get("texture");
-                        texture2 = dy.TextureLoader.getInstance().get("compressedTexture");
+                    var texture1 = wd.TextureLoader.getInstance().get("texture");
+                        texture2 = wd.TextureLoader.getInstance().get("compressedTexture");
 
                     onload(texture1, texture2);
                 });
@@ -104,13 +104,13 @@ describe("Texture", function() {
                 maxTextureSize: 1000,
                 maxTextureUnit:16
             };
-            sandbox.stub(dy.GPUDetector, "getInstance").returns(gpuDetector);
+            sandbox.stub(wd.GPUDetector, "getInstance").returns(gpuDetector);
         });
         afterEach(function(){
         });
         afterAll(function(){
             //put release cache to the last, so it can use the res cache during testing
-            dy.LoaderManager.getInstance().dispose();
+            wd.LoaderManager.getInstance().dispose();
         });
 
         describe("anisotropic", function(){
@@ -162,7 +162,7 @@ describe("Texture", function() {
             });
             it("texture unit shouldn't exceed maxTextureUnit", function(done){
                 gpuDetector.maxTextureUnit = 1;
-                sandbox.stub(dy.Log, "warn");
+                sandbox.stub(wd.Log, "warn");
 
                 loadMultiTexture(function(texture1, texture2){
                     mapManager.addMap(texture1);
@@ -170,7 +170,7 @@ describe("Texture", function() {
 
                     mapManager.update();
 
-                    expect(dy.Log.warn).toCalledOnce();
+                    expect(wd.Log.warn).toCalledOnce();
 
                     done();
                 });

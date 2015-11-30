@@ -1,6 +1,6 @@
 {
-  "name": "dy",
-  "version": "0.0.1",
+  "name": "wd",
+  "version": "0.1.0",
   "devDependencies": {
     "del": "^1.2.0",
     "wdcb": "^0.1.1",

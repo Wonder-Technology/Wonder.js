@@ -4,8 +4,8 @@ describe("loader", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        manager = dy.LoaderManager.getInstance();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        manager = wd.LoaderManager.getInstance();
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -16,7 +16,7 @@ describe("loader", function () {
 
     describe("get asset", function(){
         it("use LoaderManager.getInstance().get(id) to get loaded asset", function(done){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
             ]).subscribe(function(data){
             }, function(err){
@@ -27,12 +27,12 @@ describe("loader", function () {
             });
         });
         it("use XXXLoader.getInstance().get(id) to get loaded asset", function(done){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
             ]).subscribe(function(data){
             }, function(err){
             }, function(){
-                expect(dy.GLSLLoader.getInstance().get("a1")).toEqual("test");
+                expect(wd.GLSLLoader.getInstance().get("a1")).toEqual("test");
 
                 done();
             });
@@ -43,7 +43,7 @@ describe("loader", function () {
         var current = [],
             total = [];
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"},
             {url: testTool.resPath + "test/res/fragment.glsl", id: "a2"}
         ]).subscribe(function(data){
@@ -54,8 +54,8 @@ describe("loader", function () {
             expect(current).toEqual([1, 2]);
             expect(total).toEqual([2, 2]);
 
-            expect(dy.LoaderManager.getInstance().get("a1")).toEqual("test");
-            expect(dy.LoaderManager.getInstance().get("a2")).toEqual("test");
+            expect(wd.LoaderManager.getInstance().get("a1")).toEqual("test");
+            expect(wd.LoaderManager.getInstance().get("a2")).toEqual("test");
 
             done();
         });
@@ -67,7 +67,7 @@ describe("loader", function () {
             var current = [],
                 total = [];
 
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/1.jpg", id: "jpg"},
                 {url: testTool.resPath + "test/res/2.png", id: "png"}
             ]).subscribe(function (data) {
@@ -80,35 +80,35 @@ describe("loader", function () {
                 expect(current).toEqual([1, 2]);
                 expect(total).toEqual([2, 2]);
 
-                var jpg = dy.LoaderManager.getInstance().get("jpg");
-                var png = dy.LoaderManager.getInstance().get("png");
+                var jpg = wd.LoaderManager.getInstance().get("jpg");
+                var png = wd.LoaderManager.getInstance().get("png");
 
-                expect(jpg).toBeInstanceOf(dy.ImageTextureAsset);
-                expect(jpg.format).toEqual(dy.TextureFormat.RGB);
-                expect(png).toBeInstanceOf(dy.ImageTextureAsset);
-                expect(png.format).toEqual(dy.TextureFormat.RGBA);
+                expect(jpg).toBeInstanceOf(wd.ImageTextureAsset);
+                expect(jpg.format).toEqual(wd.TextureFormat.RGB);
+                expect(png).toBeInstanceOf(wd.ImageTextureAsset);
+                expect(png.format).toEqual(wd.TextureFormat.RGBA);
 
                 done();
             });
         });
         it("load compressed texture", function (done) {
-            sandbox.stub(dy.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
+            sandbox.stub(wd.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
                 COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
             });
 
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/disturb_dxt1_mip.dds", id: "dds"}
             ]).subscribe(function (data) {
             }, function (err) {
                 console.log(err);
                 done();
             }, function () {
-                var dds = dy.LoaderManager.getInstance().get("dds");
+                var dds = wd.LoaderManager.getInstance().get("dds");
 
-                expect(dds).toBeInstanceOf(dy.CompressedTextureAsset);
+                expect(dds).toBeInstanceOf(wd.CompressedTextureAsset);
                 expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
                 expect(dds.mipmaps.getCount()).toEqual(10);
-                expect(dds.minFilter).toEqual(dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                expect(dds.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
 
                 done();
             });
@@ -123,7 +123,7 @@ describe("loader", function () {
         //    var current = [],
         //        total = [];
         //
-        //    dy.LoaderManager.getInstance().load([
+        //    wd.LoaderManager.getInstance().load([
         //        {url: [testTool.resPath + "test/res/sintel.mp4",testTool.resPath + "test/res/sintel.ogv"], id: "video1"},
         //        //{url: testTool.resPath + "test/res/kinect.webm", id: "video2"}
         //        {url: testTool.resPath + "test/res/sintel.ogv", id: "video2"}
@@ -136,10 +136,10 @@ describe("loader", function () {
         //        expect(current).toEqual([1, 2]);
         //        expect(total).toEqual([2, 2]);
         //
-        //        expect(dy.LoaderManager.getInstance().get("video1")).toBeInstanceOf(dy.VideoTextureAsset);
-        //        expect(dy.LoaderManager.getInstance().get("video1").video).toBeInstanceOf(dy.Video);
-        //        expect(dy.LoaderManager.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
-        //        expect(dy.LoaderManager.getInstance().get("video2")).toBeInstanceOf(dy.VideoTextureAsset);
+        //        expect(wd.LoaderManager.getInstance().get("video1")).toBeInstanceOf(wd.VideoTextureAsset);
+        //        expect(wd.LoaderManager.getInstance().get("video1").video).toBeInstanceOf(wd.Video);
+        //        expect(wd.LoaderManager.getInstance().get("video1").video.url).toEqual(testTool.resPath + "test/res/sintel.mp4");
+        //        expect(wd.LoaderManager.getInstance().get("video2")).toBeInstanceOf(wd.VideoTextureAsset);
         //
         //        done();
         //    });
@@ -149,12 +149,12 @@ describe("loader", function () {
         //});
     });
 
-    describe("load dy file", function(){
+    describe("load wd file", function(){
         var json;
 
         function assertColor(color, colorArr){
             expect(color.toVector3()).toEqual(
-                dy.Vector3.create(colorArr[0], colorArr[1], colorArr[2])
+                wd.Vector3.create(colorArr[0], colorArr[1], colorArr[2])
             );
         }
 
@@ -172,7 +172,7 @@ describe("loader", function () {
         function assert1Obj(data){
             var result = data;
 
-            var geo = result.getChild("models").getChild(0).getComponent(dy.Geometry);
+            var geo = result.getChild("models").getChild(0).getComponent(wd.Geometry);
             var model1 = json.objects[0];
             expect(geo.vertices).toEqual(
                 model1.vertices
@@ -200,9 +200,9 @@ describe("loader", function () {
             var mat = geo.material;
             assertColor(mat.color, materialData.diffuseColor);
             assertColor(mat.specular, materialData.specularColor);
-            expect(mat.diffuseMap).toBeInstanceOf(dy.ImageTexture);
-            expect(mat.specularMap).toBeInstanceOf(dy.ImageTexture);
-            expect(mat.normalMap).toBeInstanceOf(dy.ImageTexture);
+            expect(mat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
+            expect(mat.specularMap).toBeInstanceOf(wd.ImageTexture);
+            expect(mat.normalMap).toBeInstanceOf(wd.ImageTexture);
             expect(mat.shininess).toEqual(materialData.shininess);
             expect(mat.opacity).toEqual(materialData.opacity);
         }
@@ -219,7 +219,7 @@ describe("loader", function () {
             var m2 = result.getChild("models").getChild(1);
             expect(m2.getChildren().getCount()).toEqual(2);
 
-            var geo2 = m2.getComponent(dy.Geometry);
+            var geo2 = m2.getComponent(wd.Geometry);
             var model2 = json.objects[1];
             expect(geo2).toBeNull();
             //expect(geo2.vertices).toBeUndefined();
@@ -235,7 +235,7 @@ describe("loader", function () {
             var m21 = m2.getChild(0);
             expect(m21.getChildren().getCount()).toEqual(0);
 
-            var geo21 = m21.getComponent(dy.Geometry);
+            var geo21 = m21.getComponent(wd.Geometry);
             expect(testTool.getValues(geo21.colors)).toEqual(
                 testTool.getValues(model2.children[0].colors)
             )
@@ -255,7 +255,7 @@ describe("loader", function () {
             var m22 = m2.getChild(1);
             expect(m22.getChildren().getCount()).toEqual(0);
 
-            var geo22 = m22.getComponent(dy.Geometry);
+            var geo22 = m22.getComponent(wd.Geometry);
             expect(geo22.colors).toEqual(
                 model2.children[1].colors
             )
@@ -278,8 +278,8 @@ describe("loader", function () {
                 "metadata" : {
                     formatVersion:"0.1.0",
                     description:"aaa",
-                    sourceFile:"b.dy",
-                    generatedBy:"DYConverter"
+                    sourceFile:"b.wd",
+                    generatedBy:"WDConverter"
                 },
 
                 "scene":{
@@ -351,14 +351,14 @@ describe("loader", function () {
         });
 
         it("load one obj file", function (done) {
-            dy.LoaderManager.getInstance().load([
-                {url: testTool.resPath + "test/res/dy/test.dy", id: "sceneModel"}
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
             ]).subscribe(function (data) {
             }, function (err) {
                 expect().toFail(err.message);
                 done();
             }, function () {
-                var sceneModel = dy.LoaderManager.getInstance().get("sceneModel");
+                var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
 
                 assertMetadata(sceneModel);
                 assertScene(sceneModel);
@@ -368,23 +368,23 @@ describe("loader", function () {
                 done();
             });
         });
-        it("when load multi dy files, each one should be independent", function (done) {
-            dy.LoaderManager.getInstance().load([
-                {url: testTool.resPath + "test/res/dy/test.dy", id: "sceneModel1"},
-                {url: testTool.resPath + "test/res/dy/test.dy", id: "sceneModel2"}
+        it("when load multi wd files, each one should be independent", function (done) {
+            wd.LoaderManager.getInstance().load([
+                {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel1"},
+                {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel2"}
             ]).subscribe(function (data) {
             }, function (err) {
                 expect().toFail(err.message);
                 done();
             }, function () {
-                var sceneModel1 = dy.LoaderManager.getInstance().get("sceneModel1");
+                var sceneModel1 = wd.LoaderManager.getInstance().get("sceneModel1");
 
                 assertMetadata(sceneModel1);
                 assertScene(sceneModel1);
                 assert1Obj(sceneModel1);
                 assert2Obj(sceneModel1);
 
-                var sceneModel2 = dy.LoaderManager.getInstance().get("sceneModel2");
+                var sceneModel2 = wd.LoaderManager.getInstance().get("sceneModel2");
 
                 assertMetadata(sceneModel2);
                 assertScene(sceneModel2);
@@ -418,7 +418,7 @@ describe("loader", function () {
     //
     //            expect(wdCb.AjaxUtils.ajax).toCalledOnce();
     //
-    //            expect(dy.LoaderManager.getInstance().get("a1")).toEqual("test");
+    //            expect(wd.LoaderManager.getInstance().get("a1")).toEqual("test");
     //
     //            done();
     //        });
@@ -429,14 +429,14 @@ describe("loader", function () {
     //    var promise = new RSVP.Promise(function (resolve, reject) {
     //        reject(err);
     //    });
-    //    sandbox.stub(dy.LoaderManager.getInstance(), "_loadText").returns(promise);
-    //    sandbox.stub(dy.Log, "log");
+    //    sandbox.stub(wd.LoaderManager.getInstance(), "_loadText").returns(promise);
+    //    sandbox.stub(wd.Log, "log");
     //
     //    manager.load([
     //        {url: testTool.resPath + "test/res/fragment.glsl", id: "a1"}
     //    ]).subscribe(function(data){}, function(error){
     //        expect(error).toEqual(err);
-    //        expect(dy.Log.log).toCalledOnce();
+    //        expect(wd.Log.log).toCalledOnce();
     //
     //        done();
     //    }, function(){

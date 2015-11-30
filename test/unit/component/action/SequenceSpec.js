@@ -2,12 +2,12 @@ describe("Sequence", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var Sequence = dy.Sequence;
+    var Sequence = wd.Sequence;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new Sequence();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -15,20 +15,20 @@ describe("Sequence", function () {
     });
 
     it("exec inner actions in order", function(){
-        var action1 = dy.DelayTime.create(100);
+        var action1 = wd.DelayTime.create(100);
         var context = {
             a:1
         };
         gameObject.name = "test";
-        var action2 = dy.CallFunc.create(function(gameObject, dataArr){
+        var action2 = wd.CallFunc.create(function(gameObject, dataArr){
                     this.name = gameObject.name;
                     this.a = dataArr.getChild(0) + dataArr.getChild(1);
                 }, context, 3, 4);
         action2.target = gameObject;
         var x = null;
-        var tween = dy.Tween.create();
+        var tween = wd.Tween.create();
         tween.from({x:0}).to({x: 4}, 100)
-            .easing( dy.Tween.Easing.Linear.None)
+            .easing( wd.Tween.Easing.Linear.None)
             .onUpdate(function(){
                 x = this.x;
             });
@@ -81,11 +81,11 @@ describe("Sequence", function () {
 
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
-            var action1 = dy.DelayTime.create(100);
+            var action1 = wd.DelayTime.create(100);
             var x = null;
-            var tween = dy.Tween.create();
+            var tween = wd.Tween.create();
             tween.from({x:0}).to({x: 4}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x = this.x;
                 });
@@ -114,11 +114,11 @@ describe("Sequence", function () {
 
     describe("pause,resume", function(){
         it("can pause and continue action", function () {
-            var action1 = dy.DelayTime.create(100);
+            var action1 = wd.DelayTime.create(100);
             var x = null;
-            var tween = dy.Tween.create();
+            var tween = wd.Tween.create();
             tween.from({x:0}).to({x: 4}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x = this.x;
                 });
@@ -159,10 +159,10 @@ describe("Sequence", function () {
             var context = {
                 name:""
             };
-            var action1 = dy.CallFunc.create(function(gameObject, dataArr){
+            var action1 = wd.CallFunc.create(function(gameObject, dataArr){
                 this.name += "a";
             }, context);
-            var action2 = dy.CallFunc.create(function(gameObject, dataArr){
+            var action2 = wd.CallFunc.create(function(gameObject, dataArr){
                 this.name += "b";
             }, context);
 

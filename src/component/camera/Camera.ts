@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     //todo add backgroundColor
     //todo add Frustum?
 

@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class MathUtils{
         public static clamp(num:number, below:number, up:number):number{
             if(num < below){

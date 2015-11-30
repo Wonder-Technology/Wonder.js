@@ -22,8 +22,8 @@ module.exports = function(config) {
         "reference/three.js.sourcecode/Three.js",
 
         //'src/math/*.js',
-        'dist/dy.innerLib.js',
-        'dist/dy.debug.js',
+        'dist/wd.innerLib.js',
+        'dist/wd.debug.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',

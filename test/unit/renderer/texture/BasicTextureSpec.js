@@ -16,10 +16,10 @@ describe("BasicTexture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.BasicTexture;
+        Texture = wd.BasicTexture;
         texture = buildTexture();
-        mapManager = dy.MapManager.create();
-        director = dy.Director.getInstance();
+        mapManager = wd.MapManager.create();
+        director = wd.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
@@ -54,7 +54,7 @@ describe("BasicTexture", function() {
             generateMipmap: sandbox.stub()
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -74,7 +74,7 @@ describe("BasicTexture", function() {
         it("send texture unit index", function(){
             texture.sendData(program, 100, 1);
 
-            expect(program.sendUniformData.firstCall).toCalledWith(100, dy.VariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData.firstCall).toCalledWith(100, wd.VariableType.SAMPLER_2D, 1);
         });
 
         describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){
@@ -82,24 +82,24 @@ describe("BasicTexture", function() {
                 texture.width = 100;
                 texture.height = 100;
 
-                texture.sourceRegionMethod = dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+                texture.sourceRegionMethod = wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
             });
 
             it("if sourceRegion is based on canvas coordinate system, convert it to webgl coordinate stystem", function(){
-                texture.sourceRegionMapping = dy.TextureSourceRegionMapping.CANVAS;
-                texture.sourceRegion = dy.RectRegion.create(10, 20, 50, 40);
+                texture.sourceRegionMapping = wd.TextureSourceRegionMapping.CANVAS;
+                texture.sourceRegion = wd.RectRegion.create(10, 20, 50, 40);
 
                 texture.sendData(program, 0);
 
-                expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
+                expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
             });
             it("else, directly set it", function(){
-                texture.sourceRegionMapping = dy.TextureSourceRegionMapping.UV;
-                texture.sourceRegion = dy.RectRegion.create(0.1, 0.1, 0.5, 0.6);
+                texture.sourceRegionMapping = wd.TextureSourceRegionMapping.UV;
+                texture.sourceRegion = wd.RectRegion.create(0.1, 0.1, 0.5, 0.6);
 
                 texture.sendData(program, 0);
 
-                expect(testTool.getValues(texture.sourceRegion)).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.1, 0.5, 0.6)));
+                expect(testTool.getValues(texture.sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.1, 0.5, 0.6)));
 
             });
         });
@@ -108,7 +108,7 @@ describe("BasicTexture", function() {
     describe("update", function(){
         beforeEach(function(){
             sandbox.stub(texture, "bindToUnit");
-            sandbox.stub(dy.GPUDetector, "getInstance").returns({
+            sandbox.stub(wd.GPUDetector, "getInstance").returns({
                 maxTextureSize: 50
             });
         });

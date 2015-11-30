@@ -215,11 +215,11 @@
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
-/// <reference path="asset/dy/DYFileType"/>
-/// <reference path="asset/dy/DYLoader"/>
-/// <reference path="asset/dy/DYParser"/>
-/// <reference path="asset/dy/DYObjectParser"/>
-/// <reference path="asset/dy/DYBuilder"/>
+/// <reference path="asset/wd/WDFileType"/>
+/// <reference path="asset/wd/WDLoader"/>
+/// <reference path="asset/wd/WDParser"/>
+/// <reference path="asset/wd/WDObjectParser"/>
+/// <reference path="asset/wd/WDBuilder"/>
 
 
 /// <reference path="event/structure/EventListenerMap"/>

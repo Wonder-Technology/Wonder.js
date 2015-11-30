@@ -4,7 +4,7 @@ describe("shadow map", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();
@@ -15,54 +15,54 @@ describe("shadow map", function() {
         var director;
 
         function createSphere() {
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
             material.shininess = 16;
-            material.diffuseMap = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
-            material.shading = dy.Shading.SMOOTH;
+            material.diffuseMap = wd.ImageTexture.create(wd.TextureLoader.getInstance().get("texture"));
+            material.shading = wd.Shading.SMOOTH;
 
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 20;
             geometry.segment = 20;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
 
-            gameObject.transform.translate(dy.Vector3.create(-30, 20, 0));
+            gameObject.transform.translate(wd.Vector3.create(-30, 20, 0));
 
             return gameObject;
         }
 
         function createBox(){
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
-            material.color = dy.Color.create("#666666");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
+            material.color = wd.Color.create("#666666");
             material.shininess = 16;
 
 
-            var geometry = dy.BoxGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 10;
             geometry.height = 10;
             geometry.depth = 10;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
 
-            gameObject.transform.translate(dy.Vector3.create(20, 10, 30));
-            gameObject.transform.eulerAngles = dy.Vector3.create(0, 45, 0);
+            gameObject.transform.translate(wd.Vector3.create(20, 10, 30));
+            gameObject.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
 
 
-            var action = dy.RepeatForever.create(dy.CallFunc.create(function(){
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
                 gameObject.transform.rotate(0, 1, 0);
             }));
 
@@ -72,37 +72,37 @@ describe("shadow map", function() {
         }
 
         function createGround(){
-            //var map = dy.LoaderManager.getInstance().get("ground").toTexture();
-            var map = dy.ImageTexture.create();
-            map.wrapS = dy.TextureWrapMode.REPEAT;
-            map.wrapT = dy.TextureWrapMode.REPEAT;
-            map.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
+            //var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            var map = wd.ImageTexture.create();
+            map.wrapS = wd.TextureWrapMode.REPEAT;
+            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
             material.shininess = 32;
             material.diffuseMap = map;
 
 
-            var plane = dy.PlaneGeometry.create();
+            var plane = wd.PlaneGeometry.create();
             plane.width = 200;
             plane.height = 200;
             plane.material = material;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(plane);
 
             return gameObject;
         }
 
         //function createAmbientLight() {
-        //    var ambientLightComponent = dy.AmbientLight.create();
-        //    ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+        //    var ambientLightComponent = wd.AmbientLight.create();
+        //    ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
         //
-        //    var ambientLight = dy.GameObject.create();
+        //    var ambientLight = wd.GameObject.create();
         //    ambientLight.addComponent(ambientLightComponent);
         //
         //    return ambientLight;
@@ -112,8 +112,8 @@ describe("shadow map", function() {
             var SHADOW_MAP_WIDTH = 1024,
                 SHADOW_MAP_HEIGHT = 1024;
 
-            var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.color = dy.Color.create("#ffffff");
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
             directionLightComponent.intensity = 1;
             directionLightComponent.castShadow = true;
             directionLightComponent.shadowCameraLeft = -100;
@@ -129,16 +129,16 @@ describe("shadow map", function() {
 
             directionLightComponent.shadowRenderList = shadowList;
 
-            var directionLight = dy.GameObject.create();
+            var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(dy.Vector3.create(0, 50, 50));
+            directionLight.transform.translate(wd.Vector3.create(0, 50, 50));
 
             return directionLight;
         }
 
         beforeEach(function(){
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
             var sphere = createSphere();
             var box = createBox();
@@ -178,7 +178,7 @@ describe("shadow map", function() {
 
 
                 expect(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight")).toCalledOnce();
-                expect(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight").firstCall.args[2]).toEqual(jasmine.any(dy.Matrix4))
+                expect(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight").firstCall.args[2]).toEqual(jasmine.any(wd.Matrix4))
                 expect(sceneShader.program.sendUniformData.withArgs("u_mMatrix")).toCalledBefore(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                 expect(sceneShader.program.sendUniformData.withArgs("u_vMatrix")).toCalledBefore(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight"));
                 expect(sceneShader.program.sendUniformData.withArgs("u_pMatrix")).toCalledBefore(sceneShader.program.sendUniformData.withArgs("u_vpMatrixFromLight"));
@@ -213,31 +213,31 @@ describe("shadow map", function() {
 
         function createBoxes() {
             return [
-                createBox(dy.Vector3.create(20, 0, 0)),
-                createBox(dy.Vector3.create(-20, 0, 0)),
-                createBox(dy.Vector3.create(0, 20, 0)),
-                createBox(dy.Vector3.create(0, -20, 0)),
-                createBox(dy.Vector3.create(10, 0, 25)),
-                createBox(dy.Vector3.create(0, 0, -20))
+                createBox(wd.Vector3.create(20, 0, 0)),
+                createBox(wd.Vector3.create(-20, 0, 0)),
+                createBox(wd.Vector3.create(0, 20, 0)),
+                createBox(wd.Vector3.create(0, -20, 0)),
+                createBox(wd.Vector3.create(10, 0, 25)),
+                createBox(wd.Vector3.create(0, 0, -20))
             ];
         }
 
         function createBox(position) {
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
-            material.color = dy.Color.create("#666666");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
+            material.color = wd.Color.create("#666666");
             material.shininess = 16;
 
 
-            var geometry = dy.BoxGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
             geometry.depth = 5;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
             gameObject.transform.translate(position);
@@ -246,45 +246,45 @@ describe("shadow map", function() {
         }
 
         function createGrounds() {
-            var xzEu = dy.Vector3.create(0, 0, 0);
-            var xzNeEu = dy.Vector3.create(0, 0, 180);
-            var xyEu = dy.Vector3.create(90, 0, 0);
-            var xyNeEu = dy.Vector3.create(-90, 0, 0);
-            var yzEu = dy.Vector3.create(0, 0, 90);
-            var yzNeEu = dy.Vector3.create(0, 0, -90);
+            var xzEu = wd.Vector3.create(0, 0, 0);
+            var xzNeEu = wd.Vector3.create(0, 0, 180);
+            var xyEu = wd.Vector3.create(90, 0, 0);
+            var xyNeEu = wd.Vector3.create(-90, 0, 0);
+            var yzEu = wd.Vector3.create(0, 0, 90);
+            var yzNeEu = wd.Vector3.create(0, 0, -90);
 
             return [
-                createGround(dy.Vector3.create(30, 0, 0), yzEu),
-                createGround(dy.Vector3.create(-30, 0, 0), yzNeEu),
-                createGround(dy.Vector3.create(0, 30, 0), xzNeEu),
-                createGround(dy.Vector3.create(0, -30, 0), xzEu),
-                createGround(dy.Vector3.create(0, 0, 30), xyNeEu),
-                createGround(dy.Vector3.create(0, 0, -30), xyEu)
+                createGround(wd.Vector3.create(30, 0, 0), yzEu),
+                createGround(wd.Vector3.create(-30, 0, 0), yzNeEu),
+                createGround(wd.Vector3.create(0, 30, 0), xzNeEu),
+                createGround(wd.Vector3.create(0, -30, 0), xzEu),
+                createGround(wd.Vector3.create(0, 0, 30), xyNeEu),
+                createGround(wd.Vector3.create(0, 0, -30), xyEu)
             ];
         }
 
         function createGround(position, eulerAngles) {
-            var map = dy.ImageTexture.create();
-            map.wrapS = dy.TextureWrapMode.REPEAT;
-            map.wrapT = dy.TextureWrapMode.REPEAT;
-            map.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);
+            var map = wd.ImageTexture.create();
+            map.wrapS = wd.TextureWrapMode.REPEAT;
+            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 
-            var material = dy.LightMaterial.create();
-            material.specular = dy.Color.create("#ffdd99");
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
             material.shininess = 32;
-            material.side = dy.Side.BOTH;
+            material.side = wd.Side.BOTH;
             material.diffuseMap = map;
 
 
-            var plane = dy.PlaneGeometry.create();
+            var plane = wd.PlaneGeometry.create();
             plane.width = 100;
             plane.height = 100;
             plane.material = material;
 
 
-            var ground = dy.GameObject.create();
-            ground.addComponent(dy.MeshRenderer.create());
+            var ground = wd.GameObject.create();
+            ground.addComponent(wd.MeshRenderer.create());
             ground.addComponent(plane);
 
             ground.transform.eulerAngles = eulerAngles;
@@ -298,8 +298,8 @@ describe("shadow map", function() {
                 SHADOW_MAP_HEIGHT = 1024;
             var listArr = boxArr.concat(groundArr);
 
-            var pointLightComponent = dy.PointLight.create();
-            pointLightComponent.color = dy.Color.create("#ffffff");
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#ffffff");
             pointLightComponent.intensity = 1;
             pointLightComponent.rangeLevel = 10;
             pointLightComponent.castShadow = true;
@@ -319,25 +319,25 @@ describe("shadow map", function() {
                 nz:listArr
             };
 
-            var pointMaterial = dy.BasicMaterial.create();
-            pointMaterial.color = dy.Color.create("#ffffff");
+            var pointMaterial = wd.BasicMaterial.create();
+            pointMaterial.color = wd.Color.create("#ffffff");
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = pointMaterial;
             geometry.radius = 1;
             geometry.segment = 20;
 
 
-            var pointLight = dy.GameObject.create();
+            var pointLight = wd.GameObject.create();
             pointLight.addComponent(pointLightComponent);
             pointLight.addComponent(geometry);
-            pointLight.addComponent(dy.MeshRenderer.create());
+            pointLight.addComponent(wd.MeshRenderer.create());
 
             return pointLight;
         }
 
         beforeEach(function(){
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
             var boxArr = createBoxes();
             var groundArr = createGrounds();

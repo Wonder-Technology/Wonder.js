@@ -4,7 +4,7 @@ describe("BoxGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        geo = new dy.BoxGeometry();
+        geo = new wd.BoxGeometry();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -41,7 +41,7 @@ describe("BoxGeometry", function() {
         beforeEach(function(){
             geo.material = {
                 init: sandbox.stub(),
-                shading: dy.Shading.FLAT
+                shading: wd.Shading.FLAT
             }
         });
 
@@ -77,7 +77,7 @@ describe("BoxGeometry", function() {
                 ])
         });
         it("test smooth shading", function(){
-            geo.material.shading = dy.Shading.SMOOTH;
+            geo.material.shading = wd.Shading.SMOOTH;
 
             judgeOneSegemets();
         });

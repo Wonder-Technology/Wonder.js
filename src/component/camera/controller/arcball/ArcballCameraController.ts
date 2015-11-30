@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class ArcballCameraController extends CameraController {
         public static create(cameraComponent:Camera) {
             var obj = new this(cameraComponent);
@@ -107,7 +107,7 @@ module dy {
             var moveSpeedX = this.moveSpeedX,
                 moveSpeedY = this.moveSpeedY,
                 dx = null,
-                dy = null,
+                wd = null,
                 keyState = e.keyState,
                 transform = this.gameObject.transform;
 
@@ -120,14 +120,14 @@ module dy {
                 dx = moveSpeedX;
             }
             else if(keyState["w"] || keyState["up"]) {
-                dy = moveSpeedY;
+                wd = moveSpeedY;
             }
             else if(keyState["s"] || keyState["down"]) {
-                dy = -moveSpeedY;
+                wd = -moveSpeedY;
             }
 
             this.target.add(Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
-            this.target.add(Vector3.create(transform.up.x * dy, transform.up.y * dy, 0));
+            this.target.add(Vector3.create(transform.up.x * wd, transform.up.y * wd, 0));
         }
 
         private _changeDistance(e:MouseEvent){

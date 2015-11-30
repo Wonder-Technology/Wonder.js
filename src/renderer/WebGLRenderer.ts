@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class WebGLRenderer extends Renderer{
         public static create():WebGLRenderer {
             var obj = new this();

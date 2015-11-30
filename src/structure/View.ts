@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class ViewWebGL implements IView {
         public static create(view:any) {
             var obj = new this(view);

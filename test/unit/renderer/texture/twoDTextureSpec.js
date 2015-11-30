@@ -7,9 +7,9 @@ describe("twoD texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.Texture;
+        Texture = wd.Texture;
         texture = new Texture();
-        director = dy.Director.getInstance();
+        director = wd.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
@@ -45,7 +45,7 @@ describe("twoD texture", function() {
 
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -57,13 +57,13 @@ describe("twoD texture", function() {
         var gpuDetector = null;
 
         function load2DTexture(onload) {
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/1.jpg", id: "texture"}
             ]).subscribe(null, null,
                 function () {
-                    var texture = dy.TextureLoader.getInstance().get("texture").toTexture();
+                    var texture = wd.TextureLoader.getInstance().get("texture").toTexture();
 
-                    texture.sourceRegion = dy.RectRegion.create(12, 25, 64, 64);
+                    texture.sourceRegion = wd.RectRegion.create(12, 25, 64, 64);
                     texture.width = 128;
                     texture.height = 128;
 
@@ -76,13 +76,13 @@ describe("twoD texture", function() {
                 maxTextureSize: 1024,
                 maxTextureUnit: 16
             };
-            sandbox.stub(dy.GPUDetector, "getInstance").returns(gpuDetector);
+            sandbox.stub(wd.GPUDetector, "getInstance").returns(gpuDetector);
         });
         afterEach(function () {
         });
         afterAll(function () {
             //put release cache to the last, so it can use the res cache during testing
-            dy.LoaderManager.getInstance().dispose();
+            wd.LoaderManager.getInstance().dispose();
         });
 
         describe("sourceRegion", function () {
@@ -95,7 +95,7 @@ describe("twoD texture", function() {
                 canvas = {
                     getContext: sandbox.stub().returns(ctx)
                 };
-                sandbox.stub(dy.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
+                sandbox.stub(wd.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
 
                 program = {
                     sendUniformData: sandbox.stub()
@@ -107,9 +107,9 @@ describe("twoD texture", function() {
                     /*!
                      in this case, it can't repeat correctly! (because the texture is the whole texture, not the part)
 
-                     texture.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
-                     texture.wrapS = dy.TextureWrapMode.REPEAT;
-                     texture.wrapT = dy.TextureWrapMode.REPEAT;
+                     texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+                     texture.wrapS = wd.TextureWrapMode.REPEAT;
+                     texture.wrapT = wd.TextureWrapMode.REPEAT;
                      */
 
                     texture.update(0);
@@ -118,31 +118,31 @@ describe("twoD texture", function() {
 
                     texture.sendData(program, 0);
 
-                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.09375, 0.3046875, 0.5, 0.5)));
+                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.09375, 0.3046875, 0.5, 0.5)));
 
                     done();
                 });
             });
             it("test sourceRegionMethod is DRAW_IN_CANVAS.", function (done) {
                 load2DTexture(function (texture) {
-                    texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                    texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
                     /*!
                      when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
                      */
-                    texture.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
-                    texture.wrapS = dy.TextureWrapMode.REPEAT;
-                    texture.wrapT = dy.TextureWrapMode.REPEAT;
+                    texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+                    texture.wrapS = wd.TextureWrapMode.REPEAT;
+                    texture.wrapT = wd.TextureWrapMode.REPEAT;
 
                     texture.update(0);
 
                     expect(gl.texImage2D).toCalledWith(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
-                    expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, dy.TextureWrapMode.REPEAT);
-                    expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, dy.TextureWrapMode.REPEAT);
+                    expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.TextureWrapMode.REPEAT);
+                    expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.TextureWrapMode.REPEAT);
 
                     texture.sendData(program, 0);
 
-                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 1, 1)));
-                    expect(testTool.getValues(program.sendUniformData.thirdCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 2, 2)));
+                    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0, 0, 1, 1)));
+                    expect(testTool.getValues(program.sendUniformData.thirdCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0, 0, 2, 2)));
 
                     done();
                 });

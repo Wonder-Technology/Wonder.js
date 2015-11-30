@@ -1,5 +1,5 @@
 //reference to three.js->Color.js
-module dy{
+module wd{
     export class Color {
         public static create(colorVal:string) {
             var obj = new this();

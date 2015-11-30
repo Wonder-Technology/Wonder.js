@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy{
+module wd{
     export function cacheGetter(judgeFunc:() => boolean, returnCacheValueFunc:() => any, setCacheFunc:(returnVal) => void){
         return function (target, name, descriptor) {
             var getter = descriptor.get;

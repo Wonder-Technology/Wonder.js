@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class ShaderSnippet {
         public static main_begin:string = "void main(void){\n";
         public static main_end:string = "}\n";

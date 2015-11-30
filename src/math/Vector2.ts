@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class Vector2{
         public static create(x, y):Vector2 ;
         public static create():Vector2 ;

@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export class Entity {
         private static _count:number = 1;
 

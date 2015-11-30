@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum TextureType{
         UNSIGNED_BYTE = <any>"UNSIGNED_BYTE",
         UNSIGNED_SHORT_5_6_5 = <any>"UNSIGNED_SHORT_5_6_5",

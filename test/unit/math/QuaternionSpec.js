@@ -1,7 +1,7 @@
 describe("Quaternion", function() {
     var sandbox = null;
-    var Quaternion = dy.Quaternion;
-    var Vector3 = dy.Vector3;
+    var Quaternion = wd.Quaternion;
+    var Vector3 = wd.Vector3;
 
     function getValues(values) {
         var digit = 5;

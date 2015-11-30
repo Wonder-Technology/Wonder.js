@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class TwoDRenderTargetTexture extends RenderTargetTexture {
         private _renderList:wdCb.Collection<GameObject> = null;
         get renderList(){

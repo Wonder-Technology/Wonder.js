@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class VideoTextureAsset extends TextureAsset{
         public static create(video:Video) {
             var obj = new this(video);

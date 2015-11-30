@@ -8,7 +8,7 @@ describe("Color", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Color = dy.Color;
+        Color = wd.Color;
     });
     afterEach(function () {
         sandbox.restore();

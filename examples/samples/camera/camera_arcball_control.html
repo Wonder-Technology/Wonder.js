@@ -4,29 +4,29 @@
     <meta charset="UTF-8">
     <title>arcball camera control</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
-            {url: "../asset/model/dy/male02/male02.dy", id: "model"}
+        wd.LoaderManager.getInstance().load([
+            {url: "../asset/model/wd/male02/male02.wd", id: "model"}
         ]).subscribe(null, null, function () {
             initSample();
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
-            director.renderer.setClearColor(dy.Color.create("#aaaaff"));
+            director.renderer.setClearColor(wd.Color.create("#aaaaff"));
 
             director.scene.addChild(setModel());
             director.scene.addChild(createAmbientLight());
@@ -37,17 +37,17 @@
         }
 
         function setModel() {
-            var model = dy.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
+            var model = wd.LoaderManager.getInstance().get("model").getChild("models").getChild(0);
 
             model.transform.translate(0, -80, 0);
 
             model.getChildren()
                     .forEach(function (child) {
-                        var material = child.getComponent(dy.Geometry).material;
-                        material.shading = dy.Shading.SMOOTH;
+                        var material = child.getComponent(wd.Geometry).material;
+                        material.shading = wd.Shading.SMOOTH;
                     });
 
-            var action = dy.RepeatForever.create(dy.CallFunc.create(function () {
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
                 model.transform.rotate(0, 1, 0);
             }));
 
@@ -57,22 +57,22 @@
         }
 
         function createAmbientLight() {
-            var ambientLightComponent = dy.AmbientLight.create();
-            ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
 
-            var ambientLight = dy.GameObject.create();
+            var ambientLight = wd.GameObject.create();
             ambientLight.addComponent(ambientLightComponent);
 
             return ambientLight;
         }
 
         function createDirectionLight() {
-            var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.color = dy.Color.create("#ffffff");
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
             directionLightComponent.intensity = 2;
 
 
-            var directionLight = dy.GameObject.create();
+            var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
 
@@ -80,16 +80,16 @@
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = dy.ArcballCameraController.create(cameraComponent);
+            var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.distance = 200;
 
             camera.addComponent(controller);

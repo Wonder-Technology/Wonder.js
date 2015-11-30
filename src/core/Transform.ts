@@ -3,7 +3,7 @@
 /*! referenced from:
  https://github.com/playcanvas/engine
  */
-module dy{
+module wd{
     //todo addChildAndSaveTransform?(playCanvas->scene_graphnode.js)
     //todo inherit from Component?
     export class Transform extends Entity{

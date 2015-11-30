@@ -12,10 +12,10 @@ describe("MirrorTexture", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.MirrorTexture;
+        Texture = wd.MirrorTexture;
         texture = new Texture();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        gl = dy.DeviceManager.getInstance().gl;
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        gl = wd.DeviceManager.getInstance().gl;
     });
     afterEach(function () {
         sandbox.restore();
@@ -25,7 +25,7 @@ describe("MirrorTexture", function () {
         var Plane;
 
         beforeEach(function () {
-            Plane = dy.Plane;
+            Plane = wd.Plane;
         });
 
         it("if geometry's transform not change and already create plane, return that plane", function () {
@@ -43,14 +43,14 @@ describe("MirrorTexture", function () {
             expect(plane).toEqual(texture._plane);
         });
         it("if geometry isn't PlaneGeometry, error", function () {
-            setGeometry(texture, dy.BoxGeometry.create());
+            setGeometry(texture, wd.BoxGeometry.create());
 
             expect(function () {
                 texture.getPlane();
             }).toThrow();
         });
         it("create plane which is in world space and return it", function () {
-            var geometry = dy.PlaneGeometry.create();
+            var geometry = wd.PlaneGeometry.create();
             geometry.width = 10;
             geometry.height = 10;
             geometry.material = {
@@ -60,11 +60,11 @@ describe("MirrorTexture", function () {
             };
             geometry.init();
 
-            var mirror = dy.GameObject.create();
+            var mirror = wd.GameObject.create();
             mirror.addComponent(geometry);
 
-            mirror.transform.rotateLocal(dy.Vector3.create(90, 0, 0));
-            mirror.transform.translateLocal(dy.Vector3.create(0, 0, -10));
+            mirror.transform.rotateLocal(wd.Vector3.create(90, 0, 0));
+            mirror.transform.translateLocal(wd.Vector3.create(0, 0, -10));
 
             setGeometry(texture, geometry);
 
@@ -79,7 +79,7 @@ describe("MirrorTexture", function () {
 
     describe("getPosition", function () {
         it("return plane'position in world space", function () {
-            var geometry = dy.PlaneGeometry.create();
+            var geometry = wd.PlaneGeometry.create();
             geometry.width = 10;
             geometry.height = 10;
             geometry.material = {
@@ -89,11 +89,11 @@ describe("MirrorTexture", function () {
             };
             geometry.init();
 
-            var mirror = dy.GameObject.create();
+            var mirror = wd.GameObject.create();
             mirror.addComponent(geometry);
 
-            mirror.transform.rotateLocal(dy.Vector3.create(90, 0, 0));
-            mirror.transform.translateLocal(dy.Vector3.create(0, 0, -10));
+            mirror.transform.rotateLocal(wd.Vector3.create(90, 0, 0));
+            mirror.transform.translateLocal(wd.Vector3.create(0, 0, -10));
 
             setGeometry(texture, geometry);
 
@@ -156,13 +156,13 @@ describe("MirrorTexture", function () {
         it("send mirror sampler", function () {
             var pos1 = 100;
             program.getUniformLocation.onCall(0).returns(pos1);
-            var material = dy.BasicMaterial.create();
+            var material = wd.BasicMaterial.create();
             material.mirrorMap = texture;
 
             material.mapManager.sendData(program);
 
             expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
-            expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_2D, 0);
+            expect(program.sendUniformData).toCalledWith(pos1, wd.VariableType.SAMPLER_2D, 0);
         });
     });
 });

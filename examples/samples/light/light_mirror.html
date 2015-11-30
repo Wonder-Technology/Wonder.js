@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <title>mirror and light</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/1.jpg", id: "texture"}
         ]).subscribe(null, null, function () {
             initSample();
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             var sphere = createSphere();
             var box = createBox();
@@ -41,144 +41,144 @@
         }
 
         function createSphere() {
-            var material = dy.LightMaterial.create();
-            material.color = dy.Color.create("rgb(100, 255, 100)");
-            material.specular = dy.Color.create("rgb(0, 255, 0)");
+            var material = wd.LightMaterial.create();
+            material.color = wd.Color.create("rgb(100, 255, 100)");
+            material.specular = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.diffuseMap = dy.LoaderManager.getInstance().get("texture").toTexture();
-            material.shading = dy.Shading.SMOOTH;
+            material.diffuseMap = wd.LoaderManager.getInstance().get("texture").toTexture();
+            material.shading = wd.Shading.SMOOTH;
 
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 5;
             geometry.segment = 20;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
 
             return gameObject;
         }
 
         function createBox() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("rgb(100, 0, 255)");
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(100, 0, 255)");
 
-            var boxGeometry = dy.BoxGeometry.create();
+            var boxGeometry = wd.BoxGeometry.create();
             boxGeometry.material = material;
             boxGeometry.width = 2;
             boxGeometry.height = 2;
             boxGeometry.depth = 2;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(boxGeometry);
 
-            gameObject.transform.translate(dy.Vector3.create(0, -13, 0));
+            gameObject.transform.translate(wd.Vector3.create(0, -13, 0));
 
             return gameObject;
         }
 
         function createMirror(sphere, box){
-            var texture = dy.MirrorTexture.create();
+            var texture = wd.MirrorTexture.create();
             texture.width = 1024;
             texture.height = 1024;
             texture.renderList = [sphere, box];
 
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#889999");
-            material.side = dy.Side.BOTH;
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("#889999");
+            material.side = wd.Side.BOTH;
             material.mirrorMap = texture;
 
-            var plane = dy.PlaneGeometry.create();
+            var plane = wd.PlaneGeometry.create();
             plane.width = 20;
             plane.height = 20;
             plane.material = material;
 
 
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(plane);
 
-            gameObject.transform.translate(dy.Vector3.create(0, -10, 0));
+            gameObject.transform.translate(wd.Vector3.create(0, -10, 0));
 
             return gameObject;
         }
 
         function createAmbientLight() {
-            var ambientLightComponent = dy.AmbientLight.create();
-            ambientLightComponent.color = dy.Color.create("rgb(30, 30, 30)");
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
 
-            var ambientLight = dy.GameObject.create();
+            var ambientLight = wd.GameObject.create();
             ambientLight.addComponent(ambientLightComponent);
 
             return ambientLight;
         }
 
         function createPointLight() {
-            var pointLightComponent = dy.PointLight.create();
-            pointLightComponent.color = dy.Color.create("#1f89ca");
+            var pointLightComponent = wd.PointLight.create();
+            pointLightComponent.color = wd.Color.create("#1f89ca");
             pointLightComponent.intensity = 1;
             pointLightComponent.rangeLevel = 10;
 
-            var pointLight = dy.GameObject.create();
+            var pointLight = wd.GameObject.create();
             pointLight.addComponent(pointLightComponent);
 
-            var pointMaterial = dy.BasicMaterial.create();
-            pointMaterial.color = dy.Color.create("#222222");
+            var pointMaterial = wd.BasicMaterial.create();
+            pointMaterial.color = wd.Color.create("#222222");
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = pointMaterial;
             geometry.radius = 1;
             geometry.segment = 20;
 
             pointLight.addComponent(geometry);
-            pointLight.addComponent(dy.MeshRenderer.create());
+            pointLight.addComponent(wd.MeshRenderer.create());
 
-            var action = dy.RepeatForever.create(dy.CallFunc.create(function () {
-                pointLight.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+                pointLight.transform.rotateAround(0.5, wd.Vector3.create(0, 0, 0), wd.Vector3.up);
             }));
 
             pointLight.addComponent(action);
 
-            pointLight.transform.translate(dy.Vector3.create(0, 0, 10));
+            pointLight.transform.translate(wd.Vector3.create(0, 0, 10));
 
             return pointLight;
         }
 
         function createDirectionLight() {
-            var directionLightComponent = dy.DirectionLight.create();
-            directionLightComponent.color = dy.Color.create("#1f8888");
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#1f8888");
             directionLightComponent.intensity = 1;
 
 
-            var directionLight = dy.GameObject.create();
+            var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(dy.Vector3.create(10, 0, 0));
-//            directionLight.transform.rotateLocal(dy.Vector3.create(0, 90, 0));
+            directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
+//            directionLight.transform.rotateLocal(wd.Vector3.create(0, 90, 0));
 
             return directionLight;
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.FlyCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(dy.Vector3.create(10, 10, 30));
-            camera.transform.lookAt(dy.Vector3.create(0, 0, 0));
+            camera.transform.translate(wd.Vector3.create(10, 10, 30));
+            camera.transform.lookAt(wd.Vector3.create(0, 0, 0));
 
             return camera;
         }

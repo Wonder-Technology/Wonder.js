@@ -4,7 +4,7 @@
 DeviceManager is responsible for global setting of gl
  */
 
-module dy {
+module wd {
     export class DeviceManager {
         private static _instance = null;
 

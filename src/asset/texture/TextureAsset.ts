@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class TextureAsset implements ITextureAsset{
         public static defaultTexture = null;
 

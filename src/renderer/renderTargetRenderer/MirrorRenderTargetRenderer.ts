@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     declare var Math:any;
 
     export class MirrorRenderTargetRenderer extends TwoDRenderTargetRenderer{
@@ -44,7 +44,7 @@ module dy {
             mirrorCameraComponent.worldToCameraMatrix = mirrorCameraViewMatrix.copy();
             mirrorCameraComponent.pMatrix = projectionMatrix;
 
-            return GameObject.create().addComponent(dy.BasicCameraController.create(mirrorCameraComponent)).init();
+            return GameObject.create().addComponent(wd.BasicCameraController.create(mirrorCameraComponent)).init();
         }
 
         private _setSceneSide(side:Side){

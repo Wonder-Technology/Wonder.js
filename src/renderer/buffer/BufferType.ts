@@ -1,4 +1,4 @@
-module dy {
+module wd {
     export enum BufferType{
         UNSIGNED_BYTE = <any>"UNSIGNED_BYTE",
         SHORT = <any>"SHORT",

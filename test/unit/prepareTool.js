@@ -19,9 +19,9 @@ var prepareTool = (function () {
             //fps = 10;
 
 
-            model.addComponent(dy.MeshRenderer.create());
+            model.addComponent(wd.MeshRenderer.create());
 
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(model);
 
@@ -34,12 +34,12 @@ var prepareTool = (function () {
             sandbox.stub(program, "getUniformLocation");
         },
         prepareForMap:function(sandbox){
-            sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+            sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                 width:100,
                 height:100
             });
 
-            var gl = dy.DeviceManager.getInstance().gl;
+            var gl = wd.DeviceManager.getInstance().gl;
             gl.createTexture.returns({});
             gl.createRenderbuffer.returns({});
         }

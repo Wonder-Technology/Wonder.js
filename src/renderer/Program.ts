@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class Program{
         public static create():Program {
             var obj = new this();

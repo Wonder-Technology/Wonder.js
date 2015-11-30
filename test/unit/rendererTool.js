@@ -22,20 +22,20 @@ var rendererTool = {
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
             testTool.clearInstance();
-            sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-            sandbox.stub(dy.GPUDetector.getInstance(), "precision", dy.GPUPrecision.HIGHP);
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+            sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.GPUPrecision.HIGHP);
 
 
 
 
-            dy.Director.getInstance().scene.camera = {
+            wd.Director.getInstance().scene.camera = {
                 transform:{
-                    position: dy.Vector3.create(1, 2, 3)
+                    position: wd.Vector3.create(1, 2, 3)
                 }
             };
 
 
-            material = new dy[MaterialClassName]();
+            material = new wd[MaterialClassName]();
         });
         afterEach(function () {
             testTool.clearInstance();
@@ -49,7 +49,7 @@ var rendererTool = {
                     shader = material.shader;
                     program = shader.program;
 
-                    sandbox.stub(dy.ArrayBuffer, "create", function(arr, num, type){
+                    sandbox.stub(wd.ArrayBuffer, "create", function(arr, num, type){
                         return testTool.getValues(arr);
                     });
 
@@ -69,14 +69,14 @@ var rendererTool = {
                     it("build definition data", function () {
                         var attributes = testTool.extend({
                             a_position: {
-                                type: dy.VariableType.FLOAT_3,
-                                value: dy.VariableCategory.ENGINE
+                                type: wd.VariableType.FLOAT_3,
+                                value: wd.VariableCategory.ENGINE
                             }
                         }, definitionData_attributes);
                         var uniforms = testTool.extend({
-                            u_mMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
-                            u_vMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE},
-                            u_pMatrix: {type: dy.VariableType.FLOAT_MAT4, value: dy.VariableCategory.ENGINE}
+                            u_mMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE},
+                            u_vMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE},
+                            u_pMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE}
                         }, definitionData_uniforms);
 
 
@@ -98,14 +98,14 @@ var rendererTool = {
                     var quadCmd;
 
                     beforeEach(function () {
-                        quadCmd = dy.QuadCommand.create();
+                        quadCmd = wd.QuadCommand.create();
                         sandbox.stub(quadCmd.buffers, "hasChild").returns(true);
                         sandbox.stub(quadCmd.buffers, "getChild");
 
 
-                        quadCmd.mMatrix = dy.Matrix4.create();
-                        quadCmd.vMatrix = dy.Matrix4.create();
-                        quadCmd.pMatrix = dy.Matrix4.create();
+                        quadCmd.mMatrix = wd.Matrix4.create();
+                        quadCmd.vMatrix = wd.Matrix4.create();
+                        quadCmd.pMatrix = wd.Matrix4.create();
 
                         setMaterial && setMaterial(material);
                     });

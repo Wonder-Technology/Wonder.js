@@ -4,7 +4,7 @@ describe("MorphBufferContainer", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        container= new dy.MorphBufferContainer();
+        container= new wd.MorphBufferContainer();
     });
     afterEach(function () {
         sandbox.restore();
@@ -14,14 +14,14 @@ describe("MorphBufferContainer", function() {
         var model,geo,geometryData,animation;
 
         function createAnimation(){
-            var animation = dy.MorphAnimation.create();
+            var animation = wd.MorphAnimation.create();
 
             return animation;
         }
 
         beforeEach(function(){
-            sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-            geo = new dy.ModelGeometry();
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+            geo = new wd.ModelGeometry();
             geo.material = {
                 init:sandbox.stub()
             }
@@ -36,7 +36,7 @@ describe("MorphBufferContainer", function() {
                 )
             });
 
-            model = dy.GameObject.create();
+            model = wd.GameObject.create();
             model.addComponent(geo);
 
             animation = createAnimation();
@@ -49,7 +49,7 @@ describe("MorphBufferContainer", function() {
         describe("get vertice buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [];
                 geo.colors = [];
 
@@ -62,7 +62,7 @@ describe("MorphBufferContainer", function() {
             });
 
             it("if not play animation, return static data", function(){
-                var result1 = container.getChild(dy.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.BufferDataType.VERTICE);
 
                 expect(result1.length).toEqual(2);
                 expect(result1[0].data).toEqual(
@@ -80,8 +80,8 @@ describe("MorphBufferContainer", function() {
             it("if cached, return cached data", function(){
                 animation.play("play", 10);
 
-                var result1 = container.getChild(dy.BufferDataType.VERTICE);
-                var result2 = container.getChild(dy.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.BufferDataType.VERTICE);
+                var result2 = container.getChild(wd.BufferDataType.VERTICE);
 
                 expect(result1.length).toEqual(2);
                 expect(result1[0].data).toEqual(

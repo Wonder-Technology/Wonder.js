@@ -1,5 +1,5 @@
 /// <reference path="../../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class BuildShadowMapShaderLib extends ShaderLib{
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);

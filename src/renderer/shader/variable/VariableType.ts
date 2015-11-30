@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum VariableType{
         FLOAT_1,
         FLOAT_2,

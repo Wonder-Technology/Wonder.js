@@ -8,59 +8,59 @@ var tool = {
     box6: null,
 
     addSkybox: function () {
-        var material = dy.SkyboxMaterial.create();
-        material.envMap = dy.CubemapTexture.create(
+        var material = wd.SkyboxMaterial.create();
+        material.envMap = wd.CubemapTexture.create(
             [
                 {
-                    asset: dy.LoaderManager.getInstance().get("px")
+                    asset: wd.LoaderManager.getInstance().get("px")
                 },
                 {
-                    asset: dy.LoaderManager.getInstance().get("nx")
+                    asset: wd.LoaderManager.getInstance().get("nx")
                 },
                 {
-                    asset: dy.LoaderManager.getInstance().get("py")
+                    asset: wd.LoaderManager.getInstance().get("py")
                 },
                 {
-                    asset: dy.LoaderManager.getInstance().get("ny")
+                    asset: wd.LoaderManager.getInstance().get("ny")
                 },
                 {
-                    asset: dy.LoaderManager.getInstance().get("pz")
+                    asset: wd.LoaderManager.getInstance().get("pz")
                 },
                 {
-                    asset: dy.LoaderManager.getInstance().get("nz")
+                    asset: wd.LoaderManager.getInstance().get("nz")
                 }
             ]
         );
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.material = material;
         geometry.width = 100;
         geometry.height = 100;
         geometry.depth = 100;
 
 
-        this.skybox = dy.Skybox.create();
+        this.skybox = wd.Skybox.create();
         this.skybox.addComponent(geometry);
 
 
-        var director = dy.Director.getInstance();
+        var director = wd.Director.getInstance();
 
         director.scene.addChild(this.skybox);
     },
     addBox: function () {
-        this.box1 = dy.GameObject.create();
-        this.box2 = dy.GameObject.create();
-        this.box3 = dy.GameObject.create();
-        this.box4 = dy.GameObject.create();
-        this.box5 = dy.GameObject.create();
-        this.box6 = dy.GameObject.create();
+        this.box1 = wd.GameObject.create();
+        this.box2 = wd.GameObject.create();
+        this.box3 = wd.GameObject.create();
+        this.box4 = wd.GameObject.create();
+        this.box5 = wd.GameObject.create();
+        this.box6 = wd.GameObject.create();
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("#ffffff");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("#ffffff");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -69,22 +69,22 @@ var tool = {
         geometry.material = material;
 
 
-        this.box1.addComponent(dy.MeshRenderer.create());
+        this.box1.addComponent(wd.MeshRenderer.create());
         this.box1.addComponent(geometry);
 
 
-        var action = dy.RepeatForever.create(dy.CallFunc.create(function () {
-            this.box1.transform.rotateAround(0.5, dy.Vector3.create(0, 0, 0), dy.Vector3.up);
+        var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
+            this.box1.transform.rotateAround(0.5, wd.Vector3.create(0, 0, 0), wd.Vector3.up);
         }, this));
 
         this.box1.addComponent(action);
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("rgb(0, 255, 255)");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("rgb(0, 255, 255)");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -93,18 +93,18 @@ var tool = {
         geometry.material = material;
 
 
-        this.box2.addComponent(dy.MeshRenderer.create());
+        this.box2.addComponent(wd.MeshRenderer.create());
         this.box2.addComponent(geometry);
 
 
         this.box2.transform.translate(-40, 0, 40);
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("rgb(255, 0, 255)");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("rgb(255, 0, 255)");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -113,18 +113,18 @@ var tool = {
         geometry.material = material;
 
 
-        this.box3.addComponent(dy.MeshRenderer.create());
+        this.box3.addComponent(wd.MeshRenderer.create());
         this.box3.addComponent(geometry);
 
 
         this.box3.transform.translate(-80, 0, 0);
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("rgb(0, 0, 255)");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("rgb(0, 0, 255)");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -133,18 +133,18 @@ var tool = {
         geometry.material = material;
 
 
-        this.box4.addComponent(dy.MeshRenderer.create());
+        this.box4.addComponent(wd.MeshRenderer.create());
         this.box4.addComponent(geometry);
 
 
         this.box4.transform.translate(-40, 0, -40);
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("rgb(0, 255, 0)");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("rgb(0, 255, 0)");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -153,18 +153,18 @@ var tool = {
         geometry.material = material;
 
 
-        this.box5.addComponent(dy.MeshRenderer.create());
+        this.box5.addComponent(wd.MeshRenderer.create());
         this.box5.addComponent(geometry);
 
 
         this.box5.transform.translate(-40, 40, 0);
 
 
-        var material = dy.BasicMaterial.create();
-        material.color = dy.Color.create("#999999");
+        var material = wd.BasicMaterial.create();
+        material.color = wd.Color.create("#999999");
 
 
-        var geometry = dy.BoxGeometry.create();
+        var geometry = wd.BoxGeometry.create();
         geometry.width = 10;
         geometry.height = 10;
         geometry.depth = 10;
@@ -173,13 +173,13 @@ var tool = {
         geometry.material = material;
 
 
-        this.box6.addComponent(dy.MeshRenderer.create());
+        this.box6.addComponent(wd.MeshRenderer.create());
         this.box6.addComponent(geometry);
 
 
         this.box6.transform.translate(-40, -40, 0);
 
-        var director = dy.Director.getInstance();
+        var director = wd.Director.getInstance();
 
         director.scene.addChild(this.box1);
         director.scene.addChild(this.box2);
@@ -191,10 +191,10 @@ var tool = {
     addSphere: function (mode, setFunc) {
         var setFunc = setFunc || function () {
             };
-        var sphere = dy.GameObject.create();
+        var sphere = wd.GameObject.create();
 
 
-        var texture = dy.DynamicCubemapTexture.create();
+        var texture = wd.DynamicCubemapTexture.create();
         var list = [this.skybox, this.box1, this.box2, this.box3, this.box4, this.box5, this.box6];
 
         texture.renderList = {
@@ -212,14 +212,14 @@ var tool = {
         texture.mode = mode;
 
 
-        var material = dy.BasicMaterial.create();
+        var material = wd.BasicMaterial.create();
         material.envMap = texture;
-        material.color = dy.Color.create("#ffffff");
-        material.shading = dy.Shading.SMOOTH;
+        material.color = wd.Color.create("#ffffff");
+        material.shading = wd.Shading.SMOOTH;
         setFunc(material);
 
 
-        var geometry = dy.SphereGeometry.create();
+        var geometry = wd.SphereGeometry.create();
         geometry.radius = 10;
         geometry.segments = 20;
 
@@ -227,33 +227,33 @@ var tool = {
         geometry.material = material;
 
 
-        sphere.addComponent(dy.MeshRenderer.create());
+        sphere.addComponent(wd.MeshRenderer.create());
         sphere.addComponent(geometry);
 
 
         sphere.transform.translate(-40, 0, 0);
 
 
-        var director = dy.Director.getInstance();
+        var director = wd.Director.getInstance();
         director.scene.addChild(sphere);
     },
     addCamera: function () {
-        var camera = dy.GameObject.create(),
-            view = dy.Director.getInstance().view,
-            cameraComponent = dy.PerspectiveCamera.create();
+        var camera = wd.GameObject.create(),
+            view = wd.Director.getInstance().view,
+            cameraComponent = wd.PerspectiveCamera.create();
 
         cameraComponent.fovy = 60;
         cameraComponent.aspect = view.width / view.height;
         cameraComponent.near = 0.1;
         cameraComponent.far = 1000;
 
-        var controller = dy.FlyCameraController.create(cameraComponent);
+        var controller = wd.FlyCameraController.create(cameraComponent);
         camera.addComponent(controller);
 
-        camera.transform.translateLocal(dy.Vector3.create(0, 0, 30));
-        camera.transform.lookAt(dy.Vector3.create(-40, 0, 0));
+        camera.transform.translateLocal(wd.Vector3.create(0, 0, 30));
+        camera.transform.lookAt(wd.Vector3.create(-40, 0, 0));
 
-        var director = dy.Director.getInstance();
+        var director = wd.Director.getInstance();
 
         director.scene.addChild(camera);
     }

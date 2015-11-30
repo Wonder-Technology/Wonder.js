@@ -10,7 +10,7 @@ describe("script", function () {
     }
 
     function testScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
-        var gameObject = dy.GameObject.create();
+        var gameObject = wd.GameObject.create();
 
         script.url = url1;
 
@@ -45,8 +45,8 @@ describe("script", function () {
     }
 
     function testTwoScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
-        var script2 = dy.Script.create();
-        var gameObject = dy.GameObject.create();
+        var script2 = wd.Script.create();
+        var gameObject = wd.GameObject.create();
 
         script.url = url1;
         script2.url = url2;
@@ -121,11 +121,11 @@ describe("script", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        script = dy.Script.create();
-        director = dy.Director.getInstance();
+        script = wd.Script.create();
+        director = wd.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.GPUDetector.getInstance(), "detect");
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         director.scene.addChild(createCamera());
 
         url1 = testTool.resPath + "test/res/test.js";
@@ -133,8 +133,8 @@ describe("script", function () {
     });
     afterEach(function () {
         $("script").remove();
-        dy.Director._instance = null;
-        dy.JsLoader._instance = null;
+        wd.Director._instance = null;
+        wd.JsLoader._instance = null;
         sandbox.restore();
     });
 
@@ -198,8 +198,8 @@ describe("script", function () {
             wdFrp.empty()
         );
         sandbox.spy(director, "_buildLoadScriptStream");
-        var script = dy.Script.create();
-        var gameObject = dy.GameObject.create();
+        var script = wd.Script.create();
+        var gameObject = wd.GameObject.create();
 
         script.url = url1;
 

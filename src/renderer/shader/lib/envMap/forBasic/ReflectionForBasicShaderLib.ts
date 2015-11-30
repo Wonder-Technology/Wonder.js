@@ -1,5 +1,5 @@
 /// <reference path="../../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ReflectionForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();

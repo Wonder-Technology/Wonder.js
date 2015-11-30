@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class Quaternion {
         public static create(x?:number, y?:number, z?:number, w?:number) {
             var obj = new this(x, y, z, w);

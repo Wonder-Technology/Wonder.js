@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class CubemapFaceCompressedTexture extends CubemapFaceTexture implements ICubemapFaceCompressedTextureAsset{
         public static create(asset:CompressedTextureAsset) {
             var obj = new this();

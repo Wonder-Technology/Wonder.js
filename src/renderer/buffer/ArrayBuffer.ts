@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ArrayBuffer extends Buffer{
         public static create(data:any, num:number, type:BufferType, usage:BufferUsage = BufferUsage.STATIC_DRAW):ArrayBuffer {
             var obj = new this();

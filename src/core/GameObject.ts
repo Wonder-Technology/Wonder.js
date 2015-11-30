@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     //todo add copy method(refer to unity:  http://docs.unity3d.com/ScriptReference/Object.Instantiate.html)
     export class GameObject extends Entity{
         public static create() {

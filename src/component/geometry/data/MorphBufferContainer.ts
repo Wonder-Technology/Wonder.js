@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class MorphBufferContainer extends BufferContainer {
         public static create(animation:MorphAnimation) {
             var obj = new this(animation);

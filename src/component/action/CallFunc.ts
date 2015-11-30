@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 
-module dy {
+module wd {
     export class CallFunc extends ActionInstant{
         public static create(func:Function, context:any, ...data) {
             var dataArr = Array.prototype.slice.call(arguments, 2),

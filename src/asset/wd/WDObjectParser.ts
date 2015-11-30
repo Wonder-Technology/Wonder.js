@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 //todo optimize:set vertice,normal presion?(use toFixed)
-module dy {
-    export class DYObjectParser {
+module wd {
+    export class WDObjectParser {
         public static create() {
             var obj = new this();
 

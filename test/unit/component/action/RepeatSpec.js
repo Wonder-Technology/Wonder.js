@@ -2,12 +2,12 @@ describe("Repeat", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var Repeat = dy.Repeat;
+    var Repeat = wd.Repeat;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new Repeat();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -16,9 +16,9 @@ describe("Repeat", function () {
 
     it("repeat action for the specific times", function(){
         var x1 = null;
-        var tween1 = dy.Tween.create();
+        var tween1 = wd.Tween.create();
         tween1.from({x:0}).to({x: 10}, 100)
-            .easing( dy.Tween.Easing.Linear.None)
+            .easing( wd.Tween.Easing.Linear.None)
             .onUpdate(function(){
                 x1 = this.x;
             });
@@ -66,9 +66,9 @@ describe("Repeat", function () {
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
             var x1 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });
@@ -100,9 +100,9 @@ describe("Repeat", function () {
     describe("pause,resume", function(){
         it("can pause action and continue action", function () {
             var x1 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });

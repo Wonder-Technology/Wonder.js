@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class CubemapFaceTexture{
         public type:TextureType = TextureType.UNSIGNED_BYTE;
         public format:TextureFormat = null;

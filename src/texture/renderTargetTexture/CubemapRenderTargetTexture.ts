@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
 

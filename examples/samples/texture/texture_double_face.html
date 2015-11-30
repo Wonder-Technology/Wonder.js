@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>double face texture</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/1.jpg", id: "texture1"},
             {url: "../asset/texture/2.jpg", id: "texture2"}
         ]).subscribe(null, null, function () {
@@ -25,7 +25,7 @@
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle());
             director.scene.addChild(createCamera());
@@ -34,42 +34,42 @@
         }
 
         function createTriangle() {
-            var material1 = dy.BasicMaterial.create();
-            material1.map = dy.LoaderManager.getInstance().get("texture1").toTexture();
+            var material1 = wd.BasicMaterial.create();
+            material1.map = wd.LoaderManager.getInstance().get("texture1").toTexture();
 
 
-            var geometry1 = dy.TriangleGeometry.create();
+            var geometry1 = wd.TriangleGeometry.create();
             geometry1.material = material1;
             geometry1.width = 5;
             geometry1.height = 5;
 
 
-            var gameObject1 = dy.GameObject.create();
+            var gameObject1 = wd.GameObject.create();
             gameObject1.addComponent(geometry1);
-            gameObject1.addComponent(dy.MeshRenderer.create());
+            gameObject1.addComponent(wd.MeshRenderer.create());
 
 
-            var material2 = dy.BasicMaterial.create();
-            material2.map = dy.LoaderManager.getInstance().get("texture2").toTexture();
-            material2.side = dy.Side.BACK;
+            var material2 = wd.BasicMaterial.create();
+            material2.map = wd.LoaderManager.getInstance().get("texture2").toTexture();
+            material2.side = wd.Side.BACK;
 
 
-            var geometry2 = dy.TriangleGeometry.create();
+            var geometry2 = wd.TriangleGeometry.create();
             geometry2.material = material2;
             geometry2.width = 5;
             geometry2.height = 5;
 
 
-            var gameObject2 = dy.GameObject.create();
+            var gameObject2 = wd.GameObject.create();
             gameObject2.addComponent(geometry2);
-            gameObject2.addComponent(dy.MeshRenderer.create());
+            gameObject2.addComponent(wd.MeshRenderer.create());
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addChild(gameObject1);
             gameObject.addChild(gameObject2);
 
-            var action = dy.RepeatForever.create(dy.CallFunc.create(function () {
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
                 gameObject.transform.rotate(0, 1, 0);
             }));
 
@@ -79,19 +79,19 @@
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.BasicCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(dy.Vector3.create(0, 0, 5));
+            camera.transform.translate(wd.Vector3.create(0, 0, 5));
 
             return camera;
         }

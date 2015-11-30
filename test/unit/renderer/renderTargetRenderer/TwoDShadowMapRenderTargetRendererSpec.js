@@ -2,11 +2,11 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
     var tool = new TwoDRenderTargetTool();
     var self = tool;
 
-    tool.RenderTargetRenderer = dy.TwoDShadowMapRenderTargetRenderer;
+    tool.RenderTargetRenderer = wd.TwoDShadowMapRenderTargetRenderer;
 
 
     tool.initWhenCreate_beforeEach = function(){
-        self.sandbox.stub(dy.TwoDShadowMapRenderTargetRendererUtils, "create");
+        self.sandbox.stub(wd.TwoDShadowMapRenderTargetRendererUtils, "create");
     };
 
 
@@ -16,7 +16,7 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
             body: function(texture){
                 self.renderTargetRenderer.initWhenCreate();
 
-                expect(dy.TwoDShadowMapRenderTargetRendererUtils.create).toCalledOnce();
+                expect(wd.TwoDShadowMapRenderTargetRendererUtils.create).toCalledOnce();
             }
         },
         {
@@ -24,28 +24,28 @@ describe("TwoDShadowMapRenderTargetRenderer", function() {
             body: function(texture){
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dy.Log, "warn");
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.Log, "warn");
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height:100
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 99,
                     height:201
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                expect(dy.Log.warn).not.toCalled();
+                expect(wd.Log.warn).not.toCalled();
             }
         }
         ]
 
 tool.init_beforeEach = function(self){
-    self.renderTargetRenderer._shadowMapRendererUtils = new dy.TwoDShadowMapRenderTargetRendererUtils();
+    self.renderTargetRenderer._shadowMapRendererUtils = new wd.TwoDShadowMapRenderTargetRendererUtils();
 }
 
     tool.init_body = function(self) {
@@ -67,7 +67,7 @@ tool.init_beforeEach = function(self){
 
             self.renderTargetRenderer.init();
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
             expect(self.renderTargetRenderer._shadowMapRendererUtils.clearTwoDShadowMapData.callCount).toEqual(6);
         });
@@ -81,7 +81,7 @@ tool.init_beforeEach = function(self){
 
             self.renderTargetRenderer.init();
 
-            expect(self.renderTargetRenderer._shadowMapRendererUtils.createShaderWithShaderLib).toCalledWith(sinon.match.instanceOf(dy.BuildTwoDShadowMapShaderLib));
+            expect(self.renderTargetRenderer._shadowMapRendererUtils.createShaderWithShaderLib).toCalledWith(sinon.match.instanceOf(wd.BuildTwoDShadowMapShaderLib));
         });
     };
 
@@ -177,8 +177,8 @@ tool.init_beforeEach = function(self){
 
         beforeEach(function(){
             //cameraComponent = {
-            //    worldToCameraMatrix: dy.Matrix4.create().rotate(45, 0, 1, 0),
-            //    pMatrix: dy.Matrix4.create()
+            //    worldToCameraMatrix: wd.Matrix4.create().rotate(45, 0, 1, 0),
+            //    pMatrix: wd.Matrix4.create()
             //};
             //camera = {
             //    getComponent: self.sandbox.stub().returns(cameraComponent)
@@ -187,7 +187,7 @@ tool.init_beforeEach = function(self){
             //self.sandbox.stub(self.renderTargetRenderer, "_setClipPlane").returns(cameraComponent.pMatrix);
             //
             //plane = {
-            //    getReflectionMatrix:self.sandbox.stub().returns(dy.Matrix4.create())
+            //    getReflectionMatrix:self.sandbox.stub().returns(wd.Matrix4.create())
             //}
             //
             //texture = {
@@ -203,7 +203,7 @@ tool.init_beforeEach = function(self){
                 shadowCameraBottom: -20,
                 shadowCameraNear: 0.1,
                 shadowCameraFar: 50,
-                position: dy.Vector3.create(10, 20, 30)
+                position: wd.Vector3.create(10, 20, 30)
             }
 
             self.renderTargetRenderer._light = light;
@@ -211,10 +211,10 @@ tool.init_beforeEach = function(self){
         });
 
         it("create Ortho camera", function(){
-            expect(self.renderTargetRenderer.createCamera().getComponent(dy.CameraController).camera).toBeInstanceOf(dy.OrthographicCamera);
+            expect(self.renderTargetRenderer.createCamera().getComponent(wd.CameraController).camera).toBeInstanceOf(wd.OrthographicCamera);
         });
         it("set camera component", function(){
-            var cameraComponent = self.renderTargetRenderer.createCamera().getComponent(dy.CameraController).camera;
+            var cameraComponent = self.renderTargetRenderer.createCamera().getComponent(wd.CameraController).camera;
 
             expect(cameraComponent.left).toEqual(light.shadowCameraLeft);
             expect(cameraComponent.right).toEqual(light.shadowCameraRight);
@@ -225,7 +225,7 @@ tool.init_beforeEach = function(self){
         });
         it("move to light's position, lookAt zero point", function(){
             var camera = self.renderTargetRenderer.createCamera();
-            var transform = dy.Transform.create().translate(light.position).lookAt(0, 0, 0);
+            var transform = wd.Transform.create().translate(light.position).lookAt(0, 0, 0);
 
             expect(camera.transform.position).toEqual(transform.position);
             expect(camera.transform.rotation).toEqual(
@@ -234,7 +234,7 @@ tool.init_beforeEach = function(self){
         });
         it("init camera", function(){
             var firstCallCamera = self.renderTargetRenderer.createCamera(camera);
-            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
+            var firstCallCameraCompoment = firstCallCamera.getComponent(wd.CameraController).camera;
 
             expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
                     [ 0.1, 0, 0, 0, 0, 0.05, 0, 0, 0, 0, -0.0400802, 0, 0, 0, -1.0040081, 1 ]

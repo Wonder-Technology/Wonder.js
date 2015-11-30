@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class CommonTexture extends TwoDTexture{
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             var mipmapCmd:DrawMipmapTwoDTextureCommand = null,

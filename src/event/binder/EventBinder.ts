@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     //responsibilty:on, off event(manage list)
 
     export class EventBinder {

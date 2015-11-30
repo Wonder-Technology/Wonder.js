@@ -7,9 +7,9 @@ describe("compressed texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.Texture;
+        Texture = wd.Texture;
         texture = new Texture();
-        director = dy.Director.getInstance();
+        director = wd.Director.getInstance();
         gl = {
             TEXTURE_2D: "TEXTURE_2D",
             TEXTURE_WRAP_S: "TEXTURE_WRAP_S",
@@ -45,10 +45,10 @@ describe("compressed texture", function() {
 
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
-        dy.Director._instance = null;
+        wd.Director._instance = null;
         sandbox.restore();
     });
 
@@ -57,11 +57,11 @@ describe("compressed texture", function() {
         var gpuDetector = null;
 
         function loadCompressedTexture(onload){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath  + "test/res/disturb_dxt1_mip.dds", id:"compressedTexture"}
             ]).subscribe(null, null,
                 function(){
-                    var texture = dy.TextureLoader.getInstance().get("compressedTexture").toTexture();
+                    var texture = wd.TextureLoader.getInstance().get("compressedTexture").toTexture();
 
                     texture.width = 128;
                     texture.height = 128;
@@ -79,13 +79,13 @@ describe("compressed texture", function() {
                 COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
             };
 
-            sandbox.stub(dy.GPUDetector, "getInstance").returns(gpuDetector);
+            sandbox.stub(wd.GPUDetector, "getInstance").returns(gpuDetector);
         });
         afterEach(function(){
         });
         afterAll(function(){
             //put release cache to the last, so it can use the res cache during testing
-            dy.LoaderManager.getInstance().dispose();
+            wd.LoaderManager.getInstance().dispose();
         });
 
         describe("sourceRegion", function(){
@@ -110,27 +110,27 @@ describe("compressed texture", function() {
                 describe("sourceRegionMethod always be CHANGE_TEXCOORDS_IN_GLSL, because canvas->drawImage can't draw the compressed texture's data.", function(){
                     it("test default", function(done){
                         loadCompressedTexture(function(texture){
-                            texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                            texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
 
                             texture.update(0);
 
                             texture.sendData(program, 0);
 
-                            expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+                            expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
 
                             done();
                         });
                     });
                     it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(done){
                         loadCompressedTexture(function(texture){
-                            texture.sourceRegion = dy.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                            texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
-                            sandbox.stub(dy.Log, "assert");
+                            texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                            texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                            sandbox.stub(wd.Log, "assert");
 
                             texture.update(0);
 
-                            expect(dy.Log.assert).toCalled();
-                            expect(texture.sourceRegionMethod).toEqual(dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                            expect(wd.Log.assert).toCalled();
+                            expect(texture.sourceRegionMethod).toEqual(wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
 
                             done();
                         });
@@ -183,7 +183,7 @@ describe("compressed texture", function() {
                 });
                 it("if format is RGBA, use texImage2D", function(done){
                     loadCompressedTexture(function(texture){
-                        texture.format = dy.TextureFormat.RGBA;
+                        texture.format = wd.TextureFormat.RGBA;
                         texture.mipmaps.removeAllChildren();
 
                         var mipmap1 = buildMipmap();

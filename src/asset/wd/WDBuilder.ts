@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
-    export class DYBuilder{
+module wd {
+    export class WDBuilder{
         public static create() {
             var obj = new this();
 
@@ -108,9 +108,9 @@ module dy {
 
             type = materialData.type || DEFAULTYPE;
 
-            wdCb.Log.error(!dy[type], wdCb.Log.info.FUNC_NOT_EXIST(`materialClass:${type}`));
+            wdCb.Log.error(!wd[type], wdCb.Log.info.FUNC_NOT_EXIST(`materialClass:${type}`));
 
-            material = dy[type].create();
+            material = wd[type].create();
 
             material.name = materialName;
 

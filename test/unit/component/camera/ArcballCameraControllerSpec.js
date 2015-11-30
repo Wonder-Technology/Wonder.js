@@ -6,20 +6,20 @@ describe("ArcballCameraController", function () {
     var camera,cameraComponent,component;
 
     function prepare(sandbox){
-        camera = dy.GameObject.create();
+        camera = wd.GameObject.create();
 
-        cameraComponent = dy.PerspectiveCamera.create();
+        cameraComponent = wd.PerspectiveCamera.create();
         cameraComponent.fovy = 45;
         cameraComponent.aspect = 1;
         cameraComponent.near = 0.1;
         cameraComponent.far = 1000;
 
-        controller = dy.ArcballCameraController.create(cameraComponent);
+        controller = wd.ArcballCameraController.create(cameraComponent);
         controller.distance = 10;
 
         camera.addComponent(controller);
 
-        component = camera.getComponent(dy.CameraController).camera;
+        component = camera.getComponent(wd.CameraController).camera;
     }
 
     function insertDom() {
@@ -34,11 +34,11 @@ describe("ArcballCameraController", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        dy.DeviceManager.getInstance().createGL("#event-test");
+        wd.DeviceManager.getInstance().createGL("#event-test");
     });
     afterEach(function () {
         removeDom();
-        dy.EventManager.off();
+        wd.EventManager.off();
         testTool.clearInstance();
         sandbox.restore();
     });

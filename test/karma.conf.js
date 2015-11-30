@@ -19,8 +19,8 @@
         "reference/three.js.sourcecode/Three.js",
 
         //'src/math/*.js',
-        'dist/dy.innerLib.js',
-        'dist/dy.debug.js',
+        'dist/wd.innerLib.js',
+        'dist/wd.debug.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',
@@ -41,8 +41,8 @@
       //  'test/unit/asset/obj/*.js',
         //'test/unit/asset/obj/OBJParserSpec.js',
         //'test/unit/asset/loaderSpec.js',
-        //'test/unit/asset/dy/DYParserSpec.js',
-        //'test/unit/asset/dy/DYBuilderSpec.js',
+        //'test/unit/asset/wd/WDParserSpec.js',
+        //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',

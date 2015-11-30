@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ImageTexture extends CommonTexture{
         public static create(asset:ImageTextureAsset);
         public static create(canvas:HTMLCanvasElement);

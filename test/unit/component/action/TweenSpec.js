@@ -2,12 +2,12 @@ describe("Tween", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var Tween = dy.Tween;
+    var Tween = wd.Tween;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = Tween.create();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -21,7 +21,7 @@ describe("Tween", function () {
             var finishCount = 0;
             var x,y;
             action.from({x:0, y:0}).to({x: 4, y:10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onStart(function(){
                     startCount++;
                 })
@@ -122,7 +122,7 @@ describe("Tween", function () {
         it("return copy one, copy inner action", function () {
             var onStart = onStop = onFinish = onUpdate = function(){};
             action.from({x:0}).to({x: [0, 50, 100]}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .interpolation( Tween.Interpolation.Linear )
                 .onStart(onStart)
                 .onStop(onStop)
@@ -149,7 +149,7 @@ describe("Tween", function () {
         it("reverse from and to", function(){
             var x,y;
             action.from({x:0, y:0}).to({x: 4, y:10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x = this.x;
                     y = this.y;

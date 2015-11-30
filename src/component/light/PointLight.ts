@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class PointLight extends Light{
         public static type:string = "pointLight";
 

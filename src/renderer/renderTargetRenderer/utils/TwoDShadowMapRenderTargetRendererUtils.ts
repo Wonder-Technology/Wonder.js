@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class TwoDShadowMapRenderTargetRendererUtils extends ShadowMapRenderTargetRendererUtils{
         public static create(light:DirectionLight, texture:TwoDShadowMapTexture) {
             var obj = new this(light, texture);

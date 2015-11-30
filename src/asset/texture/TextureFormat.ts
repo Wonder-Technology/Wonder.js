@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum TextureFormat{
         RGB = <any>"RGB",
         RGBA = <any>"RGBA",

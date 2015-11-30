@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class Light extends Component {
         get position(){
             return this.gameObject.transform.position;

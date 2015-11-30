@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class BasicMaterial extends Material{
         public static create() {
             var obj = new this();
@@ -96,7 +96,7 @@ module dy{
 
         private _setMirrorMapShaderLib(){
             if(this.mirrorMap){
-                this.shader.addLib(dy.MirrorForBasicShaderLib.create());
+                this.shader.addLib(wd.MirrorForBasicShaderLib.create());
             }
         }
     }

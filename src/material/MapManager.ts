@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class MapManager{
         public static create(material:Material) {
         	var obj = new this(material);

@@ -16,14 +16,14 @@ describe("mouse event", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         insertDom();
-        dy.DeviceManager.getInstance().createGL("#event-test");
+        wd.DeviceManager.getInstance().createGL("#event-test");
         fakeEvent = {
             pageX:10,
             pageY:10
         };
-        target =  dy.GameObject.create();
-        manager = dy.EventManager;
-        Listener = dy.EventListener;
+        target =  wd.GameObject.create();
+        manager = wd.EventManager;
+        Listener = wd.EventListener;
     });
     afterEach(function () {
         removeDom();
@@ -42,18 +42,18 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                manager.on(target, dy.EventName.CLICK, function (e) {
+                manager.on(target, wd.EventName.CLICK, function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+                manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
-                expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
-                expect(eventTarget.name).toEqual(dy.EventName.CLICK);
+                expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
+                expect(eventTarget.name).toEqual(wd.EventName.CLICK);
                 expect(sum).toEqual(1);
 
-                manager.off(target, dy.EventName.CLICK);
-                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+                manager.off(target, wd.EventName.CLICK);
+                manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -61,19 +61,19 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                var subscription = manager.fromEvent(target, dy.EventName.CLICK)
+                var subscription = manager.fromEvent(target, wd.EventName.CLICK)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+                manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
-                expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
-                expect(eventTarget.name).toEqual(dy.EventName.CLICK);
+                expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
+                expect(eventTarget.name).toEqual(wd.EventName.CLICK);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+                manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -84,20 +84,20 @@ describe("mouse event", function () {
 
             manager.on(target,
                 {
-                    eventType: dy.EventType.MOUSE,
+                    eventType: wd.EventType.MOUSE,
 
                     onClick: function (e) {
                         eventTarget = e;
                         sum++;
                     }
                 });
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
-            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
-            expect(eventTarget.name).toEqual(dy.EventName.CLICK);
+            expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
+            expect(eventTarget.name).toEqual(wd.EventName.CLICK);
 
-            manager.off(target, dy.EventName.CLICK);
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.CLICK));
+            manager.off(target, wd.EventName.CLICK);
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
             expect(sum).toEqual(1);
         });
@@ -109,24 +109,24 @@ describe("mouse event", function () {
                     b:sandbox.stub()
                 };
 
-            var subscription1 = manager.fromEvent(target, dy.EventName.MOUSEDOWN, 1)
+            var subscription1 = manager.fromEvent(target, wd.EventName.MOUSEDOWN, 1)
                 .subscribe(function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 });
-            var subscription2 = manager.fromEvent(target, dy.EventName.MOUSEDOWN, 2)
+            var subscription2 = manager.fromEvent(target, wd.EventName.MOUSEDOWN, 2)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
 
-            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
-            expect(eventTarget.name).toEqual(dy.EventName.MOUSEDOWN);
+            expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
+            expect(eventTarget.name).toEqual(wd.EventName.MOUSEDOWN);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             subscription2.dispose();
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
 
             expect(fakeObj.a).toCalledTwice();
             expect(fakeObj.b).toCalledOnce();
@@ -142,10 +142,10 @@ describe("mouse event", function () {
         var fakeObj;
 
         beforeEach(function(){
-            mesh1 = dy.GameObject.create();
-            mesh2 = dy.GameObject.create();
-            mesh3 = dy.GameObject.create();
-            mesh4 = dy.GameObject.create();
+            mesh1 = wd.GameObject.create();
+            mesh2 = wd.GameObject.create();
+            mesh3 = wd.GameObject.create();
+            mesh4 = wd.GameObject.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -156,22 +156,22 @@ describe("mouse event", function () {
                 d:sandbox.stub()
             }
 
-            manager.fromEvent(mesh1, dy.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh1, wd.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget1 = e;
                     fakeObj.a();
                 });
-            manager.fromEvent(mesh2, dy.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh2, wd.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.fromEvent(mesh3, dy.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh3, wd.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget3 = e;
                     fakeObj.c();
                 });
-            manager.fromEvent(mesh4, dy.EventName.MOUSEDOWN)
+            manager.fromEvent(mesh4, wd.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                     eventTarget4 = e;
                     fakeObj.d();
@@ -179,28 +179,28 @@ describe("mouse event", function () {
         });
 
         it("emit custom event", function(){
-            manager.emit(mesh1, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
+            manager.emit(mesh1, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
 
-            expect(eventTarget1.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget1.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-            expect(eventTarget2.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget2.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget2.target.uid).toEqual(mesh1.uid);
             expect(eventTarget3).toBeNull();
-            expect(eventTarget4.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget4.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget4.target.uid).toEqual(mesh1.uid);
             expect(fakeObj.a).toCalledBefore(fakeObj.b);
             expect(fakeObj.b).toCalledBefore(fakeObj.d);
         });
         it("broadcast custom event", function(){
-            manager.broadcast(mesh4, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEDOWN));
+            manager.broadcast(mesh4, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
 
-            expect(eventTarget4.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget4.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget2.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget2.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget1.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget1.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget3.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget3.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget3.target.uid).toEqual(mesh4.uid);
             expect(fakeObj.d).toCalledBefore(fakeObj.b);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
@@ -212,14 +212,14 @@ describe("mouse event", function () {
         it("save location after emit event", function(){
             var eventTarget = null;
 
-            manager.on(target, dy.EventName.MOUSEMOVE,function (e) {
+            manager.on(target, wd.EventName.MOUSEMOVE,function (e) {
                     eventTarget = e;
                 });
 
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
 
-            expect(eventTarget).toBeInstanceOf(dy.MouseEvent);
-            var handler = dy.MouseEventHandler.getInstance();
+            expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
+            var handler = wd.MouseEventHandler.getInstance();
             expect(handler.lastX).toEqual(fakeEvent.pageX);
             expect(handler.lastY).toEqual(fakeEvent.pageY);
         });
@@ -228,13 +228,13 @@ describe("mouse event", function () {
     it("use drag example to test", function(){
         var sum1 = 0;
         var stub = sandbox.stub();
-        target = dy.Director.getInstance().scene;
+        target = wd.Director.getInstance().scene;
 
-        sandbox.stub(dy.MouseEventHandler.getInstance(), "_saveLocation");
+        sandbox.stub(wd.MouseEventHandler.getInstance(), "_saveLocation");
 
 
-        manager.fromEvent(target, dy.EventName.MOUSEDOWN).flatMap(function(e){
-                return manager.fromEvent(target, dy.EventName.MOUSEMOVE).takeUntil(manager.fromEvent(target, dy.EventName.MOUSEUP));
+        manager.fromEvent(target, wd.EventName.MOUSEDOWN).flatMap(function(e){
+                return manager.fromEvent(target, wd.EventName.MOUSEMOVE).takeUntil(manager.fromEvent(target, wd.EventName.MOUSEUP));
             })
             .subscribe(function(e){
                 sum1++;
@@ -242,7 +242,7 @@ describe("mouse event", function () {
             })
 
 
-        var _saveLocation = dy.MouseEventHandler.getInstance()._saveLocation;
+        var _saveLocation = wd.MouseEventHandler.getInstance()._saveLocation;
 
         YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
 
@@ -276,9 +276,9 @@ describe("mouse event", function () {
 
         beforeEach(function(){
             sum = 0;
-            sandbox.spy(dy.MouseEventHandler.getInstance(), "triggerDomEvent");
-            target = dy.Director.getInstance().scene;
-            subscription = manager.fromEvent(target, dy.EventName.MOUSEDOWN).subscribe(function(e){
+            sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
+            target = wd.Director.getInstance().scene;
+            subscription = manager.fromEvent(target, wd.EventName.MOUSEDOWN).subscribe(function(e){
                 sum++;
             })
         });
@@ -287,45 +287,45 @@ describe("mouse event", function () {
             YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
 
             subscription.dispose();
 
 
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
             YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
             YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
 
             manager.off();
 
 
-            manager.trigger(target, dy.MouseEvent.create(fakeEvent, dy.EventName.MOUSEMOVE));
+            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
             YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
 
             expect(sum).toEqual(1);
-            expect(dy.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
     });
 });

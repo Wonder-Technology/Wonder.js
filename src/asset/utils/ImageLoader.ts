@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ImageLoader{
         public static load(url:string) {
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {

@@ -4,8 +4,8 @@ describe("BasicMaterial", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        material = new dy.BasicMaterial();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        material = new wd.BasicMaterial();
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -25,19 +25,19 @@ describe("BasicMaterial", function () {
         vertice = [1, -1, 0, 0, 1, 0, 0, 0, 1];
         //normals = [];
 
-        model = dy.GameObject.create();
-        geo = dy.ModelGeometry.create();
+        model = wd.GameObject.create();
+        geo = wd.ModelGeometry.create();
 
         geo.vertices = vertice;
         geo.faces = testTool.createFaces([0,1,2]);
 
 
-        material = dy.BasicMaterial.create();
+        material = wd.BasicMaterial.create();
 
         materialTool.prepareMap(sandbox, model, geo, material);
 
 
-        director = dy.Director.getInstance();
+        director = wd.Director.getInstance();
 
 
         prepareTool.prepareForMap(sandbox);
@@ -60,21 +60,21 @@ describe("BasicMaterial", function () {
             normals = [];
             texCoords = [1.0,0.0,1.0,0.5,1.0,1.0];
 
-            model = dy.GameObject.create();
-            geo = dy.ModelGeometry.create();
+            model = wd.GameObject.create();
+            geo = wd.ModelGeometry.create();
 
             geo.vertices = vertice;
             geo.faces = testTool.createFaces([0,1,2]);
             geo.texCoords = texCoords;
 
 
-            material = dy.BasicMaterial.create();
+            material = wd.BasicMaterial.create();
 
             materialTool.prepareMap(sandbox, model, geo, material);
 
 
 
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
 
             program = material.shader.program;
@@ -84,23 +84,23 @@ describe("BasicMaterial", function () {
         });
 
         it("if only has mirrorMap, not add map shader lib", function () {
-            material.mirrorMap = dy.MirrorTexture.create();
+            material.mirrorMap = wd.MirrorTexture.create();
 
             director._init();
 
-            expect(material.shader.hasLib(dy.BasicMapShaderLib)).toBeFalsy();
+            expect(material.shader.hasLib(wd.BasicMapShaderLib)).toBeFalsy();
         });
         it("if add one map, add BasicMapShaderLib", function () {
-            var map = dy.ImageTexture.create();
+            var map = wd.ImageTexture.create();
             map.width = 100;
             map.height = 100;
-            map.sourceRegion = dy.RectRegion.create(0, 0, 64, 64);
-            map.repeatRegion = dy.RectRegion.create(0.2, 0.1, 0.5,0.5);
+            map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
+            map.repeatRegion = wd.RectRegion.create(0.2, 0.1, 0.5,0.5);
             material.map = map;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.BasicMapShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.BasicMapShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -109,12 +109,12 @@ describe("BasicMaterial", function () {
             expect(program.sendUniformData.withArgs("u_repeatRegion")).toCalledOnce();
         });
         it("if add two maps, add MultiMapShaderLib", function () {
-            material.map = [dy.ImageTexture.create(), dy.ImageTexture.create()];
+            material.map = [wd.ImageTexture.create(), wd.ImageTexture.create()];
 
 
             director._init();
 
-            expect(material.shader.hasLib(dy.MultiMapShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.MultiMapShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -125,12 +125,12 @@ describe("BasicMaterial", function () {
 
 
             expect(program.getUniformLocation.withArgs("u_sampler2D1")).toCalledOnce();
-            expect(program.sendUniformData.withArgs("u_combineMode").firstCall.args[2]).toEqual(dy.TextureCombineMode.MIX);
+            expect(program.sendUniformData.withArgs("u_combineMode").firstCall.args[2]).toEqual(wd.TextureCombineMode.MIX);
             expect(program.sendUniformData.withArgs("u_mixRatio").firstCall.args[2]).toEqual(0.5);
         });
         it("not support more than 2 maps", function () {
             expect(function () {
-                material.map = [dy.ImageTexture.create(), dy.ImageTexture.create(), dy.ImageTexture.create()];
+                material.map = [wd.ImageTexture.create(), wd.ImageTexture.create(), wd.ImageTexture.create()];
             }).toThrow();
         });
     });
@@ -143,19 +143,19 @@ describe("BasicMaterial", function () {
             vertice = [1, -1, 0, 0, 1, 0, 0, 0, 1];
             normals = [];
 
-            model = dy.GameObject.create();
-            geo = dy.PlaneGeometry.create();
+            model = wd.GameObject.create();
+            geo = wd.PlaneGeometry.create();
 
 
             geo.vertices = vertice;
             geo.faces = testTool.createFaces([0,1,2]);
 
-            material = dy.BasicMaterial.create();
+            material = wd.BasicMaterial.create();
 
             materialTool.prepareMap(sandbox, model, geo, material);
 
 
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
 
             program = material.shader.program;
@@ -165,7 +165,7 @@ describe("BasicMaterial", function () {
         });
 
         it("if only has mirrorMap, add MirrorForBasicShaderLib", function () {
-            var texture = dy.MirrorTexture.create();
+            var texture = wd.MirrorTexture.create();
             texture.width = 256;
             texture.height = 256;
             texture.renderList = [];
@@ -175,7 +175,7 @@ describe("BasicMaterial", function () {
 
             director._init();
 
-            expect(material.shader.hasLib(dy.MirrorForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.MirrorForBasicShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -194,18 +194,18 @@ describe("BasicMaterial", function () {
                 0.8164966, 0.4082483, 0.4082483, 0.8164966, 0.4082483, 0.4082483, 0.8164966, 0.4082483, 0.4082483
             ];
 
-            model = dy.GameObject.create();
-            geo = dy.ModelGeometry.create();
+            model = wd.GameObject.create();
+            geo = wd.ModelGeometry.create();
             geo.vertices = vertice;
             geo.faces = testTool.createFaces([0,1,2]);
 
-            material = dy.BasicMaterial.create();
-            envMap = dy.DynamicCubemapTexture.create();
+            material = wd.BasicMaterial.create();
+            envMap = wd.DynamicCubemapTexture.create();
 
             materialTool.prepareEnvMap(sandbox, model, geo, material, envMap);
 
 
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
 
             program = material.shader.program;
@@ -213,14 +213,14 @@ describe("BasicMaterial", function () {
 
         it("if no envMap, return", function () {
             material.envMap = null;
-            envMap.mode = dy.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EnvMapMode.REFLECTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.ReflectionForBasicShaderLib)).toBeFalsy();
+            expect(material.shader.hasLib(wd.ReflectionForBasicShaderLib)).toBeFalsy();
         });
         it("add normal shader lib", function () {
-            envMap.mode = dy.EnvMapMode.BASIC;
+            envMap.mode = wd.EnvMapMode.BASIC;
 
             director._init();
             director._run(1);
@@ -233,11 +233,11 @@ describe("BasicMaterial", function () {
             )
         });
         it("if mode is BASIC, add BasicEnvMapForBasicShaderLib", function () {
-            envMap.mode = dy.EnvMapMode.BASIC;
+            envMap.mode = wd.EnvMapMode.BASIC;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.BasicEnvMapForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.BasicEnvMapForBasicShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -245,11 +245,11 @@ describe("BasicMaterial", function () {
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
         });
         it("if mode is REFLECTION, add ReflectionShaderLib", function () {
-            envMap.mode = dy.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EnvMapMode.REFLECTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.ReflectionForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionForBasicShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -258,11 +258,11 @@ describe("BasicMaterial", function () {
         });
         it("if mode is REFRACTION, add ReflectionShaderLib", function () {
             material.refractionRatio = 0.5;
-            envMap.mode = dy.EnvMapMode.REFRACTION;
+            envMap.mode = wd.EnvMapMode.REFRACTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.RefractionForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.RefractionForBasicShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -274,11 +274,11 @@ describe("BasicMaterial", function () {
         describe("if mode is FRESNEL, add FresnelForBasicShaderLib", function () {
             it("if reflectivity is setted, send it", function () {
                 material.reflectivity = 0.5;
-                envMap.mode = dy.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EnvMapMode.FRESNEL;
 
                 director._init();
 
-                expect(material.shader.hasLib(dy.FresnelForBasicShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForBasicShaderLib)).toBeTruthy();
 
                 director._run(1);
 
@@ -288,15 +288,15 @@ describe("BasicMaterial", function () {
             });
             it("else, send u_reflectivity = NULL and send u_refractionRatio", function () {
                 material.refractionRatio = 0.5;
-                envMap.mode = dy.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EnvMapMode.FRESNEL;
 
                 director._init();
 
-                expect(material.shader.hasLib(dy.FresnelForBasicShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForBasicShaderLib)).toBeTruthy();
 
                 director._run(1);
 
-                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(dy.ShaderChunk.NULL);
+                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(wd.ShaderChunk.NULL);
                 expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);
                 expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
                 expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();

@@ -1,5 +1,5 @@
 /// <reference path="../../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class LightMapShaderLib extends ShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             if (quadCmd.buffers.hasChild(BufferDataType.TEXCOORD)) {

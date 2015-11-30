@@ -7,9 +7,9 @@ describe("cubemap texture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.CubemapTexture;
+        Texture = wd.CubemapTexture;
         texture = new Texture();
-        director = dy.Director.getInstance();
+        director = wd.Director.getInstance();
         gl = {
             TEXTURE_CUBE_MAP_POSITIVE_X:0,
             TEXTURE_CUBE_MAP_NEGATIVE_X:1,
@@ -51,7 +51,7 @@ describe("cubemap texture", function() {
 
         };
         testTool.extend(gl, testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", gl);
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", gl);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -64,15 +64,15 @@ describe("cubemap texture", function() {
         });
 
         it("if assets' length isn't 6, error", function(){
-            var asset = dy.CompressedTextureAsset.create();
+            var asset = wd.CompressedTextureAsset.create();
 
             expect(function(){
-                dy.CubemapTexture.create([
+                wd.CubemapTexture.create([
                     {asset:asset}
                 ]);
             }).toThrow();
             expect(function(){
-                dy.CubemapTexture.create([
+                wd.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset},
@@ -83,11 +83,11 @@ describe("cubemap texture", function() {
             }).not.toThrow();
         });
         it("if not all common assets or all compressed assets, error", function(){
-            var compressedAsset = dy.CompressedTextureAsset.create();
-            var commonAsset = dy.ImageTextureAsset.create({});
+            var compressedAsset = wd.CompressedTextureAsset.create();
+            var commonAsset = wd.ImageTextureAsset.create({});
 
             expect(function(){
-                dy.CubemapTexture.create([
+                wd.CubemapTexture.create([
                     {asset:commonAsset},
                     {asset:commonAsset},
                     {asset:commonAsset},
@@ -98,17 +98,17 @@ describe("cubemap texture", function() {
             }).toThrow();
         });
         it("if not all faces' txture size are equal, error", function(){
-            var commonAsset = dy.ImageTextureAsset.create({
+            var commonAsset = wd.ImageTextureAsset.create({
                 width:200,
                 height:200
             });
 
             expect(function(){
-                dy.CubemapTexture.create([
+                wd.CubemapTexture.create([
                     {asset:commonAsset},
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     },
                     {asset:commonAsset},
                     {asset:commonAsset},
@@ -117,43 +117,43 @@ describe("cubemap texture", function() {
                 ]);
             }).toThrow();
             expect(function(){
-                dy.CubemapTexture.create([
+                wd.CubemapTexture.create([
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     },
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     },
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     },
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 256, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 256, 512)
                     },
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     },
                     {
                         asset:commonAsset,
-                        sourceRegion:dy.RectRegion.create(0, 0, 512, 512)
+                        sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
                     }
                 ]);
             }).toThrow();
         });
         it("add cube face textures", function(){
-            var commonAsset = dy.ImageTextureAsset.create({
+            var commonAsset = wd.ImageTextureAsset.create({
                 width:200,
                 height:200
             });
-            var region = dy.RectRegion.create(0, 0, 200, 200);
-            var type = dy.TextureType.UNSIGNED_SHORT_4_4_4_4;
+            var region = wd.RectRegion.create(0, 0, 200, 200);
+            var type = wd.TextureType.UNSIGNED_SHORT_4_4_4_4;
 
-            var texture = dy.CubemapTexture.create([
+            var texture = wd.CubemapTexture.create([
                 {asset:commonAsset},
                 {
                     asset:commonAsset,
@@ -167,21 +167,21 @@ describe("cubemap texture", function() {
             ]);
 
             expect(texture.textures.getCount()).toEqual(6);
-            expect(texture.textures.getChild(1)).toBeInstanceOf(dy.CubemapFaceImageTexture);
+            expect(texture.textures.getChild(1)).toBeInstanceOf(wd.CubemapFaceImageTexture);
             expect(texture.textures.getChild(1).sourceRegion).toEqual(region);
             expect(texture.textures.getChild(1).type).toEqual(type);
         });
         it("set ICubemapTextureAsset's attri by the first cube face texture", function(){
-            var commonAsset = dy.ImageTextureAsset.create({
+            var commonAsset = wd.ImageTextureAsset.create({
                 width:200,
                 height:200
             });
-            var commonAsset2 = dy.ImageTextureAsset.create({
+            var commonAsset2 = wd.ImageTextureAsset.create({
                 width: 200,
                 height:200
             });
 
-                var texture = dy.CubemapTexture.create([
+                var texture = wd.CubemapTexture.create([
                     {asset:commonAsset},
                     {asset:commonAsset2},
                     {asset:commonAsset2},
@@ -205,10 +205,10 @@ describe("cubemap texture", function() {
 
         describe("if is all compressed cube face textures", function(){
             it("generateMipmaps is false", function(){
-                var asset = dy.CompressedTextureAsset.create();
-                asset.minFilter = dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                var asset = wd.CompressedTextureAsset.create();
+                asset.minFilter = wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
 
-                var texture = dy.CubemapTexture.create([
+                var texture = wd.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset},
@@ -218,15 +218,15 @@ describe("cubemap texture", function() {
                 ]);
 
                 expect(texture.generateMipmaps).toBeFalsy();
-                expect(texture.minFilter).toEqual(dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                expect(texture.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
             });
             it("if there is one no mipmap asset at least, minFilter will convert to be non-mipmap filter", function(){
-                var asset = dy.CompressedTextureAsset.create();
-                asset.minFilter = dy.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
-                var asset2 = dy.CompressedTextureAsset.create();
-                asset2.minFilter = dy.TextureFilterMode.LINEAR;
+                var asset = wd.CompressedTextureAsset.create();
+                asset.minFilter = wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                var asset2 = wd.CompressedTextureAsset.create();
+                asset2.minFilter = wd.TextureFilterMode.LINEAR;
 
-                var texture = dy.CubemapTexture.create([
+                var texture = wd.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset2},
@@ -236,13 +236,13 @@ describe("cubemap texture", function() {
                 ]);
 
                 expect(texture.generateMipmaps).toBeFalsy();
-                expect(texture.minFilter).toEqual(dy.TextureFilterMode.LINEAR);
+                expect(texture.minFilter).toEqual(wd.TextureFilterMode.LINEAR);
             });
         });
         it("else, generateMipmaps is true", function(){
-            var asset = dy.ImageTextureAsset.create({});
+            var asset = wd.ImageTextureAsset.create({});
 
-            var texture = dy.CubemapTexture.create([
+            var texture = wd.CubemapTexture.create([
                 {asset:asset},
                 {asset:asset},
                 {asset:asset},
@@ -254,9 +254,9 @@ describe("cubemap texture", function() {
             expect(texture.generateMipmaps).toBeTruthy();
         });
         it("set flipY false", function(){
-            var asset = dy.ImageTextureAsset.create({});
+            var asset = wd.ImageTextureAsset.create({});
 
-            var texture = dy.CubemapTexture.create([
+            var texture = wd.CubemapTexture.create([
                 {asset:asset},
                 {asset:asset},
                 {asset:asset},
@@ -271,9 +271,9 @@ describe("cubemap texture", function() {
 
     describe("sourceRegionMethod", function(){
         it("CubemapFaceCompressedTexture not has sourceRegionMethod attri", function(){
-            var asset = dy.CompressedTextureAsset.create();
+            var asset = wd.CompressedTextureAsset.create();
 
-            var texture = dy.CubemapTexture.create([
+            var texture = wd.CubemapTexture.create([
                 {asset:asset},
                 {asset:asset},
                 {asset:asset},
@@ -293,9 +293,9 @@ describe("cubemap texture", function() {
             beforeEach(function(){
                 testTool.openContractCheck(sandbox);
 
-                var asset = dy.ImageTextureAsset.create();
+                var asset = wd.ImageTextureAsset.create();
 
-                texture = dy.CubemapTexture.create([
+                texture = wd.CubemapTexture.create([
                     {asset:asset},
                     {asset:asset},
                     {asset:asset},
@@ -308,13 +308,13 @@ describe("cubemap texture", function() {
 
             it("only support DRAW_IN_CANVAS", function(){
                 texture.textures.forEach(function(face){
-                    expect(face.sourceRegionMethod).toEqual(dy.TextureSourceRegionMethod.DRAW_IN_CANVAS);
+                    expect(face.sourceRegionMethod).toEqual(wd.TextureSourceRegionMethod.DRAW_IN_CANVAS);
                 });
             });
             it("if set it to be not DRAW_IN_CANVAS, error", function(){
                 texture.textures.forEach(function(face){
                     expect(function() {
-                        face.sourceRegionMethod = dy.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
+                        face.sourceRegionMethod = wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
                     }).toThrow();
                 });
             });
@@ -327,11 +327,11 @@ describe("cubemap texture", function() {
 
 
         function load2DTexture(onload, onSetAsset, onCreateTexture){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath  + "test/res/1.jpg", id:"texture"}
             ]).subscribe(null, null,
                 function(){
-                    var asset = dy.LoaderManager.getInstance().get("texture");
+                    var asset = wd.LoaderManager.getInstance().get("texture");
 
                     asset.width = 128;
                     asset.height = 128;
@@ -345,7 +345,7 @@ describe("cubemap texture", function() {
                         texture = onCreateTexture(asset);
                     }
                     else{
-                        texture = dy.CubemapTexture.create([
+                        texture = wd.CubemapTexture.create([
                             {asset:asset},
                             {asset:asset},
                             {asset:asset},
@@ -359,11 +359,11 @@ describe("cubemap texture", function() {
                 });
         }
         function loadCompressedTexture(onload, onSetAsset, onCreateTexture){
-            dy.LoaderManager.getInstance().load([
+            wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath  + "test/res/disturb_dxt1_mip.dds", id:"compressedTexture"}
             ]).subscribe(null, null,
                 function(){
-                    var asset = dy.LoaderManager.getInstance().get("compressedTexture");
+                    var asset = wd.LoaderManager.getInstance().get("compressedTexture");
                     asset.width = 128;
                     asset.height = 128;
 
@@ -373,7 +373,7 @@ describe("cubemap texture", function() {
                         texture = onCreateTexture(asset);
                     }
                     else{
-                        texture = dy.CubemapTexture.create([
+                        texture = wd.CubemapTexture.create([
                             {asset:asset},
                             {asset:asset},
                             {asset:asset},
@@ -391,12 +391,12 @@ describe("cubemap texture", function() {
         }
 
         beforeEach(function(){
-            sandbox.stub(dy.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
+            sandbox.stub(wd.GPUDetector.getInstance(), "extensionCompressedTextureS3TC", {
                 COMPRESSED_RGB_S3TC_DXT1_EXT: "COMPRESSED_RGB_S3TC_DXT1_EXT"
             });
-            sandbox.stub(dy.GPUDetector.getInstance(), "maxCubemapTextureSize", 1024);
+            sandbox.stub(wd.GPUDetector.getInstance(), "maxCubemapTextureSize", 1024);
 
-            sandbox.stub(dy.GPUDetector.getInstance(), "maxTextureUnit", 16);
+            sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
 
             ctx = {
                 drawImage:sandbox.stub()
@@ -409,7 +409,7 @@ describe("cubemap texture", function() {
         });
         afterAll(function(){
             //put release cache to the last, so it can use the res cache during testing
-            dy.LoaderManager.getInstance().dispose();
+            wd.LoaderManager.getInstance().dispose();
         });
 
         describe("sendData", function() {
@@ -422,14 +422,14 @@ describe("cubemap texture", function() {
             it("send cube texture unit index", function () {
                 texture.sendData(program, 100, 1);
 
-                expect(program.sendUniformData.firstCall).toCalledWith(100, dy.VariableType.SAMPLER_CUBE, 1);
+                expect(program.sendUniformData.firstCall).toCalledWith(100, wd.VariableType.SAMPLER_CUBE, 1);
             });
             it("send u_repeatRegion", function(){
-                texture.repeatRegion = dy.RectRegion.create(0, 1, 2, 3);
+                texture.repeatRegion = wd.RectRegion.create(0, 1, 2, 3);
 
                 texture.sendData(program, 100, 1);
 
-                expect(program.sendUniformData).toCalledWith("u_repeatRegion", dy.VariableType.FLOAT_4, texture.repeatRegion);
+                expect(program.sendUniformData).toCalledWith("u_repeatRegion", wd.VariableType.FLOAT_4, texture.repeatRegion);
             });
         });
 
@@ -444,76 +444,76 @@ describe("cubemap texture", function() {
             });
 
                 it("cube compressed texture not support sourceRegion", function(done){
-                    sandbox.stub(dy.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
+                    sandbox.stub(wd.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
 
                     loadCompressedTexture(function(texture){
-                        //texture.sourceRegion = dy.RectRegion.create(0, 0, 128, 128);
-                        //texture.sourceRegionMethod = dy.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                        //texture.sourceRegion = wd.RectRegion.create(0, 0, 128, 128);
+                        //texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
 
                         texture.update(0);
 
                         texture.sendData(program, 0);
 
-                        expect(dy.BasicTextureUtils.drawPartOfTextureByCanvas).not.toCalled();
+                        expect(wd.BasicTextureUtils.drawPartOfTextureByCanvas).not.toCalled();
                         expect(program.sendUniformData).toCalledTwice();
 
                         done();
                     }, function(asset){
                     }, function(asset){
-                        return dy.CubemapTexture.create([
+                        return wd.CubemapTexture.create([
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             },
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             },
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             },
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             },
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             },
                             {
                                 asset:asset,
-                                sourceRegion: dy.RectRegion.create(0, 0, 64, 64)
+                                sourceRegion: wd.RectRegion.create(0, 0, 64, 64)
                             }
                         ]);
                     });
                 });
                 it("cube twoD texture only and default support DRAW_IN_CANVAS", function(done){
-                    sandbox.stub(dy.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
+                    sandbox.stub(wd.BasicTextureUtils, "drawPartOfTextureByCanvas").returns(canvas);
 
                     load2DTexture(function(texture){
                         /*!
                          when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
                          */
-                        texture.repeatRegion = dy.RectRegion.create(0, 0, 2, 2);
-                        texture.wrapS = dy.TextureWrapMode.REPEAT;
-                        texture.wrapT = dy.TextureWrapMode.REPEAT;
+                        texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+                        texture.wrapS = wd.TextureWrapMode.REPEAT;
+                        texture.wrapT = wd.TextureWrapMode.REPEAT;
 
                         texture.update(0);
 
                         expect(gl.texImage2D.callCount).toEqual(6);
                         expect(gl.texImage2D.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
                         expect(gl.texImage2D.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
-                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, dy.TextureWrapMode.REPEAT);
-                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, dy.TextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.TextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.TextureWrapMode.REPEAT);
 
                         texture.sendData(program, 0);
 
-                        expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(dy.RectRegion.create(0, 0, 2, 2)));
+                        expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0, 0, 2, 2)));
 
                         done();
                     }, function(asset){
-                        asset.sourceRegion = dy.RectRegion.create(0, 0, 128, 128);
+                        asset.sourceRegion = wd.RectRegion.create(0, 0, 128, 128);
                     });
                 });
         });
@@ -550,7 +550,7 @@ describe("cubemap texture", function() {
 
                         done();
                     }, function(asset){
-                        asset.format = dy.TextureFormat.RGBA;
+                        asset.format = wd.TextureFormat.RGBA;
                         asset.mipmaps.removeAllChildren();
 
                         asset.mipmaps.addChild(mipmap1);
@@ -560,7 +560,7 @@ describe("cubemap texture", function() {
                 it("else, use compressedTexImage2D", function(done){
                     var mipmap1 = buildMipmap();
                     var mipmap2 = buildMipmap();
-                    var format = dy.GPUDetector.getInstance().extensionCompressedTextureS3TC.
+                    var format = wd.GPUDetector.getInstance().extensionCompressedTextureS3TC.
                         COMPRESSED_RGB_S3TC_DXT1_EXT;
 
                     loadCompressedTexture(function(texture){
@@ -601,7 +601,7 @@ describe("cubemap texture", function() {
 
         describe("clampToMaxSize", function(){
             it("if cube face texture's size exceed max size, then make it to be canvas and scale the canvas", function(done){
-                sandbox.stub(dy.GPUDetector.getInstance(), "maxCubemapTextureSize", 50);
+                sandbox.stub(wd.GPUDetector.getInstance(), "maxCubemapTextureSize", 50);
 
                 load2DTexture(function(texture){
                     texture.update(0);
@@ -618,13 +618,13 @@ describe("cubemap texture", function() {
                 });
             });
             it("if cube face texture's size exceed max size and the cube face texture is compressed texture, then just warn and not clamp to max size", function(done){
-                sandbox.stub(dy.GPUDetector.getInstance(), "maxCubemapTextureSize", 50);
-                sandbox.spy(dy.Log, "warn");
+                sandbox.stub(wd.GPUDetector.getInstance(), "maxCubemapTextureSize", 50);
+                sandbox.spy(wd.Log, "warn");
 
                 loadCompressedTexture(function(texture){
                     texture.update(0);
 
-                    expect(dy.Log.warn.callCount).toEqual(6);
+                    expect(wd.Log.warn.callCount).toEqual(6);
 
                     texture.textures.forEach(function(face){
                         expect(face.width).toEqual(128);
@@ -638,20 +638,20 @@ describe("cubemap texture", function() {
         });
 
         it("if sourceRegion's width/height is not be power of two, then it shouldn't generateMipmap", function(done){
-            sandbox.stub(dy.GPUDetector.getInstance(), "maxCubemapTextureSize", 1024);
+            sandbox.stub(wd.GPUDetector.getInstance(), "maxCubemapTextureSize", 1024);
 
             load2DTexture(function(texture){
                 texture.update(0);
 
-                expect(gl.texParameteri.withArgs(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[dy.TextureFilterMode.LINEAR])).toCalledOnce()
+                expect(gl.texParameteri.withArgs(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[wd.TextureFilterMode.LINEAR])).toCalledOnce()
                 expect(gl.generateMipmap).not.toCalled();
 
                 done();
             }, null, function(asset){
-                return dy.CubemapTexture.create([
+                return wd.CubemapTexture.create([
                     {
                         asset:asset,
-                        sourceRegion: dy.RectRegion.create(0, 0, 100, 256)
+                        sourceRegion: wd.RectRegion.create(0, 0, 100, 256)
                     },
                     {asset:asset},
                     {asset:asset},

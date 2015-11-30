@@ -7,8 +7,8 @@ import gutil = require("gulp-util");
 import wdFrp = require("wdfrp");
 import wdCb = require("wdcb");
 import Log = require("./common/Log");
-import OBJToDY = require("./obj/OBJToDY");
-import MD2ToDY = require("./md2/MD2ToDY");
+import OBJToWD = require("./obj/OBJToWD");
+import MD2ToWD = require("./md2/MD2ToWD");
 
 export = class Converter {
     public static create() {
@@ -18,7 +18,7 @@ export = class Converter {
     }
 
     public version:string = "0.1.0";
-    public extname:string = ".dy";
+    public extname:string = ".wd";
 
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var fileExtname = path.extname(filePath),
@@ -26,10 +26,10 @@ export = class Converter {
 
         switch (fileExtname) {
             case ".obj":
-                result = OBJToDY.create(this.version).convert(fileBuffer.toString(), filePath);
+                result = OBJToWD.create(this.version).convert(fileBuffer.toString(), filePath);
                 break;
             case ".md2":
-                result = MD2ToDY.create(this.version).convert(fileBuffer, filePath);
+                result = MD2ToWD.create(this.version).convert(fileBuffer, filePath);
                 break;
             default:
                 result = wdFrp.empty();

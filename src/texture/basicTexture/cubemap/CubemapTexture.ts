@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class CubemapTexture extends BasicTexture{
         public static create(assets:Array<CubemapData>){
             var obj = new this(assets);

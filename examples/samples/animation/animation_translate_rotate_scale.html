@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <title>tranlate,rotate,scale animation</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
         initSample();
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle());
             director.scene.addChild(createRect());
@@ -30,22 +30,22 @@
         }
 
         function createTriangle() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#888888");
-            material.side = dy.Side.BOTH;
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("#888888");
+            material.side = wd.Side.BOTH;
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
-            var action = dy.RepeatForever.create(dy.CallFunc.create(function () {
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
                 gameObject.transform.rotate(0, 1, 0);
             }));
 
@@ -57,40 +57,40 @@
         }
 
         function createRect() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("#aaa123");
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("#aaa123");
 
-            var geometry = dy.RectGeometry.create();
+            var geometry = wd.RectGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
-            var tween1 = dy.Tween.create();
-            var tween2 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
+            var tween2 = wd.Tween.create();
 
             tween1.from({x: -10, y: 1})
                     .to({x: 10, y: 2}, 3000)
-                    .easing(dy.Tween.Easing.Cubic.InOut)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
                     .onUpdate(function () {
-                        gameObject.transform.position = dy.Vector3.create(this.x, -5, 0);
-                        gameObject.transform.scale = dy.Vector3.create(1, this.y, 1);
+                        gameObject.transform.position = wd.Vector3.create(this.x, -5, 0);
+                        gameObject.transform.scale = wd.Vector3.create(1, this.y, 1);
                     });
 
             tween2.from({x: 10, y: 2})
                     .to({x: -10, y: 1}, 3000)
-                    .easing(dy.Tween.Easing.Cubic.InOut)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
                     .onUpdate(function () {
-                        gameObject.transform.position = dy.Vector3.create(this.x, -5, 0);
-                        gameObject.transform.scale = dy.Vector3.create(1, this.y, 1);
+                        gameObject.transform.position = wd.Vector3.create(this.x, -5, 0);
+                        gameObject.transform.scale = wd.Vector3.create(1, this.y, 1);
                     });
 
-            var action = dy.RepeatForever.create(dy.Sequence.create(tween1, tween2));
+            var action = wd.RepeatForever.create(wd.Sequence.create(tween1, tween2));
 
             gameObject.addComponent(action);
 
@@ -100,19 +100,19 @@
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.BasicCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(dy.Vector3.create(0, 0, 30));
+            camera.transform.translate(wd.Vector3.create(0, 0, 30));
 
             return camera;
         }

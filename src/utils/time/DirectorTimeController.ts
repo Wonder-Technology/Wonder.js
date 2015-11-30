@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     const STARTING_FPS = 60,
         GAMETIME_SCALE = 1000;
 

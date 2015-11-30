@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <title>color mask</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
         initSample();
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle1());
             director.scene.addChild(createTriangle2());
@@ -31,25 +31,25 @@
         }
 
         function createTriangle1() {
-            var material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("rgb(255, 0, 0)");
+            var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(255, 0, 0)");
             material.opacity = 0.4;
             material.blend = true;
-            material.blendSrc = dy.BlendFunc.SRC_ALPHA;
-            material.blendDst = dy.BlendFunc.ONE_MINUS_SRC_ALPHA;
+            material.blendSrc = wd.BlendFunc.SRC_ALPHA;
+            material.blendDst = wd.BlendFunc.ONE_MINUS_SRC_ALPHA;
             material.redWrite = false;
 
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 20;
             geometry.height = 20;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.translate(5, 0, 0);
 
@@ -58,46 +58,46 @@
 
 
         function createTriangle2() {
-            var material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("rgb(0, 55, 55)");
+            var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(0, 55, 55)");
             material.opacity = 0.4;
             material.blend = true;
-            material.blendSrc = dy.BlendFunc.SRC_ALPHA;
-            material.blendDst = dy.BlendFunc.ONE_MINUS_SRC_ALPHA;
+            material.blendSrc = wd.BlendFunc.SRC_ALPHA;
+            material.blendDst = wd.BlendFunc.ONE_MINUS_SRC_ALPHA;
 
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
         }
 
         function createTriangle3() {
-            var material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("rgb(255, 0, 255)");
-            material.blendType = dy.BlendType.NORMAL;
+            var material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("rgb(255, 0, 255)");
+            material.blendType = wd.BlendType.NORMAL;
             material.alphaWrite = false;
 
 
-            var geometry = dy.TriangleGeometry.create();
+            var geometry = wd.TriangleGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.translate(-2, 0, 0);
 
@@ -105,19 +105,19 @@
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                view = dy.Director.getInstance().view,
-                cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                view = wd.Director.getInstance().view,
+                cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.BasicCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(dy.Vector3.create(0, 0, 30));
+            camera.transform.translate(wd.Vector3.create(0, 0, 30));
 
 
             return camera;

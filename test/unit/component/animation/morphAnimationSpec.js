@@ -3,7 +3,7 @@ describe("morph animation", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -22,7 +22,7 @@ describe("morph animation", function () {
         }
 
         function createAnimation(animName, currentFrame, nextFrame){
-            var animation = dy.MorphAnimation.create();
+            var animation = wd.MorphAnimation.create();
             //animation.currentFrame = currentFrame || 0;
             //animation.nextFrame = nextFrame || 1;
             //animation.currentAnimName = animName;
@@ -31,11 +31,11 @@ describe("morph animation", function () {
         }
 
         function prepare(){
-            model = dy.GameObject.create();
+            model = wd.GameObject.create();
 
-            geo = dy.ModelGeometry.create();
+            geo = wd.ModelGeometry.create();
 
-            material = dy.LightMaterial.create();
+            material = wd.LightMaterial.create();
 
             geo.material = material;
 
@@ -64,7 +64,7 @@ describe("morph animation", function () {
             fps = 10;
 
 
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
 
             program = material.shader.program;
@@ -319,15 +319,15 @@ describe("morph animation", function () {
             director._init();
 
 
-            var vertices1 = geo.buffers.getChild(dy.BufferDataType.VERTICE);
-            var vertices2 = geo.buffers.getChild(dy.BufferDataType.VERTICE);
+            var vertices1 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
+            var vertices2 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
 
             expect(vertices1[0].data).toEqual(vertices2[0].data);
             expect(vertices1[1].data).toEqual(vertices2[1].data);
         });
 
         it("use Action to control animation", function(){
-            var action1 = dy.Repeat.create(dy.CallFunc.create(function(){
+            var action1 = wd.Repeat.create(wd.CallFunc.create(function(){
                 box.transform.rotateLocal(0, 1, 0);
             }));
             anim.play("play", fps);

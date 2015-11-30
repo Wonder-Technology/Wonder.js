@@ -2,12 +2,12 @@ describe("DelayTime", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var DelayTime = dy.DelayTime;
+    var DelayTime = wd.DelayTime;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new DelayTime();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -39,7 +39,7 @@ describe("DelayTime", function () {
 
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
-            action = dy.DelayTime.create(100);
+            action = wd.DelayTime.create(100);
             gameObject.addComponent(action);
 
             action.start();
@@ -60,7 +60,7 @@ describe("DelayTime", function () {
 
     describe("pause,resume", function(){
         it("can pause action and continue action", function () {
-            action = dy.DelayTime.create(100);
+            action = wd.DelayTime.create(100);
             gameObject.addComponent(action);
 
             action.start();

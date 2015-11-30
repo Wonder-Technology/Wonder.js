@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
-/// <reference path="../../../dist/dy.d.ts"/>
+/// <reference path="../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
     var Camera = (function () {
@@ -15,12 +15,12 @@ var sample;
             this._gameObject = gameObject;
         }
         Camera.prototype.init = function () {
-            var scene = dy.Director.getInstance().scene.script.getChild("scene"), cameraComponent = this._gameObject.getComponent(dy.CameraController).camera;
+            var scene = wd.Director.getInstance().scene.script.getChild("scene"), cameraComponent = this._gameObject.getComponent(wd.CameraController).camera;
             alert("sceneScript.state is " + scene.state);
             alert("camera->fovy is " + cameraComponent.fovy);
         };
         Camera = __decorate([
-            dy.script("camera")
+            wd.script("camera")
         ], Camera);
         return Camera;
     })();

@@ -3,7 +3,7 @@
 //responsiblity:handle logic with specify event category
 //judge is under point
 //wrap event object
-module dy {
+module wd {
     export class MouseEventHandler extends DomEventHandler{
         private static _instance = null;
 

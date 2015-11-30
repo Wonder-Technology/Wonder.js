@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class DomEventHandler extends EventHandler{
         public off(eventName:EventName):void;
         public off(eventName:EventName, handler:Function):void;

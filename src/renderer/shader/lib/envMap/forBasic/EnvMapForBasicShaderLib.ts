@@ -1,5 +1,5 @@
 /// <reference path="../../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class EnvMapForBasicShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());

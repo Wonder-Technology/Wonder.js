@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class CameraController extends Component {
         constructor(cameraComponent:Camera){
             super();

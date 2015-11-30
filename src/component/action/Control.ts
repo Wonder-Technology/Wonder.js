@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class Control extends ActionInterval{
         set target(target:GameObject){
             this.p_target = target;

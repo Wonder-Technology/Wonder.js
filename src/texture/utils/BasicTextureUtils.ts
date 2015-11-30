@@ -1,11 +1,11 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class BasicTextureUtils extends TextureUtils{
         public static isDrawPartOfTexture(sourceRegion:RectRegion, sourceRegionMethod:TextureSourceRegionMethod){
             return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
 
-        public static drawPartOfTextureByCanvas(source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, dy:number, dWidth:number, dHeight:number){
+        public static drawPartOfTextureByCanvas(source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, wd:number, dWidth:number, dHeight:number){
             var canvas = wdCb.DomQuery.create("<canvas></canvas>").get(0),
                 ctx = null;
 
@@ -13,7 +13,7 @@ module dy {
             canvas.height = canvasHeight;
 
             ctx = canvas.getContext( "2d" );
-            ctx.drawImage( source, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+            ctx.drawImage( source, sx, sy, sWidth, sHeight, dx, wd, dWidth, dHeight);
 
             return canvas
         }

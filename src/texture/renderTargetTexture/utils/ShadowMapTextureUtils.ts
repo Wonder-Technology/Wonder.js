@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class ShadowMapTextureUtils{
         public static setTextureParameters(textureType){
             var gl = DeviceManager.getInstance().gl,

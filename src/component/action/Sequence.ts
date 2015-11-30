@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class Sequence extends Control{
         public static create(...actions) {
             var actionArr = null,

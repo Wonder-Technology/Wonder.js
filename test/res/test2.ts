@@ -1,4 +1,4 @@
-@dy.script("test2")
+@wd.script("test2")
 export class Test2{
     constructor(gameObject) {
         this.gameObject = gameObject;

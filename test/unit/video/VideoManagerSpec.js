@@ -4,7 +4,7 @@ describe("VideoManager", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        manager = dy.VideoManager.getInstance();
+        manager = wd.VideoManager.getInstance();
     });
     afterEach(function () {
         sandbox.restore();
@@ -15,13 +15,13 @@ describe("VideoManager", function () {
             var video = {
                 play:sandbox.stub()
             };
-            sandbox.stub(dy.VideoLoader.getInstance(), "get").returns({
+            sandbox.stub(wd.VideoLoader.getInstance(), "get").returns({
                 video:video
             });
 
             manager.play("a");
 
-            expect(dy.VideoLoader.getInstance().get).toCalledWith("a");
+            expect(wd.VideoLoader.getInstance().get).toCalledWith("a");
             expect(video.play).toCalledOnce();
         });
     });

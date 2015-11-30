@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export interface IShadowMapTexture{
     }
 }

@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class MouseEvent extends DomEvent{
         //public static CLICK:string = "click";
         //public static MOUSEOVER:string = "mouseover";
@@ -139,11 +139,11 @@ module dy {
         get movementDelta(){
             var e = this.event,
                 dx = null,
-                dy = null;
+                wd = null;
 
             if(this._isPointerLocked()){
                 dx = e.movementX || e.webkitMovementX || e.mozMovementX || 0;
-                dy = e.movementY || e.webkitMovementY || e.mozMovementY || 0;
+                wd = e.movementY || e.webkitMovementY || e.mozMovementY || 0;
             }
             else{
                 let location = this.location,
@@ -153,17 +153,17 @@ module dy {
 
                 if(lastX === null && lastY === null){
                     dx = 0;
-                    dy = 0;
+                    wd = 0;
                 }
                 else{
                     dx = location.x - lastX;
-                    dy = location.y - lastY;
+                    wd = location.y - lastY;
                 }
             }
 
             return {
                 x: dx,
-                y: dy
+                y: wd
             }
         }
 

@@ -1,4 +1,4 @@
-describe("DYParser", function () {
+describe("WDParser", function () {
     var sandbox = null;
     var parser = null;
     var json = null;
@@ -13,7 +13,7 @@ describe("DYParser", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        parser = new dy.DYParser();
+        parser = new wd.WDParser();
 
         json = {
             scene: {},
@@ -35,7 +35,7 @@ describe("DYParser", function () {
 
             var result = parser.parse(json);
 
-            expect(result.scene.ambientColor).toEqual(dy.Color.create("rgb(1.0,0.0,0.5)"));
+            expect(result.scene.ambientColor).toEqual(wd.Color.create("rgb(1.0,0.0,0.5)"));
         });
     });
 
@@ -56,10 +56,10 @@ describe("DYParser", function () {
 
             var result = parser.parse(json);
 
-            expect(result.materials.getChild("a").diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.getChild("a").specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
-            expect(result.materials.getChild("b").diffuseColor).toEqual(dy.Color.create("rgb(0.0,0.0,1.0)"));
-            expect(result.materials.getChild("b").specularColor).toEqual(dy.Color.create("rgb(0.1,0.2,1.0)"));
+            expect(result.materials.getChild("a").diffuseColor).toEqual(wd.Color.create("rgb(0.0,0.0,1.0)"));
+            expect(result.materials.getChild("a").specularColor).toEqual(wd.Color.create("rgb(0.1,0.2,1.0)"));
+            expect(result.materials.getChild("b").diffuseColor).toEqual(wd.Color.create("rgb(0.0,0.0,1.0)"));
+            expect(result.materials.getChild("b").specularColor).toEqual(wd.Color.create("rgb(0.1,0.2,1.0)"));
         });
         it("color's rgb can exceed 1", function () {
             setJson({
@@ -73,7 +73,7 @@ describe("DYParser", function () {
 
             var result = parser.parse(json);
 
-            expect(result.materials.getChild("a").diffuseColor).toEqual(dy.Color.create("rgb(2.0,2.0,2.0)"));
+            expect(result.materials.getChild("a").diffuseColor).toEqual(wd.Color.create("rgb(2.0,2.0,2.0)"));
             expect(result.materials.getChild("a").specularColor.r).toEqual(10);
             expect(result.materials.getChild("a").specularColor.g).toEqual(10);
             expect(result.materials.getChild("a").specularColor.b).toEqual(10);

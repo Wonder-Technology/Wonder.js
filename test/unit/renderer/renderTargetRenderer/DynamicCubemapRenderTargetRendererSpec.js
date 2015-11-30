@@ -3,7 +3,7 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
 
     var self = tool;
 
-    tool.RenderTargetRenderer = dy.DynamicCubemapRenderTargetRenderer;
+    tool.RenderTargetRenderer = wd.DynamicCubemapRenderTargetRenderer;
 
 
     tool.initWhenCreate_body = [
@@ -11,14 +11,14 @@ describe("DynamicCubemapRenderTargetRenderer", function() {
             body: function(texture){
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height:100
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 99,
                     height:201
                 });

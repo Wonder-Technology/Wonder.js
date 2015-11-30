@@ -5,9 +5,9 @@ describe("VideoTexture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.VideoTexture;
+        Texture = wd.VideoTexture;
         texture = new Texture();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -16,7 +16,7 @@ describe("VideoTexture", function() {
 
     describe("dispose", function(){
         it("off dy_startLoop handler", function(){
-            var asset = dy.VideoTextureAsset.create({
+            var asset = wd.VideoTextureAsset.create({
                 isStop:false
             });
             texture = Texture.create(asset);
@@ -24,7 +24,7 @@ describe("VideoTexture", function() {
 
             texture.init();
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
 
             expect(texture.needUpdate).toBeTruthy();
 
@@ -32,7 +32,7 @@ describe("VideoTexture", function() {
             texture.dispose();
             texture.needUpdate = false;
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
 
             expect(texture.needUpdate).toBeFalsy();
         });

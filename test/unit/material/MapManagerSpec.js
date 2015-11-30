@@ -6,11 +6,11 @@ describe("MapManager", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Manager = dy.MapManager;
+        Manager = wd.MapManager;
         manager = new Manager();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
-        gl = dy.DeviceManager.getInstance().gl;
+        gl = wd.DeviceManager.getInstance().gl;
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -19,45 +19,45 @@ describe("MapManager", function() {
 
     describe("addMap", function(){
         it("test add common texture asset", function(){
-            var asset = dy.ImageTextureAsset.create({});
-            asset.format = dy.TextureFormat.RGBA;
+            var asset = wd.ImageTextureAsset.create({});
+            asset.format = wd.TextureFormat.RGBA;
 
             manager.addMap(asset);
 
-            expect(manager.getMap(0)).toBeInstanceOf(dy.ImageTexture);
+            expect(manager.getMap(0)).toBeInstanceOf(wd.ImageTexture);
             expect(manager.getMap(0).format).toEqual(asset.format);
         });
         it("test add compressed texture asset", function(){
-            var asset = dy.CompressedTextureAsset.create({});
-            asset.format = dy.TextureFormat.RGBA;
+            var asset = wd.CompressedTextureAsset.create({});
+            asset.format = wd.TextureFormat.RGBA;
 
             manager.addMap(asset);
 
-            expect(manager.getMap(0)).toBeInstanceOf(dy.CompressedTexture);
+            expect(manager.getMap(0)).toBeInstanceOf(wd.CompressedTexture);
             expect(manager.getMap(0).format).toEqual(asset.format);
         });
         it("test add common texture and compressed texture", function(){
-            var asset1 = dy.ImageTextureAsset.create({});
-            var asset2 = dy.CompressedTextureAsset.create({});
-            var twoTexture = dy.ImageTexture.create(asset1);
-            var compressedTexture = dy.CompressedTexture.create(asset2);
+            var asset1 = wd.ImageTextureAsset.create({});
+            var asset2 = wd.CompressedTextureAsset.create({});
+            var twoTexture = wd.ImageTexture.create(asset1);
+            var compressedTexture = wd.CompressedTexture.create(asset2);
 
             manager.addMap(twoTexture);
             manager.addMap(compressedTexture);
 
-            expect(manager.getMap(0)).toBeInstanceOf(dy.ImageTexture);
-            expect(manager.getMap(1)).toBeInstanceOf(dy.CompressedTexture);
+            expect(manager.getMap(0)).toBeInstanceOf(wd.ImageTexture);
+            expect(manager.getMap(1)).toBeInstanceOf(wd.CompressedTexture);
         });
     });
 
         it("set env map", function(){
             var asset = {
-                asset: dy.CompressedTextureAsset.create({})
+                asset: wd.CompressedTextureAsset.create({})
             };
-            var texture1 = dy.CubemapTexture.create(
+            var texture1 = wd.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
-            var texture2 = dy.CubemapTexture.create(
+            var texture2 = wd.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
 
@@ -70,17 +70,17 @@ describe("MapManager", function() {
     describe("dispose", function(){
         it("dispose all textures, clear container", function(){
             var asset = {
-                asset: dy.CompressedTextureAsset.create({})
+                asset: wd.CompressedTextureAsset.create({})
             };
-            var texture1 = dy.CubemapTexture.create(
+            var texture1 = wd.CubemapTexture.create(
                 [asset,asset, asset, asset, asset, asset ]
             );
             manager.setEnvMap(texture1);
 
-            var asset1 = dy.ImageTextureAsset.create({});
-            var asset2 = dy.CompressedTextureAsset.create({});
-            var twoTexture = dy.ImageTexture.create(asset1);
-            var compressedTexture = dy.CompressedTexture.create(asset2);
+            var asset1 = wd.ImageTextureAsset.create({});
+            var asset2 = wd.CompressedTextureAsset.create({});
+            var twoTexture = wd.ImageTexture.create(asset1);
+            var compressedTexture = wd.CompressedTexture.create(asset2);
 
             manager.addMap(twoTexture);
             manager.addMap(compressedTexture);
@@ -106,20 +106,20 @@ describe("MapManager", function() {
         var program;
 
         beforeEach(function(){
-            diffuseMap = new dy.CompressedTexture();
+            diffuseMap = new wd.CompressedTexture();
             manager.addMap(diffuseMap, {
                 samplerVariableName: "diffuseSampler"
             });
 
-            twoDMap = dy.ImageTexture.create();
+            twoDMap = wd.ImageTexture.create();
             manager.addMap(twoDMap);
 
-            twoDShadowMap = dy.TwoDShadowMapTexture.create();
+            twoDShadowMap = wd.TwoDShadowMapTexture.create();
             manager.addMap(twoDShadowMap, {
                 samplerData: 0
             });
 
-            cubemapShadowMap = dy.CubemapShadowMapTexture.create();
+            cubemapShadowMap = wd.CubemapShadowMapTexture.create();
             manager.addMap(cubemapShadowMap, {
                 samplerData: 1
             });
@@ -130,7 +130,7 @@ describe("MapManager", function() {
             });
 
 
-            program = new dy.Program();
+            program = new wd.Program();
 
             gl.getUniformLocation.returns(null);
         });

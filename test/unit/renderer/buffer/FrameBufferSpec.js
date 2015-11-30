@@ -5,10 +5,10 @@ describe("FrameBuffer", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        device = dy.DeviceManager.getInstance();
+        device = wd.DeviceManager.getInstance();
         sandbox.stub(device, "gl", testTool.buildFakeGl(sandbox));
 
-        buffer = new dy.FrameBuffer();
+        buffer = new wd.FrameBuffer();
     });
     afterEach(function () {
         sandbox.restore();

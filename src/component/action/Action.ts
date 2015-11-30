@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class Action extends Component{
         get isStart() {
             return !this.isStop;

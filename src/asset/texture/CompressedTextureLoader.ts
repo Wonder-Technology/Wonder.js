@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class CompressedTextureLoader{
         public static load(url:string) {
             return AjaxLoader.load(url, "arraybuffer")

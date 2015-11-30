@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class FlyOrthographicCameraControl extends FlyCameraControl {
         public static create(cameraComponent:Camera) {
             var obj = new this(cameraComponent);

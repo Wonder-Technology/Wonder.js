@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
 //    /*!
 //     it is designed as singleton, not static class, because it need maintain state(_instance attri).
 //

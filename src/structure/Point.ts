@@ -1,4 +1,4 @@
-module dy {
+module wd {
     export class Point {
         public x:number = null;
         public y:number = null;

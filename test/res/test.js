@@ -40,7 +40,7 @@ var Test = (function () {
         this.a--;
     };
     Test = __decorate([
-        dy.script("test")
+        wd.script("test")
     ], Test);
     return Test;
 })();

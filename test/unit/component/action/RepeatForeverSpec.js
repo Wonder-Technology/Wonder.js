@@ -2,12 +2,12 @@ describe("RepeatForever", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var RepeatForever = dy.RepeatForever;
+    var RepeatForever = wd.RepeatForever;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new RepeatForever();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {
@@ -16,9 +16,9 @@ describe("RepeatForever", function () {
 
     it("repeat action forever", function(){
         var x1 = null;
-        var tween1 = dy.Tween.create();
+        var tween1 = wd.Tween.create();
         tween1.from({x:0}).to({x: 10}, 100)
-            .easing( dy.Tween.Easing.Linear.None)
+            .easing( wd.Tween.Easing.Linear.None)
             .onUpdate(function(){
                 x1 = this.x;
             });
@@ -67,9 +67,9 @@ describe("RepeatForever", function () {
     describe("start,stop", function(){
         it("when start agian after stop, it will restart the action", function () {
             var x1 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });
@@ -101,9 +101,9 @@ describe("RepeatForever", function () {
     describe("pause,resume", function(){
         it("can pause action and continue action", function () {
             var x1 = null;
-            var tween1 = dy.Tween.create();
+            var tween1 = wd.Tween.create();
             tween1.from({x:0}).to({x: 10}, 100)
-                .easing( dy.Tween.Easing.Linear.None)
+                .easing( wd.Tween.Easing.Linear.None)
                 .onUpdate(function(){
                     x1 = this.x;
                 });

@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum EngineEvent{
         STARTLOOP = <any>"dy_startLoop",
         ENDLOOP = <any>"dy_endLoop",

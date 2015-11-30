@@ -5,7 +5,7 @@ describe("shaderLibSpec", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -22,11 +22,11 @@ describe("shaderLibSpec", function () {
             var shader;
 
             beforeEach(function () {
-                scene = dy.Director.getInstance().scene;
+                scene = wd.Director.getInstance().scene;
 
-                material = new dy.LightMaterial();
+                material = new wd.LightMaterial();
 
-                quadCmd = new dy.QuadCommand();
+                quadCmd = new wd.QuadCommand();
 
                 program = {
                     use: sandbox.stub(),
@@ -40,10 +40,10 @@ describe("shaderLibSpec", function () {
 
 
 
-                scene.shadowMap.softType = dy.ShadowMapSoftType.PCF;
-                shader = new dy.Shader();
+                scene.shadowMap.softType = wd.ShadowMapSoftType.PCF;
+                shader = new wd.Shader();
                 shader.program = program;
-                Lib = dy.TwoDShadowMapShaderLib;
+                Lib = wd.TwoDShadowMapShaderLib;
                 lib = Lib.create();
                 shader.addLib(lib);
                 shader.init();
@@ -57,7 +57,7 @@ describe("shaderLibSpec", function () {
             it("pcf can be opened or closed in runtime", function () {
                 shader.update(quadCmd, material);
 
-                scene.shadowMap.softType = dy.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = wd.ShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 
@@ -68,7 +68,7 @@ describe("shaderLibSpec", function () {
 
                 shader.update(quadCmd, material);
 
-                scene.shadowMap.softType = dy.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = wd.ShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 
@@ -78,13 +78,13 @@ describe("shaderLibSpec", function () {
     });
 
     it("materials' shader lib are independent", function(){
-        var material1 = dy.CustomMaterial.create();
-        var material2 = dy.CustomMaterial.create();
+        var material1 = wd.CustomMaterial.create();
+        var material2 = wd.CustomMaterial.create();
 
         var shaderDefinitionData = {
             attributes: {
                 "a_color": {
-                    type: dy.VariableType.FLOAT_3,
+                    type: wd.VariableType.FLOAT_3,
                     value: [
                         1, 0, 0, 1,
                         1, 0, 0, 1,
@@ -98,14 +98,14 @@ describe("shaderLibSpec", function () {
         };
 
 
-        var quadCmd = new dy.QuadCommand();
+        var quadCmd = new wd.QuadCommand();
         sandbox.stub(quadCmd, "buffers", {
             hasChild:sandbox.stub().returns(true),
             getChild:sandbox.stub()
         });
-        //quadCmd.mMatrix = dy.Matrix4.create();
-        //quadCmd.vMatrix = dy.Matrix4.create();
-        //quadCmd.pMatrix = dy.Matrix4.create();
+        //quadCmd.mMatrix = wd.Matrix4.create();
+        //quadCmd.vMatrix = wd.Matrix4.create();
+        //quadCmd.pMatrix = wd.Matrix4.create();
         sandbox.stub(material1.program, "sendUniformData");
         sandbox.stub(material1.program, "sendAttributeData");
 

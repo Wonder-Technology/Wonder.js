@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     /*! referenced from:
      https://github.com/tweenjs/tween.js
      */

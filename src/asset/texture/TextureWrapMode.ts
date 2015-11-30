@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum TextureWrapMode{
         REPEAT = <any>"REPEAT",
         MIRRORED_REPEAT = <any>"MIRRORED_REPEAT",

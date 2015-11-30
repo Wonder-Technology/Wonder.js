@@ -26,4 +26,4 @@ var Scene = (function () {
     return Scene;
 })();
 
-dy.Script.addScript("scene", Scene);
+wd.Script.addScript("scene", Scene);

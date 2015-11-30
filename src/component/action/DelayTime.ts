@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class DelayTime extends ActionInterval {
         public static create(delayTime:number) {
             var action = new this(delayTime);

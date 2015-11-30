@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export abstract class TimeController{
         public elapsed:number = null;
         public pauseElapsed:number = 0;

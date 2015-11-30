@@ -33,7 +33,7 @@ describe("Converter", function () {
         });
 
         function readJSON(resultFilePath){
-            var EXTNAME = ".dy";
+            var EXTNAME = ".wd";
             var resultFilePath = resultFilePath.replace(/\.\w+$/, EXTNAME);
 
             if(!fs.existsSync(resultFilePath)){
@@ -43,7 +43,7 @@ describe("Converter", function () {
             return JSON.parse(fs.readFileSync(resultFilePath).toString());
         }
 
-        it("convert one file, get the .dy file and relative resource files", function (done) {
+        it("convert one file, get the .wd file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
             converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .subscribe(function (data) {
@@ -56,7 +56,7 @@ describe("Converter", function () {
                         formatVersion: converter.version,
                         description: '',
                         sourceFile: testPath1,
-                        generatedBy: "OBJToDY"
+                        generatedBy: "OBJToWD"
                     });
 
                     //expect(fs.existsSync(path.resolve(path.dirname(resultFilePath), "1.jpg"))).toBeTruthy();
@@ -68,7 +68,7 @@ describe("Converter", function () {
                 })
         });
 
-        it("convert multi files, get the .dy file and relative resource files", function (done) {
+        it("convert multi files, get the .wd file and relative resource files", function (done) {
             var destDir = path.join(process.cwd(), "converter/test/dest_forTest");
             converter.write(converter.convert(testFile, testPath1), sourceDir, destDir, testPath1)
                 .merge(

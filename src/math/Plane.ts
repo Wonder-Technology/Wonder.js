@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class Plane{
         public static create(a: number, b: number, c: number, d: number) {
         	var obj = new this(a, b, c, d);

@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     enum GameState{
         NORMAL,
         STOP,
@@ -148,7 +148,7 @@ module dy{
         private _init(){
             this._isFirstStart = false;
 
-            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
+            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
             this.scene.onEnter();
             this.scene.init();
@@ -159,7 +159,7 @@ module dy{
             this._timeController.start();
             this.scheduler.start();
 
-            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.AFTER_INIT));
+            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.AFTER_INIT));
         }
 
         private _buildLoopStream(){
@@ -179,14 +179,14 @@ module dy{
 
             //todo invoke scene->syncHierarchy()
 
-            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.STARTLOOP));
+            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.STARTLOOP));
 
             this._run(elapseTime);
             //this._run(time);
 
             //this.renderer.render(this.scene);
 
-            EventManager.trigger(dy.CustomEvent.create(<any>EngineEvent.ENDLOOP));
+            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.ENDLOOP));
 
             return true;
         }

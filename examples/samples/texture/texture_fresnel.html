@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>texture fresnel</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/1.jpg", id: "texture"},
             {url: "../asset/texture/skybox/px.jpg", id: "px"},
             {url: "../asset/texture/skybox/nx.jpg", id: "nx"},
@@ -30,7 +30,7 @@
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createSkybox());
             director.scene.addChild(createSphere());
@@ -40,101 +40,101 @@
         }
 
         function createSkybox() {
-            var cubemap = dy.CubemapTexture.create(
+            var cubemap = wd.CubemapTexture.create(
                     [
                         {
-                            asset: dy.LoaderManager.getInstance().get("px")
+                            asset: wd.LoaderManager.getInstance().get("px")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("nx")
+                            asset: wd.LoaderManager.getInstance().get("nx")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("py")
+                            asset: wd.LoaderManager.getInstance().get("py")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("ny")
+                            asset: wd.LoaderManager.getInstance().get("ny")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("pz")
+                            asset: wd.LoaderManager.getInstance().get("pz")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("nz")
+                            asset: wd.LoaderManager.getInstance().get("nz")
                         }
                     ]
             );
 
-            var material = dy.SkyboxMaterial.create();
+            var material = wd.SkyboxMaterial.create();
             material.envMap = cubemap;
 
 
-            var geometry = dy.BoxGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
             geometry.depth = 5;
 
 
-            var gameObject = dy.Skybox.create();
+            var gameObject = wd.Skybox.create();
             gameObject.addComponent(geometry);
 
             return gameObject;
         }
 
         function createSphere() {
-            var cubemap = dy.CubemapTexture.create(
+            var cubemap = wd.CubemapTexture.create(
                     [
                         {
-                            asset: dy.LoaderManager.getInstance().get("px")
+                            asset: wd.LoaderManager.getInstance().get("px")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("nx")
+                            asset: wd.LoaderManager.getInstance().get("nx")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("py")
+                            asset: wd.LoaderManager.getInstance().get("py")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("ny")
+                            asset: wd.LoaderManager.getInstance().get("ny")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("pz")
+                            asset: wd.LoaderManager.getInstance().get("pz")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("nz")
+                            asset: wd.LoaderManager.getInstance().get("nz")
                         }
                     ]
             );
-            cubemap.mode = dy.EnvMapMode.FRESNEL;
+            cubemap.mode = wd.EnvMapMode.FRESNEL;
 
 
-            var material = dy.BasicMaterial.create();
+            var material = wd.BasicMaterial.create();
             material.envMap = cubemap;
-            material.shading = dy.Shading.SMOOTH;
+            material.shading = wd.Shading.SMOOTH;
             material.refractionRatio = 1.52;
 
-            var geometry = dy.SphereGeometry.create();
+            var geometry = wd.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 5;
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
         }
 
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = dy.FlyCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
             camera.transform.translate(0, 0, 20);

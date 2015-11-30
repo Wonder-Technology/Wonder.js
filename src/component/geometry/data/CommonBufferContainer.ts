@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy {
+module wd {
     export class CommonBufferContainer extends BufferContainer{
         public static create() {
         	var obj = new this();

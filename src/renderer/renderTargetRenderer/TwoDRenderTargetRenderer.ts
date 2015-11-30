@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer{
         //protected frameBuffer:FrameBuffer = null;
         //protected frameBufferTexture:WebGLTexture = null;

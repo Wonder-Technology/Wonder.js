@@ -1,4 +1,4 @@
-module dy {
+module wd {
     export enum BufferUsage{
         STREAM_DRAW = <any>"STREAM_DRAW",
         STATIC_DRAW = <any>"STATIC_DRAW",

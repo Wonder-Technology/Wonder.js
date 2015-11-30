@@ -23,12 +23,12 @@ var TwoDRenderTargetTool = YYC.Class({
                 self.sandbox = sinon.sandbox.create();
                 self.renderTargetRenderer = new self.RenderTargetRenderer({
                 });
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(self.sandbox));
 
-                gl = dy.DeviceManager.getInstance().gl;
+                gl = wd.DeviceManager.getInstance().gl;
             });
             afterEach(function () {
-                dy.EventManager.off();
+                wd.EventManager.off();
                 testTool.clearInstance();
                 self.sandbox.restore();
             });
@@ -40,7 +40,7 @@ var TwoDRenderTargetTool = YYC.Class({
                     texture = {};
                     self.renderTargetRenderer.texture = texture;
 
-                    self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                    self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     });
 
                     self.initWhenCreate_beforeEach();
@@ -55,7 +55,7 @@ var TwoDRenderTargetTool = YYC.Class({
                 it("create FrameBuffer instance", function(){
                     self.renderTargetRenderer.initWhenCreate();
 
-                    expect(self.renderTargetRenderer.frameBufferOperator).toBeInstanceOf(dy.FrameBuffer);
+                    expect(self.renderTargetRenderer.frameBufferOperator).toBeInstanceOf(wd.FrameBuffer);
                 });
             });
 

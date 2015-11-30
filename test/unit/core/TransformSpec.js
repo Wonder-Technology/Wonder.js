@@ -1,8 +1,8 @@
 describe("Transform", function(){
     var sandbox = null;
     var tra1 = null;
-    var Vector3 = dy.Vector3;
-    var Transform = dy.Transform;
+    var Vector3 = wd.Vector3;
+    var Transform = wd.Transform;
 
     function getValues(values, digit){
         var digit = digit || 0;

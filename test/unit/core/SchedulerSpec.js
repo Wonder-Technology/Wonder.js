@@ -4,7 +4,7 @@ describe("Scheduler", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        schedule = dy.Scheduler.create();
+        schedule = wd.Scheduler.create();
         sandbox.stub(window.performance, "now").returns(0);
     });
     afterEach(function () {

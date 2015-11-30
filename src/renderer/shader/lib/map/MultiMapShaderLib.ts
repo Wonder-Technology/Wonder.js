@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy{
+module wd{
     //todo support more than 2 maps
     export class MultiMapShaderLib extends MapShaderLib{
         public static create() {

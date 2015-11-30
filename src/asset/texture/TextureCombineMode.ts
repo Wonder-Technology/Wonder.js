@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum TextureCombineMode{
         MIX,
         MULTIPLY,

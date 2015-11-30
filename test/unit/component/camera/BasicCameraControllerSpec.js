@@ -11,15 +11,15 @@ describe("BasicCameraController", function () {
     });
 
     it("control Camera", function () {
-        var camera = dy.GameObject.create();
+        var camera = wd.GameObject.create();
 
-        var cameraComponent = dy.PerspectiveCamera.create();
+        var cameraComponent = wd.PerspectiveCamera.create();
         cameraComponent.fovy = 45;
         cameraComponent.aspect = 1;
         cameraComponent.near = 0.1;
         cameraComponent.far = 1000;
 
-        controller = dy.BasicCameraController.create(cameraComponent);
+        controller = wd.BasicCameraController.create(cameraComponent);
         camera.addComponent(controller);
 
 
@@ -29,7 +29,7 @@ describe("BasicCameraController", function () {
 
 
 
-        var component = camera.getComponent(dy.CameraController).camera;
+        var component = camera.getComponent(wd.CameraController).camera;
         expect(component).toEqual(cameraComponent);
         expect(component.gameObject).toEqual(camera);
         expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(

@@ -5,7 +5,7 @@ describe("custom event", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        manager = dy.EventManager;
+        manager = wd.EventManager;
         eventName = "custom1";
 
     });
@@ -19,14 +19,14 @@ describe("custom event", function () {
             it("if eventName contain EventListenerMap->eventSeparator, contract error", function(){
                 testTool.openContractCheck(sandbox);
 
-                sandbox.stub(dy.EventListenerMap, "eventSeparator", "%");
+                sandbox.stub(wd.EventListenerMap, "eventSeparator", "%");
 
                 expect(function(){
-                    manager.on("dy%endLoop", function (e) {
+                    manager.on("wd%endLoop", function (e) {
                     });
                 }).toThrow();
                 expect(function(){
-                    manager.on(new dy.GameObject(), "dy%endLoop", function (e) {
+                    manager.on(new wd.GameObject(), "wd%endLoop", function (e) {
                     }, 10);
                 }).toThrow();
             });
@@ -38,13 +38,13 @@ describe("custom event", function () {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
                 expect(sum).toEqual(1);
 
                 manager.off(eventName);
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -64,15 +64,15 @@ describe("custom event", function () {
                     eventTarget2 = e;
                     fakeObj.b();
                 }, 2);
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
-                expect(eventTarget2).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
+                expect(eventTarget2).toBeInstanceOf(wd.CustomEvent);
                 expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             });
             it("target eventName", function () {
-                var target = dy.GameObject.create();
+                var target = wd.GameObject.create();
                 var eventTarget = null;
                 var sum = 0;
 
@@ -80,15 +80,15 @@ describe("custom event", function () {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(target, dy.CustomEvent.create(eventName));
+                manager.trigger(target, wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
                 expect(eventTarget.currentTarget).toEqual(target);
                 expect(eventTarget.target).toEqual(target);
                 expect(sum).toEqual(1);
 
                 manager.off(target, eventName);
-                manager.trigger(target, dy.CustomEvent.create(eventName));
+                manager.trigger(target, wd.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -103,13 +103,13 @@ describe("custom event", function () {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -139,11 +139,11 @@ describe("custom event", function () {
                     fakeObj.c();
                 });
                 subject.start();
-                manager.trigger(dy.CustomEvent.create(eventName));
+                manager.trigger(wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
-                expect(eventTarget2).toBeInstanceOf(dy.CustomEvent);
-                expect(eventTarget3).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
+                expect(eventTarget2).toBeInstanceOf(wd.CustomEvent);
+                expect(eventTarget3).toBeInstanceOf(wd.CustomEvent);
                 expect(fakeObj.b).toCalledBefore(fakeObj.a);
                 expect(fakeObj.b).toCalledBefore(fakeObj.c);
             });
@@ -187,12 +187,12 @@ describe("custom event", function () {
                     });
                     subject.start();
 
-                    manager.trigger(dy.CustomEvent.create(eventName));
+                    manager.trigger(wd.CustomEvent.create(eventName));
                 });
 
                 it("subject dispose", function () {
                     subject.dispose();
-                    manager.trigger(dy.CustomEvent.create(eventName));
+                    manager.trigger(wd.CustomEvent.create(eventName));
 
                     expect(fakeObj.a).toCalledTwice();
                     expect(fakeObj.b).toCalledOnce();
@@ -201,7 +201,7 @@ describe("custom event", function () {
                 it("subscription dispose", function () {
                     subscription1.dispose();
                     subscription2.dispose();
-                    manager.trigger(dy.CustomEvent.create(eventName));
+                    manager.trigger(wd.CustomEvent.create(eventName));
 
                     expect(fakeObj.a).toCalledOnce();
                     expect(fakeObj.b).toCalledOnce();
@@ -209,7 +209,7 @@ describe("custom event", function () {
                 });
             });
             it("target eventName", function () {
-                var target = dy.GameObject.create();
+                var target = wd.GameObject.create();
                 var eventTarget = null;
                 var sum = 0;
 
@@ -218,15 +218,15 @@ describe("custom event", function () {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(target, dy.CustomEvent.create(eventName));
+                manager.trigger(target, wd.CustomEvent.create(eventName));
 
-                expect(eventTarget).toBeInstanceOf(dy.CustomEvent);
+                expect(eventTarget).toBeInstanceOf(wd.CustomEvent);
                 expect(eventTarget.currentTarget).toEqual(target);
                 expect(eventTarget.target).toEqual(target);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(target, dy.CustomEvent.create(eventName));
+                manager.trigger(target, wd.CustomEvent.create(eventName));
 
                 expect(sum).toEqual(1);
             });
@@ -242,10 +242,10 @@ describe("custom event", function () {
         var fakeObj;
 
         beforeEach(function(){
-             mesh1 = dy.GameObject.create();
-             mesh2 = dy.GameObject.create();
-             mesh3 = dy.GameObject.create();
-             mesh4 = dy.GameObject.create();
+             mesh1 = wd.GameObject.create();
+             mesh2 = wd.GameObject.create();
+             mesh3 = wd.GameObject.create();
+             mesh4 = wd.GameObject.create();
             mesh2.addChild(mesh1);
             mesh4.addChild(mesh2);
             mesh4.addChild(mesh3);
@@ -287,39 +287,39 @@ describe("custom event", function () {
                 });
 
 
-            manager.emit(mesh1, dy.CustomEvent.create(eventName));
+            manager.emit(mesh1, wd.CustomEvent.create(eventName));
 
             expect(eventTarget5).toBeNull();
         });
         it("emit custom event", function(){
-            manager.emit(mesh1, dy.CustomEvent.create(eventName));
+            manager.emit(mesh1, wd.CustomEvent.create(eventName));
 
-            expect(eventTarget1.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget1.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
             expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-            expect(eventTarget2.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget2.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
             expect(eventTarget2.target.uid).toEqual(mesh1.uid);
             expect(eventTarget3).toBeNull();
-            expect(eventTarget4.phase).toEqual(dy.EventPhase.EMIT);
+            expect(eventTarget4.phase).toEqual(wd.EventPhase.EMIT);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
             expect(eventTarget4.target.uid).toEqual(mesh1.uid);
             expect(fakeObj.a).toCalledBefore(fakeObj.b);
             expect(fakeObj.b).toCalledBefore(fakeObj.d);
         });
         it("broadcast custom event", function(){
-            manager.broadcast(mesh4, dy.CustomEvent.create(eventName));
+            manager.broadcast(mesh4, wd.CustomEvent.create(eventName));
 
-            expect(eventTarget4.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget4.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
             expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget2.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget2.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
             expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget1.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget1.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
             expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget3.phase).toEqual(dy.EventPhase.BROADCAST);
+            expect(eventTarget3.phase).toEqual(wd.EventPhase.BROADCAST);
             expect(eventTarget3.currentTarget.uid).toEqual(mesh3.uid);
             expect(eventTarget3.target.uid).toEqual(mesh4.uid);
             expect(fakeObj.d).toCalledBefore(fakeObj.b);
@@ -341,8 +341,8 @@ describe("custom event", function () {
                 a: 1,
                 b: "b"
             };
-            mesh1 = dy.GameObject.create();
-            mesh2 = dy.GameObject.create();
+            mesh1 = wd.GameObject.create();
+            mesh2 = wd.GameObject.create();
             mesh2.addChild(mesh1);
 
             manager.fromEvent(mesh1, eventName)
@@ -361,23 +361,23 @@ describe("custom event", function () {
                     eventTarget1 = e;
                 });
 
-            manager.trigger(dy.CustomEvent.create(eventName), userData);
+            manager.trigger(wd.CustomEvent.create(eventName), userData);
 
             expect(eventTarget1.userData).toEqual(userData);
         });
         it("trigger target and event", function(){
-            manager.trigger(mesh1, dy.CustomEvent.create(eventName), userData);
+            manager.trigger(mesh1, wd.CustomEvent.create(eventName), userData);
 
             expect(eventTarget1.userData).toEqual(userData);
         });
         it("emit", function(){
-            manager.emit(mesh1, dy.CustomEvent.create(eventName), userData);
+            manager.emit(mesh1, wd.CustomEvent.create(eventName), userData);
 
             expect(eventTarget1.userData).toEqual(userData);
             expect(eventTarget2.userData).toEqual(userData);
         });
         it("broadcast", function(){
-            manager.broadcast(mesh2, dy.CustomEvent.create(eventName), userData);
+            manager.broadcast(mesh2, wd.CustomEvent.create(eventName), userData);
 
             expect(eventTarget2.userData).toEqual(userData);
             expect(eventTarget1.userData).toEqual(userData);

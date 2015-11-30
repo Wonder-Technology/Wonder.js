@@ -1,4 +1,4 @@
-describe("DYBuilder", function () {
+describe("WDBuilder", function () {
     var sandbox = null;
     var builder = null;
     var json = null;
@@ -12,8 +12,8 @@ describe("DYBuilder", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        builder = new dy.DYBuilder();
-        Color = dy.Color;
+        builder = new wd.WDBuilder();
+        Color = wd.Color;
         Collection = wdCb.Collection;
         Hash = wdCb.Hash;
 
@@ -23,7 +23,7 @@ describe("DYBuilder", function () {
             objects: []
         }
 
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();
@@ -39,7 +39,7 @@ describe("DYBuilder", function () {
                 metadata:{
                     formatVersion:"0.1",
                     description:"aaa",
-                    sourceFile:"b.dy",
+                    sourceFile:"b.wd",
                     generatedBy:"OBJConverter"
                 }
             })
@@ -90,9 +90,9 @@ describe("DYBuilder", function () {
         //                        type: "LightMaterial",
         //                        diffuseColor: Color.create(1.0, 0.1, 0),
         //                        specularColor: Color.create(0.0, 0.1, 0),
-        //                        diffuseMap: new dy.ImageTexture(),
-        //                        specularMap: new dy.CompressedTexture(),
-        //                        normalMap: new dy.ImageTexture(),
+        //                        diffuseMap: new wd.ImageTexture(),
+        //                        specularMap: new wd.CompressedTexture(),
+        //                        normalMap: new wd.ImageTexture(),
         //                        shininess: 32,
         //                        opacity: 1.0
         //                    }
@@ -115,7 +115,7 @@ describe("DYBuilder", function () {
         //        it("test geometry", function(){
         //            var result = builder.build(json);
         //
-        //            var geo = result.getChild("models").getChild(0).getComponent(dy.Geometry);
+        //            var geo = result.getChild("models").getChild(0).getComponent(wd.Geometry);
         //            expect(geo.vertices).toEqual(
         //                copy.objects.a.vertices
         //            );
@@ -142,7 +142,7 @@ describe("DYBuilder", function () {
         //
         //
         //            var materialData = copy.materials.getChild("aa");
-        //            var geo = result.getChild("models").getChild(0).getComponent(dy.Geometry);
+        //            var geo = result.getChild("models").getChild(0).getComponent(wd.Geometry);
         //            var mat = geo.material;
         //            expect(mat.color).toEqual(
         //                materialData.diffuseColor
@@ -160,7 +160,7 @@ describe("DYBuilder", function () {
         //            json.materials.addChild("bb", {
         //                diffuseColor: Color.create(0.2, 0.1, 0.2),
         //                specularColor: Color.create(0.0, 0.1, 0),
-        //                specularMap: new dy.CompressedTexture(),
+        //                specularMap: new wd.CompressedTexture(),
         //                shininess: 32,
         //                opacity: 1.0
         //            });
@@ -203,7 +203,7 @@ describe("DYBuilder", function () {
         //
         //            var materialData1 = copy.materials.getChild("aa");
         //            var materialData2 = copy.materials.getChild("bb");
-        //            var geo1 = result.getChild("models").getChild(0).getComponent(dy.Geometry);
+        //            var geo1 = result.getChild("models").getChild(0).getComponent(wd.Geometry);
         //            var mat1 = geo1.material;
         //
         //            expect(mat1.color).toEqual(materialData1.diffuseColor);
@@ -212,7 +212,7 @@ describe("DYBuilder", function () {
         //
         //
         //            var m2 = result.getChild("models").getChild(1)
-        //            var geo2 = m2.getComponent(dy.Geometry);
+        //            var geo2 = m2.getComponent(wd.Geometry);
         //            expect(geo2.vertices).toEqual(
         //                copy.objects.b.vertices
         //            );
@@ -223,7 +223,7 @@ describe("DYBuilder", function () {
         //            var mat2 = geo2.material;
         //            expect(mat2.color).toEqual(materialData2.diffuseColor);
         //
-        //            var geo21 = m2.getChild(0).getComponent(dy.Geometry);
+        //            var geo21 = m2.getChild(0).getComponent(wd.Geometry);
         //            expect(geo21.colors).toEqual(
         //                copy.objects.b.bb.colors
         //            )

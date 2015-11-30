@@ -3,7 +3,7 @@ describe("Camera", function() {
     var camera = null;
 
     function build() {
-        var camera = new dy.Camera();
+        var camera = new wd.Camera();
 
         return camera;
     }

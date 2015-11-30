@@ -6,9 +6,9 @@ describe("GameObject", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        GameObject = dy.GameObject;
+        GameObject = wd.GameObject;
         gameObject = new GameObject();
-        Vector3 = dy.Vector3;
+        Vector3 = wd.Vector3;
     });
     afterEach(function () {
         sandbox.restore();
@@ -104,9 +104,9 @@ describe("GameObject", function() {
             var UserScript = function(){};
             UserScript.prototype.onStartLoop = startLoopStub;
             UserScript.prototype.onEndLoop = endLoopStub;
-            dy.Script.addScript("aaa", UserScript);
+            wd.Script.addScript("aaa", UserScript);
 
-            var script = dy.Script.create();
+            var script = wd.Script.create();
             var stream = new wdFrp.Stream();
             sandbox.stub(script, "createLoadJsStream").returns({
                 do:sandbox.stub().returns(stream)
@@ -122,16 +122,16 @@ describe("GameObject", function() {
 
             gameObject.init();
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
             expect(startLoopStub).toCalledOnce();
             expect(endLoopStub).toCalledOnce();
 
             gameObject.dispose();
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_startLoop"));
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
 
             expect(startLoopStub).toCalledOnce();

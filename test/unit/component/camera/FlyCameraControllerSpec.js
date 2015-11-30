@@ -12,14 +12,14 @@ describe("FlyCameraController", function () {
     });
 
     it("control Camera", function () {
-        sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+        sandbox.stub(wd.DeviceManager.getInstance(), "view", {
             height:100,
             dom:{}
         })
 
-        var camera = dy.GameObject.create();
+        var camera = wd.GameObject.create();
 
-        var cameraComponent = dy.OrthographicCamera.create();
+        var cameraComponent = wd.OrthographicCamera.create();
         cameraComponent.left = -10;
         cameraComponent.right = 10;
         cameraComponent.top = 10;
@@ -27,7 +27,7 @@ describe("FlyCameraController", function () {
         cameraComponent.near = 0.1;
         cameraComponent.far = 1000;
 
-        controller = dy.FlyCameraController.create(cameraComponent);
+        controller = wd.FlyCameraController.create(cameraComponent);
         camera.addComponent(controller);
 
 
@@ -36,7 +36,7 @@ describe("FlyCameraController", function () {
 
 
 
-        var component = camera.getComponent(dy.CameraController).camera;
+        var component = camera.getComponent(wd.CameraController).camera;
         expect(component).toEqual(cameraComponent);
         expect(component.gameObject).toEqual(camera);
         expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(

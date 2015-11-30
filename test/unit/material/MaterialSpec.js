@@ -4,8 +4,8 @@ describe("Material", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        material = new dy.Material();
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        material = new wd.Material();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -14,20 +14,20 @@ describe("Material", function() {
 
     it("test default value", function(){
         expect(material.refractionRatio).toEqual(0);
-        expect(material.reflectivity).toEqual(dy.ShaderChunk.NULL);
-        expect(material.color).toEqual(dy.Color.create("#ffffff"));
+        expect(material.reflectivity).toEqual(wd.ShaderChunk.NULL);
+        expect(material.color).toEqual(wd.Color.create("#ffffff"));
     });
 
     //describe("useProgram", function(){
     //    var scene;
     //
     //    beforeEach(function(){
-    //        scene = dy.Director.getInstance().scene;
+    //        scene = wd.Director.getInstance().scene;
     //        sandbox.stub(material.shader.program, "use");
     //    });
     //
     //    it("if Scene use program, return", function(){
-    //        scene.useProgram(dy.Shader.create());
+    //        scene.useProgram(wd.Shader.create());
     //
     //        material.useProgram();
     //
@@ -45,12 +45,12 @@ describe("Material", function() {
         var scene;
 
         beforeEach(function(){
-            scene = dy.Director.getInstance().scene;
+            scene = wd.Director.getInstance().scene;
             sandbox.stub(material.shader, "update");
         });
 
         it("if Scene use program, update Scene's shader", function(){
-            scene.useProgram(dy.Shader.create());
+            scene.useProgram(wd.Shader.create());
             sandbox.stub(scene.shader, "update");
             var quadCmd = {};
 

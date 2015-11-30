@@ -1,5 +1,5 @@
 /// <reference path="../../../filePath.d.ts"/>
-module dy{
+module wd{
     const _table = wdCb.Hash.create<string>();
 
     _table.addChild("diffuseMap", "u_diffuseMapSampler");

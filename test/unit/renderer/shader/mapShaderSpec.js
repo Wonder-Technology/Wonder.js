@@ -6,22 +6,22 @@
 //                shaderName: "basic map",
 //                definitionData_attributes: {
 //                    a_texCoord: {
-//                        type: dy.VariableType.FLOAT_2,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_2,
+//                        value: wd.VariableCategory.ENGINE
 //                    }
 //                },
 //                definitionData_uniforms: {
 //                    u_sampler2D0: {
-//                        type: dy.VariableType.SAMPLER_2D,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.SAMPLER_2D,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_sourceRegion: {
-//                        type: dy.VariableType.FLOAT_4,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_4,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_repeatRegion: {
-//                        type: dy.VariableType.FLOAT_4,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_4,
+//                        value: wd.VariableCategory.ENGINE
 //                    }
 //                },
 //                judge_sendLibVariable_attributes: function(program, quadCmd, material){
@@ -34,8 +34,8 @@
 //                    expect(program.sendUniformData.getCall(3).args[0]).toEqual("u_sampler2D0");
 //                },
 //                setMaterial: function(material){
-//                    var asset = dy.ImageTextureAsset.create({});
-//                    var map = dy.ImageTexture.create( asset );
+//                    var asset = wd.ImageTextureAsset.create({});
+//                    var map = wd.ImageTexture.create( asset );
 //
 //                    material.addMap(map);
 //                }
@@ -55,34 +55,34 @@
 //                shaderName: "multi maps",
 //                definitionData_attributes: {
 //                    a_texCoord: {
-//                        type: dy.VariableType.FLOAT_2,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_2,
+//                        value: wd.VariableCategory.ENGINE
 //                    }
 //                },
 //                definitionData_uniforms: {
 //                    u_sampler2D0: {
-//                        type: dy.VariableType.SAMPLER_2D,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.SAMPLER_2D,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_sampler2D1: {
-//                        type: dy.VariableType.SAMPLER_2D,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.SAMPLER_2D,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_sourceRegion: {
-//                        type: dy.VariableType.FLOAT_4,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_4,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_repeatRegion: {
-//                        type: dy.VariableType.FLOAT_4,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_4,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_combineMode: {
-//                        type: dy.VariableType.NUMBER_1,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.NUMBER_1,
+//                        value: wd.VariableCategory.ENGINE
 //                    },
 //                    u_mixRatio: {
-//                        type: dy.VariableType.FLOAT_1,
-//                        value: dy.VariableCategory.ENGINE
+//                        type: wd.VariableType.FLOAT_1,
+//                        value: wd.VariableCategory.ENGINE
 //                    }
 //                },
 //                judge_sendLibVariable_attributes: function(program, quadCmd, material){
@@ -91,10 +91,10 @@
 //                },
 //                judge_sendLibVariable_uniforms: function(program, quadCmd, material){
 //                    expect(program.sendUniformData.getCall(3).args).toEqual(
-//                        ["u_combineMode", dy.VariableType.NUMBER_1, dy.TextureCombineMode.MULTIPLY]
+//                        ["u_combineMode", wd.VariableType.NUMBER_1, wd.TextureCombineMode.MULTIPLY]
 //                    );
 //                    expect(program.sendUniformData.getCall(4).args).toEqual(
-//                        ["u_mixRatio", dy.VariableType.FLOAT_1, 0.9]
+//                        ["u_mixRatio", wd.VariableType.FLOAT_1, 0.9]
 //                    );
 //                },
 //                judge_sendLibVariable_texture: function(program, quadCmd, material){
@@ -108,15 +108,15 @@
 //                    expect(program.sendUniformData.getCall(10).args[0]).toEqual("u_repeatRegion");
 //                },
 //                setMaterial: function(material){
-//                    var asset = dy.ImageTextureAsset.create({});
-//                    var map1 = dy.ImageTexture.create( asset );
-//                    var map2 = dy.ImageTexture.create( asset );
+//                    var asset = wd.ImageTextureAsset.create({});
+//                    var map1 = wd.ImageTexture.create( asset );
+//                    var map2 = wd.ImageTexture.create( asset );
 //
 //                    material.addMap(map1);
 //                    material.addMap(map2);
 //
 //
-//                    material.combineMode = dy.TextureCombineMode.MULTIPLY;
+//                    material.combineMode = wd.TextureCombineMode.MULTIPLY;
 //                    material.mixRatio = 0.9;
 //                }
 //            }

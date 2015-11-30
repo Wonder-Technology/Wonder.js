@@ -1,4 +1,4 @@
-module dy {
+module wd {
     /**
      * @name pc.math.DEG_TO_RAD
      * @description Conversion factor between degrees and radians

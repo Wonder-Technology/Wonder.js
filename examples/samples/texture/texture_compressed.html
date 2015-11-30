@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <title>compressed texture</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture"}
         ]).subscribe(null, null, function () {
             initSample();
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createTriangle());
             director.scene.addChild(createCamera());
@@ -33,37 +33,37 @@
         }
 
         function createTriangle() {
-            var material = dy.BasicMaterial.create();
+            var material = wd.BasicMaterial.create();
 
-            material.map = dy.LoaderManager.getInstance().get("texture").toTexture();
+            material.map = wd.LoaderManager.getInstance().get("texture").toTexture();
 
 
-            var geometry = dy.RectGeometry.create();
+            var geometry = wd.RectGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
 
 
-            var gameObject = dy.GameObject.create();
+            var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
 
-            gameObject.addComponent(dy.MeshRenderer.create());
+            gameObject.addComponent(wd.MeshRenderer.create());
 
 
             return gameObject;
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 80;
 
-            var controller = dy.BasicCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
             camera.transform.translate(0, 0, 5);

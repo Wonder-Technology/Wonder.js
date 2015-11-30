@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 //todo optimize:set vertice,normal presion?(use toFixed)
-module dy {
-    export class DYParser {
+module wd {
+    export class WDParser {
         public static create() {
             var obj = new this();
 
@@ -9,7 +9,7 @@ module dy {
         }
 
         private _data:DYFileParseData = <any>{};
-        private _objectParser = DYObjectParser.create();
+        private _objectParser = WDObjectParser.create();
 
         public parse(json:DYFileJsonData):DYFileParseData {
             this._parseMetadata(json);

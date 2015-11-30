@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class Main{
         public static isTest:boolean = null;
         public static screenSize:any = null;
@@ -19,8 +19,8 @@ module dy{
         }
 
         private static init(){
-            dy.DeviceManager.getInstance().createGL(this._canvasId);
-            dy.DeviceManager.getInstance().setScreen();
+            wd.DeviceManager.getInstance().createGL(this._canvasId);
+            wd.DeviceManager.getInstance().setScreen();
             GPUDetector.getInstance().detect();
 
             return this;

@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ActionManager{
         public static create():ActionManager {
             var obj = new this();

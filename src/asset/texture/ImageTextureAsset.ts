@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ImageTextureAsset extends TextureAsset{
         public static create(source:HTMLImageElement|HTMLCanvasElement) {
         	var obj = new this(source);

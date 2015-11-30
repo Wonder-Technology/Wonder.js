@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum EventName{
         CLICK = <any>"click",
         MOUSEOVER = <any>"mouseover",

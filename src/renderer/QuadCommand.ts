@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class QuadCommand {
         public static create():QuadCommand {
             var obj = new this();

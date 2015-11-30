@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class Spawn extends Control{
         public static create() {
             var spawn = null;

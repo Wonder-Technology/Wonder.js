@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class LoaderFactory{
         public static create(extname:string) {
             var loader = null;
@@ -24,8 +24,8 @@ module dy{
                 case ".webm":
                     loader = VideoLoader.getInstance();
                     break;
-                case ".dy":
-                    loader = DYLoader.getInstance();
+                case ".wd":
+                    loader = WDLoader.getInstance();
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(extname));

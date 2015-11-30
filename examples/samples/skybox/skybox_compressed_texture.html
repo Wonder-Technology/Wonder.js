@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>skybox with compressed texture</title>
 
-    <script src="../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../asset/texture/compressed/disturb_dxt1_nomip.dds", id: "texture1"},
             {url: "../asset/texture/compressed/disturb_dxt1_mip.dds", id: "texture2"}
         ]).subscribe(null, null, function () {
@@ -25,7 +25,7 @@
         });
 
         function initSample() {
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.scene.addChild(createSkybox());
             director.scene.addChild(createCamera());
@@ -34,57 +34,57 @@
         }
 
         function createSkybox() {
-            var cubemap = dy.CubemapTexture.create(
+            var cubemap = wd.CubemapTexture.create(
                     [
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture1")
+                            asset: wd.LoaderManager.getInstance().get("texture1")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture1")
+                            asset: wd.LoaderManager.getInstance().get("texture1")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture2")
+                            asset: wd.LoaderManager.getInstance().get("texture2")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture1")
+                            asset: wd.LoaderManager.getInstance().get("texture1")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture1")
+                            asset: wd.LoaderManager.getInstance().get("texture1")
                         },
                         {
-                            asset: dy.LoaderManager.getInstance().get("texture1")
+                            asset: wd.LoaderManager.getInstance().get("texture1")
                         }
                     ]
             );
 
-            var material = dy.SkyboxMaterial.create();
+            var material = wd.SkyboxMaterial.create();
             material.envMap = cubemap;
 
 
-            var geometry = dy.BoxGeometry.create();
+            var geometry = wd.BoxGeometry.create();
             geometry.material = material;
             geometry.width = 5;
             geometry.height = 5;
             geometry.depth = 5;
 
 
-            var gameObject = dy.Skybox.create();
+            var gameObject = wd.Skybox.create();
             gameObject.addComponent(geometry);
 
             return gameObject;
         }
 
         function createCamera() {
-            var camera = dy.GameObject.create(),
-                    view = dy.Director.getInstance().view,
-                    cameraComponent = dy.PerspectiveCamera.create();
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
 
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-            var controller = dy.FlyCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
             return camera;

@@ -4,8 +4,8 @@ describe("LightMaterial", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        material = new dy.LightMaterial();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        material = new wd.LightMaterial();
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -25,27 +25,27 @@ describe("LightMaterial", function() {
         beforeEach(function(){
             sandbox.stub(material.mapManager, "init");
             sandbox.stub(material.shader, "init");
-            map = dy.ImageTexture.create();
+            map = wd.ImageTexture.create();
 
-            scene = dy.Director.getInstance().scene;
+            scene = wd.Director.getInstance().scene;
         });
 
         it("add LightCommonShaderLib", function(){
             material.init();
 
-            expect(material.shader.getLib(dy.LightCommonShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.LightCommonShaderLib)).toBeTruthy();
         });
         it("if diffuseMap exist, add its shader lib", function(){
             material.diffuseMap = map;
 
             material.init();
 
-            expect(material.shader.getLib(dy.DiffuseMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.DiffuseMapShaderLib)).toBeTruthy();
         });
         it("else, add NoDiffuseMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.getLib(dy.NoDiffuseMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.NoDiffuseMapShaderLib)).toBeTruthy();
 
         });
         it("if specularMap exist, add its shader lib", function(){
@@ -53,24 +53,24 @@ describe("LightMaterial", function() {
 
             material.init();
 
-            expect(material.shader.getLib(dy.SpecularMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.SpecularMapShaderLib)).toBeTruthy();
         });
         it("else, add NoSpecularMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.getLib(dy.NoSpecularMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.NoSpecularMapShaderLib)).toBeTruthy();
         });
         it("if normalMap exist, add its shader lib", function(){
             material.normalMap = map;
 
             material.init();
 
-            expect(material.shader.getLib(dy.NormalMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.NormalMapShaderLib)).toBeTruthy();
         });
         it("else, add NoNormalMapShaderLib", function () {
             material.init();
 
-            expect(material.shader.getLib(dy.NoNormalMapShaderLib)).toBeTruthy();
+            expect(material.shader.getLib(wd.NoNormalMapShaderLib)).toBeTruthy();
         });
 
         describe("if Scene enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
@@ -79,7 +79,7 @@ describe("LightMaterial", function() {
 
                 material.init();
 
-                expect(material.shader.getLib(dy.NoShadowMapShaderLib)).toBeTruthy();
+                expect(material.shader.getLib(wd.NoShadowMapShaderLib)).toBeTruthy();
             });
 
             describe("else", function(){
@@ -90,22 +90,22 @@ describe("LightMaterial", function() {
                 it("else, if not has twoD shadowMap && not has cubemap shadowMap, add NoShadowMapShaderLib", function () {
                     material.init();
 
-                    expect(material.shader.getLib(dy.NoShadowMapShaderLib)).toBeTruthy();
+                    expect(material.shader.getLib(wd.NoShadowMapShaderLib)).toBeTruthy();
                 });
 
                 it("else if has twoD shadowMap, add TwoDShadowMapShaderLib", function(){
-                    material.addTwoDShadowMap(new dy.TwoDShadowMapTexture());
+                    material.addTwoDShadowMap(new wd.TwoDShadowMapTexture());
 
                     material.init();
 
-                    expect(material.shader.getLib(dy.TwoDShadowMapShaderLib)).toBeTruthy();
+                    expect(material.shader.getLib(wd.TwoDShadowMapShaderLib)).toBeTruthy();
                 });
                 it("else if has cubemap shadowMap, add CubemapShadowMapShaderLib", function(){
-                    material.addCubemapShadowMap(new dy.CubemapShadowMapTexture());
+                    material.addCubemapShadowMap(new wd.CubemapShadowMapTexture());
 
                     material.init();
 
-                    expect(material.shader.getLib(dy.CubemapShadowMapShaderLib)).toBeTruthy();
+                    expect(material.shader.getLib(wd.CubemapShadowMapShaderLib)).toBeTruthy();
                 });
             });
         });
@@ -120,18 +120,18 @@ describe("LightMaterial", function() {
             vertice = [1,-1,0, 0,1,0,0,0,1];
             normals = [];
 
-            model = dy.GameObject.create();
-            geo = dy.ModelGeometry.create();
+            model = wd.GameObject.create();
+            geo = wd.ModelGeometry.create();
             geo.vertices = vertice;
             geo.faces = testTool.createFaces([0,1,2]);
 
-            material = dy.LightMaterial.create();
-            envMap = dy.DynamicCubemapTexture.create();
+            material = wd.LightMaterial.create();
+            envMap = wd.DynamicCubemapTexture.create();
 
             materialTool.prepareEnvMap(sandbox, model, geo, material, envMap);
 
 
-            director = dy.Director.getInstance();
+            director = wd.Director.getInstance();
 
 
             program = material.shader.program;
@@ -139,18 +139,18 @@ describe("LightMaterial", function() {
 
         it("if no envMap, return", function(){
             material.envMap = null;
-            envMap.mode = dy.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EnvMapMode.REFLECTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.ReflectionForLightShaderLib)).toBeFalsy();
+            expect(material.shader.hasLib(wd.ReflectionForLightShaderLib)).toBeFalsy();
         });
         it("if mode is BASIC, add BasicEnvMapForLightShaderLib", function(){
-            envMap.mode = dy.EnvMapMode.BASIC;
+            envMap.mode = wd.EnvMapMode.BASIC;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.BasicEnvMapForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.BasicEnvMapForLightShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -158,11 +158,11 @@ describe("LightMaterial", function() {
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
         });
         it("if mode is REFLECTION, add ReflectionShaderLib", function(){
-            envMap.mode = dy.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EnvMapMode.REFLECTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.ReflectionForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionForLightShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -171,11 +171,11 @@ describe("LightMaterial", function() {
         });
         it("if mode is REFRACTION, add ReflectionShaderLib", function(){
             material.refractionRatio = 0.5;
-            envMap.mode = dy.EnvMapMode.REFRACTION;
+            envMap.mode = wd.EnvMapMode.REFRACTION;
 
             director._init();
 
-            expect(material.shader.hasLib(dy.RefractionForLightShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.RefractionForLightShaderLib)).toBeTruthy();
 
             director._run(1);
 
@@ -187,11 +187,11 @@ describe("LightMaterial", function() {
         describe("if mode is FRESNEL, add FresnelForLightShaderLib", function(){
             it("if set reflectivity, send it", function(){
                 material.reflectivity = 0.5;
-                envMap.mode = dy.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EnvMapMode.FRESNEL;
 
                 director._init();
 
-                expect(material.shader.hasLib(dy.FresnelForLightShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForLightShaderLib)).toBeTruthy();
 
                 director._run(1);
 
@@ -201,15 +201,15 @@ describe("LightMaterial", function() {
             });
             it("else, send u_reflectivity = NULL and send u_refractionRatio", function(){
                 material.refractionRatio = 0.5;
-                envMap.mode = dy.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EnvMapMode.FRESNEL;
 
                 director._init();
 
-                expect(material.shader.hasLib(dy.FresnelForLightShaderLib)).toBeTruthy();
+                expect(material.shader.hasLib(wd.FresnelForLightShaderLib)).toBeTruthy();
 
                 director._run(1);
 
-                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(dy.ShaderChunk.NULL);
+                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(wd.ShaderChunk.NULL);
                 expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);
                 expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
                 expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();

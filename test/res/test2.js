@@ -25,7 +25,7 @@ var Test2 = (function () {
     Test2.prototype.onExit = function () {
     };
     Test2 = __decorate([
-        dy.script("test2")
+        wd.script("test2")
     ], Test2);
     return Test2;
 })();

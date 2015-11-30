@@ -4,7 +4,7 @@ describe("CommonBufferContainer", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        container= new dy.CommonBufferContainer();
+        container= new wd.CommonBufferContainer();
     });
     afterEach(function () {
         sandbox.restore();
@@ -12,12 +12,12 @@ describe("CommonBufferContainer", function() {
 
     describe("hasChild", function(){
         it("if geometryData has data which is corresponding to the buffer, then return true; else return false", function(){
-            var geometryData = new dy.GeometryData();
+            var geometryData = new wd.GeometryData();
             geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
             container.geometryData = geometryData;
 
-            expect(container.hasChild(dy.BufferDataType.TEXCOORD)).toBeTruthy();
-            expect(container.hasChild(dy.BufferDataType.VERTICE)).toBeFalsy();
+            expect(container.hasChild(wd.BufferDataType.TEXCOORD)).toBeTruthy();
+            expect(container.hasChild(wd.BufferDataType.VERTICE)).toBeFalsy();
         });
     });
 
@@ -25,8 +25,8 @@ describe("CommonBufferContainer", function() {
         var geo,geometryData;
 
         beforeEach(function(){
-            sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-            geo = new dy.ModelGeometry();
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+            geo = new wd.ModelGeometry();
             geo.material = {
                 init:sandbox.stub()
             }
@@ -38,7 +38,7 @@ describe("CommonBufferContainer", function() {
         describe("get vertice buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [];
                 geo.colors = [];
 
@@ -51,8 +51,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(dy.BufferDataType.VERTICE);
-                var result2 = container.getChild(dy.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.BufferDataType.VERTICE);
+                var result2 = container.getChild(wd.BufferDataType.VERTICE);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -66,7 +66,7 @@ describe("CommonBufferContainer", function() {
         describe("get normal buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1], [1,2,2,10,4,-1,-3,5,1.2]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1], [1,2,2,10,4,-1,-3,5,1.2]);
                 geo.texCoords = [];
                 geo.colors = [];
 
@@ -79,8 +79,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(dy.BufferDataType.NORMAL);
-                var result2 = container.getChild(dy.BufferDataType.NORMAL);
+                var result1 = container.getChild(wd.BufferDataType.NORMAL);
+                var result2 = container.getChild(wd.BufferDataType.NORMAL);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -94,7 +94,7 @@ describe("CommonBufferContainer", function() {
         describe("get tangent buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1], [0,2,2,-3,4,-1,-3,5,1.2]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1], [0,2,2,-3,4,-1,-3,5,1.2]);
                 geo.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
                 geo.colors = [];
 
@@ -109,8 +109,8 @@ describe("CommonBufferContainer", function() {
             it("return calculated tangents firstly; return the last one if not dirty after", function(){
                 sandbox.spy(geometryData, "_calculateTangents");
 
-                var result1 = container.getChild(dy.BufferDataType.TANGENT);
-                var result2 = container.getChild(dy.BufferDataType.TANGENT);
+                var result1 = container.getChild(wd.BufferDataType.TANGENT);
+                var result2 = container.getChild(wd.BufferDataType.TANGENT);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -123,16 +123,16 @@ describe("CommonBufferContainer", function() {
             it("if change vertices or texCoords or faces, recompute tangents", function(){
                 sandbox.stub(geometryData, "_calculateTangents").returns([]);
 
-                container.getChild(dy.BufferDataType.TANGENT);
+                container.getChild(wd.BufferDataType.TANGENT);
                 geometryData.vertices = [];
-                container.getChild(dy.BufferDataType.TANGENT);
+                container.getChild(wd.BufferDataType.TANGENT);
                 geometryData.texCoords = [];
-                container.getChild(dy.BufferDataType.TANGENT);
+                container.getChild(wd.BufferDataType.TANGENT);
                 geometryData.faces = geometryData.faces;
-                container.getChild(dy.BufferDataType.TANGENT);
+                container.getChild(wd.BufferDataType.TANGENT);
 
 
-                container.getChild(dy.BufferDataType.TANGENT);
+                container.getChild(wd.BufferDataType.TANGENT);
 
                 expect(geometryData._calculateTangents.callCount).toEqual(4);
             });
@@ -141,7 +141,7 @@ describe("CommonBufferContainer", function() {
         describe("get indice buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [];
                 geo.colors = [];
 
@@ -154,8 +154,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(dy.BufferDataType.INDICE);
-                var result2 = container.getChild(dy.BufferDataType.INDICE);
+                var result1 = container.getChild(wd.BufferDataType.INDICE);
+                var result2 = container.getChild(wd.BufferDataType.INDICE);
 
                 expect(result1.data).toEqual(
                     new Uint16Array([
@@ -169,7 +169,7 @@ describe("CommonBufferContainer", function() {
         describe("get color buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [];
                 geo.colors = [0.1,0.2,0.3,0.2,0.1,0.002];
 
@@ -182,8 +182,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(dy.BufferDataType.COLOR);
-                var result2 = container.getChild(dy.BufferDataType.COLOR);
+                var result1 = container.getChild(wd.BufferDataType.COLOR);
+                var result2 = container.getChild(wd.BufferDataType.COLOR);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -197,7 +197,7 @@ describe("CommonBufferContainer", function() {
         describe("get texCoord buffer", function(){
             beforeEach(function(){
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = dy.GeometryUtils.convertToFaces([0,2,1]);
+                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
                 geo.colors = [];
 
@@ -210,8 +210,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(dy.BufferDataType.TEXCOORD);
-                var result2 = container.getChild(dy.BufferDataType.TEXCOORD);
+                var result1 = container.getChild(wd.BufferDataType.TEXCOORD);
+                var result2 = container.getChild(wd.BufferDataType.TEXCOORD);
 
                 expect(result1.data).toEqual(
                     new Float32Array([

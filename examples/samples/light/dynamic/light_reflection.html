@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <title>reflection with light</title>
 
-    <script src="../../../../dist/dy.innerLib.js" type="text/javascript"></script>
-    <script src="../../../../dist/dy.debug.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
     <script src="./tool.js" type="text/javascript"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        dy.Main.setConfig({
+        wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: dy.ScreenSize.FULL
+            screenSize: wd.ScreenSize.FULL
         }).init();
 
-        dy.LoaderManager.getInstance().load([
+        wd.LoaderManager.getInstance().load([
             {url: "../../asset/texture/skybox/px.jpg", id: "px"},
             {url: "../../asset/texture/skybox/nx.jpg", id: "nx"},
             {url: "../../asset/texture/skybox/py.jpg", id: "py"},
@@ -39,11 +39,11 @@
         function _initScene() {
             tool.addSkybox();
             tool.addBox();
-            tool.addSphere(dy.EnvMapMode.REFLECTION);
+            tool.addSphere(wd.EnvMapMode.REFLECTION);
             tool.addLight();
             tool.addCamera();
 
-            var director = dy.Director.getInstance();
+            var director = wd.Director.getInstance();
 
             director.start();
         }

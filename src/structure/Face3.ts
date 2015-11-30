@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class Face3{
         public static create(aIndex:number, bIndex:number, cIndex:number, faceNormal:Vector3 = Vector3.create(), vertexNormals:wdCb.Collection<Vector3> = wdCb.Collection.create<Vector3>()) {
         	var obj = new this(aIndex, bIndex, cIndex, faceNormal, vertexNormals);

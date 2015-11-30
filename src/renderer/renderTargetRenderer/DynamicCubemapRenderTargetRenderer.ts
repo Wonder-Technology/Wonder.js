@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class DynamicCubemapRenderTargetRenderer extends CubemapRenderTargetRenderer{
         public static create(texture:DynamicCubemapTexture) {
             var obj = new this(texture);

@@ -1,4 +1,4 @@
-module dy {
+module wd {
     export enum BufferDataType{
         VERTICE = <any>"VERTICE",
         INDICE = <any>"INDICE",

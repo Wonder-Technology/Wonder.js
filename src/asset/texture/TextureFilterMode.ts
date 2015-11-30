@@ -1,4 +1,4 @@
-module dy{
+module wd{
     export enum TextureFilterMode{
         NEAREST = <any>"NEAREST",
         NEAREST_MIPMAP_MEAREST = <any>"NEAREST_MIPMAP_MEAREST",

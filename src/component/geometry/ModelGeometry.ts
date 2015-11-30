@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class ModelGeometry extends Geometry{
         public static create(){
             var geom = new this();

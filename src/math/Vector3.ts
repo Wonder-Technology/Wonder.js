@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy{
+module wd{
     export class Vector3{
         public static up = Vector3.create(0, 1, 0);
         public static forward = Vector3.create(0, 0, 1);

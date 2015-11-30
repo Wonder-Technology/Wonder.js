@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     const SPECIAL_KEY_MAP = {
             8: "backspace",
             9: "tab",

@@ -27,17 +27,16 @@ gulp.task("compileTs", function() {
             removeComments:true,
             experimentalDecorators: true,
             //noExternalResolve: true
-            //out: "dyR.js"
             typescript: require("typescript")
         }));
 
 
     return merge([
         tsResult.dts
-            .pipe(gulpConcat("dy.d.ts"))
+            .pipe(gulpConcat("wd.d.ts"))
             .pipe(gulp.dest("dist")),
         tsResult.js
-            .pipe(gulpConcat("dy.js"))
+            .pipe(gulpConcat("wd.js"))
             .pipe(gulp.dest("dist/"))
     ])
 });
@@ -58,7 +57,7 @@ gulp.task("compileTsDebug", function() {
 
     return merge([
         tsResult.js
-            .pipe(gulpConcat("dy.debug.js"))
+            .pipe(gulpConcat("wd.debug.js"))
             .pipe(gulpSourcemaps.write())
             .pipe(gulp.dest("dist/"))
     ])

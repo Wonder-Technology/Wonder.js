@@ -3,7 +3,7 @@
 /*! referenced from:
 https://github.com/mrdoob/three.js
 */
-module dy{
+module wd{
     const DDS_MAGIC = 0x20534444;
     const DDSD_CAPS = 0x1,
         DDSD_HEIGHT = 0x2,

@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class RectRegion extends Vector4{
         //public x:number = null;
         //public y:number = null;

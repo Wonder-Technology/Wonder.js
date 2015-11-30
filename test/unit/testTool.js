@@ -158,10 +158,10 @@ var testTool = (function () {
             });
         },
         clearInstance: function () {
-            for (var i in dy) {
-                if (dy.hasOwnProperty(i)) {
-                    if (dy[i]) {
-                        dy[i]._instance = null;
+            for (var i in wd) {
+                if (wd.hasOwnProperty(i)) {
+                    if (wd[i]) {
+                        wd[i]._instance = null;
                     }
                 }
             }
@@ -196,18 +196,18 @@ var testTool = (function () {
          Invariant check will be invoked when load the file
          */
         openContractCheck: function (sandbox) {
-            sandbox.stub(dy.Main, "isTest", true);
+            sandbox.stub(wd.Main, "isTest", true);
         },
 
 
 
         createFaces: function(indices, normals){
-            return dy.GeometryUtils.convertToFaces(indices, normals);
+            return wd.GeometryUtils.convertToFaces(indices, normals);
         },
         createCamera:function () {
-            var camera = dy.GameObject.create();
+            var camera = wd.GameObject.create();
 
-            var cameraComponent = dy.PerspectiveCamera.create();
+            var cameraComponent = wd.PerspectiveCamera.create();
 
 
             cameraComponent.fovy = 60;
@@ -217,12 +217,12 @@ var testTool = (function () {
             cameraComponent.far = 100;
 
 
-            var controller = dy.BasicCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(dy.Vector3.create(0, 0, 20));
+            camera.transform.translate(wd.Vector3.create(0, 0, 20));
 
-            //var script = dy.Script.create();
+            //var script = wd.Script.create();
             //
             //script.url = "../camera.js";
             //

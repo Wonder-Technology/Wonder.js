@@ -1,4 +1,4 @@
-module dy {
+module wd {
     export enum EventType{
         MOUSE,
         KEYBOARD,

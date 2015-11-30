@@ -3,10 +3,10 @@ describe("CubemapShadowRenderTargetRenderer", function() {
 
     var self = tool;
 
-    tool.RenderTargetRenderer = dy.CubemapShadowMapRenderTargetRenderer;
+    tool.RenderTargetRenderer = wd.CubemapShadowMapRenderTargetRenderer;
 
 tool.init_beforeEach = function(self){
-    self.renderTargetRenderer._shadowMapRendererUtils = new dy.CubemapShadowMapRenderTargetRendererUtils();
+    self.renderTargetRenderer._shadowMapRendererUtils = new wd.CubemapShadowMapRenderTargetRendererUtils();
 }
 
     tool.init_body = function(self) {
@@ -42,7 +42,7 @@ tool.init_beforeEach = function(self){
 
             self.renderTargetRenderer.init();
 
-            dy.EventManager.trigger(dy.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
             expect(self.renderTargetRenderer._shadowMapRendererUtils.clearCubemapShadowMapData.callCount).toEqual(6);
         });
@@ -56,14 +56,14 @@ tool.init_beforeEach = function(self){
 
             self.renderTargetRenderer.init();
 
-            expect(self.renderTargetRenderer._shadowMapRendererUtils.createShaderWithShaderLib).toCalledWith(sinon.match.instanceOf(dy.BuildCubemapShadowMapShaderLib));
+            expect(self.renderTargetRenderer._shadowMapRendererUtils.createShaderWithShaderLib).toCalledWith(sinon.match.instanceOf(wd.BuildCubemapShadowMapShaderLib));
         });
     };
 
 
 
     tool.initWhenCreate_beforeEach = function(){
-        self.sandbox.stub(dy
+        self.sandbox.stub(wd
 .CubemapShadowMapRenderTargetRendererUtils, "create");
     }
 
@@ -75,7 +75,7 @@ tool.init_beforeEach = function(self){
             body: function(texture){
                 self.renderTargetRenderer.initWhenCreate();
 
-                expect(dy.CubemapShadowMapRenderTargetRendererUtils.create).toCalledOnce();
+                expect(wd.CubemapShadowMapRenderTargetRendererUtils.create).toCalledOnce();
             }
     },
         {
@@ -83,22 +83,22 @@ tool.init_beforeEach = function(self){
             body: function(texture){
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dy.Log, "warn");
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.Log, "warn");
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height:100
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 99,
                     height:201
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                expect(dy.Log.warn).not.toCalled();
+                expect(wd.Log.warn).not.toCalled();
             }
         }
     ]

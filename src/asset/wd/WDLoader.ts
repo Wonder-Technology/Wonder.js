@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
-    export class DYLoader extends Loader {
+module wd {
+    export class WDLoader extends Loader {
         private static _instance = null;
 
         public static getInstance() {
@@ -10,8 +10,8 @@ module dy {
             return this._instance;
         }
 
-        private _dyParser:DYParser = DYParser.create();
-        private _dyBuilder:DYBuilder = DYBuilder.create();
+        private _wdParser:WDParser = WDParser.create();
+        private _wdBuilder:WDBuilder = WDBuilder.create();
         private _parseData:DYFileParseData = null;
 
 
@@ -27,13 +27,13 @@ module dy {
 
             return AjaxLoader.load(url, "json")
                 .flatMap((json:DYFileJsonData) => {
-                    self._parseData = self._dyParser.parse(json);
+                    self._parseData = self._wdParser.parse(json);
 
                     return this._createLoadMapStream(url);
                 })
             .concat(
                 wdFrp.callFunc(()=> {
-                    return self._dyBuilder.build(self._parseData);
+                    return self._wdBuilder.build(self._parseData);
                 })
             );
         }

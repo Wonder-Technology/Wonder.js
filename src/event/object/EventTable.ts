@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 //todo complete it(add more event type)
-module dy {
+module wd {
      const _table = wdCb.Hash.create<EventType>();
 
     //todo not declare "<any>"!

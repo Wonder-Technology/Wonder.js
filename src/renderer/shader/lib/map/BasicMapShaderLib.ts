@@ -1,5 +1,5 @@
 /// <reference path="../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class BasicMapShaderLib extends MapShaderLib{
         public static create() {
             var obj = new this();

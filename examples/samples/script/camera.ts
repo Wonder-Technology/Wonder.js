@@ -1,16 +1,16 @@
-/// <reference path="../../../dist/dy.d.ts"/>
+/// <reference path="../../../dist/wd.d.ts"/>
 module sample{
-    @dy.script("camera")
-    export class Camera implements dy.IScriptBehavior{
-        constructor(gameObject:dy.GameObject){
+    @wd.script("camera")
+    export class Camera implements wd.IScriptBehavior{
+        constructor(gameObject:wd.GameObject){
             this._gameObject = gameObject;
         }
 
-        private _gameObject:dy.GameObject = null;
+        private _gameObject:wd.GameObject = null;
 
         public init() {
-            var scene = dy.Director.getInstance().scene.script.getChild("scene"),
-                cameraComponent = <dy.PerspectiveCamera>this._gameObject.getComponent<dy.CameraController>(dy.CameraController).camera;
+            var scene = wd.Director.getInstance().scene.script.getChild("scene"),
+                cameraComponent = <wd.PerspectiveCamera>this._gameObject.getComponent<wd.CameraController>(wd.CameraController).camera;
 
             alert(`sceneScript.state is ${scene.state}`);
             alert(`camera->fovy is ${cameraComponent.fovy}`);

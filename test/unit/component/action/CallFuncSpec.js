@@ -2,12 +2,12 @@ describe("CallFunc", function () {
     var sandbox = null;
     var gameObject = null;
     var action = null;
-    var CallFunc = dy.CallFunc;
+    var CallFunc = wd.CallFunc;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         action = new CallFunc();
-        gameObject = dy.GameObject.create();
+        gameObject = wd.GameObject.create();
     });
     afterEach(function () {
         sandbox.restore();

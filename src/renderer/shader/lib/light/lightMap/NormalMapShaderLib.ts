@@ -1,5 +1,5 @@
 /// <reference path="../../../../../filePath.d.ts"/>
-module dy{
+module wd{
     export class NormalMapShaderLib extends LightMapShaderLib{
         public static create() {
             var obj = new this();

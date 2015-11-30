@@ -4,7 +4,7 @@ describe("CustomGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        geo = new dy.CustomGeometry();
+        geo = new wd.CustomGeometry();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -12,8 +12,8 @@ describe("CustomGeometry", function() {
     });
 
     it("set custom geometry data", function(){
-        var material = dy.BasicMaterial.create();
-        material.shading = dy.Shading.SMOOTH;
+        var material = wd.BasicMaterial.create();
+        material.shading = wd.Shading.SMOOTH;
 
         geo.material = material;
         geo.vertices = [

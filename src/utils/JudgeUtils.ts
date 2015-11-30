@@ -1,5 +1,5 @@
 /// <reference path="../filePath.d.ts"/>
-module dy {
+module wd {
     export class JudgeUtils extends wdCb.JudgeUtils{
         public static isView(obj) {
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);

@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export abstract class ActionInterval extends Action{
         protected elapsed:number = null;
         protected duration:number = null;

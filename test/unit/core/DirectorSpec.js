@@ -8,11 +8,11 @@ describe("Director", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        director = dy.Director.getInstance();
+        director = wd.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        //sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        sandbox.stub(dy.GPUDetector.getInstance(), "detect");
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        //sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         director.scene.addChild(createCamera());
     });
     afterEach(function () {

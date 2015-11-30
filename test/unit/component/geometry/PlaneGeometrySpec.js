@@ -4,7 +4,7 @@ describe("PlaneGeometry", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        geo = new dy.PlaneGeometry();
+        geo = new wd.PlaneGeometry();
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -15,7 +15,7 @@ describe("PlaneGeometry", function() {
         beforeEach(function(){
             geo.material = {
                 init: sandbox.stub(),
-                shading: dy.Shading.FLAT
+                shading: wd.Shading.FLAT
             }
         });
 

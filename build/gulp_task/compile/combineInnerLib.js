@@ -18,7 +18,7 @@ var definitionsPath = "src/filePath.d.ts";
 
 gulp.task("combineDefinitionFile", function(done){
     combineInnerLibDTs(
-        path.join(distPath, "dy.d.ts"),
+        path.join(distPath, "wd.d.ts"),
         path.join(process.cwd(), definitionsPath),
         function(innerLibDtsPath){
             var result = false;
@@ -38,7 +38,7 @@ gulp.task("combineDefinitionFile", function(done){
 
 gulp.task("combineContent", function(done){
     combineInnerLibContent(
-        path.join(distPath, "dy.js"),
+        path.join(distPath, "wd.js"),
         path.join(process.cwd(), definitionsPath),
         function(innerLibDtsPath){
             var result = false;
@@ -59,10 +59,10 @@ gulp.task("combineContent", function(done){
 });
 
 function createInnerLibJs(){
-    fs.createFileSync( path.join(distPath, "dy.innerLib.js") );
+    fs.createFileSync( path.join(distPath, "wd.innerLib.js") );
 
     combineInnerLibContent(
-        path.join(distPath, "dy.innerLib.js"),
+        path.join(distPath, "wd.innerLib.js"),
         path.join(process.cwd(), definitionsPath),
         function(innerLibDtsPath){
             var result = false;

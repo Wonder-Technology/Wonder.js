@@ -4,14 +4,14 @@ describe("renderWebGL", function() {
     var deviceManager = null;
 
     function getGL(){
-        return dy.DeviceManager.getInstance().gl;
+        return wd.DeviceManager.getInstance().gl;
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        renderer = dy.WebGLRenderer.create();
-        deviceManager = dy.DeviceManager.getInstance();
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        renderer = wd.WebGLRenderer.create();
+        deviceManager = wd.DeviceManager.getInstance();
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -23,7 +23,7 @@ describe("renderWebGL", function() {
             renderer.init();
 
             expect(renderer._clearOptions.color).toEqual(
-                dy.Color.create("#000000")
+                wd.Color.create("#000000")
             );
         });
         it("init depthTest, blend, colorWrite, side, depthWrite", function(){
@@ -36,7 +36,7 @@ describe("renderWebGL", function() {
             expect(gl.blendFunc).not.toCalled();
             expect(gl.blendEquation).not.toCalled();
             expect(gl.colorMask).toCalledOnce();
-            expect(deviceManager.side).toEqual(dy.Side.FRONT);
+            expect(deviceManager.side).toEqual(wd.Side.FRONT);
             expect(gl.cullFace).toCalledWith(gl.BACK);
             expect(deviceManager.depthWrite).toBeTruthy();
         });
@@ -51,15 +51,15 @@ describe("renderWebGL", function() {
             quadCmd = renderer.createQuadCommand();
             var vsSource = "",
                 fsSource = "";
-            shader = dy.Shader.create( vsSource, fsSource );
+            shader = wd.Shader.create( vsSource, fsSource );
 
 
-            material = dy.BasicMaterial.create();
-            material.color= dy.Color.create("#FFCDff");
+            material = wd.BasicMaterial.create();
+            material.color= wd.Color.create("#FFCDff");
             material.shader = shader;
 
 
-            geometry = dy.BoxGeometry.create();
+            geometry = wd.BoxGeometry.create();
             geometry.width = 5;
             geometry.height = 5;
             geometry.depth = 5;
@@ -106,9 +106,9 @@ describe("renderWebGL", function() {
         }
 
         beforeEach(function(){
-            mMatrix = dy.Matrix4.create();
-            vMatrix = dy.Matrix4.create();
-            pMatrix = dy.Matrix4.create();
+            mMatrix = wd.Matrix4.create();
+            vMatrix = wd.Matrix4.create();
+            pMatrix = wd.Matrix4.create();
 
             gl = {
                 TRIANGLES:"TRIANGLES",
@@ -122,8 +122,8 @@ describe("renderWebGL", function() {
                 drawArrays:sandbox.stub(),
                 createBuffer:sandbox.stub().returns({})
             };
-            testTool.extend(dy.DeviceManager.getInstance().gl, gl);
-            gl = dy.DeviceManager.getInstance().gl;
+            testTool.extend(wd.DeviceManager.getInstance().gl, gl);
+            gl = wd.DeviceManager.getInstance().gl;
 
             program = {
                 setAttributeData:sandbox.stub(),
@@ -167,7 +167,7 @@ describe("renderWebGL", function() {
             material3.blend = false;
             material4.blend = false;
 
-            sandbox.stub(dy.Director.getInstance().scene, "camera", {
+            sandbox.stub(wd.Director.getInstance().scene, "camera", {
                     transform:{
                         position:{
                             z: 10
@@ -176,7 +176,7 @@ describe("renderWebGL", function() {
             });
 
             var depthWriteArr = [];
-            testTool.stubGetterSetter(sinon, dy.DeviceManager.prototype, "depthWrite", null, function(val){
+            testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){
                 depthWriteArr.push(val);
             });
 
@@ -234,11 +234,11 @@ describe("renderWebGL", function() {
             //
             //    renderer.render();
             //
-            //    expect(program.setAttributeData.firstCall).toCalledWith("a_position", dy.AttributeDataType.BUFFER, geometry.vertices);
-            //    expect(program.setAttributeData.secondCall).toCalledWith("a_color", dy.AttributeDataType.BUFFER, geometry.colors);
-            //    expect(program.setUniformData).toCalledWith("u_mMatrix", dy.UniformDataType.FLOAT_MAT4, mMatrix);
-            //    expect(program.setUniformData).toCalledWith("u_vMatrix", dy.UniformDataType.FLOAT_MAT4, vMatrix);
-            //    expect(program.setUniformData).toCalledWith("u_pMatrix", dy.UniformDataType.FLOAT_MAT4, pMatrix);
+            //    expect(program.setAttributeData.firstCall).toCalledWith("a_position", wd.AttributeDataType.BUFFER, geometry.vertices);
+            //    expect(program.setAttributeData.secondCall).toCalledWith("a_color", wd.AttributeDataType.BUFFER, geometry.colors);
+            //    expect(program.setUniformData).toCalledWith("u_mMatrix", wd.UniformDataType.FLOAT_MAT4, mMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_vMatrix", wd.UniformDataType.FLOAT_MAT4, vMatrix);
+            //    expect(program.setUniformData).toCalledWith("u_pMatrix", wd.UniformDataType.FLOAT_MAT4, pMatrix);
             //});
             //it("send texture data", function(){
             //    var result = addCommand();
@@ -277,25 +277,25 @@ describe("renderWebGL", function() {
                         expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
                     });
                     it("set side:if set Scene->side, use it", function(){
-                        dy.Director.getInstance().scene.side = dy.Side.BACK;
+                        wd.Director.getInstance().scene.side = wd.Side.BACK;
 
                         renderer.render();
 
-                        expect(deviceManager.side).toEqual(dy.Side.BACK);
+                        expect(deviceManager.side).toEqual(wd.Side.BACK);
                     });
                     it("else, use material->side", function () {
-                        material.side = dy.Side.BOTH;
+                        material.side = wd.Side.BOTH;
 
                         renderer.render();
 
-                        expect(deviceManager.side).toEqual(dy.Side.BOTH);
+                        expect(deviceManager.side).toEqual(wd.Side.BOTH);
                     });
                     it("if set material->blendSrc/Dst,blendEquation, use it", function () {
                         material.blend = true;
-                        material.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
-                        material.blendEquationSeparate = [dy.BlendEquation.ADD, dy.BlendEquation.ADD];
-                        material.blendSrc = dy.BlendFunc.SRC_ALPHA;
-                        material.blendDst = dy.BlendFunc.ONE;
+                        material.blendFuncSeparate = [wd.BlendFunc.SRC_ALPHA, wd.BlendFunc.ONE_MINUS_SRC_ALPHA, wd.BlendFunc.ONE, wd.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [wd.BlendEquation.ADD, wd.BlendEquation.ADD];
+                        material.blendSrc = wd.BlendFunc.SRC_ALPHA;
+                        material.blendDst = wd.BlendFunc.ONE;
 
                         renderer.render();
 
@@ -306,8 +306,8 @@ describe("renderWebGL", function() {
                     });
                     it("if set material->blendFuncSeparate && blendEquationSeparate, use it", function(){
                         material.blend = true;
-                        material.blendFuncSeparate = [dy.BlendFunc.SRC_ALPHA, dy.BlendFunc.ONE_MINUS_SRC_ALPHA, dy.BlendFunc.ONE, dy.BlendFunc.ONE_MINUS_SRC_ALPHA];
-                        material.blendEquationSeparate = [dy.BlendEquation.ADD, dy.BlendEquation.ADD];
+                        material.blendFuncSeparate = [wd.BlendFunc.SRC_ALPHA, wd.BlendFunc.ONE_MINUS_SRC_ALPHA, wd.BlendFunc.ONE, wd.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [wd.BlendEquation.ADD, wd.BlendEquation.ADD];
 
                         renderer.render();
 
@@ -340,7 +340,7 @@ describe("renderWebGL", function() {
 
                     renderer.render();
 
-                    var indexBuffer = quadCmd.buffers.getChild(dy.BufferDataType.INDICE);
+                    var indexBuffer = quadCmd.buffers.getChild(wd.BufferDataType.INDICE);
 
                     expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
                     expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
@@ -353,7 +353,7 @@ describe("renderWebGL", function() {
                 var depthFuncValArr = [];
                 var stub = sandbox.stub();
 
-                testTool.stubGetterSetter(sinon, dy.DeviceManager.prototype, "depthFunc", null, function(val){
+                testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthFunc", null, function(val){
                         depthFuncValArr.push(val);
                     });
                 cmd = {

@@ -2,7 +2,7 @@ describe("MirrorRenderTargetRenderer", function () {
     var tool = new TwoDRenderTargetTool();
     var self = tool;
 
-    tool.RenderTargetRenderer = dy.MirrorRenderTargetRenderer;
+    tool.RenderTargetRenderer = wd.MirrorRenderTargetRenderer;
 
 
     tool.initWhenCreate_body = [
@@ -10,14 +10,14 @@ describe("MirrorRenderTargetRenderer", function () {
             body: function (texture) {
                 texture.width = 100;
                 texture.height = 200;
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 101,
                     height: 100
                 });
 
                 self.renderTargetRenderer.initWhenCreate();
 
-                self.sandbox.stub(dy.DeviceManager.getInstance(), "view", {
+                self.sandbox.stub(wd.DeviceManager.getInstance(), "view", {
                     width: 99,
                     height: 201
                 });
@@ -35,7 +35,7 @@ describe("MirrorRenderTargetRenderer", function () {
             beforeEach: function (self, renderObj1, renderObj2, renderTargetTexture) {
 
                 plane = {
-                    getReflectionMatrix: self.sandbox.stub().returns(dy.Matrix4.create())
+                    getReflectionMatrix: self.sandbox.stub().returns(wd.Matrix4.create())
                 };
                 renderTargetTexture.getPlane = self.sandbox.stub().returns(plane);
 
@@ -50,7 +50,7 @@ describe("MirrorRenderTargetRenderer", function () {
 
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(self.renderTargetRenderer._setSceneSide.firstCall).toCalledWith(dy.Side.BACK);
+                        expect(self.renderTargetRenderer._setSceneSide.firstCall).toCalledWith(wd.Side.BACK);
                         expect(self.renderTargetRenderer._setSceneSide.secondCall).toCalledWith(null);
                         expect(renderer.render).toCalledOnce();
                         expect(renderer.render).toCalledAfter(renderObj2.render);
@@ -73,11 +73,11 @@ describe("MirrorRenderTargetRenderer", function () {
 
         beforeEach(function(){
             cameraComponent = {
-                worldToCameraMatrix: dy.Matrix4.create().rotate(45, 0, 1, 0),
-                pMatrix: dy.Matrix4.create()
+                worldToCameraMatrix: wd.Matrix4.create().rotate(45, 0, 1, 0),
+                pMatrix: wd.Matrix4.create()
             };
-            camera = dy.GameObject.create();
-            camera.addComponent(dy.BasicCameraController.create(cameraComponent));
+            camera = wd.GameObject.create();
+            camera.addComponent(wd.BasicCameraController.create(cameraComponent));
             //camera = {
             //    getComponent: self.sandbox.stub().returns(cameraComponent)
             //};
@@ -85,7 +85,7 @@ describe("MirrorRenderTargetRenderer", function () {
             self.sandbox.stub(self.renderTargetRenderer, "_setClipPlane").returns(cameraComponent.pMatrix);
 
             plane = {
-                getReflectionMatrix:self.sandbox.stub().returns(dy.Matrix4.create())
+                getReflectionMatrix:self.sandbox.stub().returns(wd.Matrix4.create())
             }
 
             texture = {
@@ -103,7 +103,7 @@ describe("MirrorRenderTargetRenderer", function () {
         });
         it("init camera(not updateProjectionMatrix)", function(){
             var firstCallCamera = self.renderTargetRenderer.createCamera(camera);
-            var firstCallCameraCompoment = firstCallCamera.getComponent(dy.CameraController).camera;
+            var firstCallCameraCompoment = firstCallCamera.getComponent(wd.CameraController).camera;
 
             expect(testTool.getValues(firstCallCameraCompoment.pMatrix.values)).toEqual(
 

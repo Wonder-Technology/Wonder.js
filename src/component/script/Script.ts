@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy{
+module wd{
     export class Script extends Component{
         public static script:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();
 

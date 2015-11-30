@@ -5,7 +5,7 @@ describe("LightShaderLib", function () {
 
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
-            Lib = dy.LightShaderLib;
+            Lib = wd.LightShaderLib;
             lib = new Lib();
         });
         afterEach(function () {
@@ -18,8 +18,8 @@ describe("LightShaderLib", function () {
         var mMatrix;
 
         function createDirectionLight(onSetLight){
-            var light = new dy.GameObject();
-            light.addComponent(dy.DirectionLight.create());
+            var light = new wd.GameObject();
+            light.addComponent(wd.DirectionLight.create());
 
             onSetLight(light);
 
@@ -27,24 +27,24 @@ describe("LightShaderLib", function () {
         }
 
         beforeEach(function(){
-            scene = dy.Director.getInstance().scene;
+            scene = wd.Director.getInstance().scene;
 
-            camera = new dy.GameObject();
+            camera = new wd.GameObject();
             sandbox.stub(scene, "camera", camera);
 
-            material = new dy.LightMaterial();
+            material = new wd.LightMaterial();
 
-            quadCmd = new dy.QuadCommand();
+            quadCmd = new wd.QuadCommand();
             sandbox.stub(quadCmd, "buffers", {
                 hasChild:sandbox.stub().returns(false),
                 getChild:sandbox.stub()
             });
 
-            mMatrix = dy.Matrix4.create().translate(1, 2, 3);
+            mMatrix = wd.Matrix4.create().translate(1, 2, 3);
 
             sandbox.stub(quadCmd, "mMatrix", mMatrix);
 
-            program = new dy.Program();
+            program = new wd.Program();
             sandbox.stub(program, "sendAttributeData");
             sandbox.stub(program, "sendUniformData");
         });
@@ -64,22 +64,22 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", dy.VariableType.FLOAT_3, dy.DirectionLight.defaultPosition);
-                expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", dy.VariableType.FLOAT_3, dy.Vector3.create(1, 0, 0));
+                expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", wd.VariableType.FLOAT_3, wd.DirectionLight.defaultPosition);
+                expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", wd.VariableType.FLOAT_3, wd.Vector3.create(1, 0, 0));
             });
         });
 
         it("send u_normalMatrix", function(){
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_normalMatrix", dy.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", wd.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
         });
         it("send u_opacity", function(){
             material.opacity = 0.1;
 
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_opacity", dy.VariableType.FLOAT_1, 0.1);
+            expect(program.sendUniformData).toCalledWith("u_opacity", wd.VariableType.FLOAT_1, 0.1);
         });
     });
 });

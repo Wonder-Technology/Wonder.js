@@ -7,20 +7,20 @@ describe("Geometry", function() {
         geo = new _class();
         geo.material = {
             init:sandbox.stub(),
-            shading: shading || dy.Shading.FLAT
+            shading: shading || wd.Shading.FLAT
         };
 
         return geo;
     }
 
     function createFaces(indices, normals){
-        return dy.GeometryUtils.convertToFaces(indices, normals);
+        return wd.GeometryUtils.convertToFaces(indices, normals);
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Geometry = dy.Geometry;
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        Geometry = wd.Geometry;
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -33,10 +33,10 @@ describe("Geometry", function() {
         beforeEach(function(){
             arrayBuffer = {};
             eleBuffer = {};
-            sandbox.stub(dy.ArrayBuffer, "create").returns(arrayBuffer);
-            sandbox.stub(dy.ElementBuffer, "create").returns(eleBuffer);
-            geo = createGeometry(dy.RectGeometry);
-            geo.material.color = dy.Color.create("#ffffff");
+            sandbox.stub(wd.ArrayBuffer, "create").returns(arrayBuffer);
+            sandbox.stub(wd.ElementBuffer, "create").returns(eleBuffer);
+            geo = createGeometry(wd.RectGeometry);
+            geo.material.color = wd.Color.create("#ffffff");
         });
 
         it("only create BufferContainer and add geometry data when init", function(){
@@ -44,7 +44,7 @@ describe("Geometry", function() {
 
             geo.init();
 
-            expect(geo.buffers).toBeInstanceOf(dy.BufferContainer);
+            expect(geo.buffers).toBeInstanceOf(wd.BufferContainer);
             expect(geo.buffers.geometryData.vertices).toEqual(jasmine.any(Array));
             expect(geo.buffers.geometryData.indices).toEqual(jasmine.any(Array));
             expect(geo.buffers.geometryData.normals).toEqual(jasmine.any(Array));
@@ -54,8 +54,8 @@ describe("Geometry", function() {
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                 ]
             );
-            expect(dy.ArrayBuffer.create).not.toCalled();
-            expect(dy.ElementBuffer.create).not.toCalled();
+            expect(wd.ArrayBuffer.create).not.toCalled();
+            expect(wd.ElementBuffer.create).not.toCalled();
         });
 
         describe("when invoke BufferContainer->getChild", function(){
@@ -64,19 +64,19 @@ describe("Geometry", function() {
             });
 
             it("if the buffer is cached, return the cached one", function(){
-                var result1 = geo.buffers.getChild(dy.BufferDataType.VERTICE);
+                var result1 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
 
-                var result2 = geo.buffers.getChild(dy.BufferDataType.VERTICE);
+                var result2 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
 
-                expect(dy.ArrayBuffer.create).toCalledOnce();
+                expect(wd.ArrayBuffer.create).toCalledOnce();
                 expect(result1).toEqual(result2);
             });
             it("else, create buffer and add it to cache", function(){
-                var result1 = geo.buffers.getChild(dy.BufferDataType.NORMAL);
-                var result2 = geo.buffers.getChild(dy.BufferDataType.INDICE);
+                var result1 = geo.buffers.getChild(wd.BufferDataType.NORMAL);
+                var result2 = geo.buffers.getChild(wd.BufferDataType.INDICE);
 
-                expect(dy.ArrayBuffer.create).toCalledOnce();
-                expect(dy.ElementBuffer.create).toCalledOnce();
+                expect(wd.ArrayBuffer.create).toCalledOnce();
+                expect(wd.ElementBuffer.create).toCalledOnce();
                 expect(result1).toEqual(arrayBuffer);
                 expect(result2).toEqual(eleBuffer);
             });
@@ -85,12 +85,12 @@ describe("Geometry", function() {
 
     describe("get normal data", function(){
         beforeEach(function(){
-            geo = createGeometry(dy.ModelGeometry);
+            geo = createGeometry(wd.ModelGeometry);
         });
 
         describe("if cached", function(){
             beforeEach(function(){
-                geo.material.shading = dy.Shading.FLAT;
+                geo.material.shading = wd.Shading.FLAT;
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.faces = createFaces([0,2,1], [1,-1,0, 0,1,0,0,0,1]);
@@ -124,7 +124,7 @@ describe("Geometry", function() {
 
             describe("if material is flat shading", function(){
                 beforeEach(function(){
-                    geo.material.shading = dy.Shading.FLAT;
+                    geo.material.shading = wd.Shading.FLAT;
                 });
 
                 it("if not has face normal, compute it", function(){
@@ -155,7 +155,7 @@ describe("Geometry", function() {
 
             describe("if material is smooth shading", function(){
                 beforeEach(function(){
-                    geo.material.shading = dy.Shading.SMOOTH;
+                    geo.material.shading = wd.Shading.SMOOTH;
                 });
 
                 it("if not has vertex normal, compute it", function(){
@@ -188,12 +188,12 @@ describe("Geometry", function() {
 
     describe("get indice data", function(){
         beforeEach(function(){
-            geo = createGeometry(dy.ModelGeometry);
+            geo = createGeometry(wd.ModelGeometry);
         });
 
         describe("if cached", function(){
             beforeEach(function(){
-                geo.material.shading = dy.Shading.FLAT;
+                geo.material.shading = wd.Shading.FLAT;
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.faces = createFaces([0,2,1]);
@@ -236,14 +236,14 @@ describe("Geometry", function() {
 
     describe("computeFaceNormals", function(){
         it("compute normal based on triangle point", function(){
-            geo = createGeometry(dy.ModelGeometry);
+            geo = createGeometry(wd.ModelGeometry);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1];
             geo.faces = createFaces([0,2,1]);
 
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
             )).toEqual(
                 [ -0.8164966, -0.4082483, -0.4082483,
                     -0.8164966, -0.4082483, -0.4082483,
@@ -251,14 +251,14 @@ describe("Geometry", function() {
             )
         });
         it("if faces not use all vertices data, then the normals will has empty data which are filled with 0", function(){
-            geo = createGeometry(dy.ModelGeometry);
+            geo = createGeometry(wd.ModelGeometry);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1, 1, 2, 3];
             geo.faces = createFaces([3,2,1]);
 
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
             )).toEqual(
                 [
                     0, 0, 0, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023
@@ -269,7 +269,7 @@ describe("Geometry", function() {
 
     describe("computeVertexNormals", function(){
         it("compute average vertex normal", function(){
-            geo = createGeometry(dy.ModelGeometry, dy.Shading.SMOOTH);
+            geo = createGeometry(wd.ModelGeometry, wd.Shading.SMOOTH);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1, 2,3,-2];
             geo.faces = createFaces([0,2,1, 2,3,1]);
 
@@ -277,7 +277,7 @@ describe("Geometry", function() {
 
             expect(
                 testTool.getValues(
-                    geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+                    geo.buffers.getChild(wd.BufferDataType.NORMAL).data
                 )
             ).toEqual(
                 [ -0.8164966, -0.4082483, -0.4082483,
@@ -287,14 +287,14 @@ describe("Geometry", function() {
             );
         });
         it("if faces not use all vertices data, then the normals will has empty data which are filled with 0", function(){
-            geo = createGeometry(dy.ModelGeometry, dy.Shading.SMOOTH);
+            geo = createGeometry(wd.ModelGeometry, wd.Shading.SMOOTH);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1, 1, 2, 3, 10, 20, 30];
             geo.faces = createFaces([3,2,1, 4,3,1]);
 
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(dy.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
             )).toEqual(
                 [
                     0, 0, 0, 0.953171, -0.1187764, -0.2781315, 0.942809, -0.2357023, -0.2357023, 0.953171, -0.1187764, -0.2781315, 0.9486833, 0, -0.3162278

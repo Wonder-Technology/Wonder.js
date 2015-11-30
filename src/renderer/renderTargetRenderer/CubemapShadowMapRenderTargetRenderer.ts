@@ -1,5 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
-module dy {
+module wd {
     export class CubemapShadowMapRenderTargetRenderer extends CubemapRenderTargetRenderer{
         public static create(light:PointLight) {
             var obj = new this(light);

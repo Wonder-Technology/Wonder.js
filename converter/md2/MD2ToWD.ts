@@ -9,7 +9,7 @@ import ModelLoaderUtils = require("../common/ModelLoaderUtils");
 import ObjectsConverter = require("./MD2ObjectsConverter");
 
 
-export = class MD2ToDY {
+export = class MD2ToWD {
     public static create(version:string) {
         var obj = null;
 
@@ -22,7 +22,7 @@ export = class MD2ToDY {
         this.version = version;
     }
 
-    public name:string = "MD2ToDY";
+    public name:string = "MD2ToWD";
     public version:string = null;
 
     private _objectsConverter:any = ObjectsConverter.create();

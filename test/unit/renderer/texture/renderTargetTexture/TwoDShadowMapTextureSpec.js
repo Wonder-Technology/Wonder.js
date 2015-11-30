@@ -5,10 +5,10 @@ describe("TwoDShadowMapTexture", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        Texture = dy.TwoDShadowMapTexture;
+        Texture = wd.TwoDShadowMapTexture;
         texture = new Texture();
 
-        sandbox.stub(dy.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();
@@ -30,8 +30,8 @@ describe("TwoDShadowMapTexture", function() {
                 pos2 = 200;
             program.getUniformLocation.onCall(1).returns(pos1);
             program.getUniformLocation.onCall(2).returns(pos2);
-            var map = new dy.ImageTexture();
-            var material = dy.LightMaterial.create();
+            var map = new wd.ImageTexture();
+            var material = wd.LightMaterial.create();
             material.diffuseMap = map;
 
             material.addTwoDShadowMap(texture);
@@ -46,8 +46,8 @@ describe("TwoDShadowMapTexture", function() {
             expect(program.getUniformLocation.secondCall).toCalledWith("u_twoDShadowMapSampler[0]");
             expect(program.getUniformLocation.thirdCall).toCalledWith("u_twoDShadowMapSampler[1]");
 
-            expect(program.sendUniformData).toCalledWith(pos1, dy.VariableType.SAMPLER_2D, 1);
-            expect(program.sendUniformData).toCalledWith(pos2, dy.VariableType.SAMPLER_2D, 2);
+            expect(program.sendUniformData).toCalledWith(pos1, wd.VariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith(pos2, wd.VariableType.SAMPLER_2D, 2);
         });
     });
 });
