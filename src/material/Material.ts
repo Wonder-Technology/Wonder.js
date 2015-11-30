@@ -127,9 +127,6 @@ module wd {
 
         public shader:Shader = Shader.create();
         public color:Color = Color.create("#ffffff");
-
-        //public depthTest:boolean = true;
-        //public depthWrite:boolean = true;
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -166,16 +163,6 @@ module wd {
         public updateTexture(){
             this.mapManager.update();
         }
-
-        //public useProgram(){
-        //    var scene:Scene = Director.getInstance().scene;
-        //
-        //    if(scene.isUseProgram){
-        //        return;
-        //    }
-        //
-        //    this.shader.program.use();
-        //}
 
         public updateShader(quadCmd:QuadCommand){
             var scene:Scene = Director.getInstance().scene;
