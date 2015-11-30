@@ -33,65 +33,9 @@ module wd {
         }
 
         private _detectExtension() {
-            //this.extensionTextureFloat = gl.getExtension( "OES_texture_float" );
-            //this.extensionTextureFloatLinear = gl.getExtension( "OES_texture_float_linear" );
-            //this.extensionStandardDerivatives = gl.getExtension( "OES_standard_derivatives" );
-            //
-            //this.extensionTextureFilterAnisotropic = gl.getExtension( "EXT_texture_filter_anisotropic" ) || gl.getExtension( "MOZ_EXT_texture_filter_anisotropic" ) || gl.getExtension( "WEBKIT_EXT_texture_filter_anisotropic" );
-
             this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
 
             this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
-
-            //this.extensionElementIndexUint = gl.getExtension( "OES_element_index_uint" );
-
-
-            //if ( this.extensionTextureFloat === null ) {
-            //
-            //    Log.log( "Float textures not supported." );
-            //
-            //}
-            //
-            //if ( this.extensionStandardDerivatives === null ) {
-            //
-            //    Log.log( "Standard derivatives not supported." );
-            //
-            //}
-            //
-            //if ( this.extensionTextureFilterAnisotropic === null ) {
-            //
-            //    Log.log( "Anisotropic texture filtering not supported." );
-            //
-            //}
-
-            //if ( this.extensionCompressedTextureS3TC === null ) {
-            //    Log.log( "S3TC compressed textures not supported." );
-            //}
-
-            //if ( this.extensionElementIndexUint === null ) {
-            //
-            //    Log.log( "elementindex as unsigned integer not supported." );
-            //
-            //}
-            //
-            //if ( gl.getShaderPrecisionFormat === undefined ) {
-            //
-            //    gl.getShaderPrecisionFormat = function () {
-            //
-            //        return {
-            //            "rangeMin": 1,
-            //            "rangeMax": 1,
-            //            "precision": 1
-            //        };
-            //
-            //    }
-            //}
-            //
-            //if ( _logarithmicDepthBuffer ) {
-            //
-            //    this.extensionFragDepth = gl.getExtension( "EXT_frag_depth" );
-            //
-            //}
         }
 
         private _detectCapabilty() {
@@ -105,14 +49,6 @@ module wd {
         }
 
         private _getExtension(name:string) {
-            //
-            //
-            //if ( extensions[ name ] !== undefined ) {
-            //
-            //    return extensions[ name ];
-            //
-            //}
-
             var extension,
                 gl = this.gl;
 
@@ -130,14 +66,6 @@ module wd {
                     extension = gl.getExtension(name);
             }
 
-            //if ( extension === null ) {
-            //
-            //    THREE.warn( "THREE.WebGLRenderer: " + name + " extension not supported." );
-            //
-            //}
-
-            //extensions[ name ] = extension;
-
             return extension;
         }
 
@@ -152,10 +80,10 @@ module wd {
             var gl = this.gl,
                 vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT),
                 vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT),
-                vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
+                //vertexShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT),
             fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT),
                 fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT),
-                fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
+                //fragmentShaderPrecisionLowpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT),
             highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0,
             mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
 

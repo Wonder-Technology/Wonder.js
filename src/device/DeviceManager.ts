@@ -3,7 +3,6 @@
 /*!
 DeviceManager is responsible for global setting of gl
  */
-
 module wd {
     export class DeviceManager {
         private static _instance = null;
@@ -22,9 +21,6 @@ module wd {
         test order:
         scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
          */
-
-
-
 
         /*!
          The scissor test culls pixels that are outside of the scissor rectangle, a user-defined rectangular sub-section of the render target.
@@ -51,7 +47,7 @@ module wd {
 
         /**
          * @function
-         * @name pc.GraphicsDevice#setScissor
+         * @name setScissor
          * @description Set the active scissor rectangle on the specified device.
          * @param {Number} x The pixel space x-coordinate of the bottom left corner of the scissor rectangle.
          * @param {Number} y The pixel space y-coordinate of the bottom left corner of the scissor rectangle.
@@ -77,7 +73,7 @@ module wd {
 
         /**
          * @function
-         * @name pc.GraphicsDevice#setViewport
+         * @name setViewport
          * @description Set the active rectangle for rendering on the specified device.
          * @param {Number} x The pixel space x-coordinate of the bottom left corner of the viewport.
          * @param {Number} y The pixel space y-coordinate of the bottom left corner of the viewport.
@@ -254,7 +250,7 @@ module wd {
 
         /**
          * @function
-         * @name pc.GraphicsDevice#setBlendFunction
+         * @name setBlendFunction
          * @description Configures blending operations.
          * @param {pc.BLENDMODE} blendSrc The source blend function.
          * @param {pc.BLENDMODE} blendDst The destination blend function.
@@ -278,9 +274,9 @@ module wd {
 
         /**
          * @function
-         * @name pc.GraphicsDevice#setBlendEquation
+         * @name setBlendEquation
          * @description Configures the blending equation. .
-         * @param {pc.BLENDEQUATION} blendEquation The blend equation.
+         * @param blendEquation The blend equation.
          */
         public setBlendEquation(blendEquation:BlendEquation) {
             if (this._blendEquation !== blendEquation) {
@@ -310,7 +306,7 @@ module wd {
 
         /**
          * @function
-         * @name pc.GraphicsDevice#setColorWrite
+         * @name setColorWrite
          * @description Enables or disables writes to the color buffer. Once this state
          * is set, it persists until it is changed. By default, color writes are enabled
          * for all color channels.
@@ -347,64 +343,6 @@ module wd {
         private _blendEquationSeparate:Array<BlendEquation> = null;
 
         public clear(options:any) {
-         //   /**
-         //    * @function
-         //    * @name pc.GraphicsDevice#clear
-         //    * @description Clears the frame buffer of the currently set render target.
-         //    * @param {Object} options Optional options object that controls the behavior of the clear operation defined as follows:
-         //    * @param {Array} options.color The color to clear the color buffer to in the range 0.0 to 1.0 for each component.
-         //    * @param {Number} options.depth The depth value to clear the depth buffer to in the range 0.0 to 1.0.
-         //    * @param {pc.CLEARFLAG} options.flags The buffers to clear (the types being color, depth and stencil).
-         //    * @example
-         //    * // Clear color buffer to black and depth buffer to 1.0
-         //    * device.clear();
-         //    *
-         //    * // Clear just the color buffer to red
-         //    * device.clear({
-         //*     color: [1, 0, 0, 1],
-         //*     flags: pc.CLEARFLAG_COLOR
-         //* });
-         //    *
-         //    * // Clear color buffer to yellow and depth to 1.0
-         //    * device.clear({
-         //*     color: [1, 1, 0, 1],
-         //*     depth: 1.0,
-         //*     flags: pc.CLEARFLAG_COLOR | pc.CLEARFLAG_DEPTH
-         //* });
-         //    */
-            //var defaultOptions = this.defaultClearOptions;
-            //options = options || defaultOptions;
-            //
-            //var flags = (options.flags === undefined) ? defaultOptions.flags : options.flags;
-            //if (flags !== 0) {
-            //    var gl = this.gl;
-            //
-            //    // Set the clear color
-            //    if (flags & pc.CLEARFLAG_COLOR) {
-            //        var color = (options.color === undefined) ? defaultOptions.color : options.color;
-            //        this.setClearColor(color[0], color[1], color[2], color[3]);
-            //    }
-            //
-            //    if (flags & pc.CLEARFLAG_DEPTH) {
-            //        // Set the clear depth
-            //        var depth = (options.depth === undefined) ? defaultOptions.depth : options.depth;
-            //        this.setClearDepth(depth);
-            //        if (!this.depthWrite) {
-            //            gl.depthMask(true);
-            //        }
-            //    }
-            //
-            //    // Clear the frame buffer
-            //    gl.clear(this.glClearFlag[flags]);
-            //
-            //    if (flags & pc.CLEARFLAG_DEPTH) {
-            //        if (!this.depthWrite) {
-            //            gl.depthMask(false);
-            //        }
-            //    }
-            //}
-
-
             var gl = this.gl,
                 color = options.color;
 
@@ -463,7 +401,6 @@ module wd {
         }
     }
 
-    /*! default is LESS */
     export enum DepthFunction{
         NEVER = <any>"NEVER",
         ALWAYS = <any>"ALWAYS",
@@ -475,7 +412,6 @@ module wd {
         NOTEQUAL = <any>"NOTEQUAL"
     }
 
-    /*!default is BACK*/
     export enum Side{
         NONE,
         BOTH,
