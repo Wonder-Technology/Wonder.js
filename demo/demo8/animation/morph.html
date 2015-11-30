@@ -15,7 +15,7 @@
     window.onload = function () {
         dy.Main.setConfig({
             canvasId: "canvas"
-        });
+        }).init();
 
         dy.LoaderManager.getInstance().load([
             {url: "../../res/model/dy/ratamahatta.png", id:"skin"},
@@ -54,7 +54,7 @@
 
             var material = dy.LightMaterial.create();
             material.diffuseMap = dy.TextureLoader.getInstance().get("skin");
-            material.diffuseMap.generateMipmaps = false;
+//            material.diffuseMap.generateMipmaps = false;
             material.specular = dy.Color.create("rgb(0, 0, 0)");
             material.shininess = 32;
 
