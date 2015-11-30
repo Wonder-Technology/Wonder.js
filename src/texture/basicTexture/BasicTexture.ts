@@ -125,16 +125,9 @@ module wd{
             if(!gpu.extensionTextureFilterAnisotropic){
                 return;
             }
-            //todo halfFloat/float for texture?(threejs->Ocean.js use it!)
-            //if (this.type !== THREE.FloatType && texture.type !== THREE.HalfFloatType ) {
-
 
             if (this.anisotropy > 1) {
                 gl.texParameterf(textureType, gpu.extensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(this.anisotropy, gpu.maxAnisotropy));
-                //gl.texParameterf(textureType, 34046, Math.min(this.anisotropy, gpu.maxAnisotropy));
-                //texture.__currentAnisotropy = texture.anisotropy;
-
-                //}
             }
         }
 

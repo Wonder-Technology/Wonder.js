@@ -9,7 +9,6 @@ module wd{
         }
 
         public mipmaps:wdCb.Collection<CompressedTextureMipmap> = null;
-        //public texture:Texture = null;
 
         public execute(){
             var gl = DeviceManager.getInstance().gl,
