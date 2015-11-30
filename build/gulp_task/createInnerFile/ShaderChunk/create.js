@@ -9,7 +9,6 @@ var Parser = require("./parser").GLSLParser;
 var PLUGIN_NAME = "ShaderChunk";
 
 var glslPath = "src/renderer/shader/chunk/glsl/**/*.glsl";
-//var glslPath = ["src/renderer/shader/chunk/glsl/light/light_common.glsl", "src/renderer/shader/chunk/glsl/light/phong/*", "src/renderer/shader/chunk/glsl/common/*"];
 var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 
 gulp.task("createShaderChunk", function(){

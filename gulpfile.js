@@ -13,14 +13,6 @@ require("./build/gulp_task/test/test");
 gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference"]));
 
 
-
-//gulp.task("singleTest", gulpSync.sync(["build"]), function (done) {
-//    karma.start({
-//        configFile: karmaConfPath,
-//        singleRun:true
-//    }, done);
-//});
-
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl"];
 
