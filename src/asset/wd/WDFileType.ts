@@ -10,8 +10,7 @@ module wd {
                 type: string,
                 diffuseColor?: Array<number>,
                 specularColor?: Array<number>,
-                //illumination?: number,
-                //url is related to this file
+                /*!url is relative to this file*/
                 diffuseMapUrl?: string,
                 specularMapUrl?: string,
                 normalMapUrl?: string,
@@ -19,77 +18,27 @@ module wd {
                 opacity?: number
             }
         },
-        //geometrys:{
-        //    [name:string]:{
-        //        type:string,
-        //        //todo support multi materials
-        //        material:string,
-        //        //todo
-        //        //smoothShading?: boolean,
-        //
-        //
-        //        /*!for model geometry*/
-        //        vertices: Array<number>,
-        //        morphTargets?: Array<{
-        //            name:string,
-        //            vertices:Array<number>,
-        //            normals?:Array<number>
-        //        }>,
-        //        //"morphColors": [],
-        //        normals?: Array<number>,
-        //        colors?: Array<number>,
-        //        //"uvs": [[]],
-        //        uvs?: Array<number>,
-        //        //"faces": []
-        //        indices: Array<number>,
-        //
-        //        /*!for other geometry*/
-        //        [otherParam:string]:any
-        //    }
-        //},
-        //textures:{
-        //    [name:string]:{
-        //        //url is related to this file
-        //        url:string
-        //    }
-        //}
         objects:Array<DYFileJsonObjectData>
     }
 
     export type DYFileJsonObjectData = {
-            //position: Array<number>,
-            //rotation: Array<number>,
-            //scale: Array<number>,
-            //visible: boolean,
-
-
-            //geometryType:string,
-            //todo support multi materials
-            material:string,
-            //todo
-            //smoothShading?: boolean,
-
+        //todo support multi materials
+        material:string,
         name:string,
 
-
-            /*!for model geometry*/
-            vertices?: Array<number>,
-            morphTargets: Array<DYFileJsonFrameData>,
-            //"morphColors": [],
-            normals?: Array<number>,
-            colors?: Array<number>,
-            //"uvs": [[]],
-            uvs?: Array<number>,
-            //"faces": []
+        /*!for model geometry*/
+        vertices?: Array<number>,
+        morphTargets: Array<DYFileJsonFrameData>,
+        normals?: Array<number>,
+        colors?: Array<number>,
+        uvs?: Array<number>,
         verticeIndices?: Array<number>,
         normalIndices?: Array<number>,
         uvIndices?: Array<number>,
+        children: Array<DYFileParseObjectData>
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any
-
-
-            children: Array<DYFileParseObjectData>
     }
 
     export type DYFileJsonFrameData = {
@@ -97,14 +46,6 @@ module wd {
         vertices:Array<number>,
         normals?:Array<number>
     }
-    //export type DYFileData = {
-    //    scene: wdCb.Hash<DYFileSceneData>,
-    //    models: wdCb.Collection<GameObject>
-    //}
-    //
-    //export type DYFileSceneData = {
-    //    ambientColor: Color
-    //}
 
     export type DYFileParseData = {
         metadata:DYFileMetadata,
@@ -119,8 +60,7 @@ module wd {
         type: string,
         diffuseColor?: Color,
         specularColor?: Color,
-        //illumination?: number,
-        //url is related to this file
+        /*!url is relative to this file*/
         diffuseMapUrl?: string,
         specularMapUrl?: string,
         normalMapUrl?: string,
@@ -129,33 +69,18 @@ module wd {
     }
 
     export type DYFileParseObjectData = {
-        //position: Array<number>,
-        //rotation: Array<number>,
-        //scale: Array<number>,
-        //visible: boolean,
         //todo now only support ModelGeometry, should support other geometry
         //geometryType:string,
 
-
         //todo support multi materials
         material:string,
-        //todo
-        //smoothShading?: boolean,
-
         name:string,
-
         isContainer:boolean,
-
 
         /*!for model geometry*/
         vertices: Array<number>,
-        //morphTargets: Array<{
-        //    name:string,
-        //    vertices:Array<number>
-        //}>,
         morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>,
         morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>,
-        //"morphColors": [],
         colors?: Array<number>,
         uvs?: Array<number>,
         faces:Array<Face3>,
@@ -167,10 +92,6 @@ module wd {
         children: wdCb.Collection<DYFileParseObjectData>
     }
 
-    //export type DYFileParseMorphTargetsData = wdCb.Collection<{
-    //    vertices: Array<number>,
-    //    normals?: Array<number>
-    //}>
     export type DYFileParseMorphTargetsData = wdCb.Collection<Array<number>>
 
     export type DYFileResult = {

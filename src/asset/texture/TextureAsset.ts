@@ -29,11 +29,8 @@ module wd{
         public sourceRegionMapping:TextureSourceRegionMapping = TextureSourceRegionMapping.CANVAS;
 
         public flipY:boolean = true;
-        public premultiplyAlpha:boolean = false;		//预乘Alpha值,如果设置为true,纹素的rgb值会先乘以alpha值,然后在存储.
-        public unpackAlignment:number = 4; // valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
-        // 默认值是4。指定用于在内存中的每个像素行开始校准要求。
-        // 允许的值是1（字节对齐），2（行对齐，偶数字节），4（对齐），和8（行开始在双字的边界）。更多信息见glpixelstorei。
-        //http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml
+        public premultiplyAlpha:boolean = false;
+        public unpackAlignment:number = 4;
 
         //todo extract TextureDefault class to save default setting?
 
@@ -41,7 +38,7 @@ module wd{
         public wrapT:TextureWrapMode = TextureWrapMode.CLAMP_TO_EDGE;
         public magFilter:TextureFilterMode = TextureFilterMode.LINEAR;
         public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
-        public type:TextureType = TextureType.UNSIGNED_BYTE;	//数据类型,默认为不带符号8位整形值(一个字节)
+        public type:TextureType = TextureType.UNSIGNED_BYTE;
         public mipmaps:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public anisotropy:number = 0;
         public needUpdate:boolean = true;
@@ -64,9 +61,7 @@ module wd{
             cubemapFaceTexture.anisotropy = this.anisotropy;
             cubemapFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
             cubemapFaceTexture.unpackAlignment = this.unpackAlignment;
-            //todo test
             cubemapFaceTexture.needUpdate = this.needUpdate;
-
             cubemapFaceTexture.mode = EnvMapMode.BASIC;
         }
 

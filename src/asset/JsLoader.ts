@@ -30,7 +30,8 @@ module wd{
                     reject("error");
                 });
 
-                if (script.readyState) { //IE
+                //IE
+                if (script.readyState) {
                     script.onreadystatechange = function () {
                         if (script.readyState === "loaded" || script.readyState === "complete") {
                             script.onreadystatechange = null;
@@ -38,13 +39,13 @@ module wd{
                         }
                     };
                 }
-                else { //Others
+                else {
                     script.onload = function () {
                         resolve(url);
                     };
                 }
 
-                // set the src attribute after the onload callback is set, to avoid an instant loading failing to fire the callback
+                /*! set the src attribute after the onload callback is set, to avoid an instant loading failing to fire the callback */
                 script.src = url;
 
                 this._appendScript(script);
@@ -54,9 +55,6 @@ module wd{
         private _createScript() {
             var script = document.createElement("script");
             script.type = "text/javascript";
-
-            //// use async=false to force scripts to execute in order
-            //script.async = false;
 
             return script;
         }

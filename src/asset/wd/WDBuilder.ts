@@ -55,8 +55,6 @@ module wd {
                     if(!self._isModelContainer(object)){
                         geometry = ModelGeometry.create();
                         geometry.vertices = object.vertices;
-                        //geometry.normals = object.normals;
-                        //geometry.indices = object.indices;
                         geometry.faces = object.faces;
                         geometry.texCoords = object.uvs;
                         geometry.colors = object.colors;
