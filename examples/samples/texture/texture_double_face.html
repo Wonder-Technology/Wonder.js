@@ -35,7 +35,7 @@
 
         function createTriangle() {
             var material1 = dy.BasicMaterial.create();
-            material1.map = dy.TextureLoader.getInstance().get("texture1").toTexture();
+            material1.map = dy.LoaderManager.getInstance().get("texture1").toTexture();
 
 
             var geometry1 = dy.TriangleGeometry.create();
@@ -50,7 +50,7 @@
 
 
             var material2 = dy.BasicMaterial.create();
-            material2.map = dy.TextureLoader.getInstance().get("texture2").toTexture();
+            material2.map = dy.LoaderManager.getInstance().get("texture2").toTexture();
             material2.side = dy.Side.BACK;
 
 

@@ -45,7 +45,7 @@
             material.color = dy.Color.create("rgb(100, 255, 100)");
             material.specular = dy.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.diffuseMap = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
+            material.diffuseMap = dy.LoaderManager.getInstance().get("texture").toTexture();
             material.shading = dy.Shading.SMOOTH;
 
 
@@ -78,26 +78,6 @@
             gameObject.addComponent(boxGeometry);
 
             gameObject.transform.translate(dy.Vector3.create(0, -13, 0));
-
-            return gameObject;
-        }
-
-        function createBox2() {
-            var material = dy.BasicMaterial.create();
-            material.color = dy.Color.create("rgb(0, 100, 255)");
-
-            var boxGeometry = dy.BoxGeometry.create();
-            boxGeometry.material = material;
-            boxGeometry.width = 2;
-            boxGeometry.height = 2;
-            boxGeometry.depth = 2;
-
-
-            var gameObject = dy.GameObject.create();
-            gameObject.addComponent(dy.MeshRenderer.create());
-            gameObject.addComponent(boxGeometry);
-
-            gameObject.transform.translate(dy.Vector3.create(0, 0, -33));
 
             return gameObject;
         }

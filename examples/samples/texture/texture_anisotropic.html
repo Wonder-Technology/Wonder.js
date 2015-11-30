@@ -33,7 +33,7 @@
         }
 
         function createPlane() {
-            var map = dy.TextureLoader.getInstance().get("texture").toTexture();
+            var map = dy.LoaderManager.getInstance().get("texture").toTexture();
             map.wrapS = map.wrapT = dy.TextureWrapMode.REPEAT;
             map.repeatRegion = dy.RectRegion.create(0, 0, 512, 512);
             /*!annotate this line to see the difference*/

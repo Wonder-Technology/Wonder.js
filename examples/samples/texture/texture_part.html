@@ -37,7 +37,7 @@
         }
 
         function createRect1() {
-            var map = dy.TextureLoader.getInstance().get("multiTexture").toTexture();
+            var map = dy.LoaderManager.getInstance().get("multiTexture").toTexture();
             /*!
              the default sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL.
              in this case, it can't repeat
@@ -65,7 +65,7 @@
         }
 
         function createRect2() {
-            var map = dy.TextureLoader.getInstance().get("multiTexture").toTexture();
+            var map = dy.LoaderManager.getInstance().get("multiTexture").toTexture();
             /*!
              when sourceRegionMethod is DRAW_IN_CANVAS, it can repeat
              */
@@ -96,7 +96,7 @@
         }
 
         function createRect3() {
-            var map = dy.TextureLoader.getInstance().get("compressedTexture").toTexture();
+            var map = dy.LoaderManager.getInstance().get("compressedTexture").toTexture();
             /*!
              compressed texture not support DRAW_IN_CANVAS
              */

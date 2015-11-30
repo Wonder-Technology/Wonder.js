@@ -196,8 +196,7 @@ var tool = {
 
         var texture = dy.DynamicCubemapTexture.create();
         var list = [this.skybox, this.box1, this.box2, this.box3, this.box4, this.box5, this.box6];
-//            var list = [skybox, box];
-//            var list = [ box];
+
         texture.renderList = {
             px: list,
             nx: list,
@@ -206,21 +205,10 @@ var tool = {
             pz: list,
             nz: list
         };
-//            texture.renderList = {
-//                px:list,
-//                nx:list,
-//                py:list,
-//                ny:list,
-//                pz:list,
-//                nz:list
-//            };
+
         texture.near = 0.1;
         texture.far = 1000;
         texture.size = 256;
-
-//            texture.mode = dy.EnvMapMode.REFLECTION;
-
-
         texture.mode = mode;
 
 

@@ -92,7 +92,7 @@
         }
 
         function createGround(position, eulerAngles) {
-            var map = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("ground"));
+            var map = dy.TextureLoader.getInstance().get("ground").toTexture();
             map.wrapS = dy.TextureWrapMode.REPEAT;
             map.wrapT = dy.TextureWrapMode.REPEAT;
             map.repeatRegion = dy.RectRegion.create(0.5, 0, 5, 5);

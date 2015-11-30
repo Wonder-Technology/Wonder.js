@@ -35,7 +35,7 @@
         function createPlane() {
             var material = dy.BasicMaterial.create();
             material.side = dy.Side.BOTH;
-            material.map =  dy.VideoLoader.getInstance().get("video").toTexture();
+            material.map =  dy.LoaderManager.getInstance().get("video").toTexture();
 
             dy.VideoManager.getInstance().play("video");
 

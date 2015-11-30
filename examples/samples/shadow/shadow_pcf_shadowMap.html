@@ -47,7 +47,7 @@
             var material = dy.LightMaterial.create();
             material.specular = dy.Color.create("#ffdd99");
             material.shininess = 16;
-            material.diffuseMap = dy.ImageTexture.create(dy.TextureLoader.getInstance().get("texture"));
+            material.diffuseMap = dy.TextureLoader.getInstance().get("texture").toTexture();
             material.shading = dy.Shading.SMOOTH;
 
 

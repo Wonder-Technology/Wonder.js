@@ -35,7 +35,7 @@
 
         function createTriangle() {
             var material = dy.BasicMaterial.create();
-            material.map = [dy.TextureLoader.getInstance().get("texture1").toTexture(), dy.TextureLoader.getInstance().get("texture2").toTexture()];
+            material.map = [dy.LoaderManager.getInstance().get("texture1").toTexture(), dy.LoaderManager.getInstance().get("texture2").toTexture()];
             material.side = dy.Side.BOTH;
 
 

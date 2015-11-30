@@ -40,7 +40,7 @@
             material.color = dy.Color.create("rgb(100, 255, 100)");
             material.specular = dy.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
-            material.normalMap = dy.LoaderManager.getInstance().get("normalMap");
+            material.normalMap = dy.LoaderManager.getInstance().get("normalMap").toTexture();
             material.shading = dy.Shading.SMOOTH;
 
 

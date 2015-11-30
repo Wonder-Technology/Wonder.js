@@ -37,7 +37,7 @@
             //if set material.color, it will mix with texture
 //            material.color = dy.Color.create("rgb(255, 0, 0)");
 
-            material.map = dy.TextureLoader.getInstance().get("texture").toTexture();
+            material.map = dy.LoaderManager.getInstance().get("texture").toTexture();
 
 
             var geometry = dy.TriangleGeometry.create();
