@@ -2,13 +2,11 @@ language: node_js
 node_js:
   - "4.1"
 before_install:
-  - git submodule init
   - git submodule update --remote
 install:
   - npm install
 before_script:
   - npm install -g gulp
-  - npm install -g typescript
 script:
   - gulp build
-  - gulp test
+  - gulp testInCI

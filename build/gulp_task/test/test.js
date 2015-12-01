@@ -12,6 +12,14 @@ gulp.task("test", function (done) {
     }, done);
 });
 
+gulp.task("testInCI", function (done) {
+    karma.start({
+        configFile: karmaConfPath,
+        singleRun:true,
+        autoWatch:false
+    }, done);
+});
+
 var karmaSyncConfPath= path.join(process.cwd(), "test/karmaSync.conf.js");
 
 gulp.task("testSync", function (done) {
