@@ -1,5 +1,8 @@
 * Wonder.js
 Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contributions are very welcome.
+
+[![Build Status](https://travis-ci.org/greengerong/qing.png?branch=master)](https://travis-ci.org/greengerong/qing)
+
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
