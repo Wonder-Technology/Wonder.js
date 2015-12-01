@@ -244,23 +244,22 @@ describe("mouse event", function () {
 
         var _saveLocation = wd.MouseEventHandler.getInstance()._saveLocation;
 
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
-
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
+        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
+        eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
 
         expect(_saveLocation).toCalledOnce();
         expect(_saveLocation).toCalledAfter(stub);
 
 
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
+        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
 
         expect(_saveLocation).toCalledOnce();
 
 
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
+        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
+        eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
 
 
         expect(_saveLocation).toCalledTwice();
@@ -284,7 +283,7 @@ describe("mouse event", function () {
         });
 
         it("use subscription.dispose to off event binded by fromEvent", function(){
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -300,13 +299,13 @@ describe("mouse event", function () {
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -322,7 +321,7 @@ describe("mouse event", function () {
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();

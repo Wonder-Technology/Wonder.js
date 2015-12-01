@@ -214,7 +214,7 @@ describe("keyboard event", function () {
         });
 
         it("use subscription.dispose to off event binded by fromEvent", function(){
-            YYC.Tool.event.triggerEvent(document, "keyup");
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -230,13 +230,13 @@ describe("keyboard event", function () {
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            YYC.Tool.event.triggerEvent(document, "keyup");
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
-            YYC.Tool.event.triggerEvent(document, "keyup");
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -251,7 +251,7 @@ describe("keyboard event", function () {
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            YYC.Tool.event.triggerEvent(document, "keyup");
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();

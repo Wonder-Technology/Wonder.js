@@ -39,7 +39,7 @@ describe("dom event", function () {
             sum++;
         });
 
-        YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
+        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
 
         expect(sum).toEqual(2);
         expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
