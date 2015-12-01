@@ -44,4 +44,38 @@ describe("dom event", function () {
         expect(sum).toEqual(2);
         expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
     });
+
+    describe("can judge browser to bind correspond eventName to dom", function(){
+        describe("test mousewheel event", function(){
+            it("firefox", function(){
+                var sum = 0;
+                sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
+                sandbox.stub(bowser, "firefox", true);
+                target = wd.Director.getInstance().scene;
+
+                manager.on(target, wd.EventName.MOUSEWHEEL, function(e){
+                    sum++;
+                });
+
+                YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "DOMMouseScroll");
+
+                expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            });
+            it("chrome", function(){
+                var sum = 0;
+                sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
+                sandbox.stub(bowser, "firefox", false);
+                sandbox.stub(bowser, "chrome", true);
+                target = wd.Director.getInstance().scene;
+
+                manager.on(target, wd.EventName.MOUSEWHEEL, function(e){
+                    sum++;
+                });
+
+                YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
+
+                expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
+            });
+        });
+    });
 });

@@ -73,7 +73,7 @@ module wd {
 
             wdCb.EventUtils.addEvent(
                 dom,
-                eventName,
+                EventNameHandler.handleEventName(eventName),
                 domHandler
             );
 
