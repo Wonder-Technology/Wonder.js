@@ -3358,9 +3358,6 @@ declare module wd {
         static NULL: number;
         static morphNormal_vertex: GLSLChunk;
         static morphVertice_vertex: GLSLChunk;
-        static basicEnd_fragment: GLSLChunk;
-        static basic_fragment: GLSLChunk;
-        static basic_vertex: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -3368,15 +3365,18 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
-        static map_forBasic_fragment: GLSLChunk;
-        static map_forBasic_vertex: GLSLChunk;
-        static multi_map_forBasic_fragment: GLSLChunk;
+        static basicEnd_fragment: GLSLChunk;
+        static basic_fragment: GLSLChunk;
+        static basic_vertex: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
+        static map_forBasic_fragment: GLSLChunk;
+        static map_forBasic_vertex: GLSLChunk;
+        static multi_map_forBasic_fragment: GLSLChunk;
         static mirror_forBasic_fragment: GLSLChunk;
         static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
@@ -3401,13 +3401,6 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
         static basic_envMap_forBasic_fragment: GLSLChunk;
         static basic_envMap_forBasic_vertex: GLSLChunk;
         static envMap_forBasic_fragment: GLSLChunk;
@@ -3415,6 +3408,13 @@ declare module wd {
         static fresnel_forBasic_fragment: GLSLChunk;
         static reflection_forBasic_fragment: GLSLChunk;
         static refraction_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;

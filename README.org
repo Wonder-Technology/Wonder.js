@@ -1,20 +1,24 @@
 * Wonder.js
-Wonder.js is a 3D Javascript Game Engine.
-Wonder.js is currently in alpha, any contributions are very welcome.
+Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contributions are very welcome.
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
 Please learn samples in examples/samples/ to get more info.
 * Design
 - Component
+
   use components to assemble game object.
 - Functional Reactive Programming
+
   use Wonder-FRP library to handle async operation in frp way.
 - Code Contract
+
   use it to improve code quality, help to debug.
 - Event Driven
+
   use event system to bind dom/custom event or to implement observer design pattern in frp way.
 - Composable Shader
+
   use shader libs to assemble glsl code.
 * Contributing
 Join us, We can create the amazing 3D world together!
@@ -42,7 +46,7 @@ Join us, We can create the amazing 3D world together!
 - Texture
  - Canvas Texture
  - Video Texture
- - Compressed Texture(DDS) 
+ - Compressed Texture(DDS)
  - Cubemap Texture
 - Converter
  - OBJ Converter
@@ -130,18 +134,21 @@ You can build engine by gulp task:
 #+END_SRC
 * How to test
 - unit test
-  Wonder has complete unit test, you can run the unit test by gulp task:
-  
+
+  Wonder has complete unit test, you can run it by gulp task:
+
 #+BEGIN_SRC js
   gulp test
 #+END_SRC
 - debug
+
   You can first include wd.innerLib.js file, then include wd.debug.js file in your html, then you can debug in engine ts
   file:
-  
+
 #+BEGIN_SRC html
   <script src="js/wd.innerLib.js"></script>
   <script src="js/wd.debug.js"></script>
 #+END_SRC
-* License 
+* License
 MIT Licence
+
