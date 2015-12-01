@@ -53,7 +53,7 @@ describe("Converter", function () {
                     var resultJson = readJSON(resultFilePath);
 
                     expect(resultJson.metadata).toEqual({
-                        formatVersion: converter.version,
+                        formatVersion: "0.1.0",
                         description: '',
                         sourceFile: testPath1,
                         generatedBy: "OBJToWD"

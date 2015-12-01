@@ -1,15 +1,12 @@
 var gulp = require("gulp");
 var gs = require("glob-stream");
 var fs = require("fs-extra");
-//var gulpSourcemaps = require("gulp-sourcemaps");
 var gulpTs = require("gulp-typescript");
 var merge = require("merge2");
-//var gulpConcat = require("gulp-concat");
 var del = require("del");
 var gulpSync = require("gulp-sync")(gulp);
 var wdFrp = require("wdfrp");
 var path = require("path");
-//var plumber = require("gulp-plumber");
 
 
 gulp.task("convert", function (done) {
@@ -18,9 +15,7 @@ gulp.task("convert", function (done) {
 
     var sourceDir = parseOption("--sourceDir") || "./source/",
         destDir = parseOption("--destDir") || "./dest/",
-        //isComputeNormals = parseOption("--isComputeNormals") ? Boolean(parseOption("--isComputeNormals")) : false,
         converter = Converter.create();
-
 
     wdFrp.fromNodeCallback(fs.remove)(destDir)
         .concat(
@@ -68,18 +63,12 @@ gulp.task("compileTs", function () {
             "experimentalDecorators": true,
             "emitDecoratorMetadata": true,
             "declaration": false,
-            //"noImplicitAny": true,
             "removeComments": true,
-            //"noLib": false,
             "preserveConstEnums": true,
-            //noExternalResolve:true,
             "suppressImplicitAnyIndexErrors": true,
             target: "ES5",
             module: "commonjs",
-            //moduleResolution: "node",
-            //sortOutput:true,
             noEmitOnError: true,
-            //"isolatedModules": true,
             typescript: require("typescript")
         }))
         .pipe(gulp.dest("./dist"));

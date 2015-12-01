@@ -14,11 +14,17 @@ export = class Converter {
     public static create() {
         var obj = new this();
 
+        obj.initWhenCreate();
+
         return obj;
     }
 
-    public version:string = "0.1.0";
+    public version:string = null;
     public extname:string = ".wd";
+
+    public initWhenCreate(){
+        this.version = fs.readJsonSync(path.join(__dirname, "../../package.json")).version;
+    }
 
     public convert(fileBuffer:Buffer, filePath:string):wdFrp.Stream {
         var fileExtname = path.extname(filePath),
