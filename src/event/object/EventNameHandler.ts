@@ -20,6 +20,9 @@ module wd{
         KEYPRESS = <any>"keypress"
     }
 
+    const EVENTNAME_SPLITTER = '|',
+        BROWSER_IDENTIFIER = '*';
+
     export class EventNameHandler{
         public static handleEventName(domEventName:EventName){
             var eventName:string = <any>domEventName,
@@ -27,7 +30,7 @@ module wd{
                 specifyBrowserEventNameArr = [],
                 result:string = null;
 
-            for (let name of eventName.split('|')){
+            for (let name of eventName.split(EVENTNAME_SPLITTER)){
 
                 if(this._isFallbackEventName(name)){
                     fallbackEventName = name;
@@ -43,14 +46,14 @@ module wd{
         }
 
         private static _isFallbackEventName(eventName:string){
-            return eventName.split('*').length === 1;
+            return eventName.split(BROWSER_IDENTIFIER).length === 1;
         }
 
         private static _getSpecifyBrowserEventName(specifyBrowserEventNameArr:Array<string>){
             var result = null;
 
             for(let eventName of specifyBrowserEventNameArr){
-                let [domEventName, browserIdentifier] = eventName.split('*');
+                let [domEventName, browserIdentifier] = eventName.split(BROWSER_IDENTIFIER);
 
                 switch (<any>browserIdentifier){
                     case BrowserIdentifier.CHROME:
