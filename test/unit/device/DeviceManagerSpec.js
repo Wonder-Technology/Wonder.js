@@ -55,12 +55,11 @@ describe("deviceManager", function() {
             sandbox.stub(window, "innerWidth", 100);
             sandbox.stub(window, "innerHeight", 200);
 
-            var createGL = device.createGL;
-            sandbox.stub(device, "createGL", function(id){
-                createGL.call(device, id);
+            sandbox.stub(device, "createGL");
+            sandbox.stub(wd.GPUDetector.getInstance(), "detect");
 
-                sandbox.stub(device.gl, "viewport");
-            });
+            device.view = wd.ViewWebGL.create($("#event-test").get(0));
+            device.gl = testTool.buildFakeGl(sandbox);
 
         });
         afterEach(function(){

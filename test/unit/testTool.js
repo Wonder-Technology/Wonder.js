@@ -4,6 +4,8 @@ var testTool = (function () {
 
         buildFakeGl: function (sandbox) {
             return {
+                getParameter: sandbox.stub(),
+                getExtension: sandbox.stub(),
                 viewport: sandbox.stub(),
                 checkFramebufferStatus: sandbox.stub(),
                 framebufferRenderbuffer: sandbox.stub(),
