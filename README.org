@@ -54,7 +54,7 @@ Join us, We can create the amazing 3D world together!
 * Usage
 Include library in your html:
 #+BEGIN_SRC html
-  <script src="js/wd.min.js"></script>
+  <script src="dist/wd.min.js"></script>
 #+END_SRC
 Here shows a spinning cube sample:
 #+BEGIN_SRC js
@@ -142,8 +142,8 @@ You can build engine by gulp task:
   file:
 
 #+BEGIN_SRC html
-  <script src="js/wd.innerLib.js"></script>
-  <script src="js/wd.debug.js"></script>
+  <script src="dist/wd.innerLib.js"></script>
+  <script src="dist/wd.debug.js"></script>
 #+END_SRC
 * License
 MIT Licence

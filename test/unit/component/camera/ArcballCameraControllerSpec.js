@@ -1,7 +1,7 @@
 describe("ArcballCameraController", function () {
     var sandbox = null;
     var controller = null;
-
+    var manager = null;
 
     var camera,cameraComponent,component;
 
@@ -33,6 +33,8 @@ describe("ArcballCameraController", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+        manager = wd.EventManager;
+
         insertDom();
         wd.DeviceManager.getInstance().createGL("#event-test");
     });
@@ -74,18 +76,18 @@ describe("ArcballCameraController", function () {
 
             camera.init();
 
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
 
             expect(controller._changeOrbit).toCalledOnce();
 
 
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
 
             expect(controller._changeDistance).toCalledOnce();
 
-            YYC.Tool.event.triggerEvent(document, "keydown");
+            eventTool.triggerDomEvent(wd.EventName.KEYDOWN, document);
 
             expect(controller._changeTarget).toCalledOnce();
 
@@ -93,11 +95,11 @@ describe("ArcballCameraController", function () {
 
             controller.dispose();
 
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousedown");
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousemove");
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mouseup");
-            YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
-            YYC.Tool.event.triggerEvent(document, "keydown");
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EventName.KEYDOWN, document);
 
 
             expect(controller._changeOrbit).toCalledOnce();

@@ -2021,15 +2021,14 @@ var wdCb;
          * @param {String} message
          */
         Log.log = function () {
-            var message = [];
+            var messages = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                message[_i - 0] = arguments[_i];
+                messages[_i - 0] = arguments[_i];
             }
-            if (!this._exec("trace", Array.prototype.slice.call(arguments, 0))) {
-                if (!this._exec("log", arguments)) {
-                    wdCb.root.alert(Array.prototype.slice.call(arguments, 0).join(","));
-                }
+            if (!this._exec("log", messages)) {
+                wdCb.root.alert(messages.join(","));
             }
+            this._exec("trace", messages);
         };
         /**
          * 断言失败时，会提示错误信息，但程序会继续执行下去
@@ -2057,9 +2056,9 @@ var wdCb;
          * @param message
          */
         Log.assert = function (cond) {
-            var message = [];
+            var messages = [];
             for (var _i = 1; _i < arguments.length; _i++) {
-                message[_i - 1] = arguments[_i];
+                messages[_i - 1] = arguments[_i];
             }
             if (cond) {
                 if (!this._exec("assert", arguments, 1)) {
@@ -2113,7 +2112,7 @@ var wdCb;
                     args[_i - 0] = arguments[_i];
                 }
                 var result = "";
-                Array.prototype.slice.call(arguments, 0).forEach(function (val) {
+                args.forEach(function (val) {
                     result += String(val) + " ";
                 });
                 return result.slice(0, -1);
@@ -2123,14 +2122,14 @@ var wdCb;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                if (arguments.length === 2) {
-                    return this.helperFunc(arguments[0], arguments[1]);
+                if (args.length === 2) {
+                    return this.helperFunc(args[0], args[1]);
                 }
-                else if (arguments.length === 3) {
-                    return this.helperFunc(arguments[1], arguments[0], arguments[2]);
+                else if (args.length === 3) {
+                    return this.helperFunc(args[1], args[0], args[2]);
                 }
                 else {
-                    throw new Error("arguments.length must <= 3");
+                    throw new Error("args.length must <= 3");
                 }
             },
             FUNC_INVALID: function () {
@@ -2138,126 +2137,112 @@ var wdCb;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("invalid");
-                return this.assertion.apply(this, arr);
+                args.unshift("invalid");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must");
-                return this.assertion.apply(this, arr);
+                args.unshift("must");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_BE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must be");
-                return this.assertion.apply(this, arr);
+                args.unshift("must be");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_NOT_BE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must not be");
-                return this.assertion.apply(this, arr);
+                args.unshift("must not be");
+                return this.assertion.apply(this, args);
             },
             FUNC_SHOULD: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("should");
-                return this.assertion.apply(this, arr);
+                args.unshift("should");
+                return this.assertion.apply(this, args);
             },
             FUNC_SHOULD_NOT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("should not");
-                return this.assertion.apply(this, arr);
+                args.unshift("should not");
+                return this.assertion.apply(this, args);
             },
             FUNC_SUPPORT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("support");
-                return this.assertion.apply(this, arr);
+                args.unshift("support");
+                return this.assertion.apply(this, args);
             },
             FUNC_NOT_SUPPORT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("not support");
-                return this.assertion.apply(this, arr);
+                args.unshift("not support");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_DEFINE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must define");
-                return this.assertion.apply(this, arr);
+                args.unshift("must define");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_NOT_DEFINE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must not define");
-                return this.assertion.apply(this, arr);
+                args.unshift("must not define");
+                return this.assertion.apply(this, args);
             },
             FUNC_UNKNOW: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("unknow");
-                return this.assertion.apply(this, arr);
+                args.unshift("unknow");
+                return this.assertion.apply(this, args);
             },
             FUNC_EXPECT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("expect");
-                return this.assertion.apply(this, arr);
+                args.unshift("expect");
+                return this.assertion.apply(this, args);
             },
             FUNC_UNEXPECT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("unexpect");
-                return this.assertion.apply(this, arr);
+                args.unshift("unexpect");
+                return this.assertion.apply(this, args);
             },
             FUNC_NOT_EXIST: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("not exist");
-                return this.assertion.apply(this, arr);
+                args.unshift("not exist");
+                return this.assertion.apply(this, args);
             }
         };
         return Log;
@@ -3225,7 +3210,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var JudgeUtils = (function (_super) {
@@ -3245,7 +3229,6 @@ var wdFrp;
     })(wdCb.JudgeUtils);
     wdFrp.JudgeUtils = JudgeUtils;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3272,7 +3255,6 @@ var wdFrp;
 
 
 
-
 var wdFrp;
 (function (wdFrp) {
     var SingleDisposable = (function () {
@@ -3295,7 +3277,6 @@ var wdFrp;
     })();
     wdFrp.SingleDisposable = SingleDisposable;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3326,7 +3307,6 @@ var wdFrp;
 
 
 
-
 var wdFrp;
 (function (wdFrp) {
     var InnerSubscription = (function () {
@@ -3348,7 +3328,6 @@ var wdFrp;
     })();
     wdFrp.InnerSubscription = InnerSubscription;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3373,7 +3352,6 @@ var wdFrp;
     wdFrp.InnerSubscriptionGroup = InnerSubscriptionGroup;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     Object.defineProperty(wdFrp, "root", {
@@ -3391,7 +3369,6 @@ var wdFrp;
     wdFrp.ABSTRACT_ATTRIBUTE = null;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     if (wdFrp.root.RSVP) {
@@ -3407,7 +3384,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var Stream = (function (_super) {
@@ -3484,7 +3460,6 @@ var wdFrp;
     wdFrp.Stream = Stream;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     wdFrp.root.requestNextAnimationFrame = (function () {
@@ -3493,29 +3468,6 @@ var wdFrp;
             time = wdFrp.root.performance.now();
             self.callback(time);
         };
-        /*!
-         bug!
-         below code:
-         when invoke b after 1s, will only invoke b, not invoke a!
-
-         function a(time){
-         console.log("a", time);
-         webkitRequestAnimationFrame(a);
-         }
-
-         function b(time){
-         console.log("b", time);
-         webkitRequestAnimationFrame(b);
-         }
-
-         a();
-
-         setTimeout(b, 1000);
-
-
-
-         so use requestAnimationFrame priority!
-         */
         if (wdFrp.root.requestAnimationFrame) {
             return requestAnimationFrame;
         }
@@ -3613,7 +3565,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var Observer = (function (_super) {
@@ -3693,7 +3644,6 @@ var wdFrp;
     wdFrp.Observer = Observer;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     var Subject = (function () {
@@ -3753,7 +3703,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var GeneratorSubject = (function (_super) {
@@ -3777,9 +3726,6 @@ var wdFrp;
             enumerable: true,
             configurable: true
         });
-        /*!
-        outer hook method
-         */
         GeneratorSubject.prototype.onBeforeNext = function (value) {
         };
         GeneratorSubject.prototype.onAfterNext = function (value) {
@@ -3867,7 +3813,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AnonymousObserver = (function (_super) {
@@ -3897,7 +3842,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AutoDetachObserver = (function (_super) {
@@ -3962,7 +3906,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MapObserver = (function (_super) {
@@ -4005,7 +3948,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DoObserver = (function (_super) {
@@ -4064,7 +4006,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MergeAllObserver = (function (_super) {
@@ -4148,12 +4089,6 @@ var wdFrp;
             this._streamGroup.removeChild(function (stream) {
                 return wdFrp.JudgeUtils.isEqual(stream, currentStream);
             });
-            /*!
-            if this innerSource is async stream(as promise stream),
-            it will first exec all parent.next and one parent.completed,
-            then exec all this.next and all this.completed
-            so in this case, it should invoke parent.currentObserver.completed after the last invokcation of this.completed(have invoked all the innerSource)
-            */
             if (this._isAsync() && this._streamGroup.getCount() === 0) {
                 parent.currentObserver.completed();
             }
@@ -4170,7 +4105,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TakeUntilObserver = (function (_super) {
@@ -4201,7 +4135,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var ConcatObserver = (function (_super) {
@@ -4217,10 +4150,6 @@ var wdFrp;
             return new this(currentObserver, startNextStream);
         };
         ConcatObserver.prototype.onNext = function (value) {
-            /*!
-            if "this.currentObserver.next" error, it will pase to this.currentObserver->onError.
-            so it shouldn't invoke this.currentObserver.error here again!
-             */
             this.currentObserver.next(value);
         };
         ConcatObserver.prototype.onError = function (error) {
@@ -4233,7 +4162,6 @@ var wdFrp;
     })(wdFrp.Observer);
     wdFrp.ConcatObserver = ConcatObserver;
 })(wdFrp || (wdFrp = {}));
-
 
 
 
@@ -4293,7 +4221,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IgnoreElementsObserver = (function (_super) {
@@ -4324,7 +4251,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var BaseStream = (function (_super) {
@@ -4357,7 +4283,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DoStream = (function (_super) {
@@ -4387,7 +4312,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MapStream = (function (_super) {
@@ -4417,7 +4341,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromArrayStream = (function (_super) {
@@ -4456,7 +4379,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromPromiseStream = (function (_super) {
@@ -4490,7 +4412,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromEventPatternStream = (function (_super) {
@@ -4526,7 +4447,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AnonymousStream = (function (_super) {
@@ -4558,7 +4478,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IntervalStream = (function (_super) {
@@ -4597,7 +4516,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IntervalRequestStream = (function (_super) {
@@ -4632,7 +4550,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MergeAllStream = (function (_super) {
@@ -4663,7 +4580,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TakeUntilStream = (function (_super) {
@@ -4698,7 +4614,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var ConcatStream = (function (_super) {
@@ -4745,7 +4660,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var RepeatStream = (function (_super) {
@@ -4786,7 +4700,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IgnoreElementsStream = (function (_super) {
@@ -4814,7 +4727,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DeferStream = (function (_super) {
@@ -4837,7 +4749,6 @@ var wdFrp;
     })(wdFrp.BaseStream);
     wdFrp.DeferStream = DeferStream;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -4893,7 +4804,6 @@ var wdFrp;
         });
     };
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -4958,7 +4868,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MockObserver = (function (_super) {
@@ -5006,7 +4915,6 @@ var wdFrp;
     wdFrp.MockObserver = MockObserver;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     var MockPromise = (function () {
@@ -5021,7 +4929,6 @@ var wdFrp;
             return obj;
         };
         MockPromise.prototype.then = function (successCb, errorCb, observer) {
-            //var scheduler = <TestScheduler>(this.scheduler);
             this._scheduler.setStreamMap(observer, this._messages);
         };
         return MockPromise;
@@ -5034,7 +4941,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var SUBSCRIBE_TIME = 200;
@@ -5249,7 +5155,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TestStream = (function (_super) {
@@ -5266,7 +5171,6 @@ var wdFrp;
             return obj;
         };
         TestStream.prototype.subscribeCore = function (observer) {
-            //var scheduler = <TestScheduler>(this.scheduler);
             this.scheduler.setStreamMap(observer, this._messages);
             return wdFrp.SingleDisposable.create();
         };
@@ -5274,7 +5178,6 @@ var wdFrp;
     })(wdFrp.BaseStream);
     wdFrp.TestStream = TestStream;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {

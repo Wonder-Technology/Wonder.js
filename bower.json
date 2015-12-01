@@ -18,6 +18,7 @@
   "main": "dist/wd.js",
   "ignore": [
     "**/.*",
+    "build",
     "examples",
     "lib",
     "src",

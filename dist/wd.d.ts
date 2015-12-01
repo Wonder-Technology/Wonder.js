@@ -71,7 +71,7 @@ declare module wdCb {
          * @function
          * @param {String} message
          */
-        static log(...message: any[]): void;
+        static log(...messages: any[]): void;
         /**
          * 断言失败时，会提示错误信息，但程序会继续执行下去
          * 使用断言捕捉不应该发生的非法情况。不要混淆非法情况与错误情况之间的区别，后者是必然存在的并且是一定要作出处理的。
@@ -97,7 +97,7 @@ declare module wdCb {
          * @param cond 如果cond返回false，则断言失败，显示message
          * @param message
          */
-        static assert(cond: any, ...message: any[]): void;
+        static assert(cond: any, ...messages: any[]): void;
         static error(cond: any, ...message: any[]): any;
         static warn(...message: any[]): void;
         private static _exec(consoleMethod, args, sliceBegin?);
@@ -112,11 +112,11 @@ declare module wdCb {
         hasChild(arg: Function | T): boolean;
         getChildren(): T[];
         getChild(index: number): T;
-        addChild(child: T): List<T>;
-        addChildren(arg: Array<T> | List<T> | any): List<T>;
+        addChild(child: T): this;
+        addChildren(arg: Array<T> | List<T> | any): this;
         unShiftChild(child: T): void;
-        removeAllChildren(): List<T>;
-        forEach(func: Function, context?: any): List<T>;
+        removeAllChildren(): this;
+        forEach(func: Function, context?: any): this;
         toArray(): T[];
         protected copyChildren(): T[];
         protected removeChildHelper(arg: any): Array<T>;
@@ -142,14 +142,14 @@ declare module wdCb {
         getKeys(): Collection<{}>;
         getValues(): Collection<{}>;
         getChild(key: string): T;
-        setValue(key: string, value: any): Hash<T>;
-        addChild(key: string, value: any): Hash<T>;
+        setValue(key: string, value: any): this;
+        addChild(key: string, value: any): this;
         addChildren(arg: {} | Hash<T>): void;
-        appendChild(key: string, value: any): Hash<T>;
+        appendChild(key: string, value: any): this;
         removeChild(arg: any): Collection<{}>;
         removeAllChildren(): void;
         hasChild(arg: any): boolean;
-        forEach(func: Function, context?: any): Hash<T>;
+        forEach(func: Function, context?: any): this;
         filter(func: Function): Hash<{}>;
         findOne(func: Function): any[];
         map(func: Function): Hash<{}>;
@@ -277,8 +277,8 @@ declare module wdCb {
         get(index: any): HTMLElement;
         prepend(eleStr: string): any;
         prepend(dom: HTMLElement): any;
-        prependTo(eleStr: string): DomQuery;
-        remove(): DomQuery;
+        prependTo(eleStr: string): this;
+        remove(): this;
         css(property: string, value: string): void;
         private _isDomEleStr(eleStr);
         private _buildDom(eleStr);
@@ -351,7 +351,7 @@ declare module wdFrp {
         static create(disposable?: IDisposable): GroupDisposable;
         private _group;
         constructor(disposable?: IDisposable);
-        add(disposable: IDisposable): GroupDisposable;
+        add(disposable: IDisposable): this;
         dispose(): void;
     }
 }
@@ -1042,7 +1042,7 @@ declare module wd {
         private _components;
         private _startLoopHandler;
         private _endLoopHandler;
-        init(): GameObject;
+        init(): this;
         onStartLoop(): void;
         onEndLoop(): void;
         onEnter(): void;
@@ -1053,8 +1053,8 @@ declare module wd {
         addChild(child: GameObject): GameObject;
         addChildren(children: Array<GameObject>): any;
         addChildren(children: wdCb.Collection<GameObject>): any;
-        sort(): GameObject;
-        forEach(func: Function): GameObject;
+        sort(): this;
+        forEach(func: Function): this;
         getChildren(): wdCb.Collection<GameObject>;
         getChild(index: number): GameObject;
         findChildByUid(uid: number): GameObject;
@@ -1068,8 +1068,8 @@ declare module wd {
         isHit(locationInView: Point): boolean;
         hasComponent(component: Component): boolean;
         hasComponent(_class: Function): boolean;
-        addComponent(component: Component): GameObject;
-        removeComponent(component: Component): GameObject;
+        addComponent(component: Component): this;
+        removeComponent(component: Component): this;
         render(renderer: Renderer, camera: GameObject): void;
         update(time: number): void;
         private _ascendZ(a, b);
@@ -1175,7 +1175,7 @@ declare module wd {
         isUseProgram: Boolean;
         private _lightManager;
         private _renderTargetRenderers;
-        init(): Scene;
+        init(): this;
         useProgram(shader: Shader): void;
         unUseProgram(): void;
         addChild(child: GameObject): GameObject;
@@ -1250,19 +1250,19 @@ declare module wd {
         values: Float32Array;
         normalize(): Vector3;
         isZero(): boolean;
-        scale(scalar: number): Vector3;
+        scale(scalar: number): this;
         set(v: Vector3): any;
         set(x: number, y: number, z: number): any;
         sub(v: Vector3): Vector3;
-        sub2(v1: Vector3, v2: Vector3): Vector3;
-        add(v: Vector3): Vector3;
-        add2(v1: Vector3, v2: Vector3): Vector3;
+        sub2(v1: Vector3, v2: Vector3): this;
+        add(v: Vector3): this;
+        add2(v1: Vector3, v2: Vector3): this;
         reverse(): Vector3;
         copy(): Vector3;
         toVector4(): Vector4;
         length(): any;
-        cross(lhs: Vector3, rhs: Vector3): Vector3;
-        lerp(lhs: Vector3, rhs: Vector3, alpha: number): Vector3;
+        cross(lhs: Vector3, rhs: Vector3): this;
+        lerp(lhs: Vector3, rhs: Vector3, alpha: number): this;
         dot(rhs: any): number;
         isEqual(v: Vector3): boolean;
         toArray(): number[];
@@ -1284,7 +1284,7 @@ declare module wd {
         normalize(): Vector4;
         copy(): Vector4;
         toVector3(): Vector3;
-        multiplyScalar(scalar: number): Vector4;
+        multiplyScalar(scalar: number): this;
         dot(v: Vector4): number;
         set(x: number, y: number, z: number, w: number): void;
         protected copyHelper(vector4: Vector4): any;
@@ -1333,7 +1333,7 @@ declare module wd {
         getTranslation(): Vector3;
         getScale(): Vector3;
         getEulerAngles(): Vector3;
-        setTRS(t: Vector3, r: Quaternion, s: Vector3): Matrix4;
+        setTRS(t: Vector3, r: Quaternion, s: Vector3): this;
     }
 }
 
@@ -1347,11 +1347,11 @@ declare module wd {
         values: Float32Array;
         setIdentity(): Matrix3;
         invert(): Matrix3;
-        multiplyScalar(s: number): Matrix3;
+        multiplyScalar(s: number): this;
         multiplyVector3(vector: any): Vector3;
         transpose(): Matrix3;
         copy(): Matrix3;
-        set(n11: any, n12: any, n13: any, n21: any, n22: any, n23: any, n31: any, n32: any, n33: any): Matrix3;
+        set(n11: any, n12: any, n13: any, n21: any, n22: any, n23: any, n31: any, n32: any, n33: any): this;
     }
 }
 
@@ -1364,20 +1364,20 @@ declare module wd {
         y: number;
         z: number;
         w: number;
-        setFromEulerAngles(eulerAngles: Vector3): Quaternion;
+        setFromEulerAngles(eulerAngles: Vector3): this;
         multiply(rhs: Quaternion): any;
         multiply(rhs1: Quaternion, rhs2: Quaternion): any;
-        setFromMatrix(matrix: Matrix4): Quaternion;
-        setFromAxisAngle(angle: number, axis: Vector3): Quaternion;
-        invert(): Quaternion;
-        conjugate(): Quaternion;
+        setFromMatrix(matrix: Matrix4): this;
+        setFromAxisAngle(angle: number, axis: Vector3): this;
+        invert(): this;
+        conjugate(): this;
         clone(): Quaternion;
         copy(): Quaternion;
-        normalize(): Quaternion;
+        normalize(): this;
         length(): any;
         multiplyVector3(vector: Vector3): Vector3;
         set(x: number, y: number, z: number, w: number): void;
-        sub(quat: Quaternion): Quaternion;
+        sub(quat: Quaternion): this;
         getEulerAngles(): Vector3;
     }
 }
@@ -1902,7 +1902,7 @@ declare module wd {
         private _context;
         private _callFunc;
         private _dataArr;
-        reverse(): CallFunc;
+        reverse(): this;
         update(time: any): void;
         copy(): CallFunc;
     }
@@ -1935,8 +1935,8 @@ declare module wd {
         target: GameObject;
         abstract getInnerActions(): any;
         init(): void;
-        reverse(): Control;
-        reset(): Control;
+        reverse(): this;
+        reset(): this;
         protected iterate(method: string, argArr?: Array<any>): void;
     }
 }
@@ -1952,12 +1952,12 @@ declare module wd {
         initWhenCreate(): void;
         update(time: any): any;
         copy(): any;
-        reset(): Sequence;
-        start(): Sequence;
-        stop(): Sequence;
-        pause(): Sequence;
-        resume(): Sequence;
-        reverse(): Sequence;
+        reset(): this;
+        start(): this;
+        stop(): this;
+        pause(): this;
+        resume(): this;
+        reverse(): this;
         getInnerActions(): wdCb.Collection<Action>;
         private _startNextActionAndJudgeFinish();
     }
@@ -1970,13 +1970,13 @@ declare module wd {
         constructor(actionArr: Array<Action>);
         private _actions;
         update(time: any): void;
-        start(): Spawn;
-        stop(): Spawn;
-        pause(): Spawn;
-        resume(): Spawn;
+        start(): this;
+        stop(): this;
+        pause(): this;
+        resume(): this;
         copy(): any;
-        reset(): Spawn;
-        reverse(): Spawn;
+        reset(): this;
+        reverse(): this;
         getInnerActions(): wdCb.Collection<Action>;
         protected iterate(method: string, argArr?: Array<any>): void;
         private _isFinish();
@@ -1988,7 +1988,7 @@ declare module wd {
     class DelayTime extends ActionInterval {
         static create(delayTime: number): DelayTime;
         constructor(delayTime: number);
-        reverse(): DelayTime;
+        reverse(): this;
         copy(): DelayTime;
     }
 }
@@ -2004,7 +2004,7 @@ declare module wd {
         initWhenCreate(): void;
         update(time: any): void;
         copy(): Repeat;
-        reset(): Repeat;
+        reset(): this;
         start(): void;
         stop(): void;
         pause(): void;
@@ -2110,19 +2110,19 @@ declare module wd {
         private _onFinishCallback;
         private _onStopCallback;
         protected updateBody(time: number): boolean;
-        from(object: any): Tween;
-        to(properties: any, duration?: number): Tween;
+        from(object: any): this;
+        to(properties: any, duration?: number): this;
         init(): void;
-        start(): Tween;
-        stop(): Tween;
+        start(): this;
+        stop(): this;
         copy(): Tween;
         reverse(): void;
-        easing(easing: any): Tween;
-        interpolation(interpolation: any): Tween;
-        onUpdate(callback: Function): Tween;
-        onFinish(callback: Function): Tween;
-        onStart(callback: Function): Tween;
-        onStop(callback: Function): Tween;
+        easing(easing: any): this;
+        interpolation(interpolation: any): this;
+        onUpdate(callback: Function): this;
+        onFinish(callback: Function): this;
+        onStart(callback: Function): this;
+        onStop(callback: Function): this;
         protected finish(): void;
     }
 }
@@ -2216,14 +2216,16 @@ declare module wd {
 declare module wd {
     abstract class Light extends Component {
         position: Vector3;
+        private _shadowMapWidth;
+        shadowMapWidth: number;
+        private _shadowMapHeight;
+        shadowMapHeight: number;
         color: Color;
         castShadow: boolean;
         shadowCameraNear: number;
         shadowCameraFar: number;
         shadowBias: number;
         shadowDarkness: number;
-        shadowMapWidth: number;
-        shadowMapHeight: number;
         shadowMap: IShadowMapTexture;
         shadowMapRenderer: RenderTargetRenderer;
     }
@@ -2627,7 +2629,7 @@ declare module wd {
         data: any;
         private _type;
         initWhenCreate(data: any, num: number, type: BufferType, usage: BufferUsage): any;
-        resetData(data: any, num?: number, type?: BufferType): ArrayBuffer;
+        resetData(data: any, num?: number, type?: BufferType): this;
     }
 }
 
@@ -2652,7 +2654,7 @@ declare module wd {
         sendAttributeData(name: string, type: VariableType, data: any): void;
         sendAttributeDataFromCustomShader(): void;
         sendStructureData(name: string, type: VariableType, data: any): void;
-        initWithShader(shader: Shader): Program;
+        initWithShader(shader: Shader): this;
         dispose(): void;
         isUniformDataNotExistByLocation(pos: any): boolean;
         private _convertAttributeDataType(val);
@@ -3358,6 +3360,9 @@ declare module wd {
         static NULL: number;
         static morphNormal_vertex: GLSLChunk;
         static morphVertice_vertex: GLSLChunk;
+        static basicEnd_fragment: GLSLChunk;
+        static basic_fragment: GLSLChunk;
+        static basic_vertex: GLSLChunk;
         static common_define: GLSLChunk;
         static common_fragment: GLSLChunk;
         static common_function: GLSLChunk;
@@ -3365,9 +3370,6 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
-        static basicEnd_fragment: GLSLChunk;
-        static basic_fragment: GLSLChunk;
-        static basic_vertex: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
@@ -3381,6 +3383,20 @@ declare module wd {
         static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static basic_envMap_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forBasic_vertex: GLSLChunk;
+        static envMap_forBasic_fragment: GLSLChunk;
+        static envMap_forBasic_vertex: GLSLChunk;
+        static fresnel_forBasic_fragment: GLSLChunk;
+        static reflection_forBasic_fragment: GLSLChunk;
+        static refraction_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
@@ -3401,20 +3417,6 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static basic_envMap_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forBasic_vertex: GLSLChunk;
-        static envMap_forBasic_fragment: GLSLChunk;
-        static envMap_forBasic_vertex: GLSLChunk;
-        static fresnel_forBasic_fragment: GLSLChunk;
-        static reflection_forBasic_fragment: GLSLChunk;
-        static refraction_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
@@ -4171,6 +4173,7 @@ declare module wd {
     }
 }
 
+
 declare module wd {
     enum EventName {
         CLICK,
@@ -4183,6 +4186,11 @@ declare module wd {
         KEYDOWN,
         KEYUP,
         KEYPRESS,
+    }
+    class EventNameHandler {
+        static handleEventName(domEventName: EventName): any;
+        private static _isFallbackEventName(eventName);
+        private static _getSpecifyBrowserEventName(specifyBrowserEventNameArr);
     }
 }
 
@@ -4740,7 +4748,7 @@ declare module wd {
         protected target: TextureTarget;
         abstract init(): any;
         abstract getSamplerName(unit: number): string;
-        bindToUnit(unit: number): Texture;
+        bindToUnit(unit: number): this;
         sendData(program: Program, pos: WebGLUniformLocation, unit: number): void;
         dispose(): void;
         filterFallback(filter: TextureFilterMode): TextureFilterMode;
@@ -4774,7 +4782,7 @@ declare module wd {
 declare module wd {
     abstract class RenderTargetTexture extends Texture {
         abstract createEmptyTexture(): any;
-        init(): RenderTargetTexture;
+        init(): this;
         getPosition(): Vector3;
         protected setEmptyTexture(texture: any): void;
     }
@@ -4808,7 +4816,7 @@ declare module wd {
     class MirrorTexture extends TwoDRenderTargetTexture {
         static create(): MirrorTexture;
         private _plane;
-        init(): MirrorTexture;
+        init(): this;
         getSamplerName(unit: number): string;
         getPlane(): Plane;
     }
@@ -4849,7 +4857,7 @@ declare module wd {
         near: number;
         far: number;
         mode: EnvMapMode;
-        init(): DynamicCubemapTexture;
+        init(): this;
         getSamplerName(unit: number): string;
     }
 }
@@ -4874,9 +4882,9 @@ declare module wd {
         needUpdate: boolean;
         initWhenCreate(...args: any[]): void;
         init(): void;
-        update(index: number): BasicTexture;
+        update(index: number): this;
         getSamplerName(unit: number): string;
-        protected sendOtherData(program: Program, unit: number): BasicTexture;
+        protected sendOtherData(program: Program, unit: number): this;
         protected abstract allocateSourceToTexture(isSourcePowerOfTwo: boolean): any;
         protected needClampMaxSize(): boolean;
         protected clampToMaxSize(): void;
@@ -4919,7 +4927,7 @@ declare module wd {
         private _video;
         private _startLoopHandler;
         initWhenCreate(asset: VideoTextureAsset): void;
-        init(): VideoTexture;
+        init(): this;
         dispose(): void;
         protected needClampMaxSize(): boolean;
     }
@@ -4937,7 +4945,7 @@ declare module wd {
         private _areAllCompressedAsset;
         initWhenCreate(assets: Array<CubemapData>): void;
         getSamplerName(unit: number): string;
-        protected sendOtherData(program: Program, unit: number): CubemapTexture;
+        protected sendOtherData(program: Program, unit: number): this;
         protected allocateSourceToTexture(isSourcePowerOfTwo: boolean): void;
         protected needClampMaxSize(): boolean;
         protected isSourcePowerOfTwo(): boolean;

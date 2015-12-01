@@ -118,15 +118,22 @@ describe("BasicTexture", function() {
 
             expect(texture.bindToUnit).toCalledWith(0);
         });
-        it("if source's size exceed max size, then make souce to be canvas and scale the canvas", function(){
+        it("if source's size exceed max size, then make souce to be canvas and scale the canvas", function(done){
             texture.source = new Image();
+            texture.source.src = testTool.resPath + "test/res/1.jpg";
+
             texture.source.width = 50;
             texture.source.height = 100;
 
-            texture.update(0);
+            texture.source.onload = function(){
+                texture.update(0);
 
-            expect(texture.source.width).toEqual(25);
-            expect(texture.source.height).toEqual(50);
+                expect(texture.source.width).toEqual(25);
+                expect(texture.source.height).toEqual(50);
+
+                done();
+            }
+
         });
         //todo complete the test
     });

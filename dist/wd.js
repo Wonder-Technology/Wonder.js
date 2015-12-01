@@ -2021,15 +2021,14 @@ var wdCb;
          * @param {String} message
          */
         Log.log = function () {
-            var message = [];
+            var messages = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                message[_i - 0] = arguments[_i];
+                messages[_i - 0] = arguments[_i];
             }
-            if (!this._exec("trace", Array.prototype.slice.call(arguments, 0))) {
-                if (!this._exec("log", arguments)) {
-                    wdCb.root.alert(Array.prototype.slice.call(arguments, 0).join(","));
-                }
+            if (!this._exec("log", messages)) {
+                wdCb.root.alert(messages.join(","));
             }
+            this._exec("trace", messages);
         };
         /**
          * 断言失败时，会提示错误信息，但程序会继续执行下去
@@ -2057,9 +2056,9 @@ var wdCb;
          * @param message
          */
         Log.assert = function (cond) {
-            var message = [];
+            var messages = [];
             for (var _i = 1; _i < arguments.length; _i++) {
-                message[_i - 1] = arguments[_i];
+                messages[_i - 1] = arguments[_i];
             }
             if (cond) {
                 if (!this._exec("assert", arguments, 1)) {
@@ -2113,7 +2112,7 @@ var wdCb;
                     args[_i - 0] = arguments[_i];
                 }
                 var result = "";
-                Array.prototype.slice.call(arguments, 0).forEach(function (val) {
+                args.forEach(function (val) {
                     result += String(val) + " ";
                 });
                 return result.slice(0, -1);
@@ -2123,14 +2122,14 @@ var wdCb;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                if (arguments.length === 2) {
-                    return this.helperFunc(arguments[0], arguments[1]);
+                if (args.length === 2) {
+                    return this.helperFunc(args[0], args[1]);
                 }
-                else if (arguments.length === 3) {
-                    return this.helperFunc(arguments[1], arguments[0], arguments[2]);
+                else if (args.length === 3) {
+                    return this.helperFunc(args[1], args[0], args[2]);
                 }
                 else {
-                    throw new Error("arguments.length must <= 3");
+                    throw new Error("args.length must <= 3");
                 }
             },
             FUNC_INVALID: function () {
@@ -2138,126 +2137,112 @@ var wdCb;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("invalid");
-                return this.assertion.apply(this, arr);
+                args.unshift("invalid");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must");
-                return this.assertion.apply(this, arr);
+                args.unshift("must");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_BE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must be");
-                return this.assertion.apply(this, arr);
+                args.unshift("must be");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_NOT_BE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must not be");
-                return this.assertion.apply(this, arr);
+                args.unshift("must not be");
+                return this.assertion.apply(this, args);
             },
             FUNC_SHOULD: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("should");
-                return this.assertion.apply(this, arr);
+                args.unshift("should");
+                return this.assertion.apply(this, args);
             },
             FUNC_SHOULD_NOT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("should not");
-                return this.assertion.apply(this, arr);
+                args.unshift("should not");
+                return this.assertion.apply(this, args);
             },
             FUNC_SUPPORT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("support");
-                return this.assertion.apply(this, arr);
+                args.unshift("support");
+                return this.assertion.apply(this, args);
             },
             FUNC_NOT_SUPPORT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("not support");
-                return this.assertion.apply(this, arr);
+                args.unshift("not support");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_DEFINE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must define");
-                return this.assertion.apply(this, arr);
+                args.unshift("must define");
+                return this.assertion.apply(this, args);
             },
             FUNC_MUST_NOT_DEFINE: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("must not define");
-                return this.assertion.apply(this, arr);
+                args.unshift("must not define");
+                return this.assertion.apply(this, args);
             },
             FUNC_UNKNOW: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("unknow");
-                return this.assertion.apply(this, arr);
+                args.unshift("unknow");
+                return this.assertion.apply(this, args);
             },
             FUNC_EXPECT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("expect");
-                return this.assertion.apply(this, arr);
+                args.unshift("expect");
+                return this.assertion.apply(this, args);
             },
             FUNC_UNEXPECT: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("unexpect");
-                return this.assertion.apply(this, arr);
+                args.unshift("unexpect");
+                return this.assertion.apply(this, args);
             },
             FUNC_NOT_EXIST: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var arr = Array.prototype.slice.call(arguments, 0);
-                arr.unshift("not exist");
-                return this.assertion.apply(this, arr);
+                args.unshift("not exist");
+                return this.assertion.apply(this, args);
             }
         };
         return Log;
@@ -3225,7 +3210,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var JudgeUtils = (function (_super) {
@@ -3245,7 +3229,6 @@ var wdFrp;
     })(wdCb.JudgeUtils);
     wdFrp.JudgeUtils = JudgeUtils;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3272,7 +3255,6 @@ var wdFrp;
 
 
 
-
 var wdFrp;
 (function (wdFrp) {
     var SingleDisposable = (function () {
@@ -3295,7 +3277,6 @@ var wdFrp;
     })();
     wdFrp.SingleDisposable = SingleDisposable;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3326,7 +3307,6 @@ var wdFrp;
 
 
 
-
 var wdFrp;
 (function (wdFrp) {
     var InnerSubscription = (function () {
@@ -3348,7 +3328,6 @@ var wdFrp;
     })();
     wdFrp.InnerSubscription = InnerSubscription;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -3373,7 +3352,6 @@ var wdFrp;
     wdFrp.InnerSubscriptionGroup = InnerSubscriptionGroup;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     Object.defineProperty(wdFrp, "root", {
@@ -3391,7 +3369,6 @@ var wdFrp;
     wdFrp.ABSTRACT_ATTRIBUTE = null;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     if (wdFrp.root.RSVP) {
@@ -3407,7 +3384,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var Stream = (function (_super) {
@@ -3484,7 +3460,6 @@ var wdFrp;
     wdFrp.Stream = Stream;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     wdFrp.root.requestNextAnimationFrame = (function () {
@@ -3493,29 +3468,6 @@ var wdFrp;
             time = wdFrp.root.performance.now();
             self.callback(time);
         };
-        /*!
-         bug!
-         below code:
-         when invoke b after 1s, will only invoke b, not invoke a!
-
-         function a(time){
-         console.log("a", time);
-         webkitRequestAnimationFrame(a);
-         }
-
-         function b(time){
-         console.log("b", time);
-         webkitRequestAnimationFrame(b);
-         }
-
-         a();
-
-         setTimeout(b, 1000);
-
-
-
-         so use requestAnimationFrame priority!
-         */
         if (wdFrp.root.requestAnimationFrame) {
             return requestAnimationFrame;
         }
@@ -3613,7 +3565,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var Observer = (function (_super) {
@@ -3693,7 +3644,6 @@ var wdFrp;
     wdFrp.Observer = Observer;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     var Subject = (function () {
@@ -3753,7 +3703,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var GeneratorSubject = (function (_super) {
@@ -3777,9 +3726,6 @@ var wdFrp;
             enumerable: true,
             configurable: true
         });
-        /*!
-        outer hook method
-         */
         GeneratorSubject.prototype.onBeforeNext = function (value) {
         };
         GeneratorSubject.prototype.onAfterNext = function (value) {
@@ -3867,7 +3813,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AnonymousObserver = (function (_super) {
@@ -3897,7 +3842,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AutoDetachObserver = (function (_super) {
@@ -3962,7 +3906,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MapObserver = (function (_super) {
@@ -4005,7 +3948,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DoObserver = (function (_super) {
@@ -4064,7 +4006,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MergeAllObserver = (function (_super) {
@@ -4148,12 +4089,6 @@ var wdFrp;
             this._streamGroup.removeChild(function (stream) {
                 return wdFrp.JudgeUtils.isEqual(stream, currentStream);
             });
-            /*!
-            if this innerSource is async stream(as promise stream),
-            it will first exec all parent.next and one parent.completed,
-            then exec all this.next and all this.completed
-            so in this case, it should invoke parent.currentObserver.completed after the last invokcation of this.completed(have invoked all the innerSource)
-            */
             if (this._isAsync() && this._streamGroup.getCount() === 0) {
                 parent.currentObserver.completed();
             }
@@ -4170,7 +4105,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TakeUntilObserver = (function (_super) {
@@ -4201,7 +4135,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var ConcatObserver = (function (_super) {
@@ -4217,10 +4150,6 @@ var wdFrp;
             return new this(currentObserver, startNextStream);
         };
         ConcatObserver.prototype.onNext = function (value) {
-            /*!
-            if "this.currentObserver.next" error, it will pase to this.currentObserver->onError.
-            so it shouldn't invoke this.currentObserver.error here again!
-             */
             this.currentObserver.next(value);
         };
         ConcatObserver.prototype.onError = function (error) {
@@ -4233,7 +4162,6 @@ var wdFrp;
     })(wdFrp.Observer);
     wdFrp.ConcatObserver = ConcatObserver;
 })(wdFrp || (wdFrp = {}));
-
 
 
 
@@ -4293,7 +4221,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IgnoreElementsObserver = (function (_super) {
@@ -4324,7 +4251,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var BaseStream = (function (_super) {
@@ -4357,7 +4283,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DoStream = (function (_super) {
@@ -4387,7 +4312,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MapStream = (function (_super) {
@@ -4417,7 +4341,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromArrayStream = (function (_super) {
@@ -4456,7 +4379,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromPromiseStream = (function (_super) {
@@ -4490,7 +4412,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var FromEventPatternStream = (function (_super) {
@@ -4526,7 +4447,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var AnonymousStream = (function (_super) {
@@ -4558,7 +4478,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IntervalStream = (function (_super) {
@@ -4597,7 +4516,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IntervalRequestStream = (function (_super) {
@@ -4632,7 +4550,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MergeAllStream = (function (_super) {
@@ -4663,7 +4580,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TakeUntilStream = (function (_super) {
@@ -4698,7 +4614,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var ConcatStream = (function (_super) {
@@ -4745,7 +4660,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var RepeatStream = (function (_super) {
@@ -4786,7 +4700,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var IgnoreElementsStream = (function (_super) {
@@ -4814,7 +4727,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var DeferStream = (function (_super) {
@@ -4837,7 +4749,6 @@ var wdFrp;
     })(wdFrp.BaseStream);
     wdFrp.DeferStream = DeferStream;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -4893,7 +4804,6 @@ var wdFrp;
         });
     };
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -4958,7 +4868,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var MockObserver = (function (_super) {
@@ -5006,7 +4915,6 @@ var wdFrp;
     wdFrp.MockObserver = MockObserver;
 })(wdFrp || (wdFrp = {}));
 
-
 var wdFrp;
 (function (wdFrp) {
     var MockPromise = (function () {
@@ -5021,7 +4929,6 @@ var wdFrp;
             return obj;
         };
         MockPromise.prototype.then = function (successCb, errorCb, observer) {
-            //var scheduler = <TestScheduler>(this.scheduler);
             this._scheduler.setStreamMap(observer, this._messages);
         };
         return MockPromise;
@@ -5034,7 +4941,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var SUBSCRIBE_TIME = 200;
@@ -5249,7 +5155,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdFrp;
 (function (wdFrp) {
     var TestStream = (function (_super) {
@@ -5266,7 +5171,6 @@ var wdFrp;
             return obj;
         };
         TestStream.prototype.subscribeCore = function (observer) {
-            //var scheduler = <TestScheduler>(this.scheduler);
             this.scheduler.setStreamMap(observer, this._messages);
             return wdFrp.SingleDisposable.create();
         };
@@ -5274,7 +5178,6 @@ var wdFrp;
     })(wdFrp.BaseStream);
     wdFrp.TestStream = TestStream;
 })(wdFrp || (wdFrp = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -5340,14 +5243,12 @@ var wdFrp;
     };
 })(wdFrp || (wdFrp = {}));
 
-
 var wd;
 (function (wd) {
     wd.Config = {
         isTest: false
     };
 })(wd || (wd = {}));
-
 
 var wdFrp;
 (function (wdFrp) {
@@ -5357,7 +5258,6 @@ var wdFrp;
         return arr.length === 0 ? wdFrp.empty() : wdFrp.fromArray(arr, scheduler);
     };
 })(wdFrp || (wdFrp = {}));
-
 
 var wd;
 (function (wd) {
@@ -5464,7 +5364,6 @@ var wd;
     wd.invariant = invariant;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     function cacheGetter(judgeFunc, returnCacheValueFunc, setCacheFunc) {
@@ -5505,7 +5404,6 @@ var wd;
     wd.cache = cache;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     function virtual(target, name, descriptor) {
@@ -5518,7 +5416,6 @@ var wd;
 (function (wd) {
     wd.ABSTRACT_ATTRIBUTE = null;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -5552,14 +5449,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Component = (function (_super) {
@@ -5591,19 +5485,16 @@ var wd;
         Component.prototype.removeFromGameObject = function (gameObject) {
             this.gameObject = null;
         };
-        Object.defineProperty(Component.prototype, "init",
-            __decorate([
-                wd.virtual
-            ], Component.prototype, "init", Object.getOwnPropertyDescriptor(Component.prototype, "init")));
-        Object.defineProperty(Component.prototype, "dispose",
-            __decorate([
-                wd.virtual
-            ], Component.prototype, "dispose", Object.getOwnPropertyDescriptor(Component.prototype, "dispose")));
+        __decorate([
+            wd.virtual
+        ], Component.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], Component.prototype, "dispose", null);
         return Component;
     })(wd.Entity);
     wd.Component = Component;
 })(wd || (wd = {}));
-
 
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -5651,7 +5542,8 @@ var wd;
         });
         Object.defineProperty(Transform.prototype, "localToWorldMatrix", {
             get: function () {
-                var syncList = wdCb.Collection.create(), current = this;
+                var syncList = wdCb.Collection.create(), current = this.parent;
+                syncList.addChild(this);
                 while (current !== null) {
                     syncList.addChild(current);
                     current = current.parent;
@@ -5972,14 +5864,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var GameObject = (function (_super) {
@@ -6068,10 +5957,6 @@ var wd;
             child.parent = this;
             child.transform.parent = this.transform;
             this._children.addChild(child);
-            /*!
-            no need to sort!
-            because WebGLRenderer enable depth test, it will sort when needed(just as WebGLRenderer->renderSortedTransparentCommands sort the commands)
-             */
             child.onEnter();
             return this;
         };
@@ -6232,36 +6117,31 @@ var wd;
                 return component instanceof _class;
             }).getCount();
         };
-        Object.defineProperty(GameObject.prototype, "_getGeometry",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this._getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
-                })
-            ], GameObject.prototype, "_getGeometry", Object.getOwnPropertyDescriptor(GameObject.prototype, "_getGeometry")));
-        Object.defineProperty(GameObject.prototype, "_getCollider",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this._getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
-                })
-            ], GameObject.prototype, "_getCollider", Object.getOwnPropertyDescriptor(GameObject.prototype, "_getCollider")));
-        Object.defineProperty(GameObject.prototype, "_getCamera",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this._getComponentCount(wd.CameraController) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
-                })
-            ], GameObject.prototype, "_getCamera", Object.getOwnPropertyDescriptor(GameObject.prototype, "_getCamera")));
-        Object.defineProperty(GameObject.prototype, "_getAnimation",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this._getComponentCount(wd.Animation) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 animation component"));
-                })
-            ], GameObject.prototype, "_getAnimation", Object.getOwnPropertyDescriptor(GameObject.prototype, "_getAnimation")));
-        Object.defineProperty(GameObject.prototype, "_getRendererComponent",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this._getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
-                })
-            ], GameObject.prototype, "_getRendererComponent", Object.getOwnPropertyDescriptor(GameObject.prototype, "_getRendererComponent")));
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
+            })
+        ], GameObject.prototype, "_getGeometry", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+            })
+        ], GameObject.prototype, "_getCollider", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.CameraController) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
+            })
+        ], GameObject.prototype, "_getCamera", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.Animation) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 animation component"));
+            })
+        ], GameObject.prototype, "_getAnimation", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
+            })
+        ], GameObject.prototype, "_getRendererComponent", null);
         return GameObject;
     })(wd.Entity);
     wd.GameObject = GameObject;
@@ -6272,7 +6152,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Scheduler = (function () {
@@ -6509,7 +6388,6 @@ var wd;
     })(ScheduleItem);
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var GameState;
@@ -6633,10 +6511,6 @@ var wd;
                 .ignoreElements()
                 .concat(this._buildLoopStream())
                 .subscribe(function (time) {
-                /*!
-                 I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
-                 so it need polyfill
-                 */
                 self._loopBody(time);
             });
         };
@@ -6687,7 +6561,6 @@ var wd;
     wd.Director = Director;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Main = (function () {
@@ -6720,14 +6593,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Scene = (function (_super) {
@@ -6811,12 +6681,11 @@ var wd;
         Scene.prototype._isLight = function (child) {
             return child.hasComponent(wd.Light);
         };
-        Object.defineProperty(Scene.prototype, "render",
-            __decorate([
-                wd.require(function (renderer) {
-                    wd.assert(!!this.camera, wd.Log.info.FUNC_MUST("scene", "add camera"));
-                })
-            ], Scene.prototype, "render", Object.getOwnPropertyDescriptor(Scene.prototype, "render")));
+        __decorate([
+            wd.require(function (renderer) {
+                wd.assert(!!this.camera, wd.Log.info.FUNC_MUST("scene", "add camera"));
+            })
+        ], Scene.prototype, "render", null);
         return Scene;
     })(wd.GameObject);
     wd.Scene = Scene;
@@ -6826,7 +6695,6 @@ var wd;
     })(wd.ShadowMapSoftType || (wd.ShadowMapSoftType = {}));
     var ShadowMapSoftType = wd.ShadowMapSoftType;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -6883,10 +6751,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
-    /*!it's flipX when viewer is inside the skybox*/
     var Skybox = (function (_super) {
         __extends(Skybox, _super);
         function Skybox() {
@@ -6910,7 +6776,6 @@ var wd;
     wd.DEG_TO_RAD = Math.PI / 180;
     wd.RAD_TO_DEG = 180 / Math.PI;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -6968,7 +6833,6 @@ var wd;
     })();
     wd.Vector2 = Vector2;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -7166,7 +7030,6 @@ var wd;
     wd.Vector3 = Vector3;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Vector4 = (function () {
@@ -7284,19 +7147,13 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
-    /*!
-     注意：矩阵元素是按列主序存储在数组中的。
-     */
     var Matrix4 = (function () {
         function Matrix4() {
             var args = [];
@@ -7875,25 +7732,22 @@ var wd;
             m[15] = 1;
             return this;
         };
-        Object.defineProperty(Matrix4.prototype, "setOrtho",
-            __decorate([
-                wd.require(function (left, right, bottom, top, near, far) {
-                    wd.assert(left !== right && bottom !== top && near !== far, wd.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-                })
-            ], Matrix4.prototype, "setOrtho", Object.getOwnPropertyDescriptor(Matrix4.prototype, "setOrtho")));
-        Object.defineProperty(Matrix4.prototype, "setPerspective",
-            __decorate([
-                wd.require(function (fovy, aspect, near, far) {
-                    wd.assert(near !== far && aspect !== 0, wd.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-                    wd.assert(near > 0, wd.Log.info.FUNC_MUST("near", "> 0"));
-                    wd.assert(far > 0, wd.Log.info.FUNC_MUST("far", "> 0"));
-                })
-            ], Matrix4.prototype, "setPerspective", Object.getOwnPropertyDescriptor(Matrix4.prototype, "setPerspective")));
+        __decorate([
+            wd.require(function (left, right, bottom, top, near, far) {
+                wd.assert(left !== right && bottom !== top && near !== far, wd.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+            })
+        ], Matrix4.prototype, "setOrtho", null);
+        __decorate([
+            wd.require(function (fovy, aspect, near, far) {
+                wd.assert(near !== far && aspect !== 0, wd.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+                wd.assert(near > 0, wd.Log.info.FUNC_MUST("near", "> 0"));
+                wd.assert(far > 0, wd.Log.info.FUNC_MUST("far", "> 0"));
+            })
+        ], Matrix4.prototype, "setPerspective", null);
         return Matrix4;
     })();
     wd.Matrix4 = Matrix4;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -8015,7 +7869,6 @@ var wd;
     })();
     wd.Matrix3 = Matrix3;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -8264,7 +8117,6 @@ var wd;
     wd.Quaternion = Quaternion;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Plane = (function () {
@@ -8330,7 +8182,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Animation = (function (_super) {
@@ -8349,14 +8200,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MorphAnimation = (function (_super) {
@@ -8478,17 +8326,16 @@ var wd;
         MorphAnimation.prototype._continueFromPausePoint = function (currentTime) {
             this._oldTime = currentTime - (this._resumeTime - this._pauseTime) % this.duration;
         };
-        Object.defineProperty(MorphAnimation.prototype, "play",
-            __decorate([
-                wd.require(function (animName, fps) {
-                    var geometry = this.gameObject.getComponent(wd.ModelGeometry);
-                    wd.assert(geometry, wd.Log.info.FUNC_SHOULD("this gameObject", "add ModelGeometry component"));
-                    wd.assert(geometry.morphTargets.getChild(animName) && geometry.morphTargets.getChild(animName).getCount() > 0, wd.Log.info.FUNC_NOT_EXIST("\"" + animName + "\" animation"));
-                }),
-                wd.ensure(function () {
-                    wd.assert(this._frameCount > 1, wd.Log.info.FUNC_SHOULD("frames.count", "> 1"));
-                })
-            ], MorphAnimation.prototype, "play", Object.getOwnPropertyDescriptor(MorphAnimation.prototype, "play")));
+        __decorate([
+            wd.require(function (animName, fps) {
+                var geometry = this.gameObject.getComponent(wd.ModelGeometry);
+                wd.assert(geometry, wd.Log.info.FUNC_SHOULD("this gameObject", "add ModelGeometry component"));
+                wd.assert(geometry.morphTargets.getChild(animName) && geometry.morphTargets.getChild(animName).getCount() > 0, wd.Log.info.FUNC_NOT_EXIST("\"" + animName + "\" animation"));
+            }),
+            wd.ensure(function () {
+                wd.assert(this._frameCount > 1, wd.Log.info.FUNC_SHOULD("frames.count", "> 1"));
+            })
+        ], MorphAnimation.prototype, "play", null);
         return MorphAnimation;
     })(wd.Animation);
     wd.MorphAnimation = MorphAnimation;
@@ -8507,14 +8354,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Geometry = (function (_super) {
@@ -8596,58 +8440,48 @@ var wd;
             geometryData.colors = colors;
             return geometryData;
         };
-        Object.defineProperty(Geometry.prototype, "init",
-            __decorate([
-                wd.ensure(function () {
-                    var geometryData = this.buffers.geometryData;
-                    wd.assert(geometryData.vertices.length > 0, wd.Log.info.FUNC_MUST("vertices.count", "> 0"));
-                    wd.assert(geometryData.faces.length * 3 === geometryData.indices.length, wd.Log.info.FUNC_SHOULD("faces.count", "be " + geometryData.indices.length / 3 + ", but actual is " + geometryData.faces.length));
-                })
-            ], Geometry.prototype, "init", Object.getOwnPropertyDescriptor(Geometry.prototype, "init")));
-        Object.defineProperty(Geometry.prototype, "computeNormals",
-            __decorate([
-                wd.virtual
-            ], Geometry.prototype, "computeNormals", Object.getOwnPropertyDescriptor(Geometry.prototype, "computeNormals")));
-        Object.defineProperty(Geometry.prototype, "hasFaceNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], Geometry.prototype, "hasFaceNormals", Object.getOwnPropertyDescriptor(Geometry.prototype, "hasFaceNormals")));
-        Object.defineProperty(Geometry.prototype, "hasVertexNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], Geometry.prototype, "hasVertexNormals", Object.getOwnPropertyDescriptor(Geometry.prototype, "hasVertexNormals")));
-        Object.defineProperty(Geometry.prototype, "computeFaceNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], Geometry.prototype, "computeFaceNormals", Object.getOwnPropertyDescriptor(Geometry.prototype, "computeFaceNormals")));
-        Object.defineProperty(Geometry.prototype, "createBufferContainer",
-            __decorate([
-                wd.virtual
-            ], Geometry.prototype, "createBufferContainer", Object.getOwnPropertyDescriptor(Geometry.prototype, "createBufferContainer")));
-        Object.defineProperty(Geometry.prototype, "createGeometryData",
-            __decorate([
-                wd.virtual
-            ], Geometry.prototype, "createGeometryData", Object.getOwnPropertyDescriptor(Geometry.prototype, "createGeometryData")));
+        __decorate([
+            wd.ensure(function () {
+                var geometryData = this.buffers.geometryData;
+                wd.assert(geometryData.vertices.length > 0, wd.Log.info.FUNC_MUST("vertices.count", "> 0"));
+                wd.assert(geometryData.faces.length * 3 === geometryData.indices.length, wd.Log.info.FUNC_SHOULD("faces.count", "be " + geometryData.indices.length / 3 + ", but actual is " + geometryData.faces.length));
+            })
+        ], Geometry.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], Geometry.prototype, "computeNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], Geometry.prototype, "hasFaceNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], Geometry.prototype, "hasVertexNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], Geometry.prototype, "computeFaceNormals", null);
+        __decorate([
+            wd.virtual
+        ], Geometry.prototype, "createBufferContainer", null);
+        __decorate([
+            wd.virtual
+        ], Geometry.prototype, "createGeometryData", null);
         return Geometry;
     })(wd.Component);
     wd.Geometry = Geometry;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var GeometryUtils = (function () {
@@ -8688,14 +8522,13 @@ var wd;
                 targetData[index * 3 + 2] = sourceData[2];
             }
         };
-        Object.defineProperty(GeometryUtils, "hasData",
-            __decorate([
-                wd.require(function (data) {
-                    if (data) {
-                        wd.assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || wd.JudgeUtils.isArray(data), wd.Log.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
-                    }
-                })
-            ], GeometryUtils, "hasData", Object.getOwnPropertyDescriptor(GeometryUtils, "hasData")));
+        __decorate([
+            wd.require(function (data) {
+                if (data) {
+                    wd.assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || wd.JudgeUtils.isArray(data), wd.Log.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
+                }
+            })
+        ], GeometryUtils, "hasData", null);
         return GeometryUtils;
     })();
     wd.GeometryUtils = GeometryUtils;
@@ -8707,14 +8540,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var ModelGeometry = (function (_super) {
@@ -8790,32 +8620,28 @@ var wd;
         ModelGeometry.prototype._hasMorphTargets = function () {
             return this.morphTargets && this.morphTargets.getCount() > 0;
         };
-        Object.defineProperty(ModelGeometry.prototype, "hasMorphFaceNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], ModelGeometry.prototype, "hasMorphFaceNormals", Object.getOwnPropertyDescriptor(ModelGeometry.prototype, "hasMorphFaceNormals")));
-        Object.defineProperty(ModelGeometry.prototype, "hasMorphVertexNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], ModelGeometry.prototype, "hasMorphVertexNormals", Object.getOwnPropertyDescriptor(ModelGeometry.prototype, "hasMorphVertexNormals")));
-        Object.defineProperty(ModelGeometry.prototype, "computeMorphNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
-                })
-            ], ModelGeometry.prototype, "computeMorphNormals", Object.getOwnPropertyDescriptor(ModelGeometry.prototype, "computeMorphNormals")));
-        Object.defineProperty(ModelGeometry.prototype, "createBufferContainer",
-            __decorate([
-                wd.require(function () {
-                    if (this.hasAnimation()) {
-                        wd.assert(this.gameObject.getComponent(wd.MorphAnimation), wd.Log.info.FUNC_SHOULD("gameObject with ModelGeometry", "add MorphAnimation component"));
-                    }
-                })
-            ], ModelGeometry.prototype, "createBufferContainer", Object.getOwnPropertyDescriptor(ModelGeometry.prototype, "createBufferContainer")));
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], ModelGeometry.prototype, "hasMorphFaceNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], ModelGeometry.prototype, "hasMorphVertexNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
+            })
+        ], ModelGeometry.prototype, "computeMorphNormals", null);
+        __decorate([
+            wd.require(function () {
+                if (this.hasAnimation()) {
+                    wd.assert(this.gameObject.getComponent(wd.MorphAnimation), wd.Log.info.FUNC_SHOULD("gameObject with ModelGeometry", "add MorphAnimation component"));
+                }
+            })
+        ], ModelGeometry.prototype, "createBufferContainer", null);
         return ModelGeometry;
     })(wd.Geometry);
     wd.ModelGeometry = ModelGeometry;
@@ -8826,7 +8652,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BoxGeometry = (function (_super) {
@@ -8931,7 +8756,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RectGeometry = (function (_super) {
@@ -8984,7 +8808,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var PlaneGeometry = (function (_super) {
@@ -9042,7 +8865,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SphereGeometry = (function (_super) {
@@ -9141,7 +8963,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TriangleGeometry = (function (_super) {
@@ -9187,14 +9008,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var GeometryData = (function () {
@@ -9488,81 +9306,75 @@ var wd;
             }
             return tangents;
         };
-        Object.defineProperty(GeometryData.prototype, "normals",
-            __decorate([
-                wd.requireGetter(function () {
-                    wd.assert(this._faces.length > 0, wd.Log.info.FUNC_SHOULD("faces.count", "> 0"));
-                    for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
-                        var face = _a[_i];
-                        if (this.geometry.isSmoothShading()) {
-                            wd.assert(face.vertexNormals && face.vertexNormals.getCount() === 3, wd.Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
-                        }
-                        else {
-                            wd.assert(!face.faceNormal.isZero(), wd.Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
-                        }
+        __decorate([
+            wd.requireGetter(function () {
+                wd.assert(this._faces.length > 0, wd.Log.info.FUNC_SHOULD("faces.count", "> 0"));
+                for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
+                    var face = _a[_i];
+                    if (this.geometry.isSmoothShading()) {
+                        wd.assert(face.vertexNormals && face.vertexNormals.getCount() === 3, wd.Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
                     }
-                }),
-                wd.ensureGetter(function (normals) {
-                    wd.assert(normals.length > 0, wd.Log.info.FUNC_SHOULD("geometry", "contain normals data"));
-                }),
-                wd.cacheGetter(function () {
-                    return !this._normalDirty && this._normalCache;
-                }, function () {
-                    return this._normalCache;
-                }, function (result) {
-                    this._normalCache = result;
-                    this._normalDirty = false;
-                })
-            ], GeometryData.prototype, "normals", Object.getOwnPropertyDescriptor(GeometryData.prototype, "normals")));
-        Object.defineProperty(GeometryData.prototype, "normalsFromFaceNormal",
-            __decorate([
-                wd.cacheGetter(function () {
-                    return !this._normalDirty && this._normalFromFaceCache;
-                }, function () {
-                    return this._normalFromFaceCache;
-                }, function (result) {
-                    this._normalFromFaceCache = result;
-                    this._normalDirty = false;
-                })
-            ], GeometryData.prototype, "normalsFromFaceNormal", Object.getOwnPropertyDescriptor(GeometryData.prototype, "normalsFromFaceNormal")));
-        Object.defineProperty(GeometryData.prototype, "normalsFromVertexNormals",
-            __decorate([
-                wd.cacheGetter(function () {
-                    return !this._normalDirty && this._normalFromVertexCache;
-                }, function () {
-                    return this._normalFromVertexCache;
-                }, function (result) {
-                    this._normalFromVertexCache = result;
-                    this._normalDirty = false;
-                })
-            ], GeometryData.prototype, "normalsFromVertexNormals", Object.getOwnPropertyDescriptor(GeometryData.prototype, "normalsFromVertexNormals")));
-        Object.defineProperty(GeometryData.prototype, "indices",
-            __decorate([
-                wd.cacheGetter(function () {
-                    return !this._indiceDirty && this._indiceCache;
-                }, function () {
-                    return this._indiceCache;
-                }, function (result) {
-                    this._indiceCache = result;
-                    this._indiceDirty = false;
-                })
-            ], GeometryData.prototype, "indices", Object.getOwnPropertyDescriptor(GeometryData.prototype, "indices")));
-        Object.defineProperty(GeometryData.prototype, "computeFaceNormals",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(wd.GeometryUtils.hasData(this.vertices), wd.Log.info.FUNC_MUST("contain vertices"));
-                }),
-                wd.ensure(function () {
-                    for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
-                        var face = _a[_i];
-                        wd.assert(face.faceNormal instanceof wd.Vector3, wd.Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
+                    else {
+                        wd.assert(!face.faceNormal.isZero(), wd.Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
                     }
-                })
-            ], GeometryData.prototype, "computeFaceNormals", Object.getOwnPropertyDescriptor(GeometryData.prototype, "computeFaceNormals")));
-        Object.defineProperty(GeometryData.prototype, "onChangeFace",
-            __decorate([
-                wd.virtual
-            ], GeometryData.prototype, "onChangeFace", Object.getOwnPropertyDescriptor(GeometryData.prototype, "onChangeFace")));
+                }
+            }),
+            wd.ensureGetter(function (normals) {
+                wd.assert(normals.length > 0, wd.Log.info.FUNC_SHOULD("geometry", "contain normals data"));
+            }),
+            wd.cacheGetter(function () {
+                return !this._normalDirty && this._normalCache;
+            }, function () {
+                return this._normalCache;
+            }, function (result) {
+                this._normalCache = result;
+                this._normalDirty = false;
+            })
+        ], GeometryData.prototype, "normals", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return !this._normalDirty && this._normalFromFaceCache;
+            }, function () {
+                return this._normalFromFaceCache;
+            }, function (result) {
+                this._normalFromFaceCache = result;
+                this._normalDirty = false;
+            })
+        ], GeometryData.prototype, "normalsFromFaceNormal", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return !this._normalDirty && this._normalFromVertexCache;
+            }, function () {
+                return this._normalFromVertexCache;
+            }, function (result) {
+                this._normalFromVertexCache = result;
+                this._normalDirty = false;
+            })
+        ], GeometryData.prototype, "normalsFromVertexNormals", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return !this._indiceDirty && this._indiceCache;
+            }, function () {
+                return this._indiceCache;
+            }, function (result) {
+                this._indiceCache = result;
+                this._indiceDirty = false;
+            })
+        ], GeometryData.prototype, "indices", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(wd.GeometryUtils.hasData(this.vertices), wd.Log.info.FUNC_MUST("contain vertices"));
+            }),
+            wd.ensure(function () {
+                for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
+                    var face = _a[_i];
+                    wd.assert(face.faceNormal instanceof wd.Vector3, wd.Log.info.FUNC_SHOULD_NOT("faceNormal", "be null"));
+                }
+            })
+        ], GeometryData.prototype, "computeFaceNormals", null);
+        __decorate([
+            wd.virtual
+        ], GeometryData.prototype, "onChangeFace", null);
         return GeometryData;
     })();
     wd.GeometryData = GeometryData;
@@ -9573,7 +9385,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonGeometryData = (function (_super) {
@@ -9596,14 +9407,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MorphGeometryData = (function (_super) {
@@ -9677,8 +9485,8 @@ var wd;
         };
         MorphGeometryData.prototype._copyFaces = function (faces) {
             var copyFaces = [];
-            for (var _i = 0; _i < faces.length; _i++) {
-                var face = faces[_i];
+            for (var _i = 0, faces_1 = faces; _i < faces_1.length; _i++) {
+                var face = faces_1[_i];
                 copyFaces.push(face.copy());
             }
             return copyFaces;
@@ -9686,30 +9494,26 @@ var wd;
         MorphGeometryData.prototype._getMorphNormals = function (geometryData) {
             return [geometryData.normalsFromFaceNormal, geometryData.normalsFromVertexNormals];
         };
-        Object.defineProperty(MorphGeometryData.prototype, "morphNormals",
-            __decorate([
-                wd.cacheGetter(function () {
-                    return !this._morphNormalDirty && this._morphNormalCache;
-                }, function () {
-                    return this._morphNormalCache;
-                }, function (result) {
-                    this._morphNormalCache = result;
-                })
-            ], MorphGeometryData.prototype, "morphNormals", Object.getOwnPropertyDescriptor(MorphGeometryData.prototype, "morphNormals")));
+        __decorate([
+            wd.cacheGetter(function () {
+                return !this._morphNormalDirty && this._morphNormalCache;
+            }, function () {
+                return this._morphNormalCache;
+            }, function (result) {
+                this._morphNormalCache = result;
+            })
+        ], MorphGeometryData.prototype, "morphNormals", null);
         return MorphGeometryData;
     })(wd.GeometryData);
     wd.MorphGeometryData = MorphGeometryData;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var BufferContainer = (function () {
@@ -9782,50 +9586,45 @@ var wd;
         BufferContainer.prototype._needReCalcuteTangent = function (type) {
             return this.geometryData.isTangentDirty && type === wd.BufferDataType.TANGENT;
         };
-        Object.defineProperty(BufferContainer.prototype, "init",
-            __decorate([
-                wd.virtual
-            ], BufferContainer.prototype, "init", Object.getOwnPropertyDescriptor(BufferContainer.prototype, "init")));
-        Object.defineProperty(BufferContainer.prototype, "_getTangent",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type) && !this._needReCalcuteTangent(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], BufferContainer.prototype, "_getTangent", Object.getOwnPropertyDescriptor(BufferContainer.prototype, "_getTangent")));
-        Object.defineProperty(BufferContainer.prototype, "_getColor",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], BufferContainer.prototype, "_getColor", Object.getOwnPropertyDescriptor(BufferContainer.prototype, "_getColor")));
-        Object.defineProperty(BufferContainer.prototype, "_getIndice",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], BufferContainer.prototype, "_getIndice", Object.getOwnPropertyDescriptor(BufferContainer.prototype, "_getIndice")));
-        Object.defineProperty(BufferContainer.prototype, "_getTexCoord",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], BufferContainer.prototype, "_getTexCoord", Object.getOwnPropertyDescriptor(BufferContainer.prototype, "_getTexCoord")));
+        __decorate([
+            wd.virtual
+        ], BufferContainer.prototype, "init", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type) && !this._needReCalcuteTangent(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], BufferContainer.prototype, "_getTangent", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], BufferContainer.prototype, "_getColor", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], BufferContainer.prototype, "_getIndice", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], BufferContainer.prototype, "_getTexCoord", null);
         return BufferContainer;
     })();
     wd.BufferContainer = BufferContainer;
@@ -9837,14 +9636,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var CommonBufferContainer = (function (_super) {
@@ -9864,26 +9660,24 @@ var wd;
             var geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
             return wd.ArrayBuffer.create(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
         };
-        Object.defineProperty(CommonBufferContainer.prototype, "getVertice",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], CommonBufferContainer.prototype, "getVertice", Object.getOwnPropertyDescriptor(CommonBufferContainer.prototype, "getVertice")));
-        Object.defineProperty(CommonBufferContainer.prototype, "getNormal",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(type);
-                }, function (type) {
-                    return this.container.getChild(type);
-                }, function (result, type) {
-                    this.container.addChild(type, result);
-                })
-            ], CommonBufferContainer.prototype, "getNormal", Object.getOwnPropertyDescriptor(CommonBufferContainer.prototype, "getNormal")));
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], CommonBufferContainer.prototype, "getVertice", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(type);
+            }, function (type) {
+                return this.container.getChild(type);
+            }, function (result, type) {
+                this.container.addChild(type, result);
+            })
+        ], CommonBufferContainer.prototype, "getNormal", null);
         return CommonBufferContainer;
     })(wd.BufferContainer);
     wd.CommonBufferContainer = CommonBufferContainer;
@@ -9895,14 +9689,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MorphBufferContainer = (function (_super) {
@@ -9985,44 +9776,38 @@ var wd;
         MorphBufferContainer.prototype._getStaticDataCacheData = function (type) {
             return "static_" + type;
         };
-        Object.defineProperty(MorphBufferContainer.prototype, "getVertice",
-            __decorate([
-                wd.require(function (type) {
-                    wd.assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, wd.Log.info.FUNC_SHOULD("set morphTargets"));
-                })
-            ], MorphBufferContainer.prototype, "getVertice", Object.getOwnPropertyDescriptor(MorphBufferContainer.prototype, "getVertice")));
-        Object.defineProperty(MorphBufferContainer.prototype, "getNormal",
-            __decorate([
-                wd.require(function (type) {
-                    wd.assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, wd.Log.info.FUNC_SHOULD("set morphTargets"));
-                })
-            ], MorphBufferContainer.prototype, "getNormal", Object.getOwnPropertyDescriptor(MorphBufferContainer.prototype, "getNormal")));
-        Object.defineProperty(MorphBufferContainer.prototype, "_getStaticData",
-            __decorate([
-                wd.cache(function (type) {
-                    return this.container.hasChild(this._getStaticDataCacheData(type));
-                }, function (type) {
-                    return this.container.getChild(this._getStaticDataCacheData(type));
-                }, function (result, type) {
-                    this.container.addChild(this._getStaticDataCacheData(type), result);
-                }),
-                wd.require(function (type) {
-                })
-            ], MorphBufferContainer.prototype, "_getStaticData", Object.getOwnPropertyDescriptor(MorphBufferContainer.prototype, "_getStaticData")));
+        __decorate([
+            wd.require(function (type) {
+                wd.assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, wd.Log.info.FUNC_SHOULD("set morphTargets"));
+            })
+        ], MorphBufferContainer.prototype, "getVertice", null);
+        __decorate([
+            wd.require(function (type) {
+                wd.assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, wd.Log.info.FUNC_SHOULD("set morphTargets"));
+            })
+        ], MorphBufferContainer.prototype, "getNormal", null);
+        __decorate([
+            wd.cache(function (type) {
+                return this.container.hasChild(this._getStaticDataCacheData(type));
+            }, function (type) {
+                return this.container.getChild(this._getStaticDataCacheData(type));
+            }, function (result, type) {
+                this.container.addChild(this._getStaticDataCacheData(type), result);
+            }),
+            wd.require(function (type) {
+            })
+        ], MorphBufferContainer.prototype, "_getStaticData", null);
         return MorphBufferContainer;
     })(wd.BufferContainer);
     wd.MorphBufferContainer = MorphBufferContainer;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Camera = (function () {
@@ -10066,20 +9851,17 @@ var wd;
                 this.dirty = false;
             }
         };
-        Object.defineProperty(Camera.prototype, "cameraToWorldMatrix",
-            __decorate([
-                wd.requireGetter(function () {
-                    wd.assert(this.gameObject, wd.Log.info.FUNC_MUST_DEFINE("gameObject"));
-                })
-            ], Camera.prototype, "cameraToWorldMatrix", Object.getOwnPropertyDescriptor(Camera.prototype, "cameraToWorldMatrix")));
-        Object.defineProperty(Camera.prototype, "init",
-            __decorate([
-                wd.virtual
-            ], Camera.prototype, "init", Object.getOwnPropertyDescriptor(Camera.prototype, "init")));
-        Object.defineProperty(Camera.prototype, "dispose",
-            __decorate([
-                wd.virtual
-            ], Camera.prototype, "dispose", Object.getOwnPropertyDescriptor(Camera.prototype, "dispose")));
+        __decorate([
+            wd.requireGetter(function () {
+                wd.assert(this.gameObject, wd.Log.info.FUNC_MUST_DEFINE("gameObject"));
+            })
+        ], Camera.prototype, "cameraToWorldMatrix", null);
+        __decorate([
+            wd.virtual
+        ], Camera.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], Camera.prototype, "dispose", null);
         return Camera;
     })();
     wd.Camera = Camera;
@@ -10090,7 +9872,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var OrthographicCamera = (function (_super) {
@@ -10187,7 +9968,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var PerspectiveCamera = (function (_super) {
@@ -10268,7 +10048,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CameraController = (function (_super) {
@@ -10325,7 +10104,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicCameraController = (function (_super) {
@@ -10347,7 +10125,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var FlyCameraController = (function (_super) {
@@ -10382,7 +10159,6 @@ var wd;
     })(wd.CameraController);
     wd.FlyCameraController = FlyCameraController;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd_1) {
@@ -10469,7 +10245,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var FlyPerspectiveCameraControl = (function (_super) {
@@ -10501,7 +10276,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var FlyOrthographicCameraControl = (function (_super) {
@@ -10525,7 +10299,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd_1) {
     var ArcballCameraController = (function (_super) {
@@ -10555,11 +10328,6 @@ var wd;
             this._bindCanvasEvent();
         };
         ArcballCameraController.prototype.update = function (time) {
-            /*!
-             X= r*cos(phi)*sin(theta);
-             Z= r*sin(phi)*sin(theta);
-             Y= r*cos(theta);
-             */
             var x = null, y = null, z = null;
             _super.prototype.update.call(this, time);
             if (!this._isChange) {
@@ -10644,7 +10412,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Action = (function (_super) {
@@ -10714,7 +10481,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ActionInstant = (function (_super) {
@@ -10748,7 +10514,6 @@ var wd;
     })(wd.Action);
     wd.ActionInstant = ActionInstant;
 })(wd || (wd = {}));
-
 
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -10799,14 +10564,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var ActionInterval = (function (_super) {
@@ -10869,10 +10631,9 @@ var wd;
             var ratio = elapsed / this.duration;
             return ratio > 1 ? 1 : ratio;
         };
-        Object.defineProperty(ActionInterval.prototype, "updateBody",
-            __decorate([
-                wd.virtual
-            ], ActionInterval.prototype, "updateBody", Object.getOwnPropertyDescriptor(ActionInterval.prototype, "updateBody")));
+        __decorate([
+            wd.virtual
+        ], ActionInterval.prototype, "updateBody", null);
         return ActionInterval;
     })(wd.Action);
     wd.ActionInterval = ActionInterval;
@@ -10883,7 +10644,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Control = (function (_super) {
@@ -10929,7 +10689,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Sequence = (function (_super) {
@@ -11030,7 +10789,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Spawn = (function (_super) {
@@ -11125,7 +10883,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DelayTime = (function (_super) {
@@ -11154,7 +10911,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Repeat = (function (_super) {
@@ -11228,7 +10984,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RepeatForever = (function (_super) {
@@ -11281,12 +11036,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
-    /*! referenced from:
-     https://github.com/tweenjs/tween.js
-     */
     var Tween = (function (_super) {
         __extends(Tween, _super);
         function Tween() {
@@ -11668,7 +11419,6 @@ var wd;
     wd.Tween = Tween;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var ActionManager = (function () {
@@ -11694,7 +11444,6 @@ var wd;
         ActionManager.prototype.update = function (time) {
             var self = this, removeQueue = [];
             this._children.forEach(function (child) {
-                /*! fix "if remove other action of children when invoke "child.update", it will error in iteration after */
                 if (!child) {
                     return;
                 }
@@ -11721,7 +11470,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RendererComponent = (function (_super) {
@@ -11740,14 +11488,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MeshRenderer = (function (_super) {
@@ -11773,14 +11518,13 @@ var wd;
             quadCmd.z = this.gameObject.transform.position.z;
             return quadCmd;
         };
-        Object.defineProperty(MeshRenderer.prototype, "createDrawCommand",
-            __decorate([
-                wd.require(function (renderer, geometry, camera) {
-                    var controller = camera.getComponent(wd.CameraController);
-                    wd.assert(!!controller && !!controller.camera, wd.Log.info.FUNC_MUST("camera", "add Camera Component"));
-                    wd.assert(!!geometry, wd.Log.info.FUNC_MUST("Mesh", "add geometry component"));
-                })
-            ], MeshRenderer.prototype, "createDrawCommand", Object.getOwnPropertyDescriptor(MeshRenderer.prototype, "createDrawCommand")));
+        __decorate([
+            wd.require(function (renderer, geometry, camera) {
+                var controller = camera.getComponent(wd.CameraController);
+                wd.assert(!!controller && !!controller.camera, wd.Log.info.FUNC_MUST("camera", "add Camera Component"));
+                wd.assert(!!geometry, wd.Log.info.FUNC_MUST("Mesh", "add geometry component"));
+            })
+        ], MeshRenderer.prototype, "createDrawCommand", null);
         return MeshRenderer;
     })(wd.RendererComponent);
     wd.MeshRenderer = MeshRenderer;
@@ -11791,7 +11535,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SkyboxRenderer = (function (_super) {
@@ -11816,7 +11559,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Collider = (function (_super) {
@@ -11840,7 +11582,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TopCollider = (function (_super) {
@@ -11868,7 +11609,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Script = (function (_super) {
@@ -11933,27 +11673,54 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Light = (function (_super) {
         __extends(Light, _super);
         function Light() {
             _super.apply(this, arguments);
+            this._shadowMapWidth = null;
+            this._shadowMapHeight = null;
             this.color = wd.Color.create("#ffffff");
             this.castShadow = false;
             this.shadowCameraNear = 0.1;
             this.shadowCameraFar = 5000;
             this.shadowBias = wd.ShaderChunk.NULL;
             this.shadowDarkness = 0;
-            this.shadowMapWidth = 1024;
-            this.shadowMapHeight = 1024;
             this.shadowMap = null;
             this.shadowMapRenderer = null;
         }
         Object.defineProperty(Light.prototype, "position", {
             get: function () {
                 return this.gameObject.transform.position;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Light.prototype, "shadowMapWidth", {
+            get: function () {
+                var maxCubemapTextureSize = wd.GPUDetector.getInstance().maxCubemapTextureSize;
+                if (!this._shadowMapWidth || this._shadowMapWidth > maxCubemapTextureSize) {
+                    return maxCubemapTextureSize;
+                }
+                return this._shadowMapWidth;
+            },
+            set: function (shadowMapWidth) {
+                this._shadowMapWidth = shadowMapWidth;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Light.prototype, "shadowMapHeight", {
+            get: function () {
+                var maxCubemapTextureSize = wd.GPUDetector.getInstance().maxCubemapTextureSize;
+                if (!this._shadowMapHeight || this._shadowMapHeight > maxCubemapTextureSize) {
+                    return maxCubemapTextureSize;
+                }
+                return this._shadowMapHeight;
+            },
+            set: function (shadowMapHeight) {
+                this._shadowMapHeight = shadowMapHeight;
             },
             enumerable: true,
             configurable: true
@@ -11968,7 +11735,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var AmbientLight = (function (_super) {
@@ -11991,7 +11757,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DirectionLight = (function (_super) {
@@ -12059,7 +11824,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var PointLight = (function (_super) {
@@ -12156,7 +11920,6 @@ var wd;
     })(wd.Light);
     wd.PointLight = PointLight;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -12287,7 +12050,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var JudgeUtils = (function (_super) {
@@ -12311,7 +12073,6 @@ var wd;
     })(wdCb.JudgeUtils);
     wd.JudgeUtils = JudgeUtils;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -12340,7 +12101,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var Log = (function (_super) {
@@ -12352,7 +12112,6 @@ var wd;
     })(wdCb.Log);
     wd.Log = Log;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -12395,7 +12154,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var STARTING_FPS = 60, GAMETIME_SCALE = 1000;
@@ -12447,7 +12205,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonTimeController = (function (_super) {
@@ -12471,14 +12228,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var RenderTargetRenderer = (function () {
@@ -12508,14 +12262,12 @@ var wd;
         };
         RenderTargetRenderer.prototype.afterRender = function () {
         };
-        Object.defineProperty(RenderTargetRenderer.prototype, "beforeRender",
-            __decorate([
-                wd.virtual
-            ], RenderTargetRenderer.prototype, "beforeRender", Object.getOwnPropertyDescriptor(RenderTargetRenderer.prototype, "beforeRender")));
-        Object.defineProperty(RenderTargetRenderer.prototype, "afterRender",
-            __decorate([
-                wd.virtual
-            ], RenderTargetRenderer.prototype, "afterRender", Object.getOwnPropertyDescriptor(RenderTargetRenderer.prototype, "afterRender")));
+        __decorate([
+            wd.virtual
+        ], RenderTargetRenderer.prototype, "beforeRender", null);
+        __decorate([
+            wd.virtual
+        ], RenderTargetRenderer.prototype, "afterRender", null);
         return RenderTargetRenderer;
     })();
     wd.RenderTargetRenderer = RenderTargetRenderer;
@@ -12526,7 +12278,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDRenderTargetRenderer = (function (_super) {
@@ -12574,7 +12325,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MirrorRenderTargetRenderer = (function (_super) {
@@ -12640,7 +12390,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDShadowMapRenderTargetRenderer = (function (_super) {
@@ -12716,7 +12465,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapRenderTargetRenderer = (function (_super) {
@@ -12837,7 +12585,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapShadowMapRenderTargetRenderer = (function (_super) {
@@ -12918,7 +12665,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DynamicCubemapRenderTargetRenderer = (function (_super) {
@@ -12946,7 +12692,6 @@ var wd;
     })(wd.CubemapRenderTargetRenderer);
     wd.DynamicCubemapRenderTargetRenderer = DynamicCubemapRenderTargetRenderer;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -13018,14 +12763,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var CubemapShadowMapRenderTargetRendererUtils = (function (_super) {
@@ -13066,13 +12808,12 @@ var wd;
         CubemapShadowMapRenderTargetRendererUtils.prototype.addShadowMap = function (material, shadowMap) {
             material.addCubemapShadowMap(shadowMap);
         };
-        Object.defineProperty(CubemapShadowMapRenderTargetRendererUtils.prototype, "clearCubemapShadowMapData",
-            __decorate([
-                wd.require(function (target) {
-                    var material = target.getComponent(wd.Geometry).material;
-                    wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-                })
-            ], CubemapShadowMapRenderTargetRendererUtils.prototype, "clearCubemapShadowMapData", Object.getOwnPropertyDescriptor(CubemapShadowMapRenderTargetRendererUtils.prototype, "clearCubemapShadowMapData")));
+        __decorate([
+            wd.require(function (target) {
+                var material = target.getComponent(wd.Geometry).material;
+                wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            })
+        ], CubemapShadowMapRenderTargetRendererUtils.prototype, "clearCubemapShadowMapData", null);
         return CubemapShadowMapRenderTargetRendererUtils;
     })(wd.ShadowMapRenderTargetRendererUtils);
     wd.CubemapShadowMapRenderTargetRendererUtils = CubemapShadowMapRenderTargetRendererUtils;
@@ -13084,14 +12825,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var TwoDShadowMapRenderTargetRendererUtils = (function (_super) {
@@ -13131,18 +12869,16 @@ var wd;
         TwoDShadowMapRenderTargetRendererUtils.prototype.addShadowMap = function (material, shadowMap) {
             material.addTwoDShadowMap(shadowMap);
         };
-        Object.defineProperty(TwoDShadowMapRenderTargetRendererUtils.prototype, "clearTwoDShadowMapData",
-            __decorate([
-                wd.require(function (target) {
-                    var material = target.getComponent(wd.Geometry).material;
-                    wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
-                })
-            ], TwoDShadowMapRenderTargetRendererUtils.prototype, "clearTwoDShadowMapData", Object.getOwnPropertyDescriptor(TwoDShadowMapRenderTargetRendererUtils.prototype, "clearTwoDShadowMapData")));
+        __decorate([
+            wd.require(function (target) {
+                var material = target.getComponent(wd.Geometry).material;
+                wd.assert(material instanceof wd.LightMaterial, wd.Log.info.FUNC_MUST_BE("material", "LightMaterial when set shadowMap"));
+            })
+        ], TwoDShadowMapRenderTargetRendererUtils.prototype, "clearTwoDShadowMapData", null);
         return TwoDShadowMapRenderTargetRendererUtils;
     })(wd.ShadowMapRenderTargetRendererUtils);
     wd.TwoDShadowMapRenderTargetRendererUtils = TwoDShadowMapRenderTargetRendererUtils;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -13162,7 +12898,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var WebGLRenderer = (function (_super) {
@@ -13293,7 +13028,6 @@ var wd;
     var BufferUsage = wd.BufferUsage;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Buffer = (function () {
@@ -13316,7 +13050,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ElementBuffer = (function (_super) {
@@ -13415,14 +13148,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var ArrayBuffer = (function (_super) {
@@ -13471,19 +13201,17 @@ var wd;
             this.data = data;
             return this;
         };
-        Object.defineProperty(ArrayBuffer.prototype, "resetData",
-            __decorate([
-                wd.require(function (data, num, type) {
-                    if (num === void 0) { num = this.num; }
-                    if (type === void 0) { type = this._type; }
-                    wd.assert(this.buffer, wd.Log.info.FUNC_MUST("create gl buffer"));
-                })
-            ], ArrayBuffer.prototype, "resetData", Object.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resetData")));
+        __decorate([
+            wd.require(function (data, num, type) {
+                if (num === void 0) { num = this.num; }
+                if (type === void 0) { type = this._type; }
+                wd.assert(this.buffer, wd.Log.info.FUNC_MUST("create gl buffer"));
+            })
+        ], ArrayBuffer.prototype, "resetData", null);
         return ArrayBuffer;
     })(wd.Buffer);
     wd.ArrayBuffer = ArrayBuffer;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -13508,14 +13236,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Program = (function () {
@@ -13645,37 +13370,9 @@ var wd;
             this._shader = shader;
             gl.attachShader(this._program, vs);
             gl.attachShader(this._program, fs);
-            /*!
-             if warn:"Attribute 0 is disabled. This has significant performance penalty" when run,
-             then do this before linkProgram:
-             gl.bindAttribLocation( this._program, 0, "a_position");
-
-
-
-             can reference here:
-             http://stackoverflow.com/questions/20305231/webgl-warning-attribute-0-is-disabled-this-has-significant-performance-penalt?answertab=votes#tab-top
-
-
-             OpenGL requires attribute zero to be enabled otherwise it will not render anything.
-             On the other hand OpenGL ES 2.0 on which WebGL is based does not. So, to emulate OpenGL ES 2.0 on top of OpenGL if you don't enable attribute 0 the browser has to make a buffer for you large enough for the number of vertices you've requested to be drawn, fill it with the correct value (see gl.vertexAttrib),
-             attach it to attribute zero, and enable it.
-
-             It does all this behind the scenes but it's important for you to know that it takes time to create and fill that buffer. There are optimizations the browser can make but in the general case,
-             if you were to assume you were running on OpenGL ES 2.0 and used attribute zero as a constant like you are supposed to be able to do, without the warning you'd have no idea of the work the browser is doing on your behalf to emulate that feature of OpenGL ES 2.0 that is different from OpenGL.
-
-             require your particular case the warning doesn't have much meaning. It looks like you are only drawing a single point. But it would not be easy for the browser to figure that out so it just warns you anytime you draw and attribute 0 is not enabled.
-             */
             gl.bindAttribLocation(this._program, 0, "a_position");
             gl.linkProgram(this._program);
             wd.Log.error(gl.getProgramParameter(this._program, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this._program));
-            /*!
-             should detach and delete shaders after linking the program
-
-             explain:
-             The shader object, due to being attached to the program object, will continue to exist even if you delete the shader object. It will only be deleted by the system when it is no longer attached to any program object (and when the user has asked to delete it, of course).
-
-             "Deleting" the shader, as with all OpenGL objects, merely sets a flag that says you don't need it any more. OpenGL will keep it around for as long as it needs it itself, and will do the actual delete any time later (most likely, but not necessarily, after the program is deleted).
-             */
             gl.deleteShader(vs);
             gl.deleteShader(fs);
             return this;
@@ -13703,23 +13400,20 @@ var wd;
             }
             return data;
         };
-        Object.defineProperty(Program.prototype, "_convertToVector3",
-            __decorate([
-                wd.require(function (data) {
-                    wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector3, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
-                })
-            ], Program.prototype, "_convertToVector3", Object.getOwnPropertyDescriptor(Program.prototype, "_convertToVector3")));
-        Object.defineProperty(Program.prototype, "_convertToVector4",
-            __decorate([
-                wd.require(function (data) {
-                    wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector4, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
-                })
-            ], Program.prototype, "_convertToVector4", Object.getOwnPropertyDescriptor(Program.prototype, "_convertToVector4")));
+        __decorate([
+            wd.require(function (data) {
+                wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector3, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
+            })
+        ], Program.prototype, "_convertToVector3", null);
+        __decorate([
+            wd.require(function (data) {
+                wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector4, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
+            })
+        ], Program.prototype, "_convertToVector4", null);
         return Program;
     })();
     wd.Program = Program;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -13791,7 +13485,6 @@ var wd;
     })();
     wd.QuadCommand = QuadCommand;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -13865,7 +13558,6 @@ var wd;
     })();
     wd.FrameBuffer = FrameBuffer;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -14052,7 +13744,6 @@ var wd;
     wd.Shader = Shader;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var ShaderSourceBuilder = (function () {
@@ -14169,7 +13860,6 @@ var wd;
                 self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
                 self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
             });
-            /*! ensure shader lib's code is before custom shader's source */
             this.attributes.addChildren(this.attributesFromShaderLib);
             this.uniforms.addChildren(this.uniformsFromShaderLib);
             this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
@@ -14333,15 +14023,11 @@ var wd;
 var wd;
 (function (wd) {
     (function (VariableCategory) {
-        /*! avoid to equal 0
-        for example, when compare to texture index, it may equal texture 0
-        */
         VariableCategory[VariableCategory["ENGINE"] = "ENGINE"] = "ENGINE";
         VariableCategory[VariableCategory["CUSTOM"] = "CUSTOM"] = "CUSTOM";
     })(wd.VariableCategory || (wd.VariableCategory = {}));
     var VariableCategory = wd.VariableCategory;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -14509,7 +14195,6 @@ var wd;
     wd.VariableLib = VariableLib;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -14535,7 +14220,6 @@ var wd;
     wd.VariableTypeTable = VariableTypeTable;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -14557,14 +14241,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var ShaderLib = (function () {
@@ -14696,16 +14377,14 @@ var wd;
                 target.addChild(variable, wd.VariableLib[variable]);
             });
         };
-        Object.defineProperty(ShaderLib.prototype, "setShaderDefinition",
-            __decorate([
-                wd.virtual
-            ], ShaderLib.prototype, "setShaderDefinition", Object.getOwnPropertyDescriptor(ShaderLib.prototype, "setShaderDefinition")));
-        Object.defineProperty(ShaderLib.prototype, "sendUniformData",
-            __decorate([
-                wd.require(function (program, name, data) {
-                    wd.assert(!!wd.VariableLib[name], name + " should exist in VariableLib");
-                })
-            ], ShaderLib.prototype, "sendUniformData", Object.getOwnPropertyDescriptor(ShaderLib.prototype, "sendUniformData")));
+        __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "setShaderDefinition", null);
+        __decorate([
+            wd.require(function (program, name, data) {
+                wd.assert(!!wd.VariableLib[name], name + " should exist in VariableLib");
+            })
+        ], ShaderLib.prototype, "sendUniformData", null);
         return ShaderLib;
     })();
     wd.ShaderLib = ShaderLib;
@@ -14721,7 +14400,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonShaderLib = (function (_super) {
@@ -14757,7 +14435,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonVerticeShaderLib = (function (_super) {
@@ -14792,7 +14469,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonNormalShaderLib = (function (_super) {
@@ -14827,7 +14503,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicShaderLib = (function (_super) {
@@ -14842,11 +14517,6 @@ var wd;
         };
         BasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
             if (quadCmd.buffers.hasChild(wd.BufferDataType.COLOR)) {
-                /*!
-                 this cause warn:"PERFORMANCE WARNING: Attribute 0 is disabled. This has signficant performance penalty" here?
-                 because a_color'pos is 0, and it should be array data(like Float32Array)
-                 refer to: https://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Vertex_Attribute_0
-                 */
                 this.sendAttributeData(program, "a_color", quadCmd.buffers.getChild(wd.BufferDataType.COLOR));
                 this.sendUniformData(program, "u_opacity", material.opacity);
             }
@@ -14867,7 +14537,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicEndShaderLib = (function (_super) {
@@ -14893,14 +14562,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MorphCommonShaderLib = (function (_super) {
@@ -14921,12 +14587,11 @@ var wd;
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_interpolation"]);
         };
-        Object.defineProperty(MorphCommonShaderLib.prototype, "sendShaderVariables",
-            __decorate([
-                wd.require(function (program, quadCmd, material) {
-                    wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("gameObject", "add MorphAnimation component"));
-                })
-            ], MorphCommonShaderLib.prototype, "sendShaderVariables", Object.getOwnPropertyDescriptor(MorphCommonShaderLib.prototype, "sendShaderVariables")));
+        __decorate([
+            wd.require(function (program, quadCmd, material) {
+                wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("gameObject", "add MorphAnimation component"));
+            })
+        ], MorphCommonShaderLib.prototype, "sendShaderVariables", null);
         return MorphCommonShaderLib;
     })(wd.ShaderLib);
     wd.MorphCommonShaderLib = MorphCommonShaderLib;
@@ -14938,14 +14603,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var MorphVerticeShaderLib = (function (_super) {
@@ -14969,12 +14631,11 @@ var wd;
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_currentFramePosition", "a_nextFramePosition"]);
         };
-        Object.defineProperty(MorphVerticeShaderLib.prototype, "sendShaderVariables",
-            __decorate([
-                wd.require(function (program, quadCmd, material) {
-                    wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("gameObject", "add MorphAnimation component"));
-                })
-            ], MorphVerticeShaderLib.prototype, "sendShaderVariables", Object.getOwnPropertyDescriptor(MorphVerticeShaderLib.prototype, "sendShaderVariables")));
+        __decorate([
+            wd.require(function (program, quadCmd, material) {
+                wd.assert(!!quadCmd.animation, wd.Log.info.FUNC_SHOULD("gameObject", "add MorphAnimation component"));
+            })
+        ], MorphVerticeShaderLib.prototype, "sendShaderVariables", null);
         return MorphVerticeShaderLib;
     })(wd.ShaderLib);
     wd.MorphVerticeShaderLib = MorphVerticeShaderLib;
@@ -14985,7 +14646,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MorphNormalShaderLib = (function (_super) {
@@ -15019,7 +14679,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SkyboxShaderLib = (function (_super) {
@@ -15048,7 +14707,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var EnvMapForBasicShaderLib = (function (_super) {
@@ -15085,7 +14743,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicEnvMapForBasicShaderLib = (function (_super) {
@@ -15108,7 +14765,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ReflectionForBasicShaderLib = (function (_super) {
@@ -15136,7 +14792,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RefractionForBasicShaderLib = (function (_super) {
@@ -15169,7 +14824,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var FresnelForBasicShaderLib = (function (_super) {
@@ -15203,7 +14857,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var EnvMapForLightShaderLib = (function (_super) {
@@ -15238,7 +14891,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicEnvMapForLightShaderLib = (function (_super) {
@@ -15261,7 +14913,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ReflectionForLightShaderLib = (function (_super) {
@@ -15289,7 +14940,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RefractionForLightShaderLib = (function (_super) {
@@ -15322,7 +14972,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var FresnelForLightShaderLib = (function (_super) {
@@ -15361,7 +15010,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MapShaderLib = (function (_super) {
@@ -15400,7 +15048,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicMapShaderLib = (function (_super) {
@@ -15423,7 +15070,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MultiMapShaderLib = (function (_super) {
@@ -15457,7 +15103,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MirrorForBasicShaderLib = (function (_super) {
@@ -15486,7 +15131,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var LightCommonShaderLib = (function (_super) {
@@ -15518,7 +15162,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var LightShaderLib = (function (_super) {
@@ -15622,7 +15265,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var LightEndShaderLib = (function (_super) {
@@ -15647,7 +15289,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var LightMapShaderLib = (function (_super) {
@@ -15674,7 +15315,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DiffuseMapShaderLib = (function (_super) {
@@ -15704,7 +15344,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SpecularMapShaderLib = (function (_super) {
@@ -15733,7 +15372,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var NormalMapShaderLib = (function (_super) {
@@ -15769,7 +15407,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var NoDiffuseMapShaderLib = (function (_super) {
@@ -15799,7 +15436,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var NoSpecularMapShaderLib = (function (_super) {
@@ -15829,7 +15465,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var NoNormalMapShaderLib = (function (_super) {
@@ -15854,7 +15489,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BuildShadowMapShaderLib = (function (_super) {
@@ -15877,7 +15511,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BuildTwoDShadowMapShaderLib = (function (_super) {
@@ -15909,7 +15542,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BuildCubemapShadowMapShaderLib = (function (_super) {
@@ -15942,7 +15574,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TotalShadowMapShaderLib = (function (_super) {
@@ -15967,7 +15598,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ShadowMapShaderLib = (function (_super) {
@@ -16015,7 +15645,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDShadowMapShaderLib = (function (_super) {
@@ -16047,7 +15676,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapShadowMapShaderLib = (function (_super) {
@@ -16078,7 +15706,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var NoShadowMapShaderLib = (function (_super) {
@@ -16098,7 +15725,6 @@ var wd;
     wd.NoShadowMapShaderLib = NoShadowMapShaderLib;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var ShaderChunk = (function () {
@@ -16108,6 +15734,9 @@ var wd;
         ShaderChunk.NULL = -1.0;
         ShaderChunk.morphNormal_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_normal = a_currentFrameNormal + (a_nextFrameNormal - a_currentFrameNormal) * u_interpolation;\n", };
         ShaderChunk.morphVertice_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 a_position = a_currentFramePosition + (a_nextFramePosition - a_currentFramePosition) * u_interpolation;\n", };
+        ShaderChunk.basicEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
+        ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
+        ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
         ShaderChunk.common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n", body: "", };
@@ -16115,9 +15744,6 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.basicEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
-        ShaderChunk.basic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(v_color, 1.0);\n", };
-        ShaderChunk.basic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_color;\n", funcDeclare: "", funcDefine: "", body: "v_color = a_color;\n", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
@@ -16131,6 +15757,20 @@ var wd;
         ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
+        ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
+        ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
+        ShaderChunk.envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
+        ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
+        ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
+        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
+        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
+        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));\n    }\n", body: "", };
         ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n    //v_diffuseMapTexCoord = a_texCoord;\n", };
         ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
@@ -16151,25 +15791,10 @@ var wd;
         ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
         ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
-        ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
-        ShaderChunk.envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
-        ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
-        ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
-        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
-        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
-        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         return ShaderChunk;
     })();
     wd.ShaderChunk = ShaderChunk;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -16185,14 +15810,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Material = (function () {
@@ -16422,16 +16044,14 @@ var wd;
             }
             return false;
         };
-        Object.defineProperty(Material.prototype, "init",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(!(this.mirrorMap && this.envMap), wd.Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
-                })
-            ], Material.prototype, "init", Object.getOwnPropertyDescriptor(Material.prototype, "init")));
-        Object.defineProperty(Material.prototype, "addShaderLib",
-            __decorate([
-                wd.virtual
-            ], Material.prototype, "addShaderLib", Object.getOwnPropertyDescriptor(Material.prototype, "addShaderLib")));
+        __decorate([
+            wd.require(function () {
+                wd.assert(!(this.mirrorMap && this.envMap), wd.Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
+            })
+        ], Material.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], Material.prototype, "addShaderLib", null);
         return Material;
     })();
     wd.Material = Material;
@@ -16442,7 +16062,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var BasicMaterial = (function (_super) {
@@ -16463,8 +16082,8 @@ var wd;
                 else {
                     var mapArr = (arguments[0]);
                     wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
-                    for (var _i = 0; _i < mapArr.length; _i++) {
-                        var m = mapArr[_i];
+                    for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
+                        var m = mapArr_1[_i];
                         this.addMap(m);
                     }
                 }
@@ -16552,7 +16171,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SkyboxMaterial = (function (_super) {
@@ -16581,7 +16199,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var LightMaterial = (function (_super) {
@@ -16783,7 +16400,6 @@ var wd;
     var Shading = wd.Shading;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var MapManager = (function () {
@@ -16928,7 +16544,6 @@ var wd;
     wd.MapManager = MapManager;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Loader = (function () {
@@ -17001,14 +16616,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var GLSLLoader = (function (_super) {
@@ -17031,16 +16643,15 @@ var wd;
             return wd.AjaxLoader.load(url, "text");
         };
         GLSLLoader._instance = null;
-        Object.defineProperty(GLSLLoader.prototype, "loadAsset",
-            __decorate([
-                wd.require(function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
-                })
-            ], GLSLLoader.prototype, "loadAsset", Object.getOwnPropertyDescriptor(GLSLLoader.prototype, "loadAsset")));
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+            })
+        ], GLSLLoader.prototype, "loadAsset", null);
         return GLSLLoader;
     })(wd.Loader);
     wd.GLSLLoader = GLSLLoader;
@@ -17052,14 +16663,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var JsLoader = (function (_super) {
@@ -17098,7 +16706,6 @@ var wd;
                         resolve(url);
                     };
                 }
-                /*! set the src attribute after the onload callback is set, to avoid an instant loading failing to fire the callback */
                 script.src = url;
                 _this._appendScript(script);
             }));
@@ -17112,16 +16719,15 @@ var wd;
             document.getElementsByTagName("head")[0].appendChild(script);
         };
         JsLoader._instance = null;
-        Object.defineProperty(JsLoader.prototype, "loadAsset",
-            __decorate([
-                wd.require(function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
-                })
-            ], JsLoader.prototype, "loadAsset", Object.getOwnPropertyDescriptor(JsLoader.prototype, "loadAsset")));
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+            })
+        ], JsLoader.prototype, "loadAsset", null);
         return JsLoader;
     })(wd.Loader);
     wd.JsLoader = JsLoader;
@@ -17132,7 +16738,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var VideoLoader = (function (_super) {
@@ -17182,14 +16787,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var TextureLoader = (function (_super) {
@@ -17238,21 +16840,19 @@ var wd;
             return stream;
         };
         TextureLoader._instance = null;
-        Object.defineProperty(TextureLoader.prototype, "loadAsset",
-            __decorate([
-                wd.require(function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
-                })
-            ], TextureLoader.prototype, "loadAsset", Object.getOwnPropertyDescriptor(TextureLoader.prototype, "loadAsset")));
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+            })
+        ], TextureLoader.prototype, "loadAsset", null);
         return TextureLoader;
     })(wd.Loader);
     wd.TextureLoader = TextureLoader;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -17263,19 +16863,6 @@ var wd;
             return wdFrp.fromPromise(new RSVP.Promise(function (resolve, reject) {
                 var img = null;
                 img = new Image();
-                /*!
-                 经过对多个浏览器版本的测试，发现ie、opera下，当图片加载过一次以后，如果再有对该图片的请求时，由于浏览器已经缓存住这张图
-
-                 片了，不会再发起一次新的请求，而是直接从缓存中加载过来。对于 firefox和safari，它们试图使这两种加载方式对用户透明，同样
-
-                 会引起图片的onload事件，而ie和opera则忽略了这种同一性，不会引起图片的onload事件，因此上边的代码在它们里边不能得以实现效果。
-
-                 确实，在ie，opera下，对于缓存图片的初始状态，与firefox和safari，chrome下是不一样的（有兴趣的话，可以在不同浏览器下，测试一下在给img的src赋值缓存图片的url之前，img的状态），
-                 但是对onload事件的触发，却是一致的，不管是什么浏览器。
-
-                 产生这个问题的根本原因在于，img的src赋值与 onload事件的绑定，顺序不对（在ie和opera下，先赋值src，再赋值onload，因为是缓存图片，就错过了onload事件的触发）。
-                 应该先绑定onload事件，然后再给src赋值。
-                 */
                 img.onload = function () {
                     this.onload = null;
                     resolve(img);
@@ -17290,7 +16877,6 @@ var wd;
     })();
     wd.ImageLoader = ImageLoader;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -17318,7 +16904,6 @@ var wd;
     wd.AjaxLoader = AjaxLoader;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var ModelLoaderUtils = (function () {
@@ -17331,7 +16916,6 @@ var wd;
     })();
     wd.ModelLoaderUtils = ModelLoaderUtils;
 })(wd || (wd = {}));
-
 
 
 
@@ -17383,7 +16967,6 @@ var wd;
     })();
     wd.CompressedTextureLoader = CompressedTextureLoader;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -17516,7 +17099,6 @@ var wd;
     wd.DDSData = DDSData;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var TextureAsset = (function () {
@@ -17611,7 +17193,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ImageTextureAsset = (function (_super) {
@@ -17649,7 +17230,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var VideoTextureAsset = (function (_super) {
@@ -17693,7 +17273,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CompressedTextureAsset = (function (_super) {
@@ -17708,9 +17287,6 @@ var wd;
         };
         CompressedTextureAsset.prototype.initWhenCreate = function () {
             this.generateMipmaps = false;
-            /*!
-             flipping doesn't work for compressed textures
-             */
             this.flipY = false;
         };
         CompressedTextureAsset.prototype.toTexture = function () {
@@ -17806,10 +17382,6 @@ var wd;
 var wd;
 (function (wd) {
     (function (TextureSourceRegionMapping) {
-        /*! canvas mapping
-        origin point is in left-up corner
-        y axis is downcast
-         */
         TextureSourceRegionMapping[TextureSourceRegionMapping["CANVAS"] = 0] = "CANVAS";
         TextureSourceRegionMapping[TextureSourceRegionMapping["UV"] = 1] = "UV";
     })(wd.TextureSourceRegionMapping || (wd.TextureSourceRegionMapping = {}));
@@ -17833,7 +17405,6 @@ var wd;
     })(wd.TextureTarget || (wd.TextureTarget = {}));
     var TextureTarget = wd.TextureTarget;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -17927,7 +17498,6 @@ var wd;
     wd.LoaderManager = LoaderManager;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var LoaderFactory = (function () {
@@ -17980,14 +17550,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var WDLoader = (function (_super) {
@@ -18045,21 +17612,19 @@ var wd;
             return wdFrp.fromArray(streamArr).mergeAll();
         };
         WDLoader._instance = null;
-        Object.defineProperty(WDLoader.prototype, "loadAsset",
-            __decorate([
-                wd.require(function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
-                })
-            ], WDLoader.prototype, "loadAsset", Object.getOwnPropertyDescriptor(WDLoader.prototype, "loadAsset")));
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+            })
+        ], WDLoader.prototype, "loadAsset", null);
         return WDLoader;
     })(wd.Loader);
     wd.WDLoader = WDLoader;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -18112,14 +17677,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var WDObjectParser = (function () {
@@ -18190,8 +17752,8 @@ var wd;
             verticeIndexOfAddedVertex = this._getVerticeIndexOfAddedVertex(vertices);
             verticeIndices[index] = verticeIndexOfAddedVertex;
             if (wd.GeometryUtils.hasData(morphTargets)) {
-                for (var _i = 0; _i < morphTargets.length; _i++) {
-                    var frame = morphTargets[_i];
+                for (var _i = 0, morphTargets_1 = morphTargets; _i < morphTargets_1.length; _i++) {
+                    var frame = morphTargets_1[_i];
                     this._addThreeComponent(frame.vertices, verticeIndex);
                     if (wd.GeometryUtils.hasData(frame.normals)) {
                         this._addDuplicateNormalOfAddedVertex(frame.normals, normalIndices, index, verticeIndex);
@@ -18356,8 +17918,8 @@ var wd;
             if (wd.GeometryUtils.hasData(objectMorphTargets)) {
                 morphTargets = wdCb.Hash.create();
                 morphNormals = wdCb.Hash.create();
-                for (var _i = 0; _i < objectMorphTargets.length; _i++) {
-                    var frameData = objectMorphTargets[_i];
+                for (var _i = 0, objectMorphTargets_1 = objectMorphTargets; _i < objectMorphTargets_1.length; _i++) {
+                    var frameData = objectMorphTargets_1[_i];
                     var animName = this._getAnimName(frameData.name);
                     morphTargets.appendChild(animName, frameData.vertices);
                     if (wd.GeometryUtils.hasData(frameData.normals)) {
@@ -18377,25 +17939,22 @@ var wd;
             object.morphTargets = morphTargets;
             object.morphNormals = morphNormals;
         };
-        Object.defineProperty(WDObjectParser.prototype, "_getVerticeIndexOfAddedVertexByFindContainer",
-            __decorate([
-                wd.require(function (container, targetVerticeIndex, targetUvIndex) {
-                    wd.assert(this._isUvIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetUvIndex), wd.Log.info.FUNC_SHOULD("uvIndex", "equal the one of added vertex"));
-                })
-            ], WDObjectParser.prototype, "_getVerticeIndexOfAddedVertexByFindContainer", Object.getOwnPropertyDescriptor(WDObjectParser.prototype, "_getVerticeIndexOfAddedVertexByFindContainer")));
-        Object.defineProperty(WDObjectParser.prototype, "_removeRebundantIndiceData",
-            __decorate([
-                wd.ensure(function (returnValue, object) {
-                    wd.assert(!object.verticeIndices, wd.Log.info.FUNC_SHOULD("object.verticeIndices", "be removed"));
-                    wd.assert(!object.uvIndices, wd.Log.info.FUNC_SHOULD("object.uvIndices", "be removed"));
-                    wd.assert(!object.normalIndices, wd.Log.info.FUNC_SHOULD("object.normalIndices", "be removed"));
-                })
-            ], WDObjectParser.prototype, "_removeRebundantIndiceData", Object.getOwnPropertyDescriptor(WDObjectParser.prototype, "_removeRebundantIndiceData")));
+        __decorate([
+            wd.require(function (container, targetVerticeIndex, targetUvIndex) {
+                wd.assert(this._isUvIndiceEqualTheOneOfAddedVertex(container, targetVerticeIndex, targetUvIndex), wd.Log.info.FUNC_SHOULD("uvIndex", "equal the one of added vertex"));
+            })
+        ], WDObjectParser.prototype, "_getVerticeIndexOfAddedVertexByFindContainer", null);
+        __decorate([
+            wd.ensure(function (returnValue, object) {
+                wd.assert(!object.verticeIndices, wd.Log.info.FUNC_SHOULD("object.verticeIndices", "be removed"));
+                wd.assert(!object.uvIndices, wd.Log.info.FUNC_SHOULD("object.uvIndices", "be removed"));
+                wd.assert(!object.normalIndices, wd.Log.info.FUNC_SHOULD("object.normalIndices", "be removed"));
+            })
+        ], WDObjectParser.prototype, "_removeRebundantIndiceData", null);
         return WDObjectParser;
     })();
     wd.WDObjectParser = WDObjectParser;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -18504,7 +18063,6 @@ var wd;
     })();
     wd.WDBuilder = WDBuilder;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -18685,6 +18243,12 @@ var wd;
 
 var wd;
 (function (wd) {
+    var BrowserIdentifier;
+    (function (BrowserIdentifier) {
+        BrowserIdentifier[BrowserIdentifier["FALLBACK"] = "fallback"] = "FALLBACK";
+        BrowserIdentifier[BrowserIdentifier["FIREFOX"] = "firefox"] = "FIREFOX";
+        BrowserIdentifier[BrowserIdentifier["CHROME"] = "chrome"] = "CHROME";
+    })(BrowserIdentifier || (BrowserIdentifier = {}));
     (function (EventName) {
         EventName[EventName["CLICK"] = "click"] = "CLICK";
         EventName[EventName["MOUSEOVER"] = "mouseover"] = "MOUSEOVER";
@@ -18692,12 +18256,61 @@ var wd;
         EventName[EventName["MOUSEOUT"] = "mouseout"] = "MOUSEOUT";
         EventName[EventName["MOUSEMOVE"] = "mousemove"] = "MOUSEMOVE";
         EventName[EventName["MOUSEDOWN"] = "mousedown"] = "MOUSEDOWN";
-        EventName[EventName["MOUSEWHEEL"] = "mousewheel"] = "MOUSEWHEEL";
+        EventName[EventName["MOUSEWHEEL"] = ("mousewheel|DOMMouseScroll*" + BrowserIdentifier.FIREFOX)] = "MOUSEWHEEL";
         EventName[EventName["KEYDOWN"] = "keydown"] = "KEYDOWN";
         EventName[EventName["KEYUP"] = "keyup"] = "KEYUP";
         EventName[EventName["KEYPRESS"] = "keypress"] = "KEYPRESS";
     })(wd.EventName || (wd.EventName = {}));
     var EventName = wd.EventName;
+    var EVENTNAME_SPLITTER = '|', BROWSER_IDENTIFIER = '*';
+    var EventNameHandler = (function () {
+        function EventNameHandler() {
+        }
+        EventNameHandler.handleEventName = function (domEventName) {
+            var eventName = domEventName, fallbackEventName = null, specifyBrowserEventNameArr = [], result = null;
+            for (var _i = 0, _a = eventName.split(EVENTNAME_SPLITTER); _i < _a.length; _i++) {
+                var name_1 = _a[_i];
+                if (this._isFallbackEventName(name_1)) {
+                    fallbackEventName = name_1;
+                }
+                else {
+                    specifyBrowserEventNameArr.push(name_1);
+                }
+            }
+            result = this._getSpecifyBrowserEventName(specifyBrowserEventNameArr);
+            return result !== null ? result : fallbackEventName;
+        };
+        EventNameHandler._isFallbackEventName = function (eventName) {
+            return eventName.split(BROWSER_IDENTIFIER).length === 1;
+        };
+        EventNameHandler._getSpecifyBrowserEventName = function (specifyBrowserEventNameArr) {
+            var result = null;
+            for (var _i = 0, specifyBrowserEventNameArr_1 = specifyBrowserEventNameArr; _i < specifyBrowserEventNameArr_1.length; _i++) {
+                var eventName = specifyBrowserEventNameArr_1[_i];
+                var _a = eventName.split(BROWSER_IDENTIFIER), domEventName = _a[0], browserIdentifier = _a[1];
+                switch (browserIdentifier) {
+                    case BrowserIdentifier.CHROME:
+                        if (bowser.chrome) {
+                            result = domEventName;
+                        }
+                        break;
+                    case BrowserIdentifier.FIREFOX:
+                        if (bowser.firefox) {
+                            result = domEventName;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (result) {
+                    break;
+                }
+            }
+            return result;
+        };
+        return EventNameHandler;
+    })();
+    wd.EventNameHandler = EventNameHandler;
 })(wd || (wd = {}));
 
 var wd;
@@ -18708,7 +18321,6 @@ var wd;
     })(wd.EventPhase || (wd.EventPhase = {}));
     var EventPhase = wd.EventPhase;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -18737,7 +18349,6 @@ var wd;
     })();
     wd.EventTable = EventTable;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -18778,7 +18389,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DomEvent = (function (_super) {
@@ -18817,7 +18427,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd_1) {
     var MouseEvent = (function (_super) {
@@ -18920,10 +18529,6 @@ var wd;
         });
         Object.defineProperty(MouseEvent.prototype, "wheel", {
             get: function () {
-                /*!
-                 FF uses 'detail' and returns a value in 'no. of lines' to scroll
-                 WebKit and Opera use 'wheelDelta', WebKit goes in multiples of 120 per wheel notch
-                 */
                 var e = this.event;
                 if (e.detail) {
                     return -1 * e.detail;
@@ -18979,7 +18584,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var SPECIAL_KEY_MAP = {
@@ -19175,7 +18779,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CustomEvent = (function (_super) {
@@ -19216,7 +18819,6 @@ var wd;
     var MouseButton = wd.MouseButton;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var EventListener = (function () {
@@ -19256,7 +18858,6 @@ var wd;
     wd.EventListener = EventListener;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var EventHandler = (function () {
@@ -19273,14 +18874,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var DomEventHandler = (function (_super) {
@@ -19326,21 +18924,19 @@ var wd;
         DomEventHandler.prototype._bind = function (dom, eventName, target) {
             var domHandler = null;
             domHandler = this.buildDomHandler(target, eventName);
-            wdCb.EventUtils.addEvent(dom, eventName, domHandler);
+            wdCb.EventUtils.addEvent(dom, wd.EventNameHandler.handleEventName(eventName), domHandler);
             return domHandler;
         };
         DomEventHandler.prototype._unBind = function (dom, eventName, handler) {
             wdCb.EventUtils.removeEvent(dom, eventName, handler);
         };
-        Object.defineProperty(DomEventHandler.prototype, "clearHandler",
-            __decorate([
-                wd.virtual
-            ], DomEventHandler.prototype, "clearHandler", Object.getOwnPropertyDescriptor(DomEventHandler.prototype, "clearHandler")));
+        __decorate([
+            wd.virtual
+        ], DomEventHandler.prototype, "clearHandler", null);
         return DomEventHandler;
     })(wd.EventHandler);
     wd.DomEventHandler = DomEventHandler;
 })(wd || (wd = {}));
-
 
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -19348,12 +18944,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var wd;
 (function (wd) {
@@ -19440,12 +19034,11 @@ var wd;
             this.lastY = location.y;
         };
         MouseEventHandler._instance = null;
-        Object.defineProperty(MouseEventHandler.prototype, "on",
-            __decorate([
-                wd.require(function (target, eventName, handler, priority) {
-                    wd.assert(target instanceof wd.GameObject, wd.Log.info.FUNC_MUST_BE("target", "GameObject"));
-                })
-            ], MouseEventHandler.prototype, "on", Object.getOwnPropertyDescriptor(MouseEventHandler.prototype, "on")));
+        __decorate([
+            wd.require(function (target, eventName, handler, priority) {
+                wd.assert(target instanceof wd.GameObject, wd.Log.info.FUNC_MUST_BE("target", "GameObject"));
+            })
+        ], MouseEventHandler.prototype, "on", null);
         return MouseEventHandler;
     })(wd.DomEventHandler);
     wd.MouseEventHandler = MouseEventHandler;
@@ -19456,7 +19049,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var KeyboardEventHandler = (function (_super) {
@@ -19548,7 +19140,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CustomEventHandler = (function (_super) {
@@ -19663,7 +19254,6 @@ var wd;
     wd.CustomEventHandler = CustomEventHandler;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var EventDispatcher = (function () {
@@ -19742,7 +19332,6 @@ var wd;
     })();
     wd.EventDispatcher = EventDispatcher;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -19854,14 +19443,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var EventBinder = (function () {
@@ -19953,32 +19539,30 @@ var wd;
         EventBinder.prototype._checkEventSeparator = function (eventName) {
             wd.assert(eventName.indexOf(wd.EventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.EventListenerMap.eventSeparator));
         };
-        Object.defineProperty(EventBinder.prototype, "on",
-            __decorate([
-                wd.require(function () {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
-                    }
-                    if (args.length === 1) {
-                    }
-                    else if (args.length === 2) {
-                    }
-                    else if (args.length === 3) {
-                        var eventName = args[0], handler = args[1], priority = args[2];
-                        this._checkEventSeparator(eventName);
-                    }
-                    else if (args.length === 4) {
-                        var target = args[0], eventName = args[1], handler = args[2], priority = args[3];
-                        this._checkEventSeparator(eventName);
-                    }
-                })
-            ], EventBinder.prototype, "on", Object.getOwnPropertyDescriptor(EventBinder.prototype, "on")));
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args.length === 1) {
+                }
+                else if (args.length === 2) {
+                }
+                else if (args.length === 3) {
+                    var eventName = args[0], handler = args[1], priority = args[2];
+                    this._checkEventSeparator(eventName);
+                }
+                else if (args.length === 4) {
+                    var target = args[0], eventName = args[1], handler = args[2], priority = args[3];
+                    this._checkEventSeparator(eventName);
+                }
+            })
+        ], EventBinder.prototype, "on", null);
         return EventBinder;
     })();
     wd.EventBinder = EventBinder;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -20007,7 +19591,6 @@ var wd;
     })();
     wd.FactoryEventHandler = FactoryEventHandler;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -20125,7 +19708,6 @@ var wd;
 var wd;
 (function (wd) {
     (function (EngineEvent) {
-        /*! global event should add "dy_" prefix */
         EngineEvent[EngineEvent["STARTLOOP"] = "dy_startLoop"] = "STARTLOOP";
         EngineEvent[EngineEvent["ENDLOOP"] = "dy_endLoop"] = "ENDLOOP";
         EngineEvent[EngineEvent["BEFORE_INIT"] = "dy_beforeInit"] = "BEFORE_INIT";
@@ -20134,64 +19716,25 @@ var wd;
     var EngineEvent = wd.EngineEvent;
 })(wd || (wd = {}));
 
-
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-/*!
-DeviceManager is responsible for global setting of gl
- */
 var wd;
 (function (wd) {
     var DeviceManager = (function () {
         function DeviceManager() {
             this.view = null;
             this.gl = null;
-            /*!
-            test order:
-            scissor test -> depth test -> stencil test -> specular add -> fog -> alpha blend -> write mask
-             */
-            /*!
-             The scissor test culls pixels that are outside of the scissor rectangle, a user-defined rectangular sub-section of the render target.
-             The scissor rectangle could be used to indicate the area of the render target where the game world is drawn. The area outside the rectangle is culled and could be devoted to a game's GUI. The scissor test cannot cull non-rectangular areas.
-             Scissor rectangles cannot be set larger than the render target, but they can be set larger than the viewport.
-             The scissor rectangle is managed by a device render state. A scissor test is enabled or disabled by setting the renderstate to TRUE or FALSE. This test is performed after the fragment color is computed but before alpha testing. IDirect3DDevice9
-             */
             this._scissorTest = null;
-            /*! 默认情况是将需要绘制的新像素的z值与深度缓冲区中对应位置的z值进行比较，如果比深度缓存中的值小，那么用新像素的颜色值更新帧缓存中对应像素的颜色值。
-             但是可以使用glDepthFunc(func)来对这种默认测试方式进行修改。
-             其中参数func的值可以为GL_NEVER（没有处理）、GL_ALWAYS（处理所有）、GL_LESS（小于）、GL_LEQUAL（小于等于）、GL_EQUAL（等于）、GL_GEQUAL（大于等于）、GL_GREATER（大于）或GL_NOTEQUAL（不等于），其中默认值是GL_LESS。
-    
-             gl.depthFunc(gl.LEQUAL);
-             */
             this._depthTest = null;
             this._depthFunc = null;
             this._side = null;
-            /*!
-             偏移值是在z值计算后、深度检测之前加上的，此时坐标已经被映射到Normalized Device Coordinates中了，
-             而此时的z轴是向内的（opengl的z轴是向外的），因此多边形偏移量为正值的话，意味着往远处移动，否则往近处移动。
-             可参考下面的说明：
-             The results are summed to produce the depth offset. This offset is applied in screen space, typically with positive Z pointing into the screen.
-             the offset is calculated after the normal Z calculations, but applied before the depth test and before being written to the depth buffer.
-             */
             this.polygonOffset = null;
             this._polygonOffsetMode = null;
             this._depthWrite = null;
-            /*! blend record
-            所谓源颜色和目标颜色，是跟绘制的顺序有关的。假如先绘制了一个红色的物体，再在其上绘制绿色的物体。则绿色是源颜色，红色是目标颜色。如果顺序反过来，则 红色就是源颜色，绿色才是目标颜色。在绘制时，应该注意顺序，使得绘制的源颜色与设置的源因子对应，目标颜色与设置的目标因子对应。不要被混乱的顺序搞晕 了。
-    
-    
-             也许你迫不及待的想要绘制一个三维的带有半透明物体的场景了。但是现在恐怕还不行，还有一点是在进行三维场景的混合时必须注意的，那就是深度缓冲。
-             总结起来，绘制顺序就是：首先绘制所有不透明的物体。如果两个物体都是不透明的，则谁先谁后 都没有关系。然后，将深度缓冲区设置为只读。接下来，绘制所有半透明的物体。如果两个物体都是半透明的，则谁先谁后只需要根据自己的意愿（注意了，先绘制 的将成为“目标颜色”，后绘制的将成为“源颜色”，所以绘制的顺序将会对结果造成一些影响）。最后，将深度缓冲区设置为可读可写形式。
-    
-             在进行混合时，绘制的顺序十分重要。因为在绘制时，正要绘制上去的是源颜色，原来存在的是目标颜色，因此先绘制的物体就成为目标颜色，后来绘制的则成为源颜色。绘制的顺序要考虑清楚，将目标颜色和设置的目标因子相对应，源颜色和设置的源因子相对应。
-             在进行三维混合时，不仅要考虑源因子和目标因子，还应该考虑深度缓冲区。必须先绘制所有不透明的物体，再绘制半透明的物体。在绘制半透明物体时前，还需要将深度缓冲区设置为只读形式，否则可能出现画面错误。
-            */
             this._blend = null;
             this._writeRed = null;
             this._writeGreen = null;
@@ -20232,14 +19775,6 @@ var wd;
                 this.scissorTest = true;
             }
         };
-        /*! Difference between viewports and scissor rectangles
-
-         Viewports are basically scaled views, the left side is 0 and the right side is 1. The entire view will be scaled down into that viewport after everything is projected.
-
-         Scissor tests clip to a rectangle inside that viewport. Instead of rendering from 0 to 1, you render from .2 to .8, with black bars on the outside. This actually cuts off a portion of what would normally be visible (if you used a viewport of the same size, you'd see the same amount but shrunk slightly).
-
-         Viewports are used for full views (consider 3D Studio Max, each viewport is the full view from that angle, but fit into a single square). Scissor tests are used to cut out extra pixels that you don't want/need to be affected (lights in deferred rendering, for instance, everything outside the range is not affected, so why bother calculating that if you already know it's not lit, just scissor around the projected sphere and forget about everything beyond that).
-         */
         DeviceManager.prototype.setViewport = function (x, y, width, height) {
             this.gl.viewport(x, y, width, height);
         };
@@ -20335,7 +19870,6 @@ var wd;
                             gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
                             break;
                         default:
-                            return;
                             break;
                     }
                     this._polygonOffsetMode = polygonOffsetMode;
@@ -20383,15 +19917,6 @@ var wd;
                 this._blendDst = blendDst;
             }
         };
-        /*!
-         OpenGL gives us even more flexibility by allowing us to change the operator between the source and destination part of the equation. Right now, the source and destination components are added together, but we could also subtract them if we want. glBlendEquation(GLenum mode) allows us to set this operation and has 3 possible options:
-
-         GL_FUNC_ADD: the default, adds both components to each other: C¯result=Src+Dst.
-         GL_FUNC_SUBTRACT: subtracts both components from each other: C¯result=Src−Dst.
-         GL_FUNC_REVERSE_SUBTRAThe default blend equation is
-
-         default is FUNC_ADD
-         */
         DeviceManager.prototype.setBlendEquation = function (blendEquation) {
             if (this._blendEquation !== blendEquation) {
                 this._blend && this.gl.blendEquation(this.gl[blendEquation]);
@@ -20463,12 +19988,11 @@ var wd;
             this.setViewport(0, 0, width, height);
         };
         DeviceManager._instance = null;
-        Object.defineProperty(DeviceManager.prototype, "setScreen",
-            __decorate([
-                wd.require(function () {
-                    wd.assert(wd.Main.screenSize !== null, wd.Log.info.FUNC_NOT_EXIST("Main.screenSize"));
-                })
-            ], DeviceManager.prototype, "setScreen", Object.getOwnPropertyDescriptor(DeviceManager.prototype, "setScreen")));
+        __decorate([
+            wd.require(function () {
+                wd.assert(wd.Main.screenSize !== null, wd.Log.info.FUNC_NOT_EXIST("Main.screenSize"));
+            })
+        ], DeviceManager.prototype, "setScreen", null);
         return DeviceManager;
     })();
     wd.DeviceManager = DeviceManager;
@@ -20527,7 +20051,6 @@ var wd;
     })(wd.BlendType || (wd.BlendType = {}));
     var BlendType = wd.BlendType;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -20651,7 +20174,6 @@ var wd;
     wd.Point = Point;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var Face3 = (function () {
@@ -20693,7 +20215,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RectRegion = (function (_super) {
@@ -20734,7 +20255,6 @@ var wd;
     })(wd.Vector4);
     wd.RectRegion = RectRegion;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -20858,11 +20378,6 @@ var wd;
                 this.a = 1;
                 return this;
             }
-            /*!
-             it will cause ambiguity: rgba(x,x,x)
-             so the format should be:
-             rgba(x.x,x.x,x.x)
-             */
             if (REGEX_RGB_2.test(colorVal)) {
                 color = REGEX_RGB_2.exec(colorVal);
                 this.r = parseFloat(color[1]);
@@ -20895,14 +20410,11 @@ var wd;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var Texture = (function () {
@@ -20995,15 +20507,13 @@ var wd;
                 gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl[this.filterFallback(this.minFilter)]);
             }
         };
-        Object.defineProperty(Texture.prototype, "isSourcePowerOfTwo",
-            __decorate([
-                wd.virtual
-            ], Texture.prototype, "isSourcePowerOfTwo", Object.getOwnPropertyDescriptor(Texture.prototype, "isSourcePowerOfTwo")));
+        __decorate([
+            wd.virtual
+        ], Texture.prototype, "isSourcePowerOfTwo", null);
         return Texture;
     })();
     wd.Texture = Texture;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -21023,7 +20533,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd_1) {
     var BasicTextureUtils = (function (_super) {
@@ -21070,7 +20579,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var RenderTargetTexture = (function (_super) {
@@ -21104,7 +20612,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDRenderTargetTexture = (function (_super) {
@@ -21144,7 +20651,6 @@ var wd;
     wd.TwoDRenderTargetTexture = TwoDRenderTargetTexture;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var ShadowMapTextureUtils = (function () {
@@ -21169,7 +20675,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var MirrorTexture = (function (_super) {
@@ -21212,7 +20717,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDShadowMapTexture = (function (_super) {
@@ -21242,7 +20746,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapRenderTargetTexture = (function (_super) {
@@ -21269,7 +20772,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapShadowMapTexture = (function (_super) {
@@ -21295,7 +20797,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DynamicCubemapTexture = (function (_super) {
@@ -21351,14 +20852,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var BasicTexture = (function (_super) {
@@ -21475,10 +20973,9 @@ var wd;
                 return this.sourceRegion;
             }
         };
-        Object.defineProperty(BasicTexture.prototype, "needClampMaxSize",
-            __decorate([
-                wd.virtual
-            ], BasicTexture.prototype, "needClampMaxSize", Object.getOwnPropertyDescriptor(BasicTexture.prototype, "needClampMaxSize")));
+        __decorate([
+            wd.virtual
+        ], BasicTexture.prototype, "needClampMaxSize", null);
         return BasicTexture;
     })(wd.Texture);
     wd.BasicTexture = BasicTexture;
@@ -21489,7 +20986,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var TwoDTexture = (function (_super) {
@@ -21511,7 +21007,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CommonTexture = (function (_super) {
@@ -21553,7 +21048,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var ImageTexture = (function (_super) {
@@ -21586,7 +21080,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var VideoTexture = (function (_super) {
@@ -21636,14 +21129,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var CubemapTexture = (function (_super) {
@@ -21744,8 +21234,8 @@ var wd;
         };
         CubemapTexture.prototype._areAssetsAllImageAssets = function (assets) {
             var areImageAssets = [];
-            for (var _i = 0; _i < assets.length; _i++) {
-                var data = assets[_i];
+            for (var _i = 0, assets_1 = assets; _i < assets_1.length; _i++) {
+                var data = assets_1[_i];
                 if (data.asset instanceof wd.ImageTextureAsset) {
                     areImageAssets.push(data);
                 }
@@ -21754,8 +21244,8 @@ var wd;
         };
         CubemapTexture.prototype._areAssetsAllCompressedAsset = function (assets) {
             var areCompressedAssets = [];
-            for (var _i = 0; _i < assets.length; _i++) {
-                var data = assets[_i];
+            for (var _i = 0, assets_2 = assets; _i < assets_2.length; _i++) {
+                var data = assets_2[_i];
                 if (data.asset instanceof wd.CompressedTextureAsset) {
                     areCompressedAssets.push(data);
                 }
@@ -21764,8 +21254,8 @@ var wd;
         };
         CubemapTexture.prototype._createTextures = function (assets) {
             var self = this;
-            for (var _i = 0; _i < assets.length; _i++) {
-                var data = assets[_i];
+            for (var _i = 0, assets_3 = assets; _i < assets_3.length; _i++) {
+                var data = assets_3[_i];
                 var face = data.asset.toCubemapFaceTexture();
                 if (data.sourceRegion && face instanceof wd.CubemapFaceImageTexture) {
                     var twoDFace = face;
@@ -21779,8 +21269,8 @@ var wd;
         };
         CubemapTexture.prototype._areTextureSizOfAllFaceseEqual = function (assets) {
             var textureWidthSizeArr = [], textureHeightSizeArr = [];
-            for (var _i = 0; _i < assets.length; _i++) {
-                var data = assets[_i];
+            for (var _i = 0, assets_4 = assets; _i < assets_4.length; _i++) {
+                var data = assets_4[_i];
                 if (data.sourceRegion) {
                     textureWidthSizeArr.push(data.sourceRegion.width);
                     textureHeightSizeArr.push(data.sourceRegion.height);
@@ -21793,8 +21283,8 @@ var wd;
             return this._areAllElementsEqual(textureWidthSizeArr) && this._areAllElementsEqual(textureHeightSizeArr);
         };
         CubemapTexture.prototype._hasSourceRegion = function (assets) {
-            for (var _i = 0; _i < assets.length; _i++) {
-                var data = assets[_i];
+            for (var _i = 0, assets_5 = assets; _i < assets_5.length; _i++) {
+                var data = assets_5[_i];
                 if (data.sourceRegion) {
                     return true;
                 }
@@ -21803,30 +21293,28 @@ var wd;
         };
         CubemapTexture.prototype._areAllElementsEqual = function (arr) {
             var lastEle = arr[0];
-            for (var _i = 0; _i < arr.length; _i++) {
-                var ele = arr[_i];
+            for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+                var ele = arr_1[_i];
                 if (ele !== lastEle) {
                     return false;
                 }
             }
             return true;
         };
-        Object.defineProperty(CubemapTexture.prototype, "initWhenCreate",
-            __decorate([
-                wd.require(function (assets) {
-                    wd.assert(assets.length === 6, wd.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
-                    wd.assert(this._areAssetsAllImageAssets(assets) || this._areAssetsAllCompressedAsset(assets), wd.Log.info.FUNC_MUST_BE("cubemap six face's assets", "all ImageTextureAsset or all CompressedTextureAsset"));
-                    if (this._areAssetsAllCompressedAsset(assets)) {
-                        wd.assert(!this._hasSourceRegion(assets), wd.Log.info.FUNC_SHOULD_NOT("compressed face", "contain sourceRegion data"));
-                    }
-                    wd.assert(this._areTextureSizOfAllFaceseEqual(assets), wd.Log.info.FUNC_MUST_BE("all cubemap faces' texture size", "equal"));
-                })
-            ], CubemapTexture.prototype, "initWhenCreate", Object.getOwnPropertyDescriptor(CubemapTexture.prototype, "initWhenCreate")));
+        __decorate([
+            wd.require(function (assets) {
+                wd.assert(assets.length === 6, wd.Log.info.FUNC_MUST("cubemap", "has 6 assets"));
+                wd.assert(this._areAssetsAllImageAssets(assets) || this._areAssetsAllCompressedAsset(assets), wd.Log.info.FUNC_MUST_BE("cubemap six face's assets", "all ImageTextureAsset or all CompressedTextureAsset"));
+                if (this._areAssetsAllCompressedAsset(assets)) {
+                    wd.assert(!this._hasSourceRegion(assets), wd.Log.info.FUNC_SHOULD_NOT("compressed face", "contain sourceRegion data"));
+                }
+                wd.assert(this._areTextureSizOfAllFaceseEqual(assets), wd.Log.info.FUNC_MUST_BE("all cubemap faces' texture size", "equal"));
+            })
+        ], CubemapTexture.prototype, "initWhenCreate", null);
         return CubemapTexture;
     })(wd.BasicTexture);
     wd.CubemapTexture = CubemapTexture;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -21848,14 +21336,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
 var wd;
 (function (wd) {
     var CubemapFaceImageTexture = (function (_super) {
@@ -21906,12 +21391,11 @@ var wd;
             noMipmapCmd.type = this.type;
             noMipmapCmd.execute();
         };
-        Object.defineProperty(CubemapFaceImageTexture.prototype, "sourceRegionMethod",
-            __decorate([
-                wd.requireSetter(function (sourceRegionMethod) {
-                    wd.assert(sourceRegionMethod === wd.TextureSourceRegionMethod.DRAW_IN_CANVAS, wd.Log.info.FUNC_SUPPORT("cubemap twoD face texture->sourceRegionMethod only", "DRAW_IN_CANVAS"));
-                })
-            ], CubemapFaceImageTexture.prototype, "sourceRegionMethod", Object.getOwnPropertyDescriptor(CubemapFaceImageTexture.prototype, "sourceRegionMethod")));
+        __decorate([
+            wd.requireSetter(function (sourceRegionMethod) {
+                wd.assert(sourceRegionMethod === wd.TextureSourceRegionMethod.DRAW_IN_CANVAS, wd.Log.info.FUNC_SUPPORT("cubemap twoD face texture->sourceRegionMethod only", "DRAW_IN_CANVAS"));
+            })
+        ], CubemapFaceImageTexture.prototype, "sourceRegionMethod", null);
         return CubemapFaceImageTexture;
     })(wd.CubemapFaceTexture);
     wd.CubemapFaceImageTexture = CubemapFaceImageTexture;
@@ -21922,7 +21406,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CubemapFaceCompressedTexture = (function (_super) {
@@ -21967,7 +21450,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CompressedTexture = (function (_super) {
@@ -22009,7 +21491,6 @@ var wd;
     wd.CompressedTexture = CompressedTexture;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var DrawTextureCommand = (function () {
@@ -22035,7 +21516,6 @@ var wd;
     })();
     wd.DrawTextureCommand = DrawTextureCommand;
 })(wd || (wd = {}));
-
 
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -22078,7 +21558,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DrawTwoDTextureCommand = (function (_super) {
@@ -22101,7 +21580,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DrawMipmapTwoDTextureCommand = (function (_super) {
@@ -22130,7 +21608,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var DrawNoMipmapTwoDTextureCommand = (function (_super) {
@@ -22149,7 +21626,6 @@ var wd;
     })(wd.DrawTwoDTextureCommand);
     wd.DrawNoMipmapTwoDTextureCommand = DrawNoMipmapTwoDTextureCommand;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
@@ -22229,7 +21705,6 @@ var wd;
     wd.Video = Video;
 })(wd || (wd = {}));
 
-
 var wd;
 (function (wd) {
     var VideoManager = (function () {
@@ -22258,7 +21733,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CustomMaterial = (function (_super) {
@@ -22280,7 +21754,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wd;
 (function (wd) {
     var CustomGeometry = (function (_super) {
@@ -22312,7 +21785,6 @@ var wd;
     })(wd.Geometry);
     wd.CustomGeometry = CustomGeometry;
 })(wd || (wd = {}));
-
 
 var wd;
 (function (wd) {
