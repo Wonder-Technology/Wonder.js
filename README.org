@@ -124,10 +124,6 @@ You can install engine by bower:
 #+BEGIN_SRC js
   bower install wonder
 #+END_SRC
-For node.js project, you can install engine by npm:
-#+BEGIN_SRC js
-  npm install wonder
-#+END_SRC
 You can build engine by gulp task:
 #+BEGIN_SRC js
   gulp build

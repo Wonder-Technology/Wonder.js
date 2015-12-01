@@ -17,6 +17,7 @@
   "license": "MIT",
   "main": "dist/wd.js",
   "ignore": [
+    "**/.*",
     "examples",
     "lib",
     "src",
