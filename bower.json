@@ -20,9 +20,6 @@
     "examples",
     "lib",
     "src",
-    "test",
-    "*",
-    "!gulpfile.js",
-    "!README.org"
+    "test"
   ]
 }

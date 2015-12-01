@@ -122,11 +122,11 @@ Here shows a spinning cube sample:
 * How to build
 You can install engine by bower:
 #+BEGIN_SRC js
-  bower install wd
+  bower install wonder
 #+END_SRC
 For node.js project, you can install engine by npm:
 #+BEGIN_SRC js
-  npm install wd
+  npm install wonder
 #+END_SRC
 You can build engine by gulp task:
 #+BEGIN_SRC js
