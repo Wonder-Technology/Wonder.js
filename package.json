@@ -2,9 +2,12 @@
   "name": "wonder",
   "version": "0.1.1",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers Firefox"
+    "test": "karma start karma.conf.js",
+    "ci": "karma start karma.conf.js --single-run --browsers Firefox",
+    "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
+    "codecov.io": "^0.1.6",
     "del": "^1.2.0",
     "fs-extra": "^0.22.1",
     "glob-stream": "^5.0.0",
@@ -21,7 +24,6 @@
     "karma": "~0.13",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.3",
-    "karma-coveralls": "^1.1.2",
     "karma-firefox-launcher": "^0.1.7",
     "karma-ie-launcher": "^0.2.0",
     "karma-jasmine": "^0.3.6",

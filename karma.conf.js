@@ -51,8 +51,10 @@
     reporters: ['progress', 'coverage'],
 
       coverageReporter: {
-          type : 'html',
-          dir : 'build/coverage/'
+          dir : 'test/coverage/',
+          reporters: [
+              { type: 'lcov'}
+          ]
       },
 
 

@@ -13,3 +13,7 @@ before_script:
 script:
   - gulp build
   - npm test
+  - npm run ci
+
+after_success:
+  - npm run codecov
