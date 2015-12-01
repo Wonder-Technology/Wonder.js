@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "devDependencies": {
     "del": "^1.2.0",
-    "wdcb": "^0.1.1",
-    "wdfrp": "^0.1.2",
     "fs-extra": "^0.22.1",
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",
@@ -17,6 +15,7 @@
     "jasmine-node": "^1.14.5",
     "karma": "~0.13",
     "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.7",
     "karma-ie-launcher": "^0.2.0",
     "karma-jasmine": "^0.3.6",
     "merge2": "^0.3.6",
@@ -26,8 +25,10 @@
     "through-gulp": "^0.3.8",
     "through2": "^2.0.0",
     "tryit": "^1.0.1",
-    "typescript": "^1.6.2",
+    "typescript": "^1.8.0-dev.20151130",
     "vinyl": "^0.4.6",
-    "vinyl-bufferstream": "^1.0.1"
+    "vinyl-bufferstream": "^1.0.1",
+    "wdcb": "^0.1.1",
+    "wdfrp": "^0.1.2"
   }
 }

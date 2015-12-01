@@ -11,16 +11,12 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/yyctoolbox/tool/yTool.js',
-
-
-        "reference/playCanvas/build/output/playcanvas-latest.js",
-        "reference/three.js.sourcecode/Three.js",
-
         //'src/math/*.js',
         'dist/wd.innerLib.js',
         'dist/wd.debug.js',
+
+        'test/helper/jquery.js',
+        'test/helper/yTool.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',
@@ -105,7 +101,8 @@
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    //browsers: ['Chrome'],
+      browsers: ['Firefox'],
 
 
     // Continuous Integration mode
