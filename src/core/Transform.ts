@@ -22,7 +22,9 @@ module wd{
         private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
             var syncList = wdCb.Collection.create<Transform>(),
-                current = this;
+                current = this.parent;
+
+            syncList.addChild(this);
 
             while (current !== null) {
                 syncList.addChild(current);

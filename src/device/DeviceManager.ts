@@ -198,7 +198,6 @@ module wd {
                         gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
                         break;
                     default:
-                        return;
                         break;
                 }
 
