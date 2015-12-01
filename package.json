@@ -2,8 +2,7 @@
   "name": "wonder",
   "version": "0.1.1",
   "scripts": {
-    "test": "karma start karma.conf.js",
-    "ci": "karma start karma.conf.js --single-run --browsers Firefox",
+    "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
