@@ -20,39 +20,44 @@ Please learn samples in examples/samples/ to get more info.
 - Composable Shader
 
   use shader libs to assemble glsl code.
-* Platform
-Chrome, Firefox of PC
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
 - Animation
- - Morph
+  - Morph
 - Camera
- - Perspective,Orthographic Camera
- - Arcball Control
- - Fly Control
+  - Perspective,Orthographic Camera
+  - Arcball Control
+  - Fly Control
 - Light
- - Direction,Point Light
- - Diffuse Map
- - Specular Map
- - Normal Map
- - Mirror
- - Reflection,Refraction,Fresnel
+  - Direction,Point Light
+  - Diffuse Map
+  - Specular Map
+  - Normal Map
+  - Mirror
+  - Reflection,Refraction,Fresnel
 - Script
- - User Script
+  - User Script
 - Shader
- - Custom Shader
+  - Custom Shader
 - Shadow
- - Direction,Point Light ShadowMap
+  - Direction,Point Light ShadowMap
 - Skybox
 - Texture
- - Canvas Texture
- - Video Texture
- - Compressed Texture(DDS)
- - Cubemap Texture
+  - Canvas Texture
+  - Video Texture
+  - Compressed Texture(DDS)
+  - Cubemap Texture
 - Converter
- - OBJ Converter
- - MD2 Converter
+  - OBJ Converter
+  - MD2 Converter
+* Roadmap
+- UI(coming soon)
+- Text(coming soon)
+- Collider
+- Scene pick
+- Render scene
+- Optimization
 * Usage
 Include library in your html:
 #+BEGIN_SRC html
