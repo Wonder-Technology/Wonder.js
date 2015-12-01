@@ -13,7 +13,7 @@ Please learn samples in examples/samples/ to get more info.
   use Wonder-FRP library to handle async operation in frp way.
 - Code Contract
 
-  use it to improve code quality, help to debug.
+  use contract to improve code quality and help debug.
 - Event Driven
 
   use event system to bind dom/custom event or to implement observer design pattern in frp way.
