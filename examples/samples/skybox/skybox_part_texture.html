@@ -44,32 +44,32 @@
                     [
                         {
                             asset: wd.LoaderManager.getInstance().get("px"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512),
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256),
                             type:wd.TextureType.UNSIGNED_BYTE
                         },
                         {
                             asset: wd.LoaderManager.getInstance().get("nx"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                         },
                         {
                             asset: wd.LoaderManager.getInstance().get("py"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                         },
                         {
                             asset: wd.LoaderManager.getInstance().get("ny"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                         },
                         {
                             asset: wd.LoaderManager.getInstance().get("pz"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                         },
                         {
                             asset: wd.LoaderManager.getInstance().get("nz"),
-                            sourceRegion:wd.RectRegion.create(0, 0, 512, 512)
+                            sourceRegion:wd.RectRegion.create(0, 0, 256, 256)
                         }
                     ]
             );
-            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 512, 512);
+            cubemap.textures.getChild(5).sourceRegion = wd.RectRegion.create(128, 128, 256, 256);
 
             var material = wd.SkyboxMaterial.create();
             material.envMap = cubemap;
