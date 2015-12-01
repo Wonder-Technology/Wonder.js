@@ -4,6 +4,11 @@ Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contribu
 [[https://travis-ci.org/yyc-git/Wonder.js?branch%3Dmaster][https://travis-ci.org/yyc-git/Wonder.js.png]]
 
 
+[[https://coveralls.io/github/yyc-git/Wonder.js?branch=master][https://coveralls.io/repos/yyc-git/Wonder.js/badge.svg?branch=master&service=github]]
+
+
+
+
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
