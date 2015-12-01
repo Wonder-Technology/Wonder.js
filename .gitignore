@@ -12,7 +12,7 @@ converter/*.js.map
 converter/*.js
 converter/**/*.js.map
 converter/**/*.js
-dist/
+//dist/
 src/**/ShaderChunk.ts
 examples/**/forRunTest*
 examples/**/*forRunTest*
