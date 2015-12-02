@@ -6,6 +6,8 @@ Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contribu
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
+- [[https://github.com/yyc-git/Wonder.js/wiki][wiki]]
+
 Please learn samples in examples/samples/ to get more info.
 * Design
 - Component
@@ -143,7 +145,7 @@ Here shows a spinning cube sample:
   If you want to see the source code and examples, you can clone this project and setup engine by these commands:
 
 #+BEGIN_SRC js
-  //run these commands in project root
+  //run these commands in project dir
   npm install
   git submodule init
   git submodule update --remote
@@ -157,7 +159,7 @@ Here shows a spinning cube sample:
 #+BEGIN_SRC js
   //you should first setup engine
 
-  //then run test gulp task in project root
+  //then run test gulp task in project dir
   gulp test
 #+END_SRC
 - debug
