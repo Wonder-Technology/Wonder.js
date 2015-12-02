@@ -41,6 +41,13 @@ vec3 getDirectionLightDir(int index){
             return v_directionLightDir[x];
         }
     }
+
+    /*!
+    try to solve error in window7 chrome/firefox:
+    not all control paths return a value.
+    failed to create d3d shaders
+    */
+    return vec3(0.0);
 }
 #endif
 
