@@ -12,6 +12,7 @@ converter/*.js.map
 converter/*.js
 converter/**/*.js.map
 converter/**/*.js
+test/coverage
 //dist/
 src/**/ShaderChunk.ts
 examples/**/forRunTest*
