@@ -2,12 +2,14 @@
   "name": "wonder",
   "version": "0.1.1",
   "scripts": {
+     "start": "node ./server/app.js",
     "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
     "codecov.io": "^0.1.6",
     "del": "^1.2.0",
+    "express": "^4.13.3",
     "fs-extra": "^0.22.1",
     "glob-stream": "^5.0.0",
     "gulp": "^3.9.0",
