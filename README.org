@@ -134,7 +134,7 @@ Here shows a spinning cube sample:
 * How to build
 - bower
 
-  You can install engine by bower:
+  You can install engine under bower:
 
 #+BEGIN_SRC js
   bower install wonder
@@ -142,7 +142,7 @@ Here shows a spinning cube sample:
 
 - setup engine
 
-  If you want to see the source code and examples, you can clone this project and setup engine by these commands:
+  If you want to pull request(that's very appreciate), you can setup engine firstly under these commands:
 
 #+BEGIN_SRC js
   //run these commands in project dir
@@ -154,7 +154,7 @@ Here shows a spinning cube sample:
 * How to test
 - unit test
 
-  Wonder.js has complete unit test, you can clone this project and run it by gulp task:
+  Wonder.js has complete unit test, you can clone this project and run karma under gulp task:
 
 #+BEGIN_SRC js
   //you should first setup engine
