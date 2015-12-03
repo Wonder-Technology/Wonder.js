@@ -26,7 +26,7 @@ module wd{
                 maxUnit = GPUDetector.getInstance().maxTextureUnit;
 
             if(unit >= maxUnit){
-                Log.warn("trying to use %d texture units, but GPU only supports %d units", unit, maxUnit);
+                Log.warn(`trying to use ${unit} texture units, but GPU only supports ${maxUnit} units`);
             }
 
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
@@ -56,6 +56,7 @@ module wd{
             return TextureFilterMode.LINEAR;
         }
 
+        @virtual
         protected sendOtherData(program:Program, unit:number){
         }
 
