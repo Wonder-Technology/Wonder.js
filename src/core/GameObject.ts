@@ -205,17 +205,17 @@ module wd {
                 return result;
             }
 
-            if(this.isHit(point)) {
+            if(this.isPick(point)) {
                 return this;
             }
 
             return null;
         }
 
-        public isHit(locationInView:Point):boolean {
-            var collider = this._getCollider();
+        public isPick(locationInView:Point):boolean {
+            var pick = this._getPick();
 
-            return collider? collider.collideXY(locationInView.x, locationInView.y) : false;
+            return pick? pick.isPick(locationInView.x, locationInView.y) : false;
         }
 
         public hasComponent(component:Component):boolean;
@@ -309,10 +309,10 @@ module wd {
         }
 
         @require(function(){
-            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+            assert(this._getComponentCount(Pick) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 pick component"));
         })
-        private _getCollider():Collider{
-            return this.getComponent<Collider>(Collider);
+        private _getPick():Pick{
+            return this.getComponent<Pick>(Pick);
         }
 
         @require(function(){

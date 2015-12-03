@@ -93,7 +93,7 @@ describe("GameObject", function() {
     });
 
     describe("getTopUnderPoint", function(){
-        //todo add Collider to test
+        //todo add Pick to test
     });
 
     describe("dispose", function(){

@@ -80,11 +80,15 @@
 /// <reference path="component/action/RepeatForever"/>
 /// <reference path="component/action/Tween"/>
 /// <reference path="component/action/ActionManager"/>
+
 /// <reference path="component/renderer/RendererComponent"/>
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/renderer/SkyboxRenderer"/>
+
 /// <reference path="component/collider/Collider"/>
-/// <reference path="component/collider/TopCollider"/>
+
+/// <reference path="component/pick/Pick"/>
+
 /// <reference path="component/script/Script"/>
 /// <reference path="component/script/IScriptBehavior"/>
 
