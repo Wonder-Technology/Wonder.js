@@ -3,8 +3,7 @@ node_js:
   - "4.1"
 before_install:
   - git submodule update --remote
-install:
-  - npm install
+
 before_script:
   - npm install -g gulp
   - export DISPLAY=:99.0
