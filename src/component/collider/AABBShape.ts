@@ -26,22 +26,20 @@ module wd {
             return this.center.copy().add(this.halfExtents);
         }
 
-        //public setFromPoints(points:Array<number>) {
-        //    var self = this,
-        //        min = Vector3.create(points[0], points[1], points[2]),
-        //        max = Vector3.create(points[0], points[1], points[2]);
-        //
-        //    //this.empty();
-        //
-        //    GeometryUtils.iterateThreeComponent(points, (point:Vector3) => {
-        //        self._expandByPoint(point, min, max);
-        //    });
-        //
-        //    this.setMinMax(min, max);
-        //
-        //    return this;
-        //
-        //}
+        public setFromPoints(points:Array<number>) {
+            var self = this,
+                min = this._getEmptyMin(),
+                max = this._getEmptyMax();
+
+            GeometryUtils.iterateThreeComponent(points, (point:Vector3) => {
+                self._expandByPoint(point, min, max);
+            });
+
+            this.setMinMax(min, max);
+
+            return this;
+
+        }
 
         //@require(function (matrix:Matrix4) {
         //    assert(!this.isEmpty(), Log.info.FUNC_SHOULD_NOT("the old AABB", "be  empty"));

@@ -138,6 +138,25 @@ describe("BoxCollider", function () {
 
             expect(shape1.setFromTransformedAABB).toCalledOnce();
         });
+        it("test set gameObject's transform before building its bounding region", function(){
+            box1.transform.translate(2, 0, 0);
+
+            director._init();
+
+            box1.transform.translate(6, 0, 0);
+            box2.transform.translate(-2, 0, 0);
+
+            director._run(1);
+
+            judgeCollide();
+
+
+            box1.transform.translate(0.1, 0, 0);
+
+            director._run(1);
+
+            judgeCollideCount(1);
+        });
 
         describe("re-calculate aabb when gameObject transform change", function () {
             it("if gameObject translate or scale, just transform aabb", function () {

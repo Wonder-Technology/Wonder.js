@@ -20,7 +20,7 @@ module wd {
         public build(){
             //console.log(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices)
             //this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
-            this.shape.setFromObject(this.gameObject);
+            this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
             this._originShape = this.shape.copy();
         }
 
