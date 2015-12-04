@@ -76,7 +76,7 @@ module wd{
                 this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(position);
             }
 
-            this.dirtyLocal = true;
+            this.isTranslate = true;
         }
 
         private _rotation:Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -93,7 +93,7 @@ module wd{
                 this._localRotation = this._parent.rotation.copy().invert().multiply(rotation);
             }
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
         }
 
         private _scale:Vector3 = Vector3.create(1, 1, 1);
@@ -110,7 +110,7 @@ module wd{
                 this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
             }
 
-            this.dirtyLocal = true;
+            this.isScale = true;
         }
 
         private _eulerAngles:Vector3 = null;
@@ -125,7 +125,7 @@ module wd{
                 this._localRotation = this._parent.rotation.copy().invert().multiply(this._localRotation);
             }
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
         }
 
         private _localPosition:Vector3 = Vector3.create(0, 0, 0);
@@ -135,7 +135,7 @@ module wd{
         set localPosition(position:Vector3){
             this._localPosition = position.copy();
 
-            this.dirtyLocal = true;
+            this.isTranslate = true;
         }
 
         private _localRotation:Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -145,7 +145,7 @@ module wd{
         set localRotation(rotation:Quaternion){
             this._localRotation = rotation.copy();
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
         }
 
         private _localEulerAngles:Vector3 = null;
@@ -156,7 +156,7 @@ module wd{
         set localEulerAngles(localEulerAngles:Vector3){
             this._localRotation.setFromEulerAngles(localEulerAngles);
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
         }
 
         private _localScale:Vector3 = Vector3.create(1, 1, 1);
@@ -166,7 +166,7 @@ module wd{
         set localScale(scale:Vector3){
             this._localScale = scale.copy();
 
-            this.dirtyLocal = true;
+            this.isScale = true;
         }
 
         get up(){
@@ -183,8 +183,36 @@ module wd{
             return this.localToWorldMatrix.getZ().normalize().scale(-1);
         }
 
+        private _isTranslate:boolean = null;
+        get isTranslate(){
+            return this._isTranslate;
+        }
+        set isTranslate(isTranslate:boolean){
+            this._isTranslate = isTranslate;
+            this.dirtyLocal = true;
+        }
+
+        private _isRotate:boolean = null;
+        get isRotate(){
+            return this._isRotate;
+        }
+        set isRotate(isRotate:boolean){
+            this._isRotate = isRotate;
+            this.dirtyLocal = true;
+        }
+
+        private _isScale:boolean = null;
+        get isScale(){
+            return this._isScale;
+        }
+        set isScale(isScale:boolean){
+            this._isScale = isScale;
+            this.dirtyLocal = true;
+        }
+
         public dirtyWorld:boolean = null;
         public dirtyLocal:boolean = true;
+
 
         private _children:wdCb.Collection<Transform> = wdCb.Collection.create<Transform>();
         private _gameObject:GameObject = null;
@@ -194,6 +222,14 @@ module wd{
             super();
 
             this._gameObject = gameObject;
+        }
+
+        public init(){
+            var self = this;
+
+            EventManager.on(<any>EngineEvent.ENDLOOP, () => {
+                self._resetTransformFlag();
+            });
         }
 
         public addChild(child:Transform){
@@ -244,7 +280,7 @@ module wd{
 
             this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
 
-            this.dirtyLocal = true;
+            this.isTranslate = true;
 
             return this;
         }
@@ -292,7 +328,7 @@ module wd{
                 this._localRotation = quaternion.multiply(this.rotation);
             }
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
 
             return this;
         }
@@ -315,7 +351,7 @@ module wd{
 
             this._localRotation.multiply(quaternion);
 
-            this.dirtyLocal = true;
+            this.isRotate = true;
 
             return this;
         }
@@ -382,6 +418,12 @@ module wd{
             this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
 
             return this;
+        }
+
+        private _resetTransformFlag(){
+            this.isTranslate = false;
+            this.isScale = false;
+            this.isRotate = false;
         }
     }
 }

@@ -39,6 +39,8 @@ module wd {
                 component.init();
             });
 
+            this.transform.init();
+
             this.execScript("init");
 
             this.forEach((child:GameObject) => {

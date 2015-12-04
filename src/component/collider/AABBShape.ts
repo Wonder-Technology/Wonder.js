@@ -112,11 +112,11 @@ module wd {
             this.setMinMax(min, max);
         }
 
-        private _getEmptyMin(){
+        private _getEmptyMin() {
             return Vector3.create(Infinity, Infinity, Infinity);
         }
 
-        private _getEmptyMax(){
+        private _getEmptyMax() {
             return Vector3.create(-Infinity, -Infinity, -Infinity);
         }
 
@@ -172,6 +172,15 @@ module wd {
             //}
             //
             //return true;
+        }
+
+        public copy() {
+            var shape = AABBShape.create();
+
+            shape.center = this.center.copy();
+            shape.halfExtents = this.halfExtents.copy();
+
+            return shape;
         }
     }
 }

@@ -10,6 +10,8 @@ module wd {
         //public halfExtents:Vector3 = null;
         public shape:AABBShape = null;
 
+        private _originShape:AABBShape = null;
+
         public init(){
             //todo add OBBShape
             this.shape = AABBShape.create();
@@ -19,6 +21,7 @@ module wd {
             //console.log(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices)
             //this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
             this.shape.setFromObject(this.gameObject);
+            this._originShape = this.shape.copy();
         }
 
         //public update(precision:BoxColliderPrecision){
@@ -37,7 +40,14 @@ module wd {
             //}
 
         public update(){
-            this.shape.setFromObject(this.gameObject);
+            var transform = this.gameObject.transform;
+
+            if(transform.isRotate){
+                this.shape.setFromObject(this.gameObject);
+            }
+            else if(transform.isTranslate || transform.isScale){
+                this.shape.setFromTransformedAABB(this._originShape, transform.localToWorldMatrix);
+            }
         }
 
 

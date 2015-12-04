@@ -30,15 +30,9 @@ module wd {
 
             //this.boundingRegion.follow(this.gameObject.transform);
 
-            //todo if translate or scale, only change aabb
-
-            //todo if rotated, then re-calcute
 
             //this.boundingRegion.update(this.precision);
             this.boundingRegion.update();
-
-
-            //todo else, not change
         }
 
 

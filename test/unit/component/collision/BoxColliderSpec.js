@@ -104,12 +104,39 @@ describe("BoxCollider", function () {
             //todo refactor
             director._init();
 
-            box1.transform.translate(8.1, 0, 0);
+            box1.transform.translate(8, 0, 0);
             box2.transform.translate(-2, 0, 0);
 
             director._run(1);
 
-            judgeNotCollide();
+            judgeCollide();
+
+
+            box1.transform.translate(0.1, 0, 0);
+
+            director._run(1);
+
+            judgeCollideCount(1);
+        });
+        it("test first translate, then do nothing. it should only set shape once", function(){
+            director._init();
+
+            var shape1 = box1.getComponent(wd.Collider).boundingRegion.shape;
+
+            sandbox.stub(shape1, "setFromTransformedAABB");
+
+
+            box1.transform.translate(12, 0, 0);
+
+            director._loopBody(1);
+
+
+            expect(shape1.setFromTransformedAABB).toCalledOnce();
+
+
+            director._loopBody(1);
+
+            expect(shape1.setFromTransformedAABB).toCalledOnce();
         });
 
         describe("re-calculate aabb when gameObject transform change", function () {
@@ -156,7 +183,6 @@ describe("BoxCollider", function () {
 
                     judgeCollideCount(1);
                 });
-
             });
         });
     });
