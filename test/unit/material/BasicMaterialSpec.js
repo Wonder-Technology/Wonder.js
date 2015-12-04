@@ -44,7 +44,7 @@ describe("BasicMaterial", function () {
 
 
         director._init();
-        director._run(1);
+        director._loopBody(1);
 
 
         expect(searchTool.searchString(/gl_Position\s=/g, material.shader.vsSource).count).toEqual(1);
@@ -102,7 +102,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.BasicMapShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_sourceRegion")).toCalledOnce();
@@ -116,7 +116,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.MultiMapShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_sourceRegion")).toCalledTwice();
@@ -177,7 +177,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.MirrorForBasicShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.getUniformLocation.withArgs("u_mirrorSampler")).toCalledOnce();
         });
@@ -223,7 +223,7 @@ describe("BasicMaterial", function () {
             envMap.mode = wd.EnvMapMode.BASIC;
 
             director._init();
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_normal")).toCalledOnce();
             expect(testTool.getValues(
@@ -239,7 +239,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.BasicEnvMapForBasicShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
@@ -251,7 +251,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.ReflectionForBasicShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
@@ -264,7 +264,7 @@ describe("BasicMaterial", function () {
 
             expect(material.shader.hasLib(wd.RefractionForBasicShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
@@ -280,7 +280,7 @@ describe("BasicMaterial", function () {
 
                 expect(material.shader.hasLib(wd.FresnelForBasicShaderLib)).toBeTruthy();
 
-                director._run(1);
+                director._loopBody(1);
 
                 expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(0.5);
                 expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
@@ -294,7 +294,7 @@ describe("BasicMaterial", function () {
 
                 expect(material.shader.hasLib(wd.FresnelForBasicShaderLib)).toBeTruthy();
 
-                director._run(1);
+                director._loopBody(1);
 
                 expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(wd.ShaderChunk.NULL);
                 expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);

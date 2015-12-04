@@ -152,7 +152,7 @@ describe("LightMaterial", function() {
 
             expect(material.shader.hasLib(wd.BasicEnvMapForLightShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
@@ -164,7 +164,7 @@ describe("LightMaterial", function() {
 
             expect(material.shader.hasLib(wd.ReflectionForLightShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
@@ -177,7 +177,7 @@ describe("LightMaterial", function() {
 
             expect(material.shader.hasLib(wd.RefractionForLightShaderLib)).toBeTruthy();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);
             expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
@@ -193,7 +193,7 @@ describe("LightMaterial", function() {
 
                 expect(material.shader.hasLib(wd.FresnelForLightShaderLib)).toBeTruthy();
 
-                director._run(1);
+                director._loopBody(1);
 
                 expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(0.5);
                 expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
@@ -207,7 +207,7 @@ describe("LightMaterial", function() {
 
                 expect(material.shader.hasLib(wd.FresnelForLightShaderLib)).toBeTruthy();
 
-                director._run(1);
+                director._loopBody(1);
 
                 expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(wd.ShaderChunk.NULL);
                 expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);

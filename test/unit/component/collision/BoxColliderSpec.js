@@ -96,7 +96,7 @@ describe("BoxCollider", function () {
             box2.transform.translate(0, -2, 0);
 
 
-            director._run(1);
+            director._loopBody(1);
 
             judgeCollide();
         });
@@ -107,14 +107,14 @@ describe("BoxCollider", function () {
             box1.transform.translate(8, 0, 0);
             box2.transform.translate(-2, 0, 0);
 
-            director._run(1);
+            director._loopBody(1);
 
             judgeCollide();
 
 
             box1.transform.translate(0.1, 0, 0);
 
-            director._run(1);
+            director._loopBody(1);
 
             judgeCollideCount(1);
         });
@@ -146,14 +146,14 @@ describe("BoxCollider", function () {
             box1.transform.translate(6, 0, 0);
             box2.transform.translate(-2, 0, 0);
 
-            director._run(1);
+            director._loopBody(1);
 
             judgeCollide();
 
 
             box1.transform.translate(0.1, 0, 0);
 
-            director._run(1);
+            director._loopBody(1);
 
             judgeCollideCount(1);
         });
@@ -166,14 +166,14 @@ describe("BoxCollider", function () {
                 box1.transform.translate(0, 0, 20);
                 box2.transform.scale = wd.Vector3.create(0, 0, 2.9);
 
-                director._run(1);
+                director._loopBody(1);
 
                 judgeNotCollide();
 
 
                 box2.transform.scale = wd.Vector3.create(0, 0, 3);
 
-                director._run(2);
+                director._loopBody(2);
 
                 judgeCollide();
             });
@@ -190,7 +190,7 @@ describe("BoxCollider", function () {
                     box2.transform.translate(10, 0, 0);
 
 
-                    director._run(1);
+                    director._loopBody(1);
 
 
                     judgeCollide();
@@ -198,7 +198,7 @@ describe("BoxCollider", function () {
 
                     box2.transform.translate(0.1, 0, 0);
 
-                    director._run(1);
+                    director._loopBody(1);
 
                     judgeCollideCount(1);
                 });

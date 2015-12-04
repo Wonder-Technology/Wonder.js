@@ -173,7 +173,7 @@ describe("shadow map", function() {
 
                 director._init();
 
-                director._run(1);
+                director._loopBody(1);
 
 
 

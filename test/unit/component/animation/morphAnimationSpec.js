@@ -277,7 +277,7 @@ describe("morph animation", function () {
         it("use static vertices,normals of morphTargets when not play animation", function(){
             director._init();
 
-            director._run(1);
+            director._loopBody(1);
 
             expect(program.sendUniformData.withArgs("u_interpolation")).toCalledOnce();
             expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0);
@@ -290,7 +290,7 @@ describe("morph animation", function () {
             );
 
 
-            director._run(5);
+            director._loopBody(5);
 
             expect(program.sendUniformData.withArgs("u_interpolation").getCall(1).args[2]).toEqual(0);
 
@@ -334,7 +334,7 @@ describe("morph animation", function () {
             director._init();
 
 
-            director._run(1);
+            director._loopBody(1);
         })
     });
 });
