@@ -21,29 +21,6 @@ describe("BoxCollider", function () {
         var director;
         var script1, script2;
 
-        function createBox() {
-            var material = wd.BasicMaterial.create();
-            //material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var collider = wd.BoxCollider.create();
-//            collider.halfExtents = wd.Vector3(2.5, 2.5, 2.5);
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-            gameObject.addComponent(collider);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-            return gameObject;
-        }
-
         function judgeCollide() {
             expect(script1.onContact).toCalledOnce();
             expect(script2.onContact).toCalledOnce();
@@ -62,21 +39,18 @@ describe("BoxCollider", function () {
         }
 
         beforeEach(function () {
-            box1 = createBox();
-            box2 = createBox();
+            box1 = colliderTool.createBox();
+            box2 = colliderTool.createBox();
 
-            //todo refactor
-
-            //box1.addComponent()
             script1 = {
                 onContact: sandbox.stub()
             };
-            box1._script.addChild("box1", script1);
+            prepareTool.addScript(box1, script1);
 
             script2 = {
                 onContact: sandbox.stub()
             };
-            box2._script.addChild("box2", script2);
+            prepareTool.addScript(box2, script2);
 
 
             director = wd.Director.getInstance();
@@ -89,7 +63,6 @@ describe("BoxCollider", function () {
         });
 
         it("trigger onContact event during collision", function () {
-            //todo refactor
             director._init();
 
             box1.transform.translate(0, 8, 0);
@@ -101,7 +74,6 @@ describe("BoxCollider", function () {
             judgeCollide();
         });
         it("test not collision", function () {
-            //todo refactor
             director._init();
 
             box1.transform.translate(8, 0, 0);
@@ -160,7 +132,6 @@ describe("BoxCollider", function () {
 
         describe("re-calculate aabb when gameObject transform change", function () {
             it("if gameObject translate or scale, just transform aabb", function () {
-                //todo refactor
                 director._init();
 
                 box1.transform.translate(0, 0, 20);

@@ -11,40 +11,13 @@ describe("AABBShape", function () {
     afterEach(function () {
         sandbox.restore();
     });
-    function createBox() {
-        var material = wd.BasicMaterial.create();
-        //material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
-
-        var geometry = wd.BoxGeometry.create();
-        geometry.material = material;
-        geometry.width = 5;
-        geometry.height = 5;
-        geometry.depth = 5;
-
-
-        var collider = wd.BoxCollider.create();
-//            collider.halfExtents = wd.Vector3(2.5, 2.5, 2.5);
-
-        var gameObject = wd.GameObject.create();
-        gameObject.addComponent(geometry);
-        gameObject.addComponent(collider);
-
-        gameObject.addComponent(wd.MeshRenderer.create());
-
-        return gameObject;
-    }
 
     describe("setFromTransformedAABB", function () {
-
-        beforeEach(function () {
-
-        });
-
         it("set aabb enclose specify aabb", function () {
             shape.center = wd.Vector3.create(0, 0, 0);
             shape.halfExtents = wd.Vector3.create(5, 5, 5);
 
-            var box = createBox();
+            var box = colliderTool.createBox();
             box.transform.translate(5, 0, 0);
             box.transform.scale = wd.Vector3.create(1, 1, 2);
             box.transform.rotateLocal(0, 0, 45);
@@ -67,7 +40,7 @@ describe("AABBShape", function () {
         shape.center = wd.Vector3.create(0, 0, 0);
         shape.halfExtents = wd.Vector3.create(5, 5, 5);
 
-        var box = createBox();
+        var box = colliderTool.createBox();
         box.transform.rotateLocal(0, 0, 45);
 
 
