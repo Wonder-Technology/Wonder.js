@@ -1,7 +1,7 @@
 var prepareTool = (function () {
     return {
         addScript:function(gameObject, script, scriptName){
-            gameObject._script.addChild(scriptName || "scriptName", script);
+            gameObject._scripts.addChild(scriptName || "scriptName", script);
         },
         prepareGeo: function(sandbox, model,geo,material,setMaterialFunc) {
             setMaterialFunc = setMaterialFunc || function(){};

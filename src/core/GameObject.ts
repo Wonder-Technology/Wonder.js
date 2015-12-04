@@ -8,9 +8,9 @@ module wd {
         	return obj;
         }
 
-        private _script:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
+        private _scripts:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
         get script(){
-            return this._script;
+            return this._scripts;
         }
 
         public parent:GameObject = null;
@@ -303,7 +303,7 @@ module wd {
         }
 
         public execScript(method:string, arg?:any){
-            this._script.forEach((script:IScriptBehavior) => {
+            this._scripts.forEach((script:IScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
         }

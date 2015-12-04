@@ -46,10 +46,11 @@ describe("Scene", function() {
             script3 = buildScript();
             script4 = buildScript();
 
-            scene._script.addChild("customScript1", script1);
-            gameObject1._script.addChild("customScript2", script2);
-            gameObject2._script.addChild("customScript3", script3);
-            gameObject3._script.addChild("customScript4", script4);
+            scene._scripts.addChild("customScript1", script1);
+            prepareTool.addScript(scene, script1, "customScript1");
+            prepareTool.addScript(gameObject1, script2, "customScript2");
+            prepareTool.addScript(gameObject2, script3, "customScript3");
+            prepareTool.addScript(gameObject3, script4, "customScript4");
 
             sandbox.stub(gameObject1, "onStartLoop");
             sandbox.stub(gameObject2, "onStartLoop");
