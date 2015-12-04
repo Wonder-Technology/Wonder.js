@@ -94,15 +94,37 @@ module wd {
             //todo optimize:use worker
             var checkTargetList = this.filter((gameObject:GameObject) => {
                     return gameObject.hasComponent(Collider);
-                });
+                }),
+                self = this;
 
             checkTargetList.forEach((gameObject:GameObject) => {
                 var collideObjects = gameObject.getComponent<Collider>(Collider).getCollideObjects(checkTargetList);
 
                 if(collideObjects.getCount() > 0){
+                    if(self._isCollisionStart(gameObject)){
+                        gameObject.execScript("onCollisionStart", collideObjects);
+                    }
+
                     gameObject.execScript("onContact", collideObjects);
+
+                    gameObject.isCollided = true;
+                }
+                else{
+                  if(self._isCollisionEnd(gameObject)){
+                    gameObject.execScript("onCollisionEnd", collideObjects);
+                }
+
+                    gameObject.isCollided = false;
                 }
             });
+        }
+
+        private _isCollisionStart(gameObject:GameObject){
+            return !gameObject.isCollided;
+        }
+
+        private _isCollisionEnd(gameObject:GameObject){
+            return gameObject.isCollided;
         }
 
         private _isCamera(child:GameObject){

@@ -17,6 +17,12 @@ var sample;
         Box2.prototype.onContact = function (collisionObjects) {
             console.log("contact", collisionObjects.getCount());
         };
+        Box2.prototype.onCollisionStart = function () {
+            console.log("collision start");
+        };
+        Box2.prototype.onCollisionEnd = function () {
+            console.log("collision end");
+        };
         Box2 = __decorate([
             wd.script("box2")
         ], Box2);

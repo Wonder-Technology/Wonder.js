@@ -12,14 +12,13 @@ module sample{
             console.log("contact", collisionObjects.getCount());
         }
 
-        //public onCollisionStart(){
-        //
-        //    console.log("collision start");
-        //}
-        //
-        //public onCollisionEnd(){
-        //    console.log("collision end");
-        //}
+        public onCollisionStart(){
+            console.log("collision start");
+        }
+
+        public onCollisionEnd(){
+            console.log("collision end");
+        }
     }
 }
 

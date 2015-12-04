@@ -62,17 +62,6 @@ describe("BoxCollider", function () {
             director.scene.addChild(testTool.createCamera());
         });
 
-        it("trigger onContact event during collision", function () {
-            director._init();
-
-            box1.transform.translate(0, 8, 0);
-            box2.transform.translate(0, -2, 0);
-
-
-            director._loopBody(1);
-
-            judgeCollide();
-        });
         it("test not collision", function () {
             director._init();
 

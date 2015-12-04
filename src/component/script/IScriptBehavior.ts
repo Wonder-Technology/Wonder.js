@@ -9,10 +9,7 @@ module wd{
         onDispose?();
 
         onContact?(collisionObjects:wdCb.Collection<GameObject>);
-        /*!
-        //todo add these:
         onCollisionStart();
         onCollisionEnd();
-        */
     }
 }
