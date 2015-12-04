@@ -25,7 +25,9 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**/*.js',
+        //'test/unit/**/*.js',
+        'test/unit/**/*ColliderSpec.js',
+        'test/unit/**/*AABB*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/scriptSpec.js',

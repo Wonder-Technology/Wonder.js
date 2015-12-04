@@ -109,7 +109,7 @@ module wd {
             var moveSpeedX = this.moveSpeedX,
                 moveSpeedY = this.moveSpeedY,
                 dx = null,
-                wd = null,
+                dy = null,
                 keyState = e.keyState,
                 transform = this.gameObject.transform;
 
@@ -122,14 +122,14 @@ module wd {
                 dx = moveSpeedX;
             }
             else if(keyState["w"] || keyState["up"]) {
-                wd = moveSpeedY;
+                dy = moveSpeedY;
             }
             else if(keyState["s"] || keyState["down"]) {
-                wd = -moveSpeedY;
+                dy = -moveSpeedY;
             }
 
             this.target.add(Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
-            this.target.add(Vector3.create(transform.up.x * wd, transform.up.y * wd, 0));
+            this.target.add(Vector3.create(transform.up.x * dy, transform.up.y * dy, 0));
         }
 
         private _changeDistance(e:MouseEvent){

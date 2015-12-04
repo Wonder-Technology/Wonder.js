@@ -7,5 +7,12 @@ module wd{
         onStartLoop?();
         onEndLoop?();
         onDispose?();
+
+        onContact?(collisionObjects:wdCb.Collection<GameObject>);
+        /*!
+        //todo add these:
+        onCollisionStart();
+        onCollisionEnd();
+        */
     }
 }

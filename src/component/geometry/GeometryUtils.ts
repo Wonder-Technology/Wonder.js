@@ -45,6 +45,14 @@ module wd {
             );
         }
 
+        @require(function(dataArr:Array<number>, iterator:(v:Vector3) => void){
+            assert(dataArr.length % 3 === 0, Log.info.FUNC_SHOULD("dataArr.length", "times of three"));
+        })
+        public static iterateThreeComponent(dataArr:Array<number>, iterator:(v:Vector3) => void){
+            for(let i = 0, len = dataArr.length / 3; i < len; i += 3){
+                iterator(Vector3.create(dataArr[i], dataArr[i + 1], dataArr[i + 2]));
+            }
+        }
 
         public static setThreeComponent(targetData:Array<number>, sourceData:Vector3, index:number);
         public static setThreeComponent(targetData:Array<number>, sourceData:Array<number>, index:number);

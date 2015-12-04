@@ -39,7 +39,7 @@ module wd {
                 component.init();
             });
 
-            this._execScript("init");
+            this.execScript("init");
 
             this.forEach((child:GameObject) => {
                 child.init();
@@ -49,28 +49,28 @@ module wd {
         }
 
         public onStartLoop() {
-            this._execScript("onStartLoop");
+            this.execScript("onStartLoop");
         }
 
         public onEndLoop() {
-            this._execScript("onEndLoop");
+            this.execScript("onEndLoop");
         }
 
         public onEnter() {
-            this._execScript("onEnter");
+            this.execScript("onEnter");
         }
 
         public onExit() {
-            this._execScript("onExit");
+            this.execScript("onExit");
         }
 
         public onDispose(){
-            this._execScript("onDispose");
+            this.execScript("onDispose");
         }
 
         //todo test memory management
         public dispose() {
-            this._execScript("onDispose");
+            this.execScript("onDispose");
 
             if(this.parent){
                 this.parent.removeChild(this);
@@ -131,10 +131,14 @@ module wd {
             return this;
         }
 
-        public forEach(func:Function){
+        public forEach(func:(gameObjcet:GameObject) => void){
             this._children.forEach(func);
 
             return this;
+        }
+
+        public filter(func:(gameObjcet:GameObject) => boolean){
+            return this._children.filter(func);
         }
 
         public getChildren(){
@@ -272,7 +276,8 @@ module wd {
 
         public update(time:number):void {
             var camera = this._getCamera(),
-                animation = this._getAnimation();
+                animation = this._getAnimation(),
+                collider = this._getCollider();
 
             if(camera){
                 camera.update(time);
@@ -282,23 +287,27 @@ module wd {
                 animation.update(time);
             }
 
+            if(collider){
+                collider.update(time);
+            }
+
             this.actionManager.update(time);
 
-            this._execScript("update", time);
+            this.execScript("update", time);
 
             this._children.forEach((child:GameObject) => {
                 child.update(time);
             });
         }
 
-        private _ascendZ(a:GameObject, b:GameObject){
-            return a.transform.position.z - b.transform.position.z;
-        }
-
-        private _execScript(method:string, arg?:any){
+        public execScript(method:string, arg?:any){
             this._script.forEach((script:IScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
+        }
+
+        private _ascendZ(a:GameObject, b:GameObject){
+            return a.transform.position.z - b.transform.position.z;
         }
 
         @require(function(){
@@ -334,6 +343,13 @@ module wd {
         })
         private _getRendererComponent():RendererComponent{
             return this.getComponent<RendererComponent>(RendererComponent);
+        }
+
+        @require(function(){
+            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+        })
+        private _getCollider():Collider{
+            return this.getComponent<Collider>(Collider);
         }
 
         private _getComponentCount(_class:Function){

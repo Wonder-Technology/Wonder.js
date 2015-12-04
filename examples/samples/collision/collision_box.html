@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>box to box collision</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../asset/texture/crate.gif", id: "ground"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+            var box1 = createBox1();
+            var box2 = createBox2();
+            var ground = createGround();
+
+            director.scene.addChild(box1);
+            director.scene.addChild(box2);
+            director.scene.addChild(ground);
+            director.scene.addChild(createCamera());
+
+            wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
+                    .subscribe(function(e){
+                        var keyState = e.keyState,
+                                x = 0,
+                                z = 0,
+                                moveSpeedX = 1,
+                                moveSpeedZ = 1;
+
+                        if (keyState["a"] || keyState["left"]) {
+                            x = -moveSpeedX;
+                        }
+                        else if(keyState["d"] || keyState["right"]) {
+                            x = moveSpeedX;
+                        }
+                        else if(keyState["w"] || keyState["up"]) {
+                            z = moveSpeedZ;
+                        }
+                        else if(keyState["s"] || keyState["down"]) {
+                            z = -moveSpeedZ;
+                        }
+
+                        box2.transform.translate(x, 0, z);
+                    });
+
+            director.start();
+        }
+
+        function createBox1() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var collision = wd.BoxCollider.create();
+//            collision.halfExtents = wd.Vector3(2.5, 2.5, 2.5);
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            return gameObject;
+        }
+
+        function createBox2() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var collision = wd.BoxCollider.create();
+//            collision.halfExtents = wd.Vector3(2.5, 2.5, 2.5);
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+//
+//            var tween1 = wd.Tween.create();
+//            var tween2 = wd.Tween.create();
+//
+//            tween1.from({x: -10})
+//                    .to({x: 10}, 3000)
+//                    .easing(wd.Tween.Easing.Cubic.InOut)
+//                    .onUpdate(function () {
+//                        gameObject.transform.position = wd.Vector3.create(this.x, 0, 0);
+//                    });
+//
+//            tween2.from({x: 10})
+//                    .to({x: -10}, 3000)
+//                    .easing(wd.Tween.Easing.Cubic.InOut)
+//                    .onUpdate(function () {
+//                        gameObject.transform.position = wd.Vector3.create(this.x, 0, 0);
+//                    });
+//
+//            var action = wd.RepeatForever.create(wd.Sequence.create(tween1, tween2));
+//
+//            gameObject.addComponent(action);
+
+
+            gameObject.transform.translate(-15, 0, 0);
+
+
+            gameObject.addComponent(wd.Script.create("./js/collision_box/box2.js"));
+
+
+            return gameObject;
+        }
+
+        function createGround(){
+            var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            map.wrapS = wd.TextureWrapMode.REPEAT;
+            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+
+
+            var material = wd.LightMaterial.create();
+            material.specular = wd.Color.create("#ffdd99");
+            material.shininess = 32;
+            material.diffuseMap = map;
+
+
+            var plane = wd.PlaneGeometry.create();
+            plane.width = 200;
+            plane.height = 200;
+            plane.material = material;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(plane);
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.BasicCameraController.create(cameraComponent);
+
+            camera.addComponent(controller);
+
+            camera.transform.translate(0, 20, 20);
+            camera.transform.lookAt(0, 0, 0);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

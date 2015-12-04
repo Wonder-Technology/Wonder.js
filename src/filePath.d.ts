@@ -86,6 +86,11 @@
 /// <reference path="component/renderer/SkyboxRenderer"/>
 
 /// <reference path="component/collider/Collider"/>
+/// <reference path="component/collider/BoxCollider"/>
+/// <reference path="component/collider/BoundingRegion"/>
+/// <reference path="component/collider/BoxBoundingRegion"/>
+/// <reference path="component/collider/Shape"/>
+/// <reference path="component/collider/AABBShape"/>
 
 /// <reference path="component/pick/Pick"/>
 

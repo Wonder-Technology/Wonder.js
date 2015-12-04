@@ -32,7 +32,7 @@ module wd {
         private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
 
         public init(){
-            this.addComponent(TopCollider.create());
+            this.addComponent(Pick.create());
 
             super.init();
 
@@ -70,6 +70,12 @@ module wd {
             this._renderTargetRenderers.removeChild(renderTargetRenderer);
         }
 
+        public update(time:number){
+            super.update(time);
+
+            this._checkCollision();
+        }
+
         @require(function(renderer:Renderer){
             assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
         })
@@ -81,6 +87,22 @@ module wd {
             });
 
             super.render(renderer, this.camera);
+        }
+
+        private _checkCollision(){
+            //todo optimize:use scene graph to only get needChecked gameObjects
+            //todo optimize:use worker
+            var checkTargetList = this.filter((gameObject:GameObject) => {
+                    return gameObject.hasComponent(Collider);
+                });
+
+            checkTargetList.forEach((gameObject:GameObject) => {
+                var collideObjects = gameObject.getComponent<Collider>(Collider).getCollideObjects(checkTargetList);
+
+                if(collideObjects.getCount() > 0){
+                    gameObject.execScript("onContact", collideObjects);
+                }
+            });
         }
 
         private _isCamera(child:GameObject){

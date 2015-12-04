@@ -80,24 +80,24 @@ module wd {
                 return mousemove.map(function (e) {
                     var movementDelta = e.movementDelta,
                         dx = null,
-                        wd = null,
+                        dy = null,
                         factor = rotateSpeed / canvas.height;
 
                     dx = factor * movementDelta.x;
-                    wd = factor * movementDelta.y;
+                    dy = factor * movementDelta.y;
 
                     self._isRotate = true;
 
                     return {
                         dx: dx,
-                        wd: wd
+                        dy: dy
                     };
                 }).takeUntil(mouseup);
             });
 
             this._mouseDragSubscription = mousedrag.subscribe(function (pos) {
                 self._rotateY -= pos.dx;
-                self._rotateX -= pos.wd;
+                self._rotateX -= pos.dy;
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {

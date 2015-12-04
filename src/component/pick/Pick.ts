@@ -1,6 +1,12 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    export abstract class Pick extends Component {
+    export class Pick extends Component {
+        public static create() {
+        	var obj = new this();
+
+        	return obj;
+        }
+
         public init(){
         }
 

@@ -270,12 +270,55 @@ module wd{
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
         }
 
+        public min(v:Vector3) {
+            if (this.x > v.x) {
+                this.x = v.x;
+            }
+            if (this.y > v.y) {
+                this.y = v.y;
+            }
+            if (this.z > v.z) {
+                this.z = v.z;
+            }
+
+            return this;
+
+        }
+
+        public max(v:Vector3) {
+            if (this.x < v.x) {
+                this.x = v.x;
+            }
+            if (this.y < v.y) {
+                this.y = v.y;
+            }
+            if (this.z < v.z) {
+                this.z = v.z;
+            }
+
+            return this;
+
+        }
+
         public isEqual(v:Vector3){
             return this.x === v.x && this.y === v.y && this.z === v.z;
         }
 
         public toArray(){
             return [this.x, this.y, this.z];
+        }
+
+        public applyMatrix4(m:Matrix4) {
+            var x = this.x,
+                y = this.y,
+                z = this.z,
+                e = m.values;
+
+            this.x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ]  * z + e[ 12 ];
+            this.y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ]  * z + e[ 13 ];
+            this.z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ];
+
+            return this;
         }
     }
 }

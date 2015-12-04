@@ -1,5 +1,8 @@
 var prepareTool = (function () {
     return {
+        prepareScript:function(){
+
+        },
         prepareGeo: function(sandbox, model,geo,material,setMaterialFunc) {
             setMaterialFunc = setMaterialFunc || function(){};
 
