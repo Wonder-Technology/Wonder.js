@@ -26,6 +26,11 @@ module wd {
             return this.center.copy().add(this.halfExtents);
         }
 
+        public setFromCenterAndHalfExtents(center:Vector3, halfExtents:Vector3){
+            this.center = center;
+            this.halfExtents = halfExtents;
+        }
+
         public setFromPoints(points:Array<number>) {
             var self = this,
                 min = this._getEmptyMin(),

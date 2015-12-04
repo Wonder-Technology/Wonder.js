@@ -130,6 +130,27 @@ describe("BoxCollider", function () {
             judgeCollideCount(1);
         });
 
+        it("user can specify bounding box", function(){
+            var collider1 = box1.getComponent(wd.Collider);
+            collider1.halfExtents = wd.Vector3.create(10, 10, 10);
+
+            director._init();
+
+
+            box1.transform.translate(0, 0, 15);
+
+            director._loopBody(1);
+
+            judgeCollide();
+
+
+            box1.transform.translate(0, 0, 0.1);
+
+            director._loopBody(2);
+
+            judgeCollideCount(1);
+        });
+
         describe("re-calculate aabb when gameObject transform change", function () {
             it("if gameObject translate or scale, just transform aabb", function () {
                 director._init();

@@ -17,10 +17,17 @@ module wd {
             this.shape = AABBShape.create();
         }
 
-        public build(){
+        public build(center:Vector3, halfExtents:Vector3){
             //console.log(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices)
             //this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
-            this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
+
+            if(center && halfExtents){
+                this.shape.setFromCenterAndHalfExtents(center, halfExtents);
+            }
+            else{
+                this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
+            }
+
             this._originShape = this.shape.copy();
         }
 

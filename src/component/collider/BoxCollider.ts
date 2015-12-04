@@ -7,31 +7,18 @@ module wd {
             return obj;
         }
 
-        //public halfExtents:Vector3 = null;
-        //public precision:BoxColliderPrecision = BoxColliderPrecision.LOW;
-
+        public center:Vector3 = Vector3.create(0, 0, 0);
+        public halfExtents:Vector3 = null;
         public boundingRegion:BoxBoundingRegion = null;
 
         public init(){
             this.boundingRegion = BoxBoundingRegion.create(this.gameObject);
             this.boundingRegion.init();
 
-            //todo can specify region by user
-
             this.buildBoundingRegion();
         }
 
         public update(time:number){
-            //var he = data.halfExtents;
-            //var x = he.x;
-            //var y = he.y;
-            //var z = he.z;
-            //var gameObject = this.gameObject;
-
-            //this.boundingRegion.follow(this.gameObject.transform);
-
-
-            //this.boundingRegion.update(this.precision);
             this.boundingRegion.update();
         }
 
@@ -71,7 +58,7 @@ module wd {
         //}
 
         public buildBoundingRegion(){
-            this.boundingRegion.build();
+            this.boundingRegion.build(this.center, this.halfExtents);
         }
 
         private _isSelf(gameObject:GameObject){
