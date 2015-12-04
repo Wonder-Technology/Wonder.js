@@ -23,17 +23,12 @@ module wd {
         }
 
 
-        //todo optimize
         public getCollideObjects(checkTargetList:wdCb.Collection<GameObject>):wdCb.Collection<GameObject>{
-            //var checkTargetList = this.gameObject.filter((gameObject:GameObject) => {
-            //    return gameObject.hasComponent(Collider);
-            //}),
-                var self = this,
+            var self = this,
                 result = wdCb.Collection.create<GameObject>();
 
             checkTargetList.forEach((gameObject) => {
-                //if(gameObject.isCollisionChecked || self._isSelf(gameObject)){
-                    if(self._isSelf(gameObject)){
+                if(self._isSelf(gameObject)){
                     return;
                 }
 
@@ -53,9 +48,6 @@ module wd {
             else{
             }
         }
-        //public isIntersectWith(collider:Collider){
-        //    return this._boundingRegion.isIntersectWith(collider);
-        //}
 
         public buildBoundingRegion(){
             this.boundingRegion.build(this.center, this.halfExtents);
@@ -65,10 +57,5 @@ module wd {
             return this.gameObject.uid === gameObject.uid;
         }
     }
-
-    //export enum BoxColliderPrecision{
-    //    LOW,
-    //    HIGH
-    //}
 }
 

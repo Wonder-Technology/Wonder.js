@@ -7,7 +7,6 @@ module wd {
             return obj;
         }
 
-        //public halfExtents:Vector3 = null;
         public shape:AABBShape = null;
 
         private _originShape:AABBShape = null;
@@ -18,9 +17,6 @@ module wd {
         }
 
         public build(center:Vector3, halfExtents:Vector3){
-            //console.log(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices)
-            //this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
-
             if(center && halfExtents){
                 this.shape.setFromCenterAndHalfExtents(center, halfExtents);
             }
@@ -30,21 +26,6 @@ module wd {
 
             this._originShape = this.shape.copy();
         }
-
-        //public update(precision:BoxColliderPrecision){
-            //switch (precision){
-            //    case BoxColliderPrecision.LOW:
-            //        this.shape.setFromTransformedAABB(this.shape, this.gameObject.transform.localToWorldMatrix);
-            //        //this.shape.setFromTransformedAABB(this.shape, Matrix4.create().rotate(45, 0, 1, 0));
-            //        //this.shape.setFromObject(this.gameObject.transform);
-            //        break;
-            //    case BoxColliderPrecision.HIGH:
-            //        this.shape.setFromObject(this.gameObject);
-            //        break;
-            //    default:
-            //        wdCb.Log.error(true, wdCb.Log.info.FUNC_UNEXPECT(`precision:${precision}`));
-            //        break;
-            //}
 
         public update(){
             var transform = this.gameObject.transform;
@@ -56,7 +37,6 @@ module wd {
                 this.shape.setFromTransformedAABB(this._originShape, transform.localToWorldMatrix);
             }
         }
-
 
         public isIntersectWithBox(boundingRegion:BoxBoundingRegion){
             return this.shape.isIntersectWithBox(boundingRegion.shape);
