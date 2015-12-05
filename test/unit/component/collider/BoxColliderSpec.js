@@ -322,4 +322,23 @@ describe("BoxCollider", function () {
             });
         });
     });
+
+    describe("isIntersectWith", function(){
+        beforeEach(function(){
+
+        });
+
+        it("if target isn't collider, error", function(){
+            expect(function(){
+                collider.isIntersectWith(wd.Director.getInstance().scene);
+            }).toThrow();
+        });
+        it("if the target is not support, warn", function(){
+            //todo test
+
+            //sandbox.stub(wd.Log, "warn");
+            //
+            //collider.isIntersectWith()
+        });
+    });
 });

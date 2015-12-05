@@ -10,6 +10,7 @@ module wd {
         public center:Vector3 = Vector3.create(0, 0, 0);
         public halfExtents:Vector3 = null;
         public boundingRegion:BoxBoundingRegion = null;
+        public type:string = "box";
 
         public init(){
             this.boundingRegion = BoxBoundingRegion.create(this.gameObject);
@@ -40,13 +41,15 @@ module wd {
             return result;
         }
 
+        @require(function(collider:Collider){
+            assert(collider instanceof Collider, Log.info.FUNC_SHOULD("target", "be collider"))
+        })
         public isIntersectWith(collider:Collider){
             if(collider instanceof BoxCollider){
                 return this.boundingRegion.isIntersectWithBox(collider.boundingRegion);
             }
-            //todo add and judge more collider
             else{
-                //todo warn,add type
+                Log.warn(Log.info.FUNC_NOT_SUPPORT(`${this.type} collider`, `intersect with ${collider.type} collider`));
             }
         }
 
