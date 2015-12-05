@@ -290,13 +290,13 @@ module wd {
                 animation.update(time);
             }
 
-            if(collider){
-                collider.update(time);
-            }
-
             this.actionManager.update(time);
 
             this.execScript("update", time);
+
+            if(collider){
+                collider.update(time);
+            }
 
             this._children.forEach((child:GameObject) => {
                 child.update(time);

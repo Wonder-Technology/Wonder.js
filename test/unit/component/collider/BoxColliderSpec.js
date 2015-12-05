@@ -15,7 +15,6 @@ describe("BoxCollider", function () {
         sandbox.restore();
     });
 
-
     describe("test aabb-aabb collision", function () {
         var box1, box2;
         var director;
@@ -182,6 +181,143 @@ describe("BoxCollider", function () {
                     director._loopBody(1);
 
                     judgeCollideCount(1);
+                });
+            });
+        });
+
+        describe("test debug box", function(){
+            beforeEach(function(){
+
+            });
+
+            it("if not set debugCollision config, not build and update debug box", function(){
+                sandbox.stub(wd.DebugConfig, "debugCollision", false);
+
+                box1.transform.translate(2, 0, 0);
+
+                director._init();
+
+                //scene contains box1,box2,camera that it not contains debugBox
+                expect(director.scene.getChildren().getCount()).toEqual(3);
+
+                box1.transform.translate(6, 0, 0);
+
+                director._loopBody(1);
+
+                expect(director.scene.getChildren().getCount()).toEqual(3);
+            });
+
+            describe("else", function(){
+                beforeEach(function(){
+                    sandbox.stub(wd.DebugConfig, "debugCollision", true);
+                });
+
+                it("build debugBox when init that it shows the bounding region shape", function(){
+                    var collider1 = box1.getComponent(wd.Collider);
+                    collider1.halfExtents = wd.Vector3.create(10, 10, 10);
+                    collider1.center = wd.Vector3.create(0, 1, 1);
+
+
+                    director._init();
+
+
+                    var debugBox = director.scene.getChild(3);
+                    var debugGeo = debugBox.getComponent(wd.CustomGeometry);
+
+                    expect(debugBox).toBeDefined();
+                    expect(testTool.getValues(debugBox.transform.position)).toEqual([0, 1, 1]);
+                    expect(testTool.getValues(debugGeo.vertices)).toEqual(
+                        [
+                            -10, -10, -10, -10, -10, 10, 10, -10, 10, 10, -10, -10, -10, 10, -10, -10, 10, 10, 10, 10, 10, 10, 10, -10
+                        ]
+                    );
+                });
+                describe("update debugBox when update that it shows the updated bounding region shape", function(){
+                    it("test translate/scale", function(){
+                        box1.transform.translate(2, 0, 0);
+                        box1.transform.scale = wd.Vector3.create(2, 1, 1);
+
+
+                        director._init();
+
+                        box1.transform.translate(2, 0, 0);
+
+                        director._loopBody(1);
+
+
+                        var debugBox = director.scene.getChild(3);
+                        var debugGeo = debugBox.getComponent(wd.CustomGeometry);
+
+                        expect(debugBox).toBeDefined();
+                        expect(testTool.getValues(debugBox.transform.position)).toEqual([4, 0, 0]);
+                        expect(testTool.getValues(debugGeo.vertices)).toEqual(
+                            [
+                                -10, -5, -5, -10, -5, 5, 10, -5, 5, 10, -5, -5, -10, 5, -5, -10, 5, 5, 10, 5, 5, 10, 5, -5
+                            ]
+                        );
+                    });
+                    describe("test rotate", function(){
+                        it("test1", function(){
+                            box1.transform.translate(2, 0, 0);
+
+                            director._init();
+
+                            box1.transform.rotate(0, 0, 45);
+
+                            director._loopBody(1);
+
+
+                            var debugBox = director.scene.getChild(3);
+                            var debugGeo = debugBox.getComponent(wd.CustomGeometry);
+
+                            expect(debugBox).toBeDefined();
+                            expect(testTool.getValues(debugBox.transform.position)).toEqual([2, 0, 0]);
+                            expect(testTool.getValues(debugGeo.vertices)).toEqual(
+                                [
+                                    -7.0710678, -7.0710678, -5, -7.0710678, -7.0710678, 5, 7.0710678, -7.0710678, 5, 7.0710678, -7.0710678, -5, -7.0710678, 7.0710678, -5, -7.0710678, 7.0710678, 5, 7.0710678, 7.0710678, 5, 7.0710678, 7.0710678, -5
+                                ]
+                            );
+                        });
+                        it("test2", function(){
+                            box1.transform.translate(2, 0, 0);
+                            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+                                box1.transform.rotate(0, 0, 1);
+                            }));
+                            box1.addComponent(action);
+
+                            director._init();
+
+
+                            var debugBox = director.scene.getChild(3);
+                            var debugGeo = debugBox.getComponent(wd.CustomGeometry);
+
+
+
+
+                            director._loopBody(1);
+
+
+                            expect(testTool.getValues(debugGeo.buffers.getChild(wd.BufferDataType.VERTICE).data)).toEqual(
+                                [
+                                    -5.0865006, -5.0865006, -5, -5.0865006, -5.0865006, 5, 5.0865006, -5.0865006, 5, 5.0865006, -5.0865006, -5, -5.0865006, 5.0865006, -5, -5.0865006, 5.0865006, 5, 5.0865006, 5.0865006, 5, 5.0865006, 5.0865006, -5
+                                ]
+                            );
+
+
+
+                            director._loopBody(1);
+
+
+
+                            expect(debugBox).toBeDefined();
+                            expect(testTool.getValues(debugBox.transform.position)).toEqual([2, 0, 0]);
+                            expect(testTool.getValues(debugGeo.buffers.getChild(wd.BufferDataType.VERTICE).data)).toEqual(
+                                [
+                                    -5.1714516, -5.1714516, -5, -5.1714516, -5.1714516, 5, 5.1714516, -5.1714516, 5, 5.1714516, -5.1714516, -5, -5.1714516, 5.1714516, -5, -5.1714516, 5.1714516, 5, 5.1714516, 5.1714516, 5, 5.1714516, 5.1714516, -5
+                                ]
+                            );
+                        })
+                    });
                 });
             });
         });

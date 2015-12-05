@@ -1,6 +1,7 @@
 module wd{
     export enum DrawMode{
-        TRIANGLES = <any>"TRIANGLES"
+        TRIANGLES = <any>"TRIANGLES",
+        LINES = <any>"LINES"
     }
 }
 

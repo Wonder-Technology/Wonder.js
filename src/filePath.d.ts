@@ -4,6 +4,7 @@
 /// <reference path="../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts"/>
 
 /// <reference path="Config"/>
+/// <reference path="DebugConfig"/>
 
 /// <reference path="extend/wdFrp"/>
 

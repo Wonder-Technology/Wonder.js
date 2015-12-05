@@ -3,8 +3,14 @@ module wd {
     export abstract class BufferContainer {
         public geometryData:GeometryData = null;
 
+        protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
+
         @virtual
         public init(){
+        }
+
+        public removeCache(type:BufferDataType){
+            this.container.removeChild(type);
         }
 
         public getChild(type:BufferDataType) {
@@ -52,8 +58,6 @@ module wd {
 
         protected abstract getVertice(type);
         protected abstract getNormal(type);
-
-        protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
         @cache(function(type:BufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);

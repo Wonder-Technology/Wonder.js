@@ -28,6 +28,8 @@
             var box2 = createBox2();
             var ground = createGround();
 
+            wd.DebugConfig.debugCollision = true;
+
             director.scene.addChild(box1);
             director.scene.addChild(box2);
             director.scene.addChild(ground);
@@ -79,6 +81,12 @@
             gameObject.addComponent(collision);
 
             gameObject.addComponent(wd.MeshRenderer.create());
+
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+                gameObject.transform.rotate(0, 0, 1);
+            }));
+
+            gameObject.addComponent(action);
 
             return gameObject;
         }

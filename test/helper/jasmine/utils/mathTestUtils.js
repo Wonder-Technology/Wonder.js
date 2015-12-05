@@ -23,6 +23,10 @@ var mathTestUtils = (function () {
         isFloat32Array: function(val){
             return Object.prototype.toString.call(val) === "[object Float32Array]";
         },
+        isUint16Array: function(val){
+            return Object.prototype.toString.call(val) === "[object Uint16Array]";
+        },
+
         isArray: function(val){
             return Object.prototype.toString.call(val) === "[object Array]";
         },

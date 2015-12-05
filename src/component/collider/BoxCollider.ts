@@ -46,6 +46,7 @@ module wd {
             }
             //todo add and judge more collider
             else{
+                //todo warn,add type
             }
         }
 

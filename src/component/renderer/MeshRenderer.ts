@@ -7,6 +7,8 @@ module wd {
         	return obj;
         }
 
+        public drawMode:DrawMode = DrawMode.TRIANGLES;
+
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
             renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
         }
@@ -34,6 +36,8 @@ module wd {
             quadCmd.material = material;
 
             quadCmd.z = this.gameObject.transform.position.z;
+
+            quadCmd.drawMode = this.drawMode;
 
             return quadCmd;
         }
