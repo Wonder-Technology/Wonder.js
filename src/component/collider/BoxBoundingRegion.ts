@@ -64,25 +64,34 @@ module wd {
         }
 
         private _buildDebugBoxFromShape(shape:AABBShape){
-            var material = wd.BasicMaterial.create();
+            var material = null,
+                geometry = null,
+                renderer = null,
+                gameObject = null;
+
+            material = wd.BasicMaterial.create();
             material.color = wd.Color.create("rgb(255,0,0)");
 
-            var geometry = wd.CustomGeometry.create();
+            geometry = wd.CustomGeometry.create();
             geometry.material = material;
             this._setDebugBoxGeometryVertices(geometry, shape.halfExtents);
+            /*!
+             //todo optimize: set ElementBuffer to create Uint8Array, BufferType.UNSIGNED_BYTE
+             geometry add buffer type table?
+             */
             geometry.indices = [
                 0,1,1,2,2,3,3,0,
                 4,5,5,6,6,7,7,4,
                 0,4,1,5,2,6,3,7
             ];
-            //todo geometry add buffer type table
 
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
 
-            var renderer = wd.MeshRenderer.create();
+            renderer = wd.MeshRenderer.create();
             renderer.drawMode = DrawMode.LINES;
 
+
+            gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
             gameObject.addComponent(renderer);
 
             gameObject.transform.translate(shape.center);
