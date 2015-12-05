@@ -111,28 +111,6 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
-//
-//            var tween1 = wd.Tween.create();
-//            var tween2 = wd.Tween.create();
-//
-//            tween1.from({x: -10})
-//                    .to({x: 10}, 3000)
-//                    .easing(wd.Tween.Easing.Cubic.InOut)
-//                    .onUpdate(function () {
-//                        gameObject.transform.position = wd.Vector3.create(this.x, 0, 0);
-//                    });
-//
-//            tween2.from({x: 10})
-//                    .to({x: -10}, 3000)
-//                    .easing(wd.Tween.Easing.Cubic.InOut)
-//                    .onUpdate(function () {
-//                        gameObject.transform.position = wd.Vector3.create(this.x, 0, 0);
-//                    });
-//
-//            var action = wd.RepeatForever.create(wd.Sequence.create(tween1, tween2));
-//
-//            gameObject.addComponent(action);
-
 
             gameObject.transform.translate(-15, 0, 0);
 
@@ -150,10 +128,10 @@
             map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 
-            var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
-            material.shininess = 32;
-            material.diffuseMap = map;
+            var material = wd.BasicMaterial.create();
+//            material.specular = wd.Color.create("#ffdd99");
+//            material.shininess = 32;
+            material.map = map;
 
 
             var plane = wd.PlaneGeometry.create();
@@ -165,6 +143,8 @@
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(plane);
+
+            gameObject.transform.translate(0, -10, 0);
 
             return gameObject;
         }
