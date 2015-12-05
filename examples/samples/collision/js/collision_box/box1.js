@@ -9,24 +9,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 /// <reference path="../../../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
-    var Box2 = (function () {
-        function Box2(gameObject) {
+    var Box1 = (function () {
+        function Box1(gameObject) {
             this._gameObject = null;
             this._gameObject = gameObject;
         }
-        Box2.prototype.onContact = function (collisionObjects) {
+        Box1.prototype.onContact = function (collisionObjects) {
             console.log("contact", collisionObjects.getCount());
         };
-        Box2.prototype.onCollisionStart = function () {
+        Box1.prototype.onCollisionStart = function () {
             console.log("collision start");
         };
-        Box2.prototype.onCollisionEnd = function () {
+        Box1.prototype.onCollisionEnd = function () {
             console.log("collision end");
         };
-        Box2 = __decorate([
-            wd.script("box2")
-        ], Box2);
-        return Box2;
+        Box1 = __decorate([
+            wd.script("box1")
+        ], Box1);
+        return Box1;
     })();
-    sample.Box2 = Box2;
+    sample.Box1 = Box1;
 })(sample || (sample = {}));

@@ -8,6 +8,7 @@ module wd {
         }
 
         public shape:AABBShape = null;
+        public isUserSpecifyTheRegion:boolean = false;
 
         private _originShape:AABBShape = null;
         private _debugBox:GameObject = null;
@@ -22,6 +23,7 @@ module wd {
         })
         public build(center:Vector3, halfExtents:Vector3){
             if(this._isBuildUserSpecifyBoundingRegion(center, halfExtents)){
+                this.isUserSpecifyTheRegion = true;
                 this.shape.setFromCenterAndHalfExtents(center, halfExtents);
             }
             else{
@@ -39,20 +41,31 @@ module wd {
         public update(){
             var transform = this.gameObject.transform;
 
-            if(!transform.isRotate && !transform.isTranslate && !transform.isScale){
+            if(this._isNotTransformed()){
                 return;
             }
 
-            if(transform.isRotate){
-                this.shape.setFromObject(this.gameObject);
+            if(this.isUserSpecifyTheRegion){
+                this.shape.setFromTranslationAndScale(this._originShape, transform.localToWorldMatrix)
             }
             else{
-                this.shape.setFromTransformedAABB(this._originShape, transform.localToWorldMatrix);
+                if(transform.isRotate){
+                    this.shape.setFromObject(this.gameObject);
+                }
+                else{
+                    this.shape.setFromTranslationAndScale(this._originShape, transform.localToWorldMatrix)
+                }
             }
 
             if(DebugConfig.debugCollision){
                 this._updateDebugBoxFromShape(this.shape);
             }
+        }
+
+        private _isNotTransformed(){
+            var transform = this.gameObject.transform;
+
+            return !transform.isRotate && !transform.isTranslate && !transform.isScale;
         }
 
         public isIntersectWithBox(boundingRegion:BoxBoundingRegion){

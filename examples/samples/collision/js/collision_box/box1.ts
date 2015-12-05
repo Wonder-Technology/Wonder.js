@@ -1,7 +1,7 @@
 /// <reference path="../../../../../dist/wd.d.ts"/>
 module sample{
-    @wd.script("box2")
-    export class Box2 implements wd.IScriptBehavior{
+    @wd.script("box1")
+    export class Box1 implements wd.IScriptBehavior{
         constructor(gameObject:wd.GameObject){
             this._gameObject = gameObject;
         }

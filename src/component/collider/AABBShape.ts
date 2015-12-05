@@ -86,6 +86,14 @@ module wd {
             );
         }
 
+        public setFromTranslationAndScale(aabb:AABBShape, matrix:Matrix4){
+            var translation = matrix.getTranslation(),
+                scale = matrix.getScale();
+
+            this.center = aabb.center.copy().add(translation);
+            this.halfExtents = aabb.halfExtents.copy().mul(scale);
+        }
+
         @require(function (gameObject:GameObject) {
             var vertices = gameObject.getComponent<Geometry>(Geometry).geometryData.vertices;
 

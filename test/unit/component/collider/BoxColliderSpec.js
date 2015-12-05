@@ -83,7 +83,7 @@ describe("BoxCollider", function () {
 
             var shape1 = box1.getComponent(wd.Collider).boundingRegion.shape;
 
-            sandbox.stub(shape1, "setFromTransformedAABB");
+            sandbox.stub(shape1, "setFromTranslationAndScale");
 
 
             box1.transform.translate(12, 0, 0);
@@ -91,12 +91,12 @@ describe("BoxCollider", function () {
             director._loopBody(1);
 
 
-            expect(shape1.setFromTransformedAABB).toCalledOnce();
+            expect(shape1.setFromTranslationAndScale).toCalledOnce();
 
 
             director._loopBody(1);
 
-            expect(shape1.setFromTransformedAABB).toCalledOnce();
+            expect(shape1.setFromTranslationAndScale).toCalledOnce();
         });
         it("test set gameObject's transform before building its bounding region", function(){
             box1.transform.translate(2, 0, 0);
@@ -118,25 +118,77 @@ describe("BoxCollider", function () {
             judgeCollideCount(1);
         });
 
-        it("user can specify bounding box", function(){
-            var collider1 = box1.getComponent(wd.Collider);
-            collider1.halfExtents = wd.Vector3.create(10, 10, 10);
+        describe("user can specify the bounding box that it don't be affected by rotate.", function(){
+            it("test1", function(){
+                var collider1 = box1.getComponent(wd.Collider);
+                collider1.halfExtents = wd.Vector3.create(10, 10, 10);
 
-            director._init();
-
-
-            box1.transform.translate(0, 0, 15);
-
-            director._loopBody(1);
-
-            judgeCollide();
+                director._init();
 
 
-            box1.transform.translate(0, 0, 0.1);
+                box1.transform.translate(15, 0, 0);
 
-            director._loopBody(2);
+                director._loopBody(1);
 
-            judgeCollideCount(1);
+                judgeCollide();
+
+
+                box1.transform.translate(0.1, 0, 0);
+
+                director._loopBody(2);
+
+                judgeCollideCount(1);
+
+
+
+                box1.transform.rotateLocal(0, 0, 45);
+
+                director._loopBody(3);
+
+                judgeCollideCount(1);
+            });
+            it("test2", function(){
+                var collider1 = box1.getComponent(wd.Collider);
+                collider1.halfExtents = wd.Vector3.create(10, 10, 10);
+
+
+
+                director._init();
+
+
+                box1.transform.translate(2, 0, 0);
+
+                director._loopBody(1);
+
+
+                box1.transform.translate(-2, 0, 0);
+
+                director._loopBody(1);
+
+
+
+                box1.transform.translate(15, 0, 0);
+
+                director._loopBody(1);
+
+                judgeCollideCount(3);
+
+
+
+                box1.transform.translate(0.1, 0, 0);
+
+                director._loopBody(2);
+
+                judgeCollideCount(3);
+
+
+
+                box1.transform.rotateLocal(0, 0, 45);
+
+                director._loopBody(3);
+
+                judgeCollideCount(3);
+            });
         });
 
         describe("re-calculate aabb when gameObject transform change", function () {
