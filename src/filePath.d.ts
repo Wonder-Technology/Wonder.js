@@ -3,8 +3,7 @@
 /// <reference path="../lib/inner/Wonder-CommonLib/dist/wdCb.d.ts"/>
 /// <reference path="../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts"/>
 
-/// <reference path="Config"/>
-/// <reference path="DebugConfig"/>
+/// <reference path="config/DebugConfig"/>
 
 /// <reference path="extend/wdFrp"/>
 
