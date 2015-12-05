@@ -27,7 +27,7 @@
             var box1 = createBox1();
             var box2 = createBox2();
             var box3 = createBox3();
-//            var sphere = createSphere();
+            var sphere = createSphere();
             var ground = createGround();
 
             wd.DebugConfig.debugCollision = true;
@@ -35,7 +35,7 @@
             director.scene.addChild(box1);
             director.scene.addChild(box2);
             director.scene.addChild(box3);
-//            director.scene.addChild(sphere);
+            director.scene.addChild(sphere);
             director.scene.addChild(ground);
             director.scene.addChild(createCamera());
 
@@ -72,7 +72,7 @@
                             z = moveSpeedZ;
                         }
 
-                        box1.transform.translate(x, 0, z);
+//                        box1.transform.translate(x, 0, z);
                     });
 
             director.start();
@@ -179,12 +179,11 @@
 
         function createSphere() {
             var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
+            material.color = wd.Color.create("rgb(0.0,0.5,1.0)");
 
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 5;
-            geometry.segments = 5;
 
 
             var collision = wd.BoxCollider.create();
@@ -196,7 +195,8 @@
             gameObject.addComponent(wd.MeshRenderer.create());
 
 
-            gameObject.transform.translate(15, 0, 0);
+            gameObject.transform.translate(0, 0, -15);
+            gameObject.transform.scale = wd.Vector3.create(2, 1, 1);
 
 
             return gameObject;

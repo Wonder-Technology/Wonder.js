@@ -49,7 +49,7 @@ module wd {
             assert(dataArr.length % 3 === 0, Log.info.FUNC_SHOULD("dataArr.length", "times of three"));
         })
         public static iterateThreeComponent(dataArr:Array<number>, iterator:(v:Vector3) => void){
-            for(let i = 0, len = dataArr.length / 3; i < len; i += 3){
+            for(let i = 0, len = dataArr.length; i < len; i += 3){
                 iterator(Vector3.create(dataArr[i], dataArr[i + 1], dataArr[i + 2]));
             }
         }

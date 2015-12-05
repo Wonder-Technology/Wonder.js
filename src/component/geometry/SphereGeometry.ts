@@ -43,22 +43,23 @@ module wd{
             return geom;
         }
 
-        public vertices:number[] = [];
-        public indices:number[] = [];
-        public texCoords:number[] = [];
-        public normals:number[] = [];
-
-        private radius:number = null;
+        private _radius:number = null;
         private _latitudeBands:number = null;
         private _longitudeBands:number = null;
 
         constructor(radius:number, bands:number){
-            this.radius = radius;
+            this._radius = radius;
             this._latitudeBands = bands;
             this._longitudeBands = bands;
         }
 
         public getData(){
+            var vertices = [];
+            var normals = [];
+            var texCoords = [];
+            var indices = [];
+
+
             for (var latNumber = 0; latNumber <= this._latitudeBands; latNumber++) {
                 var theta = latNumber * Math.PI / this._latitudeBands;
                 var sinTheta = Math.sin(theta);
@@ -69,20 +70,20 @@ module wd{
                     var sinPhi = Math.sin(phi);
                     var cosPhi = Math.cos(phi);
 
-                    var x = this.radius * cosPhi * sinTheta;
-                    var y = this.radius *cosTheta;
-                    var z = this.radius *sinPhi * sinTheta;
+                    var x = this._radius * cosPhi * sinTheta;
+                    var y = this._radius *cosTheta;
+                    var z = this._radius *sinPhi * sinTheta;
                     var u = 1 - (longNumber / this._longitudeBands);
                     var v = 1 - (latNumber / this._latitudeBands);
 
-                    this.normals.push(x);
-                    this.normals.push(y);
-                    this.normals.push(z);
-                    this.texCoords.push(u);
-                    this.texCoords.push(v);
-                    this.vertices.push(x);
-                    this.vertices.push(y);
-                    this.vertices.push(z);
+                    normals.push(x);
+                    normals.push(y);
+                    normals.push(z);
+                    texCoords.push(u);
+                    texCoords.push(v);
+                    vertices.push(x);
+                    vertices.push(y);
+                    vertices.push(z);
                 }
             }
 
@@ -91,21 +92,21 @@ module wd{
                 for (var longNumber = 0; longNumber < this._longitudeBands; longNumber++) {
                     var first = latNumber * (this._longitudeBands + 1) + longNumber;
                     var second = first + this._longitudeBands + 1;
-                    this.indices.push(first + 1);
-                    this.indices.push(second);
-                    this.indices.push(first);
+                    indices.push(first + 1);
+                    indices.push(second);
+                    indices.push(first);
 
-                    this.indices.push(first + 1);
-                    this.indices.push(second + 1);
-                    this.indices.push(second);
+                    indices.push(first + 1);
+                    indices.push(second + 1);
+                    indices.push(second);
                 }
             }
 
             return {
-                vertices: this.vertices,
-                indices: this.indices,
-                normals: this.normals,
-                texCoords: this.texCoords
+                vertices: vertices,
+                indices: indices,
+                normals: normals,
+                texCoords: texCoords
             }
         }
 
