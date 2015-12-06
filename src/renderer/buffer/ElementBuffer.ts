@@ -32,7 +32,7 @@ module wd{
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
             this.type = gl[type];
-            this.num = data.length;
+            this.count = data.length;
             this.data = data;
             this._typeSize = this._getInfo(type).size;
 

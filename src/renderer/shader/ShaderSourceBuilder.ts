@@ -286,36 +286,36 @@ module wd{
         }
 
         private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>|Float32Array|Float64Array) {
-            var num = this._getBufferNum(type);
+            var size = this._getBufferSize(type);
 
             if(JudgeUtils.isArray(value)){
-                return ArrayBuffer.create(new Float32Array(value), num, BufferType.FLOAT);
+                return ArrayBuffer.create(new Float32Array(value), size, BufferType.FLOAT);
             }
             else if(JudgeUtils.isFloatArray(value)){
-                return ArrayBuffer.create(value, num, BufferType.FLOAT);
+                return ArrayBuffer.create(value, size, BufferType.FLOAT);
             }
         }
 
-        private _getBufferNum(type:VariableType){
-            var num = null;
+        private _getBufferSize(type:VariableType){
+            var size = null;
 
             switch (type){
                 case VariableType.FLOAT_1:
                 case VariableType.NUMBER_1:
-                    num = 1;
+                    size = 1;
                     break;
                 case VariableType.FLOAT_3:
-                    num = 3;
+                    size = 3;
                     break;
                 case VariableType.FLOAT_4:
-                    num = 4;
+                    size = 4;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT("VariableType", type));
                     break;
             }
 
-            return num;
+            return size;
         }
     }
 

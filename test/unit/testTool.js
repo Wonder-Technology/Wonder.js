@@ -4,6 +4,11 @@ var testTool = (function () {
 
         buildFakeGl: function (sandbox) {
             return {
+                LINES: "LINES",
+                TRIANGLES: "TRIANGLES",
+
+                ARRAY_BUFFER:"ARRAY_BUFFER",
+
                 getParameter: sandbox.stub(),
                 getExtension: sandbox.stub(),
                 viewport: sandbox.stub(),
@@ -25,6 +30,7 @@ var testTool = (function () {
                 uniform4f: sandbox.stub(),
                 uniformMatrix3fv: sandbox.stub(),
                 uniform1f: sandbox.stub(),
+                drawArrays: sandbox.stub(),
                 drawElements: sandbox.stub(),
 
                 generateMipmap:sandbox.stub(),

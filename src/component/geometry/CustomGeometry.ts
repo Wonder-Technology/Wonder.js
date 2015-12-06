@@ -8,7 +8,7 @@ module wd{
             return geom;
         }
 
-        private _vertices:Array<number> = null;
+        private _vertices:Array<number> = [];
         get vertices(){
             return this._vertices;
         }
@@ -21,7 +21,7 @@ module wd{
             }
         }
 
-        private _texCoords:Array<number> = null;
+        private _texCoords:Array<number> = [];
         get texCoords(){
             return this._texCoords;
         }
@@ -34,7 +34,7 @@ module wd{
             }
         }
 
-        private _colors:Array<number> = null;
+        private _colors:Array<number> = [];
         get colors(){
             return this._colors;
         }
@@ -46,7 +46,7 @@ module wd{
             }
         }
 
-        private _indices:Array<number> = null;
+        private _indices:Array<number> = [];
         get indices(){
             return this._indices;
         }
@@ -58,7 +58,7 @@ module wd{
             }
         }
 
-        private _normals:Array<number> = null;
+        private _normals:Array<number> = [];
         get normals(){
             return this._normals;
         }

@@ -332,7 +332,7 @@ describe("renderWebGL", function() {
 
                     renderer.render();
 
-                    expect(gl.drawArrays).toCalledWith("TRIANGLES",0,3);
+                    expect(gl.drawArrays).toCalledWith("TRIANGLES",0,24);
                 });
                 it("else, drawElements", function(){
                     var result = addCommand();
@@ -343,7 +343,7 @@ describe("renderWebGL", function() {
                     var indexBuffer = quadCmd.buffers.getChild(wd.BufferDataType.INDICE);
 
                     expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
-                    expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.num, indexBuffer.type, indexBuffer.typeSize * 0);
+                    expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * 0);
                 });
             });
         });

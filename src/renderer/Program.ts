@@ -105,7 +105,8 @@ module wd{
 
         public sendAttributeData(name:string, type:VariableType, data:any){
             var gl = DeviceManager.getInstance().gl,
-                pos = null;
+                pos = null,
+                buffer:ArrayBuffer = null;
 
             pos= gl.getAttribLocation(this._program, name);
 
@@ -114,15 +115,18 @@ module wd{
             }
 
             if(JudgeUtils.isFunction(data)){
-                data = data();
+                buffer = data();
 
                 Log.error(!(data instanceof ArrayBuffer), Log.info.FUNC_MUST_BE("ArrayBuffer"));
+            }
+            else{
+                buffer = data;
             }
 
             switch (type){
                 case VariableType.BUFFER:
-                    gl.bindBuffer(gl.ARRAY_BUFFER, data.buffer);
-                    gl.vertexAttribPointer(pos, data.num, data.type, false, 0, 0);
+                    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+                    gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :

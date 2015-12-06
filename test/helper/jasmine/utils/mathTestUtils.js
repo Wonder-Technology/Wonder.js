@@ -17,8 +17,8 @@ var mathTestUtils = (function () {
             }
             return result;
         },
-        toFixed: function(num){
-            return YYC.Tool.math.toFixed(num, 7);
+        toFixed: function(num, digit){
+            return YYC.Tool.math.toFixed(num, digit || 7);
         },
         isFloat32Array: function(val){
             return Object.prototype.toString.call(val) === "[object Float32Array]";

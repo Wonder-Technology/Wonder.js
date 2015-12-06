@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sphere to sphere collision</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../asset/texture/crate.gif", id: "ground"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+            var sphere1 = createSphere1();
+            var sphere2 = createSphere2();
+            var sphere3 = createSphere3();
+            var sphere = createSphere();
+            var ground = createGround();
+
+            wd.DebugConfig.debugCollision = true;
+
+            director.scene.addChild(sphere1);
+            director.scene.addChild(sphere2);
+            director.scene.addChild(sphere3);
+            director.scene.addChild(sphere);
+            director.scene.addChild(ground);
+            director.scene.addChild(createCamera());
+
+            wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
+                    .subscribe(function(e){
+                        var keyState = e.keyState,
+                                x = 0,
+                                z = 0,
+                                moveSpeedX = 0.5,
+                                moveSpeedZ = 0.5;
+
+//                        if (keyState["a"] || keyState["left"]) {
+//                            x = -moveSpeedX;
+//                        }
+//                        else if(keyState["d"] || keyState["right"]) {
+//                            x = moveSpeedX;
+//                        }
+//                        else if(keyState["w"] || keyState["up"]) {
+//                            z = -moveSpeedZ;
+//                        }
+//                        else if(keyState["s"] || keyState["down"]) {
+//                            z = moveSpeedZ;
+//                        }
+                        if (keyState["a"]) {
+                            x = -moveSpeedX;
+                        }
+                        else if(keyState["d"]) {
+                            x = moveSpeedX;
+                        }
+                        else if(keyState["w"]) {
+                            z = -moveSpeedZ;
+                        }
+                        else if(keyState["s"]) {
+                            z = moveSpeedZ;
+                        }
+
+                        sphere1.transform.translate(x, 0, z);
+                    });
+
+            director.start();
+        }
+
+        function createSphere1() {
+
+
+
+
+
+
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.SphereCollider.create();
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(-15, 0, 0);
+
+
+            gameObject.addComponent(wd.Script.create("./js/collision_sphere/sphere1.js"));
+
+
+            return gameObject;
+        }
+
+        function createSphere2() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.SphereCollider.create();
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+                gameObject.transform.rotate(0, 0, 1);
+            }));
+
+            gameObject.addComponent(action);
+
+            return gameObject;
+
+        }
+
+        function createSphere3() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.5,1.0,1.0)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.SphereCollider.create();
+            collision.radius = 8;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(18, 0, 0);
+
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+                gameObject.transform.rotate(0, 0, 1);
+            }));
+
+            gameObject.addComponent(action);
+
+//            gameObject.addComponent(wd.Script.create("./js/collision_sphere/sphere2.js"));
+
+
+            return gameObject;
+        }
+
+        function createSphere() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.0,0.5,1.0)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.SphereCollider.create();
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(0, 0, -15);
+
+            var tween1 = wd.Tween.create();
+            var tween2 = wd.Tween.create();
+
+            tween1.from({scale:1})
+                    .to({scale:2}, 3000)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        gameObject.transform.scale = wd.Vector3.create(this.scale, 1, this.scale);
+                    });
+
+            tween2.from({scale:2})
+                    .to({scale:1}, 3000)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        gameObject.transform.scale = wd.Vector3.create(this.scale, 1, this.scale);
+                    });
+
+            var action = wd.RepeatForever.create(wd.Sequence.create(tween1, tween2));
+
+            gameObject.addComponent(action);
+
+            return gameObject;
+        }
+
+        function createGround(){
+            var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+            map.wrapS = wd.TextureWrapMode.REPEAT;
+            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+
+
+            var material = wd.BasicMaterial.create();
+//            material.specular = wd.Color.create("#ffdd99");
+//            material.shininess = 32;
+            material.map = map;
+
+
+            var plane = wd.PlaneGeometry.create();
+            plane.width = 200;
+            plane.height = 200;
+            plane.material = material;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(plane);
+
+            gameObject.transform.translate(0, -10, 0);
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+//            var controller = wd.BasicCameraController.create(cameraComponent);
+            var controller = wd.FlyCameraController.create(cameraComponent);
+
+            camera.addComponent(controller);
+
+            camera.transform.translate(0, 20, 20);
+            camera.transform.lookAt(0, 0, 0);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

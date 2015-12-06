@@ -328,5 +328,17 @@ module wd{
 
             return this;
         }
+
+        public distanceTo(v:Vector3) {
+            return Math.sqrt(this.distanceToSquared(v));
+        }
+
+        public distanceToSquared(v:Vector3) {
+            var dx = this.x - v.x,
+                dy = this.y - v.y,
+                dz = this.z - v.z;
+
+            return dx * dx + dy * dy + dz * dz;
+        }
     }
 }

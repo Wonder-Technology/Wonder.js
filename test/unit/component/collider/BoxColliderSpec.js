@@ -42,7 +42,7 @@ describe("BoxCollider", function () {
 
             beforeEach(function () {
                 box1 = colliderTool.createBox();
-                sphere2 = colliderTool.createSphere();
+                sphere2 = colliderTool.createBox();
 
                 script1 = {
                     onContact: sandbox.stub()
@@ -64,7 +64,7 @@ describe("BoxCollider", function () {
                 director.scene.addChild(testTool.createCamera());
             });
 
-            it("test sphere build aabb shape", function(){
+            it("test sphere geometry build aabb shape", function(){
                 var geo2 = sphere2.getComponent(wd.Geometry);
                 geo2.segments = 20;
 
@@ -122,7 +122,7 @@ describe("BoxCollider", function () {
                 director.scene.addChild(testTool.createCamera());
             });
 
-            it("test not collision", function () {
+            it("test collision", function () {
                 director._init();
 
                 box1.transform.translate(8, 0, 0);
@@ -166,6 +166,23 @@ describe("BoxCollider", function () {
 
                 box1.transform.translate(6, 0, 0);
                 box2.transform.translate(-2, 0, 0);
+
+                director._loopBody(1);
+
+                judgeCollide();
+
+
+                box1.transform.translate(0.1, 0, 0);
+
+                director._loopBody(1);
+
+                judgeCollideCount(1);
+            });
+            it("test scale", function(){
+                director._init();
+
+                box1.transform.translate(15, 0, 0);
+                box2.transform.scale = wd.Vector3.create(2, 0.5, 3);
 
                 director._loopBody(1);
 
@@ -341,7 +358,7 @@ describe("BoxCollider", function () {
                         );
                     });
                     describe("update debugBox when update that it shows the updated bounding region shape", function () {
-                        it("test translate/scale", function () {
+                        it("test translate/scale and test use gl.drawElements to draw; and test that the scale is set to vertices, not set to transform", function () {
                             box1.transform.translate(2, 0, 0);
                             box1.transform.scale = wd.Vector3.create(2, 1, 1);
 
@@ -363,6 +380,9 @@ describe("BoxCollider", function () {
                                     -10, -5, -5, -10, -5, 5, 10, -5, 5, 10, -5, -5, -10, 5, -5, -10, 5, 5, 10, 5, 5, 10, 5, -5
                                 ]
                             );
+
+                            expect(wd.DeviceManager.getInstance().gl.drawElements.callCount).toEqual(4);
+                            expect(wd.DeviceManager.getInstance().gl.drawArrays).not.toCalled();
                         });
                         describe("test rotate", function () {
                             it("test1", function () {

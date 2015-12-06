@@ -19,7 +19,7 @@ module wd {
         }
 
         @ensure(function(returnValue, center:Vector3, halfExtents:Vector3){
-            //assert(this._isBuildUserSpecifyBoundingRegion(center, halfExtents) ? this.shape.center === center : this.shape.center.isZero(), Log.info.FUNC_SHOULD_NOT("transform shape when build"));
+            assert(this._isBuildUserSpecifyBoundingRegion(center, halfExtents) ? this.shape.center === center : this.shape.center.isZero(), Log.info.FUNC_SHOULD_NOT("transform shape when build"));
         })
         public build(center:Vector3, halfExtents:Vector3){
             if(this._isBuildUserSpecifyBoundingRegion(center, halfExtents)){

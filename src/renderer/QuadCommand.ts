@@ -41,14 +41,14 @@ module wd {
             if (this.buffers.hasChild(BufferDataType.INDICE)) {
                 let indexBuffer:ElementBuffer = <ElementBuffer>this.buffers.getChild(BufferDataType.INDICE);
 
-                totalNum = indexBuffer.num;
+                totalNum = indexBuffer.count;
 
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
                 vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE);
-                totalNum = vertexBuffer.num;
+                totalNum = vertexBuffer.count;
                 gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         }
