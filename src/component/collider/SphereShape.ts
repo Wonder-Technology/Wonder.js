@@ -32,7 +32,11 @@ module wd {
         public isIntersectWithSphere(shape:SphereShape) {
             var radiusSum = this.radius + shape.radius;
 
-            return shape.center.distanceToSquared(this.center) <= ( radiusSum ** 2);
+            return shape.center.distanceToSquared(this.center) <= ( radiusSum**2);
+        }
+
+        public containPoint(point:Vector3) {
+            return point.distanceToSquared(this.center) <= (this.radius**2);
         }
 
         public copy() {

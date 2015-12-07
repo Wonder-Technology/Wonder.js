@@ -129,6 +129,19 @@ module wd {
                 (aMin.z <= bMax.z) && (aMax.z >= bMin.z);
         }
 
+        public containPoint(point:Vector3) {
+            var min = this.getMin(),
+                max = this.getMax();
+
+            for (let i = 0; i < 3; ++i) {
+                if (point.values[i] < min.values[i] || point.values[i] > max.values[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public copy() {
             var shape = AABBShape.create();
 

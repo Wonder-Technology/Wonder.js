@@ -64,4 +64,16 @@ describe("AABBShape", function () {
         expect(testTool.getValues(shape.center.values)).toEqual([0, 0, 0]);
         expect(testTool.getValues(shape.halfExtents)).toEqual([10, 10, 5]);
     });
+    
+    describe("containPoint", function(){
+        it("if a point is inside a aabb, return true", function(){
+            shape.center = wd.Vector3.create(10, 0, 0);
+            shape.halfExtents = wd.Vector3.create(8, 5, 5);
+            expect(shape.containPoint(wd.Vector3.create(18, 5, 5))).toBeTruthy();
+            expect(shape.containPoint(wd.Vector3.create(10, 5, 2))).toBeTruthy();
+
+            expect(shape.containPoint(wd.Vector3.create(19, 5, 2))).toBeFalsy();
+            expect(shape.containPoint(wd.Vector3.create(18, 6, 2))).toBeFalsy();
+        });
+    });
 });
