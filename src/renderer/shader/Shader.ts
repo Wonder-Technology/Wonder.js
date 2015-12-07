@@ -75,8 +75,8 @@ module wd{
             && this.fsSource === other.fsSource;
         }
 
-        public init(){
-        }
+        //public init(){
+        //}
 
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;

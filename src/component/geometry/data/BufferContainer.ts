@@ -1,12 +1,21 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
     export abstract class BufferContainer {
+        constructor(gameObject:GameObject) {
+            this.gameObject = gameObject;
+        }
+
         public geometryData:GeometryData = null;
 
+        protected gameObject:GameObject = null;
         protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
-        @virtual
         public init(){
+            var self = this;
+
+            EventManager.on(this.gameObject, <any>EngineEvent.MATERIAL_CHANGE, () => {
+                self.removeCache(BufferDataType.COLOR);
+            });
         }
 
         public removeCache(type:BufferDataType){

@@ -6,6 +6,10 @@ module wd{
             return this._material;
         }
         set material(material:Material){
+            if(material !== this._material){
+                EventManager.trigger(this.gameObject, CustomEvent.create(<any>EngineEvent.MATERIAL_CHANGE));
+            }
+
             this._material = material;
             this._material.geometry = this;
         }
@@ -98,7 +102,7 @@ module wd{
 
         @virtual
         protected createBufferContainer():BufferContainer{
-            return CommonBufferContainer.create();
+            return CommonBufferContainer.create(this.gameObject);
         }
 
         @virtual

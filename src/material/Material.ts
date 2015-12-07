@@ -149,11 +149,14 @@ module wd {
             assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
         })
         public init(){
-            this._addTopShaderLib();
-            this.addShaderLib();
+            var self = this;
 
             this.mapManager.init();
-            this.shader.init();
+
+            EventManager.on(<any>EngineEvent.AFTER_INIT, () => {
+                self._addTopShaderLib();
+                self.addShaderLib();
+            });
         }
 
         public dispose(){

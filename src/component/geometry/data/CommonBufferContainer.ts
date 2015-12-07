@@ -1,8 +1,8 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class CommonBufferContainer extends BufferContainer{
-        public static create() {
-        	var obj = new this();
+        public static create(gameObject:GameObject) {
+        	var obj = new this(gameObject);
 
         	return obj;
         }

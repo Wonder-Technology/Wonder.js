@@ -4,6 +4,9 @@ module wd{
         STARTLOOP = <any>"dy_startLoop",
         ENDLOOP = <any>"dy_endLoop",
         BEFORE_INIT = <any>"dy_beforeInit",
-        AFTER_INIT = <any>"dy_afterInit"
+        AFTER_INIT = <any>"dy_afterInit",
+
+
+        MATERIAL_CHANGE = <any>"dy_material_change"
     }
 }

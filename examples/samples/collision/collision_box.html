@@ -26,17 +26,17 @@
             var director = wd.Director.getInstance();
             var box1 = createBox1();
             var box2 = createBox2();
-            var box3 = createBox3();
-            var sphere = createSphere();
-            var ground = createGround();
+//            var box3 = createBox3();
+//            var sphere = createSphere();
+//            var ground = createGround();
 
             wd.DebugConfig.debugCollision = true;
 
             director.scene.addChild(box1);
             director.scene.addChild(box2);
-            director.scene.addChild(box3);
-            director.scene.addChild(sphere);
-            director.scene.addChild(ground);
+//            director.scene.addChild(box3);
+//            director.scene.addChild(sphere);
+//            director.scene.addChild(ground);
             director.scene.addChild(createCamera());
 
             wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
@@ -72,20 +72,14 @@
                             z = moveSpeedZ;
                         }
 
-//                        box1.transform.translate(x, 0, z);
+                        box1.transform.translate(x, 0, z);
                     });
 
             director.start();
         }
 
         function createBox1() {
-
-
-
-
-
-
-                        var material = wd.BasicMaterial.create();
+            var material = wd.BasicMaterial.create();
             material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
 
             var geometry = wd.BoxGeometry.create();
@@ -240,8 +234,8 @@
             cameraComponent.near = 0.1;
             cameraComponent.far = 1000;
 
-//            var controller = wd.BasicCameraController.create(cameraComponent);
-            var controller = wd.FlyCameraController.create(cameraComponent);
+            var controller = wd.BasicCameraController.create(cameraComponent);
+//            var controller = wd.FlyCameraController.create(cameraComponent);
 
             camera.addComponent(controller);
 

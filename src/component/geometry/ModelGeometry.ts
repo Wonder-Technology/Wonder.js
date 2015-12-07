@@ -76,10 +76,10 @@ module wd{
         })
         protected createBufferContainer():BufferContainer{
             if(this.hasAnimation()){
-                return MorphBufferContainer.create(this.gameObject.getComponent<MorphAnimation>(MorphAnimation));
+                return MorphBufferContainer.create(this.gameObject, this.gameObject.getComponent<MorphAnimation>(MorphAnimation));
             }
 
-            return CommonBufferContainer.create();
+            return CommonBufferContainer.create(this.gameObject);
         }
 
         protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>):GeometryData{

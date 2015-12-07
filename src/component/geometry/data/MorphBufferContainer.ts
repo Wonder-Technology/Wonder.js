@@ -1,14 +1,14 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class MorphBufferContainer extends BufferContainer {
-        public static create(animation:MorphAnimation) {
-            var obj = new this(animation);
+        public static create(gameObject:GameObject, animation:MorphAnimation) {
+            var obj = new this(gameObject, animation);
 
             return obj;
         }
 
-        constructor(animation:MorphAnimation) {
-            super();
+        constructor(gameObject:GameObject, animation:MorphAnimation) {
+            super(gameObject);
 
             this._animation = animation;
         }

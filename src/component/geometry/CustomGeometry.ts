@@ -78,10 +78,6 @@ module wd{
                 colors: this.colors
             };
         }
-
-        protected createBufferContainer():BufferContainer{
-            return CommonBufferContainer.create();
-        }
     }
 }
 
