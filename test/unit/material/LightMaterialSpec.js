@@ -18,9 +18,15 @@ describe("LightMaterial", function() {
         });
     });
 
-    describe("init", function(){
+    describe("add shader lib", function(){
         var map,
             scene;
+
+        function triggerMaterialAddShaderLib(){
+            material.init();
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+        }
 
         beforeEach(function(){
             sandbox.stub(material.mapManager, "init");
@@ -31,19 +37,19 @@ describe("LightMaterial", function() {
         });
 
         it("add LightCommonShaderLib", function(){
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.LightCommonShaderLib)).toBeTruthy();
         });
         it("if diffuseMap exist, add its shader lib", function(){
             material.diffuseMap = map;
 
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.DiffuseMapShaderLib)).toBeTruthy();
         });
         it("else, add NoDiffuseMapShaderLib", function () {
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.NoDiffuseMapShaderLib)).toBeTruthy();
 
@@ -51,24 +57,24 @@ describe("LightMaterial", function() {
         it("if specularMap exist, add its shader lib", function(){
             material.specularMap = map;
 
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.SpecularMapShaderLib)).toBeTruthy();
         });
         it("else, add NoSpecularMapShaderLib", function () {
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.NoSpecularMapShaderLib)).toBeTruthy();
         });
         it("if normalMap exist, add its shader lib", function(){
             material.normalMap = map;
 
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.NormalMapShaderLib)).toBeTruthy();
         });
         it("else, add NoNormalMapShaderLib", function () {
-            material.init();
+            rendererTool.triggerMaterialAddShaderLib(material);
 
             expect(material.shader.getLib(wd.NoNormalMapShaderLib)).toBeTruthy();
         });
@@ -77,7 +83,7 @@ describe("LightMaterial", function() {
             it("if Scene not enable shadowMap, add NoShadowMapShaderLib", function () {
                 sandbox.stub(scene.shadowMap, "enable", false);
 
-                material.init();
+                rendererTool.triggerMaterialAddShaderLib(material);
 
                 expect(material.shader.getLib(wd.NoShadowMapShaderLib)).toBeTruthy();
             });
@@ -88,7 +94,7 @@ describe("LightMaterial", function() {
                 });
 
                 it("else, if not has twoD shadowMap && not has cubemap shadowMap, add NoShadowMapShaderLib", function () {
-                    material.init();
+                    rendererTool.triggerMaterialAddShaderLib(material);
 
                     expect(material.shader.getLib(wd.NoShadowMapShaderLib)).toBeTruthy();
                 });
@@ -96,14 +102,14 @@ describe("LightMaterial", function() {
                 it("else if has twoD shadowMap, add TwoDShadowMapShaderLib", function(){
                     material.addTwoDShadowMap(new wd.TwoDShadowMapTexture());
 
-                    material.init();
+                    rendererTool.triggerMaterialAddShaderLib(material);
 
                     expect(material.shader.getLib(wd.TwoDShadowMapShaderLib)).toBeTruthy();
                 });
                 it("else if has cubemap shadowMap, add CubemapShadowMapShaderLib", function(){
                     material.addCubemapShadowMap(new wd.CubemapShadowMapTexture());
 
-                    material.init();
+                    rendererTool.triggerMaterialAddShaderLib(material);
 
                     expect(material.shader.getLib(wd.CubemapShadowMapShaderLib)).toBeTruthy();
                 });

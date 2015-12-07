@@ -151,6 +151,7 @@ module wd {
         public init(){
             var self = this;
 
+            this.shader.init();
             this.mapManager.init();
 
             EventManager.on(<any>EngineEvent.AFTER_INIT, () => {

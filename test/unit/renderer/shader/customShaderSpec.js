@@ -113,7 +113,7 @@ describe("custom shader", function () {
 
 
                     shader.read(shaderDefinitionData);
-                    material.init();
+                    rendererTool.triggerMaterialAddShaderLib(material);
                     material.updateShader(quadCmd);
                 });
 

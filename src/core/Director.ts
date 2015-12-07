@@ -142,7 +142,7 @@ module wd{
         private _init(){
             this._isFirstStart = false;
 
-            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
             this.scene.onEnter();
             this.scene.init();
@@ -153,7 +153,7 @@ module wd{
             this._timeController.start();
             this.scheduler.start();
 
-            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.AFTER_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT));
         }
 
         private _buildLoopStream(){
@@ -171,11 +171,11 @@ module wd{
 
             this._timeController.tick(elapseTime);
 
-            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.STARTLOOP));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.STARTLOOP));
 
             this._run(elapseTime);
 
-            EventManager.trigger(wd.CustomEvent.create(<any>EngineEvent.ENDLOOP));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
 
             return true;
         }

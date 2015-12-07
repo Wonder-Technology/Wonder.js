@@ -302,5 +302,78 @@ describe("Geometry", function() {
             )
         });
     });
+
+    describe("change material", function(){
+        function createGeometry(_class, shading){
+            geo = new _class();
+            geo.material = {
+                init:sandbox.stub(),
+                shading: shading || wd.Shading.FLAT
+            };
+            geo.material = wd.BasicMaterial.create();
+
+            sandbox.stub(geo.material, "init");
+            sandbox.stub(geo.material, "shading", shading || wd.Shading.FLAT);
+
+            return geo;
+        }
+
+        beforeEach(function(){
+            geo = createGeometry(wd.RectGeometry);
+            geo.material.color = wd.Color.create("#111111");
+
+            geo.init();
+        });
+
+        describe('Geometry trigger its gameObject->"material change" event when change material', function(){
+            it('BufferContainer remove color cache when event triggered', function(){
+                var colors = geo.buffers.getChild(wd.BufferDataType.COLOR);
+
+                expect(testTool.getValues(colors.data)).toEqual(
+                    [
+                        0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667
+                    ]
+                );
+
+
+
+                var newMaterial = wd.BasicMaterial.create();
+                newMaterial.color = wd.Color.create("#222222");
+
+                newMaterial.init();
+
+                geo.material = newMaterial;
+
+
+                var newColors = geo.buffers.getChild(wd.BufferDataType.COLOR);
+
+                expect(newColors.data !== colors.data).toBeTruthy();
+                expect(testTool.getValues(newColors.data)).toEqual(
+                    [
+                        0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333
+                    ]
+                );
+            });
+        });
+
+        it('just "init material" instead of "add to geometry and init material" when "change material", so that material->init is not related to geometry', function(){
+            var newMaterial = wd.BasicMaterial.create();
+            newMaterial.color = wd.Color.create("#222222");
+
+            newMaterial.init();
+
+            expect(newMaterial.shader.getLibs().getCount()).toEqual(0);
+
+
+
+
+            prepareTool.prepareGeo(sandbox, wd.GameObject.create(), geo, newMaterial);
+
+            var director = wd.Director.getInstance();
+            director._init();
+
+            expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
+        });
+    });
 });
 
