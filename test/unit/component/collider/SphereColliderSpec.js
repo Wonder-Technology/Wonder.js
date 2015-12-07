@@ -29,63 +29,6 @@ describe("SphereCollider", function () {
             expect(script2.onContact.callCount).toEqual(num);
         }
 
-        //describe("test SphereGeometry-SphereGeometry", function(){
-        //    var box1,sphere2;
-        //
-        //    function judgeCollide() {
-        //        expect(script1.onContact).toCalledOnce();
-        //        expect(script2.onContact).toCalledOnce();
-        //        expect(script1.onContact).toCalledWith(wdCb.Collection.create([sphere2]));
-        //        expect(script2.onContact).toCalledWith(wdCb.Collection.create([box1]));
-        //    }
-        //
-        //    beforeEach(function () {
-        //        box1 = colliderTool.createSphere();
-        //        sphere2 = colliderTool.createSphere();
-        //
-        //        script1 = {
-        //            onContact: sandbox.stub()
-        //        };
-        //        prepareTool.addScript(box1, script1);
-        //
-        //        script2 = {
-        //            onContact: sandbox.stub()
-        //        };
-        //        prepareTool.addScript(sphere2, script2);
-        //
-        //
-        //        director = wd.Director.getInstance();
-        //
-        //
-        //        director.scene.addChild(box1);
-        //        director.scene.addChild(sphere2);
-        //
-        //        director.scene.addChild(testTool.createCamera());
-        //    });
-        //
-        //    it("test sphere build aabb shape", function(){
-        //        var geo2 = sphere2.getComponent(wd.Geometry);
-        //        geo2.segments = 20;
-        //
-        //        director._init();
-        //
-        //        var collider2 = sphere2.getComponent(wd.Collider);
-        //
-        //        var shape = collider2.boundingRegion.shape;
-        //        expect(testTool.getValues(shape.getMin())).toEqual(
-        //            [
-        //                -5,-5,-5
-        //            ]
-        //        );
-        //        expect(testTool.getValues(shape.getMax())).toEqual(
-        //            [
-        //                5,5,5
-        //            ]
-        //        );
-        //    });
-        //});
-
-
         describe("test SphereGeometry-SphereGeometry", function () {
             var sphere1, sphere2;
 

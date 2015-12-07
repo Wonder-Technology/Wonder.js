@@ -7,7 +7,6 @@ module wd {
             return obj;
         }
 
-        public center:Vector3 = Vector3.create(0, 0, 0);
         public halfExtents:Vector3 = Vector3.create(0.5, 0.5, 0.5);
 
         public setMinMax(min:Vector3, max:Vector3) {
@@ -23,7 +22,7 @@ module wd {
             return this.center.copy().add(this.halfExtents);
         }
 
-        public setFromCenterAndHalfExtents(center:Vector3, halfExtents:Vector3){
+        public setFromShapeParam(center:Vector3, halfExtents:Vector3){
             this.center = center;
             this.halfExtents = halfExtents;
         }
@@ -91,6 +90,10 @@ module wd {
                 scale = matrix.getScale();
 
             this.center = aabb.center.copy().add(translation);
+            /*!
+            the scale may has float deviation, so may the halfExtents.
+            todo fix halfExtents float deviation?(use toFixed?)
+             */
             this.halfExtents = aabb.halfExtents.copy().mul(scale);
         }
 

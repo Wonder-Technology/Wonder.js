@@ -7,38 +7,14 @@ module wd {
             return obj;
         }
 
+        public boundingRegion:SphereBoundingRegion;
+
         public center:Vector3 = Vector3.create(0, 0, 0);
         public radius:number = null;
-        public boundingRegion:SphereBoundingRegion = null;
-        public type:string = "sphere";
+        public type:string = <any>ColliderType.SPHERE;
 
-        public init(){
-            this.boundingRegion = SphereBoundingRegion.create(this.gameObject);
-            this.boundingRegion.init();
-
-            this.buildBoundingRegion();
-        }
-
-        public update(time:number){
-            this.boundingRegion.update();
-        }
-
-
-        public getCollideObjects(checkTargetList:wdCb.Collection<GameObject>):wdCb.Collection<GameObject>{
-            var self = this,
-                result = wdCb.Collection.create<GameObject>();
-
-            checkTargetList.forEach((gameObject) => {
-                if(self._isSelf(gameObject)){
-                    return;
-                }
-
-                if(self.isIntersectWith(gameObject.getComponent(Collider))){
-                    result.addChild(gameObject);
-                }
-            });
-
-            return result;
+        public createBoundingRegion(){
+            return SphereBoundingRegion.create(this.gameObject);
         }
 
         @require(function(collider:Collider){
@@ -55,10 +31,6 @@ module wd {
 
         public buildBoundingRegion(){
             this.boundingRegion.build(this.center, this.radius);
-        }
-
-        private _isSelf(gameObject:GameObject){
-            return this.gameObject.uid === gameObject.uid;
         }
     }
 }

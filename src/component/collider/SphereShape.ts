@@ -7,10 +7,9 @@ module wd {
             return obj;
         }
 
-        public center:Vector3 = Vector3.create(0, 0, 0);
         public radius:number = 1;
 
-        public setFromCenterAndRadius(center:Vector3, radius:number){
+        public setFromShapeParam(center:Vector3, radius:number){
             this.center = center;
             this.radius = radius;
         }

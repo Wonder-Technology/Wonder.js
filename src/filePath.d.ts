@@ -43,6 +43,7 @@
 /// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/GeometryUtils"/>
+/// <reference path="component/geometry/CustomGeometry"/>
 /// <reference path="component/geometry/ModelGeometry"/>
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
@@ -94,6 +95,7 @@
 /// <reference path="component/collider/Shape"/>
 /// <reference path="component/collider/AABBShape"/>
 /// <reference path="component/collider/SphereShape"/>
+/// <reference path="component/collider/ColliderType"/>
 
 /// <reference path="component/pick/Pick"/>
 
