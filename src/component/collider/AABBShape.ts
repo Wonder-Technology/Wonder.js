@@ -129,6 +129,48 @@ module wd {
                 (aMin.z <= bMax.z) && (aMax.z >= bMin.z);
         }
 
+        public isIntersectWithSphere(shape:SphereShape){
+            return this.isBoxAndSphereIntersected(this, shape);
+        }
+
+        public closestPointTo(point:Vector3){
+            var min = this.getMin(),
+                max = this.getMax(),
+                resultPoint = Vector3.create();
+
+            if (point.x < min.x) {
+                resultPoint.x = min.x;
+            }
+            else if (point.x > max.x) {
+                resultPoint.x = max.x;
+            }
+            else {
+                resultPoint.x = point.x;
+            }
+
+            if (point.y < min.y) {
+                resultPoint.y = min.y;
+            }
+            else if (point.y > max.y) {
+                resultPoint.y = max.y;
+            }
+            else {
+                resultPoint.y = point.y;
+            }
+
+            if (point.z < min.z) {
+                resultPoint.z = min.z;
+            }
+            else if (point.z > max.z) {
+                resultPoint.z = max.z;
+            }
+            else {
+                resultPoint.z = point.z;
+            }
+
+            return resultPoint;
+        }
+
         public containPoint(point:Vector3) {
             var min = this.getMin(),
                 max = this.getMax();

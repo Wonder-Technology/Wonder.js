@@ -57,7 +57,6 @@ module wd{
         private _libs: wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
-
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;
 
@@ -75,8 +74,8 @@ module wd{
             && this.fsSource === other.fsSource;
         }
 
-        //public init(){
-        //}
+        public init(){
+        }
 
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;

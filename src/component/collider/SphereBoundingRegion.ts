@@ -11,10 +11,6 @@ module wd {
 
         protected originShape:SphereShape;
 
-        public isIntersectWithSphere(boundingRegion:SphereBoundingRegion){
-            return this.shape.isIntersectWithSphere(boundingRegion.shape);
-        }
-
         protected createShape(){
             return SphereShape.create();
         }

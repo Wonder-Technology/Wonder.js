@@ -17,18 +17,6 @@ module wd {
             return BoxBoundingRegion.create(this.gameObject);
         }
 
-        @require(function(collider:Collider){
-            assert(collider instanceof Collider, Log.info.FUNC_SHOULD("target", "be collider"))
-        })
-        public isIntersectWith(collider:Collider){
-            if(collider instanceof BoxCollider){
-                return this.boundingRegion.isIntersectWithBox(collider.boundingRegion);
-            }
-            else{
-                Log.warn(Log.info.FUNC_NOT_SUPPORT(`${this.type} collider`, `intersect with ${collider.type} collider`));
-            }
-        }
-
         public buildBoundingRegion(){
             this.boundingRegion.build(this.center, this.halfExtents);
         }

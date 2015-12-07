@@ -26,17 +26,19 @@
             var director = wd.Director.getInstance();
             var box1 = createBox1();
             var box2 = createBox2();
-//            var box3 = createBox3();
-//            var sphere = createSphere();
-//            var ground = createGround();
+            var box3 = createBox3();
+            var box4 = createBox4();
+            var sphere = createSphere();
+            var ground = createGround();
 
             wd.DebugConfig.debugCollision = true;
 
             director.scene.addChild(box1);
             director.scene.addChild(box2);
-//            director.scene.addChild(box3);
-//            director.scene.addChild(sphere);
-//            director.scene.addChild(ground);
+            director.scene.addChild(box3);
+            director.scene.addChild(box4);
+            director.scene.addChild(sphere);
+            director.scene.addChild(ground);
             director.scene.addChild(createCamera());
 
             wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
@@ -171,6 +173,40 @@
             return gameObject;
         }
 
+        function createBox4() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.5,1.0,1.0)");
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var collision = wd.SphereCollider.create();
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(-30, 0, 0);
+
+//            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+//                gameObject.transform.rotate(0, 0, 1);
+//            }));
+//
+//            gameObject.addComponent(action);
+
+//            gameObject.addComponent(wd.Script.create("./js/collision_box/box2.js"));
+
+
+            return gameObject;
+        }
+
         function createSphere() {
             var material = wd.BasicMaterial.create();
             material.color = wd.Color.create("rgb(0.0,0.5,1.0)");
@@ -239,7 +275,7 @@
 
             camera.addComponent(controller);
 
-            camera.transform.translate(0, 20, 20);
+            camera.transform.translate(0, 30, 30);
             camera.transform.lookAt(0, 0, 0);
 
             return camera;

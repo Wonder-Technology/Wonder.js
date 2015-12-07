@@ -11,11 +11,6 @@ module wd {
 
         protected originShape:AABBShape;
 
-
-        public isIntersectWithBox(boundingRegion:BoxBoundingRegion){
-            return this.shape.isIntersectWithBox(boundingRegion.shape);
-        }
-
         protected createShape(){
             //todo add OBBShape
             return AABBShape.create();

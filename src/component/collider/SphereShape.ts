@@ -35,6 +35,10 @@ module wd {
             return shape.center.distanceToSquared(this.center) <= ( radiusSum**2);
         }
 
+        public isIntersectWithBox(shape:AABBShape) {
+            return this.isBoxAndSphereIntersected(shape, this);
+        }
+
         public containPoint(point:Vector3) {
             return point.distanceToSquared(this.center) <= (this.radius**2);
         }

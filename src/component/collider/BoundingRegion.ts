@@ -56,6 +56,14 @@ module wd {
             }
         }
 
+        public isIntersectWithSphere(boundingRegion:SphereBoundingRegion){
+            return this.shape.isIntersectWithSphere(boundingRegion.shape);
+        }
+
+        public isIntersectWithBox(boundingRegion:BoxBoundingRegion){
+            return this.shape.isIntersectWithBox(boundingRegion.shape);
+        }
+
         protected abstract createShape():Shape;
         protected abstract isBuildUserSpecifyBoundingRegion(...args):boolean;
         protected abstract isNotTransformed():boolean;

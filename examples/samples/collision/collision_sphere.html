@@ -28,6 +28,11 @@
             var sphere2 = createSphere2();
             var sphere3 = createSphere3();
             var sphere = createSphere();
+
+
+            var box1 = createBox1();
+
+
             var ground = createGround();
 
             wd.DebugConfig.debugCollision = true;
@@ -36,6 +41,7 @@
             director.scene.addChild(sphere2);
             director.scene.addChild(sphere3);
             director.scene.addChild(sphere);
+            director.scene.addChild(box1);
             director.scene.addChild(ground);
             director.scene.addChild(createCamera());
 
@@ -190,6 +196,50 @@
 
 
             gameObject.transform.translate(0, 0, -15);
+
+            var tween1 = wd.Tween.create();
+            var tween2 = wd.Tween.create();
+
+            tween1.from({scale:1})
+                    .to({scale:2}, 3000)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        gameObject.transform.scale = wd.Vector3.create(this.scale, 1, this.scale);
+                    });
+
+            tween2.from({scale:2})
+                    .to({scale:1}, 3000)
+                    .easing(wd.Tween.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        gameObject.transform.scale = wd.Vector3.create(this.scale, 1, this.scale);
+                    });
+
+            var action = wd.RepeatForever.create(wd.Sequence.create(tween1, tween2));
+
+            gameObject.addComponent(action);
+
+            return gameObject;
+        }
+
+        function createBox1() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.0,0.8,0.5)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.BoxCollider.create();
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(0, 0, 15);
 
             var tween1 = wd.Tween.create();
             var tween2 = wd.Tween.create();

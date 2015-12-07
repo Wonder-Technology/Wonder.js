@@ -338,7 +338,7 @@ module wd{
                 dy = this.y - v.y,
                 dz = this.z - v.z;
 
-            return dx * dx + dy * dy + dz * dz;
+            return dx**2 + dy**2 + dz**2;
         }
     }
 }

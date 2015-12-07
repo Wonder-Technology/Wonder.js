@@ -450,6 +450,7 @@ describe("BoxCollider", function () {
         });
     });
 
+
     describe("isIntersectWith", function () {
         beforeEach(function () {
 

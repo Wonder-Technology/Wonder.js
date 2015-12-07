@@ -7,7 +7,6 @@ module wd {
 
         public abstract createBoundingRegion();
         public abstract buildBoundingRegion();
-        public abstract isIntersectWith(collider:Collider);
 
         public init(){
             this.boundingRegion = this.createBoundingRegion();
@@ -18,6 +17,21 @@ module wd {
 
         public update(time:number){
             this.boundingRegion.update();
+        }
+
+        @require(function(collider:Collider){
+            assert(collider instanceof Collider, Log.info.FUNC_SHOULD("target", "be collider"))
+        })
+        public isIntersectWith(collider:Collider){
+            if(collider instanceof BoxCollider){
+                return this.boundingRegion.isIntersectWithBox(collider.boundingRegion);
+            }
+            else if(collider instanceof SphereCollider){
+                return this.boundingRegion.isIntersectWithSphere(collider.boundingRegion);
+            }
+            else{
+                Log.warn(Log.info.FUNC_NOT_SUPPORT(`${this.type} collider`, `intersect with ${collider.type} collider`));
+            }
         }
 
         public getCollideObjects(checkTargetList:wdCb.Collection<GameObject>):wdCb.Collection<GameObject>{

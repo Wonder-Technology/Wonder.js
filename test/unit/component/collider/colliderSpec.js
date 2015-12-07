@@ -15,7 +15,6 @@ describe("collider", function () {
         sandbox.restore();
     });
 
-
     describe("test collision event", function () {
         var box1, box2;
         var director;
@@ -128,6 +127,79 @@ describe("collider", function () {
 
             expect(script1.onCollisionEnd).toCalledOnce();
             expect(script2.onCollisionEnd).toCalledOnce();
+        });
+    });
+
+    describe("test sphere-aabb collision", function () {
+        var director;
+        var script1, script2;
+        var box1,sphere2;
+
+        function judgeNotCollide() {
+            expect(script1.onContact).not.toCalled();
+            expect(script2.onContact).not.toCalled();
+        }
+
+        function judgeCollideCount(num) {
+            expect(script1.onContact.callCount).toEqual(num);
+            expect(script2.onContact.callCount).toEqual(num);
+        }
+
+        function judgeCollide() {
+            expect(script1.onContact).toCalledOnce();
+            expect(script2.onContact).toCalledOnce();
+            expect(script1.onContact).toCalledWith(wdCb.Collection.create([sphere2]));
+            expect(script2.onContact).toCalledWith(wdCb.Collection.create([box1]));
+        }
+
+        beforeEach(function () {
+            box1 = colliderTool.createBox();
+            sphere2 = colliderTool.createSphere();
+
+            script1 = {
+                onContact: sandbox.stub()
+            };
+            prepareTool.addScript(box1, script1);
+
+            script2 = {
+                onContact: sandbox.stub()
+            };
+            prepareTool.addScript(sphere2, script2);
+
+
+            director = wd.Director.getInstance();
+
+
+            director.scene.addChild(box1);
+            director.scene.addChild(sphere2);
+
+            director.scene.addChild(testTool.createCamera());
+        });
+
+        it("test1", function(){
+            director._init();
+
+            box1.transform.translate(8, 0, 0);
+            sphere2.transform.translate(-2, 0, 0);
+
+            director._loopBody(1);
+
+            judgeCollide();
+
+
+            box1.transform.translate(0.1, 0, 0);
+
+            director._loopBody(1);
+
+            judgeCollideCount(1);
+
+
+            box1.transform.position = wd.Vector3.create(-9, 9, 0);
+            sphere2.transform.position = wd.Vector3.create(0, 0, 0);
+
+            director._loopBody(1);
+
+            judgeCollideCount(1);
         });
     });
 });
