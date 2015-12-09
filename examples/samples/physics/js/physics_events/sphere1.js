@@ -7,36 +7,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 /// <reference path="../../../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
-    var Box1 = (function () {
-        function Box1(gameObject) {
+    var Sphere1 = (function () {
+        function Sphere1(gameObject) {
             this._gameObject = null;
             this._collidingMaterial = null;
             this._originMaterial = null;
             this._gameObject = gameObject;
         }
-        Box1.prototype.init = function () {
+        Sphere1.prototype.init = function () {
             this._collidingMaterial = wd.BasicMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
             this._collidingMaterial.init();
             this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
         };
-        Box1.prototype.onContact = function (collisionObjects) {
+        Sphere1.prototype.onContact = function (collisionObjects) {
             console.log("contact", collisionObjects);
         };
-        Box1.prototype.onCollisionStart = function (collisionObjects) {
+        Sphere1.prototype.onCollisionStart = function (collisionObjects) {
             console.log("collision start", collisionObjects);
-            var geometry = this._gameObject.getComponent(wd.Geometry);
-            geometry.material = this._collidingMaterial;
         };
-        Box1.prototype.onCollisionEnd = function () {
+        Sphere1.prototype.onCollisionEnd = function () {
             console.log("collision end");
-            var geometry = this._gameObject.getComponent(wd.Geometry);
-            geometry.material = this._originMaterial;
         };
-        Box1 = __decorate([
-            wd.script("box1")
-        ], Box1);
-        return Box1;
+        Sphere1 = __decorate([
+            wd.script("sphere1")
+        ], Sphere1);
+        return Sphere1;
     })();
-    sample.Box1 = Box1;
+    sample.Sphere1 = Sphere1;
 })(sample || (sample = {}));

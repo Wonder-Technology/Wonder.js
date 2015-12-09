@@ -20,11 +20,11 @@ module sample{
         }
 
         public onContact(collisionObjects:wdCb.Collection<wd.GameObject>){
-            console.log("contact", collisionObjects.getCount());
+            console.log("contact", collisionObjects);
         }
 
-        public onCollisionStart(){
-            console.log("collision start");
+        public onCollisionStart(collisionObjects:wdCb.Collection<wd.GameObject>){
+            console.log("collision start", collisionObjects);
 
             var geometry = this._gameObject.getComponent<wd.Geometry>(wd.Geometry);
 

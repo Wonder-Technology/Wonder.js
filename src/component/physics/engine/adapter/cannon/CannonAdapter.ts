@@ -32,10 +32,14 @@ module wd {
         }
 
         public addDynamicBody(gameObject:GameObject, shape:Shape, {
-            //todo set type
-            mass,
             position,
             rotation,
+
+            onCollisionStart,
+            onContact,
+            onCollisionEnd,
+
+            mass,
             linearDamping,
             angularDamping,
             friction,
@@ -65,6 +69,30 @@ module wd {
                 gameObject:gameObject,
                 body:body
             });
+
+
+            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
+        }
+
+        private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
+            var gameObjectDatas = this._gameObjectDatas;
+
+            targetBody.addEventListener("collide",(e) => {
+                let data = gameObjectDatas.findOne(({gameObject, body}) => {
+                    return body === e.body;
+                }),
+                collideObject:GameObject = null;
+
+                if(!data){
+                    return;
+                }
+
+                collideObject = data.gameObject;
+
+                onCollisionStart(collideObject);
+                onContact(collideObject);
+                onCollisionEnd(collideObject);
+            });
         }
 
         public update(time:number):void {
@@ -74,6 +102,8 @@ module wd {
 
             this._gameObjectDatas.forEach(({gameObject,body}) => {
                 //let {gameObject,body} = gameObjectData;
+
+
 
                 gameObject.transform.position = self._convertToWonderVector3(body.position);
                 gameObject.transform.rotation = self._convertToWonderQuaternion(body.quaternion);

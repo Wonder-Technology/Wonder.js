@@ -53,6 +53,18 @@ module wd {
             this._addBody();
         }
 
+        private _onContact(collideObject:GameObject){
+            this.gameObject.execScript("onContact", wdCb.Collection.create([collideObject]));
+        }
+
+        private _onCollisionStart(collideObject:GameObject){
+            this.gameObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
+        }
+
+        private _onCollisionEnd(){
+            this.gameObject.execScript("onCollisionEnd");
+        }
+
         @require(function(){
             assert(this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
             assert(this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
@@ -69,6 +81,11 @@ module wd {
                 mass:this.mass,
                 position: position,
                 rotation: rotation,
+
+                onContact: wdCb.FunctionUtils.bind(this, this._onContact),
+                onCollisionStart: wdCb.FunctionUtils.bind(this, this._onCollisionStart),
+                onCollisionEnd: wdCb.FunctionUtils.bind(this, this._onCollisionEnd),
+
 
                 linearDamping:this.linearDamping,
                 angularDamping:this.angularDamping,

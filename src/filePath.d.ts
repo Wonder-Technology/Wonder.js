@@ -17,6 +17,7 @@
 /// <reference path="definition/Variable"/>
 
 
+
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
 /// <reference path="core/Transform"/>
@@ -28,6 +29,8 @@
 /// <reference path="core/entity/LightManager"/>
 /// <reference path="core/entity/Skybox"/>
 
+
+/// <reference path="collision/CollisionDetector"/>
 
 
 
