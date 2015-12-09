@@ -346,7 +346,7 @@ describe("BoxCollider", function () {
                         director._init();
 
 
-                        var debugBox = director.scene.getChild(3);
+                        var debugBox = colliderTool.findDebugObject(box1);
                         var debugGeo = debugBox.getComponent(wd.CustomGeometry);
 
                         expect(debugBox).toBeDefined();
@@ -370,9 +370,10 @@ describe("BoxCollider", function () {
                             director._loopBody(1);
 
 
-                            var debugBox = director.scene.getChild(3);
+                            var debugBox = colliderTool.findDebugObject(box1);
                             var debugGeo = debugBox.getComponent(wd.CustomGeometry);
 
+                            expect(colliderTool.findDebugObjects(box1).getCount()).toEqual(1);
                             expect(debugBox).toBeDefined();
                             expect(testTool.getValues(debugBox.transform.position)).toEqual([4, 0, 0]);
                             expect(testTool.getValues(debugGeo.vertices)).toEqual(
@@ -395,7 +396,7 @@ describe("BoxCollider", function () {
                                 director._loopBody(1);
 
 
-                                var debugBox = director.scene.getChild(3);
+                                var debugBox = colliderTool.findDebugObject(box1);
                                 var debugGeo = debugBox.getComponent(wd.CustomGeometry);
 
                                 expect(debugBox).toBeDefined();
@@ -416,7 +417,7 @@ describe("BoxCollider", function () {
                                 director._init();
 
 
-                                var debugBox = director.scene.getChild(3);
+                                var debugBox = colliderTool.findDebugObject(box1);
                                 var debugGeo = debugBox.getComponent(wd.CustomGeometry);
 
 

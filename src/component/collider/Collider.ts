@@ -1,6 +1,11 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class Collider extends Component {
+        get shape():Shape{
+            return this.boundingRegion.shape;
+        }
+
+        public sequenceNumber:number = 1;
         public type:string = ABSTRACT_ATTRIBUTE;
 
         public boundingRegion:BoundingRegion = null;

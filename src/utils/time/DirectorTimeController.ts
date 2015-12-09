@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
-    const STARTING_FPS = 60,
-        GAMETIME_SCALE = 1000;
+    //const STARTING_FPS = 60,
+    const GAMETIME_SCALE = 1000;
 
     export class DirectorTimeController extends TimeController{
         public static create() {
@@ -13,11 +13,13 @@ module wd{
         public gameTime:number = null;
         public fps:number = null;
         public isTimeChange:boolean = false;
+        public deltaTime:number = null;
 
         private _lastTime:number = null;
 
         public tick(time:number) {
-            this._updateFps(time);
+            this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
+            this._updateFps(this.deltaTime);
             this.gameTime = time / GAMETIME_SCALE;
 
             this._lastTime = time;
@@ -40,13 +42,15 @@ module wd{
             return root.performance.now();
         }
 
-        private _updateFps(time) {
-            if (this._lastTime === null) {
-                this.fps = STARTING_FPS;
-            }
-            else {
-                this.fps = 1000 / (time - this._lastTime);
-            }
+        private _updateFps(deltaTime:number) {
+            this.fps = 1000 / deltaTime;
+
+            //if (this._lastTime === null) {
+            //    this.fps = STARTING_FPS;
+            //}
+            //else {
+            //    this.fps = 1000 / (time - this._lastTime);
+            //}
         }
     }
 }

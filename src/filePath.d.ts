@@ -3,6 +3,8 @@
 /// <reference path="../lib/inner/Wonder-CommonLib/dist/wdCb.d.ts"/>
 /// <reference path="../lib/inner/Wonder-FRP/dist/wdFrp.core.d.ts"/>
 
+/// <reference path="../lib/outer/cannon/cannon.d.ts"/>
+
 /// <reference path="config/DebugConfig"/>
 
 /// <reference path="extend/wdFrp"/>
@@ -96,6 +98,14 @@
 /// <reference path="component/collider/AABBShape"/>
 /// <reference path="component/collider/SphereShape"/>
 /// <reference path="component/collider/ColliderType"/>
+
+/// <reference path="component/physics/RigidBody"/>
+/// <reference path="component/physics/DynamicRigidBody"/>
+/// <reference path="component/physics/DynamicRigidBody"/>
+/// <reference path="component/physics/engine/PhysicsEngineFactory"/>
+/// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
+/// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
+/// <reference path="component/physics/engine/adapter/cannon/CannonAdapter"/>
 
 /// <reference path="component/pick/Pick"/>
 

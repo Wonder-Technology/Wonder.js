@@ -103,6 +103,10 @@ module wd{
             return top ? top : this.scene;
         }
 
+        public getDeltaTime(){
+            return this._timeController.deltaTime;
+        }
+
         private startLoop() {
             var self = this;
 

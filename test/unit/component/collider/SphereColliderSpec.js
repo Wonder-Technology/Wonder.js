@@ -286,7 +286,7 @@ describe("SphereCollider", function () {
                         director._init();
 
 
-                        var debugSphere = director.scene.getChild(3);
+                        var debugSphere = colliderTool.findDebugObject(sphere1);
                         var debugGeo = debugSphere.getComponent(wd.CustomGeometry);
 
                         expect(debugSphere).toBeDefined();
@@ -309,7 +309,7 @@ describe("SphereCollider", function () {
                             director._loopBody(1);
 
 
-                            var debugSphere = director.scene.getChild(3);
+                            var debugSphere = colliderTool.findDebugObject(sphere1);
                             var debugGeo = debugSphere.getComponent(wd.CustomGeometry);
 
                             expect(debugSphere).toBeDefined();
@@ -336,7 +336,7 @@ describe("SphereCollider", function () {
                             director._loopBody(1);
 
 
-                            var debugSphere = director.scene.getChild(3);
+                            var debugSphere = colliderTool.findDebugObject(sphere1);
                             var debugGeo = debugSphere.getComponent(wd.CustomGeometry);
 
                             expect(debugSphere).toBeDefined();

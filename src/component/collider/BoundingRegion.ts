@@ -93,6 +93,8 @@ module wd {
 
             gameObject.transform.translate(shape.center);
 
+            gameObject.name = `debugBoundingRegion${this.gameObject.uid}`;
+
             gameObject.init();
 
             return gameObject;

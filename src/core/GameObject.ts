@@ -36,6 +36,10 @@ module wd {
             EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
             EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
+            this._components = this._components.sort((a:Component, b:Component) => {
+                return a.sequenceNumber - b.sequenceNumber;
+            });
+
             this._components.forEach((component:Component) => {
                 component.init();
             });
@@ -281,6 +285,7 @@ module wd {
             var camera = this._getCamera(),
                 animation = this._getAnimation(),
                 collider = this._getCollider();
+                //rigidBody = this._getRigidBody();
 
             if(camera){
                 camera.update(time);
@@ -297,6 +302,10 @@ module wd {
             if(collider){
                 collider.update(time);
             }
+
+            //if(rigidBody){
+            //    rigidBody.update(time);
+            //}
 
             this._children.forEach((child:GameObject) => {
                 child.update(time);
@@ -354,6 +363,13 @@ module wd {
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
+        //
+        //@require(function(){
+        //    assert(this._getComponentCount(RigidBody) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rigid body component"));
+        //})
+        //private _getRigidBody():RigidBody{
+        //    return this.getComponent<RigidBody>(RigidBody);
+        //}
 
         private _getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {

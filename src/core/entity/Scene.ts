@@ -27,12 +27,24 @@ module wd {
         public shader:Shader = null;
         public camera:GameObject = null;
         public isUseProgram:Boolean = false;
+        public physics = {
+            enable: false,
+            engine: PhysicsEngineType.CANNON,
+            gravity: Vector3.create(0, -9.8, 0),
+            iterations: 10
+        };
+        public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
 
         public init(){
             this.addComponent(Pick.create());
+
+            if(this.physics.enable){
+                this.physicsEngineAdapter = PhysicsEngineFactory.create(this.physics.engine);
+                this.physicsEngineAdapter.init();
+            }
 
             super.init();
 
@@ -71,6 +83,10 @@ module wd {
         }
 
         public update(time:number){
+            if(this.physics.enable){
+                this.physicsEngineAdapter.update(time);
+            }
+
             super.update(time);
 
             this._checkCollision();

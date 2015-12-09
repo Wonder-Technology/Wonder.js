@@ -1,14 +1,26 @@
 var colliderTool = (function () {
     return {
-        createSphere: function () {
-            var material = wd.BasicMaterial.create();
+        findDebugObject: function(gameObject){
+            return wd.Director.getInstance().scene.findChildByName("debugBoundingRegion" + gameObject.uid);
+        },
+        findDebugObjects: function(gameObject){
+            return wd.Director.getInstance().scene.findChildrenByName("debugBoundingRegion" + gameObject.uid);
+        },
+
+
+
+
+
+        createSphere: function (colliderClass) {
+            var material = wd.BasicMaterial.create(),
+                colliderClass = colliderClass || wd.SphereCollider;
 
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;
             geometry.radius = 5;
 
 
-            var collider = wd.SphereCollider.create();
+            var collider = colliderClass.create();
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
@@ -18,8 +30,9 @@ var colliderTool = (function () {
 
             return gameObject;
         },
-        createBox: function () {
-            var material = wd.BasicMaterial.create();
+        createBox: function (colliderClass) {
+            var material = wd.BasicMaterial.create(),
+            colliderClass = colliderClass || wd.BoxCollider;
 
             var geometry = wd.BoxGeometry.create();
             geometry.material = material;
@@ -28,7 +41,7 @@ var colliderTool = (function () {
             geometry.depth = 5;
 
 
-            var collider = wd.BoxCollider.create();
+            var collider = colliderClass.create();
 
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(geometry);
