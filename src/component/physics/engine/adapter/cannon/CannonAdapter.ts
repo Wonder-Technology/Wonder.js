@@ -35,6 +35,7 @@ module wd {
             //todo set type
             mass,
             position,
+            rotation,
             linearDamping,
             angularDamping,
             friction,
@@ -45,6 +46,8 @@ module wd {
 
             body = new CANNON.Body({
                 position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
                 mass: mass,
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
@@ -167,8 +170,8 @@ module wd {
             return new CANNON.Vec3(v.x, v.y, v.z);
         }
 
-        private _convertToCannonVelocity(velocity:Vector3){
-            return this._convertToCannonVector3(velocity.reverse());
+        private _convertToCannonQuaternion(rotation:Quaternion){
+            return new CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
         }
 
         private _convertToWonderVector3(v:CANNON.Vec3) {

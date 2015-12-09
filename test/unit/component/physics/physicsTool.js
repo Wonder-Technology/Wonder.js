@@ -7,6 +7,16 @@ var physicsTool = (function () {
                 pos
             );
         },
+        judgeRotation: function(obj, rot){
+            expect(testTool.getValues(obj.transform.rotation.getEulerAngles())).toEqual(
+                [
+                    mathTestUtils.toFixed(rot[0]),
+                    mathTestUtils.toFixed(rot[1]),
+                    mathTestUtils.toFixed(rot[2])
+                ]
+            );
+        },
+
         setStartTime: function (sandbox, time) {
             var director = wd.Director.getInstance();
 
@@ -38,13 +48,45 @@ var physicsTool = (function () {
             return rigidBody;
         },
 
-        createSphere: function (colliderClass, rigidBody) {
+        createSphere: function (colliderClass, rigidBody, radius) {
             var material = wd.BasicMaterial.create(),
                 colliderClass = colliderClass || wd.SphereCollider;
 
+            var radius = radius || 5;
+
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;
-            geometry.radius = 5;
+            geometry.radius = radius;
+
+
+            var collider = colliderClass.create();
+
+            var gameObject = wd.GameObject.create();
+
+
+            if (rigidBody) {
+                gameObject.addComponent(rigidBody);
+            }
+
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(collider);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            return gameObject;
+        },
+        createBox: function (colliderClass, rigidBody, size) {
+            var material = wd.BasicMaterial.create(),
+                colliderClass = colliderClass || wd.SphereCollider;
+
+            var size = size || 5;
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = size;
+            geometry.height = size;
+            geometry.depth = size;
 
 
             var collider = colliderClass.create();

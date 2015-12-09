@@ -61,12 +61,15 @@ module wd {
             var engineAdapter:IPhysicsEngineAdapter = this._getPhysicsEngineAdapter();
 
             var position = this.gameObject.transform.position,
+                rotation = this.gameObject.transform.rotation,
                 shape = this.gameObject.getComponent<Collider>(Collider).shape;
 
 
             engineAdapter.addDynamicBody(this.gameObject, shape, {
                 mass:this.mass,
                 position: position,
+                rotation: rotation,
+
                 linearDamping:this.linearDamping,
                 angularDamping:this.angularDamping,
                 friction:this.friction,
