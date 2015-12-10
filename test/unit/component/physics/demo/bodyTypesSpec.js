@@ -66,8 +66,7 @@ describe("physics bodyTypes demo", function () {
 
 
             rigidBody3 = physicsTool.createRigidBody({
-                class:wd.StaticRigidBody,
-                mass: 0
+                class:wd.StaticRigidBody
             });
 
 

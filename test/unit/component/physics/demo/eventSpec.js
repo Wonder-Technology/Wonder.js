@@ -40,6 +40,39 @@ describe("physics event demo", function () {
         expect(script2.onCollisionEnd).not.toCalled();
     }
 
+    function prepare(rigidBody1Class, rigidBody2Class) {
+        rigidBody1 = physicsTool.createRigidBody({
+            class: rigidBody1Class,
+            velocity: wd.Vector3.create(0, 0, 5)
+        });
+
+
+        box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+
+        box1.transform.translate(0, 0, -10);
+
+
+        rigidBody2 = physicsTool.createRigidBody({
+            class: rigidBody2Class
+        });
+
+
+        sphere2 = physicsTool.createSphere(wd.SphereCollider, rigidBody2);
+
+
+        sphere2.transform.translate(0, 0, 10);
+
+
+        prepareTool.addScript(box1, script1);
+
+        prepareTool.addScript(sphere2, script2);
+
+
+        director.scene.addChild(box1);
+        director.scene.addChild(sphere2);
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -79,39 +112,6 @@ describe("physics event demo", function () {
         testTool.clearInstance();
         sandbox.restore();
     });
-
-    function prepare(rigidBody1Class, rigidBody2Class) {
-        rigidBody1 = physicsTool.createRigidBody({
-            class: rigidBody1Class,
-            velocity: wd.Vector3.create(0, 0, 5)
-        });
-
-
-        box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
-
-
-        box1.transform.translate(0, 0, -10);
-
-
-        rigidBody2 = physicsTool.createRigidBody({
-            class: rigidBody2Class
-        });
-
-
-        sphere2 = physicsTool.createSphere(wd.SphereCollider, rigidBody2);
-
-
-        sphere2.transform.translate(0, 0, 10);
-
-
-        prepareTool.addScript(box1, script1);
-
-        prepareTool.addScript(sphere2, script2);
-
-
-        director.scene.addChild(box1);
-        director.scene.addChild(sphere2);
-    }
 
     it("not trigger collision event when collision in kinematic-kinematic rigid body case", function () {
         prepare(wd.KinematicRigidBody, wd.KinematicRigidBody);

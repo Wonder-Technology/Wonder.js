@@ -1,11 +1,11 @@
 var physicsTool = (function () {
     return {
-        judgePos: function (obj, pos) {
-            expect(testTool.getValues(
-                obj.transform.position)
-            ).toEqual(
-                pos
-            );
+        judgePos: function (obj, pos, digit) {
+            this.judgeValue(obj.transform.position, pos, digit || 7);
+        },
+        judgeValue: function (sourceVal, targetValArr, digit) {
+            expect(testTool.getValues(sourceVal, digit || 3)
+            ).toEqual( targetValArr );
         },
         judgeRotation: function(obj, rot){
             expect(testTool.getValues(obj.transform.rotation.getEulerAngles())).toEqual(

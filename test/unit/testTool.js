@@ -138,17 +138,22 @@ var testTool = (function () {
             window.performance.now.returns(time);
             gameObject.actionManager.update(time);
         },
-        getValues: function (values) {
+        getValues: function (values, digit) {
+            var digit = digit || 7;
+
             if (values) {
                 if (mathTestUtils.isArray(values) || mathTestUtils.isFloat32Array(values) || mathTestUtils.isUint16Array(values)) {
-                    return mathTestUtils.getValues(values);
+                    return mathTestUtils.getValues(values, digit);
+                }
+                else if(values.values){
+                    return mathTestUtils.getValues(values.values, digit);
                 }
                 else {
-                    return mathTestUtils.getValues(values.values);
+                    return mathTestUtils.toFixed(values, digit);
                 }
             }
 
-            return mathTestUtils.getValues(matrix.values);
+            //return mathTestUtils.getValues(matrix.values);
         },
         stubGetterSetter: function (sinon, object, attri, getterFunc, setterFunc) {
             /*!

@@ -12,6 +12,26 @@ module wd {
         private _materials:wdCb.Collection<CANNON.Material> = wdCb.Collection.create<CANNON.Material>();
         private _gameObjectDatas:wdCb.Collection<GameObjectData> = wdCb.Collection.create<GameObjectData>();
 
+        public getVelocity(obj:GameObject){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return null;
+            }
+
+            return this._convertToWonderVector3(result.body.velocity);
+        }
+
+        public setVelocity(obj:GameObject, velocity:Vector3){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return;
+            }
+
+            result.body.velocity = this._convertToCannonVector3(velocity);
+        }
+
         public init() {
             var {
                 enable,
@@ -52,13 +72,14 @@ module wd {
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
                 velocity: this._convertToCannonVector3(velocity)
-                //material: this._createMaterial(friction, restitution)
             });
 
             this._addBody(body, gameObject, shape, {
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
+                friction: friction,
+                restitution: restitution
             });
         }
 
@@ -90,6 +111,8 @@ module wd {
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
+                friction: friction,
+                restitution: restitution
             });
         }
 
@@ -117,15 +140,21 @@ module wd {
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
+                friction: friction,
+                restitution: restitution
             });
         }
 
         private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
             onCollisionStart,
             onContact,
-            onCollisionEnd
+            onCollisionEnd,
+            friction,
+            restitution
             }) {
             body.addShape(this._createShape(shape));
+
+            body.material = this._createMaterial(friction, restitution);
 
             this.world.addBody(body);
 
@@ -311,6 +340,12 @@ module wd {
                     friction: friction,
                     restitution: restitution
                 }));
+            });
+        }
+
+        private _findGameObjectData(obj:GameObject){
+            return this._gameObjectDatas.findOne(({gameObject, body}) => {
+                return gameObject.uid === obj.uid;
             });
         }
     }
