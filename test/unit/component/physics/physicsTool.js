@@ -80,13 +80,24 @@ var physicsTool = (function () {
             var material = wd.BasicMaterial.create(),
                 colliderClass = colliderClass || wd.SphereCollider;
 
-            var size = size || 5;
+            var sizeArr = [];
+
+            if(YYC.Tool.judge.isArray(size)){
+                sizeArr = size;
+            }
+            else if(size === undefined){
+                sizeArr = [5,5,5];
+            }
+            else{
+                sizeArr = [size,size,size];
+            }
+
 
             var geometry = wd.BoxGeometry.create();
             geometry.material = material;
-            geometry.width = size;
-            geometry.height = size;
-            geometry.depth = size;
+            geometry.width = sizeArr[0];
+            geometry.height = sizeArr[1];
+            geometry.depth = sizeArr[2];
 
 
             var collider = colliderClass.create();

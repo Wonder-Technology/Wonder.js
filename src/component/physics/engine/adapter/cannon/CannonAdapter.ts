@@ -74,6 +74,76 @@ module wd {
             this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
         }
 
+        public addKinematicBody(gameObject:GameObject, shape:Shape, {
+            position,
+            rotation,
+
+            onCollisionStart,
+            onContact,
+            onCollisionEnd,
+
+            mass,
+            friction,
+            restitution,
+            velocity
+            }) {
+            var body = null;
+
+            body = new CANNON.Body({
+                type: CANNON.Body.KINEMATIC,
+                position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
+                mass: mass,
+                velocity: this._convertToCannonVector3(velocity)
+            });
+
+            body.addShape(this._createShape(shape));
+
+            this.world.addBody(body);
+
+            this._gameObjectDatas.addChild({
+                gameObject:gameObject,
+                body:body
+            });
+
+
+            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
+        }
+
+        public addStaticBody(gameObject:GameObject, shape:Shape, {
+            position,
+            rotation,
+
+            onCollisionStart,
+            onContact,
+            onCollisionEnd,
+
+            friction,
+            restitution
+            }) {
+            var body = null;
+
+            body = new CANNON.Body({
+                position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
+                mass: 0
+            });
+
+            body.addShape(this._createShape(shape));
+
+            this.world.addBody(body);
+
+            this._gameObjectDatas.addChild({
+                gameObject:gameObject,
+                body:body
+            });
+
+
+            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
+        }
+
         private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
             var gameObjectDatas = this._gameObjectDatas;
 

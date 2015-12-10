@@ -6,6 +6,8 @@ module wd {
         init():void;
         update(time:number):void;
         addDynamicBody(gameObject:GameObject, shape:Shape, options:any):void;
+        addKinematicBody(gameObject:GameObject, shape:Shape, options:any):void;
+        addStaticBody(gameObject:GameObject, shape:Shape, options:any):void;
     }
 }
 
