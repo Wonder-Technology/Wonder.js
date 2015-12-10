@@ -7,18 +7,14 @@ module wd {
             return obj;
         }
 
-
         public world:CANNON.World = null;
 
         private _materials:wdCb.Collection<CANNON.Material> = wdCb.Collection.create<CANNON.Material>();
         private _gameObjectDatas:wdCb.Collection<GameObjectData> = wdCb.Collection.create<GameObjectData>();
-        //private _body:CANNON.Body = null;
 
         public init() {
-            //todo set type?
             var {
-                enable:boolean,
-                //engine:PhysicsEngineType,
+                enable,
                 gravity,
                 iterations
                 }= Director.getInstance().scene.physics;
@@ -56,22 +52,14 @@ module wd {
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
                 velocity: this._convertToCannonVector3(velocity)
-                //todo must reverse?elsewhere wrong?
-                //velocity: this._convertToCannonVelocity(velocity),
                 //material: this._createMaterial(friction, restitution)
             });
 
-            body.addShape(this._createShape(shape));
-
-            this.world.addBody(body);
-
-            this._gameObjectDatas.addChild({
-                gameObject:gameObject,
-                body:body
+            this._addBody(body, gameObject, shape, {
+                onCollisionStart: onCollisionStart,
+                onContact: onContact,
+                onCollisionEnd: onCollisionEnd,
             });
-
-
-            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
         }
 
         public addKinematicBody(gameObject:GameObject, shape:Shape, {
@@ -98,17 +86,11 @@ module wd {
                 velocity: this._convertToCannonVector3(velocity)
             });
 
-            body.addShape(this._createShape(shape));
-
-            this.world.addBody(body);
-
-            this._gameObjectDatas.addChild({
-                gameObject:gameObject,
-                body:body
+            this._addBody(body, gameObject, shape, {
+                onCollisionStart: onCollisionStart,
+                onContact: onContact,
+                onCollisionEnd: onCollisionEnd,
             });
-
-
-            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
         }
 
         public addStaticBody(gameObject:GameObject, shape:Shape, {
@@ -131,6 +113,18 @@ module wd {
                 mass: 0
             });
 
+            this._addBody(body, gameObject, shape, {
+                onCollisionStart: onCollisionStart,
+                onContact: onContact,
+                onCollisionEnd: onCollisionEnd,
+            });
+        }
+
+        private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
+            onCollisionStart,
+            onContact,
+            onCollisionEnd
+            }) {
             body.addShape(this._createShape(shape));
 
             this.world.addBody(body);
