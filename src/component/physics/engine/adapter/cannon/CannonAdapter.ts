@@ -183,6 +183,24 @@ module wd {
             });
         }
 
+        public removeGameObject(obj:GameObject){
+            var material = this._getMaterial(obj),
+                gameObjectData = this._findGameObjectData(obj),
+                body = gameObjectData !== null ? gameObjectData.body : null;
+
+            if(body){
+                this.world.remove(body);
+            }
+
+            this._gameObjectDatas.removeChild(({gameObject, body}) => {
+                return JudgeUtils.isEqual(gameObject, obj);
+            });
+
+            this._materials.removeChild(({gameObject,material}) => {
+                return JudgeUtils.isEqual(gameObject, obj);
+            });
+        }
+
         public update(time:number):void {
             var self = this;
 
@@ -338,15 +356,7 @@ module wd {
                 return null;
             }
 
-            this._materials.forEach(({gameObject, material}) => {
-                let contactMaterial = world.getContactMaterial(material, currentMaterial);
-
-                if(!contactMaterial){
-                    return;
-                }
-
-                resultArr.push(contactMaterial[dataName]);
-            });
+            resultArr = this._getContactMaterials(currentMaterial);
 
             firstData = resultArr[0];
             for(let data of resultArr){
@@ -376,6 +386,23 @@ module wd {
             });
 
             return result;
+        }
+
+        private _getContactMaterials(currentMaterial:CANNON.Material){
+            var resultArr = [],
+                world = this.world;
+
+            this._materials.forEach(({gameObject, material}) => {
+                let contactMaterial = world.getContactMaterial(material, currentMaterial);
+
+                if(!contactMaterial){
+                    return;
+                }
+
+                resultArr.push(contactMaterial);
+            });
+
+            return resultArr;
         }
 
         private _setMaterialData(obj:GameObject, dataName:string, data:number){

@@ -25,6 +25,10 @@ module wd {
             this.addBody();
         }
 
+        public dispose(){
+            this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
+        }
+
         protected abstract addBody();
 
         protected isPhysicsEngineAdapterExist(){

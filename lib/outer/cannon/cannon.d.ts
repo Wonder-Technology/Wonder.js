@@ -937,7 +937,7 @@ declare module CANNON {
         collisionMatrix: ArrayCollisionMatrix;
         collisionMatrixPrevious: ArrayCollisionMatrix;
         materials: Material[];
-        contactMaterials: ContactMaterial[];
+        contactmaterials: ContactMaterial[];
         contactMaterialTable: TupleDictionary;
         defaultMaterial: Material;
         defaultContactMaterial: ContactMaterial;

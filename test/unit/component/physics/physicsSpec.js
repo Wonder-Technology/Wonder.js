@@ -42,7 +42,7 @@ describe("physics", function () {
         }
 
         function getBody(){
-            return rigidBody1.getPhysicsEngineAdapter()._findGameObjectData(box1).body;
+            return physicsTool.getBody(box1);
         }
 
         beforeEach(function(){
@@ -327,6 +327,76 @@ describe("physics", function () {
                 assert(position2, rotation2);
             })
         });
+    });
+
+    describe("dispose", function(){
+        var rigidBody1, rigidBody2;
+        var box1, ground;
+        var adapter;
+        var box1Material;
+
+        beforeEach(function(){
+            rigidBody1 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody
+            });
+
+
+            box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+
+            rigidBody2 = physicsTool.createRigidBody({
+            });
+
+
+            ground = physicsTool.createBox(wd.BoxCollider, rigidBody2, [1000, 1, 1000]);
+
+
+            director.scene.addChild(box1);
+            director.scene.addChild(ground);
+
+
+            director._init();
+
+
+            adapter = physicsTool.getPhysicsEngineAdapter();
+
+            box1Material = adapter._getMaterial(box1);
+
+            expect(box1Material).toBeInstanceOf(CANNON.Material);
+        });
+
+        it("unregistered gameObject", function(){
+            box1.dispose();
+
+            expect(adapter._findGameObjectData(box1)).toBeNull();
+        });
+        it("unregistered its material", function(){
+            box1.dispose();
+
+            expect(adapter._getMaterial(box1)).toBeNull();
+        });
+        it("remove body", function(){
+            box1.dispose();
+
+            expect(adapter.world.bodies.length).toEqual(1);
+            expect(adapter.world.bodies[0]).toEqual(
+                physicsTool.getBody(ground)
+            );
+        });
+        /*!
+         todo remove material and contact material?
+
+         it("remove material and contact material", function(){
+         var groundMaterial = adapter._getMaterial(ground);
+
+         box1.dispose();
+
+         expect(adapter.world.getContactMaterial(box1Material, groundMaterial)).not.toBeDefined();
+         expect(adapter.world.getContactMaterial(groundMaterial, box1Material)).not.toBeDefined();
+         //expect(adapter.world.contactmaterials.length).toEqual(1);
+         //expect(adapter._getContactMaterials(box1Material).length).toEqual(0);
+         });
+         */
     });
 });
 

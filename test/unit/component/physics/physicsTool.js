@@ -123,6 +123,12 @@ var physicsTool = (function () {
         },
         convertToWonderQuaternion: function (r){
             return wd.Quaternion.create(r.x, r.y, r.z, r.w);
+        },
+        getPhysicsEngineAdapter: function() {
+            return wd.Director.getInstance().scene.physicsEngineAdapter;
+        },
+        getBody: function (obj){
+            return this.getPhysicsEngineAdapter()._findGameObjectData(obj).body;
         }
     }
 })();
