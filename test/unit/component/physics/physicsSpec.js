@@ -50,11 +50,11 @@ describe("physics", function () {
         });
 
         describe("change velocity/angularVelocity", function(){
-            function judge(rigidBodyClass, velocityAttriName){
+            function judge(rigidBodyClass, dataAttriName){
                 var data = {
                     class: rigidBodyClass
                 };
-                data[velocityAttriName] = wd.Vector3.create(5, 0, 0);
+                data[dataAttriName] = wd.Vector3.create(5, 0, 0);
 
                 prepare(data);
 
@@ -63,14 +63,14 @@ describe("physics", function () {
 
                 director._loopBody(100);
 
-                physicsTool.judgeValue(rigidBody1[velocityAttriName], [5, 0, 0]);
+                physicsTool.judgeValue(rigidBody1[dataAttriName], [5, 0, 0]);
 
-                rigidBody1[velocityAttriName] = wd.Vector3.create(6, 0, 0);
+                rigidBody1[dataAttriName] = wd.Vector3.create(6, 0, 0);
 
                 director._loopBody(200);
 
-                physicsTool.judgeValue(rigidBody1[velocityAttriName], [6, 0, 0]);
-                physicsTool.judgeValue(physicsTool.convertToWonderVector3(getBody()[velocityAttriName]), [6, 0, 0]);
+                physicsTool.judgeValue(rigidBody1[dataAttriName], [6, 0, 0]);
+                physicsTool.judgeValue(physicsTool.convertToWonderVector3(getBody()[dataAttriName]), [6, 0, 0]);
             }
 
             describe("change velocity", function(){
@@ -89,6 +89,41 @@ describe("physics", function () {
                 it("change kinematic rigid body's angularVelocity", function(){
                     judge(wd.KinematicRigidBody, "angularVelocity");
                 });
+            });
+        });
+        
+        describe("change damping", function(){
+            function judge(rigidBodyClass, dataAttriName){
+                var data = {
+                    class: rigidBodyClass
+                };
+                data[dataAttriName] = 0.3;
+
+                prepare(data);
+
+
+                director._init();
+
+                director._loopBody(100);
+
+                physicsTool.judgeValue(rigidBody1[dataAttriName], 0.3);
+
+                rigidBody1[dataAttriName] = 0.5;
+
+                director._loopBody(200);
+
+                physicsTool.judgeValue(rigidBody1[dataAttriName], 0.5);
+                physicsTool.judgeValue(getBody()[dataAttriName], 0.5);
+            }
+            beforeEach(function(){
+
+            });
+
+            it("change dynamic rigid body's linearDamping", function(){
+                judge(wd.DynamicRigidBody, "linearDamping");
+            });
+            it("change dynamic rigid body's angularDamping", function(){
+                judge(wd.DynamicRigidBody, "angularDamping");
             });
         });
     });

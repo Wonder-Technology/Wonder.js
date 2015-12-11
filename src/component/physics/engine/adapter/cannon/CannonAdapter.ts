@@ -12,24 +12,26 @@ module wd {
         private _materials:wdCb.Collection<CANNON.Material> = wdCb.Collection.create<CANNON.Material>();
         private _gameObjectDatas:wdCb.Collection<GameObjectData> = wdCb.Collection.create<GameObjectData>();
 
+        public getLinearDamping(obj:GameObject){
+            return this._getNumberData(obj, "linearDamping");
+        }
+        public setLinearDamping(obj:GameObject, linearDamping:number){
+            return this._setNumberData(obj, "linearDamping", linearDamping);
+        }
+
+        public getAngularDamping(obj:GameObject){
+            return this._getNumberData(obj, "angularDamping");
+        }
+        public setAngularDamping(obj:GameObject, angularDamping:number){
+            return this._setNumberData(obj, "angularDamping", angularDamping);
+        }
+
         public getVelocity(obj:GameObject){
-            var result = this._findGameObjectData(obj);
-
-            if(!result){
-                return null;
-            }
-
-            return this._convertToWonderVector3(result.body.velocity);
+            return this._getVec3Data(obj, "velocity");
         }
 
         public setVelocity(obj:GameObject, velocity:Vector3){
-            var result = this._findGameObjectData(obj);
-
-            if(!result){
-                return;
-            }
-
-            result.body.velocity = this._convertToCannonVector3(velocity);
+            this._setVec3Data(obj, "velocity", velocity);
         }
 
         public getAngularVelocity(obj:GameObject){
@@ -316,6 +318,26 @@ module wd {
             return this._gameObjectDatas.findOne(({gameObject, body}) => {
                 return gameObject.uid === obj.uid;
             });
+        }
+
+        private _getNumberData(obj:GameObject, dataName:string){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return null;
+            }
+
+            return result.body[dataName];
+        }
+
+        private _setNumberData(obj:GameObject, dataName:string, data:number){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return;
+            }
+
+            result.body[dataName] = data;
         }
 
         private _getVec3Data(obj:GameObject, dataName:string){

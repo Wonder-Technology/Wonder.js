@@ -7,7 +7,23 @@ module wd {
         	return obj;
         }
 
-        //todo more set
+        private _linearDamping:number = 0;
+        @operateBodyDataGetterAndSetter("LinearDamping")
+        get linearDamping(){
+            return this._linearDamping;
+        }
+        set linearDamping(linearDamping:number){
+            this._linearDamping = linearDamping;
+        }
+
+        private _angularDamping:number = 0;
+        @operateBodyDataGetterAndSetter("AngularDamping")
+        get angularDamping(){
+            return this._angularDamping;
+        }
+        set angularDamping(angularDamping:number){
+            this._angularDamping = angularDamping;
+        }
 
         private _velocity:Vector3 = Vector3.create(0, 0, 0);
         @operateBodyDataGetterAndSetter("Velocity")
@@ -28,8 +44,6 @@ module wd {
         }
 
         public mass:number = 1;
-        public linearDamping:number = 0;
-        public angularDamping:number = 0;
 
         protected addBody() {
             this.addBodyToPhysicsEngine("addDynamicBody", {
