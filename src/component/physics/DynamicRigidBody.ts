@@ -52,13 +52,22 @@ module wd {
             this._mass = mass;
         }
 
+        public impulse:Vector3 = null;
+        public force:Vector3 = null;
+        public hitPoint:Vector3 = null;
+
         protected addBody() {
             this.addBodyToPhysicsEngine("addDynamicBody", {
                 mass: this.mass,
+
                 linearDamping: this.linearDamping,
                 angularDamping: this.angularDamping,
                 velocity: this.velocity,
-                angularVelocity: this.angularVelocity
+                angularVelocity: this.angularVelocity,
+
+                impulse: this.impulse,
+                force: this.force,
+                hitPoint: this.hitPoint
             });
         }
     }

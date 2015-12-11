@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>impulse and force</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+
+    <script src="../../../lib/outer/cannon/cannon.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        initSample();
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+            var box1 = createBox1();
+            var sphere2 = createSphere2();
+
+            wd.DebugConfig.debugCollision = true;
+
+            director.scene.physics.enable = true;
+            director.scene.physics.gravity = wd.Vector3.create(0, 0, 0);
+
+            director.scene.addChild(box1);
+            director.scene.addChild(sphere2);
+            director.scene.addChild(createCamera());
+
+
+            director.start();
+        }
+
+        function createBox1() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+            geometry.depth = 5;
+
+
+            var collision = wd.BoxCollider.create();
+
+
+            var rigidBody = wd.DynamicRigidBody.create();
+            rigidBody.mass = 2;
+
+            var f = -500;
+            var dt = 1 / 60;
+            rigidBody.impulse = wd.Vector3.create(f * dt, 0, 0);
+            rigidBody.hitPoint = wd.Vector3.create(0, 3, 3);
+
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+            gameObject.addComponent(rigidBody);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(-10, 0, 0);
+
+
+            return gameObject;
+        }
+
+        function createSphere2() {
+            var material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 5;
+
+
+            var collision = wd.SphereCollider.create();
+
+
+            var rigidBody = wd.DynamicRigidBody.create();
+            rigidBody.mass = 5;
+
+            var f = 50;
+            rigidBody.impulse = wd.Vector3.create(f, 0, 0);
+            rigidBody.hitPoint = wd.Vector3.create(0, 3, 3);
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(collision);
+            gameObject.addComponent(rigidBody);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(10, 0, 0);
+
+            return gameObject;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 30;
+
+            camera.addComponent(controller);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

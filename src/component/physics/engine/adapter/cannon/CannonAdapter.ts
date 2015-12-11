@@ -102,9 +102,13 @@ module wd {
             friction,
             restitution,
             velocity,
-            angularVelocity
+            angularVelocity,
+
+            impulse,
+            force,
+            hitPoint
             }) {
-            var body = null;
+            var body:CANNON.Body = null;
 
             body = new CANNON.Body({
                 mass: mass,
@@ -114,7 +118,16 @@ module wd {
                 angularVelocity: this._convertToCannonVector3(angularVelocity)
             });
 
-            this._addBody(body, gameObject, shape, {
+            body.addShape(this._createShape(shape));
+
+            if(impulse && hitPoint){
+                body.applyImpulse(this._convertToCannonVector3(impulse), this._convertToCannonVector3(hitPoint));
+            }
+            if(force && hitPoint){
+                body.applyForce(this._convertToCannonVector3(force), this._convertToCannonVector3(hitPoint));
+            }
+
+            this._addBody(body, gameObject, {
                 position: this._convertToCannonVector3(position),
                 quaternion: this._convertToCannonQuaternion(rotation),
 
@@ -140,7 +153,7 @@ module wd {
             velocity,
             angularVelocity
             }) {
-            var body = null;
+            var body:CANNON.Body = null;
 
             body = new CANNON.Body({
                 type: CANNON.Body.KINEMATIC,
@@ -150,7 +163,9 @@ module wd {
                 angularVelocity: this._convertToCannonVector3(angularVelocity)
             });
 
-            this._addBody(body, gameObject, shape, {
+            body.addShape(this._createShape(shape));
+
+            this._addBody(body, gameObject, {
                 position: this._convertToCannonVector3(position),
                 quaternion: this._convertToCannonQuaternion(rotation),
 
@@ -173,13 +188,15 @@ module wd {
             friction,
             restitution
             }) {
-            var body = null;
+            var body:CANNON.Body = null;
 
             body = new CANNON.Body({
                 mass: 0
             });
 
-            this._addBody(body, gameObject, shape, {
+            body.addShape(this._createShape(shape));
+
+            this._addBody(body, gameObject, {
                 position: this._convertToCannonVector3(position),
                 quaternion: this._convertToCannonQuaternion(rotation),
 
@@ -435,7 +452,7 @@ module wd {
 
         }
 
-        private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
+        private _addBody(body:CANNON.Body, gameObject:GameObject, {
             position,
             quaternion,
             onCollisionStart,
@@ -444,8 +461,6 @@ module wd {
             friction,
             restitution
             }) {
-            body.addShape(this._createShape(shape));
-
             body.material = this._createMaterial(gameObject, friction, restitution);
             body.position = position;
             body.quaternion = quaternion;
