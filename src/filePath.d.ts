@@ -106,10 +106,16 @@
 /// <reference path="component/physics/RigidBody"/>
 /// <reference path="component/physics/DynamicRigidBody"/>
 /// <reference path="component/physics/DynamicRigidBody"/>
+
 /// <reference path="component/physics/engine/PhysicsEngineFactory"/>
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
 /// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/CannonDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/GameObjectDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/MaterialList"/>
+/// <reference path="component/physics/engine/adapter/cannon/CannonUtils"/>
 /// <reference path="component/physics/engine/adapter/cannon/CannonAdapter"/>
+
 
 /// <reference path="component/pick/Pick"/>
 

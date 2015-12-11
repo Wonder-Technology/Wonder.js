@@ -9,15 +9,15 @@ module wd {
 
         public world:CANNON.World = null;
 
-        private _materials:wdCb.Collection<MaterialData> = wdCb.Collection.create<MaterialData>();
-        private _gameObjectDatas:wdCb.Collection<GameObjectData> = wdCb.Collection.create<GameObjectData>();
+        private _materialList:MaterialList = MaterialList.create();
+        private _gameObjectList:GameObjectDataList = GameObjectDataList.create();
 
         public getGravity(gravity:number){
-            return this._convertToWonderVector3(this.world.gravity);
+            return CannonUtils.convertToWonderVector3(this.world.gravity);
         }
 
         public setGravity( gravity:Vector3){
-            this.world.gravity = this._convertToCannonVector3(gravity);
+            this.world.gravity = CannonUtils.convertToCannonVector3(gravity);
         }
 
         public getFriction(obj:GameObject, friction:number){
@@ -114,22 +114,22 @@ module wd {
                 mass: mass,
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
-                velocity: this._convertToCannonVector3(velocity),
-                angularVelocity: this._convertToCannonVector3(angularVelocity)
+                velocity: CannonUtils.convertToCannonVector3(velocity),
+                angularVelocity: CannonUtils.convertToCannonVector3(angularVelocity)
             });
 
             body.addShape(this._createShape(shape));
 
             if(impulse && hitPoint){
-                body.applyImpulse(this._convertToCannonVector3(impulse), this._convertToCannonVector3(hitPoint));
+                body.applyImpulse(CannonUtils.convertToCannonVector3(impulse), CannonUtils.convertToCannonVector3(hitPoint));
             }
             if(force && hitPoint){
-                body.applyForce(this._convertToCannonVector3(force), this._convertToCannonVector3(hitPoint));
+                body.applyForce(CannonUtils.convertToCannonVector3(force), CannonUtils.convertToCannonVector3(hitPoint));
             }
 
             this._addBody(body, gameObject, {
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
+                position: CannonUtils.convertToCannonVector3(position),
+                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
 
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
@@ -159,15 +159,15 @@ module wd {
                 type: CANNON.Body.KINEMATIC,
 
                 mass: mass,
-                velocity: this._convertToCannonVector3(velocity),
-                angularVelocity: this._convertToCannonVector3(angularVelocity)
+                velocity: CannonUtils.convertToCannonVector3(velocity),
+                angularVelocity: CannonUtils.convertToCannonVector3(angularVelocity)
             });
 
             body.addShape(this._createShape(shape));
 
             this._addBody(body, gameObject, {
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
+                position: CannonUtils.convertToCannonVector3(position),
+                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
 
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
@@ -197,8 +197,8 @@ module wd {
             body.addShape(this._createShape(shape));
 
             this._addBody(body, gameObject, {
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
+                position: CannonUtils.convertToCannonVector3(position),
+                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
 
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
@@ -210,78 +210,36 @@ module wd {
 
         public removeGameObject(obj:GameObject){
             var material = this._getMaterial(obj),
-                gameObjectData = this._findGameObjectData(obj),
+                gameObjectData = this._gameObjectList.findByGameObject(obj),
                 body = gameObjectData !== null ? gameObjectData.body : null;
 
             if(body){
                 this.world.remove(body);
             }
 
-            this._gameObjectDatas.removeChild(({gameObject, body}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
 
-            this._materials.removeChild(({gameObject,material}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
+            this._gameObjectList.remove(obj);
+
+            this._materialList.remove(obj);
         }
 
         public update(time:number):void {
-            var self = this;
-
-            this._gameObjectDatas.forEach(({gameObject,body}) => {
-                let transform = gameObject.transform;
-
-                //todo consider isScale?
-                if(transform.isTranslate || transform.isRotate){
-                    self._updateBodyTransformData(gameObject, body);
-                }
-            });
-
+            this._gameObjectList.updateBodyTransformData();
             this.world.step(Director.getInstance().getDeltaTime() / 1000);
-
-            this._gameObjectDatas.forEach(({gameObject,body}) => {
-                self._updateGameObjectTransformData(gameObject, body);
-            });
-        }
-
-        private _updateBodyTransformData(gameObject:GameObject, body:CANNON.Body){
-            body.position = this._convertToCannonVector3(gameObject.transform.position);
-            body.quaternion = this._convertToCannonQuaternion(gameObject.transform.rotation);
-        }
-
-        private _updateGameObjectTransformData(gameObject:GameObject, body:CANNON.Body){
-            gameObject.transform.position = this._convertToWonderVector3(body.position);
-            gameObject.transform.rotation = this._convertToWonderQuaternion(body.quaternion);
+            this._gameObjectList.updateGameObjectTransformData();
         }
 
         private _createShape(shape:Shape) {
             var cannonShape = null;
 
             if (shape instanceof AABBShape) {
-                cannonShape = new CANNON.Box(this._convertToCannonVector3(shape.halfExtents));
+                cannonShape = new CANNON.Box(CannonUtils.convertToCannonVector3(shape.halfExtents));
             }
             else if (shape instanceof SphereShape) {
                 cannonShape = new CANNON.Sphere(shape.radius);
             }
 
             return cannonShape;
-        }
-
-        private _convertToCannonVector3(v:Vector3) {
-            return new CANNON.Vec3(v.x, v.y, v.z);
-        }
-
-        private _convertToCannonQuaternion(rotation:Quaternion){
-            return new CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
-        }
-
-        private _convertToWonderVector3(v:CANNON.Vec3) {
-            return Vector3.create(v.x, v.y, v.z);
-        }
-
-        private _convertToWonderQuaternion(r:CANNON.Quaternion){
-            return Quaternion.create(r.x, r.y, r.z, r.w);
         }
 
         private _createMaterial(gameObject:GameObject, friction:number, restitution:number) {
@@ -302,37 +260,16 @@ module wd {
         }
 
         private _getMaterial(obj:GameObject) {
-            var result = this._materials.findOne(({gameObject,material}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
-
-            return result === null ? null : result.material;
+            return this._materialList.getMaterial(obj);
         }
 
         private _addMaterial(gameObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {
-            var world = this.world;
-
-            this._materials.addChild({
-                gameObject:gameObject,
-                material:currentMaterial
-            });
-
-            this._materials.forEach(({gameObject, material}) => {
-                world.addContactMaterial(new CANNON.ContactMaterial(material, currentMaterial, {
-                    friction: friction,
-                    restitution: restitution
-                }));
-            });
-        }
-
-        private _findGameObjectData(obj:GameObject){
-            return this._gameObjectDatas.findOne(({gameObject, body}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
+            this._materialList.add(gameObject, currentMaterial);
+            this._materialList.addContactMaterial(this.world, currentMaterial, friction, restitution);
         }
 
         private _getNumberData(obj:GameObject, dataName:string){
-            var result = this._findGameObjectData(obj);
+            var result = this._gameObjectList.findByGameObject(obj);
 
             if(!result){
                 return null;
@@ -342,7 +279,7 @@ module wd {
         }
 
         private _setNumberData(obj:GameObject, dataName:string, data:number){
-            var result = this._findGameObjectData(obj);
+            var result = this._gameObjectList.findByGameObject(obj);
 
             if(!result){
                 return;
@@ -352,36 +289,35 @@ module wd {
         }
 
         private _getVec3Data(obj:GameObject, dataName:string){
-            var result = this._findGameObjectData(obj);
+            var result = this._gameObjectList.findByGameObject(obj);
 
             if(!result){
                 return null;
             }
 
-            return this._convertToWonderVector3(result.body[dataName]);
+            return CannonUtils.convertToWonderVector3(result.body[dataName]);
         }
 
         private _setVec3Data(obj:GameObject, dataName:string, data:Vector3){
-            var result = this._findGameObjectData(obj);
+            var result = this._gameObjectList.findByGameObject(obj);
 
             if(!result){
                 return;
             }
 
-            result.body[dataName] = this._convertToCannonVector3(data);
+            result.body[dataName] = CannonUtils.convertToCannonVector3(data);
         }
 
         @require(function(obj:GameObject, dataName:string){
             var resultArr = [],
                 firstData = null,
-                world = this.world,
                 currentMaterial = this._getMaterial(obj);
 
             if(!currentMaterial){
                 return null;
             }
 
-            resultArr = this._getContactMaterials(currentMaterial);
+            resultArr = this._materialList.getContactMaterials(this.world, currentMaterial);
 
             firstData = resultArr[0];
             for(let data of resultArr){
@@ -390,7 +326,6 @@ module wd {
         })
         private _getMaterialData(obj:GameObject, dataName:string){
             var result = null,
-                world = this.world,
                 currentMaterial = this._getMaterial(obj);
 
 
@@ -398,36 +333,8 @@ module wd {
                 return null;
             }
 
-            this._materials.forEach(({gameObject, material}) => {
-                let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
-                if(!contactMaterial){
-                    return;
-                }
-
-                result = contactMaterial[dataName];
-
-                return wdCb.$BREAK;
-            });
-
-            return result;
-        }
-
-        private _getContactMaterials(currentMaterial:CANNON.Material){
-            var resultArr = [],
-                world = this.world;
-
-            this._materials.forEach(({gameObject, material}) => {
-                let contactMaterial = world.getContactMaterial(material, currentMaterial);
-
-                if(!contactMaterial){
-                    return;
-                }
-
-                resultArr.push(contactMaterial);
-            });
-
-            return resultArr;
+            return this._materialList.getContactMaterialData(this.world, currentMaterial, dataName);
         }
 
         private _setMaterialData(obj:GameObject, dataName:string, data:number){
@@ -440,16 +347,8 @@ module wd {
                 return;
             }
 
-            this._materials.forEach(({gameObject, material}) => {
-                let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
-                if(!contactMaterial){
-                    return;
-                }
-
-                contactMaterial[dataName] = data;
-            });
-
+            this._materialList.setContactMaterialData(this.world, currentMaterial, dataName, data);
         }
 
         private _addBody(body:CANNON.Body, gameObject:GameObject, {
@@ -467,22 +366,16 @@ module wd {
 
             this.world.addBody(body);
 
-            this._gameObjectDatas.addChild({
-                gameObject:gameObject,
-                body:body
-            });
-
+            this._gameObjectList.add(gameObject, body);
 
             this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
         }
 
         private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
-            var gameObjectDatas = this._gameObjectDatas;
+            var self = this;
 
             targetBody.addEventListener("collide",(e) => {
-                let data = gameObjectDatas.findOne(({gameObject, body}) => {
-                        return body === e.body;
-                    }),
+                let data = self._gameObjectList.findByBody(e.body),
                     collideObject:GameObject = null;
 
                 if(!data){
@@ -496,16 +389,6 @@ module wd {
                 onCollisionEnd(collideObject);
             });
         }
-    }
-
-    type MaterialData = {
-        gameObject:GameObject,
-        material:CANNON.Material
-    }
-
-    type GameObjectData = {
-        gameObject:GameObject,
-        body:CANNON.Body
     }
 }
 

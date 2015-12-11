@@ -394,7 +394,7 @@ describe("physics", function () {
         it("unregistered gameObject", function(){
             box1.dispose();
 
-            expect(adapter._findGameObjectData(box1)).toBeNull();
+            expect(adapter._gameObjectList.findByGameObject(box1)).toBeNull();
         });
         it("unregistered its material", function(){
             box1.dispose();
