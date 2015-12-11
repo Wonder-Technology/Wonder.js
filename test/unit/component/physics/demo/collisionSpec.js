@@ -182,10 +182,9 @@ describe("physics collision demo", function () {
              */
 
             director._loopBody(1010);
-            physicsTool.judgePos(box1, [5.1019335, -0.0877188, 0 ] );
-            physicsTool.judgePos(sphere2, [-5.1019335, 0.0877188, 0] );
 
-            physicsTool.judgeRotation(box1,  [0, 0, 61.615921]);
+            expect(box1.transform.position.x > 5).toBeTruthy();
+            expect(box1.transform.rotation.getEulerAngles().z > 60).toBeTruthy();
 
             /*!
             sphere not rotate

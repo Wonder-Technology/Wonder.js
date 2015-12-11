@@ -7,8 +7,8 @@ var physicsTool = (function () {
             expect(testTool.getValues(sourceVal, digit || 3)
             ).toEqual( targetValArr );
         },
-        judgeRotation: function(obj, rot){
-            expect(testTool.getValues(obj.transform.rotation.getEulerAngles())).toEqual(
+        judgeRotation: function(obj, rot, digit){
+            expect(testTool.getValues(obj.transform.rotation.getEulerAngles(), digit || 7)).toEqual(
                 [
                     mathTestUtils.toFixed(rot[0]),
                     mathTestUtils.toFixed(rot[1]),
@@ -120,6 +120,9 @@ var physicsTool = (function () {
         },
         convertToWonderVector3: function (v){
             return wd.Vector3.create(v.x, v.y, v.z);
+        },
+        convertToWonderQuaternion: function (r){
+            return wd.Quaternion.create(r.x, r.y, r.z, r.w);
         }
     }
 })();

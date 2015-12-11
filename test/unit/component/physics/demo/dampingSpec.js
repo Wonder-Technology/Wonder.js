@@ -80,6 +80,9 @@ describe("physics damping demo", function () {
     });
 
     describe("test angular damping", function(){
+        var rigidBody1;
+        var box1;
+
         beforeEach(function(){
             rigidBody1 = physicsTool.createRigidBody({
                 class: wd.DynamicRigidBody,

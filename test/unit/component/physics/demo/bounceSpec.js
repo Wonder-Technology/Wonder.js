@@ -76,13 +76,13 @@ describe("physics bounce demo", function () {
 
 
             director._loopBody(800);
-            physicsTool.judgePos(box1, [0, 5.381, 0], 3);
-            physicsTool.judgeValue(rigidBody1.velocity.y, 2.812, 3);
+            physicsTool.judgePos(box1, [0, 5.517, 0], 3);
+            physicsTool.judgeValue(rigidBody1.velocity.y, 4.169, 3);
 
 
             director._loopBody(900);
-            physicsTool.judgePos(box1, [0, 5.57, 0], 3);
-            physicsTool.judgeValue(rigidBody1.velocity.y, 1.887, 3);
+            physicsTool.judgePos(box1, [0, 5.834, 0], 3);
+            physicsTool.judgeValue(rigidBody1.velocity.y, 3.169, 3);
         });
     });
 });

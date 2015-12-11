@@ -185,10 +185,10 @@ module wd{
         }
 
         private _run(time:number) {
+            this.scheduler.update(time);
             this.scene.update(time);
             this.scene.render(this.renderer);
             this.renderer.render();
-            this.scheduler.update(time);
         }
     }
 }

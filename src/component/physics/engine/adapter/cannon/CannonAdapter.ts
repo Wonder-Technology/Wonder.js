@@ -99,9 +99,6 @@ module wd {
             var body = null;
 
             body = new CANNON.Body({
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
-
                 mass: mass,
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
@@ -110,6 +107,9 @@ module wd {
             });
 
             this._addBody(body, gameObject, shape, {
+                position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
@@ -136,8 +136,6 @@ module wd {
 
             body = new CANNON.Body({
                 type: CANNON.Body.KINEMATIC,
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
 
                 mass: mass,
                 velocity: this._convertToCannonVector3(velocity),
@@ -145,6 +143,9 @@ module wd {
             });
 
             this._addBody(body, gameObject, shape, {
+                position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
@@ -167,13 +168,13 @@ module wd {
             var body = null;
 
             body = new CANNON.Body({
-                position: this._convertToCannonVector3(position),
-                quaternion: this._convertToCannonQuaternion(rotation),
-
                 mass: 0
             });
 
             this._addBody(body, gameObject, shape, {
+                position: this._convertToCannonVector3(position),
+                quaternion: this._convertToCannonQuaternion(rotation),
+
                 onCollisionStart: onCollisionStart,
                 onContact: onContact,
                 onCollisionEnd: onCollisionEnd,
@@ -185,90 +186,31 @@ module wd {
         public update(time:number):void {
             var self = this;
 
+            this._gameObjectDatas.forEach(({gameObject,body}) => {
+                let transform = gameObject.transform;
+
+                //todo consider isScale?
+                if(transform.isTranslate || transform.isRotate){
+                    self._updateBodyTransformData(gameObject, body);
+                }
+            });
+
             this.world.step(Director.getInstance().getDeltaTime() / 1000);
 
             this._gameObjectDatas.forEach(({gameObject,body}) => {
-                //let {gameObject,body} = gameObjectData;
-
-
-
-                gameObject.transform.position = self._convertToWonderVector3(body.position);
-                gameObject.transform.rotation = self._convertToWonderQuaternion(body.quaternion);
+                self._updateGameObjectTransformData(gameObject, body);
             });
-
-        //    for (var index = 0; index < this._registeredMeshes.length; index++) {
-        //        var registeredMesh = this._registeredMeshes[index];
-        //
-        //        if (registeredMesh.isChild) {
-        //            continue;
-        //        }
-        //
-        //        // Body position
-        //        var bodyX = registeredMesh.body.position.x,
-        //            bodyY = registeredMesh.body.position.y,
-        //            bodyZ = registeredMesh.body.position.z;
-        //
-        //        registeredMesh.mesh.position.x = bodyX + registeredMesh.delta.x;
-        //        registeredMesh.mesh.position.y = bodyY + registeredMesh.delta.y;
-        //        registeredMesh.mesh.position.z = bodyZ + registeredMesh.delta.z;
-        //
-        //        registeredMesh.mesh.rotationQuaternion.copyFrom(registeredMesh.body.quaternion);
-        //        if (registeredMesh.deltaRotation) {
-        //            registeredMesh.mesh.rotationQuaternion.multiplyInPlace(registeredMesh.deltaRotation);
-        //        }
-        //    }
         }
 
-        //public updateBodyPosition = function (mesh:AbstractMesh):void {
-        //    for (var index = 0; index < this._registeredMeshes.length; index++) {
-        //        var registeredMesh = this._registeredMeshes[index];
-        //        if (registeredMesh.mesh === mesh || registeredMesh.mesh === mesh.parent) {
-        //            var body = registeredMesh.body;
-        //
-        //            var center = mesh.getBoundingInfo().boundingBox.center;
-        //            body.position.set(center.x, center.y, center.z);
-        //
-        //            body.quaternion.copy(mesh.rotationQuaternion);
-        //
-        //            if (registeredMesh.deltaRotation) {
-        //                var tmpQ = new CANNON.Quaternion(-0.7071067811865475, 0, 0, 0.7071067811865475);
-        //                body.quaternion = body.quaternion.mult(tmpQ);
-        //            }
-        //        }
-        //
-        //        //if (registeredMesh.heightmap) {
-        //        //    //calculate the correct body position:
-        //        //    var rotationQuaternion = mesh.rotationQuaternion;
-        //        //    mesh.rotationQuaternion = new BABYLON.Quaternion();
-        //        //    mesh.computeWorldMatrix(true);
-        //        //
-        //        //    //get original center with no rotation
-        //        //    var center = mesh.getBoundingInfo().boundingBox.center.clone();
-        //        //
-        //        //    var oldPivot = mesh.getPivotMatrix() || Matrix.Translation(0, 0, 0);
-        //        //
-        //        //    //rotation is back
-        //        //    mesh.rotationQuaternion = rotationQuaternion;
-        //        //
-        //        //    //calculate the new center using a pivot (since Cannon.js doesn't center height maps)
-        //        //    var p = Matrix.Translation(mesh.getBoundingInfo().boundingBox.extendSize.x, 0, -mesh.getBoundingInfo().boundingBox.extendSize.z);
-        //        //    mesh.setPivotMatrix(p);
-        //        //    mesh.computeWorldMatrix(true);
-        //        //
-        //        //    //calculate the translation
-        //        //    var translation = mesh.getBoundingInfo().boundingBox.center.subtract(center).subtract(mesh.position).negate();
-        //        //
-        //        //    body.position = new CANNON.Vec3(translation.x, translation.y - mesh.getBoundingInfo().boundingBox.extendSize.y, translation.z);
-        //        //    //add it inverted to the delta
-        //        //    registeredMesh.delta = mesh.getBoundingInfo().boundingBox.center.subtract(center);
-        //        //    registeredMesh.delta.y += mesh.getBoundingInfo().boundingBox.extendSize.y;
-        //        //
-        //        //    mesh.setPivotMatrix(oldPivot);
-        //        //    mesh.computeWorldMatrix(true);
-        //        //}
-        //    }
-        //}
+        private _updateBodyTransformData(gameObject:GameObject, body:CANNON.Body){
+            body.position = this._convertToCannonVector3(gameObject.transform.position);
+            body.quaternion = this._convertToCannonQuaternion(gameObject.transform.rotation);
+        }
 
+        private _updateGameObjectTransformData(gameObject:GameObject, body:CANNON.Body){
+            gameObject.transform.position = this._convertToWonderVector3(body.position);
+            gameObject.transform.rotation = this._convertToWonderQuaternion(body.quaternion);
+        }
 
         private _createShape(shape:Shape) {
             var cannonShape = null;
@@ -459,6 +401,8 @@ module wd {
         }
 
         private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
+            position,
+            quaternion,
             onCollisionStart,
             onContact,
             onCollisionEnd,
@@ -468,6 +412,8 @@ module wd {
             body.addShape(this._createShape(shape));
 
             body.material = this._createMaterial(gameObject, friction, restitution);
+            body.position = position;
+            body.quaternion = quaternion;
 
             this.world.addBody(body);
 

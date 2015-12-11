@@ -200,6 +200,7 @@ describe("physics", function () {
                     director._loopBody(800);
 
                     expect(body.velocity.y > 10).toBeTruthy();
+                    //expect(body.velocity.y).toEqual();
                 }
 
                 it("change dynamic rigid body's restitution", function(){
@@ -257,15 +258,74 @@ describe("physics", function () {
                 });
             });
         });
-    });
-    
-    describe("change position,rotation", function(){
-        beforeEach(function(){
-            
-        });
-        
-        it("", function(){
-        
+
+
+        describe("change position,rotation", function(){
+            var position1,position2;
+            var rotation1,rotation2;
+
+            function assert(position, rotation){
+                physicsTool.judgeValue(box1.transform.position, position.toArray());
+                physicsTool.judgeValue(physicsTool.convertToWonderVector3(getBody().position), position.toArray());
+
+
+                physicsTool.judgeValue(box1.transform.rotation.getEulerAngles(), rotation.getEulerAngles().toArray());
+                physicsTool.judgeValue(physicsTool.convertToWonderQuaternion(getBody().quaternion).getEulerAngles(), rotation.getEulerAngles().toArray());
+            }
+
+            beforeEach(function(){
+                prepare({
+                    class:wd.DynamicRigidBody
+                });
+
+                position1 = wd.Vector3.create(10, 0, 0);
+                rotation1 = wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(0, 0, 45));
+
+                box1.transform.position = position1;
+                box1.transform.rotation = rotation1;
+
+
+
+                position2 = wd.Vector3.create(20, 10, 10);
+                rotation2 = wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(0, 0, 60));
+            });
+
+            it("test change gameObject's position/rotation with dynamic rigid body", function(){
+                director._init();
+
+                director._loopBody(100);
+
+                assert(position1, rotation1);
+
+
+
+                box1.transform.position = position2;
+                box1.transform.rotation = rotation2;
+
+                director._loopBody(200);
+
+                assert(position2, rotation2);
+            });
+            it("test use scheduler to change position/rotation", function(){
+                director.scheduler.scheduleTime(function(){
+                    box1.transform.position = position2;
+                    box1.transform.rotation = rotation2;
+                }, 150);
+
+
+
+                director._init();
+
+                director._loopBody(100);
+
+                assert(position1, rotation1);
+
+
+
+                director._loopBody(200);
+
+                assert(position2, rotation2);
+            })
         });
     });
 });
