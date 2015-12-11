@@ -46,52 +46,49 @@ describe("physics", function () {
             return rigidBody1.getPhysicsEngineAdapter()._findGameObjectData(box1).body;
         }
 
-        function convertToWonderVector3(v){
-            return wd.Vector3.create(v.x, v.y, v.z);
-        }
-
         beforeEach(function(){
         });
-        
-        describe("change velocity", function(){
-            it("change dynamic rigid body's velocity", function(){
-                prepare({
-                    class: wd.DynamicRigidBody,
-                    velocity:wd.Vector3.create(5, 0, 0)
-                });
+
+        describe("change velocity/angularVelocity", function(){
+            function judge(rigidBodyClass, velocityAttriName){
+                var data = {
+                    class: rigidBodyClass
+                };
+                data[velocityAttriName] = wd.Vector3.create(5, 0, 0);
+
+                prepare(data);
 
 
                 director._init();
 
                 director._loopBody(100);
 
-                physicsTool.judgeValue(rigidBody1.velocity, [5, 0, 0]);
+                physicsTool.judgeValue(rigidBody1[velocityAttriName], [5, 0, 0]);
 
-                rigidBody1.velocity = wd.Vector3.create(6, 0, 0);
+                rigidBody1[velocityAttriName] = wd.Vector3.create(6, 0, 0);
 
                 director._loopBody(200);
 
-                physicsTool.judgeValue(rigidBody1.velocity, [6, 0, 0]);
-                physicsTool.judgeValue(convertToWonderVector3(getBody().velocity), [6, 0, 0]);
+                physicsTool.judgeValue(rigidBody1[velocityAttriName], [6, 0, 0]);
+                physicsTool.judgeValue(physicsTool.convertToWonderVector3(getBody()[velocityAttriName]), [6, 0, 0]);
+            }
+
+            describe("change velocity", function(){
+                it("change dynamic rigid body's velocity", function(){
+                    judge(wd.DynamicRigidBody, "velocity");
+                });
+                it("change kinematic rigid body's velocity", function(){
+                    judge(wd.KinematicRigidBody, "velocity");
+                });
             });
-            it("change kinematic rigid body's velocity", function(){
-                prepare({
-                    class: wd.KinematicRigidBody,
-                    velocity:wd.Vector3.create(5, 0, 0)
+
+            describe("change angularVelocity", function(){
+                it("change dynamic rigid body's angularVelocity", function(){
+                    judge(wd.DynamicRigidBody, "angularVelocity");
                 });
-
-                director._init();
-
-                director._loopBody(100);
-
-                physicsTool.judgeValue(rigidBody1.velocity, [5, 0, 0]);
-
-                rigidBody1.velocity = wd.Vector3.create(6, 0, 0);
-
-                director._loopBody(200);
-
-                physicsTool.judgeValue(rigidBody1.velocity, [6, 0, 0]);
-                physicsTool.judgeValue(convertToWonderVector3(getBody().velocity), [6, 0, 0]);
+                it("change kinematic rigid body's angularVelocity", function(){
+                    judge(wd.KinematicRigidBody, "angularVelocity");
+                });
             });
         });
     });

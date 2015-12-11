@@ -32,6 +32,26 @@ module wd {
             result.body.velocity = this._convertToCannonVector3(velocity);
         }
 
+        public getAngularVelocity(obj:GameObject){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return null;
+            }
+
+            return this._convertToWonderVector3(result.body.angularVelocity);
+        }
+
+        public setAngularVelocity(obj:GameObject, angularVelocity:Vector3){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return;
+            }
+
+            result.body.angularVelocity = this._convertToCannonVector3(angularVelocity);
+        }
+
         public init() {
             var {
                 enable,
@@ -60,7 +80,8 @@ module wd {
             angularDamping,
             friction,
             restitution,
-            velocity
+            velocity,
+            angularVelocity
             }) {
             var body = null;
 
@@ -71,7 +92,8 @@ module wd {
                 mass: mass,
                 linearDamping: linearDamping,
                 angularDamping: angularDamping,
-                velocity: this._convertToCannonVector3(velocity)
+                velocity: this._convertToCannonVector3(velocity),
+                angularVelocity: this._convertToCannonVector3(angularVelocity)
             });
 
             this._addBody(body, gameObject, shape, {
@@ -94,7 +116,8 @@ module wd {
             mass,
             friction,
             restitution,
-            velocity
+            velocity,
+            angularVelocity
             }) {
             var body = null;
 
@@ -104,7 +127,8 @@ module wd {
                 quaternion: this._convertToCannonQuaternion(rotation),
 
                 mass: mass,
-                velocity: this._convertToCannonVector3(velocity)
+                velocity: this._convertToCannonVector3(velocity),
+                angularVelocity: this._convertToCannonVector3(angularVelocity)
             });
 
             this._addBody(body, gameObject, shape, {

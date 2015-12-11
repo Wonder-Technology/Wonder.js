@@ -42,6 +42,7 @@ var physicsTool = (function () {
             rigidBody.linearDamping = options.linearDamping || 0;
             rigidBody.angularDamping = options.angularDamping || 0;
             rigidBody.velocity = options.velocity || wd.Vector3.create(0, 0, 0);
+            rigidBody.angularVelocity = options.angularVelocity || wd.Vector3.create(0, 0, 0);
             rigidBody.friction = options.friction || 0;
             rigidBody.restitution = options.restitution || 0;
 
@@ -116,6 +117,9 @@ var physicsTool = (function () {
             gameObject.addComponent(wd.MeshRenderer.create());
 
             return gameObject;
+        },
+        convertToWonderVector3: function (v){
+            return wd.Vector3.create(v.x, v.y, v.z);
         }
     }
 })();

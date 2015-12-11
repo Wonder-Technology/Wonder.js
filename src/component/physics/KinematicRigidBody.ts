@@ -18,13 +18,23 @@ module wd {
             this._velocity = velocity;
         }
 
+        private _angularVelocity:Vector3 = Vector3.create(0, 0, 0);
+        @operateBodyDataGetterAndSetter("AngularVelocity")
+        get angularVelocity(){
+            return this._angularVelocity;
+        }
+        set angularVelocity(angularVelocity:Vector3){
+            this._angularVelocity = angularVelocity;
+        }
+
         public mass:number = 1;
 
 
         protected addBody() {
             this.addBodyToPhysicsEngine("addKinematicBody", {
                 mass: this.mass,
-                velocity: this.velocity
+                velocity: this.velocity,
+                angularVelocity: this.angularVelocity
             });
         }
     }

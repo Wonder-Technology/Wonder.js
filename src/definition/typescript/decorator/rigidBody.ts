@@ -9,7 +9,7 @@ module wd {
                 if(this.isPhysicsEngineAdapterExist()){
                     let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.gameObject);
 
-                    return data !== null ? data : this[`_${dataName.toLowerCase()}`];
+                    return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
                 }
 
                 return getter.call(this);
@@ -25,5 +25,11 @@ module wd {
 
             return descriptor;
         }
+    }
+
+    function lowerFirstChar(str){
+        var firstChar = str.slice(0, 1);
+
+        return `${firstChar.toLowerCase()}${str.slice(1)}`;
     }
 }
