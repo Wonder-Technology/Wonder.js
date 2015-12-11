@@ -33,23 +33,11 @@ module wd {
         }
 
         public getAngularVelocity(obj:GameObject){
-            var result = this._findGameObjectData(obj);
-
-            if(!result){
-                return null;
-            }
-
-            return this._convertToWonderVector3(result.body.angularVelocity);
+            return this._getVec3Data(obj, "angularVelocity");
         }
 
         public setAngularVelocity(obj:GameObject, angularVelocity:Vector3){
-            var result = this._findGameObjectData(obj);
-
-            if(!result){
-                return;
-            }
-
-            result.body.angularVelocity = this._convertToCannonVector3(angularVelocity);
+            this._setVec3Data(obj, "angularVelocity", angularVelocity);
         }
 
         public init() {
@@ -166,49 +154,6 @@ module wd {
                 onCollisionEnd: onCollisionEnd,
                 friction: friction,
                 restitution: restitution
-            });
-        }
-
-        private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
-            onCollisionStart,
-            onContact,
-            onCollisionEnd,
-            friction,
-            restitution
-            }) {
-            body.addShape(this._createShape(shape));
-
-            body.material = this._createMaterial(friction, restitution);
-
-            this.world.addBody(body);
-
-            this._gameObjectDatas.addChild({
-                gameObject:gameObject,
-                body:body
-            });
-
-
-            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
-        }
-
-        private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
-            var gameObjectDatas = this._gameObjectDatas;
-
-            targetBody.addEventListener("collide",(e) => {
-                let data = gameObjectDatas.findOne(({gameObject, body}) => {
-                    return body === e.body;
-                }),
-                collideObject:GameObject = null;
-
-                if(!data){
-                    return;
-                }
-
-                collideObject = data.gameObject;
-
-                onCollisionStart(collideObject);
-                onContact(collideObject);
-                onCollisionEnd(collideObject);
             });
         }
 
@@ -370,6 +315,69 @@ module wd {
         private _findGameObjectData(obj:GameObject){
             return this._gameObjectDatas.findOne(({gameObject, body}) => {
                 return gameObject.uid === obj.uid;
+            });
+        }
+
+        private _getVec3Data(obj:GameObject, dataName:string){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return null;
+            }
+
+            return this._convertToWonderVector3(result.body[dataName]);
+        }
+
+        private _setVec3Data(obj:GameObject, dataName:string, data:Vector3){
+            var result = this._findGameObjectData(obj);
+
+            if(!result){
+                return;
+            }
+
+            result.body[dataName] = this._convertToCannonVector3(data);
+        }
+
+        private _addBody(body:CANNON.Body, gameObject:GameObject, shape:Shape, {
+            onCollisionStart,
+            onContact,
+            onCollisionEnd,
+            friction,
+            restitution
+            }) {
+            body.addShape(this._createShape(shape));
+
+            body.material = this._createMaterial(friction, restitution);
+
+            this.world.addBody(body);
+
+            this._gameObjectDatas.addChild({
+                gameObject:gameObject,
+                body:body
+            });
+
+
+            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
+        }
+
+        private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
+            var gameObjectDatas = this._gameObjectDatas;
+
+            targetBody.addEventListener("collide",(e) => {
+                let data = gameObjectDatas.findOne(({gameObject, body}) => {
+                        return body === e.body;
+                    }),
+                    collideObject:GameObject = null;
+
+                if(!data){
+                    return;
+                }
+
+                collideObject = data.gameObject;
+
+                onCollisionStart(collideObject);
+                onContact(collideObject);
+                onCollisionEnd(collideObject);
             });
         }
     }
