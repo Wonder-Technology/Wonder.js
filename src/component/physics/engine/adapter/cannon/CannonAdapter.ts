@@ -12,6 +12,14 @@ module wd {
         private _materials:wdCb.Collection<MaterialData> = wdCb.Collection.create<MaterialData>();
         private _gameObjectDatas:wdCb.Collection<GameObjectData> = wdCb.Collection.create<GameObjectData>();
 
+        public getGravity(gravity:number){
+            return this._convertToWonderVector3(this.world.gravity);
+        }
+
+        public setGravity( gravity:Vector3){
+            this.world.gravity = this._convertToCannonVector3(gravity);
+        }
+
         public getFriction(obj:GameObject, friction:number){
             return this._getMaterialData(obj, "friction");
         }

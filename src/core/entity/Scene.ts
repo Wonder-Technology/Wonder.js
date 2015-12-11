@@ -1,5 +1,27 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
+    //todo why does it compile failed if setting local class(no "export" keyword) here?
+    export class PhysicsConfig{
+        public static create() {
+            var obj = new this();
+
+            return obj;
+        }
+
+        private _gravity:Vector3 = Vector3.create(0, -9.8, 0);
+        @operateWorldDataGetterAndSetter("Gravity")
+        get gravity(){
+            return this._gravity;
+        }
+        set gravity(gravity:Vector3){
+            this._gravity = gravity;
+        }
+
+        public enable:boolean = false;
+        public engine:PhysicsEngineType = PhysicsEngineType.CANNON;
+        public iterations:number = 10;
+    }
+
     export class Scene extends GameObject{
         public static create() {
             var obj = new this();
@@ -27,12 +49,7 @@ module wd {
         public shader:Shader = null;
         public camera:GameObject = null;
         public isUseProgram:Boolean = false;
-        public physics = {
-            enable: false,
-            engine: PhysicsEngineType.CANNON,
-            gravity: Vector3.create(0, -9.8, 0),
-            iterations: 10
-        };
+        public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
         private _lightManager:LightManager = LightManager.create();

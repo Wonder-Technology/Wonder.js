@@ -129,6 +129,10 @@ var physicsTool = (function () {
         },
         getBody: function (obj){
             return this.getPhysicsEngineAdapter()._findGameObjectData(obj).body;
+        },
+
+        getWorld: function (){
+            return this.getPhysicsEngineAdapter().world;
         }
     }
 })();

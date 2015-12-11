@@ -327,6 +327,32 @@ describe("physics", function () {
                 assert(position2, rotation2);
             })
         });
+
+        describe("change world data", function(){
+            beforeEach(function(){
+
+            });
+
+            it("change gravity", function(){
+                physicsTool.setPhysicsSetting({
+                    gravity: wd.Vector3.create(10, 10, 0)
+                });
+
+                director._init();
+
+
+                physicsTool.setPhysicsSetting({
+                    gravity: wd.Vector3.create(0, 10, 0)
+                });
+
+                expect(testTool.getValues(
+                    director.scene.physics.gravity
+                )).toEqual([0, 10, 0]);
+                expect(testTool.getValues(
+                    physicsTool.convertToWonderVector3(physicsTool.getWorld().gravity)
+                )).toEqual([0, 10, 0]);
+            });
+        });
     });
 
     describe("dispose", function(){
