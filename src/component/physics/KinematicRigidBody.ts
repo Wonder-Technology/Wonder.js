@@ -7,7 +7,6 @@ module wd {
             return obj;
         }
 
-        //todo more set
         private _velocity:Vector3 = Vector3.create(0, 0, 0);
         @operateBodyDataGetterAndSetter("Velocity")
         get velocity() {
@@ -27,7 +26,14 @@ module wd {
             this._angularVelocity = angularVelocity;
         }
 
-        public mass:number = 1;
+        private _mass:number = 1;
+        @operateBodyDataGetterAndSetter("Mass")
+        get mass(){
+            return this._mass;
+        }
+        set mass(mass:number){
+            this._mass = mass;
+        }
 
 
         protected addBody() {

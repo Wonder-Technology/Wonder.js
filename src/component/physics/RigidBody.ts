@@ -1,9 +1,25 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class RigidBody extends Component {
+        private _friction:number = 0;
+        @operateBodyDataGetterAndSetter("Friction")
+        get friction(){
+            return this._friction;
+        }
+        set friction(friction:number){
+            this._friction = friction;
+        }
+
+        private _restitution:number = 0;
+        @operateBodyDataGetterAndSetter("Restitution")
+        get restitution(){
+            return this._restitution;
+        }
+        set restitution(restitution:number){
+            this._restitution = restitution;
+        }
+
         public sequenceNumber:number = 2;
-        public friction:number = 0;
-        public restitution:number = 0;
 
         public init() {
             this.addBody();

@@ -1,6 +1,5 @@
 describe("physics", function () {
     var sandbox = null;
-    //var collider = null;
     var director;
 
     beforeEach(function () {
@@ -91,8 +90,131 @@ describe("physics", function () {
                 });
             });
         });
-        
-        describe("change damping", function(){
+
+        describe("change friction/restitution", function(){
+            var rigidBody1, rigidBody2;
+            var box1,ground;
+
+            beforeEach(function(){
+                physicsTool.setPhysicsSetting({
+                    gravity: wd.Vector3.create(0, -10, 0)
+                });
+            });
+
+            describe("change friction", function(){
+                function judge(rigidBody2Class) {
+                    rigidBody1 = physicsTool.createRigidBody({
+                        class: wd.DynamicRigidBody,
+                        friction: 0.3,
+                        velocity: wd.Vector3.create(5, 0, 0)
+                    });
+
+
+                    box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+
+                    box1.transform.translate(-10, 5, 0);
+
+
+                    rigidBody2 = physicsTool.createRigidBody({
+                        friction: 0.2,
+                        class: rigidBody2Class
+                    });
+
+
+                    ground = physicsTool.createBox(wd.BoxCollider, rigidBody2, [1000, 1, 1000]);
+
+
+                    director.scene.addChild(box1);
+                    director.scene.addChild(ground);
+
+
+                    director._init();
+
+                    director._loopBody(100);
+
+                    var body = rigidBody1;
+
+                    var firstVelocityX = body.velocity.x;
+
+
+
+                    body.friction = 0.0;
+
+                    director._loopBody(200);
+
+                    expect(rigidBody1.velocity.x).toEqual(firstVelocityX);
+                }
+
+                it("change dynamic rigid body's friction", function(){
+                    judge(wd.StaticRigidBody);
+                });
+                it("change kinematic rigid body's friction", function(){
+                    judge(wd.KinematicRigidBody);
+                });
+                it("change static rigid body's friction", function(){
+                    judge(wd.StaticRigidBody);
+                });
+            });
+
+            describe("change restitution", function(){
+                function judge(rigidBody2Class) {
+                    rigidBody1 = physicsTool.createRigidBody({
+                        class: wd.DynamicRigidBody,
+                        restitution: 0.03
+                    });
+
+
+                    box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+
+                    box1.transform.translate(0, 10, 0);
+
+
+                    rigidBody2 = physicsTool.createRigidBody({
+                        restitution: 0.03,
+                        class: rigidBody2Class
+                    });
+
+
+                    ground = physicsTool.createBox(wd.BoxCollider, rigidBody2, [1000, 1, 1000]);
+
+
+                    director.scene.addChild(box1);
+                    director.scene.addChild(ground);
+
+
+                    director._init();
+
+                    director._loopBody(700);
+
+                    var body = rigidBody1;
+
+                    expect(body.velocity.y < 0).toBeTruthy();
+
+
+
+
+                    body.restitution = 2;
+
+                    director._loopBody(800);
+
+                    expect(body.velocity.y > 10).toBeTruthy();
+                }
+
+                it("change dynamic rigid body's restitution", function(){
+                    judge(wd.StaticRigidBody);
+                });
+                it("change kinematic rigid body's restitution", function(){
+                    judge(wd.KinematicRigidBody);
+                });
+                it("change static rigid body's restitution", function(){
+                    judge(wd.StaticRigidBody);
+                });
+            });
+        });
+
+        describe("change damping/mass", function(){
             function judge(rigidBodyClass, dataAttriName){
                 var data = {
                     class: rigidBodyClass
@@ -107,6 +229,7 @@ describe("physics", function () {
                 director._loopBody(100);
 
                 physicsTool.judgeValue(rigidBody1[dataAttriName], 0.3);
+                physicsTool.judgeValue(getBody()[dataAttriName], 0.3);
 
                 rigidBody1[dataAttriName] = 0.5;
 
@@ -115,15 +238,23 @@ describe("physics", function () {
                 physicsTool.judgeValue(rigidBody1[dataAttriName], 0.5);
                 physicsTool.judgeValue(getBody()[dataAttriName], 0.5);
             }
-            beforeEach(function(){
 
+            describe("change damping", function(){
+                it("change dynamic rigid body's linearDamping", function(){
+                    judge(wd.DynamicRigidBody, "linearDamping");
+                });
+                it("change dynamic rigid body's angularDamping", function(){
+                    judge(wd.DynamicRigidBody, "angularDamping");
+                });
             });
 
-            it("change dynamic rigid body's linearDamping", function(){
-                judge(wd.DynamicRigidBody, "linearDamping");
-            });
-            it("change dynamic rigid body's angularDamping", function(){
-                judge(wd.DynamicRigidBody, "angularDamping");
+            describe("change mass", function(){
+                it("change dynamic rigid body's mass", function(){
+                    judge(wd.DynamicRigidBody, "mass");
+                });
+                it("change kinematic rigid body's mass", function(){
+                    judge(wd.KinematicRigidBody, "mass");
+                });
             });
         });
     });
