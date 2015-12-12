@@ -37,10 +37,6 @@ module wd {
             EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
             EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
-            this._components = this._components.sort((a:Component, b:Component) => {
-                return a.sequenceNumber - b.sequenceNumber;
-            });
-
             this._components.forEach((component:Component) => {
                 component.init();
             });

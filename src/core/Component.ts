@@ -2,7 +2,6 @@
 module wd{
     export abstract class Component extends Entity{
         public gameObject:GameObject = null;
-        public sequenceNumber:number = 0;
 
         @virtual
         public init(){

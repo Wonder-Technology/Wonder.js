@@ -37,8 +37,6 @@ module wd {
             });
         }
 
-        public sequenceNumber:number = 2;
-
         public init() {
             var self = this;
 

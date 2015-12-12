@@ -5,7 +5,6 @@ module wd {
             return this.boundingRegion.shape;
         }
 
-        public sequenceNumber:number = 1;
         public type:string = ABSTRACT_ATTRIBUTE;
 
         public boundingRegion:BoundingRegion = null;
