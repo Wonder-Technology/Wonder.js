@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    export class GameObjectDataList extends CannonDataList{
+    export class CannonGameObjectDataList extends CannonDataList{
         public static create() {
             var obj = new this();
 

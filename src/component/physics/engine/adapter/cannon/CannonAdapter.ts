@@ -9,8 +9,11 @@ module wd {
 
         public world:CANNON.World = null;
 
-        private _materialList:MaterialList = MaterialList.create();
-        private _gameObjectList:GameObjectDataList = GameObjectDataList.create();
+        private _materialList:CannonMaterialList = CannonMaterialList.create();
+        private _gameObjectList:CannonGameObjectDataList = CannonGameObjectDataList.create();
+        private _dynamicBody:CannonDynamicBody = null;
+        private _kinematicBody:CannonKinematicBody = null;
+        private _staticBody:CannonStaticBody = null;
 
         public getGravity(gravity:number){
             return CannonUtils.convertToWonderVector3(this.world.gravity);
@@ -75,7 +78,6 @@ module wd {
 
         public init() {
             var {
-                enable,
                 gravity,
                 iterations
                 }= Director.getInstance().scene.physics;
@@ -86,126 +88,22 @@ module wd {
 
             this.world.solver.iterations = iterations;
             this.world.gravity.set(gravity.x, gravity.y, gravity.z);
+
+            this._dynamicBody = CannonDynamicBody.create(this.world, this._gameObjectList, this._materialList);
+            this._kinematicBody = CannonKinematicBody.create(this.world, this._gameObjectList, this._materialList);
+            this._staticBody = CannonStaticBody.create(this.world, this._gameObjectList, this._materialList);
         }
 
-        public addDynamicBody(gameObject:GameObject, shape:Shape, {
-            position,
-            rotation,
-
-            onCollisionStart,
-            onContact,
-            onCollisionEnd,
-
-            mass,
-            linearDamping,
-            angularDamping,
-            friction,
-            restitution,
-            velocity,
-            angularVelocity,
-
-            impulse,
-            force,
-            hitPoint
-            }) {
-            var body:CANNON.Body = null;
-
-            body = new CANNON.Body({
-                mass: mass,
-                linearDamping: linearDamping,
-                angularDamping: angularDamping,
-                velocity: CannonUtils.convertToCannonVector3(velocity),
-                angularVelocity: CannonUtils.convertToCannonVector3(angularVelocity)
-            });
-
-            body.addShape(this._createShape(shape));
-
-            if(impulse && hitPoint){
-                body.applyImpulse(CannonUtils.convertToCannonVector3(impulse), CannonUtils.convertToCannonVector3(hitPoint));
-            }
-            if(force && hitPoint){
-                body.applyForce(CannonUtils.convertToCannonVector3(force), CannonUtils.convertToCannonVector3(hitPoint));
-            }
-
-            this._addBody(body, gameObject, {
-                position: CannonUtils.convertToCannonVector3(position),
-                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
-
-                onCollisionStart: onCollisionStart,
-                onContact: onContact,
-                onCollisionEnd: onCollisionEnd,
-                friction: friction,
-                restitution: restitution
-            });
+        public addDynamicBody(gameObject:GameObject, shape:Shape, data:any) {
+            this._dynamicBody.addBody(gameObject, shape, data);
         }
 
-        public addKinematicBody(gameObject:GameObject, shape:Shape, {
-            position,
-            rotation,
-
-            onCollisionStart,
-            onContact,
-            onCollisionEnd,
-
-            mass,
-            friction,
-            restitution,
-            velocity,
-            angularVelocity
-            }) {
-            var body:CANNON.Body = null;
-
-            body = new CANNON.Body({
-                type: CANNON.Body.KINEMATIC,
-
-                mass: mass,
-                velocity: CannonUtils.convertToCannonVector3(velocity),
-                angularVelocity: CannonUtils.convertToCannonVector3(angularVelocity)
-            });
-
-            body.addShape(this._createShape(shape));
-
-            this._addBody(body, gameObject, {
-                position: CannonUtils.convertToCannonVector3(position),
-                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
-
-                onCollisionStart: onCollisionStart,
-                onContact: onContact,
-                onCollisionEnd: onCollisionEnd,
-                friction: friction,
-                restitution: restitution
-            });
+        public addKinematicBody(gameObject:GameObject, shape:Shape, data:any) {
+            this._kinematicBody.addBody(gameObject, shape, data);
         }
 
-        public addStaticBody(gameObject:GameObject, shape:Shape, {
-            position,
-            rotation,
-
-            onCollisionStart,
-            onContact,
-            onCollisionEnd,
-
-            friction,
-            restitution
-            }) {
-            var body:CANNON.Body = null;
-
-            body = new CANNON.Body({
-                mass: 0
-            });
-
-            body.addShape(this._createShape(shape));
-
-            this._addBody(body, gameObject, {
-                position: CannonUtils.convertToCannonVector3(position),
-                quaternion: CannonUtils.convertToCannonQuaternion(rotation),
-
-                onCollisionStart: onCollisionStart,
-                onContact: onContact,
-                onCollisionEnd: onCollisionEnd,
-                friction: friction,
-                restitution: restitution
-            });
+        public addStaticBody(gameObject:GameObject, shape:Shape, data:any) {
+            this._staticBody.addBody(gameObject, shape, data);
         }
 
         public removeGameObject(obj:GameObject){
@@ -229,43 +127,8 @@ module wd {
             this._gameObjectList.updateGameObjectTransformData();
         }
 
-        private _createShape(shape:Shape) {
-            var cannonShape = null;
-
-            if (shape instanceof AABBShape) {
-                cannonShape = new CANNON.Box(CannonUtils.convertToCannonVector3(shape.halfExtents));
-            }
-            else if (shape instanceof SphereShape) {
-                cannonShape = new CANNON.Sphere(shape.radius);
-            }
-
-            return cannonShape;
-        }
-
-        private _createMaterial(gameObject:GameObject, friction:number, restitution:number) {
-            var material = null,
-                currentMaterial = null;
-
-            material = this._getMaterial(gameObject);
-
-            if (material) {
-                return material;
-            }
-
-            currentMaterial = new CANNON.Material("material");
-
-            this._addMaterial(gameObject, currentMaterial, friction, restitution);
-
-            return currentMaterial;
-        }
-
         private _getMaterial(obj:GameObject) {
             return this._materialList.getMaterial(obj);
-        }
-
-        private _addMaterial(gameObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {
-            this._materialList.add(gameObject, currentMaterial);
-            this._materialList.addContactMaterial(this.world, currentMaterial, friction, restitution);
         }
 
         private _getNumberData(obj:GameObject, dataName:string){
@@ -349,45 +212,6 @@ module wd {
 
 
             this._materialList.setContactMaterialData(this.world, currentMaterial, dataName, data);
-        }
-
-        private _addBody(body:CANNON.Body, gameObject:GameObject, {
-            position,
-            quaternion,
-            onCollisionStart,
-            onContact,
-            onCollisionEnd,
-            friction,
-            restitution
-            }) {
-            body.material = this._createMaterial(gameObject, friction, restitution);
-            body.position = position;
-            body.quaternion = quaternion;
-
-            this.world.addBody(body);
-
-            this._gameObjectList.add(gameObject, body);
-
-            this._bindCollideEvent(body, onCollisionStart, onContact, onCollisionEnd);
-        }
-
-        private _bindCollideEvent(targetBody:CANNON.Body, onCollisionStart:(collideObject:GameObject) => void, onContact:(collideObject:GameObject) => void, onCollisionEnd:(collideObject:GameObject) => void){
-            var self = this;
-
-            targetBody.addEventListener("collide",(e) => {
-                let data = self._gameObjectList.findByBody(e.body),
-                    collideObject:GameObject = null;
-
-                if(!data){
-                    return;
-                }
-
-                collideObject = data.gameObject;
-
-                onCollisionStart(collideObject);
-                onContact(collideObject);
-                onCollisionEnd(collideObject);
-            });
         }
     }
 }

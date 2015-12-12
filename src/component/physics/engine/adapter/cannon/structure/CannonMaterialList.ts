@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    export class MaterialList extends CannonDataList{
+    export class CannonMaterialList extends CannonDataList{
         public static create() {
             var obj = new this();
 
