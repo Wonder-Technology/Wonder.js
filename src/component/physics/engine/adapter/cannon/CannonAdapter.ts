@@ -42,6 +42,7 @@ module wd {
         public getLinearDamping(obj:GameObject){
             return this._getNumberData(obj, "linearDamping");
         }
+
         public setLinearDamping(obj:GameObject, linearDamping:number){
             return this._setNumberData(obj, "linearDamping", linearDamping);
         }
@@ -49,6 +50,7 @@ module wd {
         public getAngularDamping(obj:GameObject){
             return this._getNumberData(obj, "angularDamping");
         }
+
         public setAngularDamping(obj:GameObject, angularDamping:number){
             return this._setNumberData(obj, "angularDamping", angularDamping);
         }
@@ -56,6 +58,7 @@ module wd {
         public getMass(obj:GameObject){
             return this._getNumberData(obj, "mass");
         }
+
         public setMass(obj:GameObject, mass:number){
             return this._setNumberData(obj, "mass", mass);
         }
@@ -114,7 +117,6 @@ module wd {
             if(body){
                 this.world.remove(body);
             }
-
 
             this._gameObjectList.remove(obj);
 
@@ -191,11 +193,9 @@ module wd {
             var result = null,
                 currentMaterial = this._getMaterial(obj);
 
-
             if(!currentMaterial){
                 return null;
             }
-
 
             return this._materialList.getContactMaterialData(this.world, currentMaterial, dataName);
         }
@@ -209,7 +209,6 @@ module wd {
 
                 return;
             }
-
 
             this._materialList.setContactMaterialData(this.world, currentMaterial, dataName, data);
         }
