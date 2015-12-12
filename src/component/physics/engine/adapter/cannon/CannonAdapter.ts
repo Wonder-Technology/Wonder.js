@@ -125,7 +125,9 @@ module wd {
 
         public update(time:number):void {
             this._gameObjectList.updateBodyTransformData();
+
             this.world.step(Director.getInstance().getDeltaTime() / 1000);
+
             this._gameObjectList.updateGameObjectTransformData();
         }
 

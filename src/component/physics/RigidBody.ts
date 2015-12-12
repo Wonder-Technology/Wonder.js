@@ -19,13 +19,42 @@ module wd {
             this._restitution = restitution;
         }
 
+        private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        set children(children:wdCb.Collection<GameObject>|Array<GameObject>){
+            if(JudgeUtils.isArray(children)){
+                let arr = <Array<GameObject>>children;
+
+                this._children = wdCb.Collection.create<GameObject>(arr);
+            }
+            else{
+                let list = <wdCb.Collection<GameObject>>children;
+
+                this._children = list;
+            }
+
+            this._children.forEach((child:GameObject) => {
+                child.isRigidbodyChild = true;
+            });
+        }
+
         public sequenceNumber:number = 2;
 
         public init() {
-            this.addBody();
+            var self = this;
+
+            /*!
+            should init after its and its children's collider component init
+             */
+            EventManager.on(<any>EngineEvent.AFTER_INIT, () => {
+                self.addBody();
+            });
         }
 
         public dispose(){
+            this._children.forEach((child:GameObject) => {
+                child.isRigidbodyChild = false;
+            });
+
             this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
         }
 
@@ -36,8 +65,8 @@ module wd {
         }
 
         @require(function () {
-            assert(this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
-            assert(this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+            assert(!!this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
+            assert(!!this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
         })
         protected addBodyToPhysicsEngine(method:string, data:any = {}) {
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter(),
@@ -49,6 +78,8 @@ module wd {
                 this.gameObject, shape, wdCb.ExtendUtils.extend({
                     position: position,
                     rotation: rotation,
+
+                    children: this._children,
 
                     onContact: wdCb.FunctionUtils.bind(this, this._onContact),
                     onCollisionStart: wdCb.FunctionUtils.bind(this, this._onCollisionStart),

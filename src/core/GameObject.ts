@@ -14,6 +14,7 @@ module wd {
         }
 
         public parent:GameObject = null;
+        public isRigidbodyChild:boolean = false;
         public bubbleParent:GameObject = null;
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
@@ -77,7 +78,7 @@ module wd {
 
         //todo test memory management
         public dispose() {
-            this.execScript("onDispose");
+            this.onDispose();
 
             if(this.parent){
                 this.parent.removeChild(this);

@@ -482,4 +482,57 @@ describe("Transform", function(){
             expect(newParent.addChild).toCalledWith(tra1);
         });
     });
+
+    describe("test state", function(){
+        describe("isTranslate", function(){
+            it("if set it to be true, set dirtyLocal to be true", function(){
+                tra1.translate(0,1,0);
+
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+            it("change children state", function(){
+                var tra2 = Transform.create();
+                tra1.parent = tra2;
+
+                tra2.translate(0,1,0);
+
+                expect(tra2.isTranslate).toBeTruthy();
+                expect(tra1.isTranslate).toBeTruthy();
+            });
+        });
+
+        describe("isRotate", function(){
+            it("if set it to be true, set dirtyLocal to be true", function(){
+                tra1.rotate(0,1,0);
+
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+            it("change children state", function(){
+                var tra2 = Transform.create();
+                tra1.parent = tra2;
+
+                tra2.rotate(0,1,0);
+
+                expect(tra2.isRotate).toBeTruthy();
+                expect(tra1.isRotate).toBeTruthy();
+            });
+        });
+
+        describe("isScale", function(){
+            it("if set it to be true, set dirtyLocal to be true", function(){
+                tra1.scale = wd.Vector3.create(1,1,2);
+
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+            it("change children state", function(){
+                var tra2 = Transform.create();
+                tra1.parent = tra2;
+
+                tra2.scale = wd.Vector3.create(1,1,2);
+
+                expect(tra2.isScale).toBeTruthy();
+                expect(tra1.isScale).toBeTruthy();
+            });
+        });
+    });
 });

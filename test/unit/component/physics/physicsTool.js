@@ -17,6 +17,24 @@ var physicsTool = (function () {
             );
         },
 
+        judgeGameObjectAndBodyRotation: function(obj, rot, digit){
+            expect(testTool.getValues(obj.transform.rotation.getEulerAngles(), digit || 7)).toEqual(
+                [
+                    mathTestUtils.toFixed(rot[0]),
+                    mathTestUtils.toFixed(rot[1]),
+                    mathTestUtils.toFixed(rot[2])
+                ]
+            );
+            expect(testTool.getValues(this.convertToWonderQuaternion(this.getBody(obj).quaternion).getEulerAngles(), digit || 7))
+            .toEqual(
+                [
+                    mathTestUtils.toFixed(rot[0]),
+                    mathTestUtils.toFixed(rot[1]),
+                    mathTestUtils.toFixed(rot[2])
+                ]
+            );
+        },
+
         setStartTime: function (sandbox, time) {
             var director = wd.Director.getInstance();
 

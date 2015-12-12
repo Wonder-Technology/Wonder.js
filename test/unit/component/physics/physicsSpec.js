@@ -29,6 +29,39 @@ describe("physics", function () {
         sandbox.restore();
     });
 
+    describe("angularVelocity", function(){
+        it("it will change gameObject's and body's rotation", function(){
+            var rigidBody1;
+            var box1;
+
+            rigidBody1 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                angularDamping: 0.3,
+                angularVelocity:wd.Vector3.create(0, 0, 5)
+            });
+
+
+            box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+
+            director.scene.addChild(box1);
+
+
+
+
+            director._init();
+
+            physicsTool.judgeGameObjectAndBodyRotation(box1, [0,0,0], 3);
+
+
+
+            director._loopBody(100);
+
+
+            physicsTool.judgeGameObjectAndBodyRotation(box1, [0,0,27.1], 1);
+        });
+    });
+
     describe("change data", function(){
         var rigidBody1;
         var box1;
@@ -260,7 +293,7 @@ describe("physics", function () {
         });
 
 
-        describe("change position,rotation", function(){
+        describe("change gameObject's position,rotation", function(){
             var position1,position2;
             var rotation1,rotation2;
 
@@ -423,6 +456,10 @@ describe("physics", function () {
          //expect(adapter._getContactMaterials(box1Material).length).toEqual(0);
          });
          */
+        describe("test dispose compound", function(){
+            //reset isRigidbodyChild flag
+            //remove child body
+        });
     });
 });
 

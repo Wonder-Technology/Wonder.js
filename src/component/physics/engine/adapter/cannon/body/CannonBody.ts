@@ -16,6 +16,10 @@ module wd {
 
             body.addShape(this._createShape(shape));
 
+            if(data.children){
+                this._addCompounds(gameObject, data.children, body);
+            }
+
             this.afterAddShape(body, data);
 
             body.material = this._createMaterial(gameObject, data.friction, data.restitution);
@@ -93,6 +97,25 @@ module wd {
         private _addMaterial(gameObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {
             this.materialList.add(gameObject, currentMaterial);
             this.materialList.addContactMaterial(this.world, currentMaterial, friction, restitution);
+        }
+
+        @require(function (gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body) {
+            children.forEach((child:GameObject) => {
+                assert(!!child.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
+                assert(!!child.getComponent<Collider>(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+            });
+        })
+        private _addCompounds(gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body){
+            var position = gameObject.transform.position,
+                rotation = gameObject.transform.rotation;
+
+            children.forEach((child:GameObject) => {
+                body.addShape(
+                    this._createShape(child.getComponent<Collider>(Collider).shape),
+                    CannonUtils.convertToCannonVector3(child.transform.position.copy().sub(position)),
+                    CannonUtils.convertToCannonQuaternion(child.transform.rotation.copy().sub(rotation))
+                );
+            });
         }
     }
 }

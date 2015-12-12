@@ -487,7 +487,7 @@ declare module CANNON {
         pointToLocalFrame(worldPoint: Vec3, result?: Vec3): Vec3;
         pointToWorldFrame(localPoint: Vec3, result?: Vec3): Vec3;
         vectorToWorldFrame(localVector: Vec3, result?: Vec3): Vec3;
-        addShape(shape: Shape, offset?: Vec3, orientation?: Vec3): void;
+        addShape(shape: Shape, offset?: Vec3, orientation?: Quaternion): void;
         updateBoundingRadius(): void;
         computeAABB(): void;
         updateInertiaWorld(force: Vec3): void;

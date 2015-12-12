@@ -22,7 +22,7 @@ module wd{
         private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
             var syncList = wdCb.Collection.create<Transform>(),
-                current = this.parent;
+                current = this._parent;
 
             syncList.addChild(this);
 
@@ -183,31 +183,52 @@ module wd{
             return this.localToWorldMatrix.getZ().normalize().scale(-1);
         }
 
-        private _isTranslate:boolean = null;
+        private _isTranslate:boolean = false;
         get isTranslate(){
             return this._isTranslate;
         }
         set isTranslate(isTranslate:boolean){
             this._isTranslate = isTranslate;
-            this.dirtyLocal = true;
+
+            if(isTranslate){
+                this.dirtyLocal = true;
+            }
+
+            this._children.forEach((child:Transform) => {
+                child.isTranslate = isTranslate;
+            });
         }
 
-        private _isRotate:boolean = null;
+        private _isRotate:boolean = false;
         get isRotate(){
             return this._isRotate;
         }
         set isRotate(isRotate:boolean){
             this._isRotate = isRotate;
-            this.dirtyLocal = true;
+
+            if(isRotate){
+                this.dirtyLocal = true;
+            }
+
+            this._children.forEach((child:Transform) => {
+                child.isRotate = isRotate;
+            });
         }
 
-        private _isScale:boolean = null;
+        private _isScale:boolean = false;
         get isScale(){
             return this._isScale;
         }
         set isScale(isScale:boolean){
             this._isScale = isScale;
-            this.dirtyLocal = true;
+
+            if(isScale){
+                this.dirtyLocal = true;
+            }
+
+            this._children.forEach((child:Transform) => {
+                child.isScale = isScale;
+            });
         }
 
         public dirtyWorld:boolean = null;

@@ -27,6 +27,7 @@ module wd {
                     this.shape.setFromObject(this.gameObject);
                 }
                 else{
+                    //todo optimize:set when isTranslate/isScale?
                     this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix)
                 }
             }

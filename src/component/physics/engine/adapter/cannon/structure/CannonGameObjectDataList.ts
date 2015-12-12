@@ -24,6 +24,11 @@ module wd {
 
         public updateGameObjectTransformData(){
             this.dataList.forEach(({gameObject,body}) => {
+                if(gameObject.isRigidbodyChild){
+                    return;
+                }
+
+                console.log(body.position);
                 gameObject.transform.position = CannonUtils.convertToWonderVector3(body.position);
                 gameObject.transform.rotation = CannonUtils.convertToWonderQuaternion(body.quaternion);
             });

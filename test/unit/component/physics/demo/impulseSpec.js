@@ -32,7 +32,7 @@ describe("physics impulse/force demo", function () {
 
     describe("test impulse(An impulse is a force added to a body during a short period of time (impulse = force * time). Impulses will be added to Body.velocity and Body.angularVelocity)", function () {
         var rigidBody1;
-        var box1;
+        var sphere1;
 
         beforeEach(function () {
         });
@@ -43,11 +43,11 @@ describe("physics impulse/force demo", function () {
             });
 
 
-            box1 = physicsTool.createSphere(wd.SphereCollider, rigidBody1);
+            sphere1 = physicsTool.createSphere(wd.SphereCollider, rigidBody1);
 
 
 
-            director.scene.addChild(box1);
+            director.scene.addChild(sphere1);
 
 
             var f = 500;
@@ -72,7 +72,7 @@ describe("physics impulse/force demo", function () {
 
     describe("test force", function () {
         var rigidBody1;
-        var box1;
+        var sphere1;
 
         beforeEach(function () {
         });
@@ -83,11 +83,11 @@ describe("physics impulse/force demo", function () {
             });
 
 
-            box1 = physicsTool.createSphere(wd.SphereCollider, rigidBody1);
+            sphere1 = physicsTool.createSphere(wd.SphereCollider, rigidBody1);
 
 
 
-            director.scene.addChild(box1);
+            director.scene.addChild(sphere1);
 
 
             rigidBody1.force = wd.Vector3.create(10, 0, 0);
