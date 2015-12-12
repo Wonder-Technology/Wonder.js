@@ -2,7 +2,7 @@
   "name": "wonder",
   "version": "0.1.1",
   "scripts": {
-     "start": "node ./server/app.js",
+    "start": "node ./server/app.js",
     "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
@@ -35,7 +35,7 @@
     "through-gulp": "^0.3.8",
     "through2": "^2.0.0",
     "tryit": "^1.0.1",
-    "typescript": "^1.8.0-dev.20151130",
+    "typescript": "^1.8.0-dev.20151211",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
     "wdcb": "^0.1.1",

@@ -15,6 +15,8 @@
         'dist/wd.innerLib.js',
         'dist/wd.debug.js',
 
+        'lib/outer/cannon/cannon.js',
+
         'test/helper/jquery.js',
         'test/helper/yTool.js',
 
@@ -25,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**/*.js',
+        'test/unit/**',
 
         {pattern: 'test/res/*', watched: false, included: false, served: true},
     {pattern: 'test/res/**', watched: false, included: false, served: true}

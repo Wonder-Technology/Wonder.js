@@ -76,6 +76,8 @@
             wd.Director.getInstance().scheduler.scheduleTime(function(){
                 rigidBody.friction = 0;
                 rigidBody.velocity = wd.Vector3.create(10, 0, 0);
+                gameObject.transform.rotate(0, 0, 45)
+                gameObject.transform.translate(10, 0, 0)
             }, 3000);
 
 

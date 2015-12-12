@@ -98,35 +98,20 @@ describe("GameObject", function() {
 
     describe("dispose", function(){
         it("off dy_startLoop,dy_endLoop event->exec script handler", function(){
-            var startLoopStub = sandbox.stub();
-            var endLoopStub = sandbox.stub();
-
-            var UserScript = function(){};
-            UserScript.prototype.onStartLoop = startLoopStub;
-            UserScript.prototype.onEndLoop = endLoopStub;
-            wd.Script.addScript("aaa", UserScript);
-
-            var script = wd.Script.create();
-            var stream = new wdFrp.Stream();
-            sandbox.stub(script, "createLoadJsStream").returns({
-                do:sandbox.stub().returns(stream)
-            });
-
-            gameObject.addComponent(script);
-            //todo how to trigger stream in test?
-            //(here just invoke the method that contained in stream)
-            script._addScriptToGameObject(gameObject, {
-                class: UserScript
-            });
-
+            var script = {
+                onStartLoop:sandbox.stub(),
+                onEndLoop:sandbox.stub()
+            };
+            prepareTool.addScript(gameObject, script);
 
             gameObject.init();
 
             wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
             wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
-            expect(startLoopStub).toCalledOnce();
-            expect(endLoopStub).toCalledOnce();
+            expect(script.onStartLoop).toCalledOnce();
+            expect(script.onEndLoop).toCalledOnce();
+
 
             gameObject.dispose();
 
@@ -134,8 +119,36 @@ describe("GameObject", function() {
             wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
 
 
-            expect(startLoopStub).toCalledOnce();
-            expect(endLoopStub).toCalledOnce();
+            expect(script.onStartLoop).toCalledOnce();
+            expect(script.onEndLoop).toCalledOnce();
+        });
+        it("invoke its and children's script->dispose", function(){
+            var script1 = {
+                onDispose:sandbox.stub()
+            };
+            var script2 = {
+                onDispose:sandbox.stub()
+            };
+            prepareTool.addScript(gameObject, script1);
+
+
+            var child = GameObject.create();
+
+            prepareTool.addScript(child, script2);
+
+
+            gameObject.addChild(child);
+
+
+
+
+            gameObject.dispose();
+
+
+
+            expect(script1.onDispose).toCalledOnce();
+            expect(script2.onDispose).toCalledOnce();
+            expect(script1.onDispose).toCalledBefore(script2.onDispose);
         });
         //todo more test
     });
