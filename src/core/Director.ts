@@ -158,6 +158,7 @@ module wd{
             this.scheduler.start();
 
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _buildLoopStream(){

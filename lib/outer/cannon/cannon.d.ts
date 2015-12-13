@@ -182,6 +182,13 @@ declare module CANNON {
 
     }
 
+
+    export class LockConstraint extends Constraint {
+        constructor(bodyA: Body, bodyB: Body, options?:any);
+    }
+
+
+
     export class Equation {
 
         id: number;

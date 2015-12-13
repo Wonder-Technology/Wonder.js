@@ -1,5 +1,6 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
+    import LockConstraint = CANNON.LockConstraint;
     export abstract class CannonBody {
         constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, materialList:CannonMaterialList) {
             this.world = world;
@@ -28,6 +29,8 @@ module wd {
             body.quaternion = CannonUtils.convertToCannonQuaternion(data.rotation);
 
             this.world.addBody(body);
+
+
 
             this.gameObjectList.add(gameObject, body);
 

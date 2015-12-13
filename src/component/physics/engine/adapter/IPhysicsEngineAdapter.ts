@@ -8,6 +8,8 @@ module wd {
         addDynamicBody(gameObject:GameObject, shape:Shape, options:any):void;
         addKinematicBody(gameObject:GameObject, shape:Shape, options:any):void;
         addStaticBody(gameObject:GameObject, shape:Shape, options:any):void;
+        addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint):void;
+        removeLockConstraint(gameObject:GameObject):void;
     }
 }
 

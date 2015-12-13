@@ -5,6 +5,7 @@ module wd{
         ENDLOOP = <any>"dy_endLoop",
         BEFORE_INIT = <any>"dy_beforeInit",
         AFTER_INIT = <any>"dy_afterInit",
+        AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"dy_afterInit_rigidBody_addConstraint",
 
 
         MATERIAL_CHANGE = <any>"dy_material_change"

@@ -40,15 +40,33 @@ module wd {
             });
         }
 
+        public lockConstraint:LockConstraint = LockConstraint.create(this);
+
+
         public init() {
             var self = this;
 
             /*!
-            should init after its and its children's collider component init
+            addBody should after its and its children's collider component init
              */
             EventManager.on(<any>EngineEvent.AFTER_INIT, () => {
                 self.addBody();
             });
+
+            /*!
+            add constraint should after all body added
+             */
+            EventManager.on(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT, () => {
+                self.addConstraint();
+            });
+        }
+
+        public addConstraint(){
+            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
+
+            if(this.lockConstraint && this.lockConstraint.connectedBody){
+                engineAdapter.addLockConstraint(this.gameObject, this.lockConstraint);
+            }
         }
 
         public dispose(){
@@ -59,11 +77,15 @@ module wd {
             this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
         }
 
-        protected abstract addBody();
+        public getPhysicsEngineAdapter() {
+            return Director.getInstance().scene.physicsEngineAdapter;
+        }
 
-        protected isPhysicsEngineAdapterExist(){
+        public isPhysicsEngineAdapterExist(){
             return !!Director.getInstance().scene && !!Director.getInstance().scene.physicsEngineAdapter;
         }
+
+        protected abstract addBody();
 
         @require(function () {
             if(this._isContainer(this.gameObject)){
@@ -86,6 +108,8 @@ module wd {
 
                     children: this._children,
 
+                    lockConstraint: this.lockConstraint,
+
                     onContact: wdCb.FunctionUtils.bind(this, this._onContact),
                     onCollisionStart: wdCb.FunctionUtils.bind(this, this._onCollisionStart),
                     onCollisionEnd: wdCb.FunctionUtils.bind(this, this._onCollisionEnd),
@@ -94,10 +118,6 @@ module wd {
                     restitution: this.restitution
                 }, data)
             );
-        }
-
-        protected getPhysicsEngineAdapter() {
-            return Director.getInstance().scene.physicsEngineAdapter;
         }
 
         private _onContact(collideObject:GameObject) {
@@ -118,5 +138,40 @@ module wd {
             return rigidBody.children.getCount() > 0;
         }
     }
-}
 
+    export class LockConstraint{
+        public static create(rigidBody:RigidBody) {
+        	var obj = new this(rigidBody);
+
+        	return obj;
+        }
+
+        constructor(rigidBody:RigidBody){
+            this._rigidBody = rigidBody;
+        }
+
+        private _connectedBody:RigidBody = null;
+        get connectedBody(){
+            return this._connectedBody;
+        }
+        set connectedBody(connectedBody:RigidBody){
+            var engineAdapter:IPhysicsEngineAdapter = null;
+
+            this._connectedBody = connectedBody;
+
+            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
+                return;
+            }
+
+            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+
+            engineAdapter.removeLockConstraint(this._rigidBody.gameObject);
+
+            this._rigidBody.addConstraint();
+        }
+
+        public maxForce:number = null;
+
+        private _rigidBody:RigidBody = null;
+    }
+}

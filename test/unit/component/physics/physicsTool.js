@@ -1,5 +1,8 @@
 var physicsTool = (function () {
     return {
+        getPos: function(obj, digit){
+            return testTool.getValues(obj.transform.position, digit || 1);
+        },
         judgePos: function (obj, pos, digit) {
             this.judgeValue(obj.transform.position, pos, digit || 7);
         },

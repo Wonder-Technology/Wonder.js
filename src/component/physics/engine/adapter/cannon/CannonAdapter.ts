@@ -11,9 +11,12 @@ module wd {
 
         private _materialList:CannonMaterialList = CannonMaterialList.create();
         private _gameObjectList:CannonGameObjectDataList = CannonGameObjectDataList.create();
+        private _constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
+
         private _dynamicBody:CannonDynamicBody = null;
         private _kinematicBody:CannonKinematicBody = null;
         private _staticBody:CannonStaticBody = null;
+        private _lockConstraint:CannonLockConstraint = null;
 
         public getGravity(gravity:number){
             return CannonUtils.convertToWonderVector3(this.world.gravity);
@@ -95,6 +98,8 @@ module wd {
             this._dynamicBody = CannonDynamicBody.create(this.world, this._gameObjectList, this._materialList);
             this._kinematicBody = CannonKinematicBody.create(this.world, this._gameObjectList, this._materialList);
             this._staticBody = CannonStaticBody.create(this.world, this._gameObjectList, this._materialList);
+
+            this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectList, this._constraintDataMap);
         }
 
         public addDynamicBody(gameObject:GameObject, data:any) {
@@ -107,6 +112,14 @@ module wd {
 
         public addStaticBody(gameObject:GameObject, data:any) {
             this._staticBody.addBody(gameObject, data);
+        }
+
+        public addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint){
+            this._lockConstraint.addConstraint(gameObject, lockConstraint);
+        }
+
+        public removeLockConstraint(gameObject:GameObject){
+            this._lockConstraint.removeConstraint(gameObject);
         }
 
         public removeGameObject(obj:GameObject){

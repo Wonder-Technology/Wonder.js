@@ -110,9 +110,13 @@
 /// <reference path="component/physics/engine/PhysicsEngineFactory"/>
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
 /// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
+
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonGameObjectDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonMaterialList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/CannonConstraintDataMap"/>
+
+
 /// <reference path="component/physics/engine/adapter/cannon/CannonUtils"/>
 /// <reference path="component/physics/engine/adapter/cannon/CannonAdapter"/>
 
@@ -121,6 +125,8 @@
 /// <reference path="component/physics/engine/adapter/cannon/body/CannonKinematicBody"/>
 /// <reference path="component/physics/engine/adapter/cannon/body/CannonStaticBody"/>
 
+/// <reference path="component/physics/engine/adapter/cannon/constraint/CannonLockConstraint"/>
+/// <reference path="component/physics/engine/adapter/cannon/constraint/CannonConstraintType"/>
 
 
 /// <reference path="component/pick/Pick"/>
