@@ -24,7 +24,7 @@
             var director = wd.Director.getInstance();
             var sphere1 = createSphere1();
             var box1 = createBox1();
-            var box = createBox(sphere1, box1);
+            var container = createContainer(sphere1, box1);
             var ground = createGround();
 
 
@@ -33,7 +33,7 @@
             director.scene.physics.enable = true;
             director.scene.physics.gravity = wd.Vector3.create(0, -40, 0);
 
-            director.scene.addChild(box);
+            director.scene.addChild(container);
             director.scene.addChild(ground);
             director.scene.addChild(createCamera());
 
@@ -41,38 +41,21 @@
             director.start();
         }
 
-        function createBox(sphere1, box1) {
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
-
-
-            var collision = wd.BoxCollider.create();
-
-
+        function createContainer(sphere1, box1) {
             var rigidBody = wd.DynamicRigidBody.create();
-            rigidBody.mass = 10;
+            rigidBody.mass = 5;
             rigidBody.children = [sphere1, box1];
 
 
             var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-            gameObject.addComponent(collision);
             gameObject.addComponent(rigidBody);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
 
 
             gameObject.addChild(sphere1);
             gameObject.addChild(box1);
 
 
-            gameObject.transform.rotate(0, 45, 0);
+            gameObject.transform.translate(0, 10, 0);
 
 
             return gameObject;
@@ -127,7 +110,7 @@
             gameObject.addComponent(wd.MeshRenderer.create());
 
 
-            gameObject.transform.translate(40, 20, 0);
+            gameObject.transform.translate(0, 30, 0);
 
             return gameObject;
         }
@@ -155,9 +138,6 @@
             gameObject.addComponent(rigidBody);
 
             gameObject.addComponent(wd.MeshRenderer.create());
-
-
-            gameObject.transform.translate(0, -20, 0);
 
 
             return gameObject;

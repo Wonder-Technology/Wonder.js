@@ -28,7 +28,6 @@ module wd {
                     return;
                 }
 
-                console.log(body.position);
                 gameObject.transform.position = CannonUtils.convertToWonderVector3(body.position);
                 gameObject.transform.rotation = CannonUtils.convertToWonderQuaternion(body.quaternion);
             });

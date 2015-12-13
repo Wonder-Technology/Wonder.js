@@ -20,7 +20,10 @@ module wd {
         }
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
-        set children(children:wdCb.Collection<GameObject>|Array<GameObject>){
+        get children(){
+            return  this._children;
+        }
+        set children(children:any){
             if(JudgeUtils.isArray(children)){
                 let arr = <Array<GameObject>>children;
 
@@ -63,17 +66,21 @@ module wd {
         }
 
         @require(function () {
-            assert(!!this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
-            assert(!!this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+            if(this._isContainer(this.gameObject)){
+                assert(!this.gameObject.getComponent(Collider), Log.info.FUNC_SHOULD_NOT("container", "add collider component in the case of compound"));
+            }
+            else{
+                assert(!!this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
+                assert(!!this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+            }
         })
         protected addBodyToPhysicsEngine(method:string, data:any = {}) {
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter(),
                 position = this.gameObject.transform.position,
-                rotation = this.gameObject.transform.rotation,
-                shape = this.gameObject.getComponent<Collider>(Collider).shape;
+                rotation = this.gameObject.transform.rotation;
 
             engineAdapter[method](
-                this.gameObject, shape, wdCb.ExtendUtils.extend({
+                this.gameObject, wdCb.ExtendUtils.extend({
                     position: position,
                     rotation: rotation,
 
@@ -103,6 +110,12 @@ module wd {
 
         private _onCollisionEnd() {
             this.gameObject.execScript("onCollisionEnd");
+        }
+
+        private _isContainer(gameObject:GameObject){
+            var rigidBody = gameObject.getComponent<RigidBody>(RigidBody);
+
+            return rigidBody.children.getCount() > 0;
         }
     }
 }

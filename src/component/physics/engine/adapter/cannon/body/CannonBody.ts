@@ -11,13 +11,14 @@ module wd {
         protected materialList:CannonMaterialList = null;
         protected gameObjectList:CannonGameObjectDataList = null;
 
-        public addBody(gameObject:GameObject, shape:Shape, data:any) {
+        public addBody(gameObject:GameObject, data:any) {
             var body = this.createBody(data);
 
-            body.addShape(this._createShape(shape));
-
-            if(data.children){
+            if(data.children.getCount() > 0){
                 this._addCompounds(gameObject, data.children, body);
+            }
+            else{
+                body.addShape(this._createShape(gameObject.getComponent<Collider>(Collider).shape));
             }
 
             this.afterAddShape(body, data);
@@ -101,8 +102,8 @@ module wd {
 
         @require(function (gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body) {
             children.forEach((child:GameObject) => {
-                assert(!!child.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
-                assert(!!child.getComponent<Collider>(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+                assert(!!child.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component"));
+                assert(!!child.getComponent<Collider>(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape"));
             });
         })
         private _addCompounds(gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body){
@@ -115,7 +116,7 @@ module wd {
                     CannonUtils.convertToCannonVector3(child.transform.position.copy().sub(position)),
                     CannonUtils.convertToCannonQuaternion(child.transform.rotation.copy().sub(rotation))
                 );
-            });
+            }, this);
         }
     }
 }

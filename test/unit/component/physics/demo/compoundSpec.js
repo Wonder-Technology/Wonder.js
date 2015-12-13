@@ -41,40 +41,43 @@ describe("physics compound demo", function () {
 
     describe("test boxes", function(){
         var rigidBody1, rigidBody3;
-        var box1, box2;
+        var box1, box2,container;
         var ground;
 
-        beforeEach(function(){
-            //rigidBody2 = physicsTool.createRigidBody({
-            //    class: wd.DynamicRigidBody
-            //});
+        function createBoxes(){
+            box1 = physicsTool.createBox(wd.BoxCollider);
 
-            //box2 = physicsTool.createBox(wd.BoxCollider, rigidBody2);
+            box1.transform.translate(0, 0, 0);
+
+
             box2 = physicsTool.createBox(wd.BoxCollider);
 
             box2.transform.translate(0, 20, 0);
             box2.transform.rotate(0, 45, 0);
+        }
 
-
+        function createContainer(){
             rigidBody1 = physicsTool.createRigidBody({
                 class: wd.DynamicRigidBody
-                //velocity:wd.Vector3.create(5, 0, 0)
             });
 
-            rigidBody1.children = [box2];
+            rigidBody1.children = [box1, box2];
 
-            box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
 
-            box1.addChild(box2);
+            container = wd.GameObject.create();
 
-            box1.transform.translate(0, 10, 0);
-            box1.transform.rotate(0, 20, 0);
+            container.addComponent(rigidBody1);
 
 
 
+            container.addChild(box1);
+            container.addChild(box2);
 
+            container.transform.translate(0, 10, 0);
+            container.transform.rotate(0, 20, 0);
+        }
 
-
+        function createGround(){
             rigidBody3 = physicsTool.createRigidBody({
                 class: wd.StaticRigidBody
             });
@@ -82,8 +85,16 @@ describe("physics compound demo", function () {
             ground = physicsTool.createBox(wd.BoxCollider, rigidBody3, [1000, 1, 1000]);
 
 
+        }
 
-            director.scene.addChild(box1);
+        beforeEach(function(){
+            createBoxes();
+
+            createContainer();
+
+            createGround();
+
+            director.scene.addChild(container);
             director.scene.addChild(ground);
         });
 
@@ -97,7 +108,7 @@ describe("physics compound demo", function () {
             physicsTool.judgePos(box1, [0, 5.1, 0], 1);
             physicsTool.judgePos(box2, [0,25.1,0], 1);
 
-            physicsTool.judgeGameObjectAndBodyRotation(box1, [0, 20, 0], 1);
+            physicsTool.judgeRotation(box1, [0, 20, 0], 1);
             physicsTool.judgeRotation(box2, [0, 65, 0], 1);
 
             /*!
@@ -107,8 +118,8 @@ describe("physics compound demo", function () {
 
             physicsTool.judgePos(box1, [0, 5.3, 0], 1);
             physicsTool.judgePos(box2, [0,25.3,0], 1);
+            physicsTool.judgeRotation(box1, [0, 20, 0], 1);
             physicsTool.judgeRotation(box2, [0, 65, 0], 1);
-            physicsTool.judgeGameObjectAndBodyRotation(box1, [0, 20, 0], 1);
         });
         it("update child's debug obj's position/rotation", function(){
             sandbox.stub(wd.DebugConfig, "debugCollision", true);
@@ -134,15 +145,15 @@ describe("physics compound demo", function () {
             director._loopBody(700);
 
 
-            box1.transform.translate(0, 10, 0);
-            box1.transform.rotate(0, 10, 0);
+            container.transform.translate(0, 10, 0);
+            container.transform.rotate(0, 10, 0);
 
 
             director._loopBody(800);
 
             physicsTool.judgePos(box1, [0, 14.3, 0], 1);
             physicsTool.judgePos(box2, [0,34.3,0], 1);
-            physicsTool.judgeGameObjectAndBodyRotation(box1, [0, 30, 0], 1);
+            physicsTool.judgeRotation(box1, [0, 30, 0], 1);
             physicsTool.judgeRotation(box2, [0, 75, 0], 1);
         });
     });

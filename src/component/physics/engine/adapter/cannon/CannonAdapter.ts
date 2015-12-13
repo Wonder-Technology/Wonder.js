@@ -97,16 +97,16 @@ module wd {
             this._staticBody = CannonStaticBody.create(this.world, this._gameObjectList, this._materialList);
         }
 
-        public addDynamicBody(gameObject:GameObject, shape:Shape, data:any) {
-            this._dynamicBody.addBody(gameObject, shape, data);
+        public addDynamicBody(gameObject:GameObject, data:any) {
+            this._dynamicBody.addBody(gameObject, data);
         }
 
-        public addKinematicBody(gameObject:GameObject, shape:Shape, data:any) {
-            this._kinematicBody.addBody(gameObject, shape, data);
+        public addKinematicBody(gameObject:GameObject, data:any) {
+            this._kinematicBody.addBody(gameObject, data);
         }
 
-        public addStaticBody(gameObject:GameObject, shape:Shape, data:any) {
-            this._staticBody.addBody(gameObject, shape, data);
+        public addStaticBody(gameObject:GameObject, data:any) {
+            this._staticBody.addBody(gameObject, data);
         }
 
         public removeGameObject(obj:GameObject){
