@@ -10,7 +10,7 @@ module wd {
         public world:CANNON.World = null;
 
         private _materialList:CannonMaterialList = CannonMaterialList.create();
-        private _gameObjectList:CannonGameObjectDataList = CannonGameObjectDataList.create();
+        private _gameObjectDataList:CannonGameObjectDataList = CannonGameObjectDataList.create();
         private _constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
 
         private _dynamicBody:CannonDynamicBody = null;
@@ -95,11 +95,11 @@ module wd {
             this.world.solver.iterations = iterations;
             this.world.gravity.set(gravity.x, gravity.y, gravity.z);
 
-            this._dynamicBody = CannonDynamicBody.create(this.world, this._gameObjectList, this._materialList);
-            this._kinematicBody = CannonKinematicBody.create(this.world, this._gameObjectList, this._materialList);
-            this._staticBody = CannonStaticBody.create(this.world, this._gameObjectList, this._materialList);
+            this._dynamicBody = CannonDynamicBody.create(this.world, this._gameObjectDataList, this._materialList);
+            this._kinematicBody = CannonKinematicBody.create(this.world, this._gameObjectDataList, this._materialList);
+            this._staticBody = CannonStaticBody.create(this.world, this._gameObjectDataList, this._materialList);
 
-            this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectList, this._constraintDataMap);
+            this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectDataList, this._constraintDataMap);
         }
 
         public addDynamicBody(gameObject:GameObject, data:any) {
@@ -124,68 +124,67 @@ module wd {
 
         public removeGameObject(obj:GameObject){
             var material = this._getMaterial(obj),
-                gameObjectData = this._gameObjectList.findByGameObject(obj),
-                body = gameObjectData !== null ? gameObjectData.body : null;
+                body = this._gameObjectDataList.findBodyByGameObject(obj);
 
             if(body){
                 this.world.remove(body);
             }
 
-            this._gameObjectList.remove(obj);
+            this._gameObjectDataList.remove(obj);
 
             this._materialList.remove(obj);
         }
 
         public update(time:number):void {
-            this._gameObjectList.updateBodyTransformData();
+            this._gameObjectDataList.updateBodyTransformData();
 
             this.world.step(Director.getInstance().getDeltaTime() / 1000);
 
-            this._gameObjectList.updateGameObjectTransformData();
+            this._gameObjectDataList.updateGameObjectTransformData();
         }
 
         private _getMaterial(obj:GameObject) {
-            return this._materialList.getMaterial(obj);
+            return this._materialList.findMaterialByGameObject(obj);
         }
 
         private _getNumberData(obj:GameObject, dataName:string){
-            var result = this._gameObjectList.findByGameObject(obj);
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
 
-            if(!result){
+            if(!body){
                 return null;
             }
 
-            return result.body[dataName];
+            return body[dataName];
         }
 
         private _setNumberData(obj:GameObject, dataName:string, data:number){
-            var result = this._gameObjectList.findByGameObject(obj);
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
 
-            if(!result){
-                return;
-            }
-
-            result.body[dataName] = data;
-        }
-
-        private _getVec3Data(obj:GameObject, dataName:string){
-            var result = this._gameObjectList.findByGameObject(obj);
-
-            if(!result){
+            if(!body){
                 return null;
             }
 
-            return CannonUtils.convertToWonderVector3(result.body[dataName]);
+            body[dataName] = data;
+        }
+
+        private _getVec3Data(obj:GameObject, dataName:string){
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
+
+            if(!body){
+                return null;
+            }
+
+            return CannonUtils.convertToWonderVector3(body[dataName]);
         }
 
         private _setVec3Data(obj:GameObject, dataName:string, data:Vector3){
-            var result = this._gameObjectList.findByGameObject(obj);
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
 
-            if(!result){
-                return;
+            if(!body){
+                return null;
             }
 
-            result.body[dataName] = CannonUtils.convertToCannonVector3(data);
+            body[dataName] = CannonUtils.convertToCannonVector3(data);
         }
 
         @require(function(obj:GameObject, dataName:string){

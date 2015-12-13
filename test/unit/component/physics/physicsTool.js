@@ -149,7 +149,7 @@ var physicsTool = (function () {
             return wd.Director.getInstance().scene.physicsEngineAdapter;
         },
         getBody: function (obj){
-            return this.getPhysicsEngineAdapter()._gameObjectList.findByGameObject(obj).body;
+            return this.getPhysicsEngineAdapter()._gameObjectDataList.findBodyByGameObject(obj);
         },
 
         getWorld: function (){

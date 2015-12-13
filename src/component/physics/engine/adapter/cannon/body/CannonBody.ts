@@ -62,14 +62,14 @@ module wd {
             var self = this;
 
             targetBody.addEventListener("collide", (e) => {
-                let data = self.gameObjectList.findByBody(e.body),
-                    collideObject:GameObject = null;
+                let gameObject = self.gameObjectList.findGameObjectByBody(e.body),
+                    collideObject = null;
 
-                if (!data) {
+                if (!gameObject) {
                     return;
                 }
 
-                collideObject = data.gameObject;
+                collideObject = gameObject;
 
                 onCollisionStart(collideObject);
                 onContact(collideObject);
@@ -95,7 +95,7 @@ module wd {
         }
 
         private _getMaterial(obj:GameObject) {
-            return this.materialList.getMaterial(obj);
+            return this.materialList.findMaterialByGameObject(obj);
         }
 
         private _addMaterial(gameObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {

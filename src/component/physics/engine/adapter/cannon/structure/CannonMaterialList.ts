@@ -7,12 +7,14 @@ module wd {
             return obj;
         }
 
-        protected dataList:wdCb.Collection<MaterialData>;
+        protected dataList:wdCb.Collection<CannonMaterialData>;
 
-        public findByGameObject(obj:GameObject){
-            return this.dataList.findOne(({gameObject, material}) => {
+        public findMaterialByGameObject(obj:GameObject){
+            var result = this.dataList.findOne(({gameObject, material}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
+
+            return result !== null ? result.material : null;
         }
 
         public add(obj:GameObject, material:CANNON.Material){
@@ -65,12 +67,6 @@ module wd {
             return resultArr;
         }
 
-        public getMaterial(obj:GameObject){
-            var result = this.findByGameObject(obj);
-
-            return result === null ? null : result.material;
-        }
-
         public setContactMaterialData(world:CANNON.World, currentMaterial:CANNON.Material, dataName:string, data:any){
             this.dataList.forEach(({gameObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
@@ -84,7 +80,7 @@ module wd {
         }
     }
 
-    export type MaterialData = {
+    export type CannonMaterialData = {
         gameObject:GameObject,
         material:CANNON.Material
     }

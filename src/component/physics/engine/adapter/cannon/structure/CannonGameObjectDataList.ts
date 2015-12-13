@@ -7,7 +7,7 @@ module wd {
             return obj;
         }
 
-        protected dataList:wdCb.Collection<GameObjectData>;
+        protected dataList:wdCb.Collection<CannonGameObjectData>;
 
         public updateBodyTransformData(){
             this.dataList.forEach(({gameObject,body}) => {
@@ -40,20 +40,24 @@ module wd {
             });
         }
 
-        public findByBody(b:CANNON.Body){
-            return this.dataList.findOne(({gameObject, body}) => {
+        public findGameObjectByBody(b:CANNON.Body){
+            var result = this.dataList.findOne(({gameObject, body}) => {
                 return body === b;
             });
+
+            return result !== null ? result.gameObject : null;
         }
 
-        public findByGameObject(obj:GameObject){
-            return this.dataList.findOne(({gameObject, body}) => {
+        public findBodyByGameObject(obj:GameObject):any{
+            var result = this.dataList.findOne(({gameObject, body}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
+
+            return result !== null ? result.body : null;
         }
     }
 
-    export type GameObjectData = {
+    export type CannonGameObjectData = {
         gameObject:GameObject,
         body:CANNON.Body
     }

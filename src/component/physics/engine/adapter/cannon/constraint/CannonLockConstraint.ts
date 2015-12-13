@@ -19,12 +19,12 @@ module wd{
 
 
         @require(function(gameObject:GameObject, lockConstraint:LockConstraint){
-            assert(this.gameObjectList.findByGameObject(gameObject) !== null, Log.info.FUNC_SHOULD("add rigid body"));
+            assert(this.gameObjectList.findBodyByGameObject(gameObject) !== null, Log.info.FUNC_SHOULD("add rigid body"));
             assert(this._findBody(lockConstraint.connectedBody), Log.info.FUNC_SHOULD("add connectedBody"));
         })
         public addConstraint(gameObject:GameObject, lockConstraint:LockConstraint){
             var constraint = null,
-                body:CANNON.Body = this.gameObjectList.findByGameObject(gameObject).body,
+                body:CANNON.Body = this.gameObjectList.findBodyByGameObject(gameObject),
                 connectedBody:CANNON.Body = this._findBody(lockConstraint.connectedBody);
 
             if(lockConstraint.maxForce){
@@ -48,9 +48,7 @@ module wd{
         }
 
         private _findBody(rigidBody:RigidBody){
-            var result = this.gameObjectList.findByGameObject(rigidBody.gameObject);
-
-            return result !== null ? result.body : null;
+            return this.gameObjectList.findBodyByGameObject(rigidBody.gameObject);
         }
     }
 }
