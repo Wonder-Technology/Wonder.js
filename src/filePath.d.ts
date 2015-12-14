@@ -107,6 +107,8 @@
 /// <reference path="component/physics/DynamicRigidBody"/>
 /// <reference path="component/physics/DynamicRigidBody"/>
 
+/// <reference path="component/physics/model/PhysicsConstraintModel"/>
+
 /// <reference path="component/physics/engine/PhysicsEngineFactory"/>
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
 /// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
@@ -115,6 +117,8 @@
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonMaterialList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonLockConstraintDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonPointToPointConstraintDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonDistanceConstraintDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonHingeConstraintDataList"/>
 
 
 /// <reference path="component/physics/engine/adapter/cannon/CannonUtils"/>
@@ -128,6 +132,8 @@
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonLockConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonPointToPointConstraint"/>
+/// <reference path="component/physics/engine/adapter/cannon/constraint/CannonDistanceConstraint"/>
+/// <reference path="component/physics/engine/adapter/cannon/constraint/CannonHingeConstraint"/>
 
 
 /// <reference path="component/pick/Pick"/>
