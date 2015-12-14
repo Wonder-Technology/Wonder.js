@@ -146,15 +146,21 @@ module wd {
         }
     }
 
-    export class LockConstraint{
+    export abstract class PhysicsConstraint{
+        constructor(rigidBody:RigidBody){
+            this.rigidBody = rigidBody;
+        }
+
+        public maxForce:number = null;
+
+        protected rigidBody:RigidBody = null;
+    }
+
+    export class LockConstraint extends PhysicsConstraint{
         public static create(rigidBody:RigidBody) {
         	var obj = new this(rigidBody);
 
         	return obj;
-        }
-
-        constructor(rigidBody:RigidBody){
-            this._rigidBody = rigidBody;
         }
 
         private _connectedBody:RigidBody = null;
@@ -166,32 +172,24 @@ module wd {
 
             this._connectedBody = connectedBody;
 
-            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
+            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
                 return;
             }
 
-            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+            engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
-            engineAdapter.removeLockConstraint(this._rigidBody.gameObject);
+            engineAdapter.removeLockConstraint(this.rigidBody.gameObject);
 
-            this._rigidBody.addConstraint();
+            this.rigidBody.addConstraint();
         }
-
-        public maxForce:number = null;
-
-        private _rigidBody:RigidBody = null;
     }
 
 
-    export class PointToPointConstraint{
+    export class PointToPointConstraint extends PhysicsConstraint{
         public static create(rigidBody:RigidBody) {
             var obj = new this(rigidBody);
 
             return obj;
-        }
-
-        constructor(rigidBody:RigidBody){
-            this._rigidBody = rigidBody;
         }
 
         public connectedBody:RigidBody = null;
@@ -199,10 +197,6 @@ module wd {
         //todo support change pivot
         public pivotA:Vector3 = null;
         public pivotB:Vector3 = null;
-
-        public maxForce:number = null;
-
-        private _rigidBody:RigidBody = null;
     }
 
     export class PointToPointConstraintList{

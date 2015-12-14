@@ -7,41 +7,8 @@ module wd{
         	return obj;
         }
 
-        constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataList:CannonPointToPointConstraintDataList) {
-            super();
+        protected constraintDataList:CannonPointToPointConstraintDataList;
 
-            this.world = world;
-            this.gameObjectList = gameObjectDataList;
-            this.constraintDataList = constraintDataList;
-        }
-
-        protected world:CANNON.World = null;
-        protected gameObjectList:CannonGameObjectDataList = null;
-        protected constraintDataList:CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList.create();
-
-
-        @require(function(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){
-            assert(this.gameObjectList.findBodyByGameObject(gameObject) !== null, Log.info.FUNC_SHOULD("add rigid body"));
-            assert(this._findBody(pointToPointConstraint.connectedBody), Log.info.FUNC_SHOULD("add connectedBody"));
-        })
-        public addConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){
-            var constraint = null,
-                body:CANNON.Body = this.gameObjectList.findBodyByGameObject(gameObject),
-                connectedBody:CANNON.Body = this._findBody(pointToPointConstraint.connectedBody),
-                pivotA = CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotA),
-                pivotB = CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotB);
-
-            if(pointToPointConstraint.maxForce){
-                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB, pointToPointConstraint.maxForce);
-            }
-            else{
-                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB);
-            }
-
-            this.world.addConstraint(constraint);
-
-            this.constraintDataList.add(pointToPointConstraint, constraint);
-        }
 
         public removeConstraint(pointToPointConstraint:PointToPointConstraint){
             var constraint = this.constraintDataList.findCannonConstraintByPointToPointConstraint(pointToPointConstraint);
@@ -53,8 +20,24 @@ module wd{
             this.constraintDataList.remove(pointToPointConstraint);
         }
 
-        private _findBody(rigidBody:RigidBody){
-            return this.gameObjectList.findBodyByGameObject(rigidBody.gameObject);
+        protected createCannonConstraint(body:CANNON.Body, pointToPointConstraint:PointToPointConstraint){
+            var constraint:CANNON.Constraint = null,
+                connectedBody:CANNON.Body = this.findBody(pointToPointConstraint.connectedBody),
+                pivotA = CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotA),
+                pivotB = CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotB);
+
+            if(pointToPointConstraint.maxForce){
+                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB, pointToPointConstraint.maxForce);
+            }
+            else{
+                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB);
+            }
+
+            return constraint;
+        }
+
+        protected addToConstraintDataList(gameObject:GameObject, wonderConstraint:PointToPointConstraint, cannonConstraint:CANNON.Constraint){
+            this.constraintDataList.add(wonderConstraint, cannonConstraint);
         }
     }
 }
