@@ -395,14 +395,113 @@ describe("physics constraint demo", function () {
         });
     });
 
-    //door
-    describe("HingeConstraint", function(){
-        beforeEach(function(){
+    describe("HingeConstraint(A hinge constraint makes sure that two bodies can rotate around a common axis)", function(){
+        var topBox,linkBox;
+        var rigidBody1,rigidBody2;
+        var constraint;
 
+        function createTopStaticBox(){
+            rigidBody1 = physicsTool.createRigidBody({
+                class: wd.StaticRigidBody
+            });
+
+            topBox = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+            topBox.transform.translate(0, 30, 0);
+        }
+
+        function createLinkBox(){
+            rigidBody2 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+
+
+
+            constraint = rigidBody2.hingeConstraint;
+            constraint.connectedBody = rigidBody1;
+            constraint.pivotA = wd.Vector3.create(-5, 6, 0);
+            constraint.axisA = wd.Vector3.create(1, 0, 0);
+            constraint.pivotB = wd.Vector3.create(-5, -6, 0);
+            constraint.axisB = wd.Vector3.create(1, 0, 0);
+
+
+
+
+
+
+
+            linkBox = physicsTool.createBox(wd.BoxCollider, rigidBody2);
+
+            linkBox.transform.translate(0, 18, 0);
+        }
+
+        beforeEach(function(){
+            physicsTool.setPhysicsSetting({
+                gravity: wd.Vector3.create(0, -20, 10)
+            });
+
+            createTopStaticBox();
+            createLinkBox();
+            createGround();
+
+
+            director.scene.addChildren([topBox, linkBox]);
+            director.scene.addChild(ground);
         });
 
-        it("", function(){
+        it("the boxes should link by axis", function(){
+            director._init();
 
+            director._loopBody(500);
+
+            physicsTool.judgePos(topBox, [0,30,0], 1);
+            expect(physicsTool.getPos(linkBox, 1)[1]).toEqual(16.6);
+
+
+            director._loopBody(600);
+
+            expect(physicsTool.getPos(linkBox, 1)[1]).toEqual(17.3);
+        });
+
+        describe("change constraint", function(){
+            it("remove/add constraint", function(){
+                director._init();
+
+                director._loopBody(500);
+
+
+                rigidBody2.hingeConstraint.connectedBody = null;
+
+
+                director._loopBody(600);
+
+
+                /*!
+                fall when not constraint
+                 */
+                expect(physicsTool.getPos(linkBox, 1)[1] < 17.3).toBeTruthy();
+
+
+
+
+                rigidBody2.hingeConstraint.connectedBody = rigidBody1;
+
+                director._loopBody(700);
+
+
+                /*!
+                 not fall when add constraint
+                 */
+                expect(physicsTool.getPos(linkBox, 1)[1]).toEqual(17.3);
+            });
+            it("change pivot", function(){
+                //todo support change pivot
+            });
+            it("change axis", function(){
+                //todo support change axis
+            });
         });
     });
 });

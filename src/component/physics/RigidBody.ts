@@ -42,6 +42,7 @@ module wd {
 
         public lockConstraint:LockConstraint = LockConstraint.create(this);
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
+        public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
 
@@ -72,6 +73,10 @@ module wd {
 
             if(this.distanceConstraint && this.distanceConstraint.connectedBody){
                 engineAdapter.addDistanceConstraint(this.gameObject, this.distanceConstraint);
+            }
+
+            if(this.hingeConstraint && this.hingeConstraint.connectedBody){
+                engineAdapter.addHingeConstraint(this.gameObject, this.hingeConstraint);
             }
 
             if(this.pointToPointConstraintList && this.pointToPointConstraintList.getCount() > 0){
@@ -218,6 +223,41 @@ module wd {
 
         //todo support change distance
         public distance:number = null;
+    }
+
+    export class HingeConstraint extends PhysicsConstraint{
+        public static create(rigidBody:RigidBody) {
+            var obj = new this(rigidBody);
+
+            return obj;
+        }
+
+        private _connectedBody:RigidBody = null;
+        get connectedBody(){
+            return this._connectedBody;
+        }
+        set connectedBody(connectedBody:RigidBody){
+            var engineAdapter:IPhysicsEngineAdapter = null;
+
+            this._connectedBody = connectedBody;
+
+            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
+                return;
+            }
+
+            engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+
+            engineAdapter.removeHingeConstraint(this.rigidBody.gameObject);
+
+            this.rigidBody.addConstraint();
+        }
+
+        //todo support change pivot
+        public pivotA:Vector3 = null;
+        public pivotB:Vector3 = null;
+        //todo support change axis
+        public axisA:Vector3 = null;
+        public axisB:Vector3 = null;
     }
 
     export class PointToPointConstraint extends PhysicsConstraint{

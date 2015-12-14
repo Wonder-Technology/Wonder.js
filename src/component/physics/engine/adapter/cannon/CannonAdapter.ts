@@ -13,6 +13,7 @@ module wd {
         private _gameObjectDataList:CannonGameObjectDataList = CannonGameObjectDataList.create();
         private _lockConstraintDataList:CannonLockConstraintDataList = CannonLockConstraintDataList.create();
         private _distanceConstraintDataList:CannonDistanceConstraintDataList = CannonDistanceConstraintDataList.create();
+        private _hingeConstraintDataList:CannonHingeConstraintDataList = CannonHingeConstraintDataList.create();
         private _pointToPointConstraintDataList:CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList.create();
 
         private _dynamicBody:CannonDynamicBody = null;
@@ -20,6 +21,7 @@ module wd {
         private _staticBody:CannonStaticBody = null;
         private _lockConstraint:CannonLockConstraint = null;
         private _distanceConstraint:CannonDistanceConstraint = null;
+        private _hingeConstraint:CannonHingeConstraint = null;
         private _pointToPointConstraint:CannonPointToPointConstraint = null;
 
         public getGravity(gravity:number){
@@ -105,6 +107,7 @@ module wd {
 
             this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectDataList, this._lockConstraintDataList);
             this._distanceConstraint = CannonDistanceConstraint.create(this.world, this._gameObjectDataList, this._distanceConstraintDataList);
+            this._hingeConstraint = CannonHingeConstraint.create(this.world, this._gameObjectDataList, this._hingeConstraintDataList);
             this._pointToPointConstraint = CannonPointToPointConstraint.create(this.world, this._gameObjectDataList, this._pointToPointConstraintDataList);
         }
 
@@ -134,6 +137,14 @@ module wd {
 
         public removeDistanceConstraint(gameObject:GameObject){
             this._distanceConstraint.removeConstraint(gameObject);
+        }
+
+        public addHingeConstraint(gameObject:GameObject, hingeConstraint:HingeConstraint){
+            this._hingeConstraint.addConstraint(gameObject, hingeConstraint);
+        }
+
+        public removeHingeConstraint(gameObject:GameObject){
+            this._hingeConstraint.removeConstraint(gameObject);
         }
 
         public addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){

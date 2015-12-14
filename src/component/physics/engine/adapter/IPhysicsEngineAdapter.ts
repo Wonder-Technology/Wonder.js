@@ -12,6 +12,8 @@ module wd {
         removeLockConstraint(gameObject:GameObject):void;
         addDistanceConstraint(gameObject:GameObject, distanceConstraint:DistanceConstraint):void;
         removeDistanceConstraint(gameObject:GameObject):void;
+        addHingeConstraint(gameObject:GameObject, hingeConstraint:HingeConstraint):void;
+        removeHingeConstraint(gameObject:GameObject):void;
         addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint):void;
         removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint):void;
     }
