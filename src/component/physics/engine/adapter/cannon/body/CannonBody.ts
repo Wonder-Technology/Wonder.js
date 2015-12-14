@@ -1,6 +1,5 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    import LockConstraint = CANNON.LockConstraint;
     export abstract class CannonBody {
         constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, materialList:CannonMaterialList) {
             this.world = world;

@@ -11,7 +11,6 @@ module wd {
 
         private _materialList:CannonMaterialList = CannonMaterialList.create();
         private _gameObjectDataList:CannonGameObjectDataList = CannonGameObjectDataList.create();
-        //private _constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
         private _lockConstraintDataList:CannonLockConstraintDataList = CannonLockConstraintDataList.create();
         private _pointToPointConstraintDataList:CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList.create();
 
