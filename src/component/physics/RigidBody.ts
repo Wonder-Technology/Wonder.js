@@ -92,6 +92,8 @@ module wd {
             });
 
             this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
+
+            this.getPhysicsEngineAdapter().removeConstraints(this.gameObject);
         }
 
         public getPhysicsEngineAdapter() {

@@ -9,21 +9,30 @@ module wd {
 
         protected dataList:wdCb.Collection<CannonPointToPointConstraintData>;
 
-        public add(pointToPointConstraint:PointToPointConstraint, constraint:CANNON.Constraint){
+        public filter(func:(data:CannonPointToPointConstraintData) => boolean){
+            return this.dataList.filter(func);
+        }
+
+        public forEach(func:(data:CannonPointToPointConstraintData) => void){
+            this.dataList.forEach(func);
+        }
+
+        public add(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint, constraint:CANNON.Constraint){
             this.dataList.addChild({
+                gameObject:gameObject,
                 pointToPointConstraint: pointToPointConstraint,
                 cannonConstraint:constraint
             });
         }
 
         public remove(constraint: PointToPointConstraint){
-            this.dataList.removeChild(({pointToPointConstraint, cannonConstraint}) => {
+            this.dataList.removeChild(({pointToPointConstraint}) => {
                 return JudgeUtils.isEqual(pointToPointConstraint, constraint);
             });
         }
 
         public findCannonConstraintByPointToPointConstraint(constraint: PointToPointConstraint){
-            var result = this.dataList.findOne(({pointToPointConstraint, cannonConstraint}) => {
+            var result = this.dataList.findOne(({pointToPointConstraint}) => {
                 return JudgeUtils.isEqual(pointToPointConstraint, constraint);
             });
 
@@ -32,6 +41,7 @@ module wd {
     }
 
     export type CannonPointToPointConstraintData = {
+        gameObject:GameObject,
         pointToPointConstraint:PointToPointConstraint,
         cannonConstraint:CANNON.Constraint
     }

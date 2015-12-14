@@ -168,6 +168,22 @@ module wd {
             this._materialList.remove(obj);
         }
 
+        public removeConstraints(obj:GameObject){
+            var self = this;
+
+            this._lockConstraint.removeConstraint(obj);
+            this._distanceConstraint.removeConstraint(obj);
+            this._hingeConstraint.removeConstraint(obj);
+
+            this._pointToPointConstraintDataList
+                .filter(({gameObject}) => {
+                    return JudgeUtils.isEqual(gameObject, obj);
+                })
+                .forEach(({pointToPointConstraint}) => {
+                    self._pointToPointConstraint.removeConstraint(pointToPointConstraint)
+                });
+        }
+
         public update(time:number):void {
             this._gameObjectDataList.updateBodyTransformData();
 

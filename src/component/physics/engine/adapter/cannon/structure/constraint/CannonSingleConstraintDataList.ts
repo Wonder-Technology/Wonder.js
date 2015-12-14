@@ -13,7 +13,7 @@ module wd {
         }
 
         public findConstraintByGameObject(obj:GameObject){
-            var result = this.dataList.findOne(({gameObject, constraint}) => {
+            var result = this.dataList.findOne(({gameObject}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
 
