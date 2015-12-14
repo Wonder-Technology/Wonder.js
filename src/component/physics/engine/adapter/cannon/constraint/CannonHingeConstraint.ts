@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd{
-    export class CannonHingeConstraint extends CannonConstraint{
+    export class CannonHingeConstraint extends CannonSingleConstraint{
         public static create(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataList:CannonHingeConstraintDataList) {
         	var obj = new this(world, gameObjectDataList, constraintDataList);
 
@@ -9,16 +9,6 @@ module wd{
 
         protected constraintDataList:CannonHingeConstraintDataList;
 
-
-        public removeConstraint(gameObject:GameObject){
-            var constraint = this.constraintDataList.findConstraintByGameObject(gameObject);
-
-            if(constraint){
-                this.world.removeConstraint(constraint);
-            }
-
-            this.constraintDataList.remove(gameObject);
-        }
 
         protected createCannonConstraint(body:CANNON.Body, hingeConstraint:HingeConstraint){
             var constraint:CANNON.Constraint = null,
@@ -48,10 +38,6 @@ module wd{
             constraint = new CANNON.HingeConstraint(body, connectedBody, options);
 
             return constraint;
-        }
-
-        protected addToConstraintDataList(gameObject:GameObject, wonderConstraint:HingeConstraint, cannonConstraint:CANNON.Constraint){
-            this.constraintDataList.add(gameObject, cannonConstraint);
         }
     }
 }

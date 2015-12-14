@@ -134,6 +134,7 @@
 /// <reference path="component/physics/engine/adapter/cannon/body/CannonStaticBody"/>
 
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonConstraint"/>
+/// <reference path="component/physics/engine/adapter/cannon/constraint/CannonSingleConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonLockConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonPointToPointConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonDistanceConstraint"/>
