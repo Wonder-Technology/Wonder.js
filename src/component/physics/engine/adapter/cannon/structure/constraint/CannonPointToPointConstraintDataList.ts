@@ -1,6 +1,5 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
+/// <reference path="../../../../../../../filePath.d.ts"/>
 module wd {
-    import Constraint = CANNON.Constraint;
     export class CannonPointToPointConstraintDataList{
         public static create() {
             var obj = new this();
@@ -17,7 +16,6 @@ module wd {
             });
         }
 
-        //todo refactor?
         public remove(constraint: PointToPointConstraint){
             this._dataList.removeChild(({pointToPointConstraint, cannonConstraint}) => {
                 return JudgeUtils.isEqual(pointToPointConstraint, constraint);

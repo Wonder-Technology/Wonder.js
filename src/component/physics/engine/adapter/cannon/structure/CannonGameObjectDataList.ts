@@ -1,16 +1,22 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    export class CannonGameObjectDataList extends CannonDataList{
+    export class CannonGameObjectDataList{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        protected dataList:wdCb.Collection<CannonGameObjectData>;
+        private _dataList:wdCb.Collection<CannonGameObjectData> = wdCb.Collection.create<CannonGameObjectData>();
+
+        public remove(obj:GameObject){
+            this._dataList.removeChild(({gameObject, body}) => {
+                return JudgeUtils.isEqual(gameObject, obj);
+            });
+        }
 
         public updateBodyTransformData(){
-            this.dataList.forEach(({gameObject,body}) => {
+            this._dataList.forEach(({gameObject,body}) => {
                 let transform = gameObject.transform;
 
                 //todo consider isScale?
@@ -23,7 +29,7 @@ module wd {
         }
 
         public updateGameObjectTransformData(){
-            this.dataList.forEach(({gameObject,body}) => {
+            this._dataList.forEach(({gameObject,body}) => {
                 if(gameObject.isRigidbodyChild){
                     return;
                 }
@@ -34,14 +40,14 @@ module wd {
         }
 
         public add(obj:GameObject, body:CANNON.Body){
-            this.dataList.addChild({
+            this._dataList.addChild({
                 gameObject:obj,
                 body:body
             });
         }
 
         public findGameObjectByBody(b:CANNON.Body){
-            var result = this.dataList.findOne(({gameObject, body}) => {
+            var result = this._dataList.findOne(({gameObject, body}) => {
                 return body === b;
             });
 
@@ -49,7 +55,7 @@ module wd {
         }
 
         public findBodyByGameObject(obj:GameObject):any{
-            var result = this.dataList.findOne(({gameObject, body}) => {
+            var result = this._dataList.findOne(({gameObject, body}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
 

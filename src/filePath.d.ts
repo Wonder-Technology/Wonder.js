@@ -111,11 +111,10 @@
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
 /// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
 
-/// <reference path="component/physics/engine/adapter/cannon/structure/CannonDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonGameObjectDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonMaterialList"/>
-/// <reference path="component/physics/engine/adapter/cannon/structure/CannonLockConstraintDataList"/>
-/// <reference path="component/physics/engine/adapter/cannon/structure/CannonPointToPointConstraintDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonLockConstraintDataList"/>
+/// <reference path="component/physics/engine/adapter/cannon/structure/constraint/CannonPointToPointConstraintDataList"/>
 
 
 /// <reference path="component/physics/engine/adapter/cannon/CannonUtils"/>

@@ -1,4 +1,4 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
+/// <reference path="../../../../../../../filePath.d.ts"/>
 module wd {
     export class CannonLockConstraintDataList{
         public static create() {
@@ -16,7 +16,6 @@ module wd {
             });
         }
 
-        //todo refactor?
         public remove(obj:GameObject){
             this._dataList.removeChild(({gameObject, body}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
