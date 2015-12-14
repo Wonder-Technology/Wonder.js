@@ -1,22 +1,20 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    export class CannonMaterialList{
+    export class CannonMaterialList extends CannonDataList{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        private _dataList:wdCb.Collection<CannonMaterialData> = wdCb.Collection.create<CannonMaterialData>();
+        protected dataList:wdCb.Collection<CannonMaterialData>;
 
         public remove(obj:GameObject){
-            this._dataList.removeChild(({gameObject, material}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
+            this.removeByGameObject(obj);
         }
 
         public findMaterialByGameObject(obj:GameObject){
-            var result = this._dataList.findOne(({gameObject, material}) => {
+            var result = this.dataList.findOne(({gameObject, material}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
 
@@ -24,14 +22,14 @@ module wd {
         }
 
         public add(obj:GameObject, material:CANNON.Material){
-            this._dataList.addChild({
+            this.dataList.addChild({
                 gameObject:obj,
                 material:material
             });
         }
 
         public addContactMaterial(world:CANNON.World, currentMaterial:CANNON.Material, friction:number, restitution:number){
-            this._dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({gameObject, material}) => {
                 world.addContactMaterial(new CANNON.ContactMaterial(material, currentMaterial, {
                     friction: friction,
                     restitution: restitution
@@ -42,7 +40,7 @@ module wd {
         public getContactMaterialData(world:CANNON.World, currentMaterial:CANNON.Material, dataName:string){
             var result = null;
 
-            this._dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({gameObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){
@@ -60,7 +58,7 @@ module wd {
         public getContactMaterials(world:CANNON.World, currentMaterial:CANNON.Material){
             var resultArr = [];
 
-            this._dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({gameObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){
@@ -74,7 +72,7 @@ module wd {
         }
 
         public setContactMaterialData(world:CANNON.World, currentMaterial:CANNON.Material, dataName:string, data:any){
-            this._dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({gameObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){

@@ -1,29 +1,29 @@
 /// <reference path="../../../../../../../filePath.d.ts"/>
 module wd {
-    export class CannonPointToPointConstraintDataList{
+    export class CannonPointToPointConstraintDataList extends CannonConstraintDataList{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        private _dataList:wdCb.Collection<CannonPointToPointConstraintData> = wdCb.Collection.create<CannonPointToPointConstraintData>();
+        protected dataList:wdCb.Collection<CannonPointToPointConstraintData>;
 
         public add(pointToPointConstraint:PointToPointConstraint, constraint:CANNON.Constraint){
-            this._dataList.addChild({
+            this.dataList.addChild({
                 pointToPointConstraint: pointToPointConstraint,
                 cannonConstraint:constraint
             });
         }
 
         public remove(constraint: PointToPointConstraint){
-            this._dataList.removeChild(({pointToPointConstraint, cannonConstraint}) => {
+            this.dataList.removeChild(({pointToPointConstraint, cannonConstraint}) => {
                 return JudgeUtils.isEqual(pointToPointConstraint, constraint);
             });
         }
 
         public findCannonConstraintByPointToPointConstraint(constraint: PointToPointConstraint){
-            var result = this._dataList.findOne(({pointToPointConstraint, cannonConstraint}) => {
+            var result = this.dataList.findOne(({pointToPointConstraint, cannonConstraint}) => {
                 return JudgeUtils.isEqual(pointToPointConstraint, constraint);
             });
 

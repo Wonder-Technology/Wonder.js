@@ -1,22 +1,20 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
-    export class CannonGameObjectDataList{
+    export class CannonGameObjectDataList extends CannonDataList{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        private _dataList:wdCb.Collection<CannonGameObjectData> = wdCb.Collection.create<CannonGameObjectData>();
+        protected dataList:wdCb.Collection<CannonGameObjectData>;
 
         public remove(obj:GameObject){
-            this._dataList.removeChild(({gameObject, body}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
-            });
+            this.removeByGameObject(obj);
         }
 
         public updateBodyTransformData(){
-            this._dataList.forEach(({gameObject,body}) => {
+            this.dataList.forEach(({gameObject,body}) => {
                 let transform = gameObject.transform;
 
                 //todo consider isScale?
@@ -29,7 +27,7 @@ module wd {
         }
 
         public updateGameObjectTransformData(){
-            this._dataList.forEach(({gameObject,body}) => {
+            this.dataList.forEach(({gameObject,body}) => {
                 if(gameObject.isRigidbodyChild){
                     return;
                 }
@@ -40,14 +38,14 @@ module wd {
         }
 
         public add(obj:GameObject, body:CANNON.Body){
-            this._dataList.addChild({
+            this.dataList.addChild({
                 gameObject:obj,
                 body:body
             });
         }
 
         public findGameObjectByBody(b:CANNON.Body){
-            var result = this._dataList.findOne(({gameObject, body}) => {
+            var result = this.dataList.findOne(({gameObject, body}) => {
                 return body === b;
             });
 
@@ -55,7 +53,7 @@ module wd {
         }
 
         public findBodyByGameObject(obj:GameObject):any{
-            var result = this._dataList.findOne(({gameObject, body}) => {
+            var result = this.dataList.findOne(({gameObject, body}) => {
                 return JudgeUtils.isEqual(gameObject, obj);
             });
 
