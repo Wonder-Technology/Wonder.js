@@ -12,12 +12,14 @@ module wd {
         private _materialList:CannonMaterialList = CannonMaterialList.create();
         private _gameObjectDataList:CannonGameObjectDataList = CannonGameObjectDataList.create();
         private _lockConstraintDataList:CannonLockConstraintDataList = CannonLockConstraintDataList.create();
+        private _distanceConstraintDataList:CannonDistanceConstraintDataList = CannonDistanceConstraintDataList.create();
         private _pointToPointConstraintDataList:CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList.create();
 
         private _dynamicBody:CannonDynamicBody = null;
         private _kinematicBody:CannonKinematicBody = null;
         private _staticBody:CannonStaticBody = null;
         private _lockConstraint:CannonLockConstraint = null;
+        private _distanceConstraint:CannonDistanceConstraint = null;
         private _pointToPointConstraint:CannonPointToPointConstraint = null;
 
         public getGravity(gravity:number){
@@ -102,6 +104,7 @@ module wd {
             this._staticBody = CannonStaticBody.create(this.world, this._gameObjectDataList, this._materialList);
 
             this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectDataList, this._lockConstraintDataList);
+            this._distanceConstraint = CannonDistanceConstraint.create(this.world, this._gameObjectDataList, this._distanceConstraintDataList);
             this._pointToPointConstraint = CannonPointToPointConstraint.create(this.world, this._gameObjectDataList, this._pointToPointConstraintDataList);
         }
 
@@ -123,6 +126,14 @@ module wd {
 
         public removeLockConstraint(gameObject:GameObject){
             this._lockConstraint.removeConstraint(gameObject);
+        }
+
+        public addDistanceConstraint(gameObject:GameObject, distanceConstraint:DistanceConstraint){
+            this._distanceConstraint.addConstraint(gameObject, distanceConstraint);
+        }
+
+        public removeDistanceConstraint(gameObject:GameObject){
+            this._distanceConstraint.removeConstraint(gameObject);
         }
 
         public addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){

@@ -41,6 +41,7 @@ module wd {
         }
 
         public lockConstraint:LockConstraint = LockConstraint.create(this);
+        public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
 
@@ -67,6 +68,10 @@ module wd {
 
             if(this.lockConstraint && this.lockConstraint.connectedBody){
                 engineAdapter.addLockConstraint(this.gameObject, this.lockConstraint);
+            }
+
+            if(this.distanceConstraint && this.distanceConstraint.connectedBody){
+                engineAdapter.addDistanceConstraint(this.gameObject, this.distanceConstraint);
             }
 
             if(this.pointToPointConstraintList && this.pointToPointConstraintList.getCount() > 0){
@@ -184,6 +189,36 @@ module wd {
         }
     }
 
+    export class DistanceConstraint extends PhysicsConstraint{
+        public static create(rigidBody:RigidBody) {
+            var obj = new this(rigidBody);
+
+            return obj;
+        }
+
+        private _connectedBody:RigidBody = null;
+        get connectedBody(){
+            return this._connectedBody;
+        }
+        set connectedBody(connectedBody:RigidBody){
+            var engineAdapter:IPhysicsEngineAdapter = null;
+
+            this._connectedBody = connectedBody;
+
+            if(!this.rigidBody.isPhysicsEngineAdapterExist()){
+                return;
+            }
+
+            engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+
+            engineAdapter.removeDistanceConstraint(this.rigidBody.gameObject);
+
+            this.rigidBody.addConstraint();
+        }
+
+        //todo support change distance
+        public distance:number = null;
+    }
 
     export class PointToPointConstraint extends PhysicsConstraint{
         public static create(rigidBody:RigidBody) {

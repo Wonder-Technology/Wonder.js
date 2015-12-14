@@ -13,7 +13,7 @@ module wd{
 
         @require(function(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){
             assert(this.gameObjectList.findBodyByGameObject(gameObject) !== null, Log.info.FUNC_SHOULD("add rigid body"));
-            assert(this._findBody(pointToPointConstraint.connectedBody), Log.info.FUNC_SHOULD("add connectedBody"));
+            assert(this.findBody(pointToPointConstraint.connectedBody), Log.info.FUNC_SHOULD("add connectedBody"));
         })
         public addConstraint(gameObject:GameObject, wonderConstraint:any){
             var constraint = null,

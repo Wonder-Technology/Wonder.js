@@ -10,6 +10,8 @@ module wd {
         addStaticBody(gameObject:GameObject, shape:Shape, options:any):void;
         addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint):void;
         removeLockConstraint(gameObject:GameObject):void;
+        addDistanceConstraint(gameObject:GameObject, distanceConstraint:DistanceConstraint):void;
+        removeDistanceConstraint(gameObject:GameObject):void;
         addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint):void;
         removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint):void;
     }

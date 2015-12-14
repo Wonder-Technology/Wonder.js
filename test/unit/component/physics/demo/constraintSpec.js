@@ -6,6 +6,7 @@ describe("physics constraint demo", function () {
     var director;
 
     var ground;
+    var rigidBodyGround;
 
 
     function createGround(){
@@ -44,112 +45,111 @@ describe("physics constraint demo", function () {
         sandbox.restore();
     });
 
-    //describe("LockConstraint", function(){
-    //    var rigidBody1,rigidBody2,rigidBody3, rigidBody4, rigidBody5;
-    //    var rigidBodyGround;
-    //    var box1, box2, box3, box4, box5;
-    //
-    //    function createStandBoxes(){
-    //        rigidBody1 = physicsTool.createRigidBody({
-    //            class: wd.DynamicRigidBody,
-    //            mass:5
-    //        });
-    //
-    //        box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
-    //
-    //        box1.transform.translate(-10, 5, 0);
-    //
-    //
-    //        rigidBody2 = physicsTool.createRigidBody({
-    //            class: wd.DynamicRigidBody,
-    //            mass:5
-    //        });
-    //
-    //        box2 = physicsTool.createBox(wd.BoxCollider, rigidBody2);
-    //
-    //        box2.transform.translate(10, 5, 0);
-    //    }
-    //
-    //    function createLockBoxes(){
-    //        rigidBody3 = physicsTool.createRigidBody({
-    //            class: wd.DynamicRigidBody,
-    //            mass:5
-    //        });
-    //
-    //        box3 = physicsTool.createBox(wd.BoxCollider, rigidBody3);
-    //
-    //        box3.transform.translate(-10, 15, 0);
-    //
-    //
-    //        rigidBody4 = physicsTool.createRigidBody({
-    //            class: wd.DynamicRigidBody,
-    //            mass:5
-    //        });
-    //        rigidBody4.lockConstraint.connectedBody = rigidBody3;
-    //
-    //        box4 = physicsTool.createBox(wd.BoxCollider, rigidBody4);
-    //
-    //        box4.transform.translate(-0, 15, 0);
-    //
-    //
-    //
-    //
-    //        rigidBody5 = physicsTool.createRigidBody({
-    //            class: wd.DynamicRigidBody,
-    //            mass:5
-    //        });
-    //        rigidBody5.lockConstraint.connectedBody = rigidBody4;
-    //
-    //        box5 = physicsTool.createBox(wd.BoxCollider, rigidBody5);
-    //
-    //        box5.transform.translate(10, 15, 0);
-    //    }
-    //
-    //    beforeEach(function(){
-    //        createStandBoxes();
-    //        createLockBoxes();
-    //        createGround();
-    //
-    //
-    //        director.scene.addChildren([box1,box2,box3,box4,box5]);
-    //        director.scene.addChild(ground);
-    //    });
-    //
-    //    it("the locked boxes shouldn't fall", function(){
-    //        director._init();
-    //
-    //        director._loopBody(500);
-    //
-    //        physicsTool.judgePos(box3, [-10,15.2,0], 1);
-    //        physicsTool.judgePos(box4, [0,15.1,0], 1);
-    //        physicsTool.judgePos(box5, [10,15.2,0], 1);
-    //    });
-    //    it("change constraint", function(){
-    //        director._init();
-    //
-    //        director._loopBody(500);
-    //
-    //        rigidBody4.lockConstraint.connectedBody = null;
-    //        rigidBody5.lockConstraint.connectedBody = null;
-    //
-    //
-    //        director._loopBody(700);
-    //
-    //
-    //        physicsTool.judgePos(box4, [0,14.7,0], 1);
-    //
-    //
-    //
-    //
-    //        rigidBody4.lockConstraint.connectedBody = rigidBody3;
-    //        rigidBody5.lockConstraint.connectedBody = rigidBody4;
-    //
-    //        director._loopBody(900);
-    //
-    //
-    //        physicsTool.judgePos(box4, [0,14.8,0], 1);
-    //    });
-    //});
+    describe("LockConstraint", function(){
+        var rigidBody1,rigidBody2,rigidBody3, rigidBody4, rigidBody5;
+        var box1, box2, box3, box4, box5;
+
+        function createStandBoxes(){
+            rigidBody1 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+            box1.transform.translate(-10, 5, 0);
+
+
+            rigidBody2 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box2 = physicsTool.createBox(wd.BoxCollider, rigidBody2);
+
+            box2.transform.translate(10, 5, 0);
+        }
+
+        function createLockBoxes(){
+            rigidBody3 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box3 = physicsTool.createBox(wd.BoxCollider, rigidBody3);
+
+            box3.transform.translate(-10, 15, 0);
+
+
+            rigidBody4 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+            rigidBody4.lockConstraint.connectedBody = rigidBody3;
+
+            box4 = physicsTool.createBox(wd.BoxCollider, rigidBody4);
+
+            box4.transform.translate(-0, 15, 0);
+
+
+
+
+            rigidBody5 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+            rigidBody5.lockConstraint.connectedBody = rigidBody4;
+
+            box5 = physicsTool.createBox(wd.BoxCollider, rigidBody5);
+
+            box5.transform.translate(10, 15, 0);
+        }
+
+        beforeEach(function(){
+            createStandBoxes();
+            createLockBoxes();
+            createGround();
+
+
+            director.scene.addChildren([box1,box2,box3,box4,box5]);
+            director.scene.addChild(ground);
+        });
+
+        it("the locked boxes shouldn't fall", function(){
+            director._init();
+
+            director._loopBody(500);
+
+            physicsTool.judgePos(box3, [-10,15.2,0], 1);
+            physicsTool.judgePos(box4, [0,15.1,0], 1);
+            physicsTool.judgePos(box5, [10,15.2,0], 1);
+        });
+        it("change constraint", function(){
+            director._init();
+
+            director._loopBody(500);
+
+            rigidBody4.lockConstraint.connectedBody = null;
+            rigidBody5.lockConstraint.connectedBody = null;
+
+
+            director._loopBody(700);
+
+
+            physicsTool.judgePos(box4, [0,14.7,0], 1);
+
+
+
+
+            rigidBody4.lockConstraint.connectedBody = rigidBody3;
+            rigidBody5.lockConstraint.connectedBody = rigidBody4;
+
+            director._loopBody(900);
+
+
+            physicsTool.judgePos(box4, [0,14.8,0], 1);
+        });
+    });
 
     describe("PointToPointConstraint", function(){
         var topBox,linkBox;
@@ -268,13 +268,130 @@ describe("physics constraint demo", function () {
         });
     });
 
-    describe("DistanceConstraint", function(){
-        beforeEach(function(){
+    describe("DistanceConstraint(The Distance constraint forces its owner to stay either further from, nearer to, or exactly at a given distance from its target)", function(){
+        var rigidBody1,rigidBody2,rigidBody3, rigidBody4, rigidBody5;
+        var box1, box2, box3, box4, box5;
 
+        function createStandBoxes(){
+            rigidBody1 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box1 = physicsTool.createBox(wd.BoxCollider, rigidBody1);
+
+            box1.transform.translate(-20, 5, 0);
+
+
+            rigidBody2 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box2 = physicsTool.createBox(wd.BoxCollider, rigidBody2);
+
+            box2.transform.translate(20, 5, 0);
+        }
+
+        function createUpBoxes(){
+            rigidBody3 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+
+            box3 = physicsTool.createBox(wd.BoxCollider, rigidBody3);
+
+            box3.transform.translate(-12, 15, 0);
+
+
+            rigidBody4 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+            rigidBody4.distanceConstraint.connectedBody = rigidBody3;
+            rigidBody4.distanceConstraint.distance = 15;
+
+            box4 = physicsTool.createBox(wd.BoxCollider, rigidBody4);
+
+            box4.transform.translate(-0, 15, 0);
+
+
+
+
+            rigidBody5 = physicsTool.createRigidBody({
+                class: wd.DynamicRigidBody,
+                mass:5
+            });
+            rigidBody5.distanceConstraint.connectedBody = rigidBody4;
+            rigidBody5.distanceConstraint.distance = 15;
+
+
+            box5 = physicsTool.createBox(wd.BoxCollider, rigidBody5);
+
+            box5.transform.translate(12, 15, 0);
+        }
+
+        beforeEach(function(){
+            createStandBoxes();
+            createUpBoxes();
+            createGround();
+
+
+            director.scene.addChildren([box1,box2,box3,box4,box5]);
+            director.scene.addChild(ground);
+        });
+        it("the middle one of up boxes should fall", function(){
+            director._init();
+
+            director._loopBody(100);
+            director._loopBody(500);
+
+            physicsTool.judgePos(box3, [-10.2,15.2,0], 1);
+            physicsTool.judgePos(box4, [0,13.6,0], 1);
+            physicsTool.judgePos(box5, [10.2,15.2,0], 1);
         });
 
-        it("", function(){
+        describe("change constraint", function(){
+            it("remove/add constraint", function(){
+                director._init();
 
+                director._loopBody(100);
+                director._loopBody(500);
+
+                rigidBody4.distanceConstraint.connectedBody = null;
+                rigidBody5.distanceConstraint.connectedBody = null;
+
+
+                director._loopBody(550);
+
+
+                expect(physicsTool.getPos(box3, 1)[1]).toEqual(15.2);
+                expect(physicsTool.getPos(box5, 1)[1]).toEqual(15.2);
+                /*!
+                fall faster when no distance constraint
+                 */
+                expect(physicsTool.getPos(box4, 1)[1] < 13.6).toBeTruthy();
+
+
+
+
+
+                rigidBody4.distanceConstraint.connectedBody = rigidBody3;
+                rigidBody5.distanceConstraint.connectedBody = rigidBody4;
+
+                director._loopBody(600);
+
+
+                /*!
+               when restore distance constraint, box3,box5(which are upon box4) bounce up, while box4 bounce down so it falls faster
+                 */
+                expect(physicsTool.getPos(box3, 1)[1] > 15.2).toBeTruthy();
+                expect(physicsTool.getPos(box5, 1)[1] > 15.2).toBeTruthy();
+                expect(physicsTool.getPos(box4, 1)[1] ).toEqual(11.7);
+            });
+            it("change distance", function(){
+                //todo support change distance
+            });
         });
     });
 
