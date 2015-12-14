@@ -5,8 +5,13 @@ module wd {
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
         }
 
-        public static isEqual(target1:GameObject, target2:GameObject) {
-            return target1.uid === target2.uid;
+
+        public static isEqual(target1:any, target2:any){
+            if(target1.uid && target2.uid){
+                return target1.uid === target2.uid;
+            }
+
+            return target1 === target2;
         }
 
         public static isPowerOfTwo(value:number) {

@@ -11,12 +11,15 @@ module wd {
 
         private _materialList:CannonMaterialList = CannonMaterialList.create();
         private _gameObjectDataList:CannonGameObjectDataList = CannonGameObjectDataList.create();
-        private _constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
+        //private _constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
+        private _lockConstraintDataList:CannonLockConstraintDataList = CannonLockConstraintDataList.create();
+        private _pointToPointConstraintDataList:CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList.create();
 
         private _dynamicBody:CannonDynamicBody = null;
         private _kinematicBody:CannonKinematicBody = null;
         private _staticBody:CannonStaticBody = null;
         private _lockConstraint:CannonLockConstraint = null;
+        private _pointToPointConstraint:CannonPointToPointConstraint = null;
 
         public getGravity(gravity:number){
             return CannonUtils.convertToWonderVector3(this.world.gravity);
@@ -99,7 +102,8 @@ module wd {
             this._kinematicBody = CannonKinematicBody.create(this.world, this._gameObjectDataList, this._materialList);
             this._staticBody = CannonStaticBody.create(this.world, this._gameObjectDataList, this._materialList);
 
-            this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectDataList, this._constraintDataMap);
+            this._lockConstraint = CannonLockConstraint.create(this.world, this._gameObjectDataList, this._lockConstraintDataList);
+            this._pointToPointConstraint = CannonPointToPointConstraint.create(this.world, this._gameObjectDataList, this._pointToPointConstraintDataList);
         }
 
         public addDynamicBody(gameObject:GameObject, data:any) {
@@ -120,6 +124,14 @@ module wd {
 
         public removeLockConstraint(gameObject:GameObject){
             this._lockConstraint.removeConstraint(gameObject);
+        }
+
+        public addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){
+            this._pointToPointConstraint.addConstraint(gameObject, pointToPointConstraint);
+        }
+
+        public removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint){
+            this._pointToPointConstraint.removeConstraint(pointToPointConstraint);
         }
 
         public removeGameObject(obj:GameObject){

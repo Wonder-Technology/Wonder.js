@@ -1,21 +1,23 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd{
-    export class CannonLockConstraint{
-        public static create(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataMap:CannonConstraintDataMap) {
-        	var obj = new this(world, gameObjectDataList, constraintDataMap);
+    export class CannonLockConstraint extends CannonConstraint{
+        public static create(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataList:CannonLockConstraintDataList) {
+        	var obj = new this(world, gameObjectDataList, constraintDataList);
 
         	return obj;
         }
 
-        constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataMap:CannonConstraintDataMap) {
+        constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataList:CannonLockConstraintDataList) {
+            super();
+
             this.world = world;
             this.gameObjectList = gameObjectDataList;
-            this.constraintDataMap = constraintDataMap;
+            this.constraintDataList = constraintDataList;
         }
 
         protected world:CANNON.World = null;
         protected gameObjectList:CannonGameObjectDataList = null;
-        protected constraintDataMap:CannonConstraintDataMap = CannonConstraintDataMap.create();
+        protected constraintDataList:CannonLockConstraintDataList = CannonLockConstraintDataList.create();
 
 
         @require(function(gameObject:GameObject, lockConstraint:LockConstraint){
@@ -36,15 +38,17 @@ module wd{
 
             this.world.addConstraint(constraint);
 
-            this.constraintDataMap.add(CannonConstraintType.LOCK, gameObject, constraint);
+            this.constraintDataList.add(gameObject, constraint);
         }
 
         public removeConstraint(gameObject:GameObject){
-            var constraint = this.constraintDataMap.findConstraintByGameObject(CannonConstraintType.LOCK, gameObject);
+            var constraint = this.constraintDataList.findConstraintByGameObject(gameObject);
 
             if(constraint){
                 this.world.removeConstraint(constraint);
             }
+
+            this.constraintDataList.remove(gameObject);
         }
 
         private _findBody(rigidBody:RigidBody){

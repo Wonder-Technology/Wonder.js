@@ -41,6 +41,7 @@ module wd {
         }
 
         public lockConstraint:LockConstraint = LockConstraint.create(this);
+        public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
 
         public init() {
@@ -66,6 +67,12 @@ module wd {
 
             if(this.lockConstraint && this.lockConstraint.connectedBody){
                 engineAdapter.addLockConstraint(this.gameObject, this.lockConstraint);
+            }
+
+            if(this.pointToPointConstraintList && this.pointToPointConstraintList.getCount() > 0){
+                this.pointToPointConstraintList.forEach((constraint:PointToPointConstraint) => {
+                    engineAdapter.addPointToPointConstraint(this.gameObject, constraint);
+                }, this);
             }
         }
 
@@ -173,5 +180,94 @@ module wd {
         public maxForce:number = null;
 
         private _rigidBody:RigidBody = null;
+    }
+
+
+    export class PointToPointConstraint{
+        public static create(rigidBody:RigidBody) {
+            var obj = new this(rigidBody);
+
+            return obj;
+        }
+
+        constructor(rigidBody:RigidBody){
+            this._rigidBody = rigidBody;
+        }
+
+        public connectedBody:RigidBody = null;
+
+        //todo support change pivot
+        public pivotA:Vector3 = null;
+        public pivotB:Vector3 = null;
+
+        public maxForce:number = null;
+
+        private _rigidBody:RigidBody = null;
+    }
+
+    export class PointToPointConstraintList{
+        public static create(rigidBody:RigidBody) {
+        	var obj = new this(rigidBody);
+
+        	return obj;
+        }
+
+        constructor(rigidBody:RigidBody){
+            this._rigidBody = rigidBody;
+        }
+
+        private _rigidBody:RigidBody = null;
+        private _list:wdCb.Collection<PointToPointConstraint> = wdCb.Collection.create<PointToPointConstraint>();
+
+        public forEach(func:(PointToPointConstraint) => void, context = root){
+            this._list.forEach(func, context);
+        }
+
+        public getCount(){
+            return this._list.getCount();
+        }
+
+        public addChild(constraint:PointToPointConstraint){
+            var engineAdapter:IPhysicsEngineAdapter = null;
+
+            this._list.addChild(constraint);
+
+            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
+                return;
+            }
+
+            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+
+            engineAdapter.addPointToPointConstraint(this._rigidBody.gameObject, constraint);
+        }
+
+        public addChildren(arg:Array<PointToPointConstraint>|wdCb.List<PointToPointConstraint>){
+            if(JudgeUtils.isArray(arg)){
+                for(let constraint of <Array<PointToPointConstraint>>arg){
+                    this.addChild(constraint);
+                }
+            }
+            else{
+                let constraintList = <wdCb.List<PointToPointConstraint>>arg;
+
+                constraintList.forEach((constraint:PointToPointConstraint) => {
+                    this.addChild(constraint);
+                }, this);
+            }
+        }
+
+        public removeChild(constraint:PointToPointConstraint){
+            var engineAdapter = null;
+
+            this._list.removeChild(constraint);
+
+            if(!this._rigidBody.isPhysicsEngineAdapterExist()){
+                return;
+            }
+
+            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+
+            engineAdapter.removePointToPointConstraint(constraint);
+        }
     }
 }
