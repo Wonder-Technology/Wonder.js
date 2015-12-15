@@ -8,6 +8,7 @@
     <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
 
     <script src="../../../lib/outer/cannon/cannon.js" type="text/javascript"></script>
+    <script src="./js/tool.js"></script>
 </head>
 <body>
 <script>
@@ -24,7 +25,7 @@
             var director = wd.Director.getInstance();
             var box1 = createBox1();
             var sphere2 = createSphere2();
-            var ground = createGround();
+            var ground = tool.createGround();
 
             wd.DebugConfig.debugCollision = true;
 
@@ -34,14 +35,16 @@
             director.scene.addChild(box1);
             director.scene.addChild(sphere2);
             director.scene.addChild(ground);
-            director.scene.addChild(createCamera());
+            director.scene.addChild(tool.createAmbientLight());
+            director.scene.addChild(tool.createDirectionLight([box1,sphere2,ground]));
+            director.scene.addChild(tool.createCamera());
 
 
             director.start();
         }
 
         function createBox1() {
-            var material = wd.BasicMaterial.create();
+            var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(0.0,1.0,1.0)");
 
             var geometry = wd.BoxGeometry.create();
@@ -75,7 +78,7 @@
         }
 
         function createSphere2() {
-            var material = wd.BasicMaterial.create();
+            var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
 
             var geometry = wd.SphereGeometry.create();
@@ -102,55 +105,6 @@
             gameObject.transform.translate(0, 10, 0);
 
             return gameObject;
-        }
-
-        function createGround() {
-            var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("#ffffff");
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 1000;
-            geometry.height = 1;
-            geometry.depth = 1000;
-
-
-            var collision = wd.BoxCollider.create();
-
-
-            var rigidBody = wd.StaticRigidBody.create();
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-            gameObject.addComponent(collision);
-            gameObject.addComponent(rigidBody);
-
-            gameObject.addComponent(wd.MeshRenderer.create());
-
-
-            gameObject.transform.translate(0, -2.5, 0);
-
-
-            return gameObject;
-        }
-
-        function createCamera() {
-            var camera = wd.GameObject.create(),
-                    view = wd.Director.getInstance().view,
-                    cameraComponent = wd.PerspectiveCamera.create();
-
-            cameraComponent.fovy = 60;
-            cameraComponent.aspect = view.width / view.height;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
-
-            var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 30;
-
-            camera.addComponent(controller);
-
-            return camera;
         }
     };
 </script>

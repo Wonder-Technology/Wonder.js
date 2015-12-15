@@ -11,7 +11,7 @@ module sample{
         private _originMaterial:wd.Material = null;
 
         public init(){
-            this._collidingMaterial = wd.BasicMaterial.create();
+            this._collidingMaterial = wd.LightMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
 
             this._collidingMaterial.init();

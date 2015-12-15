@@ -15,7 +15,7 @@ var sample;
             this._gameObject = gameObject;
         }
         Sphere1.prototype.init = function () {
-            this._collidingMaterial = wd.BasicMaterial.create();
+            this._collidingMaterial = wd.LightMaterial.create();
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
             this._collidingMaterial.init();
             this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
