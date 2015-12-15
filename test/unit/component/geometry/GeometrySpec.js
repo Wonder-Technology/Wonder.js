@@ -31,8 +31,12 @@ describe("Geometry", function() {
         var geo,arrayBuffer,eleBuffer;
 
         beforeEach(function(){
-            arrayBuffer = {};
-            eleBuffer = {};
+            arrayBuffer = {
+                resetData:sandbox.stub()
+            };
+            eleBuffer = {
+                resetData:sandbox.stub()
+            };
             sandbox.stub(wd.ArrayBuffer, "create").returns(arrayBuffer);
             sandbox.stub(wd.ElementBuffer, "create").returns(eleBuffer);
             geo = createGeometry(wd.RectGeometry);
@@ -328,6 +332,7 @@ describe("Geometry", function() {
         describe('Geometry trigger its gameObject->"material change" event when change material', function(){
             it('BufferContainer remove color cache when event triggered', function(){
                 var colors = geo.buffers.getChild(wd.BufferDataType.COLOR);
+                sandbox.spy(colors, "resetData");
 
                 expect(testTool.getValues(colors.data)).toEqual(
                     [
@@ -347,7 +352,8 @@ describe("Geometry", function() {
 
                 var newColors = geo.buffers.getChild(wd.BufferDataType.COLOR);
 
-                expect(newColors.data !== colors.data).toBeTruthy();
+                expect(colors.resetData).toCalledOnce();
+
                 expect(testTool.getValues(newColors.data)).toEqual(
                     [
                         0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333

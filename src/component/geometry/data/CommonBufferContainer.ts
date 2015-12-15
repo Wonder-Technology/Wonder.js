@@ -9,6 +9,9 @@ module wd {
 
         public geometryData:CommonGeometryData;
 
+        private _verticeBuffer:ArrayBuffer = null;
+        private _normalBuffer:ArrayBuffer = null;
+
         @cache(function(type:BufferDataType){
             return this.container.hasChild(<any>type);
         }, function(type){
@@ -19,7 +22,11 @@ module wd {
         protected getVertice(type:BufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
-            return ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this.createBufferOnlyOnce("_verticeBuffer", ArrayBuffer);
+
+            this._verticeBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
+
+            return this._verticeBuffer;
         }
 
         @cache(function(type:BufferDataType){
@@ -32,7 +39,11 @@ module wd {
         protected getNormal(type:BufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
-            return ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this.createBufferOnlyOnce("_normalBuffer", ArrayBuffer);
+
+            this._normalBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
+
+            return this._normalBuffer;
         }
     }
 }

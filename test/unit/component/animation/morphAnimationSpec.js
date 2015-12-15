@@ -327,14 +327,16 @@ describe("morph animation", function () {
         });
 
         it("use Action to control animation", function(){
-            var action1 = wd.Repeat.create(wd.CallFunc.create(function(){
-                box.transform.rotateLocal(0, 1, 0);
-            }));
-            anim.play("play", fps);
-            director._init();
+            //var action1 = wd.Repeat.create(wd.CallFunc.create(function(){
+            //    box.transform.rotateLocal(0, 1, 0);
+            //}));
+            //anim.play("play", fps);
+            //director._init();
+            //
+            //
+            //director._loopBody(1);
 
-
-            director._loopBody(1);
+            //todo support use action to control animation
         })
     });
 });

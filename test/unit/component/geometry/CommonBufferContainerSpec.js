@@ -1,6 +1,7 @@
 describe("CommonBufferContainer", function() {
     var sandbox = null;
     var container = null;
+    var gl;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -25,11 +26,16 @@ describe("CommonBufferContainer", function() {
         var geo,geometryData;
 
         beforeEach(function(){
-            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
             geo = new wd.ModelGeometry();
             geo.material = {
                 init:sandbox.stub()
             }
+
+            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            gl = wd.DeviceManager.getInstance().gl;
+
+            testTool.openContractCheck(sandbox);
         });
         afterEach(function(){
             testTool.clearInstance();
@@ -61,6 +67,12 @@ describe("CommonBufferContainer", function() {
                 );
                 expect(result2===result1).toBeTruthy();
             });
+
+            describe("else", function(){
+                it("update geometry buffer vbo data instead of creating new one", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE);
+                });
+            });
         });
 
         describe("get normal buffer", function(){
@@ -88,6 +100,12 @@ describe("CommonBufferContainer", function() {
                     ])
                 );
                 expect(result2===result1).toBeTruthy();
+            });
+
+            describe("else", function(){
+                it("update geometry buffer vbo data instead of creating new one", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.NORMAL);
+                });
             });
         });
 
@@ -136,6 +154,10 @@ describe("CommonBufferContainer", function() {
 
                 expect(geometryData._calculateTangents.callCount).toEqual(4);
             });
+
+            it("update geometry buffer vbo data instead of creating new one", function(){
+                bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.TANGENT);
+            });
         });
 
         describe("get indice buffer", function(){
@@ -163,6 +185,12 @@ describe("CommonBufferContainer", function() {
                     ])
                 );
                 expect(result2===result1).toBeTruthy();
+            });
+
+            describe("else", function(){
+                it("update geometry buffer vbo data instead of creating new one", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.INDICE);
+                });
             });
         });
 
@@ -192,6 +220,12 @@ describe("CommonBufferContainer", function() {
                 );
                 expect(result2===result1).toBeTruthy();
             });
+
+            describe("else", function(){
+                it("update geometry buffer vbo data instead of creating new one", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.COLOR);
+                });
+            });
         });
 
         describe("get texCoord buffer", function(){
@@ -219,6 +253,12 @@ describe("CommonBufferContainer", function() {
                     ])
                 );
                 expect(result2===result1).toBeTruthy();
+            });
+
+            describe("else", function(){
+                it("update geometry buffer vbo data instead of creating new one", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.TEXCOORD);
+                });
             });
         });
     });

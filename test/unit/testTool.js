@@ -4,6 +4,10 @@ var testTool = (function () {
 
         buildFakeGl: function (sandbox) {
             return {
+                FLOAT:"FLOAT",
+
+                DYNAMIC_DRAW:"DYNAMIC_DRAW",
+
                 LINES: "LINES",
                 TRIANGLES: "TRIANGLES",
 

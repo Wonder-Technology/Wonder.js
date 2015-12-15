@@ -1,10 +1,13 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
     export class ElementBuffer extends Buffer{
-        public static create(data, type:BufferType):ElementBuffer {
+        public static create():ElementBuffer;
+        public static create(data, type:BufferType, usage?:BufferUsage):ElementBuffer;
+
+        public static create(...args):ElementBuffer {
             var obj = new this();
 
-            obj.initWhenCreate(data, type);
+            obj.initWhenCreate.apply(obj, args);
 
             return obj;
         }
@@ -14,31 +17,66 @@ module wd{
 
         public data:any = null;
 
-        public initWhenCreate(data, type:BufferType) {
+        private _type:BufferType = null;
+
+
+        public initWhenCreate();
+        public initWhenCreate(data:any, type:BufferType, usage?:BufferUsage);
+
+        public initWhenCreate(...args) {
             var gl = DeviceManager.getInstance().gl;
 
-            if(!data || !this._checkDataType(data, type)){
-                return null;
-            }
 
-            this.buffer = gl.createBuffer();   // Create a buffer object
+            this.buffer = gl.createBuffer();
             if (!this.buffer) {
                 Log.log('Failed to create the this.buffer object');
                 return null;
             }
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+            if(args.length === 0){
+                return;
+            }
+            else{
+                let data:any = args[0],
+                    type:BufferType = args[1],
+                    usage:BufferUsage = args[2] || BufferUsage.STATIC_DRAW;
 
-            this.type = gl[type];
-            this.count = data.length;
-            this.data = data;
-            this._typeSize = this._getInfo(type).size;
+                if(!data || !this._checkDataType(data, type)){
+                    return null;
+                }
 
-            return this.buffer;
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl[usage]);
+
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+                this.type = gl[type];
+                this._type = type;
+                this.count = data.length;
+                this.data = data;
+                this._typeSize = this._getInfo(type).size;
+
+                return this.buffer;
+            }
         }
 
+        @require(function(data:any, type:BufferType = this._type){
+            assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
+        })
+        public resetData(data:any, type:BufferType = this._type){
+            var gl = DeviceManager.getInstance().gl;
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+
+            this.type = gl[type];
+            this._type = type;
+            this.data = data;
+            this.count = data.length;
+            this._typeSize = this._getInfo(type).size;
+
+            return this;
+        }
 
         private _checkDataType(data, type:BufferType){
             var info = this._getInfo(type);

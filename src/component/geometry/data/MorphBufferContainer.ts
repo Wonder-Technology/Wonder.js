@@ -20,6 +20,10 @@ module wd {
         private _animation:MorphAnimation = null;
         private _isCacheChangeFlag:any = {};
         private _isCacheChangeInLastLoop = {};
+        private _currentVerticeBuffer:ArrayBuffer = null;
+        private _nextVerticeBuffer:ArrayBuffer = null;
+        private _currentNormalBuffer:ArrayBuffer = null;
+        private _nextNormalBuffer:ArrayBuffer = null;
 
         @require(function (type:BufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
@@ -51,8 +55,12 @@ module wd {
             cacheData = this.container.getChild(<any>type);
 
             if (!cacheData) {
-                let currentBuffer = ArrayBuffer.create(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, BufferType.FLOAT, BufferUsage.DYNAMIC_DRAW),
-                    nextBuffer = ArrayBuffer.create(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, BufferType.FLOAT, BufferUsage.DYNAMIC_DRAW);
+                let currentBuffer = this._getCurrentBuffer(type),
+                    nextBuffer = this._getNextBuffer(type);
+
+                currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, BufferType.FLOAT);
+                nextBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, BufferType.FLOAT);
+
 
                 result = [currentBuffer, nextBuffer];
 
@@ -88,6 +96,36 @@ module wd {
             return result;
         }
 
+        @require(function(type:BufferDataType){
+            assert(type === BufferDataType.VERTICE || type === BufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+        })
+        private _getCurrentBuffer(type:BufferDataType){
+            if(type === BufferDataType.VERTICE){
+                this.createBufferOnlyOnce("_currentVerticeBuffer", ArrayBuffer);
+
+                return this._currentVerticeBuffer;
+            }
+
+            this.createBufferOnlyOnce("_currentNormalBuffer", ArrayBuffer);
+
+            return this._currentNormalBuffer;
+        }
+
+        @require(function(type:BufferDataType){
+            assert(type === BufferDataType.VERTICE || type === BufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+        })
+        private _getNextBuffer(type:BufferDataType){
+            if(type === BufferDataType.VERTICE){
+                this.createBufferOnlyOnce("_nextVerticeBuffer", ArrayBuffer);
+
+                return this._nextVerticeBuffer;
+            }
+
+            this.createBufferOnlyOnce("_nextNormalBuffer", ArrayBuffer);
+
+            return this._nextNormalBuffer;
+        }
+
         private _isCacheNotChange(type:BufferDataType){
             return !this._isCacheChangeFlag[type];
         }
@@ -103,9 +141,6 @@ module wd {
         }, function(result, type){
             this.container.addChild(this._getStaticDataCacheData(type), result);
         })
-        @require(function(type:BufferDataType){
-            
-        })
         private _getStaticData(type:BufferDataType){
             var data = null,
                 result = null;
@@ -118,16 +153,19 @@ module wd {
                     data = this.geometryData.normals;
                     break;
                 default:
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+                    Log.error(true, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
                     break;
             }
 
             this._animation.interpolation = 0;
 
             result = [
-                ArrayBuffer.create(new Float32Array(data), 3, BufferType.FLOAT, BufferUsage.DYNAMIC_DRAW),
-                //todo optimize: nextFrameData to be identity array?
-                ArrayBuffer.create(new Float32Array(data), 3, BufferType.FLOAT, BufferUsage.DYNAMIC_DRAW),
+                this._getCurrentBuffer(type).resetData(
+                    new Float32Array(data), 3, BufferType.FLOAT
+                ),
+                this._getNextBuffer(type).resetData(
+                    new Float32Array(data), 3, BufferType.FLOAT
+                )
                 ];
 
             return result;

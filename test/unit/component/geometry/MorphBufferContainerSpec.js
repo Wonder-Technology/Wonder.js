@@ -12,6 +12,7 @@ describe("MorphBufferContainer", function() {
 
     describe("get data buffer", function(){
         var model,geo,geometryData,animation;
+        var gl;
 
         function createAnimation(){
             var animation = wd.MorphAnimation.create();
@@ -21,6 +22,9 @@ describe("MorphBufferContainer", function() {
 
         beforeEach(function(){
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+            gl = wd.DeviceManager.getInstance().gl;
+
             geo = new wd.ModelGeometry();
             geo.material = {
                 init:sandbox.stub()
@@ -95,6 +99,34 @@ describe("MorphBufferContainer", function() {
                     ])
                 );
                 expect(result2===result1).toBeTruthy();
+            });
+            it("bug test: test buffer type in the case that cached and animation frame change", function(){
+                animation.play("play", 10);
+                animation.isFrameChange = true;
+
+                var result1 = container.getChild(wd.BufferDataType.VERTICE);
+                var result2 = container.getChild(wd.BufferDataType.VERTICE);
+
+                expect(result1[0].type).toBeDefined();
+                expect(result1[1].type).toBeDefined();
+            });
+
+
+            describe("update geometry buffer vbo data instead of creating new one", function(){
+                it("test static data", function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE, 2);
+                });
+                it("test morph data", function(){
+                    animation.play("play", 10);
+
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE, 2, function(){
+                        expect(gl.bufferData.callCount).toEqual(4);
+                        expect(gl.bufferData.getCall(0).args[2]).toEqual(gl.DYNAMIC_DRAW);
+                        expect(gl.bufferData.getCall(1).args[2]).toEqual(gl.DYNAMIC_DRAW);
+                        expect(gl.bufferData.getCall(2).args[2]).toEqual(gl.DYNAMIC_DRAW);
+                        expect(gl.bufferData.getCall(3).args[2]).toEqual(gl.DYNAMIC_DRAW);
+                    });
+                });
             });
         });
     });

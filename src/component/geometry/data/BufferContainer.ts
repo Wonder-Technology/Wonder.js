@@ -10,6 +10,11 @@ module wd {
         protected gameObject:GameObject = null;
         protected container:wdCb.Hash<Buffer> = wdCb.Hash.create<Buffer>();
 
+        private _colorBuffer:ArrayBuffer = null;
+        private _texCoordBuffer:ArrayBuffer = null;
+        private _tangentBuffer:ArrayBuffer = null;
+        private _indiceBuffer:ElementBuffer = null;
+
         public init(){
             var self = this;
 
@@ -68,6 +73,14 @@ module wd {
         protected abstract getVertice(type);
         protected abstract getNormal(type);
 
+        protected createBufferOnlyOnce(bufferAttriName:string, bufferClass:any){
+            if(this[bufferAttriName]){
+                return;
+            }
+
+            this[bufferAttriName] = bufferClass.create();
+        }
+
         @cache(function(type:BufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
         }, function(type){
@@ -76,13 +89,14 @@ module wd {
             this.container.addChild(<any>type, result);
         })
         private _getTangent(type){
-            var geometryData = null,
-                result = null;
+            var geometryData = null;
+
+            this.createBufferOnlyOnce("_tangentBuffer", ArrayBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this._tangentBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
 
-            return result;
+            return this._tangentBuffer;
         }
 
         @cache(function(type:BufferDataType){
@@ -93,13 +107,14 @@ module wd {
             this.container.addChild(<any>type, result);
         })
         private _getColor(type) {
-            var geometryData = null,
-                result = null;
+            var geometryData = null;
+
+            this.createBufferOnlyOnce("_colorBuffer", ArrayBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            result = ArrayBuffer.create(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this._colorBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
 
-            return result;
+            return this._colorBuffer;
         }
 
         @cache(function(type:BufferDataType){
@@ -110,13 +125,15 @@ module wd {
             this.container.addChild(<any>type, result);
         })
         private _getIndice(type){
-            var geometryData = null,
-                result = null;
+            var geometryData = null;
+
+            this.createBufferOnlyOnce("_indiceBuffer", ElementBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            result = ElementBuffer.create(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
 
-            return result;
+            this._indiceBuffer.resetData(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
+
+            return this._indiceBuffer;
         }
 
         @cache(function(type:BufferDataType){
@@ -127,13 +144,15 @@ module wd {
             this.container.addChild(<any>type, result);
         })
         private _getTexCoord(type){
-            var geometryData = null,
-                result = null;
+            var geometryData = null;
+
+            this.createBufferOnlyOnce("_texCoordBuffer", ArrayBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            result = ArrayBuffer.create(new Float32Array(geometryData), 2, BufferType.FLOAT);
 
-            return result;
+            this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, BufferType.FLOAT);
+
+            return this._texCoordBuffer;
         }
 
         private _needReCalcuteTangent(type:BufferDataType){

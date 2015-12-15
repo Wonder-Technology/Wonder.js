@@ -5,6 +5,8 @@ describe("BoxGeometry", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         geo = new wd.BoxGeometry();
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
