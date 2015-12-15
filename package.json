@@ -1,6 +1,6 @@
 {
   "name": "wonder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "scripts": {
     "start": "node ./server/app.js",
     "test": "karma start karma.conf.js --single-run --browsers Firefox",
