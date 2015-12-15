@@ -7,6 +7,9 @@ var colliderTool = (function () {
             return wd.Director.getInstance().scene.findChildrenByName("debugBoundingRegion" + gameObject.uid);
         },
 
+        getShape: function(gameObject){
+            return gameObject.getComponent(wd.Collider).boundingRegion.shape;
+        },
 
 
 

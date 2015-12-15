@@ -11,12 +11,8 @@ module wd {
 
         protected originShape:AABBShape;
 
-        protected createShape(){
-            //todo add OBBShape
-            return AABBShape.create();
-        }
 
-        protected updateShape(){
+        public updateShape(){
             var transform = this.gameObject.transform;
 
             if(this.isUserSpecifyTheRegion){
@@ -31,6 +27,11 @@ module wd {
                     this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix)
                 }
             }
+        }
+
+        protected createShape(){
+            //todo add OBBShape
+            return AABBShape.create();
         }
 
         @require(function(shape:AABBShape){

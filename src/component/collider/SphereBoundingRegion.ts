@@ -11,14 +11,15 @@ module wd {
 
         protected originShape:SphereShape;
 
-        protected createShape(){
-            return SphereShape.create();
-        }
 
-        protected updateShape(){
+        public updateShape(){
             var transform = this.gameObject.transform;
 
             this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix);
+        }
+
+        protected createShape(){
+            return SphereShape.create();
         }
 
         @require(function(shape:SphereShape){

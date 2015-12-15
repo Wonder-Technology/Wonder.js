@@ -33,11 +33,11 @@ module wd{
                         gameObject.execScript("onCollisionStart", collideObjects);
                         gameObject.execScript("onContact", collideObjects);
 
-                        self._triggerCollisionEventOfOnesContainedRigidBody(collideObjects, gameObject, ["onCollisionStart", "onContact"]);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onCollisionStart", "onContact"]);
                     }
                     else{
                         gameObject.execScript("onContact", collideObjects);
-                        self._triggerCollisionEventOfOnesContainedRigidBody(collideObjects, gameObject, ["onContact"]);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onContact"]);
                     }
 
                     gameObject.isCollided = true;
@@ -46,7 +46,7 @@ module wd{
                 else{
                     if(self._isCollisionEnd(gameObject)){
                         gameObject.execScript("onCollisionEnd");
-                        self._triggerCollisionEventOfOnesContainedRigidBody(self._lastCollideObjects, gameObject, ["onCollisionEnd"]);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, gameObject, ["onCollisionEnd"]);
                     }
 
                     gameObject.isCollided = false;
@@ -62,7 +62,7 @@ module wd{
             return gameObject.isCollided;
         }
 
-        private _triggerCollisionEventOfOnesContainedRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
+        private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
             collideObjects.filter((gameObject:GameObject) => {
                     return gameObject.hasComponent(RigidBody);
                 })

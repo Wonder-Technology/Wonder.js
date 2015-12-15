@@ -23,6 +23,10 @@ module wd {
             this.boundingRegion.update();
         }
 
+        public updateShape(){
+            this.boundingRegion.updateShape();
+        }
+
         @require(function(collider:Collider){
             assert(collider instanceof Collider, Log.info.FUNC_SHOULD("target", "be collider"))
         })
@@ -43,11 +47,19 @@ module wd {
                 result = wdCb.Collection.create<GameObject>();
 
             checkTargetList.forEach((gameObject) => {
+                var collider:Collider = null;
+
                 if(self._isSelf(gameObject)){
                     return;
                 }
 
-                if(self.isIntersectWith(gameObject.getComponent(Collider))){
+                collider = gameObject.getComponent(Collider);
+
+                if(gameObject.hasComponent(RigidBody)){
+                    collider.updateShape();
+                }
+
+                if(self.isIntersectWith(collider)){
                     result.addChild(gameObject);
                 }
             });

@@ -122,6 +122,16 @@ module wd {
         public addStaticBody(gameObject:GameObject, data:any) {
             this._staticBody.addBody(gameObject, data);
         }
+        //
+        //@require(function(gameObject:GameObject){
+        //    assert(!!this._gameObjectDataList.findBodyByGameObject(gameObject), Log.info.FUNC_SHOULD("add physics body"));
+        //})
+        //public updateColliderShapeFromBody(gameObject:GameObject){
+        //    var body:CANNON.Body = this._gameObjectDataList.findBodyByGameObject(gameObject);
+        //
+        //    body.
+        //
+        //}
 
         public addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint){
             this._lockConstraint.addConstraint(gameObject, lockConstraint);

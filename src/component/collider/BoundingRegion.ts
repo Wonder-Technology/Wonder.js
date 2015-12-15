@@ -13,6 +13,8 @@ module wd {
         protected debugObject:GameObject = null;
 
 
+        public abstract updateShape();
+
         public init(){
             this.shape = this.createShape();
         }
@@ -49,10 +51,12 @@ module wd {
                 return;
             }
 
-            this.updateShape();
-
             if(DebugConfig.debugCollision){
+                this.updateShape();
                 this.updateDebugObjectFromShape(this.shape);
+            }
+            else if(!this.gameObject.hasComponent(RigidBody)){
+                this.updateShape();
             }
         }
 
@@ -67,7 +71,6 @@ module wd {
         protected abstract createShape():Shape;
         protected abstract isBuildUserSpecifyBoundingRegion(...args):boolean;
         protected abstract isNotTransformed():boolean;
-        protected abstract updateShape();
         protected abstract updateDebugObjectFromShape(shape:Shape);
         protected abstract setDebugObjectGeometry(geometry:CustomGeometry, shape:Shape);
 
