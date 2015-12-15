@@ -50,14 +50,18 @@ tool.init_beforeEach = function(self){
 
     tool.init_body = function(self) {
         it("clear twoD shadow data when endLoop", function () {
+            function createRenderObj(){
+                return prepareTool.createBox();
+            }
+
             self.sandbox.stub(self.renderTargetRenderer._shadowMapRendererUtils, "clearTwoDShadowMapData");
 
-            var renderObj1 = {};
-            var renderObj2 = {};
-            var renderObj3 = {};
-            var renderObj4 = {};
-            var renderObj5 = {};
-            var renderObj6 = {};
+            var renderObj1 = createRenderObj();
+            var renderObj2 = createRenderObj();
+            var renderObj3 = createRenderObj();
+            var renderObj4 = createRenderObj();
+            var renderObj5 = createRenderObj();
+            var renderObj6 = createRenderObj();
 
 
             self.renderTargetRenderer._light = {

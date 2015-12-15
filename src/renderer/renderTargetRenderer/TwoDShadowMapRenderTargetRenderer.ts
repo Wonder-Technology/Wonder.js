@@ -31,6 +31,8 @@ module wd {
         public init(){
             var self = this;
 
+            this._handleShadowRendererList();
+
             this._shadowMapRendererUtils.bindEndLoop(() => {
                 //here not need removeRepeatItems
                 self._light.shadowRenderList.forEach((child:GameObject) => {
@@ -93,6 +95,21 @@ module wd {
             camera.init();
 
             return camera;
+        }
+
+        private _handleShadowRendererList(){
+            var self = this,
+                children = [];
+
+            this._light.shadowRenderList.forEach((renderTarget:GameObject) => {
+                children = children.concat(this._shadowMapRendererUtils.addAllChildren(renderTarget));
+            },this);
+
+            this._light.shadowRenderList.addChildren(children);
+
+            this._light.shadowRenderList.removeChild((renderTarget:GameObject) => {
+                return self._shadowMapRendererUtils.isContainer(renderTarget);
+            });
         }
     }
 }

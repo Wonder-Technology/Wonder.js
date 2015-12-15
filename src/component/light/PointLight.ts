@@ -36,20 +36,49 @@ module wd{
             return this._attenuation.quadratic;
         }
 
-        private _shadowRenderList:wdCb.Hash<Array<GameObject>|wdCb.Collection<GameObject>> = null;
+        private _shadowRenderList:wdCb.Hash<wdCb.Collection<GameObject>> = wdCb.Hash.create<wdCb.Collection<GameObject>>();
         get shadowRenderList(){
             return this._shadowRenderList;
         }
+        @requireSetter(function(shadowRenderList:any){
+            assert(JudgeUtils.isDirectObject(shadowRenderList), Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object")));
+
+            for(let direction in shadowRenderList){
+                if(shadowRenderList.hasOwnProperty(direction)){
+                    let list = shadowRenderList[direction];
+
+                    assert(JudgeUtils.isArray(list) || shadowRenderList instanceof wdCb.Hash, Log.error(true, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array")));
+                }
+            }
+
+        })
         set shadowRenderList(shadowRenderList:any) {
-            if (JudgeUtils.isDirectObject(shadowRenderList)) {
-                this._shadowRenderList = wdCb.Hash.create<Array<GameObject>|wdCb.Collection<GameObject>>(shadowRenderList);
+            shadowRenderList = <{
+                px:Array<GameObject>,
+                nx:Array<GameObject>,
+                py:Array<GameObject>,
+                ny:Array<GameObject>,
+                pz:Array<GameObject>,
+                nz:Array<GameObject>
+            }> shadowRenderList;
+
+
+            //if (JudgeUtils.isDirectObject(shadowRenderList)) {
+            //    this._shadowRenderList = wdCb.Hash.create<Array<GameObject>|wdCb.Collection<GameObject>>(shadowRenderList);
+            //}
+            //else if (shadowRenderList instanceof wdCb.Hash) {
+            //    this._shadowRenderList = shadowRenderList;
+            //}
+
+            for(let direction in shadowRenderList){
+                if(shadowRenderList.hasOwnProperty(direction)){
+                    let list = shadowRenderList[direction];
+
+                    this._shadowRenderList.addChild(direction, wdCb.Collection.create<GameObject>(list));
+                }
             }
-            else if (shadowRenderList instanceof wdCb.Hash) {
-                this._shadowRenderList = shadowRenderList;
-            }
-            else {
-                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object or wdCb.Hash"));
-            }
+            //
+            //this._shadowRenderList = wdCb.Hash.create<wdCb.Collection<GameObject>>(shadowRenderList);
         }
 
         public intensity:number = 1;

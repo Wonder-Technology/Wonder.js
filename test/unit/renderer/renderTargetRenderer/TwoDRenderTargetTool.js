@@ -63,6 +63,12 @@ var TwoDRenderTargetTool = YYC.Class({
                 var frameBufferOperator,frameBuffer,renderBuffer, glTexture, texture;
 
                 beforeEach(function(){
+                    var light = shadowTool.createDirectionLight([prepareTool.createBox()]).getComponent(wd.DirectionLight);
+
+                    self.renderTargetRenderer = new self.RenderTargetRenderer(light);
+
+
+
                     frameBuffer = {};
                     renderBuffer = {};
 

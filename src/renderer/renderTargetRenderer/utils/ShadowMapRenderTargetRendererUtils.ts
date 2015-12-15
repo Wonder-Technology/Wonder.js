@@ -69,11 +69,37 @@ module wd {
             this._shader.addLib(lib);
         }
 
+        public isContainer(gameObject:GameObject){
+            return !gameObject.hasComponent(Geometry);
+        }
+
+        public addAllChildren(gameObject:GameObject){
+            var children = [],
+                add = (gameObject:GameObject) => {
+                    gameObject.forEach((child:GameObject) => {
+                        children.push(child);
+
+                        add(child);
+                    });
+                };
+
+            add(gameObject);
+
+            return children;
+        }
+
         protected abstract setMaterialShadowMapData(material:LightMaterial, target:GameObject, shadowMapCamera:GameObject);
         protected abstract addShadowMap(material:LightMaterial, shadowMap:IShadowMapTexture);
 
         protected setShadowMap(target:GameObject, shadowMap:IShadowMapTexture){
-            var material:LightMaterial = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
+            var material:LightMaterial = null;
+
+            //change
+            if(!target.hasComponent(Geometry)){
+                return;
+            }
+
+            material = <LightMaterial>target.getComponent<Geometry>(Geometry).material;
 
             if(material.hasShadowMap(shadowMap)){
                 return;

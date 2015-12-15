@@ -1,5 +1,24 @@
 var prepareTool = (function () {
     return {
+        createBox: function(size){
+            var size = size || 5;
+
+            var material = wd.BasicMaterial.create();
+
+            var geo = wd.BoxGeometry.create();
+            geo.width = size;
+            geo.height = size;
+            geo.depth = size;
+
+            geo.material = material;
+
+            var box = wd.GameObject.create();
+
+            box.addComponent(geo);
+            box.addComponent(wd.MeshRenderer.create());
+
+            return box;
+        },
         addScript:function(gameObject, script, scriptName){
             gameObject._scripts.addChild(scriptName || "scriptName", script);
         },

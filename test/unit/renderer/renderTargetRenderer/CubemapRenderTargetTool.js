@@ -71,6 +71,13 @@ var CubemapRenderTargetTool = YYC.Class({
                 var frameBufferOperator,frameBuffer,renderBuffer, texture,glTexture;
 
                 beforeEach(function(){
+                    var light = shadowTool.createPointLight([prepareTool.createBox()]).getComponent(wd.PointLight);
+
+                    self.renderTargetRenderer = new self.RenderTargetRenderer(light);
+
+
+
+
                     frameBuffer = {};
                     renderBuffer = {};
 
@@ -95,6 +102,10 @@ var CubemapRenderTargetTool = YYC.Class({
                     self.renderTargetRenderer.texture = texture;
 
                     self.init_beforeEach(self);
+
+
+
+
                 });
 
 

@@ -13,6 +13,8 @@ describe("shadow map", function() {
 
     describe("direction shadow map", function(){
         var director;
+        var sphere;
+        var light;
 
         function createSphere() {
             var material = wd.LightMaterial.create();
@@ -39,64 +41,64 @@ describe("shadow map", function() {
             return gameObject;
         }
 
-        function createBox(){
-            var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
-            material.color = wd.Color.create("#666666");
-            material.shininess = 16;
-
-
-            var geometry = wd.BoxGeometry.create();
-            geometry.material = material;
-            geometry.width = 10;
-            geometry.height = 10;
-            geometry.depth = 10;
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(geometry);
-
-
-            gameObject.transform.translate(wd.Vector3.create(20, 10, 30));
-            gameObject.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
-
-
-            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
-                gameObject.transform.rotate(0, 1, 0);
-            }));
-
-            gameObject.addComponent(action);
-
-            return gameObject;
-        }
-
-        function createGround(){
-            //var map = wd.LoaderManager.getInstance().get("ground").toTexture();
-            var map = wd.ImageTexture.create();
-            map.wrapS = wd.TextureWrapMode.REPEAT;
-            map.wrapT = wd.TextureWrapMode.REPEAT;
-            map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
-
-
-            var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
-            material.shininess = 32;
-            material.diffuseMap = map;
-
-
-            var plane = wd.PlaneGeometry.create();
-            plane.width = 200;
-            plane.height = 200;
-            plane.material = material;
-
-
-            var gameObject = wd.GameObject.create();
-            gameObject.addComponent(wd.MeshRenderer.create());
-            gameObject.addComponent(plane);
-
-            return gameObject;
-        }
+        //function createBox(){
+        //    var material = wd.LightMaterial.create();
+        //    material.specular = wd.Color.create("#ffdd99");
+        //    material.color = wd.Color.create("#666666");
+        //    material.shininess = 16;
+        //
+        //
+        //    var geometry = wd.BoxGeometry.create();
+        //    geometry.material = material;
+        //    geometry.width = 10;
+        //    geometry.height = 10;
+        //    geometry.depth = 10;
+        //
+        //
+        //    var gameObject = wd.GameObject.create();
+        //    gameObject.addComponent(wd.MeshRenderer.create());
+        //    gameObject.addComponent(geometry);
+        //
+        //
+        //    gameObject.transform.translate(wd.Vector3.create(20, 10, 30));
+        //    gameObject.transform.eulerAngles = wd.Vector3.create(0, 45, 0);
+        //
+        //
+        //    var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+        //        gameObject.transform.rotate(0, 1, 0);
+        //    }));
+        //
+        //    gameObject.addComponent(action);
+        //
+        //    return gameObject;
+        //}
+        //
+        //function createGround(){
+        //    //var map = wd.LoaderManager.getInstance().get("ground").toTexture();
+        //    var map = wd.ImageTexture.create();
+        //    map.wrapS = wd.TextureWrapMode.REPEAT;
+        //    map.wrapT = wd.TextureWrapMode.REPEAT;
+        //    map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
+        //
+        //
+        //    var material = wd.LightMaterial.create();
+        //    material.specular = wd.Color.create("#ffdd99");
+        //    material.shininess = 32;
+        //    material.diffuseMap = map;
+        //
+        //
+        //    var plane = wd.PlaneGeometry.create();
+        //    plane.width = 200;
+        //    plane.height = 200;
+        //    plane.material = material;
+        //
+        //
+        //    var gameObject = wd.GameObject.create();
+        //    gameObject.addComponent(wd.MeshRenderer.create());
+        //    gameObject.addComponent(plane);
+        //
+        //    return gameObject;
+        //}
 
         //function createAmbientLight() {
         //    var ambientLightComponent = wd.AmbientLight.create();
@@ -108,48 +110,20 @@ describe("shadow map", function() {
         //    return ambientLight;
         //}
 
-        function createDirectionLight(shadowList) {
-            var SHADOW_MAP_WIDTH = 1024,
-                SHADOW_MAP_HEIGHT = 1024;
-
-            var directionLightComponent = wd.DirectionLight.create();
-            directionLightComponent.color = wd.Color.create("#ffffff");
-            directionLightComponent.intensity = 1;
-            directionLightComponent.castShadow = true;
-            directionLightComponent.shadowCameraLeft = -100;
-            directionLightComponent.shadowCameraRight = 100;
-            directionLightComponent.shadowCameraTop = 100;
-            directionLightComponent.shadowCameraBottom = -100;
-            directionLightComponent.shadowCameraNear = 0.1;
-            directionLightComponent.shadowCameraFar = 1000;
-            directionLightComponent.shadowBias = 0.002;
-            directionLightComponent.shadowDarkness = 0.2;
-            directionLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
-            directionLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
-
-            directionLightComponent.shadowRenderList = shadowList;
-
-            var directionLight = wd.GameObject.create();
-            directionLight.addComponent(directionLightComponent);
-
-            directionLight.transform.translate(wd.Vector3.create(0, 50, 50));
-
-            return directionLight;
-        }
-
         beforeEach(function(){
             director = wd.Director.getInstance();
 
-            var sphere = createSphere();
-            var box = createBox();
-            var ground = createGround();
+            sphere = createSphere();
+            //var box = createBox();
+            //var ground = createGround();
+            light = shadowTool.createDirectionLight([sphere]);
 
             director.scene.addChild(sphere);
             //director.scene.addChild(box);
             //director.scene.addChild(ground);
             //director.scene.addChild(createAmbientLight());
             //director.scene.addChild(createDirectionLight([sphere, box, ground]));
-            director.scene.addChild(createDirectionLight([sphere]));
+            director.scene.addChild(light);
 
 
             director.scene.addChild(testTool.createCamera());
@@ -206,10 +180,40 @@ describe("shadow map", function() {
 
             expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.init);
         });
+
+        describe("test compound gameObject", function(){
+            var part1,part2;
+
+            beforeEach(function(){
+                part1 = prepareTool.createBox();
+                part2 = prepareTool.createBox();
+
+                part1.addChild(part2);
+
+                sphere.addChild(part1);
+            });
+
+            it("test container", function(){
+                sphere.removeComponent(wd.Geometry);
+
+                director._init();
+
+                var shadowRenderList = light.getComponent(wd.DirectionLight).shadowRenderList;
+                expect(shadowRenderList.getChildren()).toEqual([part1, part2]);
+            });
+            it("test parent-child gameObject", function () {
+                director._init();
+
+                var shadowRenderList = light.getComponent(wd.DirectionLight).shadowRenderList;
+                expect(shadowRenderList.getChildren()).toEqual([sphere, part1, part2]);
+            });
+        });
     });
 
     describe("point shadow map", function(){
         var director;
+        var boxArr,groundArr;
+        var light;
 
         function createBoxes() {
             return [
@@ -293,59 +297,16 @@ describe("shadow map", function() {
             return ground;
         }
 
-        function createPointLight(boxArr, groundArr) {
-            var SHADOW_MAP_WIDTH = 1024,
-                SHADOW_MAP_HEIGHT = 1024;
-            var listArr = boxArr.concat(groundArr);
-
-            var pointLightComponent = wd.PointLight.create();
-            pointLightComponent.color = wd.Color.create("#ffffff");
-            pointLightComponent.intensity = 1;
-            pointLightComponent.rangeLevel = 10;
-            pointLightComponent.castShadow = true;
-            pointLightComponent.shadowCameraNear = 0.1;
-            pointLightComponent.shadowCameraFar = 1000;
-            pointLightComponent.shadowBias = 0.01;
-            pointLightComponent.shadowDarkness = 0.2;
-            pointLightComponent.shadowMapWidth = SHADOW_MAP_WIDTH;
-            pointLightComponent.shadowMapHeight = SHADOW_MAP_HEIGHT;
-
-            pointLightComponent.shadowRenderList = {
-                px:listArr,
-                nx:listArr,
-                py:listArr,
-                ny:listArr,
-                pz:listArr,
-                nz:listArr
-            };
-
-            var pointMaterial = wd.BasicMaterial.create();
-            pointMaterial.color = wd.Color.create("#ffffff");
-
-            var geometry = wd.SphereGeometry.create();
-            geometry.material = pointMaterial;
-            geometry.radius = 1;
-            geometry.segment = 20;
-
-
-            var pointLight = wd.GameObject.create();
-            pointLight.addComponent(pointLightComponent);
-            pointLight.addComponent(geometry);
-            pointLight.addComponent(wd.MeshRenderer.create());
-
-            return pointLight;
-        }
-
         beforeEach(function(){
             director = wd.Director.getInstance();
 
-            var boxArr = createBoxes();
-            var groundArr = createGrounds();
+            boxArr = createBoxes();
+            groundArr = createGrounds();
+            light = shadowTool.createPointLight(boxArr.concat(groundArr));
 
             director.scene.addChildren(boxArr);
             director.scene.addChildren(groundArr);
-            director.scene.addChild(createPointLight(boxArr, groundArr));
-            //director.scene.addChild(createCamera());
+            director.scene.addChild(light);
 
 
             director.scene.addChild(testTool.createCamera());
@@ -360,6 +321,43 @@ describe("shadow map", function() {
             director._init();
 
             expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.init);
+        });
+
+        describe("test compound gameObject", function(){
+            var box1;
+            var part1,part2;
+
+            beforeEach(function(){
+                box1 = boxArr[0];
+
+                part1 = prepareTool.createBox();
+                part2 = prepareTool.createBox();
+
+                part1.addChild(part2);
+
+                box1.addChild(part1);
+            });
+
+            it("test container", function(){
+                box1.removeComponent(wd.Geometry);
+
+                director._init();
+
+                var shadowRenderList = light.getComponent(wd.PointLight).shadowRenderList;
+                expect(shadowRenderList.getChild("px").getCount()).toEqual(13);
+                expect(shadowRenderList.getChild("px").hasChild(part1)).toBeTruthy();
+                expect(shadowRenderList.getChild("px").hasChild(part2)).toBeTruthy();
+                expect(shadowRenderList.getChild("px").hasChild(box1)).toBeFalsy();
+            });
+            it("test parent-child gameObject", function () {
+                director._init();
+
+                var shadowRenderList = light.getComponent(wd.PointLight).shadowRenderList;
+                expect(shadowRenderList.getChild("px").getCount()).toEqual(14);
+                expect(shadowRenderList.getChild("px").hasChild(part1)).toBeTruthy();
+                expect(shadowRenderList.getChild("px").hasChild(part2)).toBeTruthy();
+                expect(shadowRenderList.getChild("px").hasChild(box1)).toBeTruthy();
+            });
         });
     });
 });

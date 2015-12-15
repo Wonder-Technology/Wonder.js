@@ -257,7 +257,19 @@ module wd {
             return this;
         }
 
-        public removeComponent(component:Component){
+        public removeComponent(component:Component);
+        public removeComponent(_class:Function);
+
+        public removeComponent(arg){
+            var component:Component = null;
+
+            if(arg instanceof Component){
+                component = <Component>arg;
+            }
+            else{
+                component = this.getComponent<any>(<Function>arg);
+            }
+
             this._components.removeChild(component);
 
             component.removeFromGameObject(this);

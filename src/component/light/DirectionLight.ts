@@ -16,16 +16,11 @@ module wd{
         get shadowRenderList(){
             return this._shadowRenderList;
         }
+        @requireSetter(function(shadowRenderList:any){
+            assert(JudgeUtils.isArray(shadowRenderList), Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "array")));
+        })
         set shadowRenderList(shadowRenderList:any) {
-            if (JudgeUtils.isArray(shadowRenderList)) {
-                this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);
-            }
-            else if (shadowRenderList instanceof wdCb.Collection) {
-                this._shadowRenderList = shadowRenderList;
-            }
-            else {
-                Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "array or wdCb.Collection"));
-            }
+            this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);
         }
 
         public intensity:number = 1;
