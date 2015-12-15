@@ -29,6 +29,10 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- Collider
+  - BoxCollider,SphereCollider,AABBShape,SphereShape
+- Physics
+  - RigidBody,Collision,Constraint,Compound
 - Animation
   - Morph
 - Camera
