@@ -1,10 +1,8 @@
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 /// <reference path="../../../../../dist/wd.d.ts"/>
 var sample;
@@ -12,16 +10,28 @@ var sample;
     var Sphere1 = (function () {
         function Sphere1(gameObject) {
             this._gameObject = null;
+            this._collidingMaterial = null;
+            this._originMaterial = null;
             this._gameObject = gameObject;
         }
-        Sphere1.prototype.onContact = function (collisionObjects) {
-            console.log("contact", collisionObjects.getCount());
+        Sphere1.prototype.init = function () {
+            this._collidingMaterial = wd.LightMaterial.create();
+            this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
+            this._collidingMaterial.init();
+            this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
         };
-        Sphere1.prototype.onCollisionStart = function () {
-            console.log("collision start");
+        Sphere1.prototype.onContact = function (collisionObjects) {
+            console.log("contact", collisionObjects);
+        };
+        Sphere1.prototype.onCollisionStart = function (collisionObjects) {
+            console.log("collision start", collisionObjects);
+            var geometry = this._gameObject.getComponent(wd.Geometry);
+            geometry.material = this._collidingMaterial;
         };
         Sphere1.prototype.onCollisionEnd = function () {
             console.log("collision end");
+            var geometry = this._gameObject.getComponent(wd.Geometry);
+            geometry.material = this._originMaterial;
         };
         Sphere1 = __decorate([
             wd.script("sphere1")
