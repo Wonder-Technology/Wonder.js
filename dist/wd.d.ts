@@ -4081,13 +4081,13 @@ declare module wd {
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
-        static mirror_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
         static basic_envMap_forBasic_fragment: GLSLChunk;
         static basic_envMap_forBasic_vertex: GLSLChunk;
         static envMap_forBasic_fragment: GLSLChunk;
@@ -4102,16 +4102,6 @@ declare module wd {
         static fresnel_forLight_fragment: GLSLChunk;
         static reflection_forLight_fragment: GLSLChunk;
         static refraction_forLight_fragment: GLSLChunk;
-        static buildCubemapShadowMap_fragment: GLSLChunk;
-        static buildCubemapShadowMap_vertex: GLSLChunk;
-        static buildTwoDShadowMap_fragment: GLSLChunk;
-        static buildTwoDShadowMap_vertex: GLSLChunk;
-        static commonBuildShadowMap_fragment: GLSLChunk;
-        static cubemapShadowMap_fragment: GLSLChunk;
-        static noShadowMap_fragment: GLSLChunk;
-        static totalShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
@@ -4122,6 +4112,16 @@ declare module wd {
         static normalMap_vertex: GLSLChunk;
         static specularMap_fragment: GLSLChunk;
         static specularMap_vertex: GLSLChunk;
+        static buildCubemapShadowMap_fragment: GLSLChunk;
+        static buildCubemapShadowMap_vertex: GLSLChunk;
+        static buildTwoDShadowMap_fragment: GLSLChunk;
+        static buildTwoDShadowMap_vertex: GLSLChunk;
+        static commonBuildShadowMap_fragment: GLSLChunk;
+        static cubemapShadowMap_fragment: GLSLChunk;
+        static noShadowMap_fragment: GLSLChunk;
+        static totalShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_vertex: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
@@ -5372,11 +5372,14 @@ declare module wd {
     class Face3 {
         static create(aIndex: number, bIndex: number, cIndex: number, faceNormal?: Vector3, vertexNormals?: wdCb.Collection<Vector3>): Face3;
         constructor(aIndex: number, bIndex: number, cIndex: number, faceNormal: Vector3, vertexNormals: wdCb.Collection<Vector3>);
+        private _faceNormal;
+        faceNormal: Vector3;
         aIndex: number;
         bIndex: number;
         cIndex: number;
-        faceNormal: Vector3;
         vertexNormals: wdCb.Collection<Vector3>;
+        hasFaceNormal(): boolean;
+        hasVertexNormal(): boolean;
         copy(): Face3;
     }
 }

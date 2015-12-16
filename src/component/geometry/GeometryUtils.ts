@@ -17,7 +17,7 @@ module wd {
                     this.getThreeComponent(normals, b),
                     this.getThreeComponent(normals, c)
                 ]);
-                face.faceNormal.set(face.vertexNormals.getChild(0));
+                face.faceNormal = face.vertexNormals.getChild(0).copy();
             }
 
             faces.push(face);

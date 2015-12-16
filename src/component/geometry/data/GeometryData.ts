@@ -23,12 +23,9 @@ module wd {
                     assert(face.vertexNormals && face.vertexNormals.getCount() === 3, Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
                 }
                 else {
-                    assert(!face.faceNormal.isZero(), Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
+                    assert(face.hasFaceNormal(), Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
                 }
             }
-        })
-        @ensureGetter(function (normals) {
-            assert(normals.length > 0, Log.info.FUNC_SHOULD("geometry", "contain normals data"));
         })
         @cacheGetter(function(){
             return !this._normalDirty && this._normalCache;
@@ -42,19 +39,27 @@ module wd {
             var geometry = this.geometry;
 
             if (geometry.isSmoothShading()) {
-                if (!geometry.hasVertexNormals()) {
-                    geometry.computeVertexNormals();
+                if (!this.hasVertexNormals()) {
+                    this.computeVertexNormals();
                 }
 
                 return this.normalsFromVertexNormals;
             }
-            if (!geometry.hasFaceNormals()) {
-                geometry.computeFaceNormals();
+            if (!this.hasFaceNormals()) {
+                this.computeFaceNormals();
             }
 
             return this.normalsFromFaceNormal;
         }
 
+        @requireGetter(function(){
+            assert(this._faces.length > 0, Log.info.FUNC_SHOULD("geometry", "has faces"));
+        })
+        @ensureGetter(function (normals) {
+            for(let data of normals){
+                assert(JudgeUtils.isNumber(data), Log.info.FUNC_SHOULD("normals data", "be number"));
+            }
+        })
         @cacheGetter(function(){
             return !this._normalDirty && this._normalFromFaceCache;
         }, function(){
@@ -66,7 +71,7 @@ module wd {
         get normalsFromFaceNormal(){
             var normals = null;
 
-            if (!this.hasFaceNormals()) {
+            if(!this.hasFaceNormals()){
                 return [];
             }
 
@@ -86,6 +91,14 @@ module wd {
             return normals;
         }
 
+        @requireGetter(function(){
+            assert(this._faces.length > 0, Log.info.FUNC_SHOULD("geometry", "has faces"));
+        })
+        @ensureGetter(function (normals) {
+            for(let data of normals){
+                assert(JudgeUtils.isNumber(data), Log.info.FUNC_SHOULD("normals data", "be number"));
+            }
+        })
         @cacheGetter(function(){
             return !this._normalDirty && this._normalFromVertexCache;
         }, function(){
@@ -97,7 +110,7 @@ module wd {
         get normalsFromVertexNormals(){
             var normals = null;
 
-            if (!this.hasVertexNormals()) {
+            if(!this.hasVertexNormals()){
                 return [];
             }
 
@@ -219,8 +232,9 @@ module wd {
         }
 
         public hasFaceNormals(){
+            //todo optimize:only judge the first face?
             for(let face of this._faces){
-                if(face.faceNormal.isZero()){
+                if(!face.hasFaceNormal()){
                     return false;
                 }
             }
@@ -229,8 +243,9 @@ module wd {
         }
 
         public hasVertexNormals(){
+            //todo optimize:only judge the first face?
             for(let face of this._faces){
-                if(face.vertexNormals.getCount() === 0){
+                if(!face.hasVertexNormal()){
                     return false;
                 }
             }
