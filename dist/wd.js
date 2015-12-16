@@ -5245,8 +5245,9 @@ var wdFrp;
 
 var wd;
 (function (wd) {
-    wd.Config = {
-        isTest: false
+    wd.DebugConfig = {
+        isTest: false,
+        debugCollision: false
     };
 })(wd || (wd = {}));
 
@@ -5414,6 +5415,59 @@ var wd;
 
 var wd;
 (function (wd) {
+    function operateBodyDataGetterAndSetter(dataName) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get, setter = descriptor.set;
+            descriptor.get = function () {
+                if (this.isPhysicsEngineAdapterExist()) {
+                    var data = this.getPhysicsEngineAdapter()[("get" + dataName)](this.gameObject);
+                    return data !== null ? data : this[("_" + lowerFirstChar(dataName))];
+                }
+                return getter.call(this);
+            };
+            descriptor.set = function (val) {
+                setter.call(this, val);
+                if (this.isPhysicsEngineAdapterExist()) {
+                    this.getPhysicsEngineAdapter()[("set" + dataName)](this.gameObject, val);
+                }
+            };
+            return descriptor;
+        };
+    }
+    wd.operateBodyDataGetterAndSetter = operateBodyDataGetterAndSetter;
+    function operateWorldDataGetterAndSetter(dataName) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get, setter = descriptor.set;
+            descriptor.get = function () {
+                var scene = wd.Director.getInstance().scene;
+                if (isWorldDefined(scene)) {
+                    var data = scene.physicsEngineAdapter[("get" + dataName)]();
+                    return data !== null ? data : this[("_" + lowerFirstChar(dataName))];
+                }
+                return getter.call(this);
+            };
+            descriptor.set = function (val) {
+                var scene = wd.Director.getInstance().scene;
+                setter.call(this, val);
+                if (isWorldDefined(scene)) {
+                    scene.physicsEngineAdapter[("set" + dataName)](val);
+                }
+            };
+            return descriptor;
+        };
+    }
+    wd.operateWorldDataGetterAndSetter = operateWorldDataGetterAndSetter;
+    function isWorldDefined(scene) {
+        return scene.physicsEngineAdapter && scene.physicsEngineAdapter.world;
+    }
+    function lowerFirstChar(str) {
+        var firstChar = str.slice(0, 1);
+        return "" + firstChar.toLowerCase() + str.slice(1);
+    }
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
     wd.ABSTRACT_ATTRIBUTE = null;
 })(wd || (wd = {}));
 
@@ -5518,6 +5572,9 @@ var wd;
             this._localRotation = wd.Quaternion.create(0, 0, 0, 1);
             this._localEulerAngles = null;
             this._localScale = wd.Vector3.create(1, 1, 1);
+            this._isTranslate = false;
+            this._isRotate = false;
+            this._isScale = false;
             this.dirtyWorld = null;
             this.dirtyLocal = true;
             this._children = wdCb.Collection.create();
@@ -5542,7 +5599,7 @@ var wd;
         });
         Object.defineProperty(Transform.prototype, "localToWorldMatrix", {
             get: function () {
-                var syncList = wdCb.Collection.create(), current = this.parent;
+                var syncList = wdCb.Collection.create(), current = this._parent;
                 syncList.addChild(this);
                 while (current !== null) {
                     syncList.addChild(current);
@@ -5589,7 +5646,7 @@ var wd;
                 else {
                     this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(position);
                 }
-                this.dirtyLocal = true;
+                this.isTranslate = true;
             },
             enumerable: true,
             configurable: true
@@ -5606,7 +5663,7 @@ var wd;
                 else {
                     this._localRotation = this._parent.rotation.copy().invert().multiply(rotation);
                 }
-                this.dirtyLocal = true;
+                this.isRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -5623,7 +5680,7 @@ var wd;
                 else {
                     this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
                 }
-                this.dirtyLocal = true;
+                this.isScale = true;
             },
             enumerable: true,
             configurable: true
@@ -5638,7 +5695,7 @@ var wd;
                 if (this._parent !== null) {
                     this._localRotation = this._parent.rotation.copy().invert().multiply(this._localRotation);
                 }
-                this.dirtyLocal = true;
+                this.isRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -5649,7 +5706,7 @@ var wd;
             },
             set: function (position) {
                 this._localPosition = position.copy();
-                this.dirtyLocal = true;
+                this.isTranslate = true;
             },
             enumerable: true,
             configurable: true
@@ -5660,7 +5717,7 @@ var wd;
             },
             set: function (rotation) {
                 this._localRotation = rotation.copy();
-                this.dirtyLocal = true;
+                this.isRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -5672,7 +5729,7 @@ var wd;
             },
             set: function (localEulerAngles) {
                 this._localRotation.setFromEulerAngles(localEulerAngles);
-                this.dirtyLocal = true;
+                this.isRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -5683,7 +5740,7 @@ var wd;
             },
             set: function (scale) {
                 this._localScale = scale.copy();
-                this.dirtyLocal = true;
+                this.isScale = true;
             },
             enumerable: true,
             configurable: true
@@ -5709,6 +5766,60 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Transform.prototype, "isTranslate", {
+            get: function () {
+                return this._isTranslate;
+            },
+            set: function (isTranslate) {
+                this._isTranslate = isTranslate;
+                if (isTranslate) {
+                    this.dirtyLocal = true;
+                }
+                this._children.forEach(function (child) {
+                    child.isTranslate = isTranslate;
+                });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isRotate", {
+            get: function () {
+                return this._isRotate;
+            },
+            set: function (isRotate) {
+                this._isRotate = isRotate;
+                if (isRotate) {
+                    this.dirtyLocal = true;
+                }
+                this._children.forEach(function (child) {
+                    child.isRotate = isRotate;
+                });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isScale", {
+            get: function () {
+                return this._isScale;
+            },
+            set: function (isScale) {
+                this._isScale = isScale;
+                if (isScale) {
+                    this.dirtyLocal = true;
+                }
+                this._children.forEach(function (child) {
+                    child.isScale = isScale;
+                });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Transform.prototype.init = function () {
+            var self = this;
+            wd.EventManager.on(wd.EngineEvent.ENDLOOP, function () {
+                self._resetTransformFlag();
+            });
+        };
         Transform.prototype.addChild = function (child) {
             this._children.addChild(child);
         };
@@ -5747,7 +5858,7 @@ var wd;
                 translation = args[0];
             }
             this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
-            this.dirtyLocal = true;
+            this.isTranslate = true;
             return this;
         };
         Transform.prototype.translate = function () {
@@ -5785,7 +5896,7 @@ var wd;
                 quaternion = this._parent.rotation.copy().invert().multiply(quaternion);
                 this._localRotation = quaternion.multiply(this.rotation);
             }
-            this.dirtyLocal = true;
+            this.isRotate = true;
             return this;
         };
         Transform.prototype.rotateLocal = function () {
@@ -5802,7 +5913,7 @@ var wd;
             }
             quaternion.setFromEulerAngles(eulerAngles);
             this._localRotation.multiply(quaternion);
-            this.dirtyLocal = true;
+            this.isRotate = true;
             return this;
         };
         Transform.prototype.rotateAround = function () {
@@ -5853,6 +5964,11 @@ var wd;
             this.rotation = wd.Quaternion.create().setFromMatrix(wd.Matrix4.create().setLookAt(this.position, target, up));
             return this;
         };
+        Transform.prototype._resetTransformFlag = function () {
+            this.isTranslate = false;
+            this.isScale = false;
+            this.isRotate = false;
+        };
         return Transform;
     })(wd.Entity);
     wd.Transform = Transform;
@@ -5875,12 +5991,14 @@ var wd;
         __extends(GameObject, _super);
         function GameObject() {
             _super.apply(this, arguments);
-            this._script = wdCb.Hash.create();
+            this._scripts = wdCb.Hash.create();
             this.parent = null;
+            this.isRigidbodyChild = false;
             this.bubbleParent = null;
             this.transform = wd.Transform.create(this);
             this.name = "gameObject" + String(this.uid);
             this.actionManager = wd.ActionManager.create();
+            this.isCollided = false;
             this._children = wdCb.Collection.create();
             this._components = wdCb.Collection.create();
             this._startLoopHandler = null;
@@ -5892,7 +6010,7 @@ var wd;
         };
         Object.defineProperty(GameObject.prototype, "script", {
             get: function () {
-                return this._script;
+                return this._scripts;
             },
             enumerable: true,
             configurable: true
@@ -5910,29 +6028,30 @@ var wd;
             this._components.forEach(function (component) {
                 component.init();
             });
-            this._execScript("init");
+            this.transform.init();
+            this.execScript("init");
             this.forEach(function (child) {
                 child.init();
             });
             return this;
         };
         GameObject.prototype.onStartLoop = function () {
-            this._execScript("onStartLoop");
+            this.execScript("onStartLoop");
         };
         GameObject.prototype.onEndLoop = function () {
-            this._execScript("onEndLoop");
+            this.execScript("onEndLoop");
         };
         GameObject.prototype.onEnter = function () {
-            this._execScript("onEnter");
+            this.execScript("onEnter");
         };
         GameObject.prototype.onExit = function () {
-            this._execScript("onExit");
+            this.execScript("onExit");
         };
         GameObject.prototype.onDispose = function () {
-            this._execScript("onDispose");
+            this.execScript("onDispose");
         };
         GameObject.prototype.dispose = function () {
-            this._execScript("onDispose");
+            this.onDispose();
             if (this.parent) {
                 this.parent.removeChild(this);
                 this.parent = null;
@@ -5975,6 +6094,9 @@ var wd;
         GameObject.prototype.forEach = function (func) {
             this._children.forEach(func);
             return this;
+        };
+        GameObject.prototype.filter = function (func) {
+            return this._children.filter(func);
         };
         GameObject.prototype.getChildren = function () {
             return this._children;
@@ -6027,14 +6149,14 @@ var wd;
             if (result) {
                 return result;
             }
-            if (this.isHit(point)) {
+            if (this.isPick(point)) {
                 return this;
             }
             return null;
         };
-        GameObject.prototype.isHit = function (locationInView) {
-            var collider = this._getCollider();
-            return collider ? collider.collideXY(locationInView.x, locationInView.y) : false;
+        GameObject.prototype.isPick = function (locationInView) {
+            var pick = this._getPick();
+            return pick ? pick.isPick(locationInView.x, locationInView.y) : false;
         };
         GameObject.prototype.hasComponent = function () {
             var args = [];
@@ -6061,7 +6183,14 @@ var wd;
             component.addToGameObject(this);
             return this;
         };
-        GameObject.prototype.removeComponent = function (component) {
+        GameObject.prototype.removeComponent = function (arg) {
+            var component = null;
+            if (arg instanceof wd.Component) {
+                component = arg;
+            }
+            else {
+                component = this.getComponent(arg);
+            }
             this._components.removeChild(component);
             component.removeFromGameObject(this);
             return this;
@@ -6076,7 +6205,7 @@ var wd;
             });
         };
         GameObject.prototype.update = function (time) {
-            var camera = this._getCamera(), animation = this._getAnimation();
+            var camera = this._getCamera(), animation = this._getAnimation(), collider = this._getCollider();
             if (camera) {
                 camera.update(time);
             }
@@ -6084,24 +6213,27 @@ var wd;
                 animation.update(time);
             }
             this.actionManager.update(time);
-            this._execScript("update", time);
+            this.execScript("update", time);
+            if (collider) {
+                collider.update(time);
+            }
             this._children.forEach(function (child) {
                 child.update(time);
+            });
+        };
+        GameObject.prototype.execScript = function (method, arg) {
+            this._scripts.forEach(function (script) {
+                script[method] && (arg ? script[method](arg) : script[method]());
             });
         };
         GameObject.prototype._ascendZ = function (a, b) {
             return a.transform.position.z - b.transform.position.z;
         };
-        GameObject.prototype._execScript = function (method, arg) {
-            this._script.forEach(function (script) {
-                script[method] && (arg ? script[method](arg) : script[method]());
-            });
-        };
         GameObject.prototype._getGeometry = function () {
             return this.getComponent(wd.Geometry);
         };
-        GameObject.prototype._getCollider = function () {
-            return this.getComponent(wd.Collider);
+        GameObject.prototype._getPick = function () {
+            return this.getComponent(wd.Pick);
         };
         GameObject.prototype._getCamera = function () {
             return this.getComponent(wd.CameraController);
@@ -6111,6 +6243,9 @@ var wd;
         };
         GameObject.prototype._getRendererComponent = function () {
             return this.getComponent(wd.RendererComponent);
+        };
+        GameObject.prototype._getCollider = function () {
+            return this.getComponent(wd.Collider);
         };
         GameObject.prototype._getComponentCount = function (_class) {
             return this._components.filter(function (component) {
@@ -6124,9 +6259,9 @@ var wd;
         ], GameObject.prototype, "_getGeometry", null);
         __decorate([
             wd.require(function () {
-                wd.assert(this._getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+                wd.assert(this._getComponentCount(wd.Pick) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 pick component"));
             })
-        ], GameObject.prototype, "_getCollider", null);
+        ], GameObject.prototype, "_getPick", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this._getComponentCount(wd.CameraController) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
@@ -6142,6 +6277,11 @@ var wd;
                 wd.assert(this._getComponentCount(wd.RendererComponent) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
             })
         ], GameObject.prototype, "_getRendererComponent", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this._getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+            })
+        ], GameObject.prototype, "_getCollider", null);
         return GameObject;
     })(wd.Entity);
     wd.GameObject = GameObject;
@@ -6500,6 +6640,9 @@ var wd;
             var top = this.scene.getTopUnderPoint(point);
             return top ? top : this.scene;
         };
+        Director.prototype.getDeltaTime = function () {
+            return this._timeController.deltaTime;
+        };
         Director.prototype.startLoop = function () {
             var self = this;
             this._gameLoop = wdFrp.judge(function () { return self._isFirstStart; }, function () {
@@ -6533,6 +6676,7 @@ var wd;
             this._timeController.start();
             this.scheduler.start();
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT));
         };
         Director.prototype._buildLoopStream = function () {
             return wdFrp.intervalRequest();
@@ -6550,10 +6694,10 @@ var wd;
             return true;
         };
         Director.prototype._run = function (time) {
+            this.scheduler.update(time);
             this.scene.update(time);
             this.scene.render(this.renderer);
             this.renderer.render();
-            this.scheduler.update(time);
         };
         Director._instance = null;
         return Director;
@@ -6567,7 +6711,7 @@ var wd;
         function Main() {
         }
         Main.setConfig = function (_a) {
-            var canvasId = _a.canvasId, _b = _a.isTest, isTest = _b === void 0 ? wd.Config.isTest : _b, _c = _a.screenSize, screenSize = _c === void 0 ? wd.ScreenSize.FULL : _c;
+            var canvasId = _a.canvasId, _b = _a.isTest, isTest = _b === void 0 ? wd.DebugConfig.isTest : _b, _c = _a.screenSize, screenSize = _c === void 0 ? wd.ScreenSize.FULL : _c;
             this.isTest = isTest;
             this.screenSize = screenSize;
             this._canvasId = canvasId;
@@ -6612,8 +6756,11 @@ var wd;
             this.shader = null;
             this.camera = null;
             this.isUseProgram = false;
+            this.physics = PhysicsConfig.create();
+            this.physicsEngineAdapter = null;
             this._lightManager = wd.LightManager.create();
             this._renderTargetRenderers = wdCb.Collection.create();
+            this._collisionDetector = wd.CollisionDetector.create();
         }
         Scene.create = function () {
             var obj = new this();
@@ -6641,7 +6788,11 @@ var wd;
             configurable: true
         });
         Scene.prototype.init = function () {
-            this.addComponent(wd.TopCollider.create());
+            this.addComponent(wd.Pick.create());
+            if (this.physics.enable) {
+                this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(this.physics.engine);
+                this.physicsEngineAdapter.init();
+            }
             _super.prototype.init.call(this);
             this._renderTargetRenderers.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
             return this;
@@ -6668,6 +6819,13 @@ var wd;
         Scene.prototype.removeRenderTargetRenderer = function (renderTargetRenderer) {
             this._renderTargetRenderers.removeChild(renderTargetRenderer);
         };
+        Scene.prototype.update = function (time) {
+            if (this.physics.enable) {
+                this.physicsEngineAdapter.update(time);
+            }
+            _super.prototype.update.call(this, time);
+            this._collisionDetector.detect(this);
+        };
         Scene.prototype.render = function (renderer) {
             var self = this;
             this._renderTargetRenderers.forEach(function (target) {
@@ -6689,6 +6847,33 @@ var wd;
         return Scene;
     })(wd.GameObject);
     wd.Scene = Scene;
+    var PhysicsConfig = (function () {
+        function PhysicsConfig() {
+            this._gravity = wd.Vector3.create(0, -9.8, 0);
+            this.enable = false;
+            this.engine = wd.PhysicsEngineType.CANNON;
+            this.iterations = 10;
+        }
+        PhysicsConfig.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(PhysicsConfig.prototype, "gravity", {
+            get: function () {
+                return this._gravity;
+            },
+            set: function (gravity) {
+                this._gravity = gravity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        __decorate([
+            wd.operateWorldDataGetterAndSetter("Gravity")
+        ], PhysicsConfig.prototype, "gravity", null);
+        return PhysicsConfig;
+    })();
+    wd.PhysicsConfig = PhysicsConfig;
     (function (ShadowMapSoftType) {
         ShadowMapSoftType[ShadowMapSoftType["NONE"] = 0] = "NONE";
         ShadowMapSoftType[ShadowMapSoftType["PCF"] = 1] = "PCF";
@@ -6769,6 +6954,70 @@ var wd;
         return Skybox;
     })(wd.GameObject);
     wd.Skybox = Skybox;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var CollisionDetector = (function () {
+        function CollisionDetector() {
+            this._lastCollideObjects = null;
+        }
+        CollisionDetector.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CollisionDetector.prototype.detect = function (scene) {
+            var checkTargetList = scene.filter(function (gameObject) {
+                return gameObject.hasComponent(wd.Collider);
+            }), self = this;
+            checkTargetList.forEach(function (gameObject) {
+                var collideObjects = null;
+                if (gameObject.hasComponent(wd.RigidBody)) {
+                    return;
+                }
+                collideObjects = gameObject.getComponent(wd.Collider).getCollideObjects(checkTargetList);
+                if (collideObjects.getCount() > 0) {
+                    if (self._isCollisionStart(gameObject)) {
+                        gameObject.execScript("onCollisionStart", collideObjects);
+                        gameObject.execScript("onContact", collideObjects);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onCollisionStart", "onContact"]);
+                    }
+                    else {
+                        gameObject.execScript("onContact", collideObjects);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onContact"]);
+                    }
+                    gameObject.isCollided = true;
+                    self._lastCollideObjects = collideObjects;
+                }
+                else {
+                    if (self._isCollisionEnd(gameObject)) {
+                        gameObject.execScript("onCollisionEnd");
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, gameObject, ["onCollisionEnd"]);
+                    }
+                    gameObject.isCollided = false;
+                }
+            });
+        };
+        CollisionDetector.prototype._isCollisionStart = function (gameObject) {
+            return !gameObject.isCollided;
+        };
+        CollisionDetector.prototype._isCollisionEnd = function (gameObject) {
+            return gameObject.isCollided;
+        };
+        CollisionDetector.prototype._triggerCollisionEventOfCollideObjectWhichHasRigidBody = function (collideObjects, currentGameObject, eventList) {
+            collideObjects.filter(function (gameObject) {
+                return gameObject.hasComponent(wd.RigidBody);
+            })
+                .forEach(function (collideObject) {
+                for (var _i = 0; _i < eventList.length; _i++) {
+                    var eventName = eventList[_i];
+                    collideObject.execScript(eventName, wdCb.Collection.create([currentGameObject]));
+                }
+            });
+        };
+        return CollisionDetector;
+    })();
+    wd.CollisionDetector = CollisionDetector;
 })(wd || (wd = {}));
 
 var wd;
@@ -6969,6 +7218,12 @@ var wd;
             this.values[2] = v1.values[2] + v2.values[2];
             return this;
         };
+        Vector3.prototype.mul = function (v) {
+            this.values[0] = this.values[0] * v.values[0];
+            this.values[1] = this.values[1] * v.values[1];
+            this.values[2] = this.values[2] * v.values[2];
+            return this;
+        };
         Vector3.prototype.reverse = function () {
             this.values[0] = -this.values[0];
             this.values[1] = -this.values[1];
@@ -7016,11 +7271,49 @@ var wd;
             var a = this.values, b = rhs.values;
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
         };
+        Vector3.prototype.min = function (v) {
+            if (this.x > v.x) {
+                this.x = v.x;
+            }
+            if (this.y > v.y) {
+                this.y = v.y;
+            }
+            if (this.z > v.z) {
+                this.z = v.z;
+            }
+            return this;
+        };
+        Vector3.prototype.max = function (v) {
+            if (this.x < v.x) {
+                this.x = v.x;
+            }
+            if (this.y < v.y) {
+                this.y = v.y;
+            }
+            if (this.z < v.z) {
+                this.z = v.z;
+            }
+            return this;
+        };
         Vector3.prototype.isEqual = function (v) {
             return this.x === v.x && this.y === v.y && this.z === v.z;
         };
         Vector3.prototype.toArray = function () {
             return [this.x, this.y, this.z];
+        };
+        Vector3.prototype.applyMatrix4 = function (m) {
+            var x = this.x, y = this.y, z = this.z, e = m.values;
+            this.x = e[0] * x + e[4] * y + e[8] * z + e[12];
+            this.y = e[1] * x + e[5] * y + e[9] * z + e[13];
+            this.z = e[2] * x + e[6] * y + e[10] * z + e[14];
+            return this;
+        };
+        Vector3.prototype.distanceTo = function (v) {
+            return Math.sqrt(this.distanceToSquared(v));
+        };
+        Vector3.prototype.distanceToSquared = function (v) {
+            var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
+            return Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2);
         };
         Vector3.up = Vector3.create(0, 1, 0);
         Vector3.forward = Vector3.create(0, 0, 1);
@@ -8373,6 +8666,9 @@ var wd;
                 return this._material;
             },
             set: function (material) {
+                if (material !== this._material) {
+                    wd.EventManager.trigger(this.gameObject, wd.CustomEvent.create(wd.EngineEvent.MATERIAL_CHANGE));
+                }
                 this._material = material;
                 this._material.geometry = this;
             },
@@ -8427,7 +8723,7 @@ var wd;
             this.buffers.geometryData.computeVertexNormals();
         };
         Geometry.prototype.createBufferContainer = function () {
-            return wd.CommonBufferContainer.create();
+            return wd.CommonBufferContainer.create(this.gameObject);
         };
         Geometry.prototype.createGeometryData = function (vertices, faces, texCoords, colors, morphTargets) {
             return this.createCommonGeometryData(vertices, faces, texCoords, colors);
@@ -8510,6 +8806,11 @@ var wd;
             var startIndex = 3 * index;
             return wd.Vector3.create(sourceData[startIndex], sourceData[startIndex + 1], sourceData[startIndex + 2]);
         };
+        GeometryUtils.iterateThreeComponent = function (dataArr, iterator) {
+            for (var i = 0, len = dataArr.length; i < len; i += 3) {
+                iterator(wd.Vector3.create(dataArr[i], dataArr[i + 1], dataArr[i + 2]));
+            }
+        };
         GeometryUtils.setThreeComponent = function (targetData, sourceData, index) {
             if (sourceData instanceof wd.Vector3) {
                 targetData[index * 3] = sourceData.x;
@@ -8529,9 +8830,118 @@ var wd;
                 }
             })
         ], GeometryUtils, "hasData", null);
+        __decorate([
+            wd.require(function (dataArr, iterator) {
+                wd.assert(dataArr.length % 3 === 0, wd.Log.info.FUNC_SHOULD("dataArr.length", "times of three"));
+            })
+        ], GeometryUtils, "iterateThreeComponent", null);
         return GeometryUtils;
     })();
     wd.GeometryUtils = GeometryUtils;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomGeometry = (function (_super) {
+        __extends(CustomGeometry, _super);
+        function CustomGeometry() {
+            _super.apply(this, arguments);
+            this._vertices = [];
+            this._texCoords = [];
+            this._colors = [];
+            this._indices = [];
+            this._normals = [];
+        }
+        CustomGeometry.create = function () {
+            var geom = new this();
+            return geom;
+        };
+        Object.defineProperty(CustomGeometry.prototype, "vertices", {
+            get: function () {
+                return this._vertices;
+            },
+            set: function (vertices) {
+                this._vertices = vertices;
+                if (this.buffers) {
+                    this.buffers.geometryData.vertices = vertices;
+                    this.buffers.removeCache(wd.BufferDataType.VERTICE);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CustomGeometry.prototype, "texCoords", {
+            get: function () {
+                return this._texCoords;
+            },
+            set: function (texCoords) {
+                this._texCoords = texCoords;
+                if (this.buffers) {
+                    this.buffers.geometryData.texCoords = texCoords;
+                    this.buffers.removeCache(wd.BufferDataType.TEXCOORD);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CustomGeometry.prototype, "colors", {
+            get: function () {
+                return this._colors;
+            },
+            set: function (colors) {
+                this._colors = colors;
+                if (this.buffers) {
+                    this.buffers.geometryData.colors = colors;
+                    this.buffers.removeCache(wd.BufferDataType.COLOR);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CustomGeometry.prototype, "indices", {
+            get: function () {
+                return this._indices;
+            },
+            set: function (indices) {
+                this._indices = indices;
+                if (this.buffers) {
+                    this.buffers.geometryData.faces = wd.GeometryUtils.convertToFaces(indices, this.normals);
+                    this.buffers.removeCache(wd.BufferDataType.INDICE);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CustomGeometry.prototype, "normals", {
+            get: function () {
+                return this._normals;
+            },
+            set: function (normals) {
+                this._normals = normals;
+                if (this.buffers) {
+                    this.buffers.geometryData.faces = wd.GeometryUtils.convertToFaces(this.indices, normals);
+                    this.buffers.removeCache(wd.BufferDataType.NORMAL);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        CustomGeometry.prototype.computeData = function () {
+            return {
+                vertices: this.vertices,
+                faces: wd.GeometryUtils.convertToFaces(this.indices, this.normals),
+                texCoords: this.texCoords,
+                colors: this.colors
+            };
+        };
+        return CustomGeometry;
+    })(wd.Geometry);
+    wd.CustomGeometry = CustomGeometry;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -8601,9 +9011,9 @@ var wd;
         };
         ModelGeometry.prototype.createBufferContainer = function () {
             if (this.hasAnimation()) {
-                return wd.MorphBufferContainer.create(this.gameObject.getComponent(wd.MorphAnimation));
+                return wd.MorphBufferContainer.create(this.gameObject, this.gameObject.getComponent(wd.MorphAnimation));
             }
-            return wd.CommonBufferContainer.create();
+            return wd.CommonBufferContainer.create(this.gameObject);
         };
         ModelGeometry.prototype.createGeometryData = function (vertices, faces, texCoords, colors, morphTargets) {
             if (this.hasAnimation()) {
@@ -8896,14 +9306,10 @@ var wd;
     wd.SphereGeometry = SphereGeometry;
     var GetDataByLatitudeLongtitude = (function () {
         function GetDataByLatitudeLongtitude(radius, bands) {
-            this.vertices = [];
-            this.indices = [];
-            this.texCoords = [];
-            this.normals = [];
-            this.radius = null;
+            this._radius = null;
             this._latitudeBands = null;
             this._longitudeBands = null;
-            this.radius = radius;
+            this._radius = radius;
             this._latitudeBands = bands;
             this._longitudeBands = bands;
         }
@@ -8912,6 +9318,10 @@ var wd;
             return geom;
         };
         GetDataByLatitudeLongtitude.prototype.getData = function () {
+            var vertices = [];
+            var normals = [];
+            var texCoords = [];
+            var indices = [];
             for (var latNumber = 0; latNumber <= this._latitudeBands; latNumber++) {
                 var theta = latNumber * Math.PI / this._latitudeBands;
                 var sinTheta = Math.sin(theta);
@@ -8920,38 +9330,38 @@ var wd;
                     var phi = longNumber * 2 * Math.PI / this._longitudeBands;
                     var sinPhi = Math.sin(phi);
                     var cosPhi = Math.cos(phi);
-                    var x = this.radius * cosPhi * sinTheta;
-                    var y = this.radius * cosTheta;
-                    var z = this.radius * sinPhi * sinTheta;
+                    var x = this._radius * cosPhi * sinTheta;
+                    var y = this._radius * cosTheta;
+                    var z = this._radius * sinPhi * sinTheta;
                     var u = 1 - (longNumber / this._longitudeBands);
                     var v = 1 - (latNumber / this._latitudeBands);
-                    this.normals.push(x);
-                    this.normals.push(y);
-                    this.normals.push(z);
-                    this.texCoords.push(u);
-                    this.texCoords.push(v);
-                    this.vertices.push(x);
-                    this.vertices.push(y);
-                    this.vertices.push(z);
+                    normals.push(x);
+                    normals.push(y);
+                    normals.push(z);
+                    texCoords.push(u);
+                    texCoords.push(v);
+                    vertices.push(x);
+                    vertices.push(y);
+                    vertices.push(z);
                 }
             }
             for (var latNumber = 0; latNumber < this._latitudeBands; latNumber++) {
                 for (var longNumber = 0; longNumber < this._longitudeBands; longNumber++) {
                     var first = latNumber * (this._longitudeBands + 1) + longNumber;
                     var second = first + this._longitudeBands + 1;
-                    this.indices.push(first + 1);
-                    this.indices.push(second);
-                    this.indices.push(first);
-                    this.indices.push(first + 1);
-                    this.indices.push(second + 1);
-                    this.indices.push(second);
+                    indices.push(first + 1);
+                    indices.push(second);
+                    indices.push(first);
+                    indices.push(first + 1);
+                    indices.push(second + 1);
+                    indices.push(second);
                 }
             }
             return {
-                vertices: this.vertices,
-                indices: this.indices,
-                normals: this.normals,
-                texCoords: this.texCoords
+                vertices: vertices,
+                indices: indices,
+                normals: normals,
+                texCoords: texCoords
             };
         };
         return GetDataByLatitudeLongtitude;
@@ -9485,8 +9895,8 @@ var wd;
         };
         MorphGeometryData.prototype._copyFaces = function (faces) {
             var copyFaces = [];
-            for (var _i = 0, faces_1 = faces; _i < faces_1.length; _i++) {
-                var face = faces_1[_i];
+            for (var _i = 0; _i < faces.length; _i++) {
+                var face = faces[_i];
                 copyFaces.push(face.copy());
             }
             return copyFaces;
@@ -9517,11 +9927,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var wd;
 (function (wd) {
     var BufferContainer = (function () {
-        function BufferContainer() {
+        function BufferContainer(gameObject) {
             this.geometryData = null;
+            this.gameObject = null;
             this.container = wdCb.Hash.create();
+            this._colorBuffer = null;
+            this._texCoordBuffer = null;
+            this._tangentBuffer = null;
+            this._indiceBuffer = null;
+            this.gameObject = gameObject;
         }
         BufferContainer.prototype.init = function () {
+            var self = this;
+            wd.EventManager.on(this.gameObject, wd.EngineEvent.MATERIAL_CHANGE, function () {
+                self.removeCache(wd.BufferDataType.COLOR);
+            });
+        };
+        BufferContainer.prototype.removeCache = function (type) {
+            this.container.removeChild(type);
         };
         BufferContainer.prototype.getChild = function (type) {
             var result = null;
@@ -9559,36 +9982,43 @@ var wd;
                 buffer.dispose();
             });
         };
+        BufferContainer.prototype.createBufferOnlyOnce = function (bufferAttriName, bufferClass) {
+            if (this[bufferAttriName]) {
+                return;
+            }
+            this[bufferAttriName] = bufferClass.create();
+        };
         BufferContainer.prototype._getTangent = function (type) {
-            var geometryData = null, result = null;
+            var geometryData = null;
+            this.createBufferOnlyOnce("_tangentBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            result = wd.ArrayBuffer.create(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
-            return result;
+            this._tangentBuffer.resetData(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            return this._tangentBuffer;
         };
         BufferContainer.prototype._getColor = function (type) {
-            var geometryData = null, result = null;
+            var geometryData = null;
+            this.createBufferOnlyOnce("_colorBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            result = wd.ArrayBuffer.create(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
-            return result;
+            this._colorBuffer.resetData(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            return this._colorBuffer;
         };
         BufferContainer.prototype._getIndice = function (type) {
-            var geometryData = null, result = null;
+            var geometryData = null;
+            this.createBufferOnlyOnce("_indiceBuffer", wd.ElementBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            result = wd.ElementBuffer.create(new Uint16Array(geometryData), wd.BufferType.UNSIGNED_SHORT);
-            return result;
+            this._indiceBuffer.resetData(new Uint16Array(geometryData), wd.BufferType.UNSIGNED_SHORT);
+            return this._indiceBuffer;
         };
         BufferContainer.prototype._getTexCoord = function (type) {
-            var geometryData = null, result = null;
+            var geometryData = null;
+            this.createBufferOnlyOnce("_texCoordBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            result = wd.ArrayBuffer.create(new Float32Array(geometryData), 2, wd.BufferType.FLOAT);
-            return result;
+            this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, wd.BufferType.FLOAT);
+            return this._texCoordBuffer;
         };
         BufferContainer.prototype._needReCalcuteTangent = function (type) {
             return this.geometryData.isTangentDirty && type === wd.BufferDataType.TANGENT;
         };
-        __decorate([
-            wd.virtual
-        ], BufferContainer.prototype, "init", null);
         __decorate([
             wd.cache(function (type) {
                 return this.container.hasChild(type) && !this._needReCalcuteTangent(type);
@@ -9647,18 +10077,24 @@ var wd;
         __extends(CommonBufferContainer, _super);
         function CommonBufferContainer() {
             _super.apply(this, arguments);
+            this._verticeBuffer = null;
+            this._normalBuffer = null;
         }
-        CommonBufferContainer.create = function () {
-            var obj = new this();
+        CommonBufferContainer.create = function (gameObject) {
+            var obj = new this(gameObject);
             return obj;
         };
         CommonBufferContainer.prototype.getVertice = function (type) {
             var geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            return wd.ArrayBuffer.create(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            this.createBufferOnlyOnce("_verticeBuffer", wd.ArrayBuffer);
+            this._verticeBuffer.resetData(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            return this._verticeBuffer;
         };
         CommonBufferContainer.prototype.getNormal = function (type) {
             var geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            return wd.ArrayBuffer.create(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            this.createBufferOnlyOnce("_normalBuffer", wd.ArrayBuffer);
+            this._normalBuffer.resetData(new Float32Array(geometryData), 3, wd.BufferType.FLOAT);
+            return this._normalBuffer;
         };
         __decorate([
             wd.cache(function (type) {
@@ -9698,15 +10134,19 @@ var wd;
 (function (wd) {
     var MorphBufferContainer = (function (_super) {
         __extends(MorphBufferContainer, _super);
-        function MorphBufferContainer(animation) {
-            _super.call(this);
+        function MorphBufferContainer(gameObject, animation) {
+            _super.call(this, gameObject);
             this._animation = null;
             this._isCacheChangeFlag = {};
             this._isCacheChangeInLastLoop = {};
+            this._currentVerticeBuffer = null;
+            this._nextVerticeBuffer = null;
+            this._currentNormalBuffer = null;
+            this._nextNormalBuffer = null;
             this._animation = animation;
         }
-        MorphBufferContainer.create = function (animation) {
-            var obj = new this(animation);
+        MorphBufferContainer.create = function (gameObject, animation) {
+            var obj = new this(gameObject, animation);
             return obj;
         };
         MorphBufferContainer.prototype.getVertice = function (type) {
@@ -9724,7 +10164,9 @@ var wd;
             wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD("\"" + this._animation.currentAnimName + "\" animation", "contain frame data"));
             cacheData = this.container.getChild(type);
             if (!cacheData) {
-                var currentBuffer = wd.ArrayBuffer.create(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, wd.BufferType.FLOAT, wd.BufferUsage.DYNAMIC_DRAW), nextBuffer = wd.ArrayBuffer.create(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, wd.BufferType.FLOAT, wd.BufferUsage.DYNAMIC_DRAW);
+                var currentBuffer = this._getCurrentBuffer(type), nextBuffer = this._getNextBuffer(type);
+                currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, wd.BufferType.FLOAT);
+                nextBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, wd.BufferType.FLOAT);
                 result = [currentBuffer, nextBuffer];
                 this.container.addChild(type, result);
                 this._isCacheChangeInLastLoop[type] = false;
@@ -9747,6 +10189,22 @@ var wd;
             }
             return result;
         };
+        MorphBufferContainer.prototype._getCurrentBuffer = function (type) {
+            if (type === wd.BufferDataType.VERTICE) {
+                this.createBufferOnlyOnce("_currentVerticeBuffer", wd.ArrayBuffer);
+                return this._currentVerticeBuffer;
+            }
+            this.createBufferOnlyOnce("_currentNormalBuffer", wd.ArrayBuffer);
+            return this._currentNormalBuffer;
+        };
+        MorphBufferContainer.prototype._getNextBuffer = function (type) {
+            if (type === wd.BufferDataType.VERTICE) {
+                this.createBufferOnlyOnce("_nextVerticeBuffer", wd.ArrayBuffer);
+                return this._nextVerticeBuffer;
+            }
+            this.createBufferOnlyOnce("_nextNormalBuffer", wd.ArrayBuffer);
+            return this._nextNormalBuffer;
+        };
         MorphBufferContainer.prototype._isCacheNotChange = function (type) {
             return !this._isCacheChangeFlag[type];
         };
@@ -9763,13 +10221,13 @@ var wd;
                     data = this.geometryData.normals;
                     break;
                 default:
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+                    wd.Log.error(true, wd.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
                     break;
             }
             this._animation.interpolation = 0;
             result = [
-                wd.ArrayBuffer.create(new Float32Array(data), 3, wd.BufferType.FLOAT, wd.BufferUsage.DYNAMIC_DRAW),
-                wd.ArrayBuffer.create(new Float32Array(data), 3, wd.BufferType.FLOAT, wd.BufferUsage.DYNAMIC_DRAW),
+                this._getCurrentBuffer(type).resetData(new Float32Array(data), 3, wd.BufferType.FLOAT),
+                this._getNextBuffer(type).resetData(new Float32Array(data), 3, wd.BufferType.FLOAT)
             ];
             return result;
         };
@@ -9787,14 +10245,22 @@ var wd;
             })
         ], MorphBufferContainer.prototype, "getNormal", null);
         __decorate([
+            wd.require(function (type) {
+                wd.assert(type === wd.BufferDataType.VERTICE || type === wd.BufferDataType.NORMAL, wd.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+            })
+        ], MorphBufferContainer.prototype, "_getCurrentBuffer", null);
+        __decorate([
+            wd.require(function (type) {
+                wd.assert(type === wd.BufferDataType.VERTICE || type === wd.BufferDataType.NORMAL, wd.Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+            })
+        ], MorphBufferContainer.prototype, "_getNextBuffer", null);
+        __decorate([
             wd.cache(function (type) {
                 return this.container.hasChild(this._getStaticDataCacheData(type));
             }, function (type) {
                 return this.container.getChild(this._getStaticDataCacheData(type));
             }, function (result, type) {
                 this.container.addChild(this._getStaticDataCacheData(type), result);
-            }),
-            wd.require(function (type) {
             })
         ], MorphBufferContainer.prototype, "_getStaticData", null);
         return MorphBufferContainer;
@@ -10161,7 +10627,7 @@ var wd;
 })(wd || (wd = {}));
 
 var wd;
-(function (wd_1) {
+(function (wd) {
     var FlyCameraControl = (function () {
         function FlyCameraControl(cameraComponent) {
             this.moveSpeed = 1.2;
@@ -10187,7 +10653,7 @@ var wd;
                 return;
             }
             this._isRotate = false;
-            this._gameObject.transform.eulerAngles = wd_1.Vector3.create(this._rotateX, this._rotateY, 0);
+            this._gameObject.transform.eulerAngles = wd.Vector3.create(this._rotateX, this._rotateY, 0);
         };
         FlyCameraControl.prototype.dispose = function () {
             this._removeEvent();
@@ -10195,36 +10661,36 @@ var wd;
         FlyCameraControl.prototype._move = function (event) {
             var speed = this.moveSpeed, gameObject = this._gameObject, keyState = event.keyState;
             if (keyState["a"] || keyState["left"]) {
-                gameObject.transform.translateLocal(wd_1.Vector3.create(-speed, 0, 0));
+                gameObject.transform.translateLocal(wd.Vector3.create(-speed, 0, 0));
             }
             else if (keyState["d"] || keyState["right"]) {
-                gameObject.transform.translateLocal(wd_1.Vector3.create(speed, 0, 0));
+                gameObject.transform.translateLocal(wd.Vector3.create(speed, 0, 0));
             }
             else if (keyState["w"] || keyState["up"]) {
-                gameObject.transform.translateLocal(wd_1.Vector3.create(0, 0, -speed));
+                gameObject.transform.translateLocal(wd.Vector3.create(0, 0, -speed));
             }
             else if (keyState["s"] || keyState["down"]) {
-                gameObject.transform.translateLocal(wd_1.Vector3.create(0, 0, speed));
+                gameObject.transform.translateLocal(wd.Vector3.create(0, 0, speed));
             }
         };
         FlyCameraControl.prototype._bindCanvasEvent = function () {
-            var self = this, rotateSpeed = this.rotateSpeed, scene = wd_1.Director.getInstance().scene, mouseup = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEUP), mousemove = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEMOVE), mousedown = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEDOWN), keydown = wd_1.EventManager.fromEvent(wd_1.EventName.KEYDOWN), mousedrag = null, canvas = wd_1.Director.getInstance().view;
+            var self = this, rotateSpeed = this.rotateSpeed, scene = wd.Director.getInstance().scene, mouseup = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEDOWN), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null, canvas = wd.Director.getInstance().view;
             mousedrag = mousedown.flatMap(function (e) {
                 e.stopPropagation();
                 return mousemove.map(function (e) {
-                    var movementDelta = e.movementDelta, dx = null, wd = null, factor = rotateSpeed / canvas.height;
+                    var movementDelta = e.movementDelta, dx = null, dy = null, factor = rotateSpeed / canvas.height;
                     dx = factor * movementDelta.x;
-                    wd = factor * movementDelta.y;
+                    dy = factor * movementDelta.y;
                     self._isRotate = true;
                     return {
                         dx: dx,
-                        wd: wd
+                        dy: dy
                     };
                 }).takeUntil(mouseup);
             });
             this._mouseDragSubscription = mousedrag.subscribe(function (pos) {
                 self._rotateY -= pos.dx;
-                self._rotateX -= pos.wd;
+                self._rotateX -= pos.dy;
             });
             this._keydownSubscription = keydown.subscribe(function (e) {
                 self._move(e);
@@ -10237,7 +10703,7 @@ var wd;
         };
         return FlyCameraControl;
     })();
-    wd_1.FlyCameraControl = FlyCameraControl;
+    wd.FlyCameraControl = FlyCameraControl;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -10300,7 +10766,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var wd;
-(function (wd_1) {
+(function (wd) {
     var ArcballCameraController = (function (_super) {
         __extends(ArcballCameraController, _super);
         function ArcballCameraController() {
@@ -10311,7 +10777,7 @@ var wd;
             this.distance = 10;
             this.phi = Math.PI / 2;
             this.theta = Math.PI / 2;
-            this.target = wd_1.Vector3.create(0, 0, 0);
+            this.target = wd.Vector3.create(0, 0, 0);
             this.thetaMargin = 0.05;
             this.minDistance = 0.05;
             this._isChange = true;
@@ -10337,7 +10803,7 @@ var wd;
             x = ((this.distance) * Math.cos(this.phi) * Math.sin(this.theta) + this.target.x);
             z = ((this.distance) * Math.sin(this.phi) * Math.sin(this.theta) + this.target.z);
             y = ((this.distance) * Math.cos(this.theta) + this.target.y);
-            this.gameObject.transform.position = wd_1.Vector3.create(x, y, z);
+            this.gameObject.transform.position = wd.Vector3.create(x, y, z);
             this.gameObject.transform.lookAt(this.target);
         };
         ArcballCameraController.prototype.dispose = function () {
@@ -10345,7 +10811,7 @@ var wd;
             this._removeEvent();
         };
         ArcballCameraController.prototype._bindCanvasEvent = function () {
-            var self = this, scene = wd_1.Director.getInstance().scene, mouseup = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEUP), mousemove = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEMOVE), mousedown = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEDOWN), mousewheel = wd_1.EventManager.fromEvent(scene, wd_1.EventName.MOUSEWHEEL), keydown = wd_1.EventManager.fromEvent(wd_1.EventName.KEYDOWN), mousedrag = null;
+            var self = this, scene = wd.Director.getInstance().scene, mouseup = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEDOWN), mousewheel = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEWHEEL), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null;
             mousedrag = mousedown.flatMap(function (e) {
                 e.stopPropagation();
                 return mousemove.takeUntil(mouseup);
@@ -10369,7 +10835,7 @@ var wd;
             this._contrainTheta();
         };
         ArcballCameraController.prototype._changeTarget = function (e) {
-            var moveSpeedX = this.moveSpeedX, moveSpeedY = this.moveSpeedY, dx = null, wd = null, keyState = e.keyState, transform = this.gameObject.transform;
+            var moveSpeedX = this.moveSpeedX, moveSpeedY = this.moveSpeedY, dx = null, dy = null, keyState = e.keyState, transform = this.gameObject.transform;
             this._isChange = true;
             if (keyState["a"] || keyState["left"]) {
                 dx = -moveSpeedX;
@@ -10378,13 +10844,13 @@ var wd;
                 dx = moveSpeedX;
             }
             else if (keyState["w"] || keyState["up"]) {
-                wd = moveSpeedY;
+                dy = moveSpeedY;
             }
             else if (keyState["s"] || keyState["down"]) {
-                wd = -moveSpeedY;
+                dy = -moveSpeedY;
             }
-            this.target.add(wd_1.Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
-            this.target.add(wd_1.Vector3.create(transform.up.x * wd, transform.up.y * wd, 0));
+            this.target.add(wd.Vector3.create(transform.right.x * (dx), 0, transform.right.z * (dx)));
+            this.target.add(wd.Vector3.create(transform.up.x * dy, transform.up.y * dy, 0));
         };
         ArcballCameraController.prototype._changeDistance = function (e) {
             this._isChange = true;
@@ -10392,10 +10858,10 @@ var wd;
             this._contrainDistance();
         };
         ArcballCameraController.prototype._contrainDistance = function () {
-            this.distance = wd_1.MathUtils.bigThan(this.distance, this.minDistance);
+            this.distance = wd.MathUtils.bigThan(this.distance, this.minDistance);
         };
         ArcballCameraController.prototype._contrainTheta = function () {
-            this.theta = wd_1.MathUtils.clamp(this.theta, this.thetaMargin, Math.PI - this.thetaMargin);
+            this.theta = wd.MathUtils.clamp(this.theta, this.thetaMargin, Math.PI - this.thetaMargin);
         };
         ArcballCameraController.prototype._removeEvent = function () {
             this._mouseDragSubscription.dispose();
@@ -10403,8 +10869,8 @@ var wd;
             this._keydownSubscription.dispose();
         };
         return ArcballCameraController;
-    })(wd_1.CameraController);
-    wd_1.ArcballCameraController = ArcballCameraController;
+    })(wd.CameraController);
+    wd.ArcballCameraController = ArcballCameraController;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -11499,6 +11965,7 @@ var wd;
         __extends(MeshRenderer, _super);
         function MeshRenderer() {
             _super.apply(this, arguments);
+            this.drawMode = wd.DrawMode.TRIANGLES;
         }
         MeshRenderer.create = function () {
             var obj = new this();
@@ -11516,6 +11983,7 @@ var wd;
             quadCmd.pMatrix = cameraComponent.pMatrix;
             quadCmd.material = material;
             quadCmd.z = this.gameObject.transform.position.z;
+            quadCmd.drawMode = this.drawMode;
             return quadCmd;
         };
         __decorate([
@@ -11559,19 +12027,75 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var Collider = (function (_super) {
         __extends(Collider, _super);
         function Collider() {
             _super.apply(this, arguments);
+            this.type = wd.ABSTRACT_ATTRIBUTE;
+            this.boundingRegion = null;
         }
-        Collider.prototype.collideXY = function (localX, localY) {
-            return false;
+        Object.defineProperty(Collider.prototype, "shape", {
+            get: function () {
+                return this.boundingRegion.shape;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Collider.prototype.init = function () {
+            this.boundingRegion = this.createBoundingRegion();
+            this.boundingRegion.init();
+            this.buildBoundingRegion();
         };
-        Collider.prototype.collide = function (collider) {
-            return false;
+        Collider.prototype.update = function (time) {
+            this.boundingRegion.update();
         };
+        Collider.prototype.updateShape = function () {
+            this.boundingRegion.updateShape();
+        };
+        Collider.prototype.isIntersectWith = function (collider) {
+            if (collider instanceof wd.BoxCollider) {
+                return this.boundingRegion.isIntersectWithBox(collider.boundingRegion);
+            }
+            else if (collider instanceof wd.SphereCollider) {
+                return this.boundingRegion.isIntersectWithSphere(collider.boundingRegion);
+            }
+            else {
+                wd.Log.warn(wd.Log.info.FUNC_NOT_SUPPORT(this.type + " collider", "intersect with " + collider.type + " collider"));
+            }
+        };
+        Collider.prototype.getCollideObjects = function (checkTargetList) {
+            var self = this, result = wdCb.Collection.create();
+            checkTargetList.forEach(function (gameObject) {
+                var collider = null;
+                if (self._isSelf(gameObject)) {
+                    return;
+                }
+                collider = gameObject.getComponent(Collider);
+                if (gameObject.hasComponent(wd.RigidBody)) {
+                    collider.updateShape();
+                }
+                if (self.isIntersectWith(collider)) {
+                    result.addChild(gameObject);
+                }
+            });
+            return result;
+        };
+        Collider.prototype._isSelf = function (gameObject) {
+            return this.gameObject.uid === gameObject.uid;
+        };
+        __decorate([
+            wd.require(function (collider) {
+                wd.assert(collider instanceof Collider, wd.Log.info.FUNC_SHOULD("target", "be collider"));
+            })
+        ], Collider.prototype, "isIntersectWith", null);
         return Collider;
     })(wd.Component);
     wd.Collider = Collider;
@@ -11584,24 +12108,2009 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var wd;
 (function (wd) {
-    var TopCollider = (function (_super) {
-        __extends(TopCollider, _super);
-        function TopCollider() {
+    var BoxCollider = (function (_super) {
+        __extends(BoxCollider, _super);
+        function BoxCollider() {
             _super.apply(this, arguments);
+            this.center = wd.Vector3.create(0, 0, 0);
+            this.halfExtents = null;
+            this.type = wd.ColliderType.BOX;
         }
-        TopCollider.create = function () {
+        BoxCollider.create = function () {
             var obj = new this();
             return obj;
         };
-        TopCollider.prototype.collideXY = function (localX, localY) {
-            return true;
+        BoxCollider.prototype.createBoundingRegion = function () {
+            return wd.BoxBoundingRegion.create(this.gameObject);
         };
-        TopCollider.prototype.collide = function (collider) {
-            return true;
+        BoxCollider.prototype.buildBoundingRegion = function () {
+            this.boundingRegion.build(this.center, this.halfExtents);
         };
-        return TopCollider;
+        return BoxCollider;
     })(wd.Collider);
-    wd.TopCollider = TopCollider;
+    wd.BoxCollider = BoxCollider;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var SphereCollider = (function (_super) {
+        __extends(SphereCollider, _super);
+        function SphereCollider() {
+            _super.apply(this, arguments);
+            this.center = wd.Vector3.create(0, 0, 0);
+            this.radius = null;
+            this.type = wd.ColliderType.SPHERE;
+        }
+        SphereCollider.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        SphereCollider.prototype.createBoundingRegion = function () {
+            return wd.SphereBoundingRegion.create(this.gameObject);
+        };
+        SphereCollider.prototype.buildBoundingRegion = function () {
+            this.boundingRegion.build(this.center, this.radius);
+        };
+        return SphereCollider;
+    })(wd.Collider);
+    wd.SphereCollider = SphereCollider;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var BoundingRegion = (function () {
+        function BoundingRegion(gameObject) {
+            this.shape = null;
+            this.gameObject = null;
+            this.isUserSpecifyTheRegion = false;
+            this.originShape = null;
+            this.debugObject = null;
+            this.gameObject = gameObject;
+        }
+        BoundingRegion.prototype.init = function () {
+            this.shape = this.createShape();
+        };
+        BoundingRegion.prototype.build = function (center) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            var params = Array.prototype.slice.call(arguments, 0);
+            if (this.isBuildUserSpecifyBoundingRegion.apply(this, params)) {
+                this.isUserSpecifyTheRegion = true;
+                this.shape.setFromShapeParam.apply(this.shape, params);
+            }
+            else {
+                this.shape.setFromPoints(this.gameObject.getComponent(wd.Geometry).geometryData.vertices);
+            }
+            this.originShape = this.shape.copy();
+            if (wd.DebugConfig.debugCollision) {
+                this.debugObject = this.buildDebugObjectFromShape(this.shape);
+                wd.Director.getInstance().scene.addChild(this.debugObject);
+            }
+        };
+        BoundingRegion.prototype.update = function () {
+            if (this.isNotTransformed()) {
+                return;
+            }
+            if (wd.DebugConfig.debugCollision) {
+                this.updateShape();
+                this.updateDebugObjectFromShape(this.shape);
+            }
+            else if (!this.gameObject.hasComponent(wd.RigidBody)) {
+                this.updateShape();
+            }
+        };
+        BoundingRegion.prototype.isIntersectWithSphere = function (boundingRegion) {
+            return this.shape.isIntersectWithSphere(boundingRegion.shape);
+        };
+        BoundingRegion.prototype.isIntersectWithBox = function (boundingRegion) {
+            return this.shape.isIntersectWithBox(boundingRegion.shape);
+        };
+        BoundingRegion.prototype.buildDebugObjectFromShape = function (shape) {
+            var material = null, geometry = null, renderer = null, gameObject = null;
+            material = wd.BasicMaterial.create();
+            material.color = wd.Color.create("rgb(255,0,0)");
+            geometry = wd.CustomGeometry.create();
+            geometry.material = material;
+            this.setDebugObjectGeometry(geometry, shape);
+            renderer = wd.MeshRenderer.create();
+            renderer.drawMode = wd.DrawMode.LINES;
+            gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(renderer);
+            gameObject.transform.translate(shape.center);
+            gameObject.name = "debugBoundingRegion" + this.gameObject.uid;
+            gameObject.init();
+            return gameObject;
+        };
+        __decorate([
+            wd.ensure(function (returnValue, center) {
+                var args = [];
+                for (var _i = 2; _i < arguments.length; _i++) {
+                    args[_i - 2] = arguments[_i];
+                }
+                if (this.isBuildUserSpecifyBoundingRegion.apply(this, Array.prototype.slice.call(arguments, 1))) {
+                    wd.assert(this.shape.center.isEqual(center), wd.Log.info.FUNC_SHOULD_NOT("transform shape when build"));
+                }
+                else {
+                    wd.assert(this.shape.center.isZero(), wd.Log.info.FUNC_SHOULD_NOT("transform shape when build"));
+                }
+            })
+        ], BoundingRegion.prototype, "build", null);
+        return BoundingRegion;
+    })();
+    wd.BoundingRegion = BoundingRegion;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var BoxBoundingRegion = (function (_super) {
+        __extends(BoxBoundingRegion, _super);
+        function BoxBoundingRegion() {
+            _super.apply(this, arguments);
+        }
+        BoxBoundingRegion.create = function (gameObject) {
+            var obj = new this(gameObject);
+            return obj;
+        };
+        BoxBoundingRegion.prototype.updateShape = function () {
+            var transform = this.gameObject.transform;
+            if (this.isUserSpecifyTheRegion) {
+                this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix);
+            }
+            else {
+                if (transform.isRotate) {
+                    this.shape.setFromObject(this.gameObject);
+                }
+                else {
+                    this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix);
+                }
+            }
+        };
+        BoxBoundingRegion.prototype.createShape = function () {
+            return wd.AABBShape.create();
+        };
+        BoxBoundingRegion.prototype.updateDebugObjectFromShape = function (shape) {
+            var geometry = this.debugObject.getComponent(wd.CustomGeometry);
+            this.setDebugObjectGeometry(geometry, shape);
+            this.debugObject.transform.position = shape.center;
+        };
+        BoxBoundingRegion.prototype.setDebugObjectGeometry = function (geometry, shape) {
+            var halfExtents = shape.halfExtents, x = halfExtents.x, y = halfExtents.y, z = halfExtents.z;
+            geometry.vertices = [
+                -x, -y, -z, -x, -y, z, x, -y, z, x, -y, -z,
+                -x, y, -z, -x, y, z, x, y, z, x, y, -z
+            ];
+            geometry.indices = [
+                0, 1, 1, 2, 2, 3, 3, 0,
+                4, 5, 5, 6, 6, 7, 7, 4,
+                0, 4, 1, 5, 2, 6, 3, 7
+            ];
+        };
+        BoxBoundingRegion.prototype.isBuildUserSpecifyBoundingRegion = function (center, halfExtents) {
+            return !!center && !!halfExtents;
+        };
+        BoxBoundingRegion.prototype.isNotTransformed = function () {
+            var transform = this.gameObject.transform;
+            return !transform.isRotate && !transform.isTranslate && !transform.isScale;
+        };
+        __decorate([
+            wd.require(function (shape) {
+                wd.assert(this.debugObject, wd.Log.info.FUNC_SHOULD("build debugObject"));
+            })
+        ], BoxBoundingRegion.prototype, "updateDebugObjectFromShape", null);
+        __decorate([
+            wd.require(function (geometry, shape) {
+                wd.assert(shape.halfExtents && !shape.halfExtents.isZero(), wd.Log.info.FUNC_SHOULD_NOT("halfExtents", "be zero"));
+            })
+        ], BoxBoundingRegion.prototype, "setDebugObjectGeometry", null);
+        return BoxBoundingRegion;
+    })(wd.BoundingRegion);
+    wd.BoxBoundingRegion = BoxBoundingRegion;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var SphereBoundingRegion = (function (_super) {
+        __extends(SphereBoundingRegion, _super);
+        function SphereBoundingRegion() {
+            _super.apply(this, arguments);
+        }
+        SphereBoundingRegion.create = function (gameObject) {
+            var obj = new this(gameObject);
+            return obj;
+        };
+        SphereBoundingRegion.prototype.updateShape = function () {
+            var transform = this.gameObject.transform;
+            this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix);
+        };
+        SphereBoundingRegion.prototype.createShape = function () {
+            return wd.SphereShape.create();
+        };
+        SphereBoundingRegion.prototype.updateDebugObjectFromShape = function (shape) {
+            this.debugObject.transform.position = shape.center;
+            var scaleTimes = shape.radius / this.originShape.radius;
+            this.debugObject.transform.scale = wd.Vector3.create(scaleTimes, scaleTimes, scaleTimes);
+        };
+        SphereBoundingRegion.prototype.isNotTransformed = function () {
+            var transform = this.gameObject.transform;
+            return !transform.isTranslate && !transform.isScale;
+        };
+        SphereBoundingRegion.prototype.isBuildUserSpecifyBoundingRegion = function (center, radius) {
+            return !!center && !!radius;
+        };
+        SphereBoundingRegion.prototype.setDebugObjectGeometry = function (geometry, shape) {
+            var SEGMENTS = 40, RINGCOUNT = 3;
+            var radius = shape.radius, vertices = [], x = 0;
+            for (var ring = 0; ring < RINGCOUNT; ring++) {
+                var xo = 0, yo = 1, zo = 2, theta = null;
+                if (ring === 1) {
+                    xo = 1;
+                    yo = 0;
+                    zo = 2;
+                }
+                else if (ring === 2) {
+                    xo = 0;
+                    yo = 2;
+                    zo = 1;
+                }
+                for (var i = 0; i < SEGMENTS; i++) {
+                    theta = 2 * Math.PI * (i / SEGMENTS);
+                    vertices[x + xo] = radius * Math.cos(theta);
+                    vertices[x + yo] = 0;
+                    vertices[x + zo] = radius * Math.sin(theta);
+                    x += 3;
+                    theta = 2 * Math.PI * ((i + 1) / SEGMENTS);
+                    vertices[x + xo] = radius * Math.cos(theta);
+                    vertices[x + yo] = 0;
+                    vertices[x + zo] = radius * Math.sin(theta);
+                    x += 3;
+                }
+            }
+            geometry.vertices = vertices;
+        };
+        __decorate([
+            wd.require(function (shape) {
+                wd.assert(this.debugObject, wd.Log.info.FUNC_SHOULD("build debugObject"));
+            })
+        ], SphereBoundingRegion.prototype, "updateDebugObjectFromShape", null);
+        __decorate([
+            wd.require(function (geometry, shape) {
+                wd.assert(shape.radius > 0, wd.Log.info.FUNC_SHOULD("radius", "> 0"));
+            })
+        ], SphereBoundingRegion.prototype, "setDebugObjectGeometry", null);
+        return SphereBoundingRegion;
+    })(wd.BoundingRegion);
+    wd.SphereBoundingRegion = SphereBoundingRegion;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var Shape = (function () {
+        function Shape() {
+            this.center = wd.Vector3.create(0, 0, 0);
+        }
+        Shape.prototype.isBoxAndSphereIntersected = function (box, sphere) {
+            var sphereCenter = sphere.center, sphereRadius = sphere.radius;
+            return sphereCenter.distanceToSquared(box.closestPointTo(sphereCenter)) < Math.pow(sphereRadius, 2);
+        };
+        return Shape;
+    })();
+    wd.Shape = Shape;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var AABBShape = (function (_super) {
+        __extends(AABBShape, _super);
+        function AABBShape() {
+            _super.apply(this, arguments);
+            this.halfExtents = wd.Vector3.create(0.5, 0.5, 0.5);
+        }
+        AABBShape.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        AABBShape.prototype.setMinMax = function (min, max) {
+            this.center.add2(max, min).scale(0.5);
+            this.halfExtents.sub2(max, min).scale(0.5);
+        };
+        AABBShape.prototype.getMin = function () {
+            return this.center.copy().sub(this.halfExtents);
+        };
+        AABBShape.prototype.getMax = function () {
+            return this.center.copy().add(this.halfExtents);
+        };
+        AABBShape.prototype.setFromShapeParam = function (center, halfExtents) {
+            this.center = center;
+            this.halfExtents = halfExtents;
+        };
+        AABBShape.prototype.setFromPoints = function (points) {
+            var self = this, min = this._getEmptyMin(), max = this._getEmptyMax();
+            wd.GeometryUtils.iterateThreeComponent(points, function (point) {
+                self._expandByPoint(point, min, max);
+            });
+            this.setMinMax(min, max);
+            return this;
+        };
+        AABBShape.prototype.setFromTransformedAABB = function (aabb, matrix) {
+            var bc = this.center, br = this.halfExtents, ac = aabb.center.values, ar = aabb.halfExtents.values, m = matrix.values, mx0 = m[0], mx1 = m[4], mx2 = m[8], my0 = m[1], my1 = m[5], my2 = m[9], mz0 = m[2], mz1 = m[6], mz2 = m[10], mx0a = Math.abs(mx0), mx1a = Math.abs(mx1), mx2a = Math.abs(mx2), my0a = Math.abs(my0), my1a = Math.abs(my1), my2a = Math.abs(my2), mz0a = Math.abs(mz0), mz1a = Math.abs(mz1), mz2a = Math.abs(mz2);
+            bc.set(m[12] + mx0 * ac[0] + mx1 * ac[1] + mx2 * ac[2], m[13] + my0 * ac[0] + my1 * ac[1] + my2 * ac[2], m[14] + mz0 * ac[0] + mz1 * ac[1] + mz2 * ac[2]);
+            br.set(mx0a * ar[0] + mx1a * ar[1] + mx2a * ar[2], my0a * ar[0] + my1a * ar[1] + my2a * ar[2], mz0a * ar[0] + mz1a * ar[1] + mz2a * ar[2]);
+        };
+        AABBShape.prototype.setFromTranslationAndScale = function (aabb, matrix) {
+            var translation = matrix.getTranslation(), scale = matrix.getScale();
+            this.center = aabb.center.copy().add(translation);
+            this.halfExtents = aabb.halfExtents.copy().mul(scale);
+        };
+        AABBShape.prototype.setFromObject = function (gameObject) {
+            var modelMatrix = gameObject.transform.localToWorldMatrix, vertices = gameObject.getComponent(wd.Geometry).geometryData.vertices, self = this, min = this._getEmptyMin(), max = this._getEmptyMax();
+            wd.GeometryUtils.iterateThreeComponent(vertices, function (point) {
+                point.applyMatrix4(modelMatrix);
+                self._expandByPoint(point, min, max);
+            });
+            this.setMinMax(min, max);
+        };
+        AABBShape.prototype.isIntersectWithBox = function (shape) {
+            var aMax = this.getMax();
+            var aMin = this.getMin();
+            var bMax = shape.getMax();
+            var bMin = shape.getMin();
+            return (aMin.x <= bMax.x) && (aMax.x >= bMin.x) &&
+                (aMin.y <= bMax.y) && (aMax.y >= bMin.y) &&
+                (aMin.z <= bMax.z) && (aMax.z >= bMin.z);
+        };
+        AABBShape.prototype.isIntersectWithSphere = function (shape) {
+            return this.isBoxAndSphereIntersected(this, shape);
+        };
+        AABBShape.prototype.closestPointTo = function (point) {
+            var min = this.getMin(), max = this.getMax(), resultPoint = wd.Vector3.create();
+            if (point.x < min.x) {
+                resultPoint.x = min.x;
+            }
+            else if (point.x > max.x) {
+                resultPoint.x = max.x;
+            }
+            else {
+                resultPoint.x = point.x;
+            }
+            if (point.y < min.y) {
+                resultPoint.y = min.y;
+            }
+            else if (point.y > max.y) {
+                resultPoint.y = max.y;
+            }
+            else {
+                resultPoint.y = point.y;
+            }
+            if (point.z < min.z) {
+                resultPoint.z = min.z;
+            }
+            else if (point.z > max.z) {
+                resultPoint.z = max.z;
+            }
+            else {
+                resultPoint.z = point.z;
+            }
+            return resultPoint;
+        };
+        AABBShape.prototype.containPoint = function (point) {
+            var min = this.getMin(), max = this.getMax();
+            for (var i = 0; i < 3; ++i) {
+                if (point.values[i] < min.values[i] || point.values[i] > max.values[i]) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        AABBShape.prototype.copy = function () {
+            var shape = AABBShape.create();
+            shape.center = this.center.copy();
+            shape.halfExtents = this.halfExtents.copy();
+            return shape;
+        };
+        AABBShape.prototype._getEmptyMin = function () {
+            return wd.Vector3.create(Infinity, Infinity, Infinity);
+        };
+        AABBShape.prototype._getEmptyMax = function () {
+            return wd.Vector3.create(-Infinity, -Infinity, -Infinity);
+        };
+        AABBShape.prototype._expandByPoint = function (point, min, max) {
+            min.min(point);
+            max.max(point);
+        };
+        __decorate([
+            wd.require(function (gameObject) {
+                var vertices = gameObject.getComponent(wd.Geometry).geometryData.vertices;
+                wd.assert(vertices && vertices.length > 0, wd.Log.info.FUNC_MUST_DEFINE("vertices"));
+            })
+        ], AABBShape.prototype, "setFromObject", null);
+        return AABBShape;
+    })(wd.Shape);
+    wd.AABBShape = AABBShape;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var SphereShape = (function (_super) {
+        __extends(SphereShape, _super);
+        function SphereShape() {
+            _super.apply(this, arguments);
+            this.radius = 1;
+        }
+        SphereShape.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        SphereShape.prototype.setFromShapeParam = function (center, radius) {
+            this.center = center;
+            this.radius = radius;
+        };
+        SphereShape.prototype.setFromPoints = function (points) {
+            var aabb = wd.AABBShape.create();
+            this.center = aabb.setFromPoints(points).center;
+            this.radius = this._findMaxDistanceOfPointsToCenter(points);
+        };
+        SphereShape.prototype.setFromTranslationAndScale = function (sphere, matrix) {
+            var translation = matrix.getTranslation(), scale = matrix.getScale();
+            this.center = sphere.center.copy().add(translation);
+            this.radius = sphere.radius * Math.max(scale.x, scale.y, scale.z);
+        };
+        SphereShape.prototype.isIntersectWithSphere = function (shape) {
+            var radiusSum = this.radius + shape.radius;
+            return shape.center.distanceToSquared(this.center) <= (Math.pow(radiusSum, 2));
+        };
+        SphereShape.prototype.isIntersectWithBox = function (shape) {
+            return this.isBoxAndSphereIntersected(shape, this);
+        };
+        SphereShape.prototype.containPoint = function (point) {
+            return point.distanceToSquared(this.center) <= (Math.pow(this.radius, 2));
+        };
+        SphereShape.prototype.copy = function () {
+            var shape = SphereShape.create();
+            shape.center = this.center.copy();
+            shape.radius = this.radius;
+            return shape;
+        };
+        SphereShape.prototype._findMaxDistanceOfPointsToCenter = function (points) {
+            var maxRadiusSq = 0, center = this.center;
+            wd.GeometryUtils.iterateThreeComponent(points, function (point) {
+                maxRadiusSq = Math.max(maxRadiusSq, center.distanceToSquared(point));
+            });
+            return Math.sqrt(maxRadiusSq);
+        };
+        return SphereShape;
+    })(wd.Shape);
+    wd.SphereShape = SphereShape;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    (function (ColliderType) {
+        ColliderType[ColliderType["BOX"] = "box"] = "BOX";
+        ColliderType[ColliderType["SPHERE"] = "sphere"] = "SPHERE";
+    })(wd.ColliderType || (wd.ColliderType = {}));
+    var ColliderType = wd.ColliderType;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var RigidBody = (function (_super) {
+        __extends(RigidBody, _super);
+        function RigidBody() {
+            _super.apply(this, arguments);
+            this._friction = 0;
+            this._restitution = 0;
+            this._children = wdCb.Collection.create();
+            this.lockConstraint = wd.LockConstraint.create(this);
+            this.distanceConstraint = wd.DistanceConstraint.create(this);
+            this.hingeConstraint = wd.HingeConstraint.create(this);
+            this.pointToPointConstraintList = wd.PointToPointConstraintList.create(this);
+        }
+        Object.defineProperty(RigidBody.prototype, "friction", {
+            get: function () {
+                return this._friction;
+            },
+            set: function (friction) {
+                this._friction = friction;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RigidBody.prototype, "restitution", {
+            get: function () {
+                return this._restitution;
+            },
+            set: function (restitution) {
+                this._restitution = restitution;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RigidBody.prototype, "children", {
+            get: function () {
+                return this._children;
+            },
+            set: function (children) {
+                if (wd.JudgeUtils.isArray(children)) {
+                    var arr = children;
+                    this._children = wdCb.Collection.create(arr);
+                }
+                else {
+                    var list = children;
+                    this._children = list;
+                }
+                this._children.forEach(function (child) {
+                    child.isRigidbodyChild = true;
+                });
+            },
+            enumerable: true,
+            configurable: true
+        });
+        RigidBody.prototype.init = function () {
+            var self = this;
+            wd.EventManager.on(wd.EngineEvent.AFTER_INIT, function () {
+                self.addBody();
+            });
+            wd.EventManager.on(wd.EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT, function () {
+                self.addConstraint();
+            });
+        };
+        RigidBody.prototype.addConstraint = function () {
+            var _this = this;
+            var engineAdapter = this.getPhysicsEngineAdapter();
+            if (this.lockConstraint && this.lockConstraint.connectedBody) {
+                engineAdapter.addLockConstraint(this.gameObject, this.lockConstraint);
+            }
+            if (this.distanceConstraint && this.distanceConstraint.connectedBody) {
+                engineAdapter.addDistanceConstraint(this.gameObject, this.distanceConstraint);
+            }
+            if (this.hingeConstraint && this.hingeConstraint.connectedBody) {
+                engineAdapter.addHingeConstraint(this.gameObject, this.hingeConstraint);
+            }
+            if (this.pointToPointConstraintList && this.pointToPointConstraintList.getCount() > 0) {
+                this.pointToPointConstraintList.forEach(function (constraint) {
+                    engineAdapter.addPointToPointConstraint(_this.gameObject, constraint);
+                }, this);
+            }
+        };
+        RigidBody.prototype.dispose = function () {
+            this._children.forEach(function (child) {
+                child.isRigidbodyChild = false;
+            });
+            this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
+            this.getPhysicsEngineAdapter().removeConstraints(this.gameObject);
+        };
+        RigidBody.prototype.getPhysicsEngineAdapter = function () {
+            return wd.Director.getInstance().scene.physicsEngineAdapter;
+        };
+        RigidBody.prototype.isPhysicsEngineAdapterExist = function () {
+            return !!wd.Director.getInstance().scene && !!wd.Director.getInstance().scene.physicsEngineAdapter;
+        };
+        RigidBody.prototype.addBodyToPhysicsEngine = function (method, data) {
+            if (data === void 0) { data = {}; }
+            var engineAdapter = this.getPhysicsEngineAdapter(), position = this.gameObject.transform.position, rotation = this.gameObject.transform.rotation;
+            engineAdapter[method](this.gameObject, wdCb.ExtendUtils.extend({
+                position: position,
+                rotation: rotation,
+                children: this._children,
+                lockConstraint: this.lockConstraint,
+                onContact: wdCb.FunctionUtils.bind(this, this._onContact),
+                onCollisionStart: wdCb.FunctionUtils.bind(this, this._onCollisionStart),
+                onCollisionEnd: wdCb.FunctionUtils.bind(this, this._onCollisionEnd),
+                friction: this.friction,
+                restitution: this.restitution
+            }, data));
+        };
+        RigidBody.prototype._onContact = function (collideObject) {
+            this.gameObject.execScript("onContact", wdCb.Collection.create([collideObject]));
+        };
+        RigidBody.prototype._onCollisionStart = function (collideObject) {
+            this.gameObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
+        };
+        RigidBody.prototype._onCollisionEnd = function () {
+            this.gameObject.execScript("onCollisionEnd");
+        };
+        RigidBody.prototype._isContainer = function (gameObject) {
+            var rigidBody = gameObject.getComponent(RigidBody);
+            return rigidBody.children.getCount() > 0;
+        };
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Friction")
+        ], RigidBody.prototype, "friction", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Restitution")
+        ], RigidBody.prototype, "restitution", null);
+        __decorate([
+            wd.require(function () {
+                if (this._isContainer(this.gameObject)) {
+                    wd.assert(!this.gameObject.getComponent(wd.Collider), wd.Log.info.FUNC_SHOULD_NOT("container", "add collider component in the case of compound"));
+                }
+                else {
+                    wd.assert(!!this.gameObject.getComponent(wd.Collider), wd.Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
+                    wd.assert(!!this.gameObject.getComponent(wd.Collider).shape, wd.Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+                }
+            })
+        ], RigidBody.prototype, "addBodyToPhysicsEngine", null);
+        return RigidBody;
+    })(wd.Component);
+    wd.RigidBody = RigidBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var DynamicRigidBody = (function (_super) {
+        __extends(DynamicRigidBody, _super);
+        function DynamicRigidBody() {
+            _super.apply(this, arguments);
+            this._linearDamping = 0;
+            this._angularDamping = 0;
+            this._velocity = wd.Vector3.create(0, 0, 0);
+            this._angularVelocity = wd.Vector3.create(0, 0, 0);
+            this._mass = 1;
+            this.impulse = null;
+            this.force = null;
+            this.hitPoint = null;
+        }
+        DynamicRigidBody.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(DynamicRigidBody.prototype, "linearDamping", {
+            get: function () {
+                return this._linearDamping;
+            },
+            set: function (linearDamping) {
+                this._linearDamping = linearDamping;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DynamicRigidBody.prototype, "angularDamping", {
+            get: function () {
+                return this._angularDamping;
+            },
+            set: function (angularDamping) {
+                this._angularDamping = angularDamping;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DynamicRigidBody.prototype, "velocity", {
+            get: function () {
+                return this._velocity;
+            },
+            set: function (velocity) {
+                this._velocity = velocity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DynamicRigidBody.prototype, "angularVelocity", {
+            get: function () {
+                return this._angularVelocity;
+            },
+            set: function (angularVelocity) {
+                this._angularVelocity = angularVelocity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(DynamicRigidBody.prototype, "mass", {
+            get: function () {
+                return this._mass;
+            },
+            set: function (mass) {
+                this._mass = mass;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        DynamicRigidBody.prototype.addBody = function () {
+            this.addBodyToPhysicsEngine("addDynamicBody", {
+                mass: this.mass,
+                linearDamping: this.linearDamping,
+                angularDamping: this.angularDamping,
+                velocity: this.velocity,
+                angularVelocity: this.angularVelocity,
+                impulse: this.impulse,
+                force: this.force,
+                hitPoint: this.hitPoint
+            });
+        };
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("LinearDamping")
+        ], DynamicRigidBody.prototype, "linearDamping", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("AngularDamping")
+        ], DynamicRigidBody.prototype, "angularDamping", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Velocity")
+        ], DynamicRigidBody.prototype, "velocity", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("AngularVelocity")
+        ], DynamicRigidBody.prototype, "angularVelocity", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Mass")
+        ], DynamicRigidBody.prototype, "mass", null);
+        return DynamicRigidBody;
+    })(wd.RigidBody);
+    wd.DynamicRigidBody = DynamicRigidBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var PhysicsConstraint = (function () {
+        function PhysicsConstraint(rigidBody) {
+            this.maxForce = null;
+            this.rigidBody = null;
+            this.rigidBody = rigidBody;
+        }
+        return PhysicsConstraint;
+    })();
+    wd.PhysicsConstraint = PhysicsConstraint;
+    var LockConstraint = (function (_super) {
+        __extends(LockConstraint, _super);
+        function LockConstraint() {
+            _super.apply(this, arguments);
+            this._connectedBody = null;
+        }
+        LockConstraint.create = function (rigidBody) {
+            var obj = new this(rigidBody);
+            return obj;
+        };
+        Object.defineProperty(LockConstraint.prototype, "connectedBody", {
+            get: function () {
+                return this._connectedBody;
+            },
+            set: function (connectedBody) {
+                var engineAdapter = null;
+                this._connectedBody = connectedBody;
+                if (!this.rigidBody.isPhysicsEngineAdapterExist()) {
+                    return;
+                }
+                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter.removeLockConstraint(this.rigidBody.gameObject);
+                this.rigidBody.addConstraint();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return LockConstraint;
+    })(PhysicsConstraint);
+    wd.LockConstraint = LockConstraint;
+    var DistanceConstraint = (function (_super) {
+        __extends(DistanceConstraint, _super);
+        function DistanceConstraint() {
+            _super.apply(this, arguments);
+            this._connectedBody = null;
+            this.distance = null;
+        }
+        DistanceConstraint.create = function (rigidBody) {
+            var obj = new this(rigidBody);
+            return obj;
+        };
+        Object.defineProperty(DistanceConstraint.prototype, "connectedBody", {
+            get: function () {
+                return this._connectedBody;
+            },
+            set: function (connectedBody) {
+                var engineAdapter = null;
+                this._connectedBody = connectedBody;
+                if (!this.rigidBody.isPhysicsEngineAdapterExist()) {
+                    return;
+                }
+                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter.removeDistanceConstraint(this.rigidBody.gameObject);
+                this.rigidBody.addConstraint();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return DistanceConstraint;
+    })(PhysicsConstraint);
+    wd.DistanceConstraint = DistanceConstraint;
+    var HingeConstraint = (function (_super) {
+        __extends(HingeConstraint, _super);
+        function HingeConstraint() {
+            _super.apply(this, arguments);
+            this._connectedBody = null;
+            this.pivotA = null;
+            this.pivotB = null;
+            this.axisA = null;
+            this.axisB = null;
+        }
+        HingeConstraint.create = function (rigidBody) {
+            var obj = new this(rigidBody);
+            return obj;
+        };
+        Object.defineProperty(HingeConstraint.prototype, "connectedBody", {
+            get: function () {
+                return this._connectedBody;
+            },
+            set: function (connectedBody) {
+                var engineAdapter = null;
+                this._connectedBody = connectedBody;
+                if (!this.rigidBody.isPhysicsEngineAdapterExist()) {
+                    return;
+                }
+                engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
+                engineAdapter.removeHingeConstraint(this.rigidBody.gameObject);
+                this.rigidBody.addConstraint();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return HingeConstraint;
+    })(PhysicsConstraint);
+    wd.HingeConstraint = HingeConstraint;
+    var PointToPointConstraint = (function (_super) {
+        __extends(PointToPointConstraint, _super);
+        function PointToPointConstraint() {
+            _super.apply(this, arguments);
+            this.connectedBody = null;
+            this.pivotA = null;
+            this.pivotB = null;
+        }
+        PointToPointConstraint.create = function (rigidBody) {
+            var obj = new this(rigidBody);
+            return obj;
+        };
+        return PointToPointConstraint;
+    })(PhysicsConstraint);
+    wd.PointToPointConstraint = PointToPointConstraint;
+    var PointToPointConstraintList = (function () {
+        function PointToPointConstraintList(rigidBody) {
+            this._rigidBody = null;
+            this._list = wdCb.Collection.create();
+            this._rigidBody = rigidBody;
+        }
+        PointToPointConstraintList.create = function (rigidBody) {
+            var obj = new this(rigidBody);
+            return obj;
+        };
+        PointToPointConstraintList.prototype.forEach = function (func, context) {
+            if (context === void 0) { context = wd.root; }
+            this._list.forEach(func, context);
+        };
+        PointToPointConstraintList.prototype.getCount = function () {
+            return this._list.getCount();
+        };
+        PointToPointConstraintList.prototype.addChild = function (constraint) {
+            var engineAdapter = null;
+            this._list.addChild(constraint);
+            if (!this._rigidBody.isPhysicsEngineAdapterExist()) {
+                return;
+            }
+            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+            engineAdapter.addPointToPointConstraint(this._rigidBody.gameObject, constraint);
+        };
+        PointToPointConstraintList.prototype.addChildren = function (arg) {
+            var _this = this;
+            if (wd.JudgeUtils.isArray(arg)) {
+                for (var _i = 0, _a = arg; _i < _a.length; _i++) {
+                    var constraint = _a[_i];
+                    this.addChild(constraint);
+                }
+            }
+            else {
+                var constraintList = arg;
+                constraintList.forEach(function (constraint) {
+                    _this.addChild(constraint);
+                }, this);
+            }
+        };
+        PointToPointConstraintList.prototype.removeChild = function (constraint) {
+            var engineAdapter = null;
+            this._list.removeChild(constraint);
+            if (!this._rigidBody.isPhysicsEngineAdapterExist()) {
+                return;
+            }
+            engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
+            engineAdapter.removePointToPointConstraint(constraint);
+        };
+        return PointToPointConstraintList;
+    })();
+    wd.PointToPointConstraintList = PointToPointConstraintList;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var PhysicsEngineFactory = (function () {
+        function PhysicsEngineFactory() {
+        }
+        PhysicsEngineFactory.create = function (type) {
+            var result = null;
+            switch (type) {
+                case wd.PhysicsEngineType.CANNON:
+                    result = wd.CannonAdapter.create();
+                    break;
+                default:
+                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNEXPECT("physics engine type"));
+                    break;
+            }
+            return result;
+        };
+        return PhysicsEngineFactory;
+    })();
+    wd.PhysicsEngineFactory = PhysicsEngineFactory;
+})(wd || (wd = {}));
+
+
+
+var wd;
+(function (wd) {
+    (function (PhysicsEngineType) {
+        PhysicsEngineType[PhysicsEngineType["CANNON"] = 0] = "CANNON";
+    })(wd.PhysicsEngineType || (wd.PhysicsEngineType = {}));
+    var PhysicsEngineType = wd.PhysicsEngineType;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var CannonDataList = (function () {
+        function CannonDataList() {
+            this.dataList = wdCb.Collection.create();
+        }
+        CannonDataList.prototype.getCount = function () {
+            return this.dataList.getCount();
+        };
+        CannonDataList.prototype.removeByGameObject = function (obj) {
+            this.dataList.removeChild(function (_a) {
+                var gameObject = _a.gameObject, body = _a.body;
+                return wd.JudgeUtils.isEqual(gameObject, obj);
+            });
+        };
+        return CannonDataList;
+    })();
+    wd.CannonDataList = CannonDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonGameObjectDataList = (function (_super) {
+        __extends(CannonGameObjectDataList, _super);
+        function CannonGameObjectDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonGameObjectDataList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CannonGameObjectDataList.prototype.remove = function (obj) {
+            this.removeByGameObject(obj);
+        };
+        CannonGameObjectDataList.prototype.updateBodyTransformData = function () {
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, body = _a.body;
+                var transform = gameObject.transform;
+                if (transform.isTranslate || transform.isRotate) {
+                    body.position = wd.CannonUtils.convertToCannonVector3(gameObject.transform.position);
+                    body.quaternion = wd.CannonUtils.convertToCannonQuaternion(gameObject.transform.rotation);
+                }
+            });
+        };
+        CannonGameObjectDataList.prototype.updateGameObjectTransformData = function () {
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, body = _a.body;
+                if (gameObject.isRigidbodyChild) {
+                    return;
+                }
+                gameObject.transform.position = wd.CannonUtils.convertToWonderVector3(body.position);
+                gameObject.transform.rotation = wd.CannonUtils.convertToWonderQuaternion(body.quaternion);
+            });
+        };
+        CannonGameObjectDataList.prototype.add = function (obj, body) {
+            this.dataList.addChild({
+                gameObject: obj,
+                body: body
+            });
+        };
+        CannonGameObjectDataList.prototype.findGameObjectByBody = function (b) {
+            var result = this.dataList.findOne(function (_a) {
+                var gameObject = _a.gameObject, body = _a.body;
+                return body === b;
+            });
+            return result !== null ? result.gameObject : null;
+        };
+        CannonGameObjectDataList.prototype.findBodyByGameObject = function (obj) {
+            var result = this.dataList.findOne(function (_a) {
+                var gameObject = _a.gameObject, body = _a.body;
+                return wd.JudgeUtils.isEqual(gameObject, obj);
+            });
+            return result !== null ? result.body : null;
+        };
+        return CannonGameObjectDataList;
+    })(wd.CannonDataList);
+    wd.CannonGameObjectDataList = CannonGameObjectDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonMaterialList = (function (_super) {
+        __extends(CannonMaterialList, _super);
+        function CannonMaterialList() {
+            _super.apply(this, arguments);
+        }
+        CannonMaterialList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CannonMaterialList.prototype.remove = function (obj) {
+            this.removeByGameObject(obj);
+        };
+        CannonMaterialList.prototype.findMaterialByGameObject = function (obj) {
+            var result = this.dataList.findOne(function (_a) {
+                var gameObject = _a.gameObject, material = _a.material;
+                return wd.JudgeUtils.isEqual(gameObject, obj);
+            });
+            return result !== null ? result.material : null;
+        };
+        CannonMaterialList.prototype.add = function (obj, material) {
+            this.dataList.addChild({
+                gameObject: obj,
+                material: material
+            });
+        };
+        CannonMaterialList.prototype.addContactMaterial = function (world, currentMaterial, friction, restitution) {
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, material = _a.material;
+                world.addContactMaterial(new CANNON.ContactMaterial(material, currentMaterial, {
+                    friction: friction,
+                    restitution: restitution
+                }));
+            });
+        };
+        CannonMaterialList.prototype.getContactMaterialData = function (world, currentMaterial, dataName) {
+            var result = null;
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, material = _a.material;
+                var contactMaterial = world.getContactMaterial(material, currentMaterial);
+                if (!contactMaterial) {
+                    return;
+                }
+                result = contactMaterial[dataName];
+                return wdCb.$BREAK;
+            });
+            return result;
+        };
+        CannonMaterialList.prototype.getContactMaterials = function (world, currentMaterial) {
+            var resultArr = [];
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, material = _a.material;
+                var contactMaterial = world.getContactMaterial(material, currentMaterial);
+                if (!contactMaterial) {
+                    return;
+                }
+                resultArr.push(contactMaterial);
+            });
+            return resultArr;
+        };
+        CannonMaterialList.prototype.setContactMaterialData = function (world, currentMaterial, dataName, data) {
+            this.dataList.forEach(function (_a) {
+                var gameObject = _a.gameObject, material = _a.material;
+                var contactMaterial = world.getContactMaterial(material, currentMaterial);
+                if (!contactMaterial) {
+                    return;
+                }
+                contactMaterial[dataName] = data;
+            });
+        };
+        return CannonMaterialList;
+    })(wd.CannonDataList);
+    wd.CannonMaterialList = CannonMaterialList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonConstraintDataList = (function (_super) {
+        __extends(CannonConstraintDataList, _super);
+        function CannonConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        return CannonConstraintDataList;
+    })(wd.CannonDataList);
+    wd.CannonConstraintDataList = CannonConstraintDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonSingleConstraintDataList = (function (_super) {
+        __extends(CannonSingleConstraintDataList, _super);
+        function CannonSingleConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonSingleConstraintDataList.prototype.add = function (obj, constraint) {
+            this.dataList.addChild({
+                gameObject: obj,
+                constraint: constraint
+            });
+        };
+        CannonSingleConstraintDataList.prototype.remove = function (obj) {
+            this.removeByGameObject(obj);
+        };
+        CannonSingleConstraintDataList.prototype.findConstraintByGameObject = function (obj) {
+            var result = this.dataList.findOne(function (_a) {
+                var gameObject = _a.gameObject;
+                return wd.JudgeUtils.isEqual(gameObject, obj);
+            });
+            return result !== null ? result.constraint : null;
+        };
+        return CannonSingleConstraintDataList;
+    })(wd.CannonConstraintDataList);
+    wd.CannonSingleConstraintDataList = CannonSingleConstraintDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonLockConstraintDataList = (function (_super) {
+        __extends(CannonLockConstraintDataList, _super);
+        function CannonLockConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonLockConstraintDataList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return CannonLockConstraintDataList;
+    })(wd.CannonSingleConstraintDataList);
+    wd.CannonLockConstraintDataList = CannonLockConstraintDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonPointToPointConstraintDataList = (function (_super) {
+        __extends(CannonPointToPointConstraintDataList, _super);
+        function CannonPointToPointConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonPointToPointConstraintDataList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CannonPointToPointConstraintDataList.prototype.filter = function (func) {
+            return this.dataList.filter(func);
+        };
+        CannonPointToPointConstraintDataList.prototype.forEach = function (func) {
+            this.dataList.forEach(func);
+        };
+        CannonPointToPointConstraintDataList.prototype.add = function (gameObject, pointToPointConstraint, constraint) {
+            this.dataList.addChild({
+                gameObject: gameObject,
+                pointToPointConstraint: pointToPointConstraint,
+                cannonConstraint: constraint
+            });
+        };
+        CannonPointToPointConstraintDataList.prototype.remove = function (constraint) {
+            this.dataList.removeChild(function (_a) {
+                var pointToPointConstraint = _a.pointToPointConstraint;
+                return wd.JudgeUtils.isEqual(pointToPointConstraint, constraint);
+            });
+        };
+        CannonPointToPointConstraintDataList.prototype.findCannonConstraintByPointToPointConstraint = function (constraint) {
+            var result = this.dataList.findOne(function (_a) {
+                var pointToPointConstraint = _a.pointToPointConstraint;
+                return wd.JudgeUtils.isEqual(pointToPointConstraint, constraint);
+            });
+            return result !== null ? result.cannonConstraint : null;
+        };
+        return CannonPointToPointConstraintDataList;
+    })(wd.CannonConstraintDataList);
+    wd.CannonPointToPointConstraintDataList = CannonPointToPointConstraintDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonDistanceConstraintDataList = (function (_super) {
+        __extends(CannonDistanceConstraintDataList, _super);
+        function CannonDistanceConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonDistanceConstraintDataList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return CannonDistanceConstraintDataList;
+    })(wd.CannonSingleConstraintDataList);
+    wd.CannonDistanceConstraintDataList = CannonDistanceConstraintDataList;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonHingeConstraintDataList = (function (_super) {
+        __extends(CannonHingeConstraintDataList, _super);
+        function CannonHingeConstraintDataList() {
+            _super.apply(this, arguments);
+        }
+        CannonHingeConstraintDataList.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return CannonHingeConstraintDataList;
+    })(wd.CannonSingleConstraintDataList);
+    wd.CannonHingeConstraintDataList = CannonHingeConstraintDataList;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var CannonUtils = (function () {
+        function CannonUtils() {
+        }
+        CannonUtils.convertToCannonVector3 = function (v) {
+            return new CANNON.Vec3(v.x, v.y, v.z);
+        };
+        CannonUtils.convertToCannonQuaternion = function (rotation) {
+            return new CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+        };
+        CannonUtils.convertToWonderVector3 = function (v) {
+            return wd.Vector3.create(v.x, v.y, v.z);
+        };
+        CannonUtils.convertToWonderQuaternion = function (r) {
+            return wd.Quaternion.create(r.x, r.y, r.z, r.w);
+        };
+        return CannonUtils;
+    })();
+    wd.CannonUtils = CannonUtils;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var CannonAdapter = (function () {
+        function CannonAdapter() {
+            this.world = null;
+            this._materialList = wd.CannonMaterialList.create();
+            this._gameObjectDataList = wd.CannonGameObjectDataList.create();
+            this._lockConstraintDataList = wd.CannonLockConstraintDataList.create();
+            this._distanceConstraintDataList = wd.CannonDistanceConstraintDataList.create();
+            this._hingeConstraintDataList = wd.CannonHingeConstraintDataList.create();
+            this._pointToPointConstraintDataList = wd.CannonPointToPointConstraintDataList.create();
+            this._dynamicBody = null;
+            this._kinematicBody = null;
+            this._staticBody = null;
+            this._lockConstraint = null;
+            this._distanceConstraint = null;
+            this._hingeConstraint = null;
+            this._pointToPointConstraint = null;
+        }
+        CannonAdapter.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CannonAdapter.prototype.getGravity = function (gravity) {
+            return wd.CannonUtils.convertToWonderVector3(this.world.gravity);
+        };
+        CannonAdapter.prototype.setGravity = function (gravity) {
+            this.world.gravity = wd.CannonUtils.convertToCannonVector3(gravity);
+        };
+        CannonAdapter.prototype.getFriction = function (obj, friction) {
+            return this._getMaterialData(obj, "friction");
+        };
+        CannonAdapter.prototype.setFriction = function (obj, friction) {
+            this._setMaterialData(obj, "friction", friction);
+        };
+        CannonAdapter.prototype.getRestitution = function (obj, restitution) {
+            return this._getMaterialData(obj, "restitution");
+        };
+        CannonAdapter.prototype.setRestitution = function (obj, restitution) {
+            this._setMaterialData(obj, "restitution", restitution);
+        };
+        CannonAdapter.prototype.getLinearDamping = function (obj) {
+            return this._getNumberData(obj, "linearDamping");
+        };
+        CannonAdapter.prototype.setLinearDamping = function (obj, linearDamping) {
+            return this._setNumberData(obj, "linearDamping", linearDamping);
+        };
+        CannonAdapter.prototype.getAngularDamping = function (obj) {
+            return this._getNumberData(obj, "angularDamping");
+        };
+        CannonAdapter.prototype.setAngularDamping = function (obj, angularDamping) {
+            return this._setNumberData(obj, "angularDamping", angularDamping);
+        };
+        CannonAdapter.prototype.getMass = function (obj) {
+            return this._getNumberData(obj, "mass");
+        };
+        CannonAdapter.prototype.setMass = function (obj, mass) {
+            return this._setNumberData(obj, "mass", mass);
+        };
+        CannonAdapter.prototype.getVelocity = function (obj) {
+            return this._getVec3Data(obj, "velocity");
+        };
+        CannonAdapter.prototype.setVelocity = function (obj, velocity) {
+            this._setVec3Data(obj, "velocity", velocity);
+        };
+        CannonAdapter.prototype.getAngularVelocity = function (obj) {
+            return this._getVec3Data(obj, "angularVelocity");
+        };
+        CannonAdapter.prototype.setAngularVelocity = function (obj, angularVelocity) {
+            this._setVec3Data(obj, "angularVelocity", angularVelocity);
+        };
+        CannonAdapter.prototype.init = function () {
+            var _a = wd.Director.getInstance().scene.physics, gravity = _a.gravity, iterations = _a.iterations;
+            this.world = new CANNON.World();
+            this.world.broadphase = new CANNON.NaiveBroadphase();
+            this.world.solver.iterations = iterations;
+            this.world.gravity.set(gravity.x, gravity.y, gravity.z);
+            this._dynamicBody = wd.CannonDynamicBody.create(this.world, this._gameObjectDataList, this._materialList);
+            this._kinematicBody = wd.CannonKinematicBody.create(this.world, this._gameObjectDataList, this._materialList);
+            this._staticBody = wd.CannonStaticBody.create(this.world, this._gameObjectDataList, this._materialList);
+            this._lockConstraint = wd.CannonLockConstraint.create(this.world, this._gameObjectDataList, this._lockConstraintDataList);
+            this._distanceConstraint = wd.CannonDistanceConstraint.create(this.world, this._gameObjectDataList, this._distanceConstraintDataList);
+            this._hingeConstraint = wd.CannonHingeConstraint.create(this.world, this._gameObjectDataList, this._hingeConstraintDataList);
+            this._pointToPointConstraint = wd.CannonPointToPointConstraint.create(this.world, this._gameObjectDataList, this._pointToPointConstraintDataList);
+        };
+        CannonAdapter.prototype.addDynamicBody = function (gameObject, data) {
+            this._dynamicBody.addBody(gameObject, data);
+        };
+        CannonAdapter.prototype.addKinematicBody = function (gameObject, data) {
+            this._kinematicBody.addBody(gameObject, data);
+        };
+        CannonAdapter.prototype.addStaticBody = function (gameObject, data) {
+            this._staticBody.addBody(gameObject, data);
+        };
+        CannonAdapter.prototype.addLockConstraint = function (gameObject, lockConstraint) {
+            this._lockConstraint.addConstraint(gameObject, lockConstraint);
+        };
+        CannonAdapter.prototype.removeLockConstraint = function (gameObject) {
+            this._lockConstraint.removeConstraint(gameObject);
+        };
+        CannonAdapter.prototype.addDistanceConstraint = function (gameObject, distanceConstraint) {
+            this._distanceConstraint.addConstraint(gameObject, distanceConstraint);
+        };
+        CannonAdapter.prototype.removeDistanceConstraint = function (gameObject) {
+            this._distanceConstraint.removeConstraint(gameObject);
+        };
+        CannonAdapter.prototype.addHingeConstraint = function (gameObject, hingeConstraint) {
+            this._hingeConstraint.addConstraint(gameObject, hingeConstraint);
+        };
+        CannonAdapter.prototype.removeHingeConstraint = function (gameObject) {
+            this._hingeConstraint.removeConstraint(gameObject);
+        };
+        CannonAdapter.prototype.addPointToPointConstraint = function (gameObject, pointToPointConstraint) {
+            this._pointToPointConstraint.addConstraint(gameObject, pointToPointConstraint);
+        };
+        CannonAdapter.prototype.removePointToPointConstraint = function (pointToPointConstraint) {
+            this._pointToPointConstraint.removeConstraint(pointToPointConstraint);
+        };
+        CannonAdapter.prototype.removeGameObject = function (obj) {
+            var material = this._getMaterial(obj), body = this._gameObjectDataList.findBodyByGameObject(obj);
+            if (body) {
+                this.world.remove(body);
+            }
+            this._gameObjectDataList.remove(obj);
+            this._materialList.remove(obj);
+        };
+        CannonAdapter.prototype.removeConstraints = function (obj) {
+            var self = this;
+            this._lockConstraint.removeConstraint(obj);
+            this._distanceConstraint.removeConstraint(obj);
+            this._hingeConstraint.removeConstraint(obj);
+            this._pointToPointConstraintDataList
+                .filter(function (_a) {
+                var gameObject = _a.gameObject;
+                return wd.JudgeUtils.isEqual(gameObject, obj);
+            })
+                .forEach(function (_a) {
+                var pointToPointConstraint = _a.pointToPointConstraint;
+                self._pointToPointConstraint.removeConstraint(pointToPointConstraint);
+            });
+        };
+        CannonAdapter.prototype.update = function (time) {
+            this._gameObjectDataList.updateBodyTransformData();
+            this.world.step(wd.Director.getInstance().getDeltaTime() / 1000);
+            this._gameObjectDataList.updateGameObjectTransformData();
+        };
+        CannonAdapter.prototype._getMaterial = function (obj) {
+            return this._materialList.findMaterialByGameObject(obj);
+        };
+        CannonAdapter.prototype._getNumberData = function (obj, dataName) {
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
+            if (!body) {
+                return null;
+            }
+            return body[dataName];
+        };
+        CannonAdapter.prototype._setNumberData = function (obj, dataName, data) {
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
+            if (!body) {
+                return null;
+            }
+            body[dataName] = data;
+        };
+        CannonAdapter.prototype._getVec3Data = function (obj, dataName) {
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
+            if (!body) {
+                return null;
+            }
+            return wd.CannonUtils.convertToWonderVector3(body[dataName]);
+        };
+        CannonAdapter.prototype._setVec3Data = function (obj, dataName, data) {
+            var body = this._gameObjectDataList.findBodyByGameObject(obj);
+            if (!body) {
+                return null;
+            }
+            body[dataName] = wd.CannonUtils.convertToCannonVector3(data);
+        };
+        CannonAdapter.prototype._getMaterialData = function (obj, dataName) {
+            var result = null, currentMaterial = this._getMaterial(obj);
+            if (!currentMaterial) {
+                return null;
+            }
+            return this._materialList.getContactMaterialData(this.world, currentMaterial, dataName);
+        };
+        CannonAdapter.prototype._setMaterialData = function (obj, dataName, data) {
+            var world = this.world, currentMaterial = this._getMaterial(obj);
+            if (!currentMaterial) {
+                wd.Log.warn("no material find, please add material first");
+                return;
+            }
+            this._materialList.setContactMaterialData(this.world, currentMaterial, dataName, data);
+        };
+        __decorate([
+            wd.require(function (obj, dataName) {
+                var resultArr = [], firstData = null, currentMaterial = this._getMaterial(obj);
+                if (!currentMaterial) {
+                    return null;
+                }
+                resultArr = this._materialList.getContactMaterials(this.world, currentMaterial);
+                firstData = resultArr[0];
+                for (var _i = 0; _i < resultArr.length; _i++) {
+                    var data = resultArr[_i];
+                    wd.assert(data === firstData, wd.Log.info.FUNC_SHOULD("the data of contact material which contains the same material", "be the same"));
+                }
+            })
+        ], CannonAdapter.prototype, "_getMaterialData", null);
+        return CannonAdapter;
+    })();
+    wd.CannonAdapter = CannonAdapter;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var CannonBody = (function () {
+        function CannonBody(world, gameObjectDataList, materialList) {
+            this.world = null;
+            this.materialList = null;
+            this.gameObjectList = null;
+            this.world = world;
+            this.gameObjectList = gameObjectDataList;
+            this.materialList = materialList;
+        }
+        CannonBody.prototype.addBody = function (gameObject, data) {
+            var body = this.createBody(data);
+            if (data.children.getCount() > 0) {
+                this._addCompounds(gameObject, data.children, body);
+            }
+            else {
+                body.addShape(this._createShape(gameObject.getComponent(wd.Collider).shape));
+            }
+            this.afterAddShape(body, data);
+            body.material = this._createMaterial(gameObject, data.friction, data.restitution);
+            body.position = wd.CannonUtils.convertToCannonVector3(data.position);
+            body.quaternion = wd.CannonUtils.convertToCannonQuaternion(data.rotation);
+            this.world.addBody(body);
+            this.gameObjectList.add(gameObject, body);
+            this._bindCollideEvent(body, data.onCollisionStart, data.onContact, data.onCollisionEnd);
+            return body;
+        };
+        CannonBody.prototype.afterAddShape = function (body, data) {
+        };
+        CannonBody.prototype._createShape = function (shape) {
+            var cannonShape = null;
+            if (shape instanceof wd.AABBShape) {
+                cannonShape = new CANNON.Box(wd.CannonUtils.convertToCannonVector3(shape.halfExtents));
+            }
+            else if (shape instanceof wd.SphereShape) {
+                cannonShape = new CANNON.Sphere(shape.radius);
+            }
+            return cannonShape;
+        };
+        CannonBody.prototype._bindCollideEvent = function (targetBody, onCollisionStart, onContact, onCollisionEnd) {
+            var self = this;
+            targetBody.addEventListener("collide", function (e) {
+                var gameObject = self.gameObjectList.findGameObjectByBody(e.body), collideObject = null;
+                if (!gameObject) {
+                    return;
+                }
+                collideObject = gameObject;
+                onCollisionStart(collideObject);
+                onContact(collideObject);
+                onCollisionEnd(collideObject);
+            });
+        };
+        CannonBody.prototype._createMaterial = function (gameObject, friction, restitution) {
+            var material = null, currentMaterial = null;
+            material = this._getMaterial(gameObject);
+            if (material) {
+                return material;
+            }
+            currentMaterial = new CANNON.Material("material");
+            this._addMaterial(gameObject, currentMaterial, friction, restitution);
+            return currentMaterial;
+        };
+        CannonBody.prototype._getMaterial = function (obj) {
+            return this.materialList.findMaterialByGameObject(obj);
+        };
+        CannonBody.prototype._addMaterial = function (gameObject, currentMaterial, friction, restitution) {
+            this.materialList.add(gameObject, currentMaterial);
+            this.materialList.addContactMaterial(this.world, currentMaterial, friction, restitution);
+        };
+        CannonBody.prototype._addCompounds = function (gameObject, children, body) {
+            var _this = this;
+            var position = gameObject.transform.position, rotation = gameObject.transform.rotation;
+            children.forEach(function (child) {
+                body.addShape(_this._createShape(child.getComponent(wd.Collider).shape), wd.CannonUtils.convertToCannonVector3(child.transform.position.copy().sub(position)), wd.CannonUtils.convertToCannonQuaternion(child.transform.rotation.copy().sub(rotation)));
+            }, this);
+        };
+        __decorate([
+            wd.virtual
+        ], CannonBody.prototype, "afterAddShape", null);
+        __decorate([
+            wd.require(function (gameObject, children, body) {
+                children.forEach(function (child) {
+                    wd.assert(!!child.getComponent(wd.Collider), wd.Log.info.FUNC_MUST_DEFINE("collider component"));
+                    wd.assert(!!child.getComponent(wd.Collider).shape, wd.Log.info.FUNC_SHOULD("create collider.shape"));
+                });
+            })
+        ], CannonBody.prototype, "_addCompounds", null);
+        return CannonBody;
+    })();
+    wd.CannonBody = CannonBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonDynamicBody = (function (_super) {
+        __extends(CannonDynamicBody, _super);
+        function CannonDynamicBody() {
+            _super.apply(this, arguments);
+        }
+        CannonDynamicBody.create = function (world, gameObjectDataList, materialList) {
+            var obj = new this(world, gameObjectDataList, materialList);
+            return obj;
+        };
+        CannonDynamicBody.prototype.createBody = function (_a) {
+            var mass = _a.mass, linearDamping = _a.linearDamping, angularDamping = _a.angularDamping, velocity = _a.velocity, angularVelocity = _a.angularVelocity;
+            return new CANNON.Body({
+                mass: mass,
+                linearDamping: linearDamping,
+                angularDamping: angularDamping,
+                velocity: wd.CannonUtils.convertToCannonVector3(velocity),
+                angularVelocity: wd.CannonUtils.convertToCannonVector3(angularVelocity)
+            });
+        };
+        CannonDynamicBody.prototype.afterAddShape = function (body, _a) {
+            var impulse = _a.impulse, force = _a.force, hitPoint = _a.hitPoint;
+            if (impulse && hitPoint) {
+                body.applyImpulse(wd.CannonUtils.convertToCannonVector3(impulse), wd.CannonUtils.convertToCannonVector3(hitPoint));
+            }
+            if (force && hitPoint) {
+                body.applyForce(wd.CannonUtils.convertToCannonVector3(force), wd.CannonUtils.convertToCannonVector3(hitPoint));
+            }
+        };
+        return CannonDynamicBody;
+    })(wd.CannonBody);
+    wd.CannonDynamicBody = CannonDynamicBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonKinematicBody = (function (_super) {
+        __extends(CannonKinematicBody, _super);
+        function CannonKinematicBody() {
+            _super.apply(this, arguments);
+        }
+        CannonKinematicBody.create = function (world, gameObjectDataList, materialList) {
+            var obj = new this(world, gameObjectDataList, materialList);
+            return obj;
+        };
+        CannonKinematicBody.prototype.createBody = function (_a) {
+            var mass = _a.mass, velocity = _a.velocity, angularVelocity = _a.angularVelocity;
+            return new CANNON.Body({
+                type: CANNON.Body.KINEMATIC,
+                mass: mass,
+                velocity: wd.CannonUtils.convertToCannonVector3(velocity),
+                angularVelocity: wd.CannonUtils.convertToCannonVector3(angularVelocity)
+            });
+        };
+        return CannonKinematicBody;
+    })(wd.CannonBody);
+    wd.CannonKinematicBody = CannonKinematicBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonStaticBody = (function (_super) {
+        __extends(CannonStaticBody, _super);
+        function CannonStaticBody() {
+            _super.apply(this, arguments);
+        }
+        CannonStaticBody.create = function (world, gameObjectDataList, materialList) {
+            var obj = new this(world, gameObjectDataList, materialList);
+            return obj;
+        };
+        CannonStaticBody.prototype.createBody = function (_a) {
+            return new CANNON.Body({
+                mass: 0
+            });
+        };
+        return CannonStaticBody;
+    })(wd.CannonBody);
+    wd.CannonStaticBody = CannonStaticBody;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var CannonConstraint = (function () {
+        function CannonConstraint(world, gameObjectDataList, constraintDataList) {
+            this.world = null;
+            this.gameObjectList = null;
+            this.constraintDataList = null;
+            this.world = world;
+            this.gameObjectList = gameObjectDataList;
+            this.constraintDataList = constraintDataList;
+        }
+        CannonConstraint.prototype.addConstraint = function (gameObject, wonderConstraint) {
+            var constraint = null, body = this.gameObjectList.findBodyByGameObject(gameObject);
+            constraint = this.createCannonConstraint(body, wonderConstraint);
+            this.world.addConstraint(constraint);
+            this.addToConstraintDataList(gameObject, wonderConstraint, constraint);
+        };
+        CannonConstraint.prototype.findBody = function (rigidBody) {
+            return this.gameObjectList.findBodyByGameObject(rigidBody.gameObject);
+        };
+        __decorate([
+            wd.require(function (gameObject, pointToPointConstraint) {
+                wd.assert(this.gameObjectList.findBodyByGameObject(gameObject) !== null, wd.Log.info.FUNC_SHOULD("add rigid body"));
+                wd.assert(this.findBody(pointToPointConstraint.connectedBody), wd.Log.info.FUNC_SHOULD("add connectedBody"));
+            })
+        ], CannonConstraint.prototype, "addConstraint", null);
+        return CannonConstraint;
+    })();
+    wd.CannonConstraint = CannonConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonSingleConstraint = (function (_super) {
+        __extends(CannonSingleConstraint, _super);
+        function CannonSingleConstraint() {
+            _super.apply(this, arguments);
+        }
+        CannonSingleConstraint.prototype.removeConstraint = function (gameObject) {
+            var constraint = this.constraintDataList.findConstraintByGameObject(gameObject);
+            if (constraint) {
+                this.world.removeConstraint(constraint);
+            }
+            this.constraintDataList.remove(gameObject);
+        };
+        CannonSingleConstraint.prototype.addToConstraintDataList = function (gameObject, wonderConstraint, cannonConstraint) {
+            this.constraintDataList.add(gameObject, cannonConstraint);
+        };
+        return CannonSingleConstraint;
+    })(wd.CannonConstraint);
+    wd.CannonSingleConstraint = CannonSingleConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonLockConstraint = (function (_super) {
+        __extends(CannonLockConstraint, _super);
+        function CannonLockConstraint() {
+            _super.apply(this, arguments);
+        }
+        CannonLockConstraint.create = function (world, gameObjectDataList, constraintDataList) {
+            var obj = new this(world, gameObjectDataList, constraintDataList);
+            return obj;
+        };
+        CannonLockConstraint.prototype.createCannonConstraint = function (body, lockConstraint) {
+            var constraint = null, connectedBody = this.findBody(lockConstraint.connectedBody);
+            if (lockConstraint.maxForce) {
+                constraint = new CANNON.LockConstraint(body, connectedBody, lockConstraint.maxForce);
+            }
+            else {
+                constraint = new CANNON.LockConstraint(body, connectedBody);
+            }
+            return constraint;
+        };
+        return CannonLockConstraint;
+    })(wd.CannonSingleConstraint);
+    wd.CannonLockConstraint = CannonLockConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonPointToPointConstraint = (function (_super) {
+        __extends(CannonPointToPointConstraint, _super);
+        function CannonPointToPointConstraint() {
+            _super.apply(this, arguments);
+        }
+        CannonPointToPointConstraint.create = function (world, gameObjectDataList, constraintDataList) {
+            var obj = new this(world, gameObjectDataList, constraintDataList);
+            return obj;
+        };
+        CannonPointToPointConstraint.prototype.removeConstraint = function (pointToPointConstraint) {
+            var constraint = this.constraintDataList.findCannonConstraintByPointToPointConstraint(pointToPointConstraint);
+            if (constraint) {
+                this.world.removeConstraint(constraint);
+            }
+            this.constraintDataList.remove(pointToPointConstraint);
+        };
+        CannonPointToPointConstraint.prototype.createCannonConstraint = function (body, pointToPointConstraint) {
+            var constraint = null, connectedBody = this.findBody(pointToPointConstraint.connectedBody), pivotA = wd.CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotA), pivotB = wd.CannonUtils.convertToCannonVector3(pointToPointConstraint.pivotB);
+            if (pointToPointConstraint.maxForce) {
+                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB, pointToPointConstraint.maxForce);
+            }
+            else {
+                constraint = new CANNON.PointToPointConstraint(body, pivotA, connectedBody, pivotB);
+            }
+            return constraint;
+        };
+        CannonPointToPointConstraint.prototype.addToConstraintDataList = function (gameObject, wonderConstraint, cannonConstraint) {
+            this.constraintDataList.add(gameObject, wonderConstraint, cannonConstraint);
+        };
+        return CannonPointToPointConstraint;
+    })(wd.CannonConstraint);
+    wd.CannonPointToPointConstraint = CannonPointToPointConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonDistanceConstraint = (function (_super) {
+        __extends(CannonDistanceConstraint, _super);
+        function CannonDistanceConstraint() {
+            _super.apply(this, arguments);
+        }
+        CannonDistanceConstraint.create = function (world, gameObjectDataList, constraintDataList) {
+            var obj = new this(world, gameObjectDataList, constraintDataList);
+            return obj;
+        };
+        CannonDistanceConstraint.prototype.createCannonConstraint = function (body, distanceConstraint) {
+            var constraint = null, connectedBody = this.findBody(distanceConstraint.connectedBody);
+            constraint = new CANNON.DistanceConstraint(body, connectedBody, distanceConstraint.distance !== null ? distanceConstraint.distance : void 0, distanceConstraint.maxForce !== null ? distanceConstraint.maxForce : void 0);
+            return constraint;
+        };
+        return CannonDistanceConstraint;
+    })(wd.CannonSingleConstraint);
+    wd.CannonDistanceConstraint = CannonDistanceConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CannonHingeConstraint = (function (_super) {
+        __extends(CannonHingeConstraint, _super);
+        function CannonHingeConstraint() {
+            _super.apply(this, arguments);
+        }
+        CannonHingeConstraint.create = function (world, gameObjectDataList, constraintDataList) {
+            var obj = new this(world, gameObjectDataList, constraintDataList);
+            return obj;
+        };
+        CannonHingeConstraint.prototype.createCannonConstraint = function (body, hingeConstraint) {
+            var constraint = null, connectedBody = this.findBody(hingeConstraint.connectedBody), pivotA = wd.CannonUtils.convertToCannonVector3(hingeConstraint.pivotA), axisA = wd.CannonUtils.convertToCannonVector3(hingeConstraint.axisA), pivotB = wd.CannonUtils.convertToCannonVector3(hingeConstraint.pivotB), axisB = wd.CannonUtils.convertToCannonVector3(hingeConstraint.axisB), options = {};
+            if (hingeConstraint.pivotA) {
+                options.pivotA = pivotA;
+            }
+            if (hingeConstraint.axisA) {
+                options.axisA = axisA;
+            }
+            if (hingeConstraint.pivotB) {
+                options.pivotB = pivotB;
+            }
+            if (hingeConstraint.axisB) {
+                options.axisB = axisB;
+            }
+            if (hingeConstraint.maxForce) {
+                options.maxForce = hingeConstraint.maxForce;
+            }
+            constraint = new CANNON.HingeConstraint(body, connectedBody, options);
+            return constraint;
+        };
+        return CannonHingeConstraint;
+    })(wd.CannonSingleConstraint);
+    wd.CannonHingeConstraint = CannonHingeConstraint;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var Pick = (function (_super) {
+        __extends(Pick, _super);
+        function Pick() {
+            _super.apply(this, arguments);
+        }
+        Pick.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Pick.prototype.init = function () {
+        };
+        Pick.prototype.dispose = function () {
+        };
+        Pick.prototype.isPick = function (localX, localY) {
+            return true;
+        };
+        return Pick;
+    })(wd.Component);
+    wd.Pick = Pick;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -11757,6 +14266,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var DirectionLight = (function (_super) {
@@ -11781,15 +14296,7 @@ var wd;
                 return this._shadowRenderList;
             },
             set: function (shadowRenderList) {
-                if (wd.JudgeUtils.isArray(shadowRenderList)) {
-                    this._shadowRenderList = wdCb.Collection.create(shadowRenderList);
-                }
-                else if (shadowRenderList instanceof wdCb.Collection) {
-                    this._shadowRenderList = shadowRenderList;
-                }
-                else {
-                    wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("shadowRenderList", "array or wdCb.Collection"));
-                }
+                this._shadowRenderList = wdCb.Collection.create(shadowRenderList);
             },
             enumerable: true,
             configurable: true
@@ -11824,6 +14331,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var PointLight = (function (_super) {
@@ -11831,7 +14344,7 @@ var wd;
         function PointLight() {
             _super.apply(this, arguments);
             this._rangeLevel = null;
-            this._shadowRenderList = null;
+            this._shadowRenderList = wdCb.Hash.create();
             this.intensity = 1;
             this._attenuation = wd.Attenuation.create();
             this._beforeInitHandler = null;
@@ -11885,14 +14398,12 @@ var wd;
                 return this._shadowRenderList;
             },
             set: function (shadowRenderList) {
-                if (wd.JudgeUtils.isDirectObject(shadowRenderList)) {
-                    this._shadowRenderList = wdCb.Hash.create(shadowRenderList);
-                }
-                else if (shadowRenderList instanceof wdCb.Hash) {
-                    this._shadowRenderList = shadowRenderList;
-                }
-                else {
-                    wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("shadowRenderList", "object or wdCb.Hash"));
+                shadowRenderList = shadowRenderList;
+                for (var direction in shadowRenderList) {
+                    if (shadowRenderList.hasOwnProperty(direction)) {
+                        var list = shadowRenderList[direction];
+                        this._shadowRenderList.addChild(direction, wdCb.Collection.create(list));
+                    }
                 }
             },
             enumerable: true,
@@ -12061,7 +14572,10 @@ var wd;
             return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
         };
         JudgeUtils.isEqual = function (target1, target2) {
-            return target1.uid === target2.uid;
+            if (target1.uid && target2.uid) {
+                return target1.uid === target2.uid;
+            }
+            return target1 === target2;
         };
         JudgeUtils.isPowerOfTwo = function (value) {
             return (value & (value - 1)) === 0 && value !== 0;
@@ -12164,6 +14678,7 @@ var wd;
             this.gameTime = null;
             this.fps = null;
             this.isTimeChange = false;
+            this.deltaTime = null;
             this._lastTime = null;
         }
         DirectorTimeController.create = function () {
@@ -12171,7 +14686,8 @@ var wd;
             return obj;
         };
         DirectorTimeController.prototype.tick = function (time) {
-            this._updateFps(time);
+            this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
+            this._updateFps(this.deltaTime);
             this.gameTime = time / GAMETIME_SCALE;
             this._lastTime = time;
         };
@@ -12187,12 +14703,12 @@ var wd;
         DirectorTimeController.prototype.getNow = function () {
             return wd.root.performance.now();
         };
-        DirectorTimeController.prototype._updateFps = function (time) {
+        DirectorTimeController.prototype._updateFps = function (deltaTime) {
             if (this._lastTime === null) {
                 this.fps = STARTING_FPS;
             }
             else {
-                this.fps = 1000 / (time - this._lastTime);
+                this.fps = 1000 / deltaTime;
             }
         };
         return DirectorTimeController;
@@ -12411,6 +14927,7 @@ var wd;
         };
         TwoDShadowMapRenderTargetRenderer.prototype.init = function () {
             var self = this;
+            this._handleShadowRendererList();
             this._shadowMapRendererUtils.bindEndLoop(function () {
                 self._light.shadowRenderList.forEach(function (child) {
                     self._shadowMapRendererUtils.clearTwoDShadowMapData(child);
@@ -12454,6 +14971,17 @@ var wd;
             camera.transform.lookAt(0, 0, 0);
             camera.init();
             return camera;
+        };
+        TwoDShadowMapRenderTargetRenderer.prototype._handleShadowRendererList = function () {
+            var _this = this;
+            var self = this, children = [];
+            this._light.shadowRenderList.forEach(function (renderTarget) {
+                children = children.concat(_this._shadowMapRendererUtils.addAllChildren(renderTarget));
+            }, this);
+            this._light.shadowRenderList.addChildren(children);
+            this._light.shadowRenderList.removeChild(function (renderTarget) {
+                return self._shadowMapRendererUtils.isContainer(renderTarget);
+            });
         };
         return TwoDShadowMapRenderTargetRenderer;
     })(wd.TwoDRenderTargetRenderer);
@@ -12593,7 +15121,6 @@ var wd;
             _super.call(this, light.shadowMap);
             this._light = null;
             this._shadowMapRendererUtils = null;
-            this._shader = null;
             this._light = light;
         }
         CubemapShadowMapRenderTargetRenderer.create = function (light) {
@@ -12607,6 +15134,7 @@ var wd;
         };
         CubemapShadowMapRenderTargetRenderer.prototype.init = function () {
             var self = this;
+            this._handleShadowRendererList();
             this._shadowMapRendererUtils.bindEndLoop(function () {
                 self._light.shadowRenderList.forEach(function (childList) {
                     childList.forEach(function (child) {
@@ -12646,14 +15174,27 @@ var wd;
         CubemapShadowMapRenderTargetRenderer.prototype._convertRenderListToCollection = function (renderList) {
             var resultList = wdCb.Collection.create();
             renderList.forEach(function (list) {
-                if (list instanceof wdCb.Collection || wd.JudgeUtils.isArray(list)) {
-                    resultList.addChildren(list);
-                }
-                else {
-                    wd.Log.error(true, wd.Log.info.FUNC_MUST_BE("array or collection"));
-                }
+                resultList.addChildren(list);
             });
             return resultList;
+        };
+        CubemapShadowMapRenderTargetRenderer.prototype._handleShadowRendererList = function () {
+            var self = this, childrenMap = wdCb.Hash.create();
+            this._light.shadowRenderList.forEach(function (childList, direction) {
+                var children = [];
+                childList.forEach(function (renderTarget) {
+                    children = children.concat(self._shadowMapRendererUtils.addAllChildren(renderTarget));
+                });
+                childrenMap.addChild(direction, children);
+            }, this);
+            this._light.shadowRenderList.forEach(function (childList, direction) {
+                childList.addChildren(childrenMap.getChild(direction));
+            });
+            this._light.shadowRenderList.forEach(function (childList) {
+                childList.removeChild(function (renderTarget) {
+                    return self._shadowMapRendererUtils.isContainer(renderTarget);
+                });
+            });
         };
         return CubemapShadowMapRenderTargetRenderer;
     })(wd.CubemapRenderTargetRenderer);
@@ -12744,8 +15285,25 @@ var wd;
             this._shader.addLib(wd.CommonVerticeShaderLib.create());
             this._shader.addLib(lib);
         };
+        ShadowMapRenderTargetRendererUtils.prototype.isContainer = function (gameObject) {
+            return !gameObject.hasComponent(wd.Geometry);
+        };
+        ShadowMapRenderTargetRendererUtils.prototype.addAllChildren = function (gameObject) {
+            var children = [], add = function (gameObject) {
+                gameObject.forEach(function (child) {
+                    children.push(child);
+                    add(child);
+                });
+            };
+            add(gameObject);
+            return children;
+        };
         ShadowMapRenderTargetRendererUtils.prototype.setShadowMap = function (target, shadowMap) {
-            var material = target.getComponent(wd.Geometry).material;
+            var material = null;
+            if (!target.hasComponent(wd.Geometry)) {
+                return;
+            }
+            material = target.getComponent(wd.Geometry).material;
             if (material.hasShadowMap(shadowMap)) {
                 return;
             }
@@ -12988,6 +15546,7 @@ var wd;
 (function (wd) {
     (function (DrawMode) {
         DrawMode[DrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
+        DrawMode[DrawMode["LINES"] = "LINES"] = "LINES";
     })(wd.DrawMode || (wd.DrawMode = {}));
     var DrawMode = wd.DrawMode;
 })(wd || (wd = {}));
@@ -13034,7 +15593,7 @@ var wd;
         function Buffer() {
             this.buffer = null;
             this.type = null;
-            this.num = null;
+            this.count = null;
         }
         Buffer.prototype.dispose = function () {
             wd.DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
@@ -13050,6 +15609,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var ElementBuffer = (function (_super) {
@@ -13058,10 +15623,15 @@ var wd;
             _super.apply(this, arguments);
             this._typeSize = null;
             this.data = null;
+            this._type = null;
         }
-        ElementBuffer.create = function (data, type) {
+        ElementBuffer.create = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
             var obj = new this();
-            obj.initWhenCreate(data, type);
+            obj.initWhenCreate.apply(obj, args);
             return obj;
         };
         Object.defineProperty(ElementBuffer.prototype, "typeSize", {
@@ -13069,24 +15639,47 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        ElementBuffer.prototype.initWhenCreate = function (data, type) {
-            var gl = wd.DeviceManager.getInstance().gl;
-            if (!data || !this._checkDataType(data, type)) {
-                return null;
+        ElementBuffer.prototype.initWhenCreate = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
+            var gl = wd.DeviceManager.getInstance().gl;
             this.buffer = gl.createBuffer();
             if (!this.buffer) {
                 wd.Log.log('Failed to create the this.buffer object');
                 return null;
             }
+            if (args.length === 0) {
+                return;
+            }
+            else {
+                var data = args[0], type = args[1], usage = args[2] || wd.BufferUsage.STATIC_DRAW;
+                if (!data || !this._checkDataType(data, type)) {
+                    return null;
+                }
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl[usage]);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+                this.type = gl[type];
+                this._type = type;
+                this.count = data.length;
+                this.data = data;
+                this._typeSize = this._getInfo(type).size;
+                return this.buffer;
+            }
+        };
+        ElementBuffer.prototype.resetData = function (data, type) {
+            if (type === void 0) { type = this._type; }
+            var gl = wd.DeviceManager.getInstance().gl;
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
             this.type = gl[type];
-            this.num = data.length;
+            this._type = type;
             this.data = data;
+            this.count = data.length;
             this._typeSize = this._getInfo(type).size;
-            return this.buffer;
+            return this;
         };
         ElementBuffer.prototype._checkDataType = function (data, type) {
             var info = this._getInfo(type);
@@ -13137,6 +15730,12 @@ var wd;
             }
             return info;
         };
+        __decorate([
+            wd.require(function (data, type) {
+                if (type === void 0) { type = this._type; }
+                wd.assert(this.buffer, wd.Log.info.FUNC_MUST("create gl buffer"));
+            })
+        ], ElementBuffer.prototype, "resetData", null);
         return ElementBuffer;
     })(wd.Buffer);
     wd.ElementBuffer = ElementBuffer;
@@ -13159,51 +15758,65 @@ var wd;
         __extends(ArrayBuffer, _super);
         function ArrayBuffer() {
             _super.apply(this, arguments);
-            this.count = null;
+            this.size = null;
             this.data = null;
             this._type = null;
         }
-        ArrayBuffer.create = function (data, num, type, usage) {
-            if (usage === void 0) { usage = wd.BufferUsage.STATIC_DRAW; }
+        ArrayBuffer.create = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
             var obj = new this();
-            obj.initWhenCreate(data, num, type, usage);
+            obj.initWhenCreate.apply(obj, args);
             return obj;
         };
-        ArrayBuffer.prototype.initWhenCreate = function (data, num, type, usage) {
-            var gl = wd.DeviceManager.getInstance().gl;
-            if (!data) {
-                return null;
+        ArrayBuffer.prototype.initWhenCreate = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
+            var gl = wd.DeviceManager.getInstance().gl;
             this.buffer = gl.createBuffer();
             if (!this.buffer) {
                 wd.Log.log('Failed to create the this.buffer object');
                 return null;
             }
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, data, gl[usage]);
-            gl.bindBuffer(gl.ARRAY_BUFFER, null);
-            this.num = num;
-            this.type = gl[type];
-            this._type = type;
-            this.count = data.length / num;
-            this.data = data;
-            return this.buffer;
+            if (args.length === 0) {
+                return;
+            }
+            else {
+                var data = args[0], size = args[1], type = args[2], usage = args[3] || wd.BufferUsage.STATIC_DRAW;
+                if (!data) {
+                    return null;
+                }
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+                gl.bufferData(gl.ARRAY_BUFFER, data, gl[usage]);
+                gl.bindBuffer(gl.ARRAY_BUFFER, null);
+                this.size = size;
+                this.type = gl[type];
+                this._type = type;
+                this.count = data.length / size;
+                this.data = data;
+                return this.buffer;
+            }
         };
-        ArrayBuffer.prototype.resetData = function (data, num, type) {
-            if (num === void 0) { num = this.num; }
+        ArrayBuffer.prototype.resetData = function (data, size, type) {
+            if (size === void 0) { size = this.size; }
             if (type === void 0) { type = this._type; }
             var gl = wd.DeviceManager.getInstance().gl;
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
             gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
-            this.num = num;
+            this.size = size;
             this.type = gl[type];
-            this.count = data.length / num;
+            this._type = type;
+            this.count = data.length / size;
             this.data = data;
             return this;
         };
         __decorate([
-            wd.require(function (data, num, type) {
-                if (num === void 0) { num = this.num; }
+            wd.require(function (data, size, type) {
+                if (size === void 0) { size = this.size; }
                 if (type === void 0) { type = this._type; }
                 wd.assert(this.buffer, wd.Log.info.FUNC_MUST("create gl buffer"));
             })
@@ -13329,19 +15942,22 @@ var wd;
             });
         };
         Program.prototype.sendAttributeData = function (name, type, data) {
-            var gl = wd.DeviceManager.getInstance().gl, pos = null;
+            var gl = wd.DeviceManager.getInstance().gl, pos = null, buffer = null;
             pos = gl.getAttribLocation(this._program, name);
             if (pos === -1 || data === null) {
                 return;
             }
             if (wd.JudgeUtils.isFunction(data)) {
-                data = data();
+                buffer = data();
                 wd.Log.error(!(data instanceof wd.ArrayBuffer), wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+            }
+            else {
+                buffer = data;
             }
             switch (type) {
                 case wd.VariableType.BUFFER:
-                    gl.bindBuffer(gl.ARRAY_BUFFER, data.buffer);
-                    gl.vertexAttribPointer(pos, data.num, data.type, false, 0, 0);
+                    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
+                    gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
                     break;
                 default:
@@ -13451,13 +16067,13 @@ var wd;
             this._setEffects();
             if (this.buffers.hasChild(wd.BufferDataType.INDICE)) {
                 var indexBuffer = this.buffers.getChild(wd.BufferDataType.INDICE);
-                totalNum = indexBuffer.num;
+                totalNum = indexBuffer.count;
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
                 vertexBuffer = this.buffers.getChild(wd.BufferDataType.VERTICE);
-                totalNum = vertexBuffer.num;
+                totalNum = vertexBuffer.count;
                 gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         };
@@ -13969,32 +16585,32 @@ var wd;
             return source.indexOf(key) !== -1;
         };
         ShaderSourceBuilder.prototype._convertArrayToArrayBuffer = function (type, value) {
-            var num = this._getBufferNum(type);
+            var size = this._getBufferSize(type);
             if (wd.JudgeUtils.isArray(value)) {
-                return wd.ArrayBuffer.create(new Float32Array(value), num, wd.BufferType.FLOAT);
+                return wd.ArrayBuffer.create(new Float32Array(value), size, wd.BufferType.FLOAT);
             }
             else if (wd.JudgeUtils.isFloatArray(value)) {
-                return wd.ArrayBuffer.create(value, num, wd.BufferType.FLOAT);
+                return wd.ArrayBuffer.create(value, size, wd.BufferType.FLOAT);
             }
         };
-        ShaderSourceBuilder.prototype._getBufferNum = function (type) {
-            var num = null;
+        ShaderSourceBuilder.prototype._getBufferSize = function (type) {
+            var size = null;
             switch (type) {
                 case wd.VariableType.FLOAT_1:
                 case wd.VariableType.NUMBER_1:
-                    num = 1;
+                    size = 1;
                     break;
                 case wd.VariableType.FLOAT_3:
-                    num = 3;
+                    size = 3;
                     break;
                 case wd.VariableType.FLOAT_4:
-                    num = 4;
+                    size = 4;
                     break;
                 default:
                     wd.Log.error(true, wd.Log.info.FUNC_UNEXPECT("VariableType", type));
                     break;
             }
-            return num;
+            return size;
         };
         return ShaderSourceBuilder;
     })();
@@ -15750,20 +18366,13 @@ var wd;
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
         ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n    vec3 halfAngle = normalize(lightDir + viewDir);\n    float blinnTerm = dot(normal, halfAngle);\n\n    blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n    blinnTerm = dotResultBetweenNormAndLight < 0.0 ? 0.0 : blinnTerm;\n    blinnTerm = pow(blinnTerm, shininess);\n\n	return blinnTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n    vec3 materialDiffuse = getMaterialDiffuse();\n    vec3 materialSpecular = getMaterialSpecular();\n\n    float dotResultBetweenNormAndLight = dot(normal, lightDir);\n    float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n\n    vec3 ambientColor = u_ambient * materialDiffuse;\n\n    vec3 diffuseColor = diff * color * materialDiffuse * intensity;\n\n\n    float spec = getBlinnPhongShininess(u_shininess, normal, lightDir, viewDir, dotResultBetweenNormAndLight);\n\n    vec3 specularColor = spec * materialSpecular * intensity;\n\n    return  ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\nvec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n    //lightDir is not normalize computing distance\n    float distance = length(lightDir);\n\n    float attenuation = 0.0;\n    if(distance < light.range)\n    {\n        attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n    }\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n    float attenuation = 1.0;\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec3 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec3 totalLight = vec3(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n       }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n       }\n    #endif\n\n    return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n	#ifdef BOTH_SIDE\n		normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n	#endif\n\n    vec3 viewDir = normalize(getViewDir());\n\n    vec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);\n\n    totalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
+        ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
+        ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
         ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
         ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
-        ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
-        ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
-        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
-        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
-        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
-        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
         ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
@@ -15771,16 +18380,13 @@ var wd;
         ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
         ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
         ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
-        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));\n    }\n", body: "", };
-        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n    //v_diffuseMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
-        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    try to solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
-        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "//v_normal = normalize( vec3(u_normalMatrix * vec4(a_normal, 1.0)));\n    v_normal = normalize( u_normalMatrix * a_normal);\n", };
-        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
-        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    try to solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
-        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(){\n            //vec3 T = normalize(normalMatrix * tangent);\n            //vec3 B = normalize(normalMatrix * bitangent);\n            //vec3 N = normalize(normalMatrix * normal);\n\n            vec3 T = normalize(u_normalMatrix * a_tangent);\n            vec3 N = normalize(u_normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN();\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
-        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return vec3(texture2D(u_specularMapSampler, v_specularMapTexCoord));\n    }\n", body: "", };
-        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
+        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
+        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
         ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
         ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
@@ -15791,6 +18397,16 @@ var wd;
         ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
         ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
+        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));\n    }\n", body: "", };
+        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n    //v_diffuseMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
+        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    try to solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
+        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "//v_normal = normalize( vec3(u_normalMatrix * vec4(a_normal, 1.0)));\n    v_normal = normalize( u_normalMatrix * a_normal);\n", };
+        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
+        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
+        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(){\n            //vec3 T = normalize(normalMatrix * tangent);\n            //vec3 B = normalize(normalMatrix * bitangent);\n            //vec3 N = normalize(normalMatrix * normal);\n\n            vec3 T = normalize(u_normalMatrix * a_tangent);\n            vec3 N = normalize(u_normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN();\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
+        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return vec3(texture2D(u_specularMapSampler, v_specularMapTexCoord));\n    }\n", body: "", };
+        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
         return ShaderChunk;
     })();
     wd.ShaderChunk = ShaderChunk;
@@ -15979,10 +18595,13 @@ var wd;
             configurable: true
         });
         Material.prototype.init = function () {
-            this._addTopShaderLib();
-            this.addShaderLib();
-            this.mapManager.init();
+            var self = this;
             this.shader.init();
+            this.mapManager.init();
+            wd.EventManager.on(wd.EngineEvent.AFTER_INIT, function () {
+                self._addTopShaderLib();
+                self.addShaderLib();
+            });
         };
         Material.prototype.dispose = function () {
             this.mapManager.dispose();
@@ -16082,8 +18701,8 @@ var wd;
                 else {
                     var mapArr = (arguments[0]);
                     wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
-                    for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
-                        var m = mapArr_1[_i];
+                    for (var _i = 0; _i < mapArr.length; _i++) {
+                        var m = mapArr[_i];
                         this.addMap(m);
                     }
                 }
@@ -17752,8 +20371,8 @@ var wd;
             verticeIndexOfAddedVertex = this._getVerticeIndexOfAddedVertex(vertices);
             verticeIndices[index] = verticeIndexOfAddedVertex;
             if (wd.GeometryUtils.hasData(morphTargets)) {
-                for (var _i = 0, morphTargets_1 = morphTargets; _i < morphTargets_1.length; _i++) {
-                    var frame = morphTargets_1[_i];
+                for (var _i = 0; _i < morphTargets.length; _i++) {
+                    var frame = morphTargets[_i];
                     this._addThreeComponent(frame.vertices, verticeIndex);
                     if (wd.GeometryUtils.hasData(frame.normals)) {
                         this._addDuplicateNormalOfAddedVertex(frame.normals, normalIndices, index, verticeIndex);
@@ -17918,8 +20537,8 @@ var wd;
             if (wd.GeometryUtils.hasData(objectMorphTargets)) {
                 morphTargets = wdCb.Hash.create();
                 morphNormals = wdCb.Hash.create();
-                for (var _i = 0, objectMorphTargets_1 = objectMorphTargets; _i < objectMorphTargets_1.length; _i++) {
-                    var frameData = objectMorphTargets_1[_i];
+                for (var _i = 0; _i < objectMorphTargets.length; _i++) {
+                    var frameData = objectMorphTargets[_i];
                     var animName = this._getAnimName(frameData.name);
                     morphTargets.appendChild(animName, frameData.vertices);
                     if (wd.GeometryUtils.hasData(frameData.normals)) {
@@ -18285,8 +20904,8 @@ var wd;
         };
         EventNameHandler._getSpecifyBrowserEventName = function (specifyBrowserEventNameArr) {
             var result = null;
-            for (var _i = 0, specifyBrowserEventNameArr_1 = specifyBrowserEventNameArr; _i < specifyBrowserEventNameArr_1.length; _i++) {
-                var eventName = specifyBrowserEventNameArr_1[_i];
+            for (var _i = 0; _i < specifyBrowserEventNameArr.length; _i++) {
+                var eventName = specifyBrowserEventNameArr[_i];
                 var _a = eventName.split(BROWSER_IDENTIFIER), domEventName = _a[0], browserIdentifier = _a[1];
                 switch (browserIdentifier) {
                     case BrowserIdentifier.CHROME:
@@ -19712,6 +22331,8 @@ var wd;
         EngineEvent[EngineEvent["ENDLOOP"] = "dy_endLoop"] = "ENDLOOP";
         EngineEvent[EngineEvent["BEFORE_INIT"] = "dy_beforeInit"] = "BEFORE_INIT";
         EngineEvent[EngineEvent["AFTER_INIT"] = "dy_afterInit"] = "AFTER_INIT";
+        EngineEvent[EngineEvent["AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT"] = "dy_afterInit_rigidBody_addConstraint"] = "AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT";
+        EngineEvent[EngineEvent["MATERIAL_CHANGE"] = "dy_material_change"] = "MATERIAL_CHANGE";
     })(wd.EngineEvent || (wd.EngineEvent = {}));
     var EngineEvent = wd.EngineEvent;
 })(wd || (wd = {}));
@@ -20440,7 +23061,7 @@ var wd;
         Texture.prototype.bindToUnit = function (unit) {
             var gl = wd.DeviceManager.getInstance().gl, maxUnit = wd.GPUDetector.getInstance().maxTextureUnit;
             if (unit >= maxUnit) {
-                wd.Log.warn("trying to use %d texture units, but GPU only supports %d units", unit, maxUnit);
+                wd.Log.warn("trying to use " + unit + " texture units, but GPU only supports " + maxUnit + " units");
             }
             gl.activeTexture(gl["TEXTURE" + String(unit)]);
             gl.bindTexture(gl[this.target], this.glTexture);
@@ -20507,6 +23128,9 @@ var wd;
                 gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl[this.filterFallback(this.minFilter)]);
             }
         };
+        __decorate([
+            wd.virtual
+        ], Texture.prototype, "sendOtherData", null);
         __decorate([
             wd.virtual
         ], Texture.prototype, "isSourcePowerOfTwo", null);
@@ -21234,8 +23858,8 @@ var wd;
         };
         CubemapTexture.prototype._areAssetsAllImageAssets = function (assets) {
             var areImageAssets = [];
-            for (var _i = 0, assets_1 = assets; _i < assets_1.length; _i++) {
-                var data = assets_1[_i];
+            for (var _i = 0; _i < assets.length; _i++) {
+                var data = assets[_i];
                 if (data.asset instanceof wd.ImageTextureAsset) {
                     areImageAssets.push(data);
                 }
@@ -21244,8 +23868,8 @@ var wd;
         };
         CubemapTexture.prototype._areAssetsAllCompressedAsset = function (assets) {
             var areCompressedAssets = [];
-            for (var _i = 0, assets_2 = assets; _i < assets_2.length; _i++) {
-                var data = assets_2[_i];
+            for (var _i = 0; _i < assets.length; _i++) {
+                var data = assets[_i];
                 if (data.asset instanceof wd.CompressedTextureAsset) {
                     areCompressedAssets.push(data);
                 }
@@ -21254,8 +23878,8 @@ var wd;
         };
         CubemapTexture.prototype._createTextures = function (assets) {
             var self = this;
-            for (var _i = 0, assets_3 = assets; _i < assets_3.length; _i++) {
-                var data = assets_3[_i];
+            for (var _i = 0; _i < assets.length; _i++) {
+                var data = assets[_i];
                 var face = data.asset.toCubemapFaceTexture();
                 if (data.sourceRegion && face instanceof wd.CubemapFaceImageTexture) {
                     var twoDFace = face;
@@ -21269,8 +23893,8 @@ var wd;
         };
         CubemapTexture.prototype._areTextureSizOfAllFaceseEqual = function (assets) {
             var textureWidthSizeArr = [], textureHeightSizeArr = [];
-            for (var _i = 0, assets_4 = assets; _i < assets_4.length; _i++) {
-                var data = assets_4[_i];
+            for (var _i = 0; _i < assets.length; _i++) {
+                var data = assets[_i];
                 if (data.sourceRegion) {
                     textureWidthSizeArr.push(data.sourceRegion.width);
                     textureHeightSizeArr.push(data.sourceRegion.height);
@@ -21283,8 +23907,8 @@ var wd;
             return this._areAllElementsEqual(textureWidthSizeArr) && this._areAllElementsEqual(textureHeightSizeArr);
         };
         CubemapTexture.prototype._hasSourceRegion = function (assets) {
-            for (var _i = 0, assets_5 = assets; _i < assets_5.length; _i++) {
-                var data = assets_5[_i];
+            for (var _i = 0; _i < assets.length; _i++) {
+                var data = assets[_i];
                 if (data.sourceRegion) {
                     return true;
                 }
@@ -21293,8 +23917,8 @@ var wd;
         };
         CubemapTexture.prototype._areAllElementsEqual = function (arr) {
             var lastEle = arr[0];
-            for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
-                var ele = arr_1[_i];
+            for (var _i = 0; _i < arr.length; _i++) {
+                var ele = arr[_i];
                 if (ele !== lastEle) {
                     return false;
                 }
@@ -21754,36 +24378,99 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
-    var CustomGeometry = (function (_super) {
-        __extends(CustomGeometry, _super);
-        function CustomGeometry() {
+    var KinematicRigidBody = (function (_super) {
+        __extends(KinematicRigidBody, _super);
+        function KinematicRigidBody() {
             _super.apply(this, arguments);
-            this.vertices = null;
-            this.texCoords = null;
-            this.colors = null;
-            this.indices = null;
-            this.normals = null;
+            this._velocity = wd.Vector3.create(0, 0, 0);
+            this._angularVelocity = wd.Vector3.create(0, 0, 0);
+            this._mass = 1;
         }
-        CustomGeometry.create = function () {
-            var geom = new this();
-            return geom;
+        KinematicRigidBody.create = function () {
+            var obj = new this();
+            return obj;
         };
-        CustomGeometry.prototype.computeData = function () {
-            return {
-                vertices: this.vertices,
-                faces: wd.GeometryUtils.convertToFaces(this.indices, this.normals),
-                texCoords: this.texCoords,
-                colors: this.colors
-            };
+        Object.defineProperty(KinematicRigidBody.prototype, "velocity", {
+            get: function () {
+                return this._velocity;
+            },
+            set: function (velocity) {
+                this._velocity = velocity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(KinematicRigidBody.prototype, "angularVelocity", {
+            get: function () {
+                return this._angularVelocity;
+            },
+            set: function (angularVelocity) {
+                this._angularVelocity = angularVelocity;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(KinematicRigidBody.prototype, "mass", {
+            get: function () {
+                return this._mass;
+            },
+            set: function (mass) {
+                this._mass = mass;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        KinematicRigidBody.prototype.addBody = function () {
+            this.addBodyToPhysicsEngine("addKinematicBody", {
+                mass: this.mass,
+                velocity: this.velocity,
+                angularVelocity: this.angularVelocity
+            });
         };
-        CustomGeometry.prototype.createBufferContainer = function () {
-            return wd.CommonBufferContainer.create();
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Velocity")
+        ], KinematicRigidBody.prototype, "velocity", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("AngularVelocity")
+        ], KinematicRigidBody.prototype, "angularVelocity", null);
+        __decorate([
+            wd.operateBodyDataGetterAndSetter("Mass")
+        ], KinematicRigidBody.prototype, "mass", null);
+        return KinematicRigidBody;
+    })(wd.RigidBody);
+    wd.KinematicRigidBody = KinematicRigidBody;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var StaticRigidBody = (function (_super) {
+        __extends(StaticRigidBody, _super);
+        function StaticRigidBody() {
+            _super.apply(this, arguments);
+        }
+        StaticRigidBody.create = function () {
+            var obj = new this();
+            return obj;
         };
-        return CustomGeometry;
-    })(wd.Geometry);
-    wd.CustomGeometry = CustomGeometry;
+        StaticRigidBody.prototype.addBody = function () {
+            this.addBodyToPhysicsEngine("addStaticBody");
+        };
+        return StaticRigidBody;
+    })(wd.RigidBody);
+    wd.StaticRigidBody = StaticRigidBody;
 })(wd || (wd = {}));
 
 var wd;

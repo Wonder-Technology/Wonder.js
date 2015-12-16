@@ -911,8 +911,9 @@ declare module wdFrp {
 
 
 declare module wd {
-    var Config: {
+    var DebugConfig: {
         isTest: boolean;
+        debugCollision: boolean;
     };
 }
 
@@ -942,6 +943,12 @@ declare module wd {
 
 declare module wd {
     function virtual(target: any, name: any, descriptor: any): any;
+}
+
+
+declare module wd {
+    function operateBodyDataGetterAndSetter(dataName: any): (target: any, name: any, descriptor: any) => any;
+    function operateWorldDataGetterAndSetter(dataName: any): (target: any, name: any, descriptor: any) => any;
 }
 
 declare module wd {
@@ -1002,11 +1009,18 @@ declare module wd {
         up: Vector3;
         right: Vector3;
         forward: Vector3;
+        private _isTranslate;
+        isTranslate: boolean;
+        private _isRotate;
+        isRotate: boolean;
+        private _isScale;
+        isScale: boolean;
         dirtyWorld: boolean;
         dirtyLocal: boolean;
         private _children;
         private _gameObject;
         constructor(gameObject: GameObject);
+        init(): void;
         addChild(child: Transform): void;
         removeChild(child: Transform): void;
         sync(): void;
@@ -1024,6 +1038,7 @@ declare module wd {
         lookAt(targetX: number, targetY: number, targetZ: number): any;
         lookAt(target: Vector3, up: Vector3): any;
         lookAt(targetX: number, targetY: number, targetZ: number, upX: number, upY: number, upZ: number): any;
+        private _resetTransformFlag();
     }
 }
 
@@ -1031,13 +1046,15 @@ declare module wd {
 declare module wd {
     class GameObject extends Entity {
         static create(): GameObject;
-        private _script;
+        private _scripts;
         script: wdCb.Hash<IScriptBehavior>;
         parent: GameObject;
+        isRigidbodyChild: boolean;
         bubbleParent: GameObject;
         transform: Transform;
         name: string;
         actionManager: ActionManager;
+        isCollided: boolean;
         private _children;
         private _components;
         private _startLoopHandler;
@@ -1054,7 +1071,8 @@ declare module wd {
         addChildren(children: Array<GameObject>): any;
         addChildren(children: wdCb.Collection<GameObject>): any;
         sort(): this;
-        forEach(func: Function): this;
+        forEach(func: (gameObjcet: GameObject) => void): this;
+        filter(func: (gameObjcet: GameObject) => boolean): wdCb.Collection<GameObject>;
         getChildren(): wdCb.Collection<GameObject>;
         getChild(index: number): GameObject;
         findChildByUid(uid: number): GameObject;
@@ -1065,20 +1083,22 @@ declare module wd {
         getFirstComponent(): Component;
         removeChild(child: GameObject): GameObject;
         getTopUnderPoint(point: Point): GameObject;
-        isHit(locationInView: Point): boolean;
+        isPick(locationInView: Point): boolean;
         hasComponent(component: Component): boolean;
         hasComponent(_class: Function): boolean;
         addComponent(component: Component): this;
-        removeComponent(component: Component): this;
+        removeComponent(component: Component): any;
+        removeComponent(_class: Function): any;
         render(renderer: Renderer, camera: GameObject): void;
         update(time: number): void;
+        execScript(method: string, arg?: any): void;
         private _ascendZ(a, b);
-        private _execScript(method, arg?);
         private _getGeometry();
-        private _getCollider();
+        private _getPick();
         private _getCamera();
         private _getAnimation();
         private _getRendererComponent();
+        private _getCollider();
         private _getComponentCount(_class);
     }
 }
@@ -1133,6 +1153,7 @@ declare module wd {
         pause(): void;
         resume(): void;
         getTopUnderPoint(point: Point): GameObject;
+        getDeltaTime(): number;
         private startLoop();
         private _buildLoadScriptStream();
         private _buildInitStream();
@@ -1173,17 +1194,29 @@ declare module wd {
         shader: Shader;
         camera: GameObject;
         isUseProgram: Boolean;
+        physics: PhysicsConfig;
+        physicsEngineAdapter: IPhysicsEngineAdapter;
         private _lightManager;
         private _renderTargetRenderers;
+        private _collisionDetector;
         init(): this;
         useProgram(shader: Shader): void;
         unUseProgram(): void;
         addChild(child: GameObject): GameObject;
         addRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
         removeRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
+        update(time: number): void;
         render(renderer: Renderer): void;
         private _isCamera(child);
         private _isLight(child);
+    }
+    class PhysicsConfig {
+        static create(): PhysicsConfig;
+        private _gravity;
+        gravity: Vector3;
+        enable: boolean;
+        engine: PhysicsEngineType;
+        iterations: number;
     }
     type ShadowMapConfig = {
         enable: boolean;
@@ -1212,6 +1245,18 @@ declare module wd {
     class Skybox extends GameObject {
         static create(): Skybox;
         initWhenCreate(): void;
+    }
+}
+
+
+declare module wd {
+    class CollisionDetector {
+        static create(): CollisionDetector;
+        private _lastCollideObjects;
+        detect(scene: Scene): void;
+        private _isCollisionStart(gameObject);
+        private _isCollisionEnd(gameObject);
+        private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, currentGameObject, eventList);
     }
 }
 
@@ -1257,6 +1302,7 @@ declare module wd {
         sub2(v1: Vector3, v2: Vector3): this;
         add(v: Vector3): this;
         add2(v1: Vector3, v2: Vector3): this;
+        mul(v: Vector3): this;
         reverse(): Vector3;
         copy(): Vector3;
         toVector4(): Vector4;
@@ -1264,8 +1310,13 @@ declare module wd {
         cross(lhs: Vector3, rhs: Vector3): this;
         lerp(lhs: Vector3, rhs: Vector3, alpha: number): this;
         dot(rhs: any): number;
+        min(v: Vector3): this;
+        max(v: Vector3): this;
         isEqual(v: Vector3): boolean;
         toArray(): number[];
+        applyMatrix4(m: Matrix4): this;
+        distanceTo(v: Vector3): any;
+        distanceToSquared(v: Vector3): number;
     }
 }
 
@@ -1477,8 +1528,32 @@ declare module wd {
         static convertToFaces(indices: Array<number>, normals?: Array<number>): Array<Face3>;
         static hasData(data: any): boolean;
         static getThreeComponent(sourceData: Array<number>, index: number): Vector3;
+        static iterateThreeComponent(dataArr: Array<number>, iterator: (v: Vector3) => void): void;
         static setThreeComponent(targetData: Array<number>, sourceData: Vector3, index: number): any;
         static setThreeComponent(targetData: Array<number>, sourceData: Array<number>, index: number): any;
+    }
+}
+
+
+declare module wd {
+    class CustomGeometry extends Geometry {
+        static create(): CustomGeometry;
+        private _vertices;
+        vertices: Array<number>;
+        private _texCoords;
+        texCoords: Array<number>;
+        private _colors;
+        colors: Array<number>;
+        private _indices;
+        indices: Array<number>;
+        private _normals;
+        normals: Array<number>;
+        protected computeData(): {
+            vertices: number[];
+            faces: Face3[];
+            texCoords: number[];
+            colors: number[];
+        };
     }
 }
 
@@ -1654,14 +1729,22 @@ declare module wd {
 
 declare module wd {
     abstract class BufferContainer {
+        constructor(gameObject: GameObject);
         geometryData: GeometryData;
+        protected gameObject: GameObject;
+        protected container: wdCb.Hash<Buffer>;
+        private _colorBuffer;
+        private _texCoordBuffer;
+        private _tangentBuffer;
+        private _indiceBuffer;
         init(): void;
+        removeCache(type: BufferDataType): void;
         getChild(type: BufferDataType): any;
         hasChild(type: BufferDataType): boolean;
         dispose(): void;
         protected abstract getVertice(type: any): any;
         protected abstract getNormal(type: any): any;
-        protected container: wdCb.Hash<Buffer>;
+        protected createBufferOnlyOnce(bufferAttriName: string, bufferClass: any): void;
         private _getTangent(type);
         private _getColor(type);
         private _getIndice(type);
@@ -1673,8 +1756,10 @@ declare module wd {
 
 declare module wd {
     class CommonBufferContainer extends BufferContainer {
-        static create(): CommonBufferContainer;
+        static create(gameObject: GameObject): CommonBufferContainer;
         geometryData: CommonGeometryData;
+        private _verticeBuffer;
+        private _normalBuffer;
         protected getVertice(type: BufferDataType): ArrayBuffer;
         protected getNormal(type: BufferDataType): ArrayBuffer;
     }
@@ -1683,16 +1768,22 @@ declare module wd {
 
 declare module wd {
     class MorphBufferContainer extends BufferContainer {
-        static create(animation: MorphAnimation): MorphBufferContainer;
-        constructor(animation: MorphAnimation);
+        static create(gameObject: GameObject, animation: MorphAnimation): MorphBufferContainer;
+        constructor(gameObject: GameObject, animation: MorphAnimation);
         geometryData: MorphGeometryData;
         protected container: wdCb.Hash<Buffer & Array<ArrayBuffer>>;
         private _animation;
         private _isCacheChangeFlag;
         private _isCacheChangeInLastLoop;
+        private _currentVerticeBuffer;
+        private _nextVerticeBuffer;
+        private _currentNormalBuffer;
+        private _nextNormalBuffer;
         protected getVertice(type: BufferDataType): ArrayBuffer[];
         protected getNormal(type: BufferDataType): ArrayBuffer[];
         private _getMorphData(type, morphDataTargets);
+        private _getCurrentBuffer(type);
+        private _getNextBuffer(type);
         private _isCacheNotChange(type);
         private _isNotPlayAnimation();
         private _getStaticData(type);
@@ -2150,6 +2241,7 @@ declare module wd {
 declare module wd {
     class MeshRenderer extends RendererComponent {
         static create(): MeshRenderer;
+        drawMode: DrawMode;
         render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
         protected createDrawCommand(renderer: Renderer, geometry: Geometry, camera: GameObject): any;
     }
@@ -2166,17 +2258,616 @@ declare module wd {
 
 declare module wd {
     abstract class Collider extends Component {
-        collideXY(localX: number, localY: number): boolean;
-        collide(collider: Collider): boolean;
+        shape: Shape;
+        type: string;
+        boundingRegion: BoundingRegion;
+        abstract createBoundingRegion(): any;
+        abstract buildBoundingRegion(): any;
+        init(): void;
+        update(time: number): void;
+        updateShape(): void;
+        isIntersectWith(collider: Collider): any;
+        getCollideObjects(checkTargetList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
+        private _isSelf(gameObject);
     }
 }
 
 
 declare module wd {
-    class TopCollider extends Collider {
-        static create(): TopCollider;
-        collideXY(localX: number, localY: number): boolean;
-        collide(collider: Collider): boolean;
+    class BoxCollider extends Collider {
+        static create(): BoxCollider;
+        boundingRegion: BoxBoundingRegion;
+        center: Vector3;
+        halfExtents: Vector3;
+        type: string;
+        createBoundingRegion(): BoxBoundingRegion;
+        buildBoundingRegion(): void;
+    }
+}
+
+
+declare module wd {
+    class SphereCollider extends Collider {
+        static create(): SphereCollider;
+        boundingRegion: SphereBoundingRegion;
+        center: Vector3;
+        radius: number;
+        type: string;
+        createBoundingRegion(): SphereBoundingRegion;
+        buildBoundingRegion(): void;
+    }
+}
+
+
+declare module wd {
+    abstract class BoundingRegion {
+        constructor(gameObject: GameObject);
+        shape: Shape;
+        protected gameObject: GameObject;
+        protected isUserSpecifyTheRegion: boolean;
+        protected originShape: Shape;
+        protected debugObject: GameObject;
+        abstract updateShape(): any;
+        init(): void;
+        build(center: Vector3, ...args: any[]): void;
+        update(): void;
+        isIntersectWithSphere(boundingRegion: SphereBoundingRegion): any;
+        isIntersectWithBox(boundingRegion: BoxBoundingRegion): any;
+        protected abstract createShape(): Shape;
+        protected abstract isBuildUserSpecifyBoundingRegion(...args: any[]): boolean;
+        protected abstract isNotTransformed(): boolean;
+        protected abstract updateDebugObjectFromShape(shape: Shape): any;
+        protected abstract setDebugObjectGeometry(geometry: CustomGeometry, shape: Shape): any;
+        protected buildDebugObjectFromShape(shape: Shape): any;
+    }
+}
+
+
+declare module wd {
+    class BoxBoundingRegion extends BoundingRegion {
+        static create(gameObject: GameObject): BoxBoundingRegion;
+        shape: AABBShape;
+        protected originShape: AABBShape;
+        updateShape(): void;
+        protected createShape(): AABBShape;
+        protected updateDebugObjectFromShape(shape: AABBShape): void;
+        protected setDebugObjectGeometry(geometry: CustomGeometry, shape: AABBShape): void;
+        protected isBuildUserSpecifyBoundingRegion(center: Vector3, halfExtents: Vector3): boolean;
+        protected isNotTransformed(): boolean;
+    }
+}
+
+
+declare module wd {
+    class SphereBoundingRegion extends BoundingRegion {
+        static create(gameObject: GameObject): SphereBoundingRegion;
+        shape: SphereShape;
+        protected originShape: SphereShape;
+        updateShape(): void;
+        protected createShape(): SphereShape;
+        protected updateDebugObjectFromShape(shape: SphereShape): void;
+        protected isNotTransformed(): boolean;
+        protected isBuildUserSpecifyBoundingRegion(center: Vector3, radius: any): boolean;
+        protected setDebugObjectGeometry(geometry: CustomGeometry, shape: SphereShape): void;
+    }
+}
+
+
+declare module wd {
+    abstract class Shape {
+        center: Vector3;
+        abstract setFromShapeParam(...args: any[]): any;
+        abstract setFromPoints(points: Array<number>): any;
+        abstract copy(): Shape;
+        abstract isIntersectWithBox(shape: AABBShape): any;
+        abstract isIntersectWithSphere(shape: SphereShape): any;
+        protected isBoxAndSphereIntersected(box: AABBShape, sphere: SphereShape): boolean;
+    }
+}
+
+
+declare module wd {
+    class AABBShape extends Shape {
+        static create(): AABBShape;
+        halfExtents: Vector3;
+        setMinMax(min: Vector3, max: Vector3): void;
+        getMin(): Vector3;
+        getMax(): Vector3;
+        setFromShapeParam(center: Vector3, halfExtents: Vector3): void;
+        setFromPoints(points: Array<number>): this;
+        setFromTransformedAABB(aabb: AABBShape, matrix: Matrix4): void;
+        setFromTranslationAndScale(aabb: AABBShape, matrix: Matrix4): void;
+        setFromObject(gameObject: GameObject): void;
+        isIntersectWithBox(shape: AABBShape): boolean;
+        isIntersectWithSphere(shape: SphereShape): boolean;
+        closestPointTo(point: Vector3): Vector3;
+        containPoint(point: Vector3): boolean;
+        copy(): AABBShape;
+        private _getEmptyMin();
+        private _getEmptyMax();
+        private _expandByPoint(point, min, max);
+    }
+}
+
+
+declare module wd {
+    class SphereShape extends Shape {
+        static create(): SphereShape;
+        radius: number;
+        setFromShapeParam(center: Vector3, radius: number): void;
+        setFromPoints(points: Array<number>): void;
+        setFromTranslationAndScale(sphere: SphereShape, matrix: Matrix4): void;
+        isIntersectWithSphere(shape: SphereShape): boolean;
+        isIntersectWithBox(shape: AABBShape): boolean;
+        containPoint(point: Vector3): boolean;
+        copy(): SphereShape;
+        private _findMaxDistanceOfPointsToCenter(points);
+    }
+}
+
+declare module wd {
+    enum ColliderType {
+        BOX,
+        SPHERE,
+    }
+}
+
+
+declare module wd {
+    abstract class RigidBody extends Component {
+        private _friction;
+        friction: number;
+        private _restitution;
+        restitution: number;
+        private _children;
+        children: any;
+        lockConstraint: LockConstraint;
+        distanceConstraint: DistanceConstraint;
+        hingeConstraint: HingeConstraint;
+        pointToPointConstraintList: PointToPointConstraintList;
+        init(): void;
+        addConstraint(): void;
+        dispose(): void;
+        getPhysicsEngineAdapter(): any;
+        isPhysicsEngineAdapterExist(): boolean;
+        protected abstract addBody(): any;
+        protected addBodyToPhysicsEngine(method: string, data?: any): void;
+        private _onContact(collideObject);
+        private _onCollisionStart(collideObject);
+        private _onCollisionEnd();
+        private _isContainer(gameObject);
+    }
+}
+
+
+declare module wd {
+    class DynamicRigidBody extends RigidBody {
+        static create(): DynamicRigidBody;
+        private _linearDamping;
+        linearDamping: number;
+        private _angularDamping;
+        angularDamping: number;
+        private _velocity;
+        velocity: Vector3;
+        private _angularVelocity;
+        angularVelocity: Vector3;
+        private _mass;
+        mass: number;
+        impulse: Vector3;
+        force: Vector3;
+        hitPoint: Vector3;
+        protected addBody(): void;
+    }
+}
+
+
+declare module wd {
+    abstract class PhysicsConstraint {
+        constructor(rigidBody: RigidBody);
+        maxForce: number;
+        protected rigidBody: RigidBody;
+    }
+    class LockConstraint extends PhysicsConstraint {
+        static create(rigidBody: RigidBody): LockConstraint;
+        private _connectedBody;
+        connectedBody: RigidBody;
+    }
+    class DistanceConstraint extends PhysicsConstraint {
+        static create(rigidBody: RigidBody): DistanceConstraint;
+        private _connectedBody;
+        connectedBody: RigidBody;
+        distance: number;
+    }
+    class HingeConstraint extends PhysicsConstraint {
+        static create(rigidBody: RigidBody): HingeConstraint;
+        private _connectedBody;
+        connectedBody: RigidBody;
+        pivotA: Vector3;
+        pivotB: Vector3;
+        axisA: Vector3;
+        axisB: Vector3;
+    }
+    class PointToPointConstraint extends PhysicsConstraint {
+        static create(rigidBody: RigidBody): PointToPointConstraint;
+        connectedBody: RigidBody;
+        pivotA: Vector3;
+        pivotB: Vector3;
+    }
+    class PointToPointConstraintList {
+        static create(rigidBody: RigidBody): PointToPointConstraintList;
+        constructor(rigidBody: RigidBody);
+        private _rigidBody;
+        private _list;
+        forEach(func: (PointToPointConstraint) => void, context?: any): void;
+        getCount(): number;
+        addChild(constraint: PointToPointConstraint): void;
+        addChildren(arg: Array<PointToPointConstraint> | wdCb.List<PointToPointConstraint>): void;
+        removeChild(constraint: PointToPointConstraint): void;
+    }
+}
+
+
+declare module wd {
+    class PhysicsEngineFactory {
+        static create(type: PhysicsEngineType): IPhysicsEngineAdapter;
+    }
+}
+
+
+declare module wd {
+    interface IPhysicsEngineAdapter {
+        world: any;
+        init(): void;
+        update(time: number): void;
+        getGravity(gravity: number): Vector3;
+        setGravity(gravity: Vector3): void;
+        getFriction(obj: GameObject, friction: number): number;
+        setFriction(obj: GameObject, friction: number): void;
+        getRestitution(obj: GameObject, restitution: number): number;
+        setRestitution(obj: GameObject, restitution: number): void;
+        getLinearDamping(obj: GameObject): number;
+        setLinearDamping(obj: GameObject, linearDamping: number): void;
+        getAngularDamping(obj: GameObject): number;
+        setAngularDamping(obj: GameObject, angularDamping: number): void;
+        getMass(obj: GameObject): number;
+        setMass(obj: GameObject, mass: number): void;
+        getVelocity(obj: GameObject): Vector3;
+        setVelocity(obj: GameObject, velocity: Vector3): void;
+        getAngularVelocity(obj: GameObject): Vector3;
+        setAngularVelocity(obj: GameObject, angularVelocity: Vector3): void;
+        addDynamicBody(gameObject: GameObject, shape: Shape, options: any): void;
+        addKinematicBody(gameObject: GameObject, shape: Shape, options: any): void;
+        addStaticBody(gameObject: GameObject, shape: Shape, options: any): void;
+        addLockConstraint(gameObject: GameObject, lockConstraint: LockConstraint): void;
+        removeLockConstraint(gameObject: GameObject): void;
+        addDistanceConstraint(gameObject: GameObject, distanceConstraint: DistanceConstraint): void;
+        removeDistanceConstraint(gameObject: GameObject): void;
+        addHingeConstraint(gameObject: GameObject, hingeConstraint: HingeConstraint): void;
+        removeHingeConstraint(gameObject: GameObject): void;
+        addPointToPointConstraint(gameObject: GameObject, pointToPointConstraint: PointToPointConstraint): void;
+        removePointToPointConstraint(pointToPointConstraint: PointToPointConstraint): void;
+    }
+}
+
+declare module wd {
+    enum PhysicsEngineType {
+        CANNON = 0,
+    }
+}
+
+
+declare module wd {
+    abstract class CannonDataList {
+        getCount(): number;
+        protected dataList: wdCb.Collection<any>;
+        protected removeByGameObject(obj: GameObject): void;
+    }
+}
+
+
+declare module wd {
+    class CannonGameObjectDataList extends CannonDataList {
+        static create(): CannonGameObjectDataList;
+        protected dataList: wdCb.Collection<CannonGameObjectData>;
+        remove(obj: GameObject): void;
+        updateBodyTransformData(): void;
+        updateGameObjectTransformData(): void;
+        add(obj: GameObject, body: CANNON.Body): void;
+        findGameObjectByBody(b: CANNON.Body): GameObject;
+        findBodyByGameObject(obj: GameObject): any;
+    }
+    type CannonGameObjectData = {
+        gameObject: GameObject;
+        body: CANNON.Body;
+    };
+}
+
+
+declare module wd {
+    class CannonMaterialList extends CannonDataList {
+        static create(): CannonMaterialList;
+        protected dataList: wdCb.Collection<CannonMaterialData>;
+        remove(obj: GameObject): void;
+        findMaterialByGameObject(obj: GameObject): CANNON.Material;
+        add(obj: GameObject, material: CANNON.Material): void;
+        addContactMaterial(world: CANNON.World, currentMaterial: CANNON.Material, friction: number, restitution: number): void;
+        getContactMaterialData(world: CANNON.World, currentMaterial: CANNON.Material, dataName: string): any;
+        getContactMaterials(world: CANNON.World, currentMaterial: CANNON.Material): any[];
+        setContactMaterialData(world: CANNON.World, currentMaterial: CANNON.Material, dataName: string, data: any): void;
+    }
+    type CannonMaterialData = {
+        gameObject: GameObject;
+        material: CANNON.Material;
+    };
+}
+
+
+declare module wd {
+    abstract class CannonConstraintDataList extends CannonDataList {
+    }
+}
+
+
+declare module wd {
+    abstract class CannonSingleConstraintDataList extends CannonConstraintDataList {
+        add(obj: GameObject, constraint: CANNON.Constraint): void;
+        remove(obj: GameObject): void;
+        findConstraintByGameObject(obj: GameObject): any;
+    }
+}
+
+
+declare module wd {
+    class CannonLockConstraintDataList extends CannonSingleConstraintDataList {
+        static create(): CannonLockConstraintDataList;
+        protected dataList: wdCb.Collection<CannonLockConstraintData>;
+    }
+    type CannonLockConstraintData = {
+        gameObject: GameObject;
+        constraint: CANNON.Constraint;
+    };
+}
+
+
+declare module wd {
+    class CannonPointToPointConstraintDataList extends CannonConstraintDataList {
+        static create(): CannonPointToPointConstraintDataList;
+        protected dataList: wdCb.Collection<CannonPointToPointConstraintData>;
+        filter(func: (data: CannonPointToPointConstraintData) => boolean): wdCb.Collection<{
+            gameObject: GameObject;
+            pointToPointConstraint: PointToPointConstraint;
+            cannonConstraint: CANNON.Constraint;
+        }>;
+        forEach(func: (data: CannonPointToPointConstraintData) => void): void;
+        add(gameObject: GameObject, pointToPointConstraint: PointToPointConstraint, constraint: CANNON.Constraint): void;
+        remove(constraint: PointToPointConstraint): void;
+        findCannonConstraintByPointToPointConstraint(constraint: PointToPointConstraint): CANNON.Constraint;
+    }
+    type CannonPointToPointConstraintData = {
+        gameObject: GameObject;
+        pointToPointConstraint: PointToPointConstraint;
+        cannonConstraint: CANNON.Constraint;
+    };
+}
+
+
+declare module wd {
+    class CannonDistanceConstraintDataList extends CannonSingleConstraintDataList {
+        static create(): CannonDistanceConstraintDataList;
+        protected dataList: wdCb.Collection<CannonDistanceConstraintData>;
+    }
+    type CannonDistanceConstraintData = {
+        gameObject: GameObject;
+        constraint: CANNON.Constraint;
+    };
+}
+
+
+declare module wd {
+    class CannonHingeConstraintDataList extends CannonSingleConstraintDataList {
+        static create(): CannonHingeConstraintDataList;
+        protected dataList: wdCb.Collection<CannonHingeConstraintData>;
+    }
+    type CannonHingeConstraintData = {
+        gameObject: GameObject;
+        constraint: CANNON.Constraint;
+    };
+}
+
+
+declare module wd {
+    class CannonUtils {
+        static convertToCannonVector3(v: Vector3): CANNON.Vec3;
+        static convertToCannonQuaternion(rotation: Quaternion): CANNON.Quaternion;
+        static convertToWonderVector3(v: CANNON.Vec3): Vector3;
+        static convertToWonderQuaternion(r: CANNON.Quaternion): Quaternion;
+    }
+}
+
+
+declare module wd {
+    class CannonAdapter implements IPhysicsEngineAdapter {
+        static create(): CannonAdapter;
+        world: CANNON.World;
+        private _materialList;
+        private _gameObjectDataList;
+        private _lockConstraintDataList;
+        private _distanceConstraintDataList;
+        private _hingeConstraintDataList;
+        private _pointToPointConstraintDataList;
+        private _dynamicBody;
+        private _kinematicBody;
+        private _staticBody;
+        private _lockConstraint;
+        private _distanceConstraint;
+        private _hingeConstraint;
+        private _pointToPointConstraint;
+        getGravity(gravity: number): Vector3;
+        setGravity(gravity: Vector3): void;
+        getFriction(obj: GameObject, friction: number): any;
+        setFriction(obj: GameObject, friction: number): void;
+        getRestitution(obj: GameObject, restitution: number): any;
+        setRestitution(obj: GameObject, restitution: number): void;
+        getLinearDamping(obj: GameObject): any;
+        setLinearDamping(obj: GameObject, linearDamping: number): any;
+        getAngularDamping(obj: GameObject): any;
+        setAngularDamping(obj: GameObject, angularDamping: number): any;
+        getMass(obj: GameObject): any;
+        setMass(obj: GameObject, mass: number): any;
+        getVelocity(obj: GameObject): Vector3;
+        setVelocity(obj: GameObject, velocity: Vector3): void;
+        getAngularVelocity(obj: GameObject): Vector3;
+        setAngularVelocity(obj: GameObject, angularVelocity: Vector3): void;
+        init(): void;
+        addDynamicBody(gameObject: GameObject, data: any): void;
+        addKinematicBody(gameObject: GameObject, data: any): void;
+        addStaticBody(gameObject: GameObject, data: any): void;
+        addLockConstraint(gameObject: GameObject, lockConstraint: LockConstraint): void;
+        removeLockConstraint(gameObject: GameObject): void;
+        addDistanceConstraint(gameObject: GameObject, distanceConstraint: DistanceConstraint): void;
+        removeDistanceConstraint(gameObject: GameObject): void;
+        addHingeConstraint(gameObject: GameObject, hingeConstraint: HingeConstraint): void;
+        removeHingeConstraint(gameObject: GameObject): void;
+        addPointToPointConstraint(gameObject: GameObject, pointToPointConstraint: PointToPointConstraint): void;
+        removePointToPointConstraint(pointToPointConstraint: PointToPointConstraint): void;
+        removeGameObject(obj: GameObject): void;
+        removeConstraints(obj: GameObject): void;
+        update(time: number): void;
+        private _getMaterial(obj);
+        private _getNumberData(obj, dataName);
+        private _setNumberData(obj, dataName, data);
+        private _getVec3Data(obj, dataName);
+        private _setVec3Data(obj, dataName, data);
+        private _getMaterialData(obj, dataName);
+        private _setMaterialData(obj, dataName, data);
+    }
+}
+
+
+declare module wd {
+    abstract class CannonBody {
+        constructor(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, materialList: CannonMaterialList);
+        protected world: CANNON.World;
+        protected materialList: CannonMaterialList;
+        protected gameObjectList: CannonGameObjectDataList;
+        addBody(gameObject: GameObject, data: any): CANNON.Body;
+        protected abstract createBody(data: any): CANNON.Body;
+        protected afterAddShape(body: CANNON.Body, data: any): void;
+        private _createShape(shape);
+        private _bindCollideEvent(targetBody, onCollisionStart, onContact, onCollisionEnd);
+        private _createMaterial(gameObject, friction, restitution);
+        private _getMaterial(obj);
+        private _addMaterial(gameObject, currentMaterial, friction, restitution);
+        private _addCompounds(gameObject, children, body);
+    }
+}
+
+
+declare module wd {
+    class CannonDynamicBody extends CannonBody {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, materialList: CannonMaterialList): CannonDynamicBody;
+        protected createBody({mass, linearDamping, angularDamping, velocity, angularVelocity}: {
+            mass: any;
+            linearDamping: any;
+            angularDamping: any;
+            velocity: any;
+            angularVelocity: any;
+        }): CANNON.Body;
+        protected afterAddShape(body: CANNON.Body, {impulse, force, hitPoint}: {
+            impulse: any;
+            force: any;
+            hitPoint: any;
+        }): void;
+    }
+}
+
+
+declare module wd {
+    class CannonKinematicBody extends CannonBody {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, materialList: CannonMaterialList): CannonKinematicBody;
+        protected createBody({mass, velocity, angularVelocity}: {
+            mass: any;
+            velocity: any;
+            angularVelocity: any;
+        }): CANNON.Body;
+    }
+}
+
+
+declare module wd {
+    class CannonStaticBody extends CannonBody {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, materialList: CannonMaterialList): CannonStaticBody;
+        protected createBody({}: {}): CANNON.Body;
+    }
+}
+
+
+declare module wd {
+    abstract class CannonConstraint {
+        constructor(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, constraintDataList: any);
+        protected world: CANNON.World;
+        protected gameObjectList: CannonGameObjectDataList;
+        protected constraintDataList: any;
+        addConstraint(gameObject: GameObject, wonderConstraint: any): void;
+        protected abstract createCannonConstraint(body: CANNON.Body, wonderConstraint: PhysicsConstraint): CANNON.Constraint;
+        protected abstract addToConstraintDataList(gameObject: GameObject, wonderConstraint: PhysicsConstraint, cannonConstraint: CANNON.Constraint): void;
+        protected findBody(rigidBody: RigidBody): any;
+    }
+}
+
+
+declare module wd {
+    abstract class CannonSingleConstraint extends CannonConstraint {
+        removeConstraint(gameObject: GameObject): void;
+        protected addToConstraintDataList(gameObject: GameObject, wonderConstraint: LockConstraint, cannonConstraint: CANNON.Constraint): void;
+    }
+}
+
+
+declare module wd {
+    class CannonLockConstraint extends CannonSingleConstraint {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, constraintDataList: CannonLockConstraintDataList): CannonLockConstraint;
+        protected constraintDataList: CannonLockConstraintDataList;
+        protected createCannonConstraint(body: CANNON.Body, lockConstraint: LockConstraint): CANNON.Constraint;
+    }
+}
+
+
+declare module wd {
+    class CannonPointToPointConstraint extends CannonConstraint {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, constraintDataList: CannonPointToPointConstraintDataList): CannonPointToPointConstraint;
+        protected constraintDataList: CannonPointToPointConstraintDataList;
+        removeConstraint(pointToPointConstraint: PointToPointConstraint): void;
+        protected createCannonConstraint(body: CANNON.Body, pointToPointConstraint: PointToPointConstraint): CANNON.Constraint;
+        protected addToConstraintDataList(gameObject: GameObject, wonderConstraint: PointToPointConstraint, cannonConstraint: CANNON.Constraint): void;
+    }
+}
+
+
+declare module wd {
+    class CannonDistanceConstraint extends CannonSingleConstraint {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, constraintDataList: CannonDistanceConstraintDataList): CannonDistanceConstraint;
+        protected constraintDataList: CannonDistanceConstraintDataList;
+        protected createCannonConstraint(body: CANNON.Body, distanceConstraint: DistanceConstraint): CANNON.Constraint;
+    }
+}
+
+
+declare module wd {
+    class CannonHingeConstraint extends CannonSingleConstraint {
+        static create(world: CANNON.World, gameObjectDataList: CannonGameObjectDataList, constraintDataList: CannonHingeConstraintDataList): CannonHingeConstraint;
+        protected constraintDataList: CannonHingeConstraintDataList;
+        protected createCannonConstraint(body: CANNON.Body, hingeConstraint: HingeConstraint): CANNON.Constraint;
+    }
+}
+
+
+declare module wd {
+    class Pick extends Component {
+        static create(): Pick;
+        init(): void;
+        dispose(): void;
+        isPick(localX: number, localY: number): boolean;
     }
 }
 
@@ -2209,6 +2900,9 @@ declare module wd {
         onStartLoop?(): any;
         onEndLoop?(): any;
         onDispose?(): any;
+        onContact?(collisionObjects: wdCb.Collection<GameObject>): any;
+        onCollisionStart?(collisionObjects: wdCb.Collection<GameObject>): any;
+        onCollisionEnd?(): any;
     }
 }
 
@@ -2304,7 +2998,7 @@ declare module wd {
 declare module wd {
     class JudgeUtils extends wdCb.JudgeUtils {
         static isView(obj: any): boolean;
-        static isEqual(target1: GameObject, target2: GameObject): boolean;
+        static isEqual(target1: any, target2: any): boolean;
         static isPowerOfTwo(value: number): boolean;
         static isFloatArray(data: any): boolean;
     }
@@ -2347,12 +3041,13 @@ declare module wd {
         gameTime: number;
         fps: number;
         isTimeChange: boolean;
+        deltaTime: number;
         private _lastTime;
         tick(time: number): void;
         start(): void;
         resume(): void;
         protected getNow(): any;
-        private _updateFps(time);
+        private _updateFps(deltaTime);
     }
 }
 
@@ -2429,6 +3124,7 @@ declare module wd {
         protected beforeRender(): void;
         protected afterRender(): void;
         protected createCamera(): GameObject;
+        private _handleShadowRendererList();
     }
 }
 
@@ -2461,14 +3157,14 @@ declare module wd {
         private _shadowMapRendererUtils;
         initWhenCreate(): void;
         init(): void;
-        private _shader;
         dispose(): void;
-        protected getRenderList(): wdCb.Hash<Array<GameObject> | wdCb.Collection<GameObject>>;
+        protected getRenderList(): wdCb.Hash<wdCb.Collection<GameObject>>;
         protected beforeRender(): void;
         protected afterRender(): void;
         protected setCamera(camera: PerspectiveCamera): void;
         protected getPosition(): Vector3;
         private _convertRenderListToCollection(renderList);
+        private _handleShadowRendererList();
     }
 }
 
@@ -2500,6 +3196,8 @@ declare module wd {
         beforeRender(): void;
         afterRender(): void;
         createShaderWithShaderLib(lib: BuildShadowMapShaderLib): void;
+        isContainer(gameObject: GameObject): boolean;
+        addAllChildren(gameObject: GameObject): any[];
         protected abstract setMaterialShadowMapData(material: LightMaterial, target: GameObject, shadowMapCamera: GameObject): any;
         protected abstract addShadowMap(material: LightMaterial, shadowMap: IShadowMapTexture): any;
         protected setShadowMap(target: GameObject, shadowMap: IShadowMapTexture): void;
@@ -2565,6 +3263,7 @@ declare module wd {
 declare module wd {
     enum DrawMode {
         TRIANGLES,
+        LINES,
     }
 }
 
@@ -2603,7 +3302,7 @@ declare module wd {
     class Buffer {
         buffer: any;
         type: string;
-        num: number;
+        count: number;
         dispose(): void;
     }
 }
@@ -2611,11 +3310,15 @@ declare module wd {
 
 declare module wd {
     class ElementBuffer extends Buffer {
-        static create(data: any, type: BufferType): ElementBuffer;
+        static create(): ElementBuffer;
+        static create(data: any, type: BufferType, usage?: BufferUsage): ElementBuffer;
         private _typeSize;
         typeSize: number;
         data: any;
-        initWhenCreate(data: any, type: BufferType): any;
+        private _type;
+        initWhenCreate(): any;
+        initWhenCreate(data: any, type: BufferType, usage?: BufferUsage): any;
+        resetData(data: any, type?: BufferType): this;
         private _checkDataType(data, type);
         private _getInfo(type);
     }
@@ -2624,12 +3327,14 @@ declare module wd {
 
 declare module wd {
     class ArrayBuffer extends Buffer {
-        static create(data: any, num: number, type: BufferType, usage?: BufferUsage): ArrayBuffer;
-        count: number;
+        static create(): ArrayBuffer;
+        static create(data: any, size: number, type: BufferType, usage?: BufferUsage): ArrayBuffer;
+        size: number;
         data: any;
         private _type;
-        initWhenCreate(data: any, num: number, type: BufferType, usage: BufferUsage): any;
-        resetData(data: any, num?: number, type?: BufferType): this;
+        initWhenCreate(): any;
+        initWhenCreate(data: any, size: number, type: BufferType, usage?: BufferUsage): any;
+        resetData(data: any, size?: number, type?: BufferType): this;
     }
 }
 
@@ -2828,7 +3533,7 @@ declare module wd {
         private _generateUniformSource(sourceVarDeclare, sourceFuncDefine, sourceBody);
         private _isExistInSource(key, source);
         private _convertArrayToArrayBuffer(type, value);
-        private _getBufferNum(type);
+        private _getBufferSize(type);
     }
     type SourceDefine = {
         name: string;
@@ -3376,20 +4081,13 @@ declare module wd {
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
+        static mirror_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
         static basic_envMap_forBasic_fragment: GLSLChunk;
         static basic_envMap_forBasic_vertex: GLSLChunk;
         static envMap_forBasic_fragment: GLSLChunk;
@@ -3397,16 +4095,13 @@ declare module wd {
         static fresnel_forBasic_fragment: GLSLChunk;
         static reflection_forBasic_fragment: GLSLChunk;
         static refraction_forBasic_fragment: GLSLChunk;
-        static diffuseMap_fragment: GLSLChunk;
-        static diffuseMap_vertex: GLSLChunk;
-        static noDiffuseMap_fragment: GLSLChunk;
-        static noNormalMap_fragment: GLSLChunk;
-        static noNormalMap_vertex: GLSLChunk;
-        static noSpecularMap_fragment: GLSLChunk;
-        static normalMap_fragment: GLSLChunk;
-        static normalMap_vertex: GLSLChunk;
-        static specularMap_fragment: GLSLChunk;
-        static specularMap_vertex: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
         static buildCubemapShadowMap_fragment: GLSLChunk;
         static buildCubemapShadowMap_vertex: GLSLChunk;
         static buildTwoDShadowMap_fragment: GLSLChunk;
@@ -3417,6 +4112,16 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
+        static diffuseMap_fragment: GLSLChunk;
+        static diffuseMap_vertex: GLSLChunk;
+        static noDiffuseMap_fragment: GLSLChunk;
+        static noNormalMap_fragment: GLSLChunk;
+        static noNormalMap_vertex: GLSLChunk;
+        static noSpecularMap_fragment: GLSLChunk;
+        static normalMap_fragment: GLSLChunk;
+        static normalMap_vertex: GLSLChunk;
+        static specularMap_fragment: GLSLChunk;
+        static specularMap_vertex: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
@@ -4522,6 +5227,8 @@ declare module wd {
         ENDLOOP,
         BEFORE_INIT,
         AFTER_INIT,
+        AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT,
+        MATERIAL_CHANGE,
     }
 }
 
@@ -5113,20 +5820,23 @@ declare module wd {
 
 
 declare module wd {
-    class CustomGeometry extends Geometry {
-        static create(): CustomGeometry;
-        vertices: Array<number>;
-        texCoords: Array<number>;
-        colors: Array<number>;
-        indices: Array<number>;
-        normals: Array<number>;
-        protected computeData(): {
-            vertices: number[];
-            faces: Face3[];
-            texCoords: number[];
-            colors: number[];
-        };
-        protected createBufferContainer(): BufferContainer;
+    class KinematicRigidBody extends RigidBody {
+        static create(): KinematicRigidBody;
+        private _velocity;
+        velocity: Vector3;
+        private _angularVelocity;
+        angularVelocity: Vector3;
+        private _mass;
+        mass: number;
+        protected addBody(): void;
+    }
+}
+
+
+declare module wd {
+    class StaticRigidBody extends RigidBody {
+        static create(): StaticRigidBody;
+        protected addBody(): void;
     }
 }
 
