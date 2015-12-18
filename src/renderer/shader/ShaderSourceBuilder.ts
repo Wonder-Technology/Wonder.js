@@ -29,22 +29,18 @@ module wd{
 
         public attributesFromShaderLib:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         public uniformsFromShaderLib:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
-        public vsSourceFromShaderLib:string = "";
         public vsSourceTopFromShaderLib:string = "";
         public vsSourceDefineFromShaderLib:string = "";
         public vsSourceVarDeclareFromShaderLib:string = "";
         public vsSourceFuncDeclareFromShaderLib:string = "";
         public vsSourceFuncDefineFromShaderLib:string = "";
         public vsSourceBodyFromShaderLib:string = "";
-        public fsSourceFromShaderLib:string = "";
         public fsSourceTopFromShaderLib:string = "";
         public fsSourceDefineFromShaderLib:string = "";
         public fsSourceVarDeclareFromShaderLib:string = "";
         public fsSourceFuncDeclareFromShaderLib:string = "";
         public fsSourceFuncDefineFromShaderLib:string = "";
         public fsSourceBodyFromShaderLib:string = "";
-        public vsSourceDefineListFromShaderLib:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
-        public fsSourceDefineListFromShaderLib:wdCb.Collection<SourceDefine> = wdCb.Collection.create<SourceDefine>();
 
 
         public read(definitionData:ShaderDefinitionData){
