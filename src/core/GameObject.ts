@@ -14,12 +14,10 @@ module wd {
         }
 
         public parent:GameObject = null;
-        public isRigidbodyChild:boolean = false;
         public bubbleParent:GameObject = null;
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
         public actionManager:ActionManager = ActionManager.create();
-        public isCollided:boolean = false;
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();

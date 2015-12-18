@@ -121,13 +121,12 @@ describe("rigid body dispose", function () {
                 adapter = physicsTool.getPhysicsEngineAdapter();
             });
 
-            //remove child body
-            it("reset isRigidbodyChild flag", function () {
-                expect(box3.isRigidbodyChild).toBeTruthy();
+            it("reset isRigidbodyChild tag", function () {
+                expect(box3.hasTag("isRigidbodyChild")).toBeTruthy();
 
                 box1.dispose();
 
-                expect(box3.isRigidbodyChild).toBeFalsy();
+                expect(box3.hasTag("isRigidbodyChild")).toBeFalsy();
             });
             it("remove body", function () {
                 box1.dispose();
