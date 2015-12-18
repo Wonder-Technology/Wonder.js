@@ -961,10 +961,16 @@ declare module wd {
 }
 
 declare module wd {
-    class Entity {
+    abstract class Entity {
         private static _count;
         constructor();
         uid: number;
+        private _tagList;
+        addTag(tag: string): void;
+        removeTag(tag: string): void;
+        getTagList(): wdCb.Collection<string>;
+        hasTag(tag: string): boolean;
+        containTag(tag: string): boolean;
     }
 }
 
@@ -1049,12 +1055,10 @@ declare module wd {
         private _scripts;
         script: wdCb.Hash<IScriptBehavior>;
         parent: GameObject;
-        isRigidbodyChild: boolean;
         bubbleParent: GameObject;
         transform: Transform;
         name: string;
         actionManager: ActionManager;
-        isCollided: boolean;
         private _children;
         private _components;
         private _startLoopHandler;
@@ -3493,22 +3497,18 @@ declare module wd {
         fsSourceDefineList: wdCb.Collection<SourceDefine>;
         attributesFromShaderLib: wdCb.Hash<ShaderData>;
         uniformsFromShaderLib: wdCb.Hash<ShaderData>;
-        vsSourceFromShaderLib: string;
         vsSourceTopFromShaderLib: string;
         vsSourceDefineFromShaderLib: string;
         vsSourceVarDeclareFromShaderLib: string;
         vsSourceFuncDeclareFromShaderLib: string;
         vsSourceFuncDefineFromShaderLib: string;
         vsSourceBodyFromShaderLib: string;
-        fsSourceFromShaderLib: string;
         fsSourceTopFromShaderLib: string;
         fsSourceDefineFromShaderLib: string;
         fsSourceVarDeclareFromShaderLib: string;
         fsSourceFuncDeclareFromShaderLib: string;
         fsSourceFuncDefineFromShaderLib: string;
         fsSourceBodyFromShaderLib: string;
-        vsSourceDefineListFromShaderLib: wdCb.Collection<SourceDefine>;
-        fsSourceDefineListFromShaderLib: wdCb.Collection<SourceDefine>;
         read(definitionData: ShaderDefinitionData): void;
         build(libs: wdCb.Collection<ShaderLib>): void;
         clearShaderDefinition(): void;
@@ -4084,10 +4084,10 @@ declare module wd {
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static mirror_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_vertex: GLSLChunk;
         static basic_envMap_forBasic_fragment: GLSLChunk;
         static basic_envMap_forBasic_vertex: GLSLChunk;
         static envMap_forBasic_fragment: GLSLChunk;
@@ -5249,7 +5249,7 @@ declare module wd {
         depthFunc: DepthFunction;
         private _side;
         side: Side;
-        polygonOffset: Point;
+        polygonOffset: Vector2;
         private _polygonOffsetMode;
         polygonOffsetMode: PolygonOffsetMode;
         private _depthWrite;
