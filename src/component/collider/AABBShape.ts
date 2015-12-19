@@ -133,10 +133,7 @@ module wd {
             return this.isBoxAndSphereIntersected(this, shape);
         }
 
-        //todo refactor
         /**
-         * @function
-         * @name shape.intersection.rayAabb
          * @description Intersection test between a ray and an AABB
          * @param {Vector3} rayOrigin The origin of the ray
          * @param {Vector3} rayDir The dir vector of the ray
@@ -147,8 +144,7 @@ module wd {
                 absDiff,
                 absDir,
                 cross = Vector3.create(),
-                prod  = Vector3.create(),
-                i;
+                prod = Vector3.create();
 
             diff.sub2(rayOrigin, this.center);
             absDiff = Vector3.create(Math.abs(diff.x), Math.abs(diff.y), Math.abs(diff.z));
@@ -169,13 +165,13 @@ module wd {
             cross.cross(rayDir, diff);
             cross.set(Math.abs(cross.x), Math.abs(cross.y), Math.abs(cross.z));
 
-            if (cross.x > this.halfExtents.y*absDir.z + this.halfExtents.z*absDir.y) {
+            if (cross.x > this.halfExtents.y * absDir.z + this.halfExtents.z * absDir.y) {
                 return false;
             }
-            if (cross.y > this.halfExtents.x*absDir.z + this.halfExtents.z*absDir.x) {
+            if (cross.y > this.halfExtents.x * absDir.z + this.halfExtents.z * absDir.x) {
                 return false;
             }
-            if (cross.z > this.halfExtents.x*absDir.y + this.halfExtents.y*absDir.x) {
+            if (cross.z > this.halfExtents.x * absDir.y + this.halfExtents.y * absDir.x) {
                 return false;
             }
 

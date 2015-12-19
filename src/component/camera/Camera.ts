@@ -78,5 +78,9 @@ module wd{
         }
 
         protected abstract updateProjectionMatrix();
+
+        protected getInvViewProjMat(){
+            return this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+        }
     }
 }

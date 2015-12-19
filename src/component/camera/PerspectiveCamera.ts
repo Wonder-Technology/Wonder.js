@@ -38,10 +38,8 @@ module wd{
             var device:DeviceManager = DeviceManager.getInstance(),
                 width = device.view.width,
                 height = device.view.height,
-                //normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, 1),
                 normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, 1 - 2 * screenY / height, 1),
-                //invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert(),
-                invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert(),
+                invViewProjMat = this.getInvViewProjMat(),
                 point = null,
                 w = null;
 

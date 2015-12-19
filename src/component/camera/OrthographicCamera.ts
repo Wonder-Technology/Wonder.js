@@ -48,10 +48,9 @@ module wd{
             var device:DeviceManager = DeviceManager.getInstance(),
                 width = device.view.width,
                 height = device.view.height,
-                normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, (distanceFromCamera - this.far) / (this.far - this.near) * 2 + 1),
-                invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+                normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, (distanceFromCamera - this.far) / (this.far - this.near) * 2 + 1);
 
-            return invViewProjMat.multiplyVector3(normalizedDeviceCoordinate);
+            return this.getInvViewProjMat().multiplyVector3(normalizedDeviceCoordinate);
         }
 
         protected updateProjectionMatrix(){

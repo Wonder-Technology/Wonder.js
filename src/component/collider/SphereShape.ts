@@ -39,13 +39,12 @@ module wd {
             return this.isBoxAndSphereIntersected(shape, this);
         }
 
-        //todo refactor
         public isIntersectWithRay(rayOrigin:Vector3, rayDir:Vector3) {
-            var diff = Vector3.create();
-            var a = 0;
-            var b = 0;
-            var c = 0;
-            var discr = 0;
+            var diff = Vector3.create(),
+                a = 0,
+                b = 0,
+                c = 0,
+                discr = 0;
 
             diff.sub2(rayOrigin, this.center);
             if (diff.dot(diff) < this.radius * this.radius ) {

@@ -4,6 +4,7 @@ module sample {
     import Collider = wd.Collider;
     import Scene = wd.Scene;
     import CameraController = wd.CameraController;
+    import MouseEvent = wd.MouseEvent;
 
     @wd.script("RayPicking")
     export class RayPicking implements wd.IScriptBehavior {
@@ -17,35 +18,48 @@ module sample {
             var self = this;
 
             wd.EventManager.fromEvent(this._gameObject, wd.EventName.MOUSEDOWN)
-                .subscribe(function (e) {
+                .subscribe(function (e:MouseEvent) {
                     self.onSelect(e);
                 });
         }
 
-        public onSelect(e) {
-            var cameraController:CameraController = this._gameObject.camera.getComponent<CameraController>(CameraController);
+        public onSelect(e:MouseEvent) {
+            var pickingObjNearestToCameraPos:GameObject = null;
 
-            var self = this;
+            pickingObjNearestToCameraPos =  this._getPickingObjNearestToCamera(e);
 
-            this._gameObject.forEach((gameObject:GameObject) => {
-                if(!gameObject.hasComponent(Collider)){
-                    return;
-                }
+            if(!pickingObjNearestToCameraPos){
+                return;
+            }
 
-                var location = e.locationInView;
+            this._handleSelect(pickingObjNearestToCameraPos);
+        }
 
-                    if (cameraController.isIntersectWithRay(gameObject, location.x, location.y)) {
-                    self._handleSelect(gameObject);
-                }
-            });
+        private _getPickingObjNearestToCamera(e:MouseEvent){
+            var cameraController:CameraController = this._gameObject.camera.getComponent<CameraController>(CameraController),
+                self = this;
+
+            return this._gameObject.filter((gameObject:GameObject) => {
+                    let location = e.locationInView;
+
+                    return gameObject.hasComponent(Collider) && cameraController.isIntersectWithRay(gameObject, location.x, location.y);
+                })
+                .sort((a:GameObject, b:GameObject) => {
+                    return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
+                })
+                .getChild(0);
+        }
+
+        private _getDistanceToCamera(obj:GameObject){
+            return obj.transform.position.copy().sub(this._gameObject.camera.transform.position).length();
         }
 
         private _handleSelect(selectedObj:GameObject) {
+            var tween1 = wd.Tween.create(),
+                tween2 = wd.Tween.create(),
+                action = null;
+
             console.log(`select ${selectedObj.uid}`);
-
-
-            var tween1 = wd.Tween.create();
-            var tween2 = wd.Tween.create();
 
             tween1.from({x: 1})
                 .to({x: 2}, 300)
@@ -61,7 +75,7 @@ module sample {
                     selectedObj.transform.scale = wd.Vector3.create(this.x, this.x, this.x);
                 });
 
-            var action = wd.Repeat.create(wd.Sequence.create(tween1, tween2), 2);
+            action = wd.Repeat.create(wd.Sequence.create(tween1, tween2), 2);
 
             selectedObj.addComponent(action);
 
