@@ -26,15 +26,13 @@ module wd{
         }
 
         public update(time:number){
-            var self = this,
-                removeQueue = [];
+            var removeQueue = [];
 
-            this._children.forEach(function(child){
-                /*! fix "if remove other action of children when invoke "child.update", it will error in iteration after */
-                if (!child) {
-                    return;
-                }
-
+            this._children.forEach(function(child:Action){
+                /*!
+                 fix "if remove other action of children when invoke 'child.update', it will error in iteration after":
+                 defer to remove
+                 */
                 if (child.isFinish) {
                     removeQueue.push(child);
                     return;
@@ -47,8 +45,8 @@ module wd{
                 child.update(time);
             });
 
-            removeQueue.forEach(function (child) {
-                self._children.removeChild(child);
+            removeQueue.forEach(function (child:Action) {
+                child.gameObject.removeComponent(child);
             });
         }
     }
