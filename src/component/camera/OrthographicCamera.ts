@@ -43,26 +43,19 @@ module wd{
             this.dirty = true;
         }
 
-        private _near:number = null;
-        get near(){
-            return this._near;
-        }
-        set near(near:number){
-            this._near = near;
-            this.dirty = true;
-        }
 
-        private _far:number = null;
-        get far(){
-            return this._far;
-        }
-        set far(far:number){
-            this._far = far;
-            this.dirty = true;
+        public convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3{
+            var device:DeviceManager = DeviceManager.getInstance(),
+                width = device.view.width,
+                height = device.view.height,
+                normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, (distanceFromCamera - this.far) / (this.far - this.near) * 2 + 1),
+                invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+
+            return invViewProjMat.multiplyVector3(normalizedDeviceCoordinate);
         }
 
         protected updateProjectionMatrix(){
-            this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this._near, this._far);
+            this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this.near, this.far);
         }
     }
 }

@@ -164,6 +164,14 @@ module wd{
             return this;
         }
 
+        public mul2(v1:Vector3, v2:Vector3){
+            this.values[0] = v1.values[0] * v2.values[0];
+            this.values[1] = v1.values[1] * v2.values[1];
+            this.values[2] = v1.values[2] *  v2.values[2];
+
+            return this;
+        }
+
         public reverse():Vector3{
             this.values[0] = -this.values[0];
             this.values[1] = -this.values[1];

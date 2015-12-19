@@ -554,7 +554,7 @@ module wd{
             return this;
         }
 
-        public multiply(matrix2:Matrix4):Matrix4;
+        public multiply(matrix:Matrix4):Matrix4;
         public multiply(matrix1:Matrix4, matrix2:Matrix4):Matrix4;
 
         public multiply(...args):Matrix4 {

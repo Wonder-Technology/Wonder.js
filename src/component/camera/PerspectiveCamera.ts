@@ -27,24 +27,6 @@ module wd{
             this.dirty = true;
         }
 
-        private _near:number = null;
-        get near(){
-            return this._near;
-        }
-        set near(near:number){
-            this._near = near;
-            this.dirty = true;
-        }
-
-        private _far:number = null;
-        get far(){
-            return this._far;
-        }
-        set far(far:number){
-            this._far = far;
-            this.dirty = true;
-        }
-
         public zoomIn(speed:number, min:number = 1){
             this.fovy = Math.max(this.fovy - speed, min);
         }
@@ -52,8 +34,31 @@ module wd{
             this.fovy = Math.min(this.fovy + speed, max);
         }
 
+        public convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3{
+            var device:DeviceManager = DeviceManager.getInstance(),
+                width = device.view.width,
+                height = device.view.height,
+                //normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, 1),
+                normalizedDeviceCoordinate = Vector3.create(2 * screenX / width - 1, 1 - 2 * screenY / height, 1),
+                //invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert(),
+                invViewProjMat = this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert(),
+                point = null,
+                w = null;
+
+            point = invViewProjMat.multiplyVector3(normalizedDeviceCoordinate);
+
+            w = normalizedDeviceCoordinate.x * invViewProjMat.values[3] +
+                normalizedDeviceCoordinate.y * invViewProjMat.values[7] +
+                normalizedDeviceCoordinate.z * invViewProjMat.values[11] +
+                invViewProjMat.values[15];
+
+            point.scale(1 / w);
+
+            return Vector3.create().lerp(this.gameObject.transform.position, point, distanceFromCamera / this.far);
+        }
+
         protected updateProjectionMatrix(){
-            this.pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+            this.pMatrix.setPerspective(this._fovy, this._aspect, this.near, this.far);
         }
     }
 }

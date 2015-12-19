@@ -8,6 +8,7 @@ module wd {
         public abstract copy():Shape;
         public abstract isIntersectWithBox(shape:AABBShape);
         public abstract isIntersectWithSphere(shape:SphereShape);
+        public abstract isIntersectWithRay(rayOrigin:Vector3, rayDelta:Vector3);
 
         protected isBoxAndSphereIntersected(box:AABBShape, sphere:SphereShape) {
             var sphereCenter = sphere.center,
