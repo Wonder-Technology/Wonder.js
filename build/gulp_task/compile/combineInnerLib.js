@@ -6,7 +6,8 @@ var fs = require("fs-extra");
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
     "Wonder-CommonLib",
-    "Wonder-FRP"
+    "Wonder-FRP",
+    "cannon"
     ],
     combineContentList = [
         "Wonder-CommonLib",
@@ -82,6 +83,8 @@ function combineInnerLibDTs(mainFilePath, definitionDTsPath, filterFunc){
     getInnerLibDTsPathArr(definitionDTsPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
+            console.log("mainFilePath: ", mainFilePath);
+            console.log("innerLibDtsPath: ", innerLibDtsPath);
         fs.writeFileSync(
             mainFilePath,
             fs.readFileSync(innerLibDtsPath, "utf8")
@@ -94,6 +97,9 @@ function combineInnerLibContent(mainFilePath, definitionDTsPath, filterFunc){
     getInnerLibDTsPathArr(definitionDTsPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
+            console.log(innerLibDtsPath)
+
+
         fs.writeFileSync(
             mainFilePath,
             fs.readFileSync(innerLibDtsPath.replace("d.ts", "js"), "utf8")
