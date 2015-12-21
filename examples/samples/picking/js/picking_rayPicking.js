@@ -16,7 +16,7 @@ var sample;
         }
         RayPicking.prototype.init = function () {
             var self = this;
-            wd.EventManager.fromEvent(this._gameObject, wd.EventName.MOUSEDOWN)
+            wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN)
                 .subscribe(function (e) {
                 self.onSelect(e);
             });

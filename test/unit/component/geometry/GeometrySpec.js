@@ -308,6 +308,8 @@ describe("Geometry", function() {
     });
 
     describe("change material", function(){
+        var gameObject;
+
         function createGeometry(_class, shading){
             geo = new _class();
             geo.material = {
@@ -326,7 +328,10 @@ describe("Geometry", function() {
             geo = createGeometry(wd.RectGeometry);
             geo.material.color = wd.Color.create("#111111");
 
-            geo.init();
+            gameObject = wd.GameObject.create();
+            gameObject.addComponent(geo);
+
+            gameObject.init();
         });
 
         describe('Geometry trigger its gameObject->"material change" event when change material', function(){

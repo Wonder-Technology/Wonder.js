@@ -17,7 +17,7 @@ module sample {
         public init() {
             var self = this;
 
-            wd.EventManager.fromEvent(this._gameObject, wd.EventName.MOUSEDOWN)
+            wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN)
                 .subscribe(function (e:MouseEvent) {
                     self.onSelect(e);
                 });
