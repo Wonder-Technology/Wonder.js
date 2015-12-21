@@ -83,8 +83,6 @@ function combineInnerLibDTs(mainFilePath, definitionDTsPath, filterFunc){
     getInnerLibDTsPathArr(definitionDTsPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
-            console.log("mainFilePath: ", mainFilePath);
-            console.log("innerLibDtsPath: ", innerLibDtsPath);
         fs.writeFileSync(
             mainFilePath,
             fs.readFileSync(innerLibDtsPath, "utf8")
@@ -97,9 +95,6 @@ function combineInnerLibContent(mainFilePath, definitionDTsPath, filterFunc){
     getInnerLibDTsPathArr(definitionDTsPath)
         .filter(filterFunc)
         .forEach(function(innerLibDtsPath){
-            console.log(innerLibDtsPath)
-
-
         fs.writeFileSync(
             mainFilePath,
             fs.readFileSync(innerLibDtsPath.replace("d.ts", "js"), "utf8")
