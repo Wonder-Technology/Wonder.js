@@ -1932,7 +1932,7 @@ var wdCb;
             return Object.prototype.toString.call(obj) === "[object Boolean]";
         };
         JudgeUtils.isDom = function (obj) {
-            return obj instanceof HTMLElement;
+            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
         };
         /**
          * 判断是否为对象字面量（{}）
@@ -6154,26 +6154,6 @@ var wd;
             child.parent = null;
             return this;
         };
-        GameObject.prototype.getTopUnderPoint = function (point) {
-            var result = null;
-            this._children.copy().reverse().forEach(function (child) {
-                result = child.getTopUnderPoint(point);
-                if (result) {
-                    return wdCb.$BREAK;
-                }
-            });
-            if (result) {
-                return result;
-            }
-            if (this.isPick(point)) {
-                return this;
-            }
-            return null;
-        };
-        GameObject.prototype.isPick = function (locationInView) {
-            var pick = this._getPick();
-            return pick ? pick.isPick(locationInView.x, locationInView.y) : false;
-        };
         GameObject.prototype.hasComponent = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -6248,9 +6228,6 @@ var wd;
         GameObject.prototype._getGeometry = function () {
             return this.getComponent(wd.Geometry);
         };
-        GameObject.prototype._getPick = function () {
-            return this.getComponent(wd.Pick);
-        };
         GameObject.prototype._getCamera = function () {
             return this.getComponent(wd.CameraController);
         };
@@ -6273,11 +6250,6 @@ var wd;
                 wd.assert(this._getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
             })
         ], GameObject.prototype, "_getGeometry", null);
-        __decorate([
-            wd.require(function () {
-                wd.assert(this._getComponentCount(wd.Pick) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 pick component"));
-            })
-        ], GameObject.prototype, "_getPick", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this._getComponentCount(wd.CameraController) <= 1, wd.Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
@@ -6652,10 +6624,6 @@ var wd;
             this._timeController.resume();
             this.scheduler.resume();
         };
-        Director.prototype.getTopUnderPoint = function (point) {
-            var top = this.scene.getTopUnderPoint(point);
-            return top ? top : this.scene;
-        };
         Director.prototype.getDeltaTime = function () {
             return this._timeController.deltaTime;
         };
@@ -6804,7 +6772,6 @@ var wd;
             configurable: true
         });
         Scene.prototype.init = function () {
-            this.addComponent(wd.Pick.create());
             if (this.physics.enable) {
                 this.physicsEngineAdapter = wd.PhysicsEngineFactory.create(this.physics.engine);
                 this.physicsEngineAdapter.init();
@@ -7238,6 +7205,12 @@ var wd;
             this.values[0] = this.values[0] * v.values[0];
             this.values[1] = this.values[1] * v.values[1];
             this.values[2] = this.values[2] * v.values[2];
+            return this;
+        };
+        Vector3.prototype.mul2 = function (v1, v2) {
+            this.values[0] = v1.values[0] * v2.values[0];
+            this.values[1] = v1.values[1] * v2.values[1];
+            this.values[2] = v1.values[2] * v2.values[2];
             return this;
         };
         Vector3.prototype.reverse = function () {
@@ -10310,6 +10283,8 @@ var wd;
     var Camera = (function () {
         function Camera() {
             this._worldToCameraMatrix = null;
+            this._near = null;
+            this._far = null;
             this.pMatrix = wd.Matrix4.create();
             this.gameObject = null;
             this.dirty = false;
@@ -10334,6 +10309,28 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Camera.prototype, "near", {
+            get: function () {
+                return this._near;
+            },
+            set: function (near) {
+                this._near = near;
+                this.dirty = true;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Camera.prototype, "far", {
+            get: function () {
+                return this._far;
+            },
+            set: function (far) {
+                this._far = far;
+                this.dirty = true;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Camera.prototype.init = function () {
             if (this.dirty) {
                 this.updateProjectionMatrix();
@@ -10347,6 +10344,9 @@ var wd;
                 this.updateProjectionMatrix();
                 this.dirty = false;
             }
+        };
+        Camera.prototype.getInvViewProjMat = function () {
+            return this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
         };
         __decorate([
             wd.requireGetter(function () {
@@ -10379,8 +10379,6 @@ var wd;
             this._right = null;
             this._bottom = null;
             this._top = null;
-            this._near = null;
-            this._far = null;
         }
         OrthographicCamera.create = function () {
             var obj = new this();
@@ -10430,30 +10428,12 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(OrthographicCamera.prototype, "near", {
-            get: function () {
-                return this._near;
-            },
-            set: function (near) {
-                this._near = near;
-                this.dirty = true;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OrthographicCamera.prototype, "far", {
-            get: function () {
-                return this._far;
-            },
-            set: function (far) {
-                this._far = far;
-                this.dirty = true;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        OrthographicCamera.prototype.convertScreenToWorld = function (screenX, screenY, distanceFromCamera) {
+            var device = wd.DeviceManager.getInstance(), width = device.view.width, height = device.view.height, normalizedDeviceCoordinate = wd.Vector3.create(2 * screenX / width - 1, (height - screenY) / height * 2 - 1, (distanceFromCamera - this.far) / (this.far - this.near) * 2 + 1);
+            return this.getInvViewProjMat().multiplyVector3(normalizedDeviceCoordinate);
+        };
         OrthographicCamera.prototype.updateProjectionMatrix = function () {
-            this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this._near, this._far);
+            this.pMatrix.setOrtho(this._left, this._right, this._bottom, this._top, this.near, this.far);
         };
         return OrthographicCamera;
     })(wd.Camera);
@@ -10473,8 +10453,6 @@ var wd;
             _super.apply(this, arguments);
             this._fovy = null;
             this._aspect = null;
-            this._near = null;
-            this._far = null;
         }
         PerspectiveCamera.create = function () {
             var obj = new this();
@@ -10502,28 +10480,6 @@ var wd;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(PerspectiveCamera.prototype, "near", {
-            get: function () {
-                return this._near;
-            },
-            set: function (near) {
-                this._near = near;
-                this.dirty = true;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(PerspectiveCamera.prototype, "far", {
-            get: function () {
-                return this._far;
-            },
-            set: function (far) {
-                this._far = far;
-                this.dirty = true;
-            },
-            enumerable: true,
-            configurable: true
-        });
         PerspectiveCamera.prototype.zoomIn = function (speed, min) {
             if (min === void 0) { min = 1; }
             this.fovy = Math.max(this.fovy - speed, min);
@@ -10532,8 +10488,18 @@ var wd;
             if (max === void 0) { max = 179; }
             this.fovy = Math.min(this.fovy + speed, max);
         };
+        PerspectiveCamera.prototype.convertScreenToWorld = function (screenX, screenY, distanceFromCamera) {
+            var device = wd.DeviceManager.getInstance(), width = device.view.width, height = device.view.height, normalizedDeviceCoordinate = wd.Vector3.create(2 * screenX / width - 1, 1 - 2 * screenY / height, 1), invViewProjMat = this.getInvViewProjMat(), point = null, w = null;
+            point = invViewProjMat.multiplyVector3(normalizedDeviceCoordinate);
+            w = normalizedDeviceCoordinate.x * invViewProjMat.values[3] +
+                normalizedDeviceCoordinate.y * invViewProjMat.values[7] +
+                normalizedDeviceCoordinate.z * invViewProjMat.values[11] +
+                invViewProjMat.values[15];
+            point.scale(1 / w);
+            return wd.Vector3.create().lerp(this.gameObject.transform.position, point, distanceFromCamera / this.far);
+        };
         PerspectiveCamera.prototype.updateProjectionMatrix = function () {
-            this.pMatrix.setPerspective(this._fovy, this._aspect, this._near, this._far);
+            this.pMatrix.setPerspective(this._fovy, this._aspect, this.near, this.far);
         };
         return PerspectiveCamera;
     })(wd.Camera);
@@ -10590,6 +10556,19 @@ var wd;
         };
         CameraController.prototype.dispose = function () {
             this.camera.dispose();
+        };
+        CameraController.prototype.isIntersectWithRay = function (gameObject, screenX, screenY) {
+            var from = null, to = null, shape = null;
+            if (!gameObject.hasComponent(wd.Collider)) {
+                return false;
+            }
+            shape = gameObject.getComponent(wd.Collider).shape;
+            from = this.convertScreenToWorld(screenX, screenY, this.camera.near);
+            to = this.convertScreenToWorld(screenX, screenY, this.camera.far);
+            return shape.isIntersectWithRay(from, to.sub(from));
+        };
+        CameraController.prototype.convertScreenToWorld = function (screenX, screenY, distanceFromCamera) {
+            return this.camera.convertScreenToWorld(screenX, screenY, distanceFromCamera);
         };
         return CameraController;
     })(wd.Component);
@@ -10705,7 +10684,7 @@ var wd;
             }
         };
         FlyCameraControl.prototype._bindCanvasEvent = function () {
-            var self = this, rotateSpeed = this.rotateSpeed, scene = wd.Director.getInstance().scene, mouseup = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEDOWN), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null, canvas = wd.Director.getInstance().view;
+            var self = this, rotateSpeed = this.rotateSpeed, mouseup = wd.EventManager.fromEvent(wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null, canvas = wd.Director.getInstance().view;
             mousedrag = mousedown.flatMap(function (e) {
                 e.stopPropagation();
                 return mousemove.map(function (e) {
@@ -10842,7 +10821,7 @@ var wd;
             this._removeEvent();
         };
         ArcballCameraController.prototype._bindCanvasEvent = function () {
-            var self = this, scene = wd.Director.getInstance().scene, mouseup = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEDOWN), mousewheel = wd.EventManager.fromEvent(scene, wd.EventName.MOUSEWHEEL), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null;
+            var self = this, mouseup = wd.EventManager.fromEvent(wd.EventName.MOUSEUP), mousemove = wd.EventManager.fromEvent(wd.EventName.MOUSEMOVE), mousedown = wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN), mousewheel = wd.EventManager.fromEvent(wd.EventName.MOUSEWHEEL), keydown = wd.EventManager.fromEvent(wd.EventName.KEYDOWN), mousedrag = null;
             mousedrag = mousedown.flatMap(function (e) {
                 e.stopPropagation();
                 return mousemove.takeUntil(mouseup);
@@ -11939,11 +11918,8 @@ var wd;
             return this._children.hasChild(action);
         };
         ActionManager.prototype.update = function (time) {
-            var self = this, removeQueue = [];
+            var removeQueue = [];
             this._children.forEach(function (child) {
-                if (!child) {
-                    return;
-                }
                 if (child.isFinish) {
                     removeQueue.push(child);
                     return;
@@ -11954,7 +11930,7 @@ var wd;
                 child.update(time);
             });
             removeQueue.forEach(function (child) {
-                self._children.removeChild(child);
+                child.gameObject.removeComponent(child);
             });
         };
         return ActionManager;
@@ -12539,6 +12515,34 @@ var wd;
         AABBShape.prototype.isIntersectWithSphere = function (shape) {
             return this.isBoxAndSphereIntersected(this, shape);
         };
+        AABBShape.prototype.isIntersectWithRay = function (rayOrigin, rayDir) {
+            var diff = wd.Vector3.create(), absDiff, absDir, cross = wd.Vector3.create(), prod = wd.Vector3.create();
+            diff.sub2(rayOrigin, this.center);
+            absDiff = wd.Vector3.create(Math.abs(diff.x), Math.abs(diff.y), Math.abs(diff.z));
+            prod.mul2(diff, rayDir);
+            if (absDiff.x > this.halfExtents.x && prod.x >= 0) {
+                return false;
+            }
+            if (absDiff.y > this.halfExtents.y && prod.y >= 0) {
+                return false;
+            }
+            if (absDiff.z > this.halfExtents.z && prod.z >= 0) {
+                return false;
+            }
+            absDir = wd.Vector3.create(Math.abs(rayDir.x), Math.abs(rayDir.y), Math.abs(rayDir.z));
+            cross.cross(rayDir, diff);
+            cross.set(Math.abs(cross.x), Math.abs(cross.y), Math.abs(cross.z));
+            if (cross.x > this.halfExtents.y * absDir.z + this.halfExtents.z * absDir.y) {
+                return false;
+            }
+            if (cross.y > this.halfExtents.x * absDir.z + this.halfExtents.z * absDir.x) {
+                return false;
+            }
+            if (cross.z > this.halfExtents.x * absDir.y + this.halfExtents.y * absDir.x) {
+                return false;
+            }
+            return true;
+        };
         AABBShape.prototype.closestPointTo = function (point) {
             var min = this.getMin(), max = this.getMax(), resultPoint = wd.Vector3.create();
             if (point.x < min.x) {
@@ -12643,6 +12647,24 @@ var wd;
         };
         SphereShape.prototype.isIntersectWithBox = function (shape) {
             return this.isBoxAndSphereIntersected(shape, this);
+        };
+        SphereShape.prototype.isIntersectWithRay = function (rayOrigin, rayDir) {
+            var diff = wd.Vector3.create(), a = 0, b = 0, c = 0, discr = 0;
+            diff.sub2(rayOrigin, this.center);
+            if (diff.dot(diff) < this.radius * this.radius) {
+                return true;
+            }
+            a = rayDir.dot(rayDir);
+            b = 2 * rayDir.dot(diff);
+            c = this.center.dot(this.center);
+            c += rayOrigin.dot(rayOrigin);
+            c -= 2 * this.center.dot(rayOrigin);
+            c -= this.radius * this.radius;
+            discr = (b * b) - (4 * a * c);
+            if (discr < 0) {
+                return false;
+            }
+            return true;
         };
         SphereShape.prototype.containPoint = function (point) {
             return point.distanceToSquared(this.center) <= (Math.pow(this.radius, 2));
@@ -14123,34 +14145,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var wd;
 (function (wd) {
-    var Pick = (function (_super) {
-        __extends(Pick, _super);
-        function Pick() {
-            _super.apply(this, arguments);
-        }
-        Pick.create = function () {
-            var obj = new this();
-            return obj;
-        };
-        Pick.prototype.init = function () {
-        };
-        Pick.prototype.dispose = function () {
-        };
-        Pick.prototype.isPick = function (localX, localY) {
-            return true;
-        };
-        return Pick;
-    })(wd.Component);
-    wd.Pick = Pick;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
     var Script = (function (_super) {
         __extends(Script, _super);
         function Script(url) {
@@ -14619,6 +14613,12 @@ var wd;
     wd.JudgeUtils = JudgeUtils;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var MathUtils = (function () {
@@ -14636,6 +14636,18 @@ var wd;
         MathUtils.bigThan = function (num, below) {
             return num < below ? below : num;
         };
+        MathUtils.generateZeroToOne = function () {
+            return Math.random();
+        };
+        MathUtils.generateInteger = function (min, max) {
+            var max = max + 1;
+            return Math.floor(Math.random() * (max - min) + min);
+        };
+        __decorate([
+            wd.require(function (min, max) {
+                wd.assert(min < max, wd.Log.info.FUNC_SHOULD("min", "< max"));
+            })
+        ], MathUtils, "generateInteger", null);
         return MathUtils;
     })();
     wd.MathUtils = MathUtils;
@@ -18387,19 +18399,19 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
+        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
+        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
         ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n    vec3 halfAngle = normalize(lightDir + viewDir);\n    float blinnTerm = dot(normal, halfAngle);\n\n    blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n    blinnTerm = dotResultBetweenNormAndLight < 0.0 ? 0.0 : blinnTerm;\n    blinnTerm = pow(blinnTerm, shininess);\n\n	return blinnTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n    vec3 materialDiffuse = getMaterialDiffuse();\n    vec3 materialSpecular = getMaterialSpecular();\n\n    float dotResultBetweenNormAndLight = dot(normal, lightDir);\n    float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n\n    vec3 ambientColor = u_ambient * materialDiffuse;\n\n    vec3 diffuseColor = diff * color * materialDiffuse * intensity;\n\n\n    float spec = getBlinnPhongShininess(u_shininess, normal, lightDir, viewDir, dotResultBetweenNormAndLight);\n\n    vec3 specularColor = spec * materialSpecular * intensity;\n\n    return  ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\nvec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n    //lightDir is not normalize computing distance\n    float distance = length(lightDir);\n\n    float attenuation = 0.0;\n    if(distance < light.range)\n    {\n        attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n    }\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n    float attenuation = 1.0;\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec3 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec3 totalLight = vec3(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n       }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n       }\n    #endif\n\n    return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n	#ifdef BOTH_SIDE\n		normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n	#endif\n\n    vec3 viewDir = normalize(getViewDir());\n\n    vec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);\n\n    totalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
-        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
-        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
-        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
         ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
         ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
+        ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
         ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
         ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
@@ -20714,16 +20726,61 @@ var wd;
 (function (wd) {
     var EventListenerMap = (function () {
         function EventListenerMap() {
-            this._listenerMap = wdCb.Hash.create();
+            this.listenerMap = wdCb.Hash.create();
         }
-        EventListenerMap.create = function () {
+        EventListenerMap.prototype.hasChild = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1 && wd.JudgeUtils.isFunction(args[0])) {
+                return this.listenerMap.hasChild(args[0]);
+            }
+            else {
+                var target = args[0], eventName = args[1], list = this.listenerMap.getChild(this.buildKey(target, eventName));
+                return list && list.getCount() > 0;
+            }
+        };
+        EventListenerMap.prototype.appendChild = function (target, eventName, data) {
+            this.listenerMap.appendChild(this.buildKey(target, eventName), data);
+        };
+        EventListenerMap.prototype.filter = function (func) {
+            return this.listenerMap.filter(func);
+        };
+        EventListenerMap.prototype.forEach = function (func) {
+            return this.listenerMap.forEach(func);
+        };
+        EventListenerMap.prototype.getEventNameFromKey = function (key) {
+            var separator = this.getEventSeparator();
+            return key.indexOf(separator) > -1 ? key.split(separator)[1] : key;
+        };
+        EventListenerMap.prototype.isEventName = function (key, eventName) {
+            return key.indexOf("" + this.getEventSeparator() + eventName) > -1
+                || key === eventName;
+        };
+        return EventListenerMap;
+    })();
+    wd.EventListenerMap = EventListenerMap;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomEventListenerMap = (function (_super) {
+        __extends(CustomEventListenerMap, _super);
+        function CustomEventListenerMap() {
+            _super.apply(this, arguments);
+            this.listenerMap = wdCb.Hash.create();
+        }
+        CustomEventListenerMap.create = function () {
             var obj = new this();
             return obj;
         };
-        EventListenerMap.prototype.appendChild = function (target, eventName, data) {
-            this._listenerMap.appendChild(this._buildKey(target, eventName), data);
-        };
-        EventListenerMap.prototype.getChild = function () {
+        CustomEventListenerMap.prototype.getChild = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -20731,39 +20788,20 @@ var wd;
             var self = this;
             if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
                 var eventName = args[0];
-                return this._listenerMap.getChild(eventName);
+                return this.listenerMap.getChild(eventName);
             }
-            else if (args.length === 1) {
+            else if (args.length === 1 && args[0] instanceof wd.GameObject) {
                 var target = args[0];
-                return this._listenerMap.filter(function (list, key) {
+                return this.listenerMap.filter(function (list, key) {
                     return self.isTarget(key, target, list);
                 });
             }
             else if (args.length === 2) {
                 var target = args[0], eventName = args[1];
-                return this._listenerMap.getChild(this._buildKey(target, eventName));
+                return this.listenerMap.getChild(this.buildKey(target, eventName));
             }
         };
-        EventListenerMap.prototype.hasChild = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            if (args.length === 1 && wd.JudgeUtils.isFunction(args[0])) {
-                return this._listenerMap.hasChild(args[0]);
-            }
-            else if (args.length === 2) {
-                var target = args[0], eventName = args[1], list = this._listenerMap.getChild(this._buildKey(target, eventName));
-                return list && list.getCount() > 0;
-            }
-        };
-        EventListenerMap.prototype.filter = function (func) {
-            return this._listenerMap.filter(func);
-        };
-        EventListenerMap.prototype.forEach = function (func) {
-            return this._listenerMap.forEach(func);
-        };
-        EventListenerMap.prototype.removeChild = function () {
+        CustomEventListenerMap.prototype.removeChild = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -20771,35 +20809,165 @@ var wd;
             var self = this, result = null;
             if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
                 var eventName = args[0];
-                result = this._listenerMap.removeChild(eventName);
-            }
-            else if (args.length === 2 && wd.JudgeUtils.isFunction(args[1])) {
-                var eventName = args[0], handler = args[1], list = null;
-                list = this._listenerMap.getChild(eventName);
-                result = wdCb.Collection.create().addChild(list.removeChild(function (val) {
-                    return val.originHandler === handler;
+                result = this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(function (list, key) {
+                    return self.isEventName(key, eventName);
                 }));
+            }
+            else if (args.length === 1 && args[0] instanceof wd.GameObject) {
+                var target = args[0];
+                result = this.listenerMap.removeChild(function (list, key) {
+                    return self.isTarget(key, target, list);
+                });
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], list = null;
+                list = this.listenerMap.getChild(eventName);
+                result = this._getEventDataOffDataList(eventName, wdCb.Collection.create().addChild(list.removeChild(function (val) {
+                    return val.originHandler === handler;
+                })));
                 if (list.getCount() === 0) {
-                    this._listenerMap.removeChild(eventName);
+                    this.listenerMap.removeChild(eventName);
                 }
             }
             else if (args.length === 2 && wd.JudgeUtils.isNumber(args[0])) {
                 var uid = args[0], eventName = args[1];
-                result = this._listenerMap.removeChild(this._buildKey(uid, eventName));
+                result = this.listenerMap.removeChild(this.buildKey(uid, eventName));
             }
-            else if (args.length === 1) {
-                var target = args[0];
-                result = this._listenerMap.removeChild(function (list, key) {
-                    return self.isTarget(key, target, list);
+            else if (args.length === 2 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1];
+                result = this.listenerMap.removeChild(this.buildKey(target, eventName));
+            }
+            else if (args.length === 3 && args[0] instanceof wd.GameObject) {
+                var eventName = args[1], handler = args[2];
+                this.listenerMap.forEach(function (list, key) {
+                    list.removeChild(function (val) {
+                        return val.originHandler === handler;
+                    });
+                    if (list.getCount() === 0) {
+                        return wdCb.$REMOVE;
+                    }
                 });
+                result = null;
+            }
+            return result;
+        };
+        CustomEventListenerMap.prototype.getUidFromKey = function (key) {
+            var separator = "" + CustomEventListenerMap.eventSeparator;
+            return key.indexOf(separator) > -1 ? Number(key.split(separator)[0]) : null;
+        };
+        CustomEventListenerMap.prototype.isTarget = function (key, target, list) {
+            return key.indexOf(this._buildKeyPrefix(target.uid)) > -1 && list !== undefined;
+        };
+        CustomEventListenerMap.prototype.getEventSeparator = function () {
+            return "" + CustomEventListenerMap.eventSeparator;
+        };
+        CustomEventListenerMap.prototype.buildKey = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (wd.JudgeUtils.isNumber(args[0])) {
+                var uid = args[0], eventName = args[1];
+                return this._buildKeyWithUid(uid, eventName);
+            }
+            else if (args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1];
+                return this._buildKeyWithUid(target.uid, eventName);
+            }
+            else if (args[0] === null) {
+                var eventName = args[1];
+                return eventName;
+            }
+        };
+        CustomEventListenerMap.prototype._buildKeyWithUid = function (uid, eventName) {
+            return "" + this._buildKeyPrefix(uid) + CustomEventListenerMap.eventSeparator + eventName;
+        };
+        CustomEventListenerMap.prototype._buildKeyPrefix = function (uid) {
+            return "" + String(uid);
+        };
+        CustomEventListenerMap.prototype._getEventDataOffDataList = function (eventName, result) {
+            return result.map(function (list) {
+                return list.map(function (data) {
+                    return {
+                        eventName: eventName,
+                        domHandler: data.domHandler
+                    };
+                });
+            });
+        };
+        CustomEventListenerMap.eventSeparator = "@";
+        return CustomEventListenerMap;
+    })(wd.EventListenerMap);
+    wd.CustomEventListenerMap = CustomEventListenerMap;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var DomEventListenerMap = (function (_super) {
+        __extends(DomEventListenerMap, _super);
+        function DomEventListenerMap() {
+            _super.apply(this, arguments);
+            this.listenerMap = wdCb.Hash.create();
+        }
+        DomEventListenerMap.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        DomEventListenerMap.prototype.getChild = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1) {
+                var eventName = args[0];
+                return this.listenerMap.getChild(eventName);
             }
             else if (args.length === 2) {
-                var target = args[0], eventName = args[1];
-                result = this._listenerMap.removeChild(this._buildKey(target, eventName));
+                var dom = args[0], eventName = args[1];
+                return this.listenerMap.getChild(this.buildKey(dom, eventName));
             }
-            else if (args.length === 3) {
-                var target = args[0], eventName = args[1], resultList = wdCb.Collection.create(), handler = args[2];
-                this._listenerMap.forEach(function (list, key) {
+        };
+        DomEventListenerMap.prototype.removeChild = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var self = this, result = null;
+            if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0];
+                result = this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(function (list, key) {
+                    return self.isEventName(key, eventName);
+                }));
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], resultList = wdCb.Collection.create();
+                this.listenerMap.forEach(function (list, key) {
+                    if (self.isEventName(key, eventName)) {
+                        var result_1 = list.removeChild(function (val) {
+                            return val.originHandler === handler;
+                        });
+                        if (result_1.getCount() > 0) {
+                            resultList.addChild(result_1);
+                        }
+                        if (list.getCount() === 0) {
+                            return wdCb.$REMOVE;
+                        }
+                    }
+                });
+                result = this._getEventDataOffDataList(eventName, resultList);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1];
+                result = this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(this.buildKey(dom, eventName)));
+            }
+            else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
+                var eventName = args[1], resultList = wdCb.Collection.create(), handler = args[2];
+                this.listenerMap.forEach(function (list, key) {
                     var result = list.removeChild(function (val) {
                         return val.originHandler === handler;
                     });
@@ -20810,71 +20978,37 @@ var wd;
                         return wdCb.$REMOVE;
                     }
                 });
-                result = resultList;
+                result = this._getEventDataOffDataList(eventName, resultList);
             }
             return result;
         };
-        EventListenerMap.prototype.getEventOffDataList = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            var result = wdCb.Collection.create(), target = args[0], self = this;
-            if (args.length === 1) {
-                this.getChild(target)
-                    .forEach(function (list, key) {
-                    if (list && list.getCount() > 0) {
-                        result.addChild({
-                            eventName: self.getEventNameFromKey(key),
-                            domHandler: list.getChild(0).domHandler
-                        });
-                    }
-                });
-                return result;
-            }
-            else if (args.length === 2) {
-                var eventName = args[1], list = this.getChild(target, eventName);
-                if (list && list.getCount() > 0) {
-                    result.addChild({
+        DomEventListenerMap.prototype.isDom = function (key, dom, list) {
+            return key.indexOf(this._buildKeyPrefix(dom)) > -1 && list !== undefined;
+        };
+        DomEventListenerMap.prototype.getEventSeparator = function () {
+            return "" + DomEventListenerMap.eventSeparator;
+        };
+        DomEventListenerMap.prototype.buildKey = function (dom, eventName) {
+            return "" + this._buildKeyPrefix(dom) + DomEventListenerMap.eventSeparator + eventName;
+        };
+        DomEventListenerMap.prototype._buildKeyPrefix = function (dom) {
+            return dom.id ? "" + dom.tagName + dom.id : "" + dom.tagName;
+        };
+        DomEventListenerMap.prototype._getEventDataOffDataList = function (eventName, result) {
+            return result.map(function (list) {
+                return list.map(function (data) {
+                    return {
+                        dom: data.dom,
                         eventName: eventName,
-                        domHandler: list.getChild(0).domHandler
-                    });
-                }
-                return result;
-            }
+                        domHandler: data.domHandler
+                    };
+                });
+            });
         };
-        EventListenerMap.prototype.getEventNameFromKey = function (key) {
-            var separator = "" + EventListenerMap.eventSeparator;
-            return key.indexOf(separator) > -1 ? key.split(separator)[1] : key;
-        };
-        EventListenerMap.prototype.getUidFromKey = function (key) {
-            var separator = "" + EventListenerMap.eventSeparator;
-            return key.indexOf(separator) > -1 ? Number(key.split(separator)[0]) : null;
-        };
-        EventListenerMap.prototype.isTarget = function (key, target, list) {
-            return key.indexOf(String(target.uid)) > -1 && list !== undefined;
-        };
-        EventListenerMap.prototype._buildKey = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            if (wd.JudgeUtils.isNumber(args[0])) {
-                var uid = args[0], eventName = args[1];
-                return this._buildKeyWithUid(uid, eventName);
-            }
-            else {
-                var target = args[0], eventName = args[1];
-                return target ? this._buildKeyWithUid(target.uid, eventName) : eventName;
-            }
-        };
-        EventListenerMap.prototype._buildKeyWithUid = function (uid, eventName) {
-            return "" + String(uid) + EventListenerMap.eventSeparator + eventName;
-        };
-        EventListenerMap.eventSeparator = "@";
-        return EventListenerMap;
-    })();
-    wd.EventListenerMap = EventListenerMap;
+        DomEventListenerMap.eventSeparator = "@";
+        return DomEventListenerMap;
+    })(wd.EventListenerMap);
+    wd.DomEventListenerMap = DomEventListenerMap;
 })(wd || (wd = {}));
 
 var wd;
@@ -21003,7 +21137,6 @@ var wd;
             this.p_type = null;
             this.name = null;
             this.target = null;
-            this.currentTarget = null;
             this.isStopPropagation = false;
             this.phase = null;
             this.name = eventName;
@@ -21079,10 +21212,10 @@ var wd;
         __extends(MouseEvent, _super);
         function MouseEvent() {
             _super.apply(this, arguments);
-            this.p_type = wd_1.EventType.MOUSE;
             this._location = null;
             this._locationInView = null;
             this._button = null;
+            this.p_type = wd_1.EventType.MOUSE;
         }
         MouseEvent.create = function (event, eventName) {
             var obj = new this(event, eventName);
@@ -21215,7 +21348,7 @@ var wd;
         });
         MouseEvent.prototype.copy = function () {
             var eventObj = MouseEvent.create(this.event, this.name);
-            return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
+            return this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "lastX", "lastY"]);
         };
         MouseEvent.prototype._isPointerLocked = function () {
             return !!(document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement);
@@ -21413,7 +21546,7 @@ var wd;
         });
         KeyboardEvent.prototype.copy = function () {
             var eventObj = KeyboardEvent.create(this.event, this.name);
-            return this.copyMember(eventObj, this, ["altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
+            return this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
         };
         return KeyboardEvent;
     })(wd.DomEvent);
@@ -21431,8 +21564,9 @@ var wd;
         __extends(CustomEvent, _super);
         function CustomEvent() {
             _super.apply(this, arguments);
-            this.p_type = wd.EventType.CUSTOM;
+            this.currentTarget = null;
             this.userData = null;
+            this.p_type = wd.EventType.CUSTOM;
         }
         CustomEvent.create = function (eventName) {
             var obj = new this(eventName);
@@ -21537,44 +21671,68 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var self = this, dom = this.getDom(), eventRegister = wd.EventRegister.getInstance(), eventOffDataList = null;
+            var self = this, eventRegister = wd.DomEventRegister.getInstance(), eventOffDataList = null;
             eventOffDataList = eventRegister.remove.apply(eventRegister, args);
             if (eventOffDataList) {
                 eventOffDataList.forEach(function (list) {
                     list.forEach(function (eventOffData) {
-                        self._unBind(dom, eventOffData.eventName, eventOffData.domHandler);
+                        self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
                     });
                 });
             }
             this.clearHandler();
         };
-        DomEventHandler.prototype.clearHandler = function () {
-        };
-        DomEventHandler.prototype.buildDomHandler = function (target, eventName) {
-            var self = this, context = wd.root;
-            return wdCb.EventUtils.bindEvent(context, function (event) {
-                self.triggerDomEvent(event, eventName, target);
-            });
-        };
-        DomEventHandler.prototype.handler = function (target, eventName, handler, priority) {
-            var domHandler = null, originHandler = handler;
-            handler = this.addEngineHandler(target, eventName, handler);
-            if (!wd.EventRegister.getInstance().isBinded(target, eventName)) {
-                domHandler = this._bind(this.getDom(), eventName, target);
+        DomEventHandler.prototype.trigger = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var dom = null, event = null, eventName = null, registerDataList = null;
+            if (args.length === 1) {
+                event = args[0];
+                dom = this.getDefaultDom();
             }
             else {
-                domHandler = wd.EventRegister.getInstance().getDomHandler(target, eventName);
+                dom = args[0];
+                event = args[1];
             }
-            wd.EventRegister.getInstance().register(target, eventName, handler, originHandler, domHandler, priority);
+            eventName = event.name;
+            registerDataList = wd.DomEventRegister.getInstance().getEventRegisterDataList(dom, eventName);
+            if (registerDataList === null || registerDataList.getCount() === 0) {
+                return;
+            }
+            registerDataList.forEach(function (registerData) {
+                var eventCopy = event.copy();
+                registerData.handler(eventCopy);
+            });
         };
-        DomEventHandler.prototype._bind = function (dom, eventName, target) {
+        DomEventHandler.prototype.clearHandler = function () {
+        };
+        DomEventHandler.prototype.buildDomHandler = function (dom, eventName) {
+            var self = this, context = wd.root;
+            return wdCb.EventUtils.bindEvent(context, function (event) {
+                self.triggerDomEvent(dom, event, eventName);
+            });
+        };
+        DomEventHandler.prototype.handler = function (dom, eventName, handler, priority) {
+            var domHandler = null, originHandler = handler;
+            handler = this.addEngineHandler(eventName, handler);
+            if (!wd.DomEventRegister.getInstance().isBinded(dom, eventName)) {
+                domHandler = this._bind(dom, eventName);
+            }
+            else {
+                domHandler = wd.DomEventRegister.getInstance().getDomHandler(dom, eventName);
+            }
+            wd.DomEventRegister.getInstance().register(dom, eventName, handler, originHandler, domHandler, priority);
+        };
+        DomEventHandler.prototype._bind = function (dom, eventName) {
             var domHandler = null;
-            domHandler = this.buildDomHandler(target, eventName);
+            domHandler = this.buildDomHandler(dom, eventName);
             wdCb.EventUtils.addEvent(dom, wd.EventNameHandler.handleEventName(eventName), domHandler);
             return domHandler;
         };
         DomEventHandler.prototype._unBind = function (dom, eventName, handler) {
-            wdCb.EventUtils.removeEvent(dom, eventName, handler);
+            wdCb.EventUtils.removeEvent(dom, wd.EventNameHandler.handleEventName(eventName), handler);
         };
         __decorate([
             wd.virtual
@@ -21610,39 +21768,35 @@ var wd;
             }
             return this._instance;
         };
-        MouseEventHandler.prototype.on = function (target, eventName, handler, priority) {
-            this.handler(target, eventName, handler, priority);
+        MouseEventHandler.prototype.on = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var dom = null, eventName = null, handler = null, priority = null;
+            if (args.length === 3) {
+                dom = this.getDefaultDom();
+                eventName = args[0];
+                handler = args[1];
+                priority = args[2];
+            }
+            else {
+                dom = args[0];
+                eventName = args[1];
+                handler = args[2];
+                priority = args[3];
+            }
+            this.handler(dom, eventName, handler, priority);
         };
-        MouseEventHandler.prototype.trigger = function (target, event, notSetTarget) {
-            var eventName = event.name, registerDataList = null, isStopPropagation = false;
-            if (!(target instanceof wd.GameObject)) {
-                wd.Log.log("target is not GameObject, can't trigger event");
-                return;
-            }
-            if (!notSetTarget) {
-                event.target = target;
-            }
-            registerDataList = wd.EventRegister.getInstance().getEventRegisterDataList(target, eventName);
-            if (registerDataList === null || registerDataList.getCount() === 0) {
-                return;
-            }
-            registerDataList.forEach(function (registerData) {
-                var eventCopy = event.copy();
-                registerData.handler(eventCopy);
-                if (eventCopy.isStopPropagation) {
-                    isStopPropagation = true;
-                }
-            });
-            return isStopPropagation;
-        };
-        MouseEventHandler.prototype.getDom = function () {
+        MouseEventHandler.prototype.getDefaultDom = function () {
             return wd.DeviceManager.getInstance().view.dom;
+            ;
         };
-        MouseEventHandler.prototype.triggerDomEvent = function (event, eventName, target) {
-            var eventObj = this._createEventObject(event, eventName, target);
-            wd.EventManager.emit(this._getTopTarget(eventObj), eventObj);
+        MouseEventHandler.prototype.triggerDomEvent = function (dom, event, eventName) {
+            var eventObj = this._createEventObject(dom, event, eventName);
+            wd.EventManager.trigger(dom, eventObj);
         };
-        MouseEventHandler.prototype.addEngineHandler = function (target, eventName, handler) {
+        MouseEventHandler.prototype.addEngineHandler = function (eventName, handler) {
             var resultHandler = null;
             switch (eventName) {
                 case wd.EventName.MOUSEMOVE:
@@ -21658,9 +21812,6 @@ var wd;
             this.lastX = null;
             this.lastY = null;
         };
-        MouseEventHandler.prototype._getTopTarget = function (event) {
-            return wd.Director.getInstance().getTopUnderPoint(event.locationInView);
-        };
         MouseEventHandler.prototype._handleMove = function (handler) {
             var self = this;
             return function (event) {
@@ -21668,9 +21819,9 @@ var wd;
                 self._saveLocation(event);
             };
         };
-        MouseEventHandler.prototype._createEventObject = function (event, eventName, currentTarget) {
+        MouseEventHandler.prototype._createEventObject = function (dom, event, eventName) {
             var obj = wd.MouseEvent.create(event ? event : wd.root.event, eventName);
-            obj.currentTarget = currentTarget;
+            obj.target = dom;
             return obj;
         };
         MouseEventHandler.prototype._saveLocation = function (event) {
@@ -21681,8 +21832,15 @@ var wd;
         };
         MouseEventHandler._instance = null;
         __decorate([
-            wd.require(function (target, eventName, handler, priority) {
-                wd.assert(target instanceof wd.GameObject, wd.Log.info.FUNC_MUST_BE("target", "GameObject"));
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args.length === 4) {
+                    var dom = args[0];
+                    wd.assert(wd.JudgeUtils.isDom(dom), wd.Log.info.FUNC_MUST_BE("first param", "HTMLElement"));
+                }
             })
         ], MouseEventHandler.prototype, "on", null);
         return MouseEventHandler;
@@ -21709,29 +21867,33 @@ var wd;
             }
             return this._instance;
         };
-        KeyboardEventHandler.prototype.on = function (eventName, handler, priority) {
-            this.handler(null, eventName, handler, priority);
-        };
-        KeyboardEventHandler.prototype.trigger = function (event) {
-            var eventName = event.name, registerDataList = null;
-            registerDataList = wd.EventRegister.getInstance().getEventRegisterDataList(eventName);
-            if (registerDataList === null || registerDataList.getCount() === 0) {
-                return;
+        KeyboardEventHandler.prototype.on = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
             }
-            registerDataList.forEach(function (registerData) {
-                var eventCopy = event.copy();
-                registerData.handler(eventCopy);
-            });
-            return true;
+            var eventName = null, handler = null, priority = null;
+            if (args.length === 3) {
+                eventName = args[0];
+                handler = args[1];
+                priority = args[2];
+            }
+            else {
+                wd.Log.warn("keyboard event can only bind on document.body");
+                eventName = args[1];
+                handler = args[2];
+                priority = args[3];
+            }
+            this.handler(this.getDefaultDom(), eventName, handler, priority);
         };
-        KeyboardEventHandler.prototype.getDom = function () {
-            return document;
+        KeyboardEventHandler.prototype.triggerDomEvent = function (dom, event, eventName) {
+            var eventObj = this._createEventObject(dom, event, eventName);
+            wd.EventManager.trigger(dom, eventObj);
         };
-        KeyboardEventHandler.prototype.triggerDomEvent = function (event, eventName, target) {
-            var eventObj = this._createEventObject(event, eventName);
-            wd.EventManager.trigger(eventObj);
+        KeyboardEventHandler.prototype.getDefaultDom = function () {
+            return document.body;
         };
-        KeyboardEventHandler.prototype.addEngineHandler = function (target, eventName, handler) {
+        KeyboardEventHandler.prototype.addEngineHandler = function (eventName, handler) {
             var resultHandler = null;
             switch (eventName) {
                 case wd.EventName.KEYDOWN:
@@ -21771,8 +21933,9 @@ var wd;
                 }
             }
         };
-        KeyboardEventHandler.prototype._createEventObject = function (event, eventName) {
+        KeyboardEventHandler.prototype._createEventObject = function (dom, event, eventName) {
             var obj = wd.KeyboardEvent.create(event ? event : wd.root.event, eventName);
+            obj.target = dom;
             return obj;
         };
         KeyboardEventHandler._instance = null;
@@ -21806,11 +21969,11 @@ var wd;
             }
             if (args.length === 3) {
                 var eventName = args[0], handler = args[1], originHandler = handler, priority = args[2];
-                wd.EventRegister.getInstance().register(null, eventName, handler, originHandler, null, priority);
+                wd.CustomEventRegister.getInstance().register(null, eventName, handler, originHandler, null, priority);
             }
             else if (args.length === 4) {
                 var target = args[0], eventName = args[1], handler = args[2], originHandler = handler, priority = args[3];
-                wd.EventRegister.getInstance().register(target, eventName, handler, originHandler, null, priority);
+                wd.CustomEventRegister.getInstance().register(target, eventName, handler, originHandler, null, priority);
             }
         };
         CustomEventHandler.prototype.off = function () {
@@ -21818,7 +21981,7 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var eventRegister = wd.EventRegister.getInstance();
+            var eventRegister = wd.CustomEventRegister.getInstance();
             eventRegister.remove.apply(eventRegister, args);
         };
         CustomEventHandler.prototype.trigger = function () {
@@ -21855,34 +22018,34 @@ var wd;
             }
         };
         CustomEventHandler.prototype._triggerEventHandler = function (event, userData) {
-            var listenerDataList = null, self = this;
-            listenerDataList = wd.EventRegister.getInstance().getEventRegisterDataList(event.name);
-            if (listenerDataList === null || listenerDataList.getCount() === 0) {
+            var registerDataList = null, self = this;
+            registerDataList = wd.CustomEventRegister.getInstance().getEventRegisterDataList(event.name);
+            if (registerDataList === null || registerDataList.getCount() === 0) {
                 return false;
             }
-            listenerDataList.forEach(function (listenerData) {
+            registerDataList.forEach(function (registerData) {
                 var eventCopy = event.copy();
-                eventCopy.currentTarget = listenerData.target;
-                eventCopy.target = listenerData.target;
+                eventCopy.currentTarget = registerData.target;
+                eventCopy.target = registerData.target;
                 self._setUserData(eventCopy, userData);
-                listenerData.handler(eventCopy);
+                registerData.handler(eventCopy);
             });
             return true;
         };
         CustomEventHandler.prototype._triggerTargetAndEventHandler = function (target, event, userData, notSetTarget) {
-            var listenerDataList = null, isStopPropagation = false, self = this;
+            var registerDataList = null, isStopPropagation = false, self = this;
             if (!notSetTarget) {
                 event.target = target;
             }
-            listenerDataList = wd.EventRegister.getInstance().getEventRegisterDataList(target, event.name);
-            if (listenerDataList === null || listenerDataList.getCount() === 0) {
+            registerDataList = wd.CustomEventRegister.getInstance().getEventRegisterDataList(target, event.name);
+            if (registerDataList === null || registerDataList.getCount() === 0) {
                 return false;
             }
-            listenerDataList.forEach(function (listenerData) {
+            registerDataList.forEach(function (registerData) {
                 var eventCopy = event.copy();
-                eventCopy.currentTarget = listenerData.target;
+                eventCopy.currentTarget = registerData.target;
                 self._setUserData(eventCopy, userData);
-                listenerData.handler(eventCopy);
+                registerData.handler(eventCopy);
                 if (eventCopy.isStopPropagation) {
                     isStopPropagation = true;
                 }
@@ -21905,11 +22068,30 @@ var wd;
     var EventDispatcher = (function () {
         function EventDispatcher() {
         }
-        EventDispatcher.create = function () {
-            var obj = new this();
-            return obj;
+        return EventDispatcher;
+    })();
+    wd.EventDispatcher = EventDispatcher;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomEventDispatcher = (function (_super) {
+        __extends(CustomEventDispatcher, _super);
+        function CustomEventDispatcher() {
+            _super.apply(this, arguments);
+        }
+        CustomEventDispatcher.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
         };
-        EventDispatcher.prototype.trigger = function () {
+        CustomEventDispatcher.prototype.trigger = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -21919,25 +22101,23 @@ var wd;
                 return wd.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event_1);
             }
-            else if (args.length === 2 && !(args[1] instanceof wd.Event)) {
+            else if (args.length === 2 && (args[0] instanceof wd.Event)) {
                 var event_2 = args[0], userData = args[1], eventType = event_2.type;
-                wd.Log.error(eventType !== wd.EventType.CUSTOM, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
                 return wd.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event_2, userData);
             }
-            else if (args.length === 2 || (args.length === 3 && wd.JudgeUtils.isBoolean(args[2]))) {
+            else if ((args.length === 2 && args[0] instanceof wd.GameObject) || (args.length === 3 && wd.JudgeUtils.isBoolean(args[2]))) {
                 var target = args[0], event_3 = args[1], notSetTarget = args[2] === void 0 ? false : args[2], eventType = event_3.type;
                 return wd.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event_3, notSetTarget);
             }
             else if (args.length === 3 || args.length === 4) {
                 var target = args[0], event_4 = args[1], userData = args[2], notSetTarget = args[3] === void 0 ? false : args[3], eventType = event_4.type;
-                wd.Log.error(eventType !== wd.EventType.CUSTOM, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
                 return wd.FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event_4, userData, notSetTarget);
             }
         };
-        EventDispatcher.prototype.emit = function (target, eventObject, userData) {
+        CustomEventDispatcher.prototype.emit = function (target, eventObject, userData) {
             var isStopPropagation = false;
             eventObject.phase = wd.EventPhase.EMIT;
             eventObject.target = target;
@@ -21949,7 +22129,7 @@ var wd;
                 target = this._getParent(target);
             } while (target);
         };
-        EventDispatcher.prototype.broadcast = function (target, eventObject, userData) {
+        CustomEventDispatcher.prototype.broadcast = function (target, eventObject, userData) {
             var self = this;
             eventObject.phase = wd.EventPhase.BROADCAST;
             eventObject.target = target;
@@ -21966,33 +22146,121 @@ var wd;
             }
             iterator(target);
         };
-        EventDispatcher.prototype._getParent = function (target) {
+        CustomEventDispatcher.prototype._getParent = function (target) {
             var parent = target.bubbleParent;
             return parent ? parent : target.parent;
         };
-        EventDispatcher.prototype._triggerWithUserData = function (target, event, userData, notSetTarget) {
+        CustomEventDispatcher.prototype._triggerWithUserData = function (target, event, userData, notSetTarget) {
             return userData ? this.trigger(target, event, userData, notSetTarget)
                 : this.trigger(target, event, notSetTarget);
         };
-        return EventDispatcher;
-    })();
-    wd.EventDispatcher = EventDispatcher;
+        CustomEventDispatcher._instance = null;
+        return CustomEventDispatcher;
+    })(wd.EventDispatcher);
+    wd.CustomEventDispatcher = CustomEventDispatcher;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var DomEventDispatcher = (function (_super) {
+        __extends(DomEventDispatcher, _super);
+        function DomEventDispatcher() {
+            _super.apply(this, arguments);
+        }
+        DomEventDispatcher.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        DomEventDispatcher.prototype.trigger = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1) {
+                var event_1 = args[0], eventType = event_1.type;
+                wd.FactoryEventHandler.createEventHandler(eventType)
+                    .trigger(event_1);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], event_2 = args[1], eventType = event_2.type;
+                wd.FactoryEventHandler.createEventHandler(eventType)
+                    .trigger(dom, event_2);
+            }
+        };
+        DomEventDispatcher._instance = null;
+        return DomEventDispatcher;
+    })(wd.EventDispatcher);
+    wd.DomEventDispatcher = DomEventDispatcher;
 })(wd || (wd = {}));
 
 var wd;
 (function (wd) {
     var EventRegister = (function () {
         function EventRegister() {
-            this._listenerMap = wd.EventListenerMap.create();
+            this.listenerMap = wd.ABSTRACT_ATTRIBUTE;
         }
-        EventRegister.getInstance = function () {
+        EventRegister.prototype.getEventRegisterDataList = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var result = this.listenerMap.getChild.apply(this.listenerMap, args);
+            if (!result) {
+                return null;
+            }
+            return result.sort(function (dataA, dataB) {
+                return dataB.priority - dataA.priority;
+            });
+        };
+        EventRegister.prototype.filter = function (func) {
+            return this.listenerMap.filter(func);
+        };
+        EventRegister.prototype.forEach = function (func) {
+            return this.listenerMap.forEach(func);
+        };
+        EventRegister.prototype.getChild = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            return this.listenerMap.getChild.apply(this.listenerMap, Array.prototype.slice.call(arguments, 0));
+        };
+        EventRegister.prototype.getEventNameFromKey = function (key) {
+            return this.listenerMap.getEventNameFromKey(key);
+        };
+        return EventRegister;
+    })();
+    wd.EventRegister = EventRegister;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomEventRegister = (function (_super) {
+        __extends(CustomEventRegister, _super);
+        function CustomEventRegister() {
+            _super.apply(this, arguments);
+            this.listenerMap = wd.CustomEventListenerMap.create();
+        }
+        CustomEventRegister.getInstance = function () {
             if (this._instance === null) {
                 this._instance = new this();
             }
             return this._instance;
         };
-        EventRegister.prototype.register = function (target, eventName, handler, originHandler, domHandler, priority) {
-            this._listenerMap.appendChild(target, eventName, {
+        CustomEventRegister.prototype.register = function (target, eventName, handler, originHandler, domHandler, priority) {
+            this.listenerMap.appendChild(target, eventName, {
                 target: target,
                 eventName: eventName,
                 handler: handler,
@@ -22001,7 +22269,7 @@ var wd;
                 priority: priority
             });
         };
-        EventRegister.prototype.remove = function () {
+        CustomEventRegister.prototype.remove = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -22009,85 +22277,132 @@ var wd;
             var target = args[0], result = null;
             if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
                 var eventName = args[0];
-                result = this._listenerMap.removeChild(eventName);
+                result = this.listenerMap.removeChild(eventName);
+            }
+            else if (args.length === 1 && args[0] instanceof wd.GameObject) {
+                result = this.listenerMap.removeChild(target);
+                this._handleAfterAllEventHandlerRemoved(target);
             }
             else if (args.length === 2 && wd.JudgeUtils.isFunction(args[1])) {
                 var eventName = args[0], handler = args[1];
-                result = this._listenerMap.removeChild(eventName, handler);
+                result = this.listenerMap.removeChild(eventName, handler);
             }
             else if (args.length === 2 && wd.JudgeUtils.isNumber(args[0])) {
                 var uid = args[0], eventName = args[1];
-                result = this._listenerMap.removeChild(uid, eventName);
+                result = this.listenerMap.removeChild(uid, eventName);
             }
-            else if (args.length === 1) {
-                result = this._listenerMap.removeChild(target);
-                this._handleAfterAllEventHandlerRemoved(target);
-            }
-            else if (args.length === 2 || args.length === 3) {
-                result = this._listenerMap.removeChild.apply(this._listenerMap, args);
+            else if ((args.length === 2 && args[0] instanceof wd.GameObject) || args.length === 3) {
+                result = this.listenerMap.removeChild.apply(this.listenerMap, args);
                 if (this._isAllEventHandlerRemoved(target)) {
                     this._handleAfterAllEventHandlerRemoved(target);
                 }
             }
             return result;
         };
-        EventRegister.prototype.getEventRegisterDataList = function () {
+        CustomEventRegister.prototype.setBubbleParent = function (target, parent) {
+            target.bubbleParent = parent;
+        };
+        CustomEventRegister.prototype.getUidFromKey = function (key) {
+            return this.listenerMap.getUidFromKey(key);
+        };
+        CustomEventRegister.prototype.isTarget = function (key, target, list) {
+            return this.listenerMap.isTarget(key, target, list);
+        };
+        CustomEventRegister.prototype._isAllEventHandlerRemoved = function (target) {
+            return !this.listenerMap.hasChild(function (list, key) {
+                return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
+            });
+        };
+        CustomEventRegister.prototype._handleAfterAllEventHandlerRemoved = function (target) {
+            this.setBubbleParent(target, null);
+        };
+        CustomEventRegister._instance = null;
+        return CustomEventRegister;
+    })(wd.EventRegister);
+    wd.CustomEventRegister = CustomEventRegister;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var DomEventRegister = (function (_super) {
+        __extends(DomEventRegister, _super);
+        function DomEventRegister() {
+            _super.apply(this, arguments);
+            this.listenerMap = wd.DomEventListenerMap.create();
+        }
+        DomEventRegister.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        DomEventRegister.prototype.register = function (dom, eventName, handler, originHandler, domHandler, priority) {
+            this.listenerMap.appendChild(dom, eventName, {
+                dom: dom,
+                eventName: eventName,
+                handler: handler,
+                originHandler: originHandler,
+                domHandler: domHandler,
+                priority: priority
+            });
+        };
+        DomEventRegister.prototype.remove = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var result = this._listenerMap.getChild.apply(this._listenerMap, args);
-            if (!result) {
-                return null;
+            var result = null;
+            if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0];
+                result = this.listenerMap.removeChild(eventName);
             }
-            return result.sort(function (dataA, dataB) {
-                return dataB.priority - dataA.priority;
-            });
+            else if (args.length === 2 && wd.JudgeUtils.isFunction(args[1])) {
+                var eventName = args[0], handler = args[1];
+                result = this.listenerMap.removeChild(eventName, handler);
+            }
+            else if ((args.length === 2 && wd.JudgeUtils.isDom(args[0])) || args.length === 3) {
+                result = this.listenerMap.removeChild.apply(this.listenerMap, args);
+            }
+            return result;
         };
-        EventRegister.prototype.setBubbleParent = function (target, parent) {
-            target.bubbleParent = parent;
+        DomEventRegister.prototype.isBinded = function (dom, eventName) {
+            return this.listenerMap.hasChild(dom, eventName);
         };
-        EventRegister.prototype.isBinded = function (target, eventName) {
-            return this._listenerMap.hasChild(target, eventName);
+        DomEventRegister.prototype.isDom = function (key, dom, list) {
+            return this.listenerMap.isDom(key, dom, list);
         };
-        EventRegister.prototype.filter = function (func) {
-            return this._listenerMap.filter(func);
-        };
-        EventRegister.prototype.forEach = function (func) {
-            return this._listenerMap.forEach(func);
-        };
-        EventRegister.prototype.getChild = function (target, eventName) {
-            return this._listenerMap.getChild.apply(this._listenerMap, Array.prototype.slice.call(arguments, 0));
-        };
-        EventRegister.prototype.getEventNameFromKey = function (key) {
-            return this._listenerMap.getEventNameFromKey(key);
-        };
-        EventRegister.prototype.getUidFromKey = function (key) {
-            return this._listenerMap.getUidFromKey(key);
-        };
-        EventRegister.prototype.getDomHandler = function (target, eventName) {
-            var list = this.getChild(target, eventName);
+        DomEventRegister.prototype.getDomHandler = function (dom, eventName) {
+            var list = this.getChild(dom, eventName);
             if (list && list.getCount() > 0) {
                 return list.getChild(0).domHandler;
             }
         };
-        EventRegister.prototype.isTarget = function (key, target, list) {
-            return this._listenerMap.isTarget(key, target, list);
-        };
-        EventRegister.prototype._isAllEventHandlerRemoved = function (target) {
-            return !this._listenerMap.hasChild(function (list, key) {
-                return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
-            });
-        };
-        EventRegister.prototype._handleAfterAllEventHandlerRemoved = function (target) {
-            this.setBubbleParent(target, null);
-        };
-        EventRegister._instance = null;
-        return EventRegister;
-    })();
-    wd.EventRegister = EventRegister;
+        DomEventRegister._instance = null;
+        return DomEventRegister;
+    })(wd.EventRegister);
+    wd.DomEventRegister = DomEventRegister;
 })(wd || (wd = {}));
 
+var wd;
+(function (wd) {
+    var EventBinder = (function () {
+        function EventBinder() {
+        }
+        return EventBinder;
+    })();
+    wd.EventBinder = EventBinder;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -22096,36 +22411,36 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var wd;
 (function (wd) {
-    var EventBinder = (function () {
-        function EventBinder() {
+    var CustomEventBinder = (function (_super) {
+        __extends(CustomEventBinder, _super);
+        function CustomEventBinder() {
+            _super.apply(this, arguments);
         }
-        EventBinder.create = function () {
-            var obj = new this();
-            return obj;
+        CustomEventBinder.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
         };
-        EventBinder.prototype.on = function () {
+        CustomEventBinder.prototype.on = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (args.length === 1) {
-                var listener = !(args[0] instanceof wd.EventListener) ? wd.EventListener.create(args[0]) : args[0];
-                listener.handlerDataList.forEach(function (handlerData) {
-                    wd.FactoryEventHandler.createEventHandler(listener.eventType)
-                        .on(handlerData.eventName, handlerData.handler, listener.priority);
-                });
+            if (args.length === 2) {
+                var eventName = args[0], handler = args[1];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(eventName, handler);
             }
-            else if (args.length === 2) {
-                var target = args[0], listener = !(args[1] instanceof wd.EventListener) ? wd.EventListener.create(args[1]) : args[1];
-                listener.handlerDataList.forEach(function (handlerData) {
-                    wd.FactoryEventHandler.createEventHandler(listener.eventType)
-                        .on(target, handlerData.eventName, handlerData.handler, listener.priority);
-                });
-            }
-            else if (args.length === 3) {
+            else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
                 var eventName = args[0], handler = args[1], priority = args[2];
                 wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
+            }
+            else if (args.length === 3 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1], handler = args[2];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(target, eventName, handler);
             }
             else if (args.length === 4) {
                 var target = args[0], eventName = args[1], handler = args[2], priority = args[3];
@@ -22133,12 +22448,12 @@ var wd;
                     .on(target, eventName, handler, priority);
             }
         };
-        EventBinder.prototype.off = function () {
+        CustomEventBinder.prototype.off = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var eventRegister = wd.EventRegister.getInstance();
+            var eventRegister = wd.CustomEventRegister.getInstance();
             if (args.length === 0) {
                 eventRegister.forEach(function (list, key) {
                     var eventName = eventRegister.getEventNameFromKey(key), targetUid = eventRegister.getUidFromKey(key);
@@ -22153,15 +22468,15 @@ var wd;
             }
             else if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
                 var eventName = args[0];
-                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
-                    .off(eventName);
+                eventRegister.forEach(function (list, key) {
+                    var registeredEventName = eventRegister.getEventNameFromKey(key);
+                    if (registeredEventName === eventName) {
+                        wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                            .off(eventName);
+                    }
+                });
             }
-            else if (args.length === 2 && wd.JudgeUtils.isFunction(args[1])) {
-                var eventName = args[0], handler = args[1];
-                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
-                    .off(eventName, handler);
-            }
-            else if (args.length === 1) {
+            else if (args.length === 1 && args[0] instanceof wd.GameObject) {
                 var target = args[0];
                 eventRegister.forEach(function (list, key) {
                     var eventName = eventRegister.getEventNameFromKey(key);
@@ -22171,20 +22486,174 @@ var wd;
                     }
                 });
             }
-            else if (args.length === 2) {
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .off(eventName, handler);
+            }
+            else if (args.length === 2 && args[0] instanceof wd.GameObject) {
                 var target = args[0], eventName = args[1];
                 wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
                     .off(target, eventName);
             }
-            else if (args.length === 3) {
+            else if (args.length === 3 && args[0] instanceof wd.GameObject) {
                 var target = args[0], eventName = args[1], handler = args[2];
                 wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
                     .off(target, eventName, handler);
             }
         };
-        EventBinder.prototype._checkEventSeparator = function (eventName) {
-            wd.assert(eventName.indexOf(wd.EventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.EventListenerMap.eventSeparator));
+        CustomEventBinder.prototype._checkEventSeparator = function (eventName) {
+            wd.assert(eventName.indexOf(wd.CustomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.CustomEventListenerMap.eventSeparator));
         };
+        CustomEventBinder._instance = null;
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args.length === 1) {
+                }
+                else if (args.length === 2) {
+                    var eventName = args[0];
+                    this._checkEventSeparator(eventName);
+                }
+                else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
+                    var eventName = args[0];
+                    this._checkEventSeparator(eventName);
+                }
+                else if (args.length === 3 && args[0] instanceof wd.GameObject) {
+                    var eventName = args[1];
+                    this._checkEventSeparator(eventName);
+                }
+                else if (args.length === 4) {
+                    var eventName = args[1];
+                    this._checkEventSeparator(eventName);
+                }
+            })
+        ], CustomEventBinder.prototype, "on", null);
+        return CustomEventBinder;
+    })(wd.EventBinder);
+    wd.CustomEventBinder = CustomEventBinder;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var DomEventBinder = (function (_super) {
+        __extends(DomEventBinder, _super);
+        function DomEventBinder() {
+            _super.apply(this, arguments);
+        }
+        DomEventBinder.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        DomEventBinder.prototype.on = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 1) {
+                var listener = !(args[0] instanceof wd.EventListener) ? wd.EventListener.create(args[0]) : args[0];
+                listener.handlerDataList.forEach(function (handlerData) {
+                    wd.FactoryEventHandler.createEventHandler(listener.eventType)
+                        .on(handlerData.eventName, handlerData.handler, listener.priority);
+                });
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(eventName, handler);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], listener = !(args[0] instanceof wd.EventListener) ? wd.EventListener.create(args[0]) : args[0];
+                listener.handlerDataList.forEach(function (handlerData) {
+                    wd.FactoryEventHandler.createEventHandler(listener.eventType)
+                        .on(dom, handlerData.eventName, handlerData.handler, listener.priority);
+                });
+            }
+            else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], priority = args[2];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(eventName, handler, priority);
+            }
+            else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1], handler = args[2];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(dom, eventName, handler);
+            }
+            else if (args.length === 4) {
+                var dom = args[0], eventName = args[1], handler = args[2], priority = args[3];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .on(dom, eventName, handler, priority);
+            }
+        };
+        DomEventBinder.prototype.off = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var eventRegister = wd.DomEventRegister.getInstance();
+            if (args.length === 0) {
+                eventRegister.forEach(function (list, key) {
+                    var eventName = eventRegister.getEventNameFromKey(key);
+                    wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                        .off(eventName);
+                });
+            }
+            else if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0];
+                eventRegister.forEach(function (list, key) {
+                    var registeredEventName = eventRegister.getEventNameFromKey(key);
+                    if (registeredEventName === eventName) {
+                        wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                            .off(eventName);
+                    }
+                });
+            }
+            else if (args.length === 1 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0];
+                eventRegister.forEach(function (list, key) {
+                    var eventName = eventRegister.getEventNameFromKey(key);
+                    if (eventRegister.isDom(key, dom, list)) {
+                        wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                            .off(dom, eventName);
+                    }
+                });
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .off(eventName, handler);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .off(dom, eventName);
+            }
+            else if (args.length === 3) {
+                var dom = args[0], eventName = args[1], handler = args[2];
+                wd.FactoryEventHandler.createEventHandler(wd.EventTable.getEventType(eventName))
+                    .off(dom, eventName, handler);
+            }
+        };
+        DomEventBinder.prototype._checkEventSeparator = function (eventName) {
+            wd.assert(eventName.indexOf(wd.DomEventListenerMap.eventSeparator) === -1, wd.Log.info.FUNC_SHOULD_NOT("eventName", "contain " + wd.DomEventListenerMap.eventSeparator));
+        };
+        DomEventBinder._instance = null;
         __decorate([
             wd.require(function () {
                 var args = [];
@@ -22195,19 +22664,23 @@ var wd;
                 }
                 else if (args.length === 2) {
                 }
-                else if (args.length === 3) {
-                    var eventName = args[0], handler = args[1], priority = args[2];
+                else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
+                    var eventName = args[0];
+                    this._checkEventSeparator(eventName);
+                }
+                else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
+                    var eventName = args[1];
                     this._checkEventSeparator(eventName);
                 }
                 else if (args.length === 4) {
-                    var target = args[0], eventName = args[1], handler = args[2], priority = args[3];
+                    var eventName = args[1];
                     this._checkEventSeparator(eventName);
                 }
             })
-        ], EventBinder.prototype, "on", null);
-        return EventBinder;
-    })();
-    wd.EventBinder = EventBinder;
+        ], DomEventBinder.prototype, "on", null);
+        return DomEventBinder;
+    })(wd.EventBinder);
+    wd.DomEventBinder = DomEventBinder;
 })(wd || (wd = {}));
 
 var wd;
@@ -22240,6 +22713,38 @@ var wd;
 
 var wd;
 (function (wd) {
+    var FactoryEventBinder = (function () {
+        function FactoryEventBinder() {
+        }
+        FactoryEventBinder.createEventBinder = function (eventName) {
+            var binder = null, eventType = wd.EventTable.getEventType(eventName);
+            switch (eventType) {
+                case wd.EventType.MOUSE:
+                case wd.EventType.KEYBOARD:
+                    binder = wd.DomEventBinder.getInstance();
+                    break;
+                case wd.EventType.CUSTOM:
+                    binder = wd.CustomEventBinder.getInstance();
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_INVALID("eventName:" + eventName));
+                    break;
+            }
+            return binder;
+        };
+        return FactoryEventBinder;
+    })();
+    wd.FactoryEventBinder = FactoryEventBinder;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
     var EventManager = (function () {
         function EventManager() {
         }
@@ -22249,24 +22754,36 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             if (args.length === 1) {
-                var listener = args[0];
-                this._eventBinder.on(listener);
+                var listener = args[0], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.on(listener);
             }
-            else if (args.length === 2 && wd.JudgeUtils.isString(args[0]) && wd.JudgeUtils.isFunction(args[1])) {
-                var eventName = args[0], handler = args[1], priority = 1;
-                this._eventBinder.on(eventName, handler, priority);
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], priority = 1, eventBinder = wd.FactoryEventBinder.createEventBinder(eventName);
+                eventBinder.on(eventName, handler, priority);
             }
-            else if (args.length === 2) {
-                var target = args[0], listener = args[1];
-                this._eventBinder.on(target, listener);
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], listener = args[1], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.on(dom, listener);
             }
-            else if (args.length === 3 && wd.JudgeUtils.isString(args[0]) && wd.JudgeUtils.isFunction(args[1]) && wd.JudgeUtils.isNumber(args[2])) {
-                var eventName = args[0], handler = args[1], priority = args[2];
-                this._eventBinder.on(eventName, handler, priority);
+            else if (args.length === 3 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], priority = args[2], eventBinder = wd.FactoryEventBinder.createEventBinder(eventName);
+                eventBinder.on(eventName, handler, priority);
             }
-            else if (args.length === 3 || args.length === 4) {
-                var target = args[0], eventName = args[1], handler = args[2], priority = args[3] === undefined ? 1 : args[3];
-                this._eventBinder.on(target, eventName, handler, priority);
+            else if (args.length === 3 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1], handler = args[2], priority = 1, eventBinder = wd.CustomEventBinder.getInstance();
+                eventBinder.on(target, eventName, handler, priority);
+            }
+            else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1], handler = args[2], priority = 1, eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.on(dom, eventName, handler, priority);
+            }
+            else if (args.length === 4 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1], handler = args[2], priority = args[3], eventBinder = wd.CustomEventBinder.getInstance();
+                eventBinder.on(target, eventName, handler, priority);
+            }
+            else if (args.length === 4 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1], handler = args[2], priority = args[3], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.on(dom, eventName, handler, priority);
             }
         };
         EventManager.off = function () {
@@ -22274,28 +22791,85 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            this._eventBinder.off.apply(this._eventBinder, args);
+            if (args.length === 0) {
+                var customEventBinder = wd.CustomEventBinder.getInstance(), domEventBinder = wd.DomEventBinder.getInstance();
+                customEventBinder.off();
+                domEventBinder.off();
+            }
+            else if (args.length === 1 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], eventBinder = wd.FactoryEventBinder.createEventBinder(eventName);
+                eventBinder.off(eventName);
+            }
+            else if (args.length === 1 && args[0] instanceof wd.GameObject) {
+                var eventName = args[0], eventBinder = wd.CustomEventBinder.getInstance();
+                eventBinder.off(eventName);
+            }
+            else if (args.length === 1 && wd.JudgeUtils.isDom(args[0])) {
+                var eventName = args[0], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.off(eventName);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isString(args[0])) {
+                var eventName = args[0], handler = args[1], eventBinder = wd.FactoryEventBinder.createEventBinder(eventName);
+                eventBinder.off(eventName, handler);
+            }
+            else if (args.length === 2 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1], eventBinder = wd.CustomEventBinder.getInstance();
+                eventBinder.off(target, eventName);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.off(dom, eventName);
+            }
+            else if (args.length === 3 && args[0] instanceof wd.GameObject) {
+                var target = args[0], eventName = args[1], handler = args[2], eventBinder = wd.CustomEventBinder.getInstance();
+                eventBinder.off(target, eventName, handler);
+            }
+            else if (args.length === 3 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], eventName = args[1], handler = args[2], eventBinder = wd.DomEventBinder.getInstance();
+                eventBinder.off(dom, eventName, handler);
+            }
         };
         EventManager.trigger = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            this._eventDispatcher.trigger.apply(this._eventDispatcher, args);
+            if (args.length === 1) {
+                var event_1 = args[0], eventDispatcher = wd.FactoryEventDispatcher.createEventDispatcher(event_1);
+                eventDispatcher.trigger(event_1);
+            }
+            else if (args.length === 2 && args[0] instanceof wd.Event) {
+                var event_2 = args[0], userData = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                eventDispatcher.trigger(event_2, userData);
+            }
+            else if (args.length === 2 && args[0] instanceof wd.GameObject) {
+                var target = args[0], event_3 = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                eventDispatcher.trigger(target, event_3);
+            }
+            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+                var dom = args[0], event_4 = args[1], eventDispatcher = wd.DomEventDispatcher.getInstance();
+                eventDispatcher.trigger(dom, event_4);
+            }
+            else if (args.length === 3) {
+                var target = args[0], event_5 = args[1], userData = args[2], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                eventDispatcher.trigger(target, event_5, userData);
+            }
         };
         EventManager.broadcast = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            this._eventDispatcher.broadcast.apply(this._eventDispatcher, args);
+            var eventDispatcher = wd.CustomEventDispatcher.getInstance();
+            eventDispatcher.broadcast.apply(eventDispatcher, args);
         };
         EventManager.emit = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            this._eventDispatcher.emit.apply(this._eventDispatcher, args);
+            var eventDispatcher = wd.CustomEventDispatcher.getInstance();
+            eventDispatcher.emit.apply(eventDispatcher, args);
         };
         EventManager.fromEvent = function () {
             var args = [];
@@ -22322,30 +22896,91 @@ var wd;
                 };
             }
             else if (args.length === 2) {
-                var target = args[0], eventName = args[1];
+                var eventName = args[1];
                 addHandler = function (handler) {
-                    EventManager.on(target, eventName, handler);
+                    EventManager.on(args[0], eventName, handler);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventName, handler);
+                    EventManager.off(args[0], eventName, handler);
                 };
             }
             else if (args.length === 3) {
-                var target = args[0], eventName = args[1], priority = args[2];
+                var eventName = args[1], priority = args[2];
                 addHandler = function (handler) {
-                    EventManager.on(target, eventName, handler, priority);
+                    EventManager.on(args[0], eventName, handler, priority);
                 };
                 removeHandler = function (handler) {
-                    EventManager.off(target, eventName, handler);
+                    EventManager.off(args[0], eventName, handler);
                 };
             }
             return wdFrp.fromEventPattern(addHandler, removeHandler);
         };
         EventManager.setBubbleParent = function (target, parent) {
-            wd.EventRegister.getInstance().setBubbleParent(target, parent);
+            wd.CustomEventRegister.getInstance().setBubbleParent(target, parent);
         };
-        EventManager._eventBinder = wd.EventBinder.create();
-        EventManager._eventDispatcher = wd.EventDispatcher.create();
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args[0] instanceof wd.GameObject) {
+                    var eventName = args[1];
+                    wd.assert(wd.EventTable.getEventType(eventName) === wd.EventType.CUSTOM, wd.Log.info.FUNC_MUST_BE("event", "custom event"));
+                }
+                else if (wd.JudgeUtils.isDom(args[0])) {
+                    var eventName = args[1], eventType = wd.EventTable.getEventType(eventName);
+                    wd.assert(eventType === wd.EventType.MOUSE || eventType === wd.EventType.KEYBOARD, wd.Log.info.FUNC_MUST_BE("event", "dom event"));
+                }
+            })
+        ], EventManager, "on", null);
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args.length > 2 && args[0] instanceof wd.GameObject) {
+                    var eventName = args[1];
+                    wd.assert(wd.EventTable.getEventType(eventName) === wd.EventType.CUSTOM, wd.Log.info.FUNC_MUST_BE("event", "custom event"));
+                }
+                else if (args.length > 2 && wd.JudgeUtils.isDom(args[0])) {
+                    var eventName = args[1], eventType = wd.EventTable.getEventType(eventName);
+                    wd.assert(eventType === wd.EventType.MOUSE || eventType === wd.EventType.KEYBOARD, wd.Log.info.FUNC_MUST_BE("event", "dom event"));
+                }
+            })
+        ], EventManager, "off", null);
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (args.length === 2 && args[0] instanceof wd.Event) {
+                    var event_6 = args[0];
+                    wd.assert(event_6 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                }
+                else if (args[0] instanceof wd.GameObject) {
+                    var event_7 = args[1];
+                    wd.assert(event_7 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+                }
+            })
+        ], EventManager, "trigger", null);
+        __decorate([
+            wd.require(function (target, eventObject, userData) {
+                wd.assert(eventObject instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
+            })
+        ], EventManager, "broadcast", null);
+        __decorate([
+            wd.require(function (target, eventObject, userData) {
+                wd.assert(eventObject instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
+            })
+        ], EventManager, "emit", null);
+        __decorate([
+            wd.require(function (target, parent) {
+                wd.assert(target instanceof wd.GameObject, "only GameObject can setBubleParent");
+            })
+        ], EventManager, "setBubbleParent", null);
         return EventManager;
     })();
     wd.EventManager = EventManager;
@@ -24514,6 +25149,32 @@ var wd;
         return StaticRigidBody;
     })(wd.RigidBody);
     wd.StaticRigidBody = StaticRigidBody;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var FactoryEventDispatcher = (function () {
+        function FactoryEventDispatcher() {
+        }
+        FactoryEventDispatcher.createEventDispatcher = function (event) {
+            var dispatcher = null, eventType = event.type;
+            switch (eventType) {
+                case wd.EventType.MOUSE:
+                case wd.EventType.KEYBOARD:
+                    dispatcher = wd.DomEventDispatcher.getInstance();
+                    break;
+                case wd.EventType.CUSTOM:
+                    dispatcher = wd.CustomEventDispatcher.getInstance();
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_INVALID("event:" + event));
+                    break;
+            }
+            return dispatcher;
+        };
+        return FactoryEventDispatcher;
+    })();
+    wd.FactoryEventDispatcher = FactoryEventDispatcher;
 })(wd || (wd = {}));
 
 var wd;

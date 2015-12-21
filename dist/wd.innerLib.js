@@ -1932,7 +1932,7 @@ var wdCb;
             return Object.prototype.toString.call(obj) === "[object Boolean]";
         };
         JudgeUtils.isDom = function (obj) {
-            return obj instanceof HTMLElement;
+            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
         };
         /**
          * 判断是否为对象字面量（{}）
