@@ -9,14 +9,7 @@ module wd{
         	return obj;
         }
 
-        private _listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
-
-        public appendChild(target:GameObject, eventName:EventName, data:CustomEventRegisterData){
-            this._listenerMap.appendChild(
-                this._buildKey(target, eventName),
-                data
-            );
-        }
+        protected listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
 
         public getChild(eventName:EventName):wdCb.Collection<CustomEventRegisterData>;
         public getChild(target:GameObject):wdCb.Collection<CustomEventRegisterData>;
@@ -28,12 +21,12 @@ module wd{
             if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                return this._listenerMap.getChild(eventName);
+                return this.listenerMap.getChild(eventName);
             }
             else if(args.length === 1 && args[0] instanceof GameObject){
                 let target = args[0];
 
-                return this._listenerMap.filter((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+                return this.listenerMap.filter((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -41,33 +34,8 @@ module wd{
                 let target = args[0],
                     eventName = args[1];
 
-                return this._listenerMap.getChild(this._buildKey(target, eventName));
+                return this.listenerMap.getChild(this.buildKey(target, eventName));
             }
-        }
-
-
-        public hasChild(func:(...args) => boolean):boolean;
-        public hasChild(target:GameObject, eventName:EventName):boolean;
-
-        public hasChild(...args){
-            if(args.length === 1 && JudgeUtils.isFunction(args[0])){
-                return this._listenerMap.hasChild(args[0]);
-            }
-            else{
-                let target = args[0],
-                    eventName = args[1],
-                    list = this._listenerMap.getChild(this._buildKey(target, eventName));
-
-                return list && list.getCount() > 0;
-            }
-        }
-
-        public filter(func:Function){
-            return this._listenerMap.filter(func);
-        }
-
-        public forEach(func:Function){
-            return this._listenerMap.forEach(func);
         }
 
         public removeChild(eventName:EventName):wdCb.Collection<wdCb.Collection<CustomEventOffData>>;
@@ -87,14 +55,14 @@ module wd{
             if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                result =this._getEventDataOffDataList(eventName, this._listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
-                    return self._isEventName(key, eventName);
+                result =this._getEventDataOffDataList(eventName, this.listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+                    return self.isEventName(key, eventName);
                 }));
             }
             else if(args.length === 1 && args[0] instanceof GameObject){
                 let target = args[0];
 
-                result = this._listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+                result = this.listenerMap.removeChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                     return self.isTarget(key, target, list);
                 });
             }
@@ -103,32 +71,32 @@ module wd{
                     handler = args[1],
                     list:wdCb.Collection<CustomEventRegisterData> = null;
 
-                list = this._listenerMap.getChild(eventName);
+                list = this.listenerMap.getChild(eventName);
                 result =this._getEventDataOffDataList(eventName, wdCb.Collection.create().addChild(list.removeChild((val:CustomEventRegisterData) => {
                     return val.originHandler === handler;
                 })));
 
                 if(list.getCount() === 0){
-                    this._listenerMap.removeChild(eventName);
+                    this.listenerMap.removeChild(eventName);
                 }
             }
             else if(args.length === 2 && JudgeUtils.isNumber(args[0])){
                 let uid = args[0],
                     eventName = args[1];
 
-                result = this._listenerMap.removeChild(this._buildKey(uid, eventName));
+                result = this.listenerMap.removeChild(this.buildKey(uid, eventName));
             }
             else if(args.length === 2 && args[0] instanceof GameObject){
                 let target = args[0],
                 eventName = args[1];
 
-                result = this._listenerMap.removeChild(this._buildKey(target, eventName));
+                result = this.listenerMap.removeChild(this.buildKey(target, eventName));
             }
             else if(args.length === 3 && args[0] instanceof GameObject){
                 let eventName = args[1],
                     handler = args[2];
 
-                this._listenerMap.forEach((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+                this.listenerMap.forEach((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                     list.removeChild((val:CustomEventRegisterData) => {
                         return val.originHandler === handler;
                     });
@@ -144,12 +112,6 @@ module wd{
             return result;
         }
 
-        public getEventNameFromKey(key:string):EventName{
-            var separator = `${CustomEventListenerMap.eventSeparator}`;
-
-            return key.indexOf(separator) > -1 ? <any>key.split(separator)[1] : key;
-        }
-
         public getUidFromKey(key:string):number{
             var separator = `${CustomEventListenerMap.eventSeparator}`;
 
@@ -160,15 +122,14 @@ module wd{
             return key.indexOf(this._buildKeyPrefix(target.uid)) > -1 && list !== undefined;
         }
 
-        private _isEventName(key:string, eventName:EventName){
-            return key.indexOf(`${CustomEventListenerMap.eventSeparator}${eventName}`) > -1
-            || key === <any>eventName;
+        protected getEventSeparator():string{
+            return `${CustomEventListenerMap.eventSeparator}`;
         }
 
-        private _buildKey(uid:number, eventName:EventName):string;
-        private _buildKey(target:GameObject, eventName:EventName):string;
+        protected buildKey(uid:number, eventName:EventName):string;
+        protected buildKey(target:GameObject, eventName:EventName):string;
 
-        private _buildKey(...args){
+        protected buildKey(...args):string{
             if(JudgeUtils.isNumber(args[0])){
                 let uid = args[0],
                     eventName = args[1];

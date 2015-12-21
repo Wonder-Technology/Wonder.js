@@ -91,8 +91,6 @@ describe("dom event", function () {
             sum3 = 0;
             sum4 = 0;
 
-            manager.off();
-
             manager.on(wd.EventName.MOUSEWHEEL, function(e){
                 sum1++;
             });

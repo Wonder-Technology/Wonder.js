@@ -10,11 +10,7 @@ module wd {
             return this._instance;
         }
 
-        //todo no listener?
-        //public on(listener:{}|EventListener):void;
-
         public on(eventName:EventName|string, handler:Function):void;
-        //public on(target:GameObject, listener:{}|EventListener):void;
 
         public on(eventName:EventName|string, handler:Function, priority:number):void;
         public on(target:GameObject, eventName:EventName|string, handler:Function):void;

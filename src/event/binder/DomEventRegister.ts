@@ -11,11 +11,11 @@ module wd {
         }
 
 
-        private _listenerMap:DomEventListenerMap = DomEventListenerMap.create();
+        protected listenerMap:DomEventListenerMap = DomEventListenerMap.create();
 
 
         public register(dom:HTMLElement, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
-            this._listenerMap.appendChild(dom, eventName, <DomEventRegisterData>{
+            this.listenerMap.appendChild(dom, eventName, <DomEventRegisterData>{
                 dom: dom,
                 eventName: eventName,
                 handler: handler,
@@ -39,64 +39,27 @@ module wd {
             if (args.length === 1 && JudgeUtils.isString(args[0])) {
                 let eventName = args[0];
 
-                result = this._listenerMap.removeChild(eventName);
+                result = this.listenerMap.removeChild(eventName);
             }
             else if (args.length === 2 && JudgeUtils.isFunction(args[1])) {
                 let eventName = args[0],
                     handler = args[1];
 
-                result = this._listenerMap.removeChild(eventName, handler);
+                result = this.listenerMap.removeChild(eventName, handler);
             }
             else if ((args.length === 2 && JudgeUtils.isDom(args[0])) || args.length === 3) {
-                result = this._listenerMap.removeChild.apply(this._listenerMap, args);
+                result = this.listenerMap.removeChild.apply(this.listenerMap, args);
             }
 
             return result;
         }
 
-        public getEventRegisterDataList(eventName:EventName):any;
-        public getEventRegisterDataList(dom:HTMLElement, eventName:EventName):any;
-
-        public getEventRegisterDataList(...args) {
-            var result:wdCb.Collection<DomEventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, args);
-
-            if (!result) {
-                return null;
-            }
-
-            return result.sort(function (dataA, dataB) {
-                return dataB.priority - dataA.priority;
-            });
-        }
-
         public isBinded(dom:HTMLElement, eventName:EventName) {
-            return this._listenerMap.hasChild(dom, eventName);
+            return this.listenerMap.hasChild(dom, eventName);
         }
 
         public isDom(key:string, dom:HTMLElement, list:wdCb.Collection<DomEventRegisterData>){
-            return this._listenerMap.isDom(key, dom, list);
-        }
-
-        public filter(func:Function) {
-            return this._listenerMap.filter(func);
-        }
-
-        public forEach(func:Function) {
-            return this._listenerMap.forEach(func);
-        }
-
-        public getChild(eventName:EventName);
-        public getChild(dom:HTMLElement, eventName:EventName);
-
-        public getChild(...args) {
-            return this._listenerMap.getChild.apply(
-                this._listenerMap,
-                Array.prototype.slice.call(arguments, 0)
-            );
-        }
-
-        public getEventNameFromKey(key:string) {
-            return this._listenerMap.getEventNameFromKey(key);
+            return this.listenerMap.isDom(key, dom, list);
         }
 
         public getDomHandler(dom:HTMLElement, eventName:EventName) {

@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    export class CustomEventRegister {
+    export class CustomEventRegister extends EventRegister{
         private static _instance = null;
 
         public static getInstance() {
@@ -11,11 +11,11 @@ module wd {
         }
 
 
-        private _listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
+        protected listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
 
 
         public register(target:GameObject, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
-            this._listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
+            this.listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
                 target: target,
                 eventName: eventName,
                 handler: handler,
@@ -42,10 +42,10 @@ module wd {
             if (args.length === 1 && JudgeUtils.isString(args[0])) {
                 let eventName = args[0];
 
-                result = this._listenerMap.removeChild(eventName);
+                result = this.listenerMap.removeChild(eventName);
             }
             else if (args.length === 1 && args[0] instanceof GameObject) {
-                result = this._listenerMap.removeChild(target);
+                result = this.listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
             }
@@ -53,16 +53,16 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                result = this._listenerMap.removeChild(eventName, handler);
+                result = this.listenerMap.removeChild(eventName, handler);
             }
             else if (args.length === 2 && JudgeUtils.isNumber(args[0])) {
                 let uid = args[0],
                     eventName = args[1];
 
-                result = this._listenerMap.removeChild(uid, eventName);
+                result = this.listenerMap.removeChild(uid, eventName);
             }
             else if ((args.length === 2 && args[0] instanceof GameObject) || args.length === 3) {
-                result = this._listenerMap.removeChild.apply(this._listenerMap, args);
+                result = this.listenerMap.removeChild.apply(this.listenerMap, args);
 
                 if (this._isAllEventHandlerRemoved(target)) {
                     this._handleAfterAllEventHandlerRemoved(target);
@@ -72,58 +72,20 @@ module wd {
             return result;
         }
 
-        public getEventRegisterDataList(eventName:EventName):any;
-        public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
-
-        public getEventRegisterDataList(...args) {
-            var result:wdCb.Collection<CustomEventRegisterData> = this._listenerMap.getChild.apply(this._listenerMap, args);
-
-            if (!result) {
-                return null;
-            }
-
-            return result.sort(function (dataA, dataB) {
-                return dataB.priority - dataA.priority;
-            });
-        }
-
         public setBubbleParent(target:GameObject, parent:GameObject) {
             target.bubbleParent = parent;
         }
 
-        public filter(func:Function) {
-            return this._listenerMap.filter(func);
-        }
-
-        public forEach(func:Function) {
-            return this._listenerMap.forEach(func);
-        }
-
-        public getChild(eventName:EventName);
-        public getChild(target:GameObject);
-        public getChild(target:GameObject, eventName:EventName);
-
-        public getChild(...args) {
-            return this._listenerMap.getChild.apply(
-                this._listenerMap,
-                Array.prototype.slice.call(arguments, 0)
-            );
-        }
-
-        public getEventNameFromKey(key:string) {
-            return this._listenerMap.getEventNameFromKey(key);
-        }
-
         public getUidFromKey(key:string) {
-            return this._listenerMap.getUidFromKey(key);
+            return this.listenerMap.getUidFromKey(key);
         }
 
         public isTarget(key:string, target:GameObject, list:wdCb.Collection<CustomEventRegisterData>) {
-            return this._listenerMap.isTarget(key, target, list);
+            return this.listenerMap.isTarget(key, target, list);
         }
 
         private _isAllEventHandlerRemoved(target:GameObject) {
-            return !this._listenerMap.hasChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+            return !this.listenerMap.hasChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
             });
         }

@@ -12,7 +12,7 @@ module wd {
 
         public trigger(event:Event):boolean;
 
-        public trigger(event:Event, userData:any):void;
+        public trigger(event:Event, userData:any):boolean;
         public trigger(target:GameObject, event:Event):boolean;
 
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
@@ -20,7 +20,7 @@ module wd {
 
         public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
-        public trigger(...args):any {
+        public trigger(...args):boolean {
             if(args.length === 1){
                 let event = args[0],
                     eventType = event.type;

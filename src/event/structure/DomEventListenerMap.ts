@@ -9,14 +9,7 @@ module wd{
         	return obj;
         }
 
-        private _listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<DomEventRegisterData>>();
-
-        public appendChild(dom:HTMLElement, eventName:EventName, data:DomEventRegisterData){
-            this._listenerMap.appendChild(
-                this._buildDomKey(dom, eventName),
-                data
-            );
-        }
+        protected listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<DomEventRegisterData>>();
 
         public getChild(eventName:EventName):wdCb.Collection<DomEventRegisterData>;
         public getChild(dom:HTMLElement, eventName:EventName):wdCb.Collection<DomEventRegisterData>;
@@ -25,39 +18,14 @@ module wd{
             if(args.length === 1){
                 let eventName = args[0];
 
-                return this._listenerMap.getChild(eventName);
+                return this.listenerMap.getChild(eventName);
             }
             else if(args.length === 2){
                 let dom = args[0],
                     eventName = args[1];
 
-                return this._listenerMap.getChild(this._buildDomKey(dom, eventName));
+                return this.listenerMap.getChild(this.buildKey(dom, eventName));
             }
-        }
-
-
-        public hasChild(func:(...args) => boolean):boolean;
-        public hasChild(dom:HTMLElement, eventName:EventName):boolean;
-
-        public hasChild(...args){
-            if(args.length === 1 && JudgeUtils.isFunction(args[0])){
-                return this._listenerMap.hasChild(args[0]);
-            }
-            else{
-                let dom = args[0],
-                    eventName = args[1],
-                    list = this._listenerMap.getChild(this._buildDomKey(dom, eventName));
-
-                return list && list.getCount() > 0;
-            }
-        }
-
-        public filter(func:Function){
-            return this._listenerMap.filter(func);
-        }
-
-        public forEach(func:Function){
-            return this._listenerMap.forEach(func);
         }
 
         public removeChild(eventName:EventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
@@ -75,8 +43,8 @@ module wd{
             if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0];
 
-                result =this._getEventDataOffDataList(eventName, this._listenerMap.removeChild((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
-                    return self._isEventName(key, eventName);
+                result =this._getEventDataOffDataList(eventName, this.listenerMap.removeChild((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
+                    return self.isEventName(key, eventName);
                 }));
             }
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
@@ -84,8 +52,8 @@ module wd{
                     handler = args[1],
                     resultList = wdCb.Collection.create();
 
-                    this._listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
-                        if(self._isEventName(key, eventName)){
+                    this.listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
+                        if(self.isEventName(key, eventName)){
                             let result = list.removeChild((val:DomEventRegisterData) => {
                                 return val.originHandler === handler;
                             });
@@ -107,14 +75,14 @@ module wd{
                     eventName = args[1];
 
 
-                result =this._getEventDataOffDataList(eventName, this._listenerMap.removeChild(this._buildDomKey(dom, eventName)));
+                result =this._getEventDataOffDataList(eventName, this.listenerMap.removeChild(this.buildKey(dom, eventName)));
             }
             else if(args.length === 3 && JudgeUtils.isDom(args[0])){
                 let eventName = args[1],
                     resultList = wdCb.Collection.create(),
                     handler = args[2];
 
-                this._listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
+                this.listenerMap.forEach((list:wdCb.Collection<DomEventRegisterData>, key:string) => {
                     let result = list.removeChild((val:DomEventRegisterData) => {
                         return val.originHandler === handler;
                     });
@@ -134,23 +102,15 @@ module wd{
             return result;
         }
 
-        public getEventNameFromKey(key:string):EventName{
-            var separator = `${DomEventListenerMap.eventSeparator}`;
-
-            return key.indexOf(separator) > -1 ? <any>key.split(separator)[1] : key;
-        }
-
         public isDom(key:string, dom:HTMLElement, list:wdCb.Collection<DomEventRegisterData>){
             return key.indexOf(this._buildKeyPrefix(dom)) > -1 && list !== undefined;
         }
 
-        private _isEventName(key:string, eventName:EventName){
-            return key.indexOf(`${DomEventListenerMap.eventSeparator}${eventName}`) > -1
-                    //todo move to custom event
-            || key === <any>eventName;
+        protected getEventSeparator():string{
+            return `${DomEventListenerMap.eventSeparator}`;
         }
 
-        private _buildDomKey(dom:HTMLElement, eventName:EventName){
+        protected buildKey(dom:HTMLElement, eventName:EventName):string{
             return `${this._buildKeyPrefix(dom)}${DomEventListenerMap.eventSeparator}${eventName}`;
         }
 

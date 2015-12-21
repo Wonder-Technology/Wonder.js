@@ -114,7 +114,7 @@ module wd {
         }
 
         private _unBind(dom, eventName, handler){
-            wdCb.EventUtils.removeEvent(dom, eventName, handler);
+            wdCb.EventUtils.removeEvent(dom, EventNameHandler.handleEventName(eventName), handler);
         }
     }
 }

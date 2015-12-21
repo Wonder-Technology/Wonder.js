@@ -10,7 +10,7 @@ module wd {
             return this._instance;
         }
 
-        public trigger(event:Event):boolean;
+        public trigger(event:Event):void;
 
         public trigger(dom:HTMLElement, event:Event):void;
 
@@ -19,7 +19,7 @@ module wd {
                 let event = args[0],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
             else if(args.length === 2 && JudgeUtils.isDom(args[0])){
@@ -27,7 +27,7 @@ module wd {
                     event = args[1],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                FactoryEventHandler.createEventHandler(eventType)
                     .trigger(dom, event);
             }
         }
