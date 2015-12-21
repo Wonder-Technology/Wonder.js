@@ -195,35 +195,6 @@ module wd {
             return this;
         }
 
-        public getTopUnderPoint(point:Point):GameObject {
-            //todo judge position.z?
-            var result = null;
-
-            this._children.copy().reverse().forEach((child:GameObject) => {
-                result = child.getTopUnderPoint(point);
-
-                if (result) {
-                    return wdCb.$BREAK;
-                }
-            });
-
-            if(result){
-                return result;
-            }
-
-            if(this.isPick(point)) {
-                return this;
-            }
-
-            return null;
-        }
-
-        public isPick(locationInView:Point):boolean {
-            var pick = this._getPick();
-
-            return pick? pick.isPick(locationInView.x, locationInView.y) : false;
-        }
-
         public hasComponent(component:Component):boolean;
         public hasComponent(_class:Function):boolean;
 
@@ -334,13 +305,6 @@ module wd {
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
-        }
-
-        @require(function(){
-            assert(this._getComponentCount(Pick) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 pick component"));
-        })
-        private _getPick():Pick{
-            return this.getComponent<Pick>(Pick);
         }
 
         @require(function(){

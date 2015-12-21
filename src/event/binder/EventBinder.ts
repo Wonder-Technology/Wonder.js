@@ -7,10 +7,18 @@ module wd {
             return obj;
         }
 
-        public on(eventName:EventName|string, handler:Function, priority:number):void;
         public on(listener:{}|EventListener):void;
+
+        public on(eventName:EventName|string, handler:Function):void;
         public on(target:GameObject, listener:{}|EventListener):void;
+        public on(dom:HTMLElement, listener:{}|EventListener):void;
+
+        public on(eventName:EventName|string, handler:Function, priority:number):void;
+        public on(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public on(dom:HTMLElement, eventName:EventName|string, handler:Function):void;
+
         public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
+        public on(dom:HTMLElement, eventName:EventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args.length === 1){
@@ -71,11 +79,16 @@ module wd {
         }
 
         public off():void;
-        public off(eventName:EventName):void;
-        public off(eventName:EventName, handler:Function):void;
+
+        public off(eventName:EventName|string):void;
         public off(target:GameObject):void;
-        public off(target:GameObject, eventName:EventName):void;
-        public off(target:GameObject, eventName:EventName, handler:Function):void;
+
+        public off(eventName:EventName|string, handler:Function):void;
+        public off(target:GameObject, eventName:EventName|string):void;
+        public off(dom:HTMLElement, eventName:EventName):void;
+
+        public off(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public off(dom:HTMLElement, eventName:EventName, handler:Function):void;
 
         public off(...args) {
             var eventRegister = EventRegister.getInstance();
@@ -94,20 +107,7 @@ module wd {
                     }
                 });
             }
-            else if(args.length === 1 && JudgeUtils.isString(args[0])){
-                let eventName = args[0];
-
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
-                    .off(eventName);
-            }
-            else if(args.length === 2 && JudgeUtils.isFunction(args[1])){
-                let eventName = args[0],
-                    handler = args[1];
-
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
-                    .off(eventName, handler);
-            }
-            else if(args.length === 1){
+            else if(args.length === 1 && args[0] instanceof GameObject){
                 let target = args[0];
 
                 eventRegister.forEach((list:wdCb.Collection<EventRegisterData>, key:string) => {
@@ -119,20 +119,54 @@ module wd {
                     }
                 });
             }
-            else if(args.length === 2){
+            else if(args.length === 1 && JudgeUtils.isString(args[0])){
+                let eventName = args[0];
+
+                eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
+                    var registeredEventName = eventRegister.getEventNameFromKey(key);
+
+                    if(registeredEventName === eventName){
+                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                            .off(eventName);
+                    }
+                });
+            }
+            else if(args.length === 2 && JudgeUtils.isString(args[0])){
+                let eventName = args[0],
+                    handler = args[1];
+
+                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                    .off(eventName, handler);
+            }
+            else if(args.length === 2 && args[0] instanceof GameObject){
                 let target = args[0],
                     eventName = args[1];
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName);
             }
-            else if(args.length === 3){
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    eventName = args[1];
+
+                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                    .off(dom, eventName);
+            }
+            else if(args.length === 3 && args[0] instanceof GameObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2];
 
                 FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName, handler);
+            }
+            else if(args.length === 3 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    eventName = args[1],
+                    handler = args[2];
+
+                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                    .off(dom, eventName, handler);
             }
         }
 

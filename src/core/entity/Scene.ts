@@ -35,8 +35,6 @@ module wd {
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
 
         public init(){
-            this.addComponent(Pick.create());
-
             if(this.physics.enable){
                 this.physicsEngineAdapter = PhysicsEngineFactory.create(this.physics.engine);
                 this.physicsEngineAdapter.init();

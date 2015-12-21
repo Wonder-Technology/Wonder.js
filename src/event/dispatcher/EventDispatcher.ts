@@ -8,13 +8,46 @@ module wd {
         }
 
         public trigger(event:Event):boolean;
+
         public trigger(event:Event, userData:any):void;
         public trigger(target:GameObject, event:Event):boolean;
+        public trigger(dom:HTMLElement, event:Event):void;
+
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
         public trigger(target:GameObject, event:Event, userData:any):boolean;
+
         public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
-        public trigger(...args) {
+        @require(function(...args){
+            if(args.length === 1){
+            }
+            else if(args.length === 2 && (args[0] instanceof Event)){
+                let event = args[0],
+                    userData = args[1],
+                    eventType = event.type;
+
+                assert(eventType === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+            }
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    event = args[1],
+                    eventType = event.type;
+
+                assert(event instanceof DomEvent, Log.info.FUNC_MUST_BE("event", "DomEvent"));
+            }
+            else if((args.length === 2 && args[0] instanceof GameObject) || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
+            }
+            else if(args.length === 3 || args.length === 4){
+                let target = args[0],
+                    event = args[1],
+                    userData = args[2],
+                    notSetTarget = args[3] === void 0 ? false : args[3],
+                    eventType = event.type;
+
+                assert(eventType === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+            }
+        })
+        public trigger(...args):any {
             if(args.length === 1){
                 let event = args[0],
                     eventType = event.type;
@@ -22,17 +55,23 @@ module wd {
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event);
             }
-            else if(args.length === 2 && !(args[1] instanceof Event)){
+            else if(args.length === 2 && (args[0] instanceof Event)){
                 let event = args[0],
                     userData = args[1],
                     eventType = event.type;
 
-                Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
-
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(event, userData);
             }
-            else if(args.length === 2 || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    event = args[1],
+                    eventType = event.type;
+
+                return FactoryEventHandler.createEventHandler(eventType)
+                    .trigger(dom, event);
+            }
+            else if((args.length === 2 && args[0] instanceof GameObject) || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
                 let target = args[0],
                     event = args[1],
                     notSetTarget = args[2] === void 0 ? false : args[2],
@@ -47,8 +86,6 @@ module wd {
                     userData = args[2],
                     notSetTarget = args[3] === void 0 ? false : args[3],
                     eventType = event.type;
-
-                Log.error(eventType !== EventType.CUSTOM, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
 
                 return FactoryEventHandler.createEventHandler(eventType)
                     .trigger(target, event, userData, notSetTarget);

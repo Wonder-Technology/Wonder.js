@@ -16,39 +16,20 @@ module wd {
         public keyState:any = {};
 
         public on(eventName:EventName, handler:(event:KeyboardEvent) => void, priority:number) {
-            this.handler(null, eventName, handler, priority);
+            this.handler(this.getDefaultDom(), eventName, handler, priority);
         }
 
-        public trigger(event:Event):boolean{
-            var eventName = event.name,
-                registerDataList:wdCb.Collection<EventRegisterData> = null;
+        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){
+            var eventObj = this._createEventObject(dom, event, eventName);
 
-            registerDataList = EventRegister.getInstance().getEventRegisterDataList(eventName);
-
-            if (registerDataList === null || registerDataList.getCount()=== 0) {
-                return;
-            }
-
-            registerDataList.forEach((registerData:EventRegisterData) => {
-                var eventCopy = event.copy();
-
-                registerData.handler(eventCopy);
-            });
-
-            return true;
+            EventManager.trigger(dom, eventObj);
         }
 
-        protected getDom() {
-            return document;
+        protected getDefaultDom():HTMLElement{
+            return document.body;
         }
 
-        protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
-            var eventObj = this._createEventObject(event, eventName);
-
-            EventManager.trigger(eventObj);
-        }
-
-        protected addEngineHandler(target:GameObject, eventName:EventName, handler:(event:KeyboardEvent) => void){
+        protected addEngineHandler(eventName:EventName, handler:(event:KeyboardEvent) => void){
             var resultHandler = null;
 
             switch (eventName){
@@ -99,8 +80,10 @@ module wd {
             }
         }
 
-        private _createEventObject(event:any, eventName:EventName) {
+        private _createEventObject(dom:HTMLElement, event:any, eventName:EventName) {
             var obj = KeyboardEvent.create(event ? event : root.event, eventName);
+
+            obj.target = dom;
 
             return obj;
         }

@@ -15,6 +15,8 @@ module wd {
             this._event = event || root.event;
         }
 
+        public target:HTMLElement;
+
         public preventDefault(){
             var e = this._event;
 

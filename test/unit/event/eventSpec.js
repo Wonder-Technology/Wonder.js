@@ -33,51 +33,62 @@ describe("event", function () {
             eventTarget2 = null,
             sum = 0,
             sum2 = 0,
+            sum22 = 0,
         sum3 = 0;
-        var eventName = null;
+        var eventName1 = null;
+        var eventName2 = null;
         var fakeEvent = null;
         var target2 = null;
+        var dom = null;
 
         beforeEach(function(){
-            eventName = "custom1";
+            dom = document.body;
+            eventName1 = "custom1";
+            eventName2 = "custom2";
             fakeEvent = {
                 pageX:10,
                 pageY:10
             };
             target2 = wd.GameObject.create();
 
-            manager.on(target, wd.EventName.CLICK, function (e) {
+            manager.on(dom, wd.EventName.CLICK, function (e) {
                 eventTarget = e;
                 sum++;
             });
-            manager.on(target, eventName, function (e) {
+
+            manager.on(target, eventName1, function (e) {
                 eventTarget2 = e;
                 sum2++;
             });
-            manager.on(target2, eventName, function (e) {
-                sum2++;
+            manager.on(target, eventName2, function (e) {
+                sum22++;
+            });
+
+            manager.on(target2, eventName1, function (e) {
+                sum3++;
             });
         });
         it("off target", function(){
             manager.off(target);
-            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
-            manager.trigger(target, wd.CustomEvent.create(eventName));
+            manager.trigger(target, wd.CustomEvent.create(eventName1));
+            manager.trigger(target, wd.CustomEvent.create(eventName2));
 
-            expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
-            expect(sum).toEqual(0);
             expect(sum2).toEqual(0);
+            expect(sum22).toEqual(0);
         });
         it("off all", function(){
             manager.off();
-            manager.trigger(target, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
-            manager.trigger(target, wd.CustomEvent.create(eventName));
-            manager.trigger(target2, wd.CustomEvent.create(eventName));
+            manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+            manager.trigger(target, wd.CustomEvent.create(eventName1));
+            manager.trigger(target, wd.CustomEvent.create(eventName2));
+            manager.trigger(target2, wd.CustomEvent.create(eventName1));
 
             expect(eventTarget).toBeNull();
             expect(eventTarget2).toBeNull();
             expect(sum).toEqual(0);
             expect(sum2).toEqual(0);
+            expect(sum22).toEqual(0);
             expect(sum3).toEqual(0);
         });
     });

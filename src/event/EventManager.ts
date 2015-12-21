@@ -4,12 +4,18 @@ module wd {
         private static _eventBinder:EventBinder = EventBinder.create();
         private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
 
-        public static on(eventName:EventName|string, handler:Function):void;
-        public static on(eventName:EventName|string, handler:Function, priority:number):void;
         public static on(listener:{}|EventListener):void;
+
+        public static on(eventName:EventName|string, handler:Function):void;
         public static on(target:GameObject, listener:{}|EventListener):void;
+        public static on(dom:HTMLElement, listener:{}|EventListener):void;
+
+        public static on(eventName:EventName|string, handler:Function, priority:number):void;
         public static on(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public static on(dom:HTMLElement, eventName:EventName|string, handler:Function):void;
+
         public static on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
+        public static on(dom:HTMLElement, eventName:EventName|string, handler:Function, priority:number):void;
 
         public static on(...args) {
             if(args.length === 1){
@@ -48,20 +54,30 @@ module wd {
         }
 
         public static off():void;
+
         public static off(eventName:EventName|string):void;
-        public static off(eventName:EventName|string, handler:Function):void;
         public static off(target:GameObject):void;
+
+        public static off(eventName:EventName|string, handler:Function):void;
         public static off(target:GameObject, eventName:EventName|string):void;
+        public static off(dom:HTMLElement, eventName:EventName):void;
+
         public static off(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public static off(dom:HTMLElement, eventName:EventName, handler:Function):void;
+
 
         public static off(...args) {
             this._eventBinder.off.apply(this._eventBinder, args);
         }
 
         public static trigger(event:Event):void;
+
         public static trigger(event:Event, userData:any):void;
         public static trigger(target:GameObject, event:Event):void;
+        public static trigger(dom:HTMLElement, event:Event):void;
+
         public static trigger(target:GameObject, event:Event, userData:any):void;
+
 
         public static trigger(...args) {
             this._eventDispatcher.trigger.apply(this._eventDispatcher, args);
@@ -71,6 +87,9 @@ module wd {
         public static broadcast(target:GameObject, event:Event);
         public static broadcast(target:GameObject, event:Event, userData:any);
 
+        @require(function(target:GameObject, eventObject:Event, userData?:any){
+            assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
+        })
         public static broadcast(...args) {
             this._eventDispatcher.broadcast.apply(this._eventDispatcher, args);
         }
@@ -78,14 +97,21 @@ module wd {
         public static emit(target:GameObject, event:Event);
         public static emit(target:GameObject, event:Event, userData:any);
 
+        @require(function(target:GameObject, eventObject:Event, userData?:any){
+            assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
+        })
         public static emit(...args) {
             this._eventDispatcher.emit.apply(this._eventDispatcher, args);
         }
 
         public static fromEvent(eventName:EventName):wdFrp.FromEventPatternStream;
+
         public static fromEvent(eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
         public static fromEvent(target:GameObject, eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EventName):wdFrp.FromEventPatternStream;
+
         public static fromEvent(target:GameObject, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
 
         public static fromEvent(...args):any {
             var addHandler = null,

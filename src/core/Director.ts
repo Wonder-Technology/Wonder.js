@@ -97,12 +97,6 @@ module wd{
 
         //todo add dispose
 
-        public getTopUnderPoint(point:Point):GameObject{
-            var top = this.scene.getTopUnderPoint(point);
-
-            return top ? top : this.scene;
-        }
-
         public getDeltaTime(){
             return this._timeController.deltaTime;
         }

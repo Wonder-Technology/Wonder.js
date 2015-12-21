@@ -1,5 +1,4 @@
 /// <reference path="../../filePath.d.ts"/>
-
 module wd {
     export class MouseEventHandler extends DomEventHandler{
         private static _instance = null;
@@ -14,56 +13,51 @@ module wd {
         public lastX:number = null;
         public lastY:number = null;
 
-        @require(function(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void, priority:number){
-            assert(target instanceof GameObject, Log.info.FUNC_MUST_BE("target", "GameObject"));
+
+        public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+
+        @require(function(...args){
+            if(args.length === 4){
+                let dom = args[0];
+
+                assert(JudgeUtils.isDom(dom), Log.info.FUNC_MUST_BE("first param", "HTMLElement"));
+            }
         })
-        public on(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void, priority:number) {
-            this.handler(target, eventName, handler, priority);
-        }
+        public on(...args) {
+            var dom:HTMLElement = null,
+                eventName = null,
+                handler = null,
+                priority = null;
 
-        public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean{
-            var eventName = event.name,
-                registerDataList:wdCb.Collection<EventRegisterData> = null,
-                isStopPropagation = false;
+            if(args.length === 3){
+                dom = this.getDefaultDom();
 
-            if (!(target instanceof GameObject)) {
-                Log.log("target is not GameObject, can't trigger event");
-                return;
+                eventName = args[0];
+                handler = args[1];
+                priority = args[2];
+            }
+            else{
+                dom = args[0];
+                eventName = args[1];
+                handler = args[2];
+                priority = args[3];
             }
 
-            if(!notSetTarget){
-                event.target = target;
-            }
-
-            registerDataList = EventRegister.getInstance().getEventRegisterDataList(target, eventName);
-
-            if (registerDataList === null || registerDataList.getCount()=== 0) {
-                return;
-            }
-
-            registerDataList.forEach((registerData:EventRegisterData) => {
-                var eventCopy = event.copy();
-
-                registerData.handler(eventCopy);
-                if(eventCopy.isStopPropagation){
-                    isStopPropagation = true;
-                }
-            });
-
-            return isStopPropagation;
+            this.handler(dom, eventName, handler, priority);
         }
 
-        protected getDom() {
-            return DeviceManager.getInstance().view.dom;
+        protected getDefaultDom():HTMLElement{
+            return DeviceManager.getInstance().view.dom;;
         }
 
-        protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
-            var eventObj = this._createEventObject(event, eventName, target);
+        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){
+            var eventObj = this._createEventObject(dom, event, eventName);
 
-            EventManager.emit(this._getTopTarget(eventObj), eventObj);
+            EventManager.trigger(dom, eventObj);
         }
 
-        protected addEngineHandler(target:GameObject, eventName:EventName, handler:(event:MouseEvent) => void){
+        protected addEngineHandler(eventName:EventName, handler:(event:MouseEvent) => void){
             var resultHandler = null;
 
             switch (eventName){
@@ -83,10 +77,6 @@ module wd {
             this.lastY = null;
         }
 
-        private _getTopTarget(event:MouseEvent){
-            return Director.getInstance().getTopUnderPoint(event.locationInView);
-        }
-
         private _handleMove(handler:(event:MouseEvent) => void){
             var self = this;
 
@@ -97,10 +87,10 @@ module wd {
             };
         }
 
-        private _createEventObject(event:any, eventName:EventName, currentTarget:GameObject) {
+        private _createEventObject(dom:HTMLElement, event:any, eventName:EventName) {
             var obj = MouseEvent.create(event ? event : root.event, eventName);
 
-            obj.currentTarget = currentTarget;
+            obj.target = dom;
 
             return obj;
         }

@@ -9,8 +9,6 @@ module wd {
             return obj;
         }
 
-        protected p_type:EventType = EventType.MOUSE;
-
         private _location:Point = null;
         //Get cursor location(related to document)
         get location():Point {
@@ -157,10 +155,13 @@ module wd {
             }
         }
 
+        protected p_type:EventType = EventType.MOUSE;
+
+
         public copy(){
             var eventObj = MouseEvent.create(this.event, this.name);
 
-            return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
+            return this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "lastX", "lastY"]);
         }
 
         private _isPointerLocked() {

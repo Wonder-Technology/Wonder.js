@@ -32,10 +32,10 @@ describe("dom event", function () {
         sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
         target = wd.Director.getInstance().scene;
 
-        subscription = manager.fromEvent(target, wd.EventName.MOUSEDOWN).subscribe(function(e){
+        subscription = manager.fromEvent(wd.EventName.MOUSEDOWN).subscribe(function(e){
             sum++;
         });
-        manager.on(target, wd.EventName.MOUSEDOWN, function(e){
+        manager.on(wd.EventName.MOUSEDOWN, function(e){
             sum++;
         });
 
@@ -53,7 +53,7 @@ describe("dom event", function () {
                 sandbox.stub(bowser, "firefox", true);
                 target = wd.Director.getInstance().scene;
 
-                manager.on(target, wd.EventName.MOUSEWHEEL, function(e){
+                manager.on(wd.EventName.MOUSEWHEEL, function(e){
                     sum++;
                 });
 
@@ -68,7 +68,7 @@ describe("dom event", function () {
                 sandbox.stub(bowser, "chrome", true);
                 target = wd.Director.getInstance().scene;
 
-                manager.on(target, wd.EventName.MOUSEWHEEL, function(e){
+                manager.on(wd.EventName.MOUSEWHEEL, function(e){
                     sum++;
                 });
 

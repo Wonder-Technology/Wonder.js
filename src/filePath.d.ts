@@ -141,7 +141,6 @@
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonHingeConstraint"/>
 
 
-/// <reference path="component/pick/Pick"/>
 
 /// <reference path="component/script/Script"/>
 /// <reference path="component/script/IScriptBehavior"/>

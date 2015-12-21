@@ -63,7 +63,7 @@ module wd {
         public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
         public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
-        public trigger(...args) {
+        public trigger(...args):boolean {
             var event:Event = null;
 
             if(args.length === 1 || args.length === 2){
