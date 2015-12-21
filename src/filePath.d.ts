@@ -304,6 +304,8 @@
 /// <reference path="event/handler/CustomEventHandler"/>
 
 /// <reference path="event/dispatcher/EventDispatcher"/>
+/// <reference path="event/dispatcher/CustomEventDispatcher"/>
+/// <reference path="event/dispatcher/DomEventDispatcher"/>
 
 /// <reference path="event/binder/EventRegister"/>
 /// <reference path="event/binder/CustomEventRegister"/>

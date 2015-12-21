@@ -1,13 +1,9 @@
 /// <reference path="../filePath.d.ts"/>
 module wd {
     export class EventManager {
-        //private static _eventBinder:EventBinder = EventBinder.create();
-        private static _eventDispatcher:EventDispatcher = EventDispatcher.create();
-
         public static on(listener:{}|EventListener):void;
 
         public static on(eventName:EventName|string, handler:Function):void;
-        //public static on(target:GameObject, listener:{}|EventListener):void;
         public static on(dom:HTMLElement, listener:{}|EventListener):void;
 
         public static on(eventName:EventName|string, handler:Function, priority:number):void;
@@ -199,8 +195,54 @@ module wd {
         public static trigger(target:GameObject, event:Event, userData:any):void;
 
 
+        @require(function(...args){
+            if(args.length === 2 && args[0] instanceof Event){
+                let event = args[0];
+
+                assert(event instanceof CustomEvent, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+            }
+            else if(args[0] instanceof GameObject){
+                let event = args[1];
+
+                assert(event instanceof CustomEvent, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
+            }
+        })
         public static trigger(...args) {
-            this._eventDispatcher.trigger.apply(this._eventDispatcher, args);
+            if(args.length === 1){
+                let event = args[0],
+                    eventDispatcher = FactoryEventDispatcher.createEventDispatcher(event);
+
+                eventDispatcher.trigger(event);
+            }
+            else if(args.length === 2 && args[0] instanceof Event){
+                let event = args[0],
+                    userData = args[1],
+                    eventDispatcher = CustomEventDispatcher.getInstance();
+
+                eventDispatcher.trigger(event, userData);
+            }
+            else if(args.length === 2 && args[0] instanceof GameObject){
+                let target = args[0],
+                    event = args[1],
+                    eventDispatcher = CustomEventDispatcher.getInstance();
+
+                eventDispatcher.trigger(target, event);
+            }
+            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+                let dom = args[0],
+                    event = args[1],
+                    eventDispatcher = DomEventDispatcher.getInstance();
+
+                eventDispatcher.trigger(dom, event);
+            }
+            else if(args.length === 3){
+                let target = args[0],
+                    event = args[1],
+                    userData = args[2],
+                    eventDispatcher = CustomEventDispatcher.getInstance();
+
+                eventDispatcher.trigger(target, event, userData);
+            }
         }
 
 
@@ -211,7 +253,9 @@ module wd {
             assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
         })
         public static broadcast(...args) {
-            this._eventDispatcher.broadcast.apply(this._eventDispatcher, args);
+            var eventDispatcher = CustomEventDispatcher.getInstance();
+
+            eventDispatcher.broadcast.apply(eventDispatcher, args);
         }
 
         public static emit(target:GameObject, event:Event);
@@ -221,7 +265,9 @@ module wd {
             assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
         })
         public static emit(...args) {
-            this._eventDispatcher.emit.apply(this._eventDispatcher, args);
+            var eventDispatcher = CustomEventDispatcher.getInstance();
+
+            eventDispatcher.emit.apply(eventDispatcher, args);
         }
 
         public static fromEvent(eventName:EventName):wdFrp.FromEventPatternStream;
