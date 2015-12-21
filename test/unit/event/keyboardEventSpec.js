@@ -91,8 +91,20 @@ describe("keyboard event", function () {
             });
         });
 
-        //todo finish it
-        describe("bind on GameObject which has the focus", function(){
+        it("if try to bind on other dom, warn and bind on document.body", function(){
+            var sum = 0;
+
+            sandbox.stub(wd.Log, "warn");
+
+            manager.on(document.createElement("div") ,wd.EventName.KEYDOWN, function (e) {
+                sum++;
+            });
+
+            expect(wd.Log.warn).toCalledOnce();
+
+            manager.trigger(document.body, wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+
+            expect(sum).toEqual(1);
         });
 
         it("listener", function(){

@@ -15,7 +15,27 @@ module wd {
 
         public keyState:any = {};
 
-        public on(eventName:EventName, handler:(event:KeyboardEvent) => void, priority:number) {
+        public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+
+        public on(...args) {
+            var eventName = null,
+                handler = null,
+                priority = null;
+
+            if(args.length === 3){
+                eventName = args[0];
+                handler = args[1];
+                priority = args[2];
+            }
+            else{
+                Log.warn("keyboard event can only bind on document.body");
+
+                eventName = args[1];
+                handler = args[2];
+                priority = args[3];
+            }
+
             this.handler(this.getDefaultDom(), eventName, handler, priority);
         }
 

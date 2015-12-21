@@ -12,14 +12,6 @@ module wd {
                 eventRegister = EventRegister.getInstance(),
                 eventOffDataList:wdCb.Collection<EventOffData> = null;
 
-            //if(JudgeUtils.isDom(args[0])){
-            //    dom = args[0];
-            //}
-            //else{
-            //    dom = this.getDefaultDom();
-            //    args.unshift(dom);
-            //}
-
             eventOffDataList = eventRegister.remove.apply(eventRegister, args);
 
             if(eventOffDataList){
