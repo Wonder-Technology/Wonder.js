@@ -2,21 +2,22 @@
 module wd {
     export abstract class DomEventHandler extends EventHandler{
         public off(eventName:EventName):void;
+
         public off(eventName:EventName, handler:Function):void;
         public off(dom:HTMLElement, eventName:EventName):void;
+
         public off(dom:HTMLElement, eventName:EventName, handler:Function):void;
 
         public off(...args) {
             var self = this,
-                dom = null,
-                eventRegister = EventRegister.getInstance(),
-                eventOffDataList:wdCb.Collection<EventOffData> = null;
+                eventRegister = DomEventRegister.getInstance(),
+                eventOffDataList:wdCb.Collection<DomEventOffData> = null;
 
             eventOffDataList = eventRegister.remove.apply(eventRegister, args);
 
             if(eventOffDataList){
-                eventOffDataList.forEach((list:wdCb.Collection<EventOffData>) => {
-                    list.forEach((eventOffData:EventOffData) => {
+                eventOffDataList.forEach((list:wdCb.Collection<DomEventOffData>) => {
+                    list.forEach((eventOffData:DomEventOffData) => {
                         self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
                     });
                 })
@@ -32,7 +33,7 @@ module wd {
             var dom = null,
                 event = null,
                 eventName = null,
-                registerDataList:wdCb.Collection<EventRegisterData> = null;
+                registerDataList:wdCb.Collection<DomEventRegisterData> = null;
 
             if(args.length === 1){
                 event = args[0];
@@ -45,13 +46,13 @@ module wd {
 
             eventName = event.name;
 
-            registerDataList = EventRegister.getInstance().getEventRegisterDataList(dom, eventName);
+            registerDataList = DomEventRegister.getInstance().getEventRegisterDataList(dom, eventName);
 
             if (registerDataList === null || registerDataList.getCount()=== 0) {
                 return;
             }
 
-            registerDataList.forEach((registerData:EventRegisterData) => {
+            registerDataList.forEach((registerData:DomEventRegisterData) => {
                 var eventCopy = event.copy();
 
                 registerData.handler(eventCopy);
@@ -81,14 +82,14 @@ module wd {
 
             handler = this.addEngineHandler(eventName, handler);
 
-            if (!EventRegister.getInstance().isBinded(dom, eventName)) {
+            if (!DomEventRegister.getInstance().isBinded(dom, eventName)) {
                 domHandler = this._bind(dom, eventName);
             }
             else{
-                domHandler = EventRegister.getInstance().getDomHandler(dom, eventName);
+                domHandler = DomEventRegister.getInstance().getDomHandler(dom, eventName);
             }
 
-            EventRegister.getInstance().register(
+            DomEventRegister.getInstance().register(
                 dom,
                 eventName,
                 handler,

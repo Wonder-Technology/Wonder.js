@@ -20,7 +20,7 @@ module wd {
                     originHandler = handler,
                     priority = args[2];
 
-                EventRegister.getInstance().register(
+                CustomEventRegister.getInstance().register(
                     null,
                     <any>eventName,
                     handler,
@@ -36,7 +36,7 @@ module wd {
                     originHandler = handler,
                     priority = args[3];
 
-                EventRegister.getInstance().register(
+                CustomEventRegister.getInstance().register(
                     target,
                     <any>eventName,
                     handler,
@@ -53,7 +53,7 @@ module wd {
         public off(target:GameObject, eventName:string, handler:Function):void;
 
         public off(...args) {
-            var eventRegister = EventRegister.getInstance();
+            var eventRegister = CustomEventRegister.getInstance();
 
             eventRegister.remove.apply(eventRegister, args);
         }
@@ -102,31 +102,31 @@ module wd {
         }
 
         private _triggerEventHandler(event, userData){
-            var listenerDataList:wdCb.Collection<EventRegisterData> = null,
+            var registerDataList:wdCb.Collection<CustomEventRegisterData> = null,
                 self = this;
 
-            listenerDataList = EventRegister.getInstance().getEventRegisterDataList(event.name);
+            registerDataList = CustomEventRegister.getInstance().getEventRegisterDataList(event.name);
 
-            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+            if (registerDataList === null || registerDataList.getCount()=== 0) {
                 return false;
             }
 
-            listenerDataList.forEach((listenerData:EventRegisterData) => {
+            registerDataList.forEach((registerData:CustomEventRegisterData) => {
                 var eventCopy = event.copy();
 
-                eventCopy.currentTarget = listenerData.target;
-                eventCopy.target = listenerData.target;
+                eventCopy.currentTarget = registerData.target;
+                eventCopy.target = registerData.target;
 
                 self._setUserData(eventCopy, userData);
 
-                listenerData.handler(eventCopy);
+                registerData.handler(eventCopy);
             });
 
             return true;
         }
 
         private _triggerTargetAndEventHandler(target, event, userData, notSetTarget){
-            var listenerDataList:wdCb.Collection<EventRegisterData> = null,
+            var registerDataList:wdCb.Collection<CustomEventRegisterData> = null,
                 isStopPropagation = false,
                 self = this;
 
@@ -134,20 +134,20 @@ module wd {
                 event.target = target;
             }
 
-            listenerDataList = EventRegister.getInstance().getEventRegisterDataList(target, event.name);
+            registerDataList = CustomEventRegister.getInstance().getEventRegisterDataList(target, event.name);
 
-            if (listenerDataList === null || listenerDataList.getCount()=== 0) {
+            if (registerDataList === null || registerDataList.getCount()=== 0) {
                 return false;
             }
 
-            listenerDataList.forEach((listenerData:EventRegisterData) => {
+            registerDataList.forEach((registerData:CustomEventRegisterData) => {
                 var eventCopy = event.copy();
 
-                eventCopy.currentTarget = listenerData.target;
+                eventCopy.currentTarget = registerData.target;
 
                 self._setUserData(eventCopy, userData);
 
-                listenerData.handler(eventCopy);
+                registerData.handler(eventCopy);
 
                 if(eventCopy.isStopPropagation){
                     isStopPropagation = true;

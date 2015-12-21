@@ -81,15 +81,18 @@ describe("mouse event", function () {
                     var dom;
                     var eventTarget = null,
                         sum = null;
+                    var handler1;
 
                     beforeEach(function(){
                         sum = 0;
                         dom = document.body;
 
-                        manager.on(dom, wd.EventName.CLICK, function (e) {
+                        handler1 = function (e) {
                             eventTarget = e;
                             sum++;
-                        });
+                        };
+
+                        manager.on(dom, wd.EventName.CLICK, handler1);
 
 
 
@@ -120,6 +123,36 @@ describe("mouse event", function () {
                         manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
                         expect(sum).toEqual(1);
+                    });
+                    it("test off(dom,eventName,hander)", function(){
+                        var sum2 = 0;
+                        var handler2 = function (e) {
+                            sum2++;
+                        };
+
+                        manager.on(dom, wd.EventName.CLICK, handler2);
+
+
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(sum).toEqual(2);
+                        expect(sum2).toEqual(1);
+
+                        manager.off(dom, wd.EventName.CLICK, handler2);
+
+
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(sum).toEqual(3);
+                        expect(sum2).toEqual(1);
+
+
+                        manager.off(dom, wd.EventName.CLICK, handler1);
+
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(sum).toEqual(3);
+                        expect(sum2).toEqual(1);
                     });
                 });
                 it("test fromEvent/dispose", function(){

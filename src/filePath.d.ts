@@ -283,6 +283,9 @@
 
 
 /// <reference path="event/structure/EventListenerMap"/>
+/// <reference path="event/structure/CustomEventListenerMap"/>
+/// <reference path="event/structure/DomEventListenerMap"/>
+
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventNameHandler"/>
 /// <reference path="event/object/EventPhase"/>
@@ -299,10 +302,19 @@
 /// <reference path="event/handler/MouseEventHandler"/>
 /// <reference path="event/handler/KeyboardEventHandler"/>
 /// <reference path="event/handler/CustomEventHandler"/>
+
 /// <reference path="event/dispatcher/EventDispatcher"/>
+
 /// <reference path="event/binder/EventRegister"/>
+/// <reference path="event/binder/CustomEventRegister"/>
+/// <reference path="event/binder/DomEventRegister"/>
+
 /// <reference path="event/binder/EventBinder"/>
+/// <reference path="event/binder/CustomEventBinder"/>
+/// <reference path="event/binder/DomEventBinder"/>
+
 /// <reference path="event/factory/FactoryEventHandler"/>
+/// <reference path="event/factory/FactoryEventBinder"/>
 
 /// <reference path="event/EventManager"/>
 /// <reference path="event/EngineEvent"/>

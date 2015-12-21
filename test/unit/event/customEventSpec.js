@@ -19,7 +19,7 @@ describe("custom event", function () {
             it("if eventName contain EventListenerMap->eventSeparator, contract error", function(){
                 testTool.openContractCheck(sandbox);
 
-                sandbox.stub(wd.EventListenerMap, "eventSeparator", "%");
+                sandbox.stub(wd.CustomEventListenerMap, "eventSeparator", "%");
 
                 expect(function(){
                     manager.on("wd%endLoop", function (e) {
