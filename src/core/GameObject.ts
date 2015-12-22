@@ -266,12 +266,16 @@ module wd {
                 font = this._getFont(),
                 uiRenderer = this._getUIRenderer();
 
-            if(uiRenderer){
-                uiRenderer.clearCanvas();
-            }
+            //todo extract UIManager
 
-            if(font){
-                font.update(time);
+            if(font && font.dirty){
+                if(uiRenderer){
+                    uiRenderer.clearCanvas();
+                }
+
+                if(font){
+                    font.update(time);
+                }
             }
 
             if(camera){

@@ -29,13 +29,15 @@ module wd {
 
         public dispose(){
             EventManager.off(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+
+            wdCb.DomQuery.create(this._canvas).remove();
         }
 
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
         }
 
         public clearCanvas(){
-            this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+            this.context.clearRect(0, 0, this._canvas.width, this._canvas.height)
         }
 
         private _createOverlayCanvas(){

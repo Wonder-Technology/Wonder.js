@@ -41,6 +41,7 @@ describe("UIRenderer", function () {
     });
     afterEach(function () {
         testTool.clearInstance();
+        renderer.dispose();
         sandbox.restore();
     });
 
@@ -52,8 +53,6 @@ describe("UIRenderer", function () {
         });
 
         it("add overlay canvas", function(){
-            //gameObject.init();
-
             var canvas = $("canvas");
             var view = wd.DeviceManager.getInstance().view;
             expect(canvas.length).toEqual(1);
@@ -65,23 +64,44 @@ describe("UIRenderer", function () {
             expect(canvas.height()).toEqual(view.height);
         });
         it("get context", function(){
-            //gameObject.init();
-
             expect(renderer._context).not.toBeNull();
         });
         it("ui can get UIRenderer's context", function(){
-            //sandbox.stub(director.renderer, "render");
-            //sandbox.stub(font, "update");
-            //director.scene.addChild(gameObject);
-
-            //director._init();
-
             expect(font._context).not.toBeNull();
         });
     });
 
+    describe("dispose", function(){
+        it("off BEFORE_INIT event handler", function(){
+            sandbox.spy(renderer, "_createOverlayCanvas");
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
+
+            expect(renderer._createOverlayCanvas).toCalledOnce();
+
+
+            renderer.dispose();
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
+
+            expect(renderer._createOverlayCanvas).toCalledOnce();
+        });
+        it("remove canvas", function(){
+            director.scene.addChild(gameObject);
+
+            director._init();
+
+            expect($("canvas").length).toEqual(1);
+
+
+            renderer.dispose();
+
+            expect($("canvas").length).toEqual(0);
+        });
+        //todo unbind event binded on canvas
+    });
+
     it("not add command, not render webgl, only update ui", function(){
-        var director = wd.Director.getInstance();
         sandbox.stub(director.renderer, "render");
         sandbox.stub(font, "update");
 
@@ -97,7 +117,6 @@ describe("UIRenderer", function () {
     });
 
     it("clear canvas before update ui", function(){
-        var director = wd.Director.getInstance();
         sandbox.stub(font, "update");
 
         director.scene.addChild(gameObject);
@@ -112,4 +131,5 @@ describe("UIRenderer", function () {
 
         expect(renderer.context.clearRect).toCalledBefore(font.update);
     });
+
 });

@@ -14,14 +14,65 @@ module wd {
             return obj;
         }
 
-        public text:string = "";
-        public fontSize:number = 10;
-        public fontFamily:string = "sans-serif";
-        //todo can be auto
-        public width:number = 0;
-        public height:number = 0;
-        public xAlignment:FontXAlignment = FontXAlignment.LEFT;
-        public yAlignment:FontYAlignment = FontYAlignment.TOP;
+        private _text:string = "";
+        get text(){
+            return this._text;
+        }
+        set text(text:string){
+            this._text = text;
+            this.dirty = true;
+        }
+
+        private _fontSize:number = 10;
+        get fontSize(){
+            return this._fontSize;
+        }
+        set fontSize(fontSize:number){
+            this._fontSize = fontSize;
+            this.dirty = true;
+        }
+
+        private _fontFamily:string = "sans-serif";
+        get fontFamily(){
+            return this._fontFamily;
+        }
+        set fontFamily(fontFamily:string){
+            this._fontFamily = fontFamily;
+        }
+
+        private _width:number = 0;
+        get width(){
+            return this._width;
+        }
+        set width(width:number){
+            this._width = width;
+            this.dirty = true;
+        }
+
+        private _height:number = 0;
+        get height(){
+            return this._height;
+        }
+        set height(height:number){
+            this._height = height;
+            this.dirty = true;
+        }
+
+        private _xAlignment:FontXAlignment = FontXAlignment.LEFT;
+        get xAlignment(){
+            return this._xAlignment;
+        }
+        set xAlignment(xAlignment:FontXAlignment){
+            this._xAlignment = xAlignment;
+        }
+
+        private _yAlignment:FontYAlignment = FontYAlignment.TOP;
+        get yAlignment(){
+            return this._yAlignment;
+        }
+        set yAlignment(yAlignment:FontYAlignment){
+            this._yAlignment = yAlignment;
+        }
 
         private _context:any = null;
         private _fillEnabled:boolean = true;
@@ -159,6 +210,9 @@ module wd {
 
 
             context.restore();
+
+
+            this.dirty = false;
         }
 
         public setFillStyle(fillStyle:string) {

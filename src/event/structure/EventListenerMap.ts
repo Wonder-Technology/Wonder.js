@@ -4,7 +4,7 @@ module wd{
         protected listenerMap:wdCb.Hash<wdCb.Collection<EventRegisterData>> = wdCb.Hash.create<wdCb.Collection<EventRegisterData>>();
 
         public abstract getChild(...args):wdCb.Collection<any>;
-        public abstract removeChild(...args):wdCb.Collection<wdCb.Collection<any>>;
+        public abstract removeChild(...args):any;
 
         public hasChild(func:(...args) => boolean):boolean;
         public hasChild(target:GameObject, eventName:EventName):boolean;

@@ -36,16 +36,15 @@ module wd {
 
 
         public remove(...args) {
-            var target = args[0],
-                result = null;
+            var target = args[0];
 
             if (args.length === 1 && JudgeUtils.isString(args[0])) {
                 let eventName = args[0];
 
-                result = this.listenerMap.removeChild(eventName);
+                this.listenerMap.removeChild(eventName);
             }
             else if (args.length === 1 && args[0] instanceof GameObject) {
-                result = this.listenerMap.removeChild(target);
+                this.listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
             }
@@ -53,23 +52,21 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                result = this.listenerMap.removeChild(eventName, handler);
+                this.listenerMap.removeChild(eventName, handler);
             }
             else if (args.length === 2 && JudgeUtils.isNumber(args[0])) {
                 let uid = args[0],
                     eventName = args[1];
 
-                result = this.listenerMap.removeChild(uid, eventName);
+                this.listenerMap.removeChild(uid, eventName);
             }
             else if ((args.length === 2 && args[0] instanceof GameObject) || args.length === 3) {
-                result = this.listenerMap.removeChild.apply(this.listenerMap, args);
+                this.listenerMap.removeChild.apply(this.listenerMap, args);
 
                 if (this._isAllEventHandlerRemoved(target)) {
                     this._handleAfterAllEventHandlerRemoved(target);
                 }
             }
-
-            return result;
         }
 
         public setBubbleParent(target:GameObject, parent:GameObject) {
