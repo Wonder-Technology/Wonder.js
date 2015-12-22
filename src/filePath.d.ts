@@ -248,7 +248,11 @@
 /// <reference path="material/Shading"/>
 /// <reference path="material/MapManager"/>
 
+
+/// <reference path="asset/AssetType"/>
+
 /// <reference path="asset/Loader"/>
+/// <reference path="asset/FontLoader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
 /// <reference path="asset/VideoLoader"/>

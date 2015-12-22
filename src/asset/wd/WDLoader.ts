@@ -15,8 +15,8 @@ module wd {
         private _parseData:DYFileParseData = null;
 
 
-        protected loadAsset(url:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>):wdFrp.Stream;
+        protected loadAsset(url:string, id:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 
         @require(function (...args) {
             assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));

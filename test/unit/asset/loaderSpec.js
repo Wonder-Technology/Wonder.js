@@ -395,4 +395,64 @@ describe("loader", function () {
             });
         });
     });
+    
+    describe("load font asset", function(){
+        function getFonts (obj) {
+            var o = obj || {},
+                sheet = document.styleSheets,
+                rule = null,
+                i = sheet.length, j;
+            while( 0 <= --i ){
+                rule = sheet[i].rules || sheet[i].cssRules || [];
+                j = rule.length;
+                while( 0 <= --j ){
+                    if( rule[j].constructor.name === 'CSSFontFaceRule' ){ // rule[j].slice(0, 10).toLowerCase() === '@font-face'
+                        o[ rule[j].style.fontFamily ] = rule[j].style.src;
+                    };
+                }
+            }
+            return o;
+        }
+
+
+
+        beforeEach(function(){
+            
+        });
+        afterEach(function(){
+            $("style").remove();
+        });
+        
+        describe("load .ttf", function(){
+            it("add style element with @font-face into body to load ttf font", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var fonts = {}
+                    getFonts(fonts);
+
+                    expect(fonts["Urdeutsch"]).toBeDefined();
+                    expect(fonts["Urdeutsch"].indexOf("test/res/font/Urdeutsch.ttf") > -1).toBeTruthy();
+
+                    done();
+                });
+            });
+            it("dipose method should remove the added style element", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    expect($("style").length).toEqual(1);
+
+                    wd.LoaderManager.getInstance().dispose();
+
+                    expect($("style").length).toEqual(0);
+
+                    done();
+                });
+
+            });
+        });
+    });
 });
