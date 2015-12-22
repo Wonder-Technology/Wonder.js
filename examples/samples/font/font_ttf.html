@@ -38,8 +38,8 @@
             //should be the same as the id of font asset
             font.fontFamily = "Urdeutsch";
             font.fontSize = 20;
-//            font.width = FontDimension.AUTO;
-            font.width = 300;
+            //if auto, it equal view.width/height
+            font.width = wd.FontDimension.AUTO;
             font.height = 100;
             font.xAlignment = wd.FontXAlignment.LEFT;
             font.yAlignment = wd.FontYAlignment.BOTTOM;

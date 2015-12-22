@@ -204,6 +204,20 @@ describe("PlainFont", function () {
                         });
                     });
                 });
+
+                it("if set width/height to be auto, it can equal view.width/height", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        width: 1000,
+                        height: 800
+                    })
+                    font.text = "阿斯";
+                    setDimensions(wd.FontDimension.AUTO, wd.FontDimension.AUTO);
+
+                    font.init();
+
+                    expect(font.width).toEqual(1000);
+                    expect(font.height).toEqual(800);
+                });
             });
 
 

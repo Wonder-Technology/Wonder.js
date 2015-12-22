@@ -37,11 +37,12 @@ module wd {
             this._context = this._getContext();
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
+
+            this._initDimension();
         }
 
         //todo implement
         public dispose() {
-
         }
 
         public update(time:number) {
@@ -360,6 +361,20 @@ module wd {
 
         private _getCanvasPosition(){
             return CoordinateUtils.convertWebGLPositionToCanvasPosition(this.gameObject.transform.position);
+        }
+
+        @require(function(){
+            assert(!!DeviceManager.getInstance().view, Log.info.FUNC_SHOULD("set view"));
+        })
+        private _initDimension(){
+            var view = DeviceManager.getInstance().view;
+
+            if(this.width === FontDimension.AUTO){
+                this.width = view.width;
+            }
+            if(this.height === FontDimension.AUTO){
+                this.height = view.height;
+            }
         }
     }
 }

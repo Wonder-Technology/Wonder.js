@@ -155,6 +155,7 @@
 
 /// <reference path="component/ui/font/FontXAlignment"/>
 /// <reference path="component/ui/font/FontYAlignment"/>
+/// <reference path="component/ui/font/FontDimension"/>
 /// <reference path="component/ui/font/Font"/>
 /// <reference path="component/ui/font/PlainFont"/>
 
