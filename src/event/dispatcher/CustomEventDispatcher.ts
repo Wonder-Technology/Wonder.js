@@ -25,7 +25,7 @@ module wd {
                 let event = args[0],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event);
             }
             else if(args.length === 2 && (args[0] instanceof Event)){
@@ -33,7 +33,7 @@ module wd {
                     userData = args[1],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event, userData);
             }
             else if((args.length === 2 && args[0] instanceof GameObject) || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
@@ -42,7 +42,7 @@ module wd {
                     notSetTarget = args[2] === void 0 ? false : args[2],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
             else if(args.length === 3 || args.length === 4){
@@ -52,7 +52,7 @@ module wd {
                     notSetTarget = args[3] === void 0 ? false : args[3],
                     eventType = event.type;
 
-                return FactoryEventHandler.createEventHandler(eventType)
+                return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(target, event, userData, notSetTarget);
             }
         }

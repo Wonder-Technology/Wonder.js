@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
-    export class FactoryEventDispatcher{
+    export class EventDispatcherFactory{
         public static createEventDispatcher(event:Event){
             let dispatcher = null,
                 eventType = event.type;

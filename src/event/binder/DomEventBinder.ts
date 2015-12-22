@@ -46,7 +46,7 @@ module wd {
                 let listener:EventListener = !(args[0] instanceof EventListener) ?  EventListener.create(args[0]): args[0];
 
                 listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
-                    FactoryEventHandler.createEventHandler(listener.eventType)
+                    EventHandlerFactory.createEventHandler(listener.eventType)
                         .on(handlerData.eventName, handlerData.handler, listener.priority);
                 });
             }
@@ -54,7 +54,7 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler);
             }
             else if(args.length === 2 && JudgeUtils.isDom(args[0])){
@@ -62,7 +62,7 @@ module wd {
                     listener:EventListener = !(args[0] instanceof EventListener) ?  EventListener.create(args[0]): args[0];
 
                 listener.handlerDataList.forEach(function (handlerData:EventHandlerData) {
-                    FactoryEventHandler.createEventHandler(listener.eventType)
+                    EventHandlerFactory.createEventHandler(listener.eventType)
                         .on(dom, handlerData.eventName, handlerData.handler, listener.priority);
                 });
             }
@@ -71,7 +71,7 @@ module wd {
                     handler = args[1],
                     priority = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
             else if(args.length === 3 && JudgeUtils.isDom(args[0])){
@@ -79,7 +79,7 @@ module wd {
                     eventName = args[1],
                     handler = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(dom, eventName, handler);
             }
             else if(args.length === 4) {
@@ -88,7 +88,7 @@ module wd {
                     handler = args[2],
                     priority = args[3];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(dom, eventName, handler, priority);
             }
         }
@@ -110,7 +110,7 @@ module wd {
                 eventRegister.forEach((list:wdCb.Collection<EventHandlerData>, key:string) => {
                     var eventName = eventRegister.getEventNameFromKey(key);
 
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
                 });
             }
@@ -121,7 +121,7 @@ module wd {
                     var registeredEventName = eventRegister.getEventNameFromKey(key);
 
                     if(registeredEventName === eventName){
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
                     }
                 });
@@ -133,7 +133,7 @@ module wd {
                     var eventName = eventRegister.getEventNameFromKey(key);
 
                     if(eventRegister.isDom(key, dom, list)){
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(dom, eventName);
                     }
                 });
@@ -142,14 +142,14 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(eventName, handler);
             }
             else if(args.length === 2 && JudgeUtils.isDom(args[0])){
                 let dom = args[0],
                     eventName = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(dom, eventName);
             }
             else if(args.length === 3){
@@ -157,7 +157,7 @@ module wd {
                     eventName = args[1],
                     handler = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(dom, eventName, handler);
             }
         }

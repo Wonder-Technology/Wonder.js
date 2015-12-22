@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
-    export class FactoryEventBinder{
+    export class EventBinderFactory{
         public static createEventBinder(eventName:EventName){
             let binder = null,
                 eventType = EventTable.getEventType(eventName);

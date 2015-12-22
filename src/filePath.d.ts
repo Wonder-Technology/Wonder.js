@@ -315,8 +315,8 @@
 /// <reference path="event/binder/CustomEventBinder"/>
 /// <reference path="event/binder/DomEventBinder"/>
 
-/// <reference path="event/factory/FactoryEventHandler"/>
-/// <reference path="event/factory/FactoryEventBinder"/>
+/// <reference path="event/factory/EventHandlerFactory"/>
+/// <reference path="event/factory/EventBinderFactory"/>
 
 /// <reference path="event/EventManager"/>
 /// <reference path="event/EngineEvent"/>

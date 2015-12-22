@@ -46,7 +46,7 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler);
             }
             else if(args.length === 3 && JudgeUtils.isString(args[0])){
@@ -54,7 +54,7 @@ module wd {
                     handler = args[1],
                     priority = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
             else if(args.length === 3 && args[0] instanceof GameObject){
@@ -62,7 +62,7 @@ module wd {
                     eventName = args[1],
                     handler = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(target, eventName, handler);
             }
             else if(args.length === 4) {
@@ -71,7 +71,7 @@ module wd {
                     handler = args[2],
                     priority = args[3];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(target, eventName, handler, priority);
             }
         }
@@ -95,11 +95,11 @@ module wd {
                         targetUid = eventRegister.getUidFromKey(key);
 
                     if(!targetUid){
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
                     }
                     else{
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName)).off(targetUid, eventName);
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName)).off(targetUid, eventName);
                     }
                 });
             }
@@ -110,7 +110,7 @@ module wd {
                     var registeredEventName = eventRegister.getEventNameFromKey(key);
 
                     if(registeredEventName === eventName){
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(eventName);
                     }
                 });
@@ -122,7 +122,7 @@ module wd {
                     var eventName = eventRegister.getEventNameFromKey(key);
 
                     if(eventRegister.isTarget(key, target, list)){
-                        FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                        EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                             .off(target, eventName);
                     }
                 });
@@ -131,14 +131,14 @@ module wd {
                 let eventName = args[0],
                     handler = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(eventName, handler);
             }
             else if(args.length === 2 && args[0] instanceof GameObject){
                 let target = args[0],
                     eventName = args[1];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName);
             }
             else if(args.length === 3 && args[0] instanceof GameObject){
@@ -146,7 +146,7 @@ module wd {
                     eventName = args[1],
                     handler = args[2];
 
-                FactoryEventHandler.createEventHandler(EventTable.getEventType(eventName))
+                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName, handler);
             }
         }

@@ -19,7 +19,7 @@ module wd {
                 let event = args[0],
                     eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventType)
+                EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event);
             }
             else if(args.length === 2 && JudgeUtils.isDom(args[0])){
@@ -27,7 +27,7 @@ module wd {
                     event = args[1],
                     eventType = event.type;
 
-                FactoryEventHandler.createEventHandler(eventType)
+                EventHandlerFactory.createEventHandler(eventType)
                     .trigger(dom, event);
             }
         }

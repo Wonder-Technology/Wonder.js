@@ -37,7 +37,7 @@ module wd {
                 let eventName = args[0],
                     handler = args[1],
                     priority = 1,
-                    eventBinder = FactoryEventBinder.createEventBinder(eventName);
+                    eventBinder = EventBinderFactory.createEventBinder(eventName);
 
                 eventBinder.on(eventName, handler, priority);
             }
@@ -52,7 +52,7 @@ module wd {
                 let eventName = args[0],
                     handler = args[1],
                     priority = args[2],
-                    eventBinder = FactoryEventBinder.createEventBinder(eventName);
+                    eventBinder = EventBinderFactory.createEventBinder(eventName);
 
                 eventBinder.on(eventName, handler, priority);
             }
@@ -131,7 +131,7 @@ module wd {
             }
             else if(args.length === 1 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
-                    eventBinder = FactoryEventBinder.createEventBinder(eventName);
+                    eventBinder = EventBinderFactory.createEventBinder(eventName);
 
                 eventBinder.off(eventName);
             }
@@ -150,7 +150,7 @@ module wd {
             else if(args.length === 2 && JudgeUtils.isString(args[0])){
                 let eventName = args[0],
                     handler = args[1],
-                    eventBinder = FactoryEventBinder.createEventBinder(eventName);
+                    eventBinder = EventBinderFactory.createEventBinder(eventName);
 
                 eventBinder.off(eventName, handler);
             }
@@ -210,7 +210,7 @@ module wd {
         public static trigger(...args) {
             if(args.length === 1){
                 let event = args[0],
-                    eventDispatcher = FactoryEventDispatcher.createEventDispatcher(event);
+                    eventDispatcher = EventDispatcherFactory.createEventDispatcher(event);
 
                 eventDispatcher.trigger(event);
             }
