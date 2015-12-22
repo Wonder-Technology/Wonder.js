@@ -183,7 +183,10 @@ module wd{
             this.scheduler.update(time);
             this.scene.update(time);
             this.scene.render(this.renderer);
-            this.renderer.render();
+
+            if(this.renderer.hasCommand()){
+                this.renderer.render();
+            }
         }
     }
 }

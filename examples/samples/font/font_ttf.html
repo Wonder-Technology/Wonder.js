@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show 2d overlay font</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {type: wd.AssetType.FONT, url: "../asset/font/Urdeutsch.ttf", id: "Urdeutsch"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createFont());
+
+            director.start();
+        }
+
+        function createFont() {
+            var font = wd.PlainFont.create();
+
+            font.text = "This is a font.\n" +
+                    "Test multi line! Test multi line! Test multi line! Test multi line! Test multi line! ";
+            //should be the same as the id of font asset
+            font.fontFamily = "Urdeutsch";
+            font.fontSize = 20;
+//            font.width = FontDimension.AUTO;
+            font.width = 300;
+            font.height = 100;
+            font.xAlignment = wd.FontXAlignment.LEFT;
+            font.yAlignment = wd.FontYAlignment.BOTTOM;
+
+
+            var gameObject = wd.GameObject.create();
+
+            gameObject.addComponent(font);
+
+
+
+            var renderer = wd.UIRenderer.create();
+
+
+            gameObject.addComponent(renderer);
+
+
+//            gameObject.transform.translate(-300, 100, 0);
+
+            return gameObject;
+        }
+    };
+</script>
+</body>
+</html>

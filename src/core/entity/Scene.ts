@@ -86,9 +86,9 @@ module wd {
             this._collisionDetector.detect(this);
         }
 
-        @require(function(renderer:Renderer){
-            assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
-        })
+        //@require(function(renderer:Renderer){
+        //    assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
+        //})
         public render(renderer:Renderer) {
             var self = this;
 

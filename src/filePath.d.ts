@@ -91,6 +91,7 @@
 /// <reference path="component/renderer/RendererComponent"/>
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/renderer/SkyboxRenderer"/>
+/// <reference path="component/renderer/UIRenderer"/>
 
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/BoxCollider"/>
@@ -152,8 +153,16 @@
 /// <reference path="component/light/Attenuation"/>
 
 
+/// <reference path="component/ui/font/FontXAlignment"/>
+/// <reference path="component/ui/font/FontYAlignment"/>
+/// <reference path="component/ui/font/Font"/>
+/// <reference path="component/ui/font/PlainFont"/>
+
+
+
 /// <reference path="utils/JudgeUtils"/>
 /// <reference path="utils/MathUtils"/>
+/// <reference path="utils/CoordinateUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>

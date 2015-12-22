@@ -25,6 +25,10 @@ module wd{
             command.init();
         }
 
+        public hasCommand(){
+            return this._commandQueue.getCount() > 0;
+        }
+
         public render(){
             var deviceManager = DeviceManager.getInstance();
 

@@ -262,8 +262,17 @@ module wd {
         public update(time:number):void {
             var camera = this._getCamera(),
                 animation = this._getAnimation(),
-                collider = this._getCollider();
-                //rigidBody = this._getRigidBody();
+                collider = this._getCollider(),
+                font = this._getFont(),
+                uiRenderer = this._getUIRenderer();
+
+            if(uiRenderer){
+                uiRenderer.clearCanvas();
+            }
+
+            if(font){
+                font.update(time);
+            }
 
             if(camera){
                 camera.update(time);
@@ -280,10 +289,6 @@ module wd {
             if(collider){
                 collider.update(time);
             }
-
-            //if(rigidBody){
-            //    rigidBody.update(time);
-            //}
 
             this._children.forEach((child:GameObject) => {
                 child.update(time);
@@ -334,13 +339,20 @@ module wd {
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
-        //
-        //@require(function(){
-        //    assert(this._getComponentCount(RigidBody) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rigid body component"));
-        //})
-        //private _getRigidBody():RigidBody{
-        //    return this.getComponent<RigidBody>(RigidBody);
-        //}
+
+        @require(function(){
+            assert(this._getComponentCount(Font) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 font component"));
+        })
+        private _getFont():Font{
+            return this.getComponent<Font>(Font);
+        }
+
+        @require(function(){
+            assert(this._getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 uiRenderer component"));
+        })
+        private _getUIRenderer():UIRenderer{
+            return this.getComponent<UIRenderer>(UIRenderer);
+        }
 
         private _getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {
