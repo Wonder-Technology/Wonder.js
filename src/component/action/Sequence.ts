@@ -27,7 +27,7 @@ module wd {
             this._currentAction = this._actions.getChild(0);
         }
 
-        public update(time) {
+        public update(elapsedTime) {
             if (this._actionIndex === this._actions.getCount()) {
                 this.finish();
                 return;
@@ -41,7 +41,7 @@ module wd {
                 return;
             }
 
-            this._currentAction.update(time);
+            this._currentAction.update(elapsedTime);
 
             if(this._currentAction.isFinish){
                 this._startNextActionAndJudgeFinish();

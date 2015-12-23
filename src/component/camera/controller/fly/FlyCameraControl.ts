@@ -28,7 +28,7 @@ module wd {
             this._bindCanvasEvent();
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if (!this._isRotate) {
                 return;
             }

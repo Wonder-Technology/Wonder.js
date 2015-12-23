@@ -76,12 +76,12 @@ module wd {
             this._renderTargetRenderers.removeChild(renderTargetRenderer);
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if(this.physics.enable){
-                this.physicsEngineAdapter.update(time);
+                this.physicsEngineAdapter.update(elapsedTime);
             }
 
-            super.update(time);
+            super.update(elapsedTime);
 
             this._collisionDetector.detect(this);
         }

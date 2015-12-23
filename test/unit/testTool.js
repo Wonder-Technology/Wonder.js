@@ -138,9 +138,9 @@ var testTool = (function () {
 
             return _child;
         },
-        updateAction: function (time, gameObject) {
-            window.performance.now.returns(time);
-            gameObject.actionManager.update(time);
+        updateAction: function (elapsedTime, gameObject) {
+            window.performance.now.returns(elapsedTime);
+            gameObject.actionManager.update(elapsedTime);
         },
         getValues: function (values, digit) {
             var digit = digit || 7;

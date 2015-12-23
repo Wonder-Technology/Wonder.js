@@ -32,8 +32,8 @@ module wd {
             this.camera.init();
         }
 
-        public update(time:number){
-            this.camera.update(time);
+        public update(elapsedTime:number){
+            this.camera.update(elapsedTime);
         }
 
         public dispose(){

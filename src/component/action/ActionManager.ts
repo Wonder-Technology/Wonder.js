@@ -25,7 +25,7 @@ module wd{
             return this._children.hasChild(action);
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             var removeQueue = [];
 
             this._children.forEach(function(child:Action){
@@ -42,7 +42,7 @@ module wd{
                     return;
                 }
 
-                child.update(time);
+                child.update(elapsedTime);
             });
 
             removeQueue.forEach(function (child:Action) {

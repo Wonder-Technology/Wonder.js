@@ -5,7 +5,7 @@ module wd{
         public abstract pause();
         public abstract resume();
         public abstract stop();
-        public abstract update(time:number);
+        public abstract update(elapsedTime:number);
     }
 }
 

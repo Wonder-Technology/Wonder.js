@@ -69,7 +69,7 @@ module wd{
         public dispose(){
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if(this.dirty){
                 this.updateProjectionMatrix();
 

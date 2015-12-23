@@ -78,22 +78,22 @@ module wd{
             this._state = AnimationState.STOP;
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if(this._state === AnimationState.DEFAULT){
                 return;
             }
 
             if(this.isStop || this.isPause){
-                this._oldTime = time;
+                this._oldTime = elapsedTime;
                 return;
             }
 
             if(this._isResume){
                 this._isResume = false;
-                this._continueFromPausePoint(time);
+                this._continueFromPausePoint(elapsedTime);
             }
 
-            this._currentTime = time;
+            this._currentTime = elapsedTime;
 
             if(this._isStartFromStop){
                 this._isStartFromStop = false;

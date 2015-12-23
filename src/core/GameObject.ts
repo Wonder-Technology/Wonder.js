@@ -259,7 +259,7 @@ module wd {
             });
         }
 
-        public update(time:number):void {
+        public update(elapsedTime:number):void {
             var camera = this._getCamera(),
                 animation = this._getAnimation(),
                 collider = this._getCollider(),
@@ -274,28 +274,28 @@ module wd {
                 }
 
                 if(font){
-                    font.update(time);
+                    font.update(elapsedTime);
                 }
             }
 
             if(camera){
-                camera.update(time);
+                camera.update(elapsedTime);
             }
 
             if(animation){
-                animation.update(time);
+                animation.update(elapsedTime);
             }
 
-            this.actionManager.update(time);
+            this.actionManager.update(elapsedTime);
 
-            this.execScript("update", time);
+            this.execScript("update", elapsedTime);
 
             if(collider){
-                collider.update(time);
+                collider.update(elapsedTime);
             }
 
             this._children.forEach((child:GameObject) => {
-                child.update(time);
+                child.update(elapsedTime);
             });
         }
 

@@ -120,7 +120,7 @@ module wd {
         public dispose() {
         }
 
-        public update(time:number) {
+        public update(elapsedTime:number) {
             if(!this._isFirstUpdate){
                 if(this.dirty){
                     this._updateWhenDirty();

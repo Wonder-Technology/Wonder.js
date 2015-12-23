@@ -4,7 +4,7 @@ module wd {
         public dirty:boolean = true;
 
         public abstract init();
-        public abstract update(time:number);
+        public abstract update(elapsedTime:number);
     }
 }
 
