@@ -132,4 +132,15 @@ describe("UIRenderer", function () {
         expect(renderer.context.clearRect).toCalledBefore(font.update);
     });
 
+    it("should only has one ui canvas", function(){
+        var gameObject2 = createFont();
+
+        director.scene.addChild(gameObject);
+        director.scene.addChild(gameObject2);
+
+        director._init();
+
+        expect($("canvas").length).toEqual(1);
+        expect(gameObject.getComponent(wd.UIRenderer).context === gameObject2.getComponent(wd.UIRenderer).context).toBeTruthy();
+    });
 });

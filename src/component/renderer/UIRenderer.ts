@@ -21,7 +21,6 @@ module wd {
         public initWhenCreate(){
             this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
                 this._createOverlayCanvas();
-                this.context = this._canvas.getContext("2d");
             });
 
             EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
@@ -41,8 +40,21 @@ module wd {
         }
 
         private _createOverlayCanvas(){
-            var canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body"),
-                view = DeviceManager.getInstance().view;
+            var canvasMap = DeviceManager.getInstance().canvasMap,
+                canvas = null,
+                view = null;
+
+            if(canvasMap.hasChild(CanvasType.UI)){
+                let data:CanvasMapData = canvasMap.getChild(<any>CanvasType.UI);
+
+                this._canvas = data.canvas;
+                this.context = data.context;
+
+                return;
+            }
+
+            canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body");
+            view = DeviceManager.getInstance().view;
 
             canvas.css("position", "absolute");
             canvas.css("left", `${view.x}px`);
@@ -53,6 +65,12 @@ module wd {
             canvas.attr("height", view.height);
 
             this._canvas = canvas.get(0);
+            this.context = this._canvas.getContext("2d");
+
+            canvasMap.addChild(<any>CanvasType.UI, {
+                canvas:this._canvas,
+                context:this.context
+            });
         }
     }
 }
