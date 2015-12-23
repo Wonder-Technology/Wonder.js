@@ -277,7 +277,7 @@ module wd {
         private _measure(text) {
             var context = this._context;
 
-            context.font = this.fontSize + "px '" + this.fontFamily + "'";
+            context.font = `${this.fontSize}px '${this.fontFamily}'`;
 
             return context.measureText(text).width;
         }
@@ -291,9 +291,14 @@ module wd {
                 dom = div.get(0),
                 resultLineHeight = null;
 
-            dom.style.cssText = "font-family: " + this.fontFamily
-                + "; font-size: " + this.fontSize + "px"
-                + "; position: absolute; left: -100px; top: -100px; line-height: " + lineHeight + ";";
+            dom.style.cssText = `
+             font-family: ${this.fontFamily};
+             font-size: ${this.fontSize}px;
+             position: absolute;
+             left: -100px;
+             top: -100px;
+             line-height: ${lineHeight};
+             `;
 
             div.prependTo("body");
 
@@ -309,7 +314,7 @@ module wd {
         private _getFontClientHeight() {
             var fontSize = this.fontSize,
                 fontName = this.fontFamily,
-                key = fontSize + "." + fontName,
+                key = `${fontSize}.${fontName}`,
                 cacheHeight = this._fontClientHeightCache.getChild(key),
                 height = null;
 
@@ -346,7 +351,7 @@ module wd {
 
             context.save();
 
-            context.font = this.fontSize + "px '" + this.fontFamily + "'";
+            context.font = `${this.fontSize}px '${this.fontFamily}'`;
 
             context.textBaseline = "top";
             context.textAlign = "start";

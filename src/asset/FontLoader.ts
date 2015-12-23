@@ -70,7 +70,7 @@ module wd{
 
             fontStyleEle.prependTo("body");
 
-            fontStr = "@font-face { font-family:" + familyName + "; src:";
+            fontStr = `@font-face { font-family:${familyName}; src:`;
 
             //todo verify whether can url be arr
             if (JudgeUtils.isArray(args[0])) {

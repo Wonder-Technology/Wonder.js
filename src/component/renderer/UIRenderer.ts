@@ -49,9 +49,8 @@ module wd {
             canvas.css("top", `${view.y}px`);
             canvas.css("zIndex", "1");
 
-            //todo add setAttribute method
-            canvas.get(0).width = view.width;
-            canvas.get(0).height = view.height;
+            canvas.attr("width", view.width);
+            canvas.attr("height", view.height);
 
             this._canvas = canvas.get(0);
         }
