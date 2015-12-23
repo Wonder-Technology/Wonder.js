@@ -20,7 +20,7 @@ module wd{
         }
 
         public static createAllLoader():wdCb.Collection<Loader>{
-            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance()]);
+            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]);
         }
 
         private static _getLoaderByExtname(extname:string){
@@ -54,6 +54,9 @@ module wd{
                 case ".woff":
                 case ".svg":
                     loader = FontLoader.getInstance();
+                    break;
+                case ".fnt":
+                    loader = FntLoader.getInstance();
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNKNOW(`extname:${extname}`));

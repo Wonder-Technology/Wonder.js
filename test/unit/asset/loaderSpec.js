@@ -397,81 +397,110 @@ describe("loader", function () {
     });
     
     describe("load font asset", function(){
-        function getFonts (obj) {
-            var o = obj || {},
-                sheet = document.styleSheets,
-                rule = null,
-                i = sheet.length, j;
-            while( 0 <= --i ){
-                rule = sheet[i].rules || sheet[i].cssRules || [];
-                j = rule.length;
-                while( 0 <= --j ){
-                    if( rule[j].constructor.name === 'CSSFontFaceRule' ){ // rule[j].slice(0, 10).toLowerCase() === '@font-face'
-                        o[ rule[j].style.fontFamily ] = rule[j].style.src;
-                    };
+        describe("plain font", function(){
+            beforeEach(function(){
+
+            });
+            afterEach(function(){
+                $("style").remove();
+            });
+
+            it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
+                if(!document.fonts){
+                    done();
+
+                    return;
                 }
-            }
-            return o;
-        }
 
+                sandbox.spy(document.fonts, "load");
 
-
-        beforeEach(function(){
-            
-        });
-        afterEach(function(){
-            $("style").remove();
-        });
-
-        it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
-            if(!document.fonts){
-                done();
-
-                return;
-            }
-
-            sandbox.spy(document.fonts, "load");
-
-            wd.LoaderManager.getInstance().load([
-                {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
-            ]).subscribe(function (data) {
-            }, null, function () {
-                expect(document.fonts.load).toCalledOnce();
-
-                done();
-            });
-        });
-
-        describe("load .ttf", function(){
-            it("add style element with @font-face into body to load ttf font", function(done){
                 wd.LoaderManager.getInstance().load([
                     {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
-                ]).subscribe(function(data){
-                }, null, function(){
-                    var fonts = {}
-                    getFonts(fonts);
-
-                    expect(fonts["Urdeutsch"]).toBeDefined();
-                    expect(fonts["Urdeutsch"].indexOf("test/res/font/Urdeutsch.ttf") > -1).toBeTruthy();
-
+                ]).subscribe(function (data) {
+                }, null, function () {
+                    expect(document.fonts.load).toCalledOnce();
 
                     done();
                 });
             });
-            it("dipose method should remove the added style element", function(done){
+
+            describe("load .ttf", function(){
+                function getFonts (obj) {
+                    var o = obj || {},
+                        sheet = document.styleSheets,
+                        rule = null,
+                        i = sheet.length, j;
+                    while( 0 <= --i ){
+                        rule = sheet[i].rules || sheet[i].cssRules || [];
+                        j = rule.length;
+                        while( 0 <= --j ){
+                            if( rule[j].constructor.name === 'CSSFontFaceRule' ){ // rule[j].slice(0, 10).toLowerCase() === '@font-face'
+                                o[ rule[j].style.fontFamily ] = rule[j].style.src;
+                            };
+                        }
+                    }
+                    return o;
+                }
+
+                it("add style element with @font-face into body to load ttf font", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        var fonts = {}
+                        getFonts(fonts);
+
+                        expect(fonts["Urdeutsch"]).toBeDefined();
+                        expect(fonts["Urdeutsch"].indexOf("test/res/font/Urdeutsch.ttf") > -1).toBeTruthy();
+
+
+                        done();
+                    });
+                });
+                it("dipose method should remove the added style element", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        expect($("style").length).toEqual(1);
+
+                        wd.LoaderManager.getInstance().dispose();
+
+                        expect($("style").length).toEqual(0);
+
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe("bitmap font", function(){
+            it("load and parse fnt file", function(done){
                 wd.LoaderManager.getInstance().load([
-                    {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    {url: testTool.resPath + "test/res/font/myFont.fnt", id: "myFont_fnt"}
                 ]).subscribe(function(data){
                 }, null, function(){
-                    expect($("style").length).toEqual(1);
+                    var fnt = wd.LoaderManager.getInstance().get("myFont_fnt");
 
-                    wd.LoaderManager.getInstance().dispose();
-
-                    expect($("style").length).toEqual(0);
+                    expect(fnt.commonHeight).toEqual(90);
+                    expect(fnt.atlasName).toEqual(testTool.resPath + "test/res/font/myFont.png");
+                    expect(fnt.fontDefDictionary).toBeDefined();
 
                     done();
                 });
+            });
+            it("load bitmap file", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/myFont.png", id: "myFont_image"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var bitmap = wd.LoaderManager.getInstance().get("myFont_image");
 
+                    expect(bitmap).toBeInstanceOf(wd.ImageTextureAsset);
+                    expect(bitmap.format).toEqual(wd.TextureFormat.RGBA);
+
+                    done();
+                });
             });
         });
     });
