@@ -157,6 +157,12 @@ module wd {
             });
         }
 
+        public findChildByTag(tag:string){
+            return this._children.findOne((child:GameObject) => {
+                return child.hasTag(tag);
+            });
+        }
+
         public findChildByName(name:string){
             return this._children.findOne((child:GameObject) => {
                 return child.name.search(name) > -1;

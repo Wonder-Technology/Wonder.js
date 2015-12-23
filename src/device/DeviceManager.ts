@@ -16,8 +16,8 @@ module wd {
 
         public view:IView = null;
         public gl:WebGLRenderingContext = null;
-        /*! store other canvas like ui canvas */
-        public canvasMap:wdCb.Hash<HTMLCanvasElement> = wdCb.Hash.create<HTMLCanvasElement>();
+        /*! store other canvas data(e.g. ui canvas) */
+        public canvasMap:wdCb.Hash<CanvasMapData> = wdCb.Hash.create<CanvasMapData>();
 
         /*!
         test order:
@@ -460,5 +460,10 @@ module wd {
 
     export enum CanvasType{
         UI = <any>"UI"
+    }
+
+    export type CanvasMapData = {
+        canvas:HTMLCanvasElement,
+        context:CanvasRenderingContext2D
     }
 }

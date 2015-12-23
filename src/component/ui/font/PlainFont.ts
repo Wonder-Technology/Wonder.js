@@ -97,7 +97,6 @@ module wd {
             }
         }
 
-        private _context:any = null;
         private _fillEnabled:boolean = true;
         private _fillStyle:string = "rgba(0, 0, 0, 1)";
         private _strokeEnabled:boolean = false;
@@ -109,7 +108,7 @@ module wd {
         private _isFirstUpdate:boolean = true;
 
         public init() {
-            this._context = this._getContext();
+            this.context = this.getContext();
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
 
@@ -156,15 +155,6 @@ module wd {
 
         public setLineHeight(lineHeight:number) {
             this._lineHeight = lineHeight;
-        }
-
-        @require(function () {
-            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
-        })
-        private _getContext() {
-            var renderer = this.gameObject.getComponent<UIRenderer>(UIRenderer);
-
-            return renderer.context;
         }
 
         private _formatText() {
@@ -275,7 +265,7 @@ module wd {
         }
 
         private _measure(text) {
-            var context = this._context;
+            var context = this.context;
 
             context.font = `${this.fontSize}px '${this.fontFamily}'`;
 
@@ -328,10 +318,6 @@ module wd {
             return height;
         }
 
-        private _getCanvasPosition(){
-            return CoordinateUtils.convertWebGLPositionToCanvasPosition(this.gameObject.transform.position);
-        }
-
         @require(function(){
             assert(!!DeviceManager.getInstance().view, Log.info.FUNC_SHOULD("set view"));
         })
@@ -347,7 +333,7 @@ module wd {
         }
 
         private _draw(){
-            var context = this._context;
+            var context = this.context;
 
             context.save();
 
@@ -367,8 +353,8 @@ module wd {
         }
 
         private _drawMultiLine(){
-            var context = this._context,
-                position = this._getCanvasPosition(),
+            var context = this.context,
+                position = this.getCanvasPosition(),
                 x = position.x,
                 y = position.y,
                 lineHeight = this._lineHeight,
@@ -410,8 +396,8 @@ module wd {
         }
 
         private _drawSingleLine() {
-            var context = this._context,
-                position = this._getCanvasPosition(),
+            var context = this.context,
+                position = this.getCanvasPosition(),
                 x = position.x,
                 y = position.y,
                 fontClientHeight = this._getFontClientHeight(),

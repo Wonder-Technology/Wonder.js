@@ -51,7 +51,9 @@ module wd{
         }
 
         public get(id:string):any{
-            return this._assetTable.getChild(id).get(id);
+            var loader = this._assetTable.getChild(id);
+
+            return loader ? loader.get(id) : null;
         }
 
         private _createLoadMultiAssetStream(type:AssetType, url:string, id:string);

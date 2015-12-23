@@ -158,6 +158,8 @@
 /// <reference path="component/ui/font/FontDimension"/>
 /// <reference path="component/ui/font/Font"/>
 /// <reference path="component/ui/font/PlainFont"/>
+/// <reference path="component/ui/font/BitmapFont"/>
+/// <reference path="component/ui/font/CharFont"/>
 
 
 
