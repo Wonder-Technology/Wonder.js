@@ -422,7 +422,26 @@ describe("loader", function () {
         afterEach(function(){
             $("style").remove();
         });
-        
+
+        it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
+            if(!document.fonts){
+                done();
+
+                return;
+            }
+
+            sandbox.spy(document.fonts, "load");
+
+            wd.LoaderManager.getInstance().load([
+                {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+            ]).subscribe(function (data) {
+            }, null, function () {
+                expect(document.fonts.load).toCalledOnce();
+
+                done();
+            });
+        });
+
         describe("load .ttf", function(){
             it("add style element with @font-face into body to load ttf font", function(done){
                 wd.LoaderManager.getInstance().load([
@@ -434,6 +453,7 @@ describe("loader", function () {
 
                     expect(fonts["Urdeutsch"]).toBeDefined();
                     expect(fonts["Urdeutsch"].indexOf("test/res/font/Urdeutsch.ttf") > -1).toBeTruthy();
+
 
                     done();
                 });

@@ -8,6 +8,8 @@ module wd{
         ".svg": "svg"
     };
 
+    declare var document:any;
+
     export class FontLoader extends Loader{
         private static _instance = null;
 
@@ -31,36 +33,26 @@ module wd{
         protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 
         protected loadAsset(...args):wdFrp.Stream {
-            var familyName = args[1];
+            var familyName = args[1],
+                self = this;
 
             this._familyName = familyName;
 
-            return wdFrp.callFunc(() => {
-                let fontStyleEle:wdCb.DomQuery = wdCb.DomQuery.create(`<style id="${familyName}"></style>`),
-                    fontStr = null;
+            return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
+                self._addStyleElement(args, familyName);
 
-                fontStyleEle.prependTo("body");
-
-                fontStr = "@font-face { font-family:" + familyName + "; src:";
-
-                //todo verify whether can url be arr
-                if (JudgeUtils.isArray(args[0])) {
-                    let urlArr = args[0];
-
-                    for(let url of urlArr){
-                        fontStr += `url('${url}') format('${this._getType(url)}'),`;
-                    }
-
-                    fontStr = fontStr.replace(/,$/, ";");
+                if(document.fonts){
+                    document.fonts.load(`1em ${familyName}`).then(function(){
+                        resolve();
+                    }, function(e){
+                        reject(e);
+                    });
                 }
                 else{
-                    let url = args[0];
-
-                    fontStr += `url('${url}') format('${this._getType(url)}');`;
+                    Log.warn("your browser not support document.fonts api, so it can't ensure that the font is loaded");
+                    resolve();
                 }
-
-                fontStyleEle.get(0).textContent += `${fontStr}};`;
-            });
+            }));
         }
 
         @require(function(url:string){
@@ -70,6 +62,33 @@ module wd{
         })
         private _getType(url:string){
             return TYPE[wdCb.PathUtils.extname(url).toLowerCase()];
+        }
+
+        private _addStyleElement(args:any, familyName:string){
+            let fontStyleEle:wdCb.DomQuery = wdCb.DomQuery.create(`<style id="${familyName}"></style>`),
+                fontStr = null;
+
+            fontStyleEle.prependTo("body");
+
+            fontStr = "@font-face { font-family:" + familyName + "; src:";
+
+            //todo verify whether can url be arr
+            if (JudgeUtils.isArray(args[0])) {
+                let urlArr = args[0];
+
+                for(let url of urlArr){
+                    fontStr += `url('${url}') format('${this._getType(url)}'),`;
+                }
+
+                fontStr = fontStr.replace(/,$/, ";");
+            }
+            else{
+                let url = args[0];
+
+                fontStr += `url('${url}') format('${this._getType(url)}');`;
+            }
+
+            fontStyleEle.get(0).textContent += `${fontStr}};`;
         }
     }
 }
