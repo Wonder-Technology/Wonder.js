@@ -19,8 +19,11 @@ module wd {
             return this._text;
         }
         set text(text:string){
-            this._text = text;
-            this.dirty = true;
+            if(text !== this._text){
+                this._text = text;
+
+                this.dirty = true;
+            }
         }
 
         private _fontSize:number = 10;
@@ -28,8 +31,11 @@ module wd {
             return this._fontSize;
         }
         set fontSize(fontSize:number){
-            this._fontSize = fontSize;
-            this.dirty = true;
+            if(fontSize !== this._fontSize){
+                this._fontSize = fontSize;
+
+                this.dirty = true;
+            }
         }
 
         private _fontFamily:string = "sans-serif";
@@ -37,7 +43,11 @@ module wd {
             return this._fontFamily;
         }
         set fontFamily(fontFamily:string){
-            this._fontFamily = fontFamily;
+            if(fontFamily !== this._fontFamily){
+                this._fontFamily = fontFamily;
+
+                this.dirty = true;
+            }
         }
 
         private _width:number = 0;
@@ -45,8 +55,11 @@ module wd {
             return this._width;
         }
         set width(width:number){
-            this._width = width;
-            this.dirty = true;
+            if(width !== this._width){
+                this._width = width;
+
+                this.dirty = true;
+            }
         }
 
         private _height:number = 0;
@@ -54,8 +67,11 @@ module wd {
             return this._height;
         }
         set height(height:number){
-            this._height = height;
-            this.dirty = true;
+            if(height !== this._height){
+                this._height = height;
+
+                this.dirty = true;
+            }
         }
 
         private _xAlignment:FontXAlignment = FontXAlignment.LEFT;
@@ -63,7 +79,11 @@ module wd {
             return this._xAlignment;
         }
         set xAlignment(xAlignment:FontXAlignment){
-            this._xAlignment = xAlignment;
+            if(xAlignment !== this._xAlignment){
+                this._xAlignment = xAlignment;
+
+                this.dirty = true;
+            }
         }
 
         private _yAlignment:FontYAlignment = FontYAlignment.TOP;
@@ -71,7 +91,11 @@ module wd {
             return this._yAlignment;
         }
         set yAlignment(yAlignment:FontYAlignment){
-            this._yAlignment = yAlignment;
+            if(yAlignment !== this._yAlignment){
+                this._yAlignment = yAlignment;
+
+                this.dirty = true;
+            }
         }
 
         private _context:any = null;
@@ -83,6 +107,7 @@ module wd {
         private _fontClientHeightCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _lineHeight:number = null;
         private _strArr:Array<string> = [];
+        private _isFirstUpdate:boolean = true;
 
         public init() {
             this._context = this._getContext();
@@ -92,125 +117,28 @@ module wd {
             this._initDimension();
         }
 
+        private _updateWhenDirty(){
+            this._formatText();
+            this._initDimension();
+        }
+
         //todo implement
         public dispose() {
         }
 
         public update(time:number) {
-            var context = this._context,
-                position = this._getCanvasPosition(),
-                x = position.x,
-                y = position.y;
+            if(!this._isFirstUpdate){
+                if(this.dirty){
+                    this._updateWhenDirty();
+                }
+            }
+            else{
+                this._isFirstUpdate = false;
+            }
 
             //todo optimize: if text not change, not update
 
-            context.save();
-
-            //context.strokeStyle = "green";
-            //context.strokeRect(400, 100, 400, 300);
-
-            context.font = this.fontSize + "px '" + this.fontFamily + "'";
-
-//                context.textBaseline = _textAlign[this.yAlignment];
-//                context.textAlign = _textBaseline[this.xAlignment];
-            context.textBaseline = "top";
-            context.textAlign = "start";
-
-
-            //如果多行
-            //依次显示出来，并设置水平和垂直对齐
-
-
-            //否则（单行）
-            //显示，设置水平和垂直对齐
-            //多行
-            if (this._strArr.length > 1) {
-                var lineHeight = this._lineHeight;
-                var fontClientHeight = this._getFontClientHeight();
-                var self = this;
-                //var y = this._y;
-                //var x = this._x;
-
-                var lineCount = this._strArr.length;
-                //最后一行的行高为字体本身的高度
-                var lineTotalHeight = (lineCount - 1) * lineHeight + fontClientHeight;
-
-                if (self.yAlignment === FontYAlignment.BOTTOM) {
-                    y = y + self.height - lineTotalHeight;
-                }
-                else if (self.yAlignment === FontYAlignment.MIDDLE) {
-                    y = y + (self.height - lineTotalHeight) / 2;
-                }
-
-                this._strArr.forEach(function (str, index) {
-                    if (self.xAlignment === FontXAlignment.RIGHT) {
-                        x = x + self.width - self._measure(str);
-                    }
-                    else if (self.xAlignment == FontXAlignment.CENTER) {
-                        x = x + (self.width - self._measure(str)) / 2;
-                    }
-
-
-                    if (self._fillEnabled) {
-                        context.fillStyle = self._fillStyle;
-                        context.fillText(str, x, y);
-                    }
-                    else if (self._strokeEnabled) {
-                        context.strokeStyle = self._strokeStyle;
-                        context.lineWidth = self._strokeSize;
-                        context.strokeText(str, x, y);
-                    }
-
-                    x = position.x;
-                    y = y + lineHeight;
-                });
-            }
-            else {
-                //var lineHeight = this._lineHeight;
-                var fontClientHeight = this._getFontClientHeight();
-                var self = this;
-                //var y = this._y;
-                //var x = this._x;
-
-                var lineCount = 1;
-                //最后一行的行高为字体本身的高度
-                var lineTotalHeight = fontClientHeight;
-
-                var str = this._strArr[0];
-
-                if (self.yAlignment === FontYAlignment.BOTTOM) {
-                    y = y + self.height - lineTotalHeight;
-                }
-                else if (self.yAlignment === FontYAlignment.MIDDLE) {
-                    y = y + (self.height - lineTotalHeight) / 2;
-                }
-
-                if (self.xAlignment === FontXAlignment.RIGHT) {
-                    x = x + self.width - self._measure(str);
-                }
-                else if (self.xAlignment == FontXAlignment.CENTER) {
-                    x = x + (self.width - self._measure(str)) / 2;
-                }
-
-
-                if (self._fillEnabled) {
-                    context.fillStyle = self._fillStyle;
-                    context.fillText(str, x, y);
-                }
-                else if (self._strokeEnabled) {
-                    context.strokeStyle = self._strokeStyle;
-                    context.lineWidth = self._strokeSize;
-                    context.strokeText(str, x, y);
-                }
-
-                //todo bug?
-                //x = self._x;
-                //y = y + lineHeight;
-            }
-
-
-            context.restore();
-
+            this._draw();
 
             this.dirty = false;
         }
@@ -429,6 +357,121 @@ module wd {
             if(this.height === FontDimension.AUTO){
                 this.height = view.height;
             }
+        }
+
+        private _draw(){
+            var context = this._context,
+                position = this._getCanvasPosition(),
+                x = position.x,
+                y = position.y;
+
+            context.save();
+
+            //context.strokeStyle = "green";
+            //context.strokeRect(400, 100, 400, 300);
+
+            context.font = this.fontSize + "px '" + this.fontFamily + "'";
+
+//                context.textBaseline = _textAlign[this.yAlignment];
+//                context.textAlign = _textBaseline[this.xAlignment];
+            context.textBaseline = "top";
+            context.textAlign = "start";
+
+
+            //如果多行
+            //依次显示出来，并设置水平和垂直对齐
+
+
+            //否则（单行）
+            //显示，设置水平和垂直对齐
+            //多行
+            if (this._strArr.length > 1) {
+                var lineHeight = this._lineHeight;
+                var fontClientHeight = this._getFontClientHeight();
+                var self = this;
+                //var y = this._y;
+                //var x = this._x;
+
+                var lineCount = this._strArr.length;
+                //最后一行的行高为字体本身的高度
+                var lineTotalHeight = (lineCount - 1) * lineHeight + fontClientHeight;
+
+                if (self.yAlignment === FontYAlignment.BOTTOM) {
+                    y = y + self.height - lineTotalHeight;
+                }
+                else if (self.yAlignment === FontYAlignment.MIDDLE) {
+                    y = y + (self.height - lineTotalHeight) / 2;
+                }
+
+                this._strArr.forEach(function (str, index) {
+                    if (self.xAlignment === FontXAlignment.RIGHT) {
+                        x = x + self.width - self._measure(str);
+                    }
+                    else if (self.xAlignment == FontXAlignment.CENTER) {
+                        x = x + (self.width - self._measure(str)) / 2;
+                    }
+
+
+                    if (self._fillEnabled) {
+                        context.fillStyle = self._fillStyle;
+                        context.fillText(str, x, y);
+                    }
+                    else if (self._strokeEnabled) {
+                        context.strokeStyle = self._strokeStyle;
+                        context.lineWidth = self._strokeSize;
+                        context.strokeText(str, x, y);
+                    }
+
+                    x = position.x;
+                    y = y + lineHeight;
+                });
+            }
+            else {
+                //var lineHeight = this._lineHeight;
+                var fontClientHeight = this._getFontClientHeight();
+                var self = this;
+                //var y = this._y;
+                //var x = this._x;
+
+                var lineCount = 1;
+                //最后一行的行高为字体本身的高度
+                var lineTotalHeight = fontClientHeight;
+
+                var str = this._strArr[0];
+
+                if (self.yAlignment === FontYAlignment.BOTTOM) {
+                    y = y + self.height - lineTotalHeight;
+                }
+                else if (self.yAlignment === FontYAlignment.MIDDLE) {
+                    y = y + (self.height - lineTotalHeight) / 2;
+                }
+
+                if (self.xAlignment === FontXAlignment.RIGHT) {
+                    x = x + self.width - self._measure(str);
+                }
+                else if (self.xAlignment == FontXAlignment.CENTER) {
+                    x = x + (self.width - self._measure(str)) / 2;
+                }
+
+
+                if (self._fillEnabled) {
+                    context.fillStyle = self._fillStyle;
+                    context.fillText(str, x, y);
+                }
+                else if (self._strokeEnabled) {
+                    context.strokeStyle = self._strokeStyle;
+                    context.lineWidth = self._strokeSize;
+                    context.strokeText(str, x, y);
+                }
+
+                //todo bug?
+                //x = self._x;
+                //y = y + lineHeight;
+            }
+
+
+            context.restore();
+
         }
     }
 }
