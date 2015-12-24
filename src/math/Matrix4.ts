@@ -621,6 +621,18 @@ module wd{
                 vec3 = vector.values;
             var result = [];
 
+            result[0] = vec3[0] * mat1[0] + vec3[1] * mat1[4] + vec3[2] * mat1[8];
+            result[1] = vec3[0] * mat1[1] + vec3[1] * mat1[5] + vec3[2] * mat1[9];
+            result[2] = vec3[0] * mat1[2] + vec3[1] * mat1[6] + vec3[2] * mat1[10];
+
+            return Vector3.create(result[0], result[1], result[2]);
+        }
+
+        public multiplyPoint(vector:Vector3):Vector3 {
+            var mat1 = this.values,
+                vec3 = vector.values;
+            var result = [];
+
             result[0] = vec3[0] * mat1[0] + vec3[1] * mat1[4] + vec3[2] * mat1[8] + mat1[12];
             result[1] = vec3[0] * mat1[1] + vec3[1] * mat1[5] + vec3[2] * mat1[9] + mat1[13];
             result[2] = vec3[0] * mat1[2] + vec3[1] * mat1[6] + vec3[2] * mat1[10] + mat1[14];

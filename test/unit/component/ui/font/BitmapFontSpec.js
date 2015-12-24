@@ -379,5 +379,67 @@ describe("BitmapFont", function () {
                 judgeDrawImage(2, 1, 102, 100, 200);
             });
         });
+
+        describe("test char font", function(){
+            beforeEach(function(){
+            });
+
+            describe("can add action component", function(){
+                function addAction(){
+                    var charFontGameObject = gameObject.findChildByTag("1");
+
+                    var action = wd.CallFunc.create(function(){
+                        this.transform.translate(100, 200, 0);
+                        this.transform.scale = wd.Vector3.create(2, 3, 1);
+                    }, charFontGameObject);
+
+                    charFontGameObject.addComponent(action);
+
+                    action.init();
+                }
+
+                it("test1", function(){
+                    font.text = "正ab";
+                    font.width = 1000;
+
+                    director._init();
+
+                    prepareAfterInit();
+
+
+                    addAction();
+
+
+
+                    director._loopBody(2);
+
+                    judgeDrawImage(0, 1, 2, 100, 200);
+                    judgeDrawImage(1, 104, 202, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 7, 2, 100, 200);
+                });
+                it("test2", function(){
+                    font.text = "正ab";
+                    font.width = 1000;
+
+                    gameObject.transform.translate(100, 50, 0);
+
+                    director._init();
+
+                    prepareAfterInit();
+
+
+                    addAction();
+
+
+
+                    director._loopBody(2);
+
+                    judgeDrawImage(0, 1 + 100, 2 - 50, 100, 200);
+                    judgeDrawImage(1, 104 + 100, 202 - 50, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 7 + 100, 2 - 50, 100, 200);
+
+                });
+            });
+        });
     });
 });

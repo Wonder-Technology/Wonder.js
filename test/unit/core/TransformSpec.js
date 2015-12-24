@@ -156,7 +156,7 @@ describe("Transform", function(){
         expect(getValues(tra1.scale)).toEqual(getValues(Vector3.create(2, 2, 2)));
     });
 
-    describe("translate test", function(){
+    describe("test translate", function(){
         var tra2 = null;
         beforeEach(function(){
             tra2 = Transform.create();
@@ -324,7 +324,7 @@ describe("Transform", function(){
     //    });
     //});
 
-    describe("rotate test", function(){
+    describe("test rotate", function(){
         var tra2 = null;
 
         it("eulerAngle's range is -180 to 180", function(){
@@ -413,6 +413,18 @@ describe("Transform", function(){
             expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(1, 3, 3)));
         });
     });
+
+    it("test scale", function(){
+        var tra2 = Transform.create();
+        tra2.parent = tra1;
+
+        tra1.position = Vector3.create(100, -50, 0);
+
+        tra2.scale = Vector3.create(2, 3, 1);
+
+        expect(getValues(tra2.scale)).toEqual([2, 3, 1]);
+    });
+
 
     describe("lookAt", function(){
         it("default up direction is positive y", function(){

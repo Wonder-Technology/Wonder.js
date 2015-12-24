@@ -17,8 +17,20 @@ module wd {
             return renderer.context;
         }
 
-        protected getCanvasPosition(){
-            return CoordinateUtils.convertWebGLPositionToCanvasPosition(this.gameObject.transform.position);
+        protected getCanvasPosition();
+        protected getCanvasPosition(gameObject:GameObject);
+
+        protected getCanvasPosition(...args){
+            var gameObject = null;
+
+            if(args.length === 0){
+                gameObject = this.gameObject;
+            }
+            else{
+                gameObject = args[0];
+            }
+
+            return CoordinateUtils.convertWebGLPositionToCanvasPosition(gameObject.transform.position);
         }
 
     }

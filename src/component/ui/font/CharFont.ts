@@ -38,6 +38,7 @@ module wd {
         })
         public update(elapsedTime:number){
             var position = null,
+                scale = null,
                 dx = null,
                 dy = null;
 
@@ -49,9 +50,11 @@ module wd {
             dx = position.x;
             dy = position.y;
 
+            scale = this.gameObject.transform.scale;
+
             this.context.drawImage(this.image,
                 this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
-                dx, dy, this.width, this.height
+                dx, dy, this.width * scale.x, this.height * scale.y
             );
         }
     }

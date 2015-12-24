@@ -18,6 +18,14 @@
 /// <reference path="definition/Variable"/>
 
 
+/// <reference path="math/Global"/>
+/// <reference path="math/Vector2"/>
+/// <reference path="math/Vector3"/>
+/// <reference path="math/Vector4"/>
+/// <reference path="math/Matrix4"/>
+/// <reference path="math/Matrix3"/>
+/// <reference path="math/Quaternion"/>
+/// <reference path="math/Plane"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
@@ -34,15 +42,6 @@
 /// <reference path="collision/CollisionDetector"/>
 
 
-
-/// <reference path="math/Global"/>
-/// <reference path="math/Vector2"/>
-/// <reference path="math/Vector3"/>
-/// <reference path="math/Vector4"/>
-/// <reference path="math/Matrix4"/>
-/// <reference path="math/Matrix3"/>
-/// <reference path="math/Quaternion"/>
-/// <reference path="math/Plane"/>
 
 
 /// <reference path="component/animation/Animation"/>

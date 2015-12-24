@@ -52,6 +52,19 @@
             gameObject.addComponent(font);
 
 
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                var action = wd.CallFunc.create(function(){
+                    var charFontGameObject1 = gameObject.findChildByTag("1");
+
+                    charFontGameObject1.transform.scale = wd.Vector3.create(2, 1, 1);
+                    charFontGameObject1.transform.translate(-300, -100, 0);
+                });
+
+                gameObject.addComponent(action);
+
+                action.init();
+            }, 1000);
+
 
             var renderer = wd.UIRenderer.create();
 

@@ -272,17 +272,6 @@ module wd {
                 font = this._getFont(),
                 uiRenderer = this._getUIRenderer();
 
-            //todo extract UIManager
-
-            if(font && font.dirty){
-                if(uiRenderer){
-                    uiRenderer.clearCanvas();
-                }
-
-                if(font){
-                    font.update(elapsedTime);
-                }
-            }
 
             if(camera){
                 camera.update(elapsedTime);
@@ -298,6 +287,18 @@ module wd {
 
             if(collider){
                 collider.update(elapsedTime);
+            }
+
+            //todo extract UIManager
+
+            if(font && font.dirty){
+                if(uiRenderer){
+                    uiRenderer.clearCanvas();
+                }
+
+                if(font){
+                    font.update(elapsedTime);
+                }
             }
 
             this._children.forEach((child:GameObject) => {
