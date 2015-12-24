@@ -7,10 +7,7 @@ module wd {
         public static convertWebGLPositionToCanvasPosition(position:Vector3){
             var view = DeviceManager.getInstance().view;
 
-            return {
-                x: view.width / 2 + position.x,
-                y: view.height / 2 - position.y
-            }
+            return Vector2.create(view.width / 2 + position.x, view.height / 2 - position.y)
         }
     }
 }

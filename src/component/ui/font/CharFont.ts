@@ -12,8 +12,23 @@ module wd {
         public xAdvance:number = null;
         public image:HTMLImageElement = null;
         public rectRegion:RectRegion = null;
-        public width:number = null;
-        public height:number = null;
+        public width:number = 0;
+        public height:number = 0;
+        public isNewLine:boolean = false;
+        public isFullLine:boolean = false;
+
+        get x(){
+            return this.gameObject.transform.position.x;
+        }
+        set x(x:number){
+            var position = this.gameObject.transform.position;
+
+            this.gameObject.transform.position = Vector3.create(x, position.y, position.z);
+        }
+
+        get y(){
+            return this.gameObject.transform.position.y;
+        }
 
         public init(){
         }
@@ -22,9 +37,17 @@ module wd {
             assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
         })
         public update(elapsedTime:number){
-            var position = this.gameObject.transform.position,
-                dx = position.x,
-                dy = position.y;
+            var position = null,
+                dx = null,
+                dy = null;
+
+            if(this.rectRegion === null){
+                return;
+            }
+
+            position = this.gameObject.transform.position;
+            dx = position.x;
+            dy = position.y;
 
             this.context.drawImage(this.image,
                 this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,

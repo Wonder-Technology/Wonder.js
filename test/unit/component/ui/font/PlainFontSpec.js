@@ -1,8 +1,6 @@
 describe("PlainFont", function () {
-    //var text = null;
     var sandbox = null;
     var Font = null;
-    //var text;
     var font;
 
     function setDimensions(width, height) {
@@ -16,7 +14,7 @@ describe("PlainFont", function () {
         font.gameObject = {};
 
 
-        sandbox.stub(font, "_getContext");
+        sandbox.stub(font, "getContext");
 
 
         return font;
@@ -39,7 +37,7 @@ describe("PlainFont", function () {
 
     describe("init", function () {
         function setFakeContext(fakeContext) {
-            font._getContext.returns(fakeContext);
+            font.getContext.returns(fakeContext);
         }
 
         beforeEach(function () {
@@ -80,7 +78,7 @@ describe("PlainFont", function () {
                     expect(font._strArr).toEqual(["阿", "斯"]);
                 });
 
-                it("test string is all chinese", function () {
+                it("test text is all chinese", function () {
                     font.text = "啊是的规范";
                     setDimensions(100, 0);
 
@@ -89,7 +87,7 @@ describe("PlainFont", function () {
                     expect(font._strArr).toEqual(["啊是", "的规", "范"]);
                 });
 
-                describe("test string has newline char", function () {
+                describe("test text has newline char", function () {
                     beforeEach(function () {
                         setDimensions(150, 0);
                     });
@@ -127,7 +125,7 @@ describe("PlainFont", function () {
                     });
                 });
 
-                describe("test string has space char", function () {
+                describe("test text has space char", function () {
                     beforeEach(function () {
                         setDimensions(150, 0);
                     });
@@ -141,7 +139,7 @@ describe("PlainFont", function () {
                     });
                 });
 
-                describe("test string has newline and space char", function () {
+                describe("test text has newline and space char", function () {
                     beforeEach(function () {
                         setDimensions(150, 0);
                     });
@@ -155,7 +153,7 @@ describe("PlainFont", function () {
                     });
                 });
 
-                describe("test string has punctuation", function () {
+                describe("test text has punctuation", function () {
                     beforeEach(function () {
                         setDimensions(150, 0);
                     });
@@ -236,7 +234,7 @@ describe("PlainFont", function () {
         var context;
 
         function setFakeContext(fakeContext) {
-            font._context = fakeContext;
+            font.context = fakeContext;
         }
 
         beforeEach(function () {
@@ -254,7 +252,7 @@ describe("PlainFont", function () {
                 strokeText: sandbox.stub()
             });
 
-            context = font._context;
+            context = font.context;
 
 
 
@@ -508,7 +506,7 @@ describe("PlainFont", function () {
                 expect(font._updateWhenDirty).toCalledOnce();
             });
             it("update when change xAlignment", function(){
-                sandbox.stub(font._context, "measureText", function () {
+                sandbox.stub(font.context, "measureText", function () {
                     return {
                         width: 0
                     }
