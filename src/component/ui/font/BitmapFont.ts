@@ -1,6 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
-    export class BitmapFont extends Font{
+    export class BitmapFont extends CanvasFont{
         public static create() {
             var obj = new this();
 
@@ -88,17 +88,14 @@ module wd {
         }
 
         public dispose(){
-
-        }
-
-        public update(elapsedTime:number){
-            super.update(elapsedTime);
         }
 
         protected updateWhenDirty() {
             this._charFontList.forEach((charFont:GameObject) => {
                 charFont.dispose();
             });
+
+            this._charFontList.removeAllChildren();
 
             var fntObj = LoaderManager.getInstance().get(this.fntId),
                 imageAsset:ImageTextureAsset = LoaderManager.getInstance().get(this.bitmapId);

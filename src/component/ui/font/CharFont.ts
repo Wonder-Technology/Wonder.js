@@ -57,10 +57,6 @@ module wd {
                 dx, dy, this.width * scale.x, this.height * scale.y
             );
         }
-
-        //todo remove
-        protected updateWhenDirty() {
-        }
     }
 }
 
