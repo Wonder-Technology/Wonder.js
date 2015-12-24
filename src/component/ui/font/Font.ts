@@ -4,9 +4,24 @@ module wd {
         public dirty:boolean = true;
         public context:CanvasRenderingContext2D = null;
 
-        public abstract init();
-        public abstract update(elapsedTime:number);
+        private _isFirstUpdate:boolean = true;
 
+        public abstract init();
+
+        public update(elapsedTime:number){
+            if(!this._isFirstUpdate){
+                if(this.dirty){
+                    this.updateWhenDirty();
+                }
+            }
+            else{
+                this._isFirstUpdate = false;
+            }
+
+            this.dirty = false;
+        }
+
+        protected abstract updateWhenDirty();
 
         @require(function () {
             assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))

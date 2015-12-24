@@ -65,6 +65,21 @@ module wd {
                 return false;
             }
 
+            var fntObj = LoaderManager.getInstance().get(this.fntId),
+                imageAsset:ImageTextureAsset = LoaderManager.getInstance().get(this.bitmapId);
+
+
+            if (!fntObj) {
+                Log.log("impossible to create font: not find fnt file");
+
+                return false;
+            }
+            if(!imageAsset){
+                Log.log("impossible to create font: not find bitmap file");
+
+                return false;
+            }
+
             this.context = this.getContext();
 
             this._createAndAddFontCharGameObjects(fntObj, imageAsset.source);
@@ -76,15 +91,34 @@ module wd {
 
         }
 
-        //@require(function(elapsedTime:number){
-        //    assert(this.gameObject.hasComponent(CharFont), Log.info.FUNC_SHOULD("gameObject", "contain "))
-        //})
         public update(elapsedTime:number){
-            //this._charFontList.forEach((charFont:GameObject) => {
-            //    charFont.update(elapsedTime);
-            //});
+            super.update(elapsedTime);
         }
 
+        protected updateWhenDirty() {
+            this._charFontList.forEach((charFont:GameObject) => {
+                charFont.dispose();
+            });
+
+            var fntObj = LoaderManager.getInstance().get(this.fntId),
+                imageAsset:ImageTextureAsset = LoaderManager.getInstance().get(this.bitmapId);
+
+
+            if (!fntObj) {
+                Log.log("impossible to create font: not find fnt file");
+
+                return false;
+            }
+            if(!imageAsset){
+                Log.log("impossible to create font: not find bitmap file");
+
+                return false;
+            }
+
+            this._createAndAddFontCharGameObjects(fntObj, imageAsset.source);
+
+            this._formatText(fntObj);
+        }
 
         /*!
          ////空格字符没有精灵，但是也算一个序号。

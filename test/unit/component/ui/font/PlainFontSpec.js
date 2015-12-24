@@ -449,13 +449,13 @@ describe("PlainFont", function () {
         });
 
 
-        describe("test change data/setting", function(){
+        describe("test change data", function(){
             beforeEach(function(){
-                sandbox.stub(font, "_updateWhenDirty");
+                sandbox.stub(font, "updateWhenDirty");
 
                 font.update();
 
-                expect(font._updateWhenDirty).not.toCalled();
+                expect(font.updateWhenDirty).not.toCalled();
             });
 
             it("if the new data equal old data, not dirty and not update text", function(){
@@ -463,11 +463,13 @@ describe("PlainFont", function () {
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
 
                 font.text = "a";
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                font.update();
+
+                expect(font.updateWhenDirty).toCalledOnce();
 
             });
             it("update when change text", function(){
@@ -475,35 +477,35 @@ describe("PlainFont", function () {
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change fontSize", function(){
                 font.fontSize = 100;
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change fontFamily", function(){
                 font.fontFamily = "aaa";
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change width", function(){
                 font.width = 100;
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change height", function(){
                 font.height = 100;
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change xAlignment", function(){
                 sandbox.stub(font.context, "measureText", function () {
@@ -515,14 +517,14 @@ describe("PlainFont", function () {
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
             it("update when change yAlignment", function(){
                 font.yAlignment = wd.FontYAlignment.MIDDLE;
 
                 font.update();
 
-                expect(font._updateWhenDirty).toCalledOnce();
+                expect(font.updateWhenDirty).toCalledOnce();
             });
         });
     });

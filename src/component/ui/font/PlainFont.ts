@@ -105,7 +105,6 @@ module wd {
         private _fontClientHeightCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _lineHeight:number = null;
         private _strArr:Array<string> = [];
-        private _isFirstUpdate:boolean = true;
 
         public init() {
             this.context = this.getContext();
@@ -120,18 +119,17 @@ module wd {
         }
 
         public update(elapsedTime:number) {
-            if(!this._isFirstUpdate){
-                if(this.dirty){
-                    this._updateWhenDirty();
-                }
-            }
-            else{
-                this._isFirstUpdate = false;
-            }
+            //if(!this._isFirstUpdate){
+            //    if(this.dirty){
+            //        this._updateWhenDirty();
+            //    }
+            //}
+            //else{
+            //    this._isFirstUpdate = false;
+            //}
+            super.update(elapsedTime);
 
             this._draw();
-
-            this.dirty = false;
         }
 
         public setFillStyle(fillStyle:string) {
@@ -155,6 +153,11 @@ module wd {
 
         public setLineHeight(lineHeight:number) {
             this._lineHeight = lineHeight;
+        }
+
+        protected updateWhenDirty() {
+            this._formatText();
+            this._initDimension();
         }
 
         private _formatText() {
@@ -431,11 +434,6 @@ module wd {
                 context.lineWidth = self._strokeSize;
                 context.strokeText(str, x, y);
             }
-        }
-
-        private _updateWhenDirty() {
-            this._formatText();
-            this._initDimension();
         }
     }
 }

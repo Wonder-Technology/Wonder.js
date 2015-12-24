@@ -98,10 +98,18 @@ describe("BitmapFont", function () {
                 x + 500, y + 400, width, height);
         }
 
-        function judgeCharFont(tag, char){
+        function judgeCharFont(tag, char, width, xAlignment){
             var charFont = gameObject.findChildByTag(String(tag)).getComponent(wd.CharFont);
 
-            expect(charFont.char).toEqual(char);
+            if(char){
+                expect(charFont.char).toEqual(char);
+            }
+            if(width){
+                expect(charFont.width).toEqual(width);
+            }
+            if(xAlignment){
+                expect(charFont.xAlignment).toEqual(xAlignment);
+            }
         }
 
         function prepareAfterInit(){
@@ -385,8 +393,9 @@ describe("BitmapFont", function () {
             });
 
             describe("can add action component", function(){
-                function addAction(){
-                    var charFontGameObject = gameObject.findChildByTag("1");
+                function addAction(index){
+                    var index = index || 1;
+                    var charFontGameObject = gameObject.findChildByTag(String(index));
 
                     var action = wd.CallFunc.create(function(){
                         this.transform.translate(100, 200, 0);
@@ -438,6 +447,106 @@ describe("BitmapFont", function () {
                     judgeDrawImage(1, 104 + 100, 202 - 50, 100 * 2, 200 * 3);
                     judgeDrawImage(2, 7 + 100, 2 - 50, 100, 200);
 
+                });
+                it("test3", function(){
+                    font.text = "正\na  dbc";
+                    font.width = 10;
+
+                    director._init();
+
+                    prepareAfterInit();
+
+                    addAction(2);
+
+                    director._loopBody(1);
+
+
+                    judgeDrawImage(0, 1, 2, 100, 200);
+                    //judgeDrawImage(1, 3, 0, 0, 0);
+                    judgeDrawImage(1, 1 + 100, 52 + 200, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 4, 52, 100, 200);
+                    judgeDrawImage(3, 7, 52, 100, 200);
+                    judgeDrawImage(4, 1, 102, 100, 200);
+                    judgeDrawImage(5, 4, 102, 100, 200);
+                    judgeDrawImage(6, 7, 102, 100, 200);
+                })
+            });
+        });
+
+        describe("test change data", function(){
+            beforeEach(function(){
+
+            });
+
+            it("if the new data equal old data, not dirty and not update text", function(){
+                font.text = "正ab";
+                font.width = 1000;
+                sandbox.stub(font, "updateWhenDirty");
+
+                director._init();
+
+                prepareAfterInit();
+
+
+
+
+                director._loopBody(2);
+
+                expect(font.updateWhenDirty).not.toCalled();
+
+
+                font.text = "正ab";
+
+                director._loopBody(2);
+
+                expect(font.updateWhenDirty).not.toCalled();
+            });
+
+            describe("else", function(){
+                beforeEach(function(){
+                    font.text = "正ab";
+                    font.width = 1000;
+                    font.xAlignment = wd.FontXAlignment.LEFT;
+
+                    director._init();
+
+                    prepareAfterInit();
+
+
+
+
+                    director._loopBody(2);
+                });
+
+                it("test change text", function(){
+                    font.text = "z";
+
+                    director._loopBody(2);
+
+
+                    expect(gameObject.getChildren().getCount()).toEqual(1);
+                    judgeCharFont("0", "z");
+
+                    expect(context.drawImage.callCount).toEqual(4);
+                    judgeDrawImage(3, 1, 2, 100, 200);
+                });
+                it("test change width", function(){
+                    font.width = 1;
+
+                    director._loopBody(2);
+
+                    judgeDrawImage(3, 1, 2, 100, 200);
+                    judgeDrawImage(4, 1, 52, 100, 200);
+                    judgeDrawImage(5, 1, 102, 100, 200);
+                });
+                it("test change xAlignment", function(){
+                    font.xAlignment = wd.FontXAlignment.RIGHT;
+
+                    director._loopBody(2);
+
+                    judgeDrawImage(3, 991, 2, 100, 200);
+                    judgeDrawImage(4, 994, 2, 100, 200);
+                    judgeDrawImage(5, 997, 2, 100, 200);
                 });
             });
         });
