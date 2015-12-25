@@ -16,8 +16,6 @@ module wd {
 
         public view:IView = null;
         public gl:WebGLRenderingContext = null;
-        /*! store other canvas data(e.g. ui canvas) */
-        public canvasMap:wdCb.Hash<CanvasMapData> = wdCb.Hash.create<CanvasMapData>();
 
         /*!
         test order:

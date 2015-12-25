@@ -4,6 +4,7 @@ describe("BitmapFont", function () {
     var font;
     var gameObject;
     var director;
+    var renderer;
 
     function createFont() {
         font = wd.BitmapFont.create();
@@ -113,8 +114,9 @@ describe("BitmapFont", function () {
         }
 
         function prepareAfterInit(){
-            var uiCanvasData = wd.DeviceManager.getInstance().canvasMap.getChild(wd.CanvasType.UI);
-            context = uiCanvasData.context;
+            //var uiCanvasData = wd.DeviceManager.getInstance().canvasMap.getChild(wd.CanvasType.UI);
+            //context = uiCanvasData.context;
+            context = renderer.context;
 
             sandbox.stub(context, "drawImage");
         }
@@ -473,7 +475,7 @@ describe("BitmapFont", function () {
             });
         });
 
-        describe("test change data", function(){
+        describe("change data will update font", function(){
             beforeEach(function(){
 
             });
@@ -550,5 +552,10 @@ describe("BitmapFont", function () {
                 });
             });
         });
+
+        //if bitmap dirty update
+        //
+        //if gameObject transform change(send event!) or char change, char font dirty
+
     });
 });

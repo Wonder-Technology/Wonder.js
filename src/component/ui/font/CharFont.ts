@@ -46,6 +46,10 @@ module wd {
                 return;
             }
 
+            //if(this._isDirty()){
+            //    this.dirty = true;
+            //}
+
             position = this.gameObject.transform.position;
             dx = position.x;
             dy = position.y;

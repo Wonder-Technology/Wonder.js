@@ -18,6 +18,7 @@ module wd {
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
         public actionManager:ActionManager = ActionManager.create();
+        public uiManager:UIManager = UIManager.create(this);
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
@@ -268,9 +269,7 @@ module wd {
         public update(elapsedTime:number):void {
             var camera = this._getCamera(),
                 animation = this._getAnimation(),
-                collider = this._getCollider(),
-                font = this._getFont(),
-                uiRenderer = this._getUIRenderer();
+                collider = this._getCollider();
 
 
             if(camera){
@@ -289,17 +288,7 @@ module wd {
                 collider.update(elapsedTime);
             }
 
-            //todo extract UIManager
-
-            if(font && font.dirty){
-                if(uiRenderer){
-                    uiRenderer.clearCanvas();
-                }
-
-                if(font){
-                    font.update(elapsedTime);
-                }
-            }
+            this.uiManager.update(elapsedTime);
 
             this._children.forEach((child:GameObject) => {
                 child.update(elapsedTime);
@@ -349,20 +338,6 @@ module wd {
         })
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
-        }
-
-        @require(function(){
-            assert(this._getComponentCount(Font) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 font component"));
-        })
-        private _getFont():Font{
-            return this.getComponent<Font>(Font);
-        }
-
-        @require(function(){
-            assert(this._getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 uiRenderer component"));
-        })
-        private _getUIRenderer():UIRenderer{
-            return this.getComponent<UIRenderer>(UIRenderer);
         }
 
         private _getComponentCount(_class:Function){

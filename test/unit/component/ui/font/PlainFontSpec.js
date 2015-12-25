@@ -449,7 +449,7 @@ describe("PlainFont", function () {
         });
 
 
-        describe("test change data", function(){
+        describe("change data will update font", function(){
             beforeEach(function(){
                 sandbox.stub(font, "updateWhenDirty");
 

@@ -152,6 +152,8 @@
 /// <reference path="component/light/Attenuation"/>
 
 
+/// <reference path="component/ui/UI"/>
+
 /// <reference path="component/ui/font/FontXAlignment"/>
 /// <reference path="component/ui/font/FontYAlignment"/>
 /// <reference path="component/ui/font/FontDimension"/>
@@ -160,6 +162,7 @@
 /// <reference path="component/ui/font/PlainFont"/>
 /// <reference path="component/ui/font/BitmapFont"/>
 /// <reference path="component/ui/font/CharFont"/>
+/// <reference path="component/ui/UIManager"/>
 
 
 

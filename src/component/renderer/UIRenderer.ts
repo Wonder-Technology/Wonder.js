@@ -10,9 +10,11 @@ module wd {
         }
 
         public context:any = null;
+        public isClear:boolean = false;
 
         private _canvas:HTMLCanvasElement = null;
         private _beforeInitHandler:() => void = null;
+        private _endLoopHandler:() => void = null;
 
 
         public init(){
@@ -23,7 +25,13 @@ module wd {
                 this._createOverlayCanvas();
             });
 
+            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
+                this.isClear = false;
+            });
+
             EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+            //todo test
+            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public dispose(){
@@ -36,22 +44,14 @@ module wd {
         }
 
         public clearCanvas(){
-            this.context.clearRect(0, 0, this._canvas.width, this._canvas.height)
+            this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
+            this.isClear = true;
         }
 
         private _createOverlayCanvas(){
-            var canvasMap = DeviceManager.getInstance().canvasMap,
-                canvas = null,
+            var canvas = null,
                 view = null;
-
-            if(canvasMap.hasChild(CanvasType.UI)){
-                let data:CanvasMapData = canvasMap.getChild(<any>CanvasType.UI);
-
-                this._canvas = data.canvas;
-                this.context = data.context;
-
-                return;
-            }
 
             canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body");
             view = DeviceManager.getInstance().view;
@@ -66,11 +66,6 @@ module wd {
 
             this._canvas = canvas.get(0);
             this.context = this._canvas.getContext("2d");
-
-            canvasMap.addChild(<any>CanvasType.UI, {
-                canvas:this._canvas,
-                context:this.context
-            });
         }
     }
 }
