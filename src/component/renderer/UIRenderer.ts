@@ -16,12 +16,25 @@ module wd {
         private _beforeInitHandler:() => void = null;
         private _endLoopHandler:() => void = null;
         private _isInit:boolean = false;
+        private _refernceList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public addToGameObject(gameObject:GameObject){
-            //if(this.gameObject) {
-            //    this.gameObject.removeComponent(this);
-            //}
+            this._refernceList.addChild(gameObject);
+
+            /*!
+            uiRenderer may be shared by multi gameObjects, so this.gameObject is the last one which share this
+             */
             this.gameObject = gameObject;
+        }
+
+        public removeFromGameObject(gameObject:GameObject){
+            this._refernceList.removeChild(gameObject);
+
+            if(this._refernceList.getCount() > 0){
+                return;
+            }
+
+            super.removeFromGameObject(gameObject);
         }
 
         public init(){
@@ -34,7 +47,7 @@ module wd {
             this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.isClear = false;
             });
-            //todo test
+
             EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
@@ -47,6 +60,10 @@ module wd {
         }
 
         public dispose(){
+            if(this._refernceList.getCount() > 0){
+                return;
+            }
+
             EventManager.off(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
 
             wdCb.DomQuery.create(this._canvas).remove();

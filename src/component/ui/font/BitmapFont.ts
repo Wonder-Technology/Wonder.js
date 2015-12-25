@@ -88,14 +88,19 @@ module wd {
         }
 
         public dispose(){
+            this._removeAllCharFont();
         }
 
-        protected updateWhenDirty() {
+        private _removeAllCharFont(){
             this._charFontList.forEach((charFont:GameObject) => {
                 charFont.dispose();
             });
 
             this._charFontList.removeAllChildren();
+        }
+
+        protected updateWhenDirty() {
+            this._removeAllCharFont();
 
             var fntObj = LoaderManager.getInstance().get(this.fntId),
                 imageAsset:ImageTextureAsset = LoaderManager.getInstance().get(this.bitmapId);

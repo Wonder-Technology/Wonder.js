@@ -65,6 +65,9 @@ module wd {
             this.context = this.getContext();
         }
 
+        public dispose(){
+        }
+
         @require(function(elapsedTime:number){
             assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
         })

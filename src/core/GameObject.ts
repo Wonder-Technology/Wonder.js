@@ -73,6 +73,8 @@ module wd {
 
         //todo test memory management
         public dispose() {
+            var components = null;
+
             this.onDispose();
 
             if(this.parent){
@@ -85,7 +87,9 @@ module wd {
             EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
             EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
-            this._components.forEach((component:Component) => {
+            components = this.removeAllComponent();
+
+            components.forEach((component:Component) => {
                 component.dispose();
             });
 
@@ -254,9 +258,23 @@ module wd {
 
             this._components.removeChild(component);
 
-            component.removeFromGameObject(this);
+            this._removeComponentHandler(component);
 
             return this;
+        }
+
+        public removeAllComponent(){
+            var result = wdCb.Collection.create<Component>();
+
+            this._components.forEach((component:Component) => {
+                this._removeComponentHandler(component);
+
+                result.addChild(component)
+            }, this);
+
+            this._components.removeAllChildren();
+
+            return result;
         }
 
         public render(renderer:Renderer, camera:GameObject):void {
@@ -350,6 +368,10 @@ module wd {
             return this._components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();
+        }
+
+        private _removeComponentHandler(component:Component){
+            component.removeFromGameObject(this);
         }
     }
 }

@@ -5,7 +5,7 @@ describe("UIRenderer", function () {
     var gameObject;
     var director;
 
-    function createFont() {
+    function createFont(uiRenderer) {
         font = wd.PlainFont.create();
 
 
@@ -14,10 +14,14 @@ describe("UIRenderer", function () {
         gameObject.addComponent(font);
 
 
-        renderer = wd.UIRenderer.create();
+        if(uiRenderer){
+            gameObject.addComponent(uiRenderer);
+        }
+        else{
+            renderer = wd.UIRenderer.create();
 
-
-        gameObject.addComponent(renderer);
+            gameObject.addComponent(renderer);
+        }
 
 
         return gameObject;
@@ -41,7 +45,7 @@ describe("UIRenderer", function () {
     });
     afterEach(function () {
         testTool.clearInstance();
-        renderer.dispose();
+        gameObject.dispose();
         sandbox.restore();
     });
 
@@ -72,33 +76,80 @@ describe("UIRenderer", function () {
     });
 
     describe("dispose", function(){
-        it("off BEFORE_INIT event handler", function(){
-            sandbox.spy(renderer, "_createOverlayCanvas");
+        it("if not all references(the gameObject which share the same UIRenderer) are disposed, not dispose the UIRenderer", function(){
+            var gameObject2 = createFont(renderer);
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
-
-            expect(renderer._createOverlayCanvas).toCalledOnce();
-
-
-            renderer.dispose();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
-
-            expect(renderer._createOverlayCanvas).toCalledOnce();
-        });
-        it("remove canvas", function(){
             director.scene.addChild(gameObject);
+            director.scene.addChild(gameObject2);
 
             director._init();
+
+
+            expect($("canvas").length).toEqual(1);
+
+            gameObject.dispose();
 
             expect($("canvas").length).toEqual(1);
 
 
-            renderer.dispose();
+            gameObject2.dispose();
 
             expect($("canvas").length).toEqual(0);
         });
-        //todo unbind event binded on canvas
+
+        describe("else", function(){
+            beforeEach(function(){
+
+            });
+
+            it("off BEFORE_INIT event handler", function(){
+                sandbox.spy(renderer, "_createOverlayCanvas");
+
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
+
+                expect(renderer._createOverlayCanvas).toCalledOnce();
+
+
+                gameObject.dispose();
+
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
+
+                expect(renderer._createOverlayCanvas).toCalledOnce();
+            });
+            it("off ENDLOOP event handler", function(){
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
+                renderer.init();
+
+                renderer.isClear = true;
+
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.ENDLOOP));
+
+                expect(renderer.isClear).toBeFalsy();
+
+
+                gameObject.dispose();
+
+
+                renderer.isClear = true;
+
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.ENDLOOP));
+
+                expect(renderer.isClear).toBeFalsy();
+            });
+            it("remove canvas", function(){
+                director.scene.addChild(gameObject);
+
+                director._init();
+
+                expect($("canvas").length).toEqual(1);
+
+
+                gameObject.dispose();
+
+                expect($("canvas").length).toEqual(0);
+            });
+            //todo unbind event binded on canvas
+        });
     });
 
     it("not add command, not render webgl, only update ui", function(){
@@ -142,6 +193,8 @@ describe("UIRenderer", function () {
 
         expect($("canvas").length).toEqual(2);
         expect(gameObject.getComponent(wd.UIRenderer).context !== gameObject2.getComponent(wd.UIRenderer).context).toBeTruthy();
+
+        gameObject2.dispose();
     });
 
     //todo should only create canvas once

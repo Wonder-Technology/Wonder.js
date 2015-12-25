@@ -42,6 +42,10 @@ describe("BitmapFont", function () {
             height: 800
         });
 
+
+        director.scene.addChild(gameObject);
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -122,11 +126,6 @@ describe("BitmapFont", function () {
         }
 
         beforeEach(function () {
-            director.scene.addChild(gameObject);
-
-            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-
-
             font.fntId = "myFont_fnt";
             font.bitmapId = "myFont_image";
 
@@ -689,6 +688,29 @@ describe("BitmapFont", function () {
                     judgeDrawImage(4, 994, -2, 100, 200);
                     judgeDrawImage(5, 997, -2, 100, 200);
                 });
+            });
+        });
+
+        describe("dispose", function(){
+            beforeEach(function(){
+
+            });
+
+            it("remove all char font", function(){
+                font.text = "正ab";
+                font.width = 1000;
+
+                director._init();
+
+                prepareAfterInit();
+
+                director._loopBody(2);
+
+                expect(gameObject.getChildren().getCount()).toEqual(3);
+
+                font.dispose();
+
+                expect(gameObject.getChildren().getCount()).toEqual(0);
             });
         });
     });
