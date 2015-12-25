@@ -197,5 +197,31 @@ describe("UIRenderer", function () {
         gameObject2.dispose();
     });
 
-    //todo should only create canvas once
+    describe("set zIndex", function() {
+        beforeEach(function () {
+
+        });
+
+        it("can specify the canvas->zIndex", function () {
+            renderer.zIndex = 10;
+            director.scene.addChild(gameObject);
+
+            director._init();
+
+            expect($("canvas").css("zIndex")).toEqual("10");
+        });
+        it("refresh canvas->zIndex when change zIndex", function(){
+            renderer.zIndex = 10;
+            director.scene.addChild(gameObject);
+
+            director._init();
+            director._loopBody(1);
+
+
+            renderer.zIndex = 100;
+
+            director._loopBody(2);
+            expect($("canvas").css("zIndex")).toEqual("100");
+        });
+    });
 });

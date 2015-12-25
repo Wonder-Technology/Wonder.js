@@ -9,6 +9,20 @@ module wd {
         	return obj;
         }
 
+        private _zIndex:number = 1;
+        get zIndex(){
+            return this._zIndex;
+        }
+        set zIndex(zIndex:number){
+            if(zIndex !== this._zIndex){
+                this._zIndex = zIndex;
+
+                if(this._canvas){
+                    wdCb.DomQuery.create(this._canvas).css("zIndex", zIndex);
+                }
+            }
+        }
+
         public context:any = null;
         public isClear:boolean = false;
 
@@ -92,7 +106,7 @@ module wd {
             canvas.css("position", "absolute");
             canvas.css("left", `${view.x}px`);
             canvas.css("top", `${view.y}px`);
-            canvas.css("zIndex", "1");
+            canvas.css("zIndex", this.zIndex);
 
             canvas.attr("width", view.width);
             canvas.attr("height", view.height);
