@@ -192,6 +192,12 @@ module wd {
             return this._components.getChild(0);
         }
 
+        public forEachComponent(func:(component:Component) => void){
+            this._components.forEach(func);
+
+            return this;
+        }
+
         public removeChild(child:GameObject):GameObject {
             child.onExit();
 

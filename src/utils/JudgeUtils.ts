@@ -7,6 +7,10 @@ module wd {
 
 
         public static isEqual(target1:any, target2:any){
+            if((!target1 && target2) || (target1 && !target2)){
+                return false;
+            }
+
             if(target1.uid && target2.uid){
                 return target1.uid === target2.uid;
             }

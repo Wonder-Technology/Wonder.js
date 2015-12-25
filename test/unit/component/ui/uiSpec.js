@@ -66,7 +66,7 @@ describe("ui", function () {
         //todo test more ui
     });
 
-    describe("if any ui component dirty, firstly clear canvas once, then update the dirty one", function(){
+    describe("if any ui component dirty, firstly clear canvas once, then update every one", function(){
         function createUIGameObject(font, uiRenderer){
             var renderer;
             var fontComponent;
@@ -111,6 +111,7 @@ describe("ui", function () {
 
             gameObject.addChild(charFontGameObject);
 
+            sandbox.spy(plainFont, "update");
             sandbox.spy(bitmapFont, "update");
             sandbox.spy(charFont, "update");
 
@@ -134,10 +135,11 @@ describe("ui", function () {
 
 
             expect(renderer.context.clearRect).toCalledOnce();
-            expect(renderer.context.clearRect).toCalledBefore(bitmapFont.update);
+            expect(renderer.context.clearRect).toCalledBefore(plainFont.update);
+            expect(plainFont.update).toCalledBefore(bitmapFont.update);
             expect(bitmapFont.update).toCalledBefore(charFont.update);
 
-            expect(plainFont.update).not.toCalled();
+            expect(plainFont.update).toCalledOnce();
             expect(bitmapFont.update).toCalledOnce();
             expect(charFont.update).toCalledOnce();
         });
@@ -170,7 +172,6 @@ describe("ui", function () {
 
             sandbox.stub(renderer.context, "clearRect");
 
-            //plainFont.dirty = false;
             bitmapFont.dirty = false;
             charFont.dirty = true;
 
@@ -180,9 +181,10 @@ describe("ui", function () {
 
 
             expect(renderer.context.clearRect).toCalledOnce();
-            expect(renderer.context.clearRect).toCalledBefore(charFont.update);
+            expect(renderer.context.clearRect).toCalledBefore(bitmapFont.update);
+            expect(bitmapFont.update).toCalledBefore(charFont.update);
 
-            expect(bitmapFont.update).not.toCalled();
+            expect(bitmapFont.update).toCalledOnce();
             expect(charFont.update).toCalledOnce();
         });
         it("test ui component with different UIRenderers, so that each UIRenderer can clear conce", function(){
@@ -214,10 +216,10 @@ describe("ui", function () {
 
 
 
+            sandbox.spy(plainFont, "update");
             sandbox.spy(bitmapFont, "update");
             sandbox.spy(bitmapFont2, "update");
             sandbox.spy(plainFont2, "update");
-            //sandbox.stub(renderer2, "clearCanvas");
 
 
 
@@ -241,21 +243,24 @@ describe("ui", function () {
 
 
             expect(renderer.context.clearRect).toCalledOnce();
-            expect(renderer.context.clearRect).toCalledBefore(bitmapFont.update);
+            expect(renderer.context.clearRect).toCalledBefore(plainFont.update);
+            expect(plainFont.update).toCalledBefore(bitmapFont.update);
 
-            expect(plainFont.update).not.toCalled();
+            expect(plainFont.update).toCalledOnce();
             expect(bitmapFont.update).toCalledOnce();
 
 
 
             expect(renderer2.context.clearRect).toCalledOnce();
             expect(renderer2.context.clearRect).toCalledAfter(bitmapFont.update);
-            expect(renderer2.context.clearRect).toCalledBefore(bitmapFont2.update);
+            expect(renderer2.context.clearRect).toCalledBefore(plainFont2.update);
+            expect(plainFont2.update).toCalledBefore(bitmapFont2.update);
 
-            expect(plainFont2.update).not.toCalled();
+            expect(plainFont2.update).toCalledOnce();
             expect(bitmapFont2.update).toCalledOnce();
         });
 
         //todo test more ui
     });
 });
+
