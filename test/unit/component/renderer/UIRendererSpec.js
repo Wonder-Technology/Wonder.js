@@ -143,4 +143,6 @@ describe("UIRenderer", function () {
         expect($("canvas").length).toEqual(2);
         expect(gameObject.getComponent(wd.UIRenderer).context !== gameObject2.getComponent(wd.UIRenderer).context).toBeTruthy();
     });
+
+    //todo should only create canvas once
 });

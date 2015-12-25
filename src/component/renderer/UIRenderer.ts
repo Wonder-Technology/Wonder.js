@@ -15,9 +15,27 @@ module wd {
         private _canvas:HTMLCanvasElement = null;
         private _beforeInitHandler:() => void = null;
         private _endLoopHandler:() => void = null;
+        private _isInit:boolean = false;
 
+        public addToGameObject(gameObject:GameObject){
+            //if(this.gameObject) {
+            //    this.gameObject.removeComponent(this);
+            //}
+            this.gameObject = gameObject;
+        }
 
         public init(){
+            if(this._isInit){
+                return;
+            }
+
+            this._isInit = true;
+
+            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
+                this.isClear = false;
+            });
+            //todo test
+            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public initWhenCreate(){
@@ -25,13 +43,7 @@ module wd {
                 this._createOverlayCanvas();
             });
 
-            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                this.isClear = false;
-            });
-
             EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
-            //todo test
-            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public dispose(){
@@ -52,6 +64,10 @@ module wd {
         private _createOverlayCanvas(){
             var canvas = null,
                 view = null;
+
+            if(this._canvas){
+                return;
+            }
 
             canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body");
             view = DeviceManager.getInstance().view;

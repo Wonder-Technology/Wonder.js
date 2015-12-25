@@ -117,6 +117,33 @@ module wd {
             this._formatText(fntObj);
         }
 
+
+        private _createCharFont(index:number, uiRenderer:UIRenderer){
+            var charFontGameObject = GameObject.create(),
+                charFont = CharFont.create();
+
+            //charFont.context = this.context;
+
+            charFontGameObject.addComponent(charFont);
+            charFontGameObject.addComponent(uiRenderer);
+
+
+            charFontGameObject.addTag(String(index));
+
+            charFontGameObject.init();
+
+            return {
+                charFontGameObject:charFontGameObject,
+                charFont:charFont
+            }
+        }
+
+        private _addCharFontGameObject(charFontGameObject:GameObject){
+            this._charFontList.addChild(charFontGameObject);
+
+            this.gameObject.addChild(charFontGameObject);
+        }
+
         /*!
          ////空格字符没有精灵，但是也算一个序号。
          ////如str = "1 a";
@@ -135,7 +162,7 @@ module wd {
 
             //todo 待研究cocos2d位置的计算nextFontPositionX/Y
 
-            //todo 使用setCacheData来重构设置属性（如fontChar.string）
+            //todo 使用setCacheData来重构设置属性（如charFontGameObject.string）
 
             var stringLen = this.text.length;
             var locStr = this.text;
@@ -148,7 +175,7 @@ module wd {
 
             var gameObject:GameObject = this.gameObject;
             var position = this.getCanvasPosition();
-            //var uiRenderer:UIRenderer = gameObject.getComponent<UIRenderer>(UIRenderer);
+            var uiRenderer:UIRenderer = gameObject.getComponent<UIRenderer>(UIRenderer);
 
             for (var i = 0; i < stringLen; i++) {
                 var key = locStr.charCodeAt(i);
@@ -167,42 +194,33 @@ module wd {
 
 
                 if (this._isNewLine(locStr[i])) {
-                    let fontChar = gameObject.findChildByTag(String(i)),
+                    let charFontGameObject = gameObject.findChildByTag(String(i)),
                         charFont:CharFont = null;
 
 
-                    if (!fontChar) {
-                        fontChar = GameObject.create();
+                    if (!charFontGameObject) {
+                        let charFontData = this._createCharFont(i, uiRenderer);
+                        charFontGameObject = charFontData.charFontGameObject;
+                        charFont = charFontData.charFont;
 
-                        charFont = CharFont.create();
-                        charFont.context = this.context;
-
-                        fontChar.addComponent(charFont);
-                        //fontChar.addComponent(uiRenderer.copy());
-
-
-                        fontChar.addTag(String(i));
-
-                        gameObject.addChild(fontChar);
-
-                        this._charFontList.addChild(fontChar);
+                        this._addCharFontGameObject(charFontGameObject);
                     }
                     else{
-                        charFont = fontChar.getComponent<CharFont>(CharFont);
+                        charFont = charFontGameObject.getComponent<CharFont>(CharFont);
                     }
 
 
                     charFont.char = locStr[i];
 
 
-                    //this.addChild(fontChar, 0, i);
+                    //this.addChild(charFontGameObject, 0, i);
 
 //                        else{
-//                            this._renderCmd._updateCharTexture(fontChar, rect, key);
+//                            this._renderCmd._updateCharTexture(charFontGameObject, rect, key);
 //                        }
 
 
-                    fontChar.transform.position = Vector3.create(position.x + nextFontPositionX, position.y + nextFontPositionY, 0);
+                    charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX, position.y + nextFontPositionY, 0);
 //
                     charFont.startPosX = nextFontPositionX;
                     charFont.xAdvance = 0;
@@ -238,81 +256,65 @@ module wd {
 //                        rect.x += self._imageOffset.x;
 //                        rect.y += self._imageOffset.y;
 
-                let fontChar = gameObject.findChildByTag(String(i)),
+                let charFontGameObject = gameObject.findChildByTag(String(i)),
                     charFont:CharFont = null;
 
 
-                if (!fontChar) {
-                    fontChar = GameObject.create();
+                if (!charFontGameObject) {
+                    let charFontData = this._createCharFont(i, uiRenderer);
+                    charFontGameObject = charFontData.charFontGameObject;
+                    charFont = charFontData.charFont;
 
 
-//                            fontChar = new YE.GameObject();
-//                            fontChar.initWithTexture(locTexture, rect, false);
-//                            fontChar._newTextureWhenChangeColor = true;
-//                            this.addChild(fontChar, 0, i);
-
-
-                    //var frame = YE.Frame.create(YE.Bitmap.create(img), rect);
-//                             bitmap.setAnchor(imgData.rect);
-
-
-                    charFont = CharFont.create();
-                    charFont.context = this.context;
+                    //charFont.context = this.context;
                     charFont.image = image;
                     charFont.rectRegion = rect;
                     charFont.width = rect.width;
                     charFont.height = rect.height;
 
 
-
-                    fontChar.addComponent(charFont);
-                    //fontChar.addComponent(uiRenderer);
-
-                    fontChar.addTag(String(i));
-
-                    gameObject.addChild(fontChar);
-                    this._charFontList.addChild(fontChar);
+                    this._addCharFontGameObject(charFontGameObject);
                 }
                 else{
-                    charFont = fontChar.getComponent<CharFont>(CharFont);
+                    charFont = charFontGameObject.getComponent<CharFont>(CharFont);
                 }
 
 
-//            if (!fontChar) {
-////                            fontChar = new YE.GameObject();
-////                            fontChar.initWithTexture(locTexture, rect, false);
-////                            fontChar._newTextureWhenChangeColor = true;
-////                            this.addChild(fontChar, 0, i);
+//            if (!charFontGameObject) {
+////                            charFontGameObject = new YE.GameObject();
+////                            charFontGameObject.initWithTexture(locTexture, rect, false);
+////                            charFontGameObject._newTextureWhenChangeColor = true;
+////                            this.addChild(charFontGameObject, 0, i);
 //
 //
 //                var frame = YE.Frame.create(YE.Bitmap.create(img), rect);
 ////                             bitmap.setAnchor(imgData.rect);
 //
-//                fontChar = YE.GameObject.create(frame);
+//                charFontGameObject = YE.GameObject.create(frame);
 //
 //
-////                            fontChar.setWidth(newConf.commonHeight);
-////                            fontChar.setHeight(newConf.commonHeight);
+////                            charFontGameObject.setWidth(newConf.commonHeight);
+////                            charFontGameObject.setHeight(newConf.commonHeight);
 //
-//                fontChar.setWidth(rect.size.width);
-//                fontChar.setHeight(rect.size.height);
+//                charFontGameObject.setWidth(rect.size.width);
+//                charFontGameObject.setHeight(rect.size.height);
 //
 //
 //            }
 
 
-//                    fontChar.setCacheData();
+//                    charFontGameObject.setCacheData();
                 charFont.char = locStr[i];
 
 
-                //this.addChild(fontChar, 0, i);
+                //this.addChild(charFontGameObject, 0, i);
 
 //                        else{
-//                            this._renderCmd._updateCharTexture(fontChar, rect, key);
+//                            this._renderCmd._updateCharTexture(charFontGameObject, rect, key);
 //                        }
 
 
-                fontChar.transform.position = Vector3.create(position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset, 0);
+                charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset, 0);
 
                 charFont.startPosX = nextFontPositionX;
                 charFont.xAdvance = fontDef.xAdvance;

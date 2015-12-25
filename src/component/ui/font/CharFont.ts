@@ -50,7 +50,19 @@ module wd {
         public isNewLine:boolean = false;
         public isFullLine:boolean = false;
 
+        @require(function () {
+            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
+        })
+        protected getContext() {
+            var renderer = this.gameObject.getComponent<UIRenderer>(UIRenderer);
+
+            return renderer.context;
+        }
+
+
+
         public init(){
+            this.context = this.getContext();
         }
 
         @require(function(elapsedTime:number){
@@ -61,6 +73,12 @@ module wd {
                 scale = null,
                 dx = null,
                 dy = null;
+
+            /*!
+             shouldn't use "this.dirty = false;", it's not work.
+             because CharFont redefine the dirty->getter excepet dirty->setter, so the dirty now only has getter, no setter.
+             */
+            this.p_dirty = false;
 
             if(this.rectRegion === null){
                 return;
@@ -74,14 +92,7 @@ module wd {
 
             this.context.drawImage(this.image,
                 this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
-                dx, dy, this.width * scale.x, this.height * scale.y
-            );
-
-            /*!
-             shouldn't use "this.dirty = false;", it's not work.
-             because CharFont redefine the dirty->getter excepet dirty->setter, so the dirty now only has getter, no setter.
-             */
-            this.p_dirty = false;
+                dx, dy, this.width * scale.x, this.height * scale.y);
         }
     }
 }
