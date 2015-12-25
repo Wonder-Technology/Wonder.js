@@ -219,8 +219,9 @@ module wd {
 //                            this._renderCmd._updateCharTexture(charFontGameObject, rect, key);
 //                        }
 
+                    this._setCharFontGameObjectPosition(charFontGameObject, position.x + nextFontPositionX, position.y + nextFontPositionY);
 
-                    charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX, position.y + nextFontPositionY, 0);
+                    //charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX, position.y + nextFontPositionY, 0);
 //
                     charFont.startPosX = nextFontPositionX;
                     charFont.xAdvance = 0;
@@ -314,7 +315,8 @@ module wd {
 //                        }
 
 
-                charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset, 0);
+                this._setCharFontGameObjectPosition(charFontGameObject, position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset);
+                //charFontGameObject.transform.position = Vector3.create(position.x + nextFontPositionX + fontDef.xOffset, position.y + nextFontPositionY + fontDef.yOffset, 0);
 
                 charFont.startPosX = nextFontPositionX;
                 charFont.xAdvance = fontDef.xAdvance;
@@ -344,10 +346,12 @@ module wd {
             return sp.startPosX;
         }
 
-        private _getLetterPosXRight(position:Vector2, sp:CharFont) {
+        private _getLetterPosXRight(position:Vector3, sp:CharFont) {
 //                return sp.getPositionX() * this._scaleX + (sp._getWidth() * this._scaleX * sp._getAnchorX());
 //                return sp.getPositionX() + sp.getWidth();
             return sp.x - position.x + sp.xAdvance;
+//            return sp.x + sp.xAdvance;
+//            return sp.x + sp.xAdvance;
         }
 
         private _getFontDef(fontDict:any, key:number){
@@ -388,7 +392,8 @@ module wd {
                 var characterGameObject:GameObject = null;
                 var charFont:CharFont = null;
 
-                var position = this.getCanvasPosition();
+                //var position = this.getCanvasPosition();
+                var position = gameObject.transform.position;
 
                 //var x = position.x,
                 //    y = position.y;
@@ -501,7 +506,7 @@ module wd {
                         charFont.isFullLine = false;
 
 
-                        characterGameObject.transform.translateLocal(- x, y, 0);
+                        this._translateCharFontGameObject(characterGameObject, -x, y);
 
                         x = 0;
                     }
@@ -571,7 +576,7 @@ module wd {
 
                         y = y + lineHeight;
 
-                        characterGameObject.transform.translateLocal(- x, y, 0);
+                        this._translateCharFontGameObject(characterGameObject, -x, y);
 
 
 //                            if (!self._lineBreakWithoutSpaces) {
@@ -623,7 +628,7 @@ module wd {
 //                        }
 
                     else {
-                        characterGameObject.transform.translateLocal(- x, y, 0);
+                        this._translateCharFontGameObject(characterGameObject, -x, y);
                     }
                 }
 
@@ -686,7 +691,7 @@ module wd {
             }
         }
 
-        private _alignLine(position:Vector2, line:Array<CharFont>, lastCharFont:CharFont) {
+        private _alignLine(position:Vector3, line:Array<CharFont>, lastCharFont:CharFont) {
             var self = this;
 //                    line = line.filter(function (cp) {
 //                        return !self._isSpaceUnicode(cp.char);
@@ -746,6 +751,14 @@ module wd {
 //                    return !self._isSpaceUnicode(cp.char);
 //
 //                });
+        }
+
+        private _setCharFontGameObjectPosition(charFontGameObject:GameObject, x:number, y:number){
+            charFontGameObject.transform.position = CoordinateUtils.convertCanvasPositionToWebGLPosition(Vector2.create(x, y));
+        }
+
+        private _translateCharFontGameObject(charFontGameObject:GameObject, x:number, y:number){
+            charFontGameObject.transform.translate(x, -y, 0);
         }
     }
 }

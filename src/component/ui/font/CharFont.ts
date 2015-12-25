@@ -84,7 +84,9 @@ module wd {
                 return;
             }
 
-            position = this.gameObject.transform.position;
+            //todo refactor
+            position = CoordinateUtils.convertWebGLPositionToCanvasPosition(this.gameObject.transform.position);
+            //position = this.gameObject.transform.position;
             dx = position.x;
             dy = position.y;
 

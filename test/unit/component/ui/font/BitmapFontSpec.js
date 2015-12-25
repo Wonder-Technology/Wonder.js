@@ -98,7 +98,7 @@ describe("BitmapFont", function () {
         function judgeDrawImage(callCount, x, y, width, height) {
             expect(context.drawImage.getCall(callCount)).toCalledWith(image,
                 0, 0, 100, 200,
-                x + 500, y + 400, width, height);
+                x + 500, -y + 400, width, height);
         }
 
         function judgeCharFont(tag, char, width, xAlignment){
@@ -164,8 +164,7 @@ describe("BitmapFont", function () {
         });
 
         it("test single line text", function () {
-            //font.text = "正ab";
-            font.text = "正";
+            font.text = "正ab";
             font.width = 1000;
 
             director._init();
@@ -174,14 +173,14 @@ describe("BitmapFont", function () {
 
             director._loopBody(1);
 
-            judgeDrawImage(0, 1, 2, 100, 200);
-            //judgeDrawImage(1, 4, 2, 100, 200);
-            //judgeDrawImage(2, 7, 2, 100, 200);
+            judgeDrawImage(0, 1, -2, 100, 200);
+            judgeDrawImage(1, 4, -2, 100, 200);
+            judgeDrawImage(2, 7, -2, 100, 200);
         });
 
         describe("test multi lines", function(){
             it("test exceed max width", function(){
-                font.text = "正ab";
+                font.text = "1ab";
                 font.width = 7;
 
                 director._init();
@@ -190,9 +189,26 @@ describe("BitmapFont", function () {
 
                 director._loopBody(1);
 
-                judgeDrawImage(0, 1, 2, 100, 200);
-                judgeDrawImage(1, 4, 2, 100, 200);
-                judgeDrawImage(2, 1, 52, 100, 200);
+                judgeDrawImage(0, 1, -2, 100, 200);
+                judgeDrawImage(1, 4, -2, 100, 200);
+                judgeDrawImage(2, 1, -52, 100, 200);
+            });
+            it("test exceed max width and gameObject transform", function(){
+                font.text = "1ab";
+                font.width = 7;
+
+                gameObject.transform.translate(-200, 100, 0);
+
+
+                director._init();
+
+                prepareAfterInit();
+
+                director._loopBody(1);
+
+                judgeDrawImage(0, 1 - 200, -2 + 100, 100, 200);
+                judgeDrawImage(1, 4 - 200, -2 + 100, 100, 200);
+                judgeDrawImage(2, 1 - 200, -52 + 100, 100, 200);
             });
 
             describe("test text has newline char", function(){
@@ -206,12 +222,12 @@ describe("BitmapFont", function () {
 
                     director._loopBody(1);
 
-                    judgeDrawImage(0,1, 2, 100, 200);
+                    judgeDrawImage(0,1, -2, 100, 200);
                     //judgeDrawImage(1,3, 0, 0, 0);
-                    judgeDrawImage(1, 1, 52, 100, 200);
-                    judgeDrawImage(2, 4, 52, 100, 200);
+                    judgeDrawImage(1, 1, -52, 100, 200);
+                    judgeDrawImage(2, 4, -52, 100, 200);
                     //judgeDrawImage(4, 6, 50, 0, 0);
-                    judgeDrawImage(3, 1, 102, 100, 200);
+                    judgeDrawImage(3, 1, -102, 100, 200);
                     //judgeDrawImage(4, 3, 100, 0, 0);
                 });
                 it("test2", function(){
@@ -224,11 +240,11 @@ describe("BitmapFont", function () {
 
                     director._loopBody(1);
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
                     //judgeDrawImage(1, 3, 0, 0, 0);
-                    judgeDrawImage(1, 1, 52, 100, 200);
-                    judgeDrawImage(2, 4, 52, 100, 200);
-                    judgeDrawImage(3, 1, 102, 100, 200);
+                    judgeDrawImage(1, 1, -52, 100, 200);
+                    judgeDrawImage(2, 4, -52, 100, 200);
+                    judgeDrawImage(3, 1, -102, 100, 200);
                 });
             });
 
@@ -244,10 +260,10 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
-                    judgeDrawImage(1, 4, 2, 100, 200);
-                    judgeDrawImage(2, 7, 2, 100, 200);
-                    judgeDrawImage(3, 10, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
+                    judgeDrawImage(1, 4, -2, 100, 200);
+                    judgeDrawImage(2, 7, -2, 100, 200);
+                    judgeDrawImage(3, 10, -2, 100, 200);
 
                     judgeCharFont(1, " ");
                     judgeCharFont(2, " ");
@@ -264,14 +280,14 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
                     //judgeDrawImage(1, 3, 0, 0, 0);
-                    judgeDrawImage(1, 1, 52, 100, 200);
-                    judgeDrawImage(2, 4, 52, 100, 200);
-                    judgeDrawImage(3, 7, 52, 100, 200);
-                    judgeDrawImage(4, 1, 102, 100, 200);
-                    judgeDrawImage(5, 4, 102, 100, 200);
-                    judgeDrawImage(6, 7, 102, 100, 200);
+                    judgeDrawImage(1, 1, -52, 100, 200);
+                    judgeDrawImage(2, 4, -52, 100, 200);
+                    judgeDrawImage(3, 7, -52, 100, 200);
+                    judgeDrawImage(4, 1, -102, 100, 200);
+                    judgeDrawImage(5, 4, -102, 100, 200);
+                    judgeDrawImage(6, 7, -102, 100, 200);
 
 
                     judgeCharFont(3, " ");
@@ -291,12 +307,12 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
                     //judgeDrawImage(1, 3, 0, 0, 0);
-                    judgeDrawImage(1, 1, 52, 100, 200);
-                    judgeDrawImage(2, 4, 52, 100, 200);
-                    judgeDrawImage(3, 1, 102, 100, 200);
-                    judgeDrawImage(4, 4, 102, 100, 200);
+                    judgeDrawImage(1, 1, -52, 100, 200);
+                    judgeDrawImage(2, 4, -52, 100, 200);
+                    judgeDrawImage(3, 1, -102, 100, 200);
+                    judgeDrawImage(4, 4, -102, 100, 200);
 
                     judgeCharFont(2, "a");
                     judgeCharFont(3, " ");
@@ -320,8 +336,8 @@ describe("BitmapFont", function () {
                 director._loopBody(1);
 
 
-                judgeDrawImage(0, 2.5, 2, 100, 200);
-                judgeDrawImage(1, 5.5, 2, 100, 200);
+                judgeDrawImage(0, 2.5, -2, 100, 200);
+                judgeDrawImage(1, 5.5, -2, 100, 200);
             });
             it("right", function(){
                 font.xAlignment = wd.FontXAlignment.RIGHT;
@@ -334,8 +350,8 @@ describe("BitmapFont", function () {
 
                 director._loopBody(1);
 
-                judgeDrawImage(0, 4, 2, 100, 200);
-                judgeDrawImage(1, 7, 2, 100, 200);
+                judgeDrawImage(0, 4, -2, 100, 200);
+                judgeDrawImage(1, 7, -2, 100, 200);
             });
 
             describe("ignore space char in the end of line", function(){
@@ -352,8 +368,8 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 47.5, 2, 100, 200);
-                    judgeDrawImage(1, 50.5, 2, 100, 200);
+                    judgeDrawImage(0, 47.5, -2, 100, 200);
+                    judgeDrawImage(1, 50.5, -2, 100, 200);
                 });
                 it("test right x alignment", function(){
                     font.xAlignment = wd.FontXAlignment.RIGHT;
@@ -368,8 +384,8 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 94, 2, 100, 200);
-                    judgeDrawImage(1, 97, 2, 100, 200);
+                    judgeDrawImage(0, 94, -2, 100, 200);
+                    judgeDrawImage(1, 97, -2, 100, 200);
                 });
             });
         });
@@ -385,9 +401,9 @@ describe("BitmapFont", function () {
 
                 director._loopBody(1);
 
-                judgeDrawImage(0, 1, 2, 100, 200);
-                judgeDrawImage(1, 1, 52, 100, 200);
-                judgeDrawImage(2, 1, 102, 100, 200);
+                judgeDrawImage(0, 1, -2, 100, 200);
+                judgeDrawImage(1, 1, -52, 100, 200);
+                judgeDrawImage(2, 1, -102, 100, 200);
             });
         });
 
@@ -412,7 +428,7 @@ describe("BitmapFont", function () {
 
         describe("test char font", function(){
             function getCharFontGameObject(index){
-                var index = index || 1;
+                var index = index === undefined ? 1 : index;
 
                 return gameObject.findChildByTag(String(index));
             }
@@ -449,9 +465,9 @@ describe("BitmapFont", function () {
 
                     director._loopBody(2);
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
-                    judgeDrawImage(1, 104, 202, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 7, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
+                    judgeDrawImage(1, 4 + 100, -2 + 200, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 7, -2, 100, 200);
                 });
                 it("test2", function(){
                     font.text = "正ab";
@@ -470,9 +486,9 @@ describe("BitmapFont", function () {
 
                     director._loopBody(2);
 
-                    judgeDrawImage(0, 1 + 100, 2 - 50, 100, 200);
-                    judgeDrawImage(1, 104 + 100, 202 - 50, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 7 + 100, 2 - 50, 100, 200);
+                    judgeDrawImage(0, 1 + 100, -2 + 50, 100, 200);
+                    judgeDrawImage(1, 4 + 100 + 100, -2 + 200 + 50, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 7 + 100, -2 + 50, 100, 200);
 
                 });
                 it("test3", function(){
@@ -488,14 +504,14 @@ describe("BitmapFont", function () {
                     director._loopBody(1);
 
 
-                    judgeDrawImage(0, 1, 2, 100, 200);
+                    judgeDrawImage(0, 1, -2, 100, 200);
                     //judgeDrawImage(1, 3, 0, 0, 0);
-                    judgeDrawImage(1, 1 + 100, 52 + 200, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 4, 52, 100, 200);
-                    judgeDrawImage(3, 7, 52, 100, 200);
-                    judgeDrawImage(4, 1, 102, 100, 200);
-                    judgeDrawImage(5, 4, 102, 100, 200);
-                    judgeDrawImage(6, 7, 102, 100, 200);
+                    judgeDrawImage(1, 1 + 100, -52 + 200, 100 * 2, 200 * 3);
+                    judgeDrawImage(2, 4, -52, 100, 200);
+                    judgeDrawImage(3, 7, -52, 100, 200);
+                    judgeDrawImage(4, 1, -102, 100, 200);
+                    judgeDrawImage(5, 4, -102, 100, 200);
+                    judgeDrawImage(6, 7, -102, 100, 200);
                 })
             });
 
@@ -556,7 +572,7 @@ describe("BitmapFont", function () {
                     expect(charFont.update.callCount).toEqual(4);
                 });
                 it("if char change, char font dirty", function(){
-                    charFont.char = "bbb";
+                    charFont.char = "9";
 
                     director._loopBody(3);
 
@@ -570,9 +586,35 @@ describe("BitmapFont", function () {
 
                 });
             });
+
+            describe("change data will cause dirty and update font", function(){
+                it("test change gameObject transform", function(){
+                    font.text = "a";
+                    font.width = 10;
+
+                    director._init();
+
+                    prepareAfterInit();
+
+                    director._loopBody(1);
+
+                    judgeDrawImage(0, 1, -2, 100, 200);
+
+
+
+
+                    var charFontGameObject = getCharFontGameObject(0);
+
+                    charFontGameObject.transform.translate(100, 200, 0);
+
+                    director._loopBody(2);
+
+                    judgeDrawImage(1, 1 + 100, -2 + 200, 100, 200);
+                });
+            });
         });
 
-        describe("change data will update font", function(){
+        describe("change data will cause dirty and update font", function(){
             beforeEach(function(){
 
             });
@@ -627,27 +669,26 @@ describe("BitmapFont", function () {
                     judgeCharFont("0", "z");
 
                     expect(context.drawImage.callCount).toEqual(4);
-                    judgeDrawImage(3, 1, 2, 100, 200);
+                    judgeDrawImage(3, 1, -2, 100, 200);
                 });
                 it("test change width", function(){
                     font.width = 1;
 
                     director._loopBody(2);
 
-                    judgeDrawImage(3, 1, 2, 100, 200);
-                    judgeDrawImage(4, 1, 52, 100, 200);
-                    judgeDrawImage(5, 1, 102, 100, 200);
+                    judgeDrawImage(3, 1, -2, 100, 200);
+                    judgeDrawImage(4, 1, -52, 100, 200);
+                    judgeDrawImage(5, 1, -102, 100, 200);
                 });
                 it("test change xAlignment", function(){
                     font.xAlignment = wd.FontXAlignment.RIGHT;
 
                     director._loopBody(2);
 
-                    judgeDrawImage(3, 991, 2, 100, 200);
-                    judgeDrawImage(4, 994, 2, 100, 200);
-                    judgeDrawImage(5, 997, 2, 100, 200);
+                    judgeDrawImage(3, 991, -2, 100, 200);
+                    judgeDrawImage(4, 994, -2, 100, 200);
+                    judgeDrawImage(5, 997, -2, 100, 200);
                 });
-                //todo test change charFont char
             });
         });
     });
