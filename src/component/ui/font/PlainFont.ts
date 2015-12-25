@@ -21,7 +21,7 @@ module wd {
             if(text !== this._text){
                 this._text = text;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -33,7 +33,7 @@ module wd {
             if(fontSize !== this._fontSize){
                 this._fontSize = fontSize;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -45,7 +45,7 @@ module wd {
             if(fontFamily !== this._fontFamily){
                 this._fontFamily = fontFamily;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -57,7 +57,7 @@ module wd {
             if(width !== this._width){
                 this._width = width;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -69,7 +69,7 @@ module wd {
             if(height !== this._height){
                 this._height = height;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -81,7 +81,7 @@ module wd {
             if(xAlignment !== this._xAlignment){
                 this._xAlignment = xAlignment;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -93,7 +93,7 @@ module wd {
             if(yAlignment !== this._yAlignment){
                 this._yAlignment = yAlignment;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -119,14 +119,6 @@ module wd {
         }
 
         public update(elapsedTime:number) {
-            //if(!this._isFirstUpdate){
-            //    if(this.dirty){
-            //        this._updateWhenDirty();
-            //    }
-            //}
-            //else{
-            //    this._isFirstUpdate = false;
-            //}
             super.update(elapsedTime);
 
             this._draw();

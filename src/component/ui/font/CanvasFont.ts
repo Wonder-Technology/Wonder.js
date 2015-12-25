@@ -5,7 +5,7 @@ module wd {
 
         public update(elapsedTime:number){
             if(!this._isFirstUpdate){
-                if(this.dirty){
+                if(this.p_dirty){
                     this.updateWhenDirty();
                 }
             }
@@ -13,7 +13,7 @@ module wd {
                 this._isFirstUpdate = false;
             }
 
-            this.dirty = false;
+            this.p_dirty = false;
         }
 
         protected abstract updateWhenDirty();

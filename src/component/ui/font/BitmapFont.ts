@@ -15,7 +15,7 @@ module wd {
             if(text !== this._text){
                 this._text = text;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -27,7 +27,7 @@ module wd {
             if(width !== this._width){
                 this._width = width;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 
@@ -39,7 +39,7 @@ module wd {
             if(xAlignment !== this._xAlignment){
                 this._xAlignment = xAlignment;
 
-                this.dirty = true;
+                this.p_dirty = true;
             }
         }
 

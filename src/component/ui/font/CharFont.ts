@@ -7,16 +7,6 @@ module wd {
         	return obj;
         }
 
-        public char:string = null;
-        public startPosX:number = null;
-        public xAdvance:number = null;
-        public image:HTMLImageElement = null;
-        public rectRegion:RectRegion = null;
-        public width:number = 0;
-        public height:number = 0;
-        public isNewLine:boolean = false;
-        public isFullLine:boolean = false;
-
         get x(){
             return this.gameObject.transform.position.x;
         }
@@ -29,6 +19,36 @@ module wd {
         get y(){
             return this.gameObject.transform.position.y;
         }
+
+        get dirty(){
+            var transform = null;
+
+            if(this.p_dirty){
+                return true;
+            }
+
+            transform = this.gameObject.transform;
+
+            return transform.isTranslate || transform.isRotate || transform.isScale;
+        }
+
+        private _char:string = null;
+        get char(){
+            return this._char;
+        }
+        set char(char:string){
+            this._char = char;
+            this.p_dirty = true;
+        }
+
+        public startPosX:number = null;
+        public xAdvance:number = null;
+        public image:HTMLImageElement = null;
+        public rectRegion:RectRegion = null;
+        public width:number = 0;
+        public height:number = 0;
+        public isNewLine:boolean = false;
+        public isFullLine:boolean = false;
 
         public init(){
         }
@@ -46,10 +66,6 @@ module wd {
                 return;
             }
 
-            //if(this._isDirty()){
-            //    this.dirty = true;
-            //}
-
             position = this.gameObject.transform.position;
             dx = position.x;
             dy = position.y;
@@ -60,6 +76,12 @@ module wd {
                 this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
                 dx, dy, this.width * scale.x, this.height * scale.y
             );
+
+            /*!
+             shouldn't use "this.dirty = false;", it's not work.
+             because CharFont redefine the dirty->getter excepet dirty->setter, so the dirty now only has getter, no setter.
+             */
+            this.p_dirty = false;
         }
     }
 }

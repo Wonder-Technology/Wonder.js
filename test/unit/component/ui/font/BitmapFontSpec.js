@@ -391,13 +391,18 @@ describe("BitmapFont", function () {
         });
 
         describe("test char font", function(){
+            function getCharFontGameObject(index){
+                var index = index || 1;
+
+                return gameObject.findChildByTag(String(index));
+            }
+
             beforeEach(function(){
             });
 
             describe("can add action component", function(){
                 function addAction(index){
-                    var index = index || 1;
-                    var charFontGameObject = gameObject.findChildByTag(String(index));
+                    var charFontGameObject = getCharFontGameObject(index);
 
                     var action = wd.CallFunc.create(function(){
                         this.transform.translate(100, 200, 0);
@@ -472,6 +477,78 @@ describe("BitmapFont", function () {
                     judgeDrawImage(5, 4, 102, 100, 200);
                     judgeDrawImage(6, 7, 102, 100, 200);
                 })
+            });
+
+            describe("test CharFont dirty", function(){
+                var charFontGameObject,
+                    charFont;
+
+                beforeEach(function(){
+                    font.text = "正ab";
+                    font.width = 1000;
+
+                    director._init();
+
+                    charFontGameObject = getCharFontGameObject(0);
+                    charFont = charFontGameObject.getComponent(wd.CharFont);
+                    sandbox.spy(charFont, "update");
+
+                    prepareAfterInit();
+
+
+                    director._loopBody(2);
+
+                    expect(charFont.update).toCalledOnce();
+                    expect(charFont.dirty).toBeFalsy();
+                });
+
+                it("if gameObject transform change, char font dirty", function(){
+                    charFontGameObject.transform.translate(1,0,0);
+
+                    expect(charFont.dirty).toBeTruthy();
+
+                    director._loopBody(3);
+
+                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.dirty).toBeFalsy();
+
+
+                    charFontGameObject.transform.scale = wd.Vector3.create(1,1,2);
+
+                    director._loopBody(4);
+
+                    expect(charFont.update.callCount).toEqual(3);
+
+
+
+
+                    charFontGameObject.transform.rotate(10,0,0);
+
+                    director._loopBody(5);
+
+                    expect(charFont.update.callCount).toEqual(4);
+
+
+
+
+                    director._loopBody(6);
+
+                    expect(charFont.update.callCount).toEqual(4);
+                });
+                it("if char change, char font dirty", function(){
+                    charFont.char = "bbb";
+
+                    director._loopBody(3);
+
+                    expect(charFont.update).toCalledTwice();
+
+
+
+                    director._loopBody(4);
+
+                    expect(charFont.update).toCalledTwice();
+
+                });
             });
         });
 
@@ -552,10 +629,5 @@ describe("BitmapFont", function () {
                 });
             });
         });
-
-        //if bitmap dirty update
-        //
-        //if gameObject transform change(send event!) or char change, char font dirty
-
     });
 });

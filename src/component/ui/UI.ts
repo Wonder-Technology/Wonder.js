@@ -1,7 +1,14 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class UI extends Component{
-        public dirty:boolean = true;
+        protected p_dirty:boolean = true;
+        @virtual
+        get dirty(){
+            return this.p_dirty;
+        }
+        set dirty(dirty:boolean){
+            this.p_dirty = dirty;
+        }
 
         public abstract update(elapsedTime:number);
         public abstract init();

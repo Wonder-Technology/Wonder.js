@@ -268,6 +268,7 @@
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/FontLoader"/>
+/// <reference path="asset/FntLoader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
 /// <reference path="asset/VideoLoader"/>
@@ -336,6 +337,7 @@
 
 /// <reference path="event/factory/EventHandlerFactory"/>
 /// <reference path="event/factory/EventBinderFactory"/>
+/// <reference path="event/factory/EventDispatcherFactory"/>
 
 /// <reference path="event/EventManager"/>
 /// <reference path="event/EngineEvent"/>
