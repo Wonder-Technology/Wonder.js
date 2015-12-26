@@ -34,17 +34,11 @@
         function createFont() {
             var font = wd.BitmapFont.create();
 
-            font.text = "a11 2\nb\nc";
+            font.text = "This is a BitmapFont example!";
             font.fntId = "myFont_fnt";
             font.bitmapId = "myFont_image";
-            //if auto, it equal view.width/height
-//            font.width = wd.FontDimension.AUTO;
-            font.width = 400;
+            font.width = 750;
             font.xAlignment = wd.FontXAlignment.CENTER;
-//
-//            wd.Director.getInstance().scheduler.scheduleTime(function(){
-////                font.text = "ccccccccc";
-//            }, 1000);
 
 
             var gameObject = wd.GameObject.create();
@@ -53,12 +47,18 @@
 
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
-                var action = wd.CallFunc.create(function(){
-                    var charFontGameObject1 = gameObject.findChildByTag("1");
+                var tween = wd.Tween.create(),
+                        charFontGameObject = gameObject.findChildByTag("5");
 
-                    charFontGameObject1.transform.scale = wd.Vector3.create(2, 1, 1);
-                    charFontGameObject1.transform.translate(-300, -100, 0);
-                });
+                tween.from({z: 0})
+                        .to({z: 360}, 3000)
+                        .easing(wd.Tween.Easing.Cubic.InOut)
+                        .onUpdate(function () {
+                            charFontGameObject.transform.eulerAngles = wd.Vector3.create(0, this.z, 0);
+                        });
+
+
+                var action = wd.RepeatForever.create(tween);
 
                 gameObject.addComponent(action);
 
@@ -72,7 +72,7 @@
             gameObject.addComponent(renderer);
 
 
-            gameObject.transform.translate(200, 100, 0);
+            gameObject.transform.translate(- font.width / 2, 100, 0);
 
             return gameObject;
         }
