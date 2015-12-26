@@ -266,8 +266,6 @@
 /// <reference path="asset/AssetType"/>
 
 /// <reference path="asset/Loader"/>
-/// <reference path="asset/FontLoader"/>
-/// <reference path="asset/FntLoader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
 /// <reference path="asset/VideoLoader"/>
@@ -299,6 +297,10 @@
 /// <reference path="asset/wd/WDParser"/>
 /// <reference path="asset/wd/WDObjectParser"/>
 /// <reference path="asset/wd/WDBuilder"/>
+
+/// <reference path="asset/font/FontLoader"/>
+/// <reference path="asset/font/FntParser"/>
+/// <reference path="asset/font/FntLoader"/>
 
 
 /// <reference path="event/structure/EventListenerMap"/>

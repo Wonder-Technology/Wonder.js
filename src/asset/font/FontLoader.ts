@@ -1,4 +1,4 @@
-/// <reference path="../filePath.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module wd{
     const TYPE = {
         ".eot": "embedded-opentype",
