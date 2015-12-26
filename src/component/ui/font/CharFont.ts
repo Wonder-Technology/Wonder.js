@@ -37,8 +37,10 @@ module wd {
             return this._char;
         }
         set char(char:string){
-            this._char = char;
-            this.p_dirty = true;
+            if(char !== this._char){
+                this._char = char;
+                this.p_dirty = true;
+            }
         }
 
         public startPosX:number = null;
@@ -49,17 +51,6 @@ module wd {
         public height:number = 0;
         public isNewLine:boolean = false;
         public isFullLine:boolean = false;
-
-        @require(function () {
-            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
-        })
-        protected getContext() {
-            var renderer = this.gameObject.getComponent<UIRenderer>(UIRenderer);
-
-            return renderer.context;
-        }
-
-
 
         public init(){
             this.context = this.getContext();
@@ -77,11 +68,7 @@ module wd {
                 dx = null,
                 dy = null;
 
-            /*!
-             shouldn't use "this.dirty = false;", it's not work.
-             because CharFont redefine the dirty->getter excepet dirty->setter, so the dirty now only has getter, no setter.
-             */
-            this.p_dirty = false;
+            super.update(elapsedTime);
 
             if(this.rectRegion === null){
                 return;
@@ -98,6 +85,9 @@ module wd {
             this.context.drawImage(this.image,
                 this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
                 dx, dy, this.width * scale.x, this.height * scale.y);
+        }
+
+        protected updateWhenDirty(){
         }
     }
 }

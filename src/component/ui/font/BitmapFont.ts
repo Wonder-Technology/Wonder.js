@@ -1,6 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
-    export class BitmapFont extends CanvasFont{
+    export class BitmapFont extends Font{
         public static create() {
             var obj = new this();
 
