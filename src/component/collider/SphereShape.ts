@@ -39,6 +39,34 @@ module wd {
             return this.isBoxAndSphereIntersected(shape, this);
         }
 
+        public isIntersectWithRay(rayOrigin:Vector3, rayDir:Vector3) {
+            var diff = Vector3.create(),
+                a = 0,
+                b = 0,
+                c = 0,
+                discr = 0;
+
+            diff.sub2(rayOrigin, this.center);
+            if (diff.dot(diff) < this.radius * this.radius ) {
+                // starts inside this
+                return true;
+            }
+
+            a = rayDir.dot(rayDir);
+            b = 2 * rayDir.dot(diff);
+            c = this.center.dot(this.center);
+            c += rayOrigin.dot(rayOrigin);
+            c -= 2 * this.center.dot(rayOrigin);
+            c -= this.radius * this.radius;
+
+            discr = (b * b) - (4 * a * c);
+            if (discr < 0) {
+                return false;
+            }
+
+            return true;
+        }
+
         public containPoint(point:Vector3) {
             return point.distanceToSquared(this.center) <= (this.radius**2);
         }

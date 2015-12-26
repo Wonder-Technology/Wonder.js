@@ -24,7 +24,7 @@ module wd {
         public reverse() {
             return this;
         }
-        public update(time) {
+        public update(elapsedTime) {
             if (this._callFunc) {
                 this._callFunc.call(this._context, this.p_target, this._dataArr);
             }

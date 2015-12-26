@@ -87,7 +87,7 @@ describe("ArcballCameraController", function () {
 
             expect(controller._changeDistance).toCalledOnce();
 
-            eventTool.triggerDomEvent(wd.EventName.KEYDOWN, document);
+            eventTool.triggerDomEvent(wd.EventName.KEYDOWN, document.body);
 
             expect(controller._changeTarget).toCalledOnce();
 

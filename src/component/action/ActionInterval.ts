@@ -16,14 +16,14 @@ module wd {
             return this._isPause;
         }
 
-        public update(time:number){
-            if (time < this._timeController.startTime) {
+        public update(elapsedTime:number){
+            if (elapsedTime < this._timeController.startTime) {
                 return;
             }
 
-            this.elapsed = this._convertToRatio(this._timeController.computeElapseTime(time));
+            this.elapsed = this._convertToRatio(this._timeController.computeElapseTime(elapsedTime));
 
-            this.updateBody(time);
+            this.updateBody(elapsedTime);
 
             if (this.elapsed === 1) {
                 this.finish();

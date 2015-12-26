@@ -39,7 +39,7 @@ describe("GameObject", function() {
     });
 
     describe("findChildByUid", function(){
-        it("match uid, return the first result. uid can be string/regex", function(){
+        it("match uid, return the first result.", function(){
             var parent = GameObject.create();
             var child1 = GameObject.create();
             child1.uid = 1;
@@ -53,6 +53,29 @@ describe("GameObject", function() {
 
             expect(parent.findChildByUid(2)).toEqual(child2);
             expect(parent.findChildByUid(3)).toEqual(child3);
+        });
+    });
+
+    describe("findChildByTag", function(){
+        it("complete match tag, return the first result.", function(){
+            var parent = GameObject.create();
+            var child1 = GameObject.create();
+            child1.addTag("1");
+            var child2 = GameObject.create();
+            child2.addTag("a");
+            child2.addTag("b");
+
+            var child3 = GameObject.create();
+            child3.addTag("a");
+            child3.addTag("abc");
+
+            parent.addChild(child1);
+            parent.addChild(child2);
+            parent.addChild(child3);
+
+            expect(parent.findChildByTag("1")).toEqual(child1);
+            expect(parent.findChildByTag("a")).toEqual(child2);
+            expect(parent.findChildByTag("abc")).toEqual(child3);
         });
     });
 

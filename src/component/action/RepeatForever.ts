@@ -15,8 +15,8 @@ module wd {
 
         private _innerAction:Action = null;
 
-        public update(time) {
-            this._innerAction.update(time);
+        public update(elapsedTime) {
+            this._innerAction.update(elapsedTime);
 
             if (this._innerAction.isFinish) {
                 this._innerAction.reset();

@@ -15,40 +15,41 @@ module wd {
 
         public keyState:any = {};
 
-        public on(eventName:EventName, handler:(event:KeyboardEvent) => void, priority:number) {
-            this.handler(null, eventName, handler, priority);
-        }
+        public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
 
-        public trigger(event:Event):boolean{
-            var eventName = event.name,
-                registerDataList:wdCb.Collection<EventRegisterData> = null;
+        public on(...args) {
+            var eventName = null,
+                handler = null,
+                priority = null;
 
-            registerDataList = EventRegister.getInstance().getEventRegisterDataList(eventName);
+            if(args.length === 3){
+                eventName = args[0];
+                handler = args[1];
+                priority = args[2];
+            }
+            else{
+                Log.warn("keyboard event can only bind on document.body");
 
-            if (registerDataList === null || registerDataList.getCount()=== 0) {
-                return;
+                eventName = args[1];
+                handler = args[2];
+                priority = args[3];
             }
 
-            registerDataList.forEach((registerData:EventRegisterData) => {
-                var eventCopy = event.copy();
-
-                registerData.handler(eventCopy);
-            });
-
-            return true;
+            this.handler(this.getDefaultDom(), eventName, handler, priority);
         }
 
-        protected getDom() {
-            return document;
+        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){
+            var eventObj = this._createEventObject(dom, event, eventName);
+
+            EventManager.trigger(dom, eventObj);
         }
 
-        protected triggerDomEvent(event:Event, eventName:EventName, target:GameObject){
-            var eventObj = this._createEventObject(event, eventName);
-
-            EventManager.trigger(eventObj);
+        protected getDefaultDom():HTMLElement{
+            return document.body;
         }
 
-        protected addEngineHandler(target:GameObject, eventName:EventName, handler:(event:KeyboardEvent) => void){
+        protected addEngineHandler(eventName:EventName, handler:(event:KeyboardEvent) => void){
             var resultHandler = null;
 
             switch (eventName){
@@ -99,8 +100,10 @@ module wd {
             }
         }
 
-        private _createEventObject(event:any, eventName:EventName) {
+        private _createEventObject(dom:HTMLElement, event:any, eventName:EventName) {
             var obj = KeyboardEvent.create(event ? event : root.event, eventName);
+
+            obj.target = dom;
 
             return obj;
         }

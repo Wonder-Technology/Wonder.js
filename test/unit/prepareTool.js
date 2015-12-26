@@ -19,6 +19,23 @@ var prepareTool = (function () {
 
             return box;
         },
+        createSphere: function(radius){
+            var radius = radius || 5;
+
+            var material = wd.BasicMaterial.create();
+
+            var geo = wd.SphereGeometry.create();
+            geo.radius = radius;
+
+            geo.material = material;
+
+            var sphere = wd.GameObject.create();
+
+            sphere.addComponent(geo);
+            sphere.addComponent(wd.MeshRenderer.create());
+
+            return sphere;
+        },
         addScript:function(gameObject, script, scriptName){
             gameObject._scripts.addChild(scriptName || "scriptName", script);
         },

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ray cast picking with perspective camera</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        initSample();
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            director.scene.addChildren(createBoxes());
+            director.scene.addChildren(createSpheres());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createCamera());
+
+
+            director.scene.addComponent(wd.Script.create("./js/picking_rayPicking.js"));
+
+
+            director.start();
+        }
+
+        function createBox(color, position) {
+            var material = wd.LightMaterial.create();
+            material.color = color;
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 2;
+            geometry.height = 2;
+            geometry.depth = 2;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+
+            gameObject.addComponent(wd.BoxCollider.create());
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(position);
+
+
+            return gameObject;
+        }
+
+        function createSphere(color, position) {
+            var material = wd.LightMaterial.create();
+            material.color = color;
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 2;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.SphereCollider.create());
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(position);
+
+            return gameObject;
+        }
+
+        function createBoxes() {
+            return [
+                createBox(createRandomColor(), wd.Vector3.create(-10, 0, 0)),
+                createBox(createRandomColor(), wd.Vector3.create(10, 0, 0))
+            ]
+        }
+
+        function createSpheres() {
+            return [
+                createSphere(createRandomColor(), wd.Vector3.create(-5, 5, 0)),
+                createSphere(createRandomColor(), wd.Vector3.create(5, 5, 0))
+            ]
+        }
+
+        function createRandomColor() {
+            var utils = wd.MathUtils;
+
+            return wd.Color.create("rgb(" + utils.generateZeroToOne() + "," + utils.generateZeroToOne() + "," + utils.generateZeroToOne().toString() + ")");
+        }
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(wd.Vector3.create(0, 100, 50));
+
+            return directionLight;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 1000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+            controller.distance = 30;
+
+            camera.addComponent(controller);
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

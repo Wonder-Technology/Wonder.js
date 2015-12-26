@@ -19,7 +19,7 @@ module wd {
             this.buildBoundingRegion();
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             this.boundingRegion.update();
         }
 

@@ -20,15 +20,15 @@ module wd {
             this._morphNormalDirty = false;
 
             if (geometry.isSmoothShading()) {
-                if (!geometry.hasMorphVertexNormals()) {
-                    geometry.computeMorphNormals();
+                if (!this.hasMorphVertexNormals()) {
+                    this.computeMorphNormals();
                 }
 
                 return geometry.morphVertexNormals;
             }
 
-            if (!geometry.hasMorphFaceNormals()) {
-                geometry.computeMorphNormals();
+            if (!this.hasMorphFaceNormals()) {
+                this.computeMorphNormals();
             }
 
             return geometry.morphFaceNormals;

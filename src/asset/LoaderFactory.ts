@@ -1,7 +1,29 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
     export class LoaderFactory{
-        public static create(extname:string) {
+        public static create(type:AssetType, extname:string) {
+            var loader = null;
+
+            switch (type){
+                case AssetType.FONT:
+                    loader = FontLoader.getInstance();
+                    break;
+                case AssetType.UNKNOW:
+                    loader = this._getLoaderByExtname(extname);
+                    break;
+                default:
+                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`asset type:${type}`));
+                    break;
+            }
+
+            return loader;
+        }
+
+        public static createAllLoader():wdCb.Collection<Loader>{
+            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance(), FontLoader.getInstance(), FntLoader.getInstance()]);
+        }
+
+        private static _getLoaderByExtname(extname:string){
             var loader = null;
 
             switch (extname){
@@ -27,16 +49,21 @@ module wd{
                 case ".wd":
                     loader = WDLoader.getInstance();
                     break;
+                case ".eot":
+                case ".ttf":
+                case ".woff":
+                case ".svg":
+                    loader = FontLoader.getInstance();
+                    break;
+                case ".fnt":
+                    loader = FntLoader.getInstance();
+                    break;
                 default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT(extname));
+                    Log.error(true, Log.info.FUNC_UNKNOW(`extname:${extname}`));
                     break;
             }
 
             return loader;
-        }
-
-        public static createAllLoader():wdCb.Collection<Loader>{
-            return wdCb.Collection.create<Loader>([JsLoader.getInstance(), GLSLLoader.getInstance(), TextureLoader.getInstance(), VideoLoader.getInstance()]);
         }
     }
 }

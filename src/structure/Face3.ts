@@ -1,7 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd {
     export class Face3{
-        public static create(aIndex:number, bIndex:number, cIndex:number, faceNormal:Vector3 = Vector3.create(), vertexNormals:wdCb.Collection<Vector3> = wdCb.Collection.create<Vector3>()) {
+        public static create(aIndex:number, bIndex:number, cIndex:number, faceNormal:Vector3 = null, vertexNormals:wdCb.Collection<Vector3> = wdCb.Collection.create<Vector3>()) {
         	var obj = new this(aIndex, bIndex, cIndex, faceNormal, vertexNormals);
 
         	return obj;
@@ -11,18 +11,33 @@ module wd {
             this.aIndex = aIndex;
             this.bIndex = bIndex;
             this.cIndex = cIndex;
-            this.faceNormal = faceNormal;
+            this._faceNormal = faceNormal;
             this.vertexNormals = vertexNormals;
+        }
+
+        private _faceNormal:Vector3 = null;
+        get faceNormal(){
+            return this._faceNormal !== null ? this._faceNormal : Vector3.create(0, 0, 0);
+        }
+        set faceNormal(faceNormal:Vector3){
+            this._faceNormal = faceNormal;
         }
 
         public aIndex:number = null;
         public bIndex:number = null;
         public cIndex:number = null;
-        public faceNormal:Vector3 = null;
         public vertexNormals:wdCb.Collection<Vector3> = null;
 
+        public hasFaceNormal(){
+            return this._faceNormal !== null;
+        }
+
+        public hasVertexNormal(){
+            return this.vertexNormals.getCount() > 0;
+        }
+
         public copy(){
-            var copyFaceNormal = this.faceNormal ? this.faceNormal.copy() : null,
+            var copyFaceNormal = this._faceNormal ? this._faceNormal.copy() : null,
                 copyVertexNormals = null;
 
             if(this.vertexNormals){

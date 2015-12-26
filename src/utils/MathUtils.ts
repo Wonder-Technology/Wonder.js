@@ -15,6 +15,30 @@ module wd {
         public static bigThan(num:number, below:number){
             return num < below ? below : num;
         }
+
+
+        /**
+         * generate num in (0,1)
+         * @returns {number}
+         */
+        public static generateZeroToOne() {
+            return Math.random();
+        }
+
+        /**
+         * generate integer in [min,max]
+         * @param min
+         * @param max
+         * @returns {number}
+         */
+        @require(function(min:number, max:number){
+            assert(min < max, Log.info.FUNC_SHOULD("min", "< max"));
+        })
+        public static generateInteger(min:number, max:number) {
+            var max = max + 1;
+
+            return Math.floor(Math.random() * (max - min) + min);
+        }
     }
 }
 

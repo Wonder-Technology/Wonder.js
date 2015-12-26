@@ -168,7 +168,7 @@ module wd {
         public copy(){
             var eventObj = KeyboardEvent.create(this.event, this.name);
 
-            return this.copyMember(eventObj, this, ["altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
+            return this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "altKey", "shiftKey", "ctrlKey", "metaKey", "keyCode", "key"]);
         }
     }
 }

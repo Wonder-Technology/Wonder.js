@@ -10,8 +10,8 @@ module wd{
             return this._instance;
         }
 
-        protected loadAsset(url:string):wdFrp.Stream;
-        protected loadAsset(url:Array<string>):wdFrp.Stream;
+        protected loadAsset(url:string, id:string):wdFrp.Stream;
+        protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 
         protected loadAsset(...args):wdFrp.Stream {
             var urlArr = null;

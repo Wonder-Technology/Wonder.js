@@ -73,7 +73,7 @@ module wd{
                 this._localPosition = position.copy();
             }
             else {
-                this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(position);
+                this._localPosition = this._parent.localToWorldMatrix.copy().invert().multiplyPoint(position);
             }
 
             this.isTranslate = true;
@@ -108,6 +108,7 @@ module wd{
             }
             else {
                 this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
+                //this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyPoint(scale);
             }
 
             this.isScale = true;

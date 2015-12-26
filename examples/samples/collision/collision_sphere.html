@@ -48,30 +48,6 @@
             director.scene.addChild(tool.createDirectionLight([sphere1,sphere2,sphere3,sphere,box1,ground]));
             director.scene.addChild(tool.createCamera(50));
 
-            wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
-                    .subscribe(function(e){
-                        var keyState = e.keyState,
-                                x = 0,
-                                z = 0,
-                                moveSpeedX = 0.5,
-                                moveSpeedZ = 0.5;
-
-                        if (keyState["a"]) {
-                            x = -moveSpeedX;
-                        }
-                        else if(keyState["d"]) {
-                            x = moveSpeedX;
-                        }
-                        else if(keyState["w"]) {
-                            z = -moveSpeedZ;
-                        }
-                        else if(keyState["s"]) {
-                            z = moveSpeedZ;
-                        }
-
-                        sphere1.transform.translate(x, 0, z);
-                    });
-
             director.start();
         }
 

@@ -169,7 +169,7 @@ module wd {
          The results are summed to produce the depth offset. This offset is applied in screen space, typically with positive Z pointing into the screen.
          the offset is calculated after the normal Z calculations, but applied before the depth test and before being written to the depth buffer.
          */
-        public polygonOffset:Point = null;
+        public polygonOffset:Vector2 = null;
 
         private _polygonOffsetMode:PolygonOffsetMode = null;
         get polygonOffsetMode(){
@@ -454,5 +454,14 @@ module wd {
         ADDITIVEALPHA,
         MULTIPLICATIVE,
         PREMULTIPLIED
+    }
+
+    export enum CanvasType{
+        UI = <any>"UI"
+    }
+
+    export type CanvasMapData = {
+        canvas:HTMLCanvasElement,
+        context:CanvasRenderingContext2D
     }
 }

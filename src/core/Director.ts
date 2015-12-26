@@ -97,12 +97,6 @@ module wd{
 
         //todo add dispose
 
-        public getTopUnderPoint(point:Point):GameObject{
-            var top = this.scene.getTopUnderPoint(point);
-
-            return top ? top : this.scene;
-        }
-
         public getDeltaTime(){
             return this._timeController.deltaTime;
         }
@@ -185,11 +179,14 @@ module wd{
             return true;
         }
 
-        private _run(time:number) {
-            this.scheduler.update(time);
-            this.scene.update(time);
+        private _run(elapseTime:number) {
+            this.scheduler.update(elapseTime);
+            this.scene.update(elapseTime);
             this.scene.render(this.renderer);
-            this.renderer.render();
+
+            if(this.renderer.hasCommand()){
+                this.renderer.render();
+            }
         }
     }
 }

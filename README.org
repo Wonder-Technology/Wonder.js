@@ -29,6 +29,10 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- UI
+  - TTF Font, Bitmap Font
+- Picking
+  - RayCast Picking
 - Collider
   - BoxCollider,SphereCollider,AABBShape,SphereShape
 - Physics
@@ -171,5 +175,4 @@ Here shows a spinning cube sample:
 #+END_SRC
 * License
 MIT Licence
-
 

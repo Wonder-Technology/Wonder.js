@@ -395,4 +395,92 @@ describe("loader", function () {
             });
         });
     });
+    
+    describe("load font asset", function(){
+        describe("plain font", function(){
+            beforeEach(function(){
+
+            });
+            afterEach(function(){
+                $("style").remove();
+            });
+
+            it("if browser support document.fonts api, it can ensure that the font is loaded", function(done) {
+                if(!document.fonts){
+                    done();
+
+                    return;
+                }
+
+                sandbox.spy(document.fonts, "load");
+
+                wd.LoaderManager.getInstance().load([
+                    {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                ]).subscribe(function (data) {
+                }, null, function () {
+                    expect(document.fonts.load).toCalledOnce();
+
+                    done();
+                });
+            });
+
+            describe("load .ttf", function(){
+                it("add style element with @font-face into body to load ttf font", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        expect($("style").length).toEqual(1);
+
+
+                        done();
+                    });
+                });
+                it("dipose method should remove the added style element", function(done){
+                    wd.LoaderManager.getInstance().load([
+                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    ]).subscribe(function(data){
+                    }, null, function(){
+                        expect($("style").length).toEqual(1);
+
+                        wd.LoaderManager.getInstance().dispose();
+
+                        expect($("style").length).toEqual(0);
+
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe("bitmap font", function(){
+            it("load and parse fnt file", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/myFont.fnt", id: "myFont_fnt"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var fnt = wd.LoaderManager.getInstance().get("myFont_fnt");
+
+                    expect(fnt.commonHeight).toEqual(90);
+                    expect(fnt.atlasName).toEqual(testTool.resPath + "test/res/font/myFont.png");
+                    expect(fnt.fontDefDictionary).toBeDefined();
+
+                    done();
+                });
+            });
+            it("load bitmap file", function(done){
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/font/myFont.png", id: "myFont_image"}
+                ]).subscribe(function(data){
+                }, null, function(){
+                    var bitmap = wd.LoaderManager.getInstance().get("myFont_image");
+
+                    expect(bitmap).toBeInstanceOf(wd.ImageTextureAsset);
+                    expect(bitmap.format).toEqual(wd.TextureFormat.RGBA);
+
+                    done();
+                });
+            });
+        });
+    });
 });

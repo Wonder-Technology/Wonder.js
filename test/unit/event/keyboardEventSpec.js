@@ -36,7 +36,7 @@ describe("keyboard event", function () {
     testTool.shouldExecRunTest("test event object's member when triggered");
 
     describe("bind/unbind keyboard event", function(){
-        describe("bind on document", function(){
+        describe("bind on document.body", function(){
             it("on/off", function(){
                 var eventTarget = null,
                     sum = 0;
@@ -91,8 +91,20 @@ describe("keyboard event", function () {
             });
         });
 
-        //todo finish it
-        describe("bind on GameObject which has the focus", function(){
+        it("if try to bind on other dom, warn and bind on document.body", function(){
+            var sum = 0;
+
+            sandbox.stub(wd.Log, "warn");
+
+            manager.on(document.createElement("div") ,wd.EventName.KEYDOWN, function (e) {
+                sum++;
+            });
+
+            expect(wd.Log.warn).toCalledOnce();
+
+            manager.trigger(document.body, wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+
+            expect(sum).toEqual(1);
         });
 
         it("listener", function(){
@@ -214,7 +226,7 @@ describe("keyboard event", function () {
         });
 
         it("use subscription.dispose to off event binded by fromEvent", function(){
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -230,13 +242,13 @@ describe("keyboard event", function () {
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -251,7 +263,7 @@ describe("keyboard event", function () {
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document);
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();

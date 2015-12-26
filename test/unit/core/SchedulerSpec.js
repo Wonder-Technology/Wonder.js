@@ -126,9 +126,9 @@ describe("Scheduler", function () {
     });
 
     describe("control test", function(){
-        function update(time){
-            window.performance.now.returns(time);
-            schedule.update(time);
+        function update(elapsedTime){
+            window.performance.now.returns(elapsedTime);
+            schedule.update(elapsedTime);
         }
 
         beforeEach(function(){

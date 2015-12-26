@@ -36,7 +36,7 @@ module wd {
             }
 
             this._children.forEach((child:GameObject) => {
-                child.isRigidbodyChild = true;
+                child.addTag("isRigidbodyChild");
             });
         }
 
@@ -44,7 +44,6 @@ module wd {
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
-
 
         public init() {
             var self = this;
@@ -86,14 +85,22 @@ module wd {
             }
         }
 
+        public removeFromGameObject(gameObject:GameObject){
+            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
+
+            if(engineAdapter){
+                this.getPhysicsEngineAdapter().removeGameObject(gameObject);
+
+                this.getPhysicsEngineAdapter().removeConstraints(gameObject);
+            }
+
+            super.removeFromGameObject(gameObject);
+        }
+
         public dispose(){
             this._children.forEach((child:GameObject) => {
-                child.isRigidbodyChild = false;
-            });
-
-            this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
-
-            this.getPhysicsEngineAdapter().removeConstraints(this.gameObject);
+                child.removeTag("isRigidbodyChild");
+            }, this);
         }
 
         public getPhysicsEngineAdapter() {

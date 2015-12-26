@@ -16,6 +16,12 @@ vec3 getPointLightDir(int index){
             return getPointLightDirByLightPos(u_pointLights[x].position);
         }
     }
+    /*!
+    solve error in window7 chrome/firefox:
+    not all control paths return a value.
+    failed to create d3d shaders
+    */
+    return vec3(0.0);
 }
 #endif
 
@@ -29,7 +35,7 @@ vec3 getDirectionLightDir(int index){
     }
 
     /*!
-    try to solve error in window7 chrome/firefox:
+    solve error in window7 chrome/firefox:
     not all control paths return a value.
     failed to create d3d shaders
     */

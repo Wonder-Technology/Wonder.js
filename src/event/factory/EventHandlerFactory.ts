@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
-    export class FactoryEventHandler{
+    export class EventHandlerFactory{
         public static createEventHandler(eventType:EventType){
             let handler = null;
 

@@ -26,10 +26,10 @@ module wd {
             this._control.init(this.gameObject);
         }
 
-        public update(time:number){
-            super.update(time);
+        public update(elapsedTime:number){
+            super.update(elapsedTime);
 
-            this._control.update(time);
+            this._control.update(elapsedTime);
         }
 
         public dispose() {

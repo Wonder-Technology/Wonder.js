@@ -14,12 +14,11 @@ module wd {
         }
 
         public parent:GameObject = null;
-        public isRigidbodyChild:boolean = false;
         public bubbleParent:GameObject = null;
         public transform:Transform = Transform.create(this);
         public name:string = "gameObject" + String(this.uid);
         public actionManager:ActionManager = ActionManager.create();
-        public isCollided:boolean = false;
+        public uiManager:UIManager = UIManager.create(this);
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
@@ -74,6 +73,8 @@ module wd {
 
         //todo test memory management
         public dispose() {
+            var components = null;
+
             this.onDispose();
 
             if(this.parent){
@@ -86,7 +87,9 @@ module wd {
             EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
             EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
 
-            this._components.forEach((component:Component) => {
+            components = this.removeAllComponent();
+
+            components.forEach((component:Component) => {
                 component.dispose();
             });
 
@@ -159,6 +162,12 @@ module wd {
             });
         }
 
+        public findChildByTag(tag:string){
+            return this._children.findOne((child:GameObject) => {
+                return child.hasTag(tag);
+            });
+        }
+
         public findChildByName(name:string){
             return this._children.findOne((child:GameObject) => {
                 return child.name.search(name) > -1;
@@ -187,6 +196,12 @@ module wd {
             return this._components.getChild(0);
         }
 
+        public forEachComponent(func:(component:Component) => void){
+            this._components.forEach(func);
+
+            return this;
+        }
+
         public removeChild(child:GameObject):GameObject {
             child.onExit();
 
@@ -195,35 +210,6 @@ module wd {
             child.parent = null;
 
             return this;
-        }
-
-        public getTopUnderPoint(point:Point):GameObject {
-            //todo judge position.z?
-            var result = null;
-
-            this._children.copy().reverse().forEach((child:GameObject) => {
-                result = child.getTopUnderPoint(point);
-
-                if (result) {
-                    return wdCb.$BREAK;
-                }
-            });
-
-            if(result){
-                return result;
-            }
-
-            if(this.isPick(point)) {
-                return this;
-            }
-
-            return null;
-        }
-
-        public isPick(locationInView:Point):boolean {
-            var pick = this._getPick();
-
-            return pick? pick.isPick(locationInView.x, locationInView.y) : false;
         }
 
         public hasComponent(component:Component):boolean;
@@ -272,9 +258,23 @@ module wd {
 
             this._components.removeChild(component);
 
-            component.removeFromGameObject(this);
+            this._removeComponentHandler(component);
 
             return this;
+        }
+
+        public removeAllComponent(){
+            var result = wdCb.Collection.create<Component>();
+
+            this._components.forEach((component:Component) => {
+                this._removeComponentHandler(component);
+
+                result.addChild(component)
+            }, this);
+
+            this._components.removeAllChildren();
+
+            return result;
         }
 
         public render(renderer:Renderer, camera:GameObject):void {
@@ -290,34 +290,32 @@ module wd {
             });
         }
 
-        public update(time:number):void {
+        public update(elapsedTime:number):void {
             var camera = this._getCamera(),
                 animation = this._getAnimation(),
                 collider = this._getCollider();
-                //rigidBody = this._getRigidBody();
+
 
             if(camera){
-                camera.update(time);
+                camera.update(elapsedTime);
             }
 
             if(animation){
-                animation.update(time);
+                animation.update(elapsedTime);
             }
 
-            this.actionManager.update(time);
+            this.actionManager.update(elapsedTime);
 
-            this.execScript("update", time);
+            this.execScript("update", elapsedTime);
 
             if(collider){
-                collider.update(time);
+                collider.update(elapsedTime);
             }
 
-            //if(rigidBody){
-            //    rigidBody.update(time);
-            //}
+            this.uiManager.update(elapsedTime);
 
             this._children.forEach((child:GameObject) => {
-                child.update(time);
+                child.update(elapsedTime);
             });
         }
 
@@ -336,13 +334,6 @@ module wd {
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
-        }
-
-        @require(function(){
-            assert(this._getComponentCount(Pick) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 pick component"));
-        })
-        private _getPick():Pick{
-            return this.getComponent<Pick>(Pick);
         }
 
         @require(function(){
@@ -372,18 +363,15 @@ module wd {
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
-        //
-        //@require(function(){
-        //    assert(this._getComponentCount(RigidBody) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rigid body component"));
-        //})
-        //private _getRigidBody():RigidBody{
-        //    return this.getComponent<RigidBody>(RigidBody);
-        //}
 
         private _getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();
+        }
+
+        private _removeComponentHandler(component:Component){
+            component.removeFromGameObject(this);
         }
     }
 }

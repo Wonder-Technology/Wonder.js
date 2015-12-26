@@ -22,10 +22,40 @@ module wd{
             this._worldToCameraMatrix = matrix;
         }
 
+        private _near:number = null;
+        get near(){
+            return this._near;
+        }
+        set near(near:number){
+            this._near = near;
+            this.dirty = true;
+        }
+
+        private _far:number = null;
+        get far(){
+            return this._far;
+        }
+        set far(far:number){
+            this._far = far;
+            this.dirty = true;
+        }
+
+
         public pMatrix:Matrix4 = Matrix4.create();
         public gameObject:GameObject = null;
 
         protected dirty:boolean = false;
+
+
+        /**
+         * @name convertScreenToWorld
+         * @description Convert a point from 2D canvas pixel space to 3D world space.
+         * @param {Number} screenX x coordinate on canvas element.
+         * @param {Number} screenY y coordinate on canvas element.
+         * @param {Number} distanceFromCamera The distance from the camera in world space to create the new point.
+         * @returns {Vector3} The world space coordinate.
+         */
+        public abstract convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3;
 
         @virtual
         public init(){
@@ -39,7 +69,7 @@ module wd{
         public dispose(){
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if(this.dirty){
                 this.updateProjectionMatrix();
 
@@ -48,5 +78,9 @@ module wd{
         }
 
         protected abstract updateProjectionMatrix();
+
+        protected getInvViewProjMat(){
+            return this.pMatrix.copy().multiply(this.worldToCameraMatrix).invert();
+        }
     }
 }

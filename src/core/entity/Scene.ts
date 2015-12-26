@@ -35,8 +35,6 @@ module wd {
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
 
         public init(){
-            this.addComponent(Pick.create());
-
             if(this.physics.enable){
                 this.physicsEngineAdapter = PhysicsEngineFactory.create(this.physics.engine);
                 this.physicsEngineAdapter.init();
@@ -78,19 +76,19 @@ module wd {
             this._renderTargetRenderers.removeChild(renderTargetRenderer);
         }
 
-        public update(time:number){
+        public update(elapsedTime:number){
             if(this.physics.enable){
-                this.physicsEngineAdapter.update(time);
+                this.physicsEngineAdapter.update(elapsedTime);
             }
 
-            super.update(time);
+            super.update(elapsedTime);
 
             this._collisionDetector.detect(this);
         }
 
-        @require(function(renderer:Renderer){
-            assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
-        })
+        //@require(function(renderer:Renderer){
+        //    assert(!!this.camera, Log.info.FUNC_MUST("scene",  "add camera"));
+        //})
         public render(renderer:Renderer) {
             var self = this;
 

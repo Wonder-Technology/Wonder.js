@@ -8,7 +8,6 @@ module wd {
         }
 
         public static drawPartOfTextureByCanvas(source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, wd:number, dWidth:number, dHeight:number){
-            //var canvas = wdCb.DomQuery.create("<canvas></canvas>").prependTo("body").get(0),
             var canvas = wdCb.DomQuery.create("<canvas></canvas>").get(0),
                 ctx = null;
 

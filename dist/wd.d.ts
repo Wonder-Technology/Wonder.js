@@ -260,6 +260,8 @@ declare module wdCb {
 declare module wdCb {
     class PathUtils {
         static basename(path: string, ext?: string): string;
+        static changeExtname(pathStr: string, extname: string): string;
+        static changeBasename(pathStr: string, basename: string, isSameExt?: boolean): string;
         static extname(path: string): string;
         static dirname(path: string): string;
         private static _splitPath(fileName);
@@ -280,6 +282,8 @@ declare module wdCb {
         prependTo(eleStr: string): this;
         remove(): this;
         css(property: string, value: string): void;
+        attr(name: string): any;
+        attr(name: string, value: string): any;
         private _isDomEleStr(eleStr);
         private _buildDom(eleStr);
         private _buildDom(dom);
@@ -909,6 +913,996 @@ declare module wdFrp {
     var fromTransformStream: (stream: any) => AnonymousStream;
 }
 
+declare module CANNON {
+
+    export interface IAABBOptions {
+
+        upperBound?: Vec3;
+        lowerBound?: Vec3;
+
+    }
+
+    export class AABB {
+
+        lowerBound: Vec3;
+        upperBound: Vec3;
+
+        constructor(options?: IAABBOptions);
+
+        setFromPoints(points: Vec3[], position?: Vec3, quaternion?: Quaternion, skinSize?: number): void;
+        copy(aabb: AABB): void;
+        extend(aabb: AABB): void;
+        overlaps(aabb: AABB): boolean;
+
+    }
+
+    export class ArrayCollisionMatrix {
+
+        matrix: Mat3[];
+
+        get(i: number, j: number): number;
+        set(i: number, j: number, value?: number): void;
+        reset(): void;
+        setNumObjects(n: number): void;
+
+    }
+
+    export class BroadPhase {
+
+        world: World;
+        useBoundingBoxes: boolean;
+        dirty: boolean;
+
+        collisionPairs(world: World, p1: Body[], p2: Body[]): void;
+        needBroadphaseCollision(bodyA: Body, bodyB: Body): boolean;
+        intersectionTest(bodyA: Body, bodyB: Body, pairs1: Body[], pairs2: Body[]): void;
+        doBoundingSphereBroadphase(bodyA: Body, bodyB: Body, pairs1: Body[], pairs2: Body[]): void;
+        doBoundingBoxBroadphase(bodyA: Body, bodyB: Body, pairs1: Body[], pairs2: Body[]): void;
+        makePairsUnique(pairs1: Body[], pairs2: Body[]): void;
+        setWorld(world: World): void;
+        boundingSphereCheck(bodyA: Body, bodyB: Body): boolean;
+        aabbQuery(world: World, aabb: AABB, result: Body[]): Body[];
+
+    }
+
+    export class GridBroadphase extends BroadPhase {
+
+        nx: number;
+        ny: number;
+        nz: number;
+        aabbMin: Vec3;
+        aabbMax: Vec3;
+        bins: any[];
+
+        constructor(aabbMin?: Vec3, aabbMax?: Vec3, nx?: number, ny?: number, nz?: number);
+
+    }
+
+    export class NaiveBroadphase extends BroadPhase {
+    }
+
+    export class ObjectCollisionMatrix {
+
+        matrix: number[];
+
+        get(i: number, j: number): number;
+        set(i: number, j: number, value: number): void;
+        reset(): void;
+        setNumObjects(n: number): void;
+
+    }
+
+    export class Ray {
+
+        from: Vec3;
+        to: Vec3;
+        precision: number;
+        checkCollisionResponse: boolean;
+
+        constructor(from?: Vec3, to?: Vec3);
+
+        getAABB(result: RaycastResult): void;
+
+    }
+
+    export class RaycastResult {
+
+        rayFromWorld: Vec3;
+        rayToWorld: Vec3;
+        hitNormalWorld: Vec3;
+        hitPointWorld: Vec3;
+        hasHit: boolean;
+        shape: Shape;
+        body: Body;
+        distance: number;
+
+        reset(): void;
+        set(rayFromWorld: Vec3, rayToWorld: Vec3, hitNormalWorld: Vec3, hitPointWorld: Vec3, shape: Shape, body: Body, distance: number): void;
+
+    }
+
+    export class SAPBroadphase extends BroadPhase {
+
+        static insertionSortX(a: any[]): any[];
+        static insertionSortY(a: any[]): any[];
+        static insertionSortZ(a: any[]): any[];
+        static checkBounds(bi: Body, bj: Body, axisIndex?: number): boolean;
+
+        axisList: any[];
+        world: World;
+        axisIndex: number;
+
+        constructor(world?: World);
+
+        autoDetectAxis(): void;
+        aabbQuery(world: World, aabb: AABB, result?: Body[]): Body[];
+
+    }
+
+    export interface IConstraintOptions {
+
+        collideConnected?: boolean;
+        wakeUpBodies?: boolean;
+
+    }
+
+    export class Constraint {
+
+        equations: any[];
+        bodyA: Body;
+        bodyB: Body;
+        id: number;
+        collideConnected: boolean;
+
+        constructor(bodyA: Body, bodyB: Body, options?: IConstraintOptions);
+
+        update(): void;
+
+    }
+
+    export class DistanceConstraint extends Constraint {
+
+        constructor(bodyA: Body, bodyB: Body, distance: number, maxForce?: number);
+
+    }
+
+    export interface IHingeConstraintOptions {
+
+        pivotA?: Vec3;
+        axisA?: Vec3;
+        pivotB?: Vec3;
+        axisB?: Vec3;
+        maxForce?: number;
+
+    }
+
+    export class HingeConstraint extends Constraint {
+
+        motorEnabled: boolean;
+        motorTargetVelocity: number;
+        motorMinForce: number;
+        motorMaxForce: number;
+        motorEquation: RotationalMotorEquation;
+
+        constructor(bodyA: Body, bodyB: Body, options?: IHingeConstraintOptions);
+
+        enableMotor(): void;
+        disableMotor(): void;
+
+    }
+
+    export class PointToPointConstraint extends Constraint {
+
+        constructor(bodyA: Body, pivotA: Vec3, bodyB: Body, pivotB: Vec3, maxForce?: number);
+
+    }
+
+
+    export class LockConstraint extends Constraint {
+        constructor(bodyA: Body, bodyB: Body, options?:any);
+    }
+
+
+
+    export class Equation {
+
+        id: number;
+        minForce: number;
+        maxForce: number;
+        bi: Body;
+        bj: Body;
+        a: number;
+        b: number;
+        eps: number;
+        jacobianElementA: JacobianElement;
+        jacobianElementB: JacobianElement;
+        enabled: boolean;
+
+        constructor(bi: Body, bj: Body, minForce?: number, maxForce?: number);
+
+        setSpookParams(stiffness: number, relaxation: number, timeStep: number): void;
+        computeB(a: number, b: number, h: number): number;
+        computeGq(): number;
+        computeGW(): number;
+        computeGWlamda(): number;
+        computeGiMf(): number;
+        computeGiMGt(): number;
+        addToWlamda(deltalambda: number): number;
+        computeC(): number;
+
+    }
+
+    export class FrictionEquation extends Equation {
+
+        constructor(bi: Body, bj: Body, slipForce: number);
+
+    }
+
+    export class RotationalEquation extends Equation {
+
+        ni: Vec3;
+        nj: Vec3;
+        nixnj: Vec3;
+        njxni: Vec3;
+        invIi: Mat3;
+        invIj: Mat3;
+        relVel: Vec3;
+        relForce: Vec3;
+
+        constructor(bodyA: Body, bodyB: Body);
+
+    }
+
+    export class RotationalMotorEquation extends Equation {
+
+        axisA: Vec3;
+        axisB: Vec3;
+        invLi: Mat3;
+        invIj: Mat3;
+        targetVelocity: number;
+
+        constructor(bodyA: Body, bodyB: Body, maxForce?: number);
+
+    }
+
+    export class ContactEquation extends Equation {
+
+        restitution: number;
+        ri: Vec3;
+        rj: Vec3;
+        penetrationVec: Vec3;
+        ni: Vec3;
+        rixn: Vec3;
+        rjxn: Vec3;
+        invIi: Mat3;
+        invIj: Mat3;
+        biInvInertiaTimesRixn: Vec3;
+        bjInvInertiaTimesRjxn: Vec3;
+
+        constructor(bi: Body, bj: Body);
+
+    }
+
+    export interface IContactMaterialOptions {
+
+        friction?: number;
+        restitution?: number;
+        contactEquationStiffness?: number;
+        contactEquationRelaxation?: number;
+        frictionEquationStiffness?: number;
+        frictionEquationRelaxation?: number;
+
+    }
+
+    export class ContactMaterial {
+
+        id: number;
+        materials: Material[];
+        friction: number;
+        restitution: number;
+        contactEquationStiffness: number;
+        contactEquationRelaxation: number;
+        frictionEquationStiffness: number;
+        frictionEquationRelaxation: number;
+
+        constructor(m1: Material, m2: Material, options?: IContactMaterialOptions);
+
+    }
+
+    export class Material {
+
+        name: string;
+        id: number;
+        friction:number;
+        restitution:number;
+
+        constructor(name: string);
+
+    }
+
+    export class JacobianElement {
+
+        spatial: Vec3;
+        rotational: Vec3;
+
+        multiplyElement(element: JacobianElement): number;
+        multiplyVectors(spacial: Vec3, rotational: Vec3): number;
+
+    }
+
+    export class Mat3 {
+
+        constructor(elements?: number[]);
+
+        identity(): void;
+        setZero(): void;
+        setTrace(vec3: Vec3): void;
+        getTrace(target: Vec3): void;
+        vmult(v: Vec3, target?: Vec3): Vec3;
+        smult(s: number): void;
+        mmult(m: Mat3): Mat3;
+        scale(v: Vec3, target?: Mat3): Mat3;
+        solve(b: Vec3, target?: Vec3): Vec3;
+        e(row: number, column: number, value?: number): number;
+        copy(source: Mat3): Mat3;
+        toString(): string;
+        reverse(target?: Mat3): Mat3;
+        setRotationFromQuaternion(q: Quaternion): Mat3;
+        transpose(target?: Mat3): Mat3;
+
+    }
+
+    export class Quaternion {
+
+        x: number;
+        y: number;
+        z: number;
+        w: number;
+
+        constructor(x?: number, y?: number, z?: number, w?: number);
+
+        set(x: number, y: number, z: number, w: number): void;
+        toString(): string;
+        toArray(): number[];
+        setFromAxisAngle(axis: Vec3, angle: number): void;
+        toAxisAngle(targetAxis?: Vec3): any[];
+        setFromVectors(u: Vec3, v: Vec3): void;
+        mult(q: Quaternion, target?: Quaternion): Quaternion;
+        inverse(target?: Quaternion): Quaternion;
+        conjugate(target?: Quaternion): Quaternion;
+        normalize(): void;
+        normalizeFast(): void;
+        vmult(v: Vec3, target?: Vec3): Vec3;
+        copy(source: Quaternion): Quaternion;
+        toEuler(target: Vec3, order?: string): void;
+        setFromEuler(x: number, y: number, z: number, order?: string): Quaternion;
+        clone(): Quaternion;
+
+    }
+
+    export class Transform {
+
+        static pointToLocalFrame(position: Vec3, quaternion: Quaternion, worldPoint: Vec3, result?: Vec3): Vec3;
+        static pointToWorldFrame(position: Vec3, quaternion: Quaternion, localPoint: Vec3, result?: Vec3): Vec3;
+
+        position: Vec3;
+        quaternion: Quaternion;
+
+        vectorToWorldFrame(localVector: Vec3, result?: Vec3): Vec3;
+        vectorToLocalFrame(position: Vec3, quaternion: Quaternion, worldVector: Vec3, result?: Vec3): Vec3;
+
+    }
+
+    export class Vec3 {
+
+        static ZERO: Vec3;
+
+        x: number;
+        y: number;
+        z: number;
+
+        constructor(x?: number, y?: number, z?: number);
+
+        cross(v: Vec3, target?: Vec3): Vec3;
+        set(x: number, y: number, z: number): Vec3;
+        setZero(): void;
+        vadd(v: Vec3, target?: Vec3): Vec3;
+        vsub(v: Vec3, target?: Vec3): Vec3;
+        crossmat(): Mat3;
+        normalize(): number;
+        unit(target?: Vec3): Vec3;
+        norm(): number;
+        norm2(): number;
+        distanceTo(p: Vec3): number;
+        mult(scalar: number, target?: Vec3): Vec3;
+        scale(scalar: number, target?: Vec3): Vec3;
+        dot(v: Vec3): number;
+        isZero(): boolean;
+        negate(target?: Vec3): Vec3;
+        tangents(t1: Vec3, t2: Vec3): void;
+        toString(): string;
+        toArray(): number[];
+        copy(source: Vec3): Vec3;
+        lerp(v: Vec3, t: number, target?: Vec3): void;
+        almostEquals(v: Vec3, precision?: number): boolean;
+        almostZero(precision?: number): boolean;
+        isAntiparallelTo(v: Vec3, prescision?: number): boolean;
+        clone(): Vec3;
+
+    }
+
+    export interface IBodyOptions {
+        position?: Vec3;
+        velocity?: Vec3;
+        angularVelocity?: Vec3;
+        quaternion?: Quaternion;
+        mass?: number;
+        material?: number;
+        type?: number;
+        linearDamping?: number;
+        angularDamping?: number;
+    }
+
+    export class Body extends EventTarget {
+
+        static DYNAMIC: number;
+        static STATIC: number;
+        static KINEMATIC: number;
+        static AWAKE: number;
+        static SLEEPY: number;
+        static SLEEPING: number;
+        static sleepyEvent: IEvent;
+        static sleepEvent: IEvent;
+
+        id: number;
+        world: World;
+        preStep: Function;
+        postStep: Function;
+        vlambda: Vec3;
+        collisionFilterGroup: number;
+        collisionFilterMask: number;
+        collisionResponse: boolean;
+        position: Vec3;
+        previousPosition: Vec3;
+        initPosition: Vec3;
+        velocity: Vec3;
+        initVelocity: Vec3;
+        force: Vec3;
+        mass: number;
+        invMass: number;
+        material: Material;
+        linearDamping: number;
+        type: number;
+        allowSleep: boolean;
+        sleepState: number;
+        sleepSpeedLimit: number;
+        sleepTimeLimit: number;
+        timeLastSleepy: number;
+        torque: Vec3;
+        quaternion: Quaternion;
+        initQuaternion: Quaternion;
+        angularVelocity: Vec3;
+        initAngularVelocity: Vec3;
+        interpolatedPosition: Vec3;
+        interpolatedQuaternion: Quaternion;
+        shapes: Shape[];
+        shapeOffsets: any[];
+        shapeOrentiations: any[];
+        inertia: Vec3;
+        invInertia: Vec3;
+        invInertiaWorld: Mat3;
+        invMassSolve: number;
+        invInertiaSolve: Vec3;
+        invInteriaWorldSolve: Mat3;
+        fixedRotation: boolean;
+        angularDamping: number;
+        aabb: AABB;
+        aabbNeedsUpdate: boolean;
+        wlambda: Vec3;
+
+        constructor(options?: IBodyOptions);
+
+        wakeUp(): void;
+        sleep(): void;
+        sleepTick(time: number): void;
+        updateSolveMassProperties(): void;
+        pointToLocalFrame(worldPoint: Vec3, result?: Vec3): Vec3;
+        pointToWorldFrame(localPoint: Vec3, result?: Vec3): Vec3;
+        vectorToWorldFrame(localVector: Vec3, result?: Vec3): Vec3;
+        addShape(shape: Shape, offset?: Vec3, orientation?: Quaternion): void;
+        updateBoundingRadius(): void;
+        computeAABB(): void;
+        updateInertiaWorld(force: Vec3): void;
+        applyForce(force: Vec3, worldPoint: Vec3): void;
+        applyImpulse(impulse: Vec3, worldPoint: Vec3): void;
+        updateMassProperties(): void;
+        getVelocityAtWorldPoint(worldPoint: Vec3, result: Vec3): Vec3;
+
+    }
+
+    export interface IRaycastVehicleOptions {
+
+        chassisBody?: Body;
+        indexRightAxis?: number;
+        indexLeftAxis?: number;
+        indexUpAxis?: number;
+
+    }
+
+    export interface IWheelInfoOptions {
+
+        chassisConnectionPointLocal?: Vec3;
+        chassisConnectionPointWorld?: Vec3;
+        directionLocal?: Vec3;
+        directionWorld?: Vec3;
+        axleLocal?: Vec3;
+        axleWorld?: Vec3;
+        suspensionRestLength?: number;
+        suspensionMaxLength?: number;
+        radius?: number;
+        suspensionStiffness?: number;
+        dampingCompression?: number;
+        dampingRelaxation?: number;
+        frictionSlip?: number;
+        steering?: number;
+        rotation?: number;
+        deltaRotation?: number;
+        rollInfluence?: number;
+        maxSuspensionForce?: number;
+        isFronmtWheel?: boolean;
+        clippedInvContactDotSuspension?: number;
+        suspensionRelativeVelocity?: number;
+        suspensionForce?: number;
+        skidInfo?: number;
+        suspensionLength?: number;
+        maxSuspensionTravel?: number;
+        useCustomSlidingRotationalSpeed?: boolean;
+        customSlidingRotationalSpeed?: number;
+
+        position?: Vec3;
+        direction?: Vec3;
+        axis?: Vec3;
+        body?: Body;
+
+    }
+
+    export class WheelInfo {
+
+        maxSuspensionTravbel: number;
+        customSlidingRotationalSpeed: number;
+        useCustomSlidingRotationalSpeed: boolean;
+        sliding: boolean;
+        chassisConnectionPointLocal: Vec3;
+        chassisConnectionPointWorld: Vec3;
+        directionLocal: Vec3;
+        directionWorld: Vec3;
+        axleLocal: Vec3;
+        axleWorld: Vec3;
+        suspensionRestLength: number;
+        suspensionMaxLength: number;
+        radius: number;
+        suspensionStiffness: number;
+        dampingCompression: number;
+        dampingRelaxation: number;
+        frictionSlip: number;
+        steering: number;
+        rotation: number;
+        deltaRotation: number;
+        rollInfluence: number;
+        maxSuspensionForce: number;
+        engineForce: number;
+        brake: number;
+        isFrontWheel: boolean;
+        clippedInvContactDotSuspension: number;
+        suspensionRelativeVelocity: number;
+        suspensionForce: number;
+        skidInfo: number;
+        suspensionLength: number;
+        sideImpulse: number;
+        forwardImpulse: number;
+        raycastResult: RaycastResult;
+        worldTransform: Transform;
+        isInContact: boolean;
+
+        constructor(options?: IWheelInfoOptions);
+
+    }
+
+    export class RaycastVehicle {
+
+        chassisBody: Body;
+        wheelInfos: IWheelInfoOptions[];
+        sliding: boolean;
+        world: World;
+        iindexRightAxis: number;
+        indexForwardAxis: number;
+        indexUpAxis: number;
+
+        constructor(options?: IRaycastVehicleOptions);
+
+        addWheel(options?: IWheelInfoOptions): void;
+        setSteeringValue(value: number, wheelIndex: number): void;
+        applyEngineForce(value: number, wheelIndex: number): void;
+        setBrake(brake: number, wheelIndex: number): void;
+        addToWorld(world: World): void;
+        getVehicleAxisWorld(axisIndex: number, result: Vec3): Vec3;
+        updateVehicle(timeStep: number): void;
+        updateSuspension(deltaTime: number): void;
+        removeFromWorld(world: World): void;
+        getWheelTransformWorld(wheelIndex: number): Transform;
+
+    }
+
+    export interface IRigidVehicleOptions {
+
+        chassisBody: Body;
+
+    }
+
+    export class RigidVehicle {
+
+        wheelBodies: Body[];
+        coordinateSystem: Vec3;
+        chassisBody: Body;
+        constraints: Constraint[];
+        wheelAxes: Vec3[];
+        wheelForces: Vec3[];
+
+        constructor(options?: IRigidVehicleOptions);
+
+        addWheel(options?: IWheelInfoOptions): Body;
+        setSteeringValue(value: number, wheelIndex: number): void;
+        setMotorSpeed(value: number, wheelIndex: number): void;
+        disableMotor(wheelIndex: number): void;
+        setWheelForce(value: number, wheelIndex: number): void;
+        applyWheelForce(value: number, wheelIndex: number): void;
+        addToWorld(world: World): void;
+        removeFromWorld(world: World): void;
+        getWheelSpeed(wheelIndex: number): number;
+
+    }
+
+    export class SPHSystem {
+
+        particles: Particle[];
+        density: number;
+        smoothingRadius: number;
+        speedOfSound: number;
+        viscosity: number;
+        eps: number;
+        pressures: number[];
+        densities: number[];
+        neighbors: number[];
+
+        add(particle: Particle): void;
+        remove(particle: Particle): void;
+        getNeighbors(particle: Particle, neighbors: Particle[]): void;
+        update(): void;
+        w(r: number): number;
+        gradw(rVec: Vec3, resultVec: Vec3): void;
+        nablaw(r: number): number;
+
+    }
+
+    export interface ISpringOptions {
+
+        restLength?: number;
+        stiffness?: number;
+        damping?: number;
+        worldAnchorA?: Vec3;
+        worldAnchorB?: Vec3;
+        localAnchorA?: Vec3;
+        localAnchorB?: Vec3;
+
+    }
+
+    export class Spring {
+
+        restLength: number;
+        stffness: number;
+        damping: number;
+        bodyA: Body;
+        bodyB: Body;
+        localAnchorA: Vec3;
+        localAnchorB: Vec3;
+
+        constructor(options?: ISpringOptions);
+
+        setWorldAnchorA(worldAnchorA: Vec3): void;
+        setWorldAnchorB(worldAnchorB: Vec3): void;
+        getWorldAnchorA(result: Vec3): void;
+        getWorldAnchorB(result: Vec3): void;
+        applyForce(): void;
+
+    }
+
+    export class Box extends Shape {
+
+        static calculateIntertia(halfExtents: Vec3, mass: number, target: Vec3): void;
+
+        boundingSphereRadius: number;
+        collisionResponse: boolean;
+        halfExtents: Vec3;
+        convexPolyhedronRepresentation: ConvexPolyhedron;
+
+        constructor(halfExtents: Vec3);
+
+        updateConvexPolyhedronRepresentation(): void;
+        calculateLocalInertia(mass: number, target?: Vec3): Vec3;
+        getSideNormals(sixTargetVectors: boolean, quat?: Quaternion): Vec3[];
+        updateBoundingSphereRadius(): number;
+        volume(): number;
+        forEachWorldCorner(pos: Vec3, quat: Quaternion, callback: Function): void;
+
+    }
+
+    export class ConvexPolyhedron extends Shape {
+
+        static computeNormal(va: Vec3, vb: Vec3, vc: Vec3, target: Vec3): void;
+        static project(hull: ConvexPolyhedron, axis: Vec3, pos: Vec3, quat: Quaternion, result: number[]): void;
+
+        vertices: Vec3[];
+        worldVertices: Vec3[];
+        worldVerticesNeedsUpdate: boolean;
+        faces: number[];
+        faceNormals: Vec3[];
+        uniqueEdges: Vec3[];
+
+        constructor(points?: Vec3[], faces?: number[]);
+
+        computeEdges(): void;
+        computeNormals(): void;
+        getFaceNormal(i: number, target: Vec3): Vec3;
+        clipAgainstHull(posA: Vec3, quatA: Quaternion, hullB: Vec3, quatB: Quaternion, separatingNormal: Vec3, minDist: number, maxDist: number, result: any[]): void;
+        findSaparatingAxis(hullB: ConvexPolyhedron, posA: Vec3, quatA: Quaternion, posB: Vec3, quatB: Quaternion, target: Vec3, faceListA: any[], faceListB: any[]): boolean;
+        testSepAxis(axis: Vec3, hullB: ConvexPolyhedron, posA: Vec3, quatA: Quaternion, posB: Vec3, quatB: Quaternion): number;
+        getPlaneConstantOfFace(face_i: number): number;
+        clipFaceAgainstHull(separatingNormal: Vec3, posA: Vec3, quatA: Quaternion, worldVertsB1: Vec3[], minDist: number, maxDist: number, result: any[]): void;
+        clipFaceAgainstPlane(inVertices: Vec3[], outVertices: Vec3[], planeNormal: Vec3, planeConstant: number): Vec3;
+        computeWorldVertices(position: Vec3, quat: Quaternion): void;
+        computeLocalAABB(aabbmin: Vec3, aabbmax: Vec3): void;
+        computeWorldFaceNormals(quat: Quaternion): void;
+        calculateWorldAABB(pos: Vec3, quat: Quaternion, min: Vec3, max: Vec3): void;
+        getAveragePointLocal(target: Vec3): Vec3;
+        transformAllPoints(offset: Vec3, quat: Quaternion): void;
+        pointIsInside(p: Vec3): boolean;
+
+    }
+
+    export class Cylinder extends Shape {
+
+        constructor(radiusTop: number, radiusBottom: number, height: number, numSegments: number);
+
+    }
+
+    export interface IHightfield {
+
+        minValue?: number;
+        maxValue?: number;
+        elementSize: number;
+
+    }
+
+    export class Heightfield extends Shape {
+
+        data: number[];
+        maxValue: number;
+        minValue: number;
+        elementSize: number;
+        cacheEnabled: boolean;
+        pillarConvex: ConvexPolyhedron;
+        pillarOffset: Vec3;
+        type: number;
+
+        constructor(data: number[], options?: IHightfield);
+
+        update(): void;
+        updateMinValue(): void;
+        updateMaxValue(): void;
+        setHeightValueAtIndex(xi: number, yi: number, value: number): void;
+        getRectMinMax(iMinX: number, iMinY: number, iMaxX: number, iMaxY: number, result: any[]): void;
+        getIndexOfPosition(x: number, y: number, result: any[], clamp: boolean): boolean;
+        getConvexTrianglePillar(xi: number, yi: number, getUpperTriangle: boolean): void;
+
+    }
+
+    export class Particle extends Shape {
+
+    }
+
+    export class Plane extends Shape {
+
+        worldNormal: Vec3;
+        worldNormalNeedsUpdate: boolean;
+        boundingSphereRadius: number;
+
+        computeWorldNormal(quat: Quaternion): void;
+        calculateWorldAABB(pos: Vec3, quat: Quaternion, min: number, max: number): void;
+
+    }
+
+    export class Shape {
+
+        static types: {
+
+            SPHERE: number;
+            PLANE: number;
+            BOX: number;
+            COMPOUND: number;
+            CONVEXPOLYHEDRON: number;
+            HEIGHTFIELD: number;
+            PARTICLE: number;
+            CYLINDER: number;
+
+        }
+
+        type: number;
+        boundingSphereRadius: number;
+        collisionResponse: boolean;
+
+        updateBoundingSphereRadius(): number;
+        volume(): number;
+        calculateLocalInertia(mass: number, target: Vec3): Vec3;
+
+    }
+
+    export class Sphere extends Shape {
+
+        radius: number;
+
+        constructor(radius: number);
+
+    }
+
+    export class GSSolver extends Solver {
+
+        iterations: number;
+        tolerance: number;
+
+        solve(dy: number, world: World): number;
+
+
+    }
+
+    export class Solver {
+        iterations: number;
+        equations: Equation[];
+
+        solve(dy: number, world: World): number;
+        addEquation(eq: Equation): void;
+        removeEquation(eq: Equation): void;
+        removeAllEquations(): void;
+
+    }
+
+    export class SplitSolver extends Solver {
+
+        subsolver: Solver;
+
+        constructor(subsolver: Solver);
+
+        solve(dy: number, world: World): number;
+
+    }
+
+    export class EventTarget {
+
+        addEventListener(type: string, listener: Function): EventTarget;
+        hasEventListener(type: string, listener: Function): boolean;
+        removeEventListener(type: string, listener: Function): EventTarget;
+        dispatchEvent(event: IEvent): IEvent;
+
+    }
+
+    export class Pool {
+
+        objects: any[];
+        type: any[];
+
+        release(): any;
+        get(): any;
+        constructObject(): any;
+
+    }
+
+    export class TupleDictionary {
+
+        data: {
+            keys: any[];
+        };
+
+        get(i: number, j: number): number;
+        set(i: number, j: number, value: number): void;
+        reset(): void;
+
+    }
+
+    export class Utils {
+
+        static defaults(options?: any, defaults?: any): any;
+
+    }
+
+    export class Vec3Pool extends Pool {
+
+        type: any;
+
+        constructObject(): Vec3;
+
+    }
+
+    export class NarrowPhase {
+
+        contactPointPool: Pool[];
+        v3pool: Vec3Pool;
+
+    }
+
+    export class World extends EventTarget {
+
+        dt: number;
+        allowSleep: boolean;
+        contacts: ContactEquation[];
+        frictionEquations: FrictionEquation[];
+        quatNormalizeSkip: number;
+        quatNormalizeFast: boolean;
+        time: number;
+        stepnumber: number;
+        default_dt: number;
+        nextId: number;
+        gravity: Vec3;
+        broadphase: NaiveBroadphase;
+        bodies: Body[];
+        solver: Solver;
+        constraints: Constraint[];
+        narrowPhase: NarrowPhase;
+        collisionMatrix: ArrayCollisionMatrix;
+        collisionMatrixPrevious: ArrayCollisionMatrix;
+        materials: Material[];
+        contactmaterials: ContactMaterial[];
+        contactMaterialTable: TupleDictionary;
+        defaultMaterial: Material;
+        defaultContactMaterial: ContactMaterial;
+        doProfiling: boolean;
+        profile: {
+            solve: number;
+            makeContactConstraints: number;
+            broadphaser: number;
+            integrate: number;
+            narrowphase: number;
+        };
+        subsystems: any[];
+        addBodyEvent: IBodyEvent;
+        removeBodyEvent: IBodyEvent;
+
+        getContactMaterial(m1: Material, m2: Material): ContactMaterial;
+        numObjects(): number;
+        collisionMatrixTick(): void;
+        addBody(body: Body): void;
+        addConstraint(c: Constraint): void;
+        removeConstraint(c: Constraint): void;
+        rayTest(from: Vec3, to: Vec3, result: RaycastResult): void;
+        remove(body: Body): void;
+        addMaterial(m: Material): void;
+        addContactMaterial(cmat: ContactMaterial): void;
+        step(dy: number, timeSinceLastCalled?: number, maxSubSteps?: number): void;
+
+    }
+
+    export interface IEvent {
+
+        type: string;
+
+    }
+
+    export interface IBodyEvent extends IEvent {
+
+        body: Body;
+
+    }
+
+}
+
 
 declare module wd {
     var DebugConfig: {
@@ -961,10 +1955,204 @@ declare module wd {
 }
 
 declare module wd {
-    class Entity {
+    const DEG_TO_RAD: number;
+    const RAD_TO_DEG: number;
+}
+
+
+declare module wd {
+    class Vector2 {
+        static create(x: any, y: any): Vector2;
+        static create(): Vector2;
+        constructor(x: any, y: any);
+        constructor();
+        x: number;
+        y: number;
+        values: Float32Array;
+        set(x: number, y: number): void;
+    }
+}
+
+
+declare module wd {
+    class Vector3 {
+        static up: Vector3;
+        static forward: Vector3;
+        static right: Vector3;
+        static create(x: any, y: any, z: any): Vector3;
+        static create(): Vector3;
+        constructor(x: any, y: any, z: any);
+        constructor();
+        x: number;
+        y: number;
+        z: number;
+        values: Float32Array;
+        normalize(): Vector3;
+        isZero(): boolean;
+        scale(scalar: number): this;
+        set(v: Vector3): any;
+        set(x: number, y: number, z: number): any;
+        sub(v: Vector3): Vector3;
+        sub2(v1: Vector3, v2: Vector3): this;
+        add(v: Vector3): this;
+        add2(v1: Vector3, v2: Vector3): this;
+        mul(v: Vector3): this;
+        mul2(v1: Vector3, v2: Vector3): this;
+        reverse(): Vector3;
+        copy(): Vector3;
+        toVector4(): Vector4;
+        length(): any;
+        cross(lhs: Vector3, rhs: Vector3): this;
+        lerp(lhs: Vector3, rhs: Vector3, alpha: number): this;
+        dot(rhs: any): number;
+        min(v: Vector3): this;
+        max(v: Vector3): this;
+        isEqual(v: Vector3): boolean;
+        toArray(): number[];
+        applyMatrix4(m: Matrix4): this;
+        distanceTo(v: Vector3): any;
+        distanceToSquared(v: Vector3): number;
+    }
+}
+
+
+declare module wd {
+    class Vector4 {
+        static create(x: any, y: any, z: any, w: any): any;
+        static create(): any;
+        constructor(x: any, y: any, z: any, w: any);
+        constructor();
+        x: number;
+        y: number;
+        z: number;
+        w: number;
+        values: Float32Array;
+        normalize(): Vector4;
+        copy(): Vector4;
+        toVector3(): Vector3;
+        multiplyScalar(scalar: number): this;
+        dot(v: Vector4): number;
+        set(x: number, y: number, z: number, w: number): void;
+        protected copyHelper(vector4: Vector4): any;
+    }
+}
+
+
+declare module wd {
+    class Matrix4 {
+        static create(mat: Float32Array): Matrix4;
+        static create(): Matrix4;
+        constructor(mat: Float32Array);
+        constructor();
+        values: Float32Array;
+        private _matrixArr;
+        push(): void;
+        pop(): void;
+        setIdentity(): Matrix4;
+        invert(): Matrix4;
+        invertTo3x3(): Matrix3;
+        transpose(): Matrix4;
+        setTranslate(x: any, y: any, z: any): Matrix4;
+        translate(x: any, y: any, z: any): Matrix4;
+        setRotate(angle: number, x: number, y: number, z: number): Matrix4;
+        rotate(angle: any, vector3: Vector3): Matrix4;
+        rotate(angle: any, x: any, y: any, z: any): Matrix4;
+        setScale(x: any, y: any, z: any): Matrix4;
+        scale(x: any, y: any, z: any): Matrix4;
+        setLookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
+        setLookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
+        lookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
+        lookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
+        setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4;
+        ortho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4;
+        setPerspective(fovy: number, aspect: number, near: number, far: number): Matrix4;
+        perspective(fovy: number, aspect: number, near: number, far: number): Matrix4;
+        applyMatrix(other: Matrix4): Matrix4;
+        multiply(matrix: Matrix4): Matrix4;
+        multiply(matrix1: Matrix4, matrix2: Matrix4): Matrix4;
+        multiplyVector4(vector: Vector4): Vector4;
+        multiplyVector3(vector: Vector3): Vector3;
+        multiplyPoint(vector: Vector3): Vector3;
+        copy(): Matrix4;
+        getX(): Vector3;
+        getY(): Vector3;
+        getZ(): Vector3;
+        getTranslation(): Vector3;
+        getScale(): Vector3;
+        getEulerAngles(): Vector3;
+        setTRS(t: Vector3, r: Quaternion, s: Vector3): this;
+    }
+}
+
+
+declare module wd {
+    class Matrix3 {
+        static create(mat: Float32Array): Matrix3;
+        static create(): Matrix3;
+        constructor(mat: Float32Array);
+        constructor();
+        values: Float32Array;
+        setIdentity(): Matrix3;
+        invert(): Matrix3;
+        multiplyScalar(s: number): this;
+        multiplyVector3(vector: any): Vector3;
+        transpose(): Matrix3;
+        copy(): Matrix3;
+        set(n11: any, n12: any, n13: any, n21: any, n22: any, n23: any, n31: any, n32: any, n33: any): this;
+    }
+}
+
+
+declare module wd {
+    class Quaternion {
+        static create(x?: number, y?: number, z?: number, w?: number): Quaternion;
+        constructor(x?: number, y?: number, z?: number, w?: number);
+        x: number;
+        y: number;
+        z: number;
+        w: number;
+        setFromEulerAngles(eulerAngles: Vector3): this;
+        multiply(rhs: Quaternion): any;
+        multiply(rhs1: Quaternion, rhs2: Quaternion): any;
+        setFromMatrix(matrix: Matrix4): this;
+        setFromAxisAngle(angle: number, axis: Vector3): this;
+        invert(): this;
+        conjugate(): this;
+        clone(): Quaternion;
+        copy(): Quaternion;
+        normalize(): this;
+        length(): any;
+        multiplyVector3(vector: Vector3): Vector3;
+        set(x: number, y: number, z: number, w: number): void;
+        sub(quat: Quaternion): this;
+        getEulerAngles(): Vector3;
+    }
+}
+
+
+declare module wd {
+    class Plane {
+        static create(a: number, b: number, c: number, d: number): Plane;
+        constructor(a: number, b: number, c: number, d: number);
+        normal: Vector3;
+        d: number;
+        getReflectionMatrix(): Matrix4;
+        normalize(): Plane;
+        copy(): Plane;
+    }
+}
+
+declare module wd {
+    abstract class Entity {
         private static _count;
         constructor();
         uid: number;
+        private _tagList;
+        addTag(tag: string): void;
+        removeTag(tag: string): void;
+        getTagList(): wdCb.Collection<string>;
+        hasTag(tag: string): boolean;
+        containTag(tag: string): boolean;
     }
 }
 
@@ -1049,12 +2237,11 @@ declare module wd {
         private _scripts;
         script: wdCb.Hash<IScriptBehavior>;
         parent: GameObject;
-        isRigidbodyChild: boolean;
         bubbleParent: GameObject;
         transform: Transform;
         name: string;
         actionManager: ActionManager;
-        isCollided: boolean;
+        uiManager: UIManager;
         private _children;
         private _components;
         private _startLoopHandler;
@@ -1076,30 +2263,31 @@ declare module wd {
         getChildren(): wdCb.Collection<GameObject>;
         getChild(index: number): GameObject;
         findChildByUid(uid: number): GameObject;
+        findChildByTag(tag: string): GameObject;
         findChildByName(name: string): GameObject;
         findChildrenByName(name: string): wdCb.Collection<GameObject>;
         getComponent<T>(_class: Function): T;
         findComponentByUid(uid: number): any;
         getFirstComponent(): Component;
+        forEachComponent(func: (component: Component) => void): this;
         removeChild(child: GameObject): GameObject;
-        getTopUnderPoint(point: Point): GameObject;
-        isPick(locationInView: Point): boolean;
         hasComponent(component: Component): boolean;
         hasComponent(_class: Function): boolean;
         addComponent(component: Component): this;
         removeComponent(component: Component): any;
         removeComponent(_class: Function): any;
+        removeAllComponent(): wdCb.Collection<Component>;
         render(renderer: Renderer, camera: GameObject): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         execScript(method: string, arg?: any): void;
         private _ascendZ(a, b);
         private _getGeometry();
-        private _getPick();
         private _getCamera();
         private _getAnimation();
         private _getRendererComponent();
         private _getCollider();
         private _getComponentCount(_class);
+        private _removeComponentHandler(component);
     }
 }
 
@@ -1109,7 +2297,7 @@ declare module wd {
         static create(): Scheduler;
         private _scheduleCount;
         private _schedules;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         scheduleLoop(task: Function, args?: Array<any>): string;
         scheduleFrame(task: any, frame?: number, args?: any): string;
         scheduleInterval(task: any, time?: number, args?: any): string;
@@ -1152,7 +2340,6 @@ declare module wd {
         stop(): void;
         pause(): void;
         resume(): void;
-        getTopUnderPoint(point: Point): GameObject;
         getDeltaTime(): number;
         private startLoop();
         private _buildLoadScriptStream();
@@ -1160,7 +2347,7 @@ declare module wd {
         private _init();
         private _buildLoopStream();
         private _loopBody(time);
-        private _run(time);
+        private _run(elapseTime);
     }
 }
 
@@ -1205,7 +2392,7 @@ declare module wd {
         addChild(child: GameObject): GameObject;
         addRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
         removeRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         render(renderer: Renderer): void;
         private _isCamera(child);
         private _isLight(child);
@@ -1260,189 +2447,42 @@ declare module wd {
     }
 }
 
-declare module wd {
-    const DEG_TO_RAD: number;
-    const RAD_TO_DEG: number;
-}
-
 
 declare module wd {
-    class Vector2 {
-        static create(x: any, y: any): Vector2;
-        static create(): Vector2;
-        constructor(x: any, y: any);
-        constructor();
-        x: number;
-        y: number;
-        values: Float32Array;
-        set(x: number, y: number): void;
+    abstract class ComponentContainer {
+        protected list: wdCb.Collection<Component>;
+        addChild(component: Component): void;
+        removeChild(component: Component): void;
+        hasChild(component: Component): boolean;
     }
 }
 
 
 declare module wd {
-    class Vector3 {
-        static up: Vector3;
-        static forward: Vector3;
-        static right: Vector3;
-        static create(x: any, y: any, z: any): Vector3;
-        static create(): Vector3;
-        constructor(x: any, y: any, z: any);
-        constructor();
-        x: number;
-        y: number;
-        z: number;
-        values: Float32Array;
-        normalize(): Vector3;
-        isZero(): boolean;
-        scale(scalar: number): this;
-        set(v: Vector3): any;
-        set(x: number, y: number, z: number): any;
-        sub(v: Vector3): Vector3;
-        sub2(v1: Vector3, v2: Vector3): this;
-        add(v: Vector3): this;
-        add2(v1: Vector3, v2: Vector3): this;
-        mul(v: Vector3): this;
-        reverse(): Vector3;
-        copy(): Vector3;
-        toVector4(): Vector4;
-        length(): any;
-        cross(lhs: Vector3, rhs: Vector3): this;
-        lerp(lhs: Vector3, rhs: Vector3, alpha: number): this;
-        dot(rhs: any): number;
-        min(v: Vector3): this;
-        max(v: Vector3): this;
-        isEqual(v: Vector3): boolean;
-        toArray(): number[];
-        applyMatrix4(m: Matrix4): this;
-        distanceTo(v: Vector3): any;
-        distanceToSquared(v: Vector3): number;
+    class ActionManager extends ComponentContainer {
+        static create(): ActionManager;
+        protected list: wdCb.Collection<Action>;
+        update(elapsedTime: number): void;
     }
 }
 
 
 declare module wd {
-    class Vector4 {
-        static create(x: any, y: any, z: any, w: any): any;
-        static create(): any;
-        constructor(x: any, y: any, z: any, w: any);
-        constructor();
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-        values: Float32Array;
-        normalize(): Vector4;
-        copy(): Vector4;
-        toVector3(): Vector3;
-        multiplyScalar(scalar: number): this;
-        dot(v: Vector4): number;
-        set(x: number, y: number, z: number, w: number): void;
-        protected copyHelper(vector4: Vector4): any;
-    }
-}
-
-
-declare module wd {
-    class Matrix4 {
-        static create(mat: Float32Array): Matrix4;
-        static create(): Matrix4;
-        constructor(mat: Float32Array);
-        constructor();
-        values: Float32Array;
-        private _matrixArr;
-        push(): void;
-        pop(): void;
-        setIdentity(): Matrix4;
-        invert(): Matrix4;
-        invertTo3x3(): Matrix3;
-        transpose(): Matrix4;
-        setTranslate(x: any, y: any, z: any): Matrix4;
-        translate(x: any, y: any, z: any): Matrix4;
-        setRotate(angle: number, x: number, y: number, z: number): Matrix4;
-        rotate(angle: any, vector3: Vector3): Matrix4;
-        rotate(angle: any, x: any, y: any, z: any): Matrix4;
-        setScale(x: any, y: any, z: any): Matrix4;
-        scale(x: any, y: any, z: any): Matrix4;
-        setLookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
-        setLookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
-        lookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
-        lookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
-        setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4;
-        ortho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4;
-        setPerspective(fovy: number, aspect: number, near: number, far: number): Matrix4;
-        perspective(fovy: number, aspect: number, near: number, far: number): Matrix4;
-        applyMatrix(other: Matrix4): Matrix4;
-        multiply(matrix2: Matrix4): Matrix4;
-        multiply(matrix1: Matrix4, matrix2: Matrix4): Matrix4;
-        multiplyVector4(vector: Vector4): Vector4;
-        multiplyVector3(vector: Vector3): Vector3;
-        copy(): Matrix4;
-        getX(): Vector3;
-        getY(): Vector3;
-        getZ(): Vector3;
-        getTranslation(): Vector3;
-        getScale(): Vector3;
-        getEulerAngles(): Vector3;
-        setTRS(t: Vector3, r: Quaternion, s: Vector3): this;
-    }
-}
-
-
-declare module wd {
-    class Matrix3 {
-        static create(mat: Float32Array): Matrix3;
-        static create(): Matrix3;
-        constructor(mat: Float32Array);
-        constructor();
-        values: Float32Array;
-        setIdentity(): Matrix3;
-        invert(): Matrix3;
-        multiplyScalar(s: number): this;
-        multiplyVector3(vector: any): Vector3;
-        transpose(): Matrix3;
-        copy(): Matrix3;
-        set(n11: any, n12: any, n13: any, n21: any, n22: any, n23: any, n31: any, n32: any, n33: any): this;
-    }
-}
-
-
-declare module wd {
-    class Quaternion {
-        static create(x?: number, y?: number, z?: number, w?: number): Quaternion;
-        constructor(x?: number, y?: number, z?: number, w?: number);
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-        setFromEulerAngles(eulerAngles: Vector3): this;
-        multiply(rhs: Quaternion): any;
-        multiply(rhs1: Quaternion, rhs2: Quaternion): any;
-        setFromMatrix(matrix: Matrix4): this;
-        setFromAxisAngle(angle: number, axis: Vector3): this;
-        invert(): this;
-        conjugate(): this;
-        clone(): Quaternion;
-        copy(): Quaternion;
-        normalize(): this;
-        length(): any;
-        multiplyVector3(vector: Vector3): Vector3;
-        set(x: number, y: number, z: number, w: number): void;
-        sub(quat: Quaternion): this;
-        getEulerAngles(): Vector3;
-    }
-}
-
-
-declare module wd {
-    class Plane {
-        static create(a: number, b: number, c: number, d: number): Plane;
-        constructor(a: number, b: number, c: number, d: number);
-        normal: Vector3;
-        d: number;
-        getReflectionMatrix(): Matrix4;
-        normalize(): Plane;
-        copy(): Plane;
+    class UIManager extends ComponentContainer {
+        static create(gameObject: GameObject): UIManager;
+        constructor(gameObject: GameObject);
+        protected list: wdCb.Collection<UI>;
+        private _gameObject;
+        private _dirtyTag;
+        private _notDirtyTag;
+        update(elapsedTime: number): void;
+        private _getUIRenderer(gameObject);
+        private _isSearchedToFindIfDirty();
+        private _isMarkedDirty();
+        private _removeAllMark();
+        private _markAllUIChildrenWithSameUIRenderer(uiRenderer, isDirty);
+        private _searchAnyOneDirtyOfAllUIWithSameUIRenderer(uiRenderer);
+        private _hasSameUIRenderer(uiRenderer1, uiRenderer2);
     }
 }
 
@@ -1453,7 +2493,7 @@ declare module wd {
         abstract pause(): any;
         abstract resume(): any;
         abstract stop(): any;
-        abstract update(time: number): any;
+        abstract update(elapsedTime: number): any;
     }
 }
 
@@ -1485,7 +2525,7 @@ declare module wd {
         pause(): void;
         resume(): void;
         stop(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         private _start();
         private _floor(time);
         private _resetAnim();
@@ -1797,13 +2837,19 @@ declare module wd {
         cameraToWorldMatrix: Matrix4;
         private _worldToCameraMatrix;
         worldToCameraMatrix: Matrix4;
+        private _near;
+        near: number;
+        private _far;
+        far: number;
         pMatrix: Matrix4;
         gameObject: GameObject;
         protected dirty: boolean;
+        abstract convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
         init(): void;
         dispose(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         protected abstract updateProjectionMatrix(): any;
+        protected getInvViewProjMat(): Matrix4;
     }
 }
 
@@ -1819,10 +2865,7 @@ declare module wd {
         bottom: number;
         private _top;
         top: number;
-        private _near;
-        near: number;
-        private _far;
-        far: number;
+        convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
         protected updateProjectionMatrix(): void;
     }
 }
@@ -1835,12 +2878,9 @@ declare module wd {
         fovy: number;
         private _aspect;
         aspect: number;
-        private _near;
-        near: number;
-        private _far;
-        far: number;
         zoomIn(speed: number, min?: number): void;
         zoomOut(speed: number, max?: number): void;
+        convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
         protected updateProjectionMatrix(): void;
     }
 }
@@ -1854,8 +2894,10 @@ declare module wd {
         pMatrix: Matrix4;
         camera: Camera;
         init(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         dispose(): void;
+        isIntersectWithRay(gameObject: GameObject, screenX: number, screenY: number): boolean;
+        convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
     }
 }
 
@@ -1873,7 +2915,7 @@ declare module wd {
         constructor(cameraComponent: Camera);
         private _control;
         init(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         dispose(): void;
     }
 }
@@ -1892,7 +2934,7 @@ declare module wd {
         private _keydownSubscription;
         private _gameObject;
         init(gameObject: GameObject): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         dispose(): void;
         protected abstract zoom(event: KeyboardEvent): any;
         private _move(event);
@@ -1937,7 +2979,7 @@ declare module wd {
         private _mouseWheelSubscription;
         private _keydownSubscription;
         init(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         dispose(): void;
         private _bindCanvasEvent();
         private _changeOrbit(e);
@@ -1959,7 +3001,7 @@ declare module wd {
         target: GameObject;
         isFinish: boolean;
         reset(): void;
-        abstract update(time: number): any;
+        abstract update(elapsedTime: number): any;
         abstract start(): any;
         abstract stop(): any;
         abstract pause(): any;
@@ -1994,7 +3036,7 @@ declare module wd {
         private _callFunc;
         private _dataArr;
         reverse(): this;
-        update(time: any): void;
+        update(elapsedTime: any): void;
         copy(): CallFunc;
     }
 }
@@ -2009,7 +3051,7 @@ declare module wd {
         private _timeController;
         isStop: boolean;
         isPause: boolean;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         start(): void;
         stop(): void;
         reset(): void;
@@ -2041,7 +3083,7 @@ declare module wd {
         private _currentAction;
         private _actionIndex;
         initWhenCreate(): void;
-        update(time: any): any;
+        update(elapsedTime: any): any;
         copy(): any;
         reset(): this;
         start(): this;
@@ -2060,7 +3102,7 @@ declare module wd {
         static create(...args: any[]): any;
         constructor(actionArr: Array<Action>);
         private _actions;
-        update(time: any): void;
+        update(elapsedTime: any): void;
         start(): this;
         stop(): this;
         pause(): this;
@@ -2093,7 +3135,7 @@ declare module wd {
         private _originTimes;
         private _times;
         initWhenCreate(): void;
-        update(time: any): void;
+        update(elapsedTime: any): void;
         copy(): Repeat;
         reset(): this;
         start(): void;
@@ -2110,7 +3152,7 @@ declare module wd {
         static create(action: Action): RepeatForever;
         constructor(action: Action);
         private _innerAction;
-        update(time: any): void;
+        update(elapsedTime: any): void;
         copy(): RepeatForever;
         start(): void;
         stop(): void;
@@ -2220,18 +3262,6 @@ declare module wd {
 
 
 declare module wd {
-    class ActionManager {
-        static create(): ActionManager;
-        private _children;
-        addChild(action: Action): void;
-        removeChild(action: Action): void;
-        hasChild(action: Action): boolean;
-        update(time: number): void;
-    }
-}
-
-
-declare module wd {
     abstract class RendererComponent extends Component {
         abstract render(renderer: Renderer, geometry: Geometry, camera: GameObject): any;
     }
@@ -2257,6 +3287,30 @@ declare module wd {
 
 
 declare module wd {
+    class UIRenderer extends RendererComponent {
+        static create(): UIRenderer;
+        private _zIndex;
+        zIndex: number;
+        context: any;
+        isClear: boolean;
+        private _canvas;
+        private _beforeInitHandler;
+        private _endLoopHandler;
+        private _isInit;
+        private _refernceList;
+        addToGameObject(gameObject: GameObject): void;
+        removeFromGameObject(gameObject: GameObject): void;
+        init(): void;
+        initWhenCreate(): void;
+        dispose(): void;
+        render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
+        clearCanvas(): void;
+        private _createOverlayCanvas();
+    }
+}
+
+
+declare module wd {
     abstract class Collider extends Component {
         shape: Shape;
         type: string;
@@ -2264,7 +3318,7 @@ declare module wd {
         abstract createBoundingRegion(): any;
         abstract buildBoundingRegion(): any;
         init(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         updateShape(): void;
         isIntersectWith(collider: Collider): any;
         getCollideObjects(checkTargetList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
@@ -2361,6 +3415,7 @@ declare module wd {
         abstract copy(): Shape;
         abstract isIntersectWithBox(shape: AABBShape): any;
         abstract isIntersectWithSphere(shape: SphereShape): any;
+        abstract isIntersectWithRay(rayOrigin: Vector3, rayDelta: Vector3): any;
         protected isBoxAndSphereIntersected(box: AABBShape, sphere: SphereShape): boolean;
     }
 }
@@ -2380,6 +3435,7 @@ declare module wd {
         setFromObject(gameObject: GameObject): void;
         isIntersectWithBox(shape: AABBShape): boolean;
         isIntersectWithSphere(shape: SphereShape): boolean;
+        isIntersectWithRay(rayOrigin: Vector3, rayDir: Vector3): boolean;
         closestPointTo(point: Vector3): Vector3;
         containPoint(point: Vector3): boolean;
         copy(): AABBShape;
@@ -2399,6 +3455,7 @@ declare module wd {
         setFromTranslationAndScale(sphere: SphereShape, matrix: Matrix4): void;
         isIntersectWithSphere(shape: SphereShape): boolean;
         isIntersectWithBox(shape: AABBShape): boolean;
+        isIntersectWithRay(rayOrigin: Vector3, rayDir: Vector3): boolean;
         containPoint(point: Vector3): boolean;
         copy(): SphereShape;
         private _findMaxDistanceOfPointsToCenter(points);
@@ -2427,6 +3484,7 @@ declare module wd {
         pointToPointConstraintList: PointToPointConstraintList;
         init(): void;
         addConstraint(): void;
+        removeFromGameObject(gameObject: GameObject): void;
         dispose(): void;
         getPhysicsEngineAdapter(): any;
         isPhysicsEngineAdapterExist(): boolean;
@@ -2518,7 +3576,7 @@ declare module wd {
     interface IPhysicsEngineAdapter {
         world: any;
         init(): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         getGravity(gravity: number): Vector3;
         setGravity(gravity: Vector3): void;
         getFriction(obj: GameObject, friction: number): number;
@@ -2732,7 +3790,7 @@ declare module wd {
         removePointToPointConstraint(pointToPointConstraint: PointToPointConstraint): void;
         removeGameObject(obj: GameObject): void;
         removeConstraints(obj: GameObject): void;
-        update(time: number): void;
+        update(elapsedTime: number): void;
         private _getMaterial(obj);
         private _getNumberData(obj, dataName);
         private _setNumberData(obj, dataName, data);
@@ -2863,16 +3921,6 @@ declare module wd {
 
 
 declare module wd {
-    class Pick extends Component {
-        static create(): Pick;
-        init(): void;
-        dispose(): void;
-        isPick(localX: number, localY: number): boolean;
-    }
-}
-
-
-declare module wd {
     class Script extends Component {
         static script: wdCb.Stack<ScriptFileData>;
         static create(): Script;
@@ -2996,6 +4044,168 @@ declare module wd {
 
 
 declare module wd {
+    abstract class UI extends Component {
+        protected p_dirty: boolean;
+        dirty: boolean;
+        abstract update(elapsedTime: number): any;
+        abstract init(): any;
+        addToGameObject(gameObject: GameObject): void;
+        removeFromGameObject(gameObject: GameObject): void;
+    }
+}
+
+declare module wd {
+    enum FontXAlignment {
+        LEFT = 0,
+        CENTER = 1,
+        RIGHT = 2,
+    }
+}
+
+declare module wd {
+    enum FontYAlignment {
+        TOP = 0,
+        MIDDLE = 1,
+        BOTTOM = 2,
+    }
+}
+
+declare module wd {
+    enum FontDimension {
+        AUTO,
+    }
+}
+
+
+declare module wd {
+    abstract class Font extends UI {
+        context: CanvasRenderingContext2D;
+        private _isFirstUpdate;
+        update(elapsedTime: number): void;
+        protected abstract updateWhenDirty(): any;
+        protected getContext(): any;
+        protected getCanvasPosition(): any;
+        protected getCanvasPosition(gameObject: GameObject): any;
+    }
+}
+
+
+declare module wd {
+    class PlainFont extends Font {
+        static create(): PlainFont;
+        private _text;
+        text: string;
+        private _fontSize;
+        fontSize: number;
+        private _fontFamily;
+        fontFamily: string;
+        private _width;
+        width: number;
+        private _height;
+        height: number;
+        private _xAlignment;
+        xAlignment: FontXAlignment;
+        private _yAlignment;
+        yAlignment: FontYAlignment;
+        private _fillEnabled;
+        private _fillStyle;
+        private _strokeEnabled;
+        private _strokeStyle;
+        private _strokeSize;
+        private _fontClientHeightCache;
+        private _lineHeight;
+        private _strArr;
+        init(): void;
+        dispose(): void;
+        update(elapsedTime: number): void;
+        setFillStyle(fillStyle: string): void;
+        enableStroke(strokeStyle: string, strokeSize: number): void;
+        enableFill(fillStyle: string): void;
+        setLineHeight(lineHeight: number): void;
+        protected updateWhenDirty(): void;
+        private _formatText();
+        private _trimStr();
+        private _formatMultiLine(i, text, allWidth, maxWidth);
+        private _measure(text);
+        private _getDefaultLineHeight();
+        private _computeLineHeight(lineHeight);
+        private _getFontClientHeight();
+        private _initDimension();
+        private _draw();
+        private _drawMultiLine();
+        private _drawSingleLine();
+    }
+}
+
+
+declare module wd {
+    class BitmapFont extends Font {
+        static create(): BitmapFont;
+        private _text;
+        text: string;
+        private _width;
+        width: number;
+        private _xAlignment;
+        xAlignment: FontXAlignment;
+        fntId: string;
+        bitmapId: string;
+        private _charFontList;
+        init(): boolean;
+        dispose(): void;
+        protected updateWhenDirty(): boolean;
+        private _getFntObj();
+        private _getImageAsset();
+        private _createAndAddFontCharGameObjects(fntObj, image);
+        private _createAndAddFontCharObjectOfNewLineChar(index, char, uiRenderer);
+        private _createAndAddFontCharObjectOfCommonChar(fontDef, image, index, char, uiRenderer);
+        private _formatText(fntObj);
+        private _formatMultiLine(fntObj);
+        private _formatAlign();
+        private _createCharFont(index, uiRenderer);
+        private _addCharFontGameObject(charFontGameObject);
+        private _findCharFontGameObject(index);
+        private _isSpaceUnicode(char);
+        private _isNewLine(char);
+        private _getLetterPosXLeft(sp);
+        private _getLetterPosXRight(position, sp);
+        private _getFontDef(fontDict, key);
+        private _isExceedWidth(position, charFont, x);
+        private _alignLine(position, line, lastCharFont);
+        private _trimBottomSpaceChar(line);
+        private _setCharFontGameObjectPosition(charFontGameObject, x, y);
+        private _translateCharFontGameObject(charFontGameObject, x, y);
+        private _removeAllCharFont();
+        private _initDimension();
+    }
+}
+
+
+declare module wd {
+    class CharFont extends Font {
+        static create(): CharFont;
+        x: number;
+        y: number;
+        dirty: any;
+        private _char;
+        char: string;
+        startPosX: number;
+        xAdvance: number;
+        image: HTMLImageElement;
+        rectRegion: RectRegion;
+        width: number;
+        height: number;
+        isNewLine: boolean;
+        isFullLine: boolean;
+        init(): void;
+        dispose(): void;
+        update(elapsedTime: number): void;
+        protected updateWhenDirty(): void;
+        private _rotateAroundImageCenter(dx, dy, dw, dh);
+    }
+}
+
+
+declare module wd {
     class JudgeUtils extends wdCb.JudgeUtils {
         static isView(obj: any): boolean;
         static isEqual(target1: any, target2: any): boolean;
@@ -3009,6 +4219,16 @@ declare module wd {
     class MathUtils {
         static clamp(num: number, below: number, up: number): number;
         static bigThan(num: number, below: number): number;
+        static generateZeroToOne(): number;
+        static generateInteger(min: number, max: number): number;
+    }
+}
+
+
+declare module wd {
+    class CoordinateUtils {
+        static convertWebGLPositionToCanvasPosition(position: Vector3): Vector2;
+        static convertCanvasPositionToWebGLPosition(position: Vector2): Vector3;
     }
 }
 
@@ -3236,6 +4456,7 @@ declare module wd {
         skyboxCommand: QuadCommand;
         abstract createQuadCommand(): any;
         abstract addCommand(command: QuadCommand): any;
+        abstract hasCommand(): boolean;
         abstract render(): any;
         init(): void;
     }
@@ -3249,6 +4470,7 @@ declare module wd {
         private _clearOptions;
         createQuadCommand(): QuadCommand;
         addCommand(command: QuadCommand): void;
+        hasCommand(): boolean;
         render(): void;
         init(): void;
         setClearColor(color: Color): void;
@@ -3493,22 +4715,18 @@ declare module wd {
         fsSourceDefineList: wdCb.Collection<SourceDefine>;
         attributesFromShaderLib: wdCb.Hash<ShaderData>;
         uniformsFromShaderLib: wdCb.Hash<ShaderData>;
-        vsSourceFromShaderLib: string;
         vsSourceTopFromShaderLib: string;
         vsSourceDefineFromShaderLib: string;
         vsSourceVarDeclareFromShaderLib: string;
         vsSourceFuncDeclareFromShaderLib: string;
         vsSourceFuncDefineFromShaderLib: string;
         vsSourceBodyFromShaderLib: string;
-        fsSourceFromShaderLib: string;
         fsSourceTopFromShaderLib: string;
         fsSourceDefineFromShaderLib: string;
         fsSourceVarDeclareFromShaderLib: string;
         fsSourceFuncDeclareFromShaderLib: string;
         fsSourceFuncDefineFromShaderLib: string;
         fsSourceBodyFromShaderLib: string;
-        vsSourceDefineListFromShaderLib: wdCb.Collection<SourceDefine>;
-        fsSourceDefineListFromShaderLib: wdCb.Collection<SourceDefine>;
         read(definitionData: ShaderDefinitionData): void;
         build(libs: wdCb.Collection<ShaderLib>): void;
         clearShaderDefinition(): void;
@@ -4081,13 +5299,13 @@ declare module wd {
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
-        static mirror_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_fragment: GLSLChunk;
+        static mirror_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
         static basic_envMap_forBasic_fragment: GLSLChunk;
         static basic_envMap_forBasic_vertex: GLSLChunk;
         static envMap_forBasic_fragment: GLSLChunk;
@@ -4102,16 +5320,6 @@ declare module wd {
         static fresnel_forLight_fragment: GLSLChunk;
         static reflection_forLight_fragment: GLSLChunk;
         static refraction_forLight_fragment: GLSLChunk;
-        static buildCubemapShadowMap_fragment: GLSLChunk;
-        static buildCubemapShadowMap_vertex: GLSLChunk;
-        static buildTwoDShadowMap_fragment: GLSLChunk;
-        static buildTwoDShadowMap_vertex: GLSLChunk;
-        static commonBuildShadowMap_fragment: GLSLChunk;
-        static cubemapShadowMap_fragment: GLSLChunk;
-        static noShadowMap_fragment: GLSLChunk;
-        static totalShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_fragment: GLSLChunk;
-        static twoDShadowMap_vertex: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
@@ -4122,6 +5330,16 @@ declare module wd {
         static normalMap_vertex: GLSLChunk;
         static specularMap_fragment: GLSLChunk;
         static specularMap_vertex: GLSLChunk;
+        static buildCubemapShadowMap_fragment: GLSLChunk;
+        static buildCubemapShadowMap_vertex: GLSLChunk;
+        static buildTwoDShadowMap_fragment: GLSLChunk;
+        static buildTwoDShadowMap_vertex: GLSLChunk;
+        static commonBuildShadowMap_fragment: GLSLChunk;
+        static cubemapShadowMap_fragment: GLSLChunk;
+        static noShadowMap_fragment: GLSLChunk;
+        static totalShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_fragment: GLSLChunk;
+        static twoDShadowMap_vertex: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
@@ -4317,6 +5535,13 @@ declare module wd {
     }
 }
 
+declare module wd {
+    enum AssetType {
+        UNKNOW = 0,
+        FONT = 1,
+    }
+}
+
 
 declare module wd {
     abstract class Loader {
@@ -4328,8 +5553,8 @@ declare module wd {
         get(id: string): any;
         has(id: string): boolean;
         dispose(): void;
-        protected abstract loadAsset(url: string): wdFrp.Stream;
-        protected abstract loadAsset(url: Array<string>): wdFrp.Stream;
+        protected abstract loadAsset(url: string, id: string): wdFrp.Stream;
+        protected abstract loadAsset(url: Array<string>, id: string): wdFrp.Stream;
         private _errorHandle(path, err);
         private _errorHandle(path, err);
     }
@@ -4340,8 +5565,8 @@ declare module wd {
     class GLSLLoader extends Loader {
         private static _instance;
         static getInstance(): any;
-        protected loadAsset(url: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>): wdFrp.Stream;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
 }
 
@@ -4350,8 +5575,8 @@ declare module wd {
     class JsLoader extends Loader {
         private static _instance;
         static getInstance(): any;
-        protected loadAsset(url: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>): wdFrp.Stream;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
         private _createScript();
         private _appendScript(script);
     }
@@ -4362,8 +5587,8 @@ declare module wd {
     class VideoLoader extends Loader {
         private static _instance;
         static getInstance(): any;
-        protected loadAsset(url: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>): wdFrp.Stream;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
 }
 
@@ -4372,8 +5597,8 @@ declare module wd {
     class TextureLoader extends Loader {
         private static _instance;
         static getInstance(): any;
-        protected loadAsset(url: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>): wdFrp.Stream;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
 }
 
@@ -4641,31 +5866,31 @@ declare module wd {
         currentLoadedCount: number;
         private _assetTable;
         load(url: string): wdFrp.Stream;
-        load(assetArr: Array<{
-            url: string;
-            id: string;
-        }>): wdFrp.Stream;
-        load(assetArr: Array<{
-            url: Array<string>;
-            id: string;
-        }>): wdFrp.Stream;
+        load(assetArr: Array<AssetData>): wdFrp.Stream;
+        load(assetArr: Array<AssetData>): wdFrp.Stream;
         reset(): void;
         dispose(): void;
         get(id: string): any;
-        private _createLoadMultiAssetStream(url, id);
-        private _createLoadMultiAssetStream(url, id);
+        private _createLoadMultiAssetStream(type, url, id);
+        private _createLoadMultiAssetStream(type, url, id);
         private _createLoadSingleAssetStream(url, id);
-        private _getLoader(url);
-        private _getLoader(url);
+        private _getLoader(type, url);
+        private _getLoader(type, url);
         private _addToAssetTable(loadStream, id, loader);
     }
+    type AssetData = {
+        type?: AssetType;
+        url: Array<string>;
+        id: string;
+    };
 }
 
 
 declare module wd {
     class LoaderFactory {
-        static create(extname: string): any;
+        static create(type: AssetType, extname: string): any;
         static createAllLoader(): wdCb.Collection<Loader>;
+        private static _getLoaderByExtname(extname);
     }
 }
 
@@ -4763,8 +5988,8 @@ declare module wd {
         private _wdParser;
         private _wdBuilder;
         private _parseData;
-        protected loadAsset(url: string): wdFrp.Stream;
-        protected loadAsset(url: Array<string>): wdFrp.Stream;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
         private _createLoadMapStream(filePath);
     }
 }
@@ -4831,40 +6056,141 @@ declare module wd {
 
 
 declare module wd {
-    class EventListenerMap {
-        static eventSeparator: string;
-        static create(): EventListenerMap;
-        private _listenerMap;
-        appendChild(target: GameObject, eventName: EventName, data: EventRegisterData): void;
-        getChild(eventName: EventName): wdCb.Collection<EventRegisterData>;
-        getChild(target: GameObject): wdCb.Collection<EventRegisterData>;
-        getChild(target: GameObject, eventName: EventName): wdCb.Collection<EventRegisterData>;
+    class FontLoader extends Loader {
+        private static _instance;
+        static getInstance(): any;
+        private _familyName;
+        dispose(): void;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
+        private _getType(url);
+        private _addStyleElement(args, familyName);
+    }
+}
+
+
+declare module wd {
+    class FntParser {
+        static create(): FntParser;
+        parseFnt(fntStr: string, url: string): {
+            commonHeight: number;
+            atlasName: string;
+            fontDefDictionary: {
+                [charId: string]: {
+                    rect: {
+                        x: number;
+                        y: number;
+                        width: number;
+                        height: number;
+                    };
+                    xOffset: number;
+                    yOffset: number;
+                    xAdvance: number;
+                };
+            };
+        };
+        private _parseStrToObj(str);
+        private _parseChar(fntStr, fnt);
+    }
+}
+
+
+declare module wd {
+    class FntLoader extends Loader {
+        private static _instance;
+        static getInstance(): any;
+        private _parser;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
+    }
+    type FntData = {
+        commonHeight: number;
+        atlasName: string;
+        fontDefDictionary: {
+            [charId: string]: {
+                rect: {
+                    x: number;
+                    y: number;
+                    width: number;
+                    height: number;
+                };
+                xOffset: number;
+                yOffset: number;
+                xAdvance: number;
+            };
+        };
+    };
+}
+
+
+declare module wd {
+    abstract class EventListenerMap {
+        protected listenerMap: wdCb.Hash<wdCb.Collection<EventRegisterData>>;
+        abstract getChild(...args: any[]): wdCb.Collection<any>;
+        abstract removeChild(...args: any[]): any;
         hasChild(func: (...args) => boolean): boolean;
         hasChild(target: GameObject, eventName: EventName): boolean;
+        hasChild(dom: HTMLElement, eventName: EventName): boolean;
+        appendChild(target: GameObject | HTMLElement, eventName: EventName, data: any): void;
         filter(func: Function): wdCb.Hash<{}>;
         forEach(func: Function): wdCb.Hash<wdCb.Collection<{
-            target: GameObject;
             originHandler: Function;
             handler: Function;
             domHandler: Function;
             priority: number;
         }>>;
-        removeChild(eventName: EventName): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        removeChild(eventName: EventName, handler: Function): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        removeChild(uid: number, eventName: EventName): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        removeChild(target: GameObject): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        removeChild(target: GameObject, eventName: EventName): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        removeChild(target: GameObject, eventName: EventName, handler: Function): wdCb.Collection<wdCb.Collection<EventOffData>>;
-        getEventOffDataList(target: GameObject): any;
-        getEventOffDataList(target: GameObject, eventName: EventName): any;
         getEventNameFromKey(key: string): EventName;
-        getUidFromKey(key: string): number;
-        isTarget(key: string, target: GameObject, list: wdCb.Collection<EventRegisterData>): boolean;
-        private _buildKey(uid, eventName);
-        private _buildKey(target, eventName);
-        private _buildKeyWithUid(uid, eventName);
+        protected abstract buildKey(...args: any[]): string;
+        protected abstract getEventSeparator(): string;
+        protected isEventName(key: string, eventName: EventName): boolean;
     }
-    type EventOffData = {
+}
+
+
+declare module wd {
+    class CustomEventListenerMap extends EventListenerMap {
+        static eventSeparator: string;
+        static create(): CustomEventListenerMap;
+        protected listenerMap: wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
+        getChild(eventName: EventName): wdCb.Collection<CustomEventRegisterData>;
+        getChild(target: GameObject): wdCb.Collection<CustomEventRegisterData>;
+        getChild(target: GameObject, eventName: EventName): wdCb.Collection<CustomEventRegisterData>;
+        removeChild(eventName: EventName): void;
+        removeChild(target: GameObject): void;
+        removeChild(eventName: EventName, handler: Function): void;
+        removeChild(uid: number, eventName: EventName): void;
+        removeChild(target: GameObject, eventName: EventName): void;
+        removeChild(target: GameObject, eventName: EventName, handler: Function): void;
+        getUidFromKey(key: string): number;
+        isTarget(key: string, target: GameObject, list: wdCb.Collection<CustomEventRegisterData>): boolean;
+        protected getEventSeparator(): string;
+        protected buildKey(uid: number, eventName: EventName): string;
+        protected buildKey(target: GameObject, eventName: EventName): string;
+        private _buildKeyWithUid(uid, eventName);
+        private _buildKeyPrefix(uid);
+    }
+}
+
+
+declare module wd {
+    class DomEventListenerMap extends EventListenerMap {
+        static eventSeparator: string;
+        static create(): DomEventListenerMap;
+        protected listenerMap: wdCb.Hash<wdCb.Collection<DomEventRegisterData>>;
+        getChild(eventName: EventName): wdCb.Collection<DomEventRegisterData>;
+        getChild(dom: HTMLElement, eventName: EventName): wdCb.Collection<DomEventRegisterData>;
+        removeChild(eventName: EventName): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        removeChild(eventName: EventName, handler: Function): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        removeChild(dom: HTMLElement, eventName: EventName): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        removeChild(dom: HTMLElement, eventName: EventName, handler: Function): wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        isDom(key: string, dom: HTMLElement, list: wdCb.Collection<DomEventRegisterData>): boolean;
+        protected getEventSeparator(): string;
+        protected buildKey(dom: HTMLElement, eventName: EventName): string;
+        private _buildKeyPrefix(dom);
+        private _getEventDataOffDataList(eventName, result);
+    }
+    type DomEventOffData = {
+        dom: HTMLElement;
         eventName: EventName;
         domHandler: Function;
     };
@@ -4920,8 +6246,7 @@ declare module wd {
         protected p_type: EventType;
         type: EventType;
         name: EventName;
-        target: GameObject;
-        currentTarget: GameObject;
+        target: any;
         isStopPropagation: boolean;
         phase: EventPhase;
         abstract copy(): any;
@@ -4936,6 +6261,7 @@ declare module wd {
         constructor(event: any, eventName: EventName);
         private _event;
         event: any;
+        target: HTMLElement;
         preventDefault(): void;
     }
 }
@@ -4944,7 +6270,6 @@ declare module wd {
 declare module wd {
     class MouseEvent extends DomEvent {
         static create(event: any, eventName: EventName): MouseEvent;
-        protected p_type: EventType;
         private _location;
         location: Point;
         private _locationInView;
@@ -4956,6 +6281,7 @@ declare module wd {
             x: any;
             y: any;
         };
+        protected p_type: EventType;
         copy(): any;
         private _isPointerLocked();
     }
@@ -4981,8 +6307,10 @@ declare module wd {
 declare module wd {
     class CustomEvent extends Event {
         static create(eventName: string): CustomEvent;
-        protected p_type: EventType;
+        target: GameObject;
+        currentTarget: GameObject;
         userData: any;
+        protected p_type: EventType;
         copyPublicAttri(destination: any, source: any): any;
         copy(): any;
     }
@@ -5030,16 +6358,17 @@ declare module wd {
     abstract class DomEventHandler extends EventHandler {
         off(eventName: EventName): void;
         off(eventName: EventName, handler: Function): void;
-        off(uid: number, eventName: EventName): void;
-        off(target: GameObject, eventName: EventName): void;
-        off(target: GameObject, eventName: EventName, handler: Function): void;
-        protected abstract getDom(): any;
-        protected abstract triggerDomEvent(event: Event, eventName: EventName, target: GameObject): any;
-        protected abstract addEngineHandler(target: GameObject, eventName: EventName, handler: Function): any;
+        off(dom: HTMLElement, eventName: EventName): void;
+        off(dom: HTMLElement, eventName: EventName, handler: Function): void;
+        trigger(event: Event): void;
+        trigger(dom: HTMLElement, event: Event): void;
+        protected abstract triggerDomEvent(dom: HTMLElement, event: Event, eventName: EventName): any;
+        protected abstract addEngineHandler(eventName: EventName, handler: Function): any;
+        protected abstract getDefaultDom(): HTMLElement;
         protected clearHandler(): void;
-        protected buildDomHandler(target: GameObject, eventName: EventName): (event: any) => any;
-        protected handler(target: GameObject, eventName: EventName, handler: Function, priority: number): void;
-        private _bind(dom, eventName, target);
+        protected buildDomHandler(dom: HTMLElement, eventName: EventName): (event: any) => any;
+        protected handler(dom: HTMLElement, eventName: EventName, handler: Function, priority: number): void;
+        private _bind(dom, eventName);
         private _unBind(dom, eventName, handler);
     }
 }
@@ -5051,15 +6380,14 @@ declare module wd {
         static getInstance(): any;
         lastX: number;
         lastY: number;
-        on(target: GameObject, eventName: EventName, handler: (event: MouseEvent) => void, priority: number): void;
-        trigger(target: GameObject, event: Event, notSetTarget: boolean): boolean;
-        protected getDom(): any;
-        protected triggerDomEvent(event: Event, eventName: EventName, target: GameObject): void;
-        protected addEngineHandler(target: GameObject, eventName: EventName, handler: (event: MouseEvent) => void): any;
+        on(eventName: EventName, handler: (event: MouseEvent) => void, priority: number): any;
+        on(dom: HTMLElement, eventName: EventName, handler: (event: MouseEvent) => void, priority: number): any;
+        protected getDefaultDom(): HTMLElement;
+        protected triggerDomEvent(dom: HTMLElement, event: Event, eventName: EventName): void;
+        protected addEngineHandler(eventName: EventName, handler: (event: MouseEvent) => void): any;
         protected clearHandler(): void;
-        private _getTopTarget(event);
         private _handleMove(handler);
-        private _createEventObject(event, eventName, currentTarget);
+        private _createEventObject(dom, event, eventName);
         private _saveLocation(event);
     }
 }
@@ -5070,16 +6398,16 @@ declare module wd {
         private static _instance;
         static getInstance(): any;
         keyState: any;
-        on(eventName: EventName, handler: (event: KeyboardEvent) => void, priority: number): void;
-        trigger(event: Event): boolean;
-        protected getDom(): any;
-        protected triggerDomEvent(event: Event, eventName: EventName, target: GameObject): void;
-        protected addEngineHandler(target: GameObject, eventName: EventName, handler: (event: KeyboardEvent) => void): any;
+        on(eventName: EventName, handler: (event: MouseEvent) => void, priority: number): any;
+        on(dom: HTMLElement, eventName: EventName, handler: (event: MouseEvent) => void, priority: number): any;
+        protected triggerDomEvent(dom: HTMLElement, event: Event, eventName: EventName): void;
+        protected getDefaultDom(): HTMLElement;
+        protected addEngineHandler(eventName: EventName, handler: (event: KeyboardEvent) => void): any;
         protected clearHandler(): void;
         private _handleKeyDown(handler);
         private _handleKeyUp(handler);
         private _setKeyStateAllFalse();
-        private _createEventObject(event, eventName);
+        private _createEventObject(dom, event, eventName);
     }
 }
 
@@ -5106,10 +6434,18 @@ declare module wd {
 
 
 declare module wd {
-    class EventDispatcher {
-        static create(): EventDispatcher;
+    abstract class EventDispatcher {
+        abstract trigger(...args: any[]): any;
+    }
+}
+
+
+declare module wd {
+    class CustomEventDispatcher extends EventDispatcher {
+        private static _instance;
+        static getInstance(): any;
         trigger(event: Event): boolean;
-        trigger(event: Event, userData: any): void;
+        trigger(event: Event, userData: any): boolean;
         trigger(target: GameObject, event: Event): boolean;
         trigger(target: GameObject, event: Event, notSetTarget: boolean): boolean;
         trigger(target: GameObject, event: Event, userData: any): boolean;
@@ -5123,38 +6459,64 @@ declare module wd {
 
 
 declare module wd {
-    class EventRegister {
+    class DomEventDispatcher extends EventDispatcher {
         private static _instance;
         static getInstance(): any;
-        private _listenerMap;
-        register(target: GameObject, eventName: EventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
-        remove(eventName: EventName): void;
-        remove(eventName: EventName, handler: Function): void;
-        remove(uid: number, eventName: EventName): void;
-        remove(target: GameObject): void;
-        remove(target: GameObject, eventName: EventName): void;
-        remove(target: GameObject, eventName: EventName, handler: Function): void;
+        trigger(event: Event): void;
+        trigger(dom: HTMLElement, event: Event): void;
+    }
+}
+
+
+declare module wd {
+    abstract class EventRegister {
+        protected listenerMap: EventListenerMap;
+        abstract register(...args: any[]): void;
+        abstract remove(...args: any[]): void;
         getEventRegisterDataList(eventName: EventName): any;
         getEventRegisterDataList(currentTarget: GameObject, eventName: EventName): any;
-        setBubbleParent(target: GameObject, parent: GameObject): void;
-        isBinded(target: GameObject, eventName: EventName): boolean;
+        getEventRegisterDataList(dom: HTMLElement, eventName: EventName): any;
         filter(func: Function): wdCb.Hash<{}>;
         forEach(func: Function): wdCb.Hash<wdCb.Collection<{
-            target: GameObject;
             originHandler: Function;
             handler: Function;
             domHandler: Function;
             priority: number;
         }>>;
-        getChild(target: GameObject, eventName?: EventName): any;
+        getChild(eventName: EventName): any;
+        getChild(target: GameObject): any;
+        getChild(target: GameObject, eventName: EventName): any;
+        getChild(dom: HTMLElement, eventName: EventName): any;
         getEventNameFromKey(key: string): EventName;
+    }
+    type EventRegisterData = {
+        originHandler: Function;
+        handler: Function;
+        domHandler: Function;
+        priority: number;
+    };
+}
+
+
+declare module wd {
+    class CustomEventRegister extends EventRegister {
+        private static _instance;
+        static getInstance(): any;
+        protected listenerMap: CustomEventListenerMap;
+        register(target: GameObject, eventName: EventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
+        remove(eventName: EventName): any;
+        remove(target: GameObject): any;
+        remove(eventName: EventName, handler: Function): any;
+        remove(uid: number, eventName: EventName): any;
+        remove(target: GameObject, eventName: EventName): any;
+        remove(target: GameObject, eventName: EventName, handler: Function): any;
+        setBubbleParent(target: GameObject, parent: GameObject): void;
         getUidFromKey(key: string): number;
-        getDomHandler(target: GameObject, eventName: EventName): Function;
-        isTarget(key: string, target: GameObject, list: wdCb.Collection<EventRegisterData>): boolean;
+        isTarget(key: string, target: GameObject, list: wdCb.Collection<CustomEventRegisterData>): boolean;
         private _isAllEventHandlerRemoved(target);
         private _handleAfterAllEventHandlerRemoved(target);
     }
-    type EventRegisterData = {
+    type CustomEventRegisterData = {
         target: GameObject;
         originHandler: Function;
         handler: Function;
@@ -5165,49 +6527,122 @@ declare module wd {
 
 
 declare module wd {
-    class EventBinder {
-        static create(): EventBinder;
+    class DomEventRegister extends EventRegister {
+        private static _instance;
+        static getInstance(): any;
+        protected listenerMap: DomEventListenerMap;
+        register(dom: HTMLElement, eventName: EventName, handler: Function, originHandler: Function, domHandler: Function, priority: number): void;
+        remove(eventName: EventName): any;
+        remove(eventName: EventName, handler: Function): any;
+        remove(dom: HTMLElement, eventName: EventName): any;
+        remove(dom: HTMLElement, eventName: EventName, handler: Function): any;
+        isBinded(dom: HTMLElement, eventName: EventName): boolean;
+        isDom(key: string, dom: HTMLElement, list: wdCb.Collection<DomEventRegisterData>): boolean;
+        getDomHandler(dom: HTMLElement, eventName: EventName): Function;
+    }
+    type DomEventRegisterData = {
+        dom?: HTMLElement;
+        target?: GameObject;
+        originHandler: Function;
+        handler: Function;
+        domHandler: Function;
+        priority: number;
+    };
+}
+
+
+declare module wd {
+    abstract class EventBinder {
+        abstract on(...args: any[]): void;
+        abstract off(...args: any[]): void;
+    }
+}
+
+
+declare module wd {
+    class CustomEventBinder extends EventBinder {
+        private static _instance;
+        static getInstance(): any;
+        on(eventName: EventName | string, handler: Function): void;
         on(eventName: EventName | string, handler: Function, priority: number): void;
-        on(listener: {} | EventListener): void;
-        on(target: GameObject, listener: {} | EventListener): void;
+        on(target: GameObject, eventName: EventName | string, handler: Function): void;
         on(target: GameObject, eventName: EventName | string, handler: Function, priority: number): void;
         off(): void;
-        off(eventName: EventName): void;
-        off(eventName: EventName, handler: Function): void;
+        off(eventName: EventName | string): void;
         off(target: GameObject): void;
-        off(target: GameObject, eventName: EventName): void;
-        off(target: GameObject, eventName: EventName, handler: Function): void;
+        off(eventName: EventName | string, handler: Function): void;
+        off(target: GameObject, eventName: EventName | string): void;
+        off(target: GameObject, eventName: EventName | string, handler: Function): void;
         private _checkEventSeparator(eventName);
     }
 }
 
 
 declare module wd {
-    class FactoryEventHandler {
+    class DomEventBinder extends EventBinder {
+        private static _instance;
+        static getInstance(): any;
+        on(listener: {} | EventListener): void;
+        on(eventName: EventName | string, handler: Function): void;
+        on(dom: HTMLElement, listener: {} | EventListener): void;
+        on(eventName: EventName | string, handler: Function, priority: number): void;
+        on(dom: HTMLElement, eventName: EventName | string, handler: Function): void;
+        on(dom: HTMLElement, eventName: EventName | string, handler: Function, priority: number): void;
+        off(): void;
+        off(eventName: EventName | string): void;
+        off(dom: HTMLElement): void;
+        off(eventName: EventName | string, handler: Function): void;
+        off(dom: HTMLElement, eventName: EventName): void;
+        off(dom: HTMLElement, eventName: EventName, handler: Function): void;
+        private _checkEventSeparator(eventName);
+    }
+}
+
+
+declare module wd {
+    class EventHandlerFactory {
         static createEventHandler(eventType: EventType): any;
     }
 }
 
 
 declare module wd {
+    class EventBinderFactory {
+        static createEventBinder(eventName: EventName): any;
+    }
+}
+
+
+declare module wd {
+    class EventDispatcherFactory {
+        static createEventDispatcher(event: Event): any;
+    }
+}
+
+
+declare module wd {
     class EventManager {
-        private static _eventBinder;
-        private static _eventDispatcher;
-        static on(eventName: EventName | string, handler: Function): void;
-        static on(eventName: EventName | string, handler: Function, priority: number): void;
         static on(listener: {} | EventListener): void;
-        static on(target: GameObject, listener: {} | EventListener): void;
+        static on(eventName: EventName | string, handler: Function): void;
+        static on(dom: HTMLElement, listener: {} | EventListener): void;
+        static on(eventName: EventName | string, handler: Function, priority: number): void;
         static on(target: GameObject, eventName: EventName | string, handler: Function): void;
+        static on(dom: HTMLElement, eventName: EventName | string, handler: Function): void;
         static on(target: GameObject, eventName: EventName | string, handler: Function, priority: number): void;
+        static on(dom: HTMLElement, eventName: EventName | string, handler: Function, priority: number): void;
         static off(): void;
         static off(eventName: EventName | string): void;
-        static off(eventName: EventName | string, handler: Function): void;
         static off(target: GameObject): void;
+        static off(dom: HTMLElement): void;
+        static off(eventName: EventName | string, handler: Function): void;
         static off(target: GameObject, eventName: EventName | string): void;
+        static off(dom: HTMLElement, eventName: EventName): void;
         static off(target: GameObject, eventName: EventName | string, handler: Function): void;
+        static off(dom: HTMLElement, eventName: EventName, handler: Function): void;
         static trigger(event: Event): void;
         static trigger(event: Event, userData: any): void;
         static trigger(target: GameObject, event: Event): void;
+        static trigger(dom: HTMLElement, event: Event): void;
         static trigger(target: GameObject, event: Event, userData: any): void;
         static broadcast(target: GameObject, event: Event): any;
         static broadcast(target: GameObject, event: Event, userData: any): any;
@@ -5216,7 +6651,9 @@ declare module wd {
         static fromEvent(eventName: EventName): wdFrp.FromEventPatternStream;
         static fromEvent(eventName: EventName, priority: number): wdFrp.FromEventPatternStream;
         static fromEvent(target: GameObject, eventName: EventName): wdFrp.FromEventPatternStream;
+        static fromEvent(dom: HTMLElement, eventName: EventName): wdFrp.FromEventPatternStream;
         static fromEvent(target: GameObject, eventName: EventName, priority: number): wdFrp.FromEventPatternStream;
+        static fromEvent(dom: HTMLElement, eventName: EventName, priority: number): wdFrp.FromEventPatternStream;
         static setBubbleParent(target: GameObject, parent: any): void;
     }
 }
@@ -5249,7 +6686,7 @@ declare module wd {
         depthFunc: DepthFunction;
         private _side;
         side: Side;
-        polygonOffset: Point;
+        polygonOffset: Vector2;
         private _polygonOffsetMode;
         polygonOffsetMode: PolygonOffsetMode;
         private _depthWrite;
@@ -5322,6 +6759,13 @@ declare module wd {
         MULTIPLICATIVE = 4,
         PREMULTIPLIED = 5,
     }
+    enum CanvasType {
+        UI,
+    }
+    type CanvasMapData = {
+        canvas: HTMLCanvasElement;
+        context: CanvasRenderingContext2D;
+    };
 }
 
 
@@ -5372,11 +6816,14 @@ declare module wd {
     class Face3 {
         static create(aIndex: number, bIndex: number, cIndex: number, faceNormal?: Vector3, vertexNormals?: wdCb.Collection<Vector3>): Face3;
         constructor(aIndex: number, bIndex: number, cIndex: number, faceNormal: Vector3, vertexNormals: wdCb.Collection<Vector3>);
+        private _faceNormal;
+        faceNormal: Vector3;
         aIndex: number;
         bIndex: number;
         cIndex: number;
-        faceNormal: Vector3;
         vertexNormals: wdCb.Collection<Vector3>;
+        hasFaceNormal(): boolean;
+        hasVertexNormal(): boolean;
         copy(): Face3;
     }
 }

@@ -131,7 +131,7 @@ describe("Scene", function() {
         });
 
         describe("update", function(){
-            var time;
+            var elapsedTime;
             var action1,
                 action2,
                 action3,
@@ -147,7 +147,7 @@ describe("Scene", function() {
             }
 
             beforeEach(function(){
-                time = 100;
+                elapsedTime = 100;
                 action1 = buildAction();
                 action2 = buildAction();
                 action3 = buildAction();
@@ -165,29 +165,29 @@ describe("Scene", function() {
                 gameObject3.addComponent(action5);
                 scene.init();
 
-                scene.update(time);
+                scene.update(elapsedTime);
 
-                expect(action1.update).toCalledWith(time);
+                expect(action1.update).toCalledWith(elapsedTime);
                 expect(action1.update).toCalledOnce();
                 expect(action1.update).toCalledBefore(scene.actionManager.update);
                 expect(action1.update).toCalledBefore(action3.update);
-                expect(action3.update).toCalledWith(time);
+                expect(action3.update).toCalledWith(elapsedTime);
                 expect(action3.update).toCalledOnce();
                 expect(action3.update).toCalledBefore(action2.update);
-                expect(action2.update).toCalledWith(time);
+                expect(action2.update).toCalledWith(elapsedTime);
                 expect(action2.update).toCalledOnce();
                 expect(action2.update).toCalledBefore(action4.update);
-                expect(action4.update).toCalledWith(time);
+                expect(action4.update).toCalledWith(elapsedTime);
                 expect(action4.update).toCalledOnce();
                 expect(action4.update).toCalledBefore(action5.update);
-                expect(action5.update).toCalledWith(time);
+                expect(action5.update).toCalledWith(elapsedTime);
                 expect(action5.update).toCalledOnce();
             });
             it("invoke scene and it's children's script->update", function(){
-                scene.update(time);
+                scene.update(elapsedTime);
 
                 expect(script1.update).toCalledOnce();
-                expect(script1.update).toCalledWith(time);
+                expect(script1.update).toCalledWith(elapsedTime);
                 expect(script2.update).toCalledOnce();
                 expect(script3.update).toCalledOnce();
                 expect(script4.update).toCalledOnce();

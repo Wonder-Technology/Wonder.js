@@ -28,7 +28,7 @@ module wd {
 
         public updateGameObjectTransformData(){
             this.dataList.forEach(({gameObject,body}) => {
-                if(gameObject.isRigidbodyChild){
+                if(gameObject.hasTag("isRigidbodyChild")){
                     return;
                 }
 

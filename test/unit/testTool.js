@@ -138,9 +138,9 @@ var testTool = (function () {
 
             return _child;
         },
-        updateAction: function (time, gameObject) {
-            window.performance.now.returns(time);
-            gameObject.actionManager.update(time);
+        updateAction: function (elapsedTime, gameObject) {
+            window.performance.now.returns(elapsedTime);
+            gameObject.actionManager.update(elapsedTime);
         },
         getValues: function (values, digit) {
             var digit = digit || 7;
@@ -221,7 +221,7 @@ var testTool = (function () {
         createFaces: function(indices, normals){
             return wd.GeometryUtils.convertToFaces(indices, normals);
         },
-        createCamera:function () {
+        createCamera:function (pos, lookAtPoint) {
             var camera = wd.GameObject.create();
 
             var cameraComponent = wd.PerspectiveCamera.create();
@@ -237,13 +237,44 @@ var testTool = (function () {
             var controller = wd.BasicCameraController.create(cameraComponent);
             camera.addComponent(controller);
 
-            camera.transform.translate(wd.Vector3.create(0, 0, 20));
+            if(pos){
+                camera.transform.translate(pos);
+            }
+            else{
+                camera.transform.translate(wd.Vector3.create(0, 0, 20));
+            }
 
-            //var script = wd.Script.create();
-            //
-            //script.url = "../camera.js";
-            //
-            //camera.addComponent(script);
+            if(lookAtPoint){
+                camera.transform.lookAt(lookAtPoint);
+            }
+
+            return camera
+        },
+        createOrthoCamera:function (pos, lookAtPoint) {
+            var camera = wd.GameObject.create(),
+                cameraComponent = wd.OrthographicCamera.create();
+
+            cameraComponent.left = -50;
+            cameraComponent.right = 50;
+            cameraComponent.top = 50;
+            cameraComponent.bottom = -50;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 100;
+
+
+            var controller = wd.BasicCameraController.create(cameraComponent);
+            camera.addComponent(controller);
+
+            if(pos){
+                camera.transform.translate(pos);
+            }
+            else{
+                camera.transform.translate(wd.Vector3.create(0, 0, 20));
+            }
+
+            if(lookAtPoint){
+                camera.transform.lookAt(lookAtPoint);
+            }
 
             return camera
         },

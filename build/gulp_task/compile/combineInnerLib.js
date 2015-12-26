@@ -6,7 +6,8 @@ var fs = require("fs-extra");
 var distPath = path.join(process.cwd(), "dist");
 var combineDTsList = [
     "Wonder-CommonLib",
-    "Wonder-FRP"
+    "Wonder-FRP",
+    "cannon"
     ],
     combineContentList = [
         "Wonder-CommonLib",

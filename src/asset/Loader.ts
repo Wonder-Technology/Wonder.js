@@ -34,7 +34,7 @@ module wd{
                 stream = wdFrp.just(data);
             }
             else{
-                stream = this.loadAsset(url)
+                stream = this.loadAsset(url, id)
                     .do((data) => {
                         self._container.addChild(id, data);
                     }, (err) => {
@@ -57,8 +57,8 @@ module wd{
             this._container.removeAllChildren();
         }
 
-        protected abstract loadAsset(url:string):wdFrp.Stream;
-        protected abstract loadAsset(url:Array<string>):wdFrp.Stream;
+        protected abstract loadAsset(url:string, id:string):wdFrp.Stream;
+        protected abstract loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 
         private _errorHandle(path:string, err:string);
         private _errorHandle(path:Array<string>, err:string);

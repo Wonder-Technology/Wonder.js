@@ -40,7 +40,7 @@ module wd{
                         self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onContact"]);
                     }
 
-                    gameObject.isCollided = true;
+                    gameObject.addTag("isCollided");
                     self._lastCollideObjects = collideObjects;
                 }
                 else{
@@ -49,17 +49,17 @@ module wd{
                         self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, gameObject, ["onCollisionEnd"]);
                     }
 
-                    gameObject.isCollided = false;
+                    gameObject.removeTag("isCollided");
                 }
             });
         }
 
         private _isCollisionStart(gameObject:GameObject){
-            return !gameObject.isCollided;
+            return !gameObject.hasTag("isCollided");
         }
 
         private _isCollisionEnd(gameObject:GameObject){
-            return gameObject.isCollided;
+            return gameObject.hasTag("isCollided");
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){

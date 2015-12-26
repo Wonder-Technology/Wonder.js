@@ -7,9 +7,14 @@ module wd {
             return obj;
         }
 
-        protected p_type:EventType = EventType.CUSTOM;
-        
+        public target:GameObject;
+
+        //currentTarget is always the object listening for the event
+        public currentTarget:GameObject = null;
         public userData:any = null;
+
+        protected p_type:EventType = EventType.CUSTOM;
+
 
         public copyPublicAttri(destination, source:any){
             var property = null;

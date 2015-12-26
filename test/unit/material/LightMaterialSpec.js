@@ -22,12 +22,6 @@ describe("LightMaterial", function() {
         var map,
             scene;
 
-        function triggerMaterialAddShaderLib(){
-            material.init();
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
-        }
-
         beforeEach(function(){
             sandbox.stub(material.mapManager, "init");
             sandbox.stub(material.shader, "init");

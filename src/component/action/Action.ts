@@ -27,7 +27,7 @@ module wd{
             this.isFinish = false;
         }
 
-        public abstract update(time:number);
+        public abstract update(elapsedTime:number);
 
         public abstract start();
 

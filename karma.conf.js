@@ -27,7 +27,8 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
+        'test/unit/**/AABBShapeSpec*',
 
         {pattern: 'test/res/*', watched: false, included: false, served: true},
     {pattern: 'test/res/**', watched: false, included: false, served: true}
@@ -81,7 +82,6 @@
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Firefox'],
-
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

@@ -18,6 +18,14 @@
 /// <reference path="definition/Variable"/>
 
 
+/// <reference path="math/Global"/>
+/// <reference path="math/Vector2"/>
+/// <reference path="math/Vector3"/>
+/// <reference path="math/Vector4"/>
+/// <reference path="math/Matrix4"/>
+/// <reference path="math/Matrix3"/>
+/// <reference path="math/Quaternion"/>
+/// <reference path="math/Plane"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
@@ -35,15 +43,9 @@
 
 
 
-/// <reference path="math/Global"/>
-/// <reference path="math/Vector2"/>
-/// <reference path="math/Vector3"/>
-/// <reference path="math/Vector4"/>
-/// <reference path="math/Matrix4"/>
-/// <reference path="math/Matrix3"/>
-/// <reference path="math/Quaternion"/>
-/// <reference path="math/Plane"/>
-
+/// <reference path="component/container/ComponentContainer"/>
+/// <reference path="component/container/ActionManager"/>
+/// <reference path="component/container/UIManager"/>
 
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
@@ -86,11 +88,11 @@
 /// <reference path="component/action/Repeat"/>
 /// <reference path="component/action/RepeatForever"/>
 /// <reference path="component/action/Tween"/>
-/// <reference path="component/action/ActionManager"/>
 
 /// <reference path="component/renderer/RendererComponent"/>
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/renderer/SkyboxRenderer"/>
+/// <reference path="component/renderer/UIRenderer"/>
 
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/BoxCollider"/>
@@ -141,7 +143,6 @@
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonHingeConstraint"/>
 
 
-/// <reference path="component/pick/Pick"/>
 
 /// <reference path="component/script/Script"/>
 /// <reference path="component/script/IScriptBehavior"/>
@@ -153,8 +154,21 @@
 /// <reference path="component/light/Attenuation"/>
 
 
+/// <reference path="component/ui/UI"/>
+
+/// <reference path="component/ui/font/FontXAlignment"/>
+/// <reference path="component/ui/font/FontYAlignment"/>
+/// <reference path="component/ui/font/FontDimension"/>
+/// <reference path="component/ui/font/Font"/>
+/// <reference path="component/ui/font/PlainFont"/>
+/// <reference path="component/ui/font/BitmapFont"/>
+/// <reference path="component/ui/font/CharFont"/>
+
+
+
 /// <reference path="utils/JudgeUtils"/>
 /// <reference path="utils/MathUtils"/>
+/// <reference path="utils/CoordinateUtils"/>
 /// <reference path="utils/Log"/>
 /// <reference path="utils/time/TimeController"/>
 /// <reference path="utils/time/DirectorTimeController"/>
@@ -249,6 +263,9 @@
 /// <reference path="material/Shading"/>
 /// <reference path="material/MapManager"/>
 
+
+/// <reference path="asset/AssetType"/>
+
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
@@ -282,8 +299,15 @@
 /// <reference path="asset/wd/WDObjectParser"/>
 /// <reference path="asset/wd/WDBuilder"/>
 
+/// <reference path="asset/font/FontLoader"/>
+/// <reference path="asset/font/FntParser"/>
+/// <reference path="asset/font/FntLoader"/>
+
 
 /// <reference path="event/structure/EventListenerMap"/>
+/// <reference path="event/structure/CustomEventListenerMap"/>
+/// <reference path="event/structure/DomEventListenerMap"/>
+
 /// <reference path="event/object/EventType"/>
 /// <reference path="event/object/EventNameHandler"/>
 /// <reference path="event/object/EventPhase"/>
@@ -300,10 +324,22 @@
 /// <reference path="event/handler/MouseEventHandler"/>
 /// <reference path="event/handler/KeyboardEventHandler"/>
 /// <reference path="event/handler/CustomEventHandler"/>
+
 /// <reference path="event/dispatcher/EventDispatcher"/>
+/// <reference path="event/dispatcher/CustomEventDispatcher"/>
+/// <reference path="event/dispatcher/DomEventDispatcher"/>
+
 /// <reference path="event/binder/EventRegister"/>
+/// <reference path="event/binder/CustomEventRegister"/>
+/// <reference path="event/binder/DomEventRegister"/>
+
 /// <reference path="event/binder/EventBinder"/>
-/// <reference path="event/factory/FactoryEventHandler"/>
+/// <reference path="event/binder/CustomEventBinder"/>
+/// <reference path="event/binder/DomEventBinder"/>
+
+/// <reference path="event/factory/EventHandlerFactory"/>
+/// <reference path="event/factory/EventBinderFactory"/>
+/// <reference path="event/factory/EventDispatcherFactory"/>
 
 /// <reference path="event/EventManager"/>
 /// <reference path="event/EngineEvent"/>

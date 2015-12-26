@@ -16,8 +16,8 @@ module wd{
         private _assetTable:wdCb.Hash<any> = wdCb.Hash.create();
 
         public load(url:string):wdFrp.Stream;
-        public load(assetArr:Array<{url:string; id:string}>) :wdFrp.Stream;
-        public load(assetArr:Array<{url:Array<string>; id:string}>) :wdFrp.Stream;
+        public load(assetArr:Array<AssetData>) :wdFrp.Stream;
+        public load(assetArr:Array<AssetData>) :wdFrp.Stream;
 
         public load(...args) {
             var self = this;
@@ -32,7 +32,7 @@ module wd{
                 let assetArr = args[0];
 
                 return wdFrp.fromArray(assetArr).flatMap((asset) => {
-                    return self._createLoadMultiAssetStream(asset.url, asset.id);
+                    return self._createLoadMultiAssetStream(asset.type || AssetType.UNKNOW, asset.url, asset.id);
                 });
             }
         }
@@ -51,16 +51,19 @@ module wd{
         }
 
         public get(id:string):any{
-            return this._assetTable.getChild(id).get(id);
+            var loader = this._assetTable.getChild(id);
+
+            return loader ? loader.get(id) : null;
         }
 
-        private _createLoadMultiAssetStream(url:string, id:string);
-        private _createLoadMultiAssetStream(url:Array<string>, id:string);
+        private _createLoadMultiAssetStream(type:AssetType, url:string, id:string);
+        private _createLoadMultiAssetStream(type:AssetType, url:Array<string>, id:string);
 
         private _createLoadMultiAssetStream(...args){
-            var url = args[0],
-                id = args[1],
-                loader = this._getLoader(url),
+            var type = args[0],
+                url = args[1],
+                id = args[2],
+                loader = this._getLoader(type, url),
                 stream = null,
                 self = this;
 
@@ -80,25 +83,26 @@ module wd{
         }
 
         private _createLoadSingleAssetStream(url, id){
-            var loader = this._getLoader(url);
+            var loader = this._getLoader(AssetType.UNKNOW, url);
 
             return this._addToAssetTable(loader.load(url, id), id, loader);
         }
 
-        private _getLoader(url:string);
-        private _getLoader(url:Array<string>);
+        private _getLoader(type:AssetType, url:string);
+        private _getLoader(type:AssetType, url:Array<string>);
 
         private _getLoader(...args){
-            var extname:string = null;
+            var type = args[0],
+                extname:string = null;
 
-            if(JudgeUtils.isArray(args[0])){
-                extname = wdCb.PathUtils.extname(args[0][0]);
+            if(JudgeUtils.isArray(args[1])){
+                extname = wdCb.PathUtils.extname(args[1][0]);
             }
             else{
-                extname = wdCb.PathUtils.extname(args[0]);
+                extname = wdCb.PathUtils.extname(args[1]);
             }
 
-            return LoaderFactory.create(extname.toLowerCase());
+            return LoaderFactory.create(type, extname.toLowerCase());
         }
 
         private _addToAssetTable(loadStream:wdFrp.Stream, id:string, loader:Loader):wdFrp.Stream{
@@ -109,4 +113,10 @@ module wd{
             });
         }
     }
+
+    export type AssetData = {
+        type?:AssetType,
+        url:Array<string>,
+        id:string
+    };
 }
