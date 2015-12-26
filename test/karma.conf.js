@@ -28,6 +28,14 @@
         'test/unit/*Tool.js',
 
         'test/unit/**',
+
+        //'test/unit/**/PlainFontSpec*',
+        //'test/unit/**/UIRendererSpec*',
+        //'test/unit/**/uiSpec*',
+        //'test/unit/**/BitmapFontSpec*',
+
+
+
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
