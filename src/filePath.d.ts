@@ -43,6 +43,9 @@
 
 
 
+/// <reference path="component/container/ComponentContainer"/>
+/// <reference path="component/container/ActionManager"/>
+/// <reference path="component/container/UIManager"/>
 
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
@@ -85,7 +88,6 @@
 /// <reference path="component/action/Repeat"/>
 /// <reference path="component/action/RepeatForever"/>
 /// <reference path="component/action/Tween"/>
-/// <reference path="component/action/ActionManager"/>
 
 /// <reference path="component/renderer/RendererComponent"/>
 /// <reference path="component/renderer/MeshRenderer"/>
@@ -161,7 +163,6 @@
 /// <reference path="component/ui/font/PlainFont"/>
 /// <reference path="component/ui/font/BitmapFont"/>
 /// <reference path="component/ui/font/CharFont"/>
-/// <reference path="component/ui/UIManager"/>
 
 
 

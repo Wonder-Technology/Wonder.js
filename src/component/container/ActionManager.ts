@@ -1,34 +1,18 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
-    export class ActionManager{
+    export class ActionManager extends ComponentContainer{
         public static create():ActionManager {
             var obj = new this();
 
             return obj;
         }
 
-        private _children:wdCb.Collection<Action> = wdCb.Collection.create<Action>();
-
-        public addChild(action:Action){
-            if(this.hasChild(action)){
-                return;
-            }
-
-            this._children.addChild(action);
-        }
-
-        public removeChild(action:Action){
-            this._children.removeChild(action);
-        }
-
-        public hasChild(action:Action){
-            return this._children.hasChild(action);
-        }
+        protected list:wdCb.Collection<Action>;
 
         public update(elapsedTime:number){
             var removeQueue = [];
 
-            this._children.forEach(function(child:Action){
+            this.list.forEach(function(child:Action){
                 /*!
                  fix "if remove other action of children when invoke 'child.update', it will error in iteration after":
                  defer to remove

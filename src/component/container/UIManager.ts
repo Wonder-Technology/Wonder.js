@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    export class UIManager{
+    export class UIManager extends ComponentContainer{
         public static create(gameObject:GameObject) {
             var obj = new this(gameObject);
 
@@ -8,40 +8,27 @@ module wd {
         }
 
         constructor(gameObject:GameObject){
+            super();
+
             this._gameObject = gameObject;
         }
 
-        private _uiList:wdCb.Collection<UI> = wdCb.Collection.create<UI>();
+        protected list:wdCb.Collection<UI>;
+
         private _gameObject:GameObject = null;
         private _dirtyTag:string = "uiDirty";
         private _notDirtyTag:string = "uiNotDirty";
 
-        public hasChild(ui:UI){
-            return this._uiList.hasChild(ui);
-        }
-
-        public addChild(ui:UI){
-            if(this.hasChild(ui)){
-                return;
-            }
-
-            this._uiList.addChild(ui);
-        }
-
-        public removeChild(ui:UI){
-            this._uiList.removeChild(ui);
-        }
-
         public update(elapsedTime:number){
             var uiRenderer = null;
 
-            if(this._uiList.getCount() === 0){
+            if(this.list.getCount() === 0){
                 return;
             }
 
             if(this._isSearchedToFindIfDirty()) {
                 if (this._isMarkedDirty()) {
-                    this._uiList.forEach((ui:UI) => {
+                    this.list.forEach((ui:UI) => {
                         ui.update(elapsedTime);
                     });
                 }
@@ -59,7 +46,7 @@ module wd {
                     uiRenderer.clearCanvas();
                 }
 
-                this._uiList.forEach((ui:UI) => {
+                this.list.forEach((ui:UI) => {
                     ui.update(elapsedTime);
                 });
 
