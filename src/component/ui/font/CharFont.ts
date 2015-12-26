@@ -65,6 +65,7 @@ module wd {
         public update(elapsedTime:number){
             var transform:Transform = null,
                 position:Vector2 = null,
+                scale:Vector3 = null,
                 dx = null,
                 dy = null,
                 dw = null,
@@ -72,33 +73,24 @@ module wd {
 
             super.update(elapsedTime);
 
-            if(this.rectRegion === null){
-                return;
-            }
-
-
-            dw = this.width;
-            dh = this.height;
-
-            if(dw === 0 && dh === 0){
+            if(this.rectRegion === null || (this.width === 0 && this.height === 0)){
                 return;
             }
 
             transform = this.gameObject.transform;
             position = CoordinateUtils.convertWebGLPositionToCanvasPosition(transform.position);
+            scale = transform.scale;
 
             dx = position.x;
             dy = position.y;
+            dw = this.width * scale.x;
+            dh = this.height * scale.y;
 
 
             this.context.save();
 
             if(transform.isRotate){
                 this._rotateAroundImageCenter(dx, dy, dw, dh);
-            }
-
-            if(transform.isScale){
-                this._scaleAroundImageCenter(dx, dy, dw, dh)
             }
 
             this.context.drawImage(this.image,
@@ -119,14 +111,6 @@ module wd {
             this.context.transform(
                 values[0], values[4], values[1], values[5], 0, 0
             );
-            this.context.translate(- (dx + dw / 2), -(dy + dh / 2));
-        }
-
-        private _scaleAroundImageCenter(dx:number, dy:number, dw:number, dh:number){
-            var scale = this.gameObject.transform.scale;
-
-            this.context.translate(dx + dw / 2, dy + dh / 2);
-            this.context.scale(scale.x, scale.y);
             this.context.translate(- (dx + dw / 2), -(dy + dh / 2));
         }
     }

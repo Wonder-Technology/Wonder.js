@@ -526,14 +526,6 @@ describe("BitmapFont", function () {
                 });
 
                 describe("test translate and scale", function(){
-                    function prepareAfterInit(){
-                        context = renderer.context;
-
-                        sandbox.stub(context, "drawImage");
-                        sandbox.stub(context, "translate");
-                        sandbox.stub(context, "scale");
-                    }
-
                     function addAction(index){
                         var charFontGameObject = getCharFontGameObject(index);
 
@@ -547,16 +539,8 @@ describe("BitmapFont", function () {
                         action.init();
                     }
 
-                    function judgeScale(x, y){
-                        var x = x || 654;
-                        var y = y || 302;
-
-                        expect(context.translate.firstCall).toCalledWith(x, y);
-                        expect(context.scale).toCalledWith(2, 3);
-                        expect(context.translate.secondCall).toCalledWith(-x, -y);
-                    }
-
                     beforeEach(function(){
+
                     });
 
                     it("test1", function(){
@@ -575,12 +559,8 @@ describe("BitmapFont", function () {
                         director._loopBody(2);
 
                         judgeDrawImage(0, 1, -2, 100, 200);
-                        judgeDrawImage(1, 4 + 100, -2 + 200, 100, 200);
+                        judgeDrawImage(1, 4 + 100, -2 + 200, 100 * 2, 200 * 3);
                         judgeDrawImage(2, 7, -2, 100, 200);
-
-
-
-                        judgeScale();
                     });
                     it("test2", function(){
                         font.text = "正ab";
@@ -600,11 +580,9 @@ describe("BitmapFont", function () {
                         director._loopBody(2);
 
                         judgeDrawImage(0, 1 + 100, -2 + 50, 100, 200);
-                        judgeDrawImage(1, 4 + 100 + 100, -2 + 200 + 50, 100, 200);
+                        judgeDrawImage(1, 4 + 100 + 100, -2 + 200 + 50, 100 * 2, 200 * 3);
                         judgeDrawImage(2, 7 + 100, -2 + 50, 100, 200);
 
-
-                        judgeScale(754, 252);
                     });
                     it("test3", function(){
                         font.text = "正\na  dbc";
@@ -621,14 +599,12 @@ describe("BitmapFont", function () {
 
                         judgeDrawImage(0, 1, -2, 100, 200);
                         //judgeDrawImage(1, 3, 0, 0, 0);
-                        judgeDrawImage(1, 1 + 100, -52 + 200, 100, 200);
+                        judgeDrawImage(1, 1 + 100, -52 + 200, 100 * 2, 200 * 3);
                         judgeDrawImage(2, 4, -52, 100, 200);
                         judgeDrawImage(3, 7, -52, 100, 200);
                         judgeDrawImage(4, 1, -102, 100, 200);
                         judgeDrawImage(5, 4, -102, 100, 200);
                         judgeDrawImage(6, 7, -102, 100, 200);
-
-                        judgeScale(651, 352);
                     })
                 });
             });
