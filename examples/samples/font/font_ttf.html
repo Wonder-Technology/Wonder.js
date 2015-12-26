@@ -33,15 +33,16 @@
         function createFont() {
             var font = wd.PlainFont.create();
 
-            font.text = "This is a font.\n" +
+            font.text = "This is single line.\n" +
                     "Test multi line! Test multi line! Test multi line! Test multi line! Test multi line! ";
-            //should be the same as the id of font asset
+            //should be the font asset id
             font.fontFamily = "Urdeutsch";
             font.fontSize = 20;
+            font.enableStroke("red");
             //if auto, it equal view.width/height
             font.width = wd.FontDimension.AUTO;
             font.height = 100;
-            font.xAlignment = wd.FontXAlignment.LEFT;
+            font.xAlignment = wd.FontXAlignment.CENTER;
             font.yAlignment = wd.FontYAlignment.BOTTOM;
 
 
@@ -57,7 +58,7 @@
             gameObject.addComponent(renderer);
 
 
-//            gameObject.transform.translate(-300, 100, 0);
+            gameObject.transform.translate(-500, 100, 0);
 
             return gameObject;
         }
