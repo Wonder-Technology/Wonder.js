@@ -85,14 +85,22 @@ module wd {
             }
         }
 
+        public removeFromGameObject(gameObject:GameObject){
+            var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
+
+            if(engineAdapter){
+                this.getPhysicsEngineAdapter().removeGameObject(gameObject);
+
+                this.getPhysicsEngineAdapter().removeConstraints(gameObject);
+            }
+
+            super.removeFromGameObject(gameObject);
+        }
+
         public dispose(){
             this._children.forEach((child:GameObject) => {
                 child.removeTag("isRigidbodyChild");
             }, this);
-
-            this.getPhysicsEngineAdapter().removeGameObject(this.gameObject);
-
-            this.getPhysicsEngineAdapter().removeConstraints(this.gameObject);
         }
 
         public getPhysicsEngineAdapter() {

@@ -43,7 +43,7 @@ module wd{
                 point = null,
                 w = null;
 
-            point = invViewProjMat.multiplyVector3(normalizedDeviceCoordinate);
+            point = invViewProjMat.multiplyPoint(normalizedDeviceCoordinate);
 
             w = normalizedDeviceCoordinate.x * invViewProjMat.values[3] +
                 normalizedDeviceCoordinate.y * invViewProjMat.values[7] +
