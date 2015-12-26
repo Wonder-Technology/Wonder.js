@@ -67,6 +67,8 @@ module wd {
 
             this.context = this.getContext();
 
+            this._initDimension();
+
             this._createAndAddFontCharGameObjects(fntObj, imageAsset.source);
 
             this._formatText(fntObj);
@@ -92,6 +94,8 @@ module wd {
 
                 return false;
             }
+
+            this._initDimension();
 
             this._createAndAddFontCharGameObjects(fntObj, imageAsset.source);
 
@@ -445,6 +449,17 @@ module wd {
             });
 
             this._charFontList.removeAllChildren();
+        }
+
+        @require(function(){
+            assert(!!DeviceManager.getInstance().view, Log.info.FUNC_SHOULD("set view"));
+        })
+        private _initDimension(){
+            var view = DeviceManager.getInstance().view;
+
+            if(this._width === FontDimension.AUTO){
+                this._width = view.width;
+            }
         }
     }
 }

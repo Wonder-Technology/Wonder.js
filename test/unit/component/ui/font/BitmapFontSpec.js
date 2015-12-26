@@ -52,6 +52,7 @@ describe("BitmapFont", function () {
         sandbox.restore();
     });
 
+
     describe("if not get fnt or bitmap resource, log", function () {
         beforeEach(function () {
             sandbox.stub(wd.Log, "log");
@@ -161,6 +162,20 @@ describe("BitmapFont", function () {
                 source:image
             });
         });
+
+        it("if set width to be auto, it can equal view.width", function(){
+            function setDimensions(width) {
+                font.width = width;
+            }
+
+            font.text = "阿斯";
+            setDimensions(wd.FontDimension.AUTO);
+
+            font.init();
+
+            expect(font.width).toEqual(1000);
+        });
+
 
         it("test single line text", function () {
             font.text = "正ab";

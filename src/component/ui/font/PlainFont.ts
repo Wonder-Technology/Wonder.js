@@ -108,10 +108,11 @@ module wd {
 
         public init() {
             this.context = this.getContext();
-            this._formatText();
-            this._lineHeight = this._getDefaultLineHeight();
 
             this._initDimension();
+
+            this._formatText();
+            this._lineHeight = this._getDefaultLineHeight();
         }
 
         //todo implement
@@ -148,8 +149,8 @@ module wd {
         }
 
         protected updateWhenDirty() {
-            this._formatText();
             this._initDimension();
+            this._formatText();
         }
 
         private _formatText() {
