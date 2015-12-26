@@ -50,11 +50,13 @@
                 var tween = wd.Tween.create(),
                         charFontGameObject = gameObject.findChildByTag("5");
 
-                tween.from({z: 0})
-                        .to({z: 360}, 3000)
+                tween.from({angle: 0})
+                        .to({angle: 360}, 3000)
                         .easing(wd.Tween.Easing.Cubic.InOut)
                         .onUpdate(function () {
-                            charFontGameObject.transform.eulerAngles = wd.Vector3.create(0, this.z, 0);
+//                            charFontGameObject.transform.eulerAngles = wd.Vector3.create(0, this.z, 0);
+                            charFontGameObject.transform.eulerAngles = wd.Vector3.create(0, this.angle, this.angle);
+                            charFontGameObject.transform.scale = wd.Vector3.create(2, 1, 1);
                         });
 
 
