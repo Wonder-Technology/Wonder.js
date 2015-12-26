@@ -436,12 +436,11 @@ describe("BitmapFont", function () {
             });
 
             describe("can add action component", function(){
-                function addAction(index){
+                function addRotateAction(index, eulerAngles){
                     var charFontGameObject = getCharFontGameObject(index);
 
                     var action = wd.CallFunc.create(function(){
-                        this.transform.translate(100, 200, 0);
-                        this.transform.scale = wd.Vector3.create(2, 3, 1);
+                        this.transform.eulerAngles = eulerAngles;
                     }, charFontGameObject);
 
                     charFontGameObject.addComponent(action);
@@ -449,69 +448,150 @@ describe("BitmapFont", function () {
                     action.init();
                 }
 
-                it("test1", function(){
-                    font.text = "正ab";
-                    font.width = 1000;
+                describe("test rotate", function(){
+                    beforeEach(function(){
+                        font.text = "正ab";
+                        font.width = 1000;
 
-                    director._init();
+                        director._init();
 
-                    prepareAfterInit();
+                        prepareAfterInit();
+
+                        context = renderer.context;
+
+                        sandbox.stub(context, "transform");
+                        sandbox.stub(context, "translate");
+                    });
+
+                    it("can rotate around image center by x axis", function(){
+                        addRotateAction(
+                            1,
+                            wd.Vector3.create(45, 0, 0)
+                        );
 
 
-                    addAction();
+                        director._loopBody(2);
+
+                        expect(context.translate.firstCall).toCalledWith(554, 502);
+                        expect(testTool.getValues(
+                            context.transform.firstCall.args, 1
+                        )).toEqual([1, 0, 0, 0.7, 0, 0]);
+                        expect(context.translate.secondCall).toCalledWith(-554, -502);
+                    });
+                    it("can rotate around image center by y axis", function(){
+                        addRotateAction(
+                            1,
+                            wd.Vector3.create(0, 45, 0)
+                        );
 
 
+                        director._loopBody(2);
 
-                    director._loopBody(2);
+                        expect(context.translate.firstCall).toCalledWith(554, 502);
+                        expect(testTool.getValues(
+                            context.transform.firstCall.args, 1
+                        )).toEqual([0.7, 0, 0, 1, 0, 0]);
+                        expect(context.translate.secondCall).toCalledWith(-554, -502);
+                    });
+                    it("can rotate around image center by x axis", function(){
+                        addRotateAction(
+                            1,
+                            wd.Vector3.create(0, 0, 45)
+                        );
 
-                    judgeDrawImage(0, 1, -2, 100, 200);
-                    judgeDrawImage(1, 4 + 100, -2 + 200, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 7, -2, 100, 200);
+
+                        director._loopBody(2);
+
+                        expect(context.translate.firstCall).toCalledWith(554, 502);
+                        expect(testTool.getValues(
+                            context.transform.firstCall.args, 1
+                        )).toEqual([0.7, -0.7, 0.7, 0.7, 0, 0]);
+                        expect(context.translate.secondCall).toCalledWith(-554, -502);
+                    });
                 });
-                it("test2", function(){
-                    font.text = "正ab";
-                    font.width = 1000;
 
-                    gameObject.transform.translate(100, 50, 0);
+                describe("test translate and scale", function(){
+                    function addAction(index){
+                        var charFontGameObject = getCharFontGameObject(index);
 
-                    director._init();
+                        var action = wd.CallFunc.create(function(){
+                            this.transform.translate(100, 200, 0);
+                            this.transform.scale = wd.Vector3.create(2, 3, 1);
+                        }, charFontGameObject);
 
-                    prepareAfterInit();
+                        charFontGameObject.addComponent(action);
+
+                        action.init();
+                    }
+
+                    beforeEach(function(){
+
+                    });
+
+                    it("test1", function(){
+                        font.text = "正ab";
+                        font.width = 1000;
+
+                        director._init();
+
+                        prepareAfterInit();
 
 
-                    addAction();
+                        addAction();
 
 
 
-                    director._loopBody(2);
+                        director._loopBody(2);
 
-                    judgeDrawImage(0, 1 + 100, -2 + 50, 100, 200);
-                    judgeDrawImage(1, 4 + 100 + 100, -2 + 200 + 50, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 7 + 100, -2 + 50, 100, 200);
+                        judgeDrawImage(0, 1, -2, 100, 200);
+                        judgeDrawImage(1, 4 + 100, -2 + 200, 100 * 2, 200 * 3);
+                        judgeDrawImage(2, 7, -2, 100, 200);
+                    });
+                    it("test2", function(){
+                        font.text = "正ab";
+                        font.width = 1000;
 
+                        gameObject.transform.translate(100, 50, 0);
+
+                        director._init();
+
+                        prepareAfterInit();
+
+
+                        addAction();
+
+
+
+                        director._loopBody(2);
+
+                        judgeDrawImage(0, 1 + 100, -2 + 50, 100, 200);
+                        judgeDrawImage(1, 4 + 100 + 100, -2 + 200 + 50, 100 * 2, 200 * 3);
+                        judgeDrawImage(2, 7 + 100, -2 + 50, 100, 200);
+
+                    });
+                    it("test3", function(){
+                        font.text = "正\na  dbc";
+                        font.width = 10;
+
+                        director._init();
+
+                        prepareAfterInit();
+
+                        addAction(2);
+
+                        director._loopBody(1);
+
+
+                        judgeDrawImage(0, 1, -2, 100, 200);
+                        //judgeDrawImage(1, 3, 0, 0, 0);
+                        judgeDrawImage(1, 1 + 100, -52 + 200, 100 * 2, 200 * 3);
+                        judgeDrawImage(2, 4, -52, 100, 200);
+                        judgeDrawImage(3, 7, -52, 100, 200);
+                        judgeDrawImage(4, 1, -102, 100, 200);
+                        judgeDrawImage(5, 4, -102, 100, 200);
+                        judgeDrawImage(6, 7, -102, 100, 200);
+                    })
                 });
-                it("test3", function(){
-                    font.text = "正\na  dbc";
-                    font.width = 10;
-
-                    director._init();
-
-                    prepareAfterInit();
-
-                    addAction(2);
-
-                    director._loopBody(1);
-
-
-                    judgeDrawImage(0, 1, -2, 100, 200);
-                    //judgeDrawImage(1, 3, 0, 0, 0);
-                    judgeDrawImage(1, 1 + 100, -52 + 200, 100 * 2, 200 * 3);
-                    judgeDrawImage(2, 4, -52, 100, 200);
-                    judgeDrawImage(3, 7, -52, 100, 200);
-                    judgeDrawImage(4, 1, -102, 100, 200);
-                    judgeDrawImage(5, 4, -102, 100, 200);
-                    judgeDrawImage(6, 7, -102, 100, 200);
-                })
             });
 
             describe("test CharFont dirty", function(){

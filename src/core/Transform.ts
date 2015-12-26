@@ -108,6 +108,7 @@ module wd{
             }
             else {
                 this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
+                //this._localScale = this._parent.localToWorldMatrix.copy().invert().multiplyPoint(scale);
             }
 
             this.isScale = true;
