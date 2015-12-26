@@ -225,7 +225,12 @@ describe("PlainFont", function () {
 
                 font.init();
 
-                expect(font._lineHeight).toEqual(57);
+                /*!
+                in different browsers, the default lineHeight may be different.
+                 */
+
+                expect(font._lineHeight > 55).toBeTruthy();
+                expect(font._lineHeight < 60).toBeTruthy();
             });
         });
     });
