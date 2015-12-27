@@ -2,7 +2,8 @@ var gulp = require("gulp");
 var path = require("path");
 var karma = require("karma").server;
 
-var karmaConfPath = path.join(process.cwd(), "karma.conf.js");
+var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
+var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
 
 gulp.task("test", function (done) {
     karma.start({
@@ -14,7 +15,7 @@ gulp.task("test", function (done) {
 
 gulp.task("testInCI", function (done) {
     karma.start({
-        configFile: karmaConfPath,
+        configFile: ciKarmaConfPath,
         singleRun:true,
         autoWatch:false
     }, done);

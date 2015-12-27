@@ -151,6 +151,7 @@ module wd {
         protected updateWhenDirty() {
             this._initDimension();
             this._formatText();
+            this._lineHeight = this._getDefaultLineHeight();
         }
 
         private _formatText() {
