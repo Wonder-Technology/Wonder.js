@@ -9,7 +9,7 @@ module wd{
         	return obj;
         }
 
-        protected listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<DomEventRegisterData>>();
+        protected listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>;
 
         public getChild(eventName:EventName):wdCb.Collection<DomEventRegisterData>;
         public getChild(dom:HTMLElement, eventName:EventName):wdCb.Collection<DomEventRegisterData>;

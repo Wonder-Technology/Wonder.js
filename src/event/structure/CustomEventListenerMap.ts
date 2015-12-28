@@ -9,7 +9,7 @@ module wd{
         	return obj;
         }
 
-        protected listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>> = wdCb.Hash.create<wdCb.Collection<CustomEventRegisterData>>();
+        protected listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
 
         public getChild(eventName:EventName):wdCb.Collection<CustomEventRegisterData>;
         public getChild(target:GameObject):wdCb.Collection<CustomEventRegisterData>;

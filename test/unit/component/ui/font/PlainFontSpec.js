@@ -452,121 +452,131 @@ describe("PlainFont", function () {
             expect(context.restore).toCalledOnce();
             expect(context.restore).toCalledAfter(context.save);
         });
-
-        describe("change data will cause dirty and update font", function(){
-            beforeEach(function(){
-            });
-
-            it("if the new data equal old data, not dirty and not update text", function(){
-                sandbox.stub(font, "updateWhenDirty");
-
-                font.update();
-
-                expect(font.updateWhenDirty).not.toCalled();
-
-                font.text = "a";
-
-                font.update();
-
-                expect(font.updateWhenDirty).toCalledOnce();
-
-                font.text = "a";
-
-                font.update();
-
-                expect(font.updateWhenDirty).toCalledOnce();
-
-            });
-
-            describe("else", function(){
-                function setFakeContext(fakeContext) {
-                    font.getContext.returns(fakeContext);
-                }
-
-                beforeEach(function(){
-                    font.fontSize = 50;
-                    font.fontFamily = "sans-serif";
+    });
 
 
-                    context = {
-                        save: sandbox.stub(),
-                        restore: sandbox.stub(),
-                        measureText: function (str) {
-                            return {
-                                width: str.length * font.fontSize
-                            }
-                        },
-                        fillText: sandbox.stub(),
-                        strokeText: sandbox.stub()
+    describe("change data will cause dirty and update font", function(){
+        function setFakeContext(fakeContext) {
+            font.getContext.returns(fakeContext);
+        }
+
+        beforeEach(function(){
+            font = createFont();
+
+            font.fontSize = 50;
+            font.fontFamily = "sans-serif";
+
+
+            context = {
+                save: sandbox.stub(),
+                restore: sandbox.stub(),
+                measureText: function (str) {
+                    return {
+                        width: str.length * font.fontSize
                     }
+                },
+                fillText: sandbox.stub(),
+                strokeText: sandbox.stub()
+            }
 
-                    setFakeContext(context);
+            setFakeContext(context);
 
 
-                    font.text = "阿斯";
+            setPosition(0, 0);
 
-                    font.init();
+            setDimensions(500, 400);
 
 
-                    font.update();
-                });
+            sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                width: 1000,
+                height: 800
+            })
 
-                it("test change text", function(){
-                    font.text = "a";
+            font.init();
+        });
 
-                    font.update();
+        it("if the new data equal old data, not dirty and not update text", function(){
+            sandbox.stub(font, "updateWhenDirty");
 
-                    expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
-                });
-                it("test change fontSize", function(){
-                    font.text = "a\nb";
-                    font.fontSize = 200;
+            font.update();
 
-                    font.update();
+            expect(font.updateWhenDirty).not.toCalled();
 
-                    expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
-                    expect(context.fillText.getCall(2)).toCalledWith("b", 500, 600);
-                    expect(context.font).toEqual("200px '" + font.fontFamily + "'");
-                });
-                it("test change fontFamily", function(){
-                    font.fontFamily = "aaa";
+            font.text = "a";
 
-                    font.update();
+            font.update();
 
-                    expect(context.font).toEqual("50px 'aaa'");
-                });
-                it("test change width", function(){
-                    font.width = wd.FontDimension.AUTO;
+            expect(font.updateWhenDirty).toCalledOnce();
 
-                    font.update();
+            font.text = "a";
 
-                    expect(font.width).toEqual(1000);
-                });
-                it("update when change height", function(){
-                    font.height = 100;
-                    font.yAlignment = wd.FontYAlignment.BOTTOM;
-                    //font.text = "a";
+            font.update();
 
-                    font.update();
+            expect(font.updateWhenDirty).toCalledOnce();
 
-                    expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 450);
-                });
-                it("test change xAlignment", function(){
-                    font.xAlignment = wd.FontXAlignment.RIGHT;
+        });
 
-                    font.update();
+        describe("else", function(){
+            beforeEach(function(){
+                font.text = "阿斯";
 
-                    expect(context.fillText.secondCall).toCalledWith("阿斯", 900, 400);
-                });
-                it("test change yAlignment", function(){
-                    font.yAlignment = wd.FontYAlignment.MIDDLE;
+                font.update();
+            });
 
-                    font.update();
+            it("test change text", function(){
+                font.text = "a";
 
-                    expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 575);
-                });
+                font.update();
+
+                expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
+            });
+            it("test change fontSize", function(){
+                font.text = "a\nb";
+                font.fontSize = 200;
+
+                font.update();
+
+                expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
+                expect(context.fillText.getCall(2)).toCalledWith("b", 500, 600);
+                expect(context.font).toEqual("200px '" + font.fontFamily + "'");
+            });
+            it("test change fontFamily", function(){
+                font.fontFamily = "aaa";
+
+                font.update();
+
+                expect(context.font).toEqual("50px 'aaa'");
+            });
+            it("test change width", function(){
+                font.width = wd.FontDimension.AUTO;
+
+                font.update();
+
+                expect(font.width).toEqual(1000);
+            });
+            it("update when change height", function(){
+                font.height = 100;
+                font.yAlignment = wd.FontYAlignment.BOTTOM;
+                //font.text = "a";
+
+                font.update();
+
+                expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 450);
+            });
+            it("test change xAlignment", function(){
+                font.xAlignment = wd.FontXAlignment.RIGHT;
+
+                font.update();
+
+                expect(context.fillText.secondCall).toCalledWith("阿斯", 900, 400);
+            });
+            it("test change yAlignment", function(){
+                font.yAlignment = wd.FontYAlignment.MIDDLE;
+
+                font.update();
+
+                expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 575);
             });
         });
     });
-
 });
