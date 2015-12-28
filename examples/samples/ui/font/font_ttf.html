@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>show 2d overlay font</title>
 
-    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
-    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
 </head>
 <body>
 <script>
@@ -17,7 +17,7 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {type: wd.AssetType.FONT, url: "../asset/font/Urdeutsch.ttf", id: "Urdeutsch"}
+            {type: wd.AssetType.FONT, url: "../../asset/font/Urdeutsch.ttf", id: "Urdeutsch"}
         ]).subscribe(null, null, function () {
             initSample();
         });
