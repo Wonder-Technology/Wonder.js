@@ -102,20 +102,6 @@ describe("UIRenderer", function () {
 
             });
 
-            it("off BEFORE_INIT event handler", function(){
-                sandbox.spy(renderer, "_createOverlayCanvas");
-
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
-
-                expect(renderer._createOverlayCanvas).toCalledOnce();
-
-
-                gameObject.dispose();
-
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
-
-                expect(renderer._createOverlayCanvas).toCalledOnce();
-            });
             it("off ENDLOOP event handler", function(){
                 wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
                 renderer.init();

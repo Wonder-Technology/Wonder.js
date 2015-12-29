@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>loading ui</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        var bar = null;
+
+        createLoadingUI();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../asset/font/myFont.fnt", id: "myFont_fnt"},
+            {url: "../asset/font/myFont.png", id: "myFont_image"}
+        ]).subscribe(function(data){
+            var barComponent = bar.getComponent(wd.ProgressBar);
+
+            barComponent.percent = data.currentLoadedCount / data.assetCount;
+//            barComponent.percent = 0.5;
+
+            bar.update(-1);
+
+        }, null, function () {
+            console.log("completed");
+
+            bar.dispose();
+        });
+
+        function createLoadingUI(){
+            var director = wd.Director.getInstance();
+
+            var renderer = createUIRenderer();
+            bar = createProgressBar(renderer);
+
+            director.scene.addChild(bar);
+
+            bar.init();
+        }
+
+        function createUIRenderer(){
+            var renderer = wd.UIRenderer.create();
+
+            return renderer;
+        }
+
+        function createProgressBar(renderer){
+            var bar = wd.ProgressBar.create();
+            bar.width = 400;
+            bar.height = 50;
+            bar.borderStyle = "#ff1112";
+            bar.fillStyle = "rgb(1.0, 0.0, 0.0)";
+
+
+            var barGameObject = wd.GameObject.create();
+
+            barGameObject.addComponent(bar);
+
+
+            barGameObject.addComponent(renderer);
+
+            return barGameObject;
+        }
+    };
+</script>
+</body>
+</html>

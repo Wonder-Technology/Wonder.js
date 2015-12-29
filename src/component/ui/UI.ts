@@ -10,8 +10,11 @@ module wd {
             this.p_dirty = dirty;
         }
 
-        public abstract update(elapsedTime:number);
+        public context:CanvasRenderingContext2D = null;
+
+
         public abstract init();
+        public abstract update(elapsedTime:number);
 
         public addToGameObject(gameObject:GameObject){
             super.addToGameObject(gameObject);
@@ -23,6 +26,17 @@ module wd {
             super.removeFromGameObject(gameObject);
 
             gameObject.uiManager.removeChild(this);
+        }
+
+        protected getContext() {
+            return this.getUIRenderer().context;
+        }
+
+        @require(function () {
+            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
+        })
+        protected getUIRenderer(){
+            return this.gameObject.getComponent<UIRenderer>(UIRenderer);
         }
     }
 }

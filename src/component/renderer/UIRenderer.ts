@@ -66,19 +66,13 @@ module wd {
         }
 
         public initWhenCreate(){
-            this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
-                this._createOverlayCanvas();
-            });
-
-            EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+            this._createOverlayCanvas();
         }
 
         public dispose(){
             if(this._refernceList.getCount() > 0){
                 return;
             }
-
-            EventManager.off(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
 
             wdCb.DomQuery.create(this._canvas).remove();
         }

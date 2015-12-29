@@ -34,6 +34,7 @@
         //'test/unit/**/uiSpec*',
         //'test/unit/**/BitmapFontSpec*',
 
+        //'test/unit/**/ProgressBarSpec*',
 
 
         //'test/unit/**/MathUtils*',

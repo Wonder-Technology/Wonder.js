@@ -33,14 +33,15 @@ describe("BitmapFont", function () {
 
         director = wd.Director.getInstance();
 
-        gameObject = createFont();
-
         sandbox.stub(wd.DeviceManager.getInstance(), "view", {
             x: 0,
             y: 0,
             width:1000,
             height: 800
         });
+
+
+        gameObject = createFont();
 
 
         director.scene.addChild(gameObject);

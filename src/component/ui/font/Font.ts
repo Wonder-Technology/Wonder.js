@@ -1,8 +1,6 @@
 /// <reference path="../../../filePath.d.ts"/>
 module wd {
     export abstract class Font extends UI {
-        public context:CanvasRenderingContext2D = null;
-
         private _isFirstUpdate:boolean = true;
 
         public update(elapsedTime:number){
@@ -19,15 +17,6 @@ module wd {
         }
 
         protected abstract updateWhenDirty();
-
-        @require(function () {
-            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
-        })
-        protected getContext() {
-            var renderer = this.gameObject.getComponent<UIRenderer>(UIRenderer);
-
-            return renderer.context;
-        }
 
         protected getCanvasPosition();
         protected getCanvasPosition(gameObject:GameObject);
