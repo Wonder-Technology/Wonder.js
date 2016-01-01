@@ -1,22 +1,13 @@
-describe("Transform", function(){
+describe("ThreeDTransform", function(){
     var sandbox = null;
     var tra1 = null;
     var Vector3 = wd.Vector3;
-    var Transform = wd.Transform;
+    var Transform = wd.ThreeDTransform;
 
     function getValues(values, digit){
-        var digit = digit || 0;
+        var digit = digit === undefined ? 0 : digit;
 
-        if(values){
-            if(mathTestUtils.isFloat32Array(values)){
-                return mathTestUtils.getValues(values, digit);
-            }
-            else{
-                return mathTestUtils.getValues(values.values, digit);
-            }
-        }
-
-        return mathTestUtils.getValues(matrix.values, digit);
+        return testTool.getValues(values, digit);
     }
 
     beforeEach(function () {
@@ -38,12 +29,12 @@ describe("Transform", function(){
         tra1.translateLocal(Vector3.create(1, 1, 1));
         tra3.translate(Vector3.create(1, 1, 1));
 
-        expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-        expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-2, 2, -2)));
-        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(1, 1, 1)));
-        expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(0, 2, 0)));
-        expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
+        expect(getValues(tra2.position)).toEqual([-1, 1, -1]);
+        expect(getValues(tra2.localPosition)).toEqual([-1, 1, -1]);
+        expect(getValues(tra1.position)).toEqual([-2, 2, -2]);
+        expect(getValues(tra1.localPosition)).toEqual([1, 1, 1]);
+        expect(getValues(tra3.position)).toEqual([0, 2, 0]);
+        expect(getValues(tra3.localPosition)).toEqual([-1, 1, -1]);
     });
 
 
@@ -65,23 +56,23 @@ describe("Transform", function(){
         });
 
         it("set position", function(){
-            expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(2, 2, 2)));
-            expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(2, 2, 2)));
-            expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(3, 4, 5)));
-            expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(1, 2, 3)));
-            expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(2, 2, 2)));
-            expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(0, 0, 0)));
+            expect(getValues(tra2.position)).toEqual([2, 2, 2]);
+            expect(getValues(tra2.localPosition)).toEqual([2, 2, 2]);
+            expect(getValues(tra1.position)).toEqual([3, 4, 5]);
+            expect(getValues(tra1.localPosition)).toEqual([1, 2, 3]);
+            expect(getValues(tra3.position)).toEqual([2, 2, 2]);
+            expect(getValues(tra3.localPosition)).toEqual([0, 0, 0]);
         });
         it("set local position", function(){
             tra3.localPosition = Vector3.create(1, 1, 1);
             tra2.localPosition = Vector3.create(3, 3, 3);
 
-            expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(3, 3, 3)));
-            expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(3, 3, 3)));
-            expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(4, 4, 4)));
-            expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(1, 1, 1)));
-            expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(4, 5, 6)));
-            expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(1, 2, 3)));
+            expect(getValues(tra2.position)).toEqual([3, 3, 3]);
+            expect(getValues(tra2.localPosition)).toEqual([3, 3, 3]);
+            expect(getValues(tra3.position)).toEqual([4, 4, 4]);
+            expect(getValues(tra3.localPosition)).toEqual([1, 1, 1]);
+            expect(getValues(tra1.position)).toEqual([4, 5, 6]);
+            expect(getValues(tra1.localPosition)).toEqual([1, 2, 3]);
         });
     });
 
@@ -98,10 +89,10 @@ describe("Transform", function(){
 
             tra2.eulerAngles = Vector3.create(2, 3, 4);
 
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(0, 0, 0)));
+            expect(getValues(tra2.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra2.localEulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([0, 0, 0]);
         });
         it("if child's eulerAngles is zero before setting parent, then it will rotate the same as the parent", function(){
             tra2.eulerAngles = Vector3.create(1,2,3);
@@ -110,10 +101,10 @@ describe("Transform", function(){
 
             tra2.eulerAngles = Vector3.create(2, 3, 4);
 
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(0, 0, 0)));
+            expect(getValues(tra2.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra2.localEulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([0, 0, 0]);
         });
         it("when set child's eulerAngles after setting its parent, it's eulerAngles will be the setting num ignoring parent's eulerAngles", function(){
             tra2.eulerAngles = Vector3.create(1,2,3);
@@ -123,10 +114,10 @@ describe("Transform", function(){
             tra2.eulerAngles = Vector3.create(2, 3, 4);
             tra1.eulerAngles = Vector3.create(2, 2, 2);
 
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(2, 2, 2)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(0, -1, -2)));
+            expect(getValues(tra2.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra2.localEulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.eulerAngles)).toEqual([2, 2, 2]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([0, -1, -2]);
         });
         it("local eulerAngles is relative to the parent(relative to world when parent is null)", function(){
             tra2.localEulerAngles = Vector3.create(1,2,3);
@@ -135,26 +126,43 @@ describe("Transform", function(){
             tra2.eulerAngles = Vector3.create(2, 3, 4);
             tra1.localEulerAngles = Vector3.create(1, 1, 1);
 
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(2, 3, 4)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(3, 4, 5)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(1, 1, 1)));
+            expect(getValues(tra2.eulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra2.localEulerAngles)).toEqual([2, 3, 4]);
+            expect(getValues(tra1.eulerAngles)).toEqual([3, 4, 5]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([1, 1, 1]);
         });
     });
 
-    it("set scale", function(){
-        var tra2 = Transform.create();
-        tra2.localScale = Vector3.create(2, 2, 0.5);
-        tra1.parent = tra2;
 
-        tra2.localScale = Vector3.create(2, 1, 1);
-        tra1.localScale = Vector3.create(1, 2, 2);
+    describe("set scale", function(){
+        beforeEach(function(){
+        });
 
-        expect(getValues(tra2.localScale)).toEqual(getValues(Vector3.create(2, 1, 1)));
-        expect(getValues(tra2.scale)).toEqual(getValues(Vector3.create(2, 1, 1)));
-        expect(getValues(tra1.localScale)).toEqual(getValues(Vector3.create(1, 2, 2)));
-        expect(getValues(tra1.scale)).toEqual(getValues(Vector3.create(2, 2, 2)));
+        it("set scale", function(){
+            var tra2 = Transform.create();
+            tra2.parent = tra1;
+
+            tra1.position = Vector3.create(100, -50, 0);
+
+            tra2.scale = Vector3.create(2, 3, 1);
+
+            expect(getValues(tra2.scale)).toEqual([2, 3, 1]);
+        });
+        it("set local scale", function(){
+            var tra2 = Transform.create();
+            tra2.localScale = Vector3.create(2, 2, 0.5);
+            tra1.parent = tra2;
+
+            tra2.localScale = Vector3.create(2, 1, 1);
+            tra1.localScale = Vector3.create(1, 2, 2);
+
+            expect(getValues(tra2.localScale)).toEqual([2, 1, 1]);
+            expect(getValues(tra2.scale)).toEqual([2, 1, 1]);
+            expect(getValues(tra1.localScale)).toEqual([1, 2, 2]);
+            expect(getValues(tra1.scale)).toEqual([2, 2, 2]);
+        });
     });
+
 
     describe("test translate", function(){
         var tra2 = null;
@@ -172,20 +180,20 @@ describe("Transform", function(){
                 tra2.translate(Vector3.create(1, 1, 1));
                 tra1.translate(Vector3.create(1, 1, 1));
 
-                expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(1, 1, 1)));
-                expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(1, 1, 1)));
-                expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(1, 4 ,-1)));
-                expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(0, 3, 2)));
+                expect(getValues(tra2.position)).toEqual([1, 1, 1]);
+                expect(getValues(tra2.localPosition)).toEqual([1, 1, 1]);
+                expect(getValues(tra1.position)).toEqual([1, 4 ,-1]);
+                expect(getValues(tra1.localPosition)).toEqual([0, 3, 2]);
             });
             //it("child should follow parent, while parent shouldn't follow parent", function(){
             //    tra2.translate(Vector3.create(1, 1, 1));
             //    tra1.rotate(Vector3.create(0, 180, 0));
             //    tra1.translate(Vector3.create(1, 1, 1));
             //
-            //    expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(1, 1, 1)));
-            //    expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(1, 1, 1)));
-            //    expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-3, 4, -5)));
-            //    expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(-4, 3, -6)));
+            //    expect(getValues(tra2.position)).toEqual([1, 1, 1]);
+            //    expect(getValues(tra2.localPosition)).toEqual([1, 1, 1]);
+            //    expect(getValues(tra1.position)).toEqual([-3, 4, -5]);
+            //    expect(getValues(tra1.localPosition)).toEqual([-4, 3, -6]);
             //});
 
             //describe("relativeTo will affect when no parent", function(){
@@ -197,10 +205,10 @@ describe("Transform", function(){
             //        tra1.translate(Vector3.create(1, 1, 1));
             //        tra1.translate(Vector3.create(1, 1, 1), Space.SELF);
             //
-            //        expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-            //        expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-            //        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-4, 5, -6)));
-            //        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(-3, 4, -5)));
+            //        expect(getValues(tra2.position)).toEqual([-1, 1, -1]);
+            //        expect(getValues(tra2.localPosition)).toEqual([-1, 1, -1]);
+            //        expect(getValues(tra1.position)).toEqual([-4, 5, -6]);
+            //        expect(getValues(tra1.localPosition)).toEqual([-3, 4, -5]);
             //    });
             //    it("relative to world", function(){
             //        tra2.rotate(Vector3.create(0, 180, 0));
@@ -208,10 +216,10 @@ describe("Transform", function(){
             //        tra1.translate(Vector3.create(1, 1, 1), Space.WORLD);
             //        tra1.translate(Vector3.create(1, 1, 1), Space.WORLD);
             //
-            //        expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(1, 1, 1)));
-            //        expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(1, 1, 1)));
-            //        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-1 + 1 +1 +1, 2 + 1 + 1 + 1, -3 + 1 +1 +1)));
-            //        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(1, 4, -1)));
+            //        expect(getValues(tra2.position)).toEqual([1, 1, 1]);
+            //        expect(getValues(tra2.localPosition)).toEqual([1, 1, 1]);
+            //        expect(getValues(tra1.position)).toEqual([-1 + 1 +1 +1, 2 + 1 + 1 + 1, -3 + 1 +1 +1]);
+            //        expect(getValues(tra1.localPosition)).toEqual([1, 4, -1]);
             //    });
             //})
         });
@@ -222,28 +230,28 @@ describe("Transform", function(){
         //        tra1.translate(Vector3.create(1, 1, 1));
         //        tra1.translate(Vector3.create(1, 1, 1), Space.SELF);
         //
-        //        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-1, 4, 1)));
-        //        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(-2, 2, -2)));
+        //        expect(getValues(tra1.position)).toEqual([-1, 4, 1]);
+        //        expect(getValues(tra1.localPosition)).toEqual([-2, 2, -2]);
         //    });
         //    it("relative to world", function(){
         //        tra1.translate(Vector3.create(1, 1, 1), Space.WORLD);
         //        tra1.translate(Vector3.create(1, 1, 1), Space.WORLD);
         //
-        //        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(3, 4, 5)));
-        //        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(2, 2, 2)));
+        //        expect(getValues(tra1.position)).toEqual([3, 4, 5]);
+        //        expect(getValues(tra1.localPosition)).toEqual([2, 2, 2]);
         //    });
         //});
 
         describe("translateLocal", function() {
-            it("translate based on self", function () {
+            it("translate based on local space", function () {
                 tra2.rotate(Vector3.create(0, 180, 0));
                 tra2.translateLocal(Vector3.create(1, 1, 1));
                 tra1.translateLocal(Vector3.create(1, 1, 1));
 
-                expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-                expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-                expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-3, 4, -5)));
-                expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(2, 3, 4)));
+                expect(getValues(tra2.position)).toEqual([-1, 1, -1]);
+                expect(getValues(tra2.localPosition)).toEqual([-1, 1, -1]);
+                expect(getValues(tra1.position)).toEqual([-3, 4, -5]);
+                expect(getValues(tra1.localPosition)).toEqual([2, 3, 4]);
             });
         });
     });
@@ -273,12 +281,12 @@ describe("Transform", function(){
     //    });
     //
     //    it("test single layer", function(){
-    //        expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-    //        expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
-    //        expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(-1, 4, 1)));
-    //        expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(0, 3, 2)));
-    //        expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(-3, 4, -5)));
-    //        expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(-2, 3, -4)));
+    //        expect(getValues(tra2.position)).toEqual([-1, 1, -1]);
+    //        expect(getValues(tra2.localPosition)).toEqual([-1, 1, -1]);
+    //        expect(getValues(tra1.position)).toEqual([-1, 4, 1]);
+    //        expect(getValues(tra1.localPosition)).toEqual([0, 3, 2]);
+    //        expect(getValues(tra3.position)).toEqual([-3, 4, -5]);
+    //        expect(getValues(tra3.localPosition)).toEqual([-2, 3, -4]);
     //    });
     //
     //    describe("add tra4 as parent", function(){
@@ -296,14 +304,14 @@ describe("Transform", function(){
     //        });
     //
     //        it("test", function(){
-    //            expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(-2, 2, -2)));
-    //            expect(getValues(tra2.localPosition)).toEqual(getValues(Vector3.create(-2, 2, -2)));
-    //            expect(getValues(tra4.position)).toEqual(getValues(Vector3.create(-2, 2, -2)));
-    //            expect(getValues(tra4.localPosition)).toEqual(getValues(Vector3.create(0, 0, 0)));
-    //            expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(0, 7, -2)));
-    //            expect(getValues(tra1.localPosition)).toEqual(getValues(Vector3.create(2, 5, 0)));
-    //            expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(-6, 7, -8)));
-    //            expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(-4, 5, -6)));
+    //            expect(getValues(tra2.position)).toEqual([-2, 2, -2]);
+    //            expect(getValues(tra2.localPosition)).toEqual([-2, 2, -2]);
+    //            expect(getValues(tra4.position)).toEqual([-2, 2, -2]);
+    //            expect(getValues(tra4.localPosition)).toEqual([0, 0, 0]);
+    //            expect(getValues(tra1.position)).toEqual([0, 7, -2]);
+    //            expect(getValues(tra1.localPosition)).toEqual([2, 5, 0]);
+    //            expect(getValues(tra3.position)).toEqual([-6, 7, -8]);
+    //            expect(getValues(tra3.localPosition)).toEqual([-4, 5, -6]);
     //        });
     //
     //        describe("set parent null", function(){
@@ -315,10 +323,10 @@ describe("Transform", function(){
     //            });
     //
     //            it("test", function(){
-    //                expect(getValues(tra3.position)).toEqual(getValues(Vector3.create(-7, 8, -9)));
-    //                expect(getValues(tra3.localPosition)).toEqual(getValues(Vector3.create(-7, 8, -9)));
-    //                expect(getValues(tra4.position)).toEqual(getValues(Vector3.create(-3, 3, -3)));
-    //                expect(getValues(tra4.localPosition)).toEqual(getValues(Vector3.create(-1, 1, -1)));
+    //                expect(getValues(tra3.position)).toEqual([-7, 8, -9]);
+    //                expect(getValues(tra3.localPosition)).toEqual([-7, 8, -9]);
+    //                expect(getValues(tra4.position)).toEqual([-3, 3, -3]);
+    //                expect(getValues(tra4.localPosition)).toEqual([-1, 1, -1]);
     //            });
     //        });
     //    });
@@ -336,16 +344,16 @@ describe("Transform", function(){
             tra3.rotate(Vector3.create(180, 0, 0));
             tra1.rotateLocal(Vector3.create(-181, 0, 0));
 
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(-179, 0, 0)));
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(-179, 0, 0)));
-            expect(getValues(tra3.localEulerAngles)).toEqual(getValues(Vector3.create(180, 0, 0)));
-            expect(getValues(tra3.eulerAngles)).toEqual(getValues(Vector3.create(180, 0, 0)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(179, 0, 0)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(179, 0, 0)));
+            expect(getValues(tra2.localEulerAngles)).toEqual([-179, 0, 0]);
+            expect(getValues(tra2.eulerAngles)).toEqual([-179, 0, 0]);
+            expect(getValues(tra3.localEulerAngles)).toEqual([180, 0, 0]);
+            expect(getValues(tra3.eulerAngles)).toEqual([180, 0, 0]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([179, 0, 0]);
+            expect(getValues(tra1.eulerAngles)).toEqual([179, 0, 0]);
         });
 
         describe("rotate", function(){
-            it("test eulerAngles when rotate around world", function(){
+            it("test eulerAngles when rotate on world space", function(){
                 tra2 = Transform.create();
                 tra2.eulerAngles = Vector3.create(90, 0, 0);
                 tra1.eulerAngles = Vector3.create(10, 0, 0);
@@ -354,12 +362,12 @@ describe("Transform", function(){
                 tra2.rotate(Vector3.create(30, 0, 0));
                 tra1.rotate(Vector3.create(20, 0, 0));
 
-                expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(120, 0, 0)));
-                expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(120, 0, 0)));
-                expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(150, 0, 0)));
-                expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(30, 0, 0)));
+                expect(getValues(tra2.localEulerAngles)).toEqual([120, 0, 0]);
+                expect(getValues(tra2.eulerAngles)).toEqual([120, 0, 0]);
+                expect(getValues(tra1.eulerAngles)).toEqual([150, 0, 0]);
+                expect(getValues(tra1.localEulerAngles)).toEqual([30, 0, 0]);
             });
-            it("test position when rotate around world(child's rotation will not affect it's position)", function(){
+            it("test position when rotate on world space(one's rotation will not affect its position, only affect its children's position)", function(){
                 tra2 = Transform.create();
                 tra2.position = Vector3.create(2, 2, 2);
                 tra1.position = Vector3.create(1, 1, 1);
@@ -367,25 +375,25 @@ describe("Transform", function(){
                 tra2.rotate(Vector3.create(0, 180, 0));
                 tra1.rotate(Vector3.create(180, 0, 180));
 
-                expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(2, 2, 2)));
-                expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(1, 3, 1)));
+                expect(getValues(tra2.position)).toEqual([2, 2, 2]);
+                expect(getValues(tra1.position)).toEqual([1, 3, 1]);
             });
         });
 
         describe("rotateLocal", function(){
-            it("test eulerAngles when rotate around self", function(){
+            it("test eulerAngles when rotate on local space", function(){
                 tra2 = Transform.create();
                 tra1.parent = tra2;
 
                 tra2.rotateLocal(Vector3.create(90, 0, 0));
                 tra1.rotateLocal(Vector3.create(0, 90, 0));
 
-                expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
-                expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
-                expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(90, 0, 90)));
-                expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(0, 90, 0)));
+                expect(getValues(tra2.localEulerAngles)).toEqual([90, 0, 0]);
+                expect(getValues(tra2.eulerAngles)).toEqual([90, 0, 0]);
+                expect(getValues(tra1.eulerAngles)).toEqual([90, 0, 90]);
+                expect(getValues(tra1.localEulerAngles)).toEqual([0, 90, 0]);
             });
-            it("test position when rotate around self(child's rotation will not affect it's position)", function(){
+            it("test position when rotate on local space(child's rotation will not affect it's position)", function(){
                 tra2 = Transform.create();
                 tra2.position = Vector3.create(2, 2, 2);
                 tra1.position = Vector3.create(1, 1, 1);
@@ -393,8 +401,8 @@ describe("Transform", function(){
                 tra2.rotateLocal(Vector3.create(90, 0, 0));
                 tra1.rotateLocal(Vector3.create(0, 90, 0));
 
-                expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(2, 2, 2)));
-                expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(3, 1, 3)));
+                expect(getValues(tra2.position)).toEqual([2, 2, 2]);
+                expect(getValues(tra1.position)).toEqual([3, 1, 3]);
             });
         });
         it("rotateAround", function(){
@@ -405,26 +413,14 @@ describe("Transform", function(){
 
             tra2.rotateAround(180, Vector3.create(2, 3, 2), Vector3.create(0, 0, 1));
 
-            expect(getValues(tra2.localEulerAngles)).toEqual(getValues(Vector3.create(0, 0, 180)));
-            expect(getValues(tra2.eulerAngles)).toEqual(getValues(Vector3.create(0, 0, 180)));
-            expect(getValues(tra2.position)).toEqual(getValues(Vector3.create(2, 4, 2)));
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(0, 0, 180)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(0, 0, 0)));
-            expect(getValues(tra1.position)).toEqual(getValues(Vector3.create(1, 3, 3)));
+            expect(getValues(tra2.localEulerAngles)).toEqual([0, 0, 180]);
+            expect(getValues(tra2.eulerAngles)).toEqual([0, 0, 180]);
+            expect(getValues(tra2.position)).toEqual([2, 4, 2]);
+            expect(getValues(tra1.eulerAngles)).toEqual([0, 0, 180]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([0, 0, 0]);
+            expect(getValues(tra1.position)).toEqual([1, 3, 3]);
         });
     });
-
-    it("test scale", function(){
-        var tra2 = Transform.create();
-        tra2.parent = tra1;
-
-        tra1.position = Vector3.create(100, -50, 0);
-
-        tra2.scale = Vector3.create(2, 3, 1);
-
-        expect(getValues(tra2.scale)).toEqual([2, 3, 1]);
-    });
-
 
     describe("lookAt", function(){
         it("default up direction is positive y", function(){
@@ -434,8 +430,8 @@ describe("Transform", function(){
 
             tra1.lookAt(tra2.position);
 
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(45, 0, 0)));
+            expect(getValues(tra1.eulerAngles)).toEqual([45, 0, 0]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([45, 0, 0]);
         });
         it("if viewPoint to target is default up axis, should specify the new up direction", function(){
             var tra2 = Transform.create();
@@ -444,8 +440,8 @@ describe("Transform", function(){
 
             tra1.lookAt(tra2.position);
 
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(NaN, NaN, 0)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(NaN, NaN, NaN)));
+            expect(getValues(tra1.eulerAngles)).toEqual([NaN, NaN, 0]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([NaN, NaN, NaN]);
 
 
 
@@ -454,11 +450,12 @@ describe("Transform", function(){
 
             tra1.lookAt(tra2.position, Vector3.forward);
 
-            expect(getValues(tra1.eulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
-            expect(getValues(tra1.localEulerAngles)).toEqual(getValues(Vector3.create(90, 0, 0)));
+            expect(getValues(tra1.eulerAngles)).toEqual([90, 0, 0]);
+            expect(getValues(tra1.localEulerAngles)).toEqual([90, 0, 0]);
         });
     });
 
+    //todo move to Transform
     describe("set parent", function(){
         var oldParent,
             newParent;
@@ -476,7 +473,7 @@ describe("Transform", function(){
         });
 
         it("if old parent exist, remove from the old parent", function(){
-            tra1._parent = oldParent;
+            tra1.p_parent = oldParent;
 
             tra1.parent = newParent;
 

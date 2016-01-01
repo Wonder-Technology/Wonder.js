@@ -143,9 +143,9 @@ var testTool = (function () {
             gameObject.actionManager.update(elapsedTime);
         },
         getValues: function (values, digit) {
-            var digit = digit || 7;
+            var digit = digit === undefined ? 7 : digit;
 
-            if (values) {
+            if (values !== undefined) {
                 if (mathTestUtils.isArray(values) || mathTestUtils.isFloat32Array(values) || mathTestUtils.isUint16Array(values)) {
                     return mathTestUtils.getValues(values, digit);
                 }

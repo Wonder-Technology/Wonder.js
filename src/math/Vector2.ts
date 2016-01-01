@@ -48,6 +48,24 @@ module wd{
             this.x = x;
             this.y = y;
         }
+
+        public add(v:Vector2){
+            this.values[0] = this.values[0] + v.values[0];
+            this.values[1] = this.values[1] + v.values[1];
+
+            return this;
+        }
+
+        public mul(v:Vector2){
+            this.values[0] = this.values[0] * v.values[0];
+            this.values[1] = this.values[1] * v.values[1];
+
+            return this;
+        }
+
+        public copy(){
+            return Vector2.create(this.x, this.y);
+        }
     }
 }
 
