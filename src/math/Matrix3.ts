@@ -348,6 +348,11 @@ module wd {
             this.ty += this.b * x + this.d * y;
         }
 
+        public translateOnlyAffectPosition(x:number, y:number) {
+            this.tx += x;
+            this.ty += y;
+        }
+
         public setPosition(x:number, y:number){
             this.tx = x;
             this.ty = y;

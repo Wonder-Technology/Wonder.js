@@ -30,6 +30,8 @@
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
 /// <reference path="core/Transform"/>
+/// <reference path="core/ThreeDTransform"/>
+/// <reference path="core/RectTransform"/>
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
@@ -37,6 +39,7 @@
 /// <reference path="core/entity/Scene"/>
 /// <reference path="core/entity/LightManager"/>
 /// <reference path="core/entity/Skybox"/>
+/// <reference path="core/entity/UIObject"/>
 
 
 /// <reference path="collision/CollisionDetector"/>
