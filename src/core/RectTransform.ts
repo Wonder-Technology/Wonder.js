@@ -100,6 +100,7 @@ module wd{
 
         public dirtyRotation:boolean = true;
         public dirtyPositionAndScale:boolean = true;
+        public pivot:Vector2 = Vector2.create(0, 0);
 
         protected p_parent:RectTransform;
         protected children:wdCb.Collection<RectTransform>;
@@ -169,7 +170,9 @@ module wd{
         }
 
         public rotate(angle:number){
-            this._localRotationMatrix.rotate(angle);
+            var position = this.position;
+
+            this.rotateAround(angle, position.x + this.pivot.x, position.y - this.pivot.y);
 
             this.dirtyRotation = true;
 
@@ -203,7 +206,7 @@ module wd{
 
 
             this._translateInRotationMatrix(x, y);
-            this.rotate(angle);
+            this._rotateAroundCanvasOriginPoint(angle);
             this._translateInRotationMatrix(-x, -y);
 
             return this;
@@ -253,6 +256,15 @@ module wd{
 
          can refer to http://www.senocular.com/flash/tutorials/transformmatrix/
          */
+
+
+        private _rotateAroundCanvasOriginPoint(angle:number){
+            this._localRotationMatrix.rotate(angle);
+
+            this.dirtyRotation = true;
+
+            return this;
+        }
     }
 }
 

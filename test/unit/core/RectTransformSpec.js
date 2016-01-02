@@ -109,6 +109,48 @@ describe("RectTransform", function(){
                     tra1.parent = tra2;
                 });
 
+                describe("rotate will rotate around the pivot point", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("the default pivot is center point", function(){
+                        tra2.rotate(45);
+
+                        expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([0, 0]);
+                        expect(getValues(tra1.rotationMatrix.getTranslation())).toEqual([0, 0]);
+
+                        expect(getValues(tra2.rotation)).toEqual(45);
+                        expect(getValues(tra1.rotation)).toEqual(45);
+                    });
+                    describe("test change pivot(it is in cartesian coordinates whose center is position point)", function(){
+                        it("test change parent pivot", function(){
+                            tra2.pivot = Vector2.create(-10, 10);
+
+                            tra2.rotate(45);
+
+                            expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([-10, 4]);
+                            expect(getValues(tra1.rotationMatrix.getTranslation())).toEqual([-10, 4]);
+
+                            expect(getValues(tra2.rotation)).toEqual(45);
+                            expect(getValues(tra1.rotation)).toEqual(45);
+                        });
+                        it("test change child pivot", function(){
+                            tra1.pivot = Vector2.create(-10, 10);
+                            tra2.rotate(45);
+
+                            expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([0, 0]);
+                            expect(getValues(tra1.rotationMatrix.getTranslation())).toEqual([0, 0]);
+
+
+                            tra2.rotation = 0;
+                            tra1.rotate(45);
+
+                            expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([0, 0]);
+                            expect(getValues(tra1.rotationMatrix.getTranslation())).toEqual([-10, 4]);
+                        });
+                    });
+                });
+
                 it("rotate will only affect rotationMatrix, not affect position,scale", function(){
                     tra2 = Transform.create();
                     tra2.position = Vector2.create(2, 2);
