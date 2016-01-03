@@ -45,6 +45,26 @@ describe("RectTransform", function(){
         });
     });
 
+    describe("set rotation", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
+        });
+        
+        it("set rotation around pivot", function(){
+            tra2.position = Vector2.create(2, 1);
+
+            tra2.rotate(10);
+
+            tra2.rotation = 20;
+
+            expect(getValues(tra2.rotation)).toEqual(20);
+            expect(getValues(tra2.rotationMatrix.getTranslation(), 1)).toEqual([0.5, -0.6]);
+        });
+    });
+    
     describe("set scale", function() {
         beforeEach(function () {
         });
@@ -100,20 +120,20 @@ describe("RectTransform", function(){
             });
         });
 
-        describe("test rotate", function(){
+        describe("test rotate", function() {
             var tra2 = null;
 
-            describe("rotate", function(){
-                beforeEach(function(){
+            describe("rotate", function () {
+                beforeEach(function () {
                     tra2 = Transform.create();
                     tra1.parent = tra2;
                 });
 
-                describe("rotate will rotate around the pivot point", function(){
-                    beforeEach(function(){
+                describe("rotate will rotate around the pivot point", function () {
+                    beforeEach(function () {
                     });
 
-                    it("the default pivot is center point", function(){
+                    it("the default pivot is center point", function () {
                         tra2.rotate(45);
 
                         expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([0, 0]);
@@ -122,8 +142,8 @@ describe("RectTransform", function(){
                         expect(getValues(tra2.rotation)).toEqual(45);
                         expect(getValues(tra1.rotation)).toEqual(45);
                     });
-                    describe("test change pivot(it is in cartesian coordinates whose center is position point)", function(){
-                        it("test change parent pivot", function(){
+                    describe("test change pivot(it is in cartesian coordinates whose center is position point)", function () {
+                        it("test change parent pivot", function () {
                             tra2.pivot = Vector2.create(-10, 10);
 
                             tra2.rotate(45);
@@ -134,7 +154,7 @@ describe("RectTransform", function(){
                             expect(getValues(tra2.rotation)).toEqual(45);
                             expect(getValues(tra1.rotation)).toEqual(45);
                         });
-                        it("test change child pivot", function(){
+                        it("test change child pivot", function () {
                             tra1.pivot = Vector2.create(-10, 10);
                             tra2.rotate(45);
 
@@ -151,7 +171,7 @@ describe("RectTransform", function(){
                     });
                 });
 
-                it("rotate will only affect rotationMatrix, not affect position,scale", function(){
+                it("rotate will only affect rotationMatrix, not affect position,scale", function () {
                     tra2 = Transform.create();
                     tra2.position = Vector2.create(2, 2);
                     tra1.position = Vector2.create(1, 1);
@@ -164,7 +184,7 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.position)).toEqual([3, 3]);
                     expect(getValues(tra1.rotation)).toEqual(55);
                 });
-                it("if rotation > 90, rotation will be rotation - 360", function(){
+                it("if rotation > 90, rotation will be rotation - 360", function () {
                     tra2.rotation = 90;
                     tra1.rotation = 10;
 
@@ -175,23 +195,23 @@ describe("RectTransform", function(){
                     expect(getValues(tra2.rotation)).toEqual(-240);
                     expect(getValues(tra1.rotation)).toEqual(-210);
                 });
-            });
 
-            describe("rotateAround", function(){
-                it("rotateAround will only affect rotationMatrix, not affect position,scale", function() {
-                    var tra2 = Transform.create();
-                    tra2.position = Vector2.create(2, 2);
-                    tra1.position = Vector2.create(1, 1);
-                    tra1.parent = tra2;
+                describe("rotateAround", function () {
+                    it("rotateAround will only affect rotationMatrix, not affect position,scale", function () {
+                        var tra2 = Transform.create();
+                        tra2.position = Vector2.create(2, 2);
+                        tra1.position = Vector2.create(1, 1);
+                        tra1.parent = tra2;
 
-                    tra2.rotateAround(45, Vector2.create(2, 3));
+                        tra2.rotateAround(45, Vector2.create(2, 3));
 
-                    expect(getValues(tra2.rotation)).toEqual(45);
-                    expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([3, -1])
-                    expect(getValues(tra2.position)).toEqual([2, 2]);
+                        expect(getValues(tra2.rotation)).toEqual(45);
+                        expect(getValues(tra2.rotationMatrix.getTranslation())).toEqual([3, -1])
+                        expect(getValues(tra2.position)).toEqual([2, 2]);
 
-                    expect(getValues(tra1.rotation)).toEqual(45);
-                    expect(getValues(tra1.position)).toEqual([3, 3]);
+                        expect(getValues(tra1.rotation)).toEqual(45);
+                        expect(getValues(tra1.position)).toEqual([3, 3]);
+                    });
                 });
             });
         });
@@ -449,6 +469,37 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.position)).toEqual([0, -200]);
                 });
             });
+        });
+    });
+
+    describe("resetPosition", function(){
+        it("reset position", function(){
+            tra1.position = Vector2.create(2, 1);
+
+            tra1.resetPosition();
+
+            expect(getValues(tra1.position)).toEqual([0, 0]);
+        });
+    });
+
+    describe("resetScale", function(){
+        it("reset scale", function(){
+            tra1.scale = Vector2.create(2, 1);
+
+            tra1.resetScale();
+
+            expect(getValues(tra1.scale)).toEqual([1, 1]);
+        });
+    });
+    describe("resetRotation", function(){
+        it("reset rotationMatrix", function(){
+            tra1.rotation = 20;
+            tra1.rotateAround(20, 2, 1);
+
+            tra1.resetRotation();
+
+            expect(getValues(tra1.rotation)).toEqual(0);
+            expect(getValues(tra1.rotationMatrix.getTranslation())).toEqual([0, 0]);
         });
     });
 });

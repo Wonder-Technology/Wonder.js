@@ -79,7 +79,8 @@ module wd{
             return this._rotation;
         }
         set rotation(angle:number){
-            this._localRotationMatrix.setRotation(angle);
+            this.resetRotation();
+            this.rotate(angle);
 
             this.dirtyRotation = true;
         }
@@ -303,9 +304,16 @@ module wd{
             return this;
         }
 
-        public reset(){
+        public resetPosition(){
+            this.position = Vector2.create(0, 0);
+        }
+
+        public resetScale(){
+            this.scale = Vector2.create(1, 1);
+        }
+
+        public resetRotation(){
             this._localRotationMatrix.setIdentity();
-            this._localPositionAndScaleMatrix.setIdentity();
         }
 
         /*!
