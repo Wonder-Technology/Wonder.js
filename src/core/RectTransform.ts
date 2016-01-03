@@ -98,6 +98,63 @@ module wd{
 
         //todo add skew attri
 
+
+        private _anchorX:Vector2 = Vector2.create(0.5, 0.5);
+        get anchorX(){
+            return this._anchorX;
+        }
+        set anchorX(anchorX:Vector2){
+            this._anchorX = anchorX;
+
+            if(anchorX.x === anchorX.y){
+                let widthFromAnchorToPosition = (anchorX.x - 0.5) * this.p_parent.width;
+
+                this.position = Vector2.create(this.p_parent.position.x + widthFromAnchorToPosition, this.position.y);
+
+                return;
+            }
+
+            this.position = Vector2.create(this.p_parent.position.x + (anchorX.x + anchorX.y - 1) / 2 * this.p_parent.width, this.position.y);
+
+            this.width = this.p_parent.width / this.p_parent.scale.x * (anchorX.y - anchorX.x) * this.scale.x;
+        }
+
+        private _anchorY:Vector2 = Vector2.create(0.5, 0.5);
+        get anchorY(){
+            return this._anchorY;
+        }
+        set anchorY(anchorY:Vector2){
+            this._anchorY = anchorY;
+
+            if(anchorY.x === anchorY.y){
+                let heightFromAnchorToPosition = (anchorY.x - 0.5) * this.p_parent.height;
+
+                this.position = Vector2.create(this.position.x, this.p_parent.position.y + heightFromAnchorToPosition);
+
+                return;
+            }
+
+            this.position = Vector2.create(this.position.x, this.p_parent.position.y + (anchorY.x + anchorY.y - 1) / 2 * this.p_parent.height);
+
+            this.height = this.p_parent.height / this.p_parent.scale.y * (anchorY.y - anchorY.x) * this.scale.y;
+        }
+
+        private _width:number = null;
+        get width(){
+            return this._width * this.scale.x;
+        }
+        set width(width:number){
+            this._width = width;
+        }
+
+        private _height:number = null;
+        get height(){
+            return this._height * this.scale.y;
+        }
+        set height(height:number){
+            this._height = height;
+        }
+
         public dirtyRotation:boolean = true;
         public dirtyPositionAndScale:boolean = true;
         public pivot:Vector2 = Vector2.create(0, 0);

@@ -263,4 +263,192 @@ describe("RectTransform", function(){
         expect(getValues(tra2.rotation)).toEqual(40);
         expect(getValues(tra1.rotation)).toEqual(70);
     });
+
+    describe("test width/height", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
+
+            tra2.width = 1000;
+            tra2.height = 500;
+
+            tra1.width = 500;
+            tra1.height = 100;
+        });
+
+        it("zoom will affect the width/height", function(){
+            tra2.zoom(2, 3);
+
+            expect(tra2.width).toEqual(2000);
+            expect(tra2.height).toEqual(1500);
+
+            expect(tra1.width).toEqual(1000);
+            expect(tra1.height).toEqual(300);
+        });
+    });
+    
+    describe("test anchor", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
+
+            tra2.width = 1000;
+            tra2.height = 500;
+
+            tra1.width = 500;
+            tra1.height = 100;
+        });
+        
+        describe("anchorX", function(){
+            describe("contain minX, maxX anchor data which is the percent of the parent's width", function(){
+                it("test position locate on parent's center point", function(){
+                    tra1.anchorX = Vector2.create(0.1, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([0, 0])
+                    expect(getValues(tra1.width)).toEqual(800);
+                    expect(tra1.height).toEqual(100);
+
+
+                    tra2.zoom(2, 2);
+
+                    expect(getValues(tra1.position)).toEqual([0, 0])
+                    expect(tra2.width).toEqual(2000);
+                    expect(tra2.height).toEqual(1000);
+
+                    expect(getValues(tra1.width)).toEqual(1600);
+                    expect(tra1.height).toEqual(200);
+                });
+                it("test position don't locate on parent's center point", function(){
+                    tra1.anchorX = Vector2.create(0.2, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([50, 0])
+                    expect(getValues(tra1.width)).toEqual(700);
+                    expect(tra1.height).toEqual(100);
+
+
+                    tra1.zoom(2, 2);
+
+                    expect(tra2.width).toEqual(1000);
+                    expect(tra2.height).toEqual(500);
+
+                    expect(getValues(tra1.position)).toEqual([50, 0])
+                    expect(getValues(tra1.width)).toEqual(1400);
+                    expect(tra1.height).toEqual(200);
+                });
+                it("test parent anchor", function(){
+                    var tra3 = Transform.create();
+                    tra2.parent = tra3;
+
+                    tra3.width = 2000;
+                    tra3.height = 1000;
+
+                    tra2.anchorX = Vector2.create(0.2, 0.9);
+
+
+                    expect(getValues(tra2.position)).toEqual([100, 0]);
+                    expect(getValues(tra2.width)).toEqual(1400);
+                    expect(tra2.height).toEqual(500);
+
+                    expect(getValues(tra1.position)).toEqual([100, 0]);
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(tra1.height).toEqual(100);
+
+                });
+            });
+
+            describe("if minX === maxX", function(){
+                beforeEach(function(){
+                    tra1.anchorX = Vector2.create(0.1, 0.1);
+                });
+
+                it("its width should be specified by user", function(){
+                    expect(tra1.width).toEqual(500);
+                    expect(tra1.height).toEqual(100);
+                });
+                it("set position by anchor", function(){
+                    tra1.anchorX = Vector2.create(0.1, 0.1);
+
+                    expect(getValues(tra1.position)).toEqual([-400, 0]);
+                });
+            });
+        });
+
+        describe("anchorY", function(){
+            describe("contain minY, maxY anchor data which is the percent of the parent's width", function(){
+                it("test position locate on parent's center point", function(){
+                    tra1.anchorY = Vector2.create(0.1, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([0, 0]);
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(getValues(tra1.height)).toEqual(400);
+
+
+                    tra2.zoom(2, 2);
+
+                    expect(getValues(tra1.position)).toEqual([0, 0]);
+                    expect(tra2.width).toEqual(2000);
+                    expect(tra2.height).toEqual(1000);
+
+                    expect(getValues(tra1.width)).toEqual(1000);
+                    expect(getValues(tra1.height)).toEqual(800);
+                });
+                it("test position don't locate on parent's center point", function(){
+                    tra1.anchorY = Vector2.create(0.2, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([0, 25])
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(getValues(tra1.height)).toEqual(350);
+
+
+                    tra1.zoom(2, 2);
+
+                    expect(tra2.width).toEqual(1000);
+                    expect(tra2.height).toEqual(500);
+
+                    expect(getValues(tra1.position)).toEqual([0, 25])
+                    expect(getValues(tra1.width)).toEqual(1000);
+                    expect(getValues(tra1.height)).toEqual(700);
+                });
+                it("test parent anchor", function(){
+                    var tra3 = Transform.create();
+                    tra2.parent = tra3;
+
+                    tra3.width = 2000;
+                    tra3.height = 1000;
+
+                    tra2.anchorY = Vector2.create(0.2, 0.9);
+
+
+                    expect(getValues(tra2.position)).toEqual([0, 50]);
+                    expect(getValues(tra2.width)).toEqual(1000);
+                    expect(getValues(tra2.height)).toEqual(700);
+
+                    expect(getValues(tra1.position)).toEqual([0, 50]);
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(tra1.height).toEqual(100);
+
+                });
+            });
+
+            describe("if minY === maxY", function(){
+                beforeEach(function(){
+                    tra1.anchorY = Vector2.create(0.1, 0.1);
+                });
+
+                it("its height should be specified by user", function(){
+                    expect(tra1.width).toEqual(500);
+                    expect(tra1.height).toEqual(100);
+                });
+                it("set position by anchor", function(){
+                    tra1.anchorY = Vector2.create(0.1, 0.1);
+
+                    expect(getValues(tra1.position)).toEqual([0, -200]);
+                });
+            });
+        });
+    });
 });
