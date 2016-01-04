@@ -39,11 +39,8 @@
             font.fontFamily = "Urdeutsch";
             font.fontSize = 20;
             font.enableStroke("red");
-            //if auto, it equal view.width/height
-//            font.width = wd.FontDimension.AUTO;
-//            font.height = 100;
             font.xAlignment = wd.FontXAlignment.CENTER;
-//            font.yAlignment = wd.FontYAlignment.BOTTOM;
+            font.yAlignment = wd.FontYAlignment.MIDDLE;
 
 
             var uiObject = wd.UIObject.create();
@@ -56,6 +53,7 @@
 
 
 
+
             var renderer = wd.UIRenderer.create();
 
 
@@ -63,6 +61,12 @@
 
 
             uiObject.transform.translate(200, 100);
+
+            /*!
+            if rotate after translate like it does here, object will rotate around its center;
+            if rotate before translate, object will first rotate, then translate along its direction.
+             */
+            uiObject.transform.rotate(45);
 
             return uiObject;
         }

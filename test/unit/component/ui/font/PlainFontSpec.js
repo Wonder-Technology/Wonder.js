@@ -21,8 +21,9 @@ describe("PlainFont", function () {
     function createFont() {
         font = Font.create();
 
-        font.gameObject = {};
-        font.gameObject.transform = {};
+        font.gameObject = wd.UIObject.create();
+        //font.gameObject.transform = {};
+        //font.gameObject.transform = {};
 
         sandbox.stub(font, "getContext");
 
@@ -255,6 +256,7 @@ describe("PlainFont", function () {
 
             setFakeContext({
                 save: sandbox.stub(),
+                setTransform: sandbox.stub(),
                 restore: sandbox.stub(),
                 measureText: function (str) {
                     return {
@@ -292,7 +294,14 @@ describe("PlainFont", function () {
 
             expect(context.save).toCalledOnce();
         });
+        it("if isRotate, set context transform to be rotationMatrix", function(){
+            font.gameObject.transform.rotate(45);
+            var rotationMatrix = font.gameObject.transform.rotationMatrix;
 
+            font.update(-1);
+
+            expect(context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
+        });
         it("set context.font", function(){
             font.fontSize = 10;
             font.fontFamily = "微软雅黑";

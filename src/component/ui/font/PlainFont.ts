@@ -289,6 +289,8 @@ module wd {
 
             context.save();
 
+            this.setCanvasTransformForRotation();
+
             context.font = `${this.fontSize}px '${this.fontFamily}'`;
 
             context.textBaseline = "top";

@@ -222,10 +222,11 @@ describe("ProgressBar", function () {
             });
             it("if isRotate, set context transform to be rotationMatrix", function(){
                 uiObject.transform.rotate(45);
+                var rotationMatrix = uiObject.transform.rotationMatrix;
 
                 uiObject.update(-1);
 
-                expect(renderer.context.setTransform).toCalledWith();
+                expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
             });
             it("draw border", function(){
                 uiObject.update(-1);

@@ -470,11 +470,14 @@ describe("BitmapFont", function () {
             });
 
             describe("can add action component", function(){
-                function addRotateAction(index, eulerAngles){
+                var rotationMatrix;
+
+                function addRotateAction(index, angle){
                     var charFontUIObject = getCharFontUIObject(index);
 
                     var action = wd.CallFunc.create(function(){
-                        this.transform.rotation = eulerAngles;
+                        this.transform.rotation = angle;
+                        rotationMatrix = charFontUIObject.transform.rotationMatrix;
                     }, charFontUIObject);
 
                     charFontUIObject.addComponent(action);
@@ -482,67 +485,32 @@ describe("BitmapFont", function () {
                     action.init();
                 }
 
-                //describe("test rotate", function(){
-                //    beforeEach(function(){
-                //        font.text = "正ab";
-                //        setWidth(1000);
-                //
-                //        director._init();
-                //
-                //        prepareAfterInit();
-                //
-                //        context = renderer.context;
-                //
-                //        sandbox.stub(context, "transform");
-                //        sandbox.stub(context, "translate");
-                //    });
-                //
-                //    it("can rotate around image center by x axis", function(){
-                //        addRotateAction(
-                //            1,
-                //            wd.Vector3.create(45, 0, 0)
-                //        );
-                //
-                //
-                //        director._loopBody(2);
-                //
-                //        expect(context.translate.firstCall).toCalledWith(554, 502);
-                //        expect(testTool.getValues(
-                //            context.transform.firstCall.args, 1
-                //        )).toEqual([1, 0, 0, 0.7, 0, 0]);
-                //        expect(context.translate.secondCall).toCalledWith(-554, -502);
-                //    });
-                //    it("can rotate around image center by y axis", function(){
-                //        addRotateAction(
-                //            1,
-                //            wd.Vector3.create(0, 45, 0)
-                //        );
-                //
-                //
-                //        director._loopBody(2);
-                //
-                //        expect(context.translate.firstCall).toCalledWith(554, 502);
-                //        expect(testTool.getValues(
-                //            context.transform.firstCall.args, 1
-                //        )).toEqual([0.7, 0, 0, 1, 0, 0]);
-                //        expect(context.translate.secondCall).toCalledWith(-554, -502);
-                //    });
-                //    it("can rotate around image center by x axis", function(){
-                //        addRotateAction(
-                //            1,
-                //            wd.Vector3.create(0, 0, 45)
-                //        );
-                //
-                //
-                //        director._loopBody(2);
-                //
-                //        expect(context.translate.firstCall).toCalledWith(554, 502);
-                //        expect(testTool.getValues(
-                //            context.transform.firstCall.args, 1
-                //        )).toEqual([0.7, -0.7, 0.7, 0.7, 0, 0]);
-                //        expect(context.translate.secondCall).toCalledWith(-554, -502);
-                //    });
-                //});
+                describe("test rotate", function(){
+                    beforeEach(function(){
+                        font.text = "正ab";
+                        setWidth(1000);
+
+                        director._init();
+
+                        prepareAfterInit();
+
+                        context = renderer.context;
+
+                        sandbox.stub(context, "setTransform");
+                    });
+
+                    it("rotate image by set canvas transform to be RectTransform->rotationMatrix", function(){
+                        addRotateAction(
+                            1,
+                            45
+                        );
+
+
+                        director._loopBody(2);
+
+                        expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
+                    });
+                });
 
                 describe("test translate and scale", function(){
                     function judgeDrawImageUnderAction(callCount, x, y, width, height) {

@@ -73,19 +73,12 @@ module wd {
             dw = this.width;
             dh = this.height;
 
-
             this.context.save();
 
-            //if(transform.isRotate){
-            //    this._rotateAroundImageCenter(dx, dy, dw, dh);
-            //}
+            this.setCanvasTransformForRotation();
 
-            //this.context.drawImage(this.image,
-            //    this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
-            //    dx, dy, dw, dh);
             this.drawInCenterPoint(this.context, this.image, this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
                 position, dw, dh);
-
 
             this.context.restore();
         }

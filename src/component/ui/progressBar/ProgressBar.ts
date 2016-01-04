@@ -42,14 +42,9 @@ module wd {
                 let offscreenCanvas = this._offScreenCanvas,
                 position = this.gameObject.transform.position;
 
-
-                let matrix = this.gameObject.transform.rotationMatrix;
-
                 this.context.save();
 
-                if(this.gameObject.transform.isRotate){
-                    this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-                }
+                this.setCanvasTransformForRotation();
 
                 this._drawBorder(position);
 

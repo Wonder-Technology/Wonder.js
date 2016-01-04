@@ -56,6 +56,14 @@ module wd {
                 height
             );
         }
+
+        protected setCanvasTransformForRotation(){
+            var matrix = this.gameObject.transform.rotationMatrix;
+
+            if(this.gameObject.transform.isRotate){
+                this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            }
+        }
     }
 }
 
