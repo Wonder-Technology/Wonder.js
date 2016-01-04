@@ -11,11 +11,11 @@ module wd {
         }
 
         get width(){
-            return this.gameObject.transform.width;
+            return this.gameObject ? this.gameObject.transform.width : null;
         }
 
         get height(){
-            return this.gameObject.transform.height;
+            return this.gameObject ? this.gameObject.transform.height : null;
         }
 
         public context:CanvasRenderingContext2D = null;

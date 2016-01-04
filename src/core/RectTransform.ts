@@ -176,7 +176,12 @@ module wd{
             return this._width * this.scale.x;
         }
         set width(width:number){
-            this._width = width;
+            if(width !== this._width){
+                this._width = width;
+
+                //todo use sendMessages instead
+                EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_WIDTH_CHANGE));
+            }
         }
 
         private _height:number = null;
@@ -184,7 +189,12 @@ module wd{
             return this._height * this.scale.y;
         }
         set height(height:number){
-            this._height = height;
+            if(height !== this._height){
+                this._height = height;
+
+                //todo use sendMessages instead
+                EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_HEIGHT_CHANGE));
+            }
         }
 
         public dirtyRotation:boolean = true;

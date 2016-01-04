@@ -40,27 +40,31 @@
             font.fontSize = 20;
             font.enableStroke("red");
             //if auto, it equal view.width/height
-            font.width = wd.FontDimension.AUTO;
-            font.height = 100;
+//            font.width = wd.FontDimension.AUTO;
+//            font.height = 100;
             font.xAlignment = wd.FontXAlignment.CENTER;
-            font.yAlignment = wd.FontYAlignment.BOTTOM;
+//            font.yAlignment = wd.FontYAlignment.BOTTOM;
 
 
-            var gameObject = wd.GameObject.create();
+            var uiObject = wd.UIObject.create();
 
-            gameObject.addComponent(font);
+            uiObject.addComponent(font);
+
+            uiObject.transform.width = 400;
+            uiObject.transform.height = 200;
+
 
 
 
             var renderer = wd.UIRenderer.create();
 
 
-            gameObject.addComponent(renderer);
+            uiObject.addComponent(renderer);
 
 
-            gameObject.transform.translate(-700, 100, 0);
+            uiObject.transform.translate(200, 100);
 
-            return gameObject;
+            return uiObject;
         }
     };
 </script>

@@ -4,15 +4,25 @@ describe("PlainFont", function () {
     var font;
 
     function setDimensions(width, height) {
-        font.width = width;
-        font.height = height || 0;
+        setWidth(width);
+        setHeight(height);
+    }
+
+    function setWidth(width){
+        font.gameObject.transform.width = width;
+        font.dirty = true;
+    }
+
+    function setHeight(height){
+        font.gameObject.transform.height = height || 0;
+        font.dirty = true;
     }
 
     function createFont() {
         font = Font.create();
 
         font.gameObject = {};
-
+        font.gameObject.transform = {};
 
         sandbox.stub(font, "getContext");
 
@@ -21,9 +31,7 @@ describe("PlainFont", function () {
     }
 
     function setPosition(x, y){
-        font.gameObject.transform = {
-            position: wd.Vector3.create(x, y, 0)
-        }
+        font.gameObject.transform.position = wd.Vector3.create(x, y, 0);
     }
 
 
@@ -42,21 +50,21 @@ describe("PlainFont", function () {
 
         beforeEach(function () {
             font = createFont();
+
+
+            setFakeContext({
+                measureText: function (str) {
+                    return {
+                        width: str.length * font.fontSize
+                    }
+                }
+            });
         });
 
         describe("format text, ensure it don't exceed the dimension", function () {
             beforeEach(function () {
                 font.fontSize = 50;
                 font.fontFamily = "sans-serif";
-
-
-                setFakeContext({
-                    measureText: function (str) {
-                        return {
-                            width: str.length * font.fontSize
-                        }
-                    }
-                });
             });
 
             it("test text not exceed the dimension", function () {
@@ -198,19 +206,19 @@ describe("PlainFont", function () {
                 });
             });
 
-            it("if set width/height to be auto, it can equal view.width/height", function(){
-                sandbox.stub(wd.DeviceManager.getInstance(), "view", {
-                    width: 1000,
-                    height: 800
-                })
-                font.text = "阿斯";
-                setDimensions(wd.FontDimension.AUTO, wd.FontDimension.AUTO);
-
-                font.init();
-
-                expect(font.width).toEqual(1000);
-                expect(font.height).toEqual(800);
-            });
+            //it("if set width/height to be auto, it can equal view.width/height", function(){
+            //    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+            //        width: 1000,
+            //        height: 800
+            //    })
+            //    font.text = "阿斯";
+            //    setDimensions(wd.FontDimension.AUTO, wd.FontDimension.AUTO);
+            //
+            //    font.init();
+            //
+            //    expect(font.width).toEqual(1000);
+            //    expect(font.height).toEqual(800);
+            //});
         });
 
 
@@ -322,9 +330,9 @@ describe("PlainFont", function () {
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
-                    expect(context.fillText.firstCall).toCalledWith("测试", 500, 400);
-                    expect(context.fillText.secondCall).toCalledWith("12 34", 500, 400 + font._lineHeight);
-                    expect(context.fillText.thirdCall).toCalledWith("hello", 500, 400 + font._lineHeight + 60);
+                    expect(context.fillText.firstCall).toCalledWith("测试", -250, -200);
+                    expect(context.fillText.secondCall).toCalledWith("12 34", -250, -200 + font._lineHeight);
+                    expect(context.fillText.thirdCall).toCalledWith("hello", -250, -200 + font._lineHeight + 60);
                 });
                 it("if use stroke to draw, use strokeText", function(){
                     var strokeStyle = "rgba(10,10,10,1)";
@@ -334,9 +342,9 @@ describe("PlainFont", function () {
 
                     expect(context.strokeStyle).toEqual(strokeStyle);
                     expect(context.strokeText).toCalledThrice();
-                    expect(context.strokeText.firstCall).toCalledWith("测试", 500, 400);
-                    expect(context.strokeText.secondCall).toCalledWith("12 34", 500, 400 + font._lineHeight);
-                    expect(context.strokeText.thirdCall).toCalledWith("hello", 500, 400 + font._lineHeight + 60);
+                    expect(context.strokeText.firstCall).toCalledWith("测试", -250, -200);
+                    expect(context.strokeText.secondCall).toCalledWith("12 34", -250, -200 + font._lineHeight);
+                    expect(context.strokeText.thirdCall).toCalledWith("hello", -250, -200 + font._lineHeight + 60);
                 });
             });
 
@@ -351,9 +359,9 @@ describe("PlainFont", function () {
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
-                    expect(context.fillText.firstCall).toCalledWith("测试", 700, 630);
-                    expect(context.fillText.secondCall).toCalledWith("12 34", 625, 690);
-                    expect(context.fillText.thirdCall).toCalledWith("hello", 625, 750);
+                    expect(context.fillText.firstCall).toCalledWith("测试", -50, 30);
+                    expect(context.fillText.secondCall).toCalledWith("12 34", -125, 90);
+                    expect(context.fillText.thirdCall).toCalledWith("hello", -125, 150);
                 });
             });
 
@@ -368,9 +376,9 @@ describe("PlainFont", function () {
 
                     expect(context.fillStyle).toEqual(fillStyle);
                     expect(context.fillText).toCalledThrice();
-                    expect(context.fillText.firstCall).toCalledWith("测试", 900, 515);
-                    expect(context.fillText.secondCall).toCalledWith("12 34", 750, 575);
-                    expect(context.fillText.thirdCall).toCalledWith("hello", 750, 635);
+                    expect(context.fillText.firstCall).toCalledWith("测试", 150, -85);
+                    expect(context.fillText.secondCall).toCalledWith("12 34", 0, -25);
+                    expect(context.fillText.thirdCall).toCalledWith("hello", 0, 35);
                 });
             });
         });
@@ -388,7 +396,7 @@ describe("PlainFont", function () {
                     font.update(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
-                    expect(context.fillText).toCalledWith("hi 1;", 500, 400);
+                    expect(context.fillText).toCalledWith("hi 1;", -250, -200);
                 });
                 it("if use stroke to draw, use strokeText", function(){
                     var strokeStyle = "rgba(10,10,10,1)";
@@ -397,7 +405,7 @@ describe("PlainFont", function () {
                     font.update(1);
 
                     expect(context.strokeStyle).toEqual(strokeStyle);
-                    expect(context.strokeText).toCalledWith("hi 1;", 500, 400);
+                    expect(context.strokeText).toCalledWith("hi 1;", -250, -200);
                 });
             });
 
@@ -411,7 +419,7 @@ describe("PlainFont", function () {
                     font.update(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
-                    expect(context.fillText).toCalledWith("hi 1;", 625, 750);
+                    expect(context.fillText).toCalledWith("hi 1;", -125, 150);
                 });
             });
 
@@ -425,7 +433,7 @@ describe("PlainFont", function () {
                     font.update(1);
 
                     expect(context.fillStyle).toEqual(fillStyle);
-                    expect(context.fillText).toCalledWith("hi 1;", 750, 575);
+                    expect(context.fillText).toCalledWith("hi 1;", 0, -25);
                 });
             });
         });
@@ -441,9 +449,9 @@ describe("PlainFont", function () {
 
             expect(context.fillStyle).toEqual(fillStyle);
             expect(context.fillText).toCalledThrice();
-            expect(context.fillText.firstCall).toCalledWith("测试", 600, 300);
-            expect(context.fillText.secondCall).toCalledWith("12 34", 600, font._lineHeight - 100 + 400);
-            expect(context.fillText.thirdCall).toCalledWith("hello", 600, font._lineHeight + 60 - 100 + 400);
+            expect(context.fillText.firstCall).toCalledWith("测试", -150, -100);
+            expect(context.fillText.secondCall).toCalledWith("12 34", -150, -40);
+            expect(context.fillText.thirdCall).toCalledWith("hello", -150, 20);
         });
 
         it("restore context", function(){
@@ -523,59 +531,63 @@ describe("PlainFont", function () {
                 font.update();
             });
 
-            it("test change text", function(){
+            it("formatText when change text", function(){
                 font.text = "a";
 
                 font.update();
 
-                expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
+                expect(context.fillText.secondCall).toCalledWith("a", -250, -200);
             });
-            it("test change fontSize", function(){
+            it("formatText and update line height change fontSize", function(){
                 font.text = "a\nb";
                 font.fontSize = 200;
 
                 font.update();
 
-                expect(context.fillText.secondCall).toCalledWith("a", 500, 400);
-                expect(context.fillText.getCall(2)).toCalledWith("b", 500, 600);
+                expect(context.fillText.secondCall).toCalledWith("a", -250, -200);
+                expect(context.fillText.getCall(2)).toCalledWith("b", -250, 0);
                 expect(context.font).toEqual("200px '" + font.fontFamily + "'");
+                expect(font._lineHeight).toEqual(200);
             });
-            it("test change fontFamily", function(){
+            it("formatText and update line height change fontFamily", function(){
                 font.fontFamily = "aaa";
 
                 font.update();
 
                 expect(context.font).toEqual("50px 'aaa'");
+                //lineHeight should be affected by the fontFamily, but here it can't test(the lineHeight will not change here)
+                expect(font._lineHeight).toEqual(50);
             });
-            it("test change width", function(){
-                font.width = wd.FontDimension.AUTO;
+            it("formatText when change width", function(){
+                setWidth(2);
+                font.xAlignment = wd.FontXAlignment.LEFT;
 
                 font.update();
 
-                expect(font.width).toEqual(1000);
+                expect(context.fillText.secondCall).toCalledWith("阿", -1, -200);
+                expect(context.fillText.getCall(2)).toCalledWith("斯", -1, -150);
             });
-            it("update when change height", function(){
-                font.height = 100;
+            it("formatText when change height", function(){
+                setHeight(100);
                 font.yAlignment = wd.FontYAlignment.BOTTOM;
-                //font.text = "a";
 
                 font.update();
 
-                expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 450);
+                expect(context.fillText.secondCall).toCalledWith("阿斯", -250, 0);
             });
-            it("test change xAlignment", function(){
+            it("formatText change xAlignment", function(){
                 font.xAlignment = wd.FontXAlignment.RIGHT;
 
                 font.update();
 
-                expect(context.fillText.secondCall).toCalledWith("阿斯", 900, 400);
+                expect(context.fillText.secondCall).toCalledWith("阿斯", 150, -200);
             });
-            it("test change yAlignment", function(){
+            it("formatText change yAlignment", function(){
                 font.yAlignment = wd.FontYAlignment.MIDDLE;
 
                 font.update();
 
-                expect(context.fillText.secondCall).toCalledWith("阿斯", 500, 575);
+                expect(context.fillText.secondCall).toCalledWith("阿斯", -250, -25);
             });
         });
     });

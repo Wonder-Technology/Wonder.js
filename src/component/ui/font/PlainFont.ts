@@ -49,30 +49,6 @@ module wd {
             }
         }
 
-        private _width:number = 0;
-        get width(){
-            return this._width;
-        }
-        set width(width:number){
-            if(width !== this._width){
-                this._width = width;
-
-                this.p_dirty = true;
-            }
-        }
-
-        private _height:number = 0;
-        get height(){
-            return this._height;
-        }
-        set height(height:number){
-            if(height !== this._height){
-                this._height = height;
-
-                this.p_dirty = true;
-            }
-        }
-
         private _xAlignment:FontXAlignment = FontXAlignment.LEFT;
         get xAlignment(){
             return this._xAlignment;
@@ -107,16 +83,10 @@ module wd {
         private _strArr:Array<string> = [];
 
         public init() {
-            this.context = this.getContext();
-
-            this._initDimension();
+            super.init();
 
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
-        }
-
-        //todo implement
-        public dispose() {
         }
 
         public update(elapsedTime:number) {
@@ -149,13 +119,12 @@ module wd {
         }
 
         protected updateWhenDirty() {
-            this._initDimension();
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
         }
 
         private _formatText() {
-            var maxWidth = this._width;
+            var maxWidth = this.width;
 
             this._trimStr();
 
@@ -315,20 +284,6 @@ module wd {
             return height;
         }
 
-        @require(function(){
-            assert(!!DeviceManager.getInstance().view, Log.info.FUNC_SHOULD("set view"));
-        })
-        private _initDimension(){
-            var view = DeviceManager.getInstance().view;
-
-            if(this._width === FontDimension.AUTO){
-                this._width = view.width;
-            }
-            if(this._height === FontDimension.AUTO){
-                this._height = view.height;
-            }
-        }
-
         private _draw(){
             var context = this.context;
 
@@ -351,7 +306,8 @@ module wd {
 
         private _drawMultiLine(){
             var context = this.context,
-                position = this.getCanvasPosition(),
+                //position = this.getCanvasPosition(),
+                position = this.getLeftCornerPosition(),
                 x = position.x,
                 y = position.y,
                 lineHeight = this._lineHeight,
@@ -394,7 +350,7 @@ module wd {
 
         private _drawSingleLine() {
             var context = this.context,
-                position = this.getCanvasPosition(),
+                position = this.getLeftCornerPosition(),
                 x = position.x,
                 y = position.y,
                 fontClientHeight = this._getFontClientHeight(),

@@ -2,6 +2,23 @@
 module wd {
     export abstract class Font extends UI {
         private _isFirstUpdate:boolean = true;
+        private _sizeChangeEventDescription:wdFrp.IDisposable = null;
+
+        public init() {
+            var self = this;
+
+            this.context = this.getContext();
+
+            this._sizeChangeEventDescription = EventManager.fromEvent(this.gameObject, <any>EngineEvent.UI_WIDTH_CHANGE)
+                .merge(EventManager.fromEvent(this.gameObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
+                .subscribe(() => {
+                    self.p_dirty = true;
+                });
+        }
+
+        public dispose(){
+            this._sizeChangeEventDescription.dispose();
+        }
 
         public update(elapsedTime:number){
             if(!this._isFirstUpdate){
@@ -18,22 +35,13 @@ module wd {
 
         protected abstract updateWhenDirty();
 
-        protected getCanvasPosition();
-        protected getCanvasPosition(gameObject:GameObject);
+        protected getLeftCornerPosition(){
+            var transform = this.gameObject.transform,
+                position = transform.position;
 
-        protected getCanvasPosition(...args){
-            var gameObject = null;
 
-            if(args.length === 0){
-                gameObject = this.gameObject;
-            }
-            else{
-                gameObject = args[0];
-            }
-
-            return CoordinateUtils.convertWebGLPositionToCanvasPosition(gameObject.transform.position);
+            return Vector2.create(position.x - transform.width / 2, position.y - transform.height / 2);
         }
-
     }
 }
 
