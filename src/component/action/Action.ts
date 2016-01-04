@@ -13,11 +13,11 @@ module wd{
             return Log.error(true, Log.info.ABSTRACT_ATTRIBUTE);
         }
 
-        protected p_target:GameObject = null;
+        protected p_target:EntityObject = null;
         get target(){
             return this.p_target;
         }
-        set target(target:GameObject){
+        set target(target:EntityObject){
             this.p_target = target;
         }
 
@@ -41,15 +41,15 @@ module wd{
 
         public abstract reverse();
 
-        public addToGameObject(gameObject:GameObject){
-            super.addToGameObject(gameObject);
+        public addToObject(gameObject:EntityObject){
+            super.addToObject(gameObject);
 
             this.target = gameObject;
             gameObject.actionManager.addChild(this);
         }
 
-        public removeFromGameObject(gameObject:GameObject){
-            super.removeFromGameObject(gameObject);
+        public removeFromObject(gameObject:EntityObject){
+            super.removeFromObject(gameObject);
 
             gameObject.actionManager.removeChild(this);
         }

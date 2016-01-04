@@ -73,7 +73,7 @@ module wd {
 
     export type DomEventRegisterData = {
         dom?:HTMLElement,
-        target?:GameObject,
+        target?:EntityObject,
         //user's event handler
         originHandler: Function,
         //wraped user's event handler

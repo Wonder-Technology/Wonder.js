@@ -4,8 +4,6 @@ module wd {
         public static create() {
             var obj = new this();
 
-            obj.initWhenCreate();
-
             return obj;
         }
 
@@ -67,7 +65,7 @@ module wd {
                 this._lightManager.addChild(child);
             }
 
-            return super.addChild(child);
+            return <GameObject>super.addChild(child);
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){

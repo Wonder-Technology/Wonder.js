@@ -25,10 +25,13 @@ module wd {
             this.camera.pMatrix = pMatrix;
         }
 
+
+        public gameObject:GameObject;
+
         public camera:Camera = null;
 
         public init() {
-            this.camera.gameObject = this.gameObject;
+            this.camera.gameObject = <GameObject>this.gameObject;
             this.camera.init();
         }
 

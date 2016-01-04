@@ -32,6 +32,7 @@
 /// <reference path="core/Transform"/>
 /// <reference path="core/ThreeDTransform"/>
 /// <reference path="core/RectTransform"/>
+/// <reference path="core/EntityObject"/>
 /// <reference path="core/GameObject"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>

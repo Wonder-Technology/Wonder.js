@@ -49,9 +49,23 @@ module wd{
             });
         }
 
+        protected p_parent:Transform = null;
+        get parent(){
+            return this.p_parent;
+        }
+        set parent(parent:Transform){
+            this.setParent(parent);
+        }
+
         public dirtyLocal:boolean = true;
 
-        protected p_parent:Transform = null;
+        //todo move it here
+        //public position:any = null;
+        //public rotation:any = null;
+        //public scale:any = null;
+
+        //todo more
+
 
         @virtual
         public init(){

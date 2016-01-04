@@ -7,7 +7,7 @@ module wd{
         public abstract removeChild(...args):any;
 
         public hasChild(func:(...args) => boolean):boolean;
-        public hasChild(target:GameObject, eventName:EventName):boolean;
+        public hasChild(target:EntityObject, eventName:EventName):boolean;
         public hasChild(dom:HTMLElement, eventName:EventName):boolean;
 
         public hasChild(...args){
@@ -23,7 +23,7 @@ module wd{
             }
         }
 
-        public appendChild(target:GameObject|HTMLElement, eventName:EventName, data:any){
+        public appendChild(target:EntityObject|HTMLElement, eventName:EventName, data:any){
             this.listenerMap.appendChild(
                 this.buildKey(target, eventName),
                 data

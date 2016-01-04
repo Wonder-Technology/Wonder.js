@@ -7,6 +7,8 @@ module wd {
         	return obj;
         }
 
+        public gameObject:GameObject;
+
         public drawMode:DrawMode = DrawMode.TRIANGLES;
 
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject){

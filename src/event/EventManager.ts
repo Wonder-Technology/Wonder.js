@@ -7,14 +7,14 @@ module wd {
         public static on(dom:HTMLElement, listener:{}|EventListener):void;
 
         public static on(eventName:EventName|string, handler:Function, priority:number):void;
-        public static on(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public static on(target:EntityObject, eventName:EventName|string, handler:Function):void;
         public static on(dom:HTMLElement, eventName:EventName|string, handler:Function):void;
 
-        public static on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
+        public static on(target:EntityObject, eventName:EventName|string, handler:Function, priority:number):void;
         public static on(dom:HTMLElement, eventName:EventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
-            if(args[0] instanceof GameObject){
+            if(args[0] instanceof EntityObject){
                 let eventName = args[1];
 
                 assert(EventTable.getEventType(eventName) === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
@@ -56,7 +56,7 @@ module wd {
 
                 eventBinder.on(eventName, handler, priority);
             }
-            else if(args.length === 3 && args[0] instanceof GameObject){
+            else if(args.length === 3 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2],
@@ -74,7 +74,7 @@ module wd {
 
                 eventBinder.on(dom, eventName, handler, priority);
             }
-            else if(args.length === 4 && args[0] instanceof GameObject){
+            else if(args.length === 4 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2],
@@ -97,19 +97,19 @@ module wd {
         public static off():void;
 
         public static off(eventName:EventName|string):void;
-        public static off(target:GameObject):void;
+        public static off(target:EntityObject):void;
         public static off(dom:HTMLElement):void;
 
         public static off(eventName:EventName|string, handler:Function):void;
-        public static off(target:GameObject, eventName:EventName|string):void;
+        public static off(target:EntityObject, eventName:EventName|string):void;
         public static off(dom:HTMLElement, eventName:EventName):void;
 
-        public static off(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public static off(target:EntityObject, eventName:EventName|string, handler:Function):void;
         public static off(dom:HTMLElement, eventName:EventName, handler:Function):void;
 
 
         @require(function(...args){
-            if(args.length > 2 && args[0] instanceof GameObject){
+            if(args.length > 2 && args[0] instanceof EntityObject){
                 let eventName = args[1];
 
                 assert(EventTable.getEventType(eventName) === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
@@ -135,7 +135,7 @@ module wd {
 
                 eventBinder.off(eventName);
             }
-            else if(args.length === 1 && args[0] instanceof GameObject){
+            else if(args.length === 1 && args[0] instanceof EntityObject){
                 let eventName = args[0],
                     eventBinder = CustomEventBinder.getInstance();
 
@@ -154,7 +154,7 @@ module wd {
 
                 eventBinder.off(eventName, handler);
             }
-            else if(args.length === 2 && args[0] instanceof GameObject){
+            else if(args.length === 2 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     eventBinder = CustomEventBinder.getInstance();
@@ -168,7 +168,7 @@ module wd {
 
                 eventBinder.off(dom, eventName);
             }
-            else if(args.length === 3 && args[0] instanceof GameObject){
+            else if(args.length === 3 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2],
@@ -189,10 +189,10 @@ module wd {
         public static trigger(event:Event):void;
 
         public static trigger(event:Event, userData:any):void;
-        public static trigger(target:GameObject, event:Event):void;
+        public static trigger(target:EntityObject, event:Event):void;
         public static trigger(dom:HTMLElement, event:Event):void;
 
-        public static trigger(target:GameObject, event:Event, userData:any):void;
+        public static trigger(target:EntityObject, event:Event, userData:any):void;
 
 
         @require(function(...args){
@@ -201,7 +201,7 @@ module wd {
 
                 assert(event instanceof CustomEvent, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
             }
-            else if(args[0] instanceof GameObject){
+            else if(args[0] instanceof EntityObject){
                 let event = args[1];
 
                 assert(event instanceof CustomEvent, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
@@ -221,7 +221,7 @@ module wd {
 
                 eventDispatcher.trigger(event, userData);
             }
-            else if(args.length === 2 && args[0] instanceof GameObject){
+            else if(args.length === 2 && args[0] instanceof EntityObject){
                 let target = args[0],
                     event = args[1],
                     eventDispatcher = CustomEventDispatcher.getInstance();
@@ -246,10 +246,10 @@ module wd {
         }
 
 
-        public static broadcast(target:GameObject, event:Event);
-        public static broadcast(target:GameObject, event:Event, userData:any);
+        public static broadcast(target:EntityObject, event:Event);
+        public static broadcast(target:EntityObject, event:Event, userData:any);
 
-        @require(function(target:GameObject, eventObject:Event, userData?:any){
+        @require(function(target:EntityObject, eventObject:Event, userData?:any){
             assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
         })
         public static broadcast(...args) {
@@ -258,10 +258,10 @@ module wd {
             eventDispatcher.broadcast.apply(eventDispatcher, args);
         }
 
-        public static emit(target:GameObject, event:Event);
-        public static emit(target:GameObject, event:Event, userData:any);
+        public static emit(target:EntityObject, event:Event);
+        public static emit(target:EntityObject, event:Event, userData:any);
 
-        @require(function(target:GameObject, eventObject:Event, userData?:any){
+        @require(function(target:EntityObject, eventObject:Event, userData?:any){
             assert(eventObject instanceof CustomEvent, Log.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
         })
         public static emit(...args) {
@@ -273,10 +273,10 @@ module wd {
         public static fromEvent(eventName:EventName):wdFrp.FromEventPatternStream;
 
         public static fromEvent(eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
-        public static fromEvent(target:GameObject, eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EventName):wdFrp.FromEventPatternStream;
         public static fromEvent(dom:HTMLElement, eventName:EventName):wdFrp.FromEventPatternStream;
 
-        public static fromEvent(target:GameObject, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
         public static fromEvent(dom:HTMLElement, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
 
         public static fromEvent(...args):any {
@@ -329,10 +329,10 @@ module wd {
             return wdFrp.fromEventPattern(addHandler, removeHandler);
         }
 
-        @require(function(target:GameObject, parent:any){
-            assert(target instanceof GameObject, "only GameObject can setBubleParent");
+        @require(function(target:EntityObject, parent:any){
+            assert(target instanceof EntityObject, "only EntityObject can setBubleParent");
         })
-        public static setBubbleParent(target:GameObject, parent:any) {
+        public static setBubbleParent(target:EntityObject, parent:any) {
             CustomEventRegister.getInstance().setBubbleParent(target, parent);
         }
     }

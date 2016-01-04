@@ -7,13 +7,6 @@ module wd{
             return obj;
         }
 
-        get parent(){
-            return this.p_parent;
-        }
-        set parent(parent:ThreeDTransform){
-            this.setParent(parent);
-        }
-
         private _localToParentMatrix:Matrix4 = Matrix4.create();
         //todo remove?
         get localToParentMatrix(){

@@ -5,6 +5,8 @@ module wd {
             return this.boundingRegion.shape;
         }
 
+        public gameObject:GameObject;
+
         public type:string = ABSTRACT_ATTRIBUTE;
 
         public boundingRegion:BoundingRegion = null;

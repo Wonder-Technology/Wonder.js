@@ -20,21 +20,19 @@ module wd {
 
         public context:CanvasRenderingContext2D = null;
         public gameObject:UIObject;
-        //todo only UIObject
-        //public gameObject:GameObject&UIObject;
 
 
         public abstract init();
         public abstract update(elapsedTime:number);
 
-        public addToGameObject(gameObject:UIObject){
-            super.addToGameObject(gameObject);
+        public addToObject(gameObject:UIObject){
+            super.addToObject(gameObject);
 
             gameObject.uiManager.addChild(this);
         }
 
-        public removeFromGameObject(gameObject:UIObject){
-            super.removeFromGameObject(gameObject);
+        public removeFromObject(gameObject:UIObject){
+            super.removeFromObject(gameObject);
 
             gameObject.uiManager.removeChild(this);
         }

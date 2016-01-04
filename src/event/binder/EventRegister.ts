@@ -8,7 +8,7 @@ module wd {
 
         public getEventRegisterDataList(eventName:EventName):any;
 
-        public getEventRegisterDataList(currentTarget:GameObject, eventName:EventName):any;
+        public getEventRegisterDataList(currentTarget:EntityObject, eventName:EventName):any;
         public getEventRegisterDataList(dom:HTMLElement, eventName:EventName):any;
 
         public getEventRegisterDataList(...args) {
@@ -32,9 +32,9 @@ module wd {
         }
 
         public getChild(eventName:EventName);
-        public getChild(target:GameObject);
+        public getChild(target:EntityObject);
 
-        public getChild(target:GameObject, eventName:EventName);
+        public getChild(target:EntityObject, eventName:EventName);
         public getChild(dom:HTMLElement, eventName:EventName);
 
         public getChild(...args) {

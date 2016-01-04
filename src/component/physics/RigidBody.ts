@@ -40,6 +40,8 @@ module wd {
             });
         }
 
+        public gameObject:GameObject;
+
         public lockConstraint:LockConstraint = LockConstraint.create(this);
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
@@ -85,7 +87,7 @@ module wd {
             }
         }
 
-        public removeFromGameObject(gameObject:GameObject){
+        public removeFromObject(gameObject:GameObject){
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
 
             if(engineAdapter){
@@ -94,7 +96,7 @@ module wd {
                 this.getPhysicsEngineAdapter().removeConstraints(gameObject);
             }
 
-            super.removeFromGameObject(gameObject);
+            super.removeFromObject(gameObject);
         }
 
         public dispose(){

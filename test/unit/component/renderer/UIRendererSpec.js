@@ -2,29 +2,29 @@ describe("UIRenderer", function () {
     var sandbox = null;
     var font;
     var renderer;
-    var gameObject;
+    var uiObject;
     var director;
 
     function createFont(uiRenderer) {
         font = wd.PlainFont.create();
 
 
-        var gameObject = wd.GameObject.create();
+        var uiObject = wd.UIObject.create();
 
-        gameObject.addComponent(font);
+        uiObject.addComponent(font);
 
 
         if(uiRenderer){
-            gameObject.addComponent(uiRenderer);
+            uiObject.addComponent(uiRenderer);
         }
         else{
             renderer = wd.UIRenderer.create();
 
-            gameObject.addComponent(renderer);
+            uiObject.addComponent(renderer);
         }
 
 
-        return gameObject;
+        return uiObject;
     }
 
     beforeEach(function () {
@@ -39,19 +39,19 @@ describe("UIRenderer", function () {
             height: 500
         });
 
-        gameObject = createFont();
+        uiObject = createFont();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
-        gameObject.dispose();
+        uiObject.dispose();
         sandbox.restore();
     });
 
     describe("init", function(){
         beforeEach(function(){
-            director.scene.addChild(gameObject);
+            director.scene.addChild(uiObject);
 
             director._init();
         });
@@ -76,23 +76,23 @@ describe("UIRenderer", function () {
     });
 
     describe("dispose", function(){
-        it("if not all references(the gameObject which share the same UIRenderer) are disposed, not dispose the UIRenderer", function(){
-            var gameObject2 = createFont(renderer);
+        it("if not all references(the uiObject which share the same UIRenderer) are disposed, not dispose the UIRenderer", function(){
+            var uiObject2 = createFont(renderer);
 
-            director.scene.addChild(gameObject);
-            director.scene.addChild(gameObject2);
+            director.scene.addChild(uiObject);
+            director.scene.addChild(uiObject2);
 
             director._init();
 
 
             expect($("canvas").length).toEqual(1);
 
-            gameObject.dispose();
+            uiObject.dispose();
 
             expect($("canvas").length).toEqual(1);
 
 
-            gameObject2.dispose();
+            uiObject2.dispose();
 
             expect($("canvas").length).toEqual(0);
         });
@@ -113,7 +113,7 @@ describe("UIRenderer", function () {
                 expect(renderer.isClear).toBeFalsy();
 
 
-                gameObject.dispose();
+                uiObject.dispose();
 
 
                 renderer.isClear = true;
@@ -123,14 +123,14 @@ describe("UIRenderer", function () {
                 expect(renderer.isClear).toBeFalsy();
             });
             it("remove canvas", function(){
-                director.scene.addChild(gameObject);
+                director.scene.addChild(uiObject);
 
                 director._init();
 
                 expect($("canvas").length).toEqual(1);
 
 
-                gameObject.dispose();
+                uiObject.dispose();
 
                 expect($("canvas").length).toEqual(0);
             });
@@ -142,7 +142,7 @@ describe("UIRenderer", function () {
         sandbox.stub(director.renderer, "render");
         sandbox.stub(font, "update");
 
-        director.scene.addChild(gameObject);
+        director.scene.addChild(uiObject);
 
 
         director._init();
@@ -156,7 +156,7 @@ describe("UIRenderer", function () {
     it("clear canvas before update ui", function(){
         sandbox.stub(font, "update");
 
-        director.scene.addChild(gameObject);
+        director.scene.addChild(uiObject);
 
 
         director._init();
@@ -170,17 +170,17 @@ describe("UIRenderer", function () {
     });
 
     it("each UIRenderer has one independent canvas", function(){
-        var gameObject2 = createFont();
+        var uiObject2 = createFont();
 
-        director.scene.addChild(gameObject);
-        director.scene.addChild(gameObject2);
+        director.scene.addChild(uiObject);
+        director.scene.addChild(uiObject2);
 
         director._init();
 
         expect($("canvas").length).toEqual(2);
-        expect(gameObject.getComponent(wd.UIRenderer).context !== gameObject2.getComponent(wd.UIRenderer).context).toBeTruthy();
+        expect(uiObject.getComponent(wd.UIRenderer).context !== uiObject2.getComponent(wd.UIRenderer).context).toBeTruthy();
 
-        gameObject2.dispose();
+        uiObject2.dispose();
     });
 
     describe("set zIndex", function() {
@@ -190,7 +190,7 @@ describe("UIRenderer", function () {
 
         it("can specify the canvas->zIndex", function () {
             renderer.zIndex = 10;
-            director.scene.addChild(gameObject);
+            director.scene.addChild(uiObject);
 
             director._init();
 
@@ -198,7 +198,7 @@ describe("UIRenderer", function () {
         });
         it("refresh canvas->zIndex when change zIndex", function(){
             renderer.zIndex = 10;
-            director.scene.addChild(gameObject);
+            director.scene.addChild(uiObject);
 
             director._init();
             director._loopBody(1);

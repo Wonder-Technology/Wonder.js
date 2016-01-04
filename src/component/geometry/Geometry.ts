@@ -18,6 +18,8 @@ module wd{
             return this.buffers.geometryData;
         }
 
+        public gameObject:GameObject;
+
         public buffers:BufferContainer = null;
 
         @ensure(function(){

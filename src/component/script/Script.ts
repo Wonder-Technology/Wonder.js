@@ -42,25 +42,25 @@ module wd{
                 });
         }
 
-        public addToGameObject(gameObject:GameObject){
+        public addToObject(gameObject:EntityObject){
             var self = this;
 
-            super.addToGameObject(gameObject);
+            super.addToObject(gameObject);
 
             Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
                     .do((data:ScriptFileData) => {
-                        self._addScriptToGameObject(gameObject, data);
+                        self._addScriptToEntityObject(gameObject, data);
                     })
             );
         }
 
-        public removeFromGameObject(gameObject:GameObject){
-            super.removeFromGameObject(gameObject);
+        public removeFromObject(gameObject:EntityObject){
+            super.removeFromObject(gameObject);
 
             Director.getInstance().scriptStreams.removeChild(this.uid.toString());
         }
 
-        private _addScriptToGameObject(gameObject:GameObject, data:ScriptFileData){
+        private _addScriptToEntityObject(gameObject:EntityObject, data:ScriptFileData){
             gameObject.script.addChild(data.name, new data.class(gameObject));
         }
     }

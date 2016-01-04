@@ -14,7 +14,7 @@ module wd {
         protected listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
 
 
-        public register(target:GameObject, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
+        public register(target:EntityObject, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
             this.listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
                 target: target,
                 eventName: eventName,
@@ -26,13 +26,13 @@ module wd {
         }
 
         public remove(eventName:EventName);
-        public remove(target:GameObject);
+        public remove(target:EntityObject);
 
         public remove(eventName:EventName, handler:Function);
         public remove(uid:number, eventName:EventName);
-        public remove(target:GameObject, eventName:EventName);
+        public remove(target:EntityObject, eventName:EventName);
 
-        public remove(target:GameObject, eventName:EventName, handler:Function);
+        public remove(target:EntityObject, eventName:EventName, handler:Function);
 
 
         public remove(...args) {
@@ -43,7 +43,7 @@ module wd {
 
                 this.listenerMap.removeChild(eventName);
             }
-            else if (args.length === 1 && args[0] instanceof GameObject) {
+            else if (args.length === 1 && args[0] instanceof EntityObject) {
                 this.listenerMap.removeChild(target);
 
                 this._handleAfterAllEventHandlerRemoved(target);
@@ -60,7 +60,7 @@ module wd {
 
                 this.listenerMap.removeChild(uid, eventName);
             }
-            else if ((args.length === 2 && args[0] instanceof GameObject) || args.length === 3) {
+            else if ((args.length === 2 && args[0] instanceof EntityObject) || args.length === 3) {
                 this.listenerMap.removeChild.apply(this.listenerMap, args);
 
                 if (this._isAllEventHandlerRemoved(target)) {
@@ -69,7 +69,7 @@ module wd {
             }
         }
 
-        public setBubbleParent(target:GameObject, parent:GameObject) {
+        public setBubbleParent(target:EntityObject, parent:EntityObject) {
             target.bubbleParent = parent;
         }
 
@@ -77,23 +77,23 @@ module wd {
             return this.listenerMap.getUidFromKey(key);
         }
 
-        public isTarget(key:string, target:GameObject, list:wdCb.Collection<CustomEventRegisterData>) {
+        public isTarget(key:string, target:EntityObject, list:wdCb.Collection<CustomEventRegisterData>) {
             return this.listenerMap.isTarget(key, target, list);
         }
 
-        private _isAllEventHandlerRemoved(target:GameObject) {
+        private _isAllEventHandlerRemoved(target:EntityObject) {
             return !this.listenerMap.hasChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
             });
         }
 
-        private _handleAfterAllEventHandlerRemoved(target:GameObject) {
+        private _handleAfterAllEventHandlerRemoved(target:EntityObject) {
             this.setBubbleParent(target, null);
         }
     }
 
     export type CustomEventRegisterData = {
-        target:GameObject,
+        target:EntityObject,
         //user's event handler
         originHandler: Function,
         //wraped user's event handler

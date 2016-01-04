@@ -2,7 +2,7 @@
 module wd {
     declare var document:any;
 
-    //todo bind on GameObject which has the focus
+    //todo bind on EntityObject which has the focus
     export class KeyboardEventHandler extends DomEventHandler{
         private static _instance = null;
 

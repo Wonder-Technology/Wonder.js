@@ -33,6 +33,8 @@ module wd {
             this._shadowMapHeight = shadowMapHeight;
         }
 
+        public gameObject:GameObject;
+
         public color:Color = Color.create("#ffffff");
         public castShadow:boolean = false;
         public shadowCameraNear:number = 0.1;

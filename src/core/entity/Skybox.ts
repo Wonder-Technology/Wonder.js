@@ -12,8 +12,6 @@ module wd {
         }
 
         public initWhenCreate(){
-            super.initWhenCreate();
-
             this.addComponent(SkyboxRenderer.create());
         }
     }

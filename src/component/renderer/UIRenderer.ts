@@ -30,25 +30,25 @@ module wd {
         private _beforeInitHandler:() => void = null;
         private _endLoopHandler:() => void = null;
         private _isInit:boolean = false;
-        private _refernceList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
-        public addToGameObject(gameObject:GameObject){
-            this._refernceList.addChild(gameObject);
+        public addToObject(object:UIObject){
+            this._referenceList.addChild(object);
 
             /*!
-            uiRenderer may be shared by multi gameObjects, so this.gameObject is the last one which share this
+            uiRenderer may be shared by multi objects, so this.object is the last one which share this
              */
-            this.gameObject = gameObject;
+            this.gameObject = object;
         }
 
-        public removeFromGameObject(gameObject:GameObject){
-            this._refernceList.removeChild(gameObject);
+        public removeFromObject(object:UIObject){
+            this._referenceList.removeChild(object);
 
-            if(this._refernceList.getCount() > 0){
+            if(this._referenceList.getCount() > 0){
                 return;
             }
 
-            super.removeFromGameObject(gameObject);
+            super.removeFromObject(object);
         }
 
         public init(){
@@ -70,7 +70,7 @@ module wd {
         }
 
         public dispose(){
-            if(this._refernceList.getCount() > 0){
+            if(this._referenceList.getCount() > 0){
                 return;
             }
 

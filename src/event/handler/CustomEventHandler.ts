@@ -11,7 +11,7 @@ module wd {
         }
 
         public on(eventName:string, handler:Function, priority:number):void;
-        public on(target:GameObject, eventName:string, handler:Function, priority:number):void;
+        public on(target:EntityObject, eventName:string, handler:Function, priority:number):void;
 
         public on(...args) {
             if(args.length === 3){
@@ -50,7 +50,7 @@ module wd {
         public off(eventName:string):void;
         public off(uid:number, eventName:string):void;
         public off(eventName:string, handler:Function):void;
-        public off(target:GameObject, eventName:string, handler:Function):void;
+        public off(target:EntityObject, eventName:string, handler:Function):void;
 
         public off(...args) {
             var eventRegister = CustomEventRegister.getInstance();
@@ -60,8 +60,8 @@ module wd {
 
         public trigger(event:Event):boolean;
         public trigger(event:Event, userData:any):boolean;
-        public trigger(target:GameObject, event:Event, notSetTarget:boolean):boolean;
-        public trigger(target:GameObject, event:Event, userData:any, notSetTarget:boolean):boolean;
+        public trigger(target:EntityObject, event:Event, notSetTarget:boolean):boolean;
+        public trigger(target:EntityObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
         public trigger(...args):boolean {
             var event:Event = null;

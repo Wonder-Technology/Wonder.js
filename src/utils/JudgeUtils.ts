@@ -23,7 +23,7 @@ module wd {
         }
 
         public static isFloatArray(data:any){
-            return Object.prototype.toString.call(data) === "[object Float32Array]" || Object.prototype.toString.call(data) === "[object Float16Array]";
+            return EntityObject.prototype.toString.call(data) === "[object Float32Array]" || EntityObject.prototype.toString.call(data) === "[object Float16Array]";
         }
     }
 }

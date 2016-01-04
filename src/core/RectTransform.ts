@@ -38,8 +38,8 @@ module wd{
             return this._rotationMatrix;
         }
 
-        private _positionAndScaleMatrix:Matrix3 = Matrix3.create();
-        get positionAndScaleMatrix(){
+        private _localToParentMatrix:Matrix3 = Matrix3.create();
+        get localToParentMatrix(){
             var syncList = wdCb.Collection.create<RectTransform>(),
                 current = this.p_parent;
 
@@ -54,15 +54,15 @@ module wd{
                 transform.syncPositionAndScale();
             });
 
-            return this._positionAndScaleMatrix;
+            return this._localToParentMatrix;
         }
-        //set positionAndScaleMatrix(positionAndScaleMatrix:Matrix3){
-        //    this._positionAndScaleMatrix = positionAndScaleMatrix;
+        //set localToParentMatrix(localToParentMatrix:Matrix3){
+        //    this._localToParentMatrix = localToParentMatrix;
         //}
 
         private _position:Vector2 = Vector2.create();
         get position(){
-            this._position = this.positionAndScaleMatrix.getTranslation();
+            this._position = this.localToParentMatrix.getTranslation();
 
             return this._position;
         }
@@ -71,7 +71,7 @@ module wd{
                 this._localPosition = position.copy();
             }
             else {
-                this._localPosition = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyPoint(position);
+                this._localPosition = this.p_parent.localToParentMatrix.copy().invert().multiplyPoint(position);
             }
 
             this.isTranslate = true;
@@ -93,7 +93,7 @@ module wd{
 
         private _scale:Vector2 = Vector2.create(1, 1);
         get scale(){
-            this._scale = this.positionAndScaleMatrix.getScale();
+            this._scale = this.localToParentMatrix.getScale();
 
             return this._scale;
         }
@@ -102,7 +102,7 @@ module wd{
                 this._localScale = scale.copy();
             }
             else {
-                this._localScale = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyVector2(scale);
+                this._localScale = this.p_parent.localToParentMatrix.copy().invert().multiplyVector2(scale);
             }
 
             this.isScale = true;
@@ -233,10 +233,10 @@ module wd{
 
             if (this.dirtyPositionAndScale) {
                 if (this.p_parent === null) {
-                    this._positionAndScaleMatrix = this._localPositionAndScaleMatrix.copy();
+                    this._localToParentMatrix = this._localPositionAndScaleMatrix.copy();
                 }
                 else {
-                    this._positionAndScaleMatrix = this.p_parent.positionAndScaleMatrix.copy().multiply(this._localPositionAndScaleMatrix);
+                    this._localToParentMatrix = this.p_parent.localToParentMatrix.copy().multiply(this._localPositionAndScaleMatrix);
                 }
 
                 this.dirtyLocal = false;

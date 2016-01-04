@@ -7,10 +7,10 @@ module wd {
             return obj;
         }
 
-        public target:GameObject;
+        public target:EntityObject;
 
         //currentTarget is always the object listening for the event
-        public currentTarget:GameObject = null;
+        public currentTarget:EntityObject = null;
         public userData:any = null;
 
         protected p_type:EventType = EventType.CUSTOM;

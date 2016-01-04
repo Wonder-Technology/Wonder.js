@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class Control extends ActionInterval{
-        set target(target:GameObject){
+        set target(target:EntityObject){
             this.p_target = target;
 
             this.getInnerActions().forEach((action:Action) => {

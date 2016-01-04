@@ -1,6 +1,8 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
     export abstract class Animation extends Component{
+        public gameObject:GameObject;
+
         public abstract play(animName:string, fps:number);
         public abstract pause();
         public abstract resume();

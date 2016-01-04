@@ -13,9 +13,9 @@ module wd {
         public on(eventName:EventName|string, handler:Function):void;
 
         public on(eventName:EventName|string, handler:Function, priority:number):void;
-        public on(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public on(target:EntityObject, eventName:EventName|string, handler:Function):void;
 
-        public on(target:GameObject, eventName:EventName|string, handler:Function, priority:number):void;
+        public on(target:EntityObject, eventName:EventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args.length === 1){
@@ -30,7 +30,7 @@ module wd {
 
                 this._checkEventSeparator(eventName);
             }
-            else if(args.length === 3 && args[0] instanceof GameObject){
+            else if(args.length === 3 && args[0] instanceof EntityObject){
                 let eventName = args[1];
 
                 this._checkEventSeparator(eventName);
@@ -57,7 +57,7 @@ module wd {
                 EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .on(eventName, handler, priority);
             }
-            else if(args.length === 3 && args[0] instanceof GameObject){
+            else if(args.length === 3 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2];
@@ -79,12 +79,12 @@ module wd {
         public off():void;
 
         public off(eventName:EventName|string):void;
-        public off(target:GameObject):void;
+        public off(target:EntityObject):void;
 
         public off(eventName:EventName|string, handler:Function):void;
-        public off(target:GameObject, eventName:EventName|string):void;
+        public off(target:EntityObject, eventName:EventName|string):void;
 
-        public off(target:GameObject, eventName:EventName|string, handler:Function):void;
+        public off(target:EntityObject, eventName:EventName|string, handler:Function):void;
 
         public off(...args) {
             var eventRegister = CustomEventRegister.getInstance();
@@ -115,7 +115,7 @@ module wd {
                     }
                 });
             }
-            else if(args.length === 1 && args[0] instanceof GameObject){
+            else if(args.length === 1 && args[0] instanceof EntityObject){
                 let target = args[0];
 
                 eventRegister.forEach((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
@@ -134,14 +134,14 @@ module wd {
                 EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(eventName, handler);
             }
-            else if(args.length === 2 && args[0] instanceof GameObject){
+            else if(args.length === 2 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1];
 
                 EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
                     .off(target, eventName);
             }
-            else if(args.length === 3 && args[0] instanceof GameObject){
+            else if(args.length === 3 && args[0] instanceof EntityObject){
                 let target = args[0],
                     eventName = args[1],
                     handler = args[2];
