@@ -265,6 +265,12 @@ module wd{
             return this;
         }
 
+        /*!
+        if pivot is not the center point, the actual position will change, but the "position" attr will not change now!
+
+        //todo change "position" when rotate to get the actual position
+         */
+
         public rotate(angle:number){
             var position = this.position;
 
