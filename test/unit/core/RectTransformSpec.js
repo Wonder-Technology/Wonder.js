@@ -18,6 +18,35 @@ describe("RectTransform", function(){
         sandbox.restore();
     });
 
+    describe("localPosition/localScale is the value relative to the parent transform", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
+        });
+
+        it("localScale", function(){
+            tra2.scale = Vector2.create(2, 2);
+            tra1.scale = Vector2.create(2, 2);
+
+
+            expect(getValues(tra1.localScale, 1)).toEqual([1,1]);
+            expect(getValues(tra2.localScale, 1)).toEqual([2,2]);
+        });
+        it("localPosition", function(){
+            tra2.scale = Vector2.create(2, 2);
+
+            tra1.translate(300, 100);
+            tra2.translate(300, 100);
+
+
+            expect(getValues(tra1.localPosition, 1)).toEqual([150, 50]);
+        });
+    });
+
+    //todo test set localPosition/localScale
+
     describe("set position", function(){
         var tra2 = null,
             tra3 = null;
@@ -52,7 +81,7 @@ describe("RectTransform", function(){
             tra2 = Transform.create();
             tra1.parent = tra2;
         });
-        
+
         it("set rotation around pivot", function(){
             tra2.position = Vector2.create(2, 1);
 
@@ -64,26 +93,39 @@ describe("RectTransform", function(){
             expect(getValues(tra2.rotationMatrix.getTranslation(), 1)).toEqual([0.5, -0.6]);
         });
     });
-    
+
     describe("set scale", function() {
-        beforeEach(function () {
+        var tra2 = null;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
         });
 
         it("set scale", function(){
-            var tra2 = Transform.create();
-            tra2.parent = tra1;
+            tra1.position = Vector2.create(100, -50);
 
-            tra2.position = Vector2.create(100, -50);
+            tra1.scale = Vector2.create(2, 3);
 
-            tra2.scale = Vector2.create(2, 3);
+            expect(getValues(tra1.scale)).toEqual([2, 3]);
+            expect(getValues(tra1.position)).toEqual([100, -50]);
+            expect(getValues(tra2.scale)).toEqual([1, 1]);
+        });
 
-            expect(getValues(tra2.scale)).toEqual([2, 3]);
-            expect(getValues(tra2.position)).toEqual([100, -50]);
-            expect(getValues(tra1.scale)).toEqual([1, 1]);
+        describe("scale shouldn't affect position", function(){
+            it("test parent and child scale", function(){
+                tra2.scale = Vector2.create(10, 2);
+                tra1.scale = Vector2.create(2, 2);
+                tra1.translate(300, 100);
+                tra2.translate(300, 100);
+
+                expect(getValues(tra1.position)).toEqual([600, 200]);
+                expect(getValues(tra2.position)).toEqual([300, 100]);
+            });
         });
     });
 
-    describe("test translate,rotate,zoom", function(){
+    describe("test translate,rotate", function(){
         beforeEach(function(){
         });
 
@@ -215,55 +257,6 @@ describe("RectTransform", function(){
                 });
             });
         });
-
-        describe("test zoom", function(){
-            var tra2 = null;
-
-            beforeEach(function(){
-                tra2 = Transform.create();
-                tra1.parent = tra2;
-            });
-
-            it("zoom", function(){
-                tra2.scale = wd.Vector2.create(2, 3);
-
-                tra2.zoom(2,2);
-                tra1.zoom(3,1);
-
-
-                expect(getValues(tra2.position)).toEqual([0,0]);
-                expect(getValues(tra1.position)).toEqual([0,0]);
-                expect(getValues(tra2.rotation)).toEqual(0);
-                expect(getValues(tra1.rotation)).toEqual(0);
-
-                expect(getValues(tra2.scale)).toEqual([4,6]);
-                expect(getValues(tra1.scale)).toEqual([12,6]);
-            });
-            it("rotate and zoom", function(){
-                tra2.rotate(30);
-                tra1.rotate(30);
-
-                tra2.zoom(2,3);
-                tra1.zoom(3,1);
-
-
-                expect(getValues(tra2.rotation)).toEqual(30);
-                expect(getValues(tra2.scale)).toEqual([2,3]);
-
-                expect(getValues(tra1.rotation)).toEqual(60);
-                expect(getValues(tra1.scale)).toEqual([6, 3]);
-            });
-            it("zoom shouldn't affect position", function(){
-                tra2.zoom(2, 3);
-                tra2.translate(Vector2.create(1, 1));
-
-                tra1.translate(Vector2.create(1, 1));
-
-
-                expect(getValues(tra1.position)).toEqual([2, 2]);
-                expect(getValues(tra2.position)).toEqual([1, 1]);
-            });
-        });
     });
 
     it("test >= 2 parent", function(){
@@ -298,8 +291,8 @@ describe("RectTransform", function(){
             tra1.height = 100;
         });
 
-        it("zoom will affect the width/height", function(){
-            tra2.zoom(2, 3);
+        it("scale will affect the width/height", function(){
+            tra2.scale = Vector2.create(2, 3);
 
             expect(tra2.width).toEqual(2000);
             expect(tra2.height).toEqual(1500);
@@ -308,7 +301,7 @@ describe("RectTransform", function(){
             expect(tra1.height).toEqual(300);
         });
     });
-    
+
     describe("test anchor", function(){
         var tra2;
 
@@ -322,7 +315,7 @@ describe("RectTransform", function(){
             tra1.width = 500;
             tra1.height = 100;
         });
-        
+
         describe("anchorX", function(){
             describe("contain minX, maxX anchor data which is the percent of the parent's width", function(){
                 it("test position locate on parent's center point", function(){
@@ -333,7 +326,7 @@ describe("RectTransform", function(){
                     expect(tra1.height).toEqual(100);
 
 
-                    tra2.zoom(2, 2);
+                    tra2.scale = Vector2.create(2, 2);
 
                     expect(getValues(tra1.position)).toEqual([0, 0])
                     expect(tra2.width).toEqual(2000);
@@ -350,7 +343,7 @@ describe("RectTransform", function(){
                     expect(tra1.height).toEqual(100);
 
 
-                    tra1.zoom(2, 2);
+                    tra1.scale = Vector2.create(2, 2);
 
                     expect(tra2.width).toEqual(1000);
                     expect(tra2.height).toEqual(500);
@@ -407,7 +400,7 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.height)).toEqual(400);
 
 
-                    tra2.zoom(2, 2);
+                    tra2.scale = Vector2.create(2, 2);
 
                     expect(getValues(tra1.position)).toEqual([0, 0]);
                     expect(tra2.width).toEqual(2000);
@@ -424,7 +417,7 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.height)).toEqual(350);
 
 
-                    tra1.zoom(2, 2);
+                    tra1.scale = Vector2.create(2, 2);
 
                     expect(tra2.width).toEqual(1000);
                     expect(tra2.height).toEqual(500);
@@ -491,6 +484,7 @@ describe("RectTransform", function(){
             expect(getValues(tra1.scale)).toEqual([1, 1]);
         });
     });
+
     describe("resetRotation", function(){
         it("reset rotationMatrix", function(){
             tra1.rotation = 20;

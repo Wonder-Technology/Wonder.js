@@ -38,7 +38,7 @@ module wd{
             return this._rotationMatrix;
         }
 
-        private _positionAndScaleMatrix:Matrix3 = null;
+        private _positionAndScaleMatrix:Matrix3 = Matrix3.create();
         get positionAndScaleMatrix(){
             var syncList = wdCb.Collection.create<RectTransform>(),
                 current = this.p_parent;
@@ -67,9 +67,14 @@ module wd{
             return this._position;
         }
         set position(position:Vector2){
-            this._localPositionAndScaleMatrix.setPosition(position.x, position.y);
+            if (this.p_parent === null) {
+                this._localPosition = position.copy();
+            }
+            else {
+                this._localPosition = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyPoint(position);
+            }
 
-            this.dirtyPositionAndScale = true;
+            this.dirtyLocalPositionAndScale = true;
         }
 
         private _rotation:number = 0;
@@ -92,12 +97,41 @@ module wd{
             return this._scale;
         }
         set scale(scale:Vector2){
-            this._localPositionAndScaleMatrix.setScale(scale.x, scale.y);
+            if (this.p_parent === null) {
+                this._localScale = scale.copy();
+            }
+            else {
+                this._localScale = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyVector2(scale);
+            }
 
-            this.dirtyPositionAndScale = true;
+            this.dirtyLocalPositionAndScale = true;
         }
 
         //todo add skew attri
+
+
+        private _localPosition:Vector2 = Vector2.create(0, 0);
+        get localPosition(){
+            return this._localPosition;
+        }
+        set localPosition(position:Vector2){
+            this._localPosition = position.copy();
+
+            //this.isTranslate = true;
+        }
+
+        private _localScale:Vector2 = Vector2.create(1, 1);
+        get localScale(){
+            return this._localScale;
+        }
+        set localScale(scale:Vector2){
+            this._localScale = scale.copy();
+
+            //this.isScale = true;
+        }
+
+
+
 
 
         private _anchorX:Vector2 = Vector2.create(0.5, 0.5);
@@ -157,6 +191,7 @@ module wd{
         }
 
         public dirtyRotation:boolean = true;
+        public dirtyLocalPositionAndScale:boolean = true;
         public dirtyPositionAndScale:boolean = true;
         public pivot:Vector2 = Vector2.create(0, 0);
 
@@ -193,14 +228,22 @@ module wd{
         }
 
         public syncPositionAndScale(){
-            if(this.dirtyPositionAndScale){
+            if (this.dirtyLocalPositionAndScale) {
+                this._localPositionAndScaleMatrix.setTS(this._localPosition, this._localScale);
+
+                this.dirtyLocalPositionAndScale = false;
+                this.dirtyPositionAndScale = true;
+            }
+
+            if (this.dirtyPositionAndScale) {
                 if (this.p_parent === null) {
                     this._positionAndScaleMatrix = this._localPositionAndScaleMatrix.copy();
                 }
                 else {
-                    //this._positionAndScaleMatrix = this.p_parent.positionAndScaleMatrix.copy().multiply(this._localPositionAndScaleMatrix);
-                    this._positionAndScaleMatrix =this._localPositionAndScaleMatrix.copy().multiply(this.p_parent.positionAndScaleMatrix);
+                    this._positionAndScaleMatrix = this.p_parent.positionAndScaleMatrix.copy().multiply(this._localPositionAndScaleMatrix);
                 }
+
+                this.dirtyLocalPositionAndScale = false;
 
                 this.children.forEach((child:RectTransform) => {
                     child.dirtyPositionAndScale = true;
@@ -221,8 +264,7 @@ module wd{
                 translation = args[0];
             }
 
-            //this._localPositionAndScaleMatrix.translate(translation.x, translation.y);
-            this._localPositionAndScaleMatrix.translateOnlyAffectPosition(translation.x, translation.y);
+            this.position = translation.add(this.position);
 
             return this;
         }
@@ -282,24 +324,6 @@ module wd{
             //}
 
             this._localRotationMatrix.translate(x, y);
-
-            return this;
-        }
-
-        public zoom(scale:Vector2);
-        public zoom(x:number, y:number);
-
-        public zoom(...args){
-            var scale = null;
-
-            if(args.length === 2){
-                scale = Vector2.create(args[0], args[1]);
-            }
-            else{
-                scale = args[0];
-            }
-
-            this._localPositionAndScaleMatrix.scale(scale.x, scale.y);
 
             return this;
         }

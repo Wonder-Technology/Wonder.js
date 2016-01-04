@@ -37,6 +37,33 @@ describe("ThreeDTransform", function(){
         expect(getValues(tra3.localPosition)).toEqual([-1, 1, -1]);
     });
 
+    describe("localPosition/localRotation/localScale is the value relative to the parent transform", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = Transform.create();
+            tra1.parent = tra2;
+        });
+
+        it("localScale", function(){
+            tra2.scale = Vector3.create(2, 2, 1);
+            tra1.scale = Vector3.create(2, 2, 1);
+
+
+            expect(getValues(tra1.localScale, 1)).toEqual([1,1,1]);
+            expect(getValues(tra2.localScale, 1)).toEqual([2,2,1]);
+        });
+        it("localPosition", function(){
+            tra2.scale = Vector3.create(2, 2, 1);
+
+            tra1.translate(300, 100, 0);
+            tra2.translate(300, 100, 0);
+
+
+            expect(getValues(tra1.localPosition, 1)).toEqual([150, 50, 0]);
+        });
+    });
+
 
     describe("set position", function(){
         var tra2 = null,
@@ -133,21 +160,23 @@ describe("ThreeDTransform", function(){
         });
     });
 
-
     describe("set scale", function(){
         beforeEach(function(){
         });
 
-        it("set scale", function(){
-            var tra2 = Transform.create();
-            tra2.parent = tra1;
+        describe("set scale", function(){
+            it("test scale", function(){
+                var tra2 = Transform.create();
+                tra2.parent = tra1;
 
-            tra1.position = Vector3.create(100, -50, 0);
+                tra1.position = Vector3.create(100, -50, 0);
 
-            tra2.scale = Vector3.create(2, 3, 1);
+                tra2.scale = Vector3.create(2, 3, 1);
 
-            expect(getValues(tra2.scale)).toEqual([2, 3, 1]);
+                expect(getValues(tra2.scale)).toEqual([2, 3, 1]);
+            });
         });
+
         it("set local scale", function(){
             var tra2 = Transform.create();
             tra2.localScale = Vector3.create(2, 2, 0.5);
