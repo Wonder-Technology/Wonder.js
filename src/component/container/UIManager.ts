@@ -1,21 +1,19 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export class UIManager extends ComponentContainer{
-        public static create(gameObject:GameObject) {
-            var obj = new this(gameObject);
+        public static create(uiObject:UIObject) {
+            var obj = new this(uiObject);
 
             return obj;
         }
 
-        constructor(gameObject:GameObject){
+        constructor(uiObject:UIObject){
             super();
 
-            this._gameObject = gameObject;
+            this._uiObject = uiObject;
         }
 
-        protected list:wdCb.Collection<UI>;
-
-        private _gameObject:GameObject = null;
+        private _uiObject:UIObject = null;
         private _dirtyTag:string = "uiDirty";
         private _notDirtyTag:string = "uiNotDirty";
 
@@ -38,7 +36,7 @@ module wd {
                 return;
             }
 
-            uiRenderer = this._getUIRenderer(this._gameObject);
+            uiRenderer = this._getUIRenderer(this._uiObject);
 
             if(this._searchAnyOneDirtyOfAllUIWithSameUIRenderer(uiRenderer)){
                 //todo remove isClear?
@@ -58,47 +56,47 @@ module wd {
         }
 
         @require(function(){
-            assert(this._gameObject._getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 uiRenderer component"));
+            assert(this._uiObject._getComponentCount(UIRenderer) <= 1, Log.info.FUNC_SHOULD_NOT("uiObject", "contain more than 1 uiRenderer component"));
         })
-        private _getUIRenderer(gameObject:GameObject):UIRenderer{
-            return gameObject.getComponent<UIRenderer>(UIRenderer);
+        private _getUIRenderer(uiObject:UIObject):UIRenderer{
+            return uiObject.getComponent<UIRenderer>(UIRenderer);
         }
 
         private _isSearchedToFindIfDirty(){
-            return this._gameObject.hasTag(this._dirtyTag) || this._gameObject.hasTag(this._notDirtyTag);
+            return this._uiObject.hasTag(this._dirtyTag) || this._uiObject.hasTag(this._notDirtyTag);
         }
 
         private _isMarkedDirty(){
-            return this._gameObject.hasTag(this._dirtyTag);
+            return this._uiObject.hasTag(this._dirtyTag);
         }
 
         private _removeAllMark(){
-            this._gameObject.removeTag(this._dirtyTag);
-            this._gameObject.removeTag(this._notDirtyTag);
+            this._uiObject.removeTag(this._dirtyTag);
+            this._uiObject.removeTag(this._notDirtyTag);
         }
 
         private _markAllUIChildrenWithSameUIRenderer(uiRenderer:UIRenderer, isDirty:boolean){
             var tag = isDirty ? this._dirtyTag : this._notDirtyTag,
                 self = this,
-                mark = (gameObject:GameObject) => {
-                    if(!gameObject.hasTag(tag)){
-                        gameObject.addTag(tag);
+                mark = (uiObject:UIObject) => {
+                    if(!uiObject.hasTag(tag)){
+                        uiObject.addTag(tag);
                     }
 
-                    gameObject
-                        .filter((child:GameObject) => {
+                    uiObject
+                        .filter((child:UIObject) => {
                             return child.hasComponent(UI) && self._hasSameUIRenderer(uiRenderer, self._getUIRenderer(child));
                         })
-                        .forEach((child:GameObject) => {
+                        .forEach((child:UIObject) => {
                             mark(child);
                         });
                 }
 
-            this._gameObject
-                .filter((child:GameObject) => {
+            this._uiObject
+                .filter((child:UIObject) => {
                     return child.hasComponent(UI) && self._hasSameUIRenderer(uiRenderer, self._getUIRenderer(child));
                 })
-                .forEach((child:GameObject) => {
+                .forEach((child:UIObject) => {
                     mark(child);
                 });
         }
@@ -108,9 +106,9 @@ module wd {
                 isEnd = false,
                 self = this;
 
-            var search = (gameObject:GameObject) => {
-                if(self._hasSameUIRenderer(uiRenderer, self._getUIRenderer(gameObject))){
-                    gameObject.forEachComponent((component:Component) => {
+            var search = (uiObject:UIObject) => {
+                if(self._hasSameUIRenderer(uiRenderer, self._getUIRenderer(uiObject))){
+                    uiObject.forEachComponent((component:Component) => {
                         if(component instanceof UI && component.dirty){
                             isEnd = true;
                             isDirty = true;
@@ -123,11 +121,11 @@ module wd {
                     }
                 }
 
-                gameObject
-                    .filter((child:GameObject) => {
+                uiObject
+                    .filter((child:UIObject) => {
                         return child.hasComponent(UI);
                     })
-                    .forEach((child:GameObject) => {
+                    .forEach((child:UIObject) => {
                         search(child);
 
                         if(isEnd){
@@ -136,7 +134,7 @@ module wd {
                     })
             }
 
-            search(this._gameObject);
+            search(this._uiObject);
 
             return isDirty;
         }

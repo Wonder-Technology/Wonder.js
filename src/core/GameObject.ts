@@ -1,9 +1,12 @@
 /// <reference path="../filePath.d.ts"/>
 module wd {
     //todo add copy method
+    //export class GameObject extends Object{
     export class GameObject extends Entity{
         public static create() {
         	var obj = new this();
+
+            obj.initWhenCreate();
 
         	return obj;
         }
@@ -15,15 +18,21 @@ module wd {
 
         public parent:GameObject = null;
         public bubbleParent:GameObject = null;
-        public transform:Transform = Transform.create(this);
+        //public transform:ThreeDTransform;
+        public transform:any = null;
+        //public transform:ThreeDTransform = null;
         public name:string = "gameObject" + String(this.uid);
         public actionManager:ActionManager = ActionManager.create();
-        public uiManager:UIManager = UIManager.create(this);
+        //public uiManager:UIManager = UIManager.create(this);
 
         private _children:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _startLoopHandler:() => void = null;
         private _endLoopHandler:() => void = null;
+
+        public initWhenCreate(){
+            this.transform = this.createTransform();
+        }
 
         public init() {
             this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
@@ -138,13 +147,15 @@ module wd {
             return this;
         }
 
-        public forEach(func:(gameObjcet:GameObject) => void){
+        //public forEach(func:(gameObjcet:GameObject) => void){
+        public forEach(func:(gameObjcet:any) => void){
             this._children.forEach(func);
 
             return this;
         }
 
-        public filter(func:(gameObjcet:GameObject) => boolean){
+        //public filter(func:(gameObjcet:GameObject) => boolean){
+        public filter(func:(gameObjcet:any) => boolean){
             return this._children.filter(func);
         }
 
@@ -312,7 +323,8 @@ module wd {
                 collider.update(elapsedTime);
             }
 
-            this.uiManager.update(elapsedTime);
+            //this.uiManager.update(elapsedTime);
+            this.beforeUpdateChildren(elapsedTime);
 
             this._children.forEach((child:GameObject) => {
                 child.update(elapsedTime);
@@ -323,6 +335,15 @@ module wd {
             this._scripts.forEach((script:IScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
+        }
+
+        @virtual
+        protected beforeUpdateChildren(elapsedTime:number){
+        }
+
+        @virtual
+        protected createTransform():any{
+            return ThreeDTransform.create(this);
         }
 
         private _ascendZ(a:GameObject, b:GameObject){

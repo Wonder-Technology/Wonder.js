@@ -19,8 +19,8 @@ module wd{
             return this._instance;
         }
 
-        public scene:Scene = Scene.create();
-        public scheduler:Scheduler = Scheduler.create();
+        public scene:Scene = null;
+        public scheduler:Scheduler = null;
         public renderer:Renderer= null;
 
         get gameTime(){
@@ -63,6 +63,8 @@ module wd{
         private _isFirstStart:boolean = true;
 
         public initWhenCreate(){
+            this.scene = Scene.create();
+            this.scheduler = Scheduler.create();
             this.renderer = WebGLRenderer.create();
         }
 

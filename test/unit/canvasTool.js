@@ -2,6 +2,8 @@ var canvasTool = (function () {
     return {
         buildFakeContext: function(sandbox){
             return {
+                setTransform:sandbox.stub(),
+
                 save:sandbox.stub(),
                 restore:sandbox.stub(),
 

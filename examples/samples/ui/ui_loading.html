@@ -17,24 +17,43 @@
         }).init();
 
         var bar = null;
+        var bar2 = null;
 
         createLoadingUI();
+
+//        wd.EventManager.on(wd.EventName.CLICK, function(){
+//            wd.EventManager.on(document, wd.EventName.CLICK, function(){
+//            console.log("click");
+//        })
 
         wd.LoaderManager.getInstance().load([
             {url: "../asset/font/myFont.fnt", id: "myFont_fnt"},
             {url: "../asset/font/myFont.png", id: "myFont_image"}
         ]).subscribe(function(data){
-            var barComponent = bar.getComponent(wd.ProgressBar);
-
-            barComponent.percent = data.currentLoadedCount / data.assetCount;
+//            var barComponent = bar.getComponent(wd.ProgressBar);
+//
+//            barComponent.percent = data.currentLoadedCount / data.assetCount;
 //            barComponent.percent = 0.5;
 
-            bar.update(-1);
+//            bar.update(-1);
 
         }, null, function () {
+            var barComponent = bar.getComponent(wd.ProgressBar);
+//            barComponent.percent = data.currentLoadedCount / data.assetCount;
+            barComponent.percent = 1
+//            bar.update(-1);
+
+
+
+            var barComponent2 = bar2.getComponent(wd.ProgressBar);
+//            barComponent.percent = data.currentLoadedCount / data.assetCount;
+            barComponent2.percent = 1
+            bar2.update(-1);
+
+
             console.log("completed");
 
-            bar.dispose();
+//            bar.dispose();
         });
 
         function createLoadingUI(){
@@ -43,9 +62,50 @@
             var renderer = createUIRenderer();
             bar = createProgressBar(renderer);
 
-            director.scene.addChild(bar);
 
-            bar.init();
+//            bar.transform.rotateAround(40, 600 , 200);
+
+//            bar.transform.zoom(1,2);
+            bar.transform.scale = wd.Vector2.create(1,2);
+            bar.transform.translate(300,100);
+
+            bar2 = createProgressBar(renderer);
+
+            bar2.addChild(bar);
+
+
+
+//            bar.transform.rotateAround(20, 300 , 100);
+
+            bar2.transform.translate(300,100);
+//            bar2.transform.rotateAround(40, 300 , 100);
+
+
+            bar2.transform.pivot = wd.Vector2.create(-200, 0);
+
+            bar2.transform.rotate(40);
+
+
+
+//            bar.transform.rotate(40);
+
+
+//            bar.transform.rotation = 0
+//            bar.transform.position = wd.Vector2.create(200, 0)
+//            bar.transform.translate(300,00);
+
+
+//            bar2.transform.resetPosition();
+//            bar2.transform.resetRotation();
+//            bar.transform.resetScale();
+//            bar2.transform.rotate(40);
+
+
+//            director.scene.addChild(bar);
+            director.scene.addChild(bar2);
+
+//            bar.init();
+            bar2.init();
         }
 
         function createUIRenderer(){
@@ -56,22 +116,39 @@
 
         function createProgressBar(renderer){
             var bar = wd.ProgressBar.create();
-            bar.width = 400;
-            bar.height = 50;
+//            bar.width = 400;
+//            bar.height = 50;
             bar.borderStyle = "#ff1112";
             bar.fillStyle = "rgb(1.0, 0.0, 0.0)";
 
 
-            var barGameObject = wd.GameObject.create();
+            var barUIObject = wd.UIObject.create();
 
-            barGameObject.addComponent(bar);
+            barUIObject.addComponent(bar);
+
+            barUIObject.transform.width = 400;
+            barUIObject.transform.height = 50;
 
 
-            barGameObject.addComponent(renderer);
+            barUIObject.addComponent(renderer);
 
-            return barGameObject;
+//            barUIObject.transform.position = wd.Vector2.create(300, 200);
+
+//            barUIObject.transform.rotate(20);
+//            barUIObject.transform.rotateAround(20, 300 + 200, 100 + 25);
+//            barUIObject.transform.rotate(10);
+//            barUIObject.transform.rotateAround(10, 150, 0);
+//            barUIObject.transform.rotateAround(10, 0, 0);
+
+
+
+
+
+
+            return barUIObject;
         }
     };
 </script>
 </body>
 </html>
+

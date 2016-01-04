@@ -7,8 +7,8 @@ module wd {
             return obj;
         }
 
-        public width:number = 0;
-        public height:number = 0;
+        //public width:number = 0;
+        //public height:number = 0;
         public borderStyle:string = "rgba(0, 0, 0, 1)";
         public fillStyle:string = "rgba(255, 0, 0, 1)";
         public radius:number = 5;
@@ -40,20 +40,22 @@ module wd {
         public update(elapsedTime:number){
             if(this.percent > 0){
                 let offscreenCanvas = this._offScreenCanvas,
-                position = CoordinateUtils.convertWebGLPositionToCanvasPosition(this.gameObject.transform.position);
+                position = this.gameObject.transform.position;
+
+
+                let matrix = this.gameObject.transform.rotationMatrix;
+
+                this.context.save();
+
+                if(this.gameObject.transform.isRotate){
+                    this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+                }
 
                 this._drawBorder(position);
 
+                this.drawInCenterPoint(this.context, offscreenCanvas, 0, 0, this.width * this.percent, this.height, position, this.width * this.percent, this.height);
 
-
-                this.context.drawImage(
-                    offscreenCanvas, 0, 0,
-                    this.width * this.percent,
-                    this.height,
-                    position.x, position.y,
-                    this.width * this.percent,
-                    this.height
-                );
+                this.context.restore();
             }
         }
 
@@ -61,7 +63,8 @@ module wd {
         }
 
         private _drawBorder(position:Vector2){
-            RoundedRectUtils.drawRoundedRect(this.context, this.borderStyle, null, position.x, position.y, this.width, this.height, this.radius);
+            //todo refactor
+            RoundedRectUtils.drawRoundedRect(this.context, this.borderStyle, null, position.x - this.width / 2, position.y - this.height / 2, this.width, this.height, this.radius);
         }
 
         private _createOffScreenCanvas(){

@@ -28,7 +28,7 @@ module wd {
 
             quadCmd.animation = geometry.gameObject.getComponent(Animation);
 
-            quadCmd.mMatrix = this.transform.localToWorldMatrix;
+            quadCmd.mMatrix = this.gameObject.transform.localToWorldMatrix;
 
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
             quadCmd.pMatrix = cameraComponent.pMatrix;

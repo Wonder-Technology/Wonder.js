@@ -2,32 +2,32 @@ describe("ProgressBar", function () {
     var sandbox = null;
     var bar;
     var renderer;
-    var gameObject;
+    var uiObject;
     var director;
 
-    var canvasPosition;
+    //var canvasPosition;
 
     function createBar() {
         bar = wd.ProgressBar.create();
 
 
-        var gameObject = wd.GameObject.create();
+        var uiObject = wd.UIObject.create();
 
-        gameObject.addComponent(bar);
+        uiObject.addComponent(bar);
 
 
         renderer = wd.UIRenderer.create();
 
 
-        gameObject.addComponent(renderer);
+        uiObject.addComponent(renderer);
 
 
-        return gameObject;
+        return uiObject;
     }
 
-    function getCanvasPosition(webGLPosition){
-        return wd.CoordinateUtils.convertWebGLPositionToCanvasPosition(webGLPosition);
-    }
+    //function getCanvasPosition(webGLPosition){
+    //    return wd.CoordinateUtils.convertWebGLPositionToCanvasPosition(webGLPosition);
+    //}
 
     function prepareForUpdateBeforeInit(){
         renderer.context = canvasTool.buildFakeContext(sandbox);
@@ -58,13 +58,13 @@ describe("ProgressBar", function () {
 
 
 
-        gameObject = createBar();
+        uiObject = createBar();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
 
 
-        director.scene.addChild(gameObject);
+        director.scene.addChild(uiObject);
 
 
 
@@ -79,35 +79,35 @@ describe("ProgressBar", function () {
 
         var webGLPosition = wd.Vector3.create(10, 20, 0);
 
-        gameObject.transform.position = webGLPosition;
+        uiObject.transform.position = webGLPosition;
 
-        canvasPosition = getCanvasPosition(webGLPosition);
+        //canvasPosition = getCanvasPosition(webGLPosition);
     });
     afterEach(function () {
         testTool.clearInstance();
-        gameObject.dispose();
+        uiObject.dispose();
         sandbox.restore();
     });
     
     describe("init", function(){
         beforeEach(function(){
-            
+
         });
-        
+
         it("ui can be init before init scene", function(){
             sandbox.spy(bar, "getContext");
 
 
             prepareForUpdateBeforeInit();
 
-            gameObject.init();
+            uiObject.init();
 
             expect(bar.getContext).toCalledOnce();
 
 
             bar.percent = 0.5;
 
-            gameObject.update(-1);
+            uiObject.update(-1);
 
 
             expect(renderer.context.drawImage).toCalledOnce();
@@ -119,20 +119,20 @@ describe("ProgressBar", function () {
             expect(bar.getContext).toCalledOnce();
         });
         it("get uiRenderer's context", function(){
-            gameObject.init();
+            uiObject.init();
 
             expect(bar.context).toEqual(renderer.context);
         });
 
         describe("create offScreen canvas", function(){
             it("set it's size to equal ui canvas's size", function(){
-                gameObject.init();
+                uiObject.init();
 
                 expect(bar._offScreenCanvas.width).toEqual(1000);
                 expect(bar._offScreenCanvas.height).toEqual(500);
             });
             it("create offScreen canvas, get its context", function(){
-                gameObject.init();
+                uiObject.init();
 
                 expect(bar._offScreenCanvas).not.toBeNull();
                 expect(bar._offScreenContext).not.toBeNull();
@@ -175,7 +175,7 @@ describe("ProgressBar", function () {
 
             buildFakeOffScreenCanvas();
 
-            gameObject.init();
+            uiObject.init();
 
             expect(fakeOffScreenContext.clearRect).toCalledWith(0, 0, fakeOffScreenCanvas.width, fakeOffScreenCanvas.height);
 
@@ -199,30 +199,66 @@ describe("ProgressBar", function () {
         beforeEach(function(){
             prepareForUpdateBeforeInit();
 
-            gameObject.init();
-
-
-            bar.percent = 0.5;
-
-            gameObject.update(-1);
+            uiObject.init();
         });
 
-        it("draw border", function(){
-            expect(renderer.context.arcTo.callCount).toEqual(4);
-            expect(renderer.context.stroke).toCalledOnce();
-            expect(renderer.context.fill).not.toCalled();
-        });
-        it("draw offScreen canvas", function(){
-            var context = renderer.context;
+        it("if percent <= 0, return", function(){
+            bar.percent = 0;
 
-            expect(context.drawImage).toCalledOnce();
-            expect(context.drawImage).toCalledWith(bar._offScreenCanvas, 0, 0,
-                bar.width * bar.percent,
-                bar.height,
-                canvasPosition.x, canvasPosition.y,
-                bar.width * bar.percent,
-                bar.height
-            );
+            uiObject.update(-1);
+
+            expect(renderer.context.drawImage).not.toCalled();
+        });
+
+        describe("else", function(){
+            beforeEach(function(){
+                bar.percent = 0.5;
+            });
+
+            it("save context", function(){
+                uiObject.update(-1);
+
+                expect(renderer.context.save).toCalledBefore(renderer.context.drawImage);
+            });
+            it("if isRotate, set context transform to be rotationMatrix", function(){
+                uiObject.transform.rotate(45);
+
+                uiObject.update(-1);
+
+                expect(renderer.context.setTransform).toCalledWith();
+            });
+            it("draw border", function(){
+                uiObject.update(-1);
+
+                expect(renderer.context.arcTo.callCount).toEqual(4);
+                expect(renderer.context.stroke).toCalledOnce();
+                expect(renderer.context.fill).not.toCalled();
+            });
+            it("draw offScreen canvas", function(){
+                uiObject.transform.width = 100;
+                uiObject.transform.height = 50;
+
+                uiObject.update(-1);
+
+                var context = renderer.context;
+                var position = uiObject.transform.position;
+                var dw = 100 * bar.percent;
+                var dh = 50;
+
+                expect(context.drawImage).toCalledOnce();
+                expect(context.drawImage).toCalledWith(bar._offScreenCanvas, 0, 0,
+                    bar.width * bar.percent,
+                    bar.height,
+                    position.x - dw / 2, position.y - dh / 2,
+                    dw,
+                    dh
+                );
+            });
+            it("restore context", function(){
+                uiObject.update(-1);
+
+                expect(renderer.context.restore).toCalledAfter(renderer.context.drawImage);
+            });
         });
     });
 });

@@ -10,19 +10,30 @@ module wd {
             this.p_dirty = dirty;
         }
 
+        get width(){
+            return this.gameObject.transform.width;
+        }
+
+        get height(){
+            return this.gameObject.transform.height;
+        }
+
         public context:CanvasRenderingContext2D = null;
+        public gameObject:UIObject;
+        //todo only UIObject
+        //public gameObject:GameObject&UIObject;
 
 
         public abstract init();
         public abstract update(elapsedTime:number);
 
-        public addToGameObject(gameObject:GameObject){
+        public addToGameObject(gameObject:UIObject){
             super.addToGameObject(gameObject);
 
             gameObject.uiManager.addChild(this);
         }
 
-        public removeFromGameObject(gameObject:GameObject){
+        public removeFromGameObject(gameObject:UIObject){
             super.removeFromGameObject(gameObject);
 
             gameObject.uiManager.removeChild(this);
@@ -37,6 +48,15 @@ module wd {
         })
         protected getUIRenderer(){
             return this.gameObject.getComponent<UIRenderer>(UIRenderer);
+        }
+
+        protected drawInCenterPoint(context:CanvasRenderingContext2D, source:any, sx:number, sy:number, sw:number, sh:number, position:Vector2, width:number, height:number){
+            context.drawImage(
+                source, sx, sy, sw, sh,
+                position.x - width / 2, position.y - height / 2,
+                width,
+                height
+            );
         }
     }
 }

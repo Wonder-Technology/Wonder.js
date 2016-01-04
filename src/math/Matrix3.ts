@@ -277,6 +277,11 @@ module wd {
             return this;
         }
 
+        public setTS(t:Vector2, s:Vector2){
+            this.setPosition(t.x, t.y);
+            this.setScale(s.x, s.y);
+        }
+
         public rotate(angle:number) {
             var rad = angle * DEG_TO_RAD;
             var c = Math.cos(rad);
