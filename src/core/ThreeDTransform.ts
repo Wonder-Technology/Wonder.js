@@ -170,56 +170,7 @@ module wd{
             return this.localToWorldMatrix.getZ().normalize().scale(-1);
         }
 
-        private _isTranslate:boolean = false;
-        get isTranslate(){
-            return this._isTranslate;
-        }
-        set isTranslate(isTranslate:boolean){
-            this._isTranslate = isTranslate;
-
-            if(isTranslate){
-                this.dirtyLocal = true;
-            }
-
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isTranslate = isTranslate;
-            });
-        }
-
-        private _isRotate:boolean = false;
-        get isRotate(){
-            return this._isRotate;
-        }
-        set isRotate(isRotate:boolean){
-            this._isRotate = isRotate;
-
-            if(isRotate){
-                this.dirtyLocal = true;
-            }
-
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isRotate = isRotate;
-            });
-        }
-
-        private _isScale:boolean = false;
-        get isScale(){
-            return this._isScale;
-        }
-        set isScale(isScale:boolean){
-            this._isScale = isScale;
-
-            if(isScale){
-                this.dirtyLocal = true;
-            }
-
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isScale = isScale;
-            });
-        }
-
         public dirtyWorld:boolean = null;
-        public dirtyLocal:boolean = true;
 
         protected p_parent:ThreeDTransform;
         protected children:wdCb.Collection<ThreeDTransform>;

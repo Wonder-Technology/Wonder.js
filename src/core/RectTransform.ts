@@ -74,7 +74,7 @@ module wd{
                 this._localPosition = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyPoint(position);
             }
 
-            this.dirtyLocalPositionAndScale = true;
+            this.isTranslate = true;
         }
 
         private _rotation:number = 0;
@@ -88,6 +88,7 @@ module wd{
             this.rotate(angle);
 
             this.dirtyRotation = true;
+            this.isRotate = true;
         }
 
         private _scale:Vector2 = Vector2.create(1, 1);
@@ -104,7 +105,7 @@ module wd{
                 this._localScale = this.p_parent.positionAndScaleMatrix.copy().invert().multiplyVector2(scale);
             }
 
-            this.dirtyLocalPositionAndScale = true;
+            this.isScale = true;
         }
 
         //todo add skew attri
@@ -117,7 +118,7 @@ module wd{
         set localPosition(position:Vector2){
             this._localPosition = position.copy();
 
-            //this.isTranslate = true;
+            this.isTranslate = true;
         }
 
         private _localScale:Vector2 = Vector2.create(1, 1);
@@ -127,12 +128,8 @@ module wd{
         set localScale(scale:Vector2){
             this._localScale = scale.copy();
 
-            //this.isScale = true;
+            this.isScale = true;
         }
-
-
-
-
 
         private _anchorX:Vector2 = Vector2.create(0.5, 0.5);
         get anchorX(){
@@ -191,7 +188,6 @@ module wd{
         }
 
         public dirtyRotation:boolean = true;
-        public dirtyLocalPositionAndScale:boolean = true;
         public dirtyPositionAndScale:boolean = true;
         public pivot:Vector2 = Vector2.create(0, 0);
 
@@ -228,10 +224,10 @@ module wd{
         }
 
         public syncPositionAndScale(){
-            if (this.dirtyLocalPositionAndScale) {
+            if (this.dirtyLocal) {
                 this._localPositionAndScaleMatrix.setTS(this._localPosition, this._localScale);
 
-                this.dirtyLocalPositionAndScale = false;
+                this.dirtyLocal = false;
                 this.dirtyPositionAndScale = true;
             }
 
@@ -243,7 +239,7 @@ module wd{
                     this._positionAndScaleMatrix = this.p_parent.positionAndScaleMatrix.copy().multiply(this._localPositionAndScaleMatrix);
                 }
 
-                this.dirtyLocalPositionAndScale = false;
+                this.dirtyLocal = false;
 
                 this.children.forEach((child:RectTransform) => {
                     child.dirtyPositionAndScale = true;
@@ -275,6 +271,7 @@ module wd{
             this.rotateAround(angle, position.x + this.pivot.x, position.y - this.pivot.y);
 
             this.dirtyRotation = true;
+            this.isRotate = true;
 
             return this;
         }
