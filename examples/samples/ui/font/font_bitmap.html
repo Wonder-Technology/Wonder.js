@@ -37,34 +37,44 @@
             font.text = "This is a BitmapFont example!";
             font.fntId = "myFont_fnt";
             font.bitmapId = "myFont_image";
-            font.width = 750;
-            font.xAlignment = wd.FontXAlignment.CENTER;
+//            font.xAlignment = wd.FontXAlignment.CENTER;
+//            font.xAlignment = wd.FontXAlignment.RIGHT;
 
 
-            var gameObject = wd.GameObject.create();
+            var gameObject = wd.UIObject.create();
 
             gameObject.addComponent(font);
 
 
-            wd.Director.getInstance().scheduler.scheduleTime(function(){
-                var tween = wd.Tween.create(),
-                        charFontGameObject = gameObject.findChildByTag("5");
 
-                tween.from({angle: 0})
-                        .to({angle: 360}, 3000)
-                        .easing(wd.Tween.Easing.Cubic.InOut)
-                        .onUpdate(function () {
-                            charFontGameObject.transform.eulerAngles = wd.Vector3.create(0, this.angle, this.angle);
-//                            charFontGameObject.transform.scale = wd.Vector3.create(2, 1, 1);
-                        });
+//            gameObject.transform.width = 250;
+//            gameObject.transform.width = 800;
+            gameObject.transform.width = 750;
+            gameObject.transform.height = 100;
 
-
-                var action = wd.RepeatForever.create(tween);
-
-                gameObject.addComponent(action);
-
-                action.init();
-            }, 1000);
+//            wd.Director.getInstance().scheduler.scheduleTime(function(){
+//                var tween = wd.Tween.create(),
+//                        charFontUIObject = gameObject.findChildByTag("5");
+//
+//                tween.from({angle: 0})
+//                        .to({angle: 360}, 3000)
+//                        .easing(wd.Tween.Easing.Cubic.InOut)
+//                        .onUpdate(function () {
+////                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, this.angle, this.angle);
+////                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, this.angle);
+////                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(this.angle, 0, 0);
+////                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, 0, this.angle);
+////                            charFontUIObject.transform.scale = wd.Vector2.create(2, 1);
+//                            charFontUIObject.transform.translate(1,1)
+//                        });
+//
+//
+//                var action = wd.RepeatForever.create(tween);
+//
+//                gameObject.addComponent(action);
+//
+//                action.init();
+//            }, 200);
 
 
             var renderer = wd.UIRenderer.create();
@@ -73,7 +83,8 @@
             gameObject.addComponent(renderer);
 
 
-            gameObject.transform.translate(- font.width / 2, 100, 0);
+//            gameObject.transform.translate(- font.width / 2, 100);
+            gameObject.transform.translate(750 / 2, 50);
 
             return gameObject;
         }

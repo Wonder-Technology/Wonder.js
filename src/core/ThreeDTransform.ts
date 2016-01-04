@@ -177,14 +177,6 @@ module wd{
             this._gameObject = gameObject;
         }
 
-        public init(){
-            var self = this;
-
-            EventManager.on(<any>EngineEvent.ENDLOOP, () => {
-                self._resetThreeDTransformFlag();
-            });
-        }
-
         public sync(){
             if (this.dirtyLocal) {
                 this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
@@ -363,12 +355,6 @@ module wd{
             this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
 
             return this;
-        }
-
-        private _resetThreeDTransformFlag(){
-            this.isTranslate = false;
-            this.isScale = false;
-            this.isRotate = false;
         }
     }
 }

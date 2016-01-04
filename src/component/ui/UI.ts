@@ -18,8 +18,8 @@ module wd {
             return this.gameObject ? this.gameObject.transform.height : null;
         }
 
-        public context:CanvasRenderingContext2D = null;
         public gameObject:UIObject;
+        public context:CanvasRenderingContext2D = null;
 
 
         public abstract init();

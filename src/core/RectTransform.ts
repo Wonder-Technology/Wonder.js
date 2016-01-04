@@ -179,7 +179,6 @@ module wd{
             if(width !== this._width){
                 this._width = width;
 
-                //todo use sendMessages instead
                 EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_WIDTH_CHANGE));
             }
         }
@@ -192,7 +191,6 @@ module wd{
             if(height !== this._height){
                 this._height = height;
 
-                //todo use sendMessages instead
                 EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_HEIGHT_CHANGE));
             }
         }
@@ -213,9 +211,6 @@ module wd{
             super();
 
             this._uiObject = uiObject;
-        }
-
-        public init(){
         }
 
         public syncRotation(){

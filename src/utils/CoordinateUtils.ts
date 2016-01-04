@@ -18,5 +18,29 @@ module wd {
 
             return Vector3.create(position.x - view.width / 2 , view.height / 2 - position.y, 0);
         }
+
+        public static convertLeftCornerPositionToCenterPosition(position:Vector2, width:number, height:number){
+            return Vector2.create(this.convertLeftCornerPositionXToCenterPositionX(position.x, width), this.convertLeftCornerPositionYToCenterPositionY(position.y, height));
+        }
+
+        public static convertLeftCornerPositionXToCenterPositionX(positionX:number, width:number){
+            return positionX + width / 2;
+        }
+
+        public static convertLeftCornerPositionYToCenterPositionY(positionY:number, height:number){
+            return positionY + height / 2;
+        }
+
+        public static convertCenterPositionToLeftCornerPosition(position:Vector2, width:number, height:number){
+            return Vector2.create(this.convertCenterPositionXToLeftCornerPositionX(position.x, width), this.convertCenterPositionYToLeftCornerPositionY(position.y, height));
+        }
+
+        public static convertCenterPositionXToLeftCornerPositionX(positionX:number, width:number){
+            return positionX - width / 2;
+        }
+
+        public static convertCenterPositionYToLeftCornerPositionY(positionY:number, height:number){
+            return positionY - height / 2;
+        }
     }
 }

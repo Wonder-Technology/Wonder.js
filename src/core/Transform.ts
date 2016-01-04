@@ -69,6 +69,11 @@ module wd{
 
         @virtual
         public init(){
+            var self = this;
+
+            EventManager.on(<any>EngineEvent.ENDLOOP, () => {
+                self._resetThreeDTransformFlag();
+            });
         }
 
 
@@ -98,6 +103,12 @@ module wd{
             this.p_parent.addChild(this);
 
             //todo can has multi parent?
+        }
+
+        private _resetThreeDTransformFlag(){
+            this.isTranslate = false;
+            this.isScale = false;
+            this.isRotate = false;
         }
     }
 }

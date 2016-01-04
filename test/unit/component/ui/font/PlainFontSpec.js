@@ -31,7 +31,7 @@ describe("PlainFont", function () {
     }
 
     function setPosition(x, y){
-        font.gameObject.transform.position = wd.Vector3.create(x, y, 0);
+        font.gameObject.transform.position = wd.Vector2.create(x, y);
     }
 
 

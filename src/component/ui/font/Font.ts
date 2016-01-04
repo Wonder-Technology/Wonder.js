@@ -39,7 +39,6 @@ module wd {
             var transform = this.gameObject.transform,
                 position = transform.position;
 
-
             return Vector2.create(position.x - transform.width / 2, position.y - transform.height / 2);
         }
     }
