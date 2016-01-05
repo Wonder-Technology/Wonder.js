@@ -228,13 +228,6 @@ describe("ProgressBar", function () {
 
                 expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
             });
-            it("draw border", function(){
-                uiObject.update(-1);
-
-                expect(renderer.context.arcTo.callCount).toEqual(4);
-                expect(renderer.context.stroke).toCalledOnce();
-                expect(renderer.context.fill).not.toCalled();
-            });
             it("draw offScreen canvas", function(){
                 uiObject.transform.width = 100;
                 uiObject.transform.height = 50;
@@ -254,6 +247,13 @@ describe("ProgressBar", function () {
                     dw,
                     dh
                 );
+            });
+            it("draw border", function(){
+                uiObject.update(-1);
+
+                expect(renderer.context.arcTo.callCount).toEqual(4);
+                expect(renderer.context.stroke).toCalledAfter(renderer.context.drawImage);
+                expect(renderer.context.fill).not.toCalled();
             });
             it("restore context", function(){
                 uiObject.update(-1);

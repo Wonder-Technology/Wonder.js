@@ -46,9 +46,9 @@ module wd {
 
                 this.setCanvasTransformForRotation();
 
-                this._drawBorder(position);
-
                 this.drawInCenterPoint(this.context, offscreenCanvas, 0, 0, this.width * this.percent, this.height, position, this.width * this.percent, this.height);
+
+                this._drawBorder(position);
 
                 this.context.restore();
             }
