@@ -19,6 +19,12 @@ describe("Scene", function() {
         }
     }
 
+    function buildAction(){
+        var action = new wd.Repeat(new wd.CallFunc(), 10);
+
+        return action;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -30,7 +36,7 @@ describe("Scene", function() {
         sandbox.restore();
     });
 
-    describe("test", function(){
+    describe("test with child", function(){
         beforeEach(function(){
             gameObject1 = wd.GameObject.create();
             gameObject2 = wd.GameObject.create();
@@ -46,7 +52,7 @@ describe("Scene", function() {
             script3 = buildScript();
             script4 = buildScript();
 
-            scene._scripts.addChild("customScript1", script1);
+            scene.script.addChild("customScript1", script1);
             prepareTool.addScript(scene, script1, "customScript1");
             prepareTool.addScript(gameObject1, script2, "customScript2");
             prepareTool.addScript(gameObject2, script3, "customScript3");
@@ -198,7 +204,7 @@ describe("Scene", function() {
             });
         });
 
-        describe("addChild", function(){
+        describe("add child", function(){
             var oldParent,
                 newParent;
             var child;
@@ -210,15 +216,12 @@ describe("Scene", function() {
             }
 
             function buildChild(){
-                return {
-                    parent:null,
-                    transform:{
-                        parent:null
-                    },
+                var gameObject = wd.GameObject.create();
 
-                    hasComponent:sandbox.stub(),
-                    onEnter:sandbox.stub()
-                }
+                sandbox.stub(gameObject, "hasComponent");
+                sandbox.stub(gameObject, "onEnter");
+
+                return gameObject;
             }
 
             beforeEach(function(){
@@ -227,77 +230,58 @@ describe("Scene", function() {
                 child = buildChild();
             });
 
-            it("if target's parent exist, remove target from it's parent", function(){
-                child.parent = oldParent;
+            describe("addChild", function(){
+                it("if target's parent exist, remove target from it's parent", function(){
+                    child.parent = oldParent;
 
-                scene.addChild(child);
+                    scene.addChild(child);
 
-                expect(oldParent.removeChild).toCalledWith(child);
-            });
-            it("set target's parent to be scene", function(){
-                scene.addChild(child);
+                    expect(oldParent.removeChild).toCalledWith(child);
+                });
+                it("set target's parent to be gameObjectScene", function(){
+                    scene.addChild(child);
 
-                expect(child.parent).toEqual(scene);
-            });
-            it("set target's transform's parent to be scene's transform", function(){
-                scene.addChild(child);
+                    expect(child.parent).toEqual(scene._gameObjectScene);
+                });
+                it("set target's transform's parent to be scene's transform", function(){
+                    scene.addChild(child);
 
-                expect(child.transform.parent).toEqual(scene.transform);
-            });
-            it("add target into scene", function(){
-                scene.addChild(child);
+                    expect(child.transform.parent).toEqual(scene.transform);
+                });
+                it("add target into scene", function(){
+                    scene.addChild(child);
 
-                expect(scene.getChild(2)).toEqual(child);
-            });
-            it("invoke child's onEnter", function(){
-                scene.addChild(child);
+                    expect(scene.getChild(2)).toEqual(child);
+                });
+                it("invoke child's onEnter", function(){
+                    scene.addChild(child);
 
-                expect(child.onEnter).toCalledOnce();
-            });
-        });
-
-        describe("addChildren", function(){
-            var oldParent,
-                newParent;
-            var child;
-
-            function buildParent(){
-                return {
-                    removeChild:sandbox.stub()
-                }
-            }
-
-            function buildChild(){
-                return {
-                    parent:null,
-                    transform:{
-                        parent:null
-                    },
-
-                    hasComponent:sandbox.stub(),
-                    onEnter:sandbox.stub()
-                }
-            }
-
-            beforeEach(function(){
-                oldParent = buildParent();
-                newParent = buildParent();
-                child = buildChild();
+                    expect(child.onEnter).toCalledOnce();
+                });
             });
 
-            it("can add array", function(){
-                var children = [gameObject1, gameObject2];
-                scene.addChildren(children);
+            describe("addChildren", function(){
+                var child2;
+                var children;
 
-                expect(scene.getChild(2)).toEqual(gameObject1);
-                expect(scene.getChild(3)).toEqual(gameObject2);
-            });
-            it("can add Collection", function(){
-                var children = wdCb.Collection.create([gameObject1, gameObject2]);
-                scene.addChildren(children);
+                beforeEach(function(){
+                    child2 = buildChild();
+                });
 
-                expect(scene.getChild(2)).toEqual(gameObject1);
-                expect(scene.getChild(3)).toEqual(gameObject2);
+                it("can add array", function(){
+                    children = [child, child2];
+                    scene.addChildren(children);
+
+                    expect(scene.getChild(2)).toEqual(child);
+                    expect(scene.getChild(3)).toEqual(child2);
+                });
+                it("can add Collection", function(){
+                    children = wdCb.Collection.create([child, child2]);
+                    scene.addChildren(children);
+
+                    expect(scene.getChild(2)).toEqual(child);
+                    expect(scene.getChild(3)).toEqual(child2);
+                });
             });
         });
 
@@ -338,7 +322,7 @@ describe("Scene", function() {
 
             scene.addComponent(component);
 
-            expect(component.entityObject).toEqual(scene);
+            expect(component.entityObject).toEqual(scene._gameObjectScene);
         });
         it("add component to container", function(){
             var component = new wd.Action();
@@ -354,7 +338,7 @@ describe("Scene", function() {
 
                 scene.addComponent(component);
 
-                expect(component.target).toEqual(scene);
+                expect(component.target).toEqual(scene._gameObjectScene);
                 expect(scene.actionManager.hasChild(component)).toBeTruthy();
             });
         });
@@ -426,7 +410,7 @@ describe("Scene", function() {
 
             scene.addRenderTargetRenderer(renderer);
 
-            expect(scene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
+            expect(scene._gameObjectScene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
         });
     });
 
@@ -452,7 +436,7 @@ describe("Scene", function() {
         });
         it("render rendererComponent", function(){
             var rendererComponent = new wd.RendererComponent();
-                geometry = new wd.Geometry();
+            geometry = new wd.Geometry();
             rendererComponent.render = sandbox.stub();
             scene.addComponent(geometry);
             scene.addComponent(rendererComponent);
@@ -477,6 +461,212 @@ describe("Scene", function() {
 
             expect(gameObject1.render).toCalledWith(renderer, camera);
             expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
+        });
+    });
+
+    describe("test dispatch to GameObjectScene/UIObjectScene", function(){
+        var uiObject1;
+
+        beforeEach(function(){
+            gameObject1 = wd.GameObject.create();
+
+            uiObject1 = wd.UIObject.create();
+
+            scene.addChild(gameObject1);
+            scene.addChild(uiObject1);
+        });
+
+        it("use gameObjectScene->script as scene->script", function(){
+            script1 = buildScript();
+
+            prepareTool.addScript(scene._gameObjectScene, script1, "customScript1");
+
+            expect(scene.script.getCount()).toEqual(1);
+        });
+        it("use gameObjectScene->actionManager as scene->actionManager", function(){
+            var action = buildAction();
+            scene._gameObjectScene.addComponent(action);
+
+            expect(scene.actionManager).toEqual(scene._gameObjectScene.actionManager);
+        });
+
+        describe("dispatch", function(){
+            describe("addChild", function(){
+                beforeEach(function(){
+                    sandbox.stub(scene._gameObjectScene, "addChild");
+                    sandbox.stub(scene.uiObjectScene, "addChild");
+                });
+
+                it("dispatch to addChild", function(){
+                    scene.addChild(uiObject1);
+
+                    expect(scene.uiObjectScene.addChild).toCalledOnce();
+                    expect(scene._gameObjectScene.addChild).not.toCalled();
+
+
+                    scene.addChild(gameObject1);
+
+                    expect(scene.uiObjectScene.addChild).toCalledOnce();
+                    expect(scene._gameObjectScene.addChild).toCalledOnce();
+                });
+            });
+
+            describe("hasChild", function(){
+                beforeEach(function(){
+                    sandbox.stub(scene._gameObjectScene, "hasChild");
+                    sandbox.stub(scene.uiObjectScene, "hasChild");
+                });
+
+                it("dispatch to hasChild", function(){
+                    scene.hasChild(uiObject1);
+
+                    expect(scene.uiObjectScene.hasChild).toCalledOnce();
+                    expect(scene._gameObjectScene.hasChild).not.toCalled();
+
+
+                    scene.hasChild(gameObject1);
+
+                    expect(scene.uiObjectScene.hasChild).toCalledOnce();
+                    expect(scene._gameObjectScene.hasChild).toCalledOnce();
+                });
+            });
+
+            describe("removeChild", function(){
+                beforeEach(function(){
+                    sandbox.stub(scene._gameObjectScene, "removeChild");
+                    sandbox.stub(scene.uiObjectScene, "removeChild");
+                });
+
+                it("dispatch to removeChild", function(){
+                    scene.removeChild(uiObject1);
+
+                    expect(scene.uiObjectScene.removeChild).toCalledOnce();
+                    expect(scene._gameObjectScene.removeChild).not.toCalled();
+
+
+                    scene.removeChild(gameObject1);
+
+                    expect(scene.uiObjectScene.removeChild).toCalledOnce();
+                    expect(scene._gameObjectScene.removeChild).toCalledOnce();
+                });
+            });
+
+            describe("addChildren", function(){
+                beforeEach(function(){
+                    sandbox.stub(scene._gameObjectScene, "addChild");
+                    sandbox.stub(scene.uiObjectScene, "addChild");
+                });
+
+                it("dispatch to addChild", function(){
+                    scene.addChildren([gameObject1, uiObject1]);
+
+                    expect(scene._gameObjectScene.addChild).toCalledWith(gameObject1);
+                    expect(scene.uiObjectScene.addChild).toCalledWith(uiObject1);
+                });
+            });
+        });
+
+        describe("invoke gameObjectScene,uiObjectScene", function(){
+            function judge(method){
+                sandbox.stub(scene._gameObjectScene, method);
+                sandbox.stub(scene.uiObjectScene, method);
+
+                scene[method]();
+
+                expect(scene._gameObjectScene[method]).toCalledOnce();
+                expect(scene.uiObjectScene[method]).toCalledOnce();
+            }
+
+
+            it("init", function(){
+                judge("init");
+            });
+            it("update", function(){
+                judge("update");
+            });
+            it("dispose", function(){
+                judge("dispose");
+            });
+
+            it("onStartLoop", function(){
+                judge("onStartLoop");
+            });
+            it("onEndLoop", function(){
+                judge("onEndLoop");
+            });
+            it("onEnter", function(){
+                judge("onEnter");
+            });
+            it("onExit", function(){
+                judge("onExit");
+            });
+            it("onDispose", function(){
+                judge("onDispose");
+            });
+        });
+
+        describe("only invoke gameObjectScene", function(){
+            function judge(method){
+                sandbox.stub(scene._gameObjectScene, method);
+                sandbox.stub(scene.uiObjectScene, method);
+
+                scene[method]();
+
+                expect(scene._gameObjectScene[method]).toCalledOnce();
+                expect(scene.uiObjectScene[method]).not.toCalled();
+            }
+
+            it("render", function(){
+                judge("render");
+            });
+            it("forEach", function(){
+                judge("forEach");
+            });
+            it("filter", function(){
+                judge("filter");
+            });
+            it("getChildren", function(){
+                judge("getChildren");
+            });
+            it("getChild", function(){
+                judge("getChild");
+            });
+            it("findChildByUid", function(){
+                judge("findChildByUid");
+            });
+            it("findChildByTag", function(){
+                judge("findChildByTag");
+            });
+            it("findChildByName", function(){
+                judge("findChildByName");
+            });
+            it("findChildrenByName", function(){
+                judge("findChildrenByName");
+            });
+            it("getComponent", function(){
+                judge("getComponent");
+            });
+            it("findComponentByUid", function(){
+                judge("findComponentByUid");
+            });
+            it("getFirstComponent", function(){
+                judge("getFirstComponent");
+            });
+            it("forEachComponent", function(){
+                judge("forEachComponent");
+            });
+            it("hasComponent", function(){
+                judge("hasComponent");
+            });
+            it("addComponent", function(){
+                judge("addComponent");
+            });
+            it("removeComponent", function(){
+                judge("removeComponent");
+            });
+            it("removeAllComponent", function(){
+                judge("removeAllComponent");
+            });
         });
     });
 });

@@ -8,6 +8,7 @@ module wd {
         }
 
         public name:string = null;
+        //todo move it,parent,bubbleParent to GameEntityObject
         public transform:any = null;
         public parent:EntityObject = null;
         public bubbleParent:EntityObject = null;
@@ -22,7 +23,10 @@ module wd {
         @virtual
         public initWhenCreate(){
             this.transform = this.createTransform();
-            this.addComponent(this.transform);
+
+            if(this.transform){
+                this.addComponent(this.transform);
+            }
         }
 
         public init() {
@@ -237,14 +241,14 @@ module wd {
         public removeComponent(component:Component);
         public removeComponent(_class:Function);
 
-        public removeComponent(arg){
+        public removeComponent(...args){
             var component:Component = null;
 
-            if(arg instanceof Component){
-                component = <Component>arg;
+            if(args[0] instanceof Component){
+                component = <Component>args[0];
             }
             else{
-                component = this.getComponent<any>(<Function>arg);
+                component = this.getComponent<any>(<Function>args[0]);
             }
 
             this._components.removeChild(component);

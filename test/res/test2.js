@@ -24,6 +24,8 @@ var Test2 = (function () {
     };
     Test2.prototype.onExit = function () {
     };
+    Test2.prototype.onDispose = function () {
+    };
     Test2 = __decorate([
         wd.script("test2")
     ], Test2);

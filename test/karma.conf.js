@@ -44,6 +44,9 @@
 
         //'test/unit/**/UIObjectSpec*',
 
+        //'test/unit/**/LightShaderLibSpec*',
+
+        //'test/unit/**/SceneSpec*',
 
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',

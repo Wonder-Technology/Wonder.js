@@ -176,20 +176,20 @@ describe("script", function () {
             sandbox.spy(test, "onEndLoop");
             sandbox.spy(test, "onEnter");
             sandbox.spy(test, "onExit");
+            sandbox.spy(test, "onDispose");
         }, function(test){
             /*!
                 scene->onEnter will be called, because it's invoked after the script is loaded
              */
             expect(test.onEnter).toCalledBefore(test.init);
-        }, function(test, time, gameObject){
+        }, function(test, time, scene){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(time);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            //expect(test.b).toEqual(-1);
 
-            director.scene.removeChild(gameObject);
-            expect(test.onExit).toCalledOnce();
-            //expect(test.b).toEqual(-1);
+            scene.dispose();
+
+            expect(test.onDispose).toCalledOnce();
         }, done);
     });
 

@@ -39,4 +39,7 @@ export class Test{
     public onExit() {
         this.a--;
     }
+
+    public onDispose() {
+    }
 }

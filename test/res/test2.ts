@@ -24,4 +24,7 @@ export class Test2{
 
     public onExit() {
     }
+
+    public onDispose() {
+    }
 }

@@ -91,10 +91,6 @@ describe("GameObject", function() {
         });
     });
 
-    describe("getTopUnderPoint", function(){
-        //todo add Pick to test
-    });
-
     describe("dispose", function(){
         it("off dy_startLoop,dy_endLoop event->exec script handler", function(){
             var script = {

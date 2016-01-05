@@ -39,6 +39,8 @@ var Test = (function () {
     Test.prototype.onExit = function () {
         this.a--;
     };
+    Test.prototype.onDispose = function () {
+    };
     Test = __decorate([
         wd.script("test")
     ], Test);

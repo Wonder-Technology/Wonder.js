@@ -33,9 +33,12 @@
 /// <reference path="core/Director"/>
 /// <reference path="core/Main"/>
 /// <reference path="core/entityObject/EntityObject"/>
+/// <reference path="core/entityObject/GameEntityObject"/>
 /// <reference path="core/entityObject/UIObject"/>
 /// <reference path="core/entityObject/GameObject"/>
 /// <reference path="core/entityObject/Scene"/>
+/// <reference path="core/entityObject/GameObjectScene"/>
+/// <reference path="core/entityObject/UIObjectScene"/>
 /// <reference path="core/entityObject/Skybox"/>
 
 

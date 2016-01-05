@@ -9,7 +9,7 @@ module wd{
 
         private _lastCollideObjects:wdCb.Collection<GameObject> = null;
 
-        public detect(scene:Scene){
+        public detect(scene:GameObjectScene){
             //todo optimize:use scene graph to only get needChecked gameObjects
             //todo optimize:use worker
             var checkTargetList = scene.filter((entityObject:GameObject) => {
