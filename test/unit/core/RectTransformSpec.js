@@ -376,16 +376,31 @@ describe("RectTransform", function(){
                     expect(getValues(tra1.position)).toEqual([100, 0]);
                     expect(getValues(tra1.width)).toEqual(500);
                     expect(tra1.height).toEqual(100);
+                });
+                it("if parent === null, its parent->width is view width;its parent->height is view height;its parent->position is (view width / 2, view height / 2);its parent->scale is (1,1) ", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        x: 0,
+                        y: 0,
+                        width: 1000,
+                        height: 500
+                    });
 
+                    tra1.parent = null;
+                    tra1.anchorX = Vector2.create(0.2, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([550, 0]);
+                    expect(getValues(tra1.width)).toEqual(700);
+                    expect(getValues(tra1.height)).toEqual(100);
                 });
             });
 
             describe("if minX === maxX", function(){
                 beforeEach(function(){
-                    tra1.anchorX = Vector2.create(0.1, 0.1);
                 });
 
                 it("its width should be specified by user", function(){
+                    tra1.anchorX = Vector2.create(0.1, 0.1);
+
                     expect(tra1.width).toEqual(500);
                     expect(tra1.height).toEqual(100);
                 });
@@ -393,6 +408,21 @@ describe("RectTransform", function(){
                     tra1.anchorX = Vector2.create(0.1, 0.1);
 
                     expect(getValues(tra1.position)).toEqual([-400, 0]);
+                });
+                it("test parent === null", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        x: 0,
+                        y: 0,
+                        width: 1000,
+                        height: 500
+                    });
+
+                    tra1.parent = null;
+                    tra1.anchorX = Vector2.create(0.1, 0.1);
+
+                    expect(getValues(tra1.position)).toEqual([100, 0]);
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(getValues(tra1.height)).toEqual(100);
                 });
             });
         });
@@ -452,14 +482,30 @@ describe("RectTransform", function(){
                     expect(tra1.height).toEqual(100);
 
                 });
+                it("test parent === null", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        x: 0,
+                        y: 0,
+                        width: 1000,
+                        height: 500
+                    });
+
+                    tra1.parent = null;
+                    tra1.anchorY = Vector2.create(0.2, 0.9);
+
+                    expect(getValues(tra1.position)).toEqual([0, 275])
+                    expect(getValues(tra1.width)).toEqual(500);
+                    expect(getValues(tra1.height)).toEqual(350);
+                });
             });
 
             describe("if minY === maxY", function(){
                 beforeEach(function(){
-                    tra1.anchorY = Vector2.create(0.1, 0.1);
                 });
 
                 it("its height should be specified by user", function(){
+                    tra1.anchorY = Vector2.create(0.1, 0.1);
+
                     expect(tra1.width).toEqual(500);
                     expect(tra1.height).toEqual(100);
                 });
@@ -467,6 +513,21 @@ describe("RectTransform", function(){
                     tra1.anchorY = Vector2.create(0.1, 0.1);
 
                     expect(getValues(tra1.position)).toEqual([0, -200]);
+                });
+                it("test parent === null", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        x: 0,
+                        y: 0,
+                        width: 1000,
+                        height: 500
+                    });
+
+                    tra1.parent = null;
+                    tra1.anchorY = Vector2.create(0.1, 0.1);
+
+                    expect(getValues(tra1.position)).toEqual([0, 50]);
+                    expect(tra1.width).toEqual(500);
+                    expect(tra1.height).toEqual(100);
                 });
             });
         });
