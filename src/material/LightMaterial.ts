@@ -127,7 +127,7 @@ module wd{
         }
 
         private _setPhongMapShaderLib(){
-            var scene:Scene = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.create());

@@ -51,13 +51,13 @@ module wd {
         }
 
         public beforeRender(){
-            var scene:Scene = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
             scene.useProgram(this._shader);
         }
 
         public afterRender(){
-            var scene:Scene = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
             scene.unUseProgram();
         }

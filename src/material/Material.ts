@@ -169,7 +169,7 @@ module wd {
         }
 
         public updateShader(quadCmd:QuadCommand){
-            var scene:Scene = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
             if(scene.isUseProgram){
                 scene.shader.update(quadCmd, this);

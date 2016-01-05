@@ -73,8 +73,8 @@ describe("LightMaterial", function() {
             expect(material.shader.getLib(wd.NoNormalMapShaderLib)).toBeTruthy();
         });
 
-        describe("if Scene enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
-            it("if Scene not enable shadowMap, add NoShadowMapShaderLib", function () {
+        describe("if SceneDispatcher enable shadowMap && (has twoD shadowMap || has cubemap shadowMap)", function () {
+            it("if SceneDispatcher not enable shadowMap, add NoShadowMapShaderLib", function () {
                 sandbox.stub(scene.shadowMap, "enable", false);
 
                 rendererTool.triggerMaterialAddShaderLib(material);

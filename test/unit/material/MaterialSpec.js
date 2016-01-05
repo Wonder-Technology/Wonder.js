@@ -26,7 +26,7 @@ describe("Material", function() {
     //        sandbox.stub(material.shader.program, "use");
     //    });
     //
-    //    it("if Scene use program, return", function(){
+    //    it("if SceneDispatcher use program, return", function(){
     //        scene.useProgram(wd.Shader.create());
     //
     //        material.useProgram();
@@ -49,7 +49,7 @@ describe("Material", function() {
             sandbox.stub(material.shader, "update");
         });
 
-        it("if Scene use program, update Scene's shader", function(){
+        it("if SceneDispatcher use program, update SceneDispatcher's shader", function(){
             scene.useProgram(wd.Shader.create());
             sandbox.stub(scene.shader, "update");
             var quadCmd = {};

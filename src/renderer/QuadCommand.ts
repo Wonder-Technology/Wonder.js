@@ -76,7 +76,7 @@ module wd {
         }
 
         private _getSide(){
-            var scene:Scene = Director.getInstance().scene;
+            var scene:SceneDispatcher = Director.getInstance().scene;
 
             return scene.side ? scene.side : this.material.side;
         }

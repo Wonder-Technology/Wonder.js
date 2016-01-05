@@ -1,7 +1,7 @@
-describe("Scene", function() {
+describe("SceneDispatcher", function() {
     var sandbox = null;
     var scene = null;
-    var Scene = null;
+    var SceneDispatcher = null;
     var gameObject1,
         gameObject2,
         gameObject3;
@@ -28,8 +28,8 @@ describe("Scene", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        Scene = wd.Scene;
-        scene = Scene.create();
+        SceneDispatcher = wd.SceneDispatcher;
+        scene = SceneDispatcher.create();
     });
     afterEach(function () {
         testTool.clearInstance();

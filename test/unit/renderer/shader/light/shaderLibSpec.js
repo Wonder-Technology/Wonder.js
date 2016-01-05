@@ -49,7 +49,7 @@ describe("shaderLibSpec", function () {
                 shader.init();
             });
 
-            it("if Scene.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
+            it("if SceneDispatcher.shadowMap.softType === PCF, glsl add 'define SHADOWMAP_TYPE_PCF'", function () {
                 shader.update(quadCmd, material);
 
                 expect(shader.fsSource).toContain("define SHADOWMAP_TYPE_PCF");

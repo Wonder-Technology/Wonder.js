@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    export class Scene extends EntityObject{
+    export class SceneDispatcher extends EntityObject{
         public static create() {
             var obj = new this();
 

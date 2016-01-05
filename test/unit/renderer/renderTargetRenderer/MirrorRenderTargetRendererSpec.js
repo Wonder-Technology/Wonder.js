@@ -44,7 +44,7 @@ describe("MirrorRenderTargetRenderer", function () {
             before_render: null,
             invoke_renderer_render: [
                 {
-                    explain: "1.set Scene's side to be FRONT, 2.invoke renderer's render method, 3.not use Scene's side",
+                    explain: "1.set SceneDispatcher's side to be FRONT, 2.invoke renderer's render method, 3.not use SceneDispatcher's side",
                     body: function (renderer, camera, renderObj1, renderObj2) {
                         self.sandbox.stub(self.renderTargetRenderer, "_setSceneSide");
 

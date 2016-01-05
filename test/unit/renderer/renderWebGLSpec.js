@@ -276,7 +276,7 @@ describe("renderWebGL", function() {
                         expect(deviceManager.setColorWrite).toCalledWith(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
                         expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
                     });
-                    it("set side:if set Scene->side, use it", function(){
+                    it("set side:if set SceneDispatcher->side, use it", function(){
                         wd.Director.getInstance().scene.side = wd.Side.BACK;
 
                         renderer.render();

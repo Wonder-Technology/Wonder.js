@@ -19,7 +19,7 @@ module wd{
             return this._instance;
         }
 
-        public scene:Scene = null;
+        public scene:SceneDispatcher = null;
         public scheduler:Scheduler = null;
         public renderer:Renderer= null;
 
@@ -63,7 +63,7 @@ module wd{
         private _isFirstStart:boolean = true;
 
         public initWhenCreate(){
-            this.scene = Scene.create();
+            this.scene = SceneDispatcher.create();
             this.scheduler = Scheduler.create();
             this.renderer = WebGLRenderer.create();
         }

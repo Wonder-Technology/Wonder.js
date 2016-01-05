@@ -363,7 +363,7 @@ describe("event", function () {
     //    beforeEach(function () {
     //        //count = 0;
     //        //director = wd.Director.getInstance();
-    //        //scene = wd.Scene.create(null, "", "");
+    //        //scene = wd.SceneDispatcher.create(null, "", "");
     //        //mesh = wd.GameObject.create(null);
     //        //
     //        ////scene.add(mesh);

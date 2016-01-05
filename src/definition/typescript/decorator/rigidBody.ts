@@ -60,7 +60,7 @@ module wd {
         }
     }
 
-    function isWorldDefined(scene:Scene){
+    function isWorldDefined(scene:SceneDispatcher){
         return scene.physicsEngineAdapter && scene.physicsEngineAdapter.world;
     }
 

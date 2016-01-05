@@ -29,7 +29,7 @@ module wd{
         }
 
         private _sendLightVariables(program:Program){
-            var scene:Scene = wd.Director.getInstance().scene,
+            var scene:SceneDispatcher = wd.Director.getInstance().scene,
                 directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 ambientLight:GameObject =scene.ambientLight,
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights;
@@ -88,7 +88,7 @@ module wd{
         }
 
         private _setLightDefinition(material:Material){
-            var scene:Scene = wd.Director.getInstance().scene,
+            var scene:SceneDispatcher = wd.Director.getInstance().scene,
                 directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights,
                 direction_lights_count = 0,

@@ -11,7 +11,7 @@ module wd{
             return this.p_parent;
         }
         set parent(parent:RectTransform){
-            //todo Scene add TopUIObject?
+            //todo SceneDispatcher add TopUIObject?
             if(parent instanceof ThreeDTransform){
                 return;
             }

@@ -2,17 +2,17 @@
 module sample {
     import GameObject = wd.GameObject;
     import Collider = wd.Collider;
-    import Scene = wd.Scene;
+    import SceneDispatcher = wd.SceneDispatcher;
     import CameraController = wd.CameraController;
     import MouseEvent = wd.MouseEvent;
 
     @wd.script("RayPicking")
     export class RayPicking implements wd.IScriptBehavior {
-        constructor(gameObject:GameObject) {
-            this._gameObject = <Scene>gameObject;
+        constructor(gameObject:SceneDispatcher) {
+            this._gameObject = gameObject;
         }
 
-        private _gameObject:Scene = null;
+        private _gameObject:SceneDispatcher = null;
 
         public init() {
             var self = this;

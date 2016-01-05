@@ -8,7 +8,7 @@ module wd{
         }
 
         private _setShadowMapSource(){
-            var scene:Scene = Director.getInstance().scene,
+            var scene:SceneDispatcher = Director.getInstance().scene,
                 twoDShadowMapCount = scene.directionLights? scene.directionLights.filter((light:GameObject) => {
                     return light.getComponent<DirectionLight>(DirectionLight).castShadow;
                 }).getCount() : 0,
