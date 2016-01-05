@@ -7,62 +7,19 @@ module wd{
             return obj;
         }
 
-        get parent(){
-            return this.p_parent;
-        }
-        set parent(parent:RectTransform){
-            //todo SceneDispatcher add TopUIObject?
-            if(parent instanceof ThreeDTransform){
-                return;
-            }
-
-            this.setParent(parent);
-        }
-
         private _rotationMatrix:Matrix3 = null;
         get rotationMatrix(){
-            var syncList = wdCb.Collection.create<RectTransform>(),
-                current = this.p_parent;
-
-            syncList.addChild(this);
-
-            while (current !== null) {
-                syncList.addChild(current);
-                current = <RectTransform>(current.parent);
-            }
-
-            syncList.reverse().forEach((transform:RectTransform) => {
-                transform.syncRotation();
-            });
-
-            return this._rotationMatrix;
+            return this.getMatrix("syncRotation", "_rotationMatrix");
         }
 
-        private _localToParentMatrix:Matrix3 = Matrix3.create();
-        get localToParentMatrix(){
-            var syncList = wdCb.Collection.create<RectTransform>(),
-                current = this.p_parent;
-
-            syncList.addChild(this);
-
-            while (current !== null) {
-                syncList.addChild(current);
-                current = <RectTransform>(current.parent);
-            }
-
-            syncList.reverse().forEach((transform:RectTransform) => {
-                transform.syncPositionAndScale();
-            });
-
-            return this._localToParentMatrix;
+        private _localPositionAndScaleMatrix:Matrix3 = Matrix3.create();
+        get localPositionAndScaleMatrix(){
+            return this.getMatrix("syncPositionAndScale", "_localPositionAndScaleMatrix");
         }
-        //set localToParentMatrix(localToParentMatrix:Matrix3){
-        //    this._localToParentMatrix = localToParentMatrix;
-        //}
 
         private _position:Vector2 = Vector2.create();
         get position(){
-            this._position = this.localToParentMatrix.getTranslation();
+            this._position = this.localPositionAndScaleMatrix.getTranslation();
 
             return this._position;
         }
@@ -71,7 +28,7 @@ module wd{
                 this._localPosition = position.copy();
             }
             else {
-                this._localPosition = this.p_parent.localToParentMatrix.copy().invert().multiplyPoint(position);
+                this._localPosition = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyPoint(position);
             }
 
             this.isTranslate = true;
@@ -93,7 +50,7 @@ module wd{
 
         private _scale:Vector2 = Vector2.create(1, 1);
         get scale(){
-            this._scale = this.localToParentMatrix.getScale();
+            this._scale = this.localPositionAndScaleMatrix.getScale();
 
             return this._scale;
         }
@@ -102,7 +59,7 @@ module wd{
                 this._localScale = scale.copy();
             }
             else {
-                this._localScale = this.p_parent.localToParentMatrix.copy().invert().multiplyVector2(scale);
+                this._localScale = this.p_parent.localPositionAndScaleMatrix.copy().invert().multiplyVector2(scale);
             }
 
             this.isScale = true;
@@ -223,7 +180,7 @@ module wd{
         protected children:wdCb.Collection<RectTransform>;
 
         private _localRotationMatrix:Matrix3 = Matrix3.create();
-        private _localPositionAndScaleMatrix:Matrix3 = Matrix3.create();
+        private _localToParentMatrix:Matrix3 = Matrix3.create();
 
 
         public syncRotation(){
@@ -243,7 +200,7 @@ module wd{
 
         public syncPositionAndScale(){
             if (this.dirtyLocal) {
-                this._localPositionAndScaleMatrix.setTS(this._localPosition, this._localScale);
+                this._localToParentMatrix.setTS(this._localPosition, this._localScale);
 
                 this.dirtyLocal = false;
                 this.dirtyPositionAndScale = true;
@@ -251,10 +208,10 @@ module wd{
 
             if (this.dirtyPositionAndScale) {
                 if (this.p_parent === null) {
-                    this._localToParentMatrix = this._localPositionAndScaleMatrix.copy();
+                    this._localPositionAndScaleMatrix = this._localToParentMatrix.copy();
                 }
                 else {
-                    this._localToParentMatrix = this.p_parent.localToParentMatrix.copy().multiply(this._localPositionAndScaleMatrix);
+                    this._localPositionAndScaleMatrix = this.p_parent.localPositionAndScaleMatrix.copy().multiply(this._localToParentMatrix);
                 }
 
                 this.dirtyLocal = false;
@@ -319,12 +276,8 @@ module wd{
                 center = Vector2.create(args[1], args[2]);
             }
 
-            //position = this.position;
-            //x = center.x - position.x;
-            //y = center.y - position.y;
             x = center.x;
             y = center.y;
-
 
             this._translateInRotationMatrix(x, y);
             this._rotateAroundCanvasOriginPoint(angle);
@@ -333,17 +286,7 @@ module wd{
             return this;
         }
 
-        //todo refactor
         private _translateInRotationMatrix(x:number, y:number){
-            //var translation = null;
-
-            //if(args.length === 2){
-            //    translation = Vector2.create();
-            //}
-            //else{
-            //    translation = args[0];
-            //}
-
             this._localRotationMatrix.translate(x, y);
 
             return this;

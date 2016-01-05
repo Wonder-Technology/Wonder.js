@@ -124,19 +124,6 @@ module wd {
             return this;
         }
 
-        //public multiplyVector3( vector:Vector3 ) {
-        //    var x = vector.x,
-        //        y = vector.y,
-        //        z = vector.z,
-        //        result = Vector3.create(),
-        //        e = this.values;
-        //
-        //    result.x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
-        //    result.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
-        //    result.z = e[ 2 ] * x + e[ 5 ] * y + e[ 8 ] * z;
-        //
-        //    return result;
-        //}
         public multiplyVector2( vector:Vector2 ) {
             var x = vector.x,
                 y = vector.y,
@@ -162,49 +149,6 @@ module wd {
         }
 
         public multiply(matrix:Matrix3) {
-            //var values = this.values,
-            //    m = matrix.values;
-            //
-            //var a00 = values[0];
-            //var a10 = values[1];
-            //var a20 = values[2];
-            //
-            //var a01 = values[3];
-            //var a11 = values[4];
-            //var a21 = values[5];
-            //
-            //var a02 = values[6];
-            //var a12 = values[7];
-            //var a22 = values[8];
-            //
-            //var b00 = m[0];
-            //var b10 = m[1];
-            //var b20 = m[2];
-            //
-            //var b01 = m[3];
-            //var b11 = m[4];
-            //var b21 = m[5];
-            //
-            //var b02 = m[6];
-            //var b12 = m[7];
-            //var b22 = m[8];
-            //
-            //values[0] = a00 * b00 + a01 * b10 + a02 * b20;
-            //values[1] = a10 * b00 + a11 * b10 + a12 * b20;
-            //values[2] = a20 * b00 + a21 * b10 + a22 * b20;
-            //
-            //values[3] = a00 * b01 + a01 * b11 + a02 * b21;
-            //values[4] = a10 * b01 + a11 * b11 + a12 * b21;
-            //values[5] = a20 * b01 + a21 * b11 + a22 * b21;
-            //
-            //values[6] = a00 * b02 + a01 * b12 + a02 * b22;
-            //values[7] = a10 * b02 + a11 * b12 + a12 * b22;
-            //values[8] = a20 * b02 + a21 * b12 + a22 * b22;
-            //
-            //return this;
-
-
-
             var m11 = this.a * matrix.a + this.c * matrix.b;
             var m12 = this.b * matrix.a + this.d * matrix.b;
 
@@ -241,38 +185,16 @@ module wd {
         }
 
         public copy() {
-            //var me = this.values;
-
-            //return Matrix3.create().set(
-            //    me[ 0 ], me[ 3 ], me[ 6 ],
-            //    me[ 1 ], me[ 4 ], me[ 7 ],
-            //    me[ 2 ], me[ 5 ], me[ 8 ]
-            //);
-            //
             return Matrix3.create().set(this);
         }
 
-        //todo remove annotation
-        //public set(matrix:Matrix3);
-        //public set(n11, n12, n13, n21, n22, n23, n31, n32, n33);
-
         public set(matrix:Matrix3) {
             var te = this.values,
-
-            //if(args.length === 1){
-            //    matrix:Matrix3 = args[0],
                 values = matrix.values;
 
             te[ 0 ] = values[0]; te[ 3 ] = values[3]; te[ 6 ] = values[6];
             te[ 1 ] = values[1]; te[ 4 ] = values[4]; te[ 7 ] = values[7];
             te[ 2 ] = values[2]; te[ 5 ] = values[5]; te[ 8 ] = values[8];
-            //}
-            //else{
-            //    te[ 0 ] = args[0]; te[ 3 ] = args[3]; te[ 6 ] = args[6];
-            //    te[ 1 ] = args[1]; te[ 4 ] = args[4]; te[ 7 ] = args[7];
-            //    te[ 2 ] = args[2]; te[ 5 ] = args[5]; te[ 8 ] = args[8];
-            //}
-
 
             return this;
         }
@@ -351,11 +273,6 @@ module wd {
         public translate(x:number, y:number) {
             this.tx += this.a * x + this.c * y;
             this.ty += this.b * x + this.d * y;
-        }
-
-        public translateOnlyAffectPosition(x:number, y:number) {
-            this.tx += x;
-            this.ty += y;
         }
 
         public setPosition(x:number, y:number){

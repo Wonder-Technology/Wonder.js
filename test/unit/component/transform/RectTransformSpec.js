@@ -68,7 +68,7 @@ describe("RectTransform", function(){
             expect(getValues(tra2.position)).toEqual([2, 2]);
             expect(getValues(tra1.position)).toEqual([3, 4]);
 
-            expect(getValues(tra1.localToParentMatrix.getTranslation())).toEqual([3, 4]);
+            expect(getValues(tra1.localPositionAndScaleMatrix.getTranslation())).toEqual([3, 4]);
 
             expect(getValues(tra3.position)).toEqual([2, 2]);
         });

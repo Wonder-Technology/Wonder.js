@@ -7,38 +7,9 @@ module wd{
             return obj;
         }
 
-        private _localToParentMatrix:Matrix4 = Matrix4.create();
-        //todo remove?
-        get localToParentMatrix(){
-            if (this.dirtyLocal) {
-                this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
-
-                this.dirtyLocal = false;
-                this.dirtyWorld = true;
-            }
-            return this._localToParentMatrix;
-        }
-
         private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
-            var syncList = wdCb.Collection.create<ThreeDTransform>(),
-                current = this.p_parent;
-
-            syncList.addChild(this);
-
-            while (current !== null) {
-                syncList.addChild(current);
-                current = <ThreeDTransform>(current.parent);
-            }
-
-            syncList.reverse().forEach((transform:ThreeDTransform) => {
-                transform.sync();
-            });
-
-            return this._localToWorldMatrix;
-        }
-        set localToWorldMatrix(localToWorldMatrix:Matrix4){
-            this._localToWorldMatrix = localToWorldMatrix;
+            return this.getMatrix("sync", "_localToWorldMatrix");
         }
 
         private _position:Vector3 = Vector3.create();
@@ -87,7 +58,6 @@ module wd{
             }
             else {
                 this._localScale = this.p_parent.localToWorldMatrix.copy().invert().multiplyVector3(scale);
-                //this._localScale = this.p_parent.localToWorldMatrix.copy().invert().multiplyPoint(scale);
             }
 
             this.isScale = true;
@@ -167,6 +137,8 @@ module wd{
 
         protected p_parent:ThreeDTransform;
         protected children:wdCb.Collection<ThreeDTransform>;
+
+        private _localToParentMatrix:Matrix4 = Matrix4.create();
 
 
         public sync(){
@@ -307,11 +279,14 @@ module wd{
             }
 
             rot = Quaternion.create().setFromAxisAngle(angle, axis);
-            dir = this.position.copy().sub(center); // find current direction relative to center
+            // find current direction relative to center
+            dir = this.position.copy().sub(center);
 
-            dir = rot.multiplyVector3(dir); // rotate the direction
+            // rotate the direction
+            dir = rot.multiplyVector3(dir);
 
-            this.position = center.add(dir); // define new position
+            // define new position
+            this.position = center.add(dir);
             //todo why "this.rotation = this.rotation.multiply(rot)" will cause entityObject rotate direction around self?
             this.rotation = rot.multiply(this.rotation);
 

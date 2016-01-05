@@ -59,12 +59,7 @@ module wd{
 
         public dirtyLocal:boolean = true;
 
-        //todo move it here
-        //public position:any = null;
-        //public rotation:any = null;
-        //public scale:any = null;
-
-        //todo more
+        protected children:wdCb.Collection<Transform> = wdCb.Collection.create<Transform>();
 
 
         public init(){
@@ -74,10 +69,6 @@ module wd{
                 self._resetThreeDTransformFlag();
             });
         }
-
-
-        protected children:wdCb.Collection<Transform> = wdCb.Collection.create<Transform>();
-
 
         public addChild(child:Transform){
             this.children.addChild(child);
@@ -102,6 +93,24 @@ module wd{
             this.p_parent.addChild(this);
 
             //todo can has multi parent?
+        }
+
+        protected getMatrix(syncMethod:string, matrixAttriName:string){
+            var syncList = wdCb.Collection.create<Transform>(),
+                current = this.p_parent;
+
+            syncList.addChild(this);
+
+            while (current !== null) {
+                syncList.addChild(current);
+                current = current.parent;
+            }
+
+            syncList.reverse().forEach((transform:Transform) => {
+                transform[syncMethod]();
+            });
+
+            return this[matrixAttriName];
         }
 
         private _resetThreeDTransformFlag(){
