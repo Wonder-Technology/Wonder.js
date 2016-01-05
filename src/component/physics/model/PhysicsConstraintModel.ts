@@ -32,7 +32,7 @@ module wd{
 
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
-            engineAdapter.removeLockConstraint(this.rigidBody.gameObject);
+            engineAdapter.removeLockConstraint(this.rigidBody.entityObject);
 
             this.rigidBody.addConstraint();
         }
@@ -60,7 +60,7 @@ module wd{
 
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
-            engineAdapter.removeDistanceConstraint(this.rigidBody.gameObject);
+            engineAdapter.removeDistanceConstraint(this.rigidBody.entityObject);
 
             this.rigidBody.addConstraint();
         }
@@ -91,7 +91,7 @@ module wd{
 
             engineAdapter = this.rigidBody.getPhysicsEngineAdapter();
 
-            engineAdapter.removeHingeConstraint(this.rigidBody.gameObject);
+            engineAdapter.removeHingeConstraint(this.rigidBody.entityObject);
 
             this.rigidBody.addConstraint();
         }
@@ -151,7 +151,7 @@ module wd{
 
             engineAdapter = this._rigidBody.getPhysicsEngineAdapter();
 
-            engineAdapter.addPointToPointConstraint(this._rigidBody.gameObject, constraint);
+            engineAdapter.addPointToPointConstraint(this._rigidBody.entityObject, constraint);
         }
 
         public addChildren(arg:Array<PointToPointConstraint>|wdCb.List<PointToPointConstraint>){

@@ -1,18 +1,18 @@
 /// <reference path="../../../../../../filePath.d.ts"/>
 module wd{
     export abstract class CannonSingleConstraint extends CannonConstraint{
-        public removeConstraint(gameObject:GameObject){
-            var constraint = this.constraintDataList.findConstraintByGameObject(gameObject);
+        public removeConstraint(entityObject:GameObject){
+            var constraint = this.constraintDataList.findConstraintByGameObject(entityObject);
 
             if(constraint){
                 this.world.removeConstraint(constraint);
             }
 
-            this.constraintDataList.remove(gameObject);
+            this.constraintDataList.remove(entityObject);
         }
 
-        protected addToConstraintDataList(gameObject:GameObject, wonderConstraint:LockConstraint, cannonConstraint:CANNON.Constraint){
-            this.constraintDataList.add(gameObject, cannonConstraint);
+        protected addToConstraintDataList(entityObject:GameObject, wonderConstraint:LockConstraint, cannonConstraint:CANNON.Constraint){
+            this.constraintDataList.add(entityObject, cannonConstraint);
         }
     }
 }

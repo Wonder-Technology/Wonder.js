@@ -42,26 +42,26 @@ module wd{
                 });
         }
 
-        public addToObject(gameObject:EntityObject){
+        public addToObject(entityObject:EntityObject){
             var self = this;
 
-            super.addToObject(gameObject);
+            super.addToObject(entityObject);
 
             Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
                     .do((data:ScriptFileData) => {
-                        self._addScriptToEntityObject(gameObject, data);
+                        self._addScriptToEntityObject(entityObject, data);
                     })
             );
         }
 
-        public removeFromObject(gameObject:EntityObject){
-            super.removeFromObject(gameObject);
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
 
             Director.getInstance().scriptStreams.removeChild(this.uid.toString());
         }
 
-        private _addScriptToEntityObject(gameObject:EntityObject, data:ScriptFileData){
-            gameObject.script.addChild(data.name, new data.class(gameObject));
+        private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
+            entityObject.script.addChild(data.name, new data.class(entityObject));
         }
     }
 

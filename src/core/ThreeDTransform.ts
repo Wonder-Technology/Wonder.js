@@ -1,8 +1,8 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
     export class ThreeDTransform extends Transform{
-        public static create(gameObject:GameObject) {
-            var obj = new this(gameObject);
+        public static create(entityObject:GameObject) {
+            var obj = new this(entityObject);
 
             return obj;
         }
@@ -171,10 +171,10 @@ module wd{
         private _gameObject:GameObject = null;
 
 
-        constructor(gameObject:GameObject){
+        constructor(entityObject:GameObject){
             super();
 
-            this._gameObject = gameObject;
+            this._gameObject = entityObject;
         }
 
         public sync(){

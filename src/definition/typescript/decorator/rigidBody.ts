@@ -7,7 +7,7 @@ module wd {
 
             descriptor.get = function () {
                 if(this.isPhysicsEngineAdapterExist()){
-                    let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.gameObject);
+                    let data = this.getPhysicsEngineAdapter()[`get${dataName}`](this.entityObject);
 
                     return data !== null ? data : this[`_${lowerFirstChar(dataName)}`];
                 }
@@ -19,7 +19,7 @@ module wd {
                 setter.call(this, val);
 
                 if(this.isPhysicsEngineAdapterExist()){
-                    this.getPhysicsEngineAdapter()[`set${dataName}`](this.gameObject, val);
+                    this.getPhysicsEngineAdapter()[`set${dataName}`](this.entityObject, val);
                 }
             };
 

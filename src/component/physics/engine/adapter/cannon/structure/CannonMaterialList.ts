@@ -14,8 +14,8 @@ module wd {
         }
 
         public findMaterialByGameObject(obj:GameObject){
-            var result = this.dataList.findOne(({gameObject, material}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
+            var result = this.dataList.findOne(({entityObject, material}) => {
+                return JudgeUtils.isEqual(entityObject, obj);
             });
 
             return result !== null ? result.material : null;
@@ -23,13 +23,13 @@ module wd {
 
         public add(obj:GameObject, material:CANNON.Material){
             this.dataList.addChild({
-                gameObject:obj,
+                entityObject:obj,
                 material:material
             });
         }
 
         public addContactMaterial(world:CANNON.World, currentMaterial:CANNON.Material, friction:number, restitution:number){
-            this.dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({entityObject, material}) => {
                 world.addContactMaterial(new CANNON.ContactMaterial(material, currentMaterial, {
                     friction: friction,
                     restitution: restitution
@@ -40,7 +40,7 @@ module wd {
         public getContactMaterialData(world:CANNON.World, currentMaterial:CANNON.Material, dataName:string){
             var result = null;
 
-            this.dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({entityObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){
@@ -58,7 +58,7 @@ module wd {
         public getContactMaterials(world:CANNON.World, currentMaterial:CANNON.Material){
             var resultArr = [];
 
-            this.dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({entityObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){
@@ -72,7 +72,7 @@ module wd {
         }
 
         public setContactMaterialData(world:CANNON.World, currentMaterial:CANNON.Material, dataName:string, data:any){
-            this.dataList.forEach(({gameObject, material}) => {
+            this.dataList.forEach(({entityObject, material}) => {
                 let contactMaterial = world.getContactMaterial(material, currentMaterial);
 
                 if(!contactMaterial){
@@ -85,7 +85,7 @@ module wd {
     }
 
     export type CannonMaterialData = {
-        gameObject:GameObject,
+        entityObject:GameObject,
         material:CANNON.Material
     }
 }

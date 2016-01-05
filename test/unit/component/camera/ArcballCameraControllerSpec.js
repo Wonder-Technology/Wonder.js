@@ -51,20 +51,20 @@ describe("ArcballCameraController", function () {
         camera.init();
 
         expect(component).toEqual(cameraComponent);
-        expect(component.gameObject).toEqual(camera);
+        expect(component.entityObject).toEqual(camera);
         expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
             [
                 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
             ]
         );
 
-        sandbox.spy(component.gameObject.transform, "lookAt");
+        sandbox.spy(component.entityObject.transform, "lookAt");
 
         camera.update(1);
 
 
-        expect(testTool.getValues(component.gameObject.transform.position)).toEqual([0, 0, 10]);
-        expect(component.gameObject.transform.lookAt).toCalledWith(controller.target);
+        expect(testTool.getValues(component.entityObject.transform.position)).toEqual([0, 0, 10]);
+        expect(component.entityObject.transform.lookAt).toCalledWith(controller.target);
     });
 
     describe("dispose", function(){

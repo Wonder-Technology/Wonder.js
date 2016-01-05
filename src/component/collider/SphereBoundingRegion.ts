@@ -1,8 +1,8 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export class SphereBoundingRegion extends BoundingRegion{
-        public static create(gameObject:GameObject) {
-            var obj = new this(gameObject);
+        public static create(entityObject:GameObject) {
+            var obj = new this(entityObject);
 
             return obj;
         }
@@ -13,7 +13,7 @@ module wd {
 
 
         public updateShape(){
-            var transform = this.gameObject.transform;
+            var transform = this.entityObject.transform;
 
             this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix);
         }
@@ -33,7 +33,7 @@ module wd {
         }
 
         protected isNotTransformed(){
-            var transform = this.gameObject.transform;
+            var transform = this.entityObject.transform;
 
             return !transform.isTranslate && !transform.isScale;
         }

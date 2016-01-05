@@ -30,7 +30,7 @@ module wd{
             });
 
             removeQueue.forEach(function (child:Action) {
-                child.gameObject.removeComponent(child);
+                child.entityObject.removeComponent(child);
             });
         }
     }

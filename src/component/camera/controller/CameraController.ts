@@ -26,12 +26,12 @@ module wd {
         }
 
 
-        public gameObject:GameObject;
+        public entityObject:GameObject;
 
         public camera:Camera = null;
 
         public init() {
-            this.camera.gameObject = <GameObject>this.gameObject;
+            this.camera.entityObject = <GameObject>this.entityObject;
             this.camera.init();
         }
 
@@ -43,16 +43,16 @@ module wd {
             this.camera.dispose();
         }
 
-        public isIntersectWithRay(gameObject:GameObject, screenX:number, screenY:number):boolean{
+        public isIntersectWithRay(entityObject:GameObject, screenX:number, screenY:number):boolean{
             var from = null,
                 to = null,
                 shape = null;
 
-            if(!gameObject.hasComponent(Collider)){
+            if(!entityObject.hasComponent(Collider)){
                 return false;
             }
 
-            shape = gameObject.getComponent<Collider>(Collider).shape;
+            shape = entityObject.getComponent<Collider>(Collider).shape;
 
             from = this.convertScreenToWorld(screenX, screenY, this.camera.near);
             to = this.convertScreenToWorld(screenX, screenY, this.camera.far);

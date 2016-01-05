@@ -52,8 +52,8 @@ module wd {
             z = ((this.distance) * Math.sin(this.phi) * Math.sin(this.theta) + this.target.z);
             y = ((this.distance) * Math.cos(this.theta) + this.target.y);
 
-            this.gameObject.transform.position = Vector3.create(x, y, z);
-            this.gameObject.transform.lookAt(this.target);
+            this.entityObject.transform.position = Vector3.create(x, y, z);
+            this.entityObject.transform.lookAt(this.target);
         }
 
         public dispose() {
@@ -110,7 +110,7 @@ module wd {
                 dx = null,
                 dy = null,
                 keyState = e.keyState,
-                transform = this.gameObject.transform;
+                transform = this.entityObject.transform;
 
             this._isChange = true;
 

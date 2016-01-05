@@ -11,19 +11,19 @@ module wd {
         protected materialList:CannonMaterialList = null;
         protected gameObjectList:CannonGameObjectDataList = null;
 
-        public addBody(gameObject:GameObject, data:any) {
+        public addBody(entityObject:GameObject, data:any) {
             var body = this.createBody(data);
 
             if(data.children.getCount() > 0){
-                this._addCompounds(gameObject, data.children, body);
+                this._addCompounds(entityObject, data.children, body);
             }
             else{
-                body.addShape(this._createShape(gameObject.getComponent<Collider>(Collider).shape));
+                body.addShape(this._createShape(entityObject.getComponent<Collider>(Collider).shape));
             }
 
             this.afterAddShape(body, data);
 
-            body.material = this._createMaterial(gameObject, data.friction, data.restitution);
+            body.material = this._createMaterial(entityObject, data.friction, data.restitution);
             body.position = CannonUtils.convertToCannonVector3(data.position);
             body.quaternion = CannonUtils.convertToCannonQuaternion(data.rotation);
 
@@ -31,7 +31,7 @@ module wd {
 
 
 
-            this.gameObjectList.add(gameObject, body);
+            this.gameObjectList.add(entityObject, body);
 
             this._bindCollideEvent(body, data.onCollisionStart, data.onContact, data.onCollisionEnd);
 
@@ -61,14 +61,14 @@ module wd {
             var self = this;
 
             targetBody.addEventListener("collide", (e) => {
-                let gameObject = self.gameObjectList.findGameObjectByBody(e.body),
+                let entityObject = self.gameObjectList.findGameObjectByBody(e.body),
                     collideObject = null;
 
-                if (!gameObject) {
+                if (!entityObject) {
                     return;
                 }
 
-                collideObject = gameObject;
+                collideObject = entityObject;
 
                 onCollisionStart(collideObject);
                 onContact(collideObject);
@@ -76,11 +76,11 @@ module wd {
             });
         }
 
-        private _createMaterial(gameObject:GameObject, friction:number, restitution:number) {
+        private _createMaterial(entityObject:GameObject, friction:number, restitution:number) {
             var material = null,
                 currentMaterial = null;
 
-            material = this._getMaterial(gameObject);
+            material = this._getMaterial(entityObject);
 
             if (material) {
                 return material;
@@ -88,7 +88,7 @@ module wd {
 
             currentMaterial = new CANNON.Material("material");
 
-            this._addMaterial(gameObject, currentMaterial, friction, restitution);
+            this._addMaterial(entityObject, currentMaterial, friction, restitution);
 
             return currentMaterial;
         }
@@ -97,20 +97,20 @@ module wd {
             return this.materialList.findMaterialByGameObject(obj);
         }
 
-        private _addMaterial(gameObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {
-            this.materialList.add(gameObject, currentMaterial);
+        private _addMaterial(entityObject:GameObject, currentMaterial:CANNON.Material, friction:number, restitution:number) {
+            this.materialList.add(entityObject, currentMaterial);
             this.materialList.addContactMaterial(this.world, currentMaterial, friction, restitution);
         }
 
-        @require(function (gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body) {
+        @require(function (entityObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body) {
             children.forEach((child:GameObject) => {
                 assert(!!child.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component"));
                 assert(!!child.getComponent<Collider>(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape"));
             });
         })
-        private _addCompounds(gameObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body){
-            var position = gameObject.transform.position,
-                rotation = gameObject.transform.rotation;
+        private _addCompounds(entityObject:GameObject, children:wdCb.Collection<GameObject>, body:CANNON.Body){
+            var position = entityObject.transform.position,
+                rotation = entityObject.transform.rotation;
 
             children.forEach((child:GameObject) => {
                 body.addShape(

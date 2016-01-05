@@ -317,35 +317,35 @@ module wd {
         }
 
         @require(function(){
-            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 geometry component"));
+            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
         }
 
         @require(function(){
-            assert(this._getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 camera controller"));
+            assert(this._getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 camera controller"));
         })
         private _getCamera():CameraController{
             return this.getComponent<CameraController>(CameraController);
         }
 
         @require(function(){
-            assert(this._getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 animation component"));
+            assert(this._getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
         })
         private _getAnimation():Animation{
             return this.getComponent<Animation>(Animation);
         }
 
         @require(function(){
-            assert(this._getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 rendererComponent"));
+            assert(this._getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
         })
         private _getRendererComponent():RendererComponent{
             return this.getComponent<RendererComponent>(RendererComponent);
         }
 
         @require(function(){
-            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("gameObject", "contain more than 1 collider component"));
+            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
         })
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);

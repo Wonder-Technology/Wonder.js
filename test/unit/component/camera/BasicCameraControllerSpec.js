@@ -31,7 +31,7 @@ describe("BasicCameraController", function () {
 
         var component = camera.getComponent(wd.CameraController).camera;
         expect(component).toEqual(cameraComponent);
-        expect(component.gameObject).toEqual(camera);
+        expect(component.entityObject).toEqual(camera);
         expect(testTool.getValues(component.worldToCameraMatrix)).toEqual(
             [
                 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1

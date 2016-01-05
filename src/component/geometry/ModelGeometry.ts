@@ -18,7 +18,7 @@ module wd{
         public buffers:MorphBufferContainer;
 
         public hasAnimation(){
-            return this._hasMorphTargets() && (this.gameObject && this.gameObject.hasComponent(MorphAnimation));
+            return this._hasMorphTargets() && (this.entityObject && this.entityObject.hasComponent(MorphAnimation));
         }
 
         @require(function(){
@@ -71,15 +71,15 @@ module wd{
 
         @require(function(){
             if(this.hasAnimation()) {
-                assert(this.gameObject.getComponent(MorphAnimation), Log.info.FUNC_SHOULD("gameObject with ModelGeometry", "add MorphAnimation component"));
+                assert(this.entityObject.getComponent(MorphAnimation), Log.info.FUNC_SHOULD("entityObject with ModelGeometry", "add MorphAnimation component"));
             }
         })
         protected createBufferContainer():BufferContainer{
             if(this.hasAnimation()){
-                return MorphBufferContainer.create(this.gameObject, this.gameObject.getComponent<MorphAnimation>(MorphAnimation));
+                return MorphBufferContainer.create(this.entityObject, this.entityObject.getComponent<MorphAnimation>(MorphAnimation));
             }
 
-            return CommonBufferContainer.create(this.gameObject);
+            return CommonBufferContainer.create(this.entityObject);
         }
 
         protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>):GeometryData{

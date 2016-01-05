@@ -97,14 +97,14 @@ module wd {
             this.halfExtents = aabb.halfExtents.copy().mul(scale);
         }
 
-        @require(function (gameObject:GameObject) {
-            var vertices = gameObject.getComponent<Geometry>(Geometry).geometryData.vertices;
+        @require(function (entityObject:GameObject) {
+            var vertices = entityObject.getComponent<Geometry>(Geometry).geometryData.vertices;
 
             assert(vertices && vertices.length > 0, Log.info.FUNC_MUST_DEFINE("vertices"));
         })
-        public setFromObject(gameObject:GameObject) {
-            var modelMatrix = gameObject.transform.localToWorldMatrix,
-                vertices = gameObject.getComponent<Geometry>(Geometry).geometryData.vertices,
+        public setFromObject(entityObject:GameObject) {
+            var modelMatrix = entityObject.transform.localToWorldMatrix,
+                vertices = entityObject.getComponent<Geometry>(Geometry).geometryData.vertices,
                 self = this,
                 min = this._getEmptyMin(),
                 max = this._getEmptyMax();

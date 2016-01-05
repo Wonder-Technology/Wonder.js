@@ -31,7 +31,7 @@ describe("MirrorTexture", function () {
         it("if geometry's transform not change and already create plane, return that plane", function () {
             texture._plane = Plane.create();
             setGeometry(texture, {
-                gameObject: {
+                entityObject: {
                     transform: {
                         dirtyLocal: false
                     }

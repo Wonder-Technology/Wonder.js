@@ -1,8 +1,7 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
     export abstract class Component extends Entity{
-        //todo change to EntityObject
-        public gameObject:EntityObject = null;
+        public entityObject:EntityObject = null;
 
         @virtual
         public init(){
@@ -13,22 +12,22 @@ module wd{
         }
 
         public get transform():Transform {
-            if(!this.gameObject) {
+            if(!this.entityObject) {
                 return null;
             }
 
-            return this.gameObject.transform;
+            return this.entityObject.transform;
         }
 
-        public addToObject(gameObject:EntityObject){
-            if(this.gameObject) {
-                this.gameObject.removeComponent(this);
+        public addToObject(entityObject:EntityObject){
+            if(this.entityObject) {
+                this.entityObject.removeComponent(this);
             }
-            this.gameObject = gameObject;
+            this.entityObject = entityObject;
         }
 
-        public removeFromObject(gameObject:EntityObject){
-            this.gameObject = null;
+        public removeFromObject(entityObject:EntityObject){
+            this.entityObject = null;
         }
     }
 }

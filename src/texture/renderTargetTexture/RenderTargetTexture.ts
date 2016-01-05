@@ -15,7 +15,7 @@ module wd {
         }
 
         public getPosition(){
-            return this.geometry.gameObject.transform.position;
+            return this.geometry.entityObject.transform.position;
         }
 
         protected setEmptyTexture(texture){

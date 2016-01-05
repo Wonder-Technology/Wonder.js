@@ -102,7 +102,7 @@ module wd {
                 nextFontPositionX = 0,
                 nextFontPositionY = 0,
                 position = this.getLeftCornerPosition(),
-                //position = this.gameObject.transform.position,
+                //position = this.entityObject.transform.position,
                 uiRenderer:UIRenderer = this.getUIRenderer(),
                 charFontUIObject:UIObject = null,
                 charFont:CharFont = null;
@@ -213,10 +213,10 @@ module wd {
         @require(function(fntObj:any){
             if (this.width > 0) {
                 for (let i = 1, stringLen = this.text.length; i < stringLen; i++) {
-                    let characterUIObject = this.gameObject.findChildByTag(String(i));
+                    let characterUIObject = this.entityObject.findChildByTag(String(i));
 
-                    assert(!!characterUIObject, "char not has corresponding gameObject");
-                    assert(characterUIObject.hasComponent(CharFont), Log.info.FUNC_SHOULD("char gameObject", "contain CharFont component"));
+                    assert(!!characterUIObject, "char not has corresponding entityObject");
+                    assert(characterUIObject.hasComponent(CharFont), Log.info.FUNC_SHOULD("char entityObject", "contain CharFont component"));
                 }
             }
         })
@@ -229,10 +229,10 @@ module wd {
         }
 
         private _formatMultiLine(fntObj:any){
-            var gameObject = this.gameObject,
+            var entityObject = this.entityObject,
                 characterUIObject:UIObject = null,
                 charFont:CharFont = null,
-                //position = gameObject.transform.position,
+                //position = entityObject.transform.position,
                 position = this.getLeftCornerPosition(),
                 x = 0,
                 y = 0,
@@ -288,7 +288,7 @@ module wd {
         }
 
         private _formatAlign(){
-            //var position = this.gameObject.transform.position,
+            //var position = this.entityObject.transform.position,
             var position = this.getLeftCornerPosition(),
                 self = this;
 
@@ -348,11 +348,11 @@ module wd {
 
         private _addCharFontUIObject(charFontUIObject:UIObject){
             this._charFontList.addChild(charFontUIObject);
-            this.gameObject.addChild(charFontUIObject);
+            this.entityObject.addChild(charFontUIObject);
         }
 
         private _findCharFontUIObject(index:number){
-            return this.gameObject.findChildByTag(String(index));
+            return this.entityObject.findChildByTag(String(index));
         }
 
         private _isSpaceUnicode(char:string) {

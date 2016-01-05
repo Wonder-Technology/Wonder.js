@@ -4,10 +4,10 @@ module wd{
     //todo add Frustum?
     export abstract class Camera{
         @requireGetter(function(){
-            assert(this.gameObject, Log.info.FUNC_MUST_DEFINE("gameObject"));
+            assert(this.entityObject, Log.info.FUNC_MUST_DEFINE("entityObject"));
         })
         get cameraToWorldMatrix(){
-            return this.gameObject.transform.localToWorldMatrix.copy();
+            return this.entityObject.transform.localToWorldMatrix.copy();
         }
 
         private _worldToCameraMatrix = null;
@@ -42,7 +42,7 @@ module wd{
 
 
         public pMatrix:Matrix4 = Matrix4.create();
-        public gameObject:GameObject = null;
+        public entityObject:GameObject = null;
 
         protected dirty:boolean = false;
 

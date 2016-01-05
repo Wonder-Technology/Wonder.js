@@ -8,8 +8,8 @@ module wd {
         protected dataList:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
         protected removeByGameObject(obj:GameObject){
-            this.dataList.removeChild(({gameObject, body}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
+            this.dataList.removeChild(({entityObject, body}) => {
+                return JudgeUtils.isEqual(entityObject, obj);
             });
         }
     }

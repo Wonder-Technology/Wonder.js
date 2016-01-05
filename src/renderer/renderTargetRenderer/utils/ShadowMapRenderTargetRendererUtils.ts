@@ -69,21 +69,21 @@ module wd {
             this._shader.addLib(lib);
         }
 
-        public isContainer(gameObject:GameObject){
-            return !gameObject.hasComponent(Geometry);
+        public isContainer(entityObject:GameObject){
+            return !entityObject.hasComponent(Geometry);
         }
 
-        public addAllChildren(gameObject:GameObject){
+        public addAllChildren(entityObject:GameObject){
             var children = [],
-                add = (gameObject:GameObject) => {
-                    gameObject.forEach((child:GameObject) => {
+                add = (entityObject:GameObject) => {
+                    entityObject.forEach((child:GameObject) => {
                         children.push(child);
 
                         add(child);
                     });
                 };
 
-            add(gameObject);
+            add(entityObject);
 
             return children;
         }

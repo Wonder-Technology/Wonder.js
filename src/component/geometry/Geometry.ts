@@ -7,7 +7,7 @@ module wd{
         }
         set material(material:Material){
             if(material !== this._material){
-                EventManager.trigger(this.gameObject, CustomEvent.create(<any>EngineEvent.MATERIAL_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.MATERIAL_CHANGE));
             }
 
             this._material = material;
@@ -18,7 +18,7 @@ module wd{
             return this.buffers.geometryData;
         }
 
-        public gameObject:GameObject;
+        public entityObject:GameObject;
 
         public buffers:BufferContainer = null;
 
@@ -104,7 +104,7 @@ module wd{
 
         @virtual
         protected createBufferContainer():BufferContainer{
-            return CommonBufferContainer.create(this.gameObject);
+            return CommonBufferContainer.create(this.entityObject);
         }
 
         @virtual

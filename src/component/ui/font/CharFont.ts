@@ -8,16 +8,16 @@ module wd {
         }
 
         get x(){
-            return this.gameObject.transform.position.x;
+            return this.entityObject.transform.position.x;
         }
         set x(x:number){
-            var position = this.gameObject.transform.position;
+            var position = this.entityObject.transform.position;
 
-            this.gameObject.transform.position = Vector2.create(x, position.y);
+            this.entityObject.transform.position = Vector2.create(x, position.y);
         }
 
         get y(){
-            return this.gameObject.transform.position.y;
+            return this.entityObject.transform.position.y;
         }
 
         //todo width/height change will dirty
@@ -29,7 +29,7 @@ module wd {
                 return true;
             }
 
-            transform = this.gameObject.transform;
+            transform = this.entityObject.transform;
 
             return transform.isTranslate || transform.isRotate || transform.isScale;
         }
@@ -67,7 +67,7 @@ module wd {
                 return;
             }
 
-            transform = this.gameObject.transform;
+            transform = this.entityObject.transform;
             position = transform.position;
 
             dw = this.width;
@@ -87,7 +87,7 @@ module wd {
         }
 
         //private _rotateAroundImageCenter(dx:number, dy:number, dw:number, dh:number){
-        //    var values = this.gameObject.transform.localToWorldMatrix.values;
+        //    var values = this.entityObject.transform.localToWorldMatrix.values;
         //
         //    this.context.translate(dx + dw / 2, dy + dh / 2);
         //    this.context.transform(

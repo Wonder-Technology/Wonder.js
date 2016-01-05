@@ -9,8 +9,8 @@ module wd {
 
             this.context = this.getContext();
 
-            this._sizeChangeEventDescription = EventManager.fromEvent(this.gameObject, <any>EngineEvent.UI_WIDTH_CHANGE)
-                .merge(EventManager.fromEvent(this.gameObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
+            this._sizeChangeEventDescription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
+                .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
                 .subscribe(() => {
                     self.p_dirty = true;
                 });
@@ -38,7 +38,7 @@ module wd {
         protected abstract updateWhenDirty();
 
         protected getLeftCornerPosition(){
-            var transform = this.gameObject.transform,
+            var transform = this.entityObject.transform,
                 position = transform.position;
 
             return Vector2.create(position.x - transform.width / 2, position.y - transform.height / 2);

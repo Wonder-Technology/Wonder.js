@@ -38,7 +38,7 @@ module wd {
             /*!
             uiRenderer may be shared by multi objects, so this.object is the last one which share this
              */
-            this.gameObject = object;
+            this.entityObject = object;
         }
 
         public removeFromObject(object:UIObject){

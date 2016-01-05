@@ -40,7 +40,7 @@ module wd {
             });
         }
 
-        public gameObject:GameObject;
+        public entityObject:GameObject;
 
         public lockConstraint:LockConstraint = LockConstraint.create(this);
         public distanceConstraint:DistanceConstraint = DistanceConstraint.create(this);
@@ -69,34 +69,34 @@ module wd {
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
 
             if(this.lockConstraint && this.lockConstraint.connectedBody){
-                engineAdapter.addLockConstraint(this.gameObject, this.lockConstraint);
+                engineAdapter.addLockConstraint(this.entityObject, this.lockConstraint);
             }
 
             if(this.distanceConstraint && this.distanceConstraint.connectedBody){
-                engineAdapter.addDistanceConstraint(this.gameObject, this.distanceConstraint);
+                engineAdapter.addDistanceConstraint(this.entityObject, this.distanceConstraint);
             }
 
             if(this.hingeConstraint && this.hingeConstraint.connectedBody){
-                engineAdapter.addHingeConstraint(this.gameObject, this.hingeConstraint);
+                engineAdapter.addHingeConstraint(this.entityObject, this.hingeConstraint);
             }
 
             if(this.pointToPointConstraintList && this.pointToPointConstraintList.getCount() > 0){
                 this.pointToPointConstraintList.forEach((constraint:PointToPointConstraint) => {
-                    engineAdapter.addPointToPointConstraint(this.gameObject, constraint);
+                    engineAdapter.addPointToPointConstraint(this.entityObject, constraint);
                 }, this);
             }
         }
 
-        public removeFromObject(gameObject:GameObject){
+        public removeFromObject(entityObject:GameObject){
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter();
 
             if(engineAdapter){
-                this.getPhysicsEngineAdapter().removeGameObject(gameObject);
+                this.getPhysicsEngineAdapter().removeGameObject(entityObject);
 
-                this.getPhysicsEngineAdapter().removeConstraints(gameObject);
+                this.getPhysicsEngineAdapter().removeConstraints(entityObject);
             }
 
-            super.removeFromObject(gameObject);
+            super.removeFromObject(entityObject);
         }
 
         public dispose(){
@@ -116,21 +116,21 @@ module wd {
         protected abstract addBody();
 
         @require(function () {
-            if(this._isContainer(this.gameObject)){
-                assert(!this.gameObject.getComponent(Collider), Log.info.FUNC_SHOULD_NOT("container", "add collider component in the case of compound"));
+            if(this._isContainer(this.entityObject)){
+                assert(!this.entityObject.getComponent(Collider), Log.info.FUNC_SHOULD_NOT("container", "add collider component in the case of compound"));
             }
             else{
-                assert(!!this.gameObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
-                assert(!!this.gameObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
+                assert(!!this.entityObject.getComponent(Collider), Log.info.FUNC_MUST_DEFINE("collider component when add rigid body component"));
+                assert(!!this.entityObject.getComponent(Collider).shape, Log.info.FUNC_SHOULD("create collider.shape before adding rigid body component"));
             }
         })
         protected addBodyToPhysicsEngine(method:string, data:any = {}) {
             var engineAdapter:IPhysicsEngineAdapter = this.getPhysicsEngineAdapter(),
-                position = this.gameObject.transform.position,
-                rotation = this.gameObject.transform.rotation;
+                position = this.entityObject.transform.position,
+                rotation = this.entityObject.transform.rotation;
 
             engineAdapter[method](
-                this.gameObject, wdCb.ExtendUtils.extend({
+                this.entityObject, wdCb.ExtendUtils.extend({
                     position: position,
                     rotation: rotation,
 
@@ -149,19 +149,19 @@ module wd {
         }
 
         private _onContact(collideObject:GameObject) {
-            this.gameObject.execScript("onContact", wdCb.Collection.create([collideObject]));
+            this.entityObject.execScript("onContact", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionStart(collideObject:GameObject) {
-            this.gameObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
+            this.entityObject.execScript("onCollisionStart", wdCb.Collection.create([collideObject]));
         }
 
         private _onCollisionEnd() {
-            this.gameObject.execScript("onCollisionEnd");
+            this.entityObject.execScript("onCollisionEnd");
         }
 
-        private _isContainer(gameObject:GameObject){
-            var rigidBody = gameObject.getComponent<RigidBody>(RigidBody);
+        private _isContainer(entityObject:GameObject){
+            var rigidBody = entityObject.getComponent<RigidBody>(RigidBody);
 
             return rigidBody.children.getCount() > 0;
         }

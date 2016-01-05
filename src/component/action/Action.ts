@@ -41,17 +41,17 @@ module wd{
 
         public abstract reverse();
 
-        public addToObject(gameObject:EntityObject){
-            super.addToObject(gameObject);
+        public addToObject(entityObject:EntityObject){
+            super.addToObject(entityObject);
 
-            this.target = gameObject;
-            gameObject.actionManager.addChild(this);
+            this.target = entityObject;
+            entityObject.actionManager.addChild(this);
         }
 
-        public removeFromObject(gameObject:EntityObject){
-            super.removeFromObject(gameObject);
+        public removeFromObject(entityObject:EntityObject){
+            super.removeFromObject(entityObject);
 
-            gameObject.actionManager.removeChild(this);
+            entityObject.actionManager.removeChild(this);
         }
 
         public init(){

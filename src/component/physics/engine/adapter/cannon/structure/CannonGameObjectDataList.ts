@@ -14,47 +14,47 @@ module wd {
         }
 
         public updateBodyTransformData(){
-            this.dataList.forEach(({gameObject,body}) => {
-                let transform = gameObject.transform;
+            this.dataList.forEach(({entityObject,body}) => {
+                let transform = entityObject.transform;
 
                 //todo consider isScale?
                 if(transform.isTranslate || transform.isRotate){
-                    body.position = CannonUtils.convertToCannonVector3(gameObject.transform.position);
-                    body.quaternion = CannonUtils.convertToCannonQuaternion(gameObject.transform.rotation);
+                    body.position = CannonUtils.convertToCannonVector3(entityObject.transform.position);
+                    body.quaternion = CannonUtils.convertToCannonQuaternion(entityObject.transform.rotation);
                 }
             });
 
         }
 
         public updateGameObjectTransformData(){
-            this.dataList.forEach(({gameObject,body}) => {
-                if(gameObject.hasTag("isRigidbodyChild")){
+            this.dataList.forEach(({entityObject,body}) => {
+                if(entityObject.hasTag("isRigidbodyChild")){
                     return;
                 }
 
-                gameObject.transform.position = CannonUtils.convertToWonderVector3(body.position);
-                gameObject.transform.rotation = CannonUtils.convertToWonderQuaternion(body.quaternion);
+                entityObject.transform.position = CannonUtils.convertToWonderVector3(body.position);
+                entityObject.transform.rotation = CannonUtils.convertToWonderQuaternion(body.quaternion);
             });
         }
 
         public add(obj:GameObject, body:CANNON.Body){
             this.dataList.addChild({
-                gameObject:obj,
+                entityObject:obj,
                 body:body
             });
         }
 
         public findGameObjectByBody(b:CANNON.Body){
-            var result = this.dataList.findOne(({gameObject, body}) => {
+            var result = this.dataList.findOne(({entityObject, body}) => {
                 return body === b;
             });
 
-            return result !== null ? result.gameObject : null;
+            return result !== null ? result.entityObject : null;
         }
 
         public findBodyByGameObject(obj:GameObject):any{
-            var result = this.dataList.findOne(({gameObject, body}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
+            var result = this.dataList.findOne(({entityObject, body}) => {
+                return JudgeUtils.isEqual(entityObject, obj);
             });
 
             return result !== null ? result.body : null;
@@ -62,7 +62,7 @@ module wd {
     }
 
     export type CannonGameObjectData = {
-        gameObject:GameObject,
+        entityObject:GameObject,
         body:CANNON.Body
     }
 }

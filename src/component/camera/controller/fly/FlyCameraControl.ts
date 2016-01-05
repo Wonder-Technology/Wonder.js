@@ -17,13 +17,13 @@ module wd {
         private _keydownSubscription:wdFrp.IDisposable = null;
         private _gameObject:GameObject = null;
 
-        public init(gameObject:GameObject) {
-            var eulerAngles = gameObject.transform.eulerAngles;
+        public init(entityObject:GameObject) {
+            var eulerAngles = entityObject.transform.eulerAngles;
 
             this._rotateX = eulerAngles.x;
             this._rotateY = eulerAngles.y;
 
-            this._gameObject = gameObject;
+            this._gameObject = entityObject;
 
             this._bindCanvasEvent();
         }
@@ -46,20 +46,20 @@ module wd {
 
         private _move(event:KeyboardEvent) {
             var speed = this.moveSpeed,
-                gameObject = this._gameObject,
+                entityObject = this._gameObject,
                 keyState = event.keyState;
 
             if (keyState["a"] || keyState["left"]) {
-                gameObject.transform.translateLocal(Vector3.create(-speed, 0, 0));
+                entityObject.transform.translateLocal(Vector3.create(-speed, 0, 0));
             }
             else if(keyState["d"] || keyState["right"]) {
-                gameObject.transform.translateLocal(Vector3.create(speed, 0, 0));
+                entityObject.transform.translateLocal(Vector3.create(speed, 0, 0));
             }
             else if(keyState["w"] || keyState["up"]) {
-                gameObject.transform.translateLocal(Vector3.create(0, 0, -speed));
+                entityObject.transform.translateLocal(Vector3.create(0, 0, -speed));
             }
             else if(keyState["s"] || keyState["down"]) {
-                gameObject.transform.translateLocal(Vector3.create(0, 0, speed));
+                entityObject.transform.translateLocal(Vector3.create(0, 0, speed));
             }
         }
 

@@ -12,59 +12,59 @@ module wd{
         public detect(scene:Scene){
             //todo optimize:use scene graph to only get needChecked gameObjects
             //todo optimize:use worker
-            var checkTargetList = scene.filter((gameObject:GameObject) => {
-                    //return gameObject.hasComponent(Collider) && !gameObject.hasComponent(RigidBody);
-                    return gameObject.hasComponent(Collider);
+            var checkTargetList = scene.filter((entityObject:GameObject) => {
+                    //return entityObject.hasComponent(Collider) && !entityObject.hasComponent(RigidBody);
+                    return entityObject.hasComponent(Collider);
                 }),
                 self = this;
 
-            checkTargetList.forEach((gameObject:GameObject) => {
+            checkTargetList.forEach((entityObject:GameObject) => {
                 var collideObjects = null;
 
-                if(gameObject.hasComponent(RigidBody)){
+                if(entityObject.hasComponent(RigidBody)){
                     return;
                 }
 
-                collideObjects = gameObject.getComponent<Collider>(Collider).getCollideObjects(checkTargetList);
+                collideObjects = entityObject.getComponent<Collider>(Collider).getCollideObjects(checkTargetList);
 
                 if(collideObjects.getCount() > 0){
-                    if(self._isCollisionStart(gameObject)){
+                    if(self._isCollisionStart(entityObject)){
 
-                        gameObject.execScript("onCollisionStart", collideObjects);
-                        gameObject.execScript("onContact", collideObjects);
+                        entityObject.execScript("onCollisionStart", collideObjects);
+                        entityObject.execScript("onContact", collideObjects);
 
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onCollisionStart", "onContact"]);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, entityObject, ["onCollisionStart", "onContact"]);
                     }
                     else{
-                        gameObject.execScript("onContact", collideObjects);
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, gameObject, ["onContact"]);
+                        entityObject.execScript("onContact", collideObjects);
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, entityObject, ["onContact"]);
                     }
 
-                    gameObject.addTag("isCollided");
+                    entityObject.addTag("isCollided");
                     self._lastCollideObjects = collideObjects;
                 }
                 else{
-                    if(self._isCollisionEnd(gameObject)){
-                        gameObject.execScript("onCollisionEnd");
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, gameObject, ["onCollisionEnd"]);
+                    if(self._isCollisionEnd(entityObject)){
+                        entityObject.execScript("onCollisionEnd");
+                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, entityObject, ["onCollisionEnd"]);
                     }
 
-                    gameObject.removeTag("isCollided");
+                    entityObject.removeTag("isCollided");
                 }
             });
         }
 
-        private _isCollisionStart(gameObject:GameObject){
-            return !gameObject.hasTag("isCollided");
+        private _isCollisionStart(entityObject:GameObject){
+            return !entityObject.hasTag("isCollided");
         }
 
-        private _isCollisionEnd(gameObject:GameObject){
-            return gameObject.hasTag("isCollided");
+        private _isCollisionEnd(entityObject:GameObject){
+            return entityObject.hasTag("isCollided");
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
-            collideObjects.filter((gameObject:GameObject) => {
-                    return gameObject.hasComponent(RigidBody);
+            collideObjects.filter((entityObject:GameObject) => {
+                    return entityObject.hasComponent(RigidBody);
                 })
                 .forEach((collideObject:GameObject) => {
                     for(let eventName of eventList){

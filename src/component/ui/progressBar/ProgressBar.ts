@@ -40,7 +40,7 @@ module wd {
         public update(elapsedTime:number){
             if(this.percent > 0){
                 let offscreenCanvas = this._offScreenCanvas,
-                position = this.gameObject.transform.position;
+                position = this.entityObject.transform.position;
 
                 this.context.save();
 

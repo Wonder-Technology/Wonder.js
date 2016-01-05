@@ -1,13 +1,13 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class BoundingRegion{
-        constructor(gameObject:GameObject){
-            this.gameObject = gameObject;
+        constructor(entityObject:GameObject){
+            this.entityObject = entityObject;
         }
 
         public shape:Shape = null;
 
-        protected gameObject:GameObject = null;
+        protected entityObject:GameObject = null;
         protected isUserSpecifyTheRegion:boolean = false;
         protected originShape:Shape = null;
         protected debugObject:GameObject = null;
@@ -35,7 +35,7 @@ module wd {
                 this.shape.setFromShapeParam.apply(this.shape, params);
             }
             else{
-                this.shape.setFromPoints(this.gameObject.getComponent<Geometry>(Geometry).geometryData.vertices);
+                this.shape.setFromPoints(this.entityObject.getComponent<Geometry>(Geometry).geometryData.vertices);
             }
 
             this.originShape = this.shape.copy();
@@ -55,7 +55,7 @@ module wd {
                 this.updateShape();
                 this.updateDebugObjectFromShape(this.shape);
             }
-            else if(!this.gameObject.hasComponent(RigidBody)){
+            else if(!this.entityObject.hasComponent(RigidBody)){
                 this.updateShape();
             }
         }
@@ -78,7 +78,7 @@ module wd {
             var material = null,
                 geometry = null,
                 renderer = null,
-                gameObject = null;
+                entityObject = null;
 
             material = wd.BasicMaterial.create();
             material.color = wd.Color.create("rgb(255,0,0)");
@@ -90,17 +90,17 @@ module wd {
             renderer = wd.MeshRenderer.create();
             renderer.drawMode = DrawMode.LINES;
 
-            gameObject = wd.GameObject.create();
-            gameObject.addComponent(geometry);
-            gameObject.addComponent(renderer);
+            entityObject = wd.GameObject.create();
+            entityObject.addComponent(geometry);
+            entityObject.addComponent(renderer);
 
-            gameObject.transform.translate(shape.center);
+            entityObject.transform.translate(shape.center);
 
-            gameObject.name = `debugBoundingRegion${this.gameObject.uid}`;
+            entityObject.name = `debugBoundingRegion${this.entityObject.uid}`;
 
-            gameObject.init();
+            entityObject.init();
 
-            return gameObject;
+            return entityObject;
         }
     }
 }

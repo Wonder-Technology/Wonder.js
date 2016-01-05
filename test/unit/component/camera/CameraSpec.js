@@ -9,7 +9,7 @@ describe("Camera", function() {
     }
 
     function setTransform(transform){
-        camera.gameObject = {
+        camera.entityObject = {
             transform: transform
         };
     }

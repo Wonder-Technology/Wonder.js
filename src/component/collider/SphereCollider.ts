@@ -14,7 +14,7 @@ module wd {
         public type:string = <any>ColliderType.SPHERE;
 
         public createBoundingRegion(){
-            return SphereBoundingRegion.create(this.gameObject);
+            return SphereBoundingRegion.create(this.entityObject);
         }
 
         public buildBoundingRegion(){

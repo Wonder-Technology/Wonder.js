@@ -3,7 +3,7 @@ module wd {
     export abstract class CannonSingleConstraintDataList extends CannonConstraintDataList{
         public add(obj:GameObject, constraint:CANNON.Constraint){
             this.dataList.addChild({
-                gameObject:obj,
+                entityObject:obj,
                 constraint:constraint
             });
         }
@@ -13,8 +13,8 @@ module wd {
         }
 
         public findConstraintByGameObject(obj:GameObject){
-            var result = this.dataList.findOne(({gameObject}) => {
-                return JudgeUtils.isEqual(gameObject, obj);
+            var result = this.dataList.findOne(({entityObject}) => {
+                return JudgeUtils.isEqual(entityObject, obj);
             });
 
             return result !== null ? result.constraint : null;

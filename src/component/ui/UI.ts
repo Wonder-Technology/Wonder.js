@@ -11,30 +11,30 @@ module wd {
         }
 
         get width(){
-            return this.gameObject ? this.gameObject.transform.width : null;
+            return this.entityObject ? this.entityObject.transform.width : null;
         }
 
         get height(){
-            return this.gameObject ? this.gameObject.transform.height : null;
+            return this.entityObject ? this.entityObject.transform.height : null;
         }
 
-        public gameObject:UIObject;
+        public entityObject:UIObject;
         public context:CanvasRenderingContext2D = null;
 
 
         public abstract init();
         public abstract update(elapsedTime:number);
 
-        public addToObject(gameObject:UIObject){
-            super.addToObject(gameObject);
+        public addToObject(entityObject:UIObject){
+            super.addToObject(entityObject);
 
-            gameObject.uiManager.addChild(this);
+            entityObject.uiManager.addChild(this);
         }
 
-        public removeFromObject(gameObject:UIObject){
-            super.removeFromObject(gameObject);
+        public removeFromObject(entityObject:UIObject){
+            super.removeFromObject(entityObject);
 
-            gameObject.uiManager.removeChild(this);
+            entityObject.uiManager.removeChild(this);
         }
 
         protected getContext() {
@@ -42,10 +42,10 @@ module wd {
         }
 
         @require(function () {
-            assert(this.gameObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("gameObject", "contain UIRenderer"))
+            assert(this.entityObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("entityObject", "contain UIRenderer"))
         })
         protected getUIRenderer(){
-            return this.gameObject.getComponent<UIRenderer>(UIRenderer);
+            return this.entityObject.getComponent<UIRenderer>(UIRenderer);
         }
 
         protected drawInCenterPoint(context:CanvasRenderingContext2D, source:any, sx:number, sy:number, sw:number, sh:number, position:Vector2, width:number, height:number){
@@ -58,9 +58,9 @@ module wd {
         }
 
         protected setCanvasTransformForRotation(){
-            var matrix = this.gameObject.transform.rotationMatrix;
+            var matrix = this.entityObject.transform.rotationMatrix;
 
-            if(this.gameObject.transform.isRotate){
+            if(this.entityObject.transform.isRotate){
                 this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
             }
         }

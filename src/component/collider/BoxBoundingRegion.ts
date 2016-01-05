@@ -1,8 +1,8 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     export class BoxBoundingRegion extends BoundingRegion{
-        public static create(gameObject:GameObject) {
-            var obj = new this(gameObject);
+        public static create(entityObject:GameObject) {
+            var obj = new this(entityObject);
 
             return obj;
         }
@@ -13,14 +13,14 @@ module wd {
 
 
         public updateShape(){
-            var transform = this.gameObject.transform;
+            var transform = this.entityObject.transform;
 
             if(this.isUserSpecifyTheRegion){
                 this.shape.setFromTranslationAndScale(this.originShape, transform.localToWorldMatrix)
             }
             else{
                 if(transform.isRotate){
-                    this.shape.setFromObject(this.gameObject);
+                    this.shape.setFromObject(this.entityObject);
                 }
                 else{
                     //todo optimize:set when isTranslate/isScale?
@@ -75,7 +75,7 @@ module wd {
         }
 
         protected isNotTransformed(){
-            var transform = this.gameObject.transform;
+            var transform = this.entityObject.transform;
 
             return !transform.isRotate && !transform.isTranslate && !transform.isScale;
         }

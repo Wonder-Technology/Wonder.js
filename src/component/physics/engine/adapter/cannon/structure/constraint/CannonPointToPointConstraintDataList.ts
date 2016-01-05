@@ -17,9 +17,9 @@ module wd {
             this.dataList.forEach(func);
         }
 
-        public add(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint, constraint:CANNON.Constraint){
+        public add(entityObject:GameObject, pointToPointConstraint:PointToPointConstraint, constraint:CANNON.Constraint){
             this.dataList.addChild({
-                gameObject:gameObject,
+                entityObject:entityObject,
                 pointToPointConstraint: pointToPointConstraint,
                 cannonConstraint:constraint
             });
@@ -41,7 +41,7 @@ module wd {
     }
 
     export type CannonPointToPointConstraintData = {
-        gameObject:GameObject,
+        entityObject:GameObject,
         pointToPointConstraint:PointToPointConstraint,
         cannonConstraint:CANNON.Constraint
     }

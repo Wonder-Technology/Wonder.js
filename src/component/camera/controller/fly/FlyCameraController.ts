@@ -23,7 +23,7 @@ module wd {
         public init() {
             super.init();
 
-            this._control.init(this.gameObject);
+            this._control.init(this.entityObject);
         }
 
         public update(elapsedTime:number){

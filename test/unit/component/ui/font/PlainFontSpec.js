@@ -9,21 +9,21 @@ describe("PlainFont", function () {
     }
 
     function setWidth(width){
-        font.gameObject.transform.width = width;
+        font.entityObject.transform.width = width;
         font.dirty = true;
     }
 
     function setHeight(height){
-        font.gameObject.transform.height = height || 0;
+        font.entityObject.transform.height = height || 0;
         font.dirty = true;
     }
 
     function createFont() {
         font = Font.create();
 
-        font.gameObject = wd.UIObject.create();
-        //font.gameObject.transform = {};
-        //font.gameObject.transform = {};
+        font.entityObject = wd.UIObject.create();
+        //font.entityObject.transform = {};
+        //font.entityObject.transform = {};
 
         sandbox.stub(font, "getContext");
 
@@ -32,7 +32,7 @@ describe("PlainFont", function () {
     }
 
     function setPosition(x, y){
-        font.gameObject.transform.position = wd.Vector2.create(x, y);
+        font.entityObject.transform.position = wd.Vector2.create(x, y);
     }
 
 
@@ -295,8 +295,8 @@ describe("PlainFont", function () {
             expect(context.save).toCalledOnce();
         });
         it("if isRotate, set context transform to be rotationMatrix", function(){
-            font.gameObject.transform.rotate(45);
-            var rotationMatrix = font.gameObject.transform.rotationMatrix;
+            font.entityObject.transform.rotate(45);
+            var rotationMatrix = font.entityObject.transform.rotationMatrix;
 
             font.update(-1);
 

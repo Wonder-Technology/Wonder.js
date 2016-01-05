@@ -52,7 +52,7 @@ module wd{
 
             point.scale(1 / w);
 
-            return Vector3.create().lerp(this.gameObject.transform.position, point, distanceFromCamera / this.far);
+            return Vector3.create().lerp(this.entityObject.transform.position, point, distanceFromCamera / this.far);
         }
 
         protected updateProjectionMatrix(){

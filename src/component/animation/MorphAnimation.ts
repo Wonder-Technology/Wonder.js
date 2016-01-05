@@ -41,16 +41,16 @@ module wd{
         }
 
         @require(function(animName:string, fps:number){
-            var geometry = this.gameObject.getComponent(ModelGeometry);
+            var geometry = this.entityObject.getComponent(ModelGeometry);
 
-            assert(geometry, Log.info.FUNC_SHOULD("this gameObject", "add ModelGeometry component"));
+            assert(geometry, Log.info.FUNC_SHOULD("this entityObject", "add ModelGeometry component"));
             assert(geometry.morphTargets.getChild(animName) && geometry.morphTargets.getChild(animName).getCount() > 0, Log.info.FUNC_NOT_EXIST(`"${animName}" animation`));
         })
         @ensure(function(){
             assert(this._frameCount > 1, Log.info.FUNC_SHOULD("frames.count", "> 1"));
         })
         public play(animName:string, fps:number){
-            var geometry = this.gameObject.getComponent<ModelGeometry>(ModelGeometry);
+            var geometry = this.entityObject.getComponent<ModelGeometry>(ModelGeometry);
 
             this.currentAnimName = animName;
             this.fps = fps;

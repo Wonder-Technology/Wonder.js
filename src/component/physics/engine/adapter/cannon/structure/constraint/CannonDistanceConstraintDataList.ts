@@ -11,7 +11,7 @@ module wd {
     }
 
     export type CannonDistanceConstraintData = {
-        gameObject:GameObject,
+        entityObject:GameObject,
         constraint:CANNON.Constraint
     }
 }

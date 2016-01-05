@@ -23,16 +23,16 @@ module wd {
         getAngularVelocity(obj:GameObject):Vector3;
         setAngularVelocity(obj:GameObject, angularVelocity:Vector3):void;
 
-        addDynamicBody(gameObject:GameObject, shape:Shape, options:any):void;
-        addKinematicBody(gameObject:GameObject, shape:Shape, options:any):void;
-        addStaticBody(gameObject:GameObject, shape:Shape, options:any):void;
-        addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint):void;
-        removeLockConstraint(gameObject:GameObject):void;
-        addDistanceConstraint(gameObject:GameObject, distanceConstraint:DistanceConstraint):void;
-        removeDistanceConstraint(gameObject:GameObject):void;
-        addHingeConstraint(gameObject:GameObject, hingeConstraint:HingeConstraint):void;
-        removeHingeConstraint(gameObject:GameObject):void;
-        addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint):void;
+        addDynamicBody(entityObject:GameObject, shape:Shape, options:any):void;
+        addKinematicBody(entityObject:GameObject, shape:Shape, options:any):void;
+        addStaticBody(entityObject:GameObject, shape:Shape, options:any):void;
+        addLockConstraint(entityObject:GameObject, lockConstraint:LockConstraint):void;
+        removeLockConstraint(entityObject:GameObject):void;
+        addDistanceConstraint(entityObject:GameObject, distanceConstraint:DistanceConstraint):void;
+        removeDistanceConstraint(entityObject:GameObject):void;
+        addHingeConstraint(entityObject:GameObject, hingeConstraint:HingeConstraint):void;
+        removeHingeConstraint(entityObject:GameObject):void;
+        addPointToPointConstraint(entityObject:GameObject, pointToPointConstraint:PointToPointConstraint):void;
         removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint):void;
     }
 }

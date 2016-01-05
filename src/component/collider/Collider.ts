@@ -5,7 +5,7 @@ module wd {
             return this.boundingRegion.shape;
         }
 
-        public gameObject:GameObject;
+        public entityObject:GameObject;
 
         public type:string = ABSTRACT_ATTRIBUTE;
 
@@ -48,29 +48,29 @@ module wd {
             var self = this,
                 result = wdCb.Collection.create<GameObject>();
 
-            checkTargetList.forEach((gameObject) => {
+            checkTargetList.forEach((entityObject) => {
                 var collider:Collider = null;
 
-                if(self._isSelf(gameObject)){
+                if(self._isSelf(entityObject)){
                     return;
                 }
 
-                collider = gameObject.getComponent(Collider);
+                collider = entityObject.getComponent(Collider);
 
-                if(gameObject.hasComponent(RigidBody)){
+                if(entityObject.hasComponent(RigidBody)){
                     collider.updateShape();
                 }
 
                 if(self.isIntersectWith(collider)){
-                    result.addChild(gameObject);
+                    result.addChild(entityObject);
                 }
             });
 
             return result;
         }
 
-        private _isSelf(gameObject:GameObject){
-            return this.gameObject.uid === gameObject.uid;
+        private _isSelf(entityObject:GameObject){
+            return this.entityObject.uid === entityObject.uid;
         }
     }
 }

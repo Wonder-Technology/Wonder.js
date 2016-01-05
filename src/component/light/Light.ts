@@ -2,7 +2,7 @@
 module wd {
     export abstract class Light extends Component {
         get position(){
-            return this.gameObject.transform.position;
+            return this.entityObject.transform.position;
         }
 
         private _shadowMapWidth:number = null;
@@ -33,7 +33,7 @@ module wd {
             this._shadowMapHeight = shadowMapHeight;
         }
 
-        public gameObject:GameObject;
+        public entityObject:GameObject;
 
         public color:Color = Color.create("#ffffff");
         public castShadow:boolean = false;

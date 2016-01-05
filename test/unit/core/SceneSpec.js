@@ -338,7 +338,7 @@ describe("Scene", function() {
 
             scene.addComponent(component);
 
-            expect(component.gameObject).toEqual(scene);
+            expect(component.entityObject).toEqual(scene);
         });
         it("add component to container", function(){
             var component = new wd.Action();
@@ -389,7 +389,7 @@ describe("Scene", function() {
 
             scene.removeComponent(component);
 
-            expect(component.gameObject).toBeNull();
+            expect(component.entityObject).toBeNull();
         });
 
         describe("if component is Action", function(){

@@ -111,54 +111,54 @@ module wd {
             this._pointToPointConstraint = CannonPointToPointConstraint.create(this.world, this._gameObjectDataList, this._pointToPointConstraintDataList);
         }
 
-        public addDynamicBody(gameObject:GameObject, data:any) {
-            this._dynamicBody.addBody(gameObject, data);
+        public addDynamicBody(entityObject:GameObject, data:any) {
+            this._dynamicBody.addBody(entityObject, data);
         }
 
-        public addKinematicBody(gameObject:GameObject, data:any) {
-            this._kinematicBody.addBody(gameObject, data);
+        public addKinematicBody(entityObject:GameObject, data:any) {
+            this._kinematicBody.addBody(entityObject, data);
         }
 
-        public addStaticBody(gameObject:GameObject, data:any) {
-            this._staticBody.addBody(gameObject, data);
+        public addStaticBody(entityObject:GameObject, data:any) {
+            this._staticBody.addBody(entityObject, data);
         }
         //
-        //@require(function(gameObject:GameObject){
-        //    assert(!!this._gameObjectDataList.findBodyByGameObject(gameObject), Log.info.FUNC_SHOULD("add physics body"));
+        //@require(function(entityObject:GameObject){
+        //    assert(!!this._gameObjectDataList.findBodyByGameObject(entityObject), Log.info.FUNC_SHOULD("add physics body"));
         //})
-        //public updateColliderShapeFromBody(gameObject:GameObject){
-        //    var body:CANNON.Body = this._gameObjectDataList.findBodyByGameObject(gameObject);
+        //public updateColliderShapeFromBody(entityObject:GameObject){
+        //    var body:CANNON.Body = this._gameObjectDataList.findBodyByGameObject(entityObject);
         //
         //    body.
         //
         //}
 
-        public addLockConstraint(gameObject:GameObject, lockConstraint:LockConstraint){
-            this._lockConstraint.addConstraint(gameObject, lockConstraint);
+        public addLockConstraint(entityObject:GameObject, lockConstraint:LockConstraint){
+            this._lockConstraint.addConstraint(entityObject, lockConstraint);
         }
 
-        public removeLockConstraint(gameObject:GameObject){
-            this._lockConstraint.removeConstraint(gameObject);
+        public removeLockConstraint(entityObject:GameObject){
+            this._lockConstraint.removeConstraint(entityObject);
         }
 
-        public addDistanceConstraint(gameObject:GameObject, distanceConstraint:DistanceConstraint){
-            this._distanceConstraint.addConstraint(gameObject, distanceConstraint);
+        public addDistanceConstraint(entityObject:GameObject, distanceConstraint:DistanceConstraint){
+            this._distanceConstraint.addConstraint(entityObject, distanceConstraint);
         }
 
-        public removeDistanceConstraint(gameObject:GameObject){
-            this._distanceConstraint.removeConstraint(gameObject);
+        public removeDistanceConstraint(entityObject:GameObject){
+            this._distanceConstraint.removeConstraint(entityObject);
         }
 
-        public addHingeConstraint(gameObject:GameObject, hingeConstraint:HingeConstraint){
-            this._hingeConstraint.addConstraint(gameObject, hingeConstraint);
+        public addHingeConstraint(entityObject:GameObject, hingeConstraint:HingeConstraint){
+            this._hingeConstraint.addConstraint(entityObject, hingeConstraint);
         }
 
-        public removeHingeConstraint(gameObject:GameObject){
-            this._hingeConstraint.removeConstraint(gameObject);
+        public removeHingeConstraint(entityObject:GameObject){
+            this._hingeConstraint.removeConstraint(entityObject);
         }
 
-        public addPointToPointConstraint(gameObject:GameObject, pointToPointConstraint:PointToPointConstraint){
-            this._pointToPointConstraint.addConstraint(gameObject, pointToPointConstraint);
+        public addPointToPointConstraint(entityObject:GameObject, pointToPointConstraint:PointToPointConstraint){
+            this._pointToPointConstraint.addConstraint(entityObject, pointToPointConstraint);
         }
 
         public removePointToPointConstraint(pointToPointConstraint:PointToPointConstraint){
@@ -186,8 +186,8 @@ module wd {
             this._hingeConstraint.removeConstraint(obj);
 
             this._pointToPointConstraintDataList
-                .filter(({gameObject}) => {
-                    return JudgeUtils.isEqual(gameObject, obj);
+                .filter(({entityObject}) => {
+                    return JudgeUtils.isEqual(entityObject, obj);
                 })
                 .forEach(({pointToPointConstraint}) => {
                     self._pointToPointConstraint.removeConstraint(pointToPointConstraint)
