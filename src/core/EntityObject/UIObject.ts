@@ -1,6 +1,6 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    export class UIObject extends EntityObject{
+    export class UIObject extends GameEntityObject{
         public static create() {
             var obj = new this();
 
@@ -23,8 +23,6 @@ module wd {
         protected createTransform(){
             return RectTransform.create();
         }
-
-        //todo addChild:child's ui renderer should be the same as parent
     }
 }
 

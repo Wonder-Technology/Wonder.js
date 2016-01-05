@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
     //todo add copy method
-    export class GameObject extends EntityObject{
+    export class GameObject extends GameEntityObject{
         public static create() {
             var obj = new this();
 

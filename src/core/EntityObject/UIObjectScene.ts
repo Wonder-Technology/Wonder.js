@@ -1,6 +1,5 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd {
-    //export class UIObjectScene extends UIObject{
     export class UIObjectScene extends EntityObject{
         public static create() {
             var obj = new this();
