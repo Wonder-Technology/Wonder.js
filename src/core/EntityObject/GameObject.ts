@@ -1,4 +1,4 @@
-/// <reference path="../filePath.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module wd {
     //todo add copy method
     export class GameObject extends EntityObject{

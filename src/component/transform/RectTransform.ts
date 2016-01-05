@@ -1,4 +1,4 @@
-/// <reference path="../filePath.d.ts"/>
+/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class RectTransform extends Transform{
         public static create() {

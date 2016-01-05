@@ -29,27 +29,27 @@
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>
-/// <reference path="core/Transform"/>
-/// <reference path="core/ThreeDTransform"/>
-/// <reference path="core/RectTransform"/>
-/// <reference path="core/EntityObject"/>
-/// <reference path="core/GameObject"/>
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
 /// <reference path="core/Main"/>
-/// <reference path="core/entity/Scene"/>
-/// <reference path="core/entity/LightManager"/>
-/// <reference path="core/entity/Skybox"/>
-/// <reference path="core/entity/UIObject"/>
+/// <reference path="core/entityObject/EntityObject"/>
+/// <reference path="core/entityObject/UIObject"/>
+/// <reference path="core/entityObject/GameObject"/>
+/// <reference path="core/entityObject/Scene"/>
+/// <reference path="core/entityObject/Skybox"/>
 
 
 /// <reference path="collision/CollisionDetector"/>
 
 
+/// <reference path="component/transform/Transform"/>
+/// <reference path="component/transform/ThreeDTransform"/>
+/// <reference path="component/transform/RectTransform"/>
 
 /// <reference path="component/container/ComponentContainer"/>
 /// <reference path="component/container/ActionManager"/>
 /// <reference path="component/container/UIManager"/>
+/// <reference path="component/container/LightManager"/>
 
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
