@@ -2,9 +2,9 @@
 module wd {
     //todo add copy method
     export abstract class EntityObject extends Entity{
-        private _scripts:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
-        get script(){
-            return this._scripts;
+        private _scriptList:wdCb.Hash<IScriptBehavior> = wdCb.Hash.create<IScriptBehavior>();
+        get scriptList(){
+            return this._scriptList;
         }
 
         public name:string = null;
@@ -315,7 +315,7 @@ module wd {
         }
 
         public execScript(method:string, arg?:any){
-            this._scripts.forEach((script:IScriptBehavior) => {
+            this._scriptList.forEach((script:IScriptBehavior) => {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
         }

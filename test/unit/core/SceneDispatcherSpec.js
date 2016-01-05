@@ -52,7 +52,7 @@ describe("SceneDispatcher", function() {
             script3 = buildScript();
             script4 = buildScript();
 
-            scene.script.addChild("customScript1", script1);
+            scene.scriptList.addChild("customScript1", script1);
             prepareTool.addScript(scene, script1, "customScript1");
             prepareTool.addScript(gameObject1, script2, "customScript2");
             prepareTool.addScript(gameObject2, script3, "customScript3");
@@ -481,7 +481,7 @@ describe("SceneDispatcher", function() {
 
             prepareTool.addScript(scene._gameObjectScene, script1, "customScript1");
 
-            expect(scene.script.getCount()).toEqual(1);
+            expect(scene.scriptList.getCount()).toEqual(1);
         });
         it("use gameObjectScene->actionManager as scene->actionManager", function(){
             var action = buildAction();

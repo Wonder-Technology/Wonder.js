@@ -1,7 +1,7 @@
 /// <reference path="../../filePath.d.ts"/>
 module wd{
     export class Script extends Component{
-        public static script:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();
+        public static scriptList:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();
 
         public static create():Script;
         public static create(url:string):Script;
@@ -18,7 +18,7 @@ module wd{
         }
 
         public static addScript(scriptName:string, _class:Function){
-            this.script.push(<ScriptFileData>{
+            this.scriptList.push(<ScriptFileData>{
                 name: scriptName,
                 class: _class
             });
@@ -38,7 +38,7 @@ module wd{
 
             return LoaderManager.getInstance().load(this.url)
             .map(() => {
-                    return Script.script.pop();
+                    return Script.scriptList.pop();
                 });
         }
 
@@ -61,7 +61,7 @@ module wd{
         }
 
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
-            entityObject.script.addChild(data.name, new data.class(entityObject));
+            entityObject.scriptList.addChild(data.name, new data.class(entityObject));
         }
     }
 

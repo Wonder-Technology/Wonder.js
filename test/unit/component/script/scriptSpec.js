@@ -19,7 +19,7 @@ describe("script", function () {
         var test = null;
         var onEnter = director.scene.onEnter;
         director.scene.onEnter = function(){
-            test = gameObject.script.getChild("test");
+            test = gameObject.scriptList.getChild("test");
             judgeOnEnter(test, gameObject);
             onEnter.call(director.scene);
         };
@@ -58,8 +58,8 @@ describe("script", function () {
         var test2 = null;
         var onEnter = director.scene.onEnter;
         director.scene.onEnter = function(){
-            test = gameObject.script.getChild("test");
-            test2 = gameObject.script.getChild("test2");
+            test = gameObject.scriptList.getChild("test");
+            test2 = gameObject.scriptList.getChild("test2");
 
             judgeOnEnter(test, test2, gameObject);
 
@@ -95,7 +95,7 @@ describe("script", function () {
         var test = null;
         var onEnter = director.scene.onEnter;
         director.scene.onEnter = function(){
-            test = this.script.getChild("test");
+            test = this.scriptList.getChild("test");
             judgeOnEnter(test, this);
             onEnter.call(director.scene);
         };

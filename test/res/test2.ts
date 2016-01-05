@@ -4,13 +4,13 @@ export class Test2{
         this.gameObject = gameObject;
     }
 
-    public gameObject = null;
+    public gameObject:wd.GameObject = null;
 
     public init(){
     }
 
     public update(time) {
-        this.gameObject.script.getChild("test").update(time);
+        this.gameObject.scriptList.getChild("test").update(time);
     }
 
     public onEnter() {

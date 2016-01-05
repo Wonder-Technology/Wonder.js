@@ -37,7 +37,7 @@ var prepareTool = (function () {
             return sphere;
         },
         addScript:function(gameObject, script, scriptName){
-            gameObject.script.addChild(scriptName || "scriptName", script);
+            gameObject.scriptList.addChild(scriptName || "scriptName", script);
         },
         prepareGeo: function(sandbox, model,geo,material,setMaterialFunc) {
             setMaterialFunc = setMaterialFunc || function(){};

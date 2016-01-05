@@ -46,7 +46,7 @@
 
         //'test/unit/**/LightShaderLibSpec*',
 
-        //'test/unit/**/SceneSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
 
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',

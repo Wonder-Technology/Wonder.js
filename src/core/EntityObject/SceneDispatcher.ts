@@ -10,10 +10,10 @@ module wd {
         }
 
         /*!
-         use gameObjectScene->script as scene->script
+         use gameObjectScene->scriptList as scene->scriptList
          */
-        get script(){
-            return this._gameObjectScene.script;
+        get scriptList(){
+            return this._gameObjectScene.scriptList;
         }
 
         /*!
