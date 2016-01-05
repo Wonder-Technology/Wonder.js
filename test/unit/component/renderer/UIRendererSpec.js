@@ -102,26 +102,6 @@ describe("UIRenderer", function () {
 
             });
 
-            it("off ENDLOOP event handler", function(){
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_INIT));
-                renderer.init();
-
-                renderer.isClear = true;
-
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.ENDLOOP));
-
-                expect(renderer.isClear).toBeFalsy();
-
-
-                renderer.dispose();
-
-
-                renderer.isClear = true;
-
-                wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.ENDLOOP));
-
-                expect(renderer.isClear).toBeFalsy();
-            });
             it("remove canvas", function(){
                 director.scene.addChild(uiObject);
 

@@ -4,10 +4,8 @@ module wd {
         private _isFirstUpdate:boolean = true;
         private _sizeChangeEventSubscription:wdFrp.IDisposable = null;
 
-        public init() {
+        public handleInit() {
             var self = this;
-
-            this.context = this.getContext();
 
             this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
                 .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))

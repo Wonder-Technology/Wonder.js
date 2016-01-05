@@ -29,6 +29,8 @@
 
         'test/unit/**',
 
+        //'test/unit/**/ui/**',
+
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
@@ -39,6 +41,7 @@
 
         //'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
 

@@ -39,8 +39,7 @@ module wd {
             uiRenderer = this._getUIRenderer(this._uiObject);
 
             if(this._searchAnyOneDirtyOfAllUIWithSameUIRenderer(uiRenderer)){
-                //todo remove isClear?
-                if(uiRenderer && !uiRenderer.isClear){
+                if(uiRenderer){
                     uiRenderer.clearCanvas();
                 }
 

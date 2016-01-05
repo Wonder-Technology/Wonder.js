@@ -38,7 +38,7 @@ module wd {
         private _charFontList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
 
-        public init(){
+        public handleInit(){
             var fntObj = this._getFntObj(),
                 imageAsset:ImageTextureAsset = this._getImageAsset();
 
@@ -54,7 +54,7 @@ module wd {
                 return false;
             }
 
-            super.init();
+            super.handleInit();
 
             this._createAndAddFontCharUIObjects(fntObj, imageAsset.source);
 

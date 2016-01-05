@@ -82,8 +82,8 @@ module wd {
         private _lineHeight:number = null;
         private _strArr:Array<string> = [];
 
-        public init() {
-            super.init();
+        public handleInit() {
+            super.handleInit();
 
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();

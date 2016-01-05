@@ -16,19 +16,8 @@ module wd {
 
         private _offScreenCanvas:HTMLCanvasElement = null;
         private _offScreenContext:CanvasRenderingContext2D = null;
-        private _isInit:boolean = false;
 
-        public init(){
-            //todo font also
-            if(this._isInit){
-                return;
-            }
-
-            this._isInit = true;
-
-
-            this.context = this.getContext();
-
+        public handleInit(){
             this._createOffScreenCanvas();
 
             this._drawProgressBar();
@@ -58,7 +47,6 @@ module wd {
         }
 
         private _drawBorder(position:Vector2){
-            //todo refactor
             RoundedRectUtils.drawRoundedRect(this.context, this.borderStyle, null, position.x - this.width / 2, position.y - this.height / 2, this.width, this.height, this.radius);
         }
 

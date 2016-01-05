@@ -20,8 +20,6 @@ module wd {
             return this.entityObject.transform.position.y;
         }
 
-        //todo width/height change will dirty
-
         get dirty(){
             var transform = null;
 

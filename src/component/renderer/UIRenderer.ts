@@ -24,11 +24,9 @@ module wd {
         }
 
         public context:any = null;
-        public isClear:boolean = false;
 
         private _canvas:HTMLCanvasElement = null;
         private _beforeInitHandler:() => void = null;
-        private _endLoopHandler:() => void = null;
         private _isInit:boolean = false;
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
@@ -57,12 +55,6 @@ module wd {
             }
 
             this._isInit = true;
-
-            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                this.isClear = false;
-            });
-
-            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public initWhenCreate(){
@@ -82,8 +74,6 @@ module wd {
 
         public clearCanvas(){
             this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
-
-            this.isClear = true;
         }
 
         private _createOverlayCanvas(){

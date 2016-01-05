@@ -96,6 +96,7 @@ describe("BitmapFont", function () {
 
                 font.bitmapId = "bbb";
 
+                font._isInit = false;
                 var result = font.init();
                 expect(wd.Log.log).toCalledTwice();
                 expect(result).toBeFalsy();

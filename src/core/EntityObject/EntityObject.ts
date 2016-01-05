@@ -8,7 +8,6 @@ module wd {
         }
 
         public name:string = null;
-        //todo move it,parent,bubbleParent to GameEntityObject
         public transform:any = null;
         public parent:EntityObject = null;
         public bubbleParent:EntityObject = null;
