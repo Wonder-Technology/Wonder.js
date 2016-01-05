@@ -2,14 +2,14 @@
 module wd {
     export abstract class Font extends UI {
         private _isFirstUpdate:boolean = true;
-        private _sizeChangeEventDescription:wdFrp.IDisposable = null;
+        private _sizeChangeEventSubscription:wdFrp.IDisposable = null;
 
         public init() {
             var self = this;
 
             this.context = this.getContext();
 
-            this._sizeChangeEventDescription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
+            this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
                 .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
                 .subscribe(() => {
                     self.p_dirty = true;
@@ -17,8 +17,8 @@ module wd {
         }
 
         public dispose(){
-            if(this._sizeChangeEventDescription){
-                this._sizeChangeEventDescription.dispose();
+            if(this._sizeChangeEventSubscription){
+                this._sizeChangeEventSubscription.dispose();
             }
         }
 
