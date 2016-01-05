@@ -18,7 +18,7 @@ describe("LightShaderLib", function () {
         var mMatrix;
 
         function createDirectionLight(onSetLight){
-            var light = new wd.GameObject();
+            var light = wd.GameObject.create();
             light.addComponent(wd.DirectionLight.create());
 
             onSetLight(light);
@@ -29,7 +29,7 @@ describe("LightShaderLib", function () {
         beforeEach(function(){
             scene = wd.Director.getInstance().scene;
 
-            camera = new wd.GameObject();
+            camera = wd.GameObject.create();
             sandbox.stub(scene, "camera", camera);
 
             material = new wd.LightMaterial();

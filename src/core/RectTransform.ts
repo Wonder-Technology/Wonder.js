@@ -1,8 +1,8 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
     export class RectTransform extends Transform{
-        public static create(uiObject:UIObject) {
-            var obj = new this(uiObject);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
@@ -179,7 +179,7 @@ module wd{
             if(width !== this._width){
                 this._width = width;
 
-                EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_WIDTH_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.UI_WIDTH_CHANGE));
             }
         }
 
@@ -191,7 +191,7 @@ module wd{
             if(height !== this._height){
                 this._height = height;
 
-                EventManager.trigger(this._uiObject, CustomEvent.create(<any>EngineEvent.UI_HEIGHT_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.UI_HEIGHT_CHANGE));
             }
         }
 
@@ -202,16 +202,9 @@ module wd{
         protected p_parent:RectTransform;
         protected children:wdCb.Collection<RectTransform>;
 
-        private _uiObject:UIObject = null;
         private _localRotationMatrix:Matrix3 = Matrix3.create();
         private _localPositionAndScaleMatrix:Matrix3 = Matrix3.create();
 
-
-        constructor(uiObject:UIObject){
-            super();
-
-            this._uiObject = uiObject;
-        }
 
         public syncRotation(){
             if(this.dirtyRotation){

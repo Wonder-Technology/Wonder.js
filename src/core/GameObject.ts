@@ -5,13 +5,20 @@ module wd {
         public static create() {
             var obj = new this();
 
+            obj.initWhenCreate();
+
             return obj;
         }
 
+        public transform:ThreeDTransform;
+
         public name:string = `gameObject${String(this.uid)}`;
-        public transform:ThreeDTransform = ThreeDTransform.create(this);
 
         protected children:wdCb.Collection<GameObject>;
+
+        protected createTransform(){
+            return ThreeDTransform.create();
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
-    export class Transform extends Entity{
+    export class Transform extends Component{
         private _isTranslate:boolean = false;
         get isTranslate(){
             return this._isTranslate;
@@ -67,7 +67,6 @@ module wd{
         //todo more
 
 
-        @virtual
         public init(){
             var self = this;
 

@@ -19,6 +19,12 @@ module wd {
         private _startLoopHandler:() => void = null;
         private _endLoopHandler:() => void = null;
 
+        @virtual
+        public initWhenCreate(){
+            this.transform = this.createTransform();
+            this.addComponent(this.transform);
+        }
+
         public init() {
             this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.onStartLoop();
@@ -33,8 +39,6 @@ module wd {
             this._components.forEach((component:Component) => {
                 component.init();
             });
-
-            this.transform.init();
 
             this.execScript("init");
 
@@ -311,6 +315,8 @@ module wd {
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
         }
+
+        protected abstract createTransform():Transform;
 
         @virtual
         protected beforeUpdateChildren(elapsedTime:number){

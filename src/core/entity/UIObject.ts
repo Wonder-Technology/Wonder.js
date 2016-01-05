@@ -4,17 +4,24 @@ module wd {
         public static create() {
             var obj = new this();
 
+            obj.initWhenCreate();
+
             return obj;
         }
 
+        public transform:RectTransform;
+
         public name:string = `uiObject${String(this.uid)}`;
-        public transform:RectTransform = RectTransform.create(this);
         public uiManager:UIManager = UIManager.create(this);
 
         protected children:wdCb.Collection<UIObject>;
 
         protected beforeUpdateChildren(elapsedTime:number){
             this.uiManager.update(elapsedTime);
+        }
+
+        protected createTransform(){
+            return RectTransform.create();
         }
 
         //todo addChild:child's ui renderer should be the same as parent

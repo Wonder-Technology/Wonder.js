@@ -1,8 +1,8 @@
 /// <reference path="../filePath.d.ts"/>
 module wd{
     export class ThreeDTransform extends Transform{
-        public static create(entityObject:GameObject) {
-            var obj = new this(entityObject);
+        public static create() {
+            var obj = new this();
 
             return obj;
         }
@@ -168,14 +168,6 @@ module wd{
         protected p_parent:ThreeDTransform;
         protected children:wdCb.Collection<ThreeDTransform>;
 
-        private _gameObject:GameObject = null;
-
-
-        constructor(entityObject:GameObject){
-            super();
-
-            this._gameObject = entityObject;
-        }
 
         public sync(){
             if (this.dirtyLocal) {
@@ -320,7 +312,7 @@ module wd{
             dir = rot.multiplyVector3(dir); // rotate the direction
 
             this.position = center.add(dir); // define new position
-            //todo why "this.rotation = this.rotation.multiply(rot)" will cause gameobject rotate direction around self?
+            //todo why "this.rotation = this.rotation.multiply(rot)" will cause entityObject rotate direction around self?
             this.rotation = rot.multiply(this.rotation);
 
             return this;
