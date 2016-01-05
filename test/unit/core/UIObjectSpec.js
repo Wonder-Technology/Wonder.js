@@ -26,8 +26,6 @@ describe("UIObject", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.openContractCheck(sandbox);
-
         director = wd.Director.getInstance();
 
         sandbox.stub(wd.DeviceManager.getInstance(), "view", {
@@ -187,7 +185,7 @@ describe("UIObject", function () {
             expect(bitmapFont.update).toCalledOnce();
             expect(charFont.update).toCalledOnce();
         });
-        it("test ui component with different UIRenderers, so that each UIRenderer can clear conce", function(){
+        it("test ui component with different UIRenderers, so that each UIRenderer can clear once", function(){
             var bitmapFont = wd.BitmapFont.create();
 
             uiObject.addComponent(bitmapFont);
@@ -261,6 +259,18 @@ describe("UIObject", function () {
         });
 
         //todo test more ui
+    });
+
+    describe("addComponent", function(){
+        beforeEach(function(){
+            testTool.openContractCheck(sandbox);
+        });
+
+        it("one UIObject should only has one UI component", function(){
+            expect(function(){
+                uiObject.addComponent(wd.ProgressBar.create());
+            }).toThrow();
+        });
     });
 });
 

@@ -23,6 +23,17 @@ module wd {
         protected createTransform(){
             return RectTransform.create();
         }
+
+        @require(function(component:Component){
+            if(component instanceof UI){
+                assert(!!!this.getComponent(UI), Log.info.FUNC_SHOULD("only has one UI component"));
+            }
+        })
+        public addComponent(component:Component){
+            super.addComponent(component);
+
+            return this;
+        }
     }
 }
 
