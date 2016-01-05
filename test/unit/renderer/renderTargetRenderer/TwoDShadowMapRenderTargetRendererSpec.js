@@ -229,7 +229,7 @@ tool.init_beforeEach = function(self){
         });
         it("move to light's position, lookAt zero point", function(){
             var camera = self.renderTargetRenderer.createCamera();
-            var transform = wd.Transform.create().translate(light.position).lookAt(0, 0, 0);
+            var transform = wd.ThreeDTransform.create().translate(light.position).lookAt(0, 0, 0);
 
             expect(camera.transform.position).toEqual(transform.position);
             expect(camera.transform.rotation).toEqual(

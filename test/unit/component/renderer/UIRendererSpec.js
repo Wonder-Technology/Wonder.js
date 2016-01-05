@@ -113,7 +113,7 @@ describe("UIRenderer", function () {
                 expect(renderer.isClear).toBeFalsy();
 
 
-                uiObject.dispose();
+                renderer.dispose();
 
 
                 renderer.isClear = true;

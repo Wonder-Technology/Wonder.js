@@ -29,12 +29,20 @@
 
         'test/unit/**',
 
+        //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/uiSpec*',
+        //'test/unit/**/UIObjectSpec*',
         //'test/unit/**/BitmapFontSpec*',
 
         //'test/unit/**/ProgressBarSpec*',
+
+        //'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/component/**',
+        //'test/unit/**/PanelSpec*',
+
+        //'test/unit/**/UIObjectSpec*',
 
 
         //'test/unit/**/MathUtils*',
@@ -62,7 +70,6 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        //'test/unit/**/TransformSpec.js',
         //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',

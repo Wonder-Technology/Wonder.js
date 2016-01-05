@@ -17,7 +17,9 @@ module wd {
         }
 
         public dispose(){
-            this._sizeChangeEventDescription.dispose();
+            if(this._sizeChangeEventDescription){
+                this._sizeChangeEventDescription.dispose();
+            }
         }
 
         public update(elapsedTime:number){

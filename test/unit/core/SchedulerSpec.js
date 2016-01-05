@@ -27,7 +27,7 @@ describe("Scheduler", function () {
     });
 
     describe("scheduleFrame", function(){
-        it("schedule the task to the next speficied frame", function(){
+        it("schedule the task to the next specific frame", function(){
             var sum = 0;
 
             schedule.scheduleFrame(function(data){

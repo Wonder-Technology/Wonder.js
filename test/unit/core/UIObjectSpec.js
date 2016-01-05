@@ -1,4 +1,4 @@
-describe("ui", function () {
+describe("UIObject", function () {
     var sandbox = null;
     var plainFont;
     var renderer;
@@ -67,7 +67,7 @@ describe("ui", function () {
     });
 
     describe("if any ui component dirty, firstly clear canvas once, then update every one", function(){
-        function createUIUIObject(font, uiRenderer){
+        function createUIObject(font, uiRenderer){
             var renderer;
             var fontComponent;
 
@@ -103,7 +103,7 @@ describe("ui", function () {
 
             uiObject.addComponent(bitmapFont);
 
-            var data = createUIUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
+            var data = createUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
 
             var charFontUIObject = data.uiObject;
             var charFont = data.font;
@@ -151,7 +151,7 @@ describe("ui", function () {
 
             uiObject.addComponent(bitmapFont);
 
-            var data = createUIUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
+            var data = createUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
 
             var charFontUIObject = data.uiObject;
             var charFont = data.font;
@@ -196,7 +196,7 @@ describe("ui", function () {
 
 
 
-            var data1 = createUIUIObject();
+            var data1 = createUIObject();
 
             var plainFontUIObject2 = data1.uiObject;
             var plainFont2 = data1.font;
@@ -263,4 +263,5 @@ describe("ui", function () {
         //todo test more ui
     });
 });
+
 
