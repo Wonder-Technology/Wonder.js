@@ -42,7 +42,7 @@ module sample {
             return this._gameObject.filter((gameObject:GameObject) => {
                     let location = e.locationInView;
 
-                    return gameObject.hasComponent(Collider) && cameraController.isIntersectWithRay(gameObject, location.x, location.y);
+                    return cameraController.isIntersectWithRay(gameObject, location.x, location.y);
                 })
                 .sort((a:GameObject, b:GameObject) => {
                     return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);

@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 /// <reference path="../../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
-    var Collider = wd.Collider;
     var CameraController = wd.CameraController;
     var RayPicking = (function () {
         function RayPicking(gameObject) {
@@ -33,7 +32,7 @@ var sample;
             var cameraController = this._gameObject.camera.getComponent(CameraController), self = this;
             return this._gameObject.filter(function (gameObject) {
                 var location = e.locationInView;
-                return gameObject.hasComponent(Collider) && cameraController.isIntersectWithRay(gameObject, location.x, location.y);
+                return cameraController.isIntersectWithRay(gameObject, location.x, location.y);
             })
                 .sort(function (a, b) {
                 return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);

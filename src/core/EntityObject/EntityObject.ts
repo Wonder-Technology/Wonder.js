@@ -13,7 +13,7 @@ module wd {
         public bubbleParent:EntityObject = null;
         public actionManager:ActionManager = ActionManager.create();
 
-        protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();;
+        protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _startLoopHandler:() => void = null;
