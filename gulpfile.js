@@ -20,7 +20,7 @@ var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl"];
 gulp.task("watch", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsDebug"]));
+    gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsConfig", "compileTsDebug"]));
 });
 
 

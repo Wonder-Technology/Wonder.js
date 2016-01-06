@@ -122,6 +122,7 @@ module wd {
             return this;
         }
 
+        public addChildren(children:EntityObject);
         public addChildren(children:Array<EntityObject>);
         public addChildren(children:wdCb.Collection<EntityObject>);
 

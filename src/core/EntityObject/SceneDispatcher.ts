@@ -145,10 +145,16 @@ module wd {
             }
         }
 
+        public addChildren(children:EntityObject);
         public addChildren(children:Array<EntityObject>);
         public addChildren(children:wdCb.Collection<EntityObject>);
 
         public addChildren(...args) {
+            if(args[0] instanceof EntityObject){
+                let child:EntityObject = <EntityObject>args[0];
+
+                this.addChild(child);
+            }
             if(args[0] instanceof wdCb.Collection){
                 let children:wdCb.Collection<EntityObject> = <wdCb.Collection<EntityObject>>args[0],
                     self = this;
@@ -157,7 +163,7 @@ module wd {
                     self.addChild(child);
                 });
             }
-            else{
+            else if(JudgeUtils.isArray(args[0])){
                 let children:Array<EntityObject> = <Array<EntityObject>>args[0];
 
                 for(let child of children){

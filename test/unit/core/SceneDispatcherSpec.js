@@ -268,6 +268,12 @@ describe("SceneDispatcher", function() {
                     child2 = buildChild();
                 });
 
+                it("can add single one", function(){
+                    children = child;
+                    scene.addChildren(children);
+
+                    expect(scene.getChild(2)).toEqual(child);
+                });
                 it("can add array", function(){
                     children = [child, child2];
                     scene.addChildren(children);

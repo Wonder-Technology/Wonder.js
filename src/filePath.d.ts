@@ -115,7 +115,8 @@
 
 /// <reference path="component/physics/RigidBody"/>
 /// <reference path="component/physics/DynamicRigidBody"/>
-/// <reference path="component/physics/DynamicRigidBody"/>
+/// <reference path="component/physics/KinematicRigidBody"/>
+/// <reference path="component/physics/StaticRigidBody"/>
 
 /// <reference path="component/physics/model/PhysicsConstraintModel"/>
 
@@ -171,6 +172,9 @@
 /// <reference path="component/ui/font/PlainFont"/>
 /// <reference path="component/ui/font/BitmapFont"/>
 /// <reference path="component/ui/font/CharFont"/>
+
+/// <reference path="component/ui/progressBar/ProgressBar"/>
+/// <reference path="component/ui/utils/RoundedRectUtils"/>
 
 
 
@@ -268,6 +272,7 @@
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
+/// <reference path="material/CustomMaterial"/>
 /// <reference path="material/Shading"/>
 /// <reference path="material/MapManager"/>
 
