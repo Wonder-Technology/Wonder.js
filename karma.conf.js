@@ -19,6 +19,7 @@
 
         'test/helper/jquery.js',
         'test/helper/yTool.js',
+        'test/helper/bowser.js',
 
         'test/helper/jsExtend.js',
         'test/helper/jasmine/**',

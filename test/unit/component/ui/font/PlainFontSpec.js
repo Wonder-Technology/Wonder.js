@@ -554,9 +554,16 @@ describe("PlainFont", function () {
                 font.update();
 
                 expect(context.fillText.secondCall).toCalledWith("a", -250, -200);
-                expect(context.fillText.getCall(2)).toCalledWith("b", -250, 0);
                 expect(context.font).toEqual("200px '" + font.fontFamily + "'");
-                expect(font._lineHeight).toEqual(200);
+
+                if(bowser.firefox){
+                    expect(font._lineHeight).toEqual(201);
+                    expect(context.fillText.getCall(2)).toCalledWith("b", -250, 1);
+                }
+                else{
+                    expect(font._lineHeight).toEqual(200);
+                    expect(context.fillText.getCall(2)).toCalledWith("b", -250, 0);
+                }
             });
             it("formatText and update line height change fontFamily", function(){
                 font.fontFamily = "aaa";
@@ -565,7 +572,12 @@ describe("PlainFont", function () {
 
                 expect(context.font).toEqual("50px 'aaa'");
                 //lineHeight should be affected by the fontFamily, but here it can't test(the lineHeight will not change here)
-                expect(font._lineHeight).toEqual(50);
+                if(bowser.firefox){
+                    expect(font._lineHeight).toEqual(51);
+                }
+                else{
+                    expect(font._lineHeight).toEqual(50);
+                }
             });
             it("formatText when change width", function(){
                 setWidth(2);
@@ -574,7 +586,13 @@ describe("PlainFont", function () {
                 font.update();
 
                 expect(context.fillText.secondCall).toCalledWith("阿", -1, -200);
-                expect(context.fillText.getCall(2)).toCalledWith("斯", -1, -150);
+
+
+                if(bowser.firefox){
+                }
+                else{
+                    expect(context.fillText.getCall(2)).toCalledWith("斯", -1, -150);
+                }
             });
             it("formatText when change height", function(){
                 setHeight(100);
