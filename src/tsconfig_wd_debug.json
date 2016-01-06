@@ -38,7 +38,6 @@
 		"core/Director.ts",
 		"core/Main.ts",
 		"core/entityObject/EntityObject.ts",
-		"core/entityObject/GameEntityObject.ts",
 		"core/entityObject/UIObject.ts",
 		"core/entityObject/GameObject.ts",
 		"core/entityObject/SceneDispatcher.ts",

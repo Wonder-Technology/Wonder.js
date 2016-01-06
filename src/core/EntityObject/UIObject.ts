@@ -1,5 +1,5 @@
 module wd {
-    export class UIObject extends GameEntityObject{
+    export class UIObject extends EntityObject{
         public static create() {
             var obj = new this();
 

@@ -1,6 +1,6 @@
 module wd {
     export abstract class Control extends ActionInterval{
-        set target(target:GameEntityObject){
+        set target(target:EntityObject){
             this.p_target = target;
 
             this.getInnerActions().forEach((action:Action) => {
