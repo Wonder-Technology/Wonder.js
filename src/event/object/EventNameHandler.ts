@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     enum BrowserIdentifier{
         FALLBACK = <any>"fallback",

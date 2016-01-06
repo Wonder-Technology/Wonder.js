@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export abstract class Geometry extends Component{
         private _material:Material = null;

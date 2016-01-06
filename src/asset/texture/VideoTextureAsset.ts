@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class VideoTextureAsset extends TextureAsset{
         public static create(video:Video) {

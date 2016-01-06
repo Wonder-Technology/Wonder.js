@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class CustomEventHandler extends EventHandler{
         private static _instance = null;

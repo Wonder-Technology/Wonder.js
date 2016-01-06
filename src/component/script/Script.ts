@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class Script extends Component{
         public static scriptList:wdCb.Stack<ScriptFileData> = wdCb.Stack.create<ScriptFileData>();

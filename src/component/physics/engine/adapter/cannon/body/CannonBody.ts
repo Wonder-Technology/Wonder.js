@@ -1,4 +1,3 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
     export abstract class CannonBody {
         constructor(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, materialList:CannonMaterialList) {

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class AABBShape extends Shape {
         public static create() {

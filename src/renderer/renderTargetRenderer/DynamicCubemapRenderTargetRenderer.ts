@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class DynamicCubemapRenderTargetRenderer extends CubemapRenderTargetRenderer{
         public static create(texture:DynamicCubemapTexture) {

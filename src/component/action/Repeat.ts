@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class Repeat extends Control {
         public static create(action:Action, times:number) {

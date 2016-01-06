@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class RoundedRectUtils {
         public static drawRoundedRect(context:CanvasRenderingContext2D, strokeStyle:string, fillStyle:string, cornerX:number, cornerY:number, width:number, height:number, cornerRadius:number) {

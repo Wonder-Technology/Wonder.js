@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export class DrawNoMipmapTwoDTextureCommand extends DrawTwoDTextureCommand{
         public static create() {

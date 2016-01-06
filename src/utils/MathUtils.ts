@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class MathUtils{
         public static clamp(num:number, below:number, up:number):number{

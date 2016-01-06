@@ -1,5 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
-
 module wd{
     export class DrawCompressedTextureCommand extends DrawTextureCommand{
         public static create() {

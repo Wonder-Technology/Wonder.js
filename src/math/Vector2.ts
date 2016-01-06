@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd{
     export class Vector2{
         public static create(x, y):Vector2 ;

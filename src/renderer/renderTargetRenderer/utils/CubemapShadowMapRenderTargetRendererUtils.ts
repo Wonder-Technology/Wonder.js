@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class CubemapShadowMapRenderTargetRendererUtils extends ShadowMapRenderTargetRendererUtils{
         public static create(light:PointLight, texture:CubemapShadowMapTexture) {

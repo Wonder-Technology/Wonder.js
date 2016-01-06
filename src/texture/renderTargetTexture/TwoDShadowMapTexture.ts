@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class TwoDShadowMapTexture extends TwoDRenderTargetTexture implements IShadowMapTexture{
         public static create() {

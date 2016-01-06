@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class TwoDShadowMapRenderTargetRenderer extends TwoDRenderTargetRenderer{
         public static create(light:DirectionLight) {

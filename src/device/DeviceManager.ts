@@ -1,5 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
-
 /*!
 DeviceManager is responsible for global setting of gl
  */

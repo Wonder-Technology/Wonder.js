@@ -1,6 +1,4 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
-    //export class GameObjectScene extends GameObject{
     export class GameObjectScene extends EntityObject{
         public static create() {
             var obj = new this();

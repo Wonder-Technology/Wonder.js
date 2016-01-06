@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     const WORD_REX = /([a-zA-Z0-9]+|\S)/,
         FIRST_ENGLISH_OR_NUM = /^[a-zA-Z0-9]/,

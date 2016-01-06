@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class PointLight extends Light{
         public static type:string = "pointLight";

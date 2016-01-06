@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     //todo support morphTargets?
     export class CustomGeometry extends Geometry{

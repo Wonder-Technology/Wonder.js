@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd{
     export class FresnelForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {

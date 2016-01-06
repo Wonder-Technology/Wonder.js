@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class JudgeUtils extends wdCb.JudgeUtils{
         public static isView(obj) {

@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class Matrix3 {
         public static create(mat:Float32Array):Matrix3;

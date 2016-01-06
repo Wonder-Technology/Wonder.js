@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd {
     export class CannonUtils{
         public static convertToCannonVector3(v:Vector3) {

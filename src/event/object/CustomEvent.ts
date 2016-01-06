@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class CustomEvent extends Event{
         public static create(eventName:string) {

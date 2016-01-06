@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class GeometryUtils{
         public static convertToFaces(indices:Array<number>, normals?:Array<number>):Array<Face3>{

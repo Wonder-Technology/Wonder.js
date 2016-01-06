@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export abstract class ShadowMapRenderTargetRendererUtils{
         constructor(light:Light, texture:Texture){

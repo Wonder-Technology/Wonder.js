@@ -1,5 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
-
 module wd {
     export class CallFunc extends ActionInstant{
         public static create(func:Function, context:any, ...data) {

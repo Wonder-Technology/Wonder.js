@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class UIObjectScene extends EntityObject{
         public static create() {

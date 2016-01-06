@@ -1,5 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
-
 module wd{
     export abstract class Event{
         constructor(eventName:EventName) {

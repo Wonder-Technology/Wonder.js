@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     //todo add custom define
     export class ShaderSourceBuilder{

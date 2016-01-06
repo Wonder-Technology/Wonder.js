@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class RepeatForever extends Control {
         public static create(action:Action) {

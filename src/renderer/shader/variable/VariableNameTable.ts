@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     const _table = wdCb.Hash.create<string>();
 

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class MeshRenderer extends RendererComponent {
         public static create() {

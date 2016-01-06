@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class ShaderSnippet {
         public static main_begin:string = "void main(void){\n";

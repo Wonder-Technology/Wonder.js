@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class BoundingRegion{
         constructor(entityObject:GameObject){

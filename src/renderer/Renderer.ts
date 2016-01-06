@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd{
     export abstract class Renderer{
         public skyboxCommand:QuadCommand = null;

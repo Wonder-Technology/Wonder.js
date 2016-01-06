@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     /*!it's flipX when viewer is inside the skybox*/
 

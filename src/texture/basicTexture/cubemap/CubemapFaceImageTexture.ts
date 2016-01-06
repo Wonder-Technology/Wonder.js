@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export class CubemapFaceImageTexture extends CubemapFaceTexture implements ICubemapFaceTwoDTextureAsset{
         public static create(asset:ImageTextureAsset) {

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class CustomEventBinder extends EventBinder{
         private static _instance = null;

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class StaticRigidBody extends RigidBody {
         public static create() {

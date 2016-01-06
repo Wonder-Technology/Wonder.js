@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
         protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;

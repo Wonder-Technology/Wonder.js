@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class MorphBufferContainer extends BufferContainer {
         public static create(entityObject:GameObject, animation:MorphAnimation) {

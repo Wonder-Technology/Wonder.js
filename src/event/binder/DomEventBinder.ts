@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class DomEventBinder extends EventBinder{
         private static _instance = null;

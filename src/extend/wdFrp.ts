@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wdFrp{
     export var fromCollection = (collection:wdCb.Collection<any>, scheduler = Scheduler.create()) =>{
         var arr = collection.toArray();

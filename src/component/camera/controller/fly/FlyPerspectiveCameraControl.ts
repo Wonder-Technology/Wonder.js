@@ -1,4 +1,3 @@
-/// <reference path="../../../../filePath.d.ts"/>
 module wd {
     export class FlyPerspectiveCameraControl extends FlyCameraControl {
         public static create(cameraComponent:Camera) {

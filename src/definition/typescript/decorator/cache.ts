@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export function cacheGetter(judgeFunc:() => boolean, returnCacheValueFunc:() => any, setCacheFunc:(returnVal) => void){
         return function (target, name, descriptor) {

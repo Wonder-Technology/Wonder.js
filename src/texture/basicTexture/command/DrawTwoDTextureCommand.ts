@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export abstract class DrawTwoDTextureCommand extends DrawTextureCommand{
         public source:any = null;

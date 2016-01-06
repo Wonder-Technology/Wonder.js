@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     const SPECIAL_KEY_MAP = {
             8: "backspace",

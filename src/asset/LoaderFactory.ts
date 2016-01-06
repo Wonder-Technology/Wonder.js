@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd{
     export class LoaderFactory{
         public static create(type:AssetType, extname:string) {

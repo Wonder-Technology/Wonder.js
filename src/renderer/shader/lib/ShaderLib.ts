@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export abstract class ShaderLib{
         public type:string = ABSTRACT_ATTRIBUTE;

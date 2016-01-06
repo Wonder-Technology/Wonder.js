@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd{
     export abstract class Loader{
         private _container:wdCb.Hash<string> = wdCb.Hash.create<string>();

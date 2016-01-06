@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class ViewWebGL implements IView {
         public static create(view:any) {

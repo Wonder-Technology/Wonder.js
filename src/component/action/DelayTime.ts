@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class DelayTime extends ActionInterval {
         public static create(delayTime:number) {

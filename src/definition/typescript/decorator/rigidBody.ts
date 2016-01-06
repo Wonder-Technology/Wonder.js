@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export function operateBodyDataGetterAndSetter(dataName) {
         return function (target, name, descriptor) {

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     const STARTING_FPS = 60,
         GAMETIME_SCALE = 1000;

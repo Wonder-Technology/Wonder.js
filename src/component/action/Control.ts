@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class Control extends ActionInterval{
         set target(target:GameEntityObject){

@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class CompressedTextureLoader{
         public static load(url:string) {

@@ -1,4 +1,3 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
 module wd{
     export class CannonLockConstraint extends CannonSingleConstraint{
         public static create(world:CANNON.World, gameObjectDataList:CannonGameObjectDataList, constraintDataList:CannonLockConstraintDataList) {

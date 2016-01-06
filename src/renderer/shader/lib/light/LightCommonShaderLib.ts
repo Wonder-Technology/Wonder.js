@@ -1,4 +1,3 @@
-/// <reference path="../../../../filePath.d.ts"/>
 module wd{
     export class LightCommonShaderLib extends ShaderLib{
         public static create() {

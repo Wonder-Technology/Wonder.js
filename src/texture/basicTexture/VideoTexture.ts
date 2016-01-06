@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class VideoTexture extends CommonTexture{
         public static create(asset:VideoTextureAsset) {

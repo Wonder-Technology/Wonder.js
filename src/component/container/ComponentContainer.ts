@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export abstract class ComponentContainer{
         protected list:wdCb.Collection<Component> = wdCb.Collection.create<Component>();

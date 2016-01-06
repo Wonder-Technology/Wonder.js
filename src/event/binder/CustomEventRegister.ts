@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class CustomEventRegister extends EventRegister{
         private static _instance = null;

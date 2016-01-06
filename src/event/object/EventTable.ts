@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 //todo add more event type
 module wd {
      const _table = wdCb.Hash.create<EventType>();

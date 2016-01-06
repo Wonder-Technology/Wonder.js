@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class Face3{
         public static create(aIndex:number, bIndex:number, cIndex:number, faceNormal:Vector3 = null, vertexNormals:wdCb.Collection<Vector3> = wdCb.Collection.create<Vector3>()) {

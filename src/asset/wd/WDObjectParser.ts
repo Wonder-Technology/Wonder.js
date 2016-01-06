@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 //todo optimize:set vertice,normal presion?(use toFixed)
 module wd {
     export class WDObjectParser {

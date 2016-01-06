@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     //todo add copy method
     export abstract class EntityObject extends Entity{

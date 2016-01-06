@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer{
         //protected frameBuffer:FrameBuffer = null;

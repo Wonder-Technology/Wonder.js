@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd{
     export function assert(cond:boolean, message:string="contract error"){
         Log.error(!cond, message);

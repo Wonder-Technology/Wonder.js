@@ -1,4 +1,3 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
 module wd{
     export abstract class CannonSingleConstraint extends CannonConstraint{
         public removeConstraint(entityObject:GameObject){

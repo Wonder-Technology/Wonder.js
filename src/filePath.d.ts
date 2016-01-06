@@ -14,6 +14,7 @@
 /// <reference path="definition/typescript/decorator/cache"/>
 /// <reference path="definition/typescript/decorator/virtual"/>
 /// <reference path="definition/typescript/decorator/rigidBody"/>
+/// <reference path="definition/typescript/decorator/script"/>
 /// <reference path="definition/Global"/>
 /// <reference path="definition/Variable"/>
 

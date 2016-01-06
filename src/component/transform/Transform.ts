@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class Transform extends Component{
         private _isTranslate:boolean = false;

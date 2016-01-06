@@ -5,30 +5,82 @@ var gulpSourcemaps = require("gulp-sourcemaps");
 var gulpConcat = require("gulp-concat");
 var merge = require("merge2");
 var fs = require("fs-extra");
+var path = require("path");
 
 
-var tsFilePaths = [
-    "src/filePath.d.ts",
-    "src/*.ts",
-    "src/**/*.ts"
-];
+//var tsFilePaths = [
+//    "src/filePath.d.ts",
+//    "src/*.ts",
+//    "src/**/*.ts"
+//];
 var distFilePaths = [
     'dist/*.ts',
     'dist/*.js'
 ];
+var definitionsPath = "src/filePath.d.ts";
+var tsconfigFile = [
+    "src/tsconfig.json",
+    "src/tsconfig_wd.json",
+    "src/tsconfig_wd_debug.json"
+];
+
+
+gulp.task("compileTsConfig", function(){
+    var mapFilePath = function(item){
+        var result = /"([^"]+)"/g.exec(item)[1];
+
+        if(result.indexOf(".d.ts") > -1){
+            return result;
+        }
+
+        return result + ".ts";
+    }
+
+    var filterFilePath = function(item){
+        return item !== "";
+    }
+
+    return gulp.src(tsconfigFile)
+        .pipe(through(function (file, encoding, callback) {
+            var arr = null,
+                tsconfig = null,
+                outputConfigStr = null;
+
+            if (file.isNull()) {
+                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+                return callback();
+            }
+            if (file.isBuffer()) {
+                arr = fs.readFileSync(path.join(process.cwd(), definitionsPath), "utf8").split('\n').filter(filterFilePath).map(mapFilePath);
+
+                tsconfig = JSON.parse(file.contents);
+                tsconfig.files = arr;
+
+                outputConfigStr = JSON.stringify(tsconfig,null,"\t");
+
+                fs.writeFileSync(file.path,outputConfigStr);
+
+                this.push(file);
+
+                callback();
+            }
+            if (file.isStream()) {
+                this.emit("error", new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'));
+                return callback();
+            }
+        }, function (callback) {
+            callback();
+        }));
+});
 
 gulp.task("compileTs", function() {
-    var tsResult = gulp.src(tsFilePaths)
-        .pipe(gulpTs({
-            declarationFiles: true,
-            target: "ES5",
-            sortOutput:true,
-            noEmitOnError: true,
-            removeComments:true,
-            experimentalDecorators: true,
-            //noExternalResolve: true
-            typescript: require("typescript")
-        }));
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[1]), {
+        sortOutput: true,
+        typescript: require('typescript')
+    });
+
+    var tsResult = tsProject.src()
+        .pipe(gulpTs(tsProject));
 
 
     return merge([
@@ -42,22 +94,17 @@ gulp.task("compileTs", function() {
 });
 
 gulp.task("compileTsDebug", function() {
-    var tsResult = gulp.src(tsFilePaths)
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[2]), {
+        typescript: require('typescript')
+    });
+
+    var tsResult = tsProject.src()
         .pipe(gulpSourcemaps.init())
-        .pipe(gulpTs({
-            declarationFiles: true,
-            target: "ES5",
-            experimentalDecorators: true,
-            sortOutput:true,
-            noEmitOnError: true,
-            removeComments:true,
-            typescript: require("typescript")
-        }));
+        .pipe(gulpTs(tsProject));
 
 
     return merge([
         tsResult.js
-            .pipe(gulpConcat("wd.debug.js"))
             .pipe(gulpSourcemaps.write())
             .pipe(gulp.dest("dist/"))
     ])

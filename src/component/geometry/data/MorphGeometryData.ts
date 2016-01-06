@@ -1,4 +1,3 @@
-/// <reference path="../../../filePath.d.ts"/>
 module wd {
     export class MorphGeometryData extends GeometryData{
         public static create(geometry:Geometry) {

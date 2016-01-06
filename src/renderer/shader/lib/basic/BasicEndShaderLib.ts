@@ -1,4 +1,3 @@
-/// <reference path="../../../../filePath.d.ts"/>
 module wd{
     export class BasicEndShaderLib extends ShaderLib{
         public static create() {

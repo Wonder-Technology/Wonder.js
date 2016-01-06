@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd {
     export class EventManager {
         public static on(listener:{}|EventListener):void;

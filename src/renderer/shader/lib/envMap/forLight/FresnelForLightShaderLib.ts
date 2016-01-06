@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd{
     export class FresnelForLightShaderLib extends EnvMapForLightShaderLib{
         public static create() {

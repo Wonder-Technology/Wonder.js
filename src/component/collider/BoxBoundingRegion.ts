@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export class BoxBoundingRegion extends BoundingRegion{
         public static create(entityObject:GameObject) {

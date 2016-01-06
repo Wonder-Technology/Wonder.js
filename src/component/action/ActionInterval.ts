@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class ActionInterval extends Action{
         protected elapsed:number = null;

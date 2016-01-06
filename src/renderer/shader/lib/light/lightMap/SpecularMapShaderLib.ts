@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd{
     export class SpecularMapShaderLib extends LightMapShaderLib{
         public static create() {

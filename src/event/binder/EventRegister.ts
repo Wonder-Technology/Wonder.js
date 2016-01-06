@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class EventRegister {
         protected listenerMap:EventListenerMap = ABSTRACT_ATTRIBUTE;

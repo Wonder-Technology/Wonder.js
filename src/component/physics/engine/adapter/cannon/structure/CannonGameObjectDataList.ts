@@ -1,4 +1,3 @@
-/// <reference path="../../../../../../filePath.d.ts"/>
 module wd {
     export class CannonGameObjectDataList extends CannonDataList{
         public static create() {

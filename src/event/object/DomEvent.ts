@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     export abstract class DomEvent extends Event{
         constructor(event:any, eventName:EventName) {

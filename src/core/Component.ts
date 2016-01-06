@@ -1,4 +1,3 @@
-/// <reference path="../filePath.d.ts"/>
 module wd{
     export abstract class Component extends Entity{
         public entityObject:EntityObject = null;

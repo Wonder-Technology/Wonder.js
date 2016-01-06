@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd{
     export class BasicEnvMapForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {

@@ -1,4 +1,3 @@
-/// <reference path="../../../../../filePath.d.ts"/>
 module wd{
     export class NoShadowMapShaderLib extends ShaderLib{
         public static create() {

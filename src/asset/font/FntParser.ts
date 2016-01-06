@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd {
     //const INFO_EXP = /info [^\n]*(\n|$)/gi,
     const COMMON_EXP = /common [^\n]*(\n|$)/gi,

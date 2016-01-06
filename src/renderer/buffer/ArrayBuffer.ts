@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class ArrayBuffer extends Buffer{
         public static create():ArrayBuffer;

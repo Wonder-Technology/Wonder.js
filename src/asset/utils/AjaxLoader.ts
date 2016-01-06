@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class AjaxLoader{
         public static load(url:string, dataType:string) {

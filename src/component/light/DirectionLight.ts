@@ -1,4 +1,3 @@
-/// <reference path="../../filePath.d.ts"/>
 module wd{
     export class DirectionLight extends Light{
         public static type:string = "directionLight";

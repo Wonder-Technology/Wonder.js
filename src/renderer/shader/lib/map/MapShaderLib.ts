@@ -1,4 +1,3 @@
-/// <reference path="../../../../filePath.d.ts"/>
 module wd{
     export abstract class MapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
