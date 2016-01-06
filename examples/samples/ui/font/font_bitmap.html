@@ -37,8 +37,7 @@
             font.text = "This is a BitmapFont example!";
             font.fntId = "myFont_fnt";
             font.bitmapId = "myFont_image";
-//            font.xAlignment = wd.FontXAlignment.CENTER;
-//            font.xAlignment = wd.FontXAlignment.RIGHT;
+            font.xAlignment = wd.FontXAlignment.CENTER;
 
 
             var gameObject = wd.UIObject.create();
@@ -46,11 +45,9 @@
             gameObject.addComponent(font);
 
 
-
-//            gameObject.transform.width = 250;
-//            gameObject.transform.width = 800;
             gameObject.transform.width = 750;
             gameObject.transform.height = 100;
+
 
             wd.Director.getInstance().scheduler.scheduleTime(function(){
                 var tween = wd.Tween.create(),
@@ -60,12 +57,6 @@
                         .to({angle: 360}, 3000)
                         .easing(wd.Tween.Easing.Cubic.InOut)
                         .onUpdate(function () {
-//                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, this.angle, this.angle);
-//                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, this.angle);
-//                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(this.angle, 0, 0);
-//                            charFontUIObject.transform.eulerAngles = wd.Vector2.create(0, 0, this.angle);
-//                            charFontUIObject.transform.scale = wd.Vector2.create(2, 1);
-//                            charFontUIObject.transform.translate(1,1)
                             charFontUIObject.transform.rotation = this.angle;
                         });
 
@@ -84,7 +75,7 @@
             gameObject.addComponent(renderer);
 
 
-            gameObject.transform.translate(750 / 2, 50);
+            gameObject.transform.translate(750 / 2, 100 / 2);
 
             return gameObject;
         }
