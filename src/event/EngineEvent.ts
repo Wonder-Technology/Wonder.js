@@ -9,7 +9,12 @@ module wd{
 
 
         MATERIAL_CHANGE = <any>"dy_material_change",
+
         UI_WIDTH_CHANGE = <any>"dy_ui_width_change",
-        UI_HEIGHT_CHANGE = <any>"dy_ui_height_change"
+        UI_HEIGHT_CHANGE = <any>"dy_ui_height_change",
+
+        TRANSFORM_TRANSLATE = <any>"dy_transform_translate",
+        TRANSFORM_ROTATE = <any>"dy_transform_rotate",
+        TRANSFORM_SCALE = <any>"dy_transform_scale"
     }
 }

@@ -64,6 +64,10 @@ module wd {
         public emit(target:EntityObject, eventObject:Event, userData?:any) {
             var isStopPropagation = false;
 
+            if(!target){
+                return;
+            }
+
             eventObject.phase = EventPhase.EMIT;
             eventObject.target = target;
 
@@ -84,6 +88,10 @@ module wd {
          */
         public broadcast(target:EntityObject, eventObject:Event, userData?:any) {
             var self = this;
+
+            if(!target){
+                return;
+            }
 
             eventObject.phase = EventPhase.BROADCAST;
             eventObject.target = target;

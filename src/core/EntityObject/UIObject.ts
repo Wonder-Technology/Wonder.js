@@ -33,6 +33,16 @@ module wd {
 
             return this;
         }
+
+        @require(function(child:EntityObject){
+            assert(this.getComponent(UIRenderer) === child.getComponent(UIRenderer), Log.info.FUNC_MUST_BE("the UIRenderer of UIObject and its children", "the same one"))
+        })
+        public addChild(child:EntityObject){
+            super.addChild(child);
+
+            return this;
+
+   }
     }
 }
 

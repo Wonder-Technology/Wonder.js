@@ -513,23 +513,23 @@ describe("PlainFont", function () {
         });
 
         it("if the new data equal old data, not dirty and not update text", function(){
-            sandbox.stub(font, "updateWhenDirty");
+            sandbox.stub(font, "reFormat");
 
             font.update();
 
-            expect(font.updateWhenDirty).not.toCalled();
+            expect(font.reFormat).not.toCalled();
 
             font.text = "a";
 
             font.update();
 
-            expect(font.updateWhenDirty).toCalledOnce();
+            expect(font.reFormat).toCalledOnce();
 
             font.text = "a";
 
             font.update();
 
-            expect(font.updateWhenDirty).toCalledOnce();
+            expect(font.reFormat).toCalledOnce();
 
         });
 

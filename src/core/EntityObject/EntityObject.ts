@@ -308,7 +308,7 @@ module wd {
 
             this.beforeUpdateChildren(elapsedTime);
 
-            this.children.forEach((child:EntityObject) => {
+            this.forEach((child:EntityObject) => {
                 child.update(elapsedTime);
             });
         }
@@ -326,41 +326,41 @@ module wd {
         }
 
         @require(function(){
-            assert(this._getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
+            assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
         }
 
         @require(function(){
-            assert(this._getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 camera controller"));
+            assert(this.getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 camera controller"));
         })
         private _getCamera():CameraController{
             return this.getComponent<CameraController>(CameraController);
         }
 
         @require(function(){
-            assert(this._getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
+            assert(this.getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
         })
         private _getAnimation():Animation{
             return this.getComponent<Animation>(Animation);
         }
 
         @require(function(){
-            assert(this._getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
+            assert(this.getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
         })
         private _getRendererComponent():RendererComponent{
             return this.getComponent<RendererComponent>(RendererComponent);
         }
 
         @require(function(){
-            assert(this._getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
+            assert(this.getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
         })
         private _getCollider():Collider{
             return this.getComponent<Collider>(Collider);
         }
 
-        private _getComponentCount(_class:Function){
+        public getComponentCount(_class:Function){
             return this._components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();

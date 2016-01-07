@@ -1,15 +1,20 @@
 module wd {
     export abstract class Font extends UI {
+        protected needFormat:boolean = false;
+
         private _isFirstUpdate:boolean = true;
         private _sizeChangeEventSubscription:wdFrp.IDisposable = null;
 
-        public handleInit() {
+        public init() {
             var self = this;
+
+            super.init();
 
             this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
                 .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
                 .subscribe(() => {
                     self.p_dirty = true;
+                    self.needFormat = true;
                 });
         }
 
@@ -21,18 +26,20 @@ module wd {
 
         public update(elapsedTime:number){
             if(!this._isFirstUpdate){
-                if(this.p_dirty){
-                    this.updateWhenDirty();
+                if(this.needFormat){
+                    this.reFormat();
                 }
             }
             else{
                 this._isFirstUpdate = false;
             }
 
-            this.p_dirty = false;
+            this.needFormat = false;
         }
 
-        protected abstract updateWhenDirty();
+        @virtual
+        protected reFormat(){
+        }
 
         protected getLeftCornerPosition(){
             var transform = this.entityObject.transform,

@@ -5,8 +5,6 @@ describe("ProgressBar", function () {
     var uiObject;
     var director;
 
-    //var canvasPosition;
-
     function createBar() {
         bar = wd.ProgressBar.create();
 
@@ -25,10 +23,6 @@ describe("ProgressBar", function () {
         return uiObject;
     }
 
-    //function getCanvasPosition(webGLPosition){
-    //    return wd.CoordinateUtils.convertWebGLPositionToCanvasPosition(webGLPosition);
-    //}
-
     function prepareForUpdateBeforeInit(){
         renderer.context = canvasTool.buildFakeContext(sandbox);
         renderer.context.canvas = {
@@ -37,7 +31,6 @@ describe("ProgressBar", function () {
         }
 
     }
-
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -80,8 +73,6 @@ describe("ProgressBar", function () {
         var webGLPosition = wd.Vector3.create(10, 20, 0);
 
         uiObject.transform.position = webGLPosition;
-
-        //canvasPosition = getCanvasPosition(webGLPosition);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -91,7 +82,6 @@ describe("ProgressBar", function () {
     
     describe("init", function(){
         beforeEach(function(){
-
         });
 
         it("ui can be init before init scene", function(){
@@ -100,14 +90,14 @@ describe("ProgressBar", function () {
 
             prepareForUpdateBeforeInit();
 
-            uiObject.init();
+            director.scene.uiObjectScene.init();
 
             expect(bar.getContext).toCalledOnce();
 
 
             bar.percent = 0.5;
 
-            uiObject.update(-1);
+            director.scene.uiObjectScene.update(-1);
 
 
             expect(renderer.context.drawImage).toCalledOnce();
@@ -119,20 +109,20 @@ describe("ProgressBar", function () {
             expect(bar.getContext).toCalledOnce();
         });
         it("get uiRenderer's context", function(){
-            uiObject.init();
+            director.scene.uiObjectScene.init();
 
             expect(bar.context).toEqual(renderer.context);
         });
 
         describe("create offScreen canvas", function(){
             it("set it's size to equal ui canvas's size", function(){
-                uiObject.init();
+                director.scene.uiObjectScene.init();
 
                 expect(bar._offScreenCanvas.width).toEqual(1000);
                 expect(bar._offScreenCanvas.height).toEqual(500);
             });
             it("create offScreen canvas, get its context", function(){
-                uiObject.init();
+                director.scene.uiObjectScene.init();
 
                 expect(bar._offScreenCanvas).not.toBeNull();
                 expect(bar._offScreenContext).not.toBeNull();
@@ -175,7 +165,7 @@ describe("ProgressBar", function () {
 
             buildFakeOffScreenCanvas();
 
-            uiObject.init();
+            director.scene.uiObjectScene.init();
 
             expect(fakeOffScreenContext.clearRect).toCalledWith(0, 0, fakeOffScreenCanvas.width, fakeOffScreenCanvas.height);
 
@@ -199,13 +189,13 @@ describe("ProgressBar", function () {
         beforeEach(function(){
             prepareForUpdateBeforeInit();
 
-            uiObject.init();
+            director.scene.uiObjectScene.init();
         });
 
         it("if percent <= 0, return", function(){
             bar.percent = 0;
 
-            uiObject.update(-1);
+            director.scene.uiObjectScene.update(-1);
 
             expect(renderer.context.drawImage).not.toCalled();
         });
@@ -216,7 +206,7 @@ describe("ProgressBar", function () {
             });
 
             it("save context", function(){
-                uiObject.update(-1);
+                director.scene.uiObjectScene.update(-1);
 
                 expect(renderer.context.save).toCalledBefore(renderer.context.drawImage);
             });
@@ -224,7 +214,7 @@ describe("ProgressBar", function () {
                 uiObject.transform.rotate(45);
                 var rotationMatrix = uiObject.transform.rotationMatrix;
 
-                uiObject.update(-1);
+                director.scene.uiObjectScene.update(-1);
 
                 expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
             });
@@ -232,7 +222,7 @@ describe("ProgressBar", function () {
                 uiObject.transform.width = 100;
                 uiObject.transform.height = 50;
 
-                uiObject.update(-1);
+                director.scene.uiObjectScene.update(-1);
 
                 var context = renderer.context;
                 var position = uiObject.transform.position;
@@ -249,18 +239,20 @@ describe("ProgressBar", function () {
                 );
             });
             it("draw border", function(){
-                uiObject.update(-1);
+                director.scene.uiObjectScene.update(-1);
 
                 expect(renderer.context.arcTo.callCount).toEqual(4);
                 expect(renderer.context.stroke).toCalledAfter(renderer.context.drawImage);
                 expect(renderer.context.fill).not.toCalled();
             });
             it("restore context", function(){
-                uiObject.update(-1);
+                director.scene.uiObjectScene.update(-1);
 
                 expect(renderer.context.restore).toCalledAfter(renderer.context.drawImage);
             });
         });
     });
+
+    //todo support "change attr(e.g. radius) will cause dirty"
 });
 

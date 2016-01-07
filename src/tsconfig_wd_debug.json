@@ -142,6 +142,7 @@
 		"component/light/PointLight.ts",
 		"component/light/Attenuation.ts",
 		"component/ui/UI.ts",
+		"component/ui/UITag.ts",
 		"component/ui/font/FontXAlignment.ts",
 		"component/ui/font/FontYAlignment.ts",
 		"component/ui/font/FontDimension.ts",

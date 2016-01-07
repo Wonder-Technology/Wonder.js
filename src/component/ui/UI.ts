@@ -20,21 +20,11 @@ module wd {
         public entityObject:UIObject;
         public context:CanvasRenderingContext2D = null;
 
-        private _isInit:boolean = false;
-
 
         public abstract update(elapsedTime:number);
 
         public init(){
-            if(this._isInit){
-                return;
-            }
-
-            this._isInit = true;
-
             this.context = this.getContext();
-
-            this.handleInit();
         }
 
         public addToObject(entityObject:UIObject){
@@ -47,10 +37,6 @@ module wd {
             super.removeFromObject(entityObject);
 
             entityObject.uiManager.removeChild(this);
-        }
-
-        @virtual
-        protected handleInit(){
         }
 
         protected getContext() {
@@ -74,9 +60,9 @@ module wd {
         }
 
         protected setCanvasTransformForRotation(){
-            var matrix = this.entityObject.transform.rotationMatrix;
-
             if(this.entityObject.transform.isRotate){
+                let matrix = this.entityObject.transform.rotationMatrix;
+
                 this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
             }
         }

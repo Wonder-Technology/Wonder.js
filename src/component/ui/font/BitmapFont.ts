@@ -16,6 +16,7 @@ module wd {
                 this._text = text;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -28,6 +29,7 @@ module wd {
                 this._xAlignment = xAlignment;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -37,7 +39,7 @@ module wd {
         private _charFontList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
 
-        public handleInit(){
+        public init(){
             var fntObj = this._getFntObj(),
                 imageAsset:ImageTextureAsset = this._getImageAsset();
 
@@ -53,7 +55,7 @@ module wd {
                 return false;
             }
 
-            super.handleInit();
+            super.init();
 
             this._createAndAddFontCharUIObjects(fntObj, imageAsset.source);
 
@@ -65,7 +67,7 @@ module wd {
             this._removeAllCharFont();
         }
 
-        protected updateWhenDirty() {
+        protected reFormat(){
             var fntObj = this._getFntObj(),
                 imageAsset:ImageTextureAsset = this._getImageAsset();
 

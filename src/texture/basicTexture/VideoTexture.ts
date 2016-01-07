@@ -18,16 +18,14 @@ module wd{
         }
 
         public init(){
-            var self = this;
-
             super.init();
 
             this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                if(self._video.isStop){
-                    self.needUpdate = false;
+                if(this._video.isStop){
+                    this.needUpdate = false;
                 }
                 else{
-                    self.needUpdate = true;
+                    this.needUpdate = true;
                 }
             });
 

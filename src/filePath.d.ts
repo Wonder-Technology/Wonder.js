@@ -164,6 +164,8 @@
 
 /// <reference path="component/ui/UI"/>
 
+/// <reference path="component/ui/UITag"/>
+
 /// <reference path="component/ui/font/FontXAlignment"/>
 /// <reference path="component/ui/font/FontYAlignment"/>
 /// <reference path="component/ui/font/FontDimension"/>

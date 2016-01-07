@@ -19,18 +19,6 @@ module wd {
             return this.entityObject.transform.position.y;
         }
 
-        get dirty(){
-            var transform = null;
-
-            if(this.p_dirty){
-                return true;
-            }
-
-            transform = this.entityObject.transform;
-
-            return transform.isTranslate || transform.isRotate || transform.isScale;
-        }
-
         private _char:string = null;
         get char(){
             return this._char;
@@ -48,6 +36,28 @@ module wd {
         public rectRegion:RectRegion = null;
         public isNewLine:boolean = false;
         public isFullLine:boolean = false;
+
+        private _subscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var self = this;
+
+            super.init();
+
+
+            //todo add to dispose
+            this._subscription = wdFrp.fromArray([EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_TRANSLATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_ROTATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_SCALE)])
+            .mergeAll()
+            .subscribe(() => {
+                self.p_dirty = true;
+            });
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._subscription.dispose();
+        }
 
         @require(function(elapsedTime:number){
             assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
@@ -79,19 +89,6 @@ module wd {
 
             this.context.restore();
         }
-
-        protected updateWhenDirty(){
-        }
-
-        //private _rotateAroundImageCenter(dx:number, dy:number, dw:number, dh:number){
-        //    var values = this.entityObject.transform.localToWorldMatrix.values;
-        //
-        //    this.context.translate(dx + dw / 2, dy + dh / 2);
-        //    this.context.transform(
-        //        values[0], values[4], values[1], values[5], 0, 0
-        //    );
-        //    this.context.translate(- (dx + dw / 2), -(dy + dh / 2));
-        //}
     }
 }
 

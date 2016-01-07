@@ -6,8 +6,6 @@ module wd {
             return obj;
         }
 
-        //public width:number = 0;
-        //public height:number = 0;
         public borderStyle:string = "rgba(0, 0, 0, 1)";
         public fillStyle:string = "rgba(255, 0, 0, 1)";
         public radius:number = 5;
@@ -16,7 +14,9 @@ module wd {
         private _offScreenCanvas:HTMLCanvasElement = null;
         private _offScreenContext:CanvasRenderingContext2D = null;
 
-        public handleInit(){
+        public init(){
+            super.init();
+
             this._createOffScreenCanvas();
 
             this._drawProgressBar();

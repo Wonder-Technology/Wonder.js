@@ -21,6 +21,7 @@ module wd {
                 this._text = text;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -33,6 +34,7 @@ module wd {
                 this._fontSize = fontSize;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -45,6 +47,7 @@ module wd {
                 this._fontFamily = fontFamily;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -57,6 +60,7 @@ module wd {
                 this._xAlignment = xAlignment;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -69,6 +73,7 @@ module wd {
                 this._yAlignment = yAlignment;
 
                 this.p_dirty = true;
+                this.needFormat = true;
             }
         }
 
@@ -81,8 +86,8 @@ module wd {
         private _lineHeight:number = null;
         private _strArr:Array<string> = [];
 
-        public handleInit() {
-            super.handleInit();
+        public init() {
+            super.init();
 
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
@@ -117,7 +122,7 @@ module wd {
             this._lineHeight = lineHeight;
         }
 
-        protected updateWhenDirty() {
+        protected reFormat(){
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
         }
