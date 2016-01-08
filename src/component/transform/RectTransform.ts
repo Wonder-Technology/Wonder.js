@@ -228,6 +228,7 @@ module wd{
         public dirtyRotation:boolean = true;
         public dirtyPositionAndScale:boolean = true;
         public pivot:Vector2 = Vector2.create(0, 0);
+        public zIndex:number = 1;
 
         protected p_parent:RectTransform;
         protected children:wdCb.Collection<RectTransform>;

@@ -22,8 +22,22 @@ module wd {
             return this;
         }
 
-        public onEndLoop() {
-            super.onEndLoop();
+        //public onEndLoop() {
+        //    super.onEndLoop();
+        //
+        //    this._resetAllTransformFlag();
+        //}
+        //
+        //public onStartLoop(){
+        //    super.onStartLoop();
+        //
+        //    this._sortSiblingChildren();
+        //}
+
+        public update(elapsedTime:number){
+            this._sortSiblingChildren();
+
+            super.update(elapsedTime);
 
             this._resetAllTransformFlag();
         }
@@ -169,6 +183,21 @@ module wd {
             transform.isTranslate = false;
             transform.isScale = false;
             transform.isRotate = false;
+        }
+
+        //todo support "put all children together, so it can sort all children by zIndex"?
+        private _sortSiblingChildren(){
+            var sort = (uiObject:EntityObject) => {
+                uiObject.sort((a:UIObject, b:UIObject) => {
+                    return a.transform.zIndex - b.transform.zIndex;
+                }, true);
+
+                uiObject.forEach((child:UIObject) => {
+                    sort(child);
+                });
+            }
+
+            sort(this);
         }
     }
 }

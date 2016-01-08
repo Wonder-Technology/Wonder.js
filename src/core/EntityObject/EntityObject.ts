@@ -132,14 +132,18 @@ module wd {
             return this;
         }
 
-        public forEach(func:(gameObjcet:EntityObject) => void){
+        public forEach(func:(entityObject:EntityObject) => void){
             this.children.forEach(func);
 
             return this;
         }
 
-        public filter(func:(gameObjcet:EntityObject) => boolean){
+        public filter(func:(entityObject:EntityObject) => boolean){
             return this.children.filter(func);
+        }
+
+        public sort(func:(a:EntityObject, b:EntityObject) => any, isSortSelf = false){
+            return this.children.sort(func, isSortSelf);
         }
 
         public getChildren(){

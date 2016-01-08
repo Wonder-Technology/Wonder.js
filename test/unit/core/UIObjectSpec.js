@@ -23,19 +23,19 @@ describe("UIObject", function () {
         return uiObject;
     }
 
-    function createUIObject(font, uiRenderer){
+    function createUIObject(ui, uiRenderer){
         var renderer;
-        var fontComponent;
+        var uiComponent;
 
-        var fontUIObject = wd.UIObject.create();
-        if(font){
-            fontComponent = font;
+        var uiUIObject = wd.UIObject.create();
+        if(ui){
+            uiComponent = ui;
         }
         else{
-            fontComponent = wd.PlainFont.create();
+            uiComponent = wd.PlainFont.create();
         }
 
-        fontUIObject.addComponent(fontComponent);
+        uiUIObject.addComponent(uiComponent);
 
         if(uiRenderer || uiRenderer === "no"){
             renderer = uiRenderer;
@@ -44,12 +44,12 @@ describe("UIObject", function () {
             renderer = wd.UIRenderer.create();
         }
 
-        fontUIObject.addComponent(renderer);
+        uiUIObject.addComponent(renderer);
 
 
         return {
-            uiObject:fontUIObject,
-            font:fontComponent,
+            uiObject:uiUIObject,
+            ui:uiComponent,
             renderer:renderer
         }
     }
@@ -163,7 +163,7 @@ describe("UIObject", function () {
             it("test ui component with the same UIRenderer", function(){
                 var data1 = createUIObject(wd.BitmapFont.create(), renderer);
                 var bitmapFontUIObject = data1.uiObject;
-                var bitmapFont = data1.font;
+                var bitmapFont = data1.ui;
 
                 uiObject.addChild(bitmapFontUIObject);
 
@@ -171,7 +171,7 @@ describe("UIObject", function () {
                 var data2 = createUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
 
                 var charFontUIObject = data2.uiObject;
-                var charFont = data2.font;
+                var charFont = data2.ui;
 
 
                 uiObject.addChild(charFontUIObject);
@@ -218,7 +218,7 @@ describe("UIObject", function () {
                 var data = createUIObject(wd.CharFont.create(), uiObject.getComponent(wd.UIRenderer));
 
                 var charFontUIObject = data.uiObject;
-                var charFont = data.font;
+                var charFont = data.ui;
 
 
                 uiObject.addChild(charFontUIObject);
@@ -254,7 +254,7 @@ describe("UIObject", function () {
             it("test UIObject with different UIRenderers, so that each UIRenderer can clear once", function(){
                 var data1 = createUIObject(wd.BitmapFont.create(), renderer);
                 var bitmapFontUIObject = data1.uiObject;
-                var bitmapFont = data1.font;
+                var bitmapFont = data1.ui;
 
                 uiObject.addChild(bitmapFontUIObject);
 
@@ -270,14 +270,14 @@ describe("UIObject", function () {
                 var data2 = createUIObject();
 
                 var plainFontUIObject2 = data2.uiObject;
-                var plainFont2 = data2.font;
+                var plainFont2 = data2.ui;
                 var renderer2 = data2.renderer;
 
 
 
                 var data3 = createUIObject(wd.BitmapFont.create(), renderer2);
                 var bitmapFontUIObject2 = data3.uiObject;
-                var bitmapFont2 = data3.font;
+                var bitmapFont2 = data3.ui;
 
 
                 //plainFontUIObject2.addComponent(bitmapFont2);
@@ -341,6 +341,78 @@ describe("UIObject", function () {
         });
     });
 
+    describe("sort sibling children by transform->zIndex", function(){
+        var uiObject2, uiObject3;
+
+        beforeEach(function(){
+            sandbox.stub(renderer.context, "fillText");
+            sandbox.stub(renderer.context, "strokeText");
+            sandbox.stub(renderer.context, "drawImage");
+
+            var data = createUIObject(wd.ProgressBar.create(), renderer);
+            uiObject2 = data.uiObject;
+            var bar = data.ui;
+
+            bar.percent = 0.5;
+
+            uiObject2.transform.zIndex = 3;
+
+
+
+
+            var data2 = createUIObject(null, renderer);
+            uiObject3 = data2.uiObject;
+            var font = data2.ui;
+            font.enableStroke("red", 50);
+
+            uiObject3.transform.zIndex = 100;
+        });
+        afterEach(function(){
+            uiObject2.dispose();
+            uiObject3.dispose();
+        })
+        
+        it("test sort top UIObject", function(){
+            uiObject.transform.zIndex = 1;
+
+            director.scene.addChildren([uiObject, uiObject2]);
+
+            director.scene.uiObjectScene.init();
+
+            director.scene.uiObjectScene.update(1);
+
+            expect(renderer.context.drawImage).toCalledAfter(renderer.context.fillText);
+        });
+        it("test sort sibling children of top UIObject", function(){
+            uiObject.addChild(uiObject2);
+            uiObject.addChild(uiObject3);
+
+
+            director.scene.addChildren([uiObject]);
+
+            director.scene.uiObjectScene.init();
+
+            director.scene.uiObjectScene.update(1);
+
+
+            expect(renderer.context.fillText).toCalledBefore(renderer.context.strokeText);
+        });
+        it("parent one will be drawed before child one by ignoring their zIndex", function(){
+            uiObject.transform.zIndex = 1000;
+
+            uiObject.addChild(uiObject2);
+
+
+            director.scene.addChildren([uiObject]);
+
+            director.scene.uiObjectScene.init();
+
+            director.scene.uiObjectScene.update(1);
+
+
+            expect(renderer.context.fillText).toCalledBefore(renderer.context.drawImage);
+        })
+    });
 
     describe("addComponent", function(){
         beforeEach(function(){

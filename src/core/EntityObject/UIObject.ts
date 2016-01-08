@@ -42,7 +42,7 @@ module wd {
 
             return this;
 
-   }
+        }
     }
 }
 
