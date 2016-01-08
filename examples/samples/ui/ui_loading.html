@@ -48,7 +48,9 @@
             var barComponent2 = bar2.getComponent(wd.ProgressBar);
 //            barComponent.percent = data.currentLoadedCount / data.assetCount;
             barComponent2.percent = 1
-            bar2.update(-1);
+//            bar2.update(-1);
+            var director = wd.Director.getInstance();
+            director.scene.uiObjectScene.update(-1);
 
 
             console.log("completed");
@@ -105,7 +107,9 @@
             director.scene.addChild(bar2);
 
 //            bar.init();
-            bar2.init();
+//            bar2.init();
+
+            director.scene.uiObjectScene.init();
         }
 
         function createUIRenderer(){
