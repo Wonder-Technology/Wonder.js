@@ -4,6 +4,8 @@ describe("Image", function () {
     var renderer;
     var uiObject;
     var director;
+    var context;
+
 
     function createImage() {
         image = wd.Image.create();
@@ -65,8 +67,6 @@ describe("Image", function () {
     });
 
     describe("update", function(){
-        var context;
-
         beforeEach(function(){
             prepareForUpdateBeforeInit();
 
@@ -127,6 +127,67 @@ describe("Image", function () {
             //
             //    expect(renderer.context.restore).toCalledAfter(renderer.context.drawImage);
             //});
+        });
+    });
+
+    describe("change data will cause dirty and update image", function(){
+        var source;
+
+        beforeEach(function(){
+            source = wd.ImageTextureAsset.create({});
+
+            //image.source = source;
+        });
+
+        it("if the new data equal old data, not dirty and not update", function(){
+            image.source = source;
+
+            prepareForUpdateBeforeInit();
+
+            director.initUIObjectScene();
+
+            context = renderer.context;
+
+
+
+            director._loopBody(2);
+
+            expect(context.save).toCalledOnce();
+
+
+            image.source = source;
+
+            director._loopBody(3);
+
+            expect(context.save).toCalledOnce();
+        });
+
+        describe("else", function(){
+            beforeEach(function(){
+                image.source = source;
+
+                prepareForUpdateBeforeInit();
+
+                director.initUIObjectScene();
+
+                context = renderer.context;
+
+
+
+                director._loopBody(2);
+
+                //expect(context.save).toCalledOnce();
+            });
+
+            it("test change source", function(){
+                var source2 = wd.ImageTextureAsset.create({});
+                image.source = source2;
+
+                director._loopBody(2);
+
+
+                expect(context.save).toCalledTwice();
+            });
         });
     });
 });

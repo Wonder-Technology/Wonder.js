@@ -7,8 +7,17 @@ module wd {
             return obj;
         }
 
-        //todo change source, dirty
-        public source:ImageTextureAsset = null;
+        private _source:ImageTextureAsset = null;
+        get source(){
+            return this._source;
+        }
+        set source(source:ImageTextureAsset){
+            if(source !== this._source){
+                this._source = source;
+
+                this.p_dirty = true;
+            }
+        }
 
         //todo support draw a part of image asset
 
