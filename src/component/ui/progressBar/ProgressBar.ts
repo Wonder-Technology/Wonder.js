@@ -22,27 +22,20 @@ module wd {
             this._drawProgressBar();
         }
 
+        protected shouldNotUpdate(){
+            return this.percent <= 0;
+        }
+
         @require(function(elapsedTime:number){
             assert(this.percent >= 0 && this.percent <= 1, Log.info.FUNC_SHOULD("percent", " >= 0 and <= 1"));
         })
-        public update(elapsedTime:number){
-            if(this.percent > 0){
-                let offscreenCanvas = this._offScreenCanvas,
+        protected draw(elapsedTime:number){
+            let offscreenCanvas = this._offScreenCanvas,
                 position = this.entityObject.transform.position;
 
-                this.context.save();
+            this.drawInCenterPoint(this.context, offscreenCanvas, 0, 0, this.width * this.percent, this.height, position, this.width * this.percent, this.height);
 
-                this.setCanvasTransformForRotation();
-
-                this.drawInCenterPoint(this.context, offscreenCanvas, 0, 0, this.width * this.percent, this.height, position, this.width * this.percent, this.height);
-
-                this._drawBorder(position);
-
-                this.context.restore();
-            }
-        }
-
-        public dispose(){
+            this._drawBorder(position);
         }
 
         private _drawBorder(position:Vector2){

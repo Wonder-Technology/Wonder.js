@@ -35,6 +35,8 @@ module wd {
             }
 
             this.needFormat = false;
+
+            super.update(elapsedTime);
         }
 
         @virtual

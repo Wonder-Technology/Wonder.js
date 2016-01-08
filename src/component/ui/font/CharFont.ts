@@ -67,20 +67,21 @@ module wd {
             this._subscription.dispose();
         }
 
-        @require(function(elapsedTime:number){
-            assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
-        })
-        public update(elapsedTime:number){
+        protected shouldNotUpdate(){
+            return this.rectRegion === null || (this.width === 0 && this.height === 0);
+        }
+
+        protected draw(elapsedTime:number){
             var transform:RectTransform = null,
                 position:Vector2 = null,
                 dw = null,
                 dh = null;
 
-            super.update(elapsedTime);
-
-            if(this.rectRegion === null || (this.width === 0 && this.height === 0)){
-                return;
-            }
+            //super.update(elapsedTime);
+            //
+            //if(this.rectRegion === null || (this.width === 0 && this.height === 0)){
+            //    return;
+            //}
 
             transform = this.entityObject.transform;
             position = transform.position;
@@ -88,14 +89,14 @@ module wd {
             dw = this.width;
             dh = this.height;
 
-            this.context.save();
-
-            this.setCanvasTransformForRotation();
+            //this.context.save();
+            //
+            //this.setCanvasTransformForRotation();
 
             this.drawInCenterPoint(this.context, this.image, this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
                 position, dw, dh);
 
-            this.context.restore();
+            //this.context.restore();
         }
     }
 }

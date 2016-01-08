@@ -190,6 +190,9 @@ describe("UIObject", function () {
             //todo test more ui
         });
         describe("if any ui component dirty, firstly clear canvas(only once), then update every one", function(){
+            beforeEach(function(){
+                sandbox.stub(wd.LoaderManager.getInstance(), "get").returns({});
+            });
 
             it("test ui component with the same UIRenderer", function(){
                 var data1 = createUIObject(wd.BitmapFont.create(), renderer);

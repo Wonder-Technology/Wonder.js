@@ -93,12 +93,6 @@ module wd {
             this._lineHeight = this._getDefaultLineHeight();
         }
 
-        public update(elapsedTime:number) {
-            super.update(elapsedTime);
-
-            this._draw();
-        }
-
         public setFillStyle(fillStyle:string) {
             this._fillStyle = fillStyle;
         }
@@ -125,6 +119,22 @@ module wd {
         protected reFormat(){
             this._formatText();
             this._lineHeight = this._getDefaultLineHeight();
+        }
+
+        protected draw(){
+            var context = this.context;
+
+            context.font = `${this.fontSize}px '${this.fontFamily}'`;
+
+            context.textBaseline = "top";
+            context.textAlign = "start";
+
+            if (this._strArr.length > 1) {
+                this._drawMultiLine();
+            }
+            else {
+                this._drawSingleLine();
+            }
         }
 
         private _formatText() {
@@ -286,28 +296,6 @@ module wd {
             this._fontClientHeightCache.addChild(key, height);
 
             return height;
-        }
-
-        private _draw(){
-            var context = this.context;
-
-            context.save();
-
-            this.setCanvasTransformForRotation();
-
-            context.font = `${this.fontSize}px '${this.fontFamily}'`;
-
-            context.textBaseline = "top";
-            context.textAlign = "start";
-
-            if (this._strArr.length > 1) {
-                this._drawMultiLine();
-            }
-            else {
-                this._drawSingleLine();
-            }
-
-            context.restore();
         }
 
         private _drawMultiLine(){

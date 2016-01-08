@@ -89,6 +89,9 @@ module wd {
             this._formatText(fntObj);
         }
 
+        protected draw(elapsedTime:number){
+        }
+
         private _getFntObj(){
             return LoaderManager.getInstance().get(this.fntId);
         }

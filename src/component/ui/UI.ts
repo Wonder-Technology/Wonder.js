@@ -21,8 +21,6 @@ module wd {
         public context:CanvasRenderingContext2D = null;
 
 
-        public abstract update(elapsedTime:number);
-
         public init(){
             this.context = this.getContext();
         }
@@ -37,6 +35,32 @@ module wd {
             super.removeFromObject(entityObject);
 
             entityObject.uiManager.removeChild(this);
+        }
+
+        @require(function(elapsedTime:number){
+            assert(this.context !== null, Log.info.FUNC_SHOULD("set context"));
+        })
+        public update(elapsedTime:number){
+            var context = this.context;
+
+            if(this.shouldNotUpdate()){
+                return;
+            }
+
+            context.save();
+
+            this._setCanvasTransformForRotation();
+
+            this.draw(elapsedTime);
+
+            context.restore();
+        }
+
+        protected abstract draw(elapsedTime:number);
+
+        @virtual
+        protected shouldNotUpdate(){
+            return false;
         }
 
         protected getContext() {
@@ -59,7 +83,7 @@ module wd {
             );
         }
 
-        protected setCanvasTransformForRotation(){
+        private _setCanvasTransformForRotation(){
             if(this.entityObject.transform.isRotate){
                 let matrix = this.entityObject.transform.rotationMatrix;
 

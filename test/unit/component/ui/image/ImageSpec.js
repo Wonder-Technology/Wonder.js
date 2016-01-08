@@ -92,21 +92,6 @@ describe("Image", function () {
                 image.source = source;
             });
 
-            //todo move to UISpec
-
-            //it("save context", function(){
-            //    director.runUIObjectScene(1);
-            //
-            //    expect(renderer.context.save).toCalledBefore(renderer.context.drawImage);
-            //});
-            //it("if isRotate, set context transform to be rotationMatrix", function(){
-            //    uiObject.transform.rotate(45);
-            //    var rotationMatrix = uiObject.transform.rotationMatrix;
-            //
-            //    director.runUIObjectScene(1);
-            //
-            //    expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
-            //});
             it("draw image", function(){
                 var width = 100;
                 var height = 50;
@@ -122,11 +107,6 @@ describe("Image", function () {
                     position.x - width / 2, position.y - height / 2, width, height
                 );
             });
-            //it("restore context", function(){
-            //    director.runUIObjectScene(1);
-            //
-            //    expect(renderer.context.restore).toCalledAfter(renderer.context.drawImage);
-            //});
         });
     });
 
