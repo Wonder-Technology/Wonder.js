@@ -4,7 +4,7 @@ module wd{
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var img = null;
 
-                img = new Image();
+                img = new root.Image();
                 /*!
                  经过对多个浏览器版本的测试，发现ie、opera下，当图片加载过一次以后，如果再有对该图片的请求时，由于浏览器已经缓存住这张图
 

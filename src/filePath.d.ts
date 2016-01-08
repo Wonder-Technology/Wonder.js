@@ -175,6 +175,9 @@
 /// <reference path="component/ui/font/CharFont"/>
 
 /// <reference path="component/ui/progressBar/ProgressBar"/>
+
+/// <reference path="component/ui/image/Image"/>
+
 /// <reference path="component/ui/utils/RoundedRectUtils"/>
 
 

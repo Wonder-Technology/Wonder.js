@@ -68,9 +68,9 @@ describe("ProgressBar", function () {
         bar.fillStyle = "red";
 
 
-        var webGLPosition = wd.Vector2.create(10, 20);
+        var position = wd.Vector2.create(10, 20);
 
-        uiObject.transform.position = webGLPosition;
+        uiObject.transform.position = position;
     });
     afterEach(function () {
         testTool.clearInstance();
