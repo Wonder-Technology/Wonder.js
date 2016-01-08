@@ -64,13 +64,11 @@ describe("ProgressBar", function () {
 
 
 
-        bar.width = 400;
-        bar.height = 50;
         bar.borderStyle = "gray";
         bar.fillStyle = "red";
 
 
-        var webGLPosition = wd.Vector3.create(10, 20, 0);
+        var webGLPosition = wd.Vector2.create(10, 20);
 
         uiObject.transform.position = webGLPosition;
     });
