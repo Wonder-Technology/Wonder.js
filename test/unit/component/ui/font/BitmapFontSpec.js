@@ -630,55 +630,40 @@ describe("BitmapFont", function () {
                 });
 
                 it("if uiObject transform change, char font dirty", function(){
-                    //charFontUIObject.transform.translate(1,0);
-                    //
-                    //expect(charFont.dirty).toBeTruthy();
-
-                    director._loopBody(3);
-                    director._loopBody(3);
-                    director._loopBody(3);
-                    director._loopBody(3);
+                    director._loopBody(2);
 
                     expect(charFont.update).toCalledOnce();
-                    //expect(charFont.update).toCalledTwice();
-                    //expect(charFont.dirty).toBeFalsy();
-                    //
-                    //
-                    //charFontUIObject.transform.scale = wd.Vector3.create(1,1,2);
-                    //
-                    //director._loopBody(4);
-                    //
-                    //expect(charFont.update.callCount).toEqual(3);
-                    //
-                    //
-                    //
-                    //
-                    //charFontUIObject.transform.rotate(10,0,0);
-                    //
-                    //director._loopBody(5);
-                    //
-                    //expect(charFont.update.callCount).toEqual(4);
-                    //
-                    //
-                    //
-                    //
-                    //director._loopBody(6);
-                    //
-                    //expect(charFont.update.callCount).toEqual(4);
-                });
-                it("if char change, char font dirty", function(){
-                    //todo rewrite test
-                    charFont.char = "9";
+
+
+                    charFontUIObject.transform.translate(2,3);
 
                     director._loopBody(3);
 
                     expect(charFont.update).toCalledTwice();
+                    expect(charFont.dirty).toBeFalsy();
 
 
+                    charFontUIObject.transform.scale = wd.Vector2.create(1,1);
 
                     director._loopBody(4);
 
-                    expect(charFont.update).toCalledTwice();
+                    expect(charFont.update.callCount).toEqual(3);
+
+
+
+
+                    charFontUIObject.transform.rotate(10);
+
+                    director._loopBody(5);
+
+                    expect(charFont.update.callCount).toEqual(4);
+
+
+
+
+                    director._loopBody(6);
+
+                    expect(charFont.update.callCount).toEqual(4);
                 });
                 it("if width change, char font dirty", function(){
                     charFontUIObject.transform.width = 2000;

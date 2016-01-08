@@ -19,15 +19,10 @@ module wd {
             return this.entityObject.transform.position.y;
         }
 
+        //todo support set char(it should reformat BitmapFont)
         private _char:string = null;
         get char(){
             return this._char;
-        }
-        set char(char:string){
-            if(char !== this._char){
-                this._char = char;
-                this.p_dirty = true;
-            }
         }
 
         public startPosX:number = null;
