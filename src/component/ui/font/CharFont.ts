@@ -38,14 +38,20 @@ module wd {
         public isFullLine:boolean = false;
 
         private _subscription:wdFrp.IDisposable = null;
+        private _isInit:boolean = false;
 
         public init(){
             var self = this;
 
+            if(this._isInit){
+                return;
+            }
+
+            this._isInit = true;
+
             super.init();
 
 
-            //todo add to dispose
             this._subscription = wdFrp.fromArray([EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_TRANSLATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_ROTATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_SCALE)])
             .mergeAll()
             .subscribe(() => {

@@ -733,6 +733,31 @@ describe("BitmapFont", function () {
                     judgeDrawImage(1, 1 + 100, 2 + 200, 100, 200);
                 });
             });
+
+            describe("dispose", function(){
+                beforeEach(function(){
+                    font.text = "a";
+                    setWidth(10);
+
+                    uiObject.init();
+                });
+
+                it("unbind transform event", function(){
+
+                    var charFontUIObject = getCharFontUIObject(0);
+                    var charFont = charFontUIObject.getComponent(wd.CharFont);
+
+                    charFont.dispose();
+
+                    charFont.dirty = false;
+
+
+                    charFontUIObject.transform.rotate(45);
+
+                    expect(charFont.dirty).toBeFalsy();
+                });
+            });
+
         });
 
         describe("change data will cause dirty and update font", function(){
