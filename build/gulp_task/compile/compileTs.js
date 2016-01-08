@@ -19,9 +19,9 @@ var distFilePaths = [
 ];
 var definitionsPath = "src/filePath.d.ts";
 var tsconfigFile = [
-    "src/tsconfig.json",
-    "src/tsconfig_wd.json",
-    "src/tsconfig_wd_debug.json"
+    "src/tsconfig.json"
+    //"src/tsconfig_wd.json",
+    //"src/tsconfig_wd_debug.json"
 ];
 
 
@@ -74,8 +74,9 @@ gulp.task("compileTsConfig", function(){
 });
 
 gulp.task("compileTs", function() {
-    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[1]), {
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
         sortOutput: true,
+        declaration: true,
         typescript: require('typescript')
     });
 
@@ -94,7 +95,8 @@ gulp.task("compileTs", function() {
 });
 
 gulp.task("compileTsDebug", function() {
-    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[2]), {
+    var tsProject = gulpTs.createProject(path.join(process.cwd(), tsconfigFile[0]), {
+        out: "wd.debug.js",
         typescript: require('typescript')
     });
 
