@@ -17,8 +17,8 @@ describe("script", function () {
         gameObject.addComponent(script);
 
         var test = null;
-        var onEnter = director.scene.onEnter;
-        director.scene.onEnter = function(){
+        var onEnter = director.scene.gameObjectScene.onEnter;
+        director.scene.gameObjectScene.onEnter = function(){
             test = gameObject.scriptList.getChild("test");
             judgeOnEnter(test, gameObject);
             onEnter.call(director.scene);
@@ -56,8 +56,8 @@ describe("script", function () {
 
         var test = null;
         var test2 = null;
-        var onEnter = director.scene.onEnter;
-        director.scene.onEnter = function(){
+        var onEnter = director.scene.gameObjectScene.onEnter;
+        director.scene.gameObjectScene.onEnter = function(){
             test = gameObject.scriptList.getChild("test");
             test2 = gameObject.scriptList.getChild("test2");
 
@@ -93,11 +93,11 @@ describe("script", function () {
         director.scene.addComponent(script);
 
         var test = null;
-        var onEnter = director.scene.onEnter;
-        director.scene.onEnter = function(){
+        var onEnter = director.scene.gameObjectScene.onEnter;
+        director.scene.gameObjectScene.onEnter = function(){
             test = this.scriptList.getChild("test");
             judgeOnEnter(test, this);
-            onEnter.call(director.scene);
+            onEnter.call(director.scene.gameObjectScene);
         };
 
         var loopBody = director._loopBody;

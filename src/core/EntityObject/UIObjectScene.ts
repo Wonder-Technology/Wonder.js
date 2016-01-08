@@ -8,38 +8,16 @@ module wd {
             return obj;
         }
 
-        private _isInit:boolean = false;
+        public onEndLoop() {
+            super.onEndLoop();
 
-        public init(){
-            if(this._isInit){
-                return;
-            }
-
-            this._isInit = true;
-
-            super.init();
-
-            return this;
+            this._resetAllTransformState();
         }
 
-        //public onEndLoop() {
-        //    super.onEndLoop();
-        //
-        //    this._resetAllTransformFlag();
-        //}
-        //
-        //public onStartLoop(){
-        //    super.onStartLoop();
-        //
-        //    this._sortSiblingChildren();
-        //}
+        public onStartLoop(){
+            super.onStartLoop();
 
-        public update(elapsedTime:number){
             this._sortSiblingChildren();
-
-            super.update(elapsedTime);
-
-            this._resetAllTransformFlag();
         }
 
         protected createTransform(){
@@ -71,6 +49,14 @@ module wd {
                     self._markTopUIObject(child, false);
                 }
             });
+        }
+
+        protected bindStartLoopEvent(){
+            EventManager.on(this, <any>EngineEvent.STARTLOOP, this.startLoopHandler);
+        }
+
+        protected bindEndLoopEvent(){
+            EventManager.on(this, <any>EngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
         @require(function(uiObject:UIObject){
@@ -138,7 +124,7 @@ module wd {
 
             reset(uiObject);
         }
-        private _resetAllTransformFlag(){
+        private _resetAllTransformState(){
             var self = this;
 
             var reset = (uiObject:UIObject) => {

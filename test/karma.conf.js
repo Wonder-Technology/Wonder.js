@@ -37,6 +37,8 @@
         //'test/unit/**/UIObjectSpec*',
         //'test/unit/**/BitmapFontSpec*',
 
+        //'test/unit/**/DirectorSpec*',
+
         //'test/unit/**/ProgressBarSpec*',
 
         //'test/unit/**/ThreeDTransformSpec.js',

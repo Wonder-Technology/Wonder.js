@@ -241,7 +241,7 @@ describe("SceneDispatcher", function() {
                 it("set target's parent to be gameObjectScene", function(){
                     scene.addChild(child);
 
-                    expect(child.parent).toEqual(scene._gameObjectScene);
+                    expect(child.parent).toEqual(scene.gameObjectScene);
                 });
                 it("set target's transform's parent to be scene's transform", function(){
                     scene.addChild(child);
@@ -328,7 +328,7 @@ describe("SceneDispatcher", function() {
 
             scene.addComponent(component);
 
-            expect(component.entityObject).toEqual(scene._gameObjectScene);
+            expect(component.entityObject).toEqual(scene.gameObjectScene);
         });
         it("add component to container", function(){
             var component = new wd.Action();
@@ -344,7 +344,7 @@ describe("SceneDispatcher", function() {
 
                 scene.addComponent(component);
 
-                expect(component.target).toEqual(scene._gameObjectScene);
+                expect(component.target).toEqual(scene.gameObjectScene);
                 expect(scene.actionManager.hasChild(component)).toBeTruthy();
             });
         });
@@ -416,7 +416,7 @@ describe("SceneDispatcher", function() {
 
             scene.addRenderTargetRenderer(renderer);
 
-            expect(scene._gameObjectScene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
+            expect(scene.gameObjectScene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
         });
     });
 
@@ -485,21 +485,21 @@ describe("SceneDispatcher", function() {
         it("use gameObjectScene->script as scene->script", function(){
             script1 = buildScript();
 
-            prepareTool.addScript(scene._gameObjectScene, script1, "customScript1");
+            prepareTool.addScript(scene.gameObjectScene, script1, "customScript1");
 
             expect(scene.scriptList.getCount()).toEqual(1);
         });
         it("use gameObjectScene->actionManager as scene->actionManager", function(){
             var action = buildAction();
-            scene._gameObjectScene.addComponent(action);
+            scene.gameObjectScene.addComponent(action);
 
-            expect(scene.actionManager).toEqual(scene._gameObjectScene.actionManager);
+            expect(scene.actionManager).toEqual(scene.gameObjectScene.actionManager);
         });
 
         describe("dispatch", function(){
             describe("addChild", function(){
                 beforeEach(function(){
-                    sandbox.stub(scene._gameObjectScene, "addChild");
+                    sandbox.stub(scene.gameObjectScene, "addChild");
                     sandbox.stub(scene.uiObjectScene, "addChild");
                 });
 
@@ -507,19 +507,19 @@ describe("SceneDispatcher", function() {
                     scene.addChild(uiObject1);
 
                     expect(scene.uiObjectScene.addChild).toCalledOnce();
-                    expect(scene._gameObjectScene.addChild).not.toCalled();
+                    expect(scene.gameObjectScene.addChild).not.toCalled();
 
 
                     scene.addChild(gameObject1);
 
                     expect(scene.uiObjectScene.addChild).toCalledOnce();
-                    expect(scene._gameObjectScene.addChild).toCalledOnce();
+                    expect(scene.gameObjectScene.addChild).toCalledOnce();
                 });
             });
 
             describe("hasChild", function(){
                 beforeEach(function(){
-                    sandbox.stub(scene._gameObjectScene, "hasChild");
+                    sandbox.stub(scene.gameObjectScene, "hasChild");
                     sandbox.stub(scene.uiObjectScene, "hasChild");
                 });
 
@@ -527,19 +527,19 @@ describe("SceneDispatcher", function() {
                     scene.hasChild(uiObject1);
 
                     expect(scene.uiObjectScene.hasChild).toCalledOnce();
-                    expect(scene._gameObjectScene.hasChild).not.toCalled();
+                    expect(scene.gameObjectScene.hasChild).not.toCalled();
 
 
                     scene.hasChild(gameObject1);
 
                     expect(scene.uiObjectScene.hasChild).toCalledOnce();
-                    expect(scene._gameObjectScene.hasChild).toCalledOnce();
+                    expect(scene.gameObjectScene.hasChild).toCalledOnce();
                 });
             });
 
             describe("removeChild", function(){
                 beforeEach(function(){
-                    sandbox.stub(scene._gameObjectScene, "removeChild");
+                    sandbox.stub(scene.gameObjectScene, "removeChild");
                     sandbox.stub(scene.uiObjectScene, "removeChild");
                 });
 
@@ -547,26 +547,26 @@ describe("SceneDispatcher", function() {
                     scene.removeChild(uiObject1);
 
                     expect(scene.uiObjectScene.removeChild).toCalledOnce();
-                    expect(scene._gameObjectScene.removeChild).not.toCalled();
+                    expect(scene.gameObjectScene.removeChild).not.toCalled();
 
 
                     scene.removeChild(gameObject1);
 
                     expect(scene.uiObjectScene.removeChild).toCalledOnce();
-                    expect(scene._gameObjectScene.removeChild).toCalledOnce();
+                    expect(scene.gameObjectScene.removeChild).toCalledOnce();
                 });
             });
 
             describe("addChildren", function(){
                 beforeEach(function(){
-                    sandbox.stub(scene._gameObjectScene, "addChild");
+                    sandbox.stub(scene.gameObjectScene, "addChild");
                     sandbox.stub(scene.uiObjectScene, "addChild");
                 });
 
                 it("dispatch to addChild", function(){
                     scene.addChildren([gameObject1, uiObject1]);
 
-                    expect(scene._gameObjectScene.addChild).toCalledWith(gameObject1);
+                    expect(scene.gameObjectScene.addChild).toCalledWith(gameObject1);
                     expect(scene.uiObjectScene.addChild).toCalledWith(uiObject1);
                 });
             });
@@ -574,12 +574,12 @@ describe("SceneDispatcher", function() {
 
         describe("invoke gameObjectScene,uiObjectScene", function(){
             function judge(method){
-                sandbox.stub(scene._gameObjectScene, method);
+                sandbox.stub(scene.gameObjectScene, method);
                 sandbox.stub(scene.uiObjectScene, method);
 
                 scene[method]();
 
-                expect(scene._gameObjectScene[method]).toCalledOnce();
+                expect(scene.gameObjectScene[method]).toCalledOnce();
                 expect(scene.uiObjectScene[method]).toCalledOnce();
             }
 
@@ -613,12 +613,12 @@ describe("SceneDispatcher", function() {
 
         describe("only invoke gameObjectScene", function(){
             function judge(method){
-                sandbox.stub(scene._gameObjectScene, method);
+                sandbox.stub(scene.gameObjectScene, method);
                 sandbox.stub(scene.uiObjectScene, method);
 
                 scene[method]();
 
-                expect(scene._gameObjectScene[method]).toCalledOnce();
+                expect(scene.gameObjectScene[method]).toCalledOnce();
                 expect(scene.uiObjectScene[method]).not.toCalled();
             }
 

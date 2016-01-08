@@ -77,66 +77,97 @@ describe("UIObject", function () {
         uiObject.dispose();
         sandbox.restore();
     });
-    
+
     describe("UIObjectScene->update: if any one of its children's ui component dirty, clear canvas and mark all children to be update_dirty", function(){
         beforeEach(function(){
         });
 
-        it("defer to update ui(next loop) when new dirty occur during current loop", function(){
-            var rotationMatrix;
+        describe("defer to update ui(next loop) when new dirty occur during current loop", function(){
+            //var rotationMatrix;
 
-            function addRotateAction(index, angle){
-                var charFontUIObject = getCharFontUIObject(index);
-
+            function addAction(uiObject){
                 var action = wd.CallFunc.create(function(){
-                    this.transform.rotation = angle;
-                    rotationMatrix = charFontUIObject.transform.rotationMatrix;
-                }, charFontUIObject);
+                    this.getComponent(wd.UI).dirty = true;
+                }, uiObject);
 
-                charFontUIObject.addComponent(action);
+                uiObject.addComponent(action);
 
                 action.init();
             }
 
-            it("if the action of one of UIObjectScene->children change its transform, then its ui will not update in current loop but in next loop after invoking UIObjectScene->update", function(){
-                font.text = "正ab";
-                setWidth(1000);
+            function addRotateAction(uiObject, angle){
+                var action = wd.CallFunc.create(function(){
+                    this.transform.rotation = angle;
+                    this.getComponent(wd.UI).dirty = true;
+                }, uiObject);
 
+                uiObject.addComponent(action);
 
+                action.init();
+            }
+
+            beforeEach(function(){
                 sandbox.stub(window.performance, "now").returns(0);
 
+                director.scene.addChild(uiObject);
 
                 director._init();
+            });
 
-                prepareAfterInit();
-
-                context = renderer.context;
-
-                sandbox.stub(context, "setTransform");
-
-
-
-                director._loopBody(198);
-
-                wd.Director.getInstance().scheduler.scheduleTime(function(){
-                    addRotateAction(
-                        1,
-                        45
-                    );
-
-                }, 200);
+            it("test defer to update ui", function(){
+                var ui = uiObject.getComponent(wd.UI);
+                sandbox.stub(ui, "update");
 
 
                 director._loopBody(199);
 
+                expect(ui.update).toCalledOnce();
 
-                expect(renderer.context.setTransform).not.toCalled();
+                wd.Director.getInstance().scheduler.scheduleTime(function(){
+                    addAction(
+                        uiObject
+                    );
+                }, 200);
 
 
                 director._loopBody(200);
+
+                expect(ui.update).toCalledOnce();
+                expect(ui.dirty).toBeTruthy();
+
+
                 director._loopBody(201);
 
-                expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
+
+                expect(ui.update).toCalledTwice();
+                expect(ui.dirty).toBeFalsy();
+            });
+            it("test defer to reset transform state when new dirty occur during current loop", function(){
+                var ui = uiObject.getComponent(wd.UI);
+                sandbox.stub(ui, "update");
+
+
+                director._loopBody(199);
+
+                expect(uiObject.transform.isRotate).toBeFalsy();
+
+                wd.Director.getInstance().scheduler.scheduleTime(function(){
+                    addRotateAction(
+                        uiObject,
+                        45
+                    );
+                }, 200);
+
+
+                director._loopBody(200);
+
+                expect(uiObject.transform.isRotate).toBeTruthy();
+
+
+                director._loopBody(201);
+
+
+                expect(uiObject.transform.isRotate).toBeFalsy();
             });
         });
 
@@ -377,9 +408,9 @@ describe("UIObject", function () {
 
             director.scene.addChildren([uiObject, uiObject2]);
 
-            director.scene.uiObjectScene.init();
+            director.initUIObjectScene();
 
-            director.scene.uiObjectScene.update(1);
+            director.runUIObjectScene(1);
 
             expect(renderer.context.drawImage).toCalledAfter(renderer.context.fillText);
         });
@@ -390,9 +421,9 @@ describe("UIObject", function () {
 
             director.scene.addChildren([uiObject]);
 
-            director.scene.uiObjectScene.init();
+            director.initUIObjectScene();
 
-            director.scene.uiObjectScene.update(1);
+            director.runUIObjectScene(1);
 
 
             expect(renderer.context.fillText).toCalledBefore(renderer.context.strokeText);
@@ -405,9 +436,9 @@ describe("UIObject", function () {
 
             director.scene.addChildren([uiObject]);
 
-            director.scene.uiObjectScene.init();
+            director.initUIObjectScene();
 
-            director.scene.uiObjectScene.update(1);
+            director.runUIObjectScene(1);
 
 
             expect(renderer.context.fillText).toCalledBefore(renderer.context.drawImage);

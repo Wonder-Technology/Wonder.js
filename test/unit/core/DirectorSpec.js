@@ -11,7 +11,6 @@ describe("Director", function () {
         director = wd.Director.getInstance();
         sandbox.stub(window.performance, "now").returns(0);
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        //sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
         sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         director.scene.addChild(createCamera());
     });
@@ -208,6 +207,94 @@ describe("Director", function () {
             expect(sum).toEqual(0);
 
             director._loopBody(450);
+            expect(sum).toEqual(1);
+        });
+    });
+
+    describe("initUIObjectScene", function(){
+        var scene;
+
+        beforeEach(function(){
+            scene = director.scene.uiObjectScene;
+
+            sandbox.stub(scene, "onEnter");
+            sandbox.stub(scene, "init");
+        });
+
+        it("only init once", function(){
+            director.initUIObjectScene();
+            director.initUIObjectScene();
+
+            expect(scene.onEnter).toCalledOnce();
+        });
+        it("trigger BEFORE_INIT bind on uiObjectScene", function(){
+            var sum = 0;
+
+            wd.EventManager.on(scene, wd.EngineEvent.BEFORE_INIT, function(){
+                sum++;
+            });
+
+            director.initUIObjectScene();
+
+            expect(sum).toEqual(1);
+        });
+        it("invoke uiObjectScene->onEnter", function () {
+            director.initUIObjectScene();
+
+            expect(scene.onEnter).toCalledOnce();
+        });
+        it("invoke uiObjectScene->init", function () {
+            director.initUIObjectScene();
+
+            expect(scene.init).toCalledOnce();
+        });
+        it("trigger AFTER_INIT bind on uiObjectScene", function(){
+            var sum = 0;
+
+            wd.EventManager.on(scene, wd.EngineEvent.AFTER_INIT, function(){
+                sum++;
+            });
+
+            director.initUIObjectScene();
+
+            expect(sum).toEqual(1);
+        });
+    });
+
+    describe("runUIObjectScene", function(){
+        var scene;
+
+        beforeEach(function(){
+            scene = director.scene.uiObjectScene;
+
+            sandbox.stub(scene, "update");
+        });
+
+        it("trigger STARTLOOP bind on uiObjectScene", function(){
+            var sum = 0;
+
+            wd.EventManager.on(scene, wd.EngineEvent.STARTLOOP, function(){
+                sum++;
+            });
+
+            director.runUIObjectScene(1);
+
+            expect(sum).toEqual(1);
+        });
+        it("invoke uiObjectScene->update", function () {
+            director.runUIObjectScene(1);
+
+            expect(scene.update).toCalledWith(1);
+        });
+        it("trigger ENDLOOP bind on uiObjectScene", function(){
+            var sum = 0;
+
+            wd.EventManager.on(scene, wd.EngineEvent.ENDLOOP, function(){
+                sum++;
+            });
+
+            director.runUIObjectScene(1);
+
             expect(sum).toEqual(1);
         });
     });

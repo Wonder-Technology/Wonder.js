@@ -12,102 +12,101 @@ module wd {
          use gameObjectScene->scriptList as scene->scriptList
          */
         get scriptList(){
-            return this._gameObjectScene.scriptList;
+            return this.gameObjectScene.scriptList;
         }
 
         /*!
          use gameObjectScene->actionManager as scene->actionManager
          */
         get actionManager(){
-            return this._gameObjectScene.actionManager;
+            return this.gameObjectScene.actionManager;
         }
 
         get ambientLight():GameObject {
-            return this._gameObjectScene.ambientLight;
+            return this.gameObjectScene.ambientLight;
         }
         
         get directionLights(): wdCb.Collection<GameObject>{
-            return this._gameObjectScene.directionLights;
+            return this.gameObjectScene.directionLights;
         }
         
         get pointLights(): wdCb.Collection<GameObject>{
-            return this._gameObjectScene.pointLights;
+            return this.gameObjectScene.pointLights;
         }
         
         get side(){
-            return this._gameObjectScene.side;
+            return this.gameObjectScene.side;
         }
         set side(side:Side){
-            this._gameObjectScene.side = side;
+            this.gameObjectScene.side = side;
         }
         
         get shadowMap(){
-            return this._gameObjectScene.shadowMap;
+            return this.gameObjectScene.shadowMap;
         }
         set shadowMap(shadowMap:any){
-            this._gameObjectScene.shadowMap = shadowMap;
+            this.gameObjectScene.shadowMap = shadowMap;
         }
 
         get shader(){
-            return this._gameObjectScene.shader;
+            return this.gameObjectScene.shader;
         }
         set shader(shader:Shader){
-            this._gameObjectScene.shader = shader;
+            this.gameObjectScene.shader = shader;
         }
 
         get camera(){
-            return this._gameObjectScene.camera;
+            return this.gameObjectScene.camera;
         }
         set camera(camera:GameObject){
-            this._gameObjectScene.camera = camera;
+            this.gameObjectScene.camera = camera;
         }
 
         get isUseProgram(){
-            return this._gameObjectScene.isUseProgram;
+            return this.gameObjectScene.isUseProgram;
         }
         set isUseProgram(isUseProgram:boolean){
-            this._gameObjectScene.isUseProgram = isUseProgram;
+            this.gameObjectScene.isUseProgram = isUseProgram;
         }
 
         get physics(){
-            return this._gameObjectScene.physics;
+            return this.gameObjectScene.physics;
         }
         set physics(physics:PhysicsConfig){
-            this._gameObjectScene.physics = physics;
+            this.gameObjectScene.physics = physics;
         }
 
         get physicsEngineAdapter(){
-            return this._gameObjectScene.physicsEngineAdapter;
+            return this.gameObjectScene.physicsEngineAdapter;
         }
         set physicsEngineAdapter(physicsEngineAdapter:IPhysicsEngineAdapter){
-            this._gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
+            this.gameObjectScene.physicsEngineAdapter = physicsEngineAdapter;
         }
 
 
         public name:string = `scene${String(this.uid)}`;
 
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
-
-        private _gameObjectScene:GameObjectScene = GameObjectScene.create();
+        public gameObjectScene:GameObjectScene = GameObjectScene.create();
 
         public init(){
-            this._gameObjectScene.init();
+            this.gameObjectScene.init();
             this.uiObjectScene.init();
 
             return this;
         }
 
         public useProgram(shader:Shader){
-            this._gameObjectScene.useProgram(shader);
+            this.gameObjectScene.useProgram(shader);
         }
 
         public unUseProgram(){
-            this._gameObjectScene.unUseProgram();
+            this.gameObjectScene.unUseProgram();
         }
 
         public addChild(child:EntityObject):EntityObject{
             if(child instanceof GameObject){
-                return this._gameObjectScene.addChild(child);
+                return this.gameObjectScene.addChild(child);
             }
             else if(child instanceof UIObject){
                 return this.uiObjectScene.addChild(child);
@@ -115,30 +114,30 @@ module wd {
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            return this._gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
+            return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
         }
 
         public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this._gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
+            this.gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
         }
 
         public update(elapsedTime:number){
-            this._gameObjectScene.update(elapsedTime);
+            this.gameObjectScene.update(elapsedTime);
             this.uiObjectScene.update(elapsedTime);
         }
 
         public render(renderer:Renderer) {
-            this._gameObjectScene.render(renderer);
+            this.gameObjectScene.render(renderer);
         }
 
         public dispose(){
-            this._gameObjectScene.dispose();
+            this.gameObjectScene.dispose();
             this.uiObjectScene.dispose();
         }
 
         public hasChild(child:EntityObject):boolean {
             if(child instanceof GameObject){
-                return this._gameObjectScene.hasChild(child);
+                return this.gameObjectScene.hasChild(child);
             }
             else if(child instanceof UIObject){
                 return this.uiObjectScene.hasChild(child);
@@ -175,42 +174,42 @@ module wd {
         }
 
         public forEach(func:(gameObjcet:EntityObject) => void){
-            this._gameObjectScene.forEach(func);
+            this.gameObjectScene.forEach(func);
 
             return this;
         }
 
         public filter(func:(gameObjcet:EntityObject) => boolean){
-            return this._gameObjectScene.filter(func);
+            return this.gameObjectScene.filter(func);
         }
 
         public getChildren(){
-            return this._gameObjectScene.getChildren();
+            return this.gameObjectScene.getChildren();
         }
 
         public getChild(index:number){
-            return this._gameObjectScene.getChild(index);
+            return this.gameObjectScene.getChild(index);
         }
 
         public findChildByUid(uid:number){
-            return this._gameObjectScene.findChildByUid(uid);
+            return this.gameObjectScene.findChildByUid(uid);
         }
 
         public findChildByTag(tag:string){
-            return this._gameObjectScene.findChildByTag(tag);
+            return this.gameObjectScene.findChildByTag(tag);
         }
 
         public findChildByName(name:string){
-            return this._gameObjectScene.findChildByName(name);
+            return this.gameObjectScene.findChildByName(name);
         }
 
         public findChildrenByName(name:string):wdCb.Collection<EntityObject>{
-            return this._gameObjectScene.findChildrenByName(name);
+            return this.gameObjectScene.findChildrenByName(name);
         }
 
         public removeChild(child:EntityObject):EntityObject {
             if(child instanceof GameObject){
-                return this._gameObjectScene.removeChild(child);
+                return this.gameObjectScene.removeChild(child);
             }
             else if(child instanceof UIObject){
                 return this.uiObjectScene.removeChild(child);
@@ -218,19 +217,19 @@ module wd {
         }
 
         public getComponent<T>(_class:Function):T{
-                return this._gameObjectScene.getComponent<T>(_class);
+                return this.gameObjectScene.getComponent<T>(_class);
         }
 
         public findComponentByUid(uid:number){
-            return this._gameObjectScene.findComponentByUid(uid);
+            return this.gameObjectScene.findComponentByUid(uid);
         }
 
         public getFirstComponent():Component {
-            return this._gameObjectScene.getFirstComponent();
+            return this.gameObjectScene.getFirstComponent();
         }
 
         public forEachComponent(func:(component:Component) => void){
-            this._gameObjectScene.forEachComponent(func);
+            this.gameObjectScene.forEachComponent(func);
 
             return this;
         }
@@ -239,11 +238,11 @@ module wd {
         public hasComponent(_class:Function):boolean;
 
         public hasComponent(...args){
-            return this._gameObjectScene.hasComponent(args[0]);
+            return this.gameObjectScene.hasComponent(args[0]);
         }
 
         public addComponent(component:Component){
-            this._gameObjectScene.addComponent(component);
+            this.gameObjectScene.addComponent(component);
 
             return this;
         }
@@ -252,37 +251,37 @@ module wd {
         public removeComponent(_class:Function);
 
         public removeComponent(...args){
-            this._gameObjectScene.removeComponent(args[0]);
+            this.gameObjectScene.removeComponent(args[0]);
 
             return this;
         }
 
         public removeAllComponent(){
-            return this._gameObjectScene.removeAllComponent();
+            return this.gameObjectScene.removeAllComponent();
         }
 
         public onStartLoop() {
-            this._gameObjectScene.onStartLoop();
+            this.gameObjectScene.onStartLoop();
             this.uiObjectScene.onStartLoop();
         }
 
         public onEndLoop() {
-            this._gameObjectScene.onEndLoop();
+            this.gameObjectScene.onEndLoop();
             this.uiObjectScene.onEndLoop();
         }
 
         public onEnter() {
-            this._gameObjectScene.onEnter();
+            this.gameObjectScene.onEnter();
             this.uiObjectScene.onEnter();
         }
 
         public onExit() {
-            this._gameObjectScene.onExit();
+            this.gameObjectScene.onExit();
             this.uiObjectScene.onExit();
         }
 
         public onDispose(){
-            this._gameObjectScene.onDispose();
+            this.gameObjectScene.onDispose();
             this.uiObjectScene.onDispose();
         }
 

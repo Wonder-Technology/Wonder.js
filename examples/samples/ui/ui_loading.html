@@ -50,7 +50,8 @@
             barComponent2.percent = 1
 //            bar2.update(-1);
             var director = wd.Director.getInstance();
-            director.scene.uiObjectScene.update(-1);
+
+            director.runUIObjectScene(-1);
 
 
             console.log("completed");
@@ -77,8 +78,6 @@
 
 
 
-//            bar.transform.rotateAround(20, 300 , 100);
-
             bar2.transform.translate(300,100);
 //            bar2.transform.rotateAround(40, 300 , 100);
 
@@ -88,28 +87,9 @@
             bar2.transform.rotate(40);
 
 
-
-//            bar.transform.rotate(40);
-
-
-//            bar.transform.rotation = 0
-//            bar.transform.position = wd.Vector2.create(200, 0)
-//            bar.transform.translate(300,00);
-
-
-//            bar2.transform.resetPosition();
-//            bar2.transform.resetRotation();
-//            bar.transform.resetScale();
-//            bar2.transform.rotate(40);
-
-
-//            director.scene.addChild(bar);
             director.scene.addChild(bar2);
 
-//            bar.init();
-//            bar2.init();
-
-            director.scene.uiObjectScene.init();
+            director.initUIObjectScene();
         }
 
         function createUIRenderer(){

@@ -13,10 +13,10 @@ module wd {
         public actionManager:ActionManager = ActionManager.create();
 
         protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
+        protected startLoopHandler:() => void = null;
+        protected endLoopHandler:() => void = null;
 
         private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
-        private _startLoopHandler:() => void = null;
-        private _endLoopHandler:() => void = null;
 
         @virtual
         public initWhenCreate(){
@@ -28,15 +28,15 @@ module wd {
         }
 
         public init() {
-            this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
+            this.startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.onStartLoop();
             });
-            this._endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
+            this.endLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.onEndLoop();
             });
 
-            EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
-            EventManager.on(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
+            this.bindStartLoopEvent();
+            this.bindEndLoopEvent();
 
             this._components.forEach((component:Component) => {
                 component.init();
@@ -84,8 +84,8 @@ module wd {
 
             EventManager.off(this);
 
-            EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
-            EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
+            EventManager.off(<any>EngineEvent.STARTLOOP, this.startLoopHandler);
+            EventManager.off(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
 
             components = this.removeAllComponent();
 
@@ -327,6 +327,16 @@ module wd {
 
         @virtual
         protected beforeUpdateChildren(elapsedTime:number){
+        }
+
+        @virtual
+        protected bindStartLoopEvent(){
+            EventManager.on(<any>EngineEvent.STARTLOOP, this.startLoopHandler);
+        }
+
+        @virtual
+        protected bindEndLoopEvent(){
+            EventManager.on(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
         @require(function(){

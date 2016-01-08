@@ -18,10 +18,6 @@ module wd{
             return this._instance;
         }
 
-        public scene:SceneDispatcher = null;
-        public scheduler:Scheduler = null;
-        public renderer:Renderer= null;
-
         get gameTime(){
             return this._timeController.gameTime;
         }
@@ -55,11 +51,16 @@ module wd{
         }
 
         public scriptStreams:wdCb.Hash<wdFrp.Stream> = wdCb.Hash.create<wdFrp.Stream>();
+        public scene:SceneDispatcher = null;
+        public scheduler:Scheduler = null;
+        public renderer:Renderer= null;
 
         private _gameLoop:wdFrp.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _isFirstStart:boolean = true;
+        private _isInitUIScene:boolean = false;
+
 
         public initWhenCreate(){
             this.scene = SceneDispatcher.create();
@@ -70,7 +71,7 @@ module wd{
         public start(){
             this._gameState = GameState.NORMAL;
 
-            this.startLoop();
+            this._startLoop();
         }
 
         public stop(){
@@ -102,7 +103,34 @@ module wd{
             return this._timeController.deltaTime;
         }
 
-        private startLoop() {
+        public initUIObjectScene(){
+            var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+
+            if(this._isInitUIScene){
+                return;
+            }
+
+            this._isInitUIScene = true;
+
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
+
+            uiObjectScene.onEnter();
+            uiObjectScene.init();
+
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.AFTER_INIT));
+        }
+
+        public runUIObjectScene(elapseTime:number){
+            var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.STARTLOOP));
+
+            uiObjectScene.update(elapseTime);
+
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.ENDLOOP));
+        }
+
+        private _startLoop() {
             var self = this;
 
             this._gameLoop = wdFrp.judge(
@@ -141,10 +169,18 @@ module wd{
         private _init(){
             this._isFirstStart = false;
 
+            this._initGameObjectScene();
+
+            this.initUIObjectScene();
+        }
+
+        private _initGameObjectScene(){
+            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
+
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
-            this.scene.onEnter();
-            this.scene.init();
+            gameObjectScene.onEnter();
+            gameObjectScene.init();
 
             //todo not put here?
             this.renderer.init();
@@ -169,25 +205,34 @@ module wd{
 
             elapseTime = this._timeController.computeElapseTime(time);
 
-            this._timeController.tick(elapseTime);
-
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.STARTLOOP));
-
             this._run(elapseTime);
-
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
 
             return true;
         }
 
-        private _run(elapseTime:number) {
+        private _run(elapseTime:number){
+            this._runGameObjectScene(elapseTime);
+
+            this.runUIObjectScene(elapseTime);
+        }
+
+        private _runGameObjectScene(elapseTime:number) {
+            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
+
+            this._timeController.tick(elapseTime);
+
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.STARTLOOP));
+
             this.scheduler.update(elapseTime);
-            this.scene.update(elapseTime);
-            this.scene.render(this.renderer);
+
+            gameObjectScene.update(elapseTime);
+            gameObjectScene.render(this.renderer);
 
             if(this.renderer.hasCommand()){
                 this.renderer.render();
             }
+
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
         }
     }
 }
