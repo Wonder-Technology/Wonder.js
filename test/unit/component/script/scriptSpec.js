@@ -16,32 +16,8 @@ describe("script", function () {
 
         gameObject.addComponent(script);
 
-        var test = null;
-        var onEnter = director.scene.gameObjectScene.onEnter;
-        director.scene.gameObjectScene.onEnter = function(){
-            test = gameObject.scriptList.getChild("test");
-            judgeOnEnter(test, gameObject);
-            onEnter.call(director.scene);
-        };
 
-        director.scene.addChild(gameObject);
-
-        var loopBody = director._loopBody;
-        director._loopBody = function(){
-            var time = 100;
-
-            judgeBeforeLoopBody(test, gameObject);
-
-            loopBody.call(director, time);
-
-            judgeAfterLoopBody(test, time, gameObject);
-
-            director.stop();
-
-            done();
-        };
-
-        director.start();
+        scriptTool.testScript(gameObject, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
     }
 
     function testTwoScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
@@ -128,8 +104,8 @@ describe("script", function () {
         sandbox.stub(wd.GPUDetector.getInstance(), "detect");
         director.scene.addChild(createCamera());
 
-        url1 = testTool.resPath + "test/res/test.js";
-        url2 = testTool.resPath + "test/res/test2.js";
+        url1 = testTool.resPath + "test/res/script/test.js";
+        url2 = testTool.resPath + "test/res/script/test2.js";
     });
     afterEach(function () {
         $("script").remove();
@@ -254,7 +230,7 @@ describe("script", function () {
         }, done);
     });
     it("can load js file of relative or absolute path", function(done){
-        url1 = "http://" + location.host + "/" + testTool.resPath + "test/res/test.js";
+        url1 = "http://" + location.host + "/" + testTool.resPath + "test/res/script/test.js";
 
         testScript(function(test){
             sandbox.spy(test, "init");
