@@ -24,5 +24,16 @@ module wd {
         public static isFloatArray(data:any){
             return EntityObject.prototype.toString.call(data) === "[object Float32Array]" || EntityObject.prototype.toString.call(data) === "[object Float16Array]";
         }
+
+        /*!
+        can't use "target instanceof interface"!
+
+        refer to:
+        http://stackoverflow.com/questions/14425568/interface-type-check-with-typescript
+         https://typescript.codeplex.com/discussions/401501
+         */
+        public static isInterface(target:any, memberOfInterface:string){
+            return !!target[memberOfInterface];
+        }
     }
 }

@@ -8,6 +8,64 @@ module wd {
             return obj;
         }
 
+        public init(){
+            var self = this;
+
+            super.init();
+
+            //todo refactor
+
+            //todo bind on it default
+            EventManager.fromEvent(document.body, EventName.CLICK)
+                .map((e:MouseEvent) => {
+                    var triggerList = wdCb.Collection.create<EventTriggerListData>(),
+                        resultList:wdCb.Collection<UIObject> = null,
+                        topUIObject:UIObject = null,
+                        selectedUIObject:wdCb.Collection<UIObject> = null;
+
+                    self.filter((entityObject:EntityObject) => {
+                            return entityObject.hasComponent(EventTriggerDetector);
+                        })
+                        .forEach((entityObject:EntityObject) => {
+                            var detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
+
+                            if(detector.isTrigger(e)){
+                                triggerList.addChild({
+                                    entityObject: entityObject
+                                    , triggerMode: detector.triggerMode
+                                });
+                            }
+                        });
+
+
+                    topUIObject = UIEventTriggerUtils.getTopUIObject(triggerList.filter((data:EventTriggerListData) => {
+                            return data.triggerMode === EventTriggerMode.TOP
+                        })
+                        .map((data:EventTriggerListData) => {
+                            return data.entityObject;
+                        })
+                    );
+
+                    selectedUIObject = triggerList.filter((data:EventTriggerListData) => {
+                            return data.triggerMode === EventTriggerMode.SELECTED;
+                        })
+                        .map((data:EventTriggerListData) => {
+                            return data.entityObject;
+                        });
+
+                    resultList = topUIObject ? selectedUIObject.addChild(topUIObject) : selectedUIObject;
+
+                    return [resultList, e]
+                })
+                .subscribe(([triggerList, e]) => {
+                    triggerList.forEach((uiObject:UIObject) => {
+                        uiObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
+                    })
+                });
+
+            return this;
+        }
+
         public onEndLoop() {
             super.onEndLoop();
 
@@ -84,13 +142,13 @@ module wd {
                 }
 
                 uiObject.forEach((child:UIObject) => {
-                        //todo optimize: tail recursion
-                        search(child);
+                    //todo optimize: tail recursion
+                    search(child);
 
-                        if(isEnd){
-                            return wdCb.$BREAK;
-                        }
-                    })
+                    if(isEnd){
+                        return wdCb.$BREAK;
+                    }
+                })
             }
 
             search(uiObject);
@@ -185,6 +243,11 @@ module wd {
 
             sort(this);
         }
+    }
+
+    type EventTriggerListData = {
+        entityObject:EntityObject,
+        triggerMode:EventTriggerMode
     }
 }
 

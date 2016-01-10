@@ -1,12 +1,12 @@
 var scriptTool = (function () {
     return {
-        testScript: function (gameObject, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done) {
+        testScript: function (gameObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done) {
             var director = wd.Director.getInstance();
 
             var test = null;
             var onEnter = director.scene.gameObjectScene.onEnter;
             director.scene.gameObjectScene.onEnter = function () {
-                test = gameObject.scriptList.getChild("test");
+                test = gameObject.scriptList.getChild(scriptName);
                 judgeOnEnter(test, gameObject);
                 onEnter.call(director.scene);
             };

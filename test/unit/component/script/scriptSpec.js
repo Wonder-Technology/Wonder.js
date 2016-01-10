@@ -17,7 +17,7 @@ describe("script", function () {
         gameObject.addComponent(script);
 
 
-        scriptTool.testScript(gameObject, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
+        scriptTool.testScript(gameObject, "test", judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
     }
 
     function testTwoScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){

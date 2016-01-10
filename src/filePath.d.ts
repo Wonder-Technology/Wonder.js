@@ -45,6 +45,63 @@
 /// <reference path="collision/CollisionDetector"/>
 
 
+
+/// <reference path="event/structure/EventListenerMap"/>
+/// <reference path="event/structure/CustomEventListenerMap"/>
+/// <reference path="event/structure/DomEventListenerMap"/>
+
+/// <reference path="event/object/EventType"/>
+/// <reference path="event/object/EventNameHandler"/>
+/// <reference path="event/object/EventPhase"/>
+/// <reference path="event/object/EventTable"/>
+/// <reference path="event/object/Event"/>
+/// <reference path="event/object/DomEvent"/>
+/// <reference path="event/object/MouseEvent"/>
+/// <reference path="event/object/KeyboardEvent"/>
+/// <reference path="event/object/CustomEvent"/>
+/// <reference path="event/object/MouseButton"/>
+/// <reference path="event/listener/EventListener"/>
+/// <reference path="event/handler/EventHandler"/>
+/// <reference path="event/handler/DomEventHandler"/>
+/// <reference path="event/handler/MouseEventHandler"/>
+/// <reference path="event/handler/KeyboardEventHandler"/>
+/// <reference path="event/handler/CustomEventHandler"/>
+
+/// <reference path="event/dispatcher/EventDispatcher"/>
+/// <reference path="event/dispatcher/CustomEventDispatcher"/>
+/// <reference path="event/dispatcher/DomEventDispatcher"/>
+
+/// <reference path="event/binder/EventRegister"/>
+/// <reference path="event/binder/CustomEventRegister"/>
+/// <reference path="event/binder/DomEventRegister"/>
+
+/// <reference path="event/binder/EventBinder"/>
+/// <reference path="event/binder/CustomEventBinder"/>
+/// <reference path="event/binder/DomEventBinder"/>
+
+/// <reference path="event/factory/EventHandlerFactory"/>
+/// <reference path="event/factory/EventBinderFactory"/>
+/// <reference path="event/factory/EventDispatcherFactory"/>
+
+/// <reference path="event/EventManager"/>
+/// <reference path="event/EngineEvent"/>
+
+
+
+
+/// <reference path="component/event/EventTriggerDetector"/>
+/// <reference path="component/event/UIEventTriggerDetector"/>
+/// <reference path="component/event/EventTriggerMode"/>
+/// <reference path="component/event/EventTriggerTable"/>
+/// <reference path="component/event/UIEventTriggerUtils"/>
+
+
+/// <reference path="component/script/IScriptBehavior"/>
+/// <reference path="component/script/IEventScriptBehavior"/>
+/// <reference path="component/script/Script"/>
+
+
+
 /// <reference path="component/transform/Transform"/>
 /// <reference path="component/transform/ThreeDTransform"/>
 /// <reference path="component/transform/RectTransform"/>
@@ -150,10 +207,6 @@
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonDistanceConstraint"/>
 /// <reference path="component/physics/engine/adapter/cannon/constraint/CannonHingeConstraint"/>
 
-
-
-/// <reference path="component/script/Script"/>
-/// <reference path="component/script/IScriptBehavior"/>
 
 /// <reference path="component/light/Light"/>
 /// <reference path="component/light/AmbientLight"/>
@@ -321,45 +374,6 @@
 /// <reference path="asset/font/FntLoader"/>
 
 
-/// <reference path="event/structure/EventListenerMap"/>
-/// <reference path="event/structure/CustomEventListenerMap"/>
-/// <reference path="event/structure/DomEventListenerMap"/>
-
-/// <reference path="event/object/EventType"/>
-/// <reference path="event/object/EventNameHandler"/>
-/// <reference path="event/object/EventPhase"/>
-/// <reference path="event/object/EventTable"/>
-/// <reference path="event/object/Event"/>
-/// <reference path="event/object/DomEvent"/>
-/// <reference path="event/object/MouseEvent"/>
-/// <reference path="event/object/KeyboardEvent"/>
-/// <reference path="event/object/CustomEvent"/>
-/// <reference path="event/object/MouseButton"/>
-/// <reference path="event/listener/EventListener"/>
-/// <reference path="event/handler/EventHandler"/>
-/// <reference path="event/handler/DomEventHandler"/>
-/// <reference path="event/handler/MouseEventHandler"/>
-/// <reference path="event/handler/KeyboardEventHandler"/>
-/// <reference path="event/handler/CustomEventHandler"/>
-
-/// <reference path="event/dispatcher/EventDispatcher"/>
-/// <reference path="event/dispatcher/CustomEventDispatcher"/>
-/// <reference path="event/dispatcher/DomEventDispatcher"/>
-
-/// <reference path="event/binder/EventRegister"/>
-/// <reference path="event/binder/CustomEventRegister"/>
-/// <reference path="event/binder/DomEventRegister"/>
-
-/// <reference path="event/binder/EventBinder"/>
-/// <reference path="event/binder/CustomEventBinder"/>
-/// <reference path="event/binder/DomEventBinder"/>
-
-/// <reference path="event/factory/EventHandlerFactory"/>
-/// <reference path="event/factory/EventBinderFactory"/>
-/// <reference path="event/factory/EventDispatcherFactory"/>
-
-/// <reference path="event/EventManager"/>
-/// <reference path="event/EngineEvent"/>
 
 /// <reference path="device/DeviceManager"/>
 /// <reference path="device/GPUDetector"/>

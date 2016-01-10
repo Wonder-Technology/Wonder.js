@@ -323,6 +323,15 @@ module wd {
             });
         }
 
+        public execEventScript(method:string, arg?:any){
+            this._scriptList.filter((script:IScriptBehavior) => {
+                    return JudgeUtils.isInterface(script, "onMouseClick");
+                })
+                .forEach((script:IEventScriptBehavior) => {
+                    script[method] && (arg ? script[method](arg) : script[method]());
+                });
+        }
+
         protected abstract createTransform():Transform;
 
         @virtual

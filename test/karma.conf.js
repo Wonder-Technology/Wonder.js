@@ -27,7 +27,9 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
+
+        'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
 
@@ -40,6 +42,8 @@
         //'test/unit/**/DirectorSpec*',
 
         //'test/unit/**/ProgressBarSpec*',
+
+        //'test/unit/**/ImageSpec*',
 
         //'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
@@ -82,7 +86,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
-        //'test/unit/**/scriptSpec.js',
+        'test/unit/**/scriptSpec.js',
 
         //'test/unit/**/*ControllerSpec.js',
       //'test/unit/renderer/shadowMapSpec.js',
