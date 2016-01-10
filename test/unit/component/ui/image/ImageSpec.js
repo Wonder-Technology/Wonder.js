@@ -92,7 +92,7 @@ describe("Image", function () {
                 image.source = source;
             });
 
-            it("draw image", function(){
+            it("draw whole image", function(){
                 var width = 100;
                 var height = 50;
                 uiObject.transform.width = width;
@@ -103,8 +103,7 @@ describe("Image", function () {
                 var position = uiObject.transform.position;
 
                 expect(context.drawImage).toCalledOnce();
-                expect(context.drawImage).toCalledWith(source.source, 0, 0, width, height,
-                    position.x - width / 2, position.y - height / 2, width, height
+                expect(context.drawImage).toCalledWith(source.source, position.x - width / 2, position.y - height / 2, width, height
                 );
             });
         });

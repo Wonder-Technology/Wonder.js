@@ -26,8 +26,7 @@ module wd {
         }
 
         protected draw(elapsedTime:number){
-            this.drawInCenterPoint(this.context, this.source.source, 0, 0, this.width, this.height,
-                this.entityObject.transform.position, this.width, this.height);
+            this.drawInCenterPoint(this.context, this.source.source, this.entityObject.transform.position, this.width, this.height);
         }
     }
 }

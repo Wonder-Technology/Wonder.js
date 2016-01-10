@@ -74,13 +74,42 @@ module wd {
             return this.entityObject.getComponent<UIRenderer>(UIRenderer);
         }
 
-        protected drawInCenterPoint(context:CanvasRenderingContext2D, source:any, sx:number, sy:number, sw:number, sh:number, position:Vector2, width:number, height:number){
-            context.drawImage(
-                source, sx, sy, sw, sh,
-                position.x - width / 2, position.y - height / 2,
-                width,
-                height
-            );
+
+        protected drawInCenterPoint(context:CanvasRenderingContext2D, source:any, position:Vector2, width:number, height:number);
+        protected drawInCenterPoint(context:CanvasRenderingContext2D, source:any, sx:number, sy:number, sw:number, sh:number, position:Vector2, width:number, height:number);
+
+        protected drawInCenterPoint(...args){
+            var context:CanvasRenderingContext2D = args[0],
+                source:any = args[1];
+
+            if(args.length === 5){
+                let position:Vector2 = args[2],
+                    width:number = args[3],
+                    height:number = args[4];
+
+                context.drawImage(
+                    source,
+                    position.x - width / 2, position.y - height / 2,
+                    width,
+                    height
+                );
+            }
+            else if(args.length === 9){
+                let sx:number = args[2],
+                    sy:number = args[3],
+                    sw:number = args[4],
+                    sh:number = args[5],
+                    position:Vector2 = args[6],
+                    width:number = args[7],
+                    height:number = args[8];
+
+                context.drawImage(
+                    source, sx, sy, sw, sh,
+                    position.x - width / 2, position.y - height / 2,
+                    width,
+                    height
+                );
+            }
         }
 
         private _setCanvasTransformForRotation(){
