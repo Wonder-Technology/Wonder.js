@@ -22,7 +22,7 @@ module wd {
                 })
             }
 
-            this.clearHandler();
+            //this.clearHandler();
         }
 
         public trigger(event:Event):void;
@@ -54,13 +54,14 @@ module wd {
             registerDataList.forEach((registerData:DomEventRegisterData) => {
                 var eventCopy = event.copy();
 
-                registerData.handler(eventCopy);
+                registerData.handler(eventCopy, registerData.eventData);
             });
         }
 
         protected abstract triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName);
         protected abstract addEngineHandler(eventName:EventName, handler:Function);
         protected abstract getDefaultDom():HTMLElement;
+        protected abstract createEventData():wdCb.Hash<any>;
 
         @virtual
         protected clearHandler(){
@@ -91,6 +92,7 @@ module wd {
             DomEventRegister.getInstance().register(
                 dom,
                 eventName,
+                this.createEventData(),
                 handler,
                 originHandler,
                 domHandler,

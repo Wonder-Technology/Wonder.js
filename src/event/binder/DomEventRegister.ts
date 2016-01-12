@@ -13,10 +13,12 @@ module wd {
         protected listenerMap:DomEventListenerMap = DomEventListenerMap.create();
 
 
-        public register(dom:HTMLElement, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
+        public register(dom:HTMLElement, eventName:EventName, eventData:wdCb.Hash<any>, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
             this.listenerMap.appendChild(dom, eventName, <DomEventRegisterData>{
                 dom: dom,
                 eventName: eventName,
+                //eventHandler: eventHandler,
+                eventData: eventData,
                 handler: handler,
                 originHandler: originHandler,
                 domHandler: domHandler,
@@ -73,8 +75,10 @@ module wd {
     export type DomEventRegisterData = {
         dom?:HTMLElement,
         target?:EntityObject,
+        //eventHandler:EventHandler,
+        eventData:wdCb.Hash<any>,
         //user's event handler
-        originHandler: Function,
+        originHandler:Function,
         //wraped user's event handler
         handler:Function,
         //dom event handler

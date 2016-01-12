@@ -134,9 +134,8 @@ module wd {
             }
             else{
                 let location = this.location,
-                    handler = MouseEventHandler.getInstance(),
-                    lastX = handler.lastX,
-                    lastY = handler.lastY;
+                    lastX = this.lastX,
+                    lastY = this.lastY;
 
                 if(lastX === null && lastY === null){
                     dx = 0;
@@ -153,6 +152,9 @@ module wd {
                 y: wd
             }
         }
+
+        public lastX:number = null;
+        public lastY:number = null;
 
         protected p_type:EventType = EventType.MOUSE;
 

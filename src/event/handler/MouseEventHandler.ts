@@ -9,8 +9,15 @@ module wd {
             return this._instance;
         }
 
-        public lastX:number = null;
-        public lastY:number = null;
+        //public static create() {
+        //	var obj = new this();
+        //
+        //	return obj;
+        //}
+
+
+        //public lastX:number = null;
+        //public lastY:number = null;
 
 
         public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
@@ -71,18 +78,24 @@ module wd {
             return resultHandler;
         }
 
-        protected clearHandler(){
-            this.lastX = null;
-            this.lastY = null;
+        protected createEventData():wdCb.Hash<any>{
+            var eventData = wdCb.Hash.create<any>();
+
+            eventData.addChild("lastX", null);
+            eventData.addChild("lastY", null);
+
+            return eventData;
         }
 
         private _handleMove(handler:(event:MouseEvent) => void){
             var self = this;
 
-            return (event:MouseEvent) => {
+            return (event:MouseEvent, eventData:wdCb.Hash<any>) => {
+                self._copyEventDataToEventObject(event, eventData);
+
                 handler(event);
 
-                self._saveLocation(event);
+                self._saveLocation(event, eventData);
             };
         }
 
@@ -94,13 +107,16 @@ module wd {
             return obj;
         }
 
-        private _saveLocation(event:MouseEvent){
-            var location = null;
+        private _copyEventDataToEventObject(event:MouseEvent, eventData:wdCb.Hash<any>){
+            event.lastX = eventData.getChild("lastX");
+            event.lastY = eventData.getChild("lastY");
+        }
 
-            location = event.location;
+        private _saveLocation(event:MouseEvent, eventData:wdCb.Hash<any>){
+            var location = event.location;
 
-            this.lastX = location.x;
-            this.lastY = location.y;
+            eventData.addChild("lastX", location.x);
+            eventData.addChild("lastY", location.y);
         }
     }
 }

@@ -10,7 +10,6 @@ module wd {
         }
 
         public trigger(event:Event):void;
-
         public trigger(dom:HTMLElement, event:Event):void;
 
         public trigger(...args):any {

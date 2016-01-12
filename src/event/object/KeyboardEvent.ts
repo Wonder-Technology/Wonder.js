@@ -160,9 +160,7 @@ module wd {
             return key;
         }
 
-        get keyState(){
-            return KeyboardEventHandler.getInstance().keyState;
-        }
+        public keyState:any = null;
 
         public copy(){
             var eventObj = KeyboardEvent.create(this.event, this.name);

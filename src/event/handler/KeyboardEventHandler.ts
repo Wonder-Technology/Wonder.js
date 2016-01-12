@@ -12,7 +12,7 @@ module wd {
             return this._instance;
         }
 
-        public keyState:any = {};
+        //public keyState:any = {};
 
         public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
         public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
@@ -66,16 +66,24 @@ module wd {
             return resultHandler;
         }
 
-        protected clearHandler(){
-            this.keyState = {};
+        protected createEventData():wdCb.Hash<any>{
+            var eventData = wdCb.Hash.create<any>();
+
+            eventData.addChild("keyState", {});
+
+            return eventData;
         }
 
         private _handleKeyDown(handler:(event:KeyboardEvent) => void){
             var self = this;
 
-            return (event:KeyboardEvent) => {
-                self._setKeyStateAllFalse();
-                self.keyState[event.key] = true;
+            return (event:KeyboardEvent, eventData:wdCb.Hash<any>) => {
+                var keyState:any = eventData.getChild("keyState");
+
+                self._setKeyStateAllFalse(keyState);
+                keyState[event.key] = true;
+
+                self._copyEventDataToEventObject(event, eventData);
 
                 handler(event);
             };
@@ -84,17 +92,23 @@ module wd {
         private _handleKeyUp(handler:(event:KeyboardEvent) => void){
             var self = this;
 
-            return (event:KeyboardEvent) => {
-                self._setKeyStateAllFalse();
+            return (event:KeyboardEvent, eventData:wdCb.Hash<any>) => {
+                self._setKeyStateAllFalse(eventData.getChild("keyState"));
+
+                self._copyEventDataToEventObject(event, eventData);
 
                 handler(event);
             };
         }
 
-        private _setKeyStateAllFalse() {
-            for (let i in this.keyState) {
-                if (this.keyState.hasOwnProperty(i)) {
-                    this.keyState[i] = false;
+        private _copyEventDataToEventObject(event:KeyboardEvent, eventData:wdCb.Hash<any>){
+            event.keyState = eventData.getChild("keyState");
+        }
+
+        private _setKeyStateAllFalse(keyState:any) {
+            for (let i in keyState) {
+                if (keyState.hasOwnProperty(i)) {
+                    keyState[i] = false;
                 }
             }
         }

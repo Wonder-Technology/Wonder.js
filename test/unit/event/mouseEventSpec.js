@@ -361,19 +361,23 @@ describe("mouse event", function () {
     });
 
     describe("handle mousemove event", function(){
-        it("save location after emit event", function(){
+        it("save location to event object after emit event", function(){
             var eventTarget = null;
+            var fakeEvent2 = {
+                pageX: 20,
+                pageY:20
+            }
 
             manager.on(wd.EventName.MOUSEMOVE,function (e) {
                     eventTarget = e;
                 });
 
             manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EventName.MOUSEMOVE));
 
             expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-            var handler = wd.MouseEventHandler.getInstance();
-            expect(handler.lastX).toEqual(fakeEvent.pageX);
-            expect(handler.lastY).toEqual(fakeEvent.pageY);
+            expect(eventTarget.lastX).toEqual(fakeEvent.pageX);
+            expect(eventTarget.lastY).toEqual(fakeEvent.pageY);
         });
     });
 
@@ -482,6 +486,38 @@ describe("mouse event", function () {
     
     it("test event obj->target", function(){
         //todo finish
+    });
+
+    describe("fix bug", function(){
+        beforeEach(function(){
+        });
+
+        it("if bind the same event more than once, the result of getting movementDelta except first handler should be correctly", function(){
+            var movementDelta = [];
+
+            var fakeEvent1 = {
+                pageX: 10,
+                pageY:10
+            }
+            var fakeEvent2 = {
+                pageX: 20,
+                pageY:20
+            }
+
+            manager.on(wd.EventName.MOUSEMOVE,function (e) {
+            });
+            manager.on(wd.EventName.MOUSEMOVE,function (e) {
+                movementDelta.push(e.movementDelta);
+            });
+
+            manager.trigger(wd.MouseEvent.create(fakeEvent1, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EventName.MOUSEMOVE));
+
+
+            var movementDelta = movementDelta[1];
+            expect(movementDelta.x).toEqual(20 - 10);
+            expect(movementDelta.y).toEqual(20 - 10);
+        });
     });
 });
 
