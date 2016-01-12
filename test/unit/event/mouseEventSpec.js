@@ -3,6 +3,7 @@ describe("mouse event", function () {
     var Listener = null;
     var sandbox = null;
     var fakeEvent = null;
+    var canvas;
 
     function insertDom() {
         $("html").append($("<canvas id='event-test'></canvas>"));
@@ -22,6 +23,8 @@ describe("mouse event", function () {
         };
         manager = wd.EventManager;
         Listener = wd.EventListener;
+
+        canvas = document.getElementById("event-test");
     });
     afterEach(function () {
         removeDom();
@@ -85,7 +88,7 @@ describe("mouse event", function () {
 
                     beforeEach(function(){
                         sum = 0;
-                        dom = document.body;
+                        dom = canvas;
 
                         handler1 = function (e) {
                             eventTarget = e;
@@ -158,7 +161,7 @@ describe("mouse event", function () {
                 it("test fromEvent/dispose", function(){
                     var eventTarget = null,
                         sum = 0;
-                    var dom = document.body;
+                    var dom = canvas;
 
                     var subscription = manager.fromEvent(dom, wd.EventName.CLICK)
                         .subscribe(function (e) {

@@ -47,7 +47,7 @@ module wd {
         }
 
         protected getDefaultDom():HTMLElement{
-            return DeviceManager.getInstance().view.dom;;
+            return document.body;
         }
 
         protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){

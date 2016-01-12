@@ -4,6 +4,8 @@ describe("dom event", function () {
     var sandbox = null;
     var target = null;
 
+    var canvas;
+
     function insertDom() {
         $("html").append($("<canvas id='event-test'></canvas>"));
     }
@@ -19,6 +21,8 @@ describe("dom event", function () {
         target = wd.GameObject.create();
         manager = wd.EventManager;
         Listener = wd.EventListener;
+
+        canvas = document.getElementById("event-test");
     });
     afterEach(function () {
         removeDom();
@@ -57,7 +61,7 @@ describe("dom event", function () {
                     sum++;
                 });
 
-                YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "DOMMouseScroll");
+                YYC.Tool.event.triggerEvent(document.body, "DOMMouseScroll");
 
                 expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
             });
@@ -72,7 +76,7 @@ describe("dom event", function () {
                     sum++;
                 });
 
-                YYC.Tool.event.triggerEvent(document.getElementById("event-test"), "mousewheel");
+                YYC.Tool.event.triggerEvent(document.body, "mousewheel");
 
                 expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
             });
@@ -135,7 +139,24 @@ describe("dom event", function () {
             eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
             eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
 
-            expect(sum1).toEqual(1);
+
+            //not off
+
+            expect(sum1).toEqual(2);
+            expect(sum2).toEqual(2);
+            expect(sum3).toEqual(2);
+            expect(sum4).toEqual(2);
+
+
+
+            manager.off(document.body);
+
+            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+
+
+            expect(sum1).toEqual(2);
             expect(sum2).toEqual(2);
             expect(sum3).toEqual(2);
             expect(sum4).toEqual(2);

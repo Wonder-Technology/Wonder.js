@@ -188,13 +188,13 @@ module wd{
 
             this._eventSubscription = wdFrp.fromArray(
                 [
-                    EventManager.fromEvent(document.body, EventName.CLICK),
-                    EventManager.fromEvent(document.body, EventName.MOUSEOVER),
-                    EventManager.fromEvent(document.body, EventName.MOUSEOUT),
-                    EventManager.fromEvent(document.body, EventName.MOUSEMOVE),
-                    EventManager.fromEvent(document.body, EventName.MOUSEDOWN),
-                    EventManager.fromEvent(document.body, EventName.MOUSEUP),
-                    EventManager.fromEvent(document.body, EventName.MOUSEWHEEL),
+                    EventManager.fromEvent(EventName.CLICK),
+                    EventManager.fromEvent(EventName.MOUSEOVER),
+                    EventManager.fromEvent(EventName.MOUSEOUT),
+                    EventManager.fromEvent(EventName.MOUSEMOVE),
+                    EventManager.fromEvent(EventName.MOUSEDOWN),
+                    EventManager.fromEvent(EventName.MOUSEUP),
+                    EventManager.fromEvent(EventName.MOUSEWHEEL),
                 ]
                 )
                 .mergeAll()
