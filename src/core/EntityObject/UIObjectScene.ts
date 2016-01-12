@@ -16,12 +16,20 @@ module wd {
             //todo refactor
 
             //todo bind on it default
-            EventManager.fromEvent(document.body, EventName.CLICK)
+            wdFrp.fromArray(
+                [
+                    EventManager.fromEvent(document.body, EventName.CLICK),
+                    EventManager.fromEvent(document.body, EventName.MOUSEOVER),
+                    EventManager.fromEvent(document.body, EventName.MOUSEOUT),
+                    EventManager.fromEvent(document.body, EventName.MOUSEMOVE),
+                    EventManager.fromEvent(document.body, EventName.MOUSEDOWN),
+                    EventManager.fromEvent(document.body, EventName.MOUSEUP),
+                    EventManager.fromEvent(document.body, EventName.MOUSEWHEEL),
+                ]
+                )
+                .mergeAll()
                 .map((e:MouseEvent) => {
-                    var triggerList = wdCb.Collection.create<EventTriggerListData>(),
-                        resultList:wdCb.Collection<UIObject> = null,
-                        topUIObject:UIObject = null,
-                        selectedUIObject:wdCb.Collection<UIObject> = null;
+                    var triggerList = wdCb.Collection.create<EventTriggerListData>();
 
                     self.filter((entityObject:EntityObject) => {
                             return entityObject.hasComponent(EventTriggerDetector);
@@ -37,25 +45,7 @@ module wd {
                             }
                         });
 
-
-                    topUIObject = UIEventTriggerUtils.getTopUIObject(triggerList.filter((data:EventTriggerListData) => {
-                            return data.triggerMode === EventTriggerMode.TOP
-                        })
-                        .map((data:EventTriggerListData) => {
-                            return data.entityObject;
-                        })
-                    );
-
-                    selectedUIObject = triggerList.filter((data:EventTriggerListData) => {
-                            return data.triggerMode === EventTriggerMode.SELECTED;
-                        })
-                        .map((data:EventTriggerListData) => {
-                            return data.entityObject;
-                        });
-
-                    resultList = topUIObject ? selectedUIObject.addChild(topUIObject) : selectedUIObject;
-
-                    return [resultList, e]
+                    return [UIEventTriggerUtils.getTriggerListByTriggerMode(triggerList), e]
                 })
                 .subscribe(([triggerList, e]) => {
                     triggerList.forEach((uiObject:UIObject) => {
@@ -245,7 +235,7 @@ module wd {
         }
     }
 
-    type EventTriggerListData = {
+    export type EventTriggerListData = {
         entityObject:EntityObject,
         triggerMode:EventTriggerMode
     }

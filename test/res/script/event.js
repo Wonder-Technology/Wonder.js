@@ -12,6 +12,18 @@ var sample;
         }
         Event.prototype.onMouseClick = function (e) {
         };
+        Event.prototype.onMouseOver = function (e) {
+        };
+        Event.prototype.onMouseOut = function (e) {
+        };
+        Event.prototype.onMouseMove = function (e) {
+        };
+        Event.prototype.onMouseDown = function (e) {
+        };
+        Event.prototype.onMouseUp = function (e) {
+        };
+        Event.prototype.onMouseWheel = function (e) {
+        };
         Event = __decorate([
             wd.script("event")
         ], Event);

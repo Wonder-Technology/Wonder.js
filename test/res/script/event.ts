@@ -8,5 +8,23 @@ module sample {
 
         public onMouseClick(e) {
         }
+
+        public onMouseOver(e) {
+        }
+
+        public onMouseOut(e) {
+        }
+
+        public onMouseMove(e) {
+        }
+
+        public onMouseDown(e) {
+        }
+
+        public onMouseUp(e) {
+        }
+
+        public onMouseWheel(e) {
+        }
     }
 }
