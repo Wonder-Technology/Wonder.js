@@ -175,6 +175,8 @@ var testTool = (function () {
             });
         },
         clearInstance: function () {
+            wd.EventManager.off();
+
             for (var i in wd) {
                 if (wd.hasOwnProperty(i)) {
                     if (wd[i]) {

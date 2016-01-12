@@ -26,12 +26,13 @@ describe("event component", function () {
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
 
-
         manager = wd.EventManager;
-
     });
     afterEach(function () {
         testTool.clearInstance();
+
+        $("canvas").remove();
+
         sandbox.restore();
     });
 

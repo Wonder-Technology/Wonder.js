@@ -169,10 +169,7 @@ module wd{
         private _init(){
             this._isFirstStart = false;
 
-
             this._initEvent();
-
-
 
             this._initGameObjectScene();
 

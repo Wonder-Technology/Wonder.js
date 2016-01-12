@@ -69,7 +69,11 @@ describe("SceneDispatcher", function() {
             sandbox.stub(gameObject3, "onExit");
         });
 
-        describe("init", function(){
+        describe("GameObjectScene->init", function(){
+            beforeEach(function(){
+                scene = scene.gameObjectScene;
+            });
+            
             it("bind global hook", function(){
                 scene.init();
 
@@ -136,7 +140,7 @@ describe("SceneDispatcher", function() {
             })
         });
 
-        describe("update", function(){
+        describe("GameObjectScene->update", function(){
             var elapsedTime;
             var action1,
                 action2,
@@ -153,6 +157,8 @@ describe("SceneDispatcher", function() {
             }
 
             beforeEach(function(){
+                scene = scene.gameObjectScene;
+
                 elapsedTime = 100;
                 action1 = buildAction();
                 action2 = buildAction();
@@ -420,10 +426,12 @@ describe("SceneDispatcher", function() {
         });
     });
 
-    describe("render", function(){
+    describe("GameObjectScene->render", function(){
         var renderer,camera;
 
         beforeEach(function(){
+            scene = scene.gameObjectScene;
+
             renderer = {};
             camera = {};
             scene.camera = camera;
@@ -584,12 +592,12 @@ describe("SceneDispatcher", function() {
             }
 
 
-            it("init", function(){
-                judge("init");
-            });
-            it("update", function(){
-                judge("update");
-            });
+            //it("init", function(){
+            //    judge("init");
+            //});
+            //it("update", function(){
+            //    judge("update");
+            //});
             it("dispose", function(){
                 judge("dispose");
             });
@@ -622,9 +630,9 @@ describe("SceneDispatcher", function() {
                 expect(scene.uiObjectScene[method]).not.toCalled();
             }
 
-            it("render", function(){
-                judge("render");
-            });
+            //it("render", function(){
+            //    judge("render");
+            //});
             it("forEach", function(){
                 judge("forEach");
             });
