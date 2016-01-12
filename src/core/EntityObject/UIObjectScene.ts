@@ -1,5 +1,5 @@
 module wd {
-    export class UIObjectScene extends EntityObject{
+    export class UIObjectScene extends Scene{
         public static create() {
             var obj = new this();
 
@@ -8,53 +8,7 @@ module wd {
             return obj;
         }
 
-        public init(){
-            var self = this;
-
-            super.init();
-
-            //todo refactor
-
-            //todo bind on it default
-            wdFrp.fromArray(
-                [
-                    EventManager.fromEvent(document.body, EventName.CLICK),
-                    EventManager.fromEvent(document.body, EventName.MOUSEOVER),
-                    EventManager.fromEvent(document.body, EventName.MOUSEOUT),
-                    EventManager.fromEvent(document.body, EventName.MOUSEMOVE),
-                    EventManager.fromEvent(document.body, EventName.MOUSEDOWN),
-                    EventManager.fromEvent(document.body, EventName.MOUSEUP),
-                    EventManager.fromEvent(document.body, EventName.MOUSEWHEEL),
-                ]
-                )
-                .mergeAll()
-                .map((e:MouseEvent) => {
-                    var triggerList = wdCb.Collection.create<EventTriggerListData>();
-
-                    self.filter((entityObject:EntityObject) => {
-                            return entityObject.hasComponent(EventTriggerDetector);
-                        })
-                        .forEach((entityObject:EntityObject) => {
-                            var detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
-
-                            if(detector.isTrigger(e)){
-                                triggerList.addChild({
-                                    entityObject: entityObject
-                                    , triggerMode: detector.triggerMode
-                                });
-                            }
-                        });
-
-                    return [UIEventTriggerUtils.getTriggerListByTriggerMode(triggerList), e]
-                })
-                .subscribe(([triggerList, e]) => {
-                    triggerList.forEach((uiObject:UIObject) => {
-                        uiObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
-                    })
-                });
-
-            return this;
-        }
+        protected eventTriggerUtils:UIObjectEventTriggerUtils = UIObjectEventTriggerUtils.create();
 
         public onEndLoop() {
             super.onEndLoop();
@@ -233,11 +187,6 @@ module wd {
 
             sort(this);
         }
-    }
-
-    export type EventTriggerListData = {
-        entityObject:EntityObject,
-        triggerMode:EventTriggerMode
     }
 }
 

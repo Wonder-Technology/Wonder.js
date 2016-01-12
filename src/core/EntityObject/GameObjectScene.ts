@@ -1,5 +1,5 @@
 module wd {
-    export class GameObjectScene extends EntityObject{
+    export class GameObjectScene extends Scene{
         public static create() {
             var obj = new this();
 
@@ -30,6 +30,8 @@ module wd {
         public isUseProgram:boolean = false;
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
+
+        protected eventTriggerUtils:GameObjectEventTriggerUtils = GameObjectEventTriggerUtils.create();
 
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();

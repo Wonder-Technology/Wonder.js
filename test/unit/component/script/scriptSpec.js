@@ -109,8 +109,7 @@ describe("script", function () {
     });
     afterEach(function () {
         $("script").remove();
-        wd.Director._instance = null;
-        wd.JsLoader._instance = null;
+        testTool.clearInstance();
         sandbox.restore();
     });
 

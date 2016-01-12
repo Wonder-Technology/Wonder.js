@@ -37,6 +37,7 @@
 /// <reference path="core/entityObject/UIObject"/>
 /// <reference path="core/entityObject/GameObject"/>
 /// <reference path="core/entityObject/SceneDispatcher"/>
+/// <reference path="core/entityObject/Scene"/>
 /// <reference path="core/entityObject/GameObjectScene"/>
 /// <reference path="core/entityObject/UIObjectScene"/>
 /// <reference path="core/entityObject/Skybox"/>
@@ -93,7 +94,9 @@
 /// <reference path="component/event/UIEventTriggerDetector"/>
 /// <reference path="component/event/EventTriggerMode"/>
 /// <reference path="component/event/EventTriggerTable"/>
-/// <reference path="component/event/UIEventTriggerUtils"/>
+/// <reference path="component/event/EventTriggerUtils"/>
+/// <reference path="component/event/UIObjectEventTriggerUtils"/>
+/// <reference path="component/event/GameObjectEventTriggerUtils"/>
 
 
 /// <reference path="component/script/IScriptBehavior"/>

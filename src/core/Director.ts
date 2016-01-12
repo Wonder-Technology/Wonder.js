@@ -169,9 +169,50 @@ module wd{
         private _init(){
             this._isFirstStart = false;
 
+
+            this._initEvent();
+
+
+
             this._initGameObjectScene();
 
             this.initUIObjectScene();
+        }
+
+        private _initEvent(){
+            var self = this;
+
+
+            //todo refactor
+
+            //todo bind on it default
+
+            //todo dispose
+
+
+            wdFrp.fromArray(
+                [
+                    EventManager.fromEvent(document.body, EventName.CLICK),
+                    EventManager.fromEvent(document.body, EventName.MOUSEOVER),
+                    EventManager.fromEvent(document.body, EventName.MOUSEOUT),
+                    EventManager.fromEvent(document.body, EventName.MOUSEMOVE),
+                    EventManager.fromEvent(document.body, EventName.MOUSEDOWN),
+                    EventManager.fromEvent(document.body, EventName.MOUSEUP),
+                    EventManager.fromEvent(document.body, EventName.MOUSEWHEEL),
+                ]
+                )
+                .mergeAll()
+                .map((e:MouseEvent) => {
+                    var gameObjectScene:GameObjectScene = self.scene.gameObjectScene,
+                        uiObjectScene:UIObjectScene = self.scene.uiObjectScene;
+
+                    return [gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)), e];
+                })
+                .subscribe(([triggerList, e]) => {
+                    triggerList.forEach((uiObject:UIObject) => {
+                        uiObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
+                    })
+                });
         }
 
         private _initGameObjectScene(){

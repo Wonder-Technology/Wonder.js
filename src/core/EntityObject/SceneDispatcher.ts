@@ -89,13 +89,6 @@ module wd {
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
         public gameObjectScene:GameObjectScene = GameObjectScene.create();
 
-        public init(){
-            this.gameObjectScene.init();
-            this.uiObjectScene.init();
-
-            return this;
-        }
-
         public useProgram(shader:Shader){
             this.gameObjectScene.useProgram(shader);
         }
@@ -119,15 +112,6 @@ module wd {
 
         public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
             this.gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
-        }
-
-        public update(elapsedTime:number){
-            this.gameObjectScene.update(elapsedTime);
-            this.uiObjectScene.update(elapsedTime);
-        }
-
-        public render(renderer:Renderer) {
-            this.gameObjectScene.render(renderer);
         }
 
         public dispose(){
