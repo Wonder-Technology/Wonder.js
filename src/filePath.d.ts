@@ -90,14 +90,16 @@
 
 
 
-/// <reference path="component/event/EventTriggerDetector"/>
-/// <reference path="component/event/UIEventTriggerDetector"/>
-/// <reference path="component/event/RayCasterEventTriggerDetector"/>
+/// <reference path="component/event/detector/EventTriggerDetector"/>
+/// <reference path="component/event/detector/UIEventTriggerDetector"/>
+/// <reference path="component/event/detector/RayCasterEventTriggerDetector"/>
+
 /// <reference path="component/event/EventTriggerMode"/>
 /// <reference path="component/event/EventTriggerTable"/>
-/// <reference path="component/event/EventTriggerUtils"/>
-/// <reference path="component/event/UIObjectEventTriggerUtils"/>
-/// <reference path="component/event/GameObjectEventTriggerUtils"/>
+
+/// <reference path="component/event/utils/EventTriggerUtils"/>
+/// <reference path="component/event/utils/UIObjectEventTriggerUtils"/>
+/// <reference path="component/event/utils/GameObjectEventTriggerUtils"/>
 
 
 /// <reference path="component/script/IScriptBehavior"/>

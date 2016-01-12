@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/component/event/eventSpec*',
 
@@ -84,7 +84,7 @@
         //'test/unit/**/physics/**/compound*',
         //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        'test/unit/**/Arcball*',
+        //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/scriptSpec.js',
 
