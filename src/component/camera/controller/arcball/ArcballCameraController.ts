@@ -1,5 +1,6 @@
 module wd {
-    declare var Math:any;
+    declare var Math:any,
+        document:any;
 
     export class ArcballCameraController extends CameraController {
         public static create(cameraComponent:Camera) {
@@ -64,10 +65,13 @@ module wd {
         //todo treat picked item as the target
         private _bindCanvasEvent() {
             var self = this,
-                mouseup = EventManager.fromEvent(EventName.MOUSEUP),
-                mousemove = EventManager.fromEvent(EventName.MOUSEMOVE),
-                mousedown = EventManager.fromEvent(EventName.MOUSEDOWN),
-                mousewheel = EventManager.fromEvent(EventName.MOUSEWHEEL),
+                /*!
+                 here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
+                 */
+                mouseup = EventManager.fromEvent(document, EventName.MOUSEUP),
+                mousemove = EventManager.fromEvent(document, EventName.MOUSEMOVE),
+                mousedown = EventManager.fromEvent(document, EventName.MOUSEDOWN),
+                mousewheel = EventManager.fromEvent(document, EventName.MOUSEWHEEL),
                 keydown = EventManager.fromEvent(EventName.KEYDOWN),
                 mousedrag = null;
 

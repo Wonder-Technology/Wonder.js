@@ -1,4 +1,6 @@
 module wd {
+    declare var document:any;
+
     export abstract class FlyCameraControl {
         constructor(cameraComponent:Camera) {
             this.cameraComponent = cameraComponent;
@@ -65,9 +67,12 @@ module wd {
         private _bindCanvasEvent() {
             var self = this,
                 rotateSpeed = this.rotateSpeed,
-                mouseup = EventManager.fromEvent(EventName.MOUSEUP),
-                mousemove = EventManager.fromEvent(EventName.MOUSEMOVE),
-                mousedown = EventManager.fromEvent(EventName.MOUSEDOWN),
+                /*!
+                 here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
+                 */
+                mouseup = EventManager.fromEvent(document, EventName.MOUSEUP),
+                mousemove = EventManager.fromEvent(document, EventName.MOUSEMOVE),
+                mousedown = EventManager.fromEvent(document, EventName.MOUSEDOWN),
                 keydown = EventManager.fromEvent(EventName.KEYDOWN),
                 mousedrag = null,
                 canvas = Director.getInstance().view;
