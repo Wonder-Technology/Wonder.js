@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        'test/unit/component/event/eventSpec*',
+        //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
 
@@ -84,9 +84,9 @@
         //'test/unit/**/physics/**/compound*',
         //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
-        //'test/unit/**/Arcball*',
+        'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
-        'test/unit/**/scriptSpec.js',
+        //'test/unit/**/scriptSpec.js',
 
         //'test/unit/**/*ControllerSpec.js',
       //'test/unit/renderer/shadowMapSpec.js',

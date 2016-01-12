@@ -181,11 +181,6 @@ module wd{
         private _initEvent(){
             var self = this;
 
-
-            //todo refactor
-
-            //todo bind on it default
-
             this._eventSubscription = wdFrp.fromArray(
                 [
                     EventManager.fromEvent(EventName.CLICK),

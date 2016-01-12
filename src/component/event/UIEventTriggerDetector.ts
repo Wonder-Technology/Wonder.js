@@ -1,4 +1,5 @@
 module wd {
+    //todo support change event rect range(because if rotate, the the event rect range may be much different from the one of drawed in canvas)
     export class UIEventTriggerDetector extends EventTriggerDetector {
         public static create() {
             var obj = new this();
@@ -12,11 +13,11 @@ module wd {
                 height = transform.height,
                 position = transform.position,
                 locationInView = e.locationInView,
-                leftCornerPosition = null;
+                leftUpCornerPosition = null;
 
-            leftCornerPosition = Vector2.create(position.x - width / 2, position.y - height / 2);
+            leftUpCornerPosition = Vector2.create(position.x - width / 2, position.y - height / 2);
 
-            return locationInView.x >= leftCornerPosition.x && locationInView.x <= leftCornerPosition.x + width && locationInView.y >= leftCornerPosition.y && locationInView.y <= leftCornerPosition.y + height;
+            return locationInView.x >= leftUpCornerPosition.x && locationInView.x <= leftUpCornerPosition.x + width && locationInView.y >= leftUpCornerPosition.y && locationInView.y <= leftUpCornerPosition.y + height;
         }
     }
 }
