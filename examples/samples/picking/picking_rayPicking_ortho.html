@@ -28,9 +28,6 @@
             director.scene.addChild(createCamera());
 
 
-            director.scene.addComponent(wd.Script.create("./js/picking_rayPicking.js"));
-
-
             director.start();
         }
 
@@ -54,6 +51,15 @@
             gameObject.addComponent(wd.MeshRenderer.create());
 
 
+
+            var eventTriggerDetector = wd.RayCasterEventTriggerDetector.create();
+
+            gameObject.addComponent(eventTriggerDetector);
+
+
+
+            gameObject.addComponent(wd.Script.create("./js/picking_rayPicking.js"));
+
             gameObject.transform.translate(position);
 
 
@@ -76,6 +82,15 @@
 
             gameObject.addComponent(wd.MeshRenderer.create());
 
+
+
+            var eventTriggerDetector = wd.RayCasterEventTriggerDetector.create();
+
+            gameObject.addComponent(eventTriggerDetector);
+
+
+
+            gameObject.addComponent(wd.Script.create("./js/picking_rayPicking.js"));
 
             gameObject.transform.translate(position);
 

@@ -233,7 +233,7 @@ var testTool = (function () {
             //cameraComponent.aspect = canvas.width / canvas.height;
             cameraComponent.aspect = 1;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 100;
+            cameraComponent.far = 1000;
 
 
             var controller = wd.BasicCameraController.create(cameraComponent);
@@ -248,6 +248,9 @@ var testTool = (function () {
 
             if(lookAtPoint){
                 camera.transform.lookAt(lookAtPoint);
+            }
+            else{
+                camera.transform.lookAt(wd.Vector3.create(0, 0, 0));
             }
 
             return camera

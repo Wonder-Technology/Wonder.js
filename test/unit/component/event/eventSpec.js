@@ -2,6 +2,7 @@ describe("event component", function () {
     var sandbox = null;
     var director;
     var manager;
+    var view;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -23,6 +24,8 @@ describe("event component", function () {
         });
 
 
+        view = wd.DeviceManager.getInstance().view;
+
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
 
@@ -43,12 +46,35 @@ describe("event component", function () {
         function createGameObject(){
             var gameObject = wd.GameObject.create();
 
-            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+            var eventTriggerDetector = wd.RayCasterEventTriggerDetector.create();
 
             gameObject.addComponent(eventTriggerDetector);
 
 
             gameObject.addComponent(wd.Script.create(url));
+
+
+
+            var material = wd.BasicMaterial.create();
+
+
+            var geometry = wd.BoxGeometry.create();
+            geometry.material = material;
+            geometry.width = 2;
+            geometry.height = 2;
+            geometry.depth = 2;
+
+            gameObject.addComponent(geometry);
+
+
+
+            var collider = wd.BoxCollider.create();
+
+            gameObject.addComponent(collider);
+
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
 
             return gameObject;
         }
@@ -57,7 +83,7 @@ describe("event component", function () {
             url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
         });
 
-        describe("test trigger UIObject mouse event script", function(){
+        describe("test trigger UIObject mouse event script by judge hitting RectTransforn->width,height", function(){
             var uiObject;
 
             function createUIRenderer(){
@@ -274,53 +300,51 @@ describe("event component", function () {
             });
         });
 
-        describe("test trigger GameObject mouse event script", function(){
+        describe("test trigger GameObject mouse event script by ray cast test", function(){
             var gameObject;
 
             beforeEach(function(){
                 gameObject = createGameObject();
                 director.scene.addChild(testTool.createCamera());
+
+                director.scene.camera.position = wd.Vector3.create(0, 0, 20);
             });
 
 
             describe("test trigger single one", function() {
                 beforeEach(function(){
-                    gameObject.transform.width = 200;
-                    gameObject.transform.height = 100;
-
-                    gameObject.transform.translate(300, 100, 0);
                 });
 
                 it("test not trigger", function (done) {
                     scriptTool.testScript(gameObject, "event", function (test) {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
+                    }, function (test, time, gameObject) {
                         fakeEvent = {
-                            pageX: 300 - 200 / 2 - 1,
-                            pageY: 100 - 100 / 2
+                            pageX: view.width / 2 - 100,
+                            pageY: view.height / 2
                         };
+
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
                         expect(test.onMouseClick).not.toCalled();
-                    }, function (test, time, gameObject) {
                     }, done);
                 });
                 it("test trigger", function (done) {
                     scriptTool.testScript(gameObject, "event", function (test) {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
+                    }, function (test, time, gameObject) {
                         fakeEvent = {
-                            pageX: 300 - 200 / 2,
-                            pageY: 100 - 100 / 2
+                            pageX: view.width / 2,
+                            pageY: view.height / 2
                         };
                         manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
-                    }, function (test, time, gameObject) {
                     }, done);
                 });
             });
-
 
             describe("test trigger multi ones", function(){
                 function getEventTriggerListByTriggerMode(triggerList){
@@ -331,7 +355,6 @@ describe("event component", function () {
                 });
 
                 it("the top one is the nearest one to camera", function(){
-                    director.scene.camera.position = wd.Vector3.create(0, 0, 10);
 
 
                     var gameObject1 = createGameObject();
@@ -373,13 +396,6 @@ describe("event component", function () {
             beforeEach(function(){
                 gameObject = createGameObject();
                 director.scene.addChild(testTool.createCamera());
-
-
-
-                gameObject.transform.width = 200;
-                gameObject.transform.height = 100;
-
-                gameObject.transform.translate(300, 100, 0);
             });
 
             describe("test Director->pause/resume event", function(){
@@ -388,8 +404,8 @@ describe("event component", function () {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
                         fakeEvent = {
-                            pageX: 300 - 200 / 2,
-                            pageY: 100 - 100 / 2
+                            pageX: view.width / 2,
+                            pageY: view.height / 2
                         };
 
 
@@ -417,8 +433,8 @@ describe("event component", function () {
                         sandbox.spy(test, "onMouseClick");
                     }, function (test) {
                         fakeEvent = {
-                            pageX: 300 - 200 / 2,
-                            pageY: 100 - 100 / 2
+                            pageX: view.width / 2,
+                            pageY: view.height / 2
                         };
 
 
@@ -440,7 +456,6 @@ describe("event component", function () {
                 });
             });
         });
-
     });
 });
 

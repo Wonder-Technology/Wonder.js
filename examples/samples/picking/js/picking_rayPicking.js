@@ -7,40 +7,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 /// <reference path="../../../../dist/wd.d.ts"/>
 var sample;
 (function (sample) {
-    var CameraController = wd.CameraController;
     var RayPicking = (function () {
         function RayPicking(gameObject) {
             this._gameObject = null;
             this._gameObject = gameObject;
         }
-        RayPicking.prototype.init = function () {
-            var self = this;
-            wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN)
-                .subscribe(function (e) {
-                self.onSelect(e);
-            });
-        };
-        RayPicking.prototype.onSelect = function (e) {
-            var pickingObjNearestToCameraPos = null;
-            pickingObjNearestToCameraPos = this._getPickingObjNearestToCamera(e);
-            if (!pickingObjNearestToCameraPos) {
-                return;
-            }
-            this._handleSelect(pickingObjNearestToCameraPos);
-        };
-        RayPicking.prototype._getPickingObjNearestToCamera = function (e) {
-            var cameraController = this._gameObject.camera.getComponent(CameraController), self = this;
-            return this._gameObject.filter(function (gameObject) {
-                var location = e.locationInView;
-                return cameraController.isIntersectWithRay(gameObject, location.x, location.y);
-            })
-                .sort(function (a, b) {
-                return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
-            })
-                .getChild(0);
-        };
-        RayPicking.prototype._getDistanceToCamera = function (obj) {
-            return obj.transform.position.copy().sub(this._gameObject.camera.transform.position).length();
+        RayPicking.prototype.onMouseDown = function (e) {
+            this._handleSelect(this._gameObject);
         };
         RayPicking.prototype._handleSelect = function (selectedObj) {
             var tween1 = wd.Tween.create(), tween2 = wd.Tween.create(), action = null;

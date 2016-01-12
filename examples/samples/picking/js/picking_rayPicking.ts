@@ -1,57 +1,18 @@
 /// <reference path="../../../../dist/wd.d.ts"/>
 module sample {
     import GameObject = wd.GameObject;
-    import Collider = wd.Collider;
-    import SceneDispatcher = wd.SceneDispatcher;
-    import CameraController = wd.CameraController;
     import MouseEvent = wd.MouseEvent;
 
     @wd.script("RayPicking")
     export class RayPicking implements wd.IScriptBehavior {
-        constructor(gameObject:SceneDispatcher) {
+        constructor(gameObject:GameObject) {
             this._gameObject = gameObject;
         }
 
-        private _gameObject:SceneDispatcher = null;
+        private _gameObject:GameObject = null;
 
-        public init() {
-            var self = this;
-
-            wd.EventManager.fromEvent(wd.EventName.MOUSEDOWN)
-                .subscribe(function (e:MouseEvent) {
-                    self.onSelect(e);
-                });
-        }
-
-        public onSelect(e:MouseEvent) {
-            var pickingObjNearestToCameraPos:GameObject = null;
-
-            pickingObjNearestToCameraPos =  this._getPickingObjNearestToCamera(e);
-
-            if(!pickingObjNearestToCameraPos){
-                return;
-            }
-
-            this._handleSelect(pickingObjNearestToCameraPos);
-        }
-
-        private _getPickingObjNearestToCamera(e:MouseEvent){
-            var cameraController:CameraController = this._gameObject.camera.getComponent<CameraController>(CameraController),
-                self = this;
-
-            return this._gameObject.filter((gameObject:GameObject) => {
-                    let location = e.locationInView;
-
-                    return cameraController.isIntersectWithRay(gameObject, location.x, location.y);
-                })
-                .sort((a:GameObject, b:GameObject) => {
-                    return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
-                })
-                .getChild(0);
-        }
-
-        private _getDistanceToCamera(obj:GameObject){
-            return obj.transform.position.copy().sub(this._gameObject.camera.transform.position).length();
+        public onMouseDown(e:MouseEvent){
+            this._handleSelect(this._gameObject);
         }
 
         private _handleSelect(selectedObj:GameObject) {

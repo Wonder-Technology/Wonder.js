@@ -92,6 +92,7 @@
 
 /// <reference path="component/event/EventTriggerDetector"/>
 /// <reference path="component/event/UIEventTriggerDetector"/>
+/// <reference path="component/event/RayCasterEventTriggerDetector"/>
 /// <reference path="component/event/EventTriggerMode"/>
 /// <reference path="component/event/EventTriggerTable"/>
 /// <reference path="component/event/EventTriggerUtils"/>

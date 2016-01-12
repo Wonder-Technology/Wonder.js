@@ -36,13 +36,12 @@ describe("rayPicking", function () {
                 camera = testTool.createCamera(Vector3.create(0, 0, 1));
 
 
-                camera.init();
-
                 cameraController = camera.getComponent(wd.CameraController);
 
                 cameraController.camera.near = 0.1;
                 cameraController.camera.far = 100;
 
+                camera.init();
             });
 
             it("test1", function () {
