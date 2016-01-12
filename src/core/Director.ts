@@ -56,6 +56,7 @@ module wd{
         public renderer:Renderer= null;
 
         private _gameLoop:wdFrp.IDisposable = null;
+        private _eventSubscription:wdFrp.IDisposable = null;
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _isFirstStart:boolean = true;
@@ -79,6 +80,7 @@ module wd{
             this._gameState = GameState.STOP;
             this._timeController.stop();
             this.scheduler.stop();
+            this._eventSubscription && this._eventSubscription.dispose();
         }
 
         public pause(){
@@ -184,10 +186,7 @@ module wd{
 
             //todo bind on it default
 
-            //todo dispose
-
-
-            wdFrp.fromArray(
+            this._eventSubscription = wdFrp.fromArray(
                 [
                     EventManager.fromEvent(document.body, EventName.CLICK),
                     EventManager.fromEvent(document.body, EventName.MOUSEOVER),
@@ -206,8 +205,12 @@ module wd{
                     return [gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)), e];
                 })
                 .subscribe(([triggerList, e]) => {
-                    triggerList.forEach((uiObject:UIObject) => {
-                        uiObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
+                    if(self._gameState === GameState.PAUSE){
+                        return;
+                    }
+
+                    triggerList.forEach((entityObject:EntityObject) => {
+                        entityObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
                     })
                 });
         }

@@ -40,9 +40,22 @@ describe("event component", function () {
         var fakeEvent;
         var url = null;
 
+        function createGameObject(){
+            var gameObject = wd.GameObject.create();
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+            gameObject.addComponent(eventTriggerDetector);
+
+
+            gameObject.addComponent(wd.Script.create(url));
+
+            return gameObject;
+        }
+
         beforeEach(function(){
             url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
-        })
+        });
 
         describe("test trigger UIObject mouse event script", function(){
             var uiObject;
@@ -264,19 +277,6 @@ describe("event component", function () {
         describe("test trigger GameObject mouse event script", function(){
             var gameObject;
 
-            function createGameObject(){
-                var gameObject = wd.GameObject.create();
-
-                var eventTriggerDetector = wd.UIEventTriggerDetector.create();
-
-                gameObject.addComponent(eventTriggerDetector);
-
-
-                gameObject.addComponent(wd.Script.create(url));
-
-                return gameObject;
-            }
-
             beforeEach(function(){
                 gameObject = createGameObject();
                 director.scene.addChild(testTool.createCamera());
@@ -366,6 +366,81 @@ describe("event component", function () {
                 });
             });
         });
+
+        describe("test Director", function(){
+            var gameObject;
+
+            beforeEach(function(){
+                gameObject = createGameObject();
+                director.scene.addChild(testTool.createCamera());
+
+
+
+                gameObject.transform.width = 200;
+                gameObject.transform.height = 100;
+
+                gameObject.transform.translate(300, 100, 0);
+            });
+
+            describe("test Director->pause/resume event", function(){
+                it("if pause, not trigger event script handler", function(done){
+                    scriptTool.testScript(gameObject, "event", function (test) {
+                        sandbox.spy(test, "onMouseClick");
+                    }, function (test) {
+                        fakeEvent = {
+                            pageX: 300 - 200 / 2,
+                            pageY: 100 - 100 / 2
+                        };
+
+
+                        director.pause();
+
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(test.onMouseClick).not.toCalled();
+
+
+
+                        director.resume();
+
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(test.onMouseClick).toCalledOnce();
+                    }, function (test, time, gameObject) {
+                    }, done);
+                });
+            });
+
+            describe("test Director->start/stop event", function(){
+                it("if stop, remove event", function(done){
+                    scriptTool.testScript(gameObject, "event", function (test) {
+                        sandbox.spy(test, "onMouseClick");
+                    }, function (test) {
+                        fakeEvent = {
+                            pageX: 300 - 200 / 2,
+                            pageY: 100 - 100 / 2
+                        };
+
+
+
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(test.onMouseClick).toCalledOnce();
+
+
+
+                        director.stop();
+
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+
+                        expect(test.onMouseClick).not.toCalledTwice();
+                    }, function (test, time, gameObject) {
+                    }, done);
+                });
+            });
+        });
+
     });
 });
 
