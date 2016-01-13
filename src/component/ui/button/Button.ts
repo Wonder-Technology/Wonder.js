@@ -62,8 +62,6 @@ module wd {
                 this.entityObject.addChild(this._createFontObject());
             }
 
-            this._stateMachine.changeState(UIState.NORMAL);
-
             if(this.entityObject.transform.isTransform){
                 this.entityObject.transform.setChildrenTransform();
             }

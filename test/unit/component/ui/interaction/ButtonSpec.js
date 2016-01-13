@@ -286,12 +286,33 @@ describe("Button", function() {
                 })
             });
         });
+
+        it("test if disable, draw disable sprite", function(){
+            target = wd.ImageTextureAsset.create({});
+
+            button.transitionMode = wd.TransitionMode.SPRITE;
+            button.transition.normalSprite = null;
+            button.transition.disabledSprite = target;
+
+            button.disable();
+
+
+            button.init();
+
+            sandbox.stub(context, "drawImage");
+
+            button.update(1);
+
+            expect(context.drawImage).toCalledOnce();
+            expect(context.drawImage.firstCall.args[0]).toEqual(target.source);
+        });
     });
 
     describe("enable", function(){
         beforeEach(function(){
             sandbox.stub(button.transition, "changeState");
 
+            button.disable();
             button.enable();
         });
 
@@ -299,7 +320,7 @@ describe("Button", function() {
             expect(button.getCurrentState()).toEqual(wd.UIState.NORMAL);
         });
         it("change transition->state", function(){
-            expect(button.transition.changeState).toCalledWith(wd.UIState.NORMAL);
+            expect(button.transition.changeState.secondCall).toCalledWith(wd.UIState.NORMAL);
         });
     });
 

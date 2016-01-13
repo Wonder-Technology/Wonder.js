@@ -25,16 +25,35 @@
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createButtonUI());
+            var renderer = createUIRenderer();
+
+            var buttonObject1 = createButtonUI(renderer);
+            buttonObject1.transform.width = 200;
+            buttonObject1.transform.height = 100;
+
+            buttonObject1.transform.translate(300,100);
+            buttonObject1.transform.rotate(10);
+
+
+
+            var buttonObject2 = createButtonUI(renderer);
+            buttonObject2.transform.width = 200;
+            buttonObject2.transform.height = 100;
+
+            buttonObject2.transform.translate(300,300);
+//            buttonObject2.transform.rotate(10);
+
+            buttonObject2.getComponent(wd.Button).disable();
+
+            director.scene.addChild(buttonObject1);
+            director.scene.addChild(buttonObject2);
 
             director.start();
         });
 
 
 
-        function createButtonUI(){
-            var renderer = createUIRenderer();
-
+        function createButtonUI(renderer){
             var button = wd.Button.create();
 
             button.transitionMode = wd.TransitionMode.SPRITE;
@@ -65,19 +84,8 @@
 
 
 
-            buttonUIObject.transform.width = 200;
-            buttonUIObject.transform.height = 100;
-
-
             buttonUIObject.addComponent(renderer);
 
-
-
-
-
-
-            buttonUIObject.transform.translate(300,100);
-            buttonUIObject.transform.rotate(10);
 
             return buttonUIObject;
         }
