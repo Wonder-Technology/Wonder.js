@@ -171,6 +171,10 @@ module wd{
             }
         }
 
+        get isTransform(){
+            return this.isTranslate || this.isRotate || this.isScale;
+        }
+
         private _isTranslate:boolean = false;
         get isTranslate(){
             return this._isTranslate;
@@ -182,11 +186,10 @@ module wd{
                 this.dirtyLocal = true;
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_TRANSLATE));
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isTranslate = isTranslate;
-            });
+
+                this.setChildrenTransformState("isTranslate");
+            }
         }
 
         private _isRotate:boolean = false;
@@ -200,11 +203,9 @@ module wd{
                 this.dirtyLocal = true;
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_ROTATE));
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isRotate = isRotate;
-            });
+                this.setChildrenTransformState("isRotate");
+            }
         }
 
         private _isScale:boolean = false;
@@ -218,11 +219,9 @@ module wd{
                 this.dirtyLocal = true;
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_SCALE));
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isScale = isScale;
-            });
+                this.setChildrenTransformState("isScale");
+            }
         }
 
         public dirtyRotation:boolean = true;
@@ -235,7 +234,6 @@ module wd{
 
         private _localRotationMatrix:Matrix3 = Matrix3.create();
         private _localToParentMatrix:Matrix3 = Matrix3.create();
-
 
         public syncRotation(){
             if(this.dirtyRotation){
@@ -364,6 +362,13 @@ module wd{
          can refer to http://www.senocular.com/flash/tutorials/transformmatrix/
          */
 
+
+
+        public setChildrenTransform(){
+            this.setChildrenTransformState("isTranslate");
+            this.setChildrenTransformState("isRotate");
+            this.setChildrenTransformState("isScale");
+        }
 
         private _rotateAroundCanvasOriginPoint(angle:number){
             this._localRotationMatrix.rotate(angle);

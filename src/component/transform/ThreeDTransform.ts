@@ -132,6 +132,11 @@ module wd{
             return this.localToWorldMatrix.getZ().normalize().scale(-1);
         }
 
+
+        get isTransform(){
+            return this.isTranslate || this.isRotate || this.isScale;
+        }
+
         private _isTranslate:boolean = false;
         get isTranslate(){
             return this._isTranslate;
@@ -141,11 +146,9 @@ module wd{
 
             if(isTranslate){
                 this.dirtyLocal = true;
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isTranslate = isTranslate;
-            });
+                this.setChildrenTransformState("isTranslate");
+            }
         }
 
         private _isRotate:boolean = false;
@@ -157,11 +160,9 @@ module wd{
 
             if(isRotate){
                 this.dirtyLocal = true;
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isRotate = isRotate;
-            });
+                this.setChildrenTransformState("isRotate");
+            }
         }
 
         private _isScale:boolean = false;
@@ -173,11 +174,9 @@ module wd{
 
             if(isScale){
                 this.dirtyLocal = true;
-            }
 
-            this.children.forEach((child:ThreeDTransform) => {
-                child.isScale = isScale;
-            });
+                this.setChildrenTransformState("isScale");
+            }
         }
 
         public dirtyWorld:boolean = null;

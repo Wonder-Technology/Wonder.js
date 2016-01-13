@@ -55,5 +55,14 @@ module wd{
 
             return this[matrixAttriName];
         }
+
+        protected setChildrenTransformState(transformState:string){
+            if(this[transformState]){
+                this.children.forEach((child:Transform) => {
+                    child[transformState] = transformState;
+                });
+            }
+        }
+
     }
 }

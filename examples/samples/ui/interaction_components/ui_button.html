@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>button ui</title>
+
+    <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/texture/1.jpg", id: "normal"},
+            {url: "../../asset/texture/2.jpg", id: "hightlight"},
+            {url: "../../asset/texture/3.jpg", id: "pressed"},
+            {url: "../../asset/texture/4.jpg", id: "disabled"}
+        ]).subscribe(null, null, function(){
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createButtonUI());
+
+            director.start();
+        });
+
+
+
+        function createButtonUI(){
+            var renderer = createUIRenderer();
+
+            var button = wd.Button.create();
+
+            button.transitionMode = wd.TransitionMode.SPRITE;
+
+            button.transition.normalSprite = wd.LoaderManager.getInstance().get("normal");
+            button.transition.hightlightSprite = wd.LoaderManager.getInstance().get("hightlight");
+            button.transition.pressedSprite = wd.LoaderManager.getInstance().get("pressed");
+            button.transition.disabledSprite = wd.LoaderManager.getInstance().get("disabled");
+
+            button.text = "I'm a button";
+
+
+            var buttonUIObject = wd.UIObject.create();
+
+            buttonUIObject.addComponent(button);
+
+
+
+            buttonUIObject.addComponent(wd.Script.create("./js/button.js"));
+
+
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+
+            buttonUIObject.addComponent(eventTriggerDetector);
+
+
+
+
+            buttonUIObject.transform.width = 200;
+            buttonUIObject.transform.height = 100;
+
+
+            buttonUIObject.addComponent(renderer);
+
+
+
+
+
+
+            buttonUIObject.transform.translate(300,100);
+            buttonUIObject.transform.rotate(10);
+
+            return buttonUIObject;
+        }
+
+        function createUIRenderer(){
+            var renderer = wd.UIRenderer.create();
+
+            return renderer;
+        }
+    };
+</script>
+</body>
+</html>

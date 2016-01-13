@@ -70,7 +70,7 @@ describe("Image", function () {
         beforeEach(function(){
             prepareForUpdateBeforeInit();
 
-            director.initUIObjectScene();
+            image.init();
 
             context = renderer.context;
         });
@@ -78,7 +78,7 @@ describe("Image", function () {
         it("if source === null, return", function(){
             image.source = null;
 
-            uiObject.update(1);
+            image.update(1);
 
             expect(context.save).not.toCalled();
         });
@@ -98,7 +98,7 @@ describe("Image", function () {
                 uiObject.transform.width = width;
                 uiObject.transform.height = height;
 
-                director.runUIObjectScene(1);
+                image.update(1);
 
                 var position = uiObject.transform.position;
 
@@ -138,6 +138,7 @@ describe("Image", function () {
 
             director._loopBody(3);
 
+
             expect(context.save).toCalledOnce();
         });
 
@@ -154,8 +155,6 @@ describe("Image", function () {
 
 
                 director._loopBody(2);
-
-                //expect(context.save).toCalledOnce();
             });
 
             it("test change source", function(){

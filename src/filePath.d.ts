@@ -222,6 +222,7 @@
 
 
 /// <reference path="component/ui/UI"/>
+/// <reference path="component/ui/InteractionUI"/>
 
 /// <reference path="component/ui/UITag"/>
 
@@ -236,6 +237,17 @@
 /// <reference path="component/ui/progressBar/ProgressBar"/>
 
 /// <reference path="component/ui/image/Image"/>
+
+
+/// <reference path="component/ui/button/Button"/>
+
+/// <reference path="component/ui/state/UIState"/>
+/// <reference path="component/ui/state/UIStateMachine"/>
+
+/// <reference path="component/ui/transition/Transition"/>
+/// <reference path="component/ui/transition/SpriteTransition"/>
+/// <reference path="component/ui/transition/TransitionMode"/>
+
 
 /// <reference path="component/ui/utils/RoundedRectUtils"/>
 
