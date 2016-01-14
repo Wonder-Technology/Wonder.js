@@ -3,7 +3,6 @@ module wd{
         onMouseDown?(e:MouseEvent);
         onMouseUp?(e:MouseEvent);
         onMouseMove?(e:MouseEvent);
-        onMouseUp?(e:MouseEvent);
         onMouseOver?(e:MouseEvent);
         onMouseOut?(e:MouseEvent);
         onMouseWheel?(e:MouseEvent);

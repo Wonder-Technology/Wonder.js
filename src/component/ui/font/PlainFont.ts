@@ -20,7 +20,7 @@ module wd {
             if(text !== this._text){
                 this._text = text;
 
-                this.p_dirty = true;
+                this.dirty = true;
                 this.needFormat = true;
             }
         }
@@ -33,7 +33,7 @@ module wd {
             if(fontSize !== this._fontSize){
                 this._fontSize = fontSize;
 
-                this.p_dirty = true;
+                this.dirty = true;
                 this.needFormat = true;
             }
         }
@@ -46,7 +46,7 @@ module wd {
             if(fontFamily !== this._fontFamily){
                 this._fontFamily = fontFamily;
 
-                this.p_dirty = true;
+                this.dirty = true;
                 this.needFormat = true;
             }
         }
@@ -59,7 +59,7 @@ module wd {
             if(xAlignment !== this._xAlignment){
                 this._xAlignment = xAlignment;
 
-                this.p_dirty = true;
+                this.dirty = true;
                 this.needFormat = true;
             }
         }
@@ -72,7 +72,7 @@ module wd {
             if(yAlignment !== this._yAlignment){
                 this._yAlignment = yAlignment;
 
-                this.p_dirty = true;
+                this.dirty = true;
                 this.needFormat = true;
             }
         }

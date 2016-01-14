@@ -21,7 +21,11 @@ module sample {
         }
 
         public onMouseClick(e:MouseEvent) {
-            alert("click");
+            if(this._entityObject.getComponent<Button>(Button).isDisabled()){
+                return;
+            }
+
+            console.log("click");
         }
     }
 }

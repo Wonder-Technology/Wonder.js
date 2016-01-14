@@ -48,6 +48,8 @@ module wd {
         }
 
 
+        private _mousedownSubscription:wdFrp.IDisposable = null;
+        private _mouseupSubscription:wdFrp.IDisposable = null;
         private _stateMachine:UIStateMachine = UIStateMachine.create(this);
 
         public initWhenCreate() {
@@ -65,6 +67,31 @@ module wd {
             if(this.entityObject.transform.isTransform){
                 this.entityObject.transform.setChildrenTransform();
             }
+
+            var self = this;
+
+            //todo test
+            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_DOWN)
+                .subscribe((e:CustomEvent) => {
+                    if(!self.isDisabled()){
+                        self._stateMachine.changeState(UIState.PRESSED);
+                    }
+                });
+
+            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
+                .subscribe((e:CustomEvent) => {
+                    if(!self.isDisabled()) {
+                        self._stateMachine.backState();
+                    }
+                });
+        }
+
+        public dispose(){
+            super.dispose();
+
+            //todo test
+            this._mousedownSubscription.dispose();
+            this._mouseupSubscription.dispose();
         }
 
         private _hasFontObject(){

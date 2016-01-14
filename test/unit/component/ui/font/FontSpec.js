@@ -117,18 +117,18 @@ describe("Font", function () {
 
             uiObject.dispose();
 
-            font.dirty = false;
+            font.needFormat = false;
         });
 
         it("off UI_WIDTH_CHANGE event", function(){
             wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_WIDTH_CHANGE));
 
-            expect(font.dirty).toBeFalsy();
+            expect(font.needFormat).toBeFalsy();
         });
         it("off UI_HEIGHT_CHANGE event", function(){
             wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_HEIGHT_CHANGE));
 
-            expect(font.dirty).toBeFalsy();
+            expect(font.needFormat).toBeFalsy();
         });
     });
 });

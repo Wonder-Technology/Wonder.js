@@ -8,12 +8,22 @@ module wd {
             return obj;
         }
 
+        //todo remove?
         protected eventTriggerUtils:UIObjectEventTriggerUtils = UIObjectEventTriggerUtils.create();
 
         public onEndLoop() {
             super.onEndLoop();
 
             this._resetAllTransformState();
+
+
+            var self = this;
+
+            //todo ensure all dirty=false
+            this.forEach((child:UIObject) => {
+                var renderer = self._getUIRenderer(child);
+                renderer.isClearCanvas = false;
+            });
         }
 
         public onStartLoop(){
@@ -35,20 +45,23 @@ module wd {
         protected beforeUpdateChildren(elapsedTime:number){
             var self = this;
 
-            this._removeAllTopUIObjectMarks();
+            this._removeAllRendererMarks();
 
             this.forEach((child:UIObject) => {
-                var uiRenderer = self._getUIRenderer(child);
-                if(self._isAnyOneOfAllUIDirty(child)){
-                    if(uiRenderer){
-                        uiRenderer.clearCanvas();
+                var renderer = self._getUIRenderer(child);
+
+
+                if(renderer.dirty){
+                    if(!renderer.isClearCanvas) {
+                        renderer.clearCanvas();
+                        renderer.dirtyDuringCurrentLoop = false;
                     }
 
-                    self._markTopUIObject(child, true);
-                    self._resetAllDirty(child);
+                    self._markUIRenderer(renderer, true);
+                    renderer.resetDirty();
                 }
                 else{
-                    self._markTopUIObject(child, false);
+                    self._markUIRenderer(renderer, false);
                 }
             });
         }
@@ -68,69 +81,30 @@ module wd {
             return uiObject.getComponent<UIRenderer>(UIRenderer);
         }
 
-        private _isAnyOneOfAllUIDirty(uiObject:UIObject){
-            var isDirty = false,
-                isEnd = false;
-
-            var search = (uiObject:UIObject) => {
-                uiObject.forEachComponent((component:Component) => {
-                    if(component instanceof UI && component.dirty){
-                        isEnd = true;
-                        isDirty = true;
-                        return wdCb.$BREAK;
-                    }
-                });
-
-                if(isEnd){
-                    return;
-                }
-
-                uiObject.forEach((child:UIObject) => {
-                    //todo optimize: tail recursion
-                    search(child);
-
-                    if(isEnd){
-                        return wdCb.$BREAK;
-                    }
-                })
-            }
-
-            search(uiObject);
-
-            return isDirty;
-        }
-
-        private _markTopUIObject(uiObject:UIObject, isDirty:boolean){
+        private _markUIRenderer(renderer:UIRenderer, isDirty:boolean){
             var tag = isDirty ? UITag.DIRTY : UITag.NOT_DIRTY;
 
-            uiObject.addTag(<any>tag);
+            renderer.addTag(<any>tag);
         }
 
-        private _removeAllTopUIObjectMarks(){
+        //todo ensure remove all renderer
+        private _removeAllRendererMarks(){
+            var self = this;
+
             this.forEach((child:UIObject) => {
-                child.removeTag(<any>UITag.DIRTY);
-                child.removeTag(<any>UITag.NOT_DIRTY);
+                var renderer = self._getUIRenderer(child);
+
+                renderer.removeTag(<any>UITag.DIRTY);
+                renderer.removeTag(<any>UITag.NOT_DIRTY);
             });
         }
 
-        private _resetAllDirty(uiObject:UIObject){
-            var reset = (uiObject:UIObject) => {
-                var ui = uiObject.getComponent<UI>(UI);
-
-                ui.dirty = false;
-
-                uiObject.forEach((child:UIObject) => {
-                    reset(child);
-                });
-            }
-
-            reset(uiObject);
-        }
         private _resetAllTransformState(){
             var self = this;
 
             var reset = (uiObject:UIObject) => {
-                if(self._isNotDirtyDuringThisLoop(uiObject)){
+                //todo change
+                if(self._isNotDirtyDuringThisLoop(self._getUIRenderer(uiObject))){
                     self._resetTransformFlag(uiObject);
                 }
 
@@ -142,27 +116,10 @@ module wd {
             this.forEach((child:UIObject) => {
                 reset(child);
             });
-
-
         }
 
-        private _isNotDirtyDuringThisLoop(uiObject:UIObject){
-            var result:boolean = true;
-
-            var judge = (uiObject:UIObject) => {
-                if(uiObject.getComponent<UI>(UI).dirty){
-                    result = false;
-                    return;
-                }
-
-                uiObject.forEach((child:UIObject) => {
-                    judge(child);
-                });
-            }
-
-            judge(uiObject);
-
-            return result;
+        private _isNotDirtyDuringThisLoop(renderer:UIRenderer){
+            return !renderer.dirtyDuringCurrentLoop;
         }
 
         private _resetTransformFlag(uiObject:UIObject){

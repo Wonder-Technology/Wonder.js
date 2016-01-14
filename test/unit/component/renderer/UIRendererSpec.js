@@ -190,4 +190,15 @@ describe("UIRenderer", function () {
             expect($("canvas").css("zIndex")).toEqual("100");
         });
     });
+
+    //todo test
+    describe("dirty", function(){
+        beforeEach(function(){
+
+        });
+
+        it("", function(){
+
+        });
+    });
 });

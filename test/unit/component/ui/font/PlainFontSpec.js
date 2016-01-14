@@ -493,7 +493,8 @@ describe("PlainFont", function () {
                     }
                 },
                 fillText: sandbox.stub(),
-                strokeText: sandbox.stub()
+                strokeText: sandbox.stub(),
+                setTransform: sandbox.stub()
             }
 
             setFakeContext(context);

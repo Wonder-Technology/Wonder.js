@@ -57,7 +57,7 @@ module wd {
             this._subscription = wdFrp.fromArray([EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_TRANSLATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_ROTATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_SCALE)])
             .mergeAll()
             .subscribe(() => {
-                self.p_dirty = true;
+                self.dirty = true;
             });
         }
 

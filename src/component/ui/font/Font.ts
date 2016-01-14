@@ -13,7 +13,7 @@ module wd {
             this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
                 .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
                 .subscribe(() => {
-                    self.p_dirty = true;
+                    self.dirty = true;
                     self.needFormat = true;
                 });
         }

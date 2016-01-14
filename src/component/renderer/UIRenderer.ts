@@ -1,11 +1,11 @@
 module wd {
     export class UIRenderer extends RendererComponent {
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
             obj.initWhenCreate();
 
-        	return obj;
+            return obj;
         }
 
         private _zIndex:number = 1;
@@ -22,18 +22,35 @@ module wd {
             }
         }
 
+        public dirtyDuringCurrentLoop:boolean = false;
+        private _dirty:boolean = true;
+        get dirty(){
+            return this._dirty;
+        }
+        set dirty(dirty:boolean){
+            if(dirty){
+                this._dirty = true;
+
+                this.dirtyDuringCurrentLoop = true;
+            }
+        }
+
         public context:any = null;
+        public isClearCanvas:boolean = false;
 
         private _canvas:HTMLCanvasElement = null;
-        private _beforeInitHandler:() => void = null;
         private _isInit:boolean = false;
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
+
+        public resetDirty(){
+            this._dirty = false;
+        }
 
         public addToObject(object:UIObject){
             this._referenceList.addChild(object);
 
             /*!
-            uiRenderer may be shared by multi objects, so this.object is the last one which share this
+             uiRenderer may be shared by multi objects, so this.object is the last one which share this
              */
             this.entityObject = object;
         }
@@ -73,6 +90,8 @@ module wd {
 
         public clearCanvas(){
             this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
+            this.isClearCanvas = true;
         }
 
         private _createOverlayCanvas(){

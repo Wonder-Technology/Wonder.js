@@ -20,7 +20,10 @@ var sample;
             font.fontSize = 30;
         };
         EventHandler.prototype.onMouseClick = function (e) {
-            alert("click");
+            if (this._entityObject.getComponent(Button).isDisabled()) {
+                return;
+            }
+            console.log("click");
         };
         EventHandler = __decorate([
             wd.script("eventHandler")

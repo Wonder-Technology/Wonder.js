@@ -31,15 +31,15 @@
 
         //'test/unit/component/event/eventSpec*',
 
-        //'test/unit/**/ui/**',
+        'test/unit/**/ui/**',
 
 
-        'test/unit/**/ButtonSpec*',
+        //'test/unit/**/ButtonSpec*',
 
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/UIObjectSpec*',
         //'test/unit/**/BitmapFontSpec*',
 
         //'test/unit/**/DirectorSpec*',

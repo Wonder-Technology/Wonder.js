@@ -189,7 +189,7 @@ module wd{
                     EventManager.fromEvent(EventName.MOUSEMOVE),
                     EventManager.fromEvent(EventName.MOUSEDOWN),
                     EventManager.fromEvent(EventName.MOUSEUP),
-                    EventManager.fromEvent(EventName.MOUSEWHEEL),
+                    EventManager.fromEvent(EventName.MOUSEWHEEL)
                 ]
                 )
                 .mergeAll()
@@ -205,7 +205,14 @@ module wd{
                     }
 
                     triggerList.forEach((entityObject:EntityObject) => {
-                        entityObject.execEventScript(EventTriggerTable.getScriptHandlerName(e.name), e);
+                        var handlerName = EventTriggerTable.getScriptHandlerName(e.name);
+                        //todo refactor Arcball/Fly->event(move to onMouseXXX handler)
+                        //todo add onMouseDrag event handler
+
+                        //todo test
+                        EventManager.trigger(entityObject, CustomEvent.create( <any>EngineEvent[EventTriggerTable.getScriptEngineEvent(e.name)]), e);
+
+                        entityObject.execEventScript(handlerName, e);
                     })
                 });
         }

@@ -11,18 +11,33 @@ module wd{
         }
 
         private _ui:InteractionUI = null;
-        private _state:UIState = null;
+        //private _state:UIState = null;
+        private _stateHistory:wdCb.Stack<UIState> = wdCb.Stack.create<UIState>();
 
         public changeState(state:UIState){
-            if(state !== this._state){
-                this._state = state;
+            this._stateHistory.push(state);
 
-                this._ui.transition.changeState(state);
+            this._ui.transition.changeState(state);
+            this._ui.dirty = true;
+        }
+
+        public backState(){
+            var lastState:UIState = null;
+
+            this._stateHistory.pop();
+
+            lastState = this._stateHistory.top;
+
+            if(!lastState){
+                lastState = UIState.NORMAL;
             }
+
+            this._ui.transition.changeState(lastState);
+            this._ui.dirty = true;
         }
 
         public getCurrentState(){
-            return this._state;
+            return this._stateHistory.top;
         }
     }
 }

@@ -30,22 +30,7 @@ module wd {
         }
 
         private _isMarkedDirty() {
-            var uiObject:EntityObject = this._uiObject,
-                isDirty = null,
-                result = false;
-
-            do{
-                isDirty = uiObject.hasTag(<any>UITag.DIRTY);
-
-                if(isDirty){
-                    result = true;
-                    break;
-                }
-
-                uiObject = uiObject.parent;
-            }while(uiObject);
-
-            return result;
+            return this._uiObject.getComponent<UIRenderer>(UIRenderer).hasTag(<any>UITag.DIRTY);
         }
     }
 }

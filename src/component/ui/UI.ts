@@ -1,12 +1,30 @@
 module wd {
     export abstract class UI extends Component{
-        protected p_dirty:boolean = true;
+        //protected p_dirty:boolean = true;
         @virtual
         get dirty(){
-            return this.p_dirty;
+            //todo
+            //return this.p_dirty;
+            var renderer = this.getUIRenderer();
+
+            if(!renderer){
+                return true;
+            }
+
+            return renderer.dirty;
         }
         set dirty(dirty:boolean){
-            this.p_dirty = dirty;
+            //this.p_dirty = dirty;
+
+            if(dirty){
+                var renderer = this.getUIRenderer();
+
+                if(!renderer){
+                    return;
+                }
+
+                renderer.dirty = dirty;
+            }
         }
 
         get width(){
@@ -67,10 +85,14 @@ module wd {
             return this.getUIRenderer().context;
         }
 
-        @require(function () {
-            assert(this.entityObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("entityObject", "contain UIRenderer"))
-        })
+        //@require(function () {
+        //    assert(this.entityObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("entityObject", "contain UIRenderer"))
+        //})
         protected getUIRenderer(){
+            if(!this.entityObject){
+                return null;
+            }
+
             return this.entityObject.getComponent<UIRenderer>(UIRenderer);
         }
 
@@ -113,11 +135,12 @@ module wd {
         }
 
         private _setCanvasTransformForRotation(){
-            if(this.entityObject.transform.isRotate){
-                let matrix = this.entityObject.transform.rotationMatrix;
+            //todo test
+            //if(this.entityObject.transform.isRotate){
+            var matrix = this.entityObject.transform.rotationMatrix;
 
-                this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            }
+            this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            //}
         }
     }
 }

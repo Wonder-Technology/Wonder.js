@@ -7,6 +7,14 @@ module wd{
         AFTER_INIT = <any>"dy_afterInit",
         AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"dy_afterInit_rigidBody_addConstraint",
 
+        MOUSE_CLICK = <any>"dy_mouseclick",
+        MOUSE_DOWN = <any>"dy_mousedown",
+        MOUSE_UP = <any>"dy_mouseup",
+        MOUSE_MOVE = <any>"dy_mousemove",
+        MOUSE_OVER = <any>"dy_mouseover",
+        MOUSE_OUT = <any>"dy_mouseup",
+        MOUSE_WHEEL = <any>"dy_mousewheel",
+
 
         MATERIAL_CHANGE = <any>"dy_material_change",
 

@@ -15,7 +15,7 @@ module wd {
             if(source !== this._source){
                 this._source = source;
 
-                this.p_dirty = true;
+                this.dirty = true;
             }
         }
 

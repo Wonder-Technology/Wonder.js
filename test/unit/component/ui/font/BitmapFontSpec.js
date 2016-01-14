@@ -728,21 +728,23 @@ describe("BitmapFont", function () {
                 });
 
                 it("unbind transform event", function(){
-
                     var charFontUIObject = getCharFontUIObject(0);
                     var charFont = charFontUIObject.getComponent(wd.CharFont);
 
                     charFont.dispose();
 
-                    charFont.dirty = false;
 
+                    var a = 0;
+                    testTool.stubGetterSetter(sinon, charFont, "dirty", function(){
+                    }, function(){
+                        a++;
+                    });
 
                     charFontUIObject.transform.rotate(45);
 
-                    expect(charFont.dirty).toBeFalsy();
+                    expect(a).toEqual(0);
                 });
             });
-
         });
 
         describe("change data will cause dirty and update font", function(){
