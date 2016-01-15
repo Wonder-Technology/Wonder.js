@@ -67,21 +67,13 @@ module wd {
         private _bindCanvasEvent() {
             var self = this,
                 rotateSpeed = this.rotateSpeed,
-                /*!
-                 here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
-                 */
-                mouseup = EventManager.fromEvent(document, EventName.MOUSEUP),
-                mousemove = EventManager.fromEvent(document, EventName.MOUSEMOVE),
-                mousedown = EventManager.fromEvent(document, EventName.MOUSEDOWN),
+                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EngineEvent.MOUSE_DRAG),
                 keydown = EventManager.fromEvent(EventName.KEYDOWN),
-                mousedrag = null,
                 canvas = Director.getInstance().view;
 
-            mousedrag = mousedown.flatMap(function (e) {
-                e.stopPropagation();
-
-                return mousemove.map(function (e) {
-                    var movementDelta = e.movementDelta,
+            this._mouseDragSubscription = mousedrag
+                .map((e:CustomEvent) => {
+                    var movementDelta = e.userData.movementDelta,
                         dx = null,
                         dy = null,
                         factor = rotateSpeed / canvas.height;
@@ -95,15 +87,13 @@ module wd {
                         dx: dx,
                         dy: dy
                     };
-                }).takeUntil(mouseup);
-            });
+                })
+                .subscribe(function (pos) {
+                    self._rotateY -= pos.dx;
+                    self._rotateX -= pos.dy;
+                });
 
-            this._mouseDragSubscription = mousedrag.subscribe(function (pos) {
-                self._rotateY -= pos.dx;
-                self._rotateX -= pos.dy;
-            });
-
-            this._keydownSubscription = keydown.subscribe(function (e) {
+            this._keydownSubscription = keydown.subscribe((e:KeyboardEvent) => {
                 self._move(e);
                 self.zoom(e);
             });

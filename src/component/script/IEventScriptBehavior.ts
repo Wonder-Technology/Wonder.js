@@ -7,5 +7,6 @@ module wd{
         onMouseOut?(e:MouseEvent);
         onMouseWheel?(e:MouseEvent);
         onMouseClick?(e:MouseEvent);
+        onMouseDrag?(e:MouseEvent);
     }
 }

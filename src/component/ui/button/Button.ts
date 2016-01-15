@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        //todo test change transitionMode
+        //todo test machine transitionMode
 
 
         private _text:string = null;

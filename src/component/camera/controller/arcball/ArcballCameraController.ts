@@ -65,30 +65,20 @@ module wd {
         //todo treat picked item as the target
         private _bindCanvasEvent() {
             var self = this,
-                /*!
-                 here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
-                 */
-                mouseup = EventManager.fromEvent(document, EventName.MOUSEUP),
-                mousemove = EventManager.fromEvent(document, EventName.MOUSEMOVE),
-                mousedown = EventManager.fromEvent(document, EventName.MOUSEDOWN),
-                mousewheel = EventManager.fromEvent(document, EventName.MOUSEWHEEL),
-                keydown = EventManager.fromEvent(EventName.KEYDOWN),
-                mousedrag = null;
+                mousewheel = EventManager.fromEvent(Director.getInstance().scene, <any>EngineEvent.MOUSE_WHEEL),
+                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EngineEvent.MOUSE_DRAG),
+            keydown = EventManager.fromEvent(EventName.KEYDOWN);
 
-            mousedrag = mousedown.flatMap(function (e) {
-                e.stopPropagation();
-
-                return mousemove.takeUntil(mouseup);
+            this._mouseDragSubscription = mousedrag.subscribe((e:CustomEvent) => {
+                self._changeOrbit(e.userData);
             });
 
-            this._mouseDragSubscription = mousedrag.subscribe(function (e) {
-                self._changeOrbit(e);
-            });
+            this._mouseWheelSubscription = mousewheel.subscribe((e:CustomEvent) => {
+                var mouseEvent:MouseEvent = e.userData;
 
-            this._mouseWheelSubscription = mousewheel.subscribe((e:MouseEvent) => {
-                e.preventDefault();
+                mouseEvent.preventDefault();
 
-                self._changeDistance(e);
+                self._changeDistance(mouseEvent);
             });
 
             this._keydownSubscription = keydown.subscribe(function (e) {

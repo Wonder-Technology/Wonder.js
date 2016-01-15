@@ -13,6 +13,7 @@ module wd{
         MOUSEMOVE = <any>"mousemove",
         MOUSEDOWN = <any>"mousedown",
         MOUSEWHEEL = <any>`mousewheel|DOMMouseScroll*${BrowserIdentifier.FIREFOX}`,
+        MOUSEDRAG = <any>"mousedrag",
 
         KEYDOWN = <any>"keydown",
         KEYUP = <any>"keyup",

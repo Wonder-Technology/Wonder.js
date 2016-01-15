@@ -14,6 +14,7 @@ module wd{
         MOUSE_OVER = <any>"dy_mouseover",
         MOUSE_OUT = <any>"dy_mouseout",
         MOUSE_WHEEL = <any>"dy_mousewheel",
+        MOUSE_DRAG = <any>"dy_mousedrag",
 
 
         MATERIAL_CHANGE = <any>"dy_material_change",

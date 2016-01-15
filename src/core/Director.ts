@@ -1,4 +1,6 @@
 module wd{
+    declare var document:any;
+
     enum GameState{
         NORMAL,
         STOP,
@@ -182,21 +184,55 @@ module wd{
         private _initEvent(){
             var self = this;
 
+            //todo dispose
+            wdFrp.fromArray(
+                [
+                    EventManager.fromEvent(EventName.MOUSEOVER),
+                    EventManager.fromEvent(EventName.MOUSEOUT)
+                    ]
+            )
+            .mergeAll()
+                .subscribe((e:MouseEvent) => {
+                    self._triggerScene(e);
+                });
+
+
             this._eventSubscription = wdFrp.fromArray(
                 [
                     EventManager.fromEvent(EventName.CLICK),
                     EventManager.fromEvent(EventName.MOUSEDOWN),
                     EventManager.fromEvent(EventName.MOUSEUP),
-                    EventManager.fromEvent(EventName.MOUSEWHEEL)
+                    EventManager.fromEvent(EventName.MOUSEWHEEL),
+
+                    /*!
+                     here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
+                     */
+                    EventManager.fromEvent(document, EventName.MOUSEDOWN)
+                        .flatMap((e:MouseEvent) => {
+                        return EventManager.fromEvent(document, EventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EventName.MOUSEUP));
+                    })
+                        .map((e:MouseEvent) => {
+                            e.name = EventName.MOUSEDRAG;
+
+                            return e;
+                        })
                 ]
                 )
                 .mergeAll()
+                //todo test
+                .do((e:MouseEvent) => {
+                    self._triggerScene(e);
+                })
                 .map((e:MouseEvent) => {
                     return self._getMouseEventTriggerListData(e);
                 })
 
                 .merge(
                     EventManager.fromEvent(EventName.MOUSEMOVE)
+                        //todo test
+                        .do((e:MouseEvent) => {
+                            self._triggerScene(e);
+                        })
                         .filterWithState((e:MouseEvent) => {
                             var gameObjectScene:GameObjectScene = self.scene.gameObjectScene,
                                 uiObjectScene:UIObjectScene = self.scene.uiObjectScene;
@@ -234,9 +270,8 @@ module wd{
                             }
                         })
                 )
-
-
                 .subscribe(([triggerList, e]) => {
+                    //todo optimize:move to first to judge
                     if(self._gameState === GameState.PAUSE || triggerList.getCount() === 0){
                         return;
                     }
@@ -252,6 +287,15 @@ module wd{
                         entityObject.execEventScript(handlerName, e);
                     })
                 });
+        }
+
+        private _triggerScene(e:MouseEvent){
+            EventManager.trigger(this.scene, CustomEvent.create( <any>EngineEvent[EventTriggerTable.getScriptEngineEvent(e.name)]), e);
+
+            var handlerName = EventTriggerTable.getScriptHandlerName(e.name);
+
+            //todo test
+            this.scene.execEventScript(handlerName, e);
         }
 
         private _getMouseEventTriggerListData(e:MouseEvent){

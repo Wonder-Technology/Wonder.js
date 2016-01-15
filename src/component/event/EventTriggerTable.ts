@@ -10,6 +10,7 @@ module wd{
     _scriptHandlerNameTable.addChild(<any>EventName.MOUSEDOWN, "onMouseDown");
     _scriptHandlerNameTable.addChild(<any>EventName.MOUSEUP, "onMouseUp");
     _scriptHandlerNameTable.addChild(<any>EventName.MOUSEWHEEL, "onMouseWheel");
+    _scriptHandlerNameTable.addChild(<any>EventName.MOUSEDRAG, "onMouseDrag");
 
 
     _scriptEngineEventTable.addChild(<any>EventName.CLICK, "MOUSE_CLICK");
@@ -19,6 +20,7 @@ module wd{
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEOVER, "MOUSE_OVER");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEOUT, "MOUSE_OUT");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEWHEEL, "MOUSE_WHEEL");
+    _scriptEngineEventTable.addChild(<any>EventName.MOUSEDRAG, "MOUSE_DRAG");
 
     export class EventTriggerTable{
         public static getScriptHandlerName(eventName:EventName){
