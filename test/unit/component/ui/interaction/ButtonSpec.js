@@ -194,6 +194,45 @@ describe("Button", function() {
                     });
                 });
             });
+
+
+            describe("change text will cause update", function(){
+                beforeEach(function(){
+                    sandbox.stub(button, "update");
+
+                    director.scene.addChild(uiObject);
+                });
+
+                describe("test change text", function(){
+                    beforeEach(function(){
+                        button.text = "ccc";
+
+                        director.initUIObjectScene();
+
+                        director.runUIObjectScene();
+                        director.runUIObjectScene();
+
+                        expect(button.update).toCalledOnce();
+
+                    });
+
+                    it("if the new data equal old data, not dirty and not update text", function(){
+                        button.text = "ccc";
+
+                        director.runUIObjectScene();
+
+                        expect(button.update).not.toCalledTwice();
+                    });
+
+                    it("else, cause update", function(){
+                        button.text = "ddd";
+
+                        director.runUIObjectScene();
+
+                        expect(button.update).toCalledTwice();
+                    });
+                });
+            });
         });
     });
 
@@ -204,6 +243,129 @@ describe("Button", function() {
             button.getFontObject().getComponent(wd.PlainFont).text = "aaa";
 
             expect(button.text).toEqual("aaa");
+        });
+    });
+
+    describe("init", function(){
+        beforeEach(function(){
+
+        });
+
+        describe("bind event", function(){
+            var EventManager = wd.EventManager;
+            var EngineEvent = wd.EngineEvent;
+            var State = wd.UIState;
+
+            function trigger(engineEvent){
+                EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
+            }
+
+            beforeEach(function(){
+                button.init();
+            });
+
+            describe("bind mousedown event", function(){
+                it("if disabled, return", function(){
+                    button.disable();
+                    trigger(EngineEvent.MOUSE_DOWN);
+
+                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                });
+                it("else, change state to PRESSED", function () {
+                    trigger(EngineEvent.MOUSE_DOWN);
+
+                    expect(button.getCurrentState()).toEqual(State.PRESSED);
+                });
+
+            });
+
+            describe("bind mouseup event", function(){
+                it("if disabled, return", function(){
+                    button.disable();
+                    trigger(EngineEvent.MOUSE_UP);
+
+                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                });
+                it("else, back state", function () {
+                    trigger(EngineEvent.MOUSE_DOWN);
+                    trigger(EngineEvent.MOUSE_UP);
+
+                    expect(button.getCurrentState()).toEqual(State.NORMAL);
+                });
+            });
+
+            describe("bind mouseover event", function(){
+                it("if disabled, return", function(){
+                    button.disable();
+                    trigger(EngineEvent.MOUSE_OVER);
+
+                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                });
+                it("else, change state to HIGHLIGHT", function () {
+                    trigger(EngineEvent.MOUSE_OVER);
+
+                    expect(button.getCurrentState()).toEqual(State.HIGHLIGHT);
+                });
+            });
+
+            describe("bind mousedown event", function(){
+                it("if disabled, return", function(){
+                    button.disable();
+                    trigger(EngineEvent.MOUSE_OVER);
+
+                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                });
+                it("else, change state to PRESSED", function () {
+                    trigger(EngineEvent.MOUSE_OVER);
+                    trigger(EngineEvent.MOUSE_OUT);
+
+                    expect(button.getCurrentState()).toEqual(State.NORMAL);
+                });
+            });
+        })
+    });
+
+    describe("dispose", function(){
+        var EventManager = wd.EventManager;
+        var EngineEvent = wd.EngineEvent;
+        var State = wd.UIState;
+
+        function trigger(engineEvent){
+            EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
+        }
+        
+        beforeEach(function(){
+            button.init();
+        });
+        
+        describe("off event", function(){
+            beforeEach(function(){
+                sandbox.stub(button._stateMachine, "changeState");
+                sandbox.stub(button._stateMachine, "backState");
+
+                button.dispose();
+            });
+            
+            it("off mousedown event", function(){
+                trigger(EngineEvent.MOUSE_DOWN);
+
+                expect(button._stateMachine.changeState).not.toCalled();
+            });
+            it("off mouseup event", function(){
+                trigger(EngineEvent.MOUSE_UP);
+
+                expect(button._stateMachine.backState).not.toCalled();
+            });
+            it("off mouseover event", function(){
+                trigger(EngineEvent.MOUSE_OVER);
+
+                expect(button._stateMachine.changeState).not.toCalled();
+            });
+            it("off mouseout event", function(){
+                trigger(EngineEvent.MOUSE_OUT);
+
+                expect(button._stateMachine.backState).not.toCalled();
+            });
         });
     });
 

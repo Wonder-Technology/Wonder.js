@@ -472,7 +472,7 @@ describe("PlainFont", function () {
     });
 
 
-    describe("change data will cause dirty and update font", function(){
+    describe("change data will cause dirty and reformat font", function(){
         function setFakeContext(fakeContext) {
             font.getContext.returns(fakeContext);
         }

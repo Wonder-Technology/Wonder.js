@@ -11,7 +11,6 @@ module wd{
         }
 
         private _ui:InteractionUI = null;
-        //private _state:UIState = null;
         private _stateHistory:wdCb.Stack<UIState> = wdCb.Stack.create<UIState>();
 
         public changeState(state:UIState){
@@ -37,7 +36,7 @@ module wd{
         }
 
         public getCurrentState(){
-            return this._stateHistory.top;
+            return this._stateHistory.top || UIState.NORMAL;
         }
     }
 }

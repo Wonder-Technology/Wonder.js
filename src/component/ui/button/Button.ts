@@ -9,7 +9,6 @@ module wd {
         }
 
         //todo test change transitionMode
-        //todo test change text
 
 
         private _text:string = null;
@@ -47,9 +46,10 @@ module wd {
             }
         }
 
-
         private _mousedownSubscription:wdFrp.IDisposable = null;
         private _mouseupSubscription:wdFrp.IDisposable = null;
+        private _mouseoverSubscription:wdFrp.IDisposable = null;
+        private _mouseoutSubscription:wdFrp.IDisposable = null;
         private _stateMachine:UIStateMachine = UIStateMachine.create(this);
 
         public initWhenCreate() {
@@ -68,46 +68,16 @@ module wd {
                 this.entityObject.transform.setChildrenTransform();
             }
 
-            var self = this;
-
-            //todo test
-            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_DOWN)
-                .subscribe((e:CustomEvent) => {
-                    if(!self.isDisabled()){
-                        self._stateMachine.changeState(UIState.PRESSED);
-                    }
-                });
-
-            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
-                .subscribe((e:CustomEvent) => {
-                    if(!self.isDisabled()) {
-                        self._stateMachine.backState();
-                    }
-                });
-
-
-            //todo dispose
-            EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OVER)
-                .subscribe((e:CustomEvent) => {
-                    if(!self.isDisabled()) {
-                        self._stateMachine.changeState(UIState.HIGHLIGHT);
-                    }
-                });
-            //todo dispose
-            EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)
-                .subscribe((e:CustomEvent) => {
-                    if(!self.isDisabled()) {
-                        self._stateMachine.backState();
-                    }
-                });
+            this._bindEvent();
         }
 
         public dispose(){
             super.dispose();
 
-            //todo test
             this._mousedownSubscription.dispose();
             this._mouseupSubscription.dispose();
+            this._mouseoverSubscription.dispose();
+            this._mouseoutSubscription.dispose();
         }
 
         private _hasFontObject(){
@@ -153,7 +123,7 @@ module wd {
         }
 
         private _createFontObject(){
-            var fontObject = null,
+            var fontObject = UIObject.create(),
                 font = PlainFont.create(),
                 transform = this.entityObject.transform;
 
@@ -162,17 +132,51 @@ module wd {
             font.xAlignment = wd.FontXAlignment.CENTER;
             font.yAlignment = wd.FontYAlignment.MIDDLE;
 
-            fontObject = UIObject.create();
-
             fontObject.addComponent(font);
 
             fontObject.addComponent(this.getUIRenderer());
-
 
             fontObject.transform.width = transform.width;
             fontObject.transform.height = transform.height;
 
             return fontObject;
+        }
+
+        private _bindEvent(){
+            var self = this;
+
+            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_DOWN)
+                .filter((e:CustomEvent) => {
+                    return !self.isDisabled();
+                })
+                .subscribe((e:CustomEvent) => {
+                    self._stateMachine.changeState(UIState.PRESSED);
+                });
+
+            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
+                .filter((e:CustomEvent) => {
+                    return !self.isDisabled();
+                })
+                .subscribe((e:CustomEvent) => {
+                    self._stateMachine.backState();
+                });
+
+
+            this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OVER)
+                .filter((e:CustomEvent) => {
+                    return !self.isDisabled();
+                })
+                .subscribe((e:CustomEvent) => {
+                    self._stateMachine.changeState(UIState.HIGHLIGHT);
+                });
+
+            this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)
+                .filter((e:CustomEvent) => {
+                    return !self.isDisabled();
+                })
+                .subscribe((e:CustomEvent) => {
+                    self._stateMachine.backState();
+                });
         }
     }
 }

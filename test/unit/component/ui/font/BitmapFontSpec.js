@@ -747,7 +747,7 @@ describe("BitmapFont", function () {
             });
         });
 
-        describe("change data will cause dirty and update font", function(){
+        describe("change data will cause dirty and reformat font", function(){
             beforeEach(function(){
 
             });
