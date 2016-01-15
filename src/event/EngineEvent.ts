@@ -12,7 +12,7 @@ module wd{
         MOUSE_UP = <any>"dy_mouseup",
         MOUSE_MOVE = <any>"dy_mousemove",
         MOUSE_OVER = <any>"dy_mouseover",
-        MOUSE_OUT = <any>"dy_mouseup",
+        MOUSE_OUT = <any>"dy_mouseout",
         MOUSE_WHEEL = <any>"dy_mousewheel",
 
 

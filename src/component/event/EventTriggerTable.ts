@@ -16,6 +16,7 @@ module wd{
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEDOWN, "MOUSE_DOWN");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEUP, "MOUSE_UP");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEMOVE, "MOUSE_MOVE");
+    _scriptEngineEventTable.addChild(<any>EventName.MOUSEOVER, "MOUSE_OVER");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEOUT, "MOUSE_OUT");
     _scriptEngineEventTable.addChild(<any>EventName.MOUSEWHEEL, "MOUSE_WHEEL");
 

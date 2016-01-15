@@ -61,6 +61,7 @@ module wd{
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _isFirstStart:boolean = true;
         private _isInitUIScene:boolean = false;
+        private _lastTriggerListData:any = null;
 
 
         public initWhenCreate(){
@@ -184,9 +185,6 @@ module wd{
             this._eventSubscription = wdFrp.fromArray(
                 [
                     EventManager.fromEvent(EventName.CLICK),
-                    EventManager.fromEvent(EventName.MOUSEOVER),
-                    EventManager.fromEvent(EventName.MOUSEOUT),
-                    EventManager.fromEvent(EventName.MOUSEMOVE),
                     EventManager.fromEvent(EventName.MOUSEDOWN),
                     EventManager.fromEvent(EventName.MOUSEUP),
                     EventManager.fromEvent(EventName.MOUSEWHEEL)
@@ -194,13 +192,52 @@ module wd{
                 )
                 .mergeAll()
                 .map((e:MouseEvent) => {
-                    var gameObjectScene:GameObjectScene = self.scene.gameObjectScene,
-                        uiObjectScene:UIObjectScene = self.scene.uiObjectScene;
-
-                    return [gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)), e];
+                    return self._getMouseEventTriggerListData(e);
                 })
+
+                .merge(
+                    EventManager.fromEvent(EventName.MOUSEMOVE)
+                        .filterWithState((e:MouseEvent) => {
+                            var gameObjectScene:GameObjectScene = self.scene.gameObjectScene,
+                                uiObjectScene:UIObjectScene = self.scene.uiObjectScene;
+
+                            return gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)).getCount() > 0;
+                        })
+                        .map(({value, state}) => {
+                            var e:MouseEvent = value;
+
+                            switch(state){
+                                case wdFrp.FilterState.TRIGGER:
+                                    e.name = EventName.MOUSEMOVE;
+                                    break;
+                                case wdFrp.FilterState.ENTER:
+                                    e.name = EventName.MOUSEOVER;
+                                    break;
+                                case wdFrp.FilterState.LEAVE:
+                                    e.name = EventName.MOUSEOUT;
+                                    break;
+                            }
+
+                            if(e.name === EventName.MOUSEOUT){
+                                let triggerListData = self._lastTriggerListData;
+
+                                triggerListData[1] = e;
+
+                                return triggerListData;
+                            }
+                            else{
+                                let triggerListData = self._getMouseEventTriggerListData(e);
+
+                                self._lastTriggerListData = triggerListData;
+
+                                return triggerListData;
+                            }
+                        })
+                )
+
+
                 .subscribe(([triggerList, e]) => {
-                    if(self._gameState === GameState.PAUSE){
+                    if(self._gameState === GameState.PAUSE || triggerList.getCount() === 0){
                         return;
                     }
 
@@ -215,6 +252,13 @@ module wd{
                         entityObject.execEventScript(handlerName, e);
                     })
                 });
+        }
+
+        private _getMouseEventTriggerListData(e:MouseEvent){
+            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene,
+                uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+
+            return [gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)), e];
         }
 
         private _initGameObjectScene(){

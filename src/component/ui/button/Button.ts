@@ -84,6 +84,22 @@ module wd {
                         self._stateMachine.backState();
                     }
                 });
+
+
+            //todo dispose
+            EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OVER)
+                .subscribe((e:CustomEvent) => {
+                    if(!self.isDisabled()) {
+                        self._stateMachine.changeState(UIState.HIGHLIGHT);
+                    }
+                });
+            //todo dispose
+            EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)
+                .subscribe((e:CustomEvent) => {
+                    if(!self.isDisabled()) {
+                        self._stateMachine.backState();
+                    }
+                });
         }
 
         public dispose(){
