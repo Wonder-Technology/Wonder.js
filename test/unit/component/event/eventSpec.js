@@ -83,7 +83,7 @@ describe("event component", function () {
             url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
         });
 
-        describe("test trigger UIObject mouse event script by judge hitting RectTransforn->width,height", function(){
+        describe("test trigger UIObject mouse event script and trigger EngineEvent by judge hitting RectTransforn->width,height", function(){
             var uiObject;
 
             function createUIRenderer(){
@@ -147,8 +147,14 @@ describe("event component", function () {
 
                 describe("test trigger", function(){
                     function judge(eventHandlerName, eventName, done){
-                        scriptTool.testScript(uiObject, "event", function(test){
+                        scriptTool.testScript(uiObject, "event", function(test, gameObject){
                             sandbox.spy(test, eventHandlerName);
+
+                            wd.EventManager.on(gameObject, wd.EngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
+                                expect(e).toBeInstanceOf(wd.CustomEvent);
+                                expect(e.userData).toBeInstanceOf(wd.MouseEvent);
+                            });
+
                         }, function(test){
                             fakeEvent = {
                                 pageX: 300 - 200 / 2,
@@ -170,17 +176,51 @@ describe("event component", function () {
 
                     });
 
+
+                    describe("test trigger onMouseMove,onMouseOver,onMouseOut", function(){
+                        function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name){
+                            manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+
+
+                            expect(test[eventHandlerName]).toCalledOnce();
+
+
+                            var event = test[eventHandlerName].args[0][0];
+                            expect(event.name).toEqual(name);
+                            expect(event.locationInView.x).toEqual(fakeEvent.pageX);
+                            expect(event.locationInView.y).toEqual(fakeEvent.pageY);
+                        }
+
+                        beforeEach(function(){
+                        });
+
+                        it("when move onto entityObject, trigger onMouseOver; then, when move on entityObject, trigger onMouseMove; when move out entityObject, trigger onMouseOut", function(done){
+                            scriptTool.testScript(uiObject, "event", function(test){
+                                sandbox.spy(test, "onMouseMove");
+                                sandbox.spy(test, "onMouseOver");
+                                sandbox.spy(test, "onMouseOut");
+                            }, function(test){
+                                judgeEvent(test, {
+                                    pageX: 300 - 200 / 2,
+                                    pageY:100 - 100 / 2
+                                }, "onMouseOver", "MOUSEMOVE", "mouseover");
+
+                                judgeEvent(test, {
+                                    pageX: 300 - 200 / 2 + 10,
+                                    pageY:100 - 100 / 2
+                                }, "onMouseMove", "MOUSEMOVE", "mousemove");
+                                judgeEvent(test, {
+                                    pageX: 300 - 200 / 2 - 1,
+                                    pageY:100 - 100 / 2
+                                }, "onMouseOut", "MOUSEMOVE", "mouseout");
+                            }, function(test, time, gameObject){
+                            }, done);
+                        });
+                    });
+
+
                     it("test trigger onMouseClick", function(done){
                         judge("onMouseClick", "CLICK", done);
-                    });
-                    it("test trigger onMouseOver", function(done){
-                        judge("onMouseOver", "MOUSEOVER", done);
-                    });
-                    it("test trigger onMouseOut", function(done){
-                        judge("onMouseOut", "MOUSEOUT", done);
-                    });
-                    it("test trigger onMouseMove", function(done){
-                        judge("onMouseMove", "MOUSEMOVE", done);
                     });
                     it("test trigger onMouseDown", function(done){
                         judge("onMouseDown", "MOUSEDOWN", done);
@@ -300,7 +340,7 @@ describe("event component", function () {
             });
         });
 
-        describe("test trigger GameObject mouse event script by ray cast test", function(){
+        describe("test trigger GameObject mouse event script and trigger EngineEvent by ray cast test", function(){
             var gameObject;
 
             beforeEach(function(){
@@ -331,8 +371,14 @@ describe("event component", function () {
                     }, done);
                 });
                 it("test trigger", function (done) {
-                    scriptTool.testScript(gameObject, "event", function (test) {
+                    scriptTool.testScript(gameObject, "event", function (test, gameObject) {
                         sandbox.spy(test, "onMouseClick");
+
+
+                        wd.EventManager.on(gameObject, wd.EngineEvent["MOUSE_CLICK"], function(e){
+                            expect(e).toBeInstanceOf(wd.CustomEvent);
+                            expect(e.userData).toBeInstanceOf(wd.MouseEvent);
+                        });
                     }, function (test) {
                     }, function (test, time, gameObject) {
                         fakeEvent = {
