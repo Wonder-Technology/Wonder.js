@@ -354,6 +354,21 @@ module wd {
             EventManager.on(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
+        protected getAllChildren(){
+            var result = wdCb.Collection.create<EntityObject>();
+            var getChildren = (entityObject:EntityObject) => {
+                result.addChildren(entityObject.getChildren());
+
+                entityObject.forEach((child:EntityObject) => {
+                    getChildren(child);
+                });
+            }
+
+            getChildren(this);
+
+            return result;
+        }
+
         @require(function(){
             assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })

@@ -239,8 +239,6 @@ module wd {
             this.uiObjectScene.onDispose();
         }
 
-        //todo test
-        //todo add execScript?
         public execEventScript(method:string, arg?:any){
             this.gameObjectScene.execEventScript.apply(this.gameObjectScene, arguments);
         }

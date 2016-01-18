@@ -12,15 +12,7 @@ module wd {
             super.onEndLoop();
 
             this._resetAllTransformState();
-
-
-            var self = this;
-
-            //todo ensure all dirty=false
-            this.forEach((child:UIObject) => {
-                var renderer = self._getUIRenderer(child);
-                renderer.isClearCanvas = false;
-            });
+            this._resetAllRendererClearCanvasFlag();
         }
 
         public onStartLoop(){
@@ -42,7 +34,7 @@ module wd {
         protected beforeUpdateChildren(elapsedTime:number){
             var self = this;
 
-            this._removeAllRendererMarks();
+            this._removeAllRendererDirtyMarks();
 
             this.forEach((child:UIObject) => {
                 var renderer = self._getUIRenderer(child);
@@ -78,14 +70,41 @@ module wd {
             return uiObject.getComponent<UIRenderer>(UIRenderer);
         }
 
+        @ensure(function(){
+            var self = this;
+
+            this.getAllChildren().forEach((child:EntityObject) => {
+                var renderer = self._getUIRenderer(child);
+
+                assert(!renderer.isClearCanvas, Log.info.FUNC_SHOULD("reset all UIRenderers->isClearCanvas"));
+            });
+        })
+        private _resetAllRendererClearCanvasFlag(){
+            var self = this;
+
+            this.forEach((child:UIObject) => {
+                var renderer = self._getUIRenderer(child);
+                renderer.isClearCanvas = false;
+            });
+        }
+
         private _markUIRenderer(renderer:UIRenderer, isDirty:boolean){
             var tag = isDirty ? UITag.DIRTY : UITag.NOT_DIRTY;
 
             renderer.addTag(<any>tag);
         }
 
-        //todo ensure remove all renderer
-        private _removeAllRendererMarks(){
+        @ensure(function(){
+            var self = this;
+
+            this.getAllChildren().forEach((child:EntityObject) => {
+                var renderer = self._getUIRenderer(child);
+
+                assert(!renderer.hasTag(<any>UITag.DIRTY), Log.info.FUNC_SHOULD("remove all UIRenderers->DIRTY tag"));
+                assert(!renderer.hasTag(<any>UITag.NOT_DIRTY), Log.info.FUNC_SHOULD("remove all UIRenderers->NOT_DIRTY tag"));
+            });
+        })
+        private _removeAllRendererDirtyMarks(){
             var self = this;
 
             this.forEach((child:UIObject) => {
@@ -100,7 +119,6 @@ module wd {
             var self = this;
 
             var reset = (uiObject:UIObject) => {
-                //todo change
                 if(self._isNotDirtyDuringThisLoop(self._getUIRenderer(uiObject))){
                     self._resetTransformFlag(uiObject);
                 }

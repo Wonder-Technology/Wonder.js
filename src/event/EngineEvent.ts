@@ -16,7 +16,6 @@ module wd{
         MOUSE_WHEEL = <any>"dy_mousewheel",
         MOUSE_DRAG = <any>"dy_mousedrag",
 
-
         MATERIAL_CHANGE = <any>"dy_material_change",
 
         UI_WIDTH_CHANGE = <any>"dy_ui_width_change",

@@ -1,10 +1,7 @@
 module wd {
     export abstract class UI extends Component{
-        //protected p_dirty:boolean = true;
         @virtual
         get dirty(){
-            //todo
-            //return this.p_dirty;
             var renderer = this.getUIRenderer();
 
             if(!renderer){
@@ -14,8 +11,6 @@ module wd {
             return renderer.dirty;
         }
         set dirty(dirty:boolean){
-            //this.p_dirty = dirty;
-
             if(dirty){
                 var renderer = this.getUIRenderer();
 
@@ -135,12 +130,9 @@ module wd {
         }
 
         private _setCanvasTransformForRotation(){
-            //todo test
-            //if(this.entityObject.transform.isRotate){
             var matrix = this.entityObject.transform.rotationMatrix;
 
             this.context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            //}
         }
     }
 }
