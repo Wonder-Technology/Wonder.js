@@ -670,7 +670,13 @@ beforeEach(function () {
             return !stub.firstCall
         }
         function _isCalled(stub){
-            var actualArg = _isSpecificCall(stub) || _verifyIsStub(stub) ? stub.args : stub.args[0];
+            var actualArg = null;
+
+            if(stub && stub.callId){
+                return true;
+            }
+
+            actualArg = _isSpecificCall(stub) || _verifyIsStub(stub) ? stub.args : stub.args[0];
 
             return actualArg && actualArg.length > 0;
         }
@@ -798,7 +804,7 @@ beforeEach(function () {
                             msg += "but expected is not called";
                         }
                         else{
-                            pass = actual.calledBefore(expected);
+                            pass = actual.calledAfter(expected);
                             msg += _isCalled(actual) ? "but actual is be called before" : "but actual is not called";
                         }
 

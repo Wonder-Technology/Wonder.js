@@ -162,7 +162,7 @@ module wd {
         public copy():MouseEvent{
             var eventObj = MouseEvent.create(this.event, this.name);
 
-            return <MouseEvent>this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "lastX", "lastY"]);
+            return <MouseEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
         }
 
         private _isPointerLocked() {

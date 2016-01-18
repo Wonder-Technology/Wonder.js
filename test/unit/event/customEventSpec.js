@@ -126,16 +126,16 @@ describe("custom event", function () {
 
                 var subscription1 = manager.fromEvent(eventName, 1)
                     .subscribe(function (e) {
-                        eventTarget = e;
+                        eventTarget = e.copy();
                         fakeObj.a();
                     });
                 manager.fromEvent(eventName, 2).subscribe(subject);
                 var subscription2 = subject.subscribe(function (e) {
-                        eventTarget2 = e;
+                        eventTarget2 = e.copy();
                         fakeObj.b();
                     });
                 var subscription3 = subject.subscribe(function (e) {
-                    eventTarget3 = e;
+                    eventTarget3 = e.copy();
                     fakeObj.c();
                 });
                 subject.start();
@@ -258,22 +258,22 @@ describe("custom event", function () {
 
             manager.fromEvent(mesh1, eventName)
                 .subscribe(function (e) {
-                    eventTarget1 = e;
+                    eventTarget1 = e.copy();
                     fakeObj.a();
                 });
             manager.fromEvent(mesh2, eventName)
                 .subscribe(function (e) {
-                    eventTarget2 = e;
+                    eventTarget2 = e.copy();
                     fakeObj.b();
                 });
             manager.fromEvent(mesh3, eventName)
                 .subscribe(function (e) {
-                    eventTarget3 = e;
+                    eventTarget3 = e.copy();
                     fakeObj.c();
                 });
             manager.fromEvent(mesh4, eventName)
                 .subscribe(function (e) {
-                    eventTarget4 = e;
+                    eventTarget4 = e.copy();
                     fakeObj.d();
                 });
         });
@@ -283,7 +283,7 @@ describe("custom event", function () {
 
             manager.fromEvent(eventName)
                 .subscribe(function (e) {
-                    eventTarget5 = e;
+                    eventTarget5 = e.copy();
                 });
 
 

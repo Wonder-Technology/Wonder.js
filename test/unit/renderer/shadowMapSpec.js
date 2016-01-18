@@ -174,11 +174,11 @@ describe("shadow map", function() {
             //sandbox.stub(groundProgram, "sendUniformData");
 
             sandbox.stub(director.scene, "addRenderTargetRenderer");
-            sandbox.stub(director.scene, "init");
+            sandbox.stub(director.scene.gameObjectScene, "init");
 
             director._init();
 
-            expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.init);
+            expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.gameObjectScene.init);
         });
 
         describe("test compound gameObject", function(){
@@ -316,11 +316,11 @@ describe("shadow map", function() {
 
         it("add shadowMapRenderer to scene before init", function(){
             sandbox.stub(director.scene, "addRenderTargetRenderer");
-            sandbox.stub(director.scene, "init");
+            sandbox.stub(director.scene.gameObjectScene, "init");
 
             director._init();
 
-            expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.init);
+            expect(director.scene.addRenderTargetRenderer).toCalledBefore(director.scene.gameObjectScene.init);
         });
 
         describe("test compound gameObject", function(){

@@ -181,7 +181,7 @@ describe("SceneDispatcher", function() {
 
                 expect(action1.update).toCalledWith(elapsedTime);
                 expect(action1.update).toCalledOnce();
-                expect(action1.update).toCalledBefore(scene.actionManager.update);
+                //expect(action1.update).toCalledBefore(scene.actionManager.update);
                 expect(action1.update).toCalledBefore(action3.update);
                 expect(action3.update).toCalledWith(elapsedTime);
                 expect(action3.update).toCalledOnce();
@@ -244,10 +244,10 @@ describe("SceneDispatcher", function() {
 
                     expect(oldParent.removeChild).toCalledWith(child);
                 });
-                it("set target's parent to be gameObjectScene", function(){
+                it("set target's parent to be SceneDispatcher", function(){
                     scene.addChild(child);
 
-                    expect(child.parent).toEqual(scene.gameObjectScene);
+                    expect(child.parent).toEqual(scene);
                 });
                 it("set target's transform's parent to be scene's transform", function(){
                     scene.addChild(child);
