@@ -25,6 +25,10 @@ describe("SceneDispatcher", function() {
         return action;
     }
 
+    function getChild(index){
+        return scene.gameObjectScene.getChild(index);
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
@@ -257,7 +261,7 @@ describe("SceneDispatcher", function() {
                 it("add target into scene", function(){
                     scene.addChild(child);
 
-                    expect(scene.getChild(2)).toEqual(child);
+                    expect(getChild(2)).toEqual(child);
                 });
                 it("invoke child's onEnter", function(){
                     scene.addChild(child);
@@ -278,21 +282,21 @@ describe("SceneDispatcher", function() {
                     children = child;
                     scene.addChildren(children);
 
-                    expect(scene.getChild(2)).toEqual(child);
+                    expect(getChild(2)).toEqual(child);
                 });
                 it("can add array", function(){
                     children = [child, child2];
                     scene.addChildren(children);
 
-                    expect(scene.getChild(2)).toEqual(child);
-                    expect(scene.getChild(3)).toEqual(child2);
+                    expect(getChild(2)).toEqual(child);
+                    expect(getChild(3)).toEqual(child2);
                 });
                 it("can add Collection", function(){
                     children = wdCb.Collection.create([child, child2]);
                     scene.addChildren(children);
 
-                    expect(scene.getChild(2)).toEqual(child);
-                    expect(scene.getChild(3)).toEqual(child2);
+                    expect(getChild(2)).toEqual(child);
+                    expect(getChild(3)).toEqual(child2);
                 });
             });
         });
@@ -329,12 +333,12 @@ describe("SceneDispatcher", function() {
             expect(wd.Log.assert).toCalledOnce();
             expect(result).toEqual(scene);
         });
-        it("set component's gameObject", function(){
+        it("set component's entityObject", function(){
             var component = new wd.Action();
 
             scene.addComponent(component);
 
-            expect(component.entityObject).toEqual(scene.gameObjectScene);
+            expect(component.entityObject).toEqual(scene);
         });
         it("add component to container", function(){
             var component = new wd.Action();
@@ -350,7 +354,7 @@ describe("SceneDispatcher", function() {
 
                 scene.addComponent(component);
 
-                expect(component.target).toEqual(scene.gameObjectScene);
+                expect(component.target).toEqual(scene);
                 expect(scene.actionManager.hasChild(component)).toBeTruthy();
             });
         });
@@ -580,6 +584,22 @@ describe("SceneDispatcher", function() {
             });
         });
 
+        //it("getChildren", function(){
+        //    judge("getChildren");
+        //});
+        //it("findChildByUid", function(){
+        //    judge("findChildByUid");
+        //});
+        //it("findChildByTag", function(){
+        //    judge("findChildByTag");
+        //});
+        //it("findChildByName", function(){
+        //    judge("findChildByName");
+        //});
+        //it("findChildrenByName", function(){
+        //    judge("findChildrenByName");
+        //});
+
         describe("invoke gameObjectScene,uiObjectScene", function(){
             function judge(method){
                 sandbox.stub(scene.gameObjectScene, method);
@@ -617,70 +637,9 @@ describe("SceneDispatcher", function() {
             it("onDispose", function(){
                 judge("onDispose");
             });
-        });
-
-        describe("only invoke gameObjectScene", function(){
-            function judge(method){
-                sandbox.stub(scene.gameObjectScene, method);
-                sandbox.stub(scene.uiObjectScene, method);
-
-                scene[method]();
-
-                expect(scene.gameObjectScene[method]).toCalledOnce();
-                expect(scene.uiObjectScene[method]).not.toCalled();
-            }
-
-            //it("render", function(){
-            //    judge("render");
+            //it("findComponentByUid", function(){
+            //    judge("findComponentByUid");
             //});
-            it("forEach", function(){
-                judge("forEach");
-            });
-            it("filter", function(){
-                judge("filter");
-            });
-            it("getChildren", function(){
-                judge("getChildren");
-            });
-            it("getChild", function(){
-                judge("getChild");
-            });
-            it("findChildByUid", function(){
-                judge("findChildByUid");
-            });
-            it("findChildByTag", function(){
-                judge("findChildByTag");
-            });
-            it("findChildByName", function(){
-                judge("findChildByName");
-            });
-            it("findChildrenByName", function(){
-                judge("findChildrenByName");
-            });
-            it("getComponent", function(){
-                judge("getComponent");
-            });
-            it("findComponentByUid", function(){
-                judge("findComponentByUid");
-            });
-            it("getFirstComponent", function(){
-                judge("getFirstComponent");
-            });
-            it("forEachComponent", function(){
-                judge("forEachComponent");
-            });
-            it("hasComponent", function(){
-                judge("hasComponent");
-            });
-            it("addComponent", function(){
-                judge("addComponent");
-            });
-            it("removeComponent", function(){
-                judge("removeComponent");
-            });
-            it("removeAllComponent", function(){
-                judge("removeAllComponent");
-            });
         });
     });
 });

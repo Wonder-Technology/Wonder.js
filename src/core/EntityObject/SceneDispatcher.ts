@@ -167,38 +167,42 @@ module wd {
             return this;
         }
 
-        public forEach(func:(gameObjcet:EntityObject) => void){
-            this.gameObjectScene.forEach(func);
-
-            return this;
-        }
-
-        public filter(func:(gameObjcet:EntityObject) => boolean){
-            return this.gameObjectScene.filter(func);
-        }
-
         public getChildren(){
-            return this.gameObjectScene.getChildren();
-        }
-
-        public getChild(index:number){
-            return this.gameObjectScene.getChild(index);
+            return this.gameObjectScene.getChildren().addChildren(this.uiObjectScene.getChildren());
         }
 
         public findChildByUid(uid:number){
-            return this.gameObjectScene.findChildByUid(uid);
+            var result = this.gameObjectScene.findChildByUid(uid);
+
+            if(!result){
+                result = this.uiObjectScene.findChildByUid(uid)
+            }
+
+            return result;
         }
 
         public findChildByTag(tag:string){
-            return this.gameObjectScene.findChildByTag(tag);
+            var result = this.gameObjectScene.findChildByTag(tag);
+
+            if(!result){
+                result = this.uiObjectScene.findChildByTag(tag)
+            }
+
+            return result;
         }
 
         public findChildByName(name:string){
-            return this.gameObjectScene.findChildByName(name);
+            var result = this.gameObjectScene.findChildByName(name);
+
+            if(!result){
+                result = this.uiObjectScene.findChildByName(name)
+            }
+
+            return result;
         }
 
         public findChildrenByName(name:string):wdCb.Collection<EntityObject>{
-            return this.gameObjectScene.findChildrenByName(name);
+            return this.gameObjectScene.findChildrenByName(name).addChildren(this.uiObjectScene.findChildrenByName(name));
         }
 
         public removeChild(child:EntityObject):EntityObject {
@@ -208,50 +212,6 @@ module wd {
             else if(child instanceof UIObject){
                 return this.uiObjectScene.removeChild(child);
             }
-        }
-
-        public getComponent<T>(_class:Function):T{
-                return this.gameObjectScene.getComponent<T>(_class);
-        }
-
-        public findComponentByUid(uid:number){
-            return this.gameObjectScene.findComponentByUid(uid);
-        }
-
-        public getFirstComponent():Component {
-            return this.gameObjectScene.getFirstComponent();
-        }
-
-        public forEachComponent(func:(component:Component) => void){
-            this.gameObjectScene.forEachComponent(func);
-
-            return this;
-        }
-
-        public hasComponent(component:Component):boolean;
-        public hasComponent(_class:Function):boolean;
-
-        public hasComponent(...args){
-            return this.gameObjectScene.hasComponent(args[0]);
-        }
-
-        public addComponent(component:Component){
-            this.gameObjectScene.addComponent(component);
-
-            return this;
-        }
-
-        public removeComponent(component:Component);
-        public removeComponent(_class:Function);
-
-        public removeComponent(...args){
-            this.gameObjectScene.removeComponent(args[0]);
-
-            return this;
-        }
-
-        public removeAllComponent(){
-            return this.gameObjectScene.removeAllComponent();
         }
 
         public onStartLoop() {
