@@ -27,7 +27,9 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
+
+        'test/unit/**/MainSpec*',
 
         //'test/unit/component/event/eventSpec*',
 

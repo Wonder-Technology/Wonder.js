@@ -1,6 +1,15 @@
 module wd{
     export class Main{
-        public static isTest:boolean = null;
+        private static _isTest:boolean = false;
+        static get isTest(){
+            return this._isTest;
+        }
+        static set isTest(isTest:boolean){
+            this._isTest = isTest;
+
+            wdFrp.Main.isTest = isTest;
+        }
+
         public static screenSize:any = null;
 
         private static _canvasId:string = null;
