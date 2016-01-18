@@ -174,12 +174,21 @@ module wd{
         }
 
         private _getMouseEventTriggerList(e:MouseEvent){
-            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene,
-                uiObjectScene:UIObjectScene = this.scene.uiObjectScene,
-                triggerList = null;
+            var topGameObject:GameObject = null,
+                topUIObject:UIObject = null,
+                triggerList = wdCb.Collection.create<EntityObject>();
 
-            //todo move to SceneDispatcher?(forEach game scene and ui scene)
-            triggerList = gameObjectScene.getMouseEventTriggerDataList(e).addChildren(uiObjectScene.getMouseEventTriggerDataList(e));
+
+            topGameObject = this._findTopGameObject(e, this.scene.gameObjectScene);
+            topUIObject = this._findTopUIObject(e, this.scene.uiObjectScene);
+
+            if(topGameObject){
+                triggerList.addChild(topGameObject);
+            }
+
+            if(topUIObject){
+                triggerList.addChild(topUIObject);
+            }
 
             if(this._isTriggerScene(e) && triggerList.getCount() === 0){
                 triggerList.addChild(this.scene);
@@ -188,12 +197,58 @@ module wd{
             return triggerList;
         }
 
+        private _findTopGameObject(e:MouseEvent, gameObjectScene:GameObjectScene){
+            var self = this;
+
+            return this._findTriggerObjectList<GameObject>(e, gameObjectScene).sort((a:GameObject, b:GameObject) => {
+                    return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
+                })
+                .getChild(0);
+        }
+
+        private _getDistanceToCamera(obj:GameObject){
+            return obj.transform.position.copy().sub(Director.getInstance().scene.camera.transform.position).length();
+        }
+
+        private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){
+            var self = this;
+
+            return this._findTriggerObjectList<UIObject>(e, uiObjectScene).sort((a:UIObject, b:UIObject) => {
+                    return b.transform.zIndex - a.transform.zIndex;
+                })
+                .getChild(0);
+        }
+
+        private _findTriggerObjectList<T>(e:MouseEvent, objectScene:EntityObject):wdCb.Collection<T>{
+            var triggerObjectList = wdCb.Collection.create<any>();
+            var find = (entityObject:EntityObject) => {
+                var detector = null;
+
+                if (entityObject.hasComponent(EventTriggerDetector)) {
+                    detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
+
+                    if (detector.isTrigger(e)) {
+                        triggerObjectList.addChild(entityObject);
+                    }
+                }
+
+                entityObject.forEach((child:EntityObject) => {
+                    find(child);
+                });
+            }
+
+            objectScene.forEach((child:EntityObject) => {
+                find(child);
+            });
+
+            return triggerObjectList;
+        }
+
         private _isTriggerScene(e:MouseEvent){
             var detector = this.scene.getComponent<EventTriggerDetector>(EventTriggerDetector);
 
             return detector.isTrigger(e);
         }
-
 
         private _getMouseEventTriggerListData(e:MouseEvent);
         private _getMouseEventTriggerListData(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>);

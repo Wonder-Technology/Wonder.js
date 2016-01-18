@@ -31,8 +31,6 @@ module wd {
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
-        protected eventTriggerUtils:GameObjectEventTriggerUtils = GameObjectEventTriggerUtils.create();
-
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();

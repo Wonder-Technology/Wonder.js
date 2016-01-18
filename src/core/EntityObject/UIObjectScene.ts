@@ -8,9 +8,6 @@ module wd {
             return obj;
         }
 
-        //todo remove?
-        protected eventTriggerUtils:UIObjectEventTriggerUtils = UIObjectEventTriggerUtils.create();
-
         public onEndLoop() {
             super.onEndLoop();
 

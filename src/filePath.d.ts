@@ -97,12 +97,7 @@
 /// <reference path="component/event/detector/SceneEventTriggerDetector"/>
 /// <reference path="component/event/detector/EventTriggerDetectorUtils"/>
 
-/// <reference path="component/event/EventTriggerMode"/>
 /// <reference path="component/event/EventTriggerTable"/>
-
-/// <reference path="component/event/utils/EventTriggerUtils"/>
-/// <reference path="component/event/utils/UIObjectEventTriggerUtils"/>
-/// <reference path="component/event/utils/GameObjectEventTriggerUtils"/>
 
 
 /// <reference path="component/script/IScriptBehavior"/>
