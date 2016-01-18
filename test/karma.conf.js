@@ -27,10 +27,12 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
-        'test/unit/**/interactionUISpec*',
+        //'test/unit/**/interactionUISpec*',
+        //'test/unit/**/TransitionSpec*',
+        //'test/unit/**/SpriteTransitionSpec*',
 
 
         //'test/unit/**/MainSpec*',

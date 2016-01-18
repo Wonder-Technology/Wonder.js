@@ -221,7 +221,6 @@
 
 
 /// <reference path="component/ui/UI"/>
-/// <reference path="component/ui/InteractionUI"/>
 
 
 /// <reference path="component/ui/font/FontXAlignment"/>
@@ -236,15 +235,16 @@
 
 /// <reference path="component/ui/image/Image"/>
 
+/// <reference path="component/ui/interaction/InteractionUI"/>
+/// <reference path="component/ui/interaction/button/Button"/>
 
-/// <reference path="component/ui/button/Button"/>
+/// <reference path="component/ui/interaction/state/UIState"/>
+/// <reference path="component/ui/interaction/state/UIStateMachine"/>
 
-/// <reference path="component/ui/state/UIState"/>
-/// <reference path="component/ui/state/UIStateMachine"/>
+/// <reference path="component/ui/interaction/transition/Transition"/>
+/// <reference path="component/ui/interaction/transition/SpriteTransition"/>
+/// <reference path="component/ui/interaction/transition/TransitionMode"/>
 
-/// <reference path="component/ui/transition/Transition"/>
-/// <reference path="component/ui/transition/SpriteTransition"/>
-/// <reference path="component/ui/transition/TransitionMode"/>
 
 
 /// <reference path="component/ui/utils/RoundedRectUtils"/>
