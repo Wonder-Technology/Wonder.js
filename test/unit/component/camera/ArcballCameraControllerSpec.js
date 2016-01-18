@@ -30,8 +30,8 @@ describe("ArcballCameraController", function () {
         $("#event-test").remove();
     }
 
-    function triggerDomEvent(eventName){
-        eventTool.triggerDomEvent(eventName, document);
+    function triggerDomEvent(eventName, dom){
+        eventTool.triggerDomEvent(eventName, dom || document);
     }
 
     function triggerKeyboardDomEvent(eventName){
@@ -40,6 +40,9 @@ describe("ArcballCameraController", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        testTool.openContractCheck(sandbox);
+
         manager = wd.EventManager;
 
         insertDom();
@@ -75,13 +78,20 @@ describe("ArcballCameraController", function () {
     });
 
     describe("dispose", function(){
+        beforeEach(function(){
+            sandbox.stub(wd.EventTriggerDetectorUtils, "isInRect").returns(true);
+        });
+
         it("remove events", function(){
             prepare(sandbox);
             sandbox.stub(controller, "_changeOrbit");
             sandbox.stub(controller, "_changeDistance");
             sandbox.stub(controller, "_changeTarget");
 
-            camera.init();
+            var director = wd.Director.getInstance();
+            director.scene.addChild(camera);
+
+            director._init();
 
             triggerDomEvent(wd.EventName.MOUSEDOWN);
             triggerDomEvent(wd.EventName.MOUSEMOVE);
@@ -90,7 +100,7 @@ describe("ArcballCameraController", function () {
             expect(controller._changeOrbit).toCalledOnce();
 
 
-            triggerDomEvent(wd.EventName.MOUSEWHEEL);
+            triggerDomEvent(wd.EventName.MOUSEWHEEL, document.body);
 
             expect(controller._changeDistance).toCalledOnce();
 
@@ -105,7 +115,7 @@ describe("ArcballCameraController", function () {
             triggerDomEvent(wd.EventName.MOUSEDOWN);
             triggerDomEvent(wd.EventName.MOUSEMOVE);
             triggerDomEvent(wd.EventName.MOUSEUP);
-            triggerDomEvent(wd.EventName.MOUSEWHEEL);
+            triggerDomEvent(wd.EventName.MOUSEWHEEL, document.body);
             triggerKeyboardDomEvent(wd.EventName.KEYDOWN);
 
 
@@ -118,6 +128,10 @@ describe("ArcballCameraController", function () {
     testTool.shouldExecRunTest("test more");
 
     describe("fix bug", function(){
+        beforeEach(function(){
+            sandbox.stub(wd.EventTriggerDetectorUtils, "isInRect").returns(true);
+        });
+
         it("the event handler binded should not affected by other event handler binded on the same event", function(){
             prepare(sandbox);
 
@@ -131,7 +145,10 @@ describe("ArcballCameraController", function () {
 
             sandbox.stub(controller, "_changeOrbit");
 
-            camera.init();
+            var director = wd.Director.getInstance();
+            director.scene.addChild(camera);
+
+            director._init();
 
             triggerDomEvent(wd.EventName.MOUSEDOWN);
             triggerDomEvent(wd.EventName.MOUSEMOVE);
@@ -143,7 +160,6 @@ describe("ArcballCameraController", function () {
             triggerDomEvent(wd.EventName.MOUSEUP);
 
             expect(controller._changeOrbit).toCalledTwice();
-
         });
     });
 });

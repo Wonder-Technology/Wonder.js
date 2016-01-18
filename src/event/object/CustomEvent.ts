@@ -6,8 +6,6 @@ module wd {
             return obj;
         }
 
-        public target:EntityObject;
-
         public userData:any = null;
 
         protected p_type:EventType = EventType.CUSTOM;
@@ -30,11 +28,11 @@ module wd {
             return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         }
 
-        @require(function(event:MouseEvent){
-            if(event.target){
-                assert(event.target instanceof EntityObject, Log.info.FUNC_MUST_BE("target", "EntityObject"));
-            }
-        })
+        //@require(function(event:MouseEvent){
+        //    if(event.target){
+        //        assert(event.target instanceof EntityObject, Log.info.FUNC_MUST_BE("target", "EntityObject"));
+        //    }
+        //})
         public getDataFromDomEvent(event:MouseEvent){
             this.target = <EntityObject>event.target;
             this.currentTarget = event.currentTarget;
