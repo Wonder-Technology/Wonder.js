@@ -97,7 +97,7 @@ module wd{
 
                 currentTriggerList.forEach((currentObject:EntityObject) => {
                     if(!lastTriggerList.hasChild((lastObject:EntityObject) => {
-                            return JudgeUtils.isEqual(currentObject, lastObject) || self._isBubbleParent(lastObject, currentObject);
+                            return JudgeUtils.isEqual(currentObject, lastObject);
                         })){
                         mouseoverObjects.addChild(currentObject);
                     }
@@ -108,22 +108,6 @@ module wd{
                 mouseoverObjects: mouseoverObjects,
                 mouseoutObjects: mouseoutObjects
             }
-        }
-
-        private _isBubbleParent(source:EntityObject, target:EntityObject){
-            var parent = source.bubbleParent,
-                result = false;
-
-            while(parent){
-                if(JudgeUtils.isEqual(parent, target)){
-                    result = true;
-                    break;
-                }
-
-                parent = parent.bubbleParent;
-            }
-
-            return result;
         }
 
         private _setMouseOverTag(objects:wdCb.Collection<EntityObject>){
@@ -155,7 +139,7 @@ module wd{
         }
 
         private _trigger(e:MouseEvent, entityObject:EntityObject);
-        private _trigger(e:MouseEvent, entityObject:EntityObject, notSetTarget:boolean);
+        private _trigger(e:MouseEvent, entityObject:EntityObject, isBubble:boolean);
 
         private _trigger(...args) {
             var e:MouseEvent = args[0],
@@ -165,20 +149,18 @@ module wd{
                 customEvent:CustomEvent = null,
                 handlerName = null;
 
-            if(args.length === 3){
-                notSetTarget = args[2];
+            if(args.length === 3 && args[2]){
+                notSetTarget = true;
+                event = e;
+            }
+            else{
+                event = this._setEventNameByEventTag(entityObject, e);
+                this._removeEventTag(entityObject);
             }
 
-            event = this._setEventNameByEventTag(entityObject, e);
-            customEvent = null;
             handlerName = EventTriggerTable.getScriptHandlerName(event.name);
 
-            this._removeEventTag(entityObject);
-
-
-
             customEvent = CustomEvent.create(<any>EngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]);
-
 
             customEvent.getDataFromDomEvent(event);
 
@@ -188,7 +170,6 @@ module wd{
             event.getDataFromCustomEvent(customEvent);
 
             entityObject.execEventScript(handlerName, event);
-
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
                 this._trigger(event.copy(), entityObject.bubbleParent, true);
@@ -237,8 +218,6 @@ module wd{
         }
 
         private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){
-            var self = this;
-
             return this._findTriggerObjectList<UIObject>(e, uiObjectScene).sort((a:UIObject, b:UIObject) => {
                     return b.transform.zIndex - a.transform.zIndex;
                 })

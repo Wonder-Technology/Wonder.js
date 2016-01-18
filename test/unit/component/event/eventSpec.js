@@ -400,7 +400,7 @@ describe("event component", function () {
                     }, function (test, time, gameObject) {
                     }, done);
                 });
-                it("it shouldn't trigger scene->mouseover(should trigger scene->mousemove) when mouseout object which is in scene range(it means this is still a mousemove in scene)", function(){
+                it("it should trigger scene->mouseoverand trigger scene->mousemove when mouseout object which is in scene range", function(){
                     var renderer = createUIRenderer();
                     var uiObject1 = createUIObject(renderer);
                     director.scene.addChild(uiObject1);
@@ -476,12 +476,13 @@ describe("event component", function () {
                     expect(uiObject1Handler.secondCall).toCalledBefore(sceneHandler.secondCall);
                     expect(uiObject1Handler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
                     expect(sceneHandler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
-                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EngineEvent.MOUSE_MOVE);
+                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EngineEvent.MOUSE_OVER);
+                    expect(sceneHandler).toCalledThrice();
                 });
             });
         });
 
-        describe("test trigger UIObject mouse event script and trigger EngineEvent by judge hitting RectTransforn->width,height", function(){
+        describe("test trigger UIObject mouse event script and trigger EngineEvent by judge hitting RectTransform->width,height", function(){
             var uiObject;
 
             describe("test trigger single one", function(){
