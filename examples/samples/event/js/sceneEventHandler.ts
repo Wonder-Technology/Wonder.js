@@ -1,4 +1,4 @@
-/// <reference path="../../../../../dist/wd.d.ts"/>
+/// <reference path="../../../../dist/wd.d.ts"/>
 module sample {
     import EntityObject = wd.EntityObject;
     import MouseEvent = wd.MouseEvent;

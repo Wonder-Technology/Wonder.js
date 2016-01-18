@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ui event</title>
+    <title>ui event script</title>
 
-    <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
-    <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
     <style>
         body{
             margin:0;
@@ -29,9 +29,9 @@
 
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../asset/texture/1.jpg", id: "1"},
-            {url: "../../asset/texture/2.jpg", id: "2"},
-            {url: "../../asset/texture/3.jpg", id: "3"},
+            {url: "../asset/texture/1.jpg", id: "1"},
+            {url: "../asset/texture/2.jpg", id: "2"},
+            {url: "../asset/texture/3.jpg", id: "3"}
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
