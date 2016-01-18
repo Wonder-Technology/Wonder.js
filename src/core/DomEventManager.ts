@@ -61,7 +61,8 @@ module wd{
 
                             self._lastTriggerList = triggerList.copy();
 
-                            triggerList.addChildren(mouseoutObjects);
+                            //triggerList.addChildren(mouseoutObjects);
+                            triggerList = mouseoutObjects.addChildren(triggerList);
 
                             return self._getMouseEventTriggerListData(e, triggerList);
                         })
@@ -71,14 +72,15 @@ module wd{
                 })
                 .subscribe(([triggerList, e]) => {
                     triggerList.forEach((entityObject:EntityObject) => {
-                        self._trigger(e, entityObject);
+                        self._trigger(e.copy(), entityObject);
                     })
                 });
         }
 
         private _getMouseOverAndMouseOutObject(currentTriggerList:wdCb.Collection<EntityObject>, lastTriggerList:wdCb.Collection<EntityObject>){
             var mouseoverObjects = wdCb.Collection.create<EntityObject>(),
-                mouseoutObjects = wdCb.Collection.create<EntityObject>();
+                mouseoutObjects = wdCb.Collection.create<EntityObject>(),
+                self = this;
 
             if(!lastTriggerList){
                 mouseoverObjects = currentTriggerList;
@@ -95,7 +97,7 @@ module wd{
 
                 currentTriggerList.forEach((currentObject:EntityObject) => {
                     if(!lastTriggerList.hasChild((lastObject:EntityObject) => {
-                            return JudgeUtils.isEqual(currentObject, lastObject);
+                            return JudgeUtils.isEqual(currentObject, lastObject) || self._isBubbleParent(lastObject, currentObject);
                         })){
                         mouseoverObjects.addChild(currentObject);
                     }
@@ -106,6 +108,22 @@ module wd{
                 mouseoverObjects: mouseoverObjects,
                 mouseoutObjects: mouseoutObjects
             }
+        }
+
+        private _isBubbleParent(source:EntityObject, target:EntityObject){
+            var parent = source.bubbleParent,
+                result = false;
+
+            while(parent){
+                if(JudgeUtils.isEqual(parent, target)){
+                    result = true;
+                    break;
+                }
+
+                parent = parent.bubbleParent;
+            }
+
+            return result;
         }
 
         private _setMouseOverTag(objects:wdCb.Collection<EntityObject>){
@@ -173,7 +191,7 @@ module wd{
 
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
-                this._trigger(event, entityObject.bubbleParent, true);
+                this._trigger(event.copy(), entityObject.bubbleParent, true);
             }
         }
 
@@ -194,11 +212,15 @@ module wd{
                 triggerList.addChild(topUIObject);
             }
 
-            if(this._isTriggerScene(e) && triggerList.getCount() === 0){
+            if(this._isSceneAsTopOne(e, triggerList)){
                 triggerList.addChild(this.scene);
             }
 
             return triggerList;
+        }
+
+        private _isSceneAsTopOne(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>){
+            return this._isTriggerScene(e) && triggerList.getCount() === 0;
         }
 
         private _findTopGameObject(e:MouseEvent, gameObjectScene:GameObjectScene){

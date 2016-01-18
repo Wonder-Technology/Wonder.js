@@ -400,6 +400,84 @@ describe("event component", function () {
                     }, function (test, time, gameObject) {
                     }, done);
                 });
+                it("it shouldn't trigger scene->mouseover(should trigger scene->mousemove) when mouseout object which is in scene range(it means this is still a mousemove in scene)", function(){
+                    var renderer = createUIRenderer();
+                    var uiObject1 = createUIObject(renderer);
+                    director.scene.addChild(uiObject1);
+
+
+
+
+
+                    inObject1FakeEvent = {
+                        pageX: 300,
+                        pageY: 100
+                    };
+                    outObject1FakeEvent = {
+                        pageX: 300 - 100 / 2 - 1,
+                        pageY: 100
+                    };
+
+                    uiObject1.transform.width = 100;
+                    uiObject1.transform.height = 100;
+
+                    uiObject1.transform.position = wd.Vector2.create(300, 100);
+
+
+
+
+
+
+                    var moveEventName = wd.EventName.MOUSEMOVE;
+
+                    var sceneHandler = sandbox.stub();
+                    var uiObject1Handler = sandbox.stub();
+
+                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_MOVE, function (e) {
+                        sceneHandler(e.name);
+                    });
+                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_OVER, function (e) {
+                        sceneHandler(e.name);
+                    });
+                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_OUT, function (e) {
+                        sceneHandler(e.name);
+                    });
+
+                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_MOVE, function (e) {
+                        uiObject1Handler(e.name);
+                    });
+                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_OVER, function (e) {
+                        uiObject1Handler(e.name);
+                    });
+                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_OUT, function (e) {
+                        uiObject1Handler(e.name);
+                    });
+
+
+                    director._init();
+
+
+
+
+
+
+                    manager.trigger(wd.MouseEvent.create(inObject1FakeEvent, moveEventName));
+
+                    expect(uiObject1Handler).toCalledBefore(sceneHandler);
+                    expect(uiObject1Handler).toCalledWith(wd.EngineEvent.MOUSE_OVER);
+                    expect(sceneHandler).toCalledWith(wd.EngineEvent.MOUSE_OVER);
+
+
+
+
+                    manager.trigger(wd.MouseEvent.create(outObject1FakeEvent, moveEventName));
+
+
+                    expect(uiObject1Handler.secondCall).toCalledBefore(sceneHandler.secondCall);
+                    expect(uiObject1Handler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
+                    expect(sceneHandler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
+                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EngineEvent.MOUSE_MOVE);
+                });
             });
         });
 
@@ -544,6 +622,7 @@ describe("event component", function () {
 
                                 var event = test.onMouseDrag.args[0][0];
                                 expect(event.name).toEqual(wd.EventName.MOUSEDRAG);
+                                expect(event.type).toEqual(wd.EventType.MOUSE);
                                 expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                                 expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                             }, function(test, time, gameObject){
