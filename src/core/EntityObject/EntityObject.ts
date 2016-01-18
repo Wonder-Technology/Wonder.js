@@ -6,10 +6,18 @@ module wd {
             return this._scriptList;
         }
 
+        private _bubbleParent:EntityObject = null;
+        get bubbleParent(){
+            return this._bubbleParent ? this._bubbleParent : this.parent;
+        }
+        set bubbleParent(bubbleParent:EntityObject){
+            this._bubbleParent = bubbleParent;
+        }
+
         public name:string = null;
         public transform:any = null;
         public parent:EntityObject = null;
-        public bubbleParent:EntityObject = null;
+
         public actionManager:ActionManager = ActionManager.create();
 
         protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();

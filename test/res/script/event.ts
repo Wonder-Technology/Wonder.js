@@ -26,5 +26,8 @@ module sample {
 
         public onMouseWheel(e) {
         }
+
+        public onMouseDrag(e) {
+        }
     }
 }

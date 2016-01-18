@@ -89,6 +89,12 @@ module wd {
         public uiObjectScene:UIObjectScene = UIObjectScene.create();
         public gameObjectScene:GameObjectScene = GameObjectScene.create();
 
+        public initWhenCreate(){
+            super.initWhenCreate();
+
+            this.addComponent(SceneEventTriggerDetector.create());
+        }
+
         public useProgram(shader:Shader){
             this.gameObjectScene.useProgram(shader);
         }

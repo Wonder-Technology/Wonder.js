@@ -1,5 +1,7 @@
 module wd{
     export abstract class EventTriggerUtils{
+
+
         public getEventTriggerListByTriggerMode(triggerList:wdCb.Collection<EventTriggerListData>){
             var topEntityObject:EntityObject = null,
                 selectedEntityObject:wdCb.Collection<EntityObject> = null,

@@ -17,7 +17,7 @@ module wd {
 
             leftUpCornerPosition = Vector2.create(position.x - width / 2, position.y - height / 2);
 
-            return locationInView.x >= leftUpCornerPosition.x && locationInView.x <= leftUpCornerPosition.x + width && locationInView.y >= leftUpCornerPosition.y && locationInView.y <= leftUpCornerPosition.y + height;
+            return EventTriggerDetectorUtils.isInRect(locationInView, leftUpCornerPosition, width, height);
         }
     }
 }

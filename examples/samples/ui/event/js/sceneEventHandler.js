@@ -13,28 +13,28 @@ var sample;
             this._entityObject = entityObject;
         }
         SceneEventHandler.prototype.onMouseClick = function (e) {
-            console.log("scene click");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseDown = function (e) {
-            console.log("scene mousedown");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseUp = function (e) {
-            console.log("scene mouseup");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseWheel = function (e) {
-            console.log("scene mousewheel");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseMove = function (e) {
-            console.log("scene mousemove");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseOver = function (e) {
-            console.log("scene mouseover");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseOut = function (e) {
-            console.log("scene mouseout");
+            console.log("scene " + e.name);
         };
         SceneEventHandler.prototype.onMouseDrag = function (e) {
-            console.log("scene drag");
+            console.log("scene " + e.name);
         };
         SceneEventHandler = __decorate([
             wd.script("eventHandler")

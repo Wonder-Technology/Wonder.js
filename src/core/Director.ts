@@ -7,6 +7,12 @@ module wd{
         PAUSE
     }
 
+    //todo move to binder
+    enum EventTag{
+        MOUSE_OVER = <any>"MOUSE_OVER",
+        MOUSE_OUT = <any>"MOUSE_OUT"
+    }
+
     //todo invoke scene.onExit
 
     export class Director{
@@ -63,7 +69,8 @@ module wd{
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _isFirstStart:boolean = true;
         private _isInitUIScene:boolean = false;
-        private _lastTriggerListData:any = null;
+        //private _lastTriggerListData:any = null;
+        private _lastTriggerList:any = null;
 
 
         public initWhenCreate(){
@@ -184,17 +191,7 @@ module wd{
         private _initEvent(){
             var self = this;
 
-            //todo dispose
-            wdFrp.fromArray(
-                [
-                    EventManager.fromEvent(EventName.MOUSEOVER),
-                    EventManager.fromEvent(EventName.MOUSEOUT)
-                    ]
-            )
-            .mergeAll()
-                .subscribe((e:MouseEvent) => {
-                    self._triggerScene(e);
-                });
+
 
 
             this._eventSubscription = wdFrp.fromArray(
@@ -219,57 +216,27 @@ module wd{
                 ]
                 )
                 .mergeAll()
-                //todo test
-                .do((e:MouseEvent) => {
-                    self._triggerScene(e);
-                })
                 .map((e:MouseEvent) => {
                     return self._getMouseEventTriggerListData(e);
                 })
 
-                .merge(
-                    EventManager.fromEvent(EventName.MOUSEMOVE)
-                        //todo test
-                        .do((e:MouseEvent) => {
-                            self._triggerScene(e);
-                        })
-                        .filterWithState((e:MouseEvent) => {
-                            var gameObjectScene:GameObjectScene = self.scene.gameObjectScene,
-                                uiObjectScene:UIObjectScene = self.scene.uiObjectScene;
+                    .merge(
+            EventManager.fromEvent(EventName.MOUSEMOVE)
+                .map((e:MouseEvent) => {
+                    var triggerList = self._getMouseEventTriggerList(e),
+                        objects = null;
+                    var {mouseoverObjects, mouseoutObjects} = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList);
 
-                            return gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)).getCount() > 0;
-                        })
-                        .map(({value, state}) => {
-                            var e:MouseEvent = value;
+                    self._setMouseOverTag(mouseoverObjects);
+                    self._setMouseOutTag(mouseoutObjects);
 
-                            switch(state){
-                                case wdFrp.FilterState.TRIGGER:
-                                    e.name = EventName.MOUSEMOVE;
-                                    break;
-                                case wdFrp.FilterState.ENTER:
-                                    e.name = EventName.MOUSEOVER;
-                                    break;
-                                case wdFrp.FilterState.LEAVE:
-                                    e.name = EventName.MOUSEOUT;
-                                    break;
-                            }
+                    self._lastTriggerList = triggerList.copy();
 
-                            if(e.name === EventName.MOUSEOUT){
-                                let triggerListData = self._lastTriggerListData;
+                    triggerList.addChildren(mouseoutObjects);
 
-                                triggerListData[1] = e;
-
-                                return triggerListData;
-                            }
-                            else{
-                                let triggerListData = self._getMouseEventTriggerListData(e);
-
-                                self._lastTriggerListData = triggerListData;
-
-                                return triggerListData;
-                            }
-                        })
-                )
+                    return self._getMouseEventTriggerListData(e, triggerList);
+                })
+                    )
                 .subscribe(([triggerList, e]) => {
                     //todo optimize:move to first to judge
                     if(self._gameState === GameState.PAUSE || triggerList.getCount() === 0){
@@ -277,32 +244,124 @@ module wd{
                     }
 
                     triggerList.forEach((entityObject:EntityObject) => {
-                        var handlerName = EventTriggerTable.getScriptHandlerName(e.name);
-                        //todo refactor Arcball/Fly->event(move to onMouseXXX handler)
-                        //todo add onMouseDrag event handler
-
-                        //todo test
-                        EventManager.trigger(entityObject, CustomEvent.create( <any>EngineEvent[EventTriggerTable.getScriptEngineEvent(e.name)]), e);
-
-                        entityObject.execEventScript(handlerName, e);
+                        self._trigger(e, entityObject);
                     })
                 });
         }
 
-        private _triggerScene(e:MouseEvent){
-            EventManager.trigger(this.scene, CustomEvent.create( <any>EngineEvent[EventTriggerTable.getScriptEngineEvent(e.name)]), e);
+        private _getMouseOverAndMouseOutObject(currentTriggerList:wdCb.Collection<EntityObject>, lastTriggerList:wdCb.Collection<EntityObject>){
+            var mouseoverObjects = wdCb.Collection.create<EntityObject>(),
+                mouseoutObjects = wdCb.Collection.create<EntityObject>();
 
-            var handlerName = EventTriggerTable.getScriptHandlerName(e.name);
+            if(!lastTriggerList){
+                mouseoverObjects = currentTriggerList;
+            }
+            else{
+                //todo optimize
 
-            //todo test
-            this.scene.execEventScript(handlerName, e);
+                lastTriggerList.forEach((lastObject:EntityObject) => {
+                    if(!currentTriggerList.hasChild((currentObject:EntityObject) => {
+                            return JudgeUtils.isEqual(currentObject, lastObject);
+                        })){
+                        mouseoutObjects.addChild(lastObject);
+                    }
+                });
+
+                currentTriggerList.forEach((currentObject:EntityObject) => {
+                    if(!lastTriggerList.hasChild((lastObject:EntityObject) => {
+                            return JudgeUtils.isEqual(currentObject, lastObject);
+                        })){
+                        mouseoverObjects.addChild(currentObject);
+                    }
+                });
+            }
+
+            return {
+                mouseoverObjects: mouseoverObjects,
+                mouseoutObjects: mouseoutObjects
+            }
         }
 
-        private _getMouseEventTriggerListData(e:MouseEvent){
-            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene,
-                uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
+        private _setMouseOverTag(objects:wdCb.Collection<EntityObject>){
+            objects.forEach((object:EntityObject) => {
+                object.addTag(<any>EventTag.MOUSE_OVER);
+            })
+        }
 
-            return [gameObjectScene.getMouseEventTriggerList(e).addChildren(uiObjectScene.getMouseEventTriggerList(e)), e];
+        private _setMouseOutTag(objects:wdCb.Collection<EntityObject>){
+            objects.forEach((object:EntityObject) => {
+                object.addTag(<any>EventTag.MOUSE_OUT);
+            })
+        }
+
+        private _setEventNameByEventTag(object:EntityObject, e:MouseEvent){
+            if(object.hasTag(<any>EventTag.MOUSE_OVER)){
+                e.name = EventName.MOUSEOVER;
+            }
+            else if(object.hasTag(<any>EventTag.MOUSE_OUT)){
+                e.name = EventName.MOUSEOUT;
+            }
+
+            return e;
+        }
+
+        private _removeEventTag(object:EntityObject){
+            object.removeTag(<any>EventTag.MOUSE_OVER);
+            object.removeTag(<any>EventTag.MOUSE_OUT);
+        }
+
+        private _trigger(e:MouseEvent, entityObject:EntityObject) {
+            var event:MouseEvent = this._setEventNameByEventTag(entityObject, e),
+                handlerName = EventTriggerTable.getScriptHandlerName(event.name);
+
+            this._removeEventTag(entityObject);
+
+            EventManager.trigger(entityObject, CustomEvent.create(<any>EngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]), event);
+
+            entityObject.execEventScript(handlerName, event);
+
+
+            if (!event.isStopPropagation && entityObject.bubbleParent) {
+                this._trigger(event, entityObject.bubbleParent);
+            }
+        }
+
+        private _getMouseEventTriggerList(e:MouseEvent){
+            var gameObjectScene:GameObjectScene = this.scene.gameObjectScene,
+                uiObjectScene:UIObjectScene = this.scene.uiObjectScene,
+                triggerList = null;
+
+            triggerList = gameObjectScene.getMouseEventTriggerDataList(e).addChildren(uiObjectScene.getMouseEventTriggerDataList(e));
+
+            if(this._isTriggerScene(e)){
+                triggerList.addChild(this.scene);
+            }
+
+            return triggerList;
+        }
+
+        private _isTriggerScene(e:MouseEvent){
+            var detector = this.scene.getComponent<EventTriggerDetector>(EventTriggerDetector);
+
+            return detector.isTrigger(e);
+        }
+
+
+        private _getMouseEventTriggerListData(e:MouseEvent);
+        private _getMouseEventTriggerListData(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>);
+
+        private _getMouseEventTriggerListData(...args){
+            if(args.length === 1){
+                let e:MouseEvent = args[0];
+
+                return [this._getMouseEventTriggerList(e), e];
+            }
+            else{
+                let e:MouseEvent = args[0],
+                    triggerList:wdCb.Collection<EntityObject> = args[1];
+
+                return [triggerList, e];
+            }
         }
 
         private _initGameObjectScene(){

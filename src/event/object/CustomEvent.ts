@@ -26,10 +26,10 @@ module wd {
             return destination;
         }
 
-        public copy(){
+        public copy():CustomEvent{
             var eventObj = CustomEvent.create(<any>this.name);
 
-            return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
+            return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
         }
     }
 }

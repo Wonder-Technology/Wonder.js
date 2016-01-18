@@ -1,25 +1,43 @@
 module wd {
-    export abstract class Scene extends EntityObject{
+    export abstract class Scene extends EntityObject {
         protected eventTriggerUtils:EventTriggerUtils = ABSTRACT_ATTRIBUTE;
 
-        public getMouseEventTriggerList(e:MouseEvent){
-            var triggerList = wdCb.Collection.create<EventTriggerListData>();
+        //todo move to event binder
+        public getMouseEventTriggerDataList(e:MouseEvent) {
+            var triggerDataList = wdCb.Collection.create<EventTriggerListData>(),
+                self = this;
 
-            this.filter((entityObject:EntityObject) => {
-                    return entityObject.hasComponent(EventTriggerDetector);
-                })
-                .forEach((entityObject:EntityObject) => {
-                    var detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
+            var find = (entityObject:EntityObject) => {
+                entityObject
+                //.filter((child:EntityObject) => {
+                //    return child.hasComponent(EventTriggerDetector);
+                //})
+                    .forEach((child:EntityObject) => {
+                        var detector = null;
 
-                    if(detector.isTrigger(e)){
-                        triggerList.addChild({
-                            entityObject: entityObject
-                            , triggerMode: detector.triggerMode
-                        });
-                    }
-                });
+                        if (!child.hasComponent(EventTriggerDetector)) {
+                            find(child);
+                            return;
+                        }
 
-            return this.eventTriggerUtils.getEventTriggerListByTriggerMode(triggerList);
+                        detector = child.getComponent<EventTriggerDetector>(EventTriggerDetector);
+
+                        if (detector.isTrigger(e)) {
+                            triggerDataList.addChild({
+                                entityObject: child
+                                , triggerMode: detector.triggerMode
+                            });
+                        }
+
+                        find(child);
+                    });
+            }
+
+            find(this);
+
+            return this.eventTriggerUtils.getEventTriggerListByTriggerMode(triggerDataList);
+            //.reverse();
+            //.addChild(this);
         }
     }
 

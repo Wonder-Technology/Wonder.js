@@ -79,47 +79,91 @@ describe("event component", function () {
             return gameObject;
         }
 
+        function createUIObject(renderer){
+            var bar = wd.ProgressBar.create();
+
+
+            var barUIObject = wd.UIObject.create();
+
+            barUIObject.addComponent(bar);
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+            barUIObject.addComponent(eventTriggerDetector);
+
+
+
+            barUIObject.addComponent(wd.Script.create(url));
+
+
+
+
+            barUIObject.addComponent(renderer);
+
+            return barUIObject;
+        }
+
+        function createUIRenderer(){
+            var renderer = wd.UIRenderer.create();
+
+            return renderer;
+        }
+
         beforeEach(function(){
             url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
+        });
+
+        describe("test trigger Scene mouse event and trigger EngineEvent", function() {
+            beforeEach(function () {
+                director.scene.addComponent(wd.Script.create(url));
+            });
+
+            describe("test trigger onMouseMove,onMouseOver,onMouseOut", function () {
+                function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name) {
+                    manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+
+
+                    expect(test[eventHandlerName]).toCalledOnce();
+
+
+                    var event = test[eventHandlerName].args[0][0];
+                    expect(event.name).toEqual(name);
+                    expect(event.locationInView.x).toEqual(fakeEvent.pageX);
+                    expect(event.locationInView.y).toEqual(fakeEvent.pageY);
+                }
+
+                it("when move onto view, trigger onMouseOver; then, when move on view, trigger onMouseMove; when move out view, trigger onMouseOut", function (done) {
+                    scriptTool.testScript(director.scene, "event", function (test) {
+                        sandbox.spy(test, "onMouseMove");
+                        sandbox.spy(test, "onMouseOver");
+                        sandbox.spy(test, "onMouseOut");
+                    }, function (test) {
+                        judgeEvent(test, {
+                            pageX: 1,
+                            pageY: 0
+                        }, "onMouseOver", "MOUSEMOVE", "mouseover");
+
+                        judgeEvent(test, {
+                            pageX: 10,
+                            pageY: 20
+                        }, "onMouseMove", "MOUSEMOVE", "mousemove");
+                        judgeEvent(test, {
+                            pageX: 1001,
+                            pageY: 0
+                        }, "onMouseOut", "MOUSEMOVE", "mouseout");
+                    }, function (test, time, gameObject) {
+                    }, done);
+                });
+            });
         });
 
         describe("test trigger UIObject mouse event script and trigger EngineEvent by judge hitting RectTransforn->width,height", function(){
             var uiObject;
 
-            function createUIRenderer(){
-                var renderer = wd.UIRenderer.create();
-
-                return renderer;
-            }
-
-            function createProgressBar(renderer){
-                var bar = wd.ProgressBar.create();
-
-
-                var barUIObject = wd.UIObject.create();
-
-                barUIObject.addComponent(bar);
-
-                var eventTriggerDetector = wd.UIEventTriggerDetector.create();
-
-                barUIObject.addComponent(eventTriggerDetector);
-
-
-
-                barUIObject.addComponent(wd.Script.create(url));
-
-
-
-
-                barUIObject.addComponent(renderer);
-
-                return barUIObject;
-            }
-
             describe("test trigger single one", function(){
                 beforeEach(function(){
                     var renderer = createUIRenderer();
-                    uiObject = createProgressBar(renderer);
+                    uiObject = createUIObject(renderer);
 
 
                     uiObject.transform.width = 200;
@@ -147,10 +191,10 @@ describe("event component", function () {
 
                 describe("test trigger", function(){
                     function judge(eventHandlerName, eventName, done){
-                        scriptTool.testScript(uiObject, "event", function(test, gameObject){
+                        scriptTool.testScript(uiObject, "event", function(test, uiObject){
                             sandbox.spy(test, eventHandlerName);
 
-                            wd.EventManager.on(gameObject, wd.EngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
+                            wd.EventManager.on(uiObject, wd.EngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
                                 expect(e).toBeInstanceOf(wd.CustomEvent);
                                 expect(e.userData).toBeInstanceOf(wd.MouseEvent);
                             });
@@ -160,7 +204,7 @@ describe("event component", function () {
                                 pageX: 300 - 200 / 2,
                                 pageY:100 - 100 / 2
                             };
-                            manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+                            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
 
 
                             expect(test[eventHandlerName]).toCalledOnce();
@@ -168,7 +212,7 @@ describe("event component", function () {
                             var event = test[eventHandlerName].args[0][0];
                             expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                             expect(event.locationInView.y).toEqual(fakeEvent.pageY);
-                        }, function(test, time, gameObject){
+                        }, function(test, time, uiObject){
                         }, done);
                     }
 
@@ -213,6 +257,49 @@ describe("event component", function () {
                                     pageX: 300 - 200 / 2 - 1,
                                     pageY:100 - 100 / 2
                                 }, "onMouseOut", "MOUSEMOVE", "mouseout");
+
+
+
+                                manager.trigger(document.body, wd.MouseEvent.create({
+                                    pageX: 300 - 200 / 2 - 1,
+                                    pageY:100 - 100 / 2
+                                }, wd.EventName.MOUSEMOVE));
+
+                                expect(test.onMouseMove).not.toCalledTwice();
+
+                            }, function(test, time, gameObject){
+                            }, done);
+                        });
+                    });
+
+                    describe("test trigger onMouseDrag", function(){
+                        beforeEach(function(){
+                        });
+
+                        it("test", function(done){
+                            scriptTool.testScript(uiObject, "event", function(test){
+                                sandbox.spy(test, "onMouseMove");
+                                sandbox.spy(test, "onMouseDown");
+                                sandbox.spy(test, "onMouseUp");
+                                sandbox.spy(test, "onMouseDrag");
+                            }, function(test){
+                                fakeEvent = {
+                                    pageX: 300 - 200 / 2,
+                                    pageY:100 - 100 / 2
+                                }
+
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEUP));
+
+
+                                expect(test.onMouseDrag).toCalledOnce();
+
+
+                                var event = test.onMouseDrag.args[0][0];
+                                expect(event.name).toEqual(wd.EventName.MOUSEDRAG);
+                                expect(event.locationInView.x).toEqual(fakeEvent.pageX);
+                                expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                             }, function(test, time, gameObject){
                             }, done);
                         });
@@ -247,14 +334,14 @@ describe("event component", function () {
 
                 it("the top one is computed by transform->zIndex", function(){
 
-                    var uiObject1 = createProgressBar(renderer);
+                    var uiObject1 = createUIObject(renderer);
                     var detector1 = uiObject1.getComponent(wd.EventTriggerDetector);
                     detector1.triggerMode = wd.EventTriggerMode.TOP;
 
                     uiObject1.transform.zIndex = 5;
 
 
-                    var uiObject2 = createProgressBar(renderer);
+                    var uiObject2 = createUIObject(renderer);
                     var detector2 = uiObject2.getComponent(wd.EventTriggerDetector);
                     detector2.triggerMode = wd.EventTriggerMode.TOP;
 
@@ -278,14 +365,14 @@ describe("event component", function () {
                     ]);
                 });
                 it("trigger all selected ones(triggerMode === SELECTED) and the top one(triggerMode === TOP)", function(){
-                    var uiObject1 = createProgressBar(renderer);
+                    var uiObject1 = createUIObject(renderer);
                     var detector1 = uiObject1.getComponent(wd.EventTriggerDetector);
                     detector1.triggerMode = wd.EventTriggerMode.TOP;
 
                     uiObject1.transform.zIndex = 5;
 
 
-                    var uiObject2 = createProgressBar(renderer);
+                    var uiObject2 = createUIObject(renderer);
                     var detector2 = uiObject2.getComponent(wd.EventTriggerDetector);
                     detector2.triggerMode = wd.EventTriggerMode.SELECTED;
 
@@ -293,7 +380,7 @@ describe("event component", function () {
 
 
 
-                    var uiObject3 = createProgressBar(renderer);
+                    var uiObject3 = createUIObject(renderer);
                     var detector3 = uiObject3.getComponent(wd.EventTriggerDetector);
                     detector3.triggerMode = wd.EventTriggerMode.SELECTED;
 
@@ -301,7 +388,7 @@ describe("event component", function () {
 
 
 
-                    var uiObject4 = createProgressBar(renderer);
+                    var uiObject4 = createUIObject(renderer);
                     var detector4 = uiObject4.getComponent(wd.EventTriggerDetector);
                     detector4.triggerMode = wd.EventTriggerMode.TOP;
 

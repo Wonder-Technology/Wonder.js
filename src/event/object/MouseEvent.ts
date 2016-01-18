@@ -159,10 +159,10 @@ module wd {
         protected p_type:EventType = EventType.MOUSE;
 
 
-        public copy(){
+        public copy():MouseEvent{
             var eventObj = MouseEvent.create(this.event, this.name);
 
-            return this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "lastX", "lastY"]);
+            return <MouseEvent>this.copyMember(eventObj, this, ["target", "isStopPropagation", "phase", "lastX", "lastY"]);
         }
 
         private _isPointerLocked() {

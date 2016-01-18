@@ -24,6 +24,8 @@ var sample;
         };
         Event.prototype.onMouseWheel = function (e) {
         };
+        Event.prototype.onMouseDrag = function (e) {
+        };
         Event = __decorate([
             wd.script("event")
         ], Event);

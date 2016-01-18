@@ -4,7 +4,7 @@ module sample {
     import MouseEvent = wd.MouseEvent;
 
     @wd.script("eventHandler")
-    export class ImageEventHandler implements wd.IEventScriptBehavior {
+    export class Image11EventHandler implements wd.IEventScriptBehavior {
         constructor(entityObject:EntityObject) {
             this._entityObject = entityObject;
         }
@@ -12,35 +12,35 @@ module sample {
         private _entityObject:EntityObject = null;
 
         public onMouseClick(e:MouseEvent) {
-            console.log("image click");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseDown(e:MouseEvent){
-            console.log("image mousedown");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseUp(e:MouseEvent){
-            console.log("image mouseup");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseWheel(e:MouseEvent){
-            console.log("image mousewheel");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseMove(e:MouseEvent) {
-            console.log("image mousemove");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseOver(e:MouseEvent) {
-            console.log("image mouseover");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseOut(e:MouseEvent) {
-            console.log("image mouseout");
+            console.log(`image11 ${e.name}`);
         }
 
         public onMouseDrag(e:MouseEvent){
-            console.log("image drag");
+            console.log(`image11 ${e.name}`);
         }
     }
 }

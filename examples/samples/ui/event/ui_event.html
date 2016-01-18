@@ -6,47 +6,95 @@
 
     <script src="../../../../dist/wd.innerLib.js" type="text/javascript"></script>
     <script src="../../../../dist/wd.debug.js" type="text/javascript"></script>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+        }
+    </style>
 </head>
 <body>
+<div style="width:1000px;height:1000px;"></div>
 <script>
     window.onload = function () {
         wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: wd.ScreenSize.FULL
+//            screenSize: wd.ScreenSize.FULL
+            screenSize: {
+                width:800,
+                height:200
+            }
         }).init();
 
 
         wd.LoaderManager.getInstance().load([
-            {url: "../../asset/texture/1.jpg", id: "loading"}
+            {url: "../../asset/texture/1.jpg", id: "1"},
+            {url: "../../asset/texture/2.jpg", id: "2"},
+            {url: "../../asset/texture/3.jpg", id: "3"},
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
 
-            var image = createImageUI();
+            var renderer = createUIRenderer();
 
-            image.addComponent(wd.Script.create("./js/imageEventHandler.js"));
+            var image1 = createImageUI(wd.LoaderManager.getInstance().get("1"), renderer);
+            var image11 = createImageUI(wd.LoaderManager.getInstance().get("2"), renderer);
+            var image2 = createImageUI(wd.LoaderManager.getInstance().get("3"), renderer);
+
+            image1.addChild(image11);
+
+            image1.addComponent(wd.Script.create("./js/image1EventHandler.js"));
+            image11.addComponent(wd.Script.create("./js/image11EventHandler.js"));
+
+            image2.addComponent(wd.Script.create("./js/image2EventHandler.js"));
+
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+            image1.addComponent(eventTriggerDetector);
 
 
 
             var eventTriggerDetector = wd.UIEventTriggerDetector.create();
-            //todo support triggerAllSelected
-            //todo support change event rect
+
+            image11.addComponent(eventTriggerDetector);
+
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+            image2.addComponent(eventTriggerDetector);
 
 
 
-            image.addComponent(eventTriggerDetector);
+
+            image1.transform.width = 100;
+            image1.transform.height = 100;
+
+            image1.transform.scale = wd.Vector2.create(1,2);
+            image1.transform.translate(300,100);
+            image1.transform.zIndex = 1;
+
+
+            image11.transform.width = 50;
+            image11.transform.height = 50;
+
+
+            image11.transform.translate(50,0);
+            image11.transform.zIndex = 2;
 
 
 
-            image.transform.width = 100;
-            image.transform.height = 100;
-
-            image.transform.scale = wd.Vector2.create(1,2);
-            image.transform.translate(300,100);
+            image2.transform.width = 100;
+            image2.transform.height = 50;
 
 
-            director.scene.addChild(image);
+            image2.transform.translate(350,100);
+            image2.transform.zIndex = 3;
+
+
+            director.scene.addChild(image1);
+            director.scene.addChild(image2);
 
 
 
@@ -58,11 +106,9 @@
 
 
 
-        function createImageUI(){
-            var renderer = createUIRenderer();
-
+        function createImageUI(source, renderer){
             var image = wd.Image.create();
-            image.source = wd.LoaderManager.getInstance().get("loading");
+            image.source = source;
 
 
             var imageUIObject = wd.UIObject.create();
@@ -73,9 +119,6 @@
 
             imageUIObject.addComponent(renderer);
 
-
-//            imageUIObject.transform.translate(300,100);
-//            imageUIObject.transform.rotate(10);
 
             return imageUIObject;
         }
