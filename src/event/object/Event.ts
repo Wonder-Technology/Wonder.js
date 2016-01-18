@@ -15,6 +15,8 @@ module wd{
         public name:EventName = null;
         //target is the actual target that received the event.
         public target:any = null;
+        //currentTarget is always the object listening for the event
+        public currentTarget:EntityObject = null;
         public isStopPropagation:boolean = false;
         public phase:EventPhase = null;
 

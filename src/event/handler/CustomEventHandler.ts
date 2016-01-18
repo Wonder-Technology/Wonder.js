@@ -111,14 +111,20 @@ module wd {
             }
 
             registerDataList.forEach((registerData:CustomEventRegisterData) => {
-                var eventCopy = event.copy();
+                //var eventCopy = event.copy();
+                //
+                //eventCopy.currentTarget = registerData.target;
+                //eventCopy.target = registerData.target;
+                //
+                //self._setUserData(eventCopy, userData);
+                //
+                //registerData.handler(eventCopy);
+                event.currentTarget = registerData.target;
+                event.target = registerData.target;
 
-                eventCopy.currentTarget = registerData.target;
-                eventCopy.target = registerData.target;
+                self._setUserData(event, userData);
 
-                self._setUserData(eventCopy, userData);
-
-                registerData.handler(eventCopy);
+                registerData.handler(event);
             });
 
             return true;
@@ -140,15 +146,27 @@ module wd {
             }
 
             registerDataList.forEach((registerData:CustomEventRegisterData) => {
-                var eventCopy = event.copy();
+                //var eventCopy = event.copy();
 
-                eventCopy.currentTarget = registerData.target;
+                //eventCopy.currentTarget = registerData.target;
+                //
+                //self._setUserData(eventCopy, userData);
+                //
+                //registerData.handler(eventCopy);
+                //
+                //if(eventCopy.isStopPropagation){
+                //    isStopPropagation = true;
+                //}
 
-                self._setUserData(eventCopy, userData);
 
-                registerData.handler(eventCopy);
 
-                if(eventCopy.isStopPropagation){
+                event.currentTarget = registerData.target;
+
+                self._setUserData(event, userData);
+
+                registerData.handler(event);
+
+                if(event.isStopPropagation){
                     isStopPropagation = true;
                 }
             });

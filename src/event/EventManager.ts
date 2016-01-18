@@ -193,6 +193,8 @@ module wd {
 
         public static trigger(target:EntityObject, event:Event, userData:any):void;
 
+        public static trigger(target:EntityObject, event:Event, userData:any, notSetTarget:boolean):void;
+
 
         @require(function(...args){
             if(args.length === 2 && args[0] instanceof Event){
@@ -241,6 +243,15 @@ module wd {
                     eventDispatcher = CustomEventDispatcher.getInstance();
 
                 eventDispatcher.trigger(target, event, userData);
+            }
+            else if(args.length === 4){
+                let target = args[0],
+                    event = args[1],
+                    userData = args[2],
+                    notSetTarget = args[3],
+                    eventDispatcher = CustomEventDispatcher.getInstance();
+
+                eventDispatcher.trigger(target, event, userData, notSetTarget);
             }
         }
 

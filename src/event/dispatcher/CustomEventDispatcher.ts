@@ -77,7 +77,7 @@ module wd {
                 if(isStopPropagation){
                     break;
                 }
-                target = this._getParent(target);
+                target = target.bubbleParent;
             }while(target);
         }
 
@@ -106,19 +106,14 @@ module wd {
                 }
 
                 children.forEach((child:EntityObject) => {
-                    self._triggerWithUserData(child, eventObject.copy(), userData, true);
+                    //self._triggerWithUserData(child, eventObject.copy(), userData, true);
+                    self._triggerWithUserData(child, eventObject, userData, true);
 
                     iterator(child);
                 });
             }
 
             iterator(target);
-        }
-
-        private _getParent(target:EntityObject):EntityObject {
-            var parent = target.bubbleParent;
-
-            return parent ? parent : target.parent;
         }
 
         private _triggerWithUserData(target, event, userData, notSetTarget){

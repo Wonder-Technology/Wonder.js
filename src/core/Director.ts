@@ -310,19 +310,44 @@ module wd{
             object.removeTag(<any>EventTag.MOUSE_OUT);
         }
 
-        private _trigger(e:MouseEvent, entityObject:EntityObject) {
-            var event:MouseEvent = this._setEventNameByEventTag(entityObject, e),
-                handlerName = EventTriggerTable.getScriptHandlerName(event.name);
+        private _trigger(e:MouseEvent, entityObject:EntityObject);
+        private _trigger(e:MouseEvent, entityObject:EntityObject, notSetTarget:boolean);
+
+        private _trigger(...args) {
+            var e:MouseEvent = args[0],
+                entityObject:EntityObject = args[1],
+                notSetTarget = false,
+                event:MouseEvent = null,
+                customEvent:CustomEvent = null,
+                handlerName = null;
+
+            if(args.length === 3){
+                notSetTarget = args[2];
+            }
+
+            event = this._setEventNameByEventTag(entityObject, e);
+            customEvent = null;
+            handlerName = EventTriggerTable.getScriptHandlerName(event.name);
 
             this._removeEventTag(entityObject);
 
-            EventManager.trigger(entityObject, CustomEvent.create(<any>EngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]), event);
+
+
+            customEvent = CustomEvent.create(<any>EngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]);
+
+
+            customEvent.getDataFromDomEvent(event);
+
+            //todo refactor: support directly trigger mouse event on target
+            EventManager.trigger(entityObject, customEvent, event, notSetTarget);
+
+            event.getDataFromCustomEvent(customEvent);
 
             entityObject.execEventScript(handlerName, event);
 
 
             if (!event.isStopPropagation && entityObject.bubbleParent) {
-                this._trigger(event, entityObject.bubbleParent);
+                this._trigger(event, entityObject.bubbleParent, true);
             }
         }
 
@@ -331,9 +356,11 @@ module wd{
                 uiObjectScene:UIObjectScene = this.scene.uiObjectScene,
                 triggerList = null;
 
+            //todo move to binder
+            //todo move to SceneDispatcher?(forEach game scene and ui scene)
             triggerList = gameObjectScene.getMouseEventTriggerDataList(e).addChildren(uiObjectScene.getMouseEventTriggerDataList(e));
 
-            if(this._isTriggerScene(e)){
+            if(this._isTriggerScene(e) && triggerList.getCount() === 0){
                 triggerList.addChild(this.scene);
             }
 

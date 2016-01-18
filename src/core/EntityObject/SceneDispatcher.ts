@@ -105,11 +105,15 @@ module wd {
 
         public addChild(child:EntityObject):EntityObject{
             if(child instanceof GameObject){
-                return this.gameObjectScene.addChild(child);
+                this.gameObjectScene.addChild(child);
             }
             else if(child instanceof UIObject){
-                return this.uiObjectScene.addChild(child);
+                this.uiObjectScene.addChild(child);
             }
+
+            child.parent = this;
+
+            return this;
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){

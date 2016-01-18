@@ -6,12 +6,6 @@ module wd {
             return obj;
         }
 
-        constructor(){
-            super();
-
-            this.triggerMode = EventTriggerMode.SELECTED;
-        }
-
         public isTrigger(e:MouseEvent):boolean {
             var view:IView = DeviceManager.getInstance().view,
                 width = view.width,

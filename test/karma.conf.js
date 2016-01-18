@@ -29,14 +29,14 @@
 
         //'test/unit/**',
 
-        //'test/unit/component/event/eventSpec*',
+        'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
 
 
-        'test/unit/**/ButtonSpec*',
-        'test/unit/**/UIStateMachineSpec*',
+        //'test/unit/**/ButtonSpec*',
+        //'test/unit/**/UIStateMachineSpec*',
 
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',

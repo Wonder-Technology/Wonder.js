@@ -113,6 +113,252 @@ describe("event component", function () {
             url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
         });
 
+        describe("trigger order should be bubble up to scene(include scene)", function() {
+            beforeEach(function () {
+
+            });
+
+            describe("test trigger GameObject and scene mouse event", function () {
+                beforeEach(function(){
+
+                });
+
+                it("it will trigger the top one, then bubble up", function(){
+                    var gameObject1 = createGameObject();
+
+
+                    var gameObject2 = createGameObject();
+
+
+                    gameObject1.addChild(gameObject2);
+
+                    director.scene.addChild(gameObject1);
+
+
+
+
+
+                    director.scene.addChild(testTool.createCamera());
+
+                    director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                    fakeEvent = {
+                        pageX: view.width / 2,
+                        pageY: view.height / 2
+                    };
+
+                    gameObject1.transform.position = wd.Vector3.create(0, 0, 1);
+                    gameObject2.transform.position = wd.Vector3.create(0, 0, 2);
+
+
+
+
+
+
+
+
+
+
+
+                    var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                    var eventName = wd.EventName.CLICK;
+
+
+                    var sceneHandler = sandbox.stub();
+                    var gameObject1Handler = sandbox.stub();
+                    var gameObject2Handler = sandbox.stub();
+                    var sceneEvent,gameObject1Event,gameObject2Event;
+
+                    wd.EventManager.on(director.scene, engineEvent, function(e){
+                        sceneEvent = e;
+                        sceneHandler();
+                    });
+                    wd.EventManager.on(gameObject1, engineEvent, function(e){
+                        gameObject1Event = e;
+                        gameObject1Handler();
+                    });
+                    wd.EventManager.on(gameObject2, engineEvent, function(e){
+                        gameObject2Event = e;
+                        gameObject2Handler();
+                    });
+
+
+                    director._init();
+
+
+
+                    manager.trigger(wd.MouseEvent.create(fakeEvent, eventName));
+
+
+
+                    expect(sceneHandler).toCalledOnce();
+                    expect(gameObject1Handler).toCalledOnce();
+                    expect(gameObject2Handler).toCalledOnce();
+
+
+                    expect(gameObject2Handler).toCalledBefore(gameObject1Handler);
+                    expect(gameObject1Handler).toCalledBefore(sceneHandler);
+
+                    //todo pass all unit test(Arc, customEventSpec)
+                    expect(sceneEvent.target).toEqual(gameObject2);
+                    expect(sceneEvent.currentTarget).toEqual(director.scene);
+                    expect(gameObject1Event.target).toEqual(gameObject2);
+                    expect(gameObject1Event.currentTarget).toEqual(gameObject1);
+                    expect(gameObject2Event.target).toEqual(gameObject2);
+                    expect(gameObject2Event.currentTarget).toEqual(gameObject2);
+                });
+            });
+
+            describe("test trigger UIObject and scene mouse event", function () {
+                it("it will trigger the top one, then bubble up", function() {
+                    var renderer = createUIRenderer();
+
+
+                    var uiObject1 = createUIObject(renderer);
+
+
+                    var uiObject2 = createUIObject(renderer);
+
+
+                    uiObject1.addChild(uiObject2);
+
+                    director.scene.addChild(uiObject1);
+
+
+
+
+
+
+                    fakeEvent = {
+                        pageX: 300,
+                        pageY: 100
+                    }
+
+                    uiObject1.transform.width = 100;
+                    uiObject1.transform.height = 100;
+
+                    uiObject1.transform.position = wd.Vector2.create(300, 100);
+
+                    uiObject1.transform.zIndex = 1;
+
+
+                    uiObject2.transform.width = 100;
+                    uiObject2.transform.height = 100;
+
+                    uiObject2.transform.position = wd.Vector2.create(300, 100);
+
+
+                    uiObject2.transform.zIndex = 2;
+
+
+
+
+                    var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                    var eventName = wd.EventName.CLICK;
+
+
+                    var sceneHandler = sandbox.stub();
+                    var uiObject1Handler = sandbox.stub();
+                    var uiObject2Handler = sandbox.stub();
+
+                    wd.EventManager.on(director.scene, engineEvent, function (e) {
+                        sceneHandler();
+                    });
+                    wd.EventManager.on(uiObject1, engineEvent, function (e) {
+                        uiObject1Handler();
+                    });
+                    wd.EventManager.on(uiObject2, engineEvent, function (e) {
+                        uiObject2Handler();
+                    });
+
+
+                    director._init();
+
+
+                    manager.trigger(wd.MouseEvent.create(fakeEvent, eventName));
+
+                    expect(uiObject2Handler).toCalledBefore(uiObject1Handler);
+                    expect(uiObject1Handler).toCalledBefore(sceneHandler);
+                });
+            });
+
+            it("test stopPropagation", function(){
+                var gameObject1 = createGameObject();
+
+
+                var gameObject2 = createGameObject();
+
+
+                gameObject1.addChild(gameObject2);
+
+                director.scene.addChild(gameObject1);
+
+
+
+
+
+                director.scene.addChild(testTool.createCamera());
+
+                director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                fakeEvent = {
+                    pageX: view.width / 2,
+                    pageY: view.height / 2
+                };
+
+                gameObject1.transform.position = wd.Vector3.create(0, 0, 1);
+                gameObject2.transform.position = wd.Vector3.create(0, 0, 2);
+
+
+
+
+
+
+
+
+
+
+
+                var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                var eventName = wd.EventName.CLICK;
+
+
+                var sceneHandler = sandbox.stub();
+                var gameObject1Handler = sandbox.stub();
+                var gameObject2Handler = sandbox.stub();
+                var sceneEvent,gameObject1Event,gameObject2Event;
+
+                wd.EventManager.on(director.scene, engineEvent, function(e){
+                    sceneEvent = e;
+                    sceneHandler();
+                });
+                wd.EventManager.on(gameObject1, engineEvent, function(e){
+                    gameObject1Event = e;
+                    gameObject1Handler();
+
+                    e.stopPropagation();
+                });
+                wd.EventManager.on(gameObject2, engineEvent, function(e){
+                    gameObject2Event = e;
+                    gameObject2Handler();
+                });
+
+
+                director._init();
+
+
+
+                manager.trigger(wd.MouseEvent.create(fakeEvent, eventName));
+
+
+
+                expect(sceneHandler).not.toCalled();
+                expect(gameObject1Handler).toCalledOnce();
+                expect(gameObject2Handler).toCalledOnce();
+
+
+                expect(gameObject2Handler).toCalledBefore(gameObject1Handler);
+            });
+        });
+
         describe("test trigger Scene mouse event and trigger EngineEvent", function() {
             beforeEach(function () {
                 director.scene.addComponent(wd.Script.create(url));
@@ -320,111 +566,6 @@ describe("event component", function () {
                     });
                 });
             });
-
-            describe("test trigger multi ones", function(){
-                var renderer;
-
-                function getEventTriggerListByTriggerMode(triggerList){
-                    return director.scene.uiObjectScene.eventTriggerUtils.getEventTriggerListByTriggerMode(triggerList);
-                }
-
-                beforeEach(function(){
-                    renderer = createUIRenderer();
-                });
-
-                it("the top one is computed by transform->zIndex", function(){
-
-                    var uiObject1 = createUIObject(renderer);
-                    var detector1 = uiObject1.getComponent(wd.EventTriggerDetector);
-                    detector1.triggerMode = wd.EventTriggerMode.TOP;
-
-                    uiObject1.transform.zIndex = 5;
-
-
-                    var uiObject2 = createUIObject(renderer);
-                    var detector2 = uiObject2.getComponent(wd.EventTriggerDetector);
-                    detector2.triggerMode = wd.EventTriggerMode.TOP;
-
-                    uiObject2.transform.zIndex = 10;
-
-                    var triggerList = wdCb.Collection.create([
-                        {
-                            entityObject:uiObject1,
-                            triggerMode:detector1.triggerMode
-                        },
-                        {
-                            entityObject: uiObject2,
-                            triggerMode: detector2.triggerMode
-                        }
-                    ]);
-
-                    var result = getEventTriggerListByTriggerMode(triggerList);
-
-                    expect(result.getChildren()).toEqual([
-                        uiObject2
-                    ]);
-                });
-                it("trigger all selected ones(triggerMode === SELECTED) and the top one(triggerMode === TOP)", function(){
-                    var uiObject1 = createUIObject(renderer);
-                    var detector1 = uiObject1.getComponent(wd.EventTriggerDetector);
-                    detector1.triggerMode = wd.EventTriggerMode.TOP;
-
-                    uiObject1.transform.zIndex = 5;
-
-
-                    var uiObject2 = createUIObject(renderer);
-                    var detector2 = uiObject2.getComponent(wd.EventTriggerDetector);
-                    detector2.triggerMode = wd.EventTriggerMode.SELECTED;
-
-                    uiObject2.transform.zIndex = 10;
-
-
-
-                    var uiObject3 = createUIObject(renderer);
-                    var detector3 = uiObject3.getComponent(wd.EventTriggerDetector);
-                    detector3.triggerMode = wd.EventTriggerMode.SELECTED;
-
-                    uiObject3.transform.zIndex = 9;
-
-
-
-                    var uiObject4 = createUIObject(renderer);
-                    var detector4 = uiObject4.getComponent(wd.EventTriggerDetector);
-                    detector4.triggerMode = wd.EventTriggerMode.TOP;
-
-                    uiObject4.transform.zIndex = 1;
-
-
-                    var triggerList = wdCb.Collection.create([
-                        {
-                            entityObject:uiObject1,
-                            triggerMode:detector1.triggerMode
-                        },
-                        {
-                            entityObject: uiObject2,
-                            triggerMode: detector2.triggerMode
-                        },
-                        {
-                            entityObject: uiObject3,
-                            triggerMode: detector3.triggerMode
-                        },
-                        {
-                            entityObject:uiObject4,
-                            triggerMode:detector4.triggerMode
-                        }
-                    ]);
-
-
-                    var result = getEventTriggerListByTriggerMode(triggerList);
-
-                    expect(result.getCount()).toEqual(3);
-                    expect(result.getChildren()).toEqual([
-                        uiObject2,
-                        uiObject3,
-                        uiObject1
-                    ])
-                });
-            });
         });
 
         describe("test trigger GameObject mouse event script and trigger EngineEvent by ray cast test", function(){
@@ -476,49 +617,6 @@ describe("event component", function () {
 
                         expect(test.onMouseClick).toCalledOnce();
                     }, done);
-                });
-            });
-
-            describe("test trigger multi ones", function(){
-                function getEventTriggerListByTriggerMode(triggerList){
-                    return director.scene.gameObjectScene.eventTriggerUtils.getEventTriggerListByTriggerMode(triggerList);
-                }
-
-                beforeEach(function(){
-                });
-
-                it("the top one is the nearest one to camera", function(){
-
-
-                    var gameObject1 = createGameObject();
-                    var detector1 = gameObject1.getComponent(wd.EventTriggerDetector);
-                    detector1.triggerMode = wd.EventTriggerMode.TOP;
-
-                    gameObject1.transform.translate(0, 0, -1);
-
-
-                    var gameObject2 = createGameObject();
-                    var detector2 = gameObject2.getComponent(wd.EventTriggerDetector);
-                    detector2.triggerMode = wd.EventTriggerMode.TOP;
-
-                    gameObject2.transform.translate(0, 0, -3);
-
-                    var triggerList = wdCb.Collection.create([
-                        {
-                            entityObject:gameObject1,
-                            triggerMode:detector1.triggerMode
-                        },
-                        {
-                            entityObject: gameObject2,
-                            triggerMode: detector2.triggerMode
-                        }
-                    ]);
-
-                    var result = getEventTriggerListByTriggerMode(triggerList);
-
-                    expect(result.getChildren()).toEqual([
-                        gameObject1
-                    ]);
                 });
             });
         });

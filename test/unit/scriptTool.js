@@ -1,27 +1,29 @@
 var scriptTool = (function () {
     return {
-        testScript: function (gameObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done) {
+        testScript: function (entityObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done) {
             var director = wd.Director.getInstance();
 
             var test = null;
             var onEnter = director.scene.gameObjectScene.onEnter;
             director.scene.gameObjectScene.onEnter = function () {
-                test = gameObject.scriptList.getChild(scriptName);
-                judgeOnEnter(test, gameObject);
+                test = entityObject.scriptList.getChild(scriptName);
+                judgeOnEnter(test, entityObject);
                 onEnter.call(director.scene);
             };
 
-            director.scene.addChild(gameObject);
+            if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
+                director.scene.addChild(entityObject);
+            }
 
             var loopBody = director._loopBody;
             director._loopBody = function () {
                 var time = 100;
 
-                judgeBeforeLoopBody(test, gameObject);
+                judgeBeforeLoopBody(test, entityObject);
 
                 loopBody.call(director, time);
 
-                judgeAfterLoopBody(test, time, gameObject);
+                judgeAfterLoopBody(test, time, entityObject);
 
                 director.stop();
 

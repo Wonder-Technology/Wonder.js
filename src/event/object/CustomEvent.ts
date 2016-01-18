@@ -8,8 +8,6 @@ module wd {
 
         public target:EntityObject;
 
-        //currentTarget is always the object listening for the event
-        public currentTarget:EntityObject = null;
         public userData:any = null;
 
         protected p_type:EventType = EventType.CUSTOM;
@@ -30,6 +28,17 @@ module wd {
             var eventObj = CustomEvent.create(<any>this.name);
 
             return <CustomEvent>this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
+        }
+
+        @require(function(event:MouseEvent){
+            if(event.target){
+                assert(event.target instanceof EntityObject, Log.info.FUNC_MUST_BE("target", "EntityObject"));
+            }
+        })
+        public getDataFromDomEvent(event:MouseEvent){
+            this.target = <EntityObject>event.target;
+            this.currentTarget = event.currentTarget;
+            this.isStopPropagation = event.isStopPropagation;
         }
     }
 }

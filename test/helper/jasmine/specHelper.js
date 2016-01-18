@@ -636,16 +636,46 @@ beforeEach(function () {
         }());
 
 
+        function _verifyIsStub(stub) {
+            var method;
+
+            for (var i = 0, l = arguments.length; i < l; ++i) {
+                method = arguments[i];
+
+                if (!method) {
+                    //assert.fail("fake is not a spy");
+                    return false;
+                }
+
+                if (method.proxy && method.proxy.isSinonProxy) {
+                    verifyIsStub(method.proxy);
+                }
+                else {
+                    if (typeof method !== "function") {
+                        //assert.fail(method + " is not a function");
+                        return false;
+                    }
+
+                    if (typeof method.getCall !== "function") {
+                        //assert.fail(method + " is not stubbed");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         function _isSpecificCall(stub) {
             return !stub.firstCall
         }
         function _isCalled(stub){
-            var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];
+            var actualArg = _isSpecificCall(stub) || _verifyIsStub(stub) ? stub.args : stub.args[0];
 
             return actualArg && actualArg.length > 0;
         }
         function getActualArg(stub){
-            var actualArg = _isSpecificCall(stub) ? stub.args : stub.args[0];
+            var actualArg = _isSpecificCall(stub) || _verifyIsStub(stub) ? stub.args : stub.args[0];
 
             return actualArg;
         }
@@ -734,13 +764,22 @@ beforeEach(function () {
             toCalledBefore: function () {
                 return {
                     compare: function (actual, expected) {
-                        var msg = null;
+                        var msg = null,
+                            pass = null;
 
                         msg = "Expected to be called before, ";
-                        msg += _isCalled(actual) ? "but actual is be called after" : "but actual is not called";
+
+                        if(!_isCalled(expected)){
+                            pass = false;
+                            msg += "but expected is not called";
+                        }
+                        else{
+                            pass = actual.calledBefore(expected);
+                            msg += _isCalled(actual) ? "but actual is be called after" : "but actual is not called";
+                        }
 
                         return {
-                            pass: actual.calledBefore(expected),
+                            pass: pass,
                             message: msg
                         }
                     }
@@ -749,13 +788,22 @@ beforeEach(function () {
             toCalledAfter: function () {
                 return {
                     compare: function (actual, expected) {
-                        var msg = null;
+                        var msg = null,
+                            pass = null;
 
                         msg = "Expected to be called after, ";
-                        msg += _isCalled(actual) ? "but actual is be called before" : "but actual is not called";
+
+                        if(!_isCalled(expected)){
+                            pass = false;
+                            msg += "but expected is not called";
+                        }
+                        else{
+                            pass = actual.calledBefore(expected);
+                            msg += _isCalled(actual) ? "but actual is be called before" : "but actual is not called";
+                        }
 
                         return {
-                            pass: actual.calledAfter(expected),
+                            pass: pass,
                             message: msg
                         }
                     }
