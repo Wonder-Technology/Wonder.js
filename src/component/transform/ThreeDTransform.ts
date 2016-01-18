@@ -185,15 +185,22 @@ module wd{
         protected children:wdCb.Collection<ThreeDTransform>;
 
         private _localToParentMatrix:Matrix4 = Matrix4.create();
+        private _endLoopSubscription:wdFrp.IDisposable = null;
 
 
         public init(){
             var self = this;
 
-            //todo dispose
-            EventManager.on(<any>EngineEvent.ENDLOOP, () => {
-                self._resetTransformFlag();
-            });
+            this._endLoopSubscription = EventManager.fromEvent(<any>EngineEvent.ENDLOOP)
+                .subscribe(() => {
+                    self._resetTransformFlag();
+                });
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
         }
 
         public sync(){
