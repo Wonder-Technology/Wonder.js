@@ -33,6 +33,7 @@
 /// <reference path="core/Scheduler"/>
 /// <reference path="core/Director"/>
 /// <reference path="core/Main"/>
+/// <reference path="core/DomEventManager"/>
 /// <reference path="core/entityObject/EntityObject"/>
 /// <reference path="core/entityObject/UIObject"/>
 /// <reference path="core/entityObject/GameObject"/>
