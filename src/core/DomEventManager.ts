@@ -39,12 +39,18 @@ module wd{
                 ]
                 )
                 .mergeAll()
+                .filter((e:MouseEvent) => {
+                    return !Director.getInstance().isPause ;
+                })
                 .map((e:MouseEvent) => {
                     return self._getMouseEventTriggerListData(e);
                 })
 
                 .merge(
                     EventManager.fromEvent(EventName.MOUSEMOVE)
+                        .filter((e:MouseEvent) => {
+                            return !Director.getInstance().isPause ;
+                        })
                         .map((e:MouseEvent) => {
                             var triggerList = self._getMouseEventTriggerList(e),
                                 objects = null;
@@ -60,12 +66,10 @@ module wd{
                             return self._getMouseEventTriggerListData(e, triggerList);
                         })
                 )
+                .filter(([triggerList, e]) => {
+                    return triggerList.getCount() > 0;
+                })
                 .subscribe(([triggerList, e]) => {
-                    //todo optimize:move to first to judge
-                    if(Director.getInstance().isPause || triggerList.getCount() === 0){
-                        return;
-                    }
-
                     triggerList.forEach((entityObject:EntityObject) => {
                         self._trigger(e, entityObject);
                     })
