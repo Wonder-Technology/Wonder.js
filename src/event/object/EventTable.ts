@@ -10,6 +10,8 @@ module wd {
     _table.addChild(<any>EventName.MOUSEDOWN, EventType.MOUSE);
     _table.addChild(<any>EventName.MOUSEUP, EventType.MOUSE);
     _table.addChild(<any>EventName.MOUSEWHEEL, EventType.MOUSE);
+    _table.addChild(<any>EventName.MOUSEDRAG, EventType.MOUSE);
+
     _table.addChild(<any>EventName.KEYDOWN, EventType.KEYBOARD);
     _table.addChild(<any>EventName.KEYPRESS, EventType.KEYBOARD);
     _table.addChild(<any>EventName.KEYUP, EventType.KEYBOARD);
