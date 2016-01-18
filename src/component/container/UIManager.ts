@@ -22,15 +22,15 @@ module wd {
                 return;
             }
 
-            if(this._isMarkedDirty()) {
+            if(this._isDirty()) {
                 this.list.forEach((ui:UI) => {
                     ui.update(elapsedTime);
                 });
             }
         }
 
-        private _isMarkedDirty() {
-            return this._uiObject.getComponent<UIRenderer>(UIRenderer).hasTag(<any>UITag.DIRTY);
+        private _isDirty() {
+            return this._uiObject.getComponent<UIRenderer>(UIRenderer).state === UIRendererState.DIRTY;
         }
     }
 }

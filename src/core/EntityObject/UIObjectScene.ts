@@ -34,11 +34,10 @@ module wd {
         protected beforeUpdateChildren(elapsedTime:number){
             var self = this;
 
-            this._removeAllRendererDirtyMarks();
+            this._resetAllRendererState();
 
             this.forEach((child:UIObject) => {
                 var renderer = self._getUIRenderer(child);
-
 
                 if(renderer.dirty){
                     if(!renderer.isClearCanvas) {
@@ -46,11 +45,14 @@ module wd {
                         renderer.dirtyDuringCurrentLoop = false;
                     }
 
-                    self._markUIRenderer(renderer, true);
+                    renderer.state = UIRendererState.DIRTY;
+
                     renderer.resetDirty();
                 }
                 else{
-                    self._markUIRenderer(renderer, false);
+                    if(renderer.state !== UIRendererState.DIRTY){
+                        renderer.state = UIRendererState.NOT_DIRTY;
+                    }
                 }
             });
         }
@@ -88,30 +90,22 @@ module wd {
             });
         }
 
-        private _markUIRenderer(renderer:UIRenderer, isDirty:boolean){
-            var tag = isDirty ? UITag.DIRTY : UITag.NOT_DIRTY;
-
-            renderer.addTag(<any>tag);
-        }
-
         @ensure(function(){
             var self = this;
 
             this.getAllChildren().forEach((child:EntityObject) => {
                 var renderer = self._getUIRenderer(child);
 
-                assert(!renderer.hasTag(<any>UITag.DIRTY), Log.info.FUNC_SHOULD("remove all UIRenderers->DIRTY tag"));
-                assert(!renderer.hasTag(<any>UITag.NOT_DIRTY), Log.info.FUNC_SHOULD("remove all UIRenderers->NOT_DIRTY tag"));
+                assert(renderer.state === UIRendererState.NORMAL, Log.info.FUNC_SHOULD("reset all UIRenderers->state"));
             });
         })
-        private _removeAllRendererDirtyMarks(){
+        private _resetAllRendererState(){
             var self = this;
 
             this.forEach((child:UIObject) => {
                 var renderer = self._getUIRenderer(child);
 
-                renderer.removeTag(<any>UITag.DIRTY);
-                renderer.removeTag(<any>UITag.NOT_DIRTY);
+                renderer.state = UIRendererState.NORMAL;
             });
         }
 

@@ -161,6 +161,7 @@
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/renderer/SkyboxRenderer"/>
 /// <reference path="component/renderer/UIRenderer"/>
+/// <reference path="component/renderer/UIRendererState"/>
 
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/BoxCollider"/>
@@ -222,7 +223,6 @@
 /// <reference path="component/ui/UI"/>
 /// <reference path="component/ui/InteractionUI"/>
 
-/// <reference path="component/ui/UITag"/>
 
 /// <reference path="component/ui/font/FontXAlignment"/>
 /// <reference path="component/ui/font/FontYAlignment"/>

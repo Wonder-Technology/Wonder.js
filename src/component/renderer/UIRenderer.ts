@@ -37,6 +37,7 @@ module wd {
 
         public context:any = null;
         public isClearCanvas:boolean = false;
+        public state:UIRendererState = UIRendererState.NORMAL;
 
         private _canvas:HTMLCanvasElement = null;
         private _isInit:boolean = false;
