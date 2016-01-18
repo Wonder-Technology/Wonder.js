@@ -8,9 +8,6 @@ module wd {
             return obj;
         }
 
-        //todo test machine transitionMode
-
-
         private _text:string = null;
         get text(){
             var fontObject = null;

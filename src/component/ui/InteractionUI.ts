@@ -1,17 +1,19 @@
 module wd{
     export abstract class InteractionUI extends UI{
         get transition(){
+            var transition = null;
+
             switch (this.p_transitionMode){
                 case TransitionMode.SPRITE:
-                    return this._spriteTransition;
+                    transition = this._spriteTransition;
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));
+                    transition = null;
                     break;
             }
-        }
 
-        //todo unit test
+            return transition;
+        }
 
         protected p_transitionMode:TransitionMode = null;
         get transitionMode(){

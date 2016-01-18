@@ -29,7 +29,11 @@
 
         //'test/unit/**',
 
-        'test/unit/**/MainSpec*',
+
+        'test/unit/**/interactionUISpec*',
+
+
+        //'test/unit/**/MainSpec*',
 
         //'test/unit/component/event/eventSpec*',
 
