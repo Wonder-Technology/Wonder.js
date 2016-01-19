@@ -94,5 +94,11 @@ describe("Color", function() {
         expect(getValues(color3.b)).toEqual(0.14);
         expect(getValues(color3.a)).toEqual(1);
     });
+
+    describe("toString", function(){
+        it("get color string", function(){
+            expect(Color.create("#ffffff").toString()).toEqual("#ffffff");
+        });
+    });
 });
 

@@ -2,7 +2,12 @@ var canvasTool = (function () {
     return {
         buildFakeContext: function(sandbox){
             return {
-                //measureText:sandbox.stub().returns({width:0}),
+                measureText:sandbox.stub().returns({width:0}),
+
+                getImageData:sandbox.stub().returns({
+                    data:[]
+                }),
+                putImageData:sandbox.stub(),
 
                 setTransform:sandbox.stub(),
 
@@ -15,6 +20,9 @@ var canvasTool = (function () {
                 moveTo:sandbox.stub(),
                 stroke:sandbox.stub(),
                 fill:sandbox.stub(),
+
+                fillRect:sandbox.stub(),
+                fillText:sandbox.stub(),
 
                 drawImage:sandbox.stub(),
                 clearRect:sandbox.stub()

@@ -27,13 +27,14 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
+        //'test/unit/**/ColorSpec*',
 
-        'test/unit/**/interactionUISpec*',
-        'test/unit/**/TransitionSpec*',
-        'test/unit/**/SpriteTransitionSpec*',
-        'test/unit/**/TransitionManagerSpec*',
+        //'test/unit/**/interactionUISpec*',
+        //'test/unit/**/TransitionSpec*',
+        //'test/unit/**/SpriteTransitionSpec*',
+        //'test/unit/**/TransitionManagerSpec*',
 
 
         //'test/unit/**/MainSpec*',
@@ -44,8 +45,8 @@
         //'test/unit/**/UIObjectSpec*',
 
 
-        'test/unit/**/ButtonSpec*',
-        'test/unit/**/UIStateMachineSpec*',
+        //'test/unit/**/ButtonSpec*',
+        //'test/unit/**/UIStateMachineSpec*',
 
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',

@@ -110,10 +110,10 @@ module wd {
 
                 switch (this.p_transitionMode) {
                     case TransitionMode.SPRITE:
-                        image.targetSource = target;
+                        image.targetSource = null;
                         break;
                     case TransitionMode.COLOR:
-                        image.targetColor = target;
+                        image.targetColor = null;
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));

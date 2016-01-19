@@ -1,5 +1,6 @@
 describe("Image", function () {
     var sandbox = null;
+    var Image = wd.Image;
     var image;
     var renderer;
     var uiObject;
@@ -8,7 +9,7 @@ describe("Image", function () {
 
 
     function createImage() {
-        image = wd.Image.create();
+        image = Image.create();
 
 
         var uiObject = wd.UIObject.create();
@@ -50,8 +51,6 @@ describe("Image", function () {
 
         uiObject = createImage();
 
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-
 
 
         director.scene.addChild(uiObject);
@@ -75,36 +74,134 @@ describe("Image", function () {
             context = renderer.context;
         });
 
-        it("if source === null, return", function(){
+        it("if source === null && targetSource === null && color === null && targetColor === null, return", function(){
             image.source = null;
 
             image.update(1);
 
             expect(context.save).not.toCalled();
+
+            image.source = null;
+            image.color = {};
+
+            image.update(1);
+
+            expect(context.save).toCalledOnce();
+
+
+            image.targetSource = {};
+            image.source = null;
+            image.color = null;
+
+            image.update(1);
+
+            expect(context.save).toCalledTwice();
+
+
+            image.targetSource = null;
+            image.source = null;
+            image.color = null;
+            image.targetColor = {};
+
+            image.update(1);
+
+            expect(context.save.callCount).toEqual(3);
         });
 
         describe("else", function(){
             var source;
+            var color;
+            var width,height;
+            var position;
+
+            function judgeDrawSource(){
+                expect(context.drawImage).toCalledOnce();
+                expect(context.drawImage).toCalledWith(source.source, position.x - width / 2, position.y - height / 2, width, height)
+            }
 
             beforeEach(function(){
-                source = wd.ImageTextureAsset.create({});
+                color = wd.Color.create("rgb(0.1, 0.2, 0.3)");
 
-                image.source = source;
-            });
-
-            it("draw whole image", function(){
-                var width = 100;
-                var height = 50;
+                width = 100;
+                height = 50;
                 uiObject.transform.width = width;
                 uiObject.transform.height = height;
 
-                image.update(1);
+                position = uiObject.transform.position;
+            });
+            
+            describe("if setted draw color", function(){
+                beforeEach(function(){
+                    image.color = color;
+                });
 
-                var position = uiObject.transform.position;
+                it("if draw color->a < 1, set global alpha", function(){
+                    image.update(1);
 
-                expect(context.drawImage).toCalledOnce();
-                expect(context.drawImage).toCalledWith(source.source, position.x - width / 2, position.y - height / 2, width, height
-                );
+                    expect(context.globalAlpha).toBeUndefined();
+
+
+                    image.color.a = 0.2;
+
+                    image.update(1);
+
+                    expect(context.globalAlpha).toEqual(0.2);
+                });
+                it("fillRect image range", function(){
+                    image.update(1);
+
+                    expect(context.fillRect).toCalledWith(position.x - width / 2, position.y - height / 2, width, height);
+                });
+
+                describe("if setted draw source", function(){
+                    beforeEach(function(){
+                        source = wd.ImageTextureAsset.create({});
+
+                        image.source = source;
+                    });
+
+                    describe("blend color with source", function(){
+                        it("if browser support canvas.globalCompositeOperation->multiply, use multiply to blend", function(){
+                            image._blendColorWithSource = image._blendByMultiply;
+
+                            image.update(1);
+
+                            expect(context.globalCompositeOperation).toEqual("multiply");
+                            judgeDrawSource();
+                        });
+                        it("else, blend by multiply each pix", function(){
+                            image._blendColorWithSource = image._blendByPerPixel;
+                            sandbox.stub(image, "getCanvas").returns({
+                                width: 100,
+                                height: 50
+                            });
+                            context.getImageData.returns({
+                                data:[0.1, 0.2, 0.3, 0.5]
+                            });
+
+                            image.update(1);
+
+                            expect(context.globalCompositeOperation).toEqual("copy");
+                            expect(context.getImageData).toCalledWith(0, 0, 100, 50);
+                            expect(context.putImageData).toCalledWith({data:[0.1 * color.r, 0.2 * color.g, 0.3 * color.b, 0.5]}, 0, 0);
+                        });
+                    });
+                });
+            });
+
+            describe("else", function(){
+                beforeEach(function(){
+                    image.color = null;
+                    source = wd.ImageTextureAsset.create({});
+
+                    image.source = source;
+                });
+
+                it("draw whole image", function(){
+                    image.update(1);
+
+                    judgeDrawSource();
+                });
             });
         });
     });

@@ -30,7 +30,6 @@ module wd{
             return Vector4.create(this.r, this.g, this.b, this.a);
         }
 
-        //todo test
         public toString(){
             return this._colorString;
         }

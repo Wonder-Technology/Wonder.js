@@ -95,10 +95,6 @@ describe("Button", function() {
 
 
         uiObject = createButton();
-
-
-
-        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -482,6 +478,8 @@ describe("Button", function() {
 
     describe("update", function(){
         beforeEach(function(){
+            renderer.context = canvasTool.buildFakeContext(sandbox);
+
             context = renderer.context;
         });
 
@@ -520,8 +518,6 @@ describe("Button", function() {
                 target = wd.ImageTextureAsset.create({a:1});
 
                 button.transitionMode = wd.TransitionMode.SPRITE;
-
-                sandbox.stub(context, "drawImage");
             });
 
             describe("if background transition->target === null,", function(){
@@ -600,6 +596,103 @@ describe("Button", function() {
             });
         });
 
+        describe("if transition mode === COLOR", function(){
+            var source;
+            var color;
+            var target;
+
+            function judge(drawColor){
+                var width = 100,
+                    height = 50;
+                var position = wd.Vector2.create(10, 20);
+                setWidth(width);
+                setHeight(height);
+                setPosition(position.x, position.y);
+
+                director.scene.addChild(uiObject);
+
+
+                director.initUIObjectScene();
+
+
+
+                sandbox.stub(getImage(button), "_setFillStyle");
+
+                getImage(button).color = color;
+
+                director.runUIObjectScene(1);
+
+
+
+                expect(context.fillRect).toCalledOnce();
+                expect(getImage(button)._setFillStyle).toCalledWith(drawColor.toString());
+            }
+
+            beforeEach(function(){
+                source = wd.ImageTextureAsset.create({});
+                color = wd.Color.create("rgb(1.0, 0.1, 0.0)");
+                target = wd.Color.create("rgb(0.0, 0.0, 1.0)");
+
+                button.transitionMode = wd.TransitionMode.COLOR;
+            });
+
+            describe("if background transition->target === null,", function(){
+                beforeEach(function(){
+                    button.getObjectTransition(ObjectName.BACKGROUND).normalColor = null;
+                });
+
+                it("fillRect background->Image->color", function () {
+                    judge(color);
+                });
+
+                it("fix bug:if background transition->normalColor === null, then: 1.fillRect;" +
+                    "2.change state to HIGHTLIGHT and fillRect;" +
+                    "3.back state to NORMAL and fillRect;" +
+                    "the third fillStyle should equal the first fillStyle", function() {
+                    button.getObjectTransition(ObjectName.BACKGROUND).highlightColor = target;
+
+                    director.scene.addChild(uiObject);
+
+
+
+
+
+                    director.initUIObjectScene();
+
+                    sandbox.stub(getImage(button), "_setFillStyle");
+
+                    getImage(button).color = color;
+
+
+                    director.runUIObjectScene(1);
+
+
+                    button._stateMachine.changeState(wd.UIState.HIGHLIGHT);
+
+                    director.runUIObjectScene(2);
+
+
+                    button._stateMachine.backState();
+
+                    director.runUIObjectScene(2);
+
+
+
+
+                    expect(getImage(button)._setFillStyle.callCount).toEqual(3);
+                    expect(getImage(button)._setFillStyle.firstCall.args[0]).toEqual(color.toString());
+                    expect(getImage(button)._setFillStyle.getCall(1).args[0]).toEqual(target.toString());
+                    expect(getImage(button)._setFillStyle.getCall(2).args[0]).toEqual(color.toString());
+                });
+            });
+
+            it("else, fillRect background transition->target", function(){
+                button.getObjectTransition(ObjectName.BACKGROUND).normalColor = target;
+
+                judge(target.toString());
+            });
+        });
+
         describe("test draw font", function(){
             beforeEach(function(){
             });
@@ -617,9 +710,6 @@ describe("Button", function() {
 
 
                 director.initUIObjectScene();
-
-                sandbox.stub(context, "drawImage");
-                sandbox.stub(context, "setTransform");
 
 
 

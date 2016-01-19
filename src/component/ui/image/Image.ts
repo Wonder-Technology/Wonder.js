@@ -77,13 +77,12 @@ module wd {
             if(drawColor !== null){
                 let position = this.entityObject.transform.position;
 
-                this.context.fillStyle = drawColor.toString();
+                this._setFillStyle(drawColor.toString());
 
-                if(drawColor.a !== 1){
+                if(drawColor.a < 1){
                     this._setGlobalAlpha(this.context, drawColor.a);
                 }
 
-                //todo move to utils
                 this.context.fillRect(position.x - this.width / 2, position.y - this.height / 2, this.width, this.height);
 
                 if(drawSource){
@@ -93,6 +92,10 @@ module wd {
             else{
                 this.drawInCenterPoint(this.context, drawSource.source, this.entityObject.transform.position, this.width, this.height);
             }
+        }
+
+        private _setFillStyle(style:string){
+            this.context.fillStyle = style;
         }
 
         private _getDrawSource():ImageTextureAsset{
