@@ -82,6 +82,10 @@ module wd {
             return this.getUIRenderer().context;
         }
 
+        protected getCanvas() {
+            return this.getUIRenderer().canvas;
+        }
+
         //@require(function () {
         //    assert(this.entityObject.hasComponent(UIRenderer), Log.info.FUNC_SHOULD("entityObject", "contain UIRenderer"))
         //})

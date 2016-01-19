@@ -16,8 +16,8 @@ module wd {
             if(zIndex !== this._zIndex){
                 this._zIndex = zIndex;
 
-                if(this._canvas){
-                    wdCb.DomQuery.create(this._canvas).css("zIndex", zIndex);
+                if(this.canvas){
+                    wdCb.DomQuery.create(this.canvas).css("zIndex", zIndex);
                 }
             }
         }
@@ -38,8 +38,8 @@ module wd {
         public context:any = null;
         public isClearCanvas:boolean = false;
         public state:UIRendererState = UIRendererState.NORMAL;
+        public canvas:HTMLCanvasElement = null;
 
-        private _canvas:HTMLCanvasElement = null;
         private _isInit:boolean = false;
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
@@ -83,14 +83,14 @@ module wd {
                 return;
             }
 
-            wdCb.DomQuery.create(this._canvas).remove();
+            wdCb.DomQuery.create(this.canvas).remove();
         }
 
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
         }
 
         public clearCanvas(){
-            this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
             this.isClearCanvas = true;
         }
@@ -99,7 +99,7 @@ module wd {
             var canvas = null,
                 view = null;
 
-            if(this._canvas){
+            if(this.canvas){
                 return;
             }
 
@@ -114,8 +114,8 @@ module wd {
             canvas.attr("width", view.width);
             canvas.attr("height", view.height);
 
-            this._canvas = canvas.get(0);
-            this.context = this._canvas.getContext("2d");
+            this.canvas = canvas.get(0);
+            this.context = this.canvas.getContext("2d");
         }
     }
 }

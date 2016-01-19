@@ -15,10 +15,10 @@ module wd{
         public b:number = null;
         public a:number = null;
 
-        constructor() {
-        }
+        private _colorString:string = null;
 
         public initWhenCreate(colorVal:string) {
+            this._colorString = colorVal;
             this._setColor(colorVal);
         }
 
@@ -28,6 +28,11 @@ module wd{
 
         public toVector4(){
             return Vector4.create(this.r, this.g, this.b, this.a);
+        }
+
+        //todo test
+        public toString(){
+            return this._colorString;
         }
 
         private _setColor(colorVal:string) {
@@ -51,7 +56,7 @@ module wd{
 
             }
 
-            // rgba(255,0,0)
+            // rgb(255,0,0)
 
             if ( REGEX_RGB.test( colorVal ) ) {
                 color = REGEX_RGB.exec( colorVal );
@@ -66,9 +71,9 @@ module wd{
             }
 
             /*!
-             it will cause ambiguity: rgba(x,x,x)
+             it will cause ambiguity: rgb(x,x,x)
              so the format should be:
-             rgba(x.x,x.x,x.x)
+             rgb(x.x,x.x,x.x)
              */
             if ( REGEX_RGB_2.test( colorVal ) ) {
                 color = REGEX_RGB_2.exec( colorVal );

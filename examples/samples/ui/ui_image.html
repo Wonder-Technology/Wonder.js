@@ -22,14 +22,16 @@
         ]).subscribe(null, null, function(){
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createImageUI());
+            director.scene.addChild(createImageUIWithOnlySource());
+            director.scene.addChild(createImageUIWithOnlyColor());
+            director.scene.addChild(createImageUIWithSourceAndColor());
 
             director.start();
         });
 
 
 
-        function createImageUI(){
+        function createImageUIWithOnlySource(){
             var renderer = createUIRenderer();
 
             var image = wd.Image.create();
@@ -48,6 +50,55 @@
 
 
             imageUIObject.transform.translate(300,100);
+            imageUIObject.transform.rotate(10);
+
+            return imageUIObject;
+        }
+
+        function createImageUIWithOnlyColor(){
+            var renderer = createUIRenderer();
+
+            var image = wd.Image.create();
+            image.color = wd.Color.create("rgb(255, 0, 0)");
+
+
+            var imageUIObject = wd.UIObject.create();
+
+            imageUIObject.addComponent(image);
+
+            imageUIObject.transform.width = 100;
+            imageUIObject.transform.height = 100;
+
+
+            imageUIObject.addComponent(renderer);
+
+
+            imageUIObject.transform.translate(450,100);
+            imageUIObject.transform.rotate(10);
+
+            return imageUIObject;
+        }
+
+        function createImageUIWithSourceAndColor(){
+            var renderer = createUIRenderer();
+
+            var image = wd.Image.create();
+            image.source = wd.LoaderManager.getInstance().get("loading");
+            image.color = wd.Color.create("rgba(255, 0, 0, 0.5)");
+
+
+            var imageUIObject = wd.UIObject.create();
+
+            imageUIObject.addComponent(image);
+
+            imageUIObject.transform.width = 100;
+            imageUIObject.transform.height = 100;
+
+
+            imageUIObject.addComponent(renderer);
+
+
+            imageUIObject.transform.translate(600,100);
             imageUIObject.transform.rotate(10);
 
             return imageUIObject;
