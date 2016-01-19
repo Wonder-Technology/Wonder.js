@@ -99,17 +99,36 @@ module wd {
             return this._stateMachine.getCurrentState();
         }
 
+        @require(function(elapsedTime:number){
+            assert(this.getObject(ButtonObjectName.BACKGROUND).hasComponent(Image), Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
+        })
         public update(elapsedTime:number) {
             var target = this.transitionManager.getObjectTarget(ButtonObjectName.BACKGROUND);
 
             if(!target){
-                this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = null;
+                let image = this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image);
+
+                switch (this.p_transitionMode) {
+                    case TransitionMode.SPRITE:
+                        image.targetSource = target;
+                        break;
+                    case TransitionMode.COLOR:
+                        image.targetColor = target;
+                        break;
+                    default:
+                        Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));
+                        break;
+                }
+
                 return;
             }
 
             switch (this.p_transitionMode) {
                 case TransitionMode.SPRITE:
                     this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = target;
+                    break;
+                case TransitionMode.COLOR:
+                    this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetColor = target;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));

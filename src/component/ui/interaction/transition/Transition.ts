@@ -1,5 +1,4 @@
 module wd{
-    //todo support color tint
     export abstract class Transition{
         private _target:any = null;
         get target(){

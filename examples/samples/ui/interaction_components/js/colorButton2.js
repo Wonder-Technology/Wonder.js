@@ -12,33 +12,33 @@ var sample;
     var ButtonObjectName = wd.ButtonObjectName;
     var LoaderManager = wd.LoaderManager;
     var Image = wd.Image;
-    var ButtonScript = (function () {
-        function ButtonScript(entityObject) {
+    var ColorButtonScript2 = (function () {
+        function ColorButtonScript2(entityObject) {
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        ButtonScript.prototype.init = function () {
+        ColorButtonScript2.prototype.init = function () {
             this._setText();
             this._setBackground();
         };
-        ButtonScript.prototype.onMouseClick = function (e) {
+        ColorButtonScript2.prototype.onMouseClick = function (e) {
             if (this._entityObject.getComponent(Button).isDisabled()) {
                 return;
             }
             console.log("click");
         };
-        ButtonScript.prototype._setText = function () {
+        ColorButtonScript2.prototype._setText = function () {
             var font = this._entityObject.getComponent(Button).getObject(ButtonObjectName.TEXT).getComponent(PlainFont);
             font.fontSize = 30;
         };
-        ButtonScript.prototype._setBackground = function () {
+        ColorButtonScript2.prototype._setBackground = function () {
             var image = this._entityObject.getComponent(Button).getObject(ButtonObjectName.BACKGROUND).getComponent(Image);
-            image.source = LoaderManager.getInstance().get("normal2");
+            image.source = LoaderManager.getInstance().get("normal");
         };
-        ButtonScript = __decorate([
-            wd.script("button")
-        ], ButtonScript);
-        return ButtonScript;
+        ColorButtonScript2 = __decorate([
+            wd.script("colorButton2")
+        ], ColorButtonScript2);
+        return ColorButtonScript2;
     })();
-    sample.ButtonScript = ButtonScript;
+    sample.ColorButtonScript2 = ColorButtonScript2;
 })(sample || (sample = {}));

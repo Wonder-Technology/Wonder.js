@@ -61,33 +61,37 @@ module wd {
 
         public color:Color = null;
         public targetSource:ImageTextureAsset = null;
+        public targetColor:Color = null;
 
         //implement it in STATIC_CONSTRUCTOR
         private _blendColorWithSource:Function;
 
         protected shouldNotUpdate(){
-            return this._getDrawSource() === null && this.color === null;
+            return this._getDrawSource() === null && this._getDrawColor() === null;
         }
 
         protected draw(elapsedTime:number){
-            if(this.color !== null){
+            var drawColor = this._getDrawColor(),
+                drawSource = this._getDrawSource();
+
+            if(drawColor !== null){
                 let position = this.entityObject.transform.position;
 
-                this.context.fillStyle = this.color.toString();
+                this.context.fillStyle = drawColor.toString();
 
-                if(this.color.a !== 1){
-                    this._setGlobalAlpha(this.context, this.color.a);
+                if(drawColor.a !== 1){
+                    this._setGlobalAlpha(this.context, drawColor.a);
                 }
 
                 //todo move to utils
                 this.context.fillRect(position.x - this.width / 2, position.y - this.height / 2, this.width, this.height);
 
-                if(this._getDrawSource()){
+                if(drawSource){
                     this._blendColorWithSource();
                 }
             }
             else{
-                this.drawInCenterPoint(this.context, this._getDrawSource().source, this.entityObject.transform.position, this.width, this.height);
+                this.drawInCenterPoint(this.context, drawSource.source, this.entityObject.transform.position, this.width, this.height);
             }
         }
 
@@ -97,6 +101,14 @@ module wd {
             }
 
             return this.source;
+        }
+
+        private _getDrawColor():Color{
+            if(this.targetColor){
+                return this.targetColor;
+            }
+
+            return this.color;
         }
 
         @require(function(){

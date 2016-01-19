@@ -28,7 +28,7 @@
 
             var renderer = createUIRenderer();
 
-            var buttonObject1 = createButtonUI(renderer);
+            var buttonObject1 = createButtonUIWithSprite(renderer);
             buttonObject1.transform.width = 200;
             buttonObject1.transform.height = 100;
 
@@ -37,7 +37,7 @@
 
 
 
-            var buttonObject2 = createButtonUI(renderer);
+            var buttonObject2 = createButtonUIWithSprite(renderer);
             buttonObject2.transform.width = 200;
             buttonObject2.transform.height = 100;
 
@@ -45,15 +45,34 @@
 
             buttonObject2.getComponent(wd.Button).disable();
 
+
+            var buttonObject3 = createButtonUIWithColor(renderer, "./js/colorButton.js");
+            buttonObject3.transform.width = 200;
+            buttonObject3.transform.height = 100;
+
+            buttonObject3.transform.translate(300,250);
+
+
+
+            var buttonObject4 = createButtonUIWithColor(renderer, "./js/colorButton2.js");
+            buttonObject4.transform.width = 200;
+            buttonObject4.transform.height = 100;
+
+            buttonObject4.transform.translate(600,250);
+
+
+
             director.scene.addChild(buttonObject1);
             director.scene.addChild(buttonObject2);
+            director.scene.addChild(buttonObject3);
+            director.scene.addChild(buttonObject4);
 
             director.start();
         });
 
 
 
-        function createButtonUI(renderer){
+        function createButtonUIWithSprite(renderer){
             var button = wd.Button.create();
 
             button.text = "I'm a button";
@@ -76,7 +95,48 @@
 
 
 
-            buttonUIObject.addComponent(wd.Script.create("./js/button.js"));
+            buttonUIObject.addComponent(wd.Script.create("./js/spriteButton.js"));
+
+
+
+            var eventTriggerDetector = wd.UIEventTriggerDetector.create();
+
+
+            buttonUIObject.addComponent(eventTriggerDetector);
+
+
+
+
+            buttonUIObject.addComponent(renderer);
+
+
+            return buttonUIObject;
+        }
+
+        function createButtonUIWithColor(renderer, scriptUrl){
+            var button = wd.Button.create();
+
+            button.text = "I'm a button";
+
+
+            button.transitionMode = wd.TransitionMode.COLOR;
+
+            var backgroundTransition = button.getObjectTransition(wd.ButtonObjectName.BACKGROUND);
+
+//            backgroundTransition.normalColor = wd.Color.create("rgba(255, 0, 0, 0.2)");
+            backgroundTransition.highlightColor = wd.Color.create("rgb(0, 255, 0)");
+            backgroundTransition.pressedColor = wd.Color.create("rgb(0, 0, 255)");
+            backgroundTransition.disabledColor = wd.Color.create("rgb(0, 255, 255)");
+
+
+
+            var buttonUIObject = wd.UIObject.create();
+
+            buttonUIObject.addComponent(button);
+
+
+
+            buttonUIObject.addComponent(wd.Script.create(scriptUrl));
 
 
 

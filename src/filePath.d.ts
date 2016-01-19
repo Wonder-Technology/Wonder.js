@@ -244,6 +244,7 @@
 
 /// <reference path="component/ui/interaction/transition/Transition"/>
 /// <reference path="component/ui/interaction/transition/SpriteTransition"/>
+/// <reference path="component/ui/interaction/transition/ColorTransition"/>
 /// <reference path="component/ui/interaction/transition/TransitionMode"/>
 /// <reference path="component/ui/interaction/transition/TransitionManager"/>
 
