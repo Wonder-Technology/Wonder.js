@@ -237,6 +237,7 @@
 
 /// <reference path="component/ui/interaction/InteractionUI"/>
 /// <reference path="component/ui/interaction/button/Button"/>
+/// <reference path="component/ui/interaction/button/ButtonObjectName"/>
 
 /// <reference path="component/ui/interaction/state/UIState"/>
 /// <reference path="component/ui/interaction/state/UIStateMachine"/>
@@ -244,6 +245,7 @@
 /// <reference path="component/ui/interaction/transition/Transition"/>
 /// <reference path="component/ui/interaction/transition/SpriteTransition"/>
 /// <reference path="component/ui/interaction/transition/TransitionMode"/>
+/// <reference path="component/ui/interaction/transition/TransitionManager"/>
 
 
 

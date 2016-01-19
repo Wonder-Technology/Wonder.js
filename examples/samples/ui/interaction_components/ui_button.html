@@ -19,7 +19,8 @@
 
         wd.LoaderManager.getInstance().load([
             {url: "../../asset/texture/1.jpg", id: "normal"},
-            {url: "../../asset/texture/2.jpg", id: "hightlight"},
+            {url: "../../asset/texture/5.jpg", id: "normal2"},
+            {url: "../../asset/texture/2.jpg", id: "highlight"},
             {url: "../../asset/texture/3.jpg", id: "pressed"},
             {url: "../../asset/texture/4.jpg", id: "disabled"}
         ]).subscribe(null, null, function(){
@@ -55,14 +56,18 @@
         function createButtonUI(renderer){
             var button = wd.Button.create();
 
+            button.text = "I'm a button";
+
+
             button.transitionMode = wd.TransitionMode.SPRITE;
 
-            button.transition.normalSprite = wd.LoaderManager.getInstance().get("normal");
-            button.transition.hightlightSprite = wd.LoaderManager.getInstance().get("hightlight");
-            button.transition.pressedSprite = wd.LoaderManager.getInstance().get("pressed");
-            button.transition.disabledSprite = wd.LoaderManager.getInstance().get("disabled");
+            var backgroundTransition = button.getObjectTransition(wd.ButtonObjectName.BACKGROUND);
 
-            button.text = "I'm a button";
+//            backgroundTransition.normalSprite = wd.LoaderManager.getInstance().get("normal");
+            backgroundTransition.highlightSprite = wd.LoaderManager.getInstance().get("highlight");
+            backgroundTransition.pressedSprite = wd.LoaderManager.getInstance().get("pressed");
+            backgroundTransition.disabledSprite = wd.LoaderManager.getInstance().get("disabled");
+
 
 
             var buttonUIObject = wd.UIObject.create();

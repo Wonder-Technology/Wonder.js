@@ -9,26 +9,36 @@ var sample;
 (function (sample) {
     var Button = wd.Button;
     var PlainFont = wd.PlainFont;
-    var EventHandler = (function () {
-        function EventHandler(entityObject) {
+    var ButtonObjectName = wd.ButtonObjectName;
+    var LoaderManager = wd.LoaderManager;
+    var Image = wd.Image;
+    var ButtonScript = (function () {
+        function ButtonScript(entityObject) {
             this._entityObject = null;
             this._entityObject = entityObject;
         }
-        EventHandler.prototype.init = function () {
-            // can set Button Font here
-            var font = this._entityObject.getComponent(Button).getFontObject().getComponent(PlainFont);
-            font.fontSize = 30;
+        ButtonScript.prototype.init = function () {
+            this._setText();
+            this._setBackground();
         };
-        EventHandler.prototype.onMouseClick = function (e) {
+        ButtonScript.prototype.onMouseClick = function (e) {
             if (this._entityObject.getComponent(Button).isDisabled()) {
                 return;
             }
             console.log("click");
         };
-        EventHandler = __decorate([
-            wd.script("eventHandler")
-        ], EventHandler);
-        return EventHandler;
+        ButtonScript.prototype._setText = function () {
+            var font = this._entityObject.getComponent(Button).getObject(ButtonObjectName.TEXT).getComponent(PlainFont);
+            font.fontSize = 30;
+        };
+        ButtonScript.prototype._setBackground = function () {
+            var image = this._entityObject.getComponent(Button).getObject(ButtonObjectName.BACKGROUND).getComponent(Image);
+            image.source = LoaderManager.getInstance().get("normal2");
+        };
+        ButtonScript = __decorate([
+            wd.script("button")
+        ], ButtonScript);
+        return ButtonScript;
     })();
-    sample.EventHandler = EventHandler;
+    sample.ButtonScript = ButtonScript;
 })(sample || (sample = {}));

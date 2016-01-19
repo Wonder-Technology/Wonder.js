@@ -69,7 +69,9 @@ module wd {
             context.restore();
         }
 
-        protected abstract draw(elapsedTime:number);
+        @virtual
+        protected draw(elapsedTime:number){
+        }
 
         @virtual
         protected shouldNotUpdate(){

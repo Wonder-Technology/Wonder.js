@@ -19,14 +19,24 @@ module wd {
             }
         }
 
+        public targetSource:ImageTextureAsset = null;
+
         //todo support draw a part of image asset
 
         protected shouldNotUpdate(){
-            return this.source === null;
+            return this._getDrawSource() === null;
         }
 
         protected draw(elapsedTime:number){
-            this.drawInCenterPoint(this.context, this.source.source, this.entityObject.transform.position, this.width, this.height);
+            this.drawInCenterPoint(this.context, this._getDrawSource().source, this.entityObject.transform.position, this.width, this.height);
+        }
+
+        private _getDrawSource():ImageTextureAsset{
+            if(this.targetSource){
+                return this.targetSource;
+            }
+
+            return this.source;
         }
     }
 }

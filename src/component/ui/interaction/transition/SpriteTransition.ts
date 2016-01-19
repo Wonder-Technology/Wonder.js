@@ -7,7 +7,7 @@ module wd{
         }
 
         public normalSprite:ImageTextureAsset = null;
-        public hightlightSprite:ImageTextureAsset = null;
+        public highlightSprite:ImageTextureAsset = null;
         public pressedSprite:ImageTextureAsset = null;
         public disabledSprite:ImageTextureAsset = null;
 
@@ -17,7 +17,7 @@ module wd{
                     this.target = this.normalSprite;
                     break;
                 case UIState.HIGHLIGHT:
-                    this.target = this.hightlightSprite;
+                    this.target = this.highlightSprite;
                     break;
                 case UIState.PRESSED:
                     this.target = this.pressedSprite;

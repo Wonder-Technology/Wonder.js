@@ -10,13 +10,17 @@ module wd{
             this._ui = ui;
         }
 
+        get transitionManager(){
+            return this._ui.transitionManager;
+        }
+
         private _ui:InteractionUI = null;
         private _stateHistory:wdCb.Stack<UIState> = wdCb.Stack.create<UIState>();
 
         public changeState(state:UIState){
             this._stateHistory.push(state);
 
-            this._ui.transition.changeState(state);
+            this.transitionManager.changeState(state);
             this._ui.dirty = true;
         }
 
@@ -31,7 +35,7 @@ module wd{
                 lastState = UIState.NORMAL;
             }
 
-            this._ui.transition.changeState(lastState);
+            this.transitionManager.changeState(lastState);
             this._ui.dirty = true;
         }
 

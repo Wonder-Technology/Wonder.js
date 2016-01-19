@@ -23,19 +23,7 @@ module wd{
                     EventManager.fromEvent(EventName.MOUSEDOWN),
                     EventManager.fromEvent(EventName.MOUSEUP),
                     EventManager.fromEvent(EventName.MOUSEWHEEL),
-
-                    /*!
-                     here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
-                     */
-                    EventManager.fromEvent(document, EventName.MOUSEDOWN)
-                        .flatMap((e:MouseEvent) => {
-                            return EventManager.fromEvent(document, EventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EventName.MOUSEUP));
-                        })
-                        .map((e:MouseEvent) => {
-                            e.name = EventName.MOUSEDRAG;
-
-                            return e;
-                        })
+                    this._buildMouseDragStream()
                 ]
                 )
                 .mergeAll()
@@ -45,15 +33,13 @@ module wd{
                 .map((e:MouseEvent) => {
                     return self._getMouseEventTriggerListData(e);
                 })
-
                 .merge(
                     EventManager.fromEvent(EventName.MOUSEMOVE)
                         .filter((e:MouseEvent) => {
                             return !Director.getInstance().isPause ;
                         })
                         .map((e:MouseEvent) => {
-                            var triggerList = self._getMouseEventTriggerList(e),
-                                objects = null;
+                            var triggerList = self._getMouseEventTriggerList(e);
                             var {mouseoverObjects, mouseoutObjects} = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList);
 
                             self._setMouseOverTag(mouseoverObjects);
@@ -61,7 +47,6 @@ module wd{
 
                             self._lastTriggerList = triggerList.copy();
 
-                            //triggerList.addChildren(mouseoutObjects);
                             triggerList = mouseoutObjects.addChildren(triggerList);
 
                             return self._getMouseEventTriggerListData(e, triggerList);
@@ -77,10 +62,24 @@ module wd{
                 });
         }
 
+        private _buildMouseDragStream(){
+            /*!
+             here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
+             */
+            return EventManager.fromEvent(document, EventName.MOUSEDOWN)
+                .flatMap((e:MouseEvent) => {
+                    return EventManager.fromEvent(document, EventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EventName.MOUSEUP));
+                })
+                .map((e:MouseEvent) => {
+                    e.name = EventName.MOUSEDRAG;
+
+                    return e;
+                })
+        }
+
         private _getMouseOverAndMouseOutObject(currentTriggerList:wdCb.Collection<EntityObject>, lastTriggerList:wdCb.Collection<EntityObject>){
             var mouseoverObjects = wdCb.Collection.create<EntityObject>(),
-                mouseoutObjects = wdCb.Collection.create<EntityObject>(),
-                self = this;
+                mouseoutObjects = wdCb.Collection.create<EntityObject>();
 
             if(!lastTriggerList){
                 mouseoverObjects = currentTriggerList;

@@ -5,6 +5,7 @@ describe("Button", function() {
     var uiObject;
     var director;
     var renderer;
+    var ObjectName = wd.ButtonObjectName;
 
     function setWidth(width) {
         uiObject.transform.width = width;
@@ -53,6 +54,8 @@ describe("Button", function() {
 
         uiObject.addComponent(renderer);
 
+        uiObject.name = ObjectName.TEXT;
+
 
         return uiObject;
     }
@@ -60,6 +63,18 @@ describe("Button", function() {
 
     function setPosition(x, y) {
         uiObject.transform.position = wd.Vector2.create(x, y);
+    }
+
+    function getImage(button){
+        return button.getObject(ObjectName.BACKGROUND).getComponent(wd.Image);
+    }
+
+    function getFontObject(){
+        return button.getObject(ObjectName.TEXT);
+    }
+
+    function getBackgroundObject(){
+        return button.getObject(ObjectName.BACKGROUND);
     }
 
     beforeEach(function () {
@@ -141,8 +156,8 @@ describe("Button", function() {
 
                     uiObject.init();
 
-                    expect(uiObject.getChildren().getCount()).toEqual(1);
-                    expect(uiObject.getChild(0).getComponent(wd.PlainFont).text).toEqual("bbb");
+                    expect(uiObject.getChildren().getCount()).toEqual(2);
+                    expect(button.getObject(ObjectName.Text).getComponent(wd.PlainFont).text).toEqual("bbb");
                 });
             });
 
@@ -236,19 +251,115 @@ describe("Button", function() {
         });
     });
 
-    describe("getFontObject", function(){
-        it("get PlainFont child UIObject", function(){
+    describe("getObject", function(){
+        it("get PlainFont UIObject", function(){
             button.text = "ccc";
 
-            button.getFontObject().getComponent(wd.PlainFont).text = "aaa";
+            button.getObject(ObjectName.TEXT).getComponent(wd.PlainFont).text = "aaa";
 
             expect(button.text).toEqual("aaa");
+        });
+        it("get Background UIObject", function(){
+            uiObject.init();
+
+            expect(button.getObject(ObjectName.BACKGROUND)).toBeInstanceOf(wd.UIObject);
         });
     });
 
     describe("init", function(){
         beforeEach(function(){
 
+        });
+
+        describe("if not has Font Object", function(){
+            beforeEach(function(){
+
+            });
+
+            describe("add font object", function(){
+                describe("test font object", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("add and set PlainFont component", function(){
+                        button.text = "a";
+
+                        uiObject.init();
+
+                        var font = getFontObject().getComponent(wd.PlainFont);
+                        expect(font.text).toEqual("a");
+                        expect(font._fillEnabled).toBeTruthy();
+                        expect(font.xAlignment).toEqual(wd.FontXAlignment.CENTER);
+                        expect(font.yAlignment).toEqual(wd.FontYAlignment.MIDDLE);
+                    });
+                    it("add the same UIRenderer of Button", function () {
+                        uiObject.init();
+
+                        expect(getFontObject().getComponent(wd.UIRenderer) === renderer).toBeTruthy();
+                    });
+                    it("width,height is equal UIObject.transform->width,height", function(){
+                        setWidth(100);
+                        setHeight(50);
+
+                        uiObject.init();
+
+                        expect(getFontObject().transform.width).toEqual(100);
+                        expect(getFontObject().transform.height).toEqual(50);
+                    });
+                    it("name is TEXT", function(){
+                        uiObject.init();
+
+                        expect(getFontObject().name).toEqual(ObjectName.TEXT);
+                    });
+                    it("zIndex > Background->zIndex", function(){
+                        uiObject.init();
+
+                        expect(getFontObject().transform.zIndex > getBackgroundObject().transform.zIndex).toBeTruthy();
+                    });
+                });
+            });
+        });
+
+        describe("add background object", function(){
+            beforeEach(function(){
+            });
+
+            describe("test background object", function(){
+                beforeEach(function(){
+
+                });
+
+                it("add Image component", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().hasComponent(wd.Image)).toBeTruthy();
+                });
+                it("add the same UIRenderer of Button", function () {
+                    uiObject.init();
+
+                    expect(getBackgroundObject().getComponent(wd.UIRenderer) === renderer).toBeTruthy();
+                });
+                it("width,height is equal UIObject.transform->width,height", function(){
+                    setWidth(100);
+                    setHeight(50);
+
+                    uiObject.init();
+
+                    expect(getBackgroundObject().transform.width).toEqual(100);
+                    expect(getBackgroundObject().transform.height).toEqual(50);
+                });
+                it("name is BACKGROUND", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().name).toEqual(ObjectName.BACKGROUND);
+                });
+                it("zIndex < Font->zIndex", function(){
+                    uiObject.init();
+
+                    expect(getBackgroundObject().transform.zIndex < getFontObject().transform.zIndex).toBeTruthy();
+                });
+            });
         });
 
         describe("bind event", function(){
@@ -374,26 +485,11 @@ describe("Button", function() {
             context = renderer.context;
         });
 
-        it("if transition.target === null, return", function(){
-            button.transition.target = null;
-
-            button.init();
-            button.update(1);
-
-            expect(context.save).not.toCalled();
-        });
-
-        describe("else", function(){
+        describe("if transition mode === SPRITE", function(){
+            var source;
             var target;
 
-            beforeEach(function(){
-                target = wd.ImageTextureAsset.create({});
-
-                button.transitionMode = wd.TransitionMode.SPRITE;
-                button.transition.normalSprite = target;
-            });
-
-            it("draw button", function(){
+            function judge(drawSource){
                 var width = 100,
                     height = 50;
                 var position = wd.Vector2.create(10, 20);
@@ -401,78 +497,147 @@ describe("Button", function() {
                 setHeight(height);
                 setPosition(position.x, position.y);
 
-                button.init();
+                director.scene.addChild(uiObject);
 
-                sandbox.stub(context, "drawImage");
 
-                button.update(1);
+                director.initUIObjectScene();
+
+                getImage(button).source = source;
+
+                director.runUIObjectScene(1);
+
+
 
                 expect(context.drawImage).toCalledOnce();
                 expect(context.drawImage).toCalledWith(
-                    target.source, position.x - width / 2, position.y - height / 2, width, height
+                    drawSource, position.x - width / 2, position.y - height / 2, width, height
                 );
+
+            }
+
+            beforeEach(function(){
+                source = wd.ImageTextureAsset.create({});
+                target = wd.ImageTextureAsset.create({a:1});
+
+                button.transitionMode = wd.TransitionMode.SPRITE;
+
+                sandbox.stub(context, "drawImage");
             });
 
-            describe("test draw font", function(){
+            describe("if background transition->target === null,", function(){
                 beforeEach(function(){
-
+                    button.getObjectTransition(ObjectName.BACKGROUND).normalSprite = null;
                 });
 
-                it("if rotate Button UIObject when defer to create PlainFont UIObject, the Font UIObject should also be rotated", function(){
-                    button.text = "ccc";
-                    var uiObject = createButton(button, renderer);
+                it("draw background->Image->source", function () {
+                    judge(source.source);
+                });
 
-
-                    uiObject.transform.rotate(10);
-
+                it("fix bug:if background transition->normalSprite === null, then: 1.draw;" +
+                    "2.change state to HIGHTLIGHT and draw;" +
+                    "3.back state to NORMAL and draw;" +
+                    "the third draw source should equal the first draw source", function() {
+                    button.getObjectTransition(ObjectName.BACKGROUND).highlightSprite = target;
 
                     director.scene.addChild(uiObject);
 
 
 
+
+
                     director.initUIObjectScene();
 
-                    sandbox.stub(context, "drawImage");
-                    sandbox.stub(context, "setTransform");
-
-
-
-
-                    var fontObject = button.getFontObject();
-                    sandbox.stub(fontObject.getComponent(wd.PlainFont), "draw");
+                    getImage(button).source = source;
 
                     director.runUIObjectScene(1);
 
 
-                    expect(context.setTransform).toCalledTwice();
-                })
+                    button._stateMachine.changeState(wd.UIState.HIGHLIGHT);
+
+                    director.runUIObjectScene(2);
+
+
+                    button._stateMachine.backState();
+
+                    director.runUIObjectScene(2);
+
+
+
+
+
+                    expect(context.drawImage.callCount).toEqual(3);
+                    expect(context.drawImage.firstCall.args[0]).toEqual(source.source);
+                    expect(context.drawImage.getCall(1).args[0]).toEqual(target.source);
+                    expect(context.drawImage.getCall(2).args[0]).toEqual(source.source);
+                });
+            });
+            it("else, draw background transition->target", function(){
+                button.getObjectTransition(ObjectName.BACKGROUND).normalSprite = target;
+
+                judge(target.source);
+            });
+
+            it("test if disable, draw disable sprite", function(){
+               var backgroundTransition = button.getObjectTransition(ObjectName.BACKGROUND);
+                backgroundTransition.normalSprite = null;
+                backgroundTransition.disabledSprite = target;
+
+                button.disable();
+
+
+
+
+                director.scene.addChild(uiObject);
+
+                director.initUIObjectScene();
+
+                director.runUIObjectScene(1);
+
+
+
+                expect(context.drawImage).toCalledOnce();
+                expect(context.drawImage.firstCall.args[0]).toEqual(target.source);
             });
         });
 
-        it("test if disable, draw disable sprite", function(){
-            target = wd.ImageTextureAsset.create({});
+        describe("test draw font", function(){
+            beforeEach(function(){
+            });
 
-            button.transitionMode = wd.TransitionMode.SPRITE;
-            button.transition.normalSprite = null;
-            button.transition.disabledSprite = target;
-
-            button.disable();
+            it("if rotate Button UIObject when defer to create PlainFont UIObject, the Font UIObject should also be rotated", function(){
+                button.text = "ccc";
+                var uiObject = createButton(button, renderer);
 
 
-            button.init();
+                uiObject.transform.rotate(10);
 
-            sandbox.stub(context, "drawImage");
 
-            button.update(1);
+                director.scene.addChild(uiObject);
 
-            expect(context.drawImage).toCalledOnce();
-            expect(context.drawImage.firstCall.args[0]).toEqual(target.source);
+
+
+                director.initUIObjectScene();
+
+                sandbox.stub(context, "drawImage");
+                sandbox.stub(context, "setTransform");
+
+
+
+
+                var fontObject = button.getObject(ObjectName.TEXT);
+                sandbox.stub(fontObject.getComponent(wd.PlainFont), "draw");
+
+                director.runUIObjectScene(1);
+
+
+                expect(context.setTransform).toCalledOnce();
+            })
         });
     });
 
     describe("enable", function(){
         beforeEach(function(){
-            sandbox.stub(button.transition, "changeState");
+            sandbox.stub(button.transitionManager, "changeState");
 
             button.disable();
             button.enable();
@@ -482,13 +647,13 @@ describe("Button", function() {
             expect(button.getCurrentState()).toEqual(wd.UIState.NORMAL);
         });
         it("change transition->state", function(){
-            expect(button.transition.changeState.secondCall).toCalledWith(wd.UIState.NORMAL);
+            expect(button.transitionManager.changeState.secondCall).toCalledWith(wd.UIState.NORMAL);
         });
     });
 
     describe("disable", function(){
         beforeEach(function(){
-            sandbox.stub(button.transition, "changeState");
+            sandbox.stub(button.transitionManager, "changeState");
 
             button.disable();
         });
@@ -497,7 +662,7 @@ describe("Button", function() {
             expect(button.isDisabled()).toBeTruthy();
         });
         it("change transition->state", function(){
-            expect(button.transition.changeState).toCalledWith(wd.UIState.DISABLED);
+            expect(button.transitionManager.changeState).toCalledWith(wd.UIState.DISABLED);
         });
     });
 });

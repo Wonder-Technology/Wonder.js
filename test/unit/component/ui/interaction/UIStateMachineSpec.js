@@ -15,7 +15,7 @@ describe("UIStateMachine", function() {
 
         ui = {
             dirty:false,
-            transition:{
+            transitionManager:{
                 changeState:sandbox.stub()
             }
         };
@@ -36,7 +36,7 @@ describe("UIStateMachine", function() {
             expect(machine.getCurrentState()).toEqual(State.HIGHLIGHT);
         });
         it("change transition state", function(){
-            expect(ui.transition.changeState).toCalledWith(State.HIGHLIGHT);
+            expect(ui.transitionManager.changeState).toCalledWith(State.HIGHLIGHT);
         });
         it("set ui component dirty", function(){
             expect(ui.dirty).toBeTruthy();
@@ -61,7 +61,7 @@ describe("UIStateMachine", function() {
                 expect(machine.getCurrentState()).toEqual(State.PRESSED);
             });
             it("back transition state", function () {
-                expect(ui.transition.changeState).toCalledWith(State.PRESSED);
+                expect(ui.transitionManager.changeState).toCalledWith(State.PRESSED);
             });
             it("set ui component dirty", function () {
                 expect(ui.dirty).toBeTruthy();

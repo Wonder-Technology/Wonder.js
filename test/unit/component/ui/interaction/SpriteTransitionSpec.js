@@ -19,18 +19,18 @@ describe("SpriteTransition", function() {
 
     describe("changeState", function(){
         var normalSprite,
-            hightlightSprite,
+            highlightSprite,
             pressedSprite,
             disabledSprite;
 
         beforeEach(function(){
             normalSprite = {};
-            hightlightSprite = {};
+            highlightSprite = {};
             pressedSprite = {};
             disabledSprite = {};
 
             transition.normalSprite = normalSprite;
-            transition.hightlightSprite = hightlightSprite;
+            transition.highlightSprite = highlightSprite;
             transition.pressedSprite = pressedSprite;
             transition.disabledSprite = disabledSprite;
         });
@@ -43,7 +43,7 @@ describe("SpriteTransition", function() {
 
             transition.changeState(State.HIGHLIGHT);
 
-            expect(transition.target).toEqual(hightlightSprite);
+            expect(transition.target).toEqual(highlightSprite);
 
 
             transition.changeState(State.PRESSED);

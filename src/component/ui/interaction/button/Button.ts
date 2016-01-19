@@ -16,7 +16,7 @@ module wd {
                 return this._text;
             }
 
-            fontObject = this.getFontObject();
+            fontObject = this.getObject(ButtonObjectName.TEXT);
 
             if(fontObject){
                 return fontObject.getComponent(PlainFont).text;
@@ -33,7 +33,7 @@ module wd {
                 return;
             }
 
-            fontObject = this.getFontObject();
+            fontObject = this.getObject(ButtonObjectName.TEXT);
 
             if(fontObject){
                 fontObject.getComponent<PlainFont>(PlainFont).text = text;
@@ -61,9 +61,7 @@ module wd {
                 this.entityObject.addChild(this._createFontObject());
             }
 
-            if(this.entityObject.transform.isTransform){
-                this.entityObject.transform.setChildrenTransform();
-            }
+            this.entityObject.addChild(this._createBackgroundObject());
 
             this._bindEvent();
         }
@@ -77,14 +75,12 @@ module wd {
             this._mouseoutSubscription.dispose();
         }
 
-        private _hasFontObject(){
-            return !!this.getFontObject();
+        public getObject(objectName:ButtonObjectName):UIObject{
+            return this.entityObject.findChildByName(<any>objectName);
         }
 
-        public getFontObject():UIObject{
-            return this.entityObject.filter((child:UIObject) => {
-                return child.hasComponent(PlainFont);
-            }).getChild(0);
+        public getObjectTransition(objectName:ButtonObjectName):Transition{
+            return this.transitionManager.getObjectTransition(objectName);
         }
 
         public enable() {
@@ -103,20 +99,41 @@ module wd {
             return this._stateMachine.getCurrentState();
         }
 
-        protected shouldNotUpdate() {
-            return this.transition.target === null;
-        }
+        public update(elapsedTime:number) {
+            var target = this.transitionManager.getObjectTarget(ButtonObjectName.BACKGROUND);
 
-        protected draw(elapsedTime:number) {
+            if(!target){
+                this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = null;
+                return;
+            }
+
             switch (this.p_transitionMode) {
                 case TransitionMode.SPRITE:
-                    this.drawInCenterPoint(this.context, this.transition.target.source, this.entityObject.transform.position, this.width, this.height);
+                    this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = target;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));
                     break;
-
             }
+        }
+
+        private _createBackgroundObject(){
+            var object = UIObject.create(),
+                image = Image.create(),
+                transform = this.entityObject.transform;
+
+            object.addComponent(image);
+
+            object.addComponent(this.getUIRenderer());
+
+            object.transform.width = transform.width;
+            object.transform.height = transform.height;
+
+            object.transform.zIndex = 1;
+
+            object.name = <any>ButtonObjectName.BACKGROUND;
+
+            return object;
         }
 
         private _createFontObject(){
@@ -126,8 +143,8 @@ module wd {
 
             font.text = this._text;
             font.enableFill("#000000");
-            font.xAlignment = wd.FontXAlignment.CENTER;
-            font.yAlignment = wd.FontYAlignment.MIDDLE;
+            font.xAlignment = FontXAlignment.CENTER;
+            font.yAlignment = FontYAlignment.MIDDLE;
 
             fontObject.addComponent(font);
 
@@ -136,7 +153,15 @@ module wd {
             fontObject.transform.width = transform.width;
             fontObject.transform.height = transform.height;
 
+            fontObject.transform.zIndex = 2;
+
+            fontObject.name = <any>ButtonObjectName.TEXT;
+
             return fontObject;
+        }
+
+        private _hasFontObject(){
+            return !!this.getObject(ButtonObjectName.TEXT);
         }
 
         private _bindEvent(){
