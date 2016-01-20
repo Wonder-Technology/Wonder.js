@@ -217,6 +217,7 @@
 
 /// <reference path="component/light/Light"/>
 /// <reference path="component/light/AmbientLight"/>
+/// <reference path="component/light/SourceLight"/>
 /// <reference path="component/light/DirectionLight"/>
 /// <reference path="component/light/PointLight"/>
 /// <reference path="component/light/Attenuation"/>

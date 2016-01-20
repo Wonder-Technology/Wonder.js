@@ -1,5 +1,5 @@
 module wd{
-    export class DirectionLight extends Light{
+    export class DirectionLight extends SourceLight{
         public static type:string = "directionLight";
         public static defaultPosition:Vector3 = Vector3.create(0, 0, 1);
 
@@ -32,29 +32,12 @@ module wd{
         public shadowMap:TwoDShadowMapTexture;
         public shadowMapRenderer:TwoDShadowMapRenderTargetRenderer;
 
-        private _beforeInitHandler:() => void = null;
-
-        public initWhenCreate(){
-            this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
-                if(this.castShadow){
-                    this.shadowMap = TwoDShadowMapTexture.create();
-
-                    this.shadowMapRenderer = TwoDShadowMapRenderTargetRenderer.create(this);
-                    Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
-                }
-            });
-
-            EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+        protected createShadowMap(){
+            return TwoDShadowMapTexture.create();
         }
 
-        public dispose(){
-            if(this.castShadow){
-                this.shadowMap.dispose();
-
-                Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
-            }
-
-            EventManager.off(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+        protected createShadowMapRenderer(){
+            return TwoDShadowMapRenderTargetRenderer.create(this);
         }
     }
 }

@@ -281,9 +281,12 @@ describe("script", function () {
 
             script._handlerAfterLoadedScript(data, entityObject);
 
-            expect(wd.EventManager.trigger).toCalledTwice();
+            expect(wd.EventManager.trigger.callCount).toEqual(3);
         });
 
+        it("trigger global BEFORE_INIT before trigger script->init", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.BEFORE_INIT)).toCalledBefore(entityObject.execScript.withArgs("init"));
+        });
         it("trigger global AFTER_INIT after trigger script->init", function(){
             expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT)).toCalledAfter(entityObject.execScript.withArgs("init"));
         });

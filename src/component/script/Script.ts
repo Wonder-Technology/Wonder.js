@@ -55,8 +55,7 @@ module wd{
             this._addScriptToEntityObject(entityObject, data);
             entityObject.execScript("onEnter", null, true);
 
-            //todo test
-            //todo before_init
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
             entityObject.execScript("init", null, true);
 

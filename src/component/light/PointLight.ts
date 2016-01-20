@@ -1,5 +1,5 @@
 module wd{
-    export class PointLight extends Light{
+    export class PointLight extends SourceLight{
         public static type:string = "pointLight";
 
         public static create() {
@@ -61,14 +61,6 @@ module wd{
                 nz:Array<GameObject>
             }> shadowRenderList;
 
-
-            //if (JudgeUtils.isDirectObject(shadowRenderList)) {
-            //    this._shadowRenderList = wdCb.Hash.create<Array<GameObject>|wdCb.Collection<GameObject>>(shadowRenderList);
-            //}
-            //else if (shadowRenderList instanceof wdCb.Hash) {
-            //    this._shadowRenderList = shadowRenderList;
-            //}
-
             for(let direction in shadowRenderList){
                 if(shadowRenderList.hasOwnProperty(direction)){
                     let list = shadowRenderList[direction];
@@ -76,8 +68,6 @@ module wd{
                     this._shadowRenderList.addChild(direction, wdCb.Collection.create<GameObject>(list));
                 }
             }
-            //
-            //this._shadowRenderList = wdCb.Hash.create<wdCb.Collection<GameObject>>(shadowRenderList);
         }
 
         public intensity:number = 1;
@@ -86,27 +76,13 @@ module wd{
         public shadowMapRenderer:CubemapShadowMapRenderTargetRenderer;
 
         private _attenuation:Attenuation = Attenuation.create();
-        private _beforeInitHandler:() => void = null;
 
-        public initWhenCreate(){
-            this._beforeInitHandler = wdCb.FunctionUtils.bind(this, () => {
-                if(this.castShadow){
-                    this.shadowMap = CubemapShadowMapTexture.create();
-
-                    this.shadowMapRenderer = CubemapShadowMapRenderTargetRenderer.create(this);
-                    Director.getInstance().scene.addRenderTargetRenderer(this.shadowMapRenderer);
-                }
-            });
-
-            EventManager.on(<any>EngineEvent.BEFORE_INIT, this._beforeInitHandler);
+        protected createShadowMap(){
+            return CubemapShadowMapTexture.create();
         }
 
-        public dispose(){
-            if(this.castShadow){
-                this.shadowMap.dispose();
-
-                Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
-            }
+        protected createShadowMapRenderer(){
+            return CubemapShadowMapRenderTargetRenderer.create(this);
         }
     }
 }
