@@ -11,7 +11,6 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
 script:
-  - gulp buildCI
   - npm test
 
 after_success:
