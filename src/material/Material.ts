@@ -154,7 +154,7 @@ module wd {
             this.shader.init();
             this.mapManager.init();
 
-            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_INIT)
+            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_GAMEOBJECT_INIT)
                 .subscribe(() => {
                     self._afterInitHandler();
                 });

@@ -5,18 +5,16 @@ module wd{
         public initWhenCreate(){
             var self = this;
 
-            this._beforeInitSubscription = EventManager.fromEvent(<any>EngineEvent.BEFORE_INIT)
+            this._beforeInitSubscription = EventManager.fromEvent(<any>EngineEvent.BEFORE_GAMEOBJECT_INIT)
                 .subscribe(() => {
                     self.beforeInitHandler();
                 });
         }
 
         public dispose(){
-            if(this.castShadow){
-                this.shadowMap.dispose();
+            this.shadowMap && this.shadowMap.dispose();
 
-                Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
-            }
+            Director.getInstance().scene.removeRenderTargetRenderer(this.shadowMapRenderer);
 
             this._beforeInitSubscription && this._beforeInitSubscription.dispose();
         }

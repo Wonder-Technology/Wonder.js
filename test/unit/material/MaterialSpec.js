@@ -18,29 +18,6 @@ describe("Material", function() {
         expect(material.color).toEqual(wd.Color.create("#ffffff"));
     });
 
-    //describe("useProgram", function(){
-    //    var scene;
-    //
-    //    beforeEach(function(){
-    //        scene = wd.Director.getInstance().scene;
-    //        sandbox.stub(material.shader.program, "use");
-    //    });
-    //
-    //    it("if SceneDispatcher use program, return", function(){
-    //        scene.useProgram(wd.Shader.create());
-    //
-    //        material.useProgram();
-    //
-    //        expect(material.shader.program.use).not.toCalled();
-    //    });
-    //    it("else, use material's shader's program", function () {
-    //        material.useProgram();
-    //
-    //        expect(material.shader.program.use).toCalledOnce();
-    //    });
-    //
-    //});
-
     describe("updateShader", function(){
         var scene;
 
@@ -121,14 +98,14 @@ describe("Material", function() {
             material.init();
 
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
 
 
             expect(material.addShaderLib).toCalledOnce();
 
             material.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(material.addShaderLib).not.toCalledTwice();
         });

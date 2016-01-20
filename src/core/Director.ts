@@ -116,12 +116,8 @@ module wd{
 
             this._initDomEvent();
 
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
-
             uiObjectScene.onEnter();
             uiObjectScene.init();
-
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.AFTER_INIT));
         }
 
         public runUIObjectScene(elapseTime:number){
@@ -167,7 +163,7 @@ module wd{
 
             this._initDomEvent();
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_GAMEOBJECT_INIT));
 
             gameObjectScene.onEnter();
             gameObjectScene.init();
@@ -178,8 +174,8 @@ module wd{
             this._timeController.start();
             this.scheduler.start();
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT));
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _buildLoopStream(){

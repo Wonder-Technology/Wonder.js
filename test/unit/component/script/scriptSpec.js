@@ -284,14 +284,14 @@ describe("script", function () {
             expect(wd.EventManager.trigger.callCount).toEqual(3);
         });
 
-        it("trigger global BEFORE_INIT before trigger script->init", function(){
-            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.BEFORE_INIT)).toCalledBefore(entityObject.execScript.withArgs("init"));
+        it("trigger global BEFORE_GAMEOBJECT_INIT before trigger script->init", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.BEFORE_GAMEOBJECT_INIT)).toCalledBefore(entityObject.execScript.withArgs("init"));
         });
-        it("trigger global AFTER_INIT after trigger script->init", function(){
-            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT)).toCalledAfter(entityObject.execScript.withArgs("init"));
+        it("trigger global AFTER_GAMEOBJECT_INIT after trigger script->init", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_GAMEOBJECT_INIT)).toCalledAfter(entityObject.execScript.withArgs("init"));
         });
-        it("trigger global AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT after trigger global AFTER_INIT", function(){
-            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT)).toCalledAfter(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT));
+        it("trigger global AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT after trigger global AFTER_GAMEOBJECT_INIT", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)).toCalledAfter(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
         });
     });
 });

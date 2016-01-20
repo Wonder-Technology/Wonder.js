@@ -88,6 +88,19 @@ module wd {
          */
         public broadcast(target:EntityObject, eventObject:Event, userData?:any) {
             var self = this;
+            var iterator = (obj:EntityObject) => {
+                var children:wdCb.Collection<EntityObject> = obj.getChildren();
+
+                if(children.getCount() === 0){
+                    return;
+                }
+
+                children.forEach((child:EntityObject) => {
+                    self._triggerWithUserData(child, eventObject, userData, true);
+
+                    iterator(child);
+                });
+            }
 
             if(!target){
                 return;
@@ -97,21 +110,6 @@ module wd {
             eventObject.target = target;
 
             this._triggerWithUserData(target, eventObject, userData, true);
-
-            function iterator(obj:EntityObject){
-                var children:wdCb.Collection<EntityObject> = obj.getChildren();
-
-                if(children.getCount() === 0){
-                    return;
-                }
-
-                children.forEach((child:EntityObject) => {
-                    //self._triggerWithUserData(child, eventObject.copy(), userData, true);
-                    self._triggerWithUserData(child, eventObject, userData, true);
-
-                    iterator(child);
-                });
-            }
 
             iterator(target);
         }

@@ -228,17 +228,6 @@ describe("Director", function () {
             expect(scene.onEnter).toCalledOnce();
         });
 
-        it("trigger BEFORE_INIT bind on uiObjectScene", function(){
-            var sum = 0;
-
-            wd.EventManager.on(scene, wd.EngineEvent.BEFORE_INIT, function(){
-                sum++;
-            });
-
-            director.initUIObjectScene();
-
-            expect(sum).toEqual(1);
-        });
         it("invoke uiObjectScene->onEnter", function () {
             director.initUIObjectScene();
 
@@ -248,17 +237,6 @@ describe("Director", function () {
             director.initUIObjectScene();
 
             expect(scene.init).toCalledOnce();
-        });
-        it("trigger AFTER_INIT bind on uiObjectScene", function(){
-            var sum = 0;
-
-            wd.EventManager.on(scene, wd.EngineEvent.AFTER_INIT, function(){
-                sum++;
-            });
-
-            director.initUIObjectScene();
-
-            expect(sum).toEqual(1);
         });
     });
 
