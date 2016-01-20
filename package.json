@@ -1,9 +1,8 @@
 {
   "name": "wonder",
-  "version": "0.4.0",
+  "version": "0.3.0",
   "scripts": {
     "start": "node ./server/app.js",
-    "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
