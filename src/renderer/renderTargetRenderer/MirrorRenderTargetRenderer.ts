@@ -75,8 +75,8 @@ module wd {
 
         private _getClipPlaneInCameraSpace(vMatrix:Matrix4, plane:Plane){
             var clipPlane = Vector4.create(),
-                p = vMatrix.multiplyVector3(this.texture.getPosition()),
-                n = vMatrix.copy().invert().transpose().multiplyVector3(plane.normal).normalize();
+                p = vMatrix.multiplyPoint(this.texture.getPosition()),
+                n = vMatrix.copy().invert().transpose().multiplyPoint(plane.normal).normalize();
 
             clipPlane.set(n.x, n.y, n.z, -p.dot(n));
 

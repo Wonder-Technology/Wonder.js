@@ -65,7 +65,6 @@ describe("MirrorRenderTargetRenderer", function () {
     tool.test();
 
 
-
     describe("create camera", function(){
         var camera,cameraComponent;
         var texture;
@@ -113,5 +112,46 @@ describe("MirrorRenderTargetRenderer", function () {
             );
         })
     });
+
+    describe("_setClipPlane", function(){
+        describe("set clip plane by Oblique frustum clipping", function(){
+            it("set clip plane in camera space", function(){
+                var geometry = wd.PlaneGeometry.create();
+                geometry.width = 10;
+                geometry.height = 10;
+                geometry.material = {
+                    color: "#ffffff",
+
+                    init:self.sandbox.stub()
+                };
+                geometry.init();
+
+                var mirrorTexture = wd.MirrorTexture.create();
+                mirrorTexture.material = {
+                    geometry: geometry
+                };
+                var mirror = wd.GameObject.create();
+                mirror.addComponent(geometry);
+
+                mirror.transform.rotateLocal(wd.Vector3.create(90, 0, 0));
+                mirror.transform.translateLocal(wd.Vector3.create(0, 0, -10));
+
+                var camera = wd.GameObject.create();
+                camera.transform.translateLocal(wd.Vector3.create(0, 10, 10));
+                camera.transform.lookAt(wd.Vector3.create(0, 10, 0));
+
+                var renderer = new self.RenderTargetRenderer(mirrorTexture);
+
+                var clipPlane = renderer._getClipPlaneInCameraSpace(camera.transform.localToWorldMatrix, mirrorTexture.getPlane());
+
+                expect(testTool.getValues(clipPlane.values)).toEqual(
+                    [0, 0, 1, -10]
+                );
+            });
+
+            //todo test more
+        });
+    });
+
 });
 
