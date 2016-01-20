@@ -40,7 +40,6 @@ module wd {
         public state:UIRendererState = UIRendererState.NORMAL;
         public canvas:HTMLCanvasElement = null;
 
-        private _isInit:boolean = false;
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();
 
         public resetDirty(){
@@ -66,12 +65,8 @@ module wd {
             super.removeFromObject(object);
         }
 
+        @execOnlyOnce("_isInit")
         public init(){
-            if(this._isInit){
-                return;
-            }
-
-            this._isInit = true;
         }
 
         public initWhenCreate(){

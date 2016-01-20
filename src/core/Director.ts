@@ -59,8 +59,6 @@ module wd{
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _domEventManager:DomEventManager = DomEventManager.create();
-        private _isInitUIScene:boolean = false;
-        private _isInitEvent:boolean = false;
 
 
         public initWhenCreate(){
@@ -105,14 +103,9 @@ module wd{
             return this._timeController.deltaTime;
         }
 
+        @execOnlyOnce("_isInitUIScene")
         public initUIObjectScene(){
             var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
-
-            if(this._isInitUIScene){
-                return;
-            }
-
-            this._isInitUIScene = true;
 
             this._initDomEvent();
 
@@ -221,13 +214,8 @@ module wd{
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
         }
 
+        @execOnlyOnce("_isInitDomEvent")
         private _initDomEvent(){
-            if(this._isInitEvent){
-                return;
-            }
-
-            this._isInitEvent = true;
-
             this._eventSubscription = this._domEventManager.initDomEvent();
         }
     }
