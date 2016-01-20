@@ -76,11 +76,11 @@
             var pointLight = wd.GameObject.create();
             pointLight.addComponent(pointLightComponent);
 
-            var pointMaterial = wd.BasicMaterial.create();
-            pointMaterial.color = wd.Color.create("#222222");
+            var pointSphereMaterial = wd.BasicMaterial.create();
+            pointSphereMaterial.color = wd.Color.create("#222222");
 
             var geometry = wd.SphereGeometry.create();
-            geometry.material = pointMaterial;
+            geometry.material = pointSphereMaterial;
             geometry.radius = 1;
             geometry.segment = 20;
 
