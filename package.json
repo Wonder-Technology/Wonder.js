@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "scripts": {
     "start": "node ./server/app.js",
+    "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
@@ -21,7 +22,7 @@
     "gulp-util": "^3.0.7",
     "jasmine-before-all": "^0.1.0",
     "jasmine-node": "^1.14.5",
-    "karma": "<=0.13.15",
+    "karma": "<=0.13.13",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.3",
     "karma-firefox-launcher": "^0.1.7",
