@@ -50,7 +50,6 @@ module wd{
             return DeviceManager.getInstance().view;
         }
 
-        public scriptStreams:wdCb.Hash<wdFrp.Stream> = wdCb.Hash.create<wdFrp.Stream>();
         public scene:SceneDispatcher = null;
         public scheduler:Scheduler = null;
         public renderer:Renderer= null;
@@ -62,6 +61,7 @@ module wd{
         private _domEventManager:DomEventManager = DomEventManager.create();
         private _isFirstStart:boolean = true;
         private _isInitUIScene:boolean = false;
+        private _isInitEvent:boolean = false;
 
 
         public initWhenCreate(){
@@ -115,6 +115,8 @@ module wd{
 
             this._isInitUIScene = true;
 
+            this._initDomEvent();
+
             EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
             uiObjectScene.onEnter();
@@ -135,18 +137,8 @@ module wd{
 
         private _startLoop() {
             var self = this;
-
-            this._gameLoop = wdFrp.judge(
-                () => { return self._isFirstStart; },
-                () => {
-                    return self._buildLoadScriptStream();
-                },
-                () => {
-                    return wdFrp.empty();
-                }
-            )
-            .concat(this._buildInitStream())
-                .ignoreElements()
+            //todo test
+            this._gameLoop = this._buildInitStream()
                 .concat(this._buildLoopStream())
                 .subscribe((time) => {
                     //todo need polyfill
@@ -158,11 +150,6 @@ module wd{
                 });
         }
 
-        private _buildLoadScriptStream(){
-            return wdFrp.fromCollection(this.scriptStreams.getValues())
-                .mergeAll();
-        }
-
         private _buildInitStream(){
             return wdFrp.callFunc(() => {
                 this._init();
@@ -172,8 +159,6 @@ module wd{
         private _init(){
             this._isFirstStart = false;
 
-            this._eventSubscription = this._domEventManager.initDomEvent();
-
             this._initGameObjectScene();
 
             this.initUIObjectScene();
@@ -181,6 +166,8 @@ module wd{
 
         private _initGameObjectScene(){
             var gameObjectScene:GameObjectScene = this.scene.gameObjectScene;
+
+            this._initDomEvent();
 
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_INIT));
 
@@ -238,6 +225,17 @@ module wd{
             }
 
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
+        }
+
+        //todo test
+        private _initDomEvent(){
+            if(this._isInitEvent){
+                return;
+            }
+
+            this._isInitEvent = true;
+
+            this._eventSubscription = this._domEventManager.initDomEvent();
         }
     }
 }

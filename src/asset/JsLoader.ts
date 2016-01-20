@@ -24,9 +24,13 @@ module wd{
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();
 
+                //todo test
+                // use async=false to force scripts to execute in order
+                script.async = false;
+
                 script.addEventListener("error", function (e) {
                     //todo get error message from e(Event)?
-                    reject("error");
+                    reject(`load js file error. url:${url}`);
                 });
 
                 //IE
@@ -53,6 +57,7 @@ module wd{
 
         private _createScript() {
             var script = document.createElement("script");
+
             script.type = "text/javascript";
 
             return script;

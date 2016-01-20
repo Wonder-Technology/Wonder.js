@@ -21,8 +21,9 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createCamera());
+            //add scene.js before add camera.js, so that scene.js->init can execute before camera.js->init
             director.scene.addComponent(wd.Script.create("./scene.js"));
+            director.scene.addChild(createCamera());
 
             director.start();
         }

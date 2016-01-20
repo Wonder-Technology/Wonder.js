@@ -50,8 +50,6 @@ module wd {
                 component.init();
             });
 
-            this.execScript("init");
-
             this.forEach((child:EntityObject) => {
                 child.init();
             });
@@ -68,7 +66,6 @@ module wd {
         }
 
         public onEnter() {
-            this.execScript("onEnter");
         }
 
         public onExit() {

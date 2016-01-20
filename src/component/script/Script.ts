@@ -9,7 +9,7 @@ module wd{
             if(args.length === 0){
                 return new this();
             }
-            if(args.length === 1){
+            else if(args.length === 1){
                 let url = args[0];
 
                 return new this(url);
@@ -46,17 +46,18 @@ module wd{
 
             super.addToObject(entityObject);
 
-            Director.getInstance().scriptStreams.addChild(this.uid.toString(), this.createLoadJsStream()
-                    .do((data:ScriptFileData) => {
-                        self._addScriptToEntityObject(entityObject, data);
-                    })
-            );
+            this.createLoadJsStream()
+                .subscribe((data:ScriptFileData) => {
+                    self._addScriptToEntityObject(entityObject, data);
+
+                    //todo test
+                    entityObject.execScript("onEnter");
+                    entityObject.execScript("init");
+                });
         }
 
         public removeFromObject(entityObject:EntityObject){
             super.removeFromObject(entityObject);
-
-            Director.getInstance().scriptStreams.removeChild(this.uid.toString());
         }
 
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){

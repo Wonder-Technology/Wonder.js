@@ -239,6 +239,10 @@ module wd {
             this.uiObjectScene.onDispose();
         }
 
+        public execScript(method:string, arg?:any){
+            this.gameObjectScene.execScript.apply(this.gameObjectScene, arguments);
+        }
+
         public execEventScript(method:string, arg?:any){
             this.gameObjectScene.execEventScript.apply(this.gameObjectScene, arguments);
         }
