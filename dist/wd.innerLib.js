@@ -1934,28 +1934,12 @@ var wdCb;
         JudgeUtils.isDom = function (obj) {
             return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
         };
-        /**
-         * 判断是否为对象字面量（{}）
-         */
         JudgeUtils.isDirectObject = function (obj) {
             if (Object.prototype.toString.call(obj) === "[object Object]") {
                 return true;
             }
             return false;
         };
-        /**
-         * 检查宿主对象是否可调用
-         *
-         * 任何对象，如果其语义在ECMAScript规范中被定义过，那么它被称为原生对象；
-         环境所提供的，而在ECMAScript规范中没有被描述的对象，我们称之为宿主对象。
-
-         该方法用于特性检测，判断对象是否可用。用法如下：
-
-         MyEngine addEvent():
-         if (Tool.judge.isHostMethod(dom, "addEventListener")) {    //判断dom是否具有addEventListener方法
-            dom.addEventListener(sEventType, fnHandler, false);
-            }
-         */
         JudgeUtils.isHostMethod = function (object, property) {
             var type = typeof object[property];
             return type === "function" ||
@@ -1969,7 +1953,6 @@ var wdCb;
     })();
     wdCb.JudgeUtils = JudgeUtils;
 })(wdCb || (wdCb = {}));
-
 
 var wdCb;
 (function (wdCb) {
@@ -1985,11 +1968,9 @@ var wdCb;
 
 var wdCb;
 (function (wdCb) {
-    // performance.now polyfill
     if ('performance' in wdCb.root === false) {
         wdCb.root.performance = {};
     }
-    // IE 8
     Date.now = (Date.now || function () {
         return new Date().getTime();
     });
@@ -2015,11 +1996,6 @@ var wdCb;
     var Log = (function () {
         function Log() {
         }
-        /**
-         * Output Debug message.
-         * @function
-         * @param {String} message
-         */
         Log.log = function () {
             var messages = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -2030,31 +2006,6 @@ var wdCb;
             }
             this._exec("trace", messages);
         };
-        /**
-         * 断言失败时，会提示错误信息，但程序会继续执行下去
-         * 使用断言捕捉不应该发生的非法情况。不要混淆非法情况与错误情况之间的区别，后者是必然存在的并且是一定要作出处理的。
-         *
-         * 1）对非预期错误使用断言
-         断言中的布尔表达式的反面一定要描述一个非预期错误，下面所述的在一定情况下为非预期错误的一些例子：
-         （1）空指针。
-         （2）输入或者输出参数的值不在预期范围内。
-         （3）数组的越界。
-         非预期错误对应的就是预期错误，我们通常使用错误处理代码来处理预期错误，而使用断言处理非预期错误。在代码执行过程中，有些错误永远不应该发生，这样的错误是非预期错误。断言可以被看成是一种可执行的注释，你不能依赖它来让代码正常工作（《Code Complete 2》）。例如：
-         int nRes = f(); // nRes 由 f 函数控制， f 函数保证返回值一定在 -100 ~ 100
-         Assert(-100 <= nRes && nRes <= 100); // 断言，一个可执行的注释
-         由于 f 函数保证了返回值处于 -100 ~ 100，那么如果出现了 nRes 不在这个范围的值时，就表明一个非预期错误的出现。后面会讲到“隔栏”，那时会对断言有更加深刻的理解。
-         2）不要把需要执行的代码放入断言中
-         断言用于软件的开发和维护，而通常不在发行版本中包含断言。
-         需要执行的代码放入断言中是不正确的，因为在发行版本中，这些代码通常不会被执行，例如：
-         Assert(f()); // f 函数通常在发行版本中不会被执行
-         而使用如下方法则比较安全：
-         res = f();
-         Assert(res); // 安全
-         3）对来源于内部系统的可靠的数据使用断言，而不要对外部不可靠的数据使用断言，对于外部不可靠数据，应该使用错误处理代码。
-         再次强调，把断言看成可执行的注释。
-         * @param cond 如果cond返回false，则断言失败，显示message
-         * @param message
-         */
         Log.assert = function (cond) {
             var messages = [];
             for (var _i = 1; _i < arguments.length; _i++) {
@@ -2072,12 +2023,6 @@ var wdCb;
                 message[_i - 1] = arguments[_i];
             }
             if (cond) {
-                /*!
-                console.error will not interrupt, it will throw error and continue exec the left statements
-
-                but here need interrupt! so not use it here.
-                 */
-                //if (!this._exec("error", arguments, 1)) {
                 throw new Error(Array.prototype.slice.call(arguments, 1).join("\n"));
             }
         };
@@ -2250,7 +2195,6 @@ var wdCb;
     wdCb.Log = Log;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var List = (function () {
@@ -2314,12 +2258,6 @@ var wdCb;
             this._forEach(this.children, func, context);
             return this;
         };
-        //public removeChildAt (index) {
-        //    Log.error(index < 0, "序号必须大于等于0");
-        //
-        //    this.children.splice(index, 1);
-        //}
-        //
         List.prototype.toArray = function () {
             return this.children;
         };
@@ -2354,7 +2292,7 @@ var wdCb;
                 this._forEach(arr, function (value, index) {
                     if (!!func.call(null, value, index)) {
                         result = index;
-                        return wdCb.$BREAK; //如果包含，则置返回值为true,跳出循环
+                        return wdCb.$BREAK;
                     }
                 });
             }
@@ -2365,7 +2303,7 @@ var wdCb;
                         || (value.contain && value.contain(val))
                         || (value.indexOf && value.indexOf(val) > -1)) {
                         result = index;
-                        return wdCb.$BREAK; //如果包含，则置返回值为true,跳出循环
+                        return wdCb.$BREAK;
                     }
                 });
             }
@@ -2400,6 +2338,89 @@ var wdCb;
     wdCb.List = List;
 })(wdCb || (wdCb = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdCb;
+(function (wdCb) {
+    var Collection = (function (_super) {
+        __extends(Collection, _super);
+        function Collection(children) {
+            if (children === void 0) { children = []; }
+            _super.call(this);
+            this.children = children;
+        }
+        Collection.create = function (children) {
+            if (children === void 0) { children = []; }
+            var obj = new this(children);
+            return obj;
+        };
+        Collection.prototype.copy = function (isDeep) {
+            if (isDeep === void 0) { isDeep = false; }
+            return isDeep ? Collection.create(wdCb.ExtendUtils.extendDeep(this.children))
+                : Collection.create(wdCb.ExtendUtils.extend([], this.children));
+        };
+        Collection.prototype.filter = function (func) {
+            var scope = this.children, result = [];
+            this.forEach(function (value, index) {
+                if (!func.call(scope, value, index)) {
+                    return;
+                }
+                result.push(value);
+            });
+            return Collection.create(result);
+        };
+        Collection.prototype.findOne = function (func) {
+            var scope = this.children, result = null;
+            this.forEach(function (value, index) {
+                if (!func.call(scope, value, index)) {
+                    return;
+                }
+                result = value;
+                return wdCb.$BREAK;
+            });
+            return result;
+        };
+        Collection.prototype.reverse = function () {
+            return Collection.create(this.copyChildren().reverse());
+        };
+        Collection.prototype.removeChild = function (arg) {
+            return Collection.create(this.removeChildHelper(arg));
+        };
+        Collection.prototype.sort = function (func, isSortSelf) {
+            if (isSortSelf === void 0) { isSortSelf = false; }
+            if (isSortSelf) {
+                this.children.sort(func);
+                return this;
+            }
+            return Collection.create(this.copyChildren().sort(func));
+        };
+        Collection.prototype.map = function (func) {
+            var resultArr = [];
+            this.forEach(function (e, index) {
+                var result = func(e, index);
+                if (result !== wdCb.$REMOVE) {
+                    resultArr.push(result);
+                }
+            });
+            return Collection.create(resultArr);
+        };
+        Collection.prototype.removeRepeatItems = function () {
+            var resultList = Collection.create();
+            this.forEach(function (item) {
+                if (resultList.hasChild(item)) {
+                    return;
+                }
+                resultList.addChild(item);
+            });
+            return resultList;
+        };
+        return Collection;
+    })(wdCb.List);
+    wdCb.Collection = Collection;
+})(wdCb || (wdCb = {}));
 
 var wdCb;
 (function (wdCb) {
@@ -2584,7 +2605,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdCb;
 (function (wdCb) {
     var Queue = (function (_super) {
@@ -2599,6 +2619,20 @@ var wdCb;
             var obj = new this(children);
             return obj;
         };
+        Object.defineProperty(Queue.prototype, "front", {
+            get: function () {
+                return this.children[this.children.length - 1];
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Queue.prototype, "rear", {
+            get: function () {
+                return this.children[0];
+            },
+            enumerable: true,
+            configurable: true
+        });
         Queue.prototype.push = function (element) {
             this.children.unshift(element);
         };
@@ -2618,7 +2652,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
 var wdCb;
 (function (wdCb) {
     var Stack = (function (_super) {
@@ -2633,6 +2666,13 @@ var wdCb;
             var obj = new this(children);
             return obj;
         };
+        Object.defineProperty(Stack.prototype, "top", {
+            get: function () {
+                return this.children[this.children.length - 1];
+            },
+            enumerable: true,
+            configurable: true
+        });
         Stack.prototype.push = function (element) {
             this.children.push(element);
         };
@@ -2652,24 +2692,12 @@ var wdCb;
     var AjaxUtils = (function () {
         function AjaxUtils() {
         }
-        /*!
-         实现ajax
-
-         ajax({
-         type:"post",//post或者get，非必须
-         url:"test.jsp",//必须的
-         data:"name=dipoo&info=good",//非必须
-         dataType:"json",//text/xml/json，非必须
-         success:function(data){//回调函数，非必须
-         alert(data.name);
-         }
-         });*/
         AjaxUtils.ajax = function (conf) {
-            var type = conf.type; //type参数,可选
-            var url = conf.url; //url参数，必填
-            var data = conf.data; //data参数可选，只有在post请求时需要
-            var dataType = conf.dataType; //datatype参数可选
-            var success = conf.success; //回调函数可选
+            var type = conf.type;
+            var url = conf.url;
+            var data = conf.data;
+            var dataType = conf.dataType;
+            var success = conf.success;
             var error = conf.error;
             var xhr = null;
             var self = this;
@@ -2752,7 +2780,6 @@ var wdCb;
     wdCb.AjaxUtils = AjaxUtils;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var ArrayUtils = (function () {
@@ -2799,7 +2826,6 @@ var wdCb;
     wdCb.ArrayUtils = ArrayUtils;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var ConvertUtils = (function () {
@@ -2809,9 +2835,6 @@ var wdCb;
             if (wdCb.JudgeUtils.isNumber(obj)) {
                 return String(obj);
             }
-            //if (JudgeUtils.isjQuery(obj)) {
-            //    return _jqToString(obj);
-            //}
             if (wdCb.JudgeUtils.isFunction(obj)) {
                 return this._convertCodeToString(obj);
             }
@@ -2828,17 +2851,13 @@ var wdCb;
     wdCb.ConvertUtils = ConvertUtils;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var EventUtils = (function () {
         function EventUtils() {
         }
         EventUtils.bindEvent = function (context, func) {
-            //var args = Array.prototype.slice.call(arguments, 2),
-            //    self = this;
             return function (event) {
-                //return fun.apply(object, [self.wrapEvent(event)].concat(args)); //对事件对象进行包装
                 return func.call(context, event);
             };
         };
@@ -2869,49 +2888,14 @@ var wdCb;
     wdCb.EventUtils = EventUtils;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var ExtendUtils = (function () {
         function ExtendUtils() {
         }
-        /**
-         * 深拷贝
-         *
-         * 示例：
-         * 如果拷贝对象为数组，能够成功拷贝（不拷贝Array原型链上的成员）
-         * expect(extend.extendDeep([1, { x: 1, y: 1 }, "a", { x: 2 }, [2]])).toEqual([1, { x: 1, y: 1 }, "a", { x: 2 }, [2]]);
-         *
-         * 如果拷贝对象为对象，能够成功拷贝（能拷贝原型链上的成员）
-         * var result = null;
-         function A() {
-                };
-         A.prototype.a = 1;
-
-         function B() {
-                };
-         B.prototype = new A();
-         B.prototype.b = { x: 1, y: 1 };
-         B.prototype.c = [{ x: 1 }, [2]];
-
-         var t = new B();
-
-         result = extend.extendDeep(t);
-
-         expect(result).toEqual(
-         {
-             a: 1,
-             b: { x: 1, y: 1 },
-             c: [{ x: 1 }, [2]]
-         });
-         * @param parent
-         * @param child
-         * @returns
-         */
         ExtendUtils.extendDeep = function (parent, child, filter) {
             if (filter === void 0) { filter = function (val, i) { return true; }; }
             var i = null, len = 0, toStr = Object.prototype.toString, sArr = "[object Array]", sOb = "[object Object]", type = "", _child = null;
-            //数组的话，不获得Array原型上的成员。
             if (toStr.call(parent) === sArr) {
                 _child = child || [];
                 for (i = 0, len = parent.length; i < len; i++) {
@@ -2949,9 +2933,6 @@ var wdCb;
             }
             return _child;
         };
-        /**
-         * 浅拷贝
-         */
         ExtendUtils.extend = function (destination, source) {
             var property = "";
             for (property in source) {
@@ -2972,18 +2953,14 @@ var wdCb;
     wdCb.ExtendUtils = ExtendUtils;
 })(wdCb || (wdCb = {}));
 
-
 var wdCb;
 (function (wdCb) {
     var SPLITPATH_REGEX = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-    //reference from
-    //https://github.com/cookfront/learn-note/blob/master/blog-backup/2014/nodejs-path.md
     var PathUtils = (function () {
         function PathUtils() {
         }
         PathUtils.basename = function (path, ext) {
             var f = this._splitPath(path)[2];
-            // TODO: make this comparison case-insensitive on windows?
             if (ext && f.substr(-1 * ext.length) === ext) {
                 f = f.substr(0, f.length - ext.length);
             }
@@ -3024,11 +3001,9 @@ var wdCb;
         PathUtils.dirname = function (path) {
             var result = this._splitPath(path), root = result[0], dir = result[1];
             if (!root && !dir) {
-                //no dirname whatsoever
                 return '.';
             }
             if (dir) {
-                //it has a dirname, strip trailing slash
                 dir = dir.substr(0, dir.length - 1);
             }
             return root + dir;
@@ -3041,6 +3016,20 @@ var wdCb;
     wdCb.PathUtils = PathUtils;
 })(wdCb || (wdCb = {}));
 
+var wdCb;
+(function (wdCb) {
+    var FunctionUtils = (function () {
+        function FunctionUtils() {
+        }
+        FunctionUtils.bind = function (object, func) {
+            return function () {
+                return func.apply(object, arguments);
+            };
+        };
+        return FunctionUtils;
+    })();
+    wdCb.FunctionUtils = FunctionUtils;
+})(wdCb || (wdCb = {}));
 
 var wdCb;
 (function (wdCb) {
@@ -3159,103 +3148,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-
-var wdCb;
-(function (wdCb) {
-    var Collection = (function (_super) {
-        __extends(Collection, _super);
-        function Collection(children) {
-            if (children === void 0) { children = []; }
-            _super.call(this);
-            this.children = children;
-        }
-        Collection.create = function (children) {
-            if (children === void 0) { children = []; }
-            var obj = new this(children);
-            return obj;
-        };
-        Collection.prototype.copy = function (isDeep) {
-            if (isDeep === void 0) { isDeep = false; }
-            return isDeep ? Collection.create(wdCb.ExtendUtils.extendDeep(this.children))
-                : Collection.create(wdCb.ExtendUtils.extend([], this.children));
-        };
-        Collection.prototype.filter = function (func) {
-            var scope = this.children, result = [];
-            this.forEach(function (value, index) {
-                if (!func.call(scope, value, index)) {
-                    return;
-                }
-                result.push(value);
-            });
-            return Collection.create(result);
-        };
-        Collection.prototype.findOne = function (func) {
-            var scope = this.children, result = null;
-            this.forEach(function (value, index) {
-                if (!func.call(scope, value, index)) {
-                    return;
-                }
-                result = value;
-                return wdCb.$BREAK;
-            });
-            return result;
-        };
-        Collection.prototype.reverse = function () {
-            return Collection.create(this.copyChildren().reverse());
-        };
-        Collection.prototype.removeChild = function (arg) {
-            return Collection.create(this.removeChildHelper(arg));
-        };
-        Collection.prototype.sort = function (func) {
-            return Collection.create(this.copyChildren().sort(func));
-        };
-        Collection.prototype.map = function (func) {
-            var resultArr = [];
-            this.forEach(function (e, index) {
-                var result = func(e, index);
-                if (result !== wdCb.$REMOVE) {
-                    resultArr.push(result);
-                }
-                //e && e[handlerName] && e[handlerName].apply(context || e, valueArr);
-            });
-            return Collection.create(resultArr);
-        };
-        Collection.prototype.removeRepeatItems = function () {
-            var resultList = Collection.create();
-            this.forEach(function (item) {
-                if (resultList.hasChild(item)) {
-                    return;
-                }
-                resultList.addChild(item);
-            });
-            return resultList;
-        };
-        return Collection;
-    })(wdCb.List);
-    wdCb.Collection = Collection;
-})(wdCb || (wdCb = {}));
-
-
-var wdCb;
-(function (wdCb) {
-    var FunctionUtils = (function () {
-        function FunctionUtils() {
-        }
-        FunctionUtils.bind = function (object, func) {
-            return function () {
-                return func.apply(object, arguments);
-            };
-        };
-        return FunctionUtils;
-    })();
-    wdCb.FunctionUtils = FunctionUtils;
-})(wdCb || (wdCb = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var wdFrp;
 (function (wdFrp) {
     var JudgeUtils = (function (_super) {
@@ -3271,9 +3163,76 @@ var wdFrp;
         JudgeUtils.isEqual = function (ob1, ob2) {
             return ob1.uid === ob2.uid;
         };
+        JudgeUtils.isIObserver = function (i) {
+            return i.next && i.error && i.completed;
+        };
         return JudgeUtils;
     })(wdCb.JudgeUtils);
     wdFrp.JudgeUtils = JudgeUtils;
+})(wdFrp || (wdFrp = {}));
+
+var wdFrp;
+(function (wdFrp) {
+    wdFrp.fromNodeCallback = function (func, context) {
+        return function () {
+            var funcArgs = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                funcArgs[_i - 0] = arguments[_i];
+            }
+            return wdFrp.createStream(function (observer) {
+                var hander = function (err) {
+                    var args = [];
+                    for (var _i = 1; _i < arguments.length; _i++) {
+                        args[_i - 1] = arguments[_i];
+                    }
+                    if (err) {
+                        observer.error(err);
+                        return;
+                    }
+                    if (args.length <= 1) {
+                        observer.next.apply(observer, args);
+                    }
+                    else {
+                        observer.next(args);
+                    }
+                    observer.completed();
+                };
+                funcArgs.push(hander);
+                func.apply(context, funcArgs);
+            });
+        };
+    };
+    wdFrp.fromStream = function (stream, finishEventName) {
+        if (finishEventName === void 0) { finishEventName = "end"; }
+        stream.pause();
+        return wdFrp.createStream(function (observer) {
+            var dataHandler = function (data) {
+                observer.next(data);
+            }, errorHandler = function (err) {
+                observer.error(err);
+            }, endHandler = function () {
+                observer.completed();
+            };
+            stream.addListener("data", dataHandler);
+            stream.addListener("error", errorHandler);
+            stream.addListener(finishEventName, endHandler);
+            stream.resume();
+            return function () {
+                stream.removeListener("data", dataHandler);
+                stream.removeListener("error", errorHandler);
+                stream.removeListener(finishEventName, endHandler);
+            };
+        });
+    };
+    wdFrp.fromReadableStream = function (stream) {
+        return wdFrp.fromStream(stream, "end");
+    };
+    wdFrp.fromWritableStream = function (stream) {
+        return wdFrp.fromStream(stream, "finish");
+    };
+    wdFrp.fromTransformStream = function (stream) {
+        return wdFrp.fromStream(stream, "finish");
+    };
 })(wdFrp || (wdFrp = {}));
 
 var wdFrp;
@@ -3297,6 +3256,123 @@ var wdFrp;
         return Entity;
     })();
     wdFrp.Entity = Entity;
+})(wdFrp || (wdFrp = {}));
+
+var wdFrp;
+(function (wdFrp) {
+    var Main = (function () {
+        function Main() {
+        }
+        Main.isTest = false;
+        return Main;
+    })();
+    wdFrp.Main = Main;
+})(wdFrp || (wdFrp = {}));
+
+var wdFrp;
+(function (wdFrp) {
+    var Log = wdCb.Log;
+    function assert(cond, message) {
+        if (message === void 0) { message = "contract error"; }
+        Log.error(!cond, message);
+    }
+    wdFrp.assert = assert;
+    function require(InFunc) {
+        return function (target, name, descriptor) {
+            var value = descriptor.value;
+            descriptor.value = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (wdFrp.Main.isTest) {
+                    InFunc.apply(this, args);
+                }
+                return value.apply(this, args);
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.require = require;
+    function ensure(OutFunc) {
+        return function (target, name, descriptor) {
+            var value = descriptor.value;
+            descriptor.value = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                var result = value.apply(this, args), params = [result].concat(args);
+                if (wdFrp.Main.isTest) {
+                    OutFunc.apply(this, params);
+                }
+                return result;
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.ensure = ensure;
+    function requireGetter(InFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get;
+            descriptor.get = function () {
+                if (wdFrp.Main.isTest) {
+                    InFunc.call(this);
+                }
+                return getter.call(this);
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.requireGetter = requireGetter;
+    function requireSetter(InFunc) {
+        return function (target, name, descriptor) {
+            var setter = descriptor.set;
+            descriptor.set = function (val) {
+                if (wdFrp.Main.isTest) {
+                    InFunc.call(this, val);
+                }
+                setter.call(this, val);
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.requireSetter = requireSetter;
+    function ensureGetter(OutFunc) {
+        return function (target, name, descriptor) {
+            var getter = descriptor.get;
+            descriptor.get = function () {
+                var result = getter.call(this);
+                if (wdFrp.Main.isTest) {
+                    OutFunc.call(this, result);
+                }
+                return result;
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.ensureGetter = ensureGetter;
+    function ensureSetter(OutFunc) {
+        return function (target, name, descriptor) {
+            var setter = descriptor.set;
+            descriptor.set = function (val) {
+                var result = setter.call(this, val), params = [result, val];
+                if (wdFrp.Main.isTest) {
+                    OutFunc.apply(this, params);
+                }
+            };
+            return descriptor;
+        };
+    }
+    wdFrp.ensureSetter = ensureSetter;
+    function invariant(func) {
+        return function (target) {
+            if (wdFrp.Main.isTest) {
+                func(target);
+            }
+        };
+    }
+    wdFrp.invariant = invariant;
 })(wdFrp || (wdFrp = {}));
 
 
@@ -3430,8 +3506,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wdFrp;
 (function (wdFrp) {
+    var Log = wdCb.Log;
     var Stream = (function (_super) {
         __extends(Stream, _super);
         function Stream(subscribeFunc) {
@@ -3457,6 +3540,96 @@ var wdFrp;
         };
         Stream.prototype.takeUntil = function (otherStream) {
             return wdFrp.TakeUntilStream.create(this, otherStream);
+        };
+        Stream.prototype.take = function (count) {
+            if (count === void 0) { count = 1; }
+            var self = this;
+            if (count === 0) {
+                return wdFrp.empty();
+            }
+            return wdFrp.createStream(function (observer) {
+                self.subscribe(function (value) {
+                    if (count > 0) {
+                        observer.next(value);
+                    }
+                    count--;
+                    if (count <= 0) {
+                        observer.completed();
+                    }
+                }, function (e) {
+                    observer.error(e);
+                }, function () {
+                    observer.completed();
+                });
+            });
+        };
+        Stream.prototype.takeLast = function (count) {
+            if (count === void 0) { count = 1; }
+            var self = this;
+            if (count === 0) {
+                return wdFrp.empty();
+            }
+            return wdFrp.createStream(function (observer) {
+                var queue = [];
+                self.subscribe(function (value) {
+                    queue.push(value);
+                    if (queue.length > count) {
+                        queue.shift();
+                    }
+                }, function (e) {
+                    observer.error(e);
+                }, function () {
+                    while (queue.length > 0) {
+                        observer.next(queue.shift());
+                    }
+                    observer.completed();
+                });
+            });
+        };
+        Stream.prototype.takeWhile = function (predicate, thisArg) {
+            if (thisArg === void 0) { thisArg = this; }
+            var self = this, bindPredicate = null;
+            bindPredicate = wdCb.FunctionUtils.bind(thisArg, predicate);
+            return wdFrp.createStream(function (observer) {
+                var i = 0, isStart = false;
+                self.subscribe(function (value) {
+                    if (bindPredicate(value, i++, self)) {
+                        try {
+                            observer.next(value);
+                            isStart = true;
+                        }
+                        catch (e) {
+                            observer.error(e);
+                            return;
+                        }
+                    }
+                    else {
+                        if (isStart) {
+                            observer.completed();
+                        }
+                    }
+                }, function (e) {
+                    observer.error(e);
+                }, function () {
+                    observer.completed();
+                });
+            });
+        };
+        Stream.prototype.filter = function (predicate, thisArg) {
+            if (thisArg === void 0) { thisArg = this; }
+            if (this instanceof wdFrp.FilterStream) {
+                var self_1 = this;
+                return self_1.internalFilter(predicate, thisArg);
+            }
+            return wdFrp.FilterStream.create(this, predicate, thisArg);
+        };
+        Stream.prototype.filterWithState = function (predicate, thisArg) {
+            if (thisArg === void 0) { thisArg = this; }
+            if (this instanceof wdFrp.FilterStream) {
+                var self_2 = this;
+                return self_2.internalFilter(predicate, thisArg);
+            }
+            return wdFrp.FilterWithStateStream.create(this, predicate, thisArg);
         };
         Stream.prototype.concat = function () {
             var args = null;
@@ -3488,9 +3661,9 @@ var wdFrp;
         Stream.prototype.ignoreElements = function () {
             return wdFrp.IgnoreElementsStream.create(this);
         };
-        Stream.prototype.handleSubject = function (arg) {
-            if (this._isSubject(arg)) {
-                this._setSubject(arg);
+        Stream.prototype.handleSubject = function (subject) {
+            if (this._isSubject(subject)) {
+                this._setSubject(subject);
                 return true;
             }
             return false;
@@ -3501,6 +3674,18 @@ var wdFrp;
         Stream.prototype._setSubject = function (subject) {
             subject.source = this;
         };
+        __decorate([
+            wdFrp.require(function (count) {
+                if (count === void 0) { count = 1; }
+                wdFrp.assert(count >= 0, Log.info.FUNC_SHOULD("count", ">= 0"));
+            })
+        ], Stream.prototype, "take", null);
+        __decorate([
+            wdFrp.require(function (count) {
+                if (count === void 0) { count = 1; }
+                wdFrp.assert(count >= 0, Log.info.FUNC_SHOULD("count", ">= 0"));
+            })
+        ], Stream.prototype, "takeLast", null);
         return Stream;
     })(wdFrp.Entity);
     wdFrp.Stream = Stream;
@@ -3922,9 +4107,9 @@ var wdFrp;
                 this.onError(e);
             }
         };
-        AutoDetachObserver.prototype.onError = function (err) {
+        AutoDetachObserver.prototype.onError = function (error) {
             try {
-                this.onUserError(err);
+                this.onUserError(error);
             }
             catch (e) {
                 throw e;
@@ -4299,6 +4484,104 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var wdFrp;
 (function (wdFrp) {
+    var FilterObserver = (function (_super) {
+        __extends(FilterObserver, _super);
+        function FilterObserver(prevObserver, predicate, source) {
+            _super.call(this, null, null, null);
+            this.prevObserver = null;
+            this.source = null;
+            this.i = 0;
+            this.predicate = null;
+            this.prevObserver = prevObserver;
+            this.predicate = predicate;
+            this.source = source;
+        }
+        FilterObserver.create = function (prevObserver, predicate, source) {
+            return new this(prevObserver, predicate, source);
+        };
+        FilterObserver.prototype.onNext = function (value) {
+            try {
+                if (this.predicate(value, this.i++, this.source)) {
+                    this.prevObserver.next(value);
+                }
+            }
+            catch (e) {
+                this.prevObserver.error(e);
+            }
+        };
+        FilterObserver.prototype.onError = function (error) {
+            this.prevObserver.error(error);
+        };
+        FilterObserver.prototype.onCompleted = function () {
+            this.prevObserver.completed();
+        };
+        return FilterObserver;
+    })(wdFrp.Observer);
+    wdFrp.FilterObserver = FilterObserver;
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdFrp;
+(function (wdFrp) {
+    var FilterWithStateObserver = (function (_super) {
+        __extends(FilterWithStateObserver, _super);
+        function FilterWithStateObserver() {
+            _super.apply(this, arguments);
+            this._isTrigger = false;
+        }
+        FilterWithStateObserver.create = function (prevObserver, predicate, source) {
+            return new this(prevObserver, predicate, source);
+        };
+        FilterWithStateObserver.prototype.onNext = function (value) {
+            var data = null;
+            try {
+                if (this.predicate(value, this.i++, this.source)) {
+                    if (!this._isTrigger) {
+                        data = {
+                            value: value,
+                            state: wdFrp.FilterState.ENTER
+                        };
+                    }
+                    else {
+                        data = {
+                            value: value,
+                            state: wdFrp.FilterState.TRIGGER
+                        };
+                    }
+                    this.prevObserver.next(data);
+                    this._isTrigger = true;
+                }
+                else {
+                    if (this._isTrigger) {
+                        data = {
+                            value: value,
+                            state: wdFrp.FilterState.LEAVE
+                        };
+                        this.prevObserver.next(data);
+                    }
+                    this._isTrigger = false;
+                }
+            }
+            catch (e) {
+                this.prevObserver.error(e);
+            }
+        };
+        return FilterWithStateObserver;
+    })(wdFrp.FilterObserver);
+    wdFrp.FilterWithStateObserver = FilterWithStateObserver;
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdFrp;
+(function (wdFrp) {
     var BaseStream = (function (_super) {
         __extends(BaseStream, _super);
         function BaseStream() {
@@ -4505,12 +4788,24 @@ var wdFrp;
             var obj = new this(subscribeFunc);
             return obj;
         };
-        AnonymousStream.prototype.subscribe = function (onNext, onError, onCompleted) {
+        AnonymousStream.prototype.subscribe = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
             var observer = null;
-            if (this.handleSubject(arguments[0])) {
+            if (args[0] instanceof wdFrp.Subject) {
+                var subject = args[0];
+                this.handleSubject(subject);
                 return;
             }
-            observer = wdFrp.AutoDetachObserver.create(onNext, onError, onCompleted);
+            else if (wdFrp.JudgeUtils.isIObserver(args[0])) {
+                observer = wdFrp.AutoDetachObserver.create(args[0]);
+            }
+            else {
+                var onNext = args[0], onError = args[1] || null, onCompleted = args[2] || null;
+                observer = wdFrp.AutoDetachObserver.create(onNext, onError, onCompleted);
+            }
             observer.setDisposable(this.buildStream(observer));
             return observer;
         };
@@ -4796,6 +5091,76 @@ var wdFrp;
     wdFrp.DeferStream = DeferStream;
 })(wdFrp || (wdFrp = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdFrp;
+(function (wdFrp) {
+    var FilterStream = (function (_super) {
+        __extends(FilterStream, _super);
+        function FilterStream(source, predicate, thisArg) {
+            _super.call(this, null);
+            this.predicate = null;
+            this._source = null;
+            this._source = source;
+            this.predicate = wdCb.FunctionUtils.bind(thisArg, predicate);
+        }
+        FilterStream.create = function (source, predicate, thisArg) {
+            var obj = new this(source, predicate, thisArg);
+            return obj;
+        };
+        FilterStream.prototype.subscribeCore = function (observer) {
+            return this._source.subscribe(this.createObserver(observer));
+        };
+        FilterStream.prototype.internalFilter = function (predicate, thisArg) {
+            return this.createStreamForInternalFilter(this._source, this._innerPredicate(predicate, this), thisArg);
+        };
+        FilterStream.prototype.createObserver = function (observer) {
+            return wdFrp.FilterObserver.create(observer, this.predicate, this);
+        };
+        FilterStream.prototype.createStreamForInternalFilter = function (source, innerPredicate, thisArg) {
+            return FilterStream.create(source, innerPredicate, thisArg);
+        };
+        FilterStream.prototype._innerPredicate = function (predicate, self) {
+            var _this = this;
+            return function (value, i, o) {
+                return self.predicate(value, i, o) && predicate.call(_this, value, i, o);
+            };
+        };
+        return FilterStream;
+    })(wdFrp.BaseStream);
+    wdFrp.FilterStream = FilterStream;
+})(wdFrp || (wdFrp = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wdFrp;
+(function (wdFrp) {
+    var FilterWithStateStream = (function (_super) {
+        __extends(FilterWithStateStream, _super);
+        function FilterWithStateStream() {
+            _super.apply(this, arguments);
+        }
+        FilterWithStateStream.create = function (source, predicate, thisArg) {
+            var obj = new this(source, predicate, thisArg);
+            return obj;
+        };
+        FilterWithStateStream.prototype.createObserver = function (observer) {
+            return wdFrp.FilterWithStateObserver.create(observer, this.predicate, this);
+        };
+        FilterWithStateStream.prototype.createStreamForInternalFilter = function (source, innerPredicate, thisArg) {
+            return FilterWithStateStream.create(source, innerPredicate, thisArg);
+        };
+        return FilterWithStateStream;
+    })(wdFrp.FilterStream);
+    wdFrp.FilterWithStateStream = FilterWithStateStream;
+})(wdFrp || (wdFrp = {}));
+
 var wdFrp;
 (function (wdFrp) {
     wdFrp.createStream = function (subscribeFunc) {
@@ -4849,6 +5214,16 @@ var wdFrp;
             observer.completed();
         });
     };
+})(wdFrp || (wdFrp = {}));
+
+var wdFrp;
+(function (wdFrp) {
+    (function (FilterState) {
+        FilterState[FilterState["TRIGGER"] = 0] = "TRIGGER";
+        FilterState[FilterState["ENTER"] = 1] = "ENTER";
+        FilterState[FilterState["LEAVE"] = 2] = "LEAVE";
+    })(wdFrp.FilterState || (wdFrp.FilterState = {}));
+    var FilterState = wdFrp.FilterState;
 })(wdFrp || (wdFrp = {}));
 
 var wdFrp;
@@ -4939,13 +5314,31 @@ var wdFrp;
             configurable: true
         });
         MockObserver.prototype.onNext = function (value) {
-            this._messages.push(wdFrp.Record.create(this._scheduler.clock, value));
+            var record = null;
+            if (wdFrp.JudgeUtils.isDirectObject(value)) {
+                record = wdFrp.Record.create(this._scheduler.clock, value, wdFrp.ActionType.NEXT, function (a, b) {
+                    var result = true;
+                    for (var i in a) {
+                        if (a.hasOwnProperty(i)) {
+                            if (a[i] !== b[i]) {
+                                result = false;
+                                break;
+                            }
+                        }
+                    }
+                    return result;
+                });
+            }
+            else {
+                record = wdFrp.Record.create(this._scheduler.clock, value, wdFrp.ActionType.NEXT);
+            }
+            this._messages.push(record);
         };
         MockObserver.prototype.onError = function (error) {
-            this._messages.push(wdFrp.Record.create(this._scheduler.clock, error));
+            this._messages.push(wdFrp.Record.create(this._scheduler.clock, error, wdFrp.ActionType.ERROR));
         };
         MockObserver.prototype.onCompleted = function () {
-            this._messages.push(wdFrp.Record.create(this._scheduler.clock, null));
+            this._messages.push(wdFrp.Record.create(this._scheduler.clock, null, wdFrp.ActionType.COMPLETED));
         };
         MockObserver.prototype.dispose = function () {
             _super.prototype.dispose.call(this);
@@ -5006,7 +5399,23 @@ var wdFrp;
             this._isReset = isReset;
         }
         TestScheduler.next = function (tick, value) {
-            return wdFrp.Record.create(tick, value, wdFrp.ActionType.NEXT);
+            if (wdFrp.JudgeUtils.isDirectObject(value)) {
+                return wdFrp.Record.create(tick, value, wdFrp.ActionType.NEXT, function (a, b) {
+                    var result = true;
+                    for (var i in a) {
+                        if (a.hasOwnProperty(i)) {
+                            if (a[i] !== b[i]) {
+                                result = false;
+                                break;
+                            }
+                        }
+                    }
+                    return result;
+                });
+            }
+            else {
+                return wdFrp.Record.create(tick, value, wdFrp.ActionType.NEXT);
+            }
         };
         TestScheduler.error = function (tick, error) {
             return wdFrp.Record.create(tick, error, wdFrp.ActionType.ERROR);
@@ -5223,69 +5632,5 @@ var wdFrp;
         return TestStream;
     })(wdFrp.BaseStream);
     wdFrp.TestStream = TestStream;
-})(wdFrp || (wdFrp = {}));
-
-var wdFrp;
-(function (wdFrp) {
-    wdFrp.fromNodeCallback = function (func, context) {
-        return function () {
-            var funcArgs = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                funcArgs[_i - 0] = arguments[_i];
-            }
-            return wdFrp.createStream(function (observer) {
-                var hander = function (err) {
-                    var args = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        args[_i - 1] = arguments[_i];
-                    }
-                    if (err) {
-                        observer.error(err);
-                        return;
-                    }
-                    if (args.length <= 1) {
-                        observer.next.apply(observer, args);
-                    }
-                    else {
-                        observer.next(args);
-                    }
-                    observer.completed();
-                };
-                funcArgs.push(hander);
-                func.apply(context, funcArgs);
-            });
-        };
-    };
-    wdFrp.fromStream = function (stream, finishEventName) {
-        if (finishEventName === void 0) { finishEventName = "end"; }
-        stream.pause();
-        return wdFrp.createStream(function (observer) {
-            var dataHandler = function (data) {
-                observer.next(data);
-            }, errorHandler = function (err) {
-                observer.error(err);
-            }, endHandler = function () {
-                observer.completed();
-            };
-            stream.addListener("data", dataHandler);
-            stream.addListener("error", errorHandler);
-            stream.addListener(finishEventName, endHandler);
-            stream.resume();
-            return function () {
-                stream.removeListener("data", dataHandler);
-                stream.removeListener("error", errorHandler);
-                stream.removeListener(finishEventName, endHandler);
-            };
-        });
-    };
-    wdFrp.fromReadableStream = function (stream) {
-        return wdFrp.fromStream(stream, "end");
-    };
-    wdFrp.fromWritableStream = function (stream) {
-        return wdFrp.fromStream(stream, "finish");
-    };
-    wdFrp.fromTransformStream = function (stream) {
-        return wdFrp.fromStream(stream, "finish");
-    };
 })(wdFrp || (wdFrp = {}));
 

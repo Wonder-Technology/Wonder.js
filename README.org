@@ -29,8 +29,13 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- Event System
+  - EventTriggerDetector
 - UI
-  - TTF Font, Bitmap Font
+  - Ttf Font, Bitmap Font
+  - ProgressBar
+  - Image
+  - Button
 - Picking
   - RayCast Picking
 - Collider
@@ -52,6 +57,7 @@ Join us, We can create the amazing 3D world together!
   - Reflection,Refraction,Fresnel
 - Script
   - User Script
+  - Event Script
 - Shader
   - Custom Shader
 - Shadow
@@ -175,4 +181,6 @@ Here shows a spinning cube sample:
 #+END_SRC
 * License
 MIT Licence
+
+
 

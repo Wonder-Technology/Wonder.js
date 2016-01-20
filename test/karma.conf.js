@@ -27,7 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
+
+        //'test/unit/**/SourceLightSpec*',
+
+        //'test/unit/**/RigidBodySpec*',
 
         //'test/unit/**/MirrorRender*',
 
@@ -119,7 +123,7 @@
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/component/**/*Animation*.js',
-        'test/unit/**/MaterialSpec.js',
+        //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
