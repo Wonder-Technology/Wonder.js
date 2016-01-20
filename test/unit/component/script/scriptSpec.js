@@ -263,4 +263,32 @@ describe("script", function () {
             }, done);
         });
     });
+
+    describe("trigger global event after script loaded", function(){
+        var entityObject;
+
+        beforeEach(function(){
+            var data = {
+                class:function(){},
+                name:""
+            };
+            entityObject = wd.GameObject.create();
+
+
+            sandbox.stub(wd.EventManager, "trigger");
+            sandbox.stub(wd.CustomEvent, "create");
+            sandbox.stub(entityObject, "execScript");
+
+            script._handlerAfterLoadedScript(data, entityObject);
+
+            expect(wd.EventManager.trigger).toCalledTwice();
+        });
+
+        it("trigger global AFTER_INIT after trigger script->init", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT)).toCalledAfter(entityObject.execScript.withArgs("init"));
+        });
+        it("trigger global AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT after trigger global AFTER_INIT", function(){
+            expect(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT)).toCalledAfter(wd.CustomEvent.create.withArgs(wd.EngineEvent.AFTER_INIT));
+        });
+    });
 });

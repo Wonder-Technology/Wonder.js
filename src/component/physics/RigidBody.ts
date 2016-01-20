@@ -46,22 +46,27 @@ module wd {
         public hingeConstraint:HingeConstraint = HingeConstraint.create(this);
         public pointToPointConstraintList:PointToPointConstraintList = PointToPointConstraintList.create(this);
 
+        private _afterInitSubscription:wdFrp.IDisposable = null;
+        private _afterInitRigidbodyAddConstraintSubscription:wdFrp.IDisposable = null;
+
         public init() {
             var self = this;
 
             /*!
             addBody should after its and its children's collider component init
              */
-            EventManager.on(<any>EngineEvent.AFTER_INIT, () => {
-                self.addBody();
-            });
+            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_INIT)
+                .subscribe(() => {
+                    self._afterInitHandler();
+                });
 
             /*!
             add constraint should after all body added
              */
-            EventManager.on(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT, () => {
-                self.addConstraint();
-            });
+            this._afterInitRigidbodyAddConstraintSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT)
+                .subscribe(() => {
+                    self._afterInitRigidbodyAddConstraintHandler();
+                });
         }
 
         public addConstraint(){
@@ -102,6 +107,9 @@ module wd {
             this._children.forEach((child:GameObject) => {
                 child.removeTag("isRigidbodyChild");
             }, this);
+
+            this._afterInitSubscription && this._afterInitSubscription.dispose();
+            this._afterInitRigidbodyAddConstraintSubscription && this._afterInitRigidbodyAddConstraintSubscription.dispose();
         }
 
         public getPhysicsEngineAdapter() {
@@ -163,6 +171,16 @@ module wd {
             var rigidBody = entityObject.getComponent<RigidBody>(RigidBody);
 
             return rigidBody.children.getCount() > 0;
+        }
+
+        @execOnlyOnce("_isAfterInit")
+        private _afterInitHandler(){
+            this.addBody();
+        }
+
+        @execOnlyOnce("_isAfterInitRigidbodyAddConstraint")
+        private _afterInitRigidbodyAddConstraintHandler(){
+            this.addConstraint();
         }
     }
 }

@@ -62,7 +62,7 @@ module wd{
 
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT));
 
-            //todo AFTER_XXX
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
