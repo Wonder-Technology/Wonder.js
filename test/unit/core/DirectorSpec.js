@@ -227,6 +227,7 @@ describe("Director", function () {
 
             expect(scene.onEnter).toCalledOnce();
         });
+
         it("trigger BEFORE_INIT bind on uiObjectScene", function(){
             var sum = 0;
 
@@ -258,6 +259,32 @@ describe("Director", function () {
             director.initUIObjectScene();
 
             expect(sum).toEqual(1);
+        });
+    });
+
+    describe("init dom event", function(){
+        beforeEach(function(){
+            sandbox.stub(director._domEventManager, "initDomEvent");
+        });
+
+        it("initUIObjectScene can init dom event", function(){
+            director.initUIObjectScene();
+
+            expect(director._domEventManager.initDomEvent).toCalledOnce();
+        });
+        it("_init can init dom event", function(){
+            director._init();
+
+            expect(director._domEventManager.initDomEvent).toCalledOnce();
+        });
+        it("can only init once", function(){
+            director.initUIObjectScene();
+
+            expect(director._domEventManager.initDomEvent).toCalledOnce();
+
+            director._init();
+
+            expect(director._domEventManager.initDomEvent).toCalledOnce();
         });
     });
 

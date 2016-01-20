@@ -59,7 +59,6 @@ module wd{
         private _gameState:GameState = GameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _domEventManager:DomEventManager = DomEventManager.create();
-        private _isFirstStart:boolean = true;
         private _isInitUIScene:boolean = false;
         private _isInitEvent:boolean = false;
 
@@ -137,8 +136,9 @@ module wd{
 
         private _startLoop() {
             var self = this;
-            //todo test
+
             this._gameLoop = this._buildInitStream()
+                .ignoreElements()
                 .concat(this._buildLoopStream())
                 .subscribe((time) => {
                     //todo need polyfill
@@ -157,8 +157,6 @@ module wd{
         }
 
         private _init(){
-            this._isFirstStart = false;
-
             this._initGameObjectScene();
 
             this.initUIObjectScene();
@@ -227,7 +225,6 @@ module wd{
             EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
         }
 
-        //todo test
         private _initDomEvent(){
             if(this._isInitEvent){
                 return;
