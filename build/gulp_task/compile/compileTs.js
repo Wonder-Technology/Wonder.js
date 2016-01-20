@@ -20,8 +20,6 @@ var distFilePaths = [
 var definitionsPath = "src/filePath.d.ts";
 var tsconfigFile = [
     "src/tsconfig.json"
-    //"src/tsconfig_wd.json",
-    //"src/tsconfig_wd_debug.json"
 ];
 
 
