@@ -13,6 +13,8 @@ require("./build/gulp_task/test/test");
 
 gulp.task("build", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTs", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
 
+gulp.task("buildCI", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig", "compileTsDebug", "combineInnerLib", "removeReference", "compress"]));
+
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
 var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl"];
