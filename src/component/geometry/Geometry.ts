@@ -5,12 +5,12 @@ module wd{
             return this._material;
         }
         set material(material:Material){
-            if(material !== this._material){
+            if(!JudgeUtils.isEqual(material, this._material)){
+                this._material = material;
+                this._material.geometry = this;
+
                 EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.MATERIAL_CHANGE));
             }
-
-            this._material = material;
-            this._material.geometry = this;
         }
 
         get geometryData(){
@@ -50,20 +50,6 @@ module wd{
             this.computeNormals();
         }
 
-        @virtual
-        protected computeNormals(){
-            if(this.isSmoothShading()){
-                if(!this.hasVertexNormals()){
-                    this.computeVertexNormals();
-                }
-            }
-            else{
-                if(!this.hasFaceNormals()){
-                    this.computeFaceNormals();
-                }
-            }
-        }
-
         @require(function(){
             assert(this.buffers && this.buffers.geometryData, Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
         })
@@ -100,6 +86,20 @@ module wd{
         }
 
         protected abstract computeData(): GeometryDataType;
+
+        @virtual
+        protected computeNormals(){
+            if(this.isSmoothShading()){
+                if(!this.hasVertexNormals()){
+                    this.computeVertexNormals();
+                }
+            }
+            else{
+                if(!this.hasFaceNormals()){
+                    this.computeFaceNormals();
+                }
+            }
+        }
 
         @virtual
         protected createBufferContainer():BufferContainer{

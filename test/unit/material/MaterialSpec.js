@@ -66,4 +66,71 @@ describe("Material", function() {
             expect(material.shader.update).toCalledWith(quadCmd, material);
         });
     });
+    
+    describe("fix bug: if create material and init material in script, Material->init->'after init logic' should be executed", function(){
+        var newMaterial;
+
+        function MaterialScript(){
+        }
+
+        MaterialScript.prototype.onEnter = function(){
+
+        }
+
+        MaterialScript.prototype.init = function(){
+            newMaterial = new wd.Material();
+            newMaterial.init();
+
+            sandbox.stub(newMaterial, "_addTopShaderLib");
+            sandbox.stub(newMaterial, "addShaderLib");
+        }
+
+        beforeEach(function(){
+        });
+
+        it("test", function(){
+            var director = wd.Director.getInstance();
+
+            director._init();
+
+            wd.Script.create()._handlerAfterLoadedScript({name: "material", class: MaterialScript}, director.scene);
+
+
+            director._loopBody(1);
+
+            expect(newMaterial._addTopShaderLib).toCalledOnce();
+            expect(newMaterial.addShaderLib).toCalledOnce();
+        });
+    });
+    
+    describe("dispose", function(){
+        beforeEach(function(){
+            
+        });
+        
+        it("dispose mapManager", function(){
+            sandbox.stub(material.mapManager, "dispose");
+
+            material.dispose();
+
+            expect(material.mapManager.dispose).toCalledOnce();
+        });
+        it("dispose 'after init event' subscription", function(){
+            sandbox.stub(material, "addShaderLib");
+
+            material.init();
+
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+
+
+            expect(material.addShaderLib).toCalledOnce();
+
+            material.dispose();
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_INIT));
+
+            expect(material.addShaderLib).not.toCalledTwice();
+        });
+    });
 });

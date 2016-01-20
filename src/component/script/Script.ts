@@ -47,11 +47,22 @@ module wd{
 
             this.createLoadJsStream()
                 .subscribe((data:ScriptFileData) => {
-                    self._addScriptToEntityObject(entityObject, data);
-
-                    entityObject.execScript("onEnter", null, true);
-                    entityObject.execScript("init", null, true);
+                    self._handlerAfterLoadedScript(data, entityObject);
                 });
+        }
+
+        private _handlerAfterLoadedScript(data:ScriptFileData, entityObject:EntityObject){
+            this._addScriptToEntityObject(entityObject, data);
+            entityObject.execScript("onEnter", null, true);
+
+            //todo test
+            //todo before_init
+
+            entityObject.execScript("init", null, true);
+
+            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_INIT));
+
+            //todo AFTER_XXX
         }
 
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){

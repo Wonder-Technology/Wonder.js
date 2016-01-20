@@ -142,6 +142,7 @@ module wd {
         public mapMixRatio:number = 0.5;
         public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
+        private _afterInitSubscription:wdFrp.IDisposable = null;
 
 
         @require(function(){
@@ -153,14 +154,16 @@ module wd {
             this.shader.init();
             this.mapManager.init();
 
-            EventManager.on(<any>EngineEvent.AFTER_INIT, () => {
-                self._addTopShaderLib();
-                self.addShaderLib();
-            });
+            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_INIT)
+                .subscribe(() => {
+                    self._afterInitHandler();
+                });
         }
 
         public dispose(){
             this.mapManager.dispose();
+
+            this._afterInitSubscription && this._afterInitSubscription.dispose();
         }
 
         public updateTexture(){
@@ -233,6 +236,12 @@ module wd {
             }
 
             return false;
+        }
+
+        @execOnlyOnce("_isAfterInit")
+        private _afterInitHandler(){
+            this._addTopShaderLib();
+            this.addShaderLib();
         }
     }
 
