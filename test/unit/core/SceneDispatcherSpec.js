@@ -109,28 +109,9 @@ describe("SceneDispatcher", function() {
                 expect(material.mapManager.init).toCalledOnce();
                 expect(material.shader.init).toCalledOnce();
             });
-            it("invoke scene and it's children's script->init", function(){
-                scene.init();
-
-                expect(script1.init).toCalledOnce();
-                expect(script2.init).toCalledOnce();
-                expect(script3.init).toCalledOnce();
-                expect(script4.init).toCalledOnce();
-                expect(script1.init).toCalledBefore(script3.init);
-                expect(script3.init).toCalledBefore(script2.init);
-                expect(script2.init).toCalledBefore(script4.init);
-            });
         });
 
         describe("onEnter", function(){
-            it("invoke scene's script->onEnter", function(){
-                scene.onEnter();
-
-                expect(script1.onEnter).toCalledOnce();
-                expect(script2.onEnter).not.toCalled();
-                expect(script3.onEnter).not.toCalled();
-                expect(script4.onEnter).not.toCalled();
-            })
         });
 
         describe("onExit", function(){
@@ -358,20 +339,6 @@ describe("SceneDispatcher", function() {
                 expect(scene.actionManager.hasChild(component)).toBeTruthy();
             });
         });
-
-        describe("if component is Script", function(){
-            it("add load stream to Director->scriptStreams", function(){
-                var stream = new wdFrp.Stream();
-                var component = wd.Script.create("aaa.js");
-                sandbox.stub(component, "createLoadJsStream").returns({
-                    do:sandbox.stub().returns(stream)
-                });
-
-                scene.addComponent(component);
-
-                expect(wd.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeTruthy();
-            });
-        });
     });
 
     describe("removeComponent", function(){
@@ -400,21 +367,6 @@ describe("SceneDispatcher", function() {
                 scene.removeComponent(component);
 
                 expect(scene.actionManager.hasChild(component)).toBeFalsy();
-            });
-        });
-
-        describe("if component is Script", function(){
-            it("remove load stream to Director->scriptStreams", function(){
-                var stream = new wdFrp.Stream();
-                var component = wd.Script.create("aaa.js");
-                sandbox.stub(component, "createLoadJsStream").returns({
-                    do:sandbox.stub().returns(stream)
-                });
-                scene.addComponent(component);
-
-                scene.removeComponent(component);
-
-                expect(wd.Director.getInstance().scriptStreams.hasChild(component.uid.toString())).toBeFalsy();
             });
         });
     });

@@ -54,10 +54,6 @@ module wd{
                 });
         }
 
-        public removeFromObject(entityObject:EntityObject){
-            super.removeFromObject(entityObject);
-        }
-
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){
             entityObject.scriptList.addChild(data.name, new data.class(entityObject));
         }

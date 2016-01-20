@@ -752,7 +752,7 @@ describe("BitmapFont", function () {
 
             });
 
-            it("if the new data equal old data, not dirty and not update text", function(){
+            it("if the new data equal old data, not dirty and not reformat text", function(){
                 font.text = "正ab";
                 setWidth(1000);
                 sandbox.stub(font, "reFormat");

@@ -77,26 +77,14 @@ module wd {
                 dw = null,
                 dh = null;
 
-            //super.update(elapsedTime);
-            //
-            //if(this.rectRegion === null || (this.width === 0 && this.height === 0)){
-            //    return;
-            //}
-
             transform = this.entityObject.transform;
             position = transform.position;
 
             dw = this.width;
             dh = this.height;
 
-            //this.context.save();
-            //
-            //this.setCanvasTransformForRotation();
-
             this.drawInCenterPoint(this.context, this.image, this.rectRegion.x, this.rectRegion.y, this.rectRegion.width, this.rectRegion.height,
                 position, dw, dh);
-
-            //this.context.restore();
         }
     }
 }

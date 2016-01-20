@@ -24,7 +24,6 @@ module wd{
             return wdFrp.fromPromise(new RSVP.Promise((resolve, reject) => {
                 var script:any = self._createScript();
 
-                //todo test
                 // use async=false to force scripts to execute in order
                 script.async = false;
 
