@@ -6,7 +6,6 @@ module wd {
             return obj;
         }
 
-        //todo test
         private _percent:number = 0;
         get percent(){
             return this._percent;
@@ -44,7 +43,6 @@ module wd {
         protected draw(elapsedTime:number){
             var position = this.entityObject.transform.position;
 
-            //todo test
             this._drawFromLeft(position);
             this._drawBorder(position);
         }

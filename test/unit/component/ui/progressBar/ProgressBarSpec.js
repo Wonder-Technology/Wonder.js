@@ -216,7 +216,7 @@ describe("ProgressBar", function () {
 
                 expect(renderer.context.setTransform).toCalledWith(rotationMatrix.a, rotationMatrix.b, rotationMatrix.c, rotationMatrix.d, rotationMatrix.tx, rotationMatrix.ty);
             });
-            it("draw offScreen canvas", function(){
+            it("draw offScreen canvas from left", function(){
                 uiObject.transform.width = 100;
                 uiObject.transform.height = 50;
 
@@ -226,12 +226,14 @@ describe("ProgressBar", function () {
                 var position = uiObject.transform.position;
                 var dw = 100 * bar.percent;
                 var dh = 50;
+                var loadedWidth = bar.width * bar.percent;
 
                 expect(context.drawImage).toCalledOnce();
                 expect(context.drawImage).toCalledWith(bar._offScreenCanvas, 0, 0,
-                    bar.width * bar.percent,
+                    loadedWidth,
                     bar.height,
-                    position.x - dw / 2, position.y - dh / 2,
+                    position.x - bar.width / 2,
+                    position.y - dh / 2,
                     dw,
                     dh
                 );
@@ -251,6 +253,37 @@ describe("ProgressBar", function () {
         });
     });
 
-    //todo support "change attr(e.g. radius) will cause dirty"
+    describe("change percent should cause dirty", function(){
+        beforeEach(function(){
+            prepareForUpdateBeforeInit();
+            bar.percent = 0.5;
+
+            director.initUIObjectScene();
+
+            director.runUIObjectScene(-1);
+
+            expect(renderer.context.drawImage).toCalledOnce();
+
+
+            director.runUIObjectScene(-1);
+
+            expect(renderer.context.drawImage).not.toCalledTwice();
+        });
+
+        it("if the new data equal old data, not dirty", function(){
+            bar.percent = 0.5;
+
+            director.runUIObjectScene(-1);
+
+            expect(renderer.context.drawImage).not.toCalledTwice();
+        });
+        it("else, dirty", function(){
+            bar.percent = 0.8;
+
+            director.runUIObjectScene(-1);
+
+            expect(renderer.context.drawImage).toCalledTwice();
+        });
+    });
 });
 
