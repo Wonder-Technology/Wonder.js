@@ -4,12 +4,33 @@ var scriptTool = (function () {
             var director = wd.Director.getInstance();
 
             var test = null;
-            var onEnter = director.scene.gameObjectScene.onEnter;
-            director.scene.gameObjectScene.onEnter = function () {
-                test = entityObject.scriptList.getChild(scriptName);
-                judgeOnEnter(test, entityObject);
-                onEnter.call(director.scene);
-            };
+            var execScript = entityObject.execScript;
+
+
+
+
+            entityObject.execScript = function(scriptHandlerName){
+                if(scriptHandlerName === "onEnter"){
+                    test = entityObject.scriptList.getChild(scriptName);
+                    judgeOnEnter(test, entityObject);
+
+                    execScript.apply(entityObject, arguments);
+
+                    return;
+                }
+
+                if(scriptHandlerName === "init"){
+                    execScript.apply(entityObject, arguments);
+
+                    director._loopBody(1);
+
+                    return;
+                }
+
+
+                execScript.apply(entityObject, arguments);
+            }
+
 
             if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
                 director.scene.addChild(entityObject);
@@ -30,7 +51,7 @@ var scriptTool = (function () {
                 done();
             };
 
-            director.start();
+            director._init();
         }
     }
 })();

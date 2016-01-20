@@ -29,7 +29,6 @@ module wd{
             this.url = url;
         }
 
-        //todo prepend script prefix(defined in config data) to relative path?
         public url:string = null;
 
         public createLoadJsStream(){
@@ -50,9 +49,8 @@ module wd{
                 .subscribe((data:ScriptFileData) => {
                     self._addScriptToEntityObject(entityObject, data);
 
-                    //todo test
-                    entityObject.execScript("onEnter");
-                    entityObject.execScript("init");
+                    entityObject.execScript("onEnter", null, true);
+                    entityObject.execScript("init", null, true);
                 });
         }
 

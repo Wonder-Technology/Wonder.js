@@ -20,7 +20,7 @@ describe("script", function () {
         scriptTool.testScript(gameObject, "test", judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
     }
 
-    function testTwoScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
+    function testTwoScript(judgeTest1OnEnter, judgeTest2OnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         var script2 = wd.Script.create();
         var gameObject = wd.GameObject.create();
 
@@ -32,15 +32,54 @@ describe("script", function () {
 
         var test = null;
         var test2 = null;
-        var onEnter = director.scene.gameObjectScene.onEnter;
-        director.scene.gameObjectScene.onEnter = function(){
-            test = gameObject.scriptList.getChild("test");
-            test2 = gameObject.scriptList.getChild("test2");
 
-            judgeOnEnter(test, test2, gameObject);
+        /*!
+         script->handler is invoked before script2->handler
+         */
 
-            onEnter.call(director.scene);
-        };
+        var execScript = gameObject.execScript;
+
+
+        var count = 0;
+
+        gameObject.execScript = function(scriptHandlerName){
+            if(scriptHandlerName !== "onEnter" && scriptHandlerName !== "init"){
+                execScript.apply(gameObject, arguments);
+
+                return
+            }
+
+
+            count ++;
+
+            //script->onEnter
+            if(count === 1){
+                test = gameObject.scriptList.getChild("test");
+                    judgeTest1OnEnter(test, gameObject);
+
+                    execScript.apply(gameObject, arguments);
+            }
+
+            //script->init
+            else if(count === 2){
+                execScript.apply(gameObject, arguments);
+            }
+
+            //script2->onEnter
+            else if(count === 3){
+                test2 = gameObject.scriptList.getChild("test2");
+                judgeTest2OnEnter(test2, gameObject);
+
+                execScript.apply(gameObject, arguments);
+            }
+
+            //script2->init
+            else if(count === 4){
+                execScript.apply(gameObject, arguments);
+
+                director._loopBody(1);
+            }
+        }
 
         director.scene.addChild(gameObject);
 
@@ -59,39 +98,15 @@ describe("script", function () {
             done();
         };
 
-        director.start();
+        director._init();
     }
-
 
     function testSceneScript(judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done){
         script.url = url1;
 
         director.scene.addComponent(script);
 
-        var test = null;
-        var onEnter = director.scene.gameObjectScene.onEnter;
-        director.scene.gameObjectScene.onEnter = function(){
-            test = this.scriptList.getChild("test");
-            judgeOnEnter(test, this);
-            onEnter.call(director.scene.gameObjectScene);
-        };
-
-        var loopBody = director._loopBody;
-        director._loopBody = function(){
-            var time = 100;
-
-            judgeBeforeLoopBody(test, director.scene);
-
-            loopBody.call(director, time);
-
-            judgeAfterLoopBody(test, time, director.scene);
-
-            director.stop();
-
-            done();
-        };
-
-        director.start();
+        scriptTool.testScript(director.scene, "test", judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done);
     }
 
 
@@ -125,22 +140,15 @@ describe("script", function () {
             expect(test.init).toCalledOnce();
             expect(test.isInit).toBeTruthy();
 
-            /*!
-            the script's onEnter,onExit before the loopBody is invoked will not be invoked, because the script is not loaded into engine at that time
-             */
-
-            //expect(test.onEnter).toCalledOnce();
-            expect(test.onEnter).not.toCalled();
+            expect(test.onEnter).toCalledBefore(test.init);
 
         }, function(test, time, gameObject){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(time);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            //expect(test.b).toEqual(-1);
 
             director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
-            //expect(test.b).toEqual(-1);
         }, done);
     });
     it("test director->scene's script", function(done){
@@ -153,9 +161,6 @@ describe("script", function () {
             sandbox.spy(test, "onExit");
             sandbox.spy(test, "onDispose");
         }, function(test){
-            /*!
-                scene->onEnter will be called, because it's invoked after the script is loaded
-             */
             expect(test.onEnter).toCalledBefore(test.init);
         }, function(test, time, scene){
             expect(test.update).toCalledWith(time);
@@ -168,66 +173,48 @@ describe("script", function () {
         }, done);
     });
 
-    it("only load script once at first time of Director->start", function(){
-        sandbox.stub(wdFrp, "intervalRequest").returns(
-            wdFrp.empty()
-        );
-        sandbox.spy(director, "_buildLoadScriptStream");
-        var script = wd.Script.create();
-        var gameObject = wd.GameObject.create();
+    describe("one gameObject can has multi script components", function(){
+        it("script should be exected in added order", function(done){
+            testTwoScript(function(test){
+                sandbox.spy(test, "init");
+                sandbox.spy(test, "update");
+                sandbox.spy(test, "onStartLoop");
+                sandbox.spy(test, "onEndLoop");
+                sandbox.spy(test, "onEnter");
+                sandbox.spy(test, "onExit");
+            }, function(test2){
+                sandbox.spy(test2, "init");
+                sandbox.spy(test2, "update");
+                sandbox.spy(test2, "onStartLoop");
+                sandbox.spy(test2, "onEndLoop");
+                sandbox.spy(test2, "onEnter");
+                sandbox.spy(test2, "onExit");
+            }, function(test, test2){
+                expect(test.init).toCalledOnce();
+                expect(test.isInit).toBeTruthy();
+                expect(test.onEnter).toCalledOnce();
 
-        script.url = url1;
+                expect(test2.init).toCalledOnce();
+                expect(test2.onEnter).toCalledOnce();
 
-        director.scene.addChild(gameObject);
+                expect(test.onEnter).toCalledBefore(test2.onEnter);
+                expect(test.init).toCalledBefore(test2.onEnter);
+            }, function(test, test2, time, gameObject){
+                expect(test.update).toCalledWith(time);
+                expect(test.time).toEqual(100);
+                expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
 
-        director.start();
-        director.stop();
-        director.start();
+                expect(test2.update).toCalledWith(time);
+                expect(test2.onStartLoop).toCalledBefore(test2.onEndLoop);
 
-        expect(director._buildLoadScriptStream.callCount).toEqual(1);
+                director.scene.removeChild(gameObject);
+                expect(test.onExit).toCalledOnce();
+
+                expect(test2.onExit).toCalledOnce();
+            }, done);
+        });
     });
-    it("one gameObject can has multi script components", function(done){
-        testTwoScript(function(test, test2){
-            sandbox.spy(test, "init");
-            sandbox.spy(test, "update");
-            sandbox.spy(test, "onStartLoop");
-            sandbox.spy(test, "onEndLoop");
-            sandbox.spy(test, "onEnter");
-            sandbox.spy(test, "onExit");
 
-            sandbox.spy(test2, "init");
-            sandbox.spy(test2, "update");
-            sandbox.spy(test2, "onStartLoop");
-            sandbox.spy(test2, "onEndLoop");
-            sandbox.spy(test2, "onEnter");
-            sandbox.spy(test2, "onExit");
-        }, function(test, test2){
-            expect(test.init).toCalledOnce();
-            expect(test.isInit).toBeTruthy();
-            //expect(test.onEnter).toCalledOnce();
-            expect(test.onEnter).not.toCalled();
-            //expect(test.a).toEqual(1);
-            //expect(test.a).toEqual(0);
-
-            expect(test2.init).toCalledOnce();
-            //expect(test2.onEnter).toCalledOnce();
-            expect(test2.onEnter).not.toCalled();
-        }, function(test, test2, time, gameObject){
-            expect(test.update).toCalledWith(time);
-            expect(test.time).toEqual(100);
-            expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            //expect(test.b).toEqual(-1);
-
-            expect(test2.update).toCalledWith(time);
-            expect(test2.onStartLoop).toCalledBefore(test2.onEndLoop);
-
-            director.scene.removeChild(gameObject);
-            expect(test.onExit).toCalledOnce();
-            //expect(test.b).toEqual(-1);
-
-            expect(test2.onExit).toCalledOnce();
-        }, done);
-    });
     it("can load js file of relative or absolute path", function(done){
         url1 = "http://" + location.host + "/" + testTool.resPath + "test/res/script/test.js";
 
@@ -241,24 +228,21 @@ describe("script", function () {
         }, function(test){
             expect(test.init).toCalledOnce();
             expect(test.isInit).toBeTruthy();
-            //expect(test.onEnter).toCalledOnce();
-            expect(test.onEnter).not.toCalled();
-            //expect(test.a).toEqual(1);
+            expect(test.onEnter).toCalledOnce();
         }, function(test, time, gameObject){
             expect(test.update).toCalledWith(time);
             expect(test.time).toEqual(time);
             expect(test.onStartLoop).toCalledBefore(test.onEndLoop);
-            //expect(test.b).toEqual(-1);
 
             director.scene.removeChild(gameObject);
             expect(test.onExit).toCalledOnce();
-            //expect(test.b).toEqual(-1);
         }, done);
     });
     it("only load the the script(based on url) once", function(done){
         url2 = url1;
-        testTwoScript(function(test, test2){
+        testTwoScript(function(test){
             expect(test).not.toBeUndefined();
+        }, function(test2){
             expect(test2).toBeUndefined();
         }, function(test, test2){
         }, function(test, test2, time, gameObject){
@@ -267,8 +251,9 @@ describe("script", function () {
 
     describe("communicate with other script component", function(){
         it("comunicate with the gameObject's script component according to visitting it directly", function(done){
-            testTwoScript(function(test, test2){
+            testTwoScript(function(test){
                 sandbox.spy(test, "update");
+            }, function(test2){
                 sandbox.spy(test2, "update");
             }, function(test, test2){
             }, function(test, test2, time, gameObject){
