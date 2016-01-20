@@ -22,9 +22,9 @@ module wd {
             if(this.isBuildUserSpecifyBoundingRegion.apply(this, Array.prototype.slice.call(arguments, 1))){
                 assert(this.shape.center.isEqual(center), Log.info.FUNC_SHOULD_NOT("transform shape when build"));
             }
-            else{
-                assert(this.shape.center.isZero(), Log.info.FUNC_SHOULD_NOT("transform shape when build"));
-            }
+            //else{
+            //    assert(this.shape.center.isZero(), Log.info.FUNC_SHOULD_NOT("transform shape when build"));
+            //}
         })
         public build(center:Vector3, ...args){
             var params = Array.prototype.slice.call(arguments, 0);
