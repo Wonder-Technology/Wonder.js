@@ -27,7 +27,10 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
+
+
+        'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 
@@ -53,7 +56,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
 
-        //'test/unit/**/DirectorSpec*',
+        'test/unit/**/DirectorSpec*',
 
         //'test/unit/**/ProgressBarSpec*',
 

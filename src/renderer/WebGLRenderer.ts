@@ -25,7 +25,7 @@ module wd{
         }
 
         public hasCommand(){
-            return this._commandQueue.getCount() > 0;
+            return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
         }
 
         public render(){

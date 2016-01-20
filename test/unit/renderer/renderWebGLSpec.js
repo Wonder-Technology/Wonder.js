@@ -379,4 +379,25 @@ describe("renderWebGL", function() {
             expect(renderer._commandQueue.getCount()).toEqual(0);
         });
     });
+
+    describe("hasCommand", function(){
+        beforeEach(function(){
+
+        });
+
+        it("if has skyboxCommand, return true", function(){
+            renderer.skyboxCommand = wd.QuadCommand.create();
+
+            expect(renderer.hasCommand()).toBeTruthy();
+        });
+        it("if has QuadCommand, return true", function(){
+            renderer.skyboxCommand = null;
+            renderer.addCommand(wd.QuadCommand.create());
+
+            expect(renderer.hasCommand()).toBeTruthy();
+        });
+        it("else, return false", function(){
+            expect(renderer.hasCommand()).toBeFalsy();
+        });
+    });
 });

@@ -325,4 +325,26 @@ describe("Director", function () {
             expect(sum).toEqual(1);
         });
     });
+
+    describe("_runGameObjectScene", function(){
+        beforeEach(function(){
+        });
+
+        it("if renderer has command, render renderer", function(){
+            sandbox.stub(director.renderer, "render");
+
+            director._runGameObjectScene(1);
+
+            expect(director.renderer.render).not.toCalled();
+
+
+
+
+            director.renderer.skyboxCommand = wd.QuadCommand.create();
+
+            director._runGameObjectScene(1);
+
+            expect(director.renderer.render).toCalledOnce();
+        });
+    });
 });
