@@ -83,6 +83,11 @@ describe("ArcballCameraController", function () {
         });
 
         it("remove events", function(){
+            if(bowser.firefox){
+                expect().toPass();
+                return;
+            }
+
             prepare(sandbox);
             sandbox.stub(controller, "_changeOrbit");
             sandbox.stub(controller, "_changeDistance");
@@ -133,6 +138,11 @@ describe("ArcballCameraController", function () {
         });
 
         it("the event handler binded should not affected by other event handler binded on the same event", function(){
+            if(bowser.firefox){
+                expect().toPass();
+                return;
+            }
+
             prepare(sandbox);
 
             manager.on(wd.EventName.MOUSEDOWN, function(e){

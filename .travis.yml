@@ -11,6 +11,7 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
 script:
+  - npm test
 
 after_success:
   - npm run codecov
