@@ -18,8 +18,8 @@
         }).init();
 
         wd.LoaderManager.getInstance().load([
-            {url: "../asset/texture/multi.png", id: "multiTexture"},
-            {url: "../asset/texture/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
+            {url: "../../asset/texture/multi.png", id: "multiTexture"},
+            {url: "../../asset/texture/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
         ]).subscribe(null, null, function () {
             initSample();
         });
