@@ -20453,6 +20453,20 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Button.prototype, "isDisabled", {
+            get: function () {
+                return this._stateMachine.currentState === wd.UIState.DISABLED;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Button.prototype, "currentState", {
+            get: function () {
+                return this._stateMachine.currentState;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Button.prototype.initWhenCreate = function () {
             this.transitionMode = wd.TransitionMode.SPRITE;
             this.text = "button";
@@ -20483,12 +20497,6 @@ var wd;
         };
         Button.prototype.disable = function () {
             this._stateMachine.changeState(wd.UIState.DISABLED);
-        };
-        Button.prototype.isDisabled = function () {
-            return this._stateMachine.getCurrentState() === wd.UIState.DISABLED;
-        };
-        Button.prototype.getCurrentState = function () {
-            return this._stateMachine.getCurrentState();
         };
         Button.prototype.update = function (elapsedTime) {
             var target = this.transitionManager.getObjectTarget(wd.ButtonObjectName.BACKGROUND);
@@ -20550,28 +20558,28 @@ var wd;
             var self = this;
             this._mousedownSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EngineEvent.MOUSE_DOWN)
                 .filter(function (e) {
-                return !self.isDisabled();
+                return !self.isDisabled;
             })
                 .subscribe(function (e) {
                 self._stateMachine.changeState(wd.UIState.PRESSED);
             });
             this._mouseupSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EngineEvent.MOUSE_UP)
                 .filter(function (e) {
-                return !self.isDisabled();
+                return !self.isDisabled;
             })
                 .subscribe(function (e) {
                 self._stateMachine.backState();
             });
             this._mouseoverSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EngineEvent.MOUSE_OVER)
                 .filter(function (e) {
-                return !self.isDisabled();
+                return !self.isDisabled;
             })
                 .subscribe(function (e) {
                 self._stateMachine.changeState(wd.UIState.HIGHLIGHT);
             });
             this._mouseoutSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EngineEvent.MOUSE_OUT)
                 .filter(function (e) {
-                return !self.isDisabled();
+                return !self.isDisabled;
             })
                 .subscribe(function (e) {
                 self._stateMachine.backState();
@@ -20626,6 +20634,13 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(UIStateMachine.prototype, "currentState", {
+            get: function () {
+                return this._stateHistory.top || wd.UIState.NORMAL;
+            },
+            enumerable: true,
+            configurable: true
+        });
         UIStateMachine.prototype.changeState = function (state) {
             this._stateHistory.push(state);
             this.transitionManager.changeState(state);
@@ -20640,9 +20655,6 @@ var wd;
             }
             this.transitionManager.changeState(lastState);
             this._ui.dirty = true;
-        };
-        UIStateMachine.prototype.getCurrentState = function () {
-            return this._stateHistory.top || wd.UIState.NORMAL;
         };
         return UIStateMachine;
     })();

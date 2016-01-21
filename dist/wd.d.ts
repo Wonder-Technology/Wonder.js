@@ -4959,6 +4959,8 @@ declare module wd {
         static create(): Button;
         private _text;
         text: string;
+        isDisabled: boolean;
+        currentState: UIState;
         private _mousedownSubscription;
         private _mouseupSubscription;
         private _mouseoverSubscription;
@@ -4971,8 +4973,6 @@ declare module wd {
         getObjectTransition(objectName: ButtonObjectName): Transition;
         enable(): void;
         disable(): void;
-        isDisabled(): boolean;
-        getCurrentState(): UIState;
         update(elapsedTime: number): void;
         private _createBackgroundObject();
         private _createFontObject();
@@ -5002,11 +5002,11 @@ declare module wd {
         static create(ui: InteractionUI): UIStateMachine;
         constructor(ui: InteractionUI);
         transitionManager: TransitionManager;
+        currentState: UIState;
         private _ui;
         private _stateHistory;
         changeState(state: UIState): void;
         backState(): void;
-        getCurrentState(): UIState;
     }
 }
 
