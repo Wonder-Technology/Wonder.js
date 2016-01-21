@@ -22,7 +22,7 @@ module sample {
         }
 
         public onMouseClick(e:MouseEvent) {
-            if(this._entityObject.getComponent<Button>(Button).isDisabled()){
+            if(this._entityObject.getComponent<Button>(Button).isDisabled){
                 return;
             }
 

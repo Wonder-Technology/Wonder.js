@@ -22,7 +22,7 @@ var sample;
             this._setBackground();
         };
         SpriteButtonScript.prototype.onMouseClick = function (e) {
-            if (this._entityObject.getComponent(Button).isDisabled()) {
+            if (this._entityObject.getComponent(Button).isDisabled) {
                 return;
             }
             console.log("click");

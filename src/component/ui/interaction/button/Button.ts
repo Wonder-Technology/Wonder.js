@@ -43,6 +43,14 @@ module wd {
             }
         }
 
+        get isDisabled(){
+            return this._stateMachine.currentState === UIState.DISABLED;
+        }
+
+        get currentState(){
+            return this._stateMachine.currentState;
+        }
+
         private _mousedownSubscription:wdFrp.IDisposable = null;
         private _mouseupSubscription:wdFrp.IDisposable = null;
         private _mouseoverSubscription:wdFrp.IDisposable = null;
@@ -89,14 +97,6 @@ module wd {
 
         public disable() {
             this._stateMachine.changeState(UIState.DISABLED);
-        }
-
-        public isDisabled(){
-            return this._stateMachine.getCurrentState() === UIState.DISABLED;
-        }
-
-        public getCurrentState(){
-            return this._stateMachine.getCurrentState();
         }
 
         @require(function(elapsedTime:number){
@@ -188,7 +188,7 @@ module wd {
 
             this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_DOWN)
                 .filter((e:CustomEvent) => {
-                    return !self.isDisabled();
+                    return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
                     self._stateMachine.changeState(UIState.PRESSED);
@@ -196,7 +196,7 @@ module wd {
 
             this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
                 .filter((e:CustomEvent) => {
-                    return !self.isDisabled();
+                    return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
                     self._stateMachine.backState();
@@ -205,7 +205,7 @@ module wd {
 
             this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OVER)
                 .filter((e:CustomEvent) => {
-                    return !self.isDisabled();
+                    return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
                     self._stateMachine.changeState(UIState.HIGHLIGHT);
@@ -213,7 +213,7 @@ module wd {
 
             this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)
                 .filter((e:CustomEvent) => {
-                    return !self.isDisabled();
+                    return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
                     self._stateMachine.backState();

@@ -33,7 +33,7 @@ describe("UIStateMachine", function() {
         });
 
         it("add to history", function(){
-            expect(machine.getCurrentState()).toEqual(State.HIGHLIGHT);
+            expect(machine.currentState).toEqual(State.HIGHLIGHT);
         });
         it("change transition state", function(){
             expect(ui.transitionManager.changeState).toCalledWith(State.HIGHLIGHT);
@@ -47,7 +47,7 @@ describe("UIStateMachine", function() {
         it("if history not has last state, last state will be NORMAL", function(){
             machine.backState();
 
-            expect(machine.getCurrentState()).toEqual(State.NORMAL);
+            expect(machine.currentState).toEqual(State.NORMAL);
         });
 
         describe("else", function(){
@@ -58,7 +58,7 @@ describe("UIStateMachine", function() {
             });
 
             it("history back to last state", function(){
-                expect(machine.getCurrentState()).toEqual(State.PRESSED);
+                expect(machine.currentState).toEqual(State.PRESSED);
             });
             it("back transition state", function () {
                 expect(ui.transitionManager.changeState).toCalledWith(State.PRESSED);
@@ -77,10 +77,10 @@ describe("UIStateMachine", function() {
         it("return history top state", function(){
             machine.changeState(State.PRESSED);
 
-            expect(machine.getCurrentState()).toEqual(State.PRESSED);
+            expect(machine.currentState).toEqual(State.PRESSED);
         });
         it("if history is empty, return NORMAL", function () {
-            expect(machine.getCurrentState()).toEqual(State.NORMAL);
+            expect(machine.currentState).toEqual(State.NORMAL);
         });
 
     });

@@ -376,12 +376,12 @@ describe("Button", function() {
                     button.disable();
                     trigger(EngineEvent.MOUSE_DOWN);
 
-                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                    expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to PRESSED", function () {
                     trigger(EngineEvent.MOUSE_DOWN);
 
-                    expect(button.getCurrentState()).toEqual(State.PRESSED);
+                    expect(button.currentState).toEqual(State.PRESSED);
                 });
 
             });
@@ -391,13 +391,13 @@ describe("Button", function() {
                     button.disable();
                     trigger(EngineEvent.MOUSE_UP);
 
-                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                    expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, back state", function () {
                     trigger(EngineEvent.MOUSE_DOWN);
                     trigger(EngineEvent.MOUSE_UP);
 
-                    expect(button.getCurrentState()).toEqual(State.NORMAL);
+                    expect(button.currentState).toEqual(State.NORMAL);
                 });
             });
 
@@ -406,12 +406,12 @@ describe("Button", function() {
                     button.disable();
                     trigger(EngineEvent.MOUSE_OVER);
 
-                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                    expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to HIGHLIGHT", function () {
                     trigger(EngineEvent.MOUSE_OVER);
 
-                    expect(button.getCurrentState()).toEqual(State.HIGHLIGHT);
+                    expect(button.currentState).toEqual(State.HIGHLIGHT);
                 });
             });
 
@@ -420,13 +420,13 @@ describe("Button", function() {
                     button.disable();
                     trigger(EngineEvent.MOUSE_OVER);
 
-                    expect(button.getCurrentState()).toEqual(State.DISABLED);
+                    expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to PRESSED", function () {
                     trigger(EngineEvent.MOUSE_OVER);
                     trigger(EngineEvent.MOUSE_OUT);
 
-                    expect(button.getCurrentState()).toEqual(State.NORMAL);
+                    expect(button.currentState).toEqual(State.NORMAL);
                 });
             });
         })
@@ -734,7 +734,7 @@ describe("Button", function() {
         });
 
         it("change state to NORMAL", function(){
-            expect(button.getCurrentState()).toEqual(wd.UIState.NORMAL);
+            expect(button.currentState).toEqual(wd.UIState.NORMAL);
         });
         it("change transition->state", function(){
             expect(button.transitionManager.changeState.secondCall).toCalledWith(wd.UIState.NORMAL);
@@ -749,7 +749,7 @@ describe("Button", function() {
         });
 
         it("change state to DISABLED", function(){
-            expect(button.isDisabled()).toBeTruthy();
+            expect(button.isDisabled).toBeTruthy();
         });
         it("change transition->state", function(){
             expect(button.transitionManager.changeState).toCalledWith(wd.UIState.DISABLED);
