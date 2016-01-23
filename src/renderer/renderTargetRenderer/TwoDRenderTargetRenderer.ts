@@ -9,6 +9,8 @@ module wd {
         protected abstract getRenderList():wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer:Renderer);
 
+        private _lastCamera:GameObject = null;
+
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl;
@@ -25,6 +27,12 @@ module wd {
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
             var renderCamera = this.createCamera(camera);
+
+            if(this._lastCamera){
+                this._lastCamera.dispose();
+            }
+
+            this._lastCamera = renderCamera;
 
             this.beforeRenderFrameBufferTexture(renderCamera);
 

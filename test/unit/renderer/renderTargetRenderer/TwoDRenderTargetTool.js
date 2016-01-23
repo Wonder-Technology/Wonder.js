@@ -190,19 +190,33 @@ renderCamera = {};
                     expect(texture.bindToUnit).toCalledWith(0);
                 });
 
-                    it("bind frameBuffer and set viewport", function(){
-                        self.renderTargetRenderer.render(renderer, camera);
+                it("dispose camera created before", function(){
+                    var camera1 = {
+                        dispose:self.sandbox.stub()
+                    };
+                    var camera2 = {
+                    }
+                    self.renderTargetRenderer.createCamera.onCall(0).returns(camera1);
+                    self.renderTargetRenderer.createCamera.onCall(1).returns(camera2);
 
-                        expect(frameBufferOperator.bindFrameBuffer).toCalledBefore(frameBufferOperator.setViewport);
-                        expect(frameBufferOperator.bindFrameBuffer).toCalledWith(self.renderTargetRenderer.frameBuffer);
-                    });
-                    it("render renderTargetTexture's renderList", function(){
-                        self.renderTargetRenderer.render(renderer, camera);
+                    self.renderTargetRenderer.render(renderer, camera);
+                    self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(renderObj1.render).toCalledWith(renderer, renderCamera);
-                        expect(renderObj2.render).toCalledWith(renderer, renderCamera);
-                        expect(renderObj1.render).toCalledBefore(renderObj2.render);
-                    });
+                    expect(camera1.dispose).toCalledOnce();
+                });
+                it("bind frameBuffer and set viewport", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
+
+                    expect(frameBufferOperator.bindFrameBuffer).toCalledBefore(frameBufferOperator.setViewport);
+                    expect(frameBufferOperator.bindFrameBuffer).toCalledWith(self.renderTargetRenderer.frameBuffer);
+                });
+                it("render renderTargetTexture's renderList", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
+
+                    expect(renderObj1.render).toCalledWith(renderer, renderCamera);
+                    expect(renderObj2.render).toCalledWith(renderer, renderCamera);
+                    expect(renderObj1.render).toCalledBefore(renderObj2.render);
+                });
 
                 testTool.multiIt(self.render.invoke_renderer_render, function(){
                     return [renderer, camera, renderObj1, renderObj2];
@@ -217,11 +231,11 @@ renderCamera = {};
 
 
 
-                    it("unbind frameBuffer and restore viewport", function(){
-                        self.renderTargetRenderer.render(renderer, camera);
+                it("unbind frameBuffer and restore viewport", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
-                    });
+                    expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
+                });
             });
         }
     }
