@@ -77,7 +77,6 @@ module wd {
             this.execScript("onDispose");
         }
 
-        //todo test memory management
         public dispose() {
             var components = null;
 

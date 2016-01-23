@@ -148,11 +148,11 @@ var CubemapRenderTargetTool = YYC.Class({
 
                         expect(frameBufferOperator.check.callCount).toEqual(6);
                     });
-                    it("has totally 6 frameBuffers and 6 renderBuffers", function(){
+                    it("has totally 6 frameBufferList and 6 renderBufferList", function(){
                         self.renderTargetRenderer.init();
 
-                        expect(self.renderTargetRenderer._frameBuffers.getCount()).toEqual(6);
-                        expect(self.renderTargetRenderer._renderBuffers.getCount()).toEqual(6);
+                        expect(self.renderTargetRenderer._frameBufferList.getCount()).toEqual(6);
+                        expect(self.renderTargetRenderer._renderBufferList.getCount()).toEqual(6);
                     });
                 });
 
@@ -164,7 +164,7 @@ var CubemapRenderTargetTool = YYC.Class({
             });
 
             describe("render", function(){
-                var renderer, camera, frameBufferOperator,renderObj1, renderObj2,renderObj3,renderObj4,renderObj5,renderObj6,targetPosition,texture, frameBuffers, frameBuffer;
+                var renderer, camera, frameBufferOperator,renderObj1, renderObj2,renderObj3,renderObj4,renderObj5,renderObj6,targetPosition,texture, frameBufferList, frameBuffer;
 
 
 
@@ -214,17 +214,18 @@ var CubemapRenderTargetTool = YYC.Class({
                     };
 
                     texture = {
-                        bindToUnit: self.sandbox.stub()
+                        bindToUnit: self.sandbox.stub(),
+                        getPosition:self.sandbox.stub()
                     };
 
                     self.renderTargetRenderer.frameBufferOperator = frameBufferOperator;
                     self.renderTargetRenderer.texture = texture;
 
                     frameBuffer = {};
-                    frameBuffers = wdCb.Collection.create([
+                    frameBufferList = wdCb.Collection.create([
                         frameBuffer, frameBuffer, frameBuffer, frameBuffer, frameBuffer, frameBuffer
                     ]);
-                    self.renderTargetRenderer._frameBuffers = frameBuffers;
+                    self.renderTargetRenderer._frameBufferList = frameBufferList;
 
 
                     renderer = {
@@ -241,9 +242,12 @@ var CubemapRenderTargetTool = YYC.Class({
 
 
 
+                    camera = {
+                        dispose:self.sandbox.stub()
+                    }
 
 
-                    self.renderTargetRenderer.createCamera = self.sandbox.stub();
+                    self.renderTargetRenderer.createCamera = self.sandbox.stub().returns(camera);
                 });
 
 
@@ -268,26 +272,68 @@ var CubemapRenderTargetTool = YYC.Class({
                         self.renderTargetRenderer.render(renderer, camera);
 
                         expect(frameBufferOperator.bindFrameBuffer.getCall(0)).toCalledBefore(frameBufferOperator.setViewport.getCall(0));
-                        expect(frameBufferOperator.bindFrameBuffer.getCall(3)).toCalledWith(frameBuffers.getChild(3))
+                        expect(frameBufferOperator.bindFrameBuffer.getCall(3)).toCalledWith(frameBufferList.getChild(3))
 
                         expect(frameBufferOperator.bindFrameBuffer.callCount).toEqual(6);
                         expect(frameBufferOperator.setViewport.callCount).toEqual(6);
                     });
 
                     describe("render renderTargetTexture's renderList", function(){
-                        it("render correspond face's renderList with face's camera", function(){
-                            var renderCamera = {};
-                            self.renderTargetRenderer.createCamera.onCall(1).returns(renderCamera);
+                        describe("optimize: if need create camera, create camera", function(){
+                            var position;
 
-                            self.renderTargetRenderer.render(renderer, camera);
+                            beforeEach(function(){
+                            });
 
-                            expect(renderObj1.render).toCalledBefore(renderObj2.render);
-                            expect(renderObj2.render).toCalledBefore(renderObj3.render);
-                            expect(renderObj3.render).toCalledBefore(renderObj4.render);
-                            expect(renderObj4.render).toCalledBefore(renderObj5.render);
-                            expect(renderObj5.render).toCalledBefore(renderObj6.render);
+                            it("if never create camera, create it", function(){
+                                self.renderTargetRenderer.render(renderer, camera);
 
-                            expect(renderObj2.render).toCalledWith(renderer, renderCamera);
+                                expect(self.renderTargetRenderer.createCamera.callCount).toEqual(6);
+                            });
+
+                            describe("else", function(){
+                                it("if getPosition()->returnVal === last position, not create camera", function () {
+                                    position = wd.Vector3.create(1, 2, 3);
+                                    self.sandbox.stub(self.renderTargetRenderer, "getPosition").returns(position);
+
+                                    var renderCamera = {};
+                                    self.renderTargetRenderer.createCamera.returns(renderCamera);
+                                    self.renderTargetRenderer.render(renderer, camera);
+                                    //not create camera
+                                    self.renderTargetRenderer.render(renderer, camera);
+
+                                    expect(self.renderTargetRenderer.createCamera.callCount).toEqual(6);
+                                });
+                                it("else, create camera", function(){
+                                    position = wd.Vector3.create(1, 2, 3);
+                                    var position2 = wd.Vector3.create(2,3,4);
+                                    self.sandbox.stub(self.renderTargetRenderer, "getPosition");
+                                    self.renderTargetRenderer.getPosition.onCall(0).returns(position);
+                                    self.renderTargetRenderer.getPosition.onCall(1).returns(position2);
+
+                                    self.renderTargetRenderer.render(renderer, camera);
+                                    self.renderTargetRenderer.render(renderer, camera);
+
+                                    expect(self.renderTargetRenderer.createCamera.callCount).toEqual(12);
+                                });
+                            });
+                        });
+
+                        describe("render correspond face's renderList with face's camera", function(){
+                            it("", function(){
+                                var renderCamera = {};
+                                self.renderTargetRenderer.createCamera.onCall(1).returns(renderCamera);
+
+                                self.renderTargetRenderer.render(renderer, camera);
+
+                                expect(renderObj1.render).toCalledBefore(renderObj2.render);
+                                expect(renderObj2.render).toCalledBefore(renderObj3.render);
+                                expect(renderObj3.render).toCalledBefore(renderObj4.render);
+                                expect(renderObj4.render).toCalledBefore(renderObj5.render);
+                                expect(renderObj5.render).toCalledBefore(renderObj6.render);
+
+                                expect(renderObj2.render).toCalledWith(renderer, renderCamera);
+                            })
                         });
                     });
 
@@ -297,12 +343,25 @@ var CubemapRenderTargetTool = YYC.Class({
                         expect(renderer.render.callCount).toEqual(6);
                     });
                 });
+                
+                describe("if need create camera", function(){
+                    var position, position2;
 
+                    beforeEach(function(){
+                        position = wd.Vector3.create(1, 2, 3);
+                        position2 = wd.Vector3.create(2, 3, 4);
+                        self.sandbox.stub(self.renderTargetRenderer, "getPosition");
+                        self.renderTargetRenderer.getPosition.onCall(0).returns(position);
+                        self.renderTargetRenderer.getPosition.onCall(1).returns(position2);
+                    });
+                    
+                    it("dispose cameras created before", function(){
+                        self.renderTargetRenderer.render(renderer, camera);
+                        self.renderTargetRenderer.render(renderer, camera);
 
-                testTool.multiIt(self.render.after_render_six_faces, function(){
-                    return [renderer, camera];
+                        expect(camera.dispose.callCount).toEqual(6);
+                    });
                 });
-
 
                 it("unbind frameBuffer and restore viewport", function(){
                     self.renderTargetRenderer.render(renderer, camera);
@@ -310,6 +369,10 @@ var CubemapRenderTargetTool = YYC.Class({
                     expect(frameBufferOperator.unBind).toCalledBefore(frameBufferOperator.restoreViewport);
                     expect(frameBufferOperator.unBind).toCalledOnce();
                     expect(frameBufferOperator.restoreViewport).toCalledOnce();
+                });
+
+                testTool.multiIt(self.render.after_render_six_faces, function(){
+                    return [renderer, camera];
                 });
             });
 

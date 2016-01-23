@@ -2,8 +2,10 @@ module wd {
     export abstract class CubemapRenderTargetRenderer extends RenderTargetRenderer{
         protected texture:CubemapRenderTargetTexture;
 
-        private _frameBuffers:wdCb.Collection<WebGLFramebuffer> = wdCb.Collection.create<WebGLFramebuffer>();
-        private _renderBuffers:wdCb.Collection<WebGLRenderbuffer> = wdCb.Collection.create<WebGLRenderbuffer>();
+        private _frameBufferList:wdCb.Collection<WebGLFramebuffer> = wdCb.Collection.create<WebGLFramebuffer>();
+        private _renderBufferList:wdCb.Collection<WebGLRenderbuffer> = wdCb.Collection.create<WebGLRenderbuffer>();
+        private _lastCameraList: wdCb.Collection<GameObject> = null;
+        private _lastPosition:Vector3 = null;
 
         protected abstract getRenderList():wdCb.Hash<any>;
         protected abstract setCamera(cubeCameraComponent:PerspectiveCamera);
@@ -18,8 +20,8 @@ module wd {
                 let frameBuffer = frameBufferOperator.createFrameBuffer(),
                     renderBuffer = frameBufferOperator.createRenderBuffer();
 
-                this._frameBuffers.addChild(frameBuffer);
-                this._renderBuffers.addChild(renderBuffer);
+                this._frameBufferList.addChild(frameBuffer);
+                this._renderBufferList.addChild(renderBuffer);
 
                 frameBufferOperator.bindFrameBuffer(frameBuffer);
                 frameBufferOperator.attachTexture(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.texture.glTexture);
@@ -31,31 +33,52 @@ module wd {
         }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var i = null,
-                renderCamera = null,
+            var renderCamera = null,
                 faceRenderList = null,
+                newCameraList = null,
+                position = this.getPosition(),
                 renderList = null;
 
             renderList = this.getRenderList();
             this.texture.bindToUnit(0);
 
-            for(i = 0; i < 6; i++){
+            if(this._needCreateCamera(position)){
+                newCameraList = wdCb.Collection.create<GameObject>();
+            }
+
+            for(let i = 0; i < 6; i++){
                 faceRenderList = renderList.getChild(this._convertIndexToFaceKey(i));
                 //faceRenderList can be array or collection
                 if(this._isEmpty(faceRenderList)) {
                     continue;
                 }
 
-                //todo optimize:create six camera once
-                renderCamera = this.createCamera(i);
+                if(this._needCreateCamera(position)) {
+                    renderCamera = this.createCamera(i);
+                    newCameraList.addChild(renderCamera);
+                }
+                else{
+                    renderCamera = this._lastCameraList.getChild(i);
+                }
 
-                this.frameBufferOperator.bindFrameBuffer(this._frameBuffers.getChild(i));
+                this.frameBufferOperator.bindFrameBuffer(this._frameBufferList.getChild(i));
                 this.frameBufferOperator.setViewport();
 
                 faceRenderList.forEach((child:GameObject) => {
                     child.render(renderer, renderCamera)
                 });
                 renderer.render();
+            }
+
+            if(this._needCreateCamera(position)){
+                if(this._lastCameraList){
+                    this._lastCameraList.forEach((camera:GameObject) => {
+                        camera.dispose();
+                    })
+                }
+
+                this._lastCameraList = newCameraList;
+                this._lastPosition = position;
             }
 
             this.frameBufferOperator.unBind();
@@ -65,8 +88,8 @@ module wd {
         protected disposeFrameBuffer(){
             var gl = DeviceManager.getInstance().gl;
 
-            this._frameBuffers.forEach((buffer:WebGLFramebuffer) => gl.deleteFramebuffer(buffer));
-            this._renderBuffers.forEach((buffer:WebGLRenderbuffer) => gl.deleteRenderbuffer(buffer));
+            this._frameBufferList.forEach((buffer:WebGLFramebuffer) => gl.deleteFramebuffer(buffer));
+            this._renderBufferList.forEach((buffer:WebGLRenderbuffer) => gl.deleteRenderbuffer(buffer));
         }
 
         protected createCamera(index:number){
@@ -144,6 +167,14 @@ module wd {
                 default:
                     break;
             }
+        }
+
+        private _needCreateCamera(position:Vector3){
+            if(this._lastPosition === null || this._lastCameraList === null){
+                return true;
+            }
+
+            return !position.isEqual(this._lastPosition);
         }
     }
 }
