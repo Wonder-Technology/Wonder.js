@@ -5168,6 +5168,7 @@ declare module wd {
         protected abstract beforeRenderFrameBufferTexture(renderCamera: GameObject): any;
         protected abstract getRenderList(): wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer: Renderer): any;
+        private _lastCamera;
         protected initFrameBuffer(): void;
         protected renderFrameBufferTexture(renderer: Renderer, camera: GameObject): void;
         protected disposeFrameBuffer(): void;
@@ -5211,8 +5212,10 @@ declare module wd {
 declare module wd {
     abstract class CubemapRenderTargetRenderer extends RenderTargetRenderer {
         protected texture: CubemapRenderTargetTexture;
-        private _frameBuffers;
-        private _renderBuffers;
+        private _frameBufferList;
+        private _renderBufferList;
+        private _lastCameraList;
+        private _lastPosition;
         protected abstract getRenderList(): wdCb.Hash<any>;
         protected abstract setCamera(cubeCameraComponent: PerspectiveCamera): any;
         protected abstract getPosition(): Vector3;
@@ -5223,6 +5226,7 @@ declare module wd {
         private _isEmpty(faceRenderList);
         private _convertIndexToFaceKey(index);
         private _lookAtFace(camera, position, index);
+        private _needCreateCamera(position);
     }
 }
 
@@ -7410,20 +7414,6 @@ declare module wd {
         static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
-        static basic_envMap_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forBasic_vertex: GLSLChunk;
-        static envMap_forBasic_fragment: GLSLChunk;
-        static envMap_forBasic_vertex: GLSLChunk;
-        static fresnel_forBasic_fragment: GLSLChunk;
-        static reflection_forBasic_fragment: GLSLChunk;
-        static refraction_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
@@ -7444,6 +7434,20 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
+        static basic_envMap_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forBasic_vertex: GLSLChunk;
+        static envMap_forBasic_fragment: GLSLChunk;
+        static envMap_forBasic_vertex: GLSLChunk;
+        static fresnel_forBasic_fragment: GLSLChunk;
+        static reflection_forBasic_fragment: GLSLChunk;
+        static refraction_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
