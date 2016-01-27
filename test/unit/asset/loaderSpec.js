@@ -172,6 +172,7 @@ describe("loader", function () {
         function assert1Obj(data){
             var result = data;
 
+
             var geo = result.getChild("models").getChild(0).getComponent(wd.Geometry);
             var model1 = json.objects[0];
             expect(geo.vertices).toEqual(
@@ -229,6 +230,11 @@ describe("loader", function () {
             //assertColor(mat2.color, materialData2.diffuseColor);
 
 
+
+
+
+
+            expect(m2.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
 
 
 

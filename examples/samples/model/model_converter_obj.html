@@ -26,6 +26,8 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
+            wd.DebugConfig.debugCollision = true;
+
             director.renderer.setClearColor(wd.Color.create("#aaaaff"));
 
             director.scene.addChild(setModel());
@@ -59,6 +61,8 @@
             }));
 
             model.addComponent(action);
+
+            model.addComponent(wd.BoxCollider.create());
 
             return model;
         }

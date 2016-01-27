@@ -97,13 +97,13 @@ module wd {
         }
 
         @require(function (entityObject:GameObject) {
-            var vertices = entityObject.getComponent<Geometry>(Geometry).geometryData.vertices;
+            var vertices = ColliderUtils.getVertices(entityObject);
 
             assert(vertices && vertices.length > 0, Log.info.FUNC_MUST_DEFINE("vertices"));
         })
         public setFromObject(entityObject:GameObject) {
             var modelMatrix = entityObject.transform.localToWorldMatrix,
-                vertices = entityObject.getComponent<Geometry>(Geometry).geometryData.vertices,
+                vertices = ColliderUtils.getVertices(entityObject),
                 self = this,
                 min = this._getEmptyMin(),
                 max = this._getEmptyMax();

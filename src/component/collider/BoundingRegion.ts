@@ -34,7 +34,7 @@ module wd {
                 this.shape.setFromShapeParam.apply(this.shape, params);
             }
             else{
-                this.shape.setFromPoints(this.entityObject.getComponent<Geometry>(Geometry).geometryData.vertices);
+                this.shape.setFromPoints(ColliderUtils.getVertices(this.entityObject));
             }
 
             this.originShape = this.shape.copy();

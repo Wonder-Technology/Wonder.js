@@ -184,6 +184,7 @@
 /// <reference path="component/collider/AABBShape"/>
 /// <reference path="component/collider/SphereShape"/>
 /// <reference path="component/collider/ColliderType"/>
+/// <reference path="component/collider/ColliderUtils"/>
 
 /// <reference path="component/physics/RigidBody"/>
 /// <reference path="component/physics/DynamicRigidBody"/>

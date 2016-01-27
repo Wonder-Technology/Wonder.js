@@ -202,4 +202,42 @@ describe("collider", function () {
             judgeCollideCount(1);
         });
     });
+
+    it("support add collider to CONTAINER gameObject", function (done) {
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        wd.LoaderManager.getInstance().load([
+            {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
+        ]).subscribe(function (data) {
+        }, function (err) {
+            expect().toFail(err.message);
+            done();
+        }, function () {
+            var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+
+            var result = sceneModel;
+
+            var objModel = result.getChild("models").getChild(1);
+
+            expect(objModel.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
+
+
+
+
+
+            objModel.addComponent(wd.BoxCollider.create());
+
+            objModel.init();
+
+
+
+
+
+            var shape = objModel.getComponent(wd.BoxCollider).shape;
+            expect(shape.halfExtents).toBeInstanceOf(wd.Vector3);
+
+
+            done();
+        });
+    });
 });

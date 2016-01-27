@@ -51,7 +51,6 @@ module wd {
 
                     model = GameObject.create();
 
-                    //todo test
                     if(self._isModelContainer(object)){
                         //todo refactor?
                         model.addTag(WDTag.CONTAINER);

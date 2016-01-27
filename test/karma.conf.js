@@ -29,6 +29,9 @@
 
         'test/unit/**',
 
+
+        //'test/unit/**/OctreeSpec*',
+
         //'test/unit/**/SourceLightSpec*',
 
         //'test/unit/**/RigidBodySpec*',
