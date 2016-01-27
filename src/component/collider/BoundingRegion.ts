@@ -46,6 +46,7 @@ module wd {
         }
 
         public update(){
+            //todo consider morphTargets(if has morphTargets and not change target, return)?
             if(this.isNotTransformed()){
                 return;
             }

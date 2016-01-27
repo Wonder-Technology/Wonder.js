@@ -95,12 +95,28 @@ module wd{
             return v[0] === 0 && v[1] === 0 && v[2] === 0;
         }
 
-        public scale(scalar:number) {
+        public scale(scalar:number);
+        public scale(x:number, y:number, z:number);
+
+        public scale(...args) {
             var v = this.values;
 
-            v[0] *= scalar;
-            v[1] *= scalar;
-            v[2] *= scalar;
+            if(args.length === 1){
+                let scalar = args[0];
+
+                v[0] *= scalar;
+                v[1] *= scalar;
+                v[2] *= scalar;
+            }
+            else if(args.length === 3){
+                let x = args[0],
+                    y = args[1],
+                    z = args[2];
+
+                v[0] *= x;
+                v[1] *= y;
+                v[2] *= z;
+            }
 
             return this;
         }

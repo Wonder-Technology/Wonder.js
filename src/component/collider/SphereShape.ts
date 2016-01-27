@@ -34,7 +34,24 @@ module wd {
             return shape.center.distanceToSquared(this.center) <= ( radiusSum**2);
         }
 
-        public isIntersectWithBox(shape:AABBShape) {
+
+        public isIntersectWithBox(shape:AABBShape);
+        public isIntersectWithBox(min:Vector3, max:Vector3);
+
+        public isIntersectWithBox(...args) {
+            var shape:AABBShape = null;
+
+            if(args.length === 1){
+                shape = args[0];
+            }
+            else if(args.length === 2){
+                let min:Vector3 = args[0],
+                    max:Vector3 = args[1];
+
+                shape = AABBShape.create();
+                shape.setMinMax(min, max);
+            }
+
             return this.isBoxAndSphereIntersected(shape, this);
         }
 

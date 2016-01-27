@@ -5,7 +5,10 @@ module wd {
         public abstract setFromShapeParam(...args);
         public abstract setFromPoints(points:Array<number>);
         public abstract copy():Shape;
+
         public abstract isIntersectWithBox(shape:AABBShape);
+        public abstract isIntersectWithBox(min:Vector3, max:Vector3);
+
         public abstract isIntersectWithSphere(shape:SphereShape);
         public abstract isIntersectWithRay(rayOrigin:Vector3, rayDelta:Vector3);
 

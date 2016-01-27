@@ -117,11 +117,25 @@ module wd {
             this.setMinMax(min, max);
         }
 
-        public isIntersectWithBox(shape:AABBShape) {
-            var aMax = this.getMax();
-            var aMin = this.getMin();
-            var bMax = shape.getMax();
-            var bMin = shape.getMin();
+        public isIntersectWithBox(shape:AABBShape);
+        public isIntersectWithBox(min:Vector3, max:Vector3);
+
+        public isIntersectWithBox(...args) {
+            var aMax = this.getMax(),
+                aMin = this.getMin(),
+                bMax = null,
+                bMin = null;
+
+            if(args.length === 1){
+                let shape = args[0];
+
+                bMin = shape.getMin();
+                bMax = shape.getMax();
+            }
+            else if(args.length === 2){
+                bMin = args[0];
+                bMax = args[1];
+            }
 
             return (aMin.x <= bMax.x) && (aMax.x >= bMin.x) &&
                 (aMin.y <= bMax.y) && (aMax.y >= bMin.y) &&

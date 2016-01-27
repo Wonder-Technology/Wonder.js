@@ -165,6 +165,15 @@
 /// <reference path="component/renderer/UIRenderer"/>
 /// <reference path="component/renderer/UIRendererState"/>
 
+
+
+/// <reference path="component/space_partition/Octree"/>
+/// <reference path="component/space_partition/OctreeNode"/>
+
+
+/// <reference path="component/collider/colliderForFirstCheck/ColliderForFirstCheck"/>
+/// <reference path="component/collider/colliderForFirstCheck/BoxColliderForFirstCheck"/>
+
 /// <reference path="component/collider/Collider"/>
 /// <reference path="component/collider/BoxCollider"/>
 /// <reference path="component/collider/SphereCollider"/>
