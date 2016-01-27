@@ -15,12 +15,14 @@ describe("Octree", function () {
     });
 
     describe("build", function () {
-        var obj1, obj2, obj3, obj4;
+        var obj1, obj2, obj3;
 
         function createObject(pos) {
             var obj = prepareTool.createBox(5);
 
-            obj.transform.position = wd.Vector3.create(pos[0], pos[1], pos[2]);
+            if(pos){
+                obj.transform.position = wd.Vector3.create(pos[0], pos[1], pos[2]);
+            }
 
             return obj;
         }
@@ -230,6 +232,134 @@ describe("Octree", function () {
             judge(5);
             judge(6);
             judge(7);
+        });
+
+        describe("test whether add objects in octree correctly", function(){
+            beforeEach(function(){
+            });
+
+            it("test add parent-child object", function(){
+                var octreeObject = wd.GameObject.create();
+
+                octreeObject.addComponent(tree);
+
+                obj1 = createObject();
+                obj2 = createObject();
+
+                obj1.addChild(obj2);
+
+                obj1.transform.position = wd.Vector3.create(10, 10, 10);
+                obj2.transform.position = wd.Vector3.create(-10, -10, -10);
+
+                octreeObject.addChild(obj1);
+
+                octreeObject.init();
+
+
+
+                tree.build();
+
+
+                judgeRoot();
+
+                judgeFirstDepthChild(0, 1, obj2);
+                judgeFirstDepthChild(1, 0);
+                judgeFirstDepthChild(2, 0);
+                judgeFirstDepthChild(3, 0);
+                judgeFirstDepthChild(4, 0);
+                judgeFirstDepthChild(5, 0);
+                judgeFirstDepthChild(6, 0);
+                judgeFirstDepthChild(7, 1, obj1);
+            });
+            it("test add obj object", function (done) {
+                sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+                wd.LoaderManager.getInstance().load([
+                    {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel"}
+                ]).subscribe(function (data) {
+                }, function (err) {
+                    expect().toFail(err.message);
+                    done();
+                }, function () {
+                    var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
+
+
+                    var result = sceneModel;
+
+                    var objModel = result.getChild("models").getChild(0);
+
+                    var octreeObject = wd.GameObject.create();
+
+                    octreeObject.addComponent(tree);
+
+
+                    obj1 = createObject();
+
+                    obj1.addChild(objModel);
+
+                    obj1.transform.position = wd.Vector3.create(10, 10, 10);
+                    objModel.transform.position = wd.Vector3.create(-10, -10, -10);
+
+                    octreeObject.addChild(obj1);
+
+                    octreeObject.init();
+
+
+
+                    tree.build();
+
+
+                    judgeRoot();
+
+                    judgeFirstDepthChild(0, 1, objModel);
+                    judgeFirstDepthChild(1, 0);
+                    judgeFirstDepthChild(2, 0);
+                    judgeFirstDepthChild(3, 0);
+                    judgeFirstDepthChild(4, 0);
+                    judgeFirstDepthChild(5, 0);
+                    judgeFirstDepthChild(6, 0);
+                    judgeFirstDepthChild(7, 1, obj1);
+
+                    done();
+                });
+            });
+        });
+
+        it("test rebuild", function () {
+            var octreeObject = wd.GameObject.create();
+
+            octreeObject.addComponent(tree);
+
+            obj1 = createObject([10, 10, 10]);
+            obj2 = createObject([-10, -10, -10]);
+
+            octreeObject.addChildren([obj1, obj2]);
+
+            octreeObject.init();
+
+
+
+
+
+            tree.build();
+
+            obj1.transform.position = wd.Vector3.create(-10, -10, -10);
+            obj2.transform.position = wd.Vector3.create(10, 10, 10);
+
+            tree.build();
+
+
+
+
+            judgeRoot();
+            judgeFirstDepthChild(0, 1, obj1);
+            judgeFirstDepthChild(1, 0);
+            judgeFirstDepthChild(2, 0);
+            judgeFirstDepthChild(3, 0);
+            judgeFirstDepthChild(4, 0);
+            judgeFirstDepthChild(5, 0);
+            judgeFirstDepthChild(6, 0);
+            judgeFirstDepthChild(7, 1, obj2);
         });
     });
 });

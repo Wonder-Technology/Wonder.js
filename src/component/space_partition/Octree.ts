@@ -12,7 +12,6 @@ module wd {
 
         public build() {
             var entityObjectList:wdCb.Collection<EntityObject> = this._getChildren();
-            var self = this;
             var currentDepth = 0;
             var maxNodeCapacity = this.maxNodeCapacity,
                 maxDepth = this.maxDepth;
@@ -45,7 +44,7 @@ module wd {
                 }
             }
 
-            this._addColliderForFirstCheck(entityObjectList);
+            this._updateColliderForFirstCheck(entityObjectList);
 
             var { worldMin, worldMax } = this._getWorldExtends(entityObjectList);
 
@@ -57,22 +56,43 @@ module wd {
             buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
         }
 
-        //todo test: parent->child, both has vertices;only parent has vertices
         private _getChildren() {
             //todo after fix bug, finish this
-            //todo return the ones which isContainer or has vertices themself
-            return this.entityObject.getChildren();
+            var children = wdCb.Collection.create<EntityObject>();
+            var find = (entityObject:EntityObject) => {
+                entityObject.forEach((child:EntityObject) => {
+                    children.addChild(child);
+
+                    if(child.hasTag(<any>WDTag.CONTAINER)){
+                        return;
+                    }
+
+                    find(child);
+                });
+            }
+
+            find(this.entityObject);
+
+            return children;
         }
 
-        private _addColliderForFirstCheck(entityObjectList:wdCb.Collection<EntityObject>) {
+        private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<EntityObject>) {
+            var collider:BoxColliderForFirstCheck = null,
+                self = this;
+
             entityObjectList.forEach((entityObject:EntityObject) => {
                 if (!entityObject.hasComponent(ColliderForFirstCheck)) {
-                    let collider = BoxColliderForFirstCheck.create();
+                    collider = self._createCollider();
 
                     entityObject.addComponent(collider);
 
                     collider.init();
                 }
+                else{
+                    collider = entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
+                }
+
+                collider.update(null);
             });
         }
 
@@ -87,18 +107,7 @@ module wd {
                     collider:BoxColliderForFirstCheck = null,
                     shape:AABBShape = null;
 
-                //if (!entityObject.hasComponent(ColliderForFirstCheck)) {
-                //    collider = BoxColliderForFirstCheck.create();
-                //
-                //    entityObject.addComponent(collider);
-                //
-                //    collider.init();
-                //}
-                //else {
                 collider = entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck);
-
-                collider.update(null);
-                //}
 
                 shape = <AABBShape>collider.shape;
                 min = shape.getMin();
@@ -112,6 +121,10 @@ module wd {
                 worldMin: worldMin,
                 worldMax: worldMax
             };
+        }
+
+        private _createCollider(){
+            return BoxColliderForFirstCheck.create();
         }
 
         private _checkExtends(v: Vector3, min: Vector3, max: Vector3): void {

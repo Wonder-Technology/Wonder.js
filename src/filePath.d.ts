@@ -394,6 +394,7 @@
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
+/// <reference path="asset/wd/WDTag"/>
 /// <reference path="asset/wd/WDFileType"/>
 /// <reference path="asset/wd/WDLoader"/>
 /// <reference path="asset/wd/WDParser"/>

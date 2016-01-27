@@ -51,7 +51,12 @@ module wd {
 
                     model = GameObject.create();
 
-                    if(!self._isModelContainer(object)){
+                    //todo test
+                    if(self._isModelContainer(object)){
+                        //todo refactor?
+                        model.addTag(WDTag.CONTAINER);
+                    }
+                    else{
                         geometry = ModelGeometry.create();
                         geometry.vertices = object.vertices;
                         geometry.faces = object.faces;
