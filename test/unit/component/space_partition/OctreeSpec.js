@@ -2,6 +2,19 @@ describe("Octree", function () {
     var sandbox = null;
     var tree = null;
     var Octree = wd.Octree;
+    var Vector3 = wd.Vector3;
+    var octreeObject;
+    var obj1, obj2, obj3, obj4;
+
+    function createObject(pos, size) {
+        var obj = prepareTool.createBox(size || 5);
+
+        if(pos){
+            obj.transform.position = Vector3.create(pos[0], pos[1], pos[2]);
+        }
+
+        return obj;
+    }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -9,23 +22,17 @@ describe("Octree", function () {
         testTool.openContractCheck(sandbox);
 
         tree = Octree.create();
+
+
+        octreeObject = wd.GameObject.create();
+
+        octreeObject.addComponent(tree);
     });
     afterEach(function () {
         sandbox.restore();
     });
 
     describe("build", function () {
-        var obj1, obj2, obj3;
-
-        function createObject(pos) {
-            var obj = prepareTool.createBox(5);
-
-            if(pos){
-                obj.transform.position = wd.Vector3.create(pos[0], pos[1], pos[2]);
-            }
-
-            return obj;
-        }
 
         function getRoot(){
             return tree._root;
@@ -33,18 +40,18 @@ describe("Octree", function () {
 
         function judgeRoot(){
             var root = getRoot();
-            expect(root.nodes.getCount()).toEqual(8);
-            expect(root.entityObjects.getCount()).toEqual(0);
+            expect(root.nodeList.getCount()).toEqual(8);
+            expect(root.entityObjectList.getCount()).toEqual(0);
         }
 
-        function judgeFirstDepthChild(index, entityObjectsCount, entityObject){
+        function judgeFirstDepthChild(index, entityObjectListCount, entityObject){
             var root = getRoot();
-            var child = root.nodes.getChild(index);
-            expect(child.nodes.getCount()).toEqual(0);
-            expect(child.entityObjects.getCount()).toEqual(entityObjectsCount);
+            var child = root.nodeList.getChild(index);
+            expect(child.nodeList.getCount()).toEqual(0);
+            expect(child.entityObjectList.getCount()).toEqual(entityObjectListCount);
 
-            if(entityObjectsCount > 0){
-                expect(child.entityObjects.getChild(0)).toEqual(entityObject);
+            if(entityObjectListCount > 0){
+                expect(child.entityObjectList.getChild(0)).toEqual(entityObject);
             }
         }
 
@@ -58,10 +65,6 @@ describe("Octree", function () {
             });
 
             it("test", function () {
-                var octreeObject = wd.GameObject.create();
-
-                octreeObject.addComponent(tree);
-
                 obj1 = createObject([10, 10, 10]);
                 obj2 = createObject([-10, -10, -10]);
 
@@ -92,13 +95,13 @@ describe("Octree", function () {
         });
 
         describe("test when depth === 2", function(){
-            function judgeSecondDepthChild(root, index, entityObjectsCount, entityObject){
-                var child = root.nodes.getChild(index);
-                expect(child.nodes.getCount()).toEqual(0);
-                expect(child.entityObjects.getCount()).toEqual(entityObjectsCount);
+            function judgeSecondDepthChild(root, index, entityObjectListCount, entityObject){
+                var child = root.nodeList.getChild(index);
+                expect(child.nodeList.getCount()).toEqual(0);
+                expect(child.entityObjectList.getCount()).toEqual(entityObjectListCount);
 
-                if(entityObjectsCount > 0){
-                    expect(child.entityObjects.getChild(0)).toEqual(entityObject);
+                if(entityObjectListCount > 0){
+                    expect(child.entityObjectList.getChild(0)).toEqual(entityObject);
                 }
             }
 
@@ -108,10 +111,6 @@ describe("Octree", function () {
             });
 
             it("test if node->entityObjectCount > maxNodeCapacity, build down", function () {
-                var octreeObject = wd.GameObject.create();
-
-                octreeObject.addComponent(tree);
-
                 obj1 = createObject([20, 20, 20]);
                 obj2 = createObject([-20, -20, -20]);
                 obj3 = createObject([-6, -6, -20]);
@@ -134,9 +133,9 @@ describe("Octree", function () {
 
 
                 var root = getRoot();
-                var child = root.nodes.getChild(0);
-                expect(child.nodes.getCount()).toEqual(8);
-                expect(child.entityObjects.getCount()).toEqual(2);
+                var child = root.nodeList.getChild(0);
+                expect(child.nodeList.getCount()).toEqual(8);
+                expect(child.entityObjectList.getCount()).toEqual(2);
 
                 judgeSecondDepthChild(child, 0, 1, obj2);
                 judgeSecondDepthChild(child, 1, 0);
@@ -161,10 +160,6 @@ describe("Octree", function () {
         it("if octree->depth(except root) >= maxDepth, stop build down", function () {
             tree.maxDepth = 1;
 
-            var octreeObject = wd.GameObject.create();
-
-            octreeObject.addComponent(tree);
-
             obj1 = createObject([20, 20, 20]);
             obj2 = createObject([-20, -20, -20]);
             obj3 = createObject([-6, -6, -20]);
@@ -188,9 +183,9 @@ describe("Octree", function () {
 
 
             var root = getRoot();
-            var child = root.nodes.getChild(0);
-            expect(child.nodes.getCount()).toEqual(0);
-            expect(child.entityObjects.getCount()).toEqual(2);
+            var child = root.nodeList.getChild(0);
+            expect(child.nodeList.getCount()).toEqual(0);
+            expect(child.entityObjectList.getCount()).toEqual(2);
 
             judgeFirstDepthChild(1, 0);
             judgeFirstDepthChild(2, 0);
@@ -200,17 +195,14 @@ describe("Octree", function () {
             judgeFirstDepthChild(6, 0);
             judgeFirstDepthChild(7, 1, obj1);
         });
-        it("if object->bounding region intersect with multi nodes, the nodes should all add it", function () {
+        it("if object->bounding region intersect with multi nodeList, the nodeList should all add it", function () {
             function judge(index){
                 judgeFirstDepthChild(index, 1, obj1);
             }
 
-            var octreeObject = wd.GameObject.create();
 
             tree.maxDepth = 2;
             tree.maxNodeCapacity = 2;
-
-            octreeObject.addComponent(tree);
 
             obj1 = createObject([0, 0, 0]);
             octreeObject.addChild(obj1);
@@ -239,17 +231,13 @@ describe("Octree", function () {
             });
 
             it("test add parent-child object", function(){
-                var octreeObject = wd.GameObject.create();
-
-                octreeObject.addComponent(tree);
-
                 obj1 = createObject();
                 obj2 = createObject();
 
                 obj1.addChild(obj2);
 
-                obj1.transform.position = wd.Vector3.create(10, 10, 10);
-                obj2.transform.position = wd.Vector3.create(-10, -10, -10);
+                obj1.transform.position = Vector3.create(10, 10, 10);
+                obj2.transform.position = Vector3.create(-10, -10, -10);
 
                 octreeObject.addChild(obj1);
 
@@ -288,17 +276,12 @@ describe("Octree", function () {
 
                     var objModel = result.getChild("models").getChild(0);
 
-                    var octreeObject = wd.GameObject.create();
-
-                    octreeObject.addComponent(tree);
-
-
                     obj1 = createObject();
 
                     obj1.addChild(objModel);
 
-                    obj1.transform.position = wd.Vector3.create(10, 10, 10);
-                    objModel.transform.position = wd.Vector3.create(-10, -10, -10);
+                    obj1.transform.position = Vector3.create(10, 10, 10);
+                    objModel.transform.position = Vector3.create(-10, -10, -10);
 
                     octreeObject.addChild(obj1);
 
@@ -326,10 +309,6 @@ describe("Octree", function () {
         });
 
         it("test rebuild", function () {
-            var octreeObject = wd.GameObject.create();
-
-            octreeObject.addComponent(tree);
-
             obj1 = createObject([10, 10, 10]);
             obj2 = createObject([-10, -10, -10]);
 
@@ -343,8 +322,8 @@ describe("Octree", function () {
 
             tree.build();
 
-            obj1.transform.position = wd.Vector3.create(-10, -10, -10);
-            obj2.transform.position = wd.Vector3.create(10, 10, 10);
+            obj1.transform.position = Vector3.create(-10, -10, -10);
+            obj2.transform.position = Vector3.create(10, 10, 10);
 
             tree.build();
 
@@ -360,6 +339,79 @@ describe("Octree", function () {
             judgeFirstDepthChild(5, 0);
             judgeFirstDepthChild(6, 0);
             judgeFirstDepthChild(7, 1, obj2);
+        });
+    });
+
+    describe("getRenderListByFrustumCull", function(){
+        var cameraObject;
+        var director;
+
+        function createCamera(pos, lookAtPoint, near, far, fovy){
+            cameraObject = testTool.createCamera(pos, lookAtPoint, near, far, fovy);
+
+            director.scene.addChild(cameraObject);
+        }
+
+        function createObj(pos, size) {
+            var obj = createObject(pos, size);
+
+            sandbox.stub(obj, "render");
+
+            return obj;
+        }
+
+        beforeEach(function(){
+            director = wd.Director.getInstance();
+
+
+            tree.maxDepth = 2;
+            tree.maxCapacity = 1;
+        });
+
+        describe("get render list by frustum cull", function(){
+            describe("integration test", function(){
+                beforeEach(function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+                });
+
+                it("test1", function(){
+                    createCamera(Vector3.create(0,0,0), Vector3.create(10,10,10));
+
+                    obj1 = createObj([10, 10, 10]);
+                    obj2 = createObj([-10, -10, -10]);
+
+                    octreeObject.addChildren([obj1, obj2]);
+
+                    director.scene.addChild(octreeObject);
+
+
+                    director._init();
+
+                    director._run(1);
+
+
+                    expect(obj1.render).toCalledOnce();
+                    expect(obj2.render).not.toCalled();
+                });
+                it("no repeat entityObject", function () {
+                    createCamera(Vector3.create(0,0,0), Vector3.create(10,0, 0));
+
+                    obj1 = createObj([0, 0, 0]);
+
+                    octreeObject.addChildren([obj1]);
+
+                    director.scene.addChild(octreeObject);
+
+
+                    director._init();
+
+                    director._run(1);
+
+
+                    expect(obj1.render).toCalledOnce();
+                });
+            });
         });
     });
 });

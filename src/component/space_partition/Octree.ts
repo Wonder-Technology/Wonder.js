@@ -8,15 +8,25 @@ module wd {
 
         public maxDepth:number = 2;
         public maxNodeCapacity:number = 64;
+
         private _root:OctreeNode = null;
+        private _renderList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+
+        //todo test
+        @require(function(entityObject:GameObject){
+            assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+        })
+        public addToObject(entityObject:GameObject){
+            super.addToObject(entityObject);
+        }
 
         public build() {
-            var entityObjectList:wdCb.Collection<EntityObject> = this._getChildren();
+            var entityObjectList:wdCb.Collection<GameObject> = this._getChildren();
             var currentDepth = 0;
             var maxNodeCapacity = this.maxNodeCapacity,
                 maxDepth = this.maxDepth;
 
-            var buildTree = (worldMin:Vector3, worldMax:Vector3, currentDepth, entityObjectList:wdCb.Collection<EntityObject>, parentNode:OctreeNode) => {
+            var buildTree = (worldMin:Vector3, worldMax:Vector3, currentDepth, entityObjectList:wdCb.Collection<GameObject>, parentNode:OctreeNode) => {
                 //todo halfExtends?
                 var nodeSize = new Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
 
@@ -56,11 +66,25 @@ module wd {
             buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
         }
 
+        @require(function(){
+            assert(!!Director.getInstance().scene.camera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
+        })
+        public getRenderListByFrustumCull(){
+            var frustumPlanes = Director.getInstance().scene.camera.getComponent(CameraController).getPlanes();
+
+            this._renderList.removeAllChildren();
+
+            this._root.findAndAddToRenderList(frustumPlanes, this._renderList);
+
+            this._renderList = this._renderList.removeRepeatItems();
+
+            return this._renderList;
+        }
+
         private _getChildren() {
-            //todo after fix bug, finish this
-            var children = wdCb.Collection.create<EntityObject>();
-            var find = (entityObject:EntityObject) => {
-                entityObject.forEach((child:EntityObject) => {
+            var children = wdCb.Collection.create<GameObject>();
+            var find = (entityObject:GameObject) => {
+                entityObject.forEach((child:GameObject) => {
                     children.addChild(child);
 
                     if(child.hasTag(<any>WDTag.CONTAINER)){
@@ -71,16 +95,16 @@ module wd {
                 });
             }
 
-            find(this.entityObject);
+            find(<GameObject>this.entityObject);
 
             return children;
         }
 
-        private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<EntityObject>) {
+        private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<GameObject>) {
             var collider:BoxColliderForFirstCheck = null,
                 self = this;
 
-            entityObjectList.forEach((entityObject:EntityObject) => {
+            entityObjectList.forEach((entityObject:GameObject) => {
                 if (!entityObject.hasComponent(ColliderForFirstCheck)) {
                     collider = self._createCollider();
 
@@ -96,12 +120,12 @@ module wd {
             });
         }
 
-        private _getWorldExtends(entityObjectList:wdCb.Collection<EntityObject>):{worldMin:Vector3, worldMax:Vector3} {
+        private _getWorldExtends(entityObjectList:wdCb.Collection<GameObject>):{worldMin:Vector3, worldMax:Vector3} {
             var worldMin = Vector3.create(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE),
             worldMax = Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE),
                 self = this;
 
-            entityObjectList.forEach((entityObject:EntityObject) => {
+            entityObjectList.forEach((entityObject:GameObject) => {
                 let min = null,
                     max = null,
                     collider:BoxColliderForFirstCheck = null,

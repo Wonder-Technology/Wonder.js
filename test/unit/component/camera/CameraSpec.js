@@ -74,7 +74,6 @@ describe("Camera", function() {
 
             expect(camera.updateProjectionMatrix).toCalledOnce();
         });
-
     });
 });
 

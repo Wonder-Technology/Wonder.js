@@ -66,5 +66,9 @@ module wd {
         public copy(): Plane {
             return Plane.create(this.normal.x, this.normal.y, this.normal.z, this.d);
         }
+
+        public dotCoordinate(point): number {
+            return ((((this.normal.x * point.x) + (this.normal.y * point.y)) + (this.normal.z * point.z)) + this.d);
+        }
     }
 }

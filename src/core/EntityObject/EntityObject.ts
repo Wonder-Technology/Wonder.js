@@ -23,8 +23,8 @@ module wd {
         protected children:wdCb.Collection<any> = wdCb.Collection.create<any>();
         protected startLoopHandler:() => void = null;
         protected endLoopHandler:() => void = null;
+        protected components:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
-        private _components:wdCb.Collection<any> = wdCb.Collection.create<any>();
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
 
         @virtual
@@ -47,13 +47,13 @@ module wd {
             this.bindStartLoopEvent();
             this.bindEndLoopEvent();
 
-            this._components.forEach((component:Component) => {
-                component.init();
-            });
+            this.initComponent();
 
             this.forEach((child:EntityObject) => {
                 child.init();
             });
+
+            this.afterInitChildren();
 
             return this;
         }
@@ -184,23 +184,23 @@ module wd {
         }
 
         public getComponent<T>(_class:Function):T{
-            return this._components.findOne((component:Component) => {
+            return this.components.findOne((component:Component) => {
                 return component instanceof _class;
             });
         }
 
         public findComponentByUid(uid:number){
-            return this._components.findOne((component:Component) => {
+            return this.components.findOne((component:Component) => {
                 return component.uid === uid;
             });
         }
 
         public getFirstComponent():Component {
-            return this._components.getChild(0);
+            return this.components.getChild(0);
         }
 
         public forEachComponent(func:(component:Component) => void){
-            this._components.forEach(func);
+            this.components.forEach(func);
 
             return this;
         }
@@ -222,12 +222,12 @@ module wd {
             if(args[0] instanceof Component){
                 let component = args[0];
 
-                return this._components.hasChild(component);
+                return this.components.hasChild(component);
             }
             else{
                 let _class = args[0];
 
-                return this._components.hasChild((component) => {
+                return this.components.hasChild((component) => {
                     return component instanceof _class;
                 })
             }
@@ -239,7 +239,7 @@ module wd {
                 return this;
             }
 
-            this._components.addChild(component);
+            this.components.addChild(component);
 
             component.addToObject(this);
 
@@ -259,7 +259,7 @@ module wd {
                 component = this.getComponent<any>(<Function>args[0]);
             }
 
-            this._components.removeChild(component);
+            this.components.removeChild(component);
 
             this._removeComponentHandler(component);
 
@@ -269,13 +269,13 @@ module wd {
         public removeAllComponent(){
             var result = wdCb.Collection.create<Component>();
 
-            this._components.forEach((component:Component) => {
+            this.components.forEach((component:Component) => {
                 this._removeComponentHandler(component);
 
                 result.addChild(component)
             }, this);
 
-            this._components.removeAllChildren();
+            this.components.removeAllChildren();
 
             return result;
         }
@@ -288,7 +288,7 @@ module wd {
                 rendererComponent.render(renderer, geometry,  camera);
             }
 
-            this.children.forEach((child:EntityObject) => {
+            this.getRenderList().forEach((child:EntityObject) => {
                 child.render(renderer, camera);
             });
         }
@@ -375,6 +375,10 @@ module wd {
         }
 
         @virtual
+        protected afterInitChildren(){
+        }
+
+        @virtual
         protected bindStartLoopEvent(){
             EventManager.on(<any>EngineEvent.STARTLOOP, this.startLoopHandler);
         }
@@ -382,6 +386,23 @@ module wd {
         @virtual
         protected bindEndLoopEvent(){
             EventManager.on(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
+        }
+
+        @virtual
+        protected getRenderList(){
+            if(this.children.getCount() > 100){
+                console.log(this.children.getCount());
+            }
+
+            return this.children;
+        }
+
+        @virtual
+        protected initComponent(){
+            //todo collider init after geometry init?
+            this.components.forEach((component:Component) => {
+                component.init();
+            });
         }
 
         protected getAllChildren(){
@@ -435,7 +456,7 @@ module wd {
         }
 
         public getComponentCount(_class:Function){
-            return this._components.filter((component:Component) => {
+            return this.components.filter((component:Component) => {
                 return component instanceof _class;
             }).getCount();
         }

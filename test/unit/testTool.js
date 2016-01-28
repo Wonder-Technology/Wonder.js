@@ -223,17 +223,17 @@ var testTool = (function () {
         createFaces: function(indices, normals){
             return wd.GeometryUtils.convertToFaces(indices, normals);
         },
-        createCamera:function (pos, lookAtPoint) {
+        createCamera:function (pos, lookAtPoint, near, far, fovy) {
             var camera = wd.GameObject.create();
 
             var cameraComponent = wd.PerspectiveCamera.create();
 
 
-            cameraComponent.fovy = 60;
+            cameraComponent.fovy = fovy || 60;
             //cameraComponent.aspect = canvas.width / canvas.height;
             cameraComponent.aspect = 1;
-            cameraComponent.near = 0.1;
-            cameraComponent.far = 1000;
+            cameraComponent.near = near || 0.1;
+            cameraComponent.far = far || 1000;
 
 
             var controller = wd.BasicCameraController.create(cameraComponent);

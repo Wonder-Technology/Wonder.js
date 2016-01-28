@@ -17,6 +17,25 @@ module wd {
         protected createTransform(){
             return ThreeDTransform.create();
         }
+
+        protected getRenderList(){
+            if(this.hasComponent(Octree)){
+                console.log(this._getOctree().getRenderListByFrustumCull().getCount());
+                return this._getOctree().getRenderListByFrustumCull();
+            }
+
+            return this.children;
+        }
+
+        protected afterInitChildren(){
+            if(this.hasComponent(Octree)){
+                return this._getOctree().build();
+            }
+        }
+
+        private _getOctree(){
+            return this.getComponent<Octree>(Octree);
+        }
     }
 }
 

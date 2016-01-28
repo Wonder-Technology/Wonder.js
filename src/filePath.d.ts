@@ -180,6 +180,8 @@
 /// <reference path="component/collider/BoundingRegion"/>
 /// <reference path="component/collider/BoxBoundingRegion"/>
 /// <reference path="component/collider/SphereBoundingRegion"/>
+/// <reference path="component/collider/BoundingRegionUtils"/>
+
 /// <reference path="component/collider/Shape"/>
 /// <reference path="component/collider/AABBShape"/>
 /// <reference path="component/collider/SphereShape"/>
