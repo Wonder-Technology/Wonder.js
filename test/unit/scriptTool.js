@@ -1,6 +1,6 @@
 var scriptTool = (function () {
     return {
-        testScript: function (entityObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done) {
+        testScript: function (entityObject, scriptName, judgeOnEnter, judgeBeforeLoopBody, judgeAfterLoopBody, done, isNotAdd) {
             var director = wd.Director.getInstance();
 
             var test = null;
@@ -32,9 +32,14 @@ var scriptTool = (function () {
             }
 
 
-            if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
-                director.scene.addChild(entityObject);
+            if(isNotAdd === true){
             }
+            else{
+                if(!wd.JudgeUtils.isEqual(entityObject, director.scene)){
+                    director.scene.addChild(entityObject);
+                }
+            }
+
 
             var loopBody = director._loopBody;
             director._loopBody = function () {

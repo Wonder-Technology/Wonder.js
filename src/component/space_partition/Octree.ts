@@ -10,7 +10,7 @@ module wd {
         public maxNodeCapacity:number = 64;
 
         private _root:OctreeNode = null;
-        private _renderList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         //todo test
         @require(function(entityObject:GameObject){
@@ -72,13 +72,26 @@ module wd {
         public getRenderListByFrustumCull(){
             var frustumPlanes = Director.getInstance().scene.camera.getComponent(CameraController).getPlanes();
 
-            this._renderList.removeAllChildren();
+            return this._visitRoot("findAndAddToRenderList", [frustumPlanes, this._selectionList]);
+        }
 
-            this._root.findAndAddToRenderList(frustumPlanes, this._renderList);
+        @require(function(){
+            assert(!!Director.getInstance().scene.camera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
+        })
+        public getIntersectListWithRay(e:MouseEvent){
+            var locationInView = e.locationInView;
 
-            this._renderList = this._renderList.removeRepeatItems();
+            return this._visitRoot("findAndAddToIntersectList", [Director.getInstance().scene.camera.getComponent(CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);
+        }
 
-            return this._renderList;
+        private _visitRoot(method:string, args:Array<any>):any{
+            this._selectionList.removeAllChildren();
+
+            this._root[method].apply(this._root, args);
+
+            this._selectionList = this._selectionList.removeRepeatItems();
+
+            return this._selectionList;
         }
 
         private _getChildren() {

@@ -27,11 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
-        'test/unit/**/OctreeSpec*',
-        'test/unit/**/BoundingRegionUtilsSpec*',
+        //'test/unit/**/OctreeSpec*',
+        //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
 

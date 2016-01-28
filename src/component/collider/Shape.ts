@@ -10,7 +10,7 @@ module wd {
         public abstract isIntersectWithBox(min:Vector3, max:Vector3);
 
         public abstract isIntersectWithSphere(shape:SphereShape);
-        public abstract isIntersectWithRay(rayOrigin:Vector3, rayDelta:Vector3);
+        public abstract isIntersectWithRay(ray:Ray);
 
         protected isBoxAndSphereIntersected(box:AABBShape, sphere:SphereShape) {
             var sphereCenter = sphere.center,

@@ -43,9 +43,7 @@ module wd {
         }
 
         public isIntersectWithRay(entityObject:GameObject, screenX:number, screenY:number):boolean{
-            var from = null,
-                to = null,
-                shape = null;
+            var shape = null;
 
             if(!entityObject.hasComponent(Collider)){
                 return false;
@@ -53,10 +51,14 @@ module wd {
 
             shape = entityObject.getComponent<Collider>(Collider).shape;
 
-            from = this.convertScreenToWorld(screenX, screenY, this.camera.near);
-            to = this.convertScreenToWorld(screenX, screenY, this.camera.far);
+            return shape.isIntersectWithRay(this.createRay(screenX, screenY));
+        }
 
-            return shape.isIntersectWithRay(from, to.sub(from));
+        public createRay(screenX:number, screenY:number){
+            var from = this.convertScreenToWorld(screenX, screenY, this.camera.near),
+                to = this.convertScreenToWorld(screenX, screenY, this.camera.far);
+
+            return Ray.create(from, to.sub(from));
         }
 
         public convertScreenToWorld(screenX:number, screenY:number, distanceFromCamera:number):Vector3{

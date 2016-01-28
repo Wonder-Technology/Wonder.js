@@ -89,12 +89,12 @@ describe("AABBShape", function () {
             var rayOrigin = Vector3.create(0, 0, 10);
             var rayDir = Vector3.create(-50,50,-20).sub(rayOrigin);
 
-            expect(shape.isIntersectWithRay(rayOrigin,rayDir)).toBeFalsy();
+            expect(shape.isIntersectWithRay(wd.Ray.create(rayOrigin, rayDir))).toBeFalsy();
 
 
             rayOrigin = Vector3.create(0, 0, 10);
             rayDir = Vector3.create(-50,50,-40).sub(rayOrigin);
-            expect(shape.isIntersectWithRay(rayOrigin,rayDir)).toBeTruthy();
+            expect(shape.isIntersectWithRay(wd.Ray.create(rayOrigin, rayDir))).toBeTruthy();
         });
     });
 });

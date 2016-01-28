@@ -14,14 +14,19 @@ module wd {
 
         protected children:wdCb.Collection<GameObject>;
 
+
+        public getOctree(){
+            return this.getComponent<Octree>(Octree);
+        }
+
         protected createTransform(){
             return ThreeDTransform.create();
         }
 
         protected getRenderList(){
             if(this.hasComponent(Octree)){
-                console.log(this._getOctree().getRenderListByFrustumCull().getCount());
-                return this._getOctree().getRenderListByFrustumCull();
+                console.log(this.getOctree().getRenderListByFrustumCull().getCount());
+                return this.getOctree().getRenderListByFrustumCull();
             }
 
             return this.children;
@@ -29,12 +34,8 @@ module wd {
 
         protected afterInitChildren(){
             if(this.hasComponent(Octree)){
-                return this._getOctree().build();
+                return this.getOctree().build();
             }
-        }
-
-        private _getOctree(){
-            return this.getComponent<Octree>(Octree);
         }
     }
 }

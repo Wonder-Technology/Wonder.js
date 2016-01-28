@@ -29,6 +29,7 @@
 /// <reference path="math/Matrix3"/>
 /// <reference path="math/Quaternion"/>
 /// <reference path="math/Plane"/>
+/// <reference path="math/Ray"/>
 
 /// <reference path="core/Entity"/>
 /// <reference path="core/Component"/>

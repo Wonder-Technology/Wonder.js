@@ -206,6 +206,7 @@ module wd{
         private _findTopGameObject(e:MouseEvent, gameObjectScene:GameObjectScene){
             var self = this;
 
+            //todo change
             return this._findTriggerObjectList<GameObject>(e, gameObjectScene).sort((a:GameObject, b:GameObject) => {
                     return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
                 })
@@ -224,21 +225,24 @@ module wd{
         }
 
         private _findTriggerObjectList<T>(e:MouseEvent, objectScene:EntityObject):wdCb.Collection<T>{
-            var triggerObjectList = wdCb.Collection.create<any>();
+            var triggerObjectList = wdCb.Collection.create<any>(),
+                self = this;
             var find = (entityObject:EntityObject) => {
-                var detector = null;
+                if(entityObject.hasComponent(Octree)){
+                    let gameObject = <GameObject>entityObject;
 
-                if (entityObject.hasComponent(EventTriggerDetector)) {
-                    detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
-
-                    if (detector.isTrigger(e)) {
-                        triggerObjectList.addChild(entityObject);
-                    }
+                    gameObject.getOctree().getIntersectListWithRay(e)
+                    .forEach((entityObject:EntityObject) => {
+                        self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
+                    });
                 }
+                else{
+                    self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
 
-                entityObject.forEach((child:EntityObject) => {
-                    find(child);
-                });
+                    entityObject.forEach((child:EntityObject) => {
+                        find(child);
+                    });
+                }
             }
 
             objectScene.forEach((child:EntityObject) => {
@@ -246,6 +250,16 @@ module wd{
             });
 
             return triggerObjectList;
+        }
+
+        private _addTriggerObjectByQueryDetector(entityObject:EntityObject, e:MouseEvent, triggerObjectList:wdCb.Collection<EntityObject>){
+            if (entityObject.hasComponent(EventTriggerDetector)) {
+                let detector = entityObject.getComponent<EventTriggerDetector>(EventTriggerDetector);
+
+                if (detector.isTrigger(e)) {
+                    triggerObjectList.addChild(entityObject);
+                }
+            }
         }
 
         private _isTriggerScene(e:MouseEvent){

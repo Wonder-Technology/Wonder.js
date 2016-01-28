@@ -230,7 +230,7 @@ describe("Octree", function () {
             beforeEach(function(){
             });
 
-            it("test add parent-child object", function(){
+            it("test add parent object, child object", function(){
                 obj1 = createObject();
                 obj2 = createObject();
 
@@ -410,6 +410,126 @@ describe("Octree", function () {
 
 
                     expect(obj1.render).toCalledOnce();
+                });
+            });
+        });
+    });
+
+    describe("getIntersectListWithRay", function(){
+        describe("test trigger the event script handler of the top gameObject intersected with ray", function(){
+            describe("integration test", function(){
+                var url;
+                var director;
+                var manager;
+                var fakeEvent;
+                var gameObject;
+                var view;
+
+                function createGameObject(){
+                    return eventScriptTool.createGameObject(url);
+                }
+
+
+                beforeEach(function(){
+                    url = "http://" + location.host + "/" + testTool.resPath + "test/res/script/event.js";
+
+
+
+                    director = wd.Director.getInstance();
+
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        x: 0,
+                        y: 0,
+                        width:1000,
+                        height: 500,
+
+                        offset:{
+                            x:0,
+                            y:0
+                        }
+                    });
+
+
+                    view = wd.DeviceManager.getInstance().view;
+
+                    sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+
+                    manager = wd.EventManager;
+                });
+                afterEach(function () {
+                    testTool.clearInstance();
+
+                    $("canvas").remove();
+
+                    sandbox.restore();
+                });
+
+                it("test1", function(done){
+                    gameObject = createGameObject();
+                    octreeObject.addChild(gameObject);
+
+                    director.scene.addChild(testTool.createCamera());
+                    director.scene.addChild(octreeObject);
+
+                    director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+
+
+
+
+                    scriptTool.testScript(gameObject, "event", function (test, gameObject) {
+                        sandbox.spy(test, "onMouseClick");
+
+
+                        wd.EventManager.on(gameObject, wd.EngineEvent["MOUSE_CLICK"], function(e){
+                            expect(e).toBeInstanceOf(wd.CustomEvent);
+                            expect(e.userData).toBeInstanceOf(wd.MouseEvent);
+                        });
+                    }, function (test) {
+                    }, function (test, time, gameObject) {
+                        fakeEvent = {
+                            pageX: view.width / 2,
+                            pageY: view.height / 2
+                        };
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+
+                        expect(test.onMouseClick).toCalledOnce();
+                    }, done, true);
+                });
+                it("test parent gameObject, child gameObject", function () {
+                    gameObject = createGameObject();
+                    var gameObject2 = createGameObject();
+
+                    gameObject.addChild(gameObject2);
+
+                    octreeObject.addChild(gameObject);
+
+
+                    fakeEvent = {
+                        pageX: view.width / 2,
+                        pageY: view.height / 2
+                    };
+
+                    var fakeMouseEvent = wd.MouseEvent.create(fakeEvent);
+
+                    var domEventManager = director._domEventManager;
+
+                    director.scene.addChild(testTool.createCamera());
+                    director.scene.addChild(octreeObject);
+
+                    director._init();
+
+
+
+
+                    var resultList = domEventManager._findTriggerObjectList(fakeMouseEvent, director.scene.gameObjectScene);
+
+
+
+
+                    expect(resultList.getCount()).toEqual(2);
+                    expect(resultList.getChild(0)).toEqual(gameObject);
+                    expect(resultList.getChild(1)).toEqual(gameObject2);
                 });
             });
         });

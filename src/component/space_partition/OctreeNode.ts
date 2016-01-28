@@ -53,17 +53,31 @@ module wd{
             this.nodeList.addChild(node);
         }
 
-        public findAndAddToRenderList(frustumPlanes:Array<Plane>, renderList:wdCb.Collection<EntityObject>):void{
+        public findAndAddToRenderList(frustumPlanes:Array<Plane>, selectionList:wdCb.Collection<EntityObject>):void{
             if (BoundingRegionUtils.isAABBIntersectFrustum(this._boundingVectors, frustumPlanes)) {
                 if (this._hasNode()) {
                     this.nodeList.forEach((node:OctreeNode) => {
-                        node.findAndAddToRenderList(frustumPlanes, renderList);
+                        node.findAndAddToRenderList(frustumPlanes, selectionList);
                     });
 
                     return;
                 }
 
-                renderList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.entityObjectList);
+            }
+        }
+
+        public findAndAddToIntersectList(ray:Ray, selectionList:wdCb.Collection<EntityObject>){
+            if (ray.isIntersectWithAABB(this._minPoint, this._maxPoint)) {
+                if (this._hasNode()) {
+                    this.nodeList.forEach((node:OctreeNode) => {
+                        node.findAndAddToIntersectList(ray, selectionList);
+                    });
+
+                    return;
+                }
+
+                selectionList.addChildren(this.entityObjectList);
             }
         }
 
