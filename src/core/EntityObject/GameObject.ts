@@ -25,7 +25,6 @@ module wd {
 
         protected getRenderList(){
             if(this.hasComponent(Octree)){
-                console.log(this.getOctree().getRenderListByFrustumCull().getCount());
                 return this.getOctree().getRenderListByFrustumCull();
             }
 

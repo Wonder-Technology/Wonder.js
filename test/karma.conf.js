@@ -29,7 +29,10 @@
 
         'test/unit/**',
 
-        'test/unit/**/EntityObjectSpec*',
+
+        //'test/unit/**/Debug*',
+
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 

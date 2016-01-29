@@ -43,12 +43,12 @@ module wd {
                 totalNum = indexBuffer.count;
 
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-                gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
                 vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE);
                 totalNum = vertexBuffer.count;
-                gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
+                GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         }
 

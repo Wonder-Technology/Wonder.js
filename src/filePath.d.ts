@@ -7,6 +7,8 @@
 
 /// <reference path="config/DebugConfig"/>
 
+/// <reference path="debug/DebugStatistics"/>
+
 /// <reference path="extend/wdFrp"/>
 
 
@@ -300,6 +302,9 @@
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
 /// <reference path="renderer/QuadCommand"/>
+
+/// <reference path="renderer/GlUtils"/>
+
 /// <reference path="renderer/buffer/FrameBuffer"/>
 
 /// <reference path="renderer/shader/Shader"/>

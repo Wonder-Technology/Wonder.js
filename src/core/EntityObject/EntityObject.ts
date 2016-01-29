@@ -286,6 +286,8 @@ module wd {
 
             if(rendererComponent && geometry){
                 rendererComponent.render(renderer, geometry,  camera);
+
+                DebugStatistics.count.renderGameObjects++;
             }
 
             this.getRenderList().forEach((child:EntityObject) => {

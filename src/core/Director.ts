@@ -149,6 +149,8 @@ module wd{
             this._initGameObjectScene();
 
             this.initUIObjectScene();
+
+            DebugStatistics.init();
         }
 
         private _initGameObjectScene(){
