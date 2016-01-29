@@ -7,14 +7,16 @@ module wd{
         }
 
         private _lastCollideObjects:wdCb.Collection<GameObject> = null;
+        private _collisionTable:wdCb.Hash<wdCb.Collection<GameObject>> = wdCb.Hash.create<wdCb.Collection<GameObject>>();
 
         public detect(scene:GameObjectScene){
-            //todo optimize:use scene graph to only get needChecked gameObjects
             //todo optimize:use worker
             var checkTargetList = scene.filter((entityObject:GameObject) => {
                     return entityObject.hasComponent(Collider) || JudgeUtils.isOctreeObject(entityObject);
                 }),
                 self = this;
+
+            this._clearCollisionTable();
 
             checkTargetList.forEach((entityObject:GameObject) => {
                 if(entityObject.hasComponent(RigidBody)){
@@ -37,7 +39,7 @@ module wd{
                             self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onContact"]);
                         }
 
-                        sourceObject.addTag("isCollided");
+                        sourceObject.addTag(<any>CollisionTag.COLLIDED);
                         self._lastCollideObjects = targetCollideObjects;
                     }
                     else{
@@ -46,7 +48,7 @@ module wd{
                             self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, sourceObject, ["onCollisionEnd"]);
                         }
 
-                        sourceObject.removeTag("isCollided");
+                        sourceObject.removeTag(<any>CollisionTag.COLLIDED);
                     }
                 });
             });
@@ -63,9 +65,12 @@ module wd{
                 self = this,
                 sourceCollider:Collider = null;
 
-
              if(JudgeUtils.isOctreeObject(sourceObject)){
                  checkTargetList.forEach((targetObject:GameObject) => {
+                     if(JudgeUtils.isSelf(sourceObject, targetObject)){
+                         return;
+                     }
+
                      if(JudgeUtils.isOctreeObject(targetObject)){
                          self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
                      }
@@ -73,6 +78,8 @@ module wd{
                          self._getCollideObjectsWithOctree(targetObject, sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
                      }
                  });
+
+                 this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
 
                  return {
                      targetCollideObjects:targetCollideObjects.removeRepeatItems(),
@@ -83,18 +90,23 @@ module wd{
             sourceCollider = sourceObject.getComponent<Collider>(Collider);
 
             checkTargetList.forEach((targetObject:GameObject) => {
+                if(JudgeUtils.isSelf(sourceObject, targetObject)){
+                    return;
+                }
 
                 if(JudgeUtils.isOctreeObject(targetObject)){
                     self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
                 }
                 else{
-                    if(sourceCollider.isCollide(targetObject)){
-                        targetCollideObjects.addChild(targetObject);
-                    }
+                    self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
                 }
             });
 
             sourceCollideObjects.addChild(sourceObject);
+
+            if(targetCollideObjects.getCount() > 0){
+                this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
+            }
 
             return {
                 targetCollideObjects:targetCollideObjects.removeRepeatItems(),
@@ -102,6 +114,46 @@ module wd{
             }
         }
 
+        @require(function(sourceObject:GameObject, sourceCollider:Collider, targetObject:GameObject, targetCollideObjects:wdCb.Collection<GameObject>){
+            assert(sourceObject instanceof GameObject && targetObject instanceof GameObject, Log.info.FUNC_SHOULD("sourceObject and targetObject", "be GameObject"));
+        })
+        private _getCollideObjectsByGameObjectToGameObject(sourceObject:GameObject, sourceCollider:Collider, targetObject:GameObject, targetCollideObjects:wdCb.Collection<GameObject>){
+            if(this._isTargetCollidedWithSourceInCurrentFrame(sourceObject, targetObject)){
+                targetCollideObjects.addChild(targetObject);
+            }
+            else if(
+                !(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(<any>CollisionTag.COLLIDED))
+                && sourceCollider.isCollide(targetObject)
+            ){
+                targetCollideObjects.addChild(targetObject);
+            }
+        }
+
+        private _clearCollisionTable(){
+            this._collisionTable.removeAllChildren();
+        }
+
+        private _isTargetCollidedWithSourceInCurrentFrame(sourceObject:GameObject, targetObject:GameObject){
+            var targetCollideObjects = this._collisionTable.getChild(String(targetObject.uid));
+
+            if(!targetCollideObjects) {
+                return false;
+            }
+
+            return targetCollideObjects.hasChild((targetCollideObject:GameObject) => {
+                return JudgeUtils.isEqual(targetCollideObject, sourceObject);
+            });
+        }
+
+        private _recordCollisionTargets(targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>){
+            var table = this._collisionTable;
+
+            sourceCollideObjects.forEach((sourceObject:GameObject) => {
+                targetCollideObjects.forEach((targetObject:GameObject) => {
+                    table.appendChild(String(sourceObject.uid), targetObject);
+                });
+            });
+        }
 
         private _getCollideObjectsWithOctree(targetObject:GameObject, sourceOctree:Octree, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
         private _getCollideObjectsWithOctree(targetOctree:Octree, sourceOctree:Octree, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
@@ -116,20 +168,18 @@ module wd{
                         targetCollideObjects:wdCb.Collection<GameObject> = args[2],
                         sourceCollideObjects:wdCb.Collection<GameObject> = args[3],
                         targetCollider = targetObject.getComponent<Collider>(Collider),
-                        isCollide = false;
-
-
-                    sourceCollideObjects.addChildren(sourceOctree.getChildren());
+                        self = this;
 
                     sourceOctree.getCollideObjects(targetCollider.shape).forEach((sourceObject:GameObject) => {
-                        if (targetCollider.isCollide(sourceObject)) {
-                            isCollide = true;
-                        }
+                        self._getCollideObjectsByGameObjectToGameObject(targetObject, targetCollider, sourceObject, sourceCollideObjects);
                     });
 
-                    if(isCollide){
+                    if(sourceCollideObjects.getCount() > 0){
                         targetCollideObjects.addChild(targetObject);
                     }
+
+                    sourceCollideObjects.removeAllChildren();
+                    sourceCollideObjects.addChildren(sourceOctree.getChildren());
                 }
                 else if(args[0] instanceof Octree && args[1] instanceof Octree){
                     let targetOctree:Octree = args[0],
@@ -137,10 +187,6 @@ module wd{
                         targetCollideObjects:wdCb.Collection<GameObject> = args[2],
                         sourceCollideObjects:wdCb.Collection<GameObject> = args[3],
                         self = this;
-
-                    if(JudgeUtils.isSelf(targetOctree, sourceOctree)){
-                        return;
-                    }
 
                     sourceOctree.getChildren()
                         .forEach((sourceObject:GameObject) => {
@@ -155,16 +201,15 @@ module wd{
                     sourceCollider:Collider = args[1],
                     sourceObject = args[2],
                     targetCollideObjects:wdCb.Collection<GameObject> = args[3],
-                    sourceCollideObjects:wdCb.Collection<GameObject> = args[4];
+                    sourceCollideObjects:wdCb.Collection<GameObject> = args[4],
+                    self = this;
 
                 if(!sourceCollider){
                     return;
                 }
 
                 targetOctree.getCollideObjects(sourceCollider.shape).forEach((targetObject:GameObject) => {
-                    if (sourceCollider.isCollide(targetObject)) {
-                        targetCollideObjects.addChild(targetObject);
-                    }
+                    self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
                 });
 
                 sourceCollideObjects.addChild(sourceObject);
@@ -174,11 +219,11 @@ module wd{
         }
 
         private _isCollisionStart(entityObject:GameObject){
-            return !entityObject.hasTag("isCollided");
+            return !entityObject.hasTag(<any>CollisionTag.COLLIDED);
         }
 
         private _isCollisionEnd(entityObject:GameObject){
-            return entityObject.hasTag("isCollided");
+            return entityObject.hasTag(<any>CollisionTag.COLLIDED);
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
@@ -191,5 +236,13 @@ module wd{
                     }
                 });
         }
+
+        private _isNotTransform(entityObject:GameObject){
+            return !entityObject.transform.isTransform;
+        }
+    }
+
+    enum CollisionTag{
+        COLLIDED = <any>"COLLIDED"
     }
 }
