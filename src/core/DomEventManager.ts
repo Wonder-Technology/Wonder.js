@@ -206,8 +206,7 @@ module wd{
         private _findTopGameObject(e:MouseEvent, gameObjectScene:GameObjectScene){
             var self = this;
 
-            //todo change
-            return this._findTriggerObjectList<GameObject>(e, gameObjectScene).sort((a:GameObject, b:GameObject) => {
+            return this._findTriggerGameObjectList(e, gameObjectScene).sort((a:GameObject, b:GameObject) => {
                     return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
                 })
                 .getChild(0);
@@ -218,34 +217,50 @@ module wd{
         }
 
         private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){
-            return this._findTriggerObjectList<UIObject>(e, uiObjectScene).sort((a:UIObject, b:UIObject) => {
+            return this._findTriggerUIObjectList(e, uiObjectScene).sort((a:UIObject, b:UIObject) => {
                     return b.transform.zIndex - a.transform.zIndex;
                 })
                 .getChild(0);
         }
 
-        private _findTriggerObjectList<T>(e:MouseEvent, objectScene:EntityObject):wdCb.Collection<T>{
+        private _findTriggerGameObjectList(e:MouseEvent, objectScene:GameObjectScene):wdCb.Collection<GameObject>{
             var triggerObjectList = wdCb.Collection.create<any>(),
                 self = this;
-            var find = (entityObject:EntityObject) => {
+            var find = (entityObject:GameObject) => {
                 if(entityObject.hasComponent(Octree)){
-                    let gameObject = <GameObject>entityObject;
-
-                    gameObject.getOctree().getIntersectListWithRay(e)
-                    .forEach((entityObject:EntityObject) => {
-                        self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
-                    });
+                    entityObject.getOctree().getIntersectListWithRay(e)
+                        .forEach((entityObject:GameObject) => {
+                            self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
+                        });
                 }
                 else{
                     self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
 
-                    entityObject.forEach((child:EntityObject) => {
+                    entityObject.forEach((child:GameObject) => {
                         find(child);
                     });
                 }
             }
 
-            objectScene.forEach((child:EntityObject) => {
+            objectScene.forEach((child:GameObject) => {
+                find(child);
+            });
+
+            return triggerObjectList;
+        }
+
+        private _findTriggerUIObjectList(e:MouseEvent, objectScene:UIObjectScene):wdCb.Collection<UIObject>{
+            var triggerObjectList = wdCb.Collection.create<any>(),
+                self = this;
+            var find = (entityObject:UIObject) => {
+                self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
+
+                entityObject.forEach((child:UIObject) => {
+                    find(child);
+                });
+            }
+
+            objectScene.forEach((child:UIObject) => {
                 find(child);
             });
 

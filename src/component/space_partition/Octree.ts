@@ -12,7 +12,6 @@ module wd {
         private _root:OctreeNode = null;
         private _selectionList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
-        //todo test
         @require(function(entityObject:GameObject){
             assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
         })
@@ -21,32 +20,26 @@ module wd {
         }
 
         public build() {
-            var entityObjectList:wdCb.Collection<GameObject> = this.getChildren();
-            var currentDepth = 0;
-            var maxNodeCapacity = this.maxNodeCapacity,
+            var entityObjectList:wdCb.Collection<GameObject> = this.getChildren(),
+                currentDepth = 0,
+                maxNodeCapacity = this.maxNodeCapacity,
                 maxDepth = this.maxDepth;
 
             var buildTree = (worldMin:Vector3, worldMax:Vector3, currentDepth, entityObjectList:wdCb.Collection<GameObject>, parentNode:OctreeNode) => {
-                //todo halfExtends?
-                var nodeSize = new Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
+                var halfExtends = new Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
 
-
-                for (var x = 0; x < 2; x++) {
-                    for (var y = 0; y < 2; y++) {
-                        for (var z = 0; z < 2; z++) {
-                            var localMin = worldMin.copy().add(nodeSize.copy().scale(x, y, z));
-                            var localMax = worldMin.copy().add(nodeSize.copy().scale(x + 1, y + 1, z + 1));
-
-                            var node = OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
-
+                for (let x = 0; x < 2; x++) {
+                    for (let y = 0; y < 2; y++) {
+                        for (let z = 0; z < 2; z++) {
+                            let localMin = worldMin.copy().add(halfExtends.copy().scale(x, y, z)),
+                                localMax = worldMin.copy().add(halfExtends.copy().scale(x + 1, y + 1, z + 1)),
+                                node = OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
 
                             node.addEntityObjects(entityObjectList);
-
 
                             if (node.entityObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
                                 buildTree(localMin, localMax, currentDepth + 1, entityObjectList, node);
                             }
-
 
                             parentNode.addNode(node);
                         }
@@ -58,10 +51,7 @@ module wd {
 
             var { worldMin, worldMax } = this._getWorldExtends(entityObjectList);
 
-
-
             this._root = OctreeNode.create(worldMin, worldMax, maxNodeCapacity, currentDepth + 1, maxDepth);
-
 
             buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
         }
@@ -88,6 +78,10 @@ module wd {
             return this._visitRoot("findAndAddToCollideList", [shape, this._selectionList]);
         }
 
+        public getChildren() {
+            return this.entityObject.getChildren();
+        }
+
         private _visitRoot(method:string, args:Array<any>):any{
             this._selectionList.removeAllChildren();
 
@@ -98,10 +92,6 @@ module wd {
             this._selectionList = this._selectionList.removeRepeatItems();
 
             return this._selectionList;
-        }
-
-        public getChildren() {
-            return this.entityObject.getChildren();
         }
 
         private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<GameObject>) {

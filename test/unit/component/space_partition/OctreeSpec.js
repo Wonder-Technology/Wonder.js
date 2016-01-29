@@ -32,6 +32,14 @@ describe("Octree", function () {
         sandbox.restore();
     });
 
+    describe("addToObject", function(){
+        it("if not add to GameObject, contract error", function(){
+            expect(function(){
+                tree.addToObject(wd.UIObject.create())
+            }).toThrow();
+        });
+    });
+
     describe("build", function () {
 
         function getRoot(){
@@ -522,7 +530,7 @@ describe("Octree", function () {
 
 
 
-                    var resultList = domEventManager._findTriggerObjectList(fakeMouseEvent, director.scene.gameObjectScene);
+                    var resultList = domEventManager._findTriggerGameObjectList(fakeMouseEvent, director.scene.gameObjectScene);
 
 
 

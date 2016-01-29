@@ -15,12 +15,12 @@ module wd{
         public entityObjectList:wdCb.Collection<EntityObject> = wdCb.Collection.create<EntityObject>();
         public nodeList:wdCb.Collection<OctreeNode> = wdCb.Collection.create<OctreeNode>();
 
-        private _depth: number;
-        private _maxDepth: number;
-        private _capacity: number;
-        private _minPoint: Vector3;
-        private _maxPoint: Vector3;
-        private _boundingVectors = new Array<Vector3>();
+        private _depth:number = null;
+        private _maxDepth:number = null;
+        private _capacity:number = null;
+        private _minPoint:Vector3 = null;
+        private _maxPoint:Vector3 = null;
+        private _boundingVectors:Array<Vector3> = null;
 
         constructor(minPoint: Vector3, maxPoint: Vector3, capacity: number, depth: number, maxDepth: number) {
             this._capacity = capacity;
@@ -35,16 +35,19 @@ module wd{
             this._boundingVectors = BoundingRegionUtils.buildBoundingVectors(this._minPoint, this._maxPoint);
         }
 
-        public addEntityObjects(entityObjectList){
+        @require(function(entityObjectList:wdCb.Collection<GameObject>){
+            entityObjectList.forEach((entityObject:GameObject) => {
+                assert(entityObject instanceof GameObject, Log.info.FUNC_SHOULD("add gameObjects"));
+            });
+        })
+        public addEntityObjects(entityObjectList:wdCb.Collection<GameObject>){
             var self = this,
                 localMin = this._minPoint,
                 localMax = this._maxPoint;
 
-            entityObjectList.forEach((entityObject:EntityObject) => {
+            entityObjectList.forEach((entityObject:GameObject) => {
                 if(entityObject.getComponent<BoxColliderForFirstCheck>(BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)){
                     self.entityObjectList.addChild(entityObject);
-
-                    //todo remove added list?
                 }
             });
         }
