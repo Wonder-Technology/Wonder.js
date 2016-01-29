@@ -397,10 +397,15 @@ module wd {
             return this.children;
         }
 
-        @virtual
         protected initComponent(){
-            //todo collider init after geometry init?
-            this.components.forEach((component:Component) => {
+            if(this.hasComponent(Geometry)){
+                this.getComponent<Geometry>(Geometry).init();
+            }
+
+            this.components.filter((component:Component) => {
+                return !(component instanceof Geometry);
+            })
+            .forEach((component:Component) => {
                 component.init();
             });
         }
