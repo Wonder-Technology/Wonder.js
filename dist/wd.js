@@ -5638,8 +5638,58 @@ var wd;
 (function (wd) {
     wd.DebugConfig = {
         isTest: false,
-        debugCollision: false
+        debugCollision: false,
+        showDebugPanel: false
     };
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var DebugStatistics = (function () {
+        function DebugStatistics() {
+        }
+        DebugStatistics.clear = function () {
+            this.count.renderGameObjects = 0;
+            this.count.drawCalls = 0;
+        };
+        DebugStatistics.init = function () {
+            var self = this;
+            this._startLoopSubscription = wd.EventManager.fromEvent(wd.EngineEvent.STARTLOOP)
+                .subscribe(function () {
+                if (wd.DebugConfig.showDebugPanel) {
+                    console.log("totalGameObjects:" + self.count.totalGameObjects + ", renderGameObjects:" + self.count.renderGameObjects + ", drawCalls:" + self.count.drawCalls);
+                    console.log("fps:" + self.during.fps);
+                    self.clear();
+                }
+            });
+        };
+        DebugStatistics.dispose = function () {
+            this._startLoopSubscription.dispose();
+        };
+        DebugStatistics.count = {
+            get totalGameObjects() {
+                var count = 0;
+                wd.Director.getInstance().scene.getChildren().forEach(function (child) {
+                    if (child.hasComponent(wd.Octree)) {
+                        count += child.getComponent(wd.Octree).getChildren().getCount();
+                        return;
+                    }
+                    count++;
+                });
+                return count;
+            },
+            renderGameObjects: 0,
+            drawCalls: 0
+        };
+        DebugStatistics.during = {
+            get fps() {
+                return wd.Director.getInstance().fps;
+            }
+        };
+        DebugStatistics._startLoopSubscription = null;
+        return DebugStatistics;
+    })();
+    wd.DebugStatistics = DebugStatistics;
 })(wd || (wd = {}));
 
 var wdFrp;
@@ -6070,11 +6120,24 @@ var wd;
             var v = this.values;
             return v[0] === 0 && v[1] === 0 && v[2] === 0;
         };
-        Vector3.prototype.scale = function (scalar) {
+        Vector3.prototype.scale = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
             var v = this.values;
-            v[0] *= scalar;
-            v[1] *= scalar;
-            v[2] *= scalar;
+            if (args.length === 1) {
+                var scalar = args[0];
+                v[0] *= scalar;
+                v[1] *= scalar;
+                v[2] *= scalar;
+            }
+            else if (args.length === 3) {
+                var x = args[0], y = args[1], z = args[2];
+                v[0] *= x;
+                v[1] *= y;
+                v[2] *= z;
+            }
             return this;
         };
         Vector3.prototype.set = function () {
@@ -7527,9 +7590,90 @@ var wd;
         Plane.prototype.copy = function () {
             return Plane.create(this.normal.x, this.normal.y, this.normal.z, this.d);
         };
+        Plane.prototype.dotCoordinate = function (point) {
+            return ((((this.normal.x * point.x) + (this.normal.y * point.y)) + (this.normal.z * point.z)) + this.d);
+        };
         return Plane;
     })();
     wd.Plane = Plane;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var Ray = (function () {
+        function Ray(origin, direction) {
+            this._origin = null;
+            this._direction = null;
+            this._origin = origin;
+            this._direction = direction;
+        }
+        Ray.create = function (origin, direction) {
+            var obj = new this(origin, direction);
+            return obj;
+        };
+        Ray.prototype.isIntersectWithAABB = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var center = null, halfExtends = null, diff = wd.Vector3.create(), absDiff = null, absDir = null, cross = wd.Vector3.create(), prod = wd.Vector3.create(), rayOrigin = this._origin, rayDir = this._direction;
+            if (args.length === 1) {
+                var aabb = args[0];
+                center = aabb.center;
+                halfExtends = aabb.halfExtents;
+            }
+            else if (args.length === 2) {
+                var minPoint = args[0], maxPoint = args[1];
+                center = wd.AABBShape.getCenter(minPoint, maxPoint);
+                halfExtends = wd.AABBShape.getHalfExtents(minPoint, maxPoint);
+            }
+            diff.sub2(rayOrigin, center);
+            absDiff = wd.Vector3.create(Math.abs(diff.x), Math.abs(diff.y), Math.abs(diff.z));
+            prod.mul2(diff, rayDir);
+            if (absDiff.x > halfExtends.x && prod.x >= 0) {
+                return false;
+            }
+            if (absDiff.y > halfExtends.y && prod.y >= 0) {
+                return false;
+            }
+            if (absDiff.z > halfExtends.z && prod.z >= 0) {
+                return false;
+            }
+            absDir = wd.Vector3.create(Math.abs(rayDir.x), Math.abs(rayDir.y), Math.abs(rayDir.z));
+            cross.cross(rayDir, diff);
+            cross.set(Math.abs(cross.x), Math.abs(cross.y), Math.abs(cross.z));
+            if (cross.x > halfExtends.y * absDir.z + halfExtends.z * absDir.y) {
+                return false;
+            }
+            if (cross.y > halfExtends.x * absDir.z + halfExtends.z * absDir.x) {
+                return false;
+            }
+            if (cross.z > halfExtends.x * absDir.y + halfExtends.y * absDir.x) {
+                return false;
+            }
+            return true;
+        };
+        Ray.prototype.isIntersectWithSphere = function (sphere) {
+            var center = sphere.center, radius = sphere.radius, diff = wd.Vector3.create(), a = 0, b = 0, c = 0, discr = 0, rayOrigin = this._origin, rayDir = this._direction;
+            diff.sub2(rayOrigin, center);
+            if (diff.dot(diff) < radius * radius) {
+                return true;
+            }
+            a = rayDir.dot(rayDir);
+            b = 2 * rayDir.dot(diff);
+            c = center.dot(center);
+            c += rayOrigin.dot(rayOrigin);
+            c -= 2 * center.dot(rayOrigin);
+            c -= radius * radius;
+            discr = (b * b) - (4 * a * c);
+            if (discr < 0) {
+                return false;
+            }
+            return true;
+        };
+        return Ray;
+    })();
+    wd.Ray = Ray;
 })(wd || (wd = {}));
 
 var wd;
@@ -8008,6 +8152,7 @@ var wd;
         Director.prototype._init = function () {
             this._initGameObjectScene();
             this.initUIObjectScene();
+            wd.DebugStatistics.init();
         };
         Director.prototype._initGameObjectScene = function () {
             var gameObjectScene = this.scene.gameObjectScene;
@@ -8261,7 +8406,7 @@ var wd;
         };
         DomEventManager.prototype._findTopGameObject = function (e, gameObjectScene) {
             var self = this;
-            return this._findTriggerObjectList(e, gameObjectScene).sort(function (a, b) {
+            return this._findTriggerGameObjectList(e, gameObjectScene).sort(function (a, b) {
                 return self._getDistanceToCamera(a) - self._getDistanceToCamera(b);
             })
                 .getChild(0);
@@ -8270,21 +8415,36 @@ var wd;
             return obj.transform.position.copy().sub(wd.Director.getInstance().scene.camera.transform.position).length();
         };
         DomEventManager.prototype._findTopUIObject = function (e, uiObjectScene) {
-            return this._findTriggerObjectList(e, uiObjectScene).sort(function (a, b) {
+            return this._findTriggerUIObjectList(e, uiObjectScene).sort(function (a, b) {
                 return b.transform.zIndex - a.transform.zIndex;
             })
                 .getChild(0);
         };
-        DomEventManager.prototype._findTriggerObjectList = function (e, objectScene) {
-            var triggerObjectList = wdCb.Collection.create();
+        DomEventManager.prototype._findTriggerGameObjectList = function (e, objectScene) {
+            var triggerObjectList = wdCb.Collection.create(), self = this;
             var find = function (entityObject) {
-                var detector = null;
-                if (entityObject.hasComponent(wd.EventTriggerDetector)) {
-                    detector = entityObject.getComponent(wd.EventTriggerDetector);
-                    if (detector.isTrigger(e)) {
-                        triggerObjectList.addChild(entityObject);
-                    }
+                if (entityObject.hasComponent(wd.Octree)) {
+                    entityObject.getOctree().getIntersectListWithRay(e)
+                        .forEach(function (entityObject) {
+                        self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
+                    });
                 }
+                else {
+                    self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
+                    entityObject.forEach(function (child) {
+                        find(child);
+                    });
+                }
+            };
+            objectScene.forEach(function (child) {
+                find(child);
+            });
+            return triggerObjectList;
+        };
+        DomEventManager.prototype._findTriggerUIObjectList = function (e, objectScene) {
+            var triggerObjectList = wdCb.Collection.create(), self = this;
+            var find = function (entityObject) {
+                self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
                 entityObject.forEach(function (child) {
                     find(child);
                 });
@@ -8293,6 +8453,14 @@ var wd;
                 find(child);
             });
             return triggerObjectList;
+        };
+        DomEventManager.prototype._addTriggerObjectByQueryDetector = function (entityObject, e, triggerObjectList) {
+            if (entityObject.hasComponent(wd.EventTriggerDetector)) {
+                var detector = entityObject.getComponent(wd.EventTriggerDetector);
+                if (detector.isTrigger(e)) {
+                    triggerObjectList.addChild(entityObject);
+                }
+            }
         };
         DomEventManager.prototype._isTriggerScene = function (e) {
             var detector = this.scene.getComponent(wd.EventTriggerDetector);
@@ -8348,7 +8516,7 @@ var wd;
             this.children = wdCb.Collection.create();
             this.startLoopHandler = null;
             this.endLoopHandler = null;
-            this._components = wdCb.Collection.create();
+            this.components = wdCb.Collection.create();
             this._scriptExecuteHistory = wdCb.Hash.create();
         }
         Object.defineProperty(EntityObject.prototype, "scriptList", {
@@ -8384,12 +8552,11 @@ var wd;
             });
             this.bindStartLoopEvent();
             this.bindEndLoopEvent();
-            this._components.forEach(function (component) {
-                component.init();
-            });
+            this.initComponent();
             this.forEach(function (child) {
                 child.init();
             });
+            this.afterInitChildren();
             return this;
         };
         EntityObject.prototype.onStartLoop = function () {
@@ -8483,20 +8650,20 @@ var wd;
             });
         };
         EntityObject.prototype.getComponent = function (_class) {
-            return this._components.findOne(function (component) {
+            return this.components.findOne(function (component) {
                 return component instanceof _class;
             });
         };
         EntityObject.prototype.findComponentByUid = function (uid) {
-            return this._components.findOne(function (component) {
+            return this.components.findOne(function (component) {
                 return component.uid === uid;
             });
         };
         EntityObject.prototype.getFirstComponent = function () {
-            return this._components.getChild(0);
+            return this.components.getChild(0);
         };
         EntityObject.prototype.forEachComponent = function (func) {
-            this._components.forEach(func);
+            this.components.forEach(func);
             return this;
         };
         EntityObject.prototype.removeChild = function (child) {
@@ -8512,11 +8679,11 @@ var wd;
             }
             if (args[0] instanceof wd.Component) {
                 var component = args[0];
-                return this._components.hasChild(component);
+                return this.components.hasChild(component);
             }
             else {
                 var _class = args[0];
-                return this._components.hasChild(function (component) {
+                return this.components.hasChild(function (component) {
                     return component instanceof _class;
                 });
             }
@@ -8526,7 +8693,7 @@ var wd;
                 wd.Log.assert(false, "the component already exist");
                 return this;
             }
-            this._components.addChild(component);
+            this.components.addChild(component);
             component.addToObject(this);
             return this;
         };
@@ -8542,26 +8709,27 @@ var wd;
             else {
                 component = this.getComponent(args[0]);
             }
-            this._components.removeChild(component);
+            this.components.removeChild(component);
             this._removeComponentHandler(component);
             return this;
         };
         EntityObject.prototype.removeAllComponent = function () {
             var _this = this;
             var result = wdCb.Collection.create();
-            this._components.forEach(function (component) {
+            this.components.forEach(function (component) {
                 _this._removeComponentHandler(component);
                 result.addChild(component);
             }, this);
-            this._components.removeAllChildren();
+            this.components.removeAllChildren();
             return result;
         };
         EntityObject.prototype.render = function (renderer, camera) {
             var geometry = this._getGeometry(), rendererComponent = this._getRendererComponent();
             if (rendererComponent && geometry) {
                 rendererComponent.render(renderer, geometry, camera);
+                wd.DebugStatistics.count.renderGameObjects++;
             }
-            this.children.forEach(function (child) {
+            this.getRenderList().forEach(function (child) {
                 child.render(renderer, camera);
             });
         };
@@ -8620,11 +8788,30 @@ var wd;
         };
         EntityObject.prototype.beforeUpdateChildren = function (elapsedTime) {
         };
+        EntityObject.prototype.afterInitChildren = function () {
+        };
         EntityObject.prototype.bindStartLoopEvent = function () {
             wd.EventManager.on(wd.EngineEvent.STARTLOOP, this.startLoopHandler);
         };
         EntityObject.prototype.bindEndLoopEvent = function () {
             wd.EventManager.on(wd.EngineEvent.ENDLOOP, this.endLoopHandler);
+        };
+        EntityObject.prototype.getRenderList = function () {
+            if (this.children.getCount() > 100) {
+                console.log(this.children.getCount());
+            }
+            return this.children;
+        };
+        EntityObject.prototype.initComponent = function () {
+            if (this.hasComponent(wd.Geometry)) {
+                this.getComponent(wd.Geometry).init();
+            }
+            this.components.filter(function (component) {
+                return !(component instanceof wd.Geometry);
+            })
+                .forEach(function (component) {
+                component.init();
+            });
         };
         EntityObject.prototype.getAllChildren = function () {
             var result = wdCb.Collection.create();
@@ -8653,7 +8840,7 @@ var wd;
             return this.getComponent(wd.Collider);
         };
         EntityObject.prototype.getComponentCount = function (_class) {
-            return this._components.filter(function (component) {
+            return this.components.filter(function (component) {
                 return component instanceof _class;
             }).getCount();
         };
@@ -8677,10 +8864,16 @@ var wd;
         ], EntityObject.prototype, "beforeUpdateChildren", null);
         __decorate([
             wd.virtual
+        ], EntityObject.prototype, "afterInitChildren", null);
+        __decorate([
+            wd.virtual
         ], EntityObject.prototype, "bindStartLoopEvent", null);
         __decorate([
             wd.virtual
         ], EntityObject.prototype, "bindEndLoopEvent", null);
+        __decorate([
+            wd.virtual
+        ], EntityObject.prototype, "getRenderList", null);
         __decorate([
             wd.require(function () {
                 wd.assert(this.getComponentCount(wd.Geometry) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
@@ -8785,8 +8978,22 @@ var wd;
             obj.initWhenCreate();
             return obj;
         };
+        GameObject.prototype.getOctree = function () {
+            return this.getComponent(wd.Octree);
+        };
         GameObject.prototype.createTransform = function () {
             return wd.ThreeDTransform.create();
+        };
+        GameObject.prototype.getRenderList = function () {
+            if (this.hasComponent(wd.Octree)) {
+                return this.getOctree().getRenderListByFrustumCull();
+            }
+            return this.children;
+        };
+        GameObject.prototype.afterInitChildren = function () {
+            if (this.hasComponent(wd.Octree)) {
+                return this.getOctree().build();
+            }
         };
         return GameObject;
     })(wd.EntityObject);
@@ -9388,11 +9595,18 @@ var wd;
     wd.Skybox = Skybox;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var CollisionDetector = (function () {
         function CollisionDetector() {
             this._lastCollideObjects = null;
+            this._collisionTable = wdCb.Hash.create();
         }
         CollisionDetector.create = function () {
             var obj = new this();
@@ -9400,41 +9614,151 @@ var wd;
         };
         CollisionDetector.prototype.detect = function (scene) {
             var checkTargetList = scene.filter(function (entityObject) {
-                return entityObject.hasComponent(wd.Collider);
+                return entityObject.hasComponent(wd.Collider) || wd.JudgeUtils.isOctreeObject(entityObject);
             }), self = this;
+            this._clearCollisionTable();
             checkTargetList.forEach(function (entityObject) {
-                var collideObjects = null;
                 if (entityObject.hasComponent(wd.RigidBody)) {
                     return;
                 }
-                collideObjects = entityObject.getComponent(wd.Collider).getCollideObjects(checkTargetList);
-                if (collideObjects.getCount() > 0) {
-                    if (self._isCollisionStart(entityObject)) {
-                        entityObject.execScript("onCollisionStart", collideObjects);
-                        entityObject.execScript("onContact", collideObjects);
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, entityObject, ["onCollisionStart", "onContact"]);
+                var _a = self._getCollideObjects(entityObject, checkTargetList), targetCollideObjects = _a.targetCollideObjects, sourceCollideObjects = _a.sourceCollideObjects;
+                sourceCollideObjects.forEach(function (sourceObject) {
+                    if (targetCollideObjects.getCount() > 0) {
+                        if (self._isCollisionStart(sourceObject)) {
+                            sourceObject.execScript("onCollisionStart", targetCollideObjects);
+                            sourceObject.execScript("onContact", targetCollideObjects);
+                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onCollisionStart", "onContact"]);
+                        }
+                        else {
+                            sourceObject.execScript("onContact", targetCollideObjects);
+                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onContact"]);
+                        }
+                        sourceObject.addTag(CollisionTag.COLLIDED);
+                        self._lastCollideObjects = targetCollideObjects;
                     }
                     else {
-                        entityObject.execScript("onContact", collideObjects);
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, entityObject, ["onContact"]);
+                        if (self._isCollisionEnd(sourceObject)) {
+                            sourceObject.execScript("onCollisionEnd");
+                            self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, sourceObject, ["onCollisionEnd"]);
+                        }
+                        sourceObject.removeTag(CollisionTag.COLLIDED);
                     }
-                    entityObject.addTag("isCollided");
-                    self._lastCollideObjects = collideObjects;
-                }
-                else {
-                    if (self._isCollisionEnd(entityObject)) {
-                        entityObject.execScript("onCollisionEnd");
-                        self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, entityObject, ["onCollisionEnd"]);
-                    }
-                    entityObject.removeTag("isCollided");
-                }
+                });
             });
         };
+        CollisionDetector.prototype._getCollideObjects = function (sourceObject, checkTargetList) {
+            var targetCollideObjects = wdCb.Collection.create(), sourceCollideObjects = wdCb.Collection.create(), self = this, sourceCollider = null;
+            if (wd.JudgeUtils.isOctreeObject(sourceObject)) {
+                checkTargetList.forEach(function (targetObject) {
+                    if (wd.JudgeUtils.isSelf(sourceObject, targetObject)) {
+                        return;
+                    }
+                    if (wd.JudgeUtils.isOctreeObject(targetObject)) {
+                        self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
+                    }
+                    else {
+                        self._getCollideObjectsWithOctree(targetObject, sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
+                    }
+                });
+                this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
+                return {
+                    targetCollideObjects: targetCollideObjects.removeRepeatItems(),
+                    sourceCollideObjects: sourceCollideObjects.removeRepeatItems()
+                };
+            }
+            sourceCollider = sourceObject.getComponent(wd.Collider);
+            checkTargetList.forEach(function (targetObject) {
+                if (wd.JudgeUtils.isSelf(sourceObject, targetObject)) {
+                    return;
+                }
+                if (wd.JudgeUtils.isOctreeObject(targetObject)) {
+                    self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
+                }
+                else {
+                    self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
+                }
+            });
+            sourceCollideObjects.addChild(sourceObject);
+            if (targetCollideObjects.getCount() > 0) {
+                this._recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
+            }
+            return {
+                targetCollideObjects: targetCollideObjects.removeRepeatItems(),
+                sourceCollideObjects: sourceCollideObjects.removeRepeatItems()
+            };
+        };
+        CollisionDetector.prototype._getCollideObjectsByGameObjectToGameObject = function (sourceObject, sourceCollider, targetObject, targetCollideObjects) {
+            if (this._isTargetCollidedWithSourceInCurrentFrame(sourceObject, targetObject)) {
+                targetCollideObjects.addChild(targetObject);
+            }
+            else if (!(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(CollisionTag.COLLIDED))
+                && sourceCollider.isCollide(targetObject)) {
+                targetCollideObjects.addChild(targetObject);
+            }
+        };
+        CollisionDetector.prototype._clearCollisionTable = function () {
+            this._collisionTable.removeAllChildren();
+        };
+        CollisionDetector.prototype._isTargetCollidedWithSourceInCurrentFrame = function (sourceObject, targetObject) {
+            var targetCollideObjects = this._collisionTable.getChild(String(targetObject.uid));
+            if (!targetCollideObjects) {
+                return false;
+            }
+            return targetCollideObjects.hasChild(function (targetCollideObject) {
+                return wd.JudgeUtils.isEqual(targetCollideObject, sourceObject);
+            });
+        };
+        CollisionDetector.prototype._recordCollisionTargets = function (targetCollideObjects, sourceCollideObjects) {
+            var table = this._collisionTable;
+            sourceCollideObjects.forEach(function (sourceObject) {
+                targetCollideObjects.forEach(function (targetObject) {
+                    table.appendChild(String(sourceObject.uid), targetObject);
+                });
+            });
+        };
+        CollisionDetector.prototype._getCollideObjectsWithOctree = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (args.length === 4) {
+                if (args[0] instanceof wd.GameObject && args[1] instanceof wd.Octree) {
+                    var targetObject = args[0], sourceOctree = args[1], targetCollideObjects = args[2], sourceCollideObjects = args[3], targetCollider = targetObject.getComponent(wd.Collider), self_1 = this;
+                    sourceOctree.getCollideObjects(targetCollider.shape).forEach(function (sourceObject) {
+                        self_1._getCollideObjectsByGameObjectToGameObject(targetObject, targetCollider, sourceObject, sourceCollideObjects);
+                    });
+                    if (sourceCollideObjects.getCount() > 0) {
+                        targetCollideObjects.addChild(targetObject);
+                    }
+                    sourceCollideObjects.removeAllChildren();
+                    sourceCollideObjects.addChildren(sourceOctree.getChildren());
+                }
+                else if (args[0] instanceof wd.Octree && args[1] instanceof wd.Octree) {
+                    var targetOctree = args[0], sourceOctree = args[1], targetCollideObjects = args[2], sourceCollideObjects = args[3], self_2 = this;
+                    sourceOctree.getChildren()
+                        .forEach(function (sourceObject) {
+                        var sourceCollider = sourceObject.getComponent(wd.Collider);
+                        self_2._getCollideObjectsWithOctree(targetOctree, sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
+                    });
+                }
+            }
+            else if (args.length === 5) {
+                var targetOctree = args[0], sourceCollider = args[1], sourceObject = args[2], targetCollideObjects = args[3], sourceCollideObjects = args[4], self_3 = this;
+                if (!sourceCollider) {
+                    return;
+                }
+                targetOctree.getCollideObjects(sourceCollider.shape).forEach(function (targetObject) {
+                    self_3._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
+                });
+                sourceCollideObjects.addChild(sourceObject);
+                return;
+            }
+        };
         CollisionDetector.prototype._isCollisionStart = function (entityObject) {
-            return !entityObject.hasTag("isCollided");
+            return !entityObject.hasTag(CollisionTag.COLLIDED);
         };
         CollisionDetector.prototype._isCollisionEnd = function (entityObject) {
-            return entityObject.hasTag("isCollided");
+            return entityObject.hasTag(CollisionTag.COLLIDED);
         };
         CollisionDetector.prototype._triggerCollisionEventOfCollideObjectWhichHasRigidBody = function (collideObjects, currentGameObject, eventList) {
             collideObjects.filter(function (entityObject) {
@@ -9447,9 +9771,28 @@ var wd;
                 }
             });
         };
+        CollisionDetector.prototype._isNotTransform = function (entityObject) {
+            return !entityObject.transform.isTransform;
+        };
+        __decorate([
+            wd.require(function (sourceObject, checkTargetList) {
+                checkTargetList.forEach(function (targetObject) {
+                    wd.assert(targetObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("targetObject", "be GameObject"));
+                });
+            })
+        ], CollisionDetector.prototype, "_getCollideObjects", null);
+        __decorate([
+            wd.require(function (sourceObject, sourceCollider, targetObject, targetCollideObjects) {
+                wd.assert(sourceObject instanceof wd.GameObject && targetObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("sourceObject and targetObject", "be GameObject"));
+            })
+        ], CollisionDetector.prototype, "_getCollideObjectsByGameObjectToGameObject", null);
         return CollisionDetector;
     })();
     wd.CollisionDetector = CollisionDetector;
+    var CollisionTag;
+    (function (CollisionTag) {
+        CollisionTag[CollisionTag["COLLIDED"] = "COLLIDED"] = "COLLIDED";
+    })(CollisionTag || (CollisionTag = {}));
 })(wd || (wd = {}));
 
 var wd;
@@ -15057,17 +15400,59 @@ var wd;
             this.camera.dispose();
         };
         CameraController.prototype.isIntersectWithRay = function (entityObject, screenX, screenY) {
-            var from = null, to = null, shape = null;
+            var shape = null;
             if (!entityObject.hasComponent(wd.Collider)) {
                 return false;
             }
             shape = entityObject.getComponent(wd.Collider).shape;
-            from = this.convertScreenToWorld(screenX, screenY, this.camera.near);
-            to = this.convertScreenToWorld(screenX, screenY, this.camera.far);
-            return shape.isIntersectWithRay(from, to.sub(from));
+            return shape.isIntersectWithRay(this.createRay(screenX, screenY));
+        };
+        CameraController.prototype.createRay = function (screenX, screenY) {
+            var from = this.convertScreenToWorld(screenX, screenY, this.camera.near), to = this.convertScreenToWorld(screenX, screenY, this.camera.far);
+            return wd.Ray.create(from, to.sub(from));
         };
         CameraController.prototype.convertScreenToWorld = function (screenX, screenY, distanceFromCamera) {
             return this.camera.convertScreenToWorld(screenX, screenY, distanceFromCamera);
+        };
+        CameraController.prototype.getPlanes = function () {
+            var frustumPlanes = [], transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix);
+            for (var index = 0; index < 6; index++) {
+                frustumPlanes.push(wd.Plane.create(0, 0, 0, 0));
+            }
+            this._setPlanes(transform, frustumPlanes);
+            return frustumPlanes;
+        };
+        CameraController.prototype._setPlanes = function (transform, frustumPlanes) {
+            frustumPlanes[0].normal.x = transform.values[3] + transform.values[2];
+            frustumPlanes[0].normal.y = transform.values[7] + transform.values[6];
+            frustumPlanes[0].normal.z = transform.values[11] + transform.values[10];
+            frustumPlanes[0].d = transform.values[15] + transform.values[14];
+            frustumPlanes[0].normalize();
+            frustumPlanes[1].normal.x = transform.values[3] - transform.values[2];
+            frustumPlanes[1].normal.y = transform.values[7] - transform.values[6];
+            frustumPlanes[1].normal.z = transform.values[11] - transform.values[10];
+            frustumPlanes[1].d = transform.values[15] - transform.values[14];
+            frustumPlanes[1].normalize();
+            frustumPlanes[2].normal.x = transform.values[3] + transform.values[0];
+            frustumPlanes[2].normal.y = transform.values[7] + transform.values[4];
+            frustumPlanes[2].normal.z = transform.values[11] + transform.values[8];
+            frustumPlanes[2].d = transform.values[15] + transform.values[12];
+            frustumPlanes[2].normalize();
+            frustumPlanes[3].normal.x = transform.values[3] - transform.values[0];
+            frustumPlanes[3].normal.y = transform.values[7] - transform.values[4];
+            frustumPlanes[3].normal.z = transform.values[11] - transform.values[8];
+            frustumPlanes[3].d = transform.values[15] - transform.values[12];
+            frustumPlanes[3].normalize();
+            frustumPlanes[4].normal.x = transform.values[3] - transform.values[1];
+            frustumPlanes[4].normal.y = transform.values[7] - transform.values[5];
+            frustumPlanes[4].normal.z = transform.values[11] - transform.values[9];
+            frustumPlanes[4].d = transform.values[15] - transform.values[13];
+            frustumPlanes[4].normalize();
+            frustumPlanes[5].normal.x = transform.values[3] + transform.values[1];
+            frustumPlanes[5].normal.y = transform.values[7] + transform.values[5];
+            frustumPlanes[5].normal.z = transform.values[11] + transform.values[9];
+            frustumPlanes[5].d = transform.values[15] + transform.values[13];
+            frustumPlanes[5].normalize();
         };
         return CameraController;
     })(wd.Component);
@@ -16617,6 +17002,303 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var wd;
 (function (wd) {
+    var Octree = (function (_super) {
+        __extends(Octree, _super);
+        function Octree() {
+            _super.apply(this, arguments);
+            this.maxDepth = 2;
+            this.maxNodeCapacity = 64;
+            this._root = null;
+            this._selectionList = wdCb.Collection.create();
+        }
+        Octree.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Octree.prototype.addToObject = function (entityObject) {
+            _super.prototype.addToObject.call(this, entityObject);
+        };
+        Octree.prototype.build = function () {
+            var entityObjectList = this.getChildren(), currentDepth = 0, maxNodeCapacity = this.maxNodeCapacity, maxDepth = this.maxDepth;
+            var buildTree = function (worldMin, worldMax, currentDepth, entityObjectList, parentNode) {
+                var halfExtends = new wd.Vector3((worldMax.x - worldMin.x) / 2, (worldMax.y - worldMin.y) / 2, (worldMax.z - worldMin.z) / 2);
+                for (var x = 0; x < 2; x++) {
+                    for (var y = 0; y < 2; y++) {
+                        for (var z = 0; z < 2; z++) {
+                            var localMin = worldMin.copy().add(halfExtends.copy().scale(x, y, z)), localMax = worldMin.copy().add(halfExtends.copy().scale(x + 1, y + 1, z + 1)), node = wd.OctreeNode.create(localMin, localMax, maxNodeCapacity, currentDepth + 1, maxDepth);
+                            node.addEntityObjects(entityObjectList);
+                            if (node.entityObjectCount > maxNodeCapacity && currentDepth < maxDepth) {
+                                buildTree(localMin, localMax, currentDepth + 1, entityObjectList, node);
+                            }
+                            parentNode.addNode(node);
+                        }
+                    }
+                }
+            };
+            this._updateColliderForFirstCheck(entityObjectList);
+            var _a = this._getWorldExtends(entityObjectList), worldMin = _a.worldMin, worldMax = _a.worldMax;
+            this._root = wd.OctreeNode.create(worldMin, worldMax, maxNodeCapacity, currentDepth + 1, maxDepth);
+            buildTree(worldMin, worldMax, currentDepth, entityObjectList, this._root);
+        };
+        Octree.prototype.getRenderListByFrustumCull = function () {
+            var frustumPlanes = wd.Director.getInstance().scene.camera.getComponent(wd.CameraController).getPlanes();
+            return this._visitRoot("findAndAddToRenderList", [frustumPlanes, this._selectionList]);
+        };
+        Octree.prototype.getIntersectListWithRay = function (e) {
+            var locationInView = e.locationInView;
+            return this._visitRoot("findAndAddToIntersectList", [wd.Director.getInstance().scene.camera.getComponent(wd.CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);
+        };
+        Octree.prototype.getCollideObjects = function (shape) {
+            return this._visitRoot("findAndAddToCollideList", [shape, this._selectionList]);
+        };
+        Octree.prototype.getChildren = function () {
+            return this.entityObject.getChildren();
+        };
+        Octree.prototype._visitRoot = function (method, args) {
+            this._selectionList.removeAllChildren();
+            this._root.nodeList.forEach(function (topNode) {
+                topNode[method].apply(topNode, args);
+            });
+            this._selectionList = this._selectionList.removeRepeatItems();
+            return this._selectionList;
+        };
+        Octree.prototype._updateColliderForFirstCheck = function (entityObjectList) {
+            var collider = null, self = this;
+            entityObjectList.forEach(function (entityObject) {
+                if (!entityObject.hasComponent(wd.ColliderForFirstCheck)) {
+                    collider = self._createCollider();
+                    entityObject.addComponent(collider);
+                    collider.init();
+                }
+                else {
+                    collider = entityObject.getComponent(wd.BoxColliderForFirstCheck);
+                }
+                collider.update(null);
+            });
+        };
+        Octree.prototype._getWorldExtends = function (entityObjectList) {
+            var worldMin = wd.Vector3.create(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE), worldMax = wd.Vector3.create(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE), self = this;
+            entityObjectList.forEach(function (entityObject) {
+                var min = null, max = null, collider = null, shape = null;
+                collider = entityObject.getComponent(wd.BoxColliderForFirstCheck);
+                shape = collider.shape;
+                min = shape.getMin();
+                max = shape.getMax();
+                self._checkExtends(min, worldMin, worldMax);
+                self._checkExtends(max, worldMin, worldMax);
+            });
+            return {
+                worldMin: worldMin,
+                worldMax: worldMax
+            };
+        };
+        Octree.prototype._createCollider = function () {
+            return wd.BoxColliderForFirstCheck.create();
+        };
+        Octree.prototype._checkExtends = function (v, min, max) {
+            if (v.x < min.x) {
+                min.x = v.x;
+            }
+            if (v.y < min.y) {
+                min.y = v.y;
+            }
+            if (v.z < min.z) {
+                min.z = v.z;
+            }
+            if (v.x > max.x) {
+                max.x = v.x;
+            }
+            if (v.y > max.y) {
+                max.y = v.y;
+            }
+            if (v.z > max.z) {
+                max.z = v.z;
+            }
+        };
+        __decorate([
+            wd.require(function (entityObject) {
+                wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("Octree component", "add to GameObject"));
+            })
+        ], Octree.prototype, "addToObject", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!wd.Director.getInstance().scene.camera.getComponent(wd.CameraController), wd.Log.info.FUNC_SHOULD("contain CameraController component"));
+            })
+        ], Octree.prototype, "getRenderListByFrustumCull", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!wd.Director.getInstance().scene.camera.getComponent(wd.CameraController), wd.Log.info.FUNC_SHOULD("contain CameraController component"));
+            })
+        ], Octree.prototype, "getIntersectListWithRay", null);
+        return Octree;
+    })(wd.Component);
+    wd.Octree = Octree;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var OctreeNode = (function () {
+        function OctreeNode(minPoint, maxPoint, capacity, depth, maxDepth) {
+            this.entityObjectList = wdCb.Collection.create();
+            this.nodeList = wdCb.Collection.create();
+            this._depth = null;
+            this._maxDepth = null;
+            this._capacity = null;
+            this._minPoint = null;
+            this._maxPoint = null;
+            this._boundingVectors = null;
+            this._capacity = capacity;
+            this._depth = depth;
+            this._maxDepth = maxDepth;
+            this._minPoint = minPoint;
+            this._maxPoint = maxPoint;
+        }
+        OctreeNode.create = function (minPoint, maxPoint, capacity, depth, maxDepth) {
+            var obj = new this(minPoint, maxPoint, capacity, depth, maxDepth);
+            obj.initWhenCreate();
+            return obj;
+        };
+        Object.defineProperty(OctreeNode.prototype, "entityObjectCount", {
+            get: function () {
+                return this.entityObjectList.getCount();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        OctreeNode.prototype.initWhenCreate = function () {
+            this._boundingVectors = wd.BoundingRegionUtils.buildBoundingVectors(this._minPoint, this._maxPoint);
+        };
+        OctreeNode.prototype.addEntityObjects = function (entityObjectList) {
+            var self = this, localMin = this._minPoint, localMax = this._maxPoint;
+            entityObjectList.forEach(function (entityObject) {
+                if (entityObject.getComponent(wd.BoxColliderForFirstCheck).shape.isIntersectWithBox(localMin, localMax)) {
+                    self.entityObjectList.addChild(entityObject);
+                }
+            });
+        };
+        OctreeNode.prototype.addNode = function (node) {
+            this.nodeList.addChild(node);
+        };
+        OctreeNode.prototype.findAndAddToRenderList = function (frustumPlanes, selectionList) {
+            if (wd.BoundingRegionUtils.isAABBIntersectFrustum(this._boundingVectors, frustumPlanes)) {
+                if (this._hasNode()) {
+                    this.nodeList.forEach(function (node) {
+                        node.findAndAddToRenderList(frustumPlanes, selectionList);
+                    });
+                    return;
+                }
+                selectionList.addChildren(this.entityObjectList);
+            }
+        };
+        OctreeNode.prototype.findAndAddToIntersectList = function (ray, selectionList) {
+            if (ray.isIntersectWithAABB(this._minPoint, this._maxPoint)) {
+                if (this._hasNode()) {
+                    this.nodeList.forEach(function (node) {
+                        node.findAndAddToIntersectList(ray, selectionList);
+                    });
+                    return;
+                }
+                selectionList.addChildren(this.entityObjectList);
+            }
+        };
+        OctreeNode.prototype.findAndAddToCollideList = function (shape, selectionList) {
+            if (shape.isIntersectWithBox(this._minPoint, this._maxPoint)) {
+                if (this._hasNode()) {
+                    this.nodeList.forEach(function (node) {
+                        node.findAndAddToCollideList(shape, selectionList);
+                    });
+                    return;
+                }
+                selectionList.addChildren(this.entityObjectList);
+            }
+        };
+        OctreeNode.prototype._hasNode = function () {
+            return this.nodeList.getCount() > 0;
+        };
+        __decorate([
+            wd.require(function (entityObjectList) {
+                entityObjectList.forEach(function (entityObject) {
+                    wd.assert(entityObject instanceof wd.GameObject, wd.Log.info.FUNC_SHOULD("add gameObjects"));
+                });
+            })
+        ], OctreeNode.prototype, "addEntityObjects", null);
+        return OctreeNode;
+    })();
+    wd.OctreeNode = OctreeNode;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var ColliderForFirstCheck = (function (_super) {
+        __extends(ColliderForFirstCheck, _super);
+        function ColliderForFirstCheck() {
+            _super.apply(this, arguments);
+        }
+        return ColliderForFirstCheck;
+    })(wd.Component);
+    wd.ColliderForFirstCheck = ColliderForFirstCheck;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var BoxColliderForFirstCheck = (function (_super) {
+        __extends(BoxColliderForFirstCheck, _super);
+        function BoxColliderForFirstCheck() {
+            _super.apply(this, arguments);
+            this._collider = wd.BoxCollider.create();
+        }
+        BoxColliderForFirstCheck.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(BoxColliderForFirstCheck.prototype, "shape", {
+            get: function () {
+                return this._collider.shape;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BoxColliderForFirstCheck.prototype.init = function () {
+            this._collider.entityObject = this.entityObject;
+            this._collider.init();
+        };
+        BoxColliderForFirstCheck.prototype.update = function (elapsedTime) {
+            this._collider.update(elapsedTime);
+        };
+        return BoxColliderForFirstCheck;
+    })(wd.ColliderForFirstCheck);
+    wd.BoxColliderForFirstCheck = BoxColliderForFirstCheck;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
     var Collider = (function (_super) {
         __extends(Collider, _super);
         function Collider() {
@@ -16653,25 +17335,19 @@ var wd;
                 wd.Log.warn(wd.Log.info.FUNC_NOT_SUPPORT(this.type + " collider", "intersect with " + collider.type + " collider"));
             }
         };
-        Collider.prototype.getCollideObjects = function (checkTargetList) {
-            var self = this, result = wdCb.Collection.create();
-            checkTargetList.forEach(function (entityObject) {
-                var collider = null;
-                if (self._isSelf(entityObject)) {
-                    return;
-                }
-                collider = entityObject.getComponent(Collider);
-                if (entityObject.hasComponent(wd.RigidBody)) {
-                    collider.updateShape();
-                }
-                if (self.isIntersectWith(collider)) {
-                    result.addChild(entityObject);
-                }
-            });
-            return result;
+        Collider.prototype.isCollide = function (targetObject) {
+            var collider = null;
+            if (this._isSelf(targetObject) || !targetObject.hasComponent(Collider)) {
+                return false;
+            }
+            collider = targetObject.getComponent(Collider);
+            if (targetObject.hasComponent(wd.RigidBody)) {
+                collider.updateShape();
+            }
+            return this.isIntersectWith(collider);
         };
         Collider.prototype._isSelf = function (entityObject) {
-            return this.entityObject.uid === entityObject.uid;
+            return wd.JudgeUtils.isSelf(this.entityObject, entityObject);
         };
         __decorate([
             wd.require(function (collider) {
@@ -16774,7 +17450,7 @@ var wd;
                 this.shape.setFromShapeParam.apply(this.shape, params);
             }
             else {
-                this.shape.setFromPoints(this.entityObject.getComponent(wd.Geometry).geometryData.vertices);
+                this.shape.setFromPoints(wd.ColliderUtils.getVertices(this.entityObject));
             }
             this.originShape = this.shape.copy();
             if (wd.DebugConfig.debugCollision) {
@@ -16999,6 +17675,89 @@ var wd;
 
 var wd;
 (function (wd) {
+    var BoundingRegionUtils = (function () {
+        function BoundingRegionUtils() {
+        }
+        BoundingRegionUtils.isAABBInFrustum = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var boundingVectors = null, frustumPlanes = null;
+            if (args.length === 2) {
+                boundingVectors = args[0];
+                frustumPlanes = args[1];
+            }
+            else if (args.length === 3) {
+                var minPoint = args[0], maxPoint = args[1];
+                boundingVectors = this.buildBoundingVectors(minPoint, maxPoint);
+                frustumPlanes = args[2];
+            }
+            for (var p = 0; p < 6; p++) {
+                for (var i = 0; i < 8; i++) {
+                    if (frustumPlanes[p].dotCoordinate(boundingVectors[i]) < 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+        BoundingRegionUtils.isAABBIntersectFrustum = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var boundingVectors = null, frustumPlanes = null;
+            if (args.length === 2) {
+                boundingVectors = args[0];
+                frustumPlanes = args[1];
+            }
+            else if (args.length === 3) {
+                var minPoint = args[0], maxPoint = args[1];
+                boundingVectors = this.buildBoundingVectors(minPoint, maxPoint);
+                frustumPlanes = args[2];
+            }
+            for (var p = 0; p < 6; p++) {
+                var inCount = 8;
+                for (var i = 0; i < 8; i++) {
+                    if (frustumPlanes[p].dotCoordinate(boundingVectors[i]) < 0) {
+                        inCount--;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (inCount === 0) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        BoundingRegionUtils.buildBoundingVectors = function (minPoint, maxPoint) {
+            var boundingVectors = [];
+            boundingVectors.push(minPoint.copy());
+            boundingVectors.push(maxPoint.copy());
+            boundingVectors.push(minPoint.copy());
+            boundingVectors[2].x = maxPoint.x;
+            boundingVectors.push(minPoint.copy());
+            boundingVectors[3].y = maxPoint.y;
+            boundingVectors.push(minPoint.copy());
+            boundingVectors[4].z = maxPoint.z;
+            boundingVectors.push(maxPoint.copy());
+            boundingVectors[5].z = minPoint.z;
+            boundingVectors.push(maxPoint.copy());
+            boundingVectors[6].x = minPoint.x;
+            boundingVectors.push(maxPoint.copy());
+            boundingVectors[7].y = minPoint.y;
+            return boundingVectors;
+        };
+        return BoundingRegionUtils;
+    })();
+    wd.BoundingRegionUtils = BoundingRegionUtils;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
     var Shape = (function () {
         function Shape() {
             this.center = wd.Vector3.create(0, 0, 0);
@@ -17035,9 +17794,15 @@ var wd;
             var obj = new this();
             return obj;
         };
+        AABBShape.getCenter = function (min, max) {
+            return wd.Vector3.create().add2(max, min).scale(0.5);
+        };
+        AABBShape.getHalfExtents = function (min, max) {
+            return wd.Vector3.create().sub2(max, min).scale(0.5);
+        };
         AABBShape.prototype.setMinMax = function (min, max) {
-            this.center.add2(max, min).scale(0.5);
-            this.halfExtents.sub2(max, min).scale(0.5);
+            this.center = AABBShape.getCenter(min, max);
+            this.halfExtents = AABBShape.getHalfExtents(min, max);
         };
         AABBShape.prototype.getMin = function () {
             return this.center.copy().sub(this.halfExtents);
@@ -17068,18 +17833,28 @@ var wd;
             this.halfExtents = aabb.halfExtents.copy().mul(scale);
         };
         AABBShape.prototype.setFromObject = function (entityObject) {
-            var modelMatrix = entityObject.transform.localToWorldMatrix, vertices = entityObject.getComponent(wd.Geometry).geometryData.vertices, self = this, min = this._getEmptyMin(), max = this._getEmptyMax();
+            var modelMatrix = entityObject.transform.localToWorldMatrix, vertices = wd.ColliderUtils.getVertices(entityObject), self = this, min = this._getEmptyMin(), max = this._getEmptyMax();
             wd.GeometryUtils.iterateThreeComponent(vertices, function (point) {
                 point.applyMatrix4(modelMatrix);
                 self._expandByPoint(point, min, max);
             });
             this.setMinMax(min, max);
         };
-        AABBShape.prototype.isIntersectWithBox = function (shape) {
-            var aMax = this.getMax();
-            var aMin = this.getMin();
-            var bMax = shape.getMax();
-            var bMin = shape.getMin();
+        AABBShape.prototype.isIntersectWithBox = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var aMax = this.getMax(), aMin = this.getMin(), bMax = null, bMin = null;
+            if (args.length === 1) {
+                var shape = args[0];
+                bMin = shape.getMin();
+                bMax = shape.getMax();
+            }
+            else if (args.length === 2) {
+                bMin = args[0];
+                bMax = args[1];
+            }
             return (aMin.x <= bMax.x) && (aMax.x >= bMin.x) &&
                 (aMin.y <= bMax.y) && (aMax.y >= bMin.y) &&
                 (aMin.z <= bMax.z) && (aMax.z >= bMin.z);
@@ -17087,33 +17862,8 @@ var wd;
         AABBShape.prototype.isIntersectWithSphere = function (shape) {
             return this.isBoxAndSphereIntersected(this, shape);
         };
-        AABBShape.prototype.isIntersectWithRay = function (rayOrigin, rayDir) {
-            var diff = wd.Vector3.create(), absDiff, absDir, cross = wd.Vector3.create(), prod = wd.Vector3.create();
-            diff.sub2(rayOrigin, this.center);
-            absDiff = wd.Vector3.create(Math.abs(diff.x), Math.abs(diff.y), Math.abs(diff.z));
-            prod.mul2(diff, rayDir);
-            if (absDiff.x > this.halfExtents.x && prod.x >= 0) {
-                return false;
-            }
-            if (absDiff.y > this.halfExtents.y && prod.y >= 0) {
-                return false;
-            }
-            if (absDiff.z > this.halfExtents.z && prod.z >= 0) {
-                return false;
-            }
-            absDir = wd.Vector3.create(Math.abs(rayDir.x), Math.abs(rayDir.y), Math.abs(rayDir.z));
-            cross.cross(rayDir, diff);
-            cross.set(Math.abs(cross.x), Math.abs(cross.y), Math.abs(cross.z));
-            if (cross.x > this.halfExtents.y * absDir.z + this.halfExtents.z * absDir.y) {
-                return false;
-            }
-            if (cross.y > this.halfExtents.x * absDir.z + this.halfExtents.z * absDir.x) {
-                return false;
-            }
-            if (cross.z > this.halfExtents.x * absDir.y + this.halfExtents.y * absDir.x) {
-                return false;
-            }
-            return true;
+        AABBShape.prototype.isIntersectWithRay = function (ray) {
+            return ray.isIntersectWithAABB(this);
         };
         AABBShape.prototype.closestPointTo = function (point) {
             var min = this.getMin(), max = this.getMax(), resultPoint = wd.Vector3.create();
@@ -17173,7 +17923,7 @@ var wd;
         };
         __decorate([
             wd.require(function (entityObject) {
-                var vertices = entityObject.getComponent(wd.Geometry).geometryData.vertices;
+                var vertices = wd.ColliderUtils.getVertices(entityObject);
                 wd.assert(vertices && vertices.length > 0, wd.Log.info.FUNC_MUST_DEFINE("vertices"));
             })
         ], AABBShape.prototype, "setFromObject", null);
@@ -17217,26 +17967,24 @@ var wd;
             var radiusSum = this.radius + shape.radius;
             return shape.center.distanceToSquared(this.center) <= (Math.pow(radiusSum, 2));
         };
-        SphereShape.prototype.isIntersectWithBox = function (shape) {
+        SphereShape.prototype.isIntersectWithBox = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var shape = null;
+            if (args.length === 1) {
+                shape = args[0];
+            }
+            else if (args.length === 2) {
+                var min = args[0], max = args[1];
+                shape = wd.AABBShape.create();
+                shape.setMinMax(min, max);
+            }
             return this.isBoxAndSphereIntersected(shape, this);
         };
-        SphereShape.prototype.isIntersectWithRay = function (rayOrigin, rayDir) {
-            var diff = wd.Vector3.create(), a = 0, b = 0, c = 0, discr = 0;
-            diff.sub2(rayOrigin, this.center);
-            if (diff.dot(diff) < this.radius * this.radius) {
-                return true;
-            }
-            a = rayDir.dot(rayDir);
-            b = 2 * rayDir.dot(diff);
-            c = this.center.dot(this.center);
-            c += rayOrigin.dot(rayOrigin);
-            c -= 2 * this.center.dot(rayOrigin);
-            c -= this.radius * this.radius;
-            discr = (b * b) - (4 * a * c);
-            if (discr < 0) {
-                return false;
-            }
-            return true;
+        SphereShape.prototype.isIntersectWithRay = function (ray) {
+            return ray.isIntersectWithSphere(this);
         };
         SphereShape.prototype.containPoint = function (point) {
             return point.distanceToSquared(this.center) <= (Math.pow(this.radius, 2));
@@ -17266,6 +18014,41 @@ var wd;
         ColliderType[ColliderType["SPHERE"] = "sphere"] = "SPHERE";
     })(wd.ColliderType || (wd.ColliderType = {}));
     var ColliderType = wd.ColliderType;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var ColliderUtils = (function () {
+        function ColliderUtils() {
+        }
+        ColliderUtils.getVertices = function (entityObject) {
+            if (!entityObject.hasComponent(wd.Geometry)) {
+                if (entityObject.hasTag(wd.WDTag.CONTAINER)) {
+                    return entityObject.getChild(0).getComponent(wd.Geometry).vertices;
+                }
+                return null;
+            }
+            return entityObject.getComponent(wd.Geometry).geometryData.vertices;
+        };
+        __decorate([
+            wd.require(function (entityObject) {
+                if (!entityObject.hasComponent(wd.Geometry)) {
+                    if (entityObject.hasTag(wd.WDTag.CONTAINER)) {
+                        var firstChildVertices = entityObject.getChild(0).getComponent(wd.Geometry).vertices, secondChildVertices = entityObject.getChild(1).getComponent(wd.Geometry).vertices;
+                        wd.assert(!!firstChildVertices && firstChildVertices.length === secondChildVertices.length, wd.Log.info.FUNC_SHOULD("if entityObject is WDTag.CONTAINER, then its children should has its vertices"));
+                    }
+                }
+            })
+        ], ColliderUtils, "getVertices", null);
+        return ColliderUtils;
+    })();
+    wd.ColliderUtils = ColliderUtils;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -20924,6 +21707,12 @@ var wd;
         JudgeUtils.isInterface = function (target, memberOfInterface) {
             return !!target[memberOfInterface];
         };
+        JudgeUtils.isOctreeObject = function (entityObject) {
+            return entityObject.hasComponent(wd.Octree);
+        };
+        JudgeUtils.isSelf = function (self, entityObject) {
+            return self.uid === entityObject.uid;
+        };
         return JudgeUtils;
     })(wdCb.JudgeUtils);
     wd.JudgeUtils = JudgeUtils;
@@ -22514,12 +23303,12 @@ var wd;
                 var indexBuffer = this.buffers.getChild(wd.BufferDataType.INDICE);
                 totalNum = indexBuffer.count;
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-                gl.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                wd.GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
                 vertexBuffer = this.buffers.getChild(wd.BufferDataType.VERTICE);
                 totalNum = vertexBuffer.count;
-                gl.drawArrays(gl[this.drawMode], startOffset, totalNum);
+                wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         };
         QuadCommand.prototype._setEffects = function () {
@@ -22545,6 +23334,27 @@ var wd;
         return QuadCommand;
     })();
     wd.QuadCommand = QuadCommand;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    var GlUtils = (function () {
+        function GlUtils() {
+        }
+        GlUtils.drawElements = function (mode, count, type, offset) {
+            wd.DebugStatistics.count.drawCalls++;
+            this._getGl().drawElements(mode, count, type, offset);
+        };
+        GlUtils.drawArrays = function (mode, first, count) {
+            wd.DebugStatistics.count.drawCalls++;
+            this._getGl().drawArrays(mode, first, count);
+        };
+        GlUtils._getGl = function () {
+            return wd.DeviceManager.getInstance().gl;
+        };
+        return GlUtils;
+    })();
+    wd.GlUtils = GlUtils;
 })(wd || (wd = {}));
 
 var wd;
@@ -26596,6 +27406,14 @@ var wd;
     wd.LoaderFactory = LoaderFactory;
 })(wd || (wd = {}));
 
+var wd;
+(function (wd) {
+    (function (WDTag) {
+        WDTag[WDTag["CONTAINER"] = "CONTAINER"] = "CONTAINER";
+    })(wd.WDTag || (wd.WDTag = {}));
+    var WDTag = wd.WDTag;
+})(wd || (wd = {}));
+
 
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -27048,7 +27866,10 @@ var wd;
                 objects.forEach(function (object) {
                     var geometry = null, model = null;
                     model = wd.GameObject.create();
-                    if (!self._isModelContainer(object)) {
+                    if (self._isModelContainer(object)) {
+                        model.addTag(wd.WDTag.CONTAINER);
+                    }
+                    else {
                         geometry = wd.ModelGeometry.create();
                         geometry.vertices = object.vertices;
                         geometry.faces = object.faces;
@@ -29379,19 +30200,33 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
+        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
+        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
         ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n    vec3 halfAngle = normalize(lightDir + viewDir);\n    float blinnTerm = dot(normal, halfAngle);\n\n    blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n    blinnTerm = dotResultBetweenNormAndLight < 0.0 ? 0.0 : blinnTerm;\n    blinnTerm = pow(blinnTerm, shininess);\n\n	return blinnTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n    vec3 materialDiffuse = getMaterialDiffuse();\n    vec3 materialSpecular = getMaterialSpecular();\n\n    float dotResultBetweenNormAndLight = dot(normal, lightDir);\n    float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n\n    vec3 ambientColor = u_ambient * materialDiffuse;\n\n    vec3 diffuseColor = diff * color * materialDiffuse * intensity;\n\n\n    float spec = getBlinnPhongShininess(u_shininess, normal, lightDir, viewDir, dotResultBetweenNormAndLight);\n\n    vec3 specularColor = spec * materialSpecular * intensity;\n\n    return  ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\nvec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n    //lightDir is not normalize computing distance\n    float distance = length(lightDir);\n\n    float attenuation = 0.0;\n    if(distance < light.range)\n    {\n        attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n    }\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n    float attenuation = 1.0;\n\n    lightDir = normalize(lightDir);\n\n    return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec3 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec3 totalLight = vec3(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n       }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n       }\n    #endif\n\n    return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n	#ifdef BOTH_SIDE\n		normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n	#endif\n\n    vec3 viewDir = normalize(getViewDir());\n\n    vec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);\n\n    totalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
-        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
-        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
         ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
+        ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
+        ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
+        ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
+        ShaderChunk.envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
+        ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
+        ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
+        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
+        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
+        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));\n    }\n", body: "", };
         ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n    //v_diffuseMapTexCoord = a_texCoord;\n", };
         ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
@@ -29412,20 +30247,6 @@ var wd;
         ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
         ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
-        ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
-        ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
-        ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
-        ShaderChunk.envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "v_normal = normalize( u_normalMatrix * a_normal);\n    v_position = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
-        ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
-        ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
-        ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
-        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
-        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
-        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
         return ShaderChunk;
     })();
     wd.ShaderChunk = ShaderChunk;

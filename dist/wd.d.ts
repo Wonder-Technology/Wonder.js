@@ -1851,7 +1851,25 @@ declare module wd {
     var DebugConfig: {
         isTest: boolean;
         debugCollision: boolean;
+        showDebugPanel: boolean;
     };
+}
+
+declare module wd {
+    class DebugStatistics {
+        static count: {
+            totalGameObjects: number;
+            renderGameObjects: number;
+            drawCalls: number;
+        };
+        static during: {
+            fps: any;
+        };
+        private static _startLoopSubscription;
+        static clear(): void;
+        static init(): void;
+        static dispose(): void;
+    }
 }
 
 declare module wdFrp {
@@ -1936,7 +1954,8 @@ declare module wd {
         values: Float32Array;
         normalize(): Vector3;
         isZero(): boolean;
-        scale(scalar: number): this;
+        scale(scalar: number): any;
+        scale(x: number, y: number, z: number): any;
         set(v: Vector3): any;
         set(x: number, y: number, z: number): any;
         sub(v: Vector3): Vector3;
@@ -2024,7 +2043,7 @@ declare module wd {
         getZ(): Vector3;
         getTranslation(): Vector3;
         getScale(): Vector3;
-        getEulerAngles(): Vector3;
+        getEulerAngles(): any;
         setTRS(t: Vector3, r: Quaternion, s: Vector3): this;
     }
 }
@@ -2090,7 +2109,7 @@ declare module wd {
         multiplyVector3(vector: Vector3): Vector3;
         set(x: number, y: number, z: number, w: number): void;
         sub(quat: Quaternion): this;
-        getEulerAngles(): Vector3;
+        getEulerAngles(): any;
     }
 }
 
@@ -2103,6 +2122,19 @@ declare module wd {
         getReflectionMatrix(): Matrix4;
         normalize(): Plane;
         copy(): Plane;
+        dotCoordinate(point: any): number;
+    }
+}
+
+declare module wd {
+    class Ray {
+        static create(origin: Vector3, direction: Vector3): Ray;
+        constructor(origin: Vector3, direction: Vector3);
+        private _origin;
+        private _direction;
+        isIntersectWithAABB(aabb: AABBShape): boolean;
+        isIntersectWithAABB(minPoint: Vector3, maxPoint: Vector3): boolean;
+        isIntersectWithSphere(sphere: SphereShape): boolean;
     }
 }
 
@@ -2227,7 +2259,9 @@ declare module wd {
         private _findTopGameObject(e, gameObjectScene);
         private _getDistanceToCamera(obj);
         private _findTopUIObject(e, uiObjectScene);
-        private _findTriggerObjectList<T>(e, objectScene);
+        private _findTriggerGameObjectList(e, objectScene);
+        private _findTriggerUIObjectList(e, objectScene);
+        private _addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
         private _isTriggerScene(e);
         private _getMouseEventTriggerListData(e);
         private _getMouseEventTriggerListData(e, triggerList);
@@ -2247,7 +2281,7 @@ declare module wd {
         protected children: wdCb.Collection<any>;
         protected startLoopHandler: () => void;
         protected endLoopHandler: () => void;
-        private _components;
+        protected components: wdCb.Collection<any>;
         private _scriptExecuteHistory;
         initWhenCreate(): void;
         init(): this;
@@ -2290,8 +2324,11 @@ declare module wd {
         execEventScript(method: string, arg?: any): void;
         protected abstract createTransform(): Transform;
         protected beforeUpdateChildren(elapsedTime: number): void;
+        protected afterInitChildren(): void;
         protected bindStartLoopEvent(): void;
         protected bindEndLoopEvent(): void;
+        protected getRenderList(): wdCb.Collection<any>;
+        protected initComponent(): void;
         protected getAllChildren(): wdCb.Collection<EntityObject>;
         private _getGeometry();
         private _getCamera();
@@ -2326,7 +2363,10 @@ declare module wd {
         transform: ThreeDTransform;
         name: string;
         protected children: wdCb.Collection<GameObject>;
+        getOctree(): Octree;
         protected createTransform(): ThreeDTransform;
+        protected getRenderList(): any;
+        protected afterInitChildren(): void;
     }
 }
 
@@ -2460,10 +2500,20 @@ declare module wd {
     class CollisionDetector {
         static create(): CollisionDetector;
         private _lastCollideObjects;
+        private _collisionTable;
         detect(scene: GameObjectScene): void;
+        private _getCollideObjects(sourceObject, checkTargetList);
+        private _getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
+        private _clearCollisionTable();
+        private _isTargetCollidedWithSourceInCurrentFrame(sourceObject, targetObject);
+        private _recordCollisionTargets(targetCollideObjects, sourceCollideObjects);
+        private _getCollideObjectsWithOctree(targetObject, sourceOctree, targetCollideObjects, sourceCollideObjects);
+        private _getCollideObjectsWithOctree(targetOctree, sourceOctree, targetCollideObjects, sourceCollideObjects);
+        private _getCollideObjectsWithOctree(targetOctree, sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
         private _isCollisionStart(entityObject);
         private _isCollisionEnd(entityObject);
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects, currentGameObject, eventList);
+        private _isNotTransform(entityObject);
     }
 }
 
@@ -3651,7 +3701,10 @@ declare module wd {
         update(elapsedTime: number): void;
         dispose(): void;
         isIntersectWithRay(entityObject: GameObject, screenX: number, screenY: number): boolean;
+        createRay(screenX: number, screenY: number): Ray;
         convertScreenToWorld(screenX: number, screenY: number, distanceFromCamera: number): Vector3;
+        getPlanes(): Array<Plane>;
+        private _setPlanes(transform, frustumPlanes);
     }
 }
 
@@ -4054,6 +4107,68 @@ declare module wd {
 }
 
 declare module wd {
+    class Octree extends Component {
+        static create(): Octree;
+        maxDepth: number;
+        maxNodeCapacity: number;
+        private _root;
+        private _selectionList;
+        addToObject(entityObject: GameObject): void;
+        build(): void;
+        getRenderListByFrustumCull(): any;
+        getIntersectListWithRay(e: MouseEvent): any;
+        getCollideObjects(shape: Shape): any;
+        getChildren(): wdCb.Collection<any>;
+        private _visitRoot(method, args);
+        private _updateColliderForFirstCheck(entityObjectList);
+        private _getWorldExtends(entityObjectList);
+        private _createCollider();
+        private _checkExtends(v, min, max);
+    }
+}
+
+declare module wd {
+    class OctreeNode {
+        static create(minPoint: Vector3, maxPoint: Vector3, capacity: number, depth: number, maxDepth: number): OctreeNode;
+        entityObjectCount: number;
+        entityObjectList: wdCb.Collection<EntityObject>;
+        nodeList: wdCb.Collection<OctreeNode>;
+        private _depth;
+        private _maxDepth;
+        private _capacity;
+        private _minPoint;
+        private _maxPoint;
+        private _boundingVectors;
+        constructor(minPoint: Vector3, maxPoint: Vector3, capacity: number, depth: number, maxDepth: number);
+        initWhenCreate(): void;
+        addEntityObjects(entityObjectList: wdCb.Collection<GameObject>): void;
+        addNode(node: OctreeNode): void;
+        findAndAddToRenderList(frustumPlanes: Array<Plane>, selectionList: wdCb.Collection<EntityObject>): void;
+        findAndAddToIntersectList(ray: Ray, selectionList: wdCb.Collection<EntityObject>): void;
+        findAndAddToCollideList(shape: Shape, selectionList: wdCb.Collection<EntityObject>): void;
+        private _hasNode();
+    }
+}
+
+declare module wd {
+    abstract class ColliderForFirstCheck extends Component {
+        entityObject: GameObject;
+        abstract init(): any;
+        abstract update(elapsedTime: number): any;
+    }
+}
+
+declare module wd {
+    class BoxColliderForFirstCheck extends ColliderForFirstCheck {
+        static create(): BoxColliderForFirstCheck;
+        shape: Shape;
+        private _collider;
+        init(): void;
+        update(elapsedTime: number): void;
+    }
+}
+
+declare module wd {
     abstract class Collider extends Component {
         shape: Shape;
         entityObject: GameObject;
@@ -4065,7 +4180,7 @@ declare module wd {
         update(elapsedTime: number): void;
         updateShape(): void;
         isIntersectWith(collider: Collider): any;
-        getCollideObjects(checkTargetList: wdCb.Collection<GameObject>): wdCb.Collection<GameObject>;
+        isCollide(targetObject: GameObject): boolean;
         private _isSelf(entityObject);
     }
 }
@@ -4146,14 +4261,25 @@ declare module wd {
 }
 
 declare module wd {
+    class BoundingRegionUtils {
+        static isAABBInFrustum(minPoint: Vector3, maxPoint: Vector3, frustumPlanes: Array<Plane>): boolean;
+        static isAABBInFrustum(boundingVectors: Vector3[], frustumPlanes: Plane[]): boolean;
+        static isAABBIntersectFrustum(minPoint: Vector3, maxPoint: Vector3, frustumPlanes: Array<Plane>): boolean;
+        static isAABBIntersectFrustum(boundingVectors: Array<Vector3>, frustumPlanes: Array<Plane>): boolean;
+        static buildBoundingVectors(minPoint: Vector3, maxPoint: Vector3): any[];
+    }
+}
+
+declare module wd {
     abstract class Shape {
         center: Vector3;
         abstract setFromShapeParam(...args: any[]): any;
         abstract setFromPoints(points: Array<number>): any;
         abstract copy(): Shape;
         abstract isIntersectWithBox(shape: AABBShape): any;
+        abstract isIntersectWithBox(min: Vector3, max: Vector3): any;
         abstract isIntersectWithSphere(shape: SphereShape): any;
-        abstract isIntersectWithRay(rayOrigin: Vector3, rayDelta: Vector3): any;
+        abstract isIntersectWithRay(ray: Ray): any;
         protected isBoxAndSphereIntersected(box: AABBShape, sphere: SphereShape): boolean;
     }
 }
@@ -4161,6 +4287,8 @@ declare module wd {
 declare module wd {
     class AABBShape extends Shape {
         static create(): AABBShape;
+        static getCenter(min: Vector3, max: Vector3): any;
+        static getHalfExtents(min: Vector3, max: Vector3): any;
         halfExtents: Vector3;
         setMinMax(min: Vector3, max: Vector3): void;
         getMin(): Vector3;
@@ -4170,9 +4298,10 @@ declare module wd {
         setFromTransformedAABB(aabb: AABBShape, matrix: Matrix4): void;
         setFromTranslationAndScale(aabb: AABBShape, matrix: Matrix4): void;
         setFromObject(entityObject: GameObject): void;
-        isIntersectWithBox(shape: AABBShape): boolean;
+        isIntersectWithBox(shape: AABBShape): any;
+        isIntersectWithBox(min: Vector3, max: Vector3): any;
         isIntersectWithSphere(shape: SphereShape): boolean;
-        isIntersectWithRay(rayOrigin: Vector3, rayDir: Vector3): boolean;
+        isIntersectWithRay(ray: Ray): boolean;
         closestPointTo(point: Vector3): Vector3;
         containPoint(point: Vector3): boolean;
         copy(): AABBShape;
@@ -4190,8 +4319,9 @@ declare module wd {
         setFromPoints(points: Array<number>): void;
         setFromTranslationAndScale(sphere: SphereShape, matrix: Matrix4): void;
         isIntersectWithSphere(shape: SphereShape): boolean;
-        isIntersectWithBox(shape: AABBShape): boolean;
-        isIntersectWithRay(rayOrigin: Vector3, rayDir: Vector3): boolean;
+        isIntersectWithBox(shape: AABBShape): any;
+        isIntersectWithBox(min: Vector3, max: Vector3): any;
+        isIntersectWithRay(ray: Ray): boolean;
         containPoint(point: Vector3): boolean;
         copy(): SphereShape;
         private _findMaxDistanceOfPointsToCenter(points);
@@ -4202,6 +4332,12 @@ declare module wd {
     enum ColliderType {
         BOX,
         SPHERE,
+    }
+}
+
+declare module wd {
+    class ColliderUtils {
+        static getVertices(entityObject: EntityObject): any;
     }
 }
 
@@ -5075,6 +5211,8 @@ declare module wd {
         static isPowerOfTwo(value: number): boolean;
         static isFloatArray(data: any): boolean;
         static isInterface(target: any, memberOfInterface: string): boolean;
+        static isOctreeObject(entityObject: EntityObject): boolean;
+        static isSelf(self: Entity, entityObject: Entity): boolean;
     }
 }
 
@@ -5458,6 +5596,14 @@ declare module wd {
         private _draw();
         private _setEffects();
         private _getSide();
+    }
+}
+
+declare module wd {
+    class GlUtils {
+        static drawElements(mode: any, count: number, type: any, offset: number): void;
+        static drawArrays(mode: any, first: number, count: number): void;
+        private static _getGl();
     }
 }
 
@@ -6607,6 +6753,12 @@ declare module wd {
 }
 
 declare module wd {
+    enum WDTag {
+        CONTAINER,
+    }
+}
+
+declare module wd {
     type DYFileJsonData = {
         metadata: DYFileMetadata;
         scene: {
@@ -7401,19 +7553,33 @@ declare module wd {
         static highp_fragment: GLSLChunk;
         static lowp_fragment: GLSLChunk;
         static mediump_fragment: GLSLChunk;
+        static map_forBasic_fragment: GLSLChunk;
+        static map_forBasic_vertex: GLSLChunk;
+        static multi_map_forBasic_fragment: GLSLChunk;
         static lightCommon_fragment: GLSLChunk;
         static lightCommon_vertex: GLSLChunk;
         static lightEnd_fragment: GLSLChunk;
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static map_forBasic_fragment: GLSLChunk;
-        static map_forBasic_vertex: GLSLChunk;
-        static multi_map_forBasic_fragment: GLSLChunk;
         static mirror_forBasic_fragment: GLSLChunk;
         static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
+        static basic_envMap_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forBasic_vertex: GLSLChunk;
+        static envMap_forBasic_fragment: GLSLChunk;
+        static envMap_forBasic_vertex: GLSLChunk;
+        static fresnel_forBasic_fragment: GLSLChunk;
+        static reflection_forBasic_fragment: GLSLChunk;
+        static refraction_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
@@ -7434,20 +7600,6 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static basic_envMap_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forBasic_vertex: GLSLChunk;
-        static envMap_forBasic_fragment: GLSLChunk;
-        static envMap_forBasic_vertex: GLSLChunk;
-        static fresnel_forBasic_fragment: GLSLChunk;
-        static reflection_forBasic_fragment: GLSLChunk;
-        static refraction_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;
