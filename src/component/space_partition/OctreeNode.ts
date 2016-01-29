@@ -81,6 +81,20 @@ module wd{
             }
         }
 
+        public findAndAddToCollideList(shape:Shape, selectionList:wdCb.Collection<EntityObject>):void{
+            if(shape.isIntersectWithBox(this._minPoint, this._maxPoint)){
+                if (this._hasNode()) {
+                    this.nodeList.forEach((node:OctreeNode) => {
+                        node.findAndAddToCollideList(shape, selectionList);
+                    });
+
+                    return;
+                }
+
+                selectionList.addChildren(this.entityObjectList);
+            }
+        }
+
         private _hasNode(){
             return this.nodeList.getCount() > 0;
         }

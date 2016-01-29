@@ -43,33 +43,24 @@ module wd {
             }
         }
 
-        public getCollideObjects(checkTargetList:wdCb.Collection<GameObject>):wdCb.Collection<GameObject>{
-            var self = this,
-                result = wdCb.Collection.create<GameObject>();
+        public isCollide(targetObject:GameObject):boolean{
+            var collider:Collider = null;
 
-            checkTargetList.forEach((entityObject) => {
-                var collider:Collider = null;
+            if(this._isSelf(targetObject) || !targetObject.hasComponent(Collider)){
+                return false;
+            }
 
-                if(self._isSelf(entityObject)){
-                    return;
-                }
+            collider = targetObject.getComponent<Collider>(Collider);
 
-                collider = entityObject.getComponent(Collider);
+            if(targetObject.hasComponent(RigidBody)){
+                collider.updateShape();
+            }
 
-                if(entityObject.hasComponent(RigidBody)){
-                    collider.updateShape();
-                }
-
-                if(self.isIntersectWith(collider)){
-                    result.addChild(entityObject);
-                }
-            });
-
-            return result;
+            return this.isIntersectWith(collider);
         }
 
         private _isSelf(entityObject:GameObject){
-            return this.entityObject.uid === entityObject.uid;
+            return JudgeUtils.isSelf(this.entityObject, entityObject);
         }
     }
 }

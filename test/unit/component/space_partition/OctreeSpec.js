@@ -534,5 +534,44 @@ describe("Octree", function () {
             });
         });
     });
+
+    describe("getCollideObjects", function(){
+        function createAABB(center, halfExtends){
+            var shape = wd.AABBShape.create();
+            shape.center = center;
+            shape.halfExtents = halfExtends || Vector3.create(1,1,1);
+
+            return shape;
+        }
+
+        beforeEach(function(){
+
+        });
+
+        it("get objects which collided with the shape", function(){
+            obj1 = createObject([-10, -10, -10]);
+            obj2 = createObject([10, 10, 10]);
+            obj3 = createObject([6, 6, 6]);
+
+            octreeObject.addChildren([obj1, obj2, obj3]);
+            octreeObject.init();
+
+            tree.build();
+
+
+
+
+
+            var result = tree.getCollideObjects(createAABB(Vector3.create(2,2,2)));
+            expect(result.getCount()).toEqual(2);
+            expect(result.getChildren()).toEqual([obj2, obj3])
+
+
+
+            result = tree.getCollideObjects(createAABB(Vector3.create(-2,-2,-2)));
+            expect(result.getCount()).toEqual(1);
+            expect(result.getChildren()).toEqual([obj1])
+        });
+    });
 });
 

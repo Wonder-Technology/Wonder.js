@@ -35,5 +35,13 @@ module wd {
         public static isInterface(target:any, memberOfInterface:string){
             return !!target[memberOfInterface];
         }
+
+        public static isOctreeObject(entityObject:EntityObject){
+            return entityObject.hasComponent(Octree);
+        }
+
+        public static isSelf(self:Entity, entityObject:Entity){
+            return self.uid === entityObject.uid;
+        }
     }
 }

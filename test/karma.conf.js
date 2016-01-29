@@ -30,7 +30,10 @@
         'test/unit/**',
 
 
+        //'test/unit/component/physics/**/eventSpec*',
+
         //'test/unit/**/OctreeSpec*',
+        //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
@@ -95,6 +98,7 @@
         //'test/unit/**/*ColliderSpec.js',
         //'test/unit/**/colliderSpec.js',
         //'test/unit/**/collider/optimizeSpec.js',
+        //'test/unit/**/collider/*',
         //'test/unit/**/physics/*.js',
         //'test/unit/**/physics/**',
         //'test/unit/**/physics/physicsSpec*',

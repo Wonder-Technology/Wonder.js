@@ -21,7 +21,7 @@ module wd {
         }
 
         public build() {
-            var entityObjectList:wdCb.Collection<GameObject> = this._getChildren();
+            var entityObjectList:wdCb.Collection<GameObject> = this.getChildren();
             var currentDepth = 0;
             var maxNodeCapacity = this.maxNodeCapacity,
                 maxDepth = this.maxDepth;
@@ -84,17 +84,23 @@ module wd {
             return this._visitRoot("findAndAddToIntersectList", [Director.getInstance().scene.camera.getComponent(CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);
         }
 
+        public getCollideObjects(shape:Shape){
+            return this._visitRoot("findAndAddToCollideList", [shape, this._selectionList]);
+        }
+
         private _visitRoot(method:string, args:Array<any>):any{
             this._selectionList.removeAllChildren();
 
-            this._root[method].apply(this._root, args);
+            this._root.nodeList.forEach((topNode:OctreeNode) => {
+                topNode[method].apply(topNode, args);
+            })
 
             this._selectionList = this._selectionList.removeRepeatItems();
 
             return this._selectionList;
         }
 
-        private _getChildren() {
+        public getChildren() {
             var children = wdCb.Collection.create<GameObject>();
             var find = (entityObject:GameObject) => {
                 entityObject.forEach((child:GameObject) => {

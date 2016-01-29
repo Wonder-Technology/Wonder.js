@@ -33,15 +33,17 @@ var colliderTool = (function () {
 
             return gameObject;
         },
-        createBox: function (colliderClass) {
+        createBox: function (colliderClass, size) {
             var material = wd.BasicMaterial.create(),
+                size = size || 5;
+
             colliderClass = colliderClass || wd.BoxCollider;
 
             var geometry = wd.BoxGeometry.create();
             geometry.material = material;
-            geometry.width = 5;
-            geometry.height = 5;
-            geometry.depth = 5;
+            geometry.width = size;
+            geometry.height = size;
+            geometry.depth = size;
 
 
             var collider = colliderClass.create();
