@@ -16,7 +16,7 @@
             screenSize: wd.ScreenSize.FULL
         }).init();
 
-        wd.DebugConfig.showDebugPanel = true;
+//        wd.DebugConfig.showDebugPanel = true;
 
         var director = wd.Director.getInstance();
 
@@ -53,9 +53,9 @@
 
         function createBoxes(){
             var resultArr = [],
-                    playgroundSize = 500;
+                    playgroundSize = 100;
 
-            for (var index = 0; index < 300; index++) {
+            for (var index = 0; index < 80; index++) {
                 var box = createBox();
 
                 var scale = Math.random() * 0.8 + 0.6;
@@ -97,9 +97,9 @@
 
             var geometry = wd.BoxGeometry.create();
             geometry.material = material;
-            geometry.width = 80;
-            geometry.height = 80;
-            geometry.depth = 80;
+            geometry.width = 16;
+            geometry.height = 16;
+            geometry.depth = 16;
 
 
             var collision = wd.BoxCollider.create();
@@ -109,6 +109,9 @@
             gameObject.addComponent(collision);
 
             gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.position = wd.Vector3.create(150, 0, -50);
 
 
 
@@ -130,7 +133,7 @@
 
             var controller = wd.BasicCameraController.create(cameraComponent);
 
-            camera.transform.translate(0,0, 300);
+            camera.transform.translate(0,0, 200);
             camera.transform.lookAt(0, 0, 0);
 
 
