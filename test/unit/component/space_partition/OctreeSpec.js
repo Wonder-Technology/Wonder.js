@@ -230,7 +230,7 @@ describe("Octree", function () {
             beforeEach(function(){
             });
 
-            it("test add parent object, child object", function(){
+            it("when add parent object, only handle parent object except child object", function(){
                 obj1 = createObject();
                 obj2 = createObject();
 
@@ -250,13 +250,13 @@ describe("Octree", function () {
 
                 judgeRoot();
 
-                judgeFirstDepthChild(0, 1, obj2);
-                judgeFirstDepthChild(1, 0);
-                judgeFirstDepthChild(2, 0);
-                judgeFirstDepthChild(3, 0);
-                judgeFirstDepthChild(4, 0);
-                judgeFirstDepthChild(5, 0);
-                judgeFirstDepthChild(6, 0);
+                judgeFirstDepthChild(0, 1, obj1);
+                judgeFirstDepthChild(1, 1, obj1);
+                judgeFirstDepthChild(2, 1, obj1);
+                judgeFirstDepthChild(3, 1, obj1);
+                judgeFirstDepthChild(4, 1, obj1);
+                judgeFirstDepthChild(5, 1, obj1);
+                judgeFirstDepthChild(6, 1, obj1);
                 judgeFirstDepthChild(7, 1, obj1);
             });
             it("test add obj object", function (done) {
@@ -276,14 +276,14 @@ describe("Octree", function () {
 
                     var objModel = result.getChild("models").getChild(0);
 
-                    obj1 = createObject();
+                    //obj1 = createObject();
 
-                    obj1.addChild(objModel);
+                    //obj1.addChild(objModel);
 
                     obj1.transform.position = Vector3.create(10, 10, 10);
                     objModel.transform.position = Vector3.create(-10, -10, -10);
 
-                    octreeObject.addChild(obj1);
+                    octreeObject.addChild(objModel);
 
                     octreeObject.init();
 
@@ -295,13 +295,13 @@ describe("Octree", function () {
                     judgeRoot();
 
                     judgeFirstDepthChild(0, 1, objModel);
-                    judgeFirstDepthChild(1, 0);
-                    judgeFirstDepthChild(2, 0);
-                    judgeFirstDepthChild(3, 0);
-                    judgeFirstDepthChild(4, 0);
-                    judgeFirstDepthChild(5, 0);
-                    judgeFirstDepthChild(6, 0);
-                    judgeFirstDepthChild(7, 1, obj1);
+                    judgeFirstDepthChild(1, 1, objModel);
+                    judgeFirstDepthChild(2, 1, objModel);
+                    judgeFirstDepthChild(3, 1, objModel);
+                    judgeFirstDepthChild(4, 1, objModel);
+                    judgeFirstDepthChild(5, 1, objModel);
+                    judgeFirstDepthChild(6, 1, objModel);
+                    judgeFirstDepthChild(7, 1, objModel);
 
                     done();
                 });
@@ -496,7 +496,7 @@ describe("Octree", function () {
                         expect(test.onMouseClick).toCalledOnce();
                     }, done, true);
                 });
-                it("test parent gameObject, child gameObject", function () {
+                it("only trigger parent gameObject except trigger child gameObject", function () {
                     gameObject = createGameObject();
                     var gameObject2 = createGameObject();
 
@@ -527,9 +527,10 @@ describe("Octree", function () {
 
 
 
-                    expect(resultList.getCount()).toEqual(2);
+                    //expect(resultList.getCount()).toEqual(2);
+                    expect(resultList.getCount()).toEqual(1);
                     expect(resultList.getChild(0)).toEqual(gameObject);
-                    expect(resultList.getChild(1)).toEqual(gameObject2);
+                    //expect(resultList.getChild(1)).toEqual(gameObject2);
                 });
             });
         });

@@ -101,22 +101,7 @@ module wd {
         }
 
         public getChildren() {
-            var children = wdCb.Collection.create<GameObject>();
-            var find = (entityObject:GameObject) => {
-                entityObject.forEach((child:GameObject) => {
-                    children.addChild(child);
-
-                    if(child.hasTag(<any>WDTag.CONTAINER)){
-                        return;
-                    }
-
-                    find(child);
-                });
-            }
-
-            find(<GameObject>this.entityObject);
-
-            return children;
+            return this.entityObject.getChildren();
         }
 
         private _updateColliderForFirstCheck(entityObjectList:wdCb.Collection<GameObject>) {

@@ -32,8 +32,8 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
-        //'test/unit/**/CollisionDetectorSpec*',
+        'test/unit/**/OctreeSpec*',
+        'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
         //'test/unit/**/SourceLightSpec*',
