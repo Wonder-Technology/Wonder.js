@@ -15,8 +15,8 @@ module wd {
         protected children:wdCb.Collection<GameObject>;
 
 
-        public getOctree(){
-            return this.getComponent<Octree>(Octree);
+        public getSpacePartition(){
+            return this.getComponent<SpacePartition>(SpacePartition);
         }
 
         protected createTransform(){
@@ -25,7 +25,7 @@ module wd {
 
         protected getRenderList(){
             if(this.hasComponent(Octree)){
-                return this.getOctree().getRenderListByFrustumCull();
+                return this.getSpacePartition().getRenderListByFrustumCull();
             }
 
             return this.children;
@@ -33,7 +33,7 @@ module wd {
 
         protected afterInitChildren(){
             if(this.hasComponent(Octree)){
-                return this.getOctree().build();
+                return this.getSpacePartition().build();
             }
         }
     }

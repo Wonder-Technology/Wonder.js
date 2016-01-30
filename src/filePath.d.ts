@@ -170,6 +170,7 @@
 
 
 
+/// <reference path="component/space_partition/SpacePartition"/>
 /// <reference path="component/space_partition/Octree"/>
 /// <reference path="component/space_partition/OctreeNode"/>
 

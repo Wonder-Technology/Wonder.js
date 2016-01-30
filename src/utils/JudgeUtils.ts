@@ -36,8 +36,8 @@ module wd {
             return !!target[memberOfInterface];
         }
 
-        public static isOctreeObject(entityObject:EntityObject){
-            return entityObject.hasComponent(Octree);
+        public static isSpacePartitionObject(entityObject:EntityObject){
+            return entityObject.hasComponent(SpacePartition);
         }
 
         public static isSelf(self:Entity, entityObject:Entity){

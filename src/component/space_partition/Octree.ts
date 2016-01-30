@@ -1,5 +1,5 @@
 module wd {
-    export class Octree extends Component {
+    export class Octree extends SpacePartition {
         public static create() {
         	var obj = new this();
 

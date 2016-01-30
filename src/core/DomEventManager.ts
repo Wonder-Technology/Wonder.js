@@ -227,8 +227,8 @@ module wd{
             var triggerObjectList = wdCb.Collection.create<any>(),
                 self = this;
             var find = (entityObject:GameObject) => {
-                if(entityObject.hasComponent(Octree)){
-                    entityObject.getOctree().getIntersectListWithRay(e)
+                if(entityObject.hasComponent(SpacePartition)){
+                    entityObject.getSpacePartition().getIntersectListWithRay(e)
                         .forEach((entityObject:GameObject) => {
                             self._addTriggerObjectByQueryDetector(entityObject, e, triggerObjectList);
                         });

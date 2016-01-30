@@ -12,7 +12,7 @@ module wd{
         public detect(scene:GameObjectScene){
             //todo optimize:use worker
             var checkTargetList = scene.filter((entityObject:GameObject) => {
-                    return entityObject.hasComponent(Collider) || JudgeUtils.isOctreeObject(entityObject);
+                    return entityObject.hasComponent(Collider) || JudgeUtils.isSpacePartitionObject(entityObject);
                 }),
                 self = this;
 
@@ -65,17 +65,17 @@ module wd{
                 self = this,
                 sourceCollider:Collider = null;
 
-             if(JudgeUtils.isOctreeObject(sourceObject)){
+             if(JudgeUtils.isSpacePartitionObject(sourceObject)){
                  checkTargetList.forEach((targetObject:GameObject) => {
                      if(JudgeUtils.isSelf(sourceObject, targetObject)){
                          return;
                      }
 
-                     if(JudgeUtils.isOctreeObject(targetObject)){
-                         self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
+                     if(JudgeUtils.isSpacePartitionObject(targetObject)){
+                         self._getCollideObjectsWithSpacePartition(targetObject.getSpacePartition(), sourceObject.getSpacePartition(), targetCollideObjects, sourceCollideObjects);
                      }
                      else{
-                         self._getCollideObjectsWithOctree(targetObject, sourceObject.getOctree(), targetCollideObjects, sourceCollideObjects);
+                         self._getCollideObjectsWithSpacePartition(targetObject, sourceObject.getSpacePartition(), targetCollideObjects, sourceCollideObjects);
                      }
                  });
 
@@ -94,8 +94,8 @@ module wd{
                     return;
                 }
 
-                if(JudgeUtils.isOctreeObject(targetObject)){
-                    self._getCollideObjectsWithOctree(targetObject.getOctree(), sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
+                if(JudgeUtils.isSpacePartitionObject(targetObject)){
+                    self._getCollideObjectsWithSpacePartition(targetObject.getSpacePartition(), sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
                 }
                 else{
                     self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
@@ -155,22 +155,22 @@ module wd{
             });
         }
 
-        private _getCollideObjectsWithOctree(targetObject:GameObject, sourceOctree:Octree, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
-        private _getCollideObjectsWithOctree(targetOctree:Octree, sourceOctree:Octree, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
+        private _getCollideObjectsWithSpacePartition(targetObject:GameObject, sourceSpacePartition:SpacePartition, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
+        private _getCollideObjectsWithSpacePartition(targetSpacePartition:SpacePartition, sourceSpacePartition:SpacePartition, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
 
-        private _getCollideObjectsWithOctree(targetOctree:Octree, sourceCollider:Collider, sourceObject:GameObject, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
+        private _getCollideObjectsWithSpacePartition(targetSpacePartition:SpacePartition, sourceCollider:Collider, sourceObject:GameObject, targetCollideObjects:wdCb.Collection<GameObject>, sourceCollideObjects:wdCb.Collection<GameObject>);
 
-        private _getCollideObjectsWithOctree(...args) {
+        private _getCollideObjectsWithSpacePartition(...args) {
             if(args.length === 4){
-                if(args[0] instanceof GameObject && args[1] instanceof Octree){
+                if(args[0] instanceof GameObject && args[1] instanceof SpacePartition){
                     let targetObject:GameObject = args[0],
-                        sourceOctree:Octree = args[1],
+                        sourceSpacePartition:SpacePartition = args[1],
                         targetCollideObjects:wdCb.Collection<GameObject> = args[2],
                         sourceCollideObjects:wdCb.Collection<GameObject> = args[3],
                         targetCollider = targetObject.getComponent<Collider>(Collider),
                         self = this;
 
-                    sourceOctree.getCollideObjects(targetCollider.shape).forEach((sourceObject:GameObject) => {
+                    sourceSpacePartition.getCollideObjects(targetCollider.shape).forEach((sourceObject:GameObject) => {
                         self._getCollideObjectsByGameObjectToGameObject(targetObject, targetCollider, sourceObject, sourceCollideObjects);
                     });
 
@@ -179,25 +179,25 @@ module wd{
                     }
 
                     sourceCollideObjects.removeAllChildren();
-                    sourceCollideObjects.addChildren(sourceOctree.getChildren());
+                    sourceCollideObjects.addChildren(sourceSpacePartition.getChildren());
                 }
-                else if(args[0] instanceof Octree && args[1] instanceof Octree){
-                    let targetOctree:Octree = args[0],
-                        sourceOctree:Octree = args[1],
+                else if(args[0] instanceof SpacePartition && args[1] instanceof SpacePartition){
+                    let targetSpacePartition:SpacePartition = args[0],
+                        sourceSpacePartition:SpacePartition = args[1],
                         targetCollideObjects:wdCb.Collection<GameObject> = args[2],
                         sourceCollideObjects:wdCb.Collection<GameObject> = args[3],
                         self = this;
 
-                    sourceOctree.getChildren()
+                    sourceSpacePartition.getChildren()
                         .forEach((sourceObject:GameObject) => {
                             var sourceCollider = sourceObject.getComponent<Collider>(Collider);
 
-                            self._getCollideObjectsWithOctree(targetOctree, sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
+                            self._getCollideObjectsWithSpacePartition(targetSpacePartition, sourceCollider, sourceObject, targetCollideObjects, sourceCollideObjects);
                         });
                 }
             }
             else if(args.length === 5){
-                let targetOctree:Octree = args[0],
+                let targetSpacePartition:SpacePartition = args[0],
                     sourceCollider:Collider = args[1],
                     sourceObject = args[2],
                     targetCollideObjects:wdCb.Collection<GameObject> = args[3],
@@ -208,7 +208,7 @@ module wd{
                     return;
                 }
 
-                targetOctree.getCollideObjects(sourceCollider.shape).forEach((targetObject:GameObject) => {
+                targetSpacePartition.getCollideObjects(sourceCollider.shape).forEach((targetObject:GameObject) => {
                     self._getCollideObjectsByGameObjectToGameObject(sourceObject, sourceCollider, targetObject, targetCollideObjects);
                 });
 

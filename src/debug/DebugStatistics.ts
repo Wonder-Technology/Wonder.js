@@ -6,8 +6,8 @@ module wd{
                 var count = 0;
 
                 Director.getInstance().scene.getChildren().forEach((child:EntityObject) => {
-                    if(child.hasComponent(Octree)){
-                        count += child.getComponent<Octree>(Octree).getChildren().getCount();
+                    if(child.hasComponent(SpacePartition)){
+                        count += child.getComponent<SpacePartition>(SpacePartition).getChildren().getCount();
                         return;
                     }
 
