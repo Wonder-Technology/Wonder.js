@@ -404,6 +404,11 @@
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
+/// <reference path="asset/gltf/IGLTFInterface"/>
+/// <reference path="asset/gltf/GLTFLoader"/>
+/// <reference path="asset/gltf/GLTFAssembler"/>
+/// <reference path="asset/gltf/GLTFParser"/>
+
 /// <reference path="asset/wd/WDTag"/>
 /// <reference path="asset/wd/WDFileType"/>
 /// <reference path="asset/wd/WDLoader"/>

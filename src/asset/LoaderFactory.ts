@@ -45,6 +45,9 @@ module wd{
                 case ".webm":
                     loader = VideoLoader.getInstance();
                     break;
+                case ".gltf":
+                    loader = GLTFLoader.getInstance();
+                    break;
                 case ".wd":
                     loader = WDLoader.getInstance();
                     break;
