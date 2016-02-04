@@ -2,7 +2,7 @@ module wd{
     declare var Math:any;
 
     export class Color {
-        public static create(colorVal:string) {
+        public static create(colorVal?:string) {
             var obj = new this();
 
             obj.initWhenCreate(colorVal);
@@ -17,7 +17,11 @@ module wd{
 
         private _colorString:string = null;
 
-        public initWhenCreate(colorVal:string) {
+        public initWhenCreate(colorVal?:string) {
+            if(!colorVal){
+                return;
+            }
+
             this._colorString = colorVal;
             this._setColor(colorVal);
         }

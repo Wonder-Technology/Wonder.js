@@ -10,30 +10,32 @@ module wd{
 
         private _data:IGLTFParseData = <any>{};
         private _arrayBufferMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _imageMap:wdCb.Hash<HTMLImageElement> = wdCb.Hash.create<HTMLImageElement>();
+        private _json:IGLTFJsonData = null;
 
         public parse(json:IGLTFJsonData):IGLTFParseData{
+            this._json = json;
+
             if(json.asset){
-                this._parseMetadata(json);
+                this._parseMetadata();
             }
 
-            this._parseObjects(json);
+            this._parseObjects();
 
             return this._data;
         }
 
         public createLoadAllAssetsStream(url:string, json:IGLTFJsonData):wdFrp.Stream{
             return wdFrp.fromArray([
-                    this._createLoadBuffersStream(url, json)
-                    //todo finish
-                    //this._createLoadGLSLStream(json),
-                    //this._createLoadTextureStream(json),
-                    //this._createLoadImageStream(json)
+                    this._createLoadBuffersStream(url, json),
+                    this._createLoadImageAssetStream(url, json)
                 ])
                 .mergeAll();
         }
 
-        private _parseMetadata(json:IGLTFJsonData){
-            var metadata = <any>{};
+        private _parseMetadata(){
+            var metadata = <any>{},
+                json = this._json;
 
             for(let i in json.asset){
                 if(json.asset.hasOwnProperty(i)){
@@ -44,8 +46,9 @@ module wd{
             this._data.metadata = metadata;
         }
 
-        private _parseObjects(json:IGLTFJsonData){
+        private _parseObjects(){
             var self = this,
+                json = this._json,
                 objects = wdCb.Collection.create<IGLTFObjectData>();
             var parse = (node:IGLTFNode) => {
                 var object:IGLTFObjectData = self._createObjectData();
@@ -68,7 +71,7 @@ module wd{
                         object.name = mesh.name;
                     }
 
-                    self._parseGeometrys(object, json, mesh);
+                    self._parseGeometrys(object, mesh);
                 }
 
 
@@ -97,7 +100,8 @@ module wd{
             this._data.objects = objects;
         }
 
-        private _parseGeometrys(object:IGLTFObjectData, json:IGLTFJsonData, mesh:IGLTFMesh){
+        private _parseGeometrys(object:IGLTFObjectData, mesh:IGLTFMesh){
+            var json = this._json;
             //if mesh->primitives has multi ones, the primitives should be children of the node(one primitive is one child)
 
             //not use mesh.name
@@ -108,7 +112,7 @@ module wd{
 
                     this._setChildObjectNameWithMultiPrimitives(childObject, primitive);
 
-                    childObject.components.addChild(this._parseGeometry(json, primitive));
+                    childObject.components.addChild(this._parseGeometry(primitive));
 
                     object.children.addChild(childObject);
                 }
@@ -117,7 +121,7 @@ module wd{
                 object.isContainer = true;
             }
             else{
-                object.components.addChild(this._parseGeometry(json, mesh.primitives[0]));
+                object.components.addChild(this._parseGeometry(mesh.primitives[0]));
             }
         }
 
@@ -134,8 +138,9 @@ module wd{
             }
         }
 
-        private _parseGeometry(json:IGLTFJsonData, primitive:IGLTFMeshPrimitive):IGLTFGeometry{
-            var accessor:IGLTFAccessor = null,
+        private _parseGeometry(primitive:IGLTFMeshPrimitive):IGLTFGeometry{
+            var json = this._json,
+                accessor:IGLTFAccessor = null,
                 bufferArr:any = null,
                 geometry:IGLTFGeometry = <any>{},
                 vertices:Array<number> = null,
@@ -143,8 +148,7 @@ module wd{
                 colors:Array<number> = null,
                 normals:Array<number> = null,
                 //indices:Array<number> = null,
-                faces:Array<Face3> = null,
-                material:IGLTFMaterial = null;
+                faces:Array<Face3> = null;
 
 
             //todo read accessor->byteStride for batch draw calls
@@ -201,14 +205,286 @@ module wd{
 
             this._addData(geometry, "drawMode", this._parseDrawMode(primitive.mode));
 
-            //todo get material
-
+            geometry.material = this._parseMaterial(primitive.material);
 
             return geometry;
         }
 
+        private _parseMaterial(materialId:string):IGLTFMaterial{
+            var json = this._json,
+                materialData = null,
+                materialExtension = null;
+
+            if(!this._isUseKHRMaterialExtension()){
+                Log.log("no KHR_materials_common extension found, will use default material instead");
+
+                let material:IGLTFBasicMaterial = {
+                    type:"BasicMaterial",
+
+                    doubleSided:false,
+                    transparent:false
+                };
+
+                return material;
+            }
+
+            let material:IGLTFLightMaterial = <any>{};
+
+            materialData = json.materials[materialId];
+
+            Log.error(!materialData.extensions || !materialData.extensions.KHR_materials_common, Log.info.FUNC_SHOULD("materials", "define KHR_materials_common extensions"));
+
+            materialExtension = materialData.extensions.KHR_materials_common;
+
+            this._addData(material, "doubleSided", materialExtension.doubleSided);
+            this._addData(material, "transparent", materialExtension.transparent);
+            this._addData(material, "opacity", materialExtension.transparency);
+
+            //todo parse jointCount
+
+            //todo support functions
+
+            material.type = this._getMaterialType(materialExtension.technique);
+
+            material.lightModel = this._getLightModel(materialExtension.technique);
+
+            this._addMaterialExtensionValues(material, materialExtension.values);
+
+
+            return material;
+        }
+
+        private _isUseKHRMaterialExtension(){
+            var extensionsUsed = this._json.extensionsUsed;
+
+            if(!extensionsUsed){
+                return false;
+            }
+
+            return extensionsUsed.indexOf("KHR_materials_common") > -1;
+        }
+
+        private _getMaterialType(technique:string){
+            var type:string = null;
+
+            switch (technique){
+                case "PHONG":
+                case "BLINN":
+                case "CONSTANT":
+                case "LAMBERT":
+                    type = "LightMaterial";
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`technique:${technique}`));
+                    break;
+            }
+
+            return type;
+        }
+
+        private _getLightModel(technique:string){
+            var model:LightModel = null;
+
+            switch (technique){
+                case "PHONG":
+                    model = LightModel.PHONG;
+                    break;
+                case "BLINN":
+                    model = LightModel.BLINN;
+                    break;
+                case "CONSTANT":
+                    model = LightModel.CONSTANT;
+                    break;
+                case "LAMBERT":
+                    model = LightModel.LAMBERT;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`technique:${technique}`));
+                    break;
+            }
+
+            return model;
+        }
+
+        private _addMaterialExtensionValues(material:IGLTFLightMaterial, values:any){
+            if(!values){
+                return;
+            }
+
+            if(values.ambient){
+                Log.warn(Log.info.FUNC_NOT_SUPPORT("ambient of material"));
+            }
+
+            this._addMaterialLightColor(material, "diffuse", values.diffuse);
+            this._addMaterialLightColor(material, "specular", values.specular);
+            this._addMaterialLightColor(material, "emission", values.emission);
+
+            if(values.shininess){
+                material.shininess = values.shininess.value;
+            }
+        }
+
+        private _addMaterialLightColor(material:IGLTFMaterial, colorName:string, colorData:{type;value}){
+            if(colorData){
+                if(this._isColor(colorData.type)){
+                    material[`${colorName}Color`] = this._getColor(colorData.value);
+                }
+                else{
+                    material[`${colorName}Map`] = this._getTexture(colorData.value);
+                }
+            }
+        }
+
+        private _isColor(type:number){
+            return Number(type) === 35666;
+        }
+
+        private _getColor(value:Array<number>){
+            var color = Color.create();
+
+            color.r = Number(value[0]);
+            color.g = Number(value[1]);
+            color.b = Number(value[2]);
+            color.a = Number(value[3]);
+
+            return color;
+        }
+
+        @require(function(textureId:string){
+            assert(!!this._json.textures[textureId], Log.info.FUNC_NOT_EXIST(`textureId:${textureId}`));
+        })
+        private _getTexture(textureId:string):Texture{
+            var texture = this._json.textures[textureId],
+                asset:TextureAsset = null;
+
+            if(texture.internalFormat !== texture.format){
+                Log.warn(`texture.internalFormat(${texture.internalFormat}) !== texture.format(${texture.format}), here take texture.format value as their value`);
+            }
+
+            asset = this._createTextureAsset(texture.target, texture.source);
+
+            this._addData(asset, "format", texture.format);
+
+            if(texture.type){
+                asset.type = this._getTextureType(texture.type);
+            }
+
+            this._addTextureSampler(asset, texture.sampler);
+
+            return asset.toTexture();
+        }
+
+        private _createTextureAsset(target:number, imageId:string){
+            var asset:TextureAsset = null,
+                source = this._imageMap.getChild(imageId);
+
+            if(!source){
+                Log.warn(`no image found in loader(id:${imageId})`);
+            }
+
+            switch (target){
+                case 3553:
+                    asset = ImageTextureAsset.create(source);
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT("target except TEXTURE_2D"));
+                    break;
+            }
+
+            return asset;
+        }
+
+        private _getTextureType(type:number){
+            var textureType:TextureType = null;
+
+            switch(type){
+                case 5121:
+                    textureType = TextureType.UNSIGNED_BYTE;
+                    break;
+                case 33635:
+                    textureType = TextureType.UNSIGNED_SHORT_5_6_5;
+                    break;
+
+                case 32819:
+                    textureType = TextureType.UNSIGNED_SHORT_4_4_4_4;
+                    break;
+
+                case 32820:
+                    textureType = TextureType.UNSIGNED_SHORT_5_5_5_1;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`texture->type:${type}`));
+                    break;
+            }
+
+            return textureType;
+        }
+
+        @require(function(asset:TextureAsset, samplerId:string){
+            assert(!!this._json.samplers[samplerId], Log.info.FUNC_NOT_EXIST(`samplerId:${samplerId}`));
+        })
+        private _addTextureSampler(asset:TextureAsset, samplerId:string){
+            var sampler = this._json.samplers[samplerId];
+
+            asset.wrapT = this._getTextureWrap(sampler.wrapT);
+            asset.wrapS = this._getTextureWrap(sampler.wrapS);
+            asset.minFilter = this._getTextureFilter(sampler.minFilter);
+            asset.magFilter = this._getTextureFilter(sampler.magFilter);
+        }
+
+        private _getTextureFilter(filter:number){
+            var textureFilter:TextureFilterMode = null;
+
+            switch (filter){
+                case 9728:
+                    textureFilter = TextureFilterMode.NEAREST;
+                    break;
+                case 9729:
+                    textureFilter = TextureFilterMode.LINEAR;
+                    break;
+                case 9984:
+                    textureFilter = TextureFilterMode.NEAREST_MIPMAP_MEAREST;
+                    break;
+                case 9985:
+                    textureFilter = TextureFilterMode.LINEAR_MIPMAP_NEAREST;
+                    break;
+                case 9986:
+                    textureFilter = TextureFilterMode.NEAREST_MIPMAP_LINEAR;
+                    break;
+                case 9987:
+                    textureFilter = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`texture filter:${filter}`));
+                    break;
+            }
+
+            return textureFilter;
+        }
+
+        private _getTextureWrap(wrap:number){
+            var textureWrap:TextureWrapMode = null;
+
+            switch (wrap){
+                case 33071:
+                    textureWrap = TextureWrapMode.CLAMP_TO_EDGE;
+                    break;
+                case 33648:
+                    textureWrap = TextureWrapMode.MIRRORED_REPEAT;
+                    break;
+                case 10497:
+                    textureWrap = TextureWrapMode.REPEAT;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`texture wrap:${wrap}`));
+                    break;
+            }
+
+            return textureWrap;
+        }
+
         private _addData(target:Object, sourceName:string, sourceData:any){
-            if(sourceData){
+            if(sourceData !== undefined && sourceData !== null){
                 target[sourceName] = sourceData;
             }
         }
@@ -355,17 +631,36 @@ module wd{
             return wdFrp.fromArray(streamArr).mergeAll();
         }
 
-        //private _createLoadGLSLStream(json:IGLTFJsonData):wdFrp.Stream{
-        //
-        //}
-        //
-        //private _createLoadTextureStream(json:IGLTFJsonData):wdFrp.Stream{
-        //
-        //}
-        //
-        //private _createLoadImageStream(json:IGLTFJsonData):wdFrp.Stream{
-        //
-        //}
+        private _createLoadImageAssetStream(filePath:string, json:IGLTFJsonData):wdFrp.Stream{
+            var streamArr = [],
+                self = this;
+
+            if(json.images){
+                let id:string = null;
+
+                for(id in json.images){
+                    if(json.images.hasOwnProperty(id)){
+                        let image = json.images[id];
+
+                        if(this._isBase64(image.uri)){
+                            this._imageMap.addChild(id, this._decodeArrayBuffer(image.uri));
+                        }
+                        else{
+                            let url = ModelLoaderUtils.getPath(filePath, image.uri);
+
+                            streamArr.push(
+                                ImageLoader.load(url)
+                                    .do((image:HTMLImageElement) => {
+                                        self._imageMap.addChild(id, image);
+                                    })
+                            );
+                        }
+                    }
+                }
+            }
+
+            return wdFrp.fromArray(streamArr).mergeAll();
+        }
 
         ////todo support multi scenes?
         //private _parseScene(json:IGLTFJsonData){

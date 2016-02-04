@@ -22,19 +22,29 @@ module wd {
         nodes: {
             [id:string]: IGLTFNode
         };
-        images?: Object;
-        textures?: Object;
+        images?: {
+            [id:string]: IGLTFImage
+        };
+        textures?: {
+            [id:string]: IGLTFTexture
+        };
         shaders: Object;
         programs: Object;
-        samplers: Object;
+        samplers: {
+            [id:string]: IGLTFSampler
+        };
         techniques: Object;
-        materials: Object;
+        materials: {
+            [id:string]: IGLTFMaterial
+        };
         animations: Object;
         skins: Object;
         scene: string;
         scenes: {
             [id:string]: IGLTFScene
         };
+
+        extensionsUsed?:Array<string>;
     }
 
 
@@ -65,6 +75,33 @@ module wd {
             version:string
             extras:Object
         }
+    }
+
+    export interface IGLTFMaterial extends IGLTFChildRootProperty {
+        technique?: string;
+        values?: Array<string>;
+        extensions?:Object;
+    }
+
+    export interface IGLTFImage extends IGLTFChildRootProperty {
+        uri: string;
+    }
+
+    export interface IGLTFSampler extends IGLTFChildRootProperty {
+        magFilter?: number;
+        minFilter?: number;
+        wrapS?: number;
+        wrapT?: number;
+    }
+
+    export interface IGLTFTexture extends IGLTFChildRootProperty {
+        sampler: string;
+        source: string;
+
+        format?: number;
+        internalFormat?: number;
+        target?: number;
+        type?: number;
     }
 
     export interface IGLTFAccessor extends IGLTFChildRootProperty {
@@ -114,22 +151,22 @@ module wd {
 
 
     export interface IGLTFParseData{
-        metadata:DYFileMetadata,
+        metadata:DYFileMetadata;
         scene:{
             ambientColor?: Color
-        },
+        };
         objects: wdCb.Collection<IGLTFObjectData>;
     }
 
 
     export interface IGLTFObjectData {
-        name?:string,
-        isContainer:boolean,
+        name?:string;
+        isContainer:boolean;
 
         components: wdCb.Collection<IGLTFComponent>;
 
 
-        //parent:IGLTFParseData,
+        //parent:IGLTFParseData;
         children: wdCb.Collection<IGLTFObjectData>;
 
         //currentScene: Object;
@@ -140,45 +177,53 @@ module wd {
     }
 
     export interface IGLTFGeometry extends IGLTFComponent{
-        material:IGLTFMaterial,
+        material:IGLTFMaterial;
 
-        vertices: Array<number>,
-        colors?: Array<number>,
-        texCoords?: Array<number>,
-        faces:Array<Face3>,
+        vertices: Array<number>;
+        colors?: Array<number>;
+        texCoords?: Array<number>;
+        faces:Array<Face3>;
 
         //todo add this
         drawMode:DrawMode;
 
-        //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>,
-        //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>,
+        //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
+        //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>;
     }
 
     export interface IGLTFMaterial{
         type:string;
+
+        doubleSided:boolean;
+        transparent:boolean;
+        //transparency?:number;
+        opacity?: number
     }
 
-    //export interface IGLTFShaderMaterial extends IGLTFMaterial{
-    //}
 
-    export interface IGLTFLightPhongMaterial extends IGLTFMaterial{
-        diffuseColor: Color,
-        specularColor: Color,
-        ///*!url is relative to this file*/
-        //diffuseMapUrl: string,
-        //specularMapUrl?: string,
-        //normalMapUrl?: string,
-
-        diffuseMap:Texture,
-        specularMap:Texture,
-        normalMap:Texture,
-
-        shininess: number,
-        opacity: number
+    export interface IGLTFBasicMaterial extends IGLTFMaterial{
     }
 
-    //export interface IGLTFBasicMaterial extends IGLTFMaterial{
-    //}
+    export interface IGLTFLightMaterial extends IGLTFMaterial{
+        //blend functions
+        functions: Object;
+
+        lightModel:LightModel;
+
+
+        diffuseColor: Color;
+        specularColor: Color;
+        emissionColor:Color;
+
+        diffuseMap:Texture;
+        specularMap:Texture;
+        emissionMap:Texture;
+
+        //todo support normalMap
+        //normalMap:Texture;
+
+        shininess: number;
+    }
 
 
 
@@ -202,7 +247,7 @@ module wd {
         metadata:wdCb.Hash<IGLTFMetadata>;
         scene:{
             ambientColor?: Color
-        },
+        };
         models:wdCb.Collection<GameObject>
     }
 }
