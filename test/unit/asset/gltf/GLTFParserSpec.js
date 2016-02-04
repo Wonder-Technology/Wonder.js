@@ -1053,6 +1053,131 @@ describe("GLTFParser", function () {
             });
         });
 
+        describe("parse camera", function(){
+            function getCamera(data){
+                return data.objects.getChild(0).components.getChild(0);
+            }
+
+            function judgeCamera(data, value){
+                var i = null,
+                    camera = getCamera(data);
+
+                for(i in value){
+                    if(value.hasOwnProperty(i)){
+                        expect(camera[i]).toEqual(value[i]);
+                    }
+                }
+            }
+            beforeEach(function(){
+
+            });
+
+            describe("parse perspective camera", function(){
+                it("test", function() {
+                    setJson({
+                        "cameras": {
+                            "Camera01-camera": {
+                                "name": "Camera01",
+                                "perspective": {
+                                    "yfov": 10,
+                                    "zfar": 255,
+                                    "aspectRatio": 1,
+                                    "znear": 0.1
+                                },
+                                "type": "perspective"
+                            }
+                        },
+                        "nodes": {
+                            "node_1": {
+                                "children": [],
+                                "name": "1",
+                                "camera": "Camera01-camera",
+                            }
+                        }
+                    })
+
+
+                    var data = parser.parse(json);
+
+
+                    var camera = getCamera(data).camera;
+                    expect(camera.near).toEqual(0.1);
+                    expect(camera.far).toEqual(255);
+                    expect(camera.fovy).toEqual(10);
+                    expect(camera.aspect).toEqual(1);
+                });
+                it("if no aspectRatio, compute it:canvas.width / canvas.height", function(){
+                    sandbox.stub(wd.DeviceManager.getInstance(), "view", {
+                        width:100,
+                        height:50
+                    });
+                    setJson({
+                        "cameras": {
+                            "Camera01-camera": {
+                                "name": "Camera01",
+                                "perspective": {
+                                    "yfov": 10,
+                                    "zfar": 255,
+                                    "znear": 0.1
+                                },
+                                "type": "perspective"
+                            }
+                        },
+                        "nodes": {
+                            "node_1": {
+                                "children": [],
+                                "name": "1",
+                                "camera": "Camera01-camera",
+                            }
+                        }
+                    })
+
+
+                    var data = parser.parse(json);
+
+
+                    var camera = getCamera(data).camera;
+                    expect(camera.aspect).toEqual(100/50);
+                });
+            });
+
+            it("parse orthographic camera", function() {
+                setJson({
+                    "cameras": {
+                        "Camera01-camera": {
+                            "name": "Camera01",
+                            "orthographic": {
+                                "xmag": 10,
+                                "ymag": 20,
+                                "zfar": 255,
+                                "znear": 0.1
+                            },
+                            "type": "orthographic"
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [],
+                            "name": "1",
+                            "camera": "Camera01-camera",
+                        }
+                    }
+                })
+
+
+                var data = parser.parse(json);
+
+
+                var camera = getCamera(data).camera;
+                expect(camera.near).toEqual(0.1);
+                expect(camera.far).toEqual(255);
+                expect(camera.left).toEqual(-10);
+                expect(camera.right).toEqual(10);
+                expect(camera.top).toEqual(20);
+                expect(camera.bottom).toEqual(-20);
+            });
+        });
+
         it("parse children", function(){
             setJson({
                 "meshes": {

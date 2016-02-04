@@ -79,6 +79,11 @@ module wd{
                     }
                 }
 
+
+                if(node.camera){
+                        object.components.addChild(self._parseCamera(node.camera));
+                }
+
                 //todo more (camera,transform...)
 
 
@@ -791,6 +796,64 @@ module wd{
                     break;
                     default:
                         //todo support spot
+                    break;
+            }
+        }
+
+        @require(function(cameraId:string){
+            var cameras = this._json.cameras;
+            assert(cameras && cameras[cameraId], Log.info.FUNC_NOT_EXIST(`cameraId:${cameraId}`));
+        })
+        private _parseCamera(cameraId:string):IGLTFCamera{
+            var cameraData = this._json.cameras[cameraId],
+                camera:IGLTFCamera = <any>{};
+
+            //todo intensity data?
+
+            this._parseCameraDataByType(camera, cameraData, camera.type);
+
+            return camera;
+        }
+
+        private _parseCameraDataByType(camera:IGLTFCamera, cameraData:any, type:string){
+            var data:any = cameraData[type],
+                cameraComponent:any = null;
+
+            switch (type){
+                case "perspective":
+                    data = cameraData[type];
+                    cameraComponent = PerspectiveCamera.create();
+
+                    cameraComponent.near = data.znear;
+                    cameraComponent.far = data.zfar;
+
+                    if(data.aspectRatio){
+                        cameraComponent.aspect = data.aspectRatio;
+                    }
+                    else{
+                        let view = DeviceManager.getInstance().view;
+
+                        cameraComponent.aspect = view.width / view.height;
+                    }
+
+                    cameraComponent.fovy = data.yfov;
+
+                    camera.camera = cameraComponent;
+                    break;
+                case "orthographic":
+                    cameraComponent = OrthographicCamera.create();
+
+                    cameraComponent.near = data.znear;
+                    cameraComponent.far = data.zfar;
+                    cameraComponent.left = -data.xmag;
+                    cameraComponent.right = data.xmag;
+                    cameraComponent.top = data.ymag;
+                    cameraComponent.bottom = -data.ymag;
+
+                    camera.camera = cameraComponent;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`camera type:${type}`));
                     break;
             }
         }

@@ -18,7 +18,9 @@ module wd {
         meshes: {
             [id:string]: IGLTFMesh
         };
-        cameras?: Object;
+        cameras?: {
+            [id:string]: IGLTFCamera
+        };
         nodes: {
             [id:string]: IGLTFNode
         };
@@ -51,6 +53,23 @@ module wd {
 
     export interface IGLTFScene extends IGLTFChildRootProperty {
         nodes: Array<string>;
+    }
+
+    export interface IGLTFCamera extends IGLTFChildRootProperty {
+    }
+
+    export interface IGLTFCameraOrthographic {
+        xmag: number;
+        ymag: number;
+        zfar: number;
+        znear: number;
+    }
+
+    export interface IGLTFCameraPerspective {
+        aspectRatio?: number;
+        yfov: number;
+        zfar: number;
+        znear: number;
     }
 
     export interface IGLTFNode extends IGLTFChildRootProperty {
@@ -179,6 +198,10 @@ module wd {
     export interface IGLTFComponent{
     }
 
+
+    export interface IGLTFCamera extends IGLTFComponent{
+        camera:Camera;
+    }
 
     export interface IGLTFLight extends IGLTFComponent{
         type:string;
