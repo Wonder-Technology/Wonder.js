@@ -70,8 +70,6 @@ module wd{
             }
         }
 
-        public intensity:number = 1;
-
         public shadowMap:CubemapShadowMapTexture;
         public shadowMapRenderer:CubemapShadowMapRenderTargetRenderer;
 

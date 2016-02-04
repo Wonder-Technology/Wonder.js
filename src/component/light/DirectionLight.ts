@@ -22,7 +22,6 @@ module wd{
             this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);
         }
 
-        public intensity:number = 1;
         //todo extract Shadow class?
         public shadowCameraLeft:number = -1000;
         public shadowCameraRight:number = 1000;

@@ -45,6 +45,7 @@ module wd {
         };
 
         extensionsUsed?:Array<string>;
+        extensions?:Object;
     }
 
 
@@ -63,6 +64,8 @@ module wd {
         rotation?: Array<number>;
         scale?: Array<number>;
         translation?: Array<number>;
+
+        extensions?:Object;
     }
 
     export interface IGLTFAsset {
@@ -174,6 +177,28 @@ module wd {
 
 
     export interface IGLTFComponent{
+    }
+
+
+    export interface IGLTFLight extends IGLTFComponent{
+        type:string;
+        color:Color;
+    }
+
+    export interface IGLTFAmbientLight extends IGLTFLight{
+    }
+
+    export interface IGLTFDirectionLight extends IGLTFLight{
+        //direction?
+    }
+
+    export interface IGLTFPointLight extends IGLTFLight{
+        constantAttenuation:number;
+        linearAttenuation:number;
+        quadraticAttenuation:number;
+
+        //todo need distance?
+        distance?:number;
     }
 
     export interface IGLTFGeometry extends IGLTFComponent{

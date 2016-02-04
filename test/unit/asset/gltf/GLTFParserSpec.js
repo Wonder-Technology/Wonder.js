@@ -6,6 +6,20 @@ describe("GLTFParser", function () {
     function setJson(data) {
         testTool.extend(json, data);
     }
+
+    function createColor(valueArr){
+        var color = wd.Color.create();
+
+        color.r = valueArr[0];
+        color.g = valueArr[1];
+        color.b = valueArr[2];
+
+        if(valueArr.length === 4){
+            color.a = valueArr[3];
+        }
+
+        return color;
+    }
     //
     //function setObject(data) {
     //    json.objects.push(data);
@@ -650,17 +664,6 @@ describe("GLTFParser", function () {
                     describe("parse values", function(){
                         var image;
 
-                        function createColor(valueArr){
-                            var color = wd.Color.create();
-
-                            color.r = valueArr[0];
-                            color.g = valueArr[1];
-                            color.b = valueArr[2];
-                            color.a = valueArr[3];
-
-                            return color;
-                        }
-
                         function judgeLightColor(name){
                             it("if " + name + " type is 35666, parse " + name + " color", function(){
                                 setJson({
@@ -815,6 +818,237 @@ describe("GLTFParser", function () {
                             })
                         });
                     });
+                });
+            });
+        });
+
+        describe("parse light", function(){
+            function getLight(data){
+                return data.objects.getChild(0).components.getChild(0);
+            }
+
+            function judgeLight(data, value){
+                var i = null,
+                    light = getLight(data);
+
+                for(i in value){
+                    if(value.hasOwnProperty(i)){
+                        expect(light[i]).toEqual(value[i]);
+                    }
+                }
+            }
+            beforeEach(function(){
+
+            });
+
+            it("parse ambient light", function(){
+                setJson({
+                    "extensions": {
+                        "KHR_materials_common": {
+                            "lights": {
+                                "EnvironmentAmbientLight": {
+                                    "ambient": {
+                                        "color": [
+                                            0,
+                                            0.1,
+                                            0.2
+                                        ]
+                                    },
+                                    "name": "EnvironmentAmbientLight",
+                                    "type": "ambient"
+                                },
+                            }
+                        }
+                    },
+                    "extensionsUsed": [
+                        "KHR_materials_common"
+                    ],
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            //"meshes": [
+                            //    "geometry1"
+                            //]
+                            "extensions": {
+                                "KHR_materials_common": {
+                                    "light": "EnvironmentAmbientLight"
+                                }
+                            },
+                        }
+                    }
+                })
+
+
+
+
+                var data = parser.parse(json);
+
+
+                judgeLight(data, {
+                    type:"ambient",
+                    color: createColor([0, 0.1, 0.2])
+                })
+            });
+            it("parse direction light", function(){
+                setJson({
+                    "extensions": {
+                        "KHR_materials_common": {
+                            "lights": {
+                                "light1": {
+                                    "directional": {
+                                        "color": [
+                                            0,
+                                            0.1,
+                                            0.2
+                                        ]
+                                    },
+                                    "name": "light1",
+                                    "type": "directional"
+                                },
+                            }
+                        }
+                    },
+                    "extensionsUsed": [
+                        "KHR_materials_common"
+                    ],
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            //"meshes": [
+                            //    "geometry1"
+                            //]
+                            "extensions": {
+                                "KHR_materials_common": {
+                                    "light": "light1"
+                                }
+                            },
+                        }
+                    }
+                })
+
+
+
+
+                var data = parser.parse(json);
+
+
+                judgeLight(data, {
+                    type:"directional",
+                    color: createColor([0, 0.1, 0.2])
+                })
+            });
+            describe("parse point light", function(){
+                it("test without distance", function(){
+                    setJson({
+                        "extensions": {
+                            "KHR_materials_common": {
+                                "lights": {
+                                    "light1": {
+                                        "name": "light1",
+                                        "point": {
+                                            "color": [
+                                                0,
+                                                0.1,
+                                                0.2
+                                            ],
+                                            "constantAttenuation": 1,
+                                            "linearAttenuation": 0.1,
+                                            "quadraticAttenuation": 0.2
+                                        },
+                                        "type": "point"
+                                    }
+                                }
+                            }
+                        },
+                        "extensionsUsed": [
+                            "KHR_materials_common"
+                        ],
+                        "nodes": {
+                            "node_1": {
+                                "children": [
+                                ],
+                                "name": "1",
+                                "extensions": {
+                                    "KHR_materials_common": {
+                                        "light": "light1"
+                                    }
+                                },
+                            }
+                        }
+                    })
+
+
+
+
+                    var data = parser.parse(json);
+
+
+                    judgeLight(data, {
+                        type:"point",
+                        color: createColor([0, 0.1, 0.2]),
+                        constantAttenuation:1,
+                        linearAttenuation:0.1,
+                        quadraticAttenuation:0.2
+                    })
+                });
+                it("test with distance", function(){
+                    setJson({
+                        "extensions": {
+                            "KHR_materials_common": {
+                                "lights": {
+                                    "light1": {
+                                        "name": "light1",
+                                        "point": {
+                                            "color": [
+                                                0,
+                                                0.1,
+                                                0.2
+                                            ],
+                                            "constantAttenuation": 1,
+                                            "linearAttenuation": 0.1,
+                                            "quadraticAttenuation": 0.2,
+                                            "distance": 10
+                                        },
+                                        "type": "point"
+                                    }
+                                }
+                            }
+                        },
+                        "extensionsUsed": [
+                            "KHR_materials_common"
+                        ],
+                        "nodes": {
+                            "node_1": {
+                                "children": [
+                                ],
+                                "name": "1",
+                                "extensions": {
+                                    "KHR_materials_common": {
+                                        "light": "light1"
+                                    }
+                                },
+                            }
+                        }
+                    })
+
+
+
+
+                    var data = parser.parse(json);
+
+
+                    judgeLight(data, {
+                        type:"point",
+                        color: createColor([0, 0.1, 0.2]),
+                        constantAttenuation:1,
+                        linearAttenuation:0.1,
+                        quadraticAttenuation:0.2,
+                        distance:10
+                    })
                 });
             });
         });

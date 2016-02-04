@@ -57,7 +57,6 @@ module wd{
                     object.name = node.name;
                 }
 
-                //if(node.meshes && node.meshes[node.meshes]){
                 if(node.meshes && node.meshes.length > 0){
                     let mesh:IGLTFMesh = null;
 
@@ -74,6 +73,11 @@ module wd{
                     self._parseGeometrys(object, mesh);
                 }
 
+                if(node.extensions){
+                    if(node.extensions["KHR_materials_common"] && node.extensions["KHR_materials_common"].light){
+                        object.components.addChild(self._parseLight(node.extensions["KHR_materials_common"].light));
+                    }
+                }
 
                 //todo more (camera,transform...)
 
@@ -345,7 +349,10 @@ module wd{
             color.r = Number(value[0]);
             color.g = Number(value[1]);
             color.b = Number(value[2]);
-            color.a = Number(value[3]);
+
+            if(value.length === 4){
+                color.a = Number(value[3]);
+            }
 
             return color;
         }
@@ -743,6 +750,48 @@ module wd{
 
             for (let i = 0; i < texCoords.length / 2; i++) {
                 texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
+            }
+        }
+
+
+
+
+
+        @require(function(lightId:string){
+            var lights = this._json.extensions["KHR_materials_common"].lights;
+            assert(lights && lights[lightId], Log.info.FUNC_NOT_EXIST(`lightId:${lightId}`));
+        })
+        private _parseLight(lightId:string):IGLTFLight{
+            var lightData = this._json.extensions["KHR_materials_common"].lights[lightId],
+                light:IGLTFLight = <any>{};
+
+            //todo intensity data?
+
+            this._addData(light, "type", lightData.type);
+
+            this._parseLightDataByType(light, lightData, light.type);
+
+            return light;
+        }
+
+        private _parseLightDataByType(light:IGLTFLight, lightData:any, type:string){
+            var data = lightData[type];
+
+            switch (type){
+                case "ambient":
+                case "directional":
+                    light.color = this._getColor(data.color);
+                    break;
+                case "point":
+                    light.color = this._getColor(data.color);
+                    this._addData(light, "distance", data.distance);
+                    this._addData(light, "constantAttenuation", data.constantAttenuation);
+                    this._addData(light, "linearAttenuation", data.linearAttenuation);
+                    this._addData(light, "quadraticAttenuation", data.quadraticAttenuation);
+                    break;
+                    default:
+                        //todo support spot
+                    break;
             }
         }
     }
