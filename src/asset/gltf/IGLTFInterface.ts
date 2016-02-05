@@ -173,10 +173,7 @@ module wd {
 
 
     export interface IGLTFParseData{
-        metadata:DYFileMetadata;
-        scene:{
-            ambientColor?: Color
-        };
+        metadata:IGLTFMetadata;
         objects: wdCb.Collection<IGLTFObjectData>;
     }
 
@@ -300,9 +297,6 @@ module wd {
 
     export interface IGLTFResult{
         metadata:wdCb.Hash<IGLTFMetadata>;
-        scene:{
-            ambientColor?: Color
-        };
         models:wdCb.Collection<GameObject>
     }
 }

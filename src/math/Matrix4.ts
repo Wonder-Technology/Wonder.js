@@ -47,6 +47,47 @@ module wd{
             this.values = this._matrixArr.pop();
         }
 
+        public set(initialM11: number, initialM12: number, initialM13: number, initialM14: number,
+                                 initialM21: number, initialM22: number, initialM23: number, initialM24: number,
+                                 initialM31: number, initialM32: number, initialM33: number, initialM34: number,
+                                 initialM41: number, initialM42: number, initialM43: number, initialM44: number);
+        public set(matrix:Matrix4);
+
+        public set(...args) {
+            var te = this.values,
+                values:any = null;
+
+            if(args.length === 1){
+                let matrix:Matrix4 = args[0];
+
+                values = matrix.values;
+            }
+            else{
+                values = [
+                    args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]
+                ];
+            }
+
+            te[ 0 ] = values[0];
+            te[ 1 ] = values[1];
+            te[ 2 ] = values[2];
+            te[ 3 ] = values[3];
+            te[ 4 ] = values[4];
+            te[ 5 ] = values[5];
+            te[ 6 ] = values[6];
+            te[ 7 ] = values[7];
+            te[ 8 ] = values[8];
+            te[ 9 ] = values[9];
+            te[ 10 ] = values[10];
+            te[ 11 ] = values[11];
+            te[ 12 ] = values[12];
+            te[ 13 ] = values[13];
+            te[ 14 ] = values[14];
+            te[ 15 ] = values[15];
+
+            return this;
+        }
+
         public setIdentity (): Matrix4 {
             var e = this.values;
             e[0] = 1;   e[4] = 0;   e[8]  = 0;   e[12] = 0;
@@ -672,6 +713,11 @@ module wd{
             return Vector3.create(this.getX().length(), this.getY().length(), this.getZ().length());
         }
 
+        public getRotation() {
+            //return Quaternion.create().setFromEulerAngles(this.getEulerAngles());
+            return Quaternion.create().setFromMatrix(this);
+        }
+
         public getEulerAngles() {
             var x, y, z, sx, sy, sz, m, halfPi;
             var scale = this.getScale();
@@ -718,7 +764,7 @@ module wd{
          * var s = new Vec3(2, 2, 2);
          *
          * var m = new Mat4();
-         * m.compose(t, r, s);
+         * m.setTRS(t, r, s);
          */
         public setTRS(t:Vector3, r:Quaternion, s:Vector3) {
             var tx, ty, tz, qx, qy, qz, qw, sx, sy, sz,

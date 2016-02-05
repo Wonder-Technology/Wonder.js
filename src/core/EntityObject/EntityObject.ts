@@ -14,8 +14,24 @@ module wd {
             this._bubbleParent = bubbleParent;
         }
 
+        private _transform:Transform = null;
+        get transform(){
+            return this._transform;
+        }
+        set transform(transform:Transform){
+            if(!transform) {
+                return
+            }
+
+            if(this._transform){
+                this.removeComponent(this._transform);
+            }
+
+            this.addComponent(transform);
+            this._transform = transform;
+        }
+
         public name:string = null;
-        public transform:any = null;
         public parent:EntityObject = null;
 
         public actionManager:ActionManager = ActionManager.create();
@@ -30,10 +46,6 @@ module wd {
         @virtual
         public initWhenCreate(){
             this.transform = this.createTransform();
-
-            if(this.transform){
-                this.addComponent(this.transform);
-            }
         }
 
         public init() {

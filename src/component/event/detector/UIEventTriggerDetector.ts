@@ -8,7 +8,7 @@ module wd {
         }
 
         public isTrigger(e:MouseEvent):boolean {
-            var transform:RectTransform = this.entityObject.transform,
+            var transform:RectTransform = <RectTransform>this.entityObject.transform,
                 width = transform.width,
                 height = transform.height,
                 position = transform.position,

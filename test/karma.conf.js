@@ -30,6 +30,7 @@
         //'test/unit/**',
 
         'test/unit/**/GLTFParserSpec*',
+        'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
