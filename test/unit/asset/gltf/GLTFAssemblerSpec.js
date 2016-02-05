@@ -2,8 +2,7 @@ describe("GLTFAssembler", function () {
     var sandbox = null;
     var builder = null;
     var parseData = null;
-    var Color = wd.Color,
-        Collection = wdCb.Collection,
+    var Collection = wdCb.Collection,
         Hash = wdCb.Hash;
 
     function setData(data) {
@@ -17,12 +16,7 @@ describe("GLTFAssembler", function () {
         builder = new wd.GLTFAssembler();
 
         parseData = {
-            //scene: {},
-            //materials: {},
-            //objects: []
-        }
-
-        //sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+        };
     });
     afterEach(function () {
         sandbox.restore();
@@ -114,7 +108,7 @@ describe("GLTFAssembler", function () {
 
             describe("add components", function(){
                 function getComponent(data){
-                    return getSingleModel(data).getFirstComponent();
+                    return getSingleModel(data).components.getChild(1);
                 }
 
                 function judgeEqual(source, target){
@@ -140,6 +134,10 @@ describe("GLTFAssembler", function () {
 
                 describe("add transform component", function(){
                     var matrix;
+
+                    function getComponent(data){
+                        return getSingleModel(data).getFirstComponent();
+                    }
 
                     beforeEach(function(){
                         matrix = wd.Matrix4.create();
@@ -188,6 +186,23 @@ describe("GLTFAssembler", function () {
                         judgeEqual(component.scale, matrix.getScale());
                     });
 
+                });
+                describe("add cameraController component", function(){
+                    it("add BasicCameraController", function () {
+                        var camera = wd.PerspectiveCamera.create();
+                        camera.near = 0.1;
+
+                        setComponent({
+                            camera:camera
+                        })
+
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.BasicCameraController);
+                        expect(component.camera.near).toEqual(camera.near);
+                    });
                 });
             });
         });

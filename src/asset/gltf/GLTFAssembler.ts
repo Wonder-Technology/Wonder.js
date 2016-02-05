@@ -97,11 +97,18 @@ module wd{
                 if(self._isTransform(component)){
                     model.transform = self._createTransform(<IGLTFTransform>component);
                 }
+                if(self._isCamera(component)){
+                    model.addComponent(self._createCamera(<IGLTFCamera>component));
+                }
             });
         }
 
         private _isTransform(component:any){
             return !!component.matrix || !!component.position;
+        }
+
+        private _isCamera(component:any){
+            return !!component.camera;
         }
 
         private _createTransform(component:IGLTFTransform){
@@ -117,6 +124,10 @@ module wd{
             }
 
             return transform;
+        }
+
+        private _createCamera(component:IGLTFCamera){
+            return BasicCameraController.create(component.camera);
         }
     }
 }
