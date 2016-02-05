@@ -16,13 +16,15 @@ module wd{
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
 
+            this.sendUniformData(program, "u_lightModel", this._convertLightModelToGLSLVariable(material.lightModel));
+
             this._sendLightVariables(program);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
-            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide"]);
+            this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide", "u_lightModel"]);
 
             this._setLightDefinition(material);
         }
@@ -130,6 +132,23 @@ module wd{
                 name: "POINT_LIGHTS_COUNT",
                 value: point_lights_count
             }]);
+        }
+
+        @require(function(lightModel:LightModel){
+            assert(lightModel !== LightModel.LAMBERT, Log.info.FUNC_SHOULD_NOT("lightModel", "=== LightModel.LAMBERT"));
+        })
+        private _convertLightModelToGLSLVariable(lightModel:LightModel){
+            switch (lightModel){
+                case LightModel.BLINN:
+                    return 1;
+                case LightModel.PHONG:
+                    return 2;
+                case LightModel.CONSTANT:
+                    return 3;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`lightModel:${lightModel}`));
+                    break;
+            }
         }
     }
 }

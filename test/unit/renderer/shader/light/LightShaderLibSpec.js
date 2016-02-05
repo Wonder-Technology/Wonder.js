@@ -1,20 +1,24 @@
 describe("LightShaderLib", function () {
-        var sandbox = null;
-        var Lib = null;
-        var lib = null;
+    var sandbox = null;
+    var Lib = null;
+    var lib = null;
+    var quadCmd,program,material;
 
-        beforeEach(function () {
-            sandbox = sinon.sandbox.create();
-            Lib = wd.LightShaderLib;
-            lib = new Lib();
-        });
-        afterEach(function () {
-            testTool.clearInstance();
-            sandbox.restore();
-        });
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        Lib = wd.LightShaderLib;
+        lib = new Lib();
+
+        material = new wd.LightMaterial();
+        quadCmd = new wd.QuadCommand();
+        program = new wd.Program();
+    });
+    afterEach(function () {
+        testTool.clearInstance();
+        sandbox.restore();
+    });
 
     describe("sendShaderVariables", function(){
-        var quadCmd,program,material;
         var scene,camera;
         var mMatrix;
 
@@ -43,9 +47,6 @@ describe("LightShaderLib", function () {
             camera = wd.GameObject.create();
             sandbox.stub(scene, "camera", camera);
 
-            material = new wd.LightMaterial();
-
-            quadCmd = new wd.QuadCommand();
             sandbox.stub(quadCmd, "buffers", {
                 hasChild:sandbox.stub().returns(false),
                 getChild:sandbox.stub()
@@ -55,7 +56,6 @@ describe("LightShaderLib", function () {
 
             sandbox.stub(quadCmd, "mMatrix", mMatrix);
 
-            program = new wd.Program();
             sandbox.stub(program, "sendAttributeData");
             sandbox.stub(program, "sendUniformData");
         });
@@ -110,6 +110,57 @@ describe("LightShaderLib", function () {
             lib.sendShaderVariables(program, quadCmd, material);
 
             expect(program.sendUniformData).toCalledWith("u_opacity", wd.VariableType.FLOAT_1, 0.1);
+        });
+
+        describe("send u_lightModel", function(){
+            beforeEach(function(){
+
+            });
+
+            it("convert string to glsl variable", function(){
+                material.lightModel = wd.LightModel.BLINN;
+
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 1);
+
+
+
+                material.lightModel = wd.LightModel.PHONG;
+
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 2);
+
+
+
+                material.lightModel = wd.LightModel.CONSTANT;
+
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 3);
+            });
+            it("not support LAMBERT", function () {
+                material.lightModel = wd.LightModel.LAMBERT;
+
+                expect(function(){
+                    lib.sendShaderVariables(program, quadCmd, material);
+                }).toThrow();
+            });
+        });
+    });
+
+
+    describe("setShaderDefinition", function(){
+        beforeEach(function(){
+            sandbox.stub(lib, "addUniformVariable");
+        });
+
+        it("send u_lightModel", function(){
+            lib.setShaderDefinition(quadCmd, material);
+
+            var uniformVariableArr = lib.addUniformVariable.args[0][0];
+            expect(uniformVariableArr.indexOf("u_lightModel") > -1).toBeTruthy();
         });
     });
 });

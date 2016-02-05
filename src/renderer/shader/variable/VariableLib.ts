@@ -152,6 +152,11 @@ module wd{
             value:VariableCategory.ENGINE
         };
 
+        public static u_lightModel:ShaderVariable = {
+            type:VariableType.NUMBER_1,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_isBothSide:ShaderVariable = {
             type:VariableType.NUMBER_1,
             value:VariableCategory.ENGINE

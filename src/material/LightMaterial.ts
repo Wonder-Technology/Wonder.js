@@ -63,6 +63,8 @@ module wd{
             this._opacity = opacity;
         }
 
+        public lightModel:LightModel = LightModel.BLINN;
+
         public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
 

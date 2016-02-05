@@ -326,6 +326,11 @@ describe("GLTFAssembler", function () {
                         function getMaterial(data){
                             return getComponent(data).material;
                         }
+                        function setMaterial(data){
+                            setComponent({
+                                material:data
+                            })
+                        }
 
                         function createColor(valueArr){
                             var color = wd.Color.create();
@@ -350,10 +355,8 @@ describe("GLTFAssembler", function () {
                         });
 
                         it("if type === 'BasicMaterial', add BasicMaterial", function(){
-                            setComponent({
-                                material:{
-                                    type:"BasicMaterial"
-                                }
+                            setMaterial({
+                                type:"BasicMaterial"
                             })
 
                             var data = builder.build(parseData);
@@ -366,12 +369,10 @@ describe("GLTFAssembler", function () {
 
 
 
-                        setComponent({
-                            material:{
+                            setMaterial({
                                 type:"BasicMaterial",
                                 doubleSided:true
-                            }
-                        })
+                            })
 
                         var data = builder.build(parseData);
 
@@ -380,41 +381,76 @@ describe("GLTFAssembler", function () {
                             expect(material.side).toEqual(wd.Side.BOTH);
                         });
 
-                        it("else if type === 'LightMaterial', add LightMaterial", function(){
-                            var materialData = {
-                                type:"LightMaterial",
-                                doubleSided:true,
+                        describe("else if type === 'LightMaterial', add LightMaterial", function(){
+                            it("test", function(){
+                                var materialData = {
+                                    type:"LightMaterial",
+                                    doubleSided:true,
 
-                                diffuseColor:createColor([1,1,0]),
-                                specularColor:createColor([0.2,1,0]),
+                                    diffuseColor:createColor([1,1,0]),
+                                    specularColor:createColor([0.2,1,0]),
 
-                                diffuseMap:wd.ImageTexture.create({}),
-                                specularMap:wd.ImageTexture.create({a:1}),
+                                    diffuseMap:wd.ImageTexture.create({}),
+                                    specularMap:wd.ImageTexture.create({a:1}),
 
-                                shininess: 10
-                            };
-                            setComponent({
-                                material:materialData
+                                    shininess: 10
+                                };
+                                setMaterial(materialData);
+
+
+
+
+                                var data = builder.build(parseData);
+
+
+
+
+                                var material = getMaterial(data);
+                                expect(material).toBeInstanceOf(wd.LightMaterial);
+                                expect(material.side).toEqual(wd.Side.BOTH);
+                                judgeColorEqual(material.color, materialData.diffuseColor);
+                                judgeColorEqual(material.specular, materialData.specularColor);
+
+                                expect(material.diffuseMap).toEqual(materialData.diffuseMap);
+                                expect(material.specularMap).toEqual(materialData.specularMap);
+
+                                expect(material.shininess).toEqual(materialData.shininess);
                             });
 
+                            describe("test lightModel", function(){
+                                it("if it's LAMBERT, log 'not support' info and use PHONG instead", function () {
+                                    sandbox.stub(wd.Log, "log");
+                                    setMaterial({
+                                        type:"LightMaterial",
+                                        lightModel:wd.LightModel.LAMBERT
+                                    });
 
 
 
-                            var data = builder.build(parseData);
+
+                                    var data = builder.build(parseData);
+
+
+                                    expect(wd.Log.log).toCalledOnce();
+                                    var material = getMaterial(data);
+                                    expect(material.lightModel).toEqual(wd.LightModel.PHONG);
+                                });
+                                it("else, set lightModel", function () {
+                                    setMaterial({
+                                        type:"LightMaterial",
+                                        lightModel:wd.LightModel.CONSTANT
+                                    });
 
 
 
 
-                            var material = getMaterial(data);
-                            expect(material).toBeInstanceOf(wd.LightMaterial);
-                            expect(material.side).toEqual(wd.Side.BOTH);
-                            judgeColorEqual(material.color, materialData.diffuseColor);
-                            judgeColorEqual(material.specular, materialData.specularColor);
+                                    var data = builder.build(parseData);
 
-                            expect(material.diffuseMap).toEqual(materialData.diffuseMap);
-                            expect(material.specularMap).toEqual(materialData.specularMap);
 
-                            expect(material.shininess).toEqual(materialData.shininess);
+                                    var material = getMaterial(data);
+                                    expect(material.lightModel).toEqual(wd.LightModel.CONSTANT);
+                                });
+                            });
                         });
                     });
                 });

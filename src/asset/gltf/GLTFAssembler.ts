@@ -226,13 +226,13 @@ module wd{
                 material.opacity = materialData.opacity;
             }
 
-            //if(materialData.lightModel === LightModel.LAMBERT){
-            //    Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
-            //    material.lightModel = LightModel.PHONG;
-            //}
-            //else{
-            //    material.lightModel = materialData.lightModel;
-            //}
+            if(materialData.lightModel === LightModel.LAMBERT){
+                Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
+                material.lightModel = LightModel.PHONG;
+            }
+            else{
+                material.lightModel = materialData.lightModel;
+            }
 
             this._addData(material, "color", materialData.diffuseColor);
             this._addData(material, "specular", materialData.specularColor);

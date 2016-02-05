@@ -41,6 +41,7 @@
             material.shininess = 32;
             material.diffuseMap = wd.LoaderManager.getInstance().get("diffuseMap").toTexture();
             material.shading = wd.Shading.SMOOTH;
+            material.lightModel = wd.LightModel.PHONG;
 
 
             var geometry = wd.SphereGeometry.create();
