@@ -52,13 +52,13 @@ module wd{
             return this._shadowRenderList;
         }
         @requireSetter(function(shadowRenderList:any){
-            assert(JudgeUtils.isDirectObject(shadowRenderList), Log.error(true, Log.info.FUNC_MUST_BE("shadowRenderList", "object")));
+            assert(JudgeUtils.isDirectObject(shadowRenderList), Log.info.FUNC_MUST_BE("shadowRenderList", "object"));
 
             for(let direction in shadowRenderList){
                 if(shadowRenderList.hasOwnProperty(direction)){
                     let list = shadowRenderList[direction];
 
-                    assert(JudgeUtils.isArray(list) || shadowRenderList instanceof wdCb.Hash, Log.error(true, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array")));
+                    assert(JudgeUtils.isArray(list) || shadowRenderList instanceof wdCb.Hash, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
                 }
             }
 
