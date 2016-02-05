@@ -6,23 +6,36 @@ module wd {
             return obj;
         }
 
-        get constant() {
-            return 1.0;
+        private _constant:number = 1;
+        get constant(){
+            return this._constant;
+        }
+        set constant(constant:number){
+            this._constant = constant;
         }
 
         private _range:number = null;
         get range() {
             return this._range;
         }
+        set range(range:number){
+            this._range = range;
+        }
 
-        private _linear:number = null;
+        private _linear:number = 0;
         get linear() {
             return this._linear;
         }
+        set linear(linear:number){
+            this._linear = linear;
+        }
 
-        private _quadratic:number = null;
+        private _quadratic:number = 0;
         get quadratic() {
             return this._quadratic;
+        }
+        set quadratic(quadratic:number){
+            this._quadratic = quadratic;
         }
 
         private _rangeLevel:number = 0;

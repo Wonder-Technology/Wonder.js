@@ -10,7 +10,7 @@ module wd{
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
             super.sendShaderVariables(program, quadCmd, material);
-            if(material.reflectivity !== ShaderChunk.NULL){
+            if(material.reflectivity !== null){
                 this.sendUniformData(program, "u_reflectivity", material.reflectivity);
             }
             else{

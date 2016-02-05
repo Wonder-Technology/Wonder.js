@@ -88,7 +88,7 @@
 
         //'test/unit/**/UIObjectSpec*',
 
-        //'test/unit/**/LightShaderLibSpec*',
+        'test/unit/**/LightShaderLibSpec*',
 
         //'test/unit/**/SceneDispatcherSpec*',
 

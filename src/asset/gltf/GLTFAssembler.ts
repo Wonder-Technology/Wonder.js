@@ -100,6 +100,9 @@ module wd{
                 if(self._isCamera(component)){
                     model.addComponent(self._createCamera(<IGLTFCamera>component));
                 }
+                if(self._isLight(component)){
+                    model.addComponent(self._createLight(<any>component));
+                }
             });
         }
 
@@ -109,6 +112,10 @@ module wd{
 
         private _isCamera(component:any){
             return !!component.camera;
+        }
+
+        private _isLight(component:any){
+            return !!component.lightColor && !!component.type
         }
 
         private _createTransform(component:IGLTFTransform){
@@ -128,6 +135,45 @@ module wd{
 
         private _createCamera(component:IGLTFCamera){
             return BasicCameraController.create(component.camera);
+        }
+
+        private _createLight(component:IGLTFLight&IGLTFPointLight&IGLTFAmbientLight&IGLTFDirectionLight){
+            var light = null;
+
+            switch (component.type){
+                case "ambient":
+                    light = AmbientLight.create();
+
+                    light.color = component.lightColor;
+                    break;
+                case "directional":
+                    light = DirectionLight.create();
+
+                    light.color = component.lightColor;
+                    break;
+                case "point":
+                    light = PointLight.create();
+
+                    light.color = component.lightColor;
+
+                    this._addData(light, "range", component.distance);
+                    this._addData(light, "constant", component.constantAttenuation);
+                    this._addData(light, "linear", component.linearAttenuation);
+                    this._addData(light, "quadratic", component.quadraticAttenuation);
+                    break;
+                default:
+                    //todo support spot
+                    break;
+            }
+
+            return light;
+        }
+
+        //todo move to utils
+        private _addData(target:Object, sourceName:string, sourceData:any){
+            if(sourceData !== undefined && sourceData !== null){
+                target[sourceName] = sourceData;
+            }
         }
     }
 }

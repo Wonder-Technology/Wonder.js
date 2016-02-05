@@ -9,6 +9,7 @@ describe("LightShaderLib", function () {
             lib = new Lib();
         });
         afterEach(function () {
+            testTool.clearInstance();
             sandbox.restore();
         });
 
@@ -20,6 +21,16 @@ describe("LightShaderLib", function () {
         function createDirectionLight(onSetLight){
             var light = wd.GameObject.create();
             light.addComponent(wd.DirectionLight.create());
+
+            onSetLight(light);
+
+            return light;
+        }
+
+        function createPointLight(onSetLight){
+            var light = wd.GameObject.create();
+
+            light.addComponent(wd.PointLight.create());
 
             onSetLight(light);
 
@@ -66,6 +77,25 @@ describe("LightShaderLib", function () {
 
                 expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", wd.VariableType.FLOAT_3, wd.DirectionLight.defaultPosition);
                 expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", wd.VariableType.FLOAT_3, wd.Vector3.create(1, 0, 0));
+            });
+        });
+
+        describe("send point light's range", function(){
+            it("if range === null, send ShaderChunk.NULL; else, send range", function(){
+                var light1 = createPointLight(function(light){
+                });
+                var light2 = createPointLight(function(light){
+                    light.getComponent(wd.PointLight).range = 1;
+                });
+
+                scene.addChild(light1);
+                scene.addChild(light2);
+
+
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_pointLights[0].range", wd.VariableType.FLOAT_1, wd.ShaderChunk.NULL);
+                expect(program.sendUniformData).toCalledWith("u_pointLights[1].range", wd.VariableType.FLOAT_1, 1);
             });
         });
 

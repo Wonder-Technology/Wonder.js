@@ -888,7 +888,7 @@ describe("GLTFParser", function () {
 
                 judgeLight(data, {
                     type:"ambient",
-                    color: createColor([0, 0.1, 0.2])
+                    lightColor: createColor([0, 0.1, 0.2])
                 })
             });
             it("parse direction light", function(){
@@ -938,7 +938,7 @@ describe("GLTFParser", function () {
 
                 judgeLight(data, {
                     type:"directional",
-                    color: createColor([0, 0.1, 0.2])
+                    lightColor: createColor([0, 0.1, 0.2])
                 })
             });
             describe("parse point light", function(){
@@ -989,7 +989,7 @@ describe("GLTFParser", function () {
 
                     judgeLight(data, {
                         type:"point",
-                        color: createColor([0, 0.1, 0.2]),
+                        lightColor: createColor([0, 0.1, 0.2]),
                         constantAttenuation:1,
                         linearAttenuation:0.1,
                         quadraticAttenuation:0.2
@@ -1043,7 +1043,7 @@ describe("GLTFParser", function () {
 
                     judgeLight(data, {
                         type:"point",
-                        color: createColor([0, 0.1, 0.2]),
+                        lightColor: createColor([0, 0.1, 0.2]),
                         constantAttenuation:1,
                         linearAttenuation:0.1,
                         quadraticAttenuation:0.2,

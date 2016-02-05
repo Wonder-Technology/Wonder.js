@@ -209,7 +209,7 @@ module wd {
 
     export interface IGLTFLight extends IGLTFComponent{
         type:string;
-        color:Color;
+        lightColor:Color;
     }
 
     export interface IGLTFAmbientLight extends IGLTFLight{

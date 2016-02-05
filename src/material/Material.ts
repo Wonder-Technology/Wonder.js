@@ -137,11 +137,12 @@ module wd {
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
         public shading = Shading.FLAT;
         public refractionRatio:number = 0;
-        public reflectivity:number = ShaderChunk.NULL;
+        public reflectivity:number = null;
         public mapCombineMode:TextureCombineMode = TextureCombineMode.MIX;
         public mapMixRatio:number = 0.5;
         public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
+
         private _afterInitSubscription:wdFrp.IDisposable = null;
 
 

@@ -204,6 +204,58 @@ describe("GLTFAssembler", function () {
                         expect(component.camera.near).toEqual(camera.near);
                     });
                 });
+
+                describe("add light component", function(){
+                    var color;
+
+                    beforeEach(function(){
+                        color = wd.Color.create("#123456");
+                    });
+
+                    it("add AmbientLight", function(){
+                        setComponent({
+                            type:"ambient",
+                            lightColor:color
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.AmbientLight);
+                        expect(component.color).toEqual(color);
+                    });
+                    it("add DirectionLight", function(){
+                        setComponent({
+                            type:"directional",
+                            lightColor:color
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.DirectionLight);
+                        expect(component.color).toEqual(color);
+                    });
+                    it("add PointLight", function(){
+                        setComponent({
+                            type:"point",
+                            lightColor:color,
+                            distance: 10,
+                            constantAttenuation:1,
+                            linearAttenuation:0.1,
+                            quadraticAttenuation:0.001
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.PointLight);
+                        expect(component.color).toEqual(color);
+                        expect(component.range).toEqual(10);
+                        expect(component.linear).toEqual(0.1);
+                        expect(component.quadratic).toEqual(0.001);
+                    });
+                });
             });
         });
     });

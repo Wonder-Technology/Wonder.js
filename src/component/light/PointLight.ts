@@ -22,17 +22,29 @@ module wd{
         get range(){
             return this._attenuation.range;
         }
+        set range(range:number){
+            this._attenuation.range = range;
+        }
 
         get constant(){
             return this._attenuation.constant;
+        }
+        set constant(constant:number){
+            this._attenuation.constant = constant;
         }
 
         get linear(){
             return this._attenuation.linear;
         }
+        set linear(linear:number){
+            this._attenuation.linear = linear;
+        }
 
         get quadratic(){
             return this._attenuation.quadratic;
+        }
+        set quadratic(quadratic:number){
+            this._attenuation.quadratic = quadratic;
         }
 
         private _shadowRenderList:wdCb.Hash<wdCb.Collection<GameObject>> = wdCb.Hash.create<wdCb.Collection<GameObject>>();

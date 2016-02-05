@@ -788,10 +788,10 @@ module wd{
             switch (type){
                 case "ambient":
                 case "directional":
-                    light.color = this._getColor(data.color);
+                    light.lightColor = this._getColor(data.color);
                     break;
                 case "point":
-                    light.color = this._getColor(data.color);
+                    light.lightColor = this._getColor(data.color);
                     this._addData(light, "distance", data.distance);
                     this._addData(light, "constantAttenuation", data.constantAttenuation);
                     this._addData(light, "linearAttenuation", data.linearAttenuation);
