@@ -107,6 +107,50 @@ describe("GLTFAssembler", function () {
                 var model = getSingleModel(data);
                 expect(model.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
             });
+            it("build children", function () {
+                var data1 = {
+                    name:"1",
+                    components:Collection.create()
+                };
+                var data2 = {
+                    name:"2",
+                    components:Collection.create(),
+                    children:Collection.create().addChild(data1)
+                };
+                var data3 = {
+                    name:"3",
+                    components:Collection.create()
+                };
+
+                var objectData = Collection.create();
+                objectData.addChild(data2);
+                objectData.addChild(data3);
+
+                setData({
+                    objects:objectData
+                });
+
+
+
+
+
+                var data = builder.build(parseData);
+
+
+
+
+
+                var models = data.getChild("models");
+                expect(models.getChildren().length).toEqual(2);
+
+                var model1 = models.getChild(0);
+                var model2 = models.getChild(1);
+
+                expect(model1.name).toEqual("2");
+                expect(model1.getChild(0).name).toEqual("1");
+
+                expect(model2.name).toEqual("3");
+            });
 
             describe("add components", function(){
                 function getComponent(data){
@@ -134,7 +178,7 @@ describe("GLTFAssembler", function () {
 
                 });
 
-                describe("add transform component", function(){
+                describe("add ThreeDTransform component", function(){
                     var matrix;
 
                     function getComponent(data){
@@ -259,7 +303,7 @@ describe("GLTFAssembler", function () {
                     });
                 });
 
-                describe("add geometry component", function(){
+                describe("add ModelGeometry component", function(){
                     beforeEach(function(){
 
                     });
@@ -453,6 +497,17 @@ describe("GLTFAssembler", function () {
                             });
                         });
                     });
+                });
+
+                it("add MeshRenderer component", function(){
+                        setComponent({
+                        })
+
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.MeshRenderer);
                 });
             });
         });

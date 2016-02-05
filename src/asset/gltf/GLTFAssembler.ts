@@ -30,56 +30,37 @@ module wd{
         private _buildModels(parseData:IGLTFParseData){
             var models = wdCb.Collection.create<GameObject>(),
                 self = this;
-            var build = (objects:wdCb.Collection<IGLTFObjectData>) => {
-                objects.forEach((object:IGLTFObjectData) => {
-                    var model = GameObject.create();
+            var build = (object:IGLTFObjectData) => {
+                var model = GameObject.create();
 
-                    if(object.name){
-                        model.name = object.name;
-                    }
+                if(object.name){
+                    model.name = object.name;
+                }
 
-                    if(self._isModelContainer(object)){
-                        model.addTag(<any>WDTag.CONTAINER);
-                    }
+                if(self._isModelContainer(object)){
+                    model.addTag(<any>WDTag.CONTAINER);
+                }
 
-                    self._addComponents(model, object.components);
-                    //
-                    //geometry = ModelGeometry.create();
-                    //geometry.vertices = object.vertices;
-                    //geometry.faces = object.faces;
-                    //geometry.texCoords = object.uvs;
-                    //geometry.colors = object.colors;
-                    //
-                    //
-                    //if(object.material){
-                    //    geometry.material = self._buildMaterial(object.material, parseData.materials);
-                    //}
-                    //
-                    //geometry.morphTargets = object.morphTargets;
-                    //geometry.morphFaceNormals = object.morphNormals;
-                    //geometry.morphVertexNormals = object.morphNormals;
-                    //
-                    //if(GeometryUtils.hasData(geometry.morphTargets)){
-                    //    model.addComponent(MorphAnimation.create());
-                    //}
-                    //
-                    //model.addComponent(geometry);
-                    //
-                    //model.name = object.name;
-                    //model.addComponent(MeshRenderer.create());
-                    models.addChild(model);
+                self._addComponents(model, object.components);
 
-                    if(object.children){
-                        build(object.children);
-                    }
-                });
+                model.addComponent(MeshRenderer.create());
+
+                if(object.children){
+                    object.children.forEach((child:IGLTFObjectData) => {
+                        model.addChild(build(child));
+                    })
+                }
+
+                return model;
             };
 
             if(!parseData.objects){
                 return;
             }
 
-            build(parseData.objects);
+            parseData.objects.forEach((object:IGLTFObjectData) => {
+                models.addChild(build(object));
+            });
 
             this._result.addChild("models", models);
         }

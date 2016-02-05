@@ -88,7 +88,7 @@
 
         //'test/unit/**/UIObjectSpec*',
 
-        'test/unit/**/LightShaderLibSpec*',
+        //'test/unit/**/LightShaderLibSpec*',
 
         //'test/unit/**/SceneDispatcherSpec*',
 
@@ -121,7 +121,7 @@
         //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
-        'test/unit/**/*MaterialSpec.js',
+        //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/scriptSpec.js',
 
         //'test/unit/**/*ControllerSpec.js',
@@ -130,18 +130,18 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
         //'test/unit/asset/obj/OBJParserSpec.js',
-        //'test/unit/asset/loaderSpec.js',
+        'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        'test/unit/component/**/GeometrySpec.js',
-        'test/unit/component/**/ModelGeometrySpec.js',
+        //'test/unit/component/**/GeometrySpec.js',
+        //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/component/**/*Animation*.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        'test/unit/renderer/**',
+        //'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',

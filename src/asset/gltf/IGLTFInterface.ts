@@ -231,9 +231,9 @@ module wd {
     export interface IGLTFGeometry extends IGLTFComponent{
         material:IGLTFMaterial;
 
-        vertices: Array<Vector3>;
-        colors?: Array<Vector3>;
-        texCoords?: Array<Vector2>;
+        vertices: Array<number>;
+        colors?: Array<number>;
+        texCoords?: Array<number>;
         faces:Array<Face3>;
 
         drawMode:DrawMode;

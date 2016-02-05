@@ -6,9 +6,9 @@ module wd{
             return geom;
         }
 
-        public vertices:Array<Vector3> = null;
-        public colors:Array<Vector3> = null;
-        public texCoords:Array<Vector2> = null;
+        public vertices:Array<number> = null;
+        public colors:Array<number> = null;
+        public texCoords:Array<number> = null;
         public faces:Array<Face3> = null;
         public morphTargets:wdCb.Hash<DYFileParseMorphTargetsData> = null;
         public morphFaceNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();

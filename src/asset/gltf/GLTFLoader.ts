@@ -21,14 +21,19 @@ module wd{
         })
         protected loadAsset(...args):wdFrp.Stream {
             var url = args[0],
-                self = this;
+                self = this,
+                jsonData:IGLTFJsonData = null;
 
             return AjaxLoader.load(url, "json")
+                //.concat([
+                //    this._gltfParser.createLoadAllAssetsStream(url, json),
+                //])
                 .flatMap((json:IGLTFJsonData) => {
-                    return self._gltfParser.createLoadAllAssetsStream(url, json);
-                })
-                .map((json:IGLTFJsonData) => {
-                    return self._gltfAssembler.build(self._gltfParser.parse(json));
+                    return self._gltfParser.createLoadAllAssetsStream(url, json).concat(
+                        wdFrp.callFunc(()=> {
+                            return self._gltfAssembler.build(self._gltfParser.parse(json));
+                        })
+                    );
                 });
         }
     }

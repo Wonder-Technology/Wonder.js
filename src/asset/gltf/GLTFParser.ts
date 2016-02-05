@@ -90,13 +90,13 @@ module wd{
                     object.components.addChild(self._parseTransform(node.translation, node.rotation, node.scale));
                 }
 
-                objects.addChild(object);
-
                 if(node.children){
                     for(let child of node.children){
-                        parse(json.nodes[child]);
+                        object.children.addChild(parse(json.nodes[child]));
                     }
                 }
+
+                return object;
             }
 
             if(!json.scenes[json.scene]){
@@ -106,7 +106,7 @@ module wd{
             }
 
             for(let nodeId of json.scenes[json.scene].nodes){
-                parse(json.nodes[nodeId]);
+                objects.addChild(parse(json.nodes[nodeId]));
             }
 
             this._data.objects = objects;
@@ -155,9 +155,9 @@ module wd{
                 accessor:IGLTFAccessor = null,
                 bufferArr:any = null,
                 geometry:IGLTFGeometry = <any>{},
-                vertices:Array<Vector3> = null,
-                texCoords:Array<Vector2> = null,
-                colors:Array<Vector3> = null,
+                vertices:Array<number> = null,
+                texCoords:Array<number> = null,
+                colors:Array<number> = null,
                 normals:Array<number> = null,
                 //indices:Array<number> = null,
                 faces:Array<Face3> = null;
@@ -175,12 +175,12 @@ module wd{
                     if(semantic === "POSITION"){
                         vertices = [];
 
-                        this._addGeometryData(vertices, bufferArr, 3);
+                        this._addGeometryData(vertices, bufferArr);
                     }
                     else if(semantic.indexOf("TEXCOORD_") > -1){
                         texCoords = [];
 
-                        this._addGeometryData(texCoords, bufferArr, 2);
+                        this._addGeometryData(texCoords, bufferArr);
 
                         this._normalizeTexCoords(texCoords);
                     }
@@ -194,7 +194,7 @@ module wd{
                     else if(semantic === "COLOR"){
                         colors = [];
 
-                        this._addGeometryData(colors, bufferArr, 3);
+                        this._addGeometryData(colors, bufferArr);
                     }
                     //todo support JOINT, WEIGHT
                 }
@@ -216,24 +216,9 @@ module wd{
             return geometry;
         }
 
-        @require(function(geometryData:Array<any>, sourceData:Array<number>, size:number){
-            if(size === 3){
-                assert(sourceData.length % 3 === 0, Log.info.FUNC_SHOULD("sourceData.length", "3 times"));
-            }
-            else if(size === 2){
-                assert(sourceData.length % 2 === 0, Log.info.FUNC_SHOULD("sourceData.length", "2 times"));
-            }
-        })
-        private _addGeometryData(geometryData:Array<any>, sourceData:Array<number>, size:number){
-            if(size === 2){
-                for(let i = 0, len = sourceData.length; i < len; i += 2){
-                    geometryData.push(Vector2.create(sourceData[i], sourceData[i + 1]));
-                }
-            }
-            else if(size === 3){
-                for(let i = 0, len = sourceData.length; i < len; i += 3){
-                    geometryData.push(Vector3.create(sourceData[i], sourceData[i + 1], sourceData[i + 2]));
-                }
+        private _addGeometryData(geometryData:Array<number>, sourceData:Array<number>){
+            for(let i = 0, len = sourceData.length; i < len; i++){
+                geometryData.push(sourceData[i]);
             }
         }
 
@@ -386,13 +371,16 @@ module wd{
             var texture = this._json.textures[textureId],
                 asset:TextureAsset = null;
 
+            asset = this._createTextureAsset(texture.target, texture.source);
+
+
             if(texture.internalFormat !== texture.format){
                 Log.warn(`texture.internalFormat(${texture.internalFormat}) !== texture.format(${texture.format}), here take texture.format value as their value`);
             }
 
-            asset = this._createTextureAsset(texture.target, texture.source);
-
-            this._addData(asset, "format", texture.format);
+            if(texture.format){
+                asset.format = this._getTextureFormat(texture.format);
+            }
 
             if(texture.type){
                 asset.type = this._getTextureType(texture.type);
@@ -433,11 +421,9 @@ module wd{
                 case 33635:
                     textureType = TextureType.UNSIGNED_SHORT_5_6_5;
                     break;
-
                 case 32819:
                     textureType = TextureType.UNSIGNED_SHORT_4_4_4_4;
                     break;
-
                 case 32820:
                     textureType = TextureType.UNSIGNED_SHORT_5_5_5_1;
                     break;
@@ -447,6 +433,33 @@ module wd{
             }
 
             return textureType;
+        }
+
+        private _getTextureFormat(format:number){
+            var textureFormat:TextureFormat = null;
+
+            switch(format){
+                case 6406:
+                    textureFormat = TextureFormat.ALPHA;
+                    break;
+                case 6407:
+                    textureFormat = TextureFormat.RGB;
+                    break;
+                case 6408:
+                    textureFormat = TextureFormat.RGBA;
+                    break;
+                case 6409:
+                    textureFormat = TextureFormat.LUMINANCE;
+                    break;
+                case 6410:
+                    textureFormat = TextureFormat.LUMINANCE_ALPHA;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`texture->format:${format}`));
+                    break;
+            }
+
+            return textureFormat;
         }
 
         @require(function(asset:TextureAsset, samplerId:string){
@@ -647,7 +660,7 @@ module wd{
                         streamArr.push(
                             AjaxLoader.load(url, "arraybuffer")
                                 .do((data:any) => {
-                                    Log.error(!(data instanceof wd.ArrayBuffer), Log.info.FUNC_SHOULD(`Buffer:${id}`, "be an array buffer"));
+                                    Log.error(!(data instanceof ArrayBuffer), Log.info.FUNC_SHOULD(`Buffer:${id}`, "be an array buffer"));
                                     Log.error(data.byteLength !== buffer.byteLength, Log.info.FUNC_SHOULD(`Buffer:${id}'s length is ${data.byteLength}, but it`, `be ${buffer.byteLength}`));
 
                                     self._arrayBufferMap.addChild(id, data);
@@ -765,20 +778,15 @@ module wd{
             }
         }
 
-        private _normalizeTexCoords(texCoords:Array<Vector2>){
+        private _normalizeTexCoords(texCoords:Array<number>){
             if (!texCoords) {
                 return;
             }
 
-            for (let i = 0; i < texCoords.length; i++) {
-                //texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
-                texCoords[i].y = 1.0 - texCoords[i].y;
+            for (let i = 0, len = texCoords.length / 2; i < len; i++) {
+                texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
             }
         }
-
-
-
-
 
         @require(function(lightId:string){
             var lights = this._json.extensions["KHR_materials_common"].lights;
