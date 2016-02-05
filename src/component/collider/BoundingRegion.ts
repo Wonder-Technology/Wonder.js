@@ -85,10 +85,10 @@ module wd {
 
             geometry = wd.CustomGeometry.create();
             geometry.material = material;
+            geometry.drawMode = DrawMode.LINES;
             this.setDebugObjectGeometry(geometry, shape);
 
             renderer = wd.MeshRenderer.create();
-            renderer.drawMode = DrawMode.LINES;
 
             entityObject = wd.GameObject.create();
             entityObject.addComponent(geometry);

@@ -18,8 +18,8 @@ module wd{
         }
 
         public entityObject:GameObject;
-
         public buffers:BufferContainer = null;
+        public drawMode:DrawMode = DrawMode.TRIANGLES;
 
         @ensure(function(){
             var geometryData = this.buffers.geometryData;

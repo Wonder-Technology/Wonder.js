@@ -8,8 +8,6 @@ module wd{
 
         private _result:wdCb.Hash<IGLTFResult> = wdCb.Hash.create<IGLTFResult>();
 
-        //todo geometry add drawMode
-
         public build(parseData:IGLTFParseData){
             this._buildMetadata(parseData);
             this._buildModels(parseData);
@@ -97,11 +95,14 @@ module wd{
                 if(self._isTransform(component)){
                     model.transform = self._createTransform(<IGLTFTransform>component);
                 }
-                if(self._isCamera(component)){
+                else if(self._isCamera(component)){
                     model.addComponent(self._createCamera(<IGLTFCamera>component));
                 }
-                if(self._isLight(component)){
+                else if(self._isLight(component)){
                     model.addComponent(self._createLight(<any>component));
+                }
+                else if(self._isGeometry(component)){
+                    model.addComponent(self._createGeometry(<any>component));
                 }
             });
         }
@@ -116,6 +117,10 @@ module wd{
 
         private _isLight(component:any){
             return !!component.lightColor && !!component.type
+        }
+
+        private _isGeometry(component:any){
+            return !!component.material;
         }
 
         private _createTransform(component:IGLTFTransform){
@@ -167,6 +172,88 @@ module wd{
             }
 
             return light;
+        }
+
+        private _createGeometry(component:IGLTFGeometry){
+            var geometry = ModelGeometry.create();
+
+            geometry.vertices = component.vertices;
+            geometry.faces = component.faces;
+            this._addData(geometry, "colors", component.colors);
+            this._addData(geometry, "texCoords", component.texCoords);
+
+            geometry.drawMode = component.drawMode;
+
+            geometry.material = this._createMaterial(component.material);
+
+            //todo support morph targets
+
+            return geometry;
+        }
+
+        private _createMaterial(materialData:IGLTFMaterial){
+            var material:Material = null;
+
+            switch (materialData.type){
+                case "BasicMaterial":
+                    material = this._createBasicMaterial(<IGLTFBasicMaterial>materialData);
+                    break;
+                case "LightMaterial":
+                    material = this._createLightMaterial(<IGLTFLightMaterial>materialData);
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`material type:${materialData.type}`));
+                    break;
+            }
+
+            return material;
+        }
+
+        private _createBasicMaterial(materialData:IGLTFBasicMaterial){
+            var material = BasicMaterial.create();
+
+            this._setBasicDataOfMaterial(material, materialData);
+
+            return material;
+        }
+
+        private _createLightMaterial(materialData:IGLTFLightMaterial){
+            var material = LightMaterial.create();
+
+            this._setBasicDataOfMaterial(material, materialData);
+
+            if(!!materialData.transparent && materialData.transparent === true && materialData.opacity){
+                material.opacity = materialData.opacity;
+            }
+
+            //if(materialData.lightModel === LightModel.LAMBERT){
+            //    Log.log(Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
+            //    material.lightModel = LightModel.PHONG;
+            //}
+            //else{
+            //    material.lightModel = materialData.lightModel;
+            //}
+
+            this._addData(material, "color", materialData.diffuseColor);
+            this._addData(material, "specular", materialData.specularColor);
+            //this._addData(material, "emission", materialData.emissionColor);
+
+            this._addData(material, "diffuseMap", materialData.diffuseMap);
+            this._addData(material, "specularMap", materialData.specularMap);
+            //this._addData(material, "emissionMap", materialData.emissionMap);
+
+            this._addData(material, "shininess", materialData.shininess);
+
+            return material;
+        }
+
+        private _setBasicDataOfMaterial(material:Material, materialData:IGLTFMaterial){
+            if(!!materialData.doubleSided && materialData.doubleSided === true){
+                material.side = Side.BOTH;
+            }
+            else{
+                material.side = Side.FRONT;
+            }
         }
 
         //todo move to utils

@@ -231,12 +231,11 @@ module wd {
     export interface IGLTFGeometry extends IGLTFComponent{
         material:IGLTFMaterial;
 
-        vertices: Array<number>;
-        colors?: Array<number>;
-        texCoords?: Array<number>;
+        vertices: Array<Vector3>;
+        colors?: Array<Vector3>;
+        texCoords?: Array<Vector2>;
         faces:Array<Face3>;
 
-        //todo add this
         drawMode:DrawMode;
 
         //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
@@ -246,10 +245,7 @@ module wd {
     export interface IGLTFMaterial{
         type:string;
 
-        doubleSided:boolean;
-        transparent:boolean;
-        //transparency?:number;
-        opacity?: number
+        doubleSided?:boolean;
     }
 
 
@@ -257,24 +253,27 @@ module wd {
     }
 
     export interface IGLTFLightMaterial extends IGLTFMaterial{
+        transparent?:boolean;
+        opacity?: number
+
         //blend functions
-        functions: Object;
+        functions?: Object;
 
         lightModel:LightModel;
 
 
-        diffuseColor: Color;
-        specularColor: Color;
-        emissionColor:Color;
+        diffuseColor?: Color;
+        specularColor?: Color;
+        emissionColor?:Color;
 
-        diffuseMap:Texture;
-        specularMap:Texture;
-        emissionMap:Texture;
+        diffuseMap?:Texture;
+        specularMap?:Texture;
+        emissionMap?:Texture;
 
         //todo support normalMap
         //normalMap:Texture;
 
-        shininess: number;
+        shininess?: number;
     }
 
 

@@ -4,6 +4,8 @@ describe("GLTFAssembler", function () {
     var parseData = null;
     var Collection = wdCb.Collection,
         Hash = wdCb.Hash;
+    var Vector2 = wd.Vector2;
+    var Vector3 = wd.Vector3;
 
     function setData(data) {
         testTool.extend(parseData, data);
@@ -254,6 +256,166 @@ describe("GLTFAssembler", function () {
                         expect(component.range).toEqual(10);
                         expect(component.linear).toEqual(0.1);
                         expect(component.quadratic).toEqual(0.001);
+                    });
+                });
+
+                describe("add geometry component", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("create ModelGeometry", function(){
+                        setComponent({
+                            material:{
+                                type:"BasicMaterial"
+                            }
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.ModelGeometry);
+                    });
+                    it("add geometryData", function () {
+                        var vertices = [Vector3.create(1,2,3), Vector3.create(2,2,3), Vector3.create(1,2,3)];
+                        var colors = [Vector3.create(3,2,3), Vector3.create(2,2,3), Vector3.create(1,2,3)];
+                        var texCoords = [Vector2.create(0.5, 0.1), Vector2.create(0.2,0.3), Vector2.create(0.2,0.1)];
+                        var faces = [
+                            wd.Face3.create(0, 1, 2)
+                        ];
+                        setComponent({
+                            vertices:vertices,
+                            colors:colors,
+                            texCoords:texCoords,
+                            faces:faces,
+
+                            material:{
+                                type:"BasicMaterial"
+                            }
+                        })
+
+
+
+                        var data = builder.build(parseData);
+
+
+
+                        var component = getComponent(data);
+                        expect(component.vertices).toEqual(vertices);
+                        expect(component.colors).toEqual(colors);
+                        expect(component.texCoords).toEqual(texCoords);
+                        expect(component.faces).toEqual(faces);
+                    });
+                    it("add drawMode", function () {
+                        setComponent({
+                            drawMode: wd.DrawMode.LINE_LOOP,
+
+                            material:{
+                                type:"BasicMaterial"
+                            }
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var component = getComponent(data);
+                        expect(component.drawMode).toEqual(wd.DrawMode.LINE_LOOP);
+                    });
+
+
+                    describe("add material", function(){
+                        function getMaterial(data){
+                            return getComponent(data).material;
+                        }
+
+                        function createColor(valueArr){
+                            var color = wd.Color.create();
+
+                            color.r = valueArr[0];
+                            color.g = valueArr[1];
+                            color.b = valueArr[2];
+
+                            if(valueArr.length === 4){
+                                color.a = valueArr[3];
+                            }
+
+                            return color;
+                        }
+
+                        function judgeColorEqual(source, target){
+                            expect(source).toEqual(target);
+                        }
+
+                        beforeEach(function(){
+                            sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+                        });
+
+                        it("if type === 'BasicMaterial', add BasicMaterial", function(){
+                            setComponent({
+                                material:{
+                                    type:"BasicMaterial"
+                                }
+                            })
+
+                            var data = builder.build(parseData);
+
+                            var material = getMaterial(data);
+                            expect(material.side).toEqual(wd.Side.FRONT);
+
+
+
+
+
+
+                        setComponent({
+                            material:{
+                                type:"BasicMaterial",
+                                doubleSided:true
+                            }
+                        })
+
+                        var data = builder.build(parseData);
+
+                        var material = getMaterial(data);
+                        expect(material).toBeInstanceOf(wd.BasicMaterial);
+                            expect(material.side).toEqual(wd.Side.BOTH);
+                        });
+
+                        it("else if type === 'LightMaterial', add LightMaterial", function(){
+                            var materialData = {
+                                type:"LightMaterial",
+                                doubleSided:true,
+
+                                diffuseColor:createColor([1,1,0]),
+                                specularColor:createColor([0.2,1,0]),
+
+                                diffuseMap:wd.ImageTexture.create({}),
+                                specularMap:wd.ImageTexture.create({a:1}),
+
+                                shininess: 10
+                            };
+                            setComponent({
+                                material:materialData
+                            });
+
+
+
+
+                            var data = builder.build(parseData);
+
+
+
+
+                            var material = getMaterial(data);
+                            expect(material).toBeInstanceOf(wd.LightMaterial);
+                            expect(material.side).toEqual(wd.Side.BOTH);
+                            judgeColorEqual(material.color, materialData.diffuseColor);
+                            judgeColorEqual(material.specular, materialData.specularColor);
+
+                            expect(material.diffuseMap).toEqual(materialData.diffuseMap);
+                            expect(material.specularMap).toEqual(materialData.specularMap);
+
+                            expect(material.shininess).toEqual(materialData.shininess);
+                        });
                     });
                 });
             });

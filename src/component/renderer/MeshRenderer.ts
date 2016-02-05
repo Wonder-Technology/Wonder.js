@@ -8,8 +8,6 @@ module wd {
 
         public entityObject:GameObject;
 
-        public drawMode:DrawMode = DrawMode.TRIANGLES;
-
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject){
             renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
         }
@@ -29,6 +27,8 @@ module wd {
 
             quadCmd.animation = geometry.entityObject.getComponent(Animation);
 
+            quadCmd.drawMode = geometry.drawMode;
+
             quadCmd.mMatrix = this.entityObject.transform.localToWorldMatrix;
 
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
@@ -38,7 +38,6 @@ module wd {
 
             quadCmd.z = this.entityObject.transform.position.z;
 
-            quadCmd.drawMode = this.drawMode;
 
             return quadCmd;
         }

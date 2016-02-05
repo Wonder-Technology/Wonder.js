@@ -155,9 +155,9 @@ module wd{
                 accessor:IGLTFAccessor = null,
                 bufferArr:any = null,
                 geometry:IGLTFGeometry = <any>{},
-                vertices:Array<number> = null,
-                texCoords:Array<number> = null,
-                colors:Array<number> = null,
+                vertices:Array<Vector3> = null,
+                texCoords:Array<Vector2> = null,
+                colors:Array<Vector3> = null,
                 normals:Array<number> = null,
                 //indices:Array<number> = null,
                 faces:Array<Face3> = null;
@@ -175,16 +175,12 @@ module wd{
                     if(semantic === "POSITION"){
                         vertices = [];
 
-                        for(let data of bufferArr){
-                            vertices.push(data);
-                        }
+                        this._addGeometryData(vertices, bufferArr, 3);
                     }
                     else if(semantic.indexOf("TEXCOORD_") > -1){
                         texCoords = [];
 
-                        for(let data of bufferArr){
-                            texCoords.push(data);
-                        }
+                        this._addGeometryData(texCoords, bufferArr, 2);
 
                         this._normalizeTexCoords(texCoords);
                     }
@@ -198,9 +194,7 @@ module wd{
                     else if(semantic === "COLOR"){
                         colors = [];
 
-                        for(let data of bufferArr){
-                            colors.push(data);
-                        }
+                        this._addGeometryData(colors, bufferArr, 3);
                     }
                     //todo support JOINT, WEIGHT
                 }
@@ -222,6 +216,27 @@ module wd{
             return geometry;
         }
 
+        @require(function(geometryData:Array<any>, sourceData:Array<number>, size:number){
+            if(size === 3){
+                assert(sourceData.length % 3 === 0, Log.info.FUNC_SHOULD("sourceData.length", "3 times"));
+            }
+            else if(size === 2){
+                assert(sourceData.length % 2 === 0, Log.info.FUNC_SHOULD("sourceData.length", "2 times"));
+            }
+        })
+        private _addGeometryData(geometryData:Array<any>, sourceData:Array<number>, size:number){
+            if(size === 2){
+                for(let i = 0, len = sourceData.length; i < len; i += 2){
+                    geometryData.push(Vector2.create(sourceData[i], sourceData[i + 1]));
+                }
+            }
+            else if(size === 3){
+                for(let i = 0, len = sourceData.length; i < len; i += 3){
+                    geometryData.push(Vector3.create(sourceData[i], sourceData[i + 1], sourceData[i + 2]));
+                }
+            }
+        }
+
         private _parseMaterial(materialId:string):IGLTFMaterial{
             var json = this._json,
                 materialData = null,
@@ -233,8 +248,7 @@ module wd{
                 let material:IGLTFBasicMaterial = {
                     type:"BasicMaterial",
 
-                    doubleSided:false,
-                    transparent:false
+                    doubleSided:false
                 };
 
                 return material;
@@ -751,13 +765,14 @@ module wd{
             }
         }
 
-        private _normalizeTexCoords(texCoords:Array<number>){
+        private _normalizeTexCoords(texCoords:Array<Vector2>){
             if (!texCoords) {
                 return;
             }
 
-            for (let i = 0; i < texCoords.length / 2; i++) {
-                texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
+            for (let i = 0; i < texCoords.length; i++) {
+                //texCoords[i * 2 + 1] = 1.0 - texCoords[i * 2 + 1];
+                texCoords[i].y = 1.0 - texCoords[i].y;
             }
         }
 
