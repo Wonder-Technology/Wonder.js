@@ -30,6 +30,18 @@ module wd{
             this._specularMap = specularMap;
         }
 
+        private _emissionMap:Texture = null;
+        get emissionMap(){
+            return this._emissionMap;
+        }
+        set emissionMap(emissionMap:Texture){
+            this.addMap(emissionMap, {
+                samplerVariableName: VariableNameTable.getVariableName("emissionMap")
+            });
+
+            this._emissionMap = emissionMap;
+        }
+
         private _normalMap:Texture = null;
         get normalMap(){
             return this._normalMap;
@@ -63,7 +75,7 @@ module wd{
             this._opacity = opacity;
         }
 
-        public lightModel:LightModel = LightModel.BLINN;
+        public lightModel:LightModel = LightModel.PHONG;
 
         public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();
@@ -73,6 +85,7 @@ module wd{
 
 
         public specular:Color = Color.create("0x111111");
+        public emission:Color = Color.create("0x111111");
 
         private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;
@@ -116,7 +129,7 @@ module wd{
 
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
-            this._setPhongMapShaderLib();
+            this._setLightMapShaderLib();
             this.shader.addLib(LightShaderLib.create());
 
             envMap = this.envMap;
@@ -127,7 +140,7 @@ module wd{
             this.shader.addLib(LightEndShaderLib.create());
         }
 
-        private _setPhongMapShaderLib(){
+        private _setLightMapShaderLib(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
             if(this._diffuseMap){
@@ -142,6 +155,13 @@ module wd{
             }
             else{
                 this.shader.addLib(NoSpecularMapShaderLib.create());
+            }
+
+            if(this._emissionMap){
+                this.shader.addLib(EmissionMapShaderLib.create());
+            }
+            else{
+                this.shader.addLib(NoEmissionMapShaderLib.create());
             }
 
             if(this._normalMap){

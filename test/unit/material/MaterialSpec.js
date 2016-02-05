@@ -14,7 +14,7 @@ describe("Material", function() {
 
     it("test default value", function(){
         expect(material.refractionRatio).toEqual(0);
-        expect(material.reflectivity).toEqual(wd.ShaderChunk.NULL);
+        expect(material.reflectivity).toBeNull();
         expect(material.color).toEqual(wd.Color.create("#ffffff"));
     });
 

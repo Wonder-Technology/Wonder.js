@@ -296,7 +296,7 @@ describe("BasicMaterial", function () {
 
                 director._loopBody(1);
 
-                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toEqual(wd.ShaderChunk.NULL);
+                expect(program.sendUniformData.withArgs("u_reflectivity").firstCall.args[2]).toBeNull();
                 expect(program.sendUniformData.withArgs("u_refractionRatio").firstCall.args[2]).toEqual(0.5);
                 expect(program.sendUniformData.withArgs("u_normalMatrix")).toCalledOnce();
                 expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();

@@ -92,6 +92,11 @@ module wd{
             value:VariableCategory.ENGINE
         };
 
+        public static u_emissionMapSampler:ShaderVariable = {
+            type:VariableType.SAMPLER_2D,
+            value:VariableCategory.ENGINE
+        };
+
         public static u_normalMapSampler:ShaderVariable = {
             type:VariableType.SAMPLER_2D,
             value:VariableCategory.ENGINE
@@ -143,6 +148,11 @@ module wd{
         };
 
         public static u_specular:ShaderVariable = {
+            type:VariableType.FLOAT_3,
+            value:VariableCategory.ENGINE
+        };
+
+        public static u_emission:ShaderVariable = {
             type:VariableType.FLOAT_3,
             value:VariableCategory.ENGINE
         };

@@ -60,6 +60,18 @@ describe("LightMaterial", function() {
 
             expect(material.shader.getLib(wd.NoSpecularMapShaderLib)).toBeTruthy();
         });
+        it("if emissionMap exist, add its shader lib", function(){
+            material.emissionMap = map;
+
+            rendererTool.triggerMaterialAddShaderLib(material);
+
+            expect(material.shader.getLib(wd.EmissionMapShaderLib)).toBeTruthy();
+        });
+        it("else, add NoEmissionMapShaderLib", function () {
+            rendererTool.triggerMaterialAddShaderLib(material);
+
+            expect(material.shader.getLib(wd.NoEmissionMapShaderLib)).toBeTruthy();
+        });
         it("if normalMap exist, add its shader lib", function(){
             material.normalMap = map;
 

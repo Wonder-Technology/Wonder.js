@@ -236,11 +236,11 @@ module wd{
 
             this._addData(material, "color", materialData.diffuseColor);
             this._addData(material, "specular", materialData.specularColor);
-            //this._addData(material, "emission", materialData.emissionColor);
+            this._addData(material, "emission", materialData.emissionColor);
 
             this._addData(material, "diffuseMap", materialData.diffuseMap);
             this._addData(material, "specularMap", materialData.specularMap);
-            //this._addData(material, "emissionMap", materialData.emissionMap);
+            this._addData(material, "emissionMap", materialData.emissionMap);
 
             this._addData(material, "shininess", materialData.shininess);
 

@@ -350,9 +350,11 @@
 /// <reference path="renderer/shader/lib/light/lightMap/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/DiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/SpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/EmissionMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/NormalMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/NoDiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/NoSpecularMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/NoEmissionMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/NoNormalMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/shadowMap/BuildShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/shadowMap/BuildTwoDShadowMapShaderLib"/>

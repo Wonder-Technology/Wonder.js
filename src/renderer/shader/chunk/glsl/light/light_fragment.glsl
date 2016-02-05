@@ -26,16 +26,18 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         vec3 materialDiffuse = getMaterialDiffuse();
         vec3 materialSpecular = getMaterialSpecular();
+        vec3 materialEmission = getMaterialEmission();
 
         float dotResultBetweenNormAndLight = dot(normal, lightDir);
         float diff = max(dotResultBetweenNormAndLight, 0.0);
 
+        vec3 emissionColor = u_emission * materialEmission;
 
         vec3 ambientColor = u_ambient * materialDiffuse;
 
 
         if(u_lightModel == 3){
-            return ambientColor;
+            return emissionColor + ambientColor;
         }
 
         vec3 diffuseColor = diff * color * materialDiffuse * intensity;
@@ -52,7 +54,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 specularColor = spec * materialSpecular * intensity;
 
-        return ambientColor + attenuation * (diffuseColor + specularColor);
+        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
 }
 
 
