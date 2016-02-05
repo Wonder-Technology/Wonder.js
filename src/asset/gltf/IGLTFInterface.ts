@@ -1,5 +1,4 @@
 module wd {
-    //todo change array format to "Array<xxx>"
     export interface IGLTFChildRootProperty {
         name?: string;
     }
@@ -56,6 +55,7 @@ module wd {
     }
 
     export interface IGLTFCamera extends IGLTFChildRootProperty {
+        type:string;
     }
 
     export interface IGLTFCameraOrthographic {
@@ -198,6 +198,13 @@ module wd {
     export interface IGLTFComponent{
     }
 
+
+    export interface IGLTFTransform extends IGLTFComponent{
+        matrix?:Matrix4;
+        position?:Vector3;
+        scale?:Vector3;
+        rotation?:Quaternion;
+    }
 
     export interface IGLTFCamera extends IGLTFComponent{
         camera:Camera;
