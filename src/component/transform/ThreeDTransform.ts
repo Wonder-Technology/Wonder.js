@@ -6,22 +6,9 @@ module wd{
             return obj;
         }
 
-        private _dirtyLocalToWorldMatrix:boolean = false;
-        set dirtyLocalToWorldMatrix(dirtyLocalToWorldMatrix:boolean){
-            this._dirtyLocalToWorldMatrix = dirtyLocalToWorldMatrix;
-
-            this.dirtyLocal = dirtyLocalToWorldMatrix;
-        }
-
         private _localToWorldMatrix:Matrix4 = null;
         get localToWorldMatrix(){
             return this.getMatrix("sync", "_localToWorldMatrix");
-        }
-        //todo test
-        set localToWorldMatrix(matrix:Matrix4){
-            this._localToParentMatrix = matrix;
-
-            this.dirtyLocalToWorldMatrix = true;
         }
 
         private _position:Vector3 = Vector3.create();
@@ -218,12 +205,7 @@ module wd{
 
         public sync(){
             if (this.dirtyLocal) {
-                if(!this._dirtyLocalToWorldMatrix){
-                    this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
-                }
-                else{
-                    this._dirtyLocalToWorldMatrix = false;
-                }
+                this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
 
                 this.dirtyLocal = false;
                 this.dirtyWorld = true;

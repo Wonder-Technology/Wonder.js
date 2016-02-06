@@ -80,9 +80,9 @@
 
         //'test/unit/**/ImageSpec*',
 
-        //'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
 

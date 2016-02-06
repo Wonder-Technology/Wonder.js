@@ -25,16 +25,16 @@ module wd{
                 jsonData:IGLTFJsonData = null;
 
             return AjaxLoader.load(url, "json")
-                //.concat([
-                //    this._gltfParser.createLoadAllAssetsStream(url, json),
-                //])
                 .flatMap((json:IGLTFJsonData) => {
-                    return self._gltfParser.createLoadAllAssetsStream(url, json).concat(
-                        wdFrp.callFunc(()=> {
-                            return self._gltfAssembler.build(self._gltfParser.parse(json));
-                        })
-                    );
-                });
+                    jsonData = json;
+
+                    return self._gltfParser.createLoadAllAssetsStream(url, json);
+                })
+                .concat(
+                    wdFrp.callFunc(()=> {
+                        return self._gltfAssembler.build(self._gltfParser.parse(jsonData));
+                    })
+                )
         }
     }
 }

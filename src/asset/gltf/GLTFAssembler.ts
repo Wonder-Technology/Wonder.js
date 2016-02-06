@@ -108,7 +108,9 @@ module wd{
             var transform:ThreeDTransform = ThreeDTransform.create();
 
             if(component.matrix){
-                transform.localToWorldMatrix = component.matrix;
+                transform.position = component.matrix.getTranslation();
+                transform.rotation = component.matrix.getRotation();
+                transform.scale = component.matrix.getScale();
             }
             else{
                 transform.position = component.position;

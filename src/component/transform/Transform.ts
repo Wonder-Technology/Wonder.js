@@ -59,7 +59,7 @@ module wd{
         protected setChildrenTransformState(transformState:string){
             if(this[transformState]){
                 this.children.forEach((child:Transform) => {
-                    child[transformState] = transformState;
+                    child[transformState] = true;
                 });
             }
         }

@@ -101,18 +101,6 @@ beforeEach(function () {
                 }
             };
         },
-//        //jasmine的原生方法toBeFalsy有问题：
-//        //expect(undefined).toBeFalsy();    //通过！
-//        //所以用我的方法覆盖原方法。
-//        toBeFalsy: function () {
-//            return {
-//                compare: function (actual, expected) {
-//                    return {
-//                        pass:  actual === false
-//                    }
-//                }
-//            };
-//        },
         //包含字符串
         toContain: function () {
             return {
@@ -218,7 +206,31 @@ beforeEach(function () {
     });
 
 
-//* sinon matcher
+    /*!
+     modify existed matcher
+     */
+    jasmine.addMatchers({
+        toBeTruthy: function () {
+            return {
+                compare: function (actual) {
+                    return {
+                        pass: actual === true
+                    }
+                }
+            };
+        },
+        toBeFalsy: function () {
+            return {
+                compare: function (actual) {
+                    return {
+                        pass: actual === false
+                    }
+                }
+            };
+        }
+    });
+
+
     (function (jasmine) {
         //* 引入YTool的judge和convert方法
 

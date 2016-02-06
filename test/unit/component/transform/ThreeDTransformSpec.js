@@ -90,6 +90,12 @@ describe("ThreeDTransform", function(){
             expect(getValues(tra3.position)).toEqual([2, 2, 2]);
             expect(getValues(tra3.localPosition)).toEqual([0, 0, 0]);
         });
+        it("test set GameObject->transform->position", function(){
+            var obj = wd.GameObject.create();
+            obj.transform.position = Vector3.create(10, 0, 0);
+
+            expect(getValues(obj.transform.position)).toEqual([10, 0, 0]);
+        });
         it("set local position", function(){
             tra3.localPosition = Vector3.create(1, 1, 1);
             tra2.localPosition = Vector3.create(3, 3, 3);
