@@ -364,12 +364,15 @@ module wd{
             return color;
         }
 
-        @require(function(textureId:string){
-            assert(!!this._json.textures[textureId], Log.info.FUNC_NOT_EXIST(`textureId:${textureId}`));
-        })
         private _getTexture(textureId:string):Texture{
-            var texture = this._json.textures[textureId],
+            var texture = null,
                 asset:TextureAsset = null;
+
+            if(!this._json.textures || !this._json.textures[textureId]) {
+                return null;
+            }
+
+            texture = this._json.textures[textureId];
 
             asset = this._createTextureAsset(texture.target, texture.source);
 
