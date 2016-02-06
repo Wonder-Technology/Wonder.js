@@ -676,7 +676,7 @@ describe("GLTFParser", function () {
                         var image;
 
                         function judgeLightColor(name){
-                            it("if " + name + " type is 35666, parse " + name + " color", function(){
+                            it("if " + name + " is array, parse " + name + " color", function(){
                                 setJson({
                                     "materials": {
                                         "mat1": {
@@ -684,24 +684,19 @@ describe("GLTFParser", function () {
                                             "extensions": {
                                                 "KHR_materials_common": {
                                                     "technique": "PHONG",
-                                                    values:{
-
-                                                    }
+                                                    values:{}
                                                 }
                                             }
                                         }
                                     }
                                 })
 
-                                var colorData = {
-                                    "type": 35666,
-                                    "value": [
+                                var colorData = [
                                         0,
                                         0,
                                         0,
                                         1
-                                    ]
-                                };
+                                    ];
 
                                 json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
 
@@ -713,9 +708,8 @@ describe("GLTFParser", function () {
                                 judgeMaterial(data, judgeData);
                             });
 
-
-                            describe("else if " + name + " type is 35678, parse " + name + " map", function(){
-                                it("", function () {
+                            describe("else", function(){
+                                it("if " + name + " type is 35666, parse " + name + " color", function(){
                                     setJson({
                                         "materials": {
                                             "mat1": {
@@ -724,63 +718,103 @@ describe("GLTFParser", function () {
                                                     "KHR_materials_common": {
                                                         "technique": "PHONG",
                                                         values:{
+
                                                         }
                                                     }
                                                 }
                                             }
-                                        },
-
-                                        "textures": {
-                                            "texture_Image0001": {
-                                                "format": 6408,
-                                                "internalFormat": 6408,
-                                                "sampler": "sampler_0",
-                                                "source": "Image0001",
-                                                "target": 3553,
-                                                "type": 5121
-                                            }
-                                        },
-                                        "images": {
-                                            "Image0001": {
-                                                "name": "Image0001",
-                                                "uri": "Cesium_Logo_Flat.png"
-                                            }
-                                        },
-                                        "samplers": {
-                                            "sampler_0": {
-                                                "magFilter": 9729,
-                                                "minFilter": 9987,
-                                                "wrapS": 10497,
-                                                "wrapT": 10497
-                                            }
                                         }
                                     })
 
-
                                     var colorData = {
-                                        "type": 35678,
-                                        "value": "texture_Image0001"
+                                        "type": 35666,
+                                        "value": [
+                                            0,
+                                            0,
+                                            0,
+                                            1
+                                        ]
                                     };
+
                                     json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
-
-
-
-
 
 
                                     var data = parser.parse(json);
 
-                                    var mat = getMaterial(data);
-                                    var map = mat[name + "Map"];
+                                    var judgeData = {};
+                                    judgeData[name + "Color"] = createColor([0,0,0,1]);
+                                    judgeMaterial(data, judgeData);
+                                });
 
-                                    expect(map).toBeInstanceOf(wd.ImageTexture);
-                                    expect(map.source).toEqual(image);
-                                    expect(map.format).toEqual(wd.TextureFormat.RGBA);
-                                    expect(map.type).toEqual(wd.TextureType.UNSIGNED_BYTE);
-                                    expect(map.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
-                                    expect(map.magFilter).toEqual(wd.TextureFilterMode.LINEAR);
-                                    expect(map.wrapS).toEqual(wd.TextureWrapMode.REPEAT);
-                                    expect(map.wrapT).toEqual(wd.TextureWrapMode.REPEAT);
+
+                                describe("else if " + name + " type is 35678, parse " + name + " map", function(){
+                                    it("", function () {
+                                        setJson({
+                                            "materials": {
+                                                "mat1": {
+                                                    "name": "Red",
+                                                    "extensions": {
+                                                        "KHR_materials_common": {
+                                                            "technique": "PHONG",
+                                                            values:{
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+
+                                            "textures": {
+                                                "texture_Image0001": {
+                                                    "format": 6408,
+                                                    "internalFormat": 6408,
+                                                    "sampler": "sampler_0",
+                                                    "source": "Image0001",
+                                                    "target": 3553,
+                                                    "type": 5121
+                                                }
+                                            },
+                                            "images": {
+                                                "Image0001": {
+                                                    "name": "Image0001",
+                                                    "uri": "Cesium_Logo_Flat.png"
+                                                }
+                                            },
+                                            "samplers": {
+                                                "sampler_0": {
+                                                    "magFilter": 9729,
+                                                    "minFilter": 9987,
+                                                    "wrapS": 10497,
+                                                    "wrapT": 10497
+                                                }
+                                            }
+                                        })
+
+
+                                        var colorData = {
+                                            "type": 35678,
+                                            "value": "texture_Image0001"
+                                        };
+                                        json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
+
+
+
+
+
+
+                                        var data = parser.parse(json);
+
+                                        var mat = getMaterial(data);
+                                        var map = mat[name + "Map"];
+
+                                        expect(map).toBeInstanceOf(wd.ImageTexture);
+                                        expect(map.source).toEqual(image);
+                                        expect(map.format).toEqual(wd.TextureFormat.RGBA);
+                                        expect(map.type).toEqual(wd.TextureType.UNSIGNED_BYTE);
+                                        expect(map.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                                        expect(map.magFilter).toEqual(wd.TextureFilterMode.LINEAR);
+                                        expect(map.wrapS).toEqual(wd.TextureWrapMode.REPEAT);
+                                        expect(map.wrapT).toEqual(wd.TextureWrapMode.REPEAT);
+                                    });
                                 });
                             });
                         };

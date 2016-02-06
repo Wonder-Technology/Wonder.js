@@ -3,9 +3,9 @@ module wd{
 
     export class GLTFParser{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         private _data:IGLTFParseData = <any>{};
@@ -80,7 +80,7 @@ module wd{
                 }
 
                 if(node.camera){
-                        object.components.addChild(self._parseCamera(node.camera));
+                    object.components.addChild(self._parseCamera(node.camera));
                 }
 
                 if(node.matrix){
@@ -159,7 +159,7 @@ module wd{
                 texCoords:Array<number> = null,
                 colors:Array<number> = null,
                 normals:Array<number> = null,
-                //indices:Array<number> = null,
+            //indices:Array<number> = null,
                 faces:Array<Face3> = null;
 
 
@@ -335,8 +335,15 @@ module wd{
             }
         }
 
-        private _addMaterialLightColor(material:IGLTFMaterial, colorName:string, colorData:{type;value}){
-            if(colorData){
+        private _addMaterialLightColor(material:IGLTFMaterial, colorName:string, colorData:{type;value}&Array<number>){
+            if(!colorData){
+                return;
+            }
+
+            if(JudgeUtils.isArray(colorData)){
+                material[`${colorName}Color`] = this._getColor(colorData);
+            }
+            else{
                 if(this._isColor(colorData.type)){
                     material[`${colorName}Color`] = this._getColor(colorData.value);
                 }
@@ -364,6 +371,9 @@ module wd{
             return color;
         }
 
+        //@require(function(textureId:string){
+        //assert(!!this._json.textures[textureId], Log.info.FUNC_NOT_EXIST(`textureId:${textureId}`));
+        //})
         private _getTexture(textureId:string):Texture{
             var texture = null,
                 asset:TextureAsset = null;
@@ -371,6 +381,7 @@ module wd{
             if(!this._json.textures || !this._json.textures[textureId]) {
                 return null;
             }
+
 
             texture = this._json.textures[textureId];
 
@@ -566,7 +577,7 @@ module wd{
                 let aIndex = bufferArr[i],
                     bIndex = bufferArr[i + 1],
                     cIndex = bufferArr[i + 2],
-                    //indexArr = [i, i + 1, i + 2],
+                //indexArr = [i, i + 1, i + 2],
                     verticeIndiceArr = [aIndex, bIndex, cIndex];
 
                 face = Face3.create(aIndex, bIndex, cIndex);
@@ -823,8 +834,8 @@ module wd{
                     this._addData(light, "linearAttenuation", data.linearAttenuation);
                     this._addData(light, "quadraticAttenuation", data.quadraticAttenuation);
                     break;
-                    default:
-                        //todo support spot
+                default:
+                    //todo support spot
                     break;
             }
         }
@@ -913,3 +924,4 @@ module wd{
         }
     }
 }
+
