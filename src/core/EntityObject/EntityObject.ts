@@ -308,14 +308,8 @@ module wd {
         }
 
         public update(elapsedTime:number):void {
-            var camera = this._getCamera(),
-                animation = this._getAnimation(),
+            var animation = this._getAnimation(),
                 collider = this._getCollider();
-
-
-            if(camera){
-                camera.update(elapsedTime);
-            }
 
             if(animation){
                 animation.update(elapsedTime);
@@ -444,13 +438,6 @@ module wd {
         })
         private _getGeometry():Geometry{
             return this.getComponent<Geometry>(Geometry);
-        }
-
-        @require(function(){
-            assert(this.getComponentCount(CameraController) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 camera controller"));
-        })
-        private _getCamera():CameraController{
-            return this.getComponent<CameraController>(CameraController);
         }
 
         @require(function(){

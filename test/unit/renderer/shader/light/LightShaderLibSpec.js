@@ -45,7 +45,7 @@ describe("LightShaderLib", function () {
             scene = wd.Director.getInstance().scene;
 
             camera = wd.GameObject.create();
-            sandbox.stub(scene, "camera", camera);
+            sandbox.stub(scene, "currentCamera", camera);
 
             sandbox.stub(quadCmd, "buffers", {
                 hasChild:sandbox.stub().returns(false),

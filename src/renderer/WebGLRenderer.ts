@@ -88,7 +88,7 @@ module wd{
         }
 
         private _getObjectToCameraZDistance(quad){
-            return Director.getInstance().scene.camera.transform.position.z - quad.z;
+            return Director.getInstance().scene.currentCamera.transform.position.z - quad.z;
         }
 
         private _clearCommand(){

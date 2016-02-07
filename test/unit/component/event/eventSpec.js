@@ -108,7 +108,7 @@ describe("event component", function () {
 
                     director.scene.addChild(testTool.createCamera());
 
-                    director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                    director.scene.currentCamera.position = wd.Vector3.create(0, 0, 20);
                     fakeEvent = {
                         pageX: view.width / 2,
                         pageY: view.height / 2
@@ -266,7 +266,7 @@ describe("event component", function () {
 
                 director.scene.addChild(testTool.createCamera());
 
-                director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                director.scene.currentCamera.position = wd.Vector3.create(0, 0, 20);
                 fakeEvent = {
                     pageX: view.width / 2,
                     pageY: view.height / 2
@@ -623,7 +623,7 @@ describe("event component", function () {
                 gameObject = createGameObject();
                 director.scene.addChild(testTool.createCamera());
 
-                director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                director.scene.currentCamera.position = wd.Vector3.create(0, 0, 20);
             });
 
 

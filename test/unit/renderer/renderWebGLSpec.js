@@ -167,13 +167,7 @@ describe("renderWebGL", function() {
             material3.blend = false;
             material4.blend = false;
 
-            sandbox.stub(wd.Director.getInstance().scene, "camera", {
-                    transform:{
-                        position:{
-                            z: 10
-                        }
-                    }
-            });
+            sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
 
             var depthWriteArr = [];
             testTool.stubGetterSetter(sinon, wd.DeviceManager.prototype, "depthWrite", null, function(val){

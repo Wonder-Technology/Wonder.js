@@ -60,7 +60,7 @@ module wd {
         public hasChild(type:BufferDataType) {
             var data = this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
-            return data && data.length > 0;
+            return !!data && data.length > 0;
         }
 
         public dispose(){

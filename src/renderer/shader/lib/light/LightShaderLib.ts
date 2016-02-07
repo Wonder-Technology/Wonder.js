@@ -10,7 +10,7 @@ module wd{
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
-            this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.camera.transform.position);
+            this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.currentCamera.transform.position);
 
 
             this.sendUniformData(program, "u_shininess", material.shininess);

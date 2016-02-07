@@ -8,7 +8,7 @@ module wd {
 
         public isTrigger(e:MouseEvent):boolean {
             var scene:SceneDispatcher = Director.getInstance().scene,
-                cameraController:CameraController = scene.camera.getComponent<CameraController>(CameraController),
+                cameraController:CameraController = scene.currentCamera.getComponent<CameraController>(CameraController),
                 locationInView = e.locationInView;
 
             return cameraController.isIntersectWithRay(<GameObject>this.entityObject, locationInView.x, locationInView.y);

@@ -27,10 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
-        'test/unit/**/GLTFParserSpec*',
-        'test/unit/**/GLTFAssemblerSpec*',
+
+        //'test/unit/**/GLTFParserSpec*',
+        //'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
@@ -80,9 +81,9 @@
 
         //'test/unit/**/ImageSpec*',
 
-        'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/ThreeDTransformSpec.js',
         //'test/unit/**/RectTransformSpec*',
-        'test/unit/**/TransformSpec*',
+        //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
 
@@ -91,6 +92,7 @@
         //'test/unit/**/LightShaderLibSpec*',
 
         //'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/GameObjectSceneSpec*',
 
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -130,7 +132,7 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
         //'test/unit/asset/obj/OBJParserSpec.js',
-        'test/unit/asset/loaderSpec.js',
+        //'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',

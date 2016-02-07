@@ -1,0 +1,283 @@
+describe("GameObjectScene", function() {
+    var sandbox = null;
+    var scene = null;
+    var GameObjectScene = null;
+    var gameObject1,
+        gameObject2,
+        gameObject3;
+    var script1,
+        script2,
+        script3,
+        script4;
+
+    function buildScript(){
+        return {
+            init: sandbox.stub(),
+            onEnter:sandbox.stub(),
+            onExit: sandbox.stub(),
+            update: sandbox.stub()
+        }
+    }
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        GameObjectScene = wd.GameObjectScene;
+        scene = GameObjectScene.create();
+    });
+    afterEach(function () {
+        testTool.clearInstance();
+        sandbox.restore();
+    });
+
+    describe("currentCamera", function(){
+        var camera1, camera2;
+
+        beforeEach(function(){
+            camera1 = testTool.createCamera();
+            camera2 = testTool.createCamera();
+        });
+
+        describe("getter", function(){
+            it("if already set it, return the setted one", function () {
+                scene.currentCamera = camera1;
+
+                expect(scene.currentCamera).toEqual(camera1);
+            });
+            it("else, defaultly return the first camera of the added cameras", function(){
+                scene.addChild(camera1);
+                scene.addChild(camera2);
+
+                expect(scene.currentCamera).toEqual(camera1);
+            });
+        });
+
+        describe("setter", function(){
+            it("if param is number, set it to be the index of added cameras", function(){
+                scene.addChild(camera1);
+                scene.addChild(camera2);
+
+                scene.currentCamera = 1;
+
+                expect(scene.currentCamera).toEqual(camera2);
+            });
+            it("else if param is GameObject, set it to be that", function () {
+                scene.currentCamera = camera2;
+
+                expect(scene.currentCamera).toEqual(camera2);
+            });
+
+        });
+    });
+
+    describe("test with child", function() {
+        beforeEach(function () {
+            gameObject1 = wd.GameObject.create();
+            gameObject2 = wd.GameObject.create();
+            gameObject3 = wd.GameObject.create();
+
+            gameObject2.addChild(gameObject1);
+
+            scene.addChild(gameObject2);
+            scene.addChild(gameObject3);
+
+            script1 = buildScript();
+            script2 = buildScript();
+            script3 = buildScript();
+            script4 = buildScript();
+
+            scene.scriptList.addChild("customScript1", script1);
+            prepareTool.addScript(scene, script1, "customScript1");
+            prepareTool.addScript(gameObject1, script2, "customScript2");
+            prepareTool.addScript(gameObject2, script3, "customScript3");
+            prepareTool.addScript(gameObject3, script4, "customScript4");
+
+            sandbox.stub(gameObject1, "onStartLoop");
+            sandbox.stub(gameObject2, "onStartLoop");
+            sandbox.stub(gameObject3, "onStartLoop");
+            sandbox.stub(gameObject1, "onEndLoop");
+            sandbox.stub(gameObject2, "onEndLoop");
+            sandbox.stub(gameObject3, "onEndLoop");
+            sandbox.stub(gameObject1, "onExit");
+            sandbox.stub(gameObject2, "onExit");
+            sandbox.stub(gameObject3, "onExit");
+        });
+
+        describe("GameObjectScene->init", function () {
+            beforeEach(function () {
+            });
+
+            it("bind global hook", function () {
+                scene.init();
+
+                wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
+                wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
+
+                expect(gameObject1.onStartLoop).toCalledOnce();
+                expect(gameObject2.onStartLoop).toCalledOnce();
+                expect(gameObject3.onStartLoop).toCalledOnce();
+                expect(gameObject1.onEndLoop).toCalledOnce();
+                expect(gameObject2.onEndLoop).toCalledOnce();
+                expect(gameObject3.onEndLoop).toCalledOnce();
+            });
+            it("invoke components' init", function () {
+                var geometry = new wd.BoxGeometry();
+                var material = new wd.BasicMaterial();
+                geometry.material = material;
+
+                sandbox.spy(geometry, "init");
+                sandbox.spy(material, "init");
+                sandbox.spy(material.mapManager, "init");
+                sandbox.stub(material.shader, "init");
+                scene.addComponent(geometry);
+
+                scene.init();
+
+                expect(geometry.init).toCalledOnce();
+                expect(material.init).toCalledOnce();
+                expect(material.mapManager.init).toCalledOnce();
+                expect(material.shader.init).toCalledOnce();
+            });
+        });
+
+        describe("GameObjectScene->update", function(){
+            var elapsedTime;
+            var action1,
+                action2,
+                action3,
+                action4,
+                action5;
+
+            function buildAction(){
+                var action = new wd.Repeat(new wd.CallFunc(), 10);
+
+                sandbox.stub(action, "update");
+
+                return action;
+            }
+
+            beforeEach(function(){
+                elapsedTime = 100;
+                action1 = buildAction();
+                action2 = buildAction();
+                action3 = buildAction();
+                action4 = buildAction();
+                action5 = buildAction();
+
+                //sandbox.stub(scene.actionManager, "update");
+            });
+
+            it("if enable physics, update phsics engine adapter", function () {
+                scene.physics.enable = true;
+                scene.init();
+                sandbox.stub(scene.physicsEngineAdapter, "update");
+
+                scene.update(elapsedTime);
+
+                expect(scene.physicsEngineAdapter.update).toCalledWith(elapsedTime);
+            });
+            it("if currentCamera component exist, update it", function () {
+                var camera1 = testTool.createCamera(),
+                    camera2 = testTool.createCamera();
+                sandbox.stub(camera1.getComponent(wd.CameraController), "update");
+                sandbox.stub(camera2.getComponent(wd.CameraController), "update");
+                scene.addChildren([camera1, camera2]);
+                scene.currentCamera = camera2;
+
+                scene.update(elapsedTime);
+
+                expect(camera1.getComponent(wd.CameraController).update).not.toCalled();
+                expect(camera2.getComponent(wd.CameraController).update).toCalledOnce();
+            });
+            it("invoke scene's and it's children's all action->update", function(){
+                scene.addComponent(action1);
+                gameObject1.addComponent(action2);
+                gameObject2.addComponent(action3);
+                gameObject3.addComponent(action4);
+                gameObject3.addComponent(action5);
+                scene.init();
+
+                scene.update(elapsedTime);
+
+                expect(action1.update).toCalledWith(elapsedTime);
+                expect(action1.update).toCalledOnce();
+                //expect(action1.update).toCalledBefore(scene.actionManager.update);
+                expect(action1.update).toCalledBefore(action3.update);
+                expect(action3.update).toCalledWith(elapsedTime);
+                expect(action3.update).toCalledOnce();
+                expect(action3.update).toCalledBefore(action2.update);
+                expect(action2.update).toCalledWith(elapsedTime);
+                expect(action2.update).toCalledOnce();
+                expect(action2.update).toCalledBefore(action4.update);
+                expect(action4.update).toCalledWith(elapsedTime);
+                expect(action4.update).toCalledOnce();
+                expect(action4.update).toCalledBefore(action5.update);
+                expect(action5.update).toCalledWith(elapsedTime);
+                expect(action5.update).toCalledOnce();
+            });
+            it("invoke scene and it's children's script->update", function(){
+                scene.update(elapsedTime);
+
+                expect(script1.update).toCalledOnce();
+                expect(script1.update).toCalledWith(elapsedTime);
+                expect(script2.update).toCalledOnce();
+                expect(script3.update).toCalledOnce();
+                expect(script4.update).toCalledOnce();
+
+                expect(script1.update).toCalledBefore(script3.update);
+                expect(script3.update).toCalledBefore(script2.update);
+                expect(script2.update).toCalledBefore(script4.update);
+            });
+        });
+    });
+
+    describe("GameObjectScene->render", function(){
+        var renderer,camera;
+
+        beforeEach(function(){
+
+            renderer = {};
+            camera = wd.GameObject.create();
+            scene.currentCamera = camera;
+        });
+
+        it("render renderTargetRenderers", function(){
+            var renderTargetRenderer = {
+                init: sandbox.stub(),
+                render: sandbox.stub()
+            };
+            scene.addRenderTargetRenderer(renderTargetRenderer);
+
+            scene.render(renderer);
+
+            expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
+        });
+        it("render rendererComponent", function(){
+            var rendererComponent = new wd.RendererComponent();
+            geometry = new wd.Geometry();
+            rendererComponent.render = sandbox.stub();
+            scene.addComponent(geometry);
+            scene.addComponent(rendererComponent);
+
+            scene.render(renderer);
+
+            expect(rendererComponent.render).toCalledWith(renderer, geometry, camera);
+        });
+        it("render children", function(){
+            var renderTargetRenderer = {
+                init: sandbox.stub(),
+                render: sandbox.stub()
+            };
+            scene.addRenderTargetRenderer(renderTargetRenderer);
+
+            var gameObject1 = wd.GameObject.create();
+            sandbox.stub(gameObject1, "render");
+            scene.addChild(gameObject1);
+
+
+            scene.render(renderer);
+
+            expect(gameObject1.render).toCalledWith(renderer, camera);
+            expect(gameObject1.render).toCalledAfter(renderTargetRenderer.render);
+        });
+    });
+});

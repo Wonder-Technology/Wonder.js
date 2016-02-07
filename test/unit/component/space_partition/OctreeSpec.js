@@ -480,7 +480,7 @@ describe("Octree", function () {
                     director.scene.addChild(testTool.createCamera());
                     director.scene.addChild(octreeObject);
 
-                    director.scene.camera.position = wd.Vector3.create(0, 0, 20);
+                    director.scene.currentCamera.position = wd.Vector3.create(0, 0, 20);
 
 
 

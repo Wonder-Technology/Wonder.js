@@ -55,11 +55,11 @@ module wd {
             this.gameObjectScene.shader = shader;
         }
 
-        get camera(){
-            return this.gameObjectScene.camera;
+        get currentCamera():GameObject{
+            return this.gameObjectScene.currentCamera;
         }
-        set camera(camera:GameObject){
-            this.gameObjectScene.camera = camera;
+        set currentCamera(arg:GameObject){
+            this.gameObjectScene.currentCamera = arg;
         }
 
         get isUseProgram(){

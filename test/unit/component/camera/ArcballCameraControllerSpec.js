@@ -56,9 +56,12 @@ describe("ArcballCameraController", function () {
     });
 
     it("control Camera", function () {
+        var director = wd.Director.getInstance();
         prepare(sandbox);
+        director.scene.addChild(camera);
 
-        camera.init();
+        //camera.init();
+        director._init();
 
         expect(component).toEqual(cameraComponent);
         expect(component.entityObject).toEqual(camera);
@@ -70,7 +73,7 @@ describe("ArcballCameraController", function () {
 
         sandbox.spy(component.entityObject.transform, "lookAt");
 
-        camera.update(1);
+        director._loopBody(1);
 
 
         expect(testTool.getValues(component.entityObject.transform.position)).toEqual([0, 0, 10]);

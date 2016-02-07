@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>load basic gltf file with cameras</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            //open contract check
+            isTest: true,
+            screenSize: wd.ScreenSize.FULL
+        }).init();
+
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/model/gltf/duck/glTF-MaterialsCommon/duck.gltf", id: "model"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            director.scene.addChild(createDefaultCamera());
+            director.scene.addChildren(setModelAndReture());
+
+
+            /*!
+            can switch camera:
+            0: default camera
+            1: gltf camera
+             */
+            director.scene.currentCamera = 1;
+
+            director.start();
+        }
+
+        function setModelAndReture() {
+            var models = wd.LoaderManager.getInstance().get("model").getChild("models");
+
+            var model = models.getChild(0);
+
+            model.transform.scale = wd.Vector3.create(0.015,0.015,0.015);
+
+            return models;
+        }
+
+        function createDefaultCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.01;
+            cameraComponent.far = 1000;
+
+            var controller = wd.BasicCameraController.create(cameraComponent);
+
+            camera.addComponent(controller);
+
+            camera.transform.translate(0, 0.03, -0.05);
+            camera.transform.lookAt(0, 0, 0);
+
+            return camera;
+        }
+    }
+</script>
+</body>
+</html>

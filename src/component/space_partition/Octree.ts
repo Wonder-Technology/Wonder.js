@@ -57,21 +57,21 @@ module wd {
         }
 
         @require(function(){
-            assert(!!Director.getInstance().scene.camera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
+            assert(!!Director.getInstance().scene.currentCamera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
         })
         public getRenderListByFrustumCull(){
-            var frustumPlanes = Director.getInstance().scene.camera.getComponent(CameraController).getPlanes();
+            var frustumPlanes = Director.getInstance().scene.currentCamera.getComponent(CameraController).getPlanes();
 
             return this._visitRoot("findAndAddToRenderList", [frustumPlanes, this._selectionList]);
         }
 
         @require(function(){
-            assert(!!Director.getInstance().scene.camera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
+            assert(!!Director.getInstance().scene.currentCamera.getComponent(CameraController), Log.info.FUNC_SHOULD("contain CameraController component"));
         })
         public getIntersectListWithRay(e:MouseEvent){
             var locationInView = e.locationInView;
 
-            return this._visitRoot("findAndAddToIntersectList", [Director.getInstance().scene.camera.getComponent(CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);
+            return this._visitRoot("findAndAddToIntersectList", [Director.getInstance().scene.currentCamera.getComponent(CameraController).createRay(locationInView.x, locationInView.y), this._selectionList]);
         }
 
         public getCollideObjects(shape:Shape){

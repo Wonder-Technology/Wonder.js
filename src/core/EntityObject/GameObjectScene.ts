@@ -20,13 +20,36 @@ module wd {
             return this._lightManager.pointLights;
         }
 
+        private _currentCamera:GameObject = null;
+        get currentCamera():any{
+            return this._currentCamera || this._cameraList.getChild(0);
+        }
+        @requireSetter(function(arg:any){
+            if(JudgeUtils.isNumber(arg)){
+                let index:number = arg;
+
+                assert(!!this._cameraList.getChild(index), Log.info.FUNC_NOT_EXIST("current camera in cameraList"));
+            }
+        })
+        set currentCamera(arg:any){
+            if(JudgeUtils.isNumber(arg)){
+                let index:number = arg;
+
+                this._currentCamera = this._cameraList.getChild(index);
+            }
+            else if(arg instanceof GameObject){
+                let currentCamera:GameObject = arg;
+
+                this._currentCamera = currentCamera;
+            }
+        }
+
         public side:Side = null;
         public shadowMap = {
             enable: true,
             softType: ShadowMapSoftType.NONE
         };
         public shader:Shader = null;
-        public camera:GameObject = null;
         public isUseProgram:boolean = false;
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
@@ -34,6 +57,7 @@ module wd {
         private _lightManager:LightManager = LightManager.create();
         private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
+        private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
         public init(){
             if(this.physics.enable){
@@ -48,6 +72,13 @@ module wd {
             return this;
         }
 
+        public getCurrentCamera(){
+        }
+
+        public setCurrentCamera(){
+
+        }
+
         public useProgram(shader:Shader){
             this.isUseProgram = true;
 
@@ -60,7 +91,7 @@ module wd {
 
         public addChild(child:GameObject):GameObject{
             if(this._isCamera(child)){
-                this.camera = child;
+                this._cameraList.addChild(child);
             }
             else if(this._isLight(child)){
                 this._lightManager.addChild(child);
@@ -78,8 +109,14 @@ module wd {
         }
 
         public update(elapsedTime:number){
+            var currentCameraComponent = this._getCurrentCameraComponent();
+
             if(this.physics.enable){
                 this.physicsEngineAdapter.update(elapsedTime);
+            }
+
+            if(currentCameraComponent){
+                currentCameraComponent.update(elapsedTime);
             }
 
             super.update(elapsedTime);
@@ -91,10 +128,10 @@ module wd {
             var self = this;
 
             this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
-                target.render(renderer, self.camera);
+                target.render(renderer, self.currentCamera);
             });
 
-            super.render(renderer, this.camera);
+            super.render(renderer, this.currentCamera);
         }
 
         protected createTransform(){
@@ -107,6 +144,14 @@ module wd {
 
         private _isLight(child:GameObject){
             return child.hasComponent(Light);
+        }
+
+        private _getCurrentCameraComponent():CameraController{
+            if(!this.currentCamera){
+                return null;
+            }
+
+            return this.currentCamera.getComponent(CameraController);
         }
     }
 

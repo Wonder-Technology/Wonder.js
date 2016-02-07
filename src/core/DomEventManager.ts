@@ -213,7 +213,7 @@ module wd{
         }
 
         private _getDistanceToCamera(obj:GameObject){
-            return obj.transform.position.copy().sub(Director.getInstance().scene.camera.transform.position).length();
+            return obj.transform.position.copy().sub(Director.getInstance().scene.currentCamera.transform.position).length();
         }
 
         private _findTopUIObject(e:MouseEvent, uiObjectScene:UIObjectScene){
