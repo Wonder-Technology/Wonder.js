@@ -43,7 +43,7 @@
 
         function createSphere() {
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
             material.diffuseMap = wd.TextureLoader.getInstance().get("texture").toTexture();
             material.shading = wd.Shading.SMOOTH;
@@ -68,7 +68,7 @@
 
         function createBox(){
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.color = wd.Color.create("#666666");
             material.shininess = 16;
 
@@ -106,7 +106,7 @@
 
 
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 32;
             material.diffuseMap = map;
 

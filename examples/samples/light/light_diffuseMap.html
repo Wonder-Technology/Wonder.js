@@ -37,7 +37,7 @@
 
         function createSphere() {
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("rgb(0, 255, 0)");
+            material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
             material.diffuseMap = wd.LoaderManager.getInstance().get("diffuseMap").toTexture();
             material.shading = wd.Shading.SMOOTH;

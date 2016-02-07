@@ -119,7 +119,7 @@ module wd {
                 material.color = materialData.diffuseColor;
             }
             if (materialData.specularColor) {
-                material.specular = materialData.specularColor;
+                material.specularColor = materialData.specularColor;
             }
 
             if (materialData.diffuseMap) {

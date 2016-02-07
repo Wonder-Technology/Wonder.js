@@ -200,7 +200,7 @@ describe("loader", function () {
             var materialData = json.materials.aa;
             var mat = geo.material;
             assertColor(mat.color, materialData.diffuseColor);
-            assertColor(mat.specular, materialData.specularColor);
+            assertColor(mat.specularColor, materialData.specularColor);
             expect(mat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
             expect(mat.specularMap).toBeInstanceOf(wd.ImageTexture);
             expect(mat.normalMap).toBeInstanceOf(wd.ImageTexture);

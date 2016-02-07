@@ -218,8 +218,8 @@ module wd{
             }
 
             GLTFUtils.addData(material, "color", materialData.diffuseColor);
-            GLTFUtils.addData(material, "specular", materialData.specularColor);
-            GLTFUtils.addData(material, "emission", materialData.emissionColor);
+            GLTFUtils.addData(material, "specularColor", materialData.specularColor);
+            GLTFUtils.addData(material, "emissionColor", materialData.emissionColor);
 
             GLTFUtils.addData(material, "diffuseMap", materialData.diffuseMap);
             GLTFUtils.addData(material, "specularMap", materialData.specularMap);

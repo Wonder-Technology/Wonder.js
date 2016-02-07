@@ -76,8 +76,7 @@ module wd{
         }
 
         private _createLoadAssetStream(filePath:string, json:IGLTFJsonData, datas:any, dataMap:wdCb.Hash<any>, loadStreamFunc:(id:string, url:string) => wdFrp.Stream):wdFrp.Stream{
-            var streamArr = [],
-                self = this;
+            var streamArr = [];
 
             if(datas){
                 let id:string = null;

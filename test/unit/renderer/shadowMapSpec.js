@@ -18,7 +18,7 @@ describe("shadow map", function() {
 
         function createSphere() {
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
             material.diffuseMap = wd.ImageTexture.create(wd.TextureLoader.getInstance().get("texture"));
             material.shading = wd.Shading.SMOOTH;
@@ -228,7 +228,7 @@ describe("shadow map", function() {
 
         function createBox(position) {
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.color = wd.Color.create("#666666");
             material.shininess = 16;
 
@@ -275,7 +275,7 @@ describe("shadow map", function() {
 
 
             var material = wd.LightMaterial.create();
-            material.specular = wd.Color.create("#ffdd99");
+            material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 32;
             material.side = wd.Side.BOTH;
             material.diffuseMap = map;

@@ -457,7 +457,7 @@ describe("GLTFAssembler", function () {
                                 expect(material).toBeInstanceOf(wd.LightMaterial);
                                 expect(material.side).toEqual(wd.Side.BOTH);
                                 judgeColorEqual(material.color, materialData.diffuseColor);
-                                judgeColorEqual(material.specular, materialData.specularColor);
+                                judgeColorEqual(material.specularColor, materialData.specularColor);
 
                                 expect(material.diffuseMap).toEqual(materialData.diffuseMap);
                                 expect(material.specularMap).toEqual(materialData.specularMap);

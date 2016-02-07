@@ -84,8 +84,8 @@ module wd{
         public buildCubemapShadowMapData:BuildCubemapShadowMapData = null;
 
 
-        public specular:Color = Color.create("0x111111");
-        public emission:Color = Color.create("0x111111");
+        public specularColor:Color = Color.create("0x111111");
+        public emissionColor:Color = Color.create("0x111111");
 
         private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;

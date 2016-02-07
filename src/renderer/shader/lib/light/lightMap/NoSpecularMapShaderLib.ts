@@ -9,7 +9,7 @@ module wd{
         public type:string = "noSpecularMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            this.sendUniformData(program, "u_specular", material.specular.toVector3());
+            this.sendUniformData(program, "u_specular", material.specularColor.toVector3());
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
