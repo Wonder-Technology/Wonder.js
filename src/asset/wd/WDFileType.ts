@@ -63,6 +63,11 @@ module wd {
         diffuseMapUrl?: string,
         specularMapUrl?: string,
         normalMapUrl?: string,
+
+        diffuseMap?:Texture,
+        specularMap?:Texture,
+        normalMap?:Texture,
+
         shininess?: number,
         opacity?: number
     }
