@@ -409,6 +409,21 @@ describe("loader", function () {
             expect(data.getChild("metadata").getChildren()).toEqual(json.metadata);
         }
 
+        function assertObj(data){
+            var result = data;
+
+
+            var boxGeo = result.getChild("models").getChild(0).getChild(0).getComponent(wd.Geometry);
+
+            expect(boxGeo.vertices.length).toEqual(72);
+
+
+            var boxMat = boxGeo.material;
+
+            expect(boxMat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
+            expect(boxMat.specularColor.r).toEqual(0.2)
+        }
+
         beforeEach(function(){
             json =
             {
@@ -426,7 +441,7 @@ describe("loader", function () {
             sandbox.stub(wd.Log, "error");
         });
 
-        it("load static gltf file with texture", function (done) {
+        it("test load metadata and buffer/image assets", function (done) {
             wd.LoaderManager.getInstance().load([
                 {url: testTool.resPath + "test/res/gltf/boxTextured/glTF-MaterialsCommon/CesiumTexturedBoxTest.gltf", id: "sceneModel"}
             ]).subscribe(function (data) {
@@ -437,6 +452,8 @@ describe("loader", function () {
                 var sceneModel = wd.LoaderManager.getInstance().get("sceneModel");
 
                 assertMetadata(sceneModel);
+
+                assertObj(sceneModel);
 
                 done();
             });
