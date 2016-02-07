@@ -405,54 +405,8 @@ describe("loader", function () {
     describe("load gltf file", function(){
         var json;
 
-        function assertColor(color, colorArr){
-            expect(color.toVector3()).toEqual(
-                wd.Vector3.create(colorArr[0], colorArr[1], colorArr[2])
-            );
-        }
-
         function assertMetadata(data){
             expect(data.getChild("metadata").getChildren()).toEqual(json.metadata);
-        }
-
-
-        function assertObj(data){
-            var result = data;
-
-
-            var geo = result.getChild("models").getChild(0).getComponent(wd.Geometry);
-            var model1 = json.objects[0];
-            expect(geo.vertices).toEqual(
-                model1.vertices
-            );
-            expect(geo.faces[0].vertexNormals.getCount()).toEqual(0);
-            expect(testTool.getValues(geo.texCoords)).toEqual(
-                testTool.getValues(model1.uvs)
-            );
-            expect(testTool.getValues(geo.colors)).toEqual(
-                testTool.getValues(model1.colors)
-            );
-            geometryTool.judgeFaceIndices(geo.faces, model1.indices);
-
-            geo.init();
-
-            var geometryData = geo.buffers.geometryData;
-            expect(geometryData.indices).toEqual(model1.indices);
-            //test computed normals
-            expect(geometryData.normals).toEqual(model1.normals);
-
-
-
-
-            var materialData = json.materials.aa;
-            var mat = geo.material;
-            assertColor(mat.color, materialData.diffuseColor);
-            assertColor(mat.specular, materialData.specularColor);
-            expect(mat.diffuseMap).toBeInstanceOf(wd.ImageTexture);
-            expect(mat.specularMap).toBeInstanceOf(wd.ImageTexture);
-            expect(mat.normalMap).toBeInstanceOf(wd.ImageTexture);
-            expect(mat.shininess).toEqual(materialData.shininess);
-            expect(mat.opacity).toEqual(materialData.opacity);
         }
 
         beforeEach(function(){
@@ -484,38 +438,9 @@ describe("loader", function () {
 
                 assertMetadata(sceneModel);
 
-                //todo finish test
-                //assertObj(sceneModel);
-
                 done();
             });
         });
-        //it("when load multi wd files, each one should be independent", function (done) {
-        //    wd.LoaderManager.getInstance().load([
-        //        {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel1"},
-        //        {url: testTool.resPath + "test/res/wd/test.wd", id: "sceneModel2"}
-        //    ]).subscribe(function (data) {
-        //    }, function (err) {
-        //        expect().toFail(err.message);
-        //        done();
-        //    }, function () {
-        //        var sceneModel1 = wd.LoaderManager.getInstance().get("sceneModel1");
-        //
-        //        assertMetadata(sceneModel1);
-        //        assertScene(sceneModel1);
-        //        assert1Obj(sceneModel1);
-        //        assert2Obj(sceneModel1);
-        //
-        //        var sceneModel2 = wd.LoaderManager.getInstance().get("sceneModel2");
-        //
-        //        assertMetadata(sceneModel2);
-        //        assertScene(sceneModel2);
-        //        assert1Obj(sceneModel2);
-        //        assert2Obj(sceneModel2);
-        //
-        //        done();
-        //    });
-        //});
     });
 
     describe("load font asset", function(){

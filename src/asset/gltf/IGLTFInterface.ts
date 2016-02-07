@@ -256,9 +256,6 @@ module wd {
         transparent?:boolean;
         opacity?: number
 
-        //blend functions
-        functions?: Object;
-
         lightModel:LightModel;
 
 
