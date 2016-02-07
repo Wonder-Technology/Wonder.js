@@ -2,6 +2,9 @@ describe("GLTFParser", function () {
     var sandbox = null;
     var parser = null;
     var json = null;
+    var Utils = wd.GLTFUtils;
+    var arrayBufferMap;
+    var imageMap;
 
     function setJson(data) {
         testTool.extend(json, data);
@@ -20,20 +23,19 @@ describe("GLTFParser", function () {
 
         return color;
     }
-    //
-    //function setObject(data) {
-    //    json.objects.push(data);
-    //}
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         parser = new wd.GLTFParser();
 
+
+
+        arrayBufferMap = wdCb.Hash.create();
+        imageMap = wdCb.Hash.create();
+
         json = {
             scenes: {
             }
-            //materials: {},
-            //objects: []
         }
 
         testTool.openContractCheck(sandbox);
@@ -48,7 +50,7 @@ describe("GLTFParser", function () {
         });
         
         it("if json.asset not exist, not parse", function(){
-            var data = parser.parse(json);
+            var data = parser.parse(json, arrayBufferMap, imageMap);
 
             expect(data.metadata).toBeUndefined();
         });
@@ -67,7 +69,7 @@ describe("GLTFParser", function () {
                     }
                 })
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
                 expect(data.metadata).toEqual(json.asset);
             });
@@ -189,7 +191,7 @@ describe("GLTFParser", function () {
                 }
             })
 
-            sandbox.stub(parser._arrayBufferMap, "getChild").returns(parser._decodeArrayBuffer(json.buffers.box.uri));
+            sandbox.stub(arrayBufferMap, "getChild").returns(Utils.decodeArrayBuffer(json.buffers.box.uri));
 
             vertices =[ -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5 ];
 
@@ -227,7 +229,7 @@ describe("GLTFParser", function () {
                 }
             })
 
-            var data = parser.parse(json);
+            var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
             expect(data.objects.getCount()).toEqual(2);
             var object1 = data.objects.getChild(0);
@@ -291,7 +293,7 @@ describe("GLTFParser", function () {
 
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
 
 
@@ -345,7 +347,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
 
 
@@ -393,7 +395,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
 
 
@@ -449,7 +451,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
 
 
 
@@ -531,7 +533,7 @@ describe("GLTFParser", function () {
                     })
 
 
-                    var data = parser.parse(json);
+                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
                     expect(wd.Log.log).toCalledOnce();
                     judgeMaterial(data, {
@@ -566,7 +568,7 @@ describe("GLTFParser", function () {
                             })
 
 
-                            judgeMaterial(parser.parse(json), dataFunc("PHONG"));
+                            judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("PHONG"));
 
 
 
@@ -585,7 +587,7 @@ describe("GLTFParser", function () {
                             })
 
 
-                            judgeMaterial(parser.parse(json), dataFunc("BLINN"));
+                            judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("BLINN"));
 
 
 
@@ -604,7 +606,7 @@ describe("GLTFParser", function () {
                             })
 
 
-                            judgeMaterial(parser.parse(json), dataFunc("LAMBERT"));
+                            judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("LAMBERT"));
 
 
 
@@ -623,7 +625,7 @@ describe("GLTFParser", function () {
                             })
 
 
-                            judgeMaterial(parser.parse(json), dataFunc("CONSTANT"));
+                            judgeMaterial(parser.parse(json, arrayBufferMap, imageMap), dataFunc("CONSTANT"));
                         }
 
                         beforeEach(function(){
@@ -663,7 +665,7 @@ describe("GLTFParser", function () {
                         })
 
 
-                        var data = parser.parse(json);
+                        var data = parser.parse(json, arrayBufferMap, imageMap);
 
                         judgeMaterial(data, {
                             doubleSided:false,
@@ -701,7 +703,7 @@ describe("GLTFParser", function () {
                                 json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
 
 
-                                var data = parser.parse(json);
+                                var data = parser.parse(json, arrayBufferMap, imageMap);
 
                                 var judgeData = {};
                                 judgeData[name + "Color"] = createColor([0,0,0,1]);
@@ -739,7 +741,7 @@ describe("GLTFParser", function () {
                                     json.materials.mat1.extensions.KHR_materials_common.values[name] = colorData;
 
 
-                                    var data = parser.parse(json);
+                                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
                                     var judgeData = {};
                                     judgeData[name + "Color"] = createColor([0,0,0,1]);
@@ -801,7 +803,7 @@ describe("GLTFParser", function () {
 
 
 
-                                        var data = parser.parse(json);
+                                        var data = parser.parse(json, arrayBufferMap, imageMap);
 
                                         var mat = getMaterial(data);
                                         var map = mat[name + "Map"];
@@ -821,7 +823,7 @@ describe("GLTFParser", function () {
 
                         beforeEach(function(){
                             image = {};
-                            sandbox.stub(parser._imageMap, "getChild").returns(image);
+                            sandbox.stub(imageMap, "getChild").returns(image);
                             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
                         });
 
@@ -859,7 +861,7 @@ describe("GLTFParser", function () {
 
 
 
-                            var data = parser.parse(json);
+                            var data = parser.parse(json, arrayBufferMap, imageMap);
 
                             judgeMaterial(data, {
                                 shininess: 256
@@ -931,7 +933,7 @@ describe("GLTFParser", function () {
 
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                 judgeLight(data, {
@@ -981,7 +983,7 @@ describe("GLTFParser", function () {
 
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                 judgeLight(data, {
@@ -1032,7 +1034,7 @@ describe("GLTFParser", function () {
 
 
 
-                    var data = parser.parse(json);
+                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                     judgeLight(data, {
@@ -1086,7 +1088,7 @@ describe("GLTFParser", function () {
 
 
 
-                    var data = parser.parse(json);
+                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                     judgeLight(data, {
@@ -1135,7 +1137,7 @@ describe("GLTFParser", function () {
                     })
 
 
-                    var data = parser.parse(json);
+                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                     var camera = getCamera(data).camera;
@@ -1171,7 +1173,7 @@ describe("GLTFParser", function () {
                     })
 
 
-                    var data = parser.parse(json);
+                    var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                     var camera = getCamera(data).camera;
@@ -1203,7 +1205,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                 var camera = getCamera(data).camera;
@@ -1255,7 +1257,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
                 expect(testTool.getValues(
                     getTransform(data).matrix.values
@@ -1292,7 +1294,7 @@ describe("GLTFParser", function () {
                 })
 
 
-                var data = parser.parse(json);
+                var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
                 var tran = getTransform(data);
@@ -1373,7 +1375,7 @@ describe("GLTFParser", function () {
             })
 
 
-            var data = parser.parse(json);
+            var data = parser.parse(json, arrayBufferMap, imageMap);
 
 
 

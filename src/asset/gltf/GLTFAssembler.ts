@@ -144,10 +144,10 @@ module wd{
 
                     light.color = component.lightColor;
 
-                    this._addData(light, "range", component.distance);
-                    this._addData(light, "constant", component.constantAttenuation);
-                    this._addData(light, "linear", component.linearAttenuation);
-                    this._addData(light, "quadratic", component.quadraticAttenuation);
+                    GLTFUtils.addData(light, "range", component.distance);
+                    GLTFUtils.addData(light, "constant", component.constantAttenuation);
+                    GLTFUtils.addData(light, "linear", component.linearAttenuation);
+                    GLTFUtils.addData(light, "quadratic", component.quadraticAttenuation);
                     break;
                 default:
                     //todo support spot
@@ -162,8 +162,8 @@ module wd{
 
             geometry.vertices = component.vertices;
             geometry.faces = component.faces;
-            this._addData(geometry, "colors", component.colors);
-            this._addData(geometry, "texCoords", component.texCoords);
+            GLTFUtils.addData(geometry, "colors", component.colors);
+            GLTFUtils.addData(geometry, "texCoords", component.texCoords);
 
             geometry.drawMode = component.drawMode;
 
@@ -217,15 +217,15 @@ module wd{
                 material.lightModel = materialData.lightModel;
             }
 
-            this._addData(material, "color", materialData.diffuseColor);
-            this._addData(material, "specular", materialData.specularColor);
-            this._addData(material, "emission", materialData.emissionColor);
+            GLTFUtils.addData(material, "color", materialData.diffuseColor);
+            GLTFUtils.addData(material, "specular", materialData.specularColor);
+            GLTFUtils.addData(material, "emission", materialData.emissionColor);
 
-            this._addData(material, "diffuseMap", materialData.diffuseMap);
-            this._addData(material, "specularMap", materialData.specularMap);
-            this._addData(material, "emissionMap", materialData.emissionMap);
+            GLTFUtils.addData(material, "diffuseMap", materialData.diffuseMap);
+            GLTFUtils.addData(material, "specularMap", materialData.specularMap);
+            GLTFUtils.addData(material, "emissionMap", materialData.emissionMap);
 
-            this._addData(material, "shininess", materialData.shininess);
+            GLTFUtils.addData(material, "shininess", materialData.shininess);
 
             return material;
         }
@@ -236,13 +236,6 @@ module wd{
             }
             else{
                 material.side = Side.FRONT;
-            }
-        }
-
-        //todo move to utils
-        private _addData(target:Object, sourceName:string, sourceData:any){
-            if(sourceData !== undefined && sourceData !== null){
-                target[sourceName] = sourceData;
             }
         }
     }
