@@ -12,7 +12,7 @@ module wd{
             return uri.length < 5 ? false : uri.substr(0, 5) === "data:";
         }
 
-        public static decodeArrayBuffer(base64Str: string){
+        public static decodeArrayBuffer(base64Str: string):any{
             var base64 = base64Str.split(',')[1],
                 decodedString = atob(base64),
                 bufferLength = decodedString.length,

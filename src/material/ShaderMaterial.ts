@@ -1,5 +1,5 @@
 module wd{
-    export class CustomMaterial extends Material{
+    export class ShaderMaterial extends Material{
         public static create() {
             var obj = new this();
 

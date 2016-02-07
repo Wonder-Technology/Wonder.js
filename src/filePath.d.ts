@@ -373,7 +373,7 @@
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
-/// <reference path="material/CustomMaterial"/>
+/// <reference path="material/ShaderMaterial"/>
 /// <reference path="material/Shading"/>
 /// <reference path="material/MapManager"/>
 

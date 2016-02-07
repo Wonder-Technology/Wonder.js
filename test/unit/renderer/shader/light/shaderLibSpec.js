@@ -78,8 +78,8 @@ describe("shaderLibSpec", function () {
     });
 
     it("materials' shader lib are independent", function(){
-        var material1 = wd.CustomMaterial.create();
-        var material2 = wd.CustomMaterial.create();
+        var material1 = wd.ShaderMaterial.create();
+        var material2 = wd.ShaderMaterial.create();
 
         var shaderDefinitionData = {
             attributes: {
