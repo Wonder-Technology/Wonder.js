@@ -72,13 +72,6 @@ module wd {
             return this;
         }
 
-        public getCurrentCamera(){
-        }
-
-        public setCurrentCamera(){
-
-        }
-
         public useProgram(shader:Shader){
             this.isUseProgram = true;
 
@@ -98,6 +91,13 @@ module wd {
             }
 
             return <GameObject>super.addChild(child);
+        }
+
+        @require(function(cameraObject:GameObject){
+            assert(cameraObject.hasComponent(CameraController), Log.info.FUNC_SHOULD("only add camera object"));
+        })
+        public addToCameraList(cameraObject:GameObject){
+            this._cameraList.addChild(cameraObject);
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){

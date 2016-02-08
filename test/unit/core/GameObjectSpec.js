@@ -7,11 +7,27 @@ describe("GameObject", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         GameObject = wd.GameObject;
-        gameObject = new GameObject();
+        gameObject = GameObject.create();
         Vector3 = wd.Vector3;
     });
     afterEach(function () {
         sandbox.restore();
+    });
+
+    describe("addChild", function(){
+        beforeEach(function(){
+
+        });
+
+        it("add camera object to GameObjectScene->cameraList", function(){
+            var cameraObject = testTool.createCamera();
+
+            gameObject.addChild(cameraObject);
+            var director = wd.Director.getInstance();
+            director.scene.addChild(gameObject);
+
+            expect(director.scene.currentCamera).toEqual(cameraObject);
+        });
     });
 
     describe("findChildByUid", function(){
