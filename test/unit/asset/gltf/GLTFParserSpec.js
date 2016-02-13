@@ -235,7 +235,9 @@ describe("GLTFParser", function () {
             var object1 = data.objects.getChild(0);
             var object2 = data.objects.getChild(1);
             expect(object1.name).toEqual("2");
+            expect(object1.id).toEqual("node_2");
             expect(object2.name).toEqual("3");
+            expect(object2.id).toEqual("node_3");
         });
 
         describe("parse Geometry", function(){

@@ -13,6 +13,7 @@ module wd{
         private _imageMap:wdCb.Hash<HTMLImageElement> = null;
         private _json:IGLTFJsonData = null;
         private _geometryParser = GLTFGeometryParser.create();
+        private _articulatedAnimationParser = GLTFArticulatedAnimationParser.create();
 
         public parse(json:IGLTFJsonData, arrayBufferMap:wdCb.Hash<any>, imageMap:wdCb.Hash<HTMLImageElement>):IGLTFParseData{
             this._json = json;
@@ -25,6 +26,10 @@ module wd{
             }
 
             this._parseObjects();
+
+            if(json.animations){
+                this._articulatedAnimationParser.parse(json, this._data.objects, this._arrayBufferMap)
+            }
 
             return this._data;
         }
@@ -102,7 +107,11 @@ module wd{
             }
 
             for(let nodeId of json.scenes[json.scene].nodes){
-                objects.addChild(parse(json.nodes[nodeId]));
+                let object = parse(json.nodes[nodeId]);
+
+                object.id = nodeId;
+
+                objects.addChild(object);
             }
 
             this._data.objects = objects;

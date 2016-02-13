@@ -513,6 +513,37 @@ describe("GLTFAssembler", function () {
                         var component = getComponent(data);
                         expect(component).toBeInstanceOf(wd.MeshRenderer);
                 });
+
+                describe("add animation component", function(){
+                    beforeEach(function(){
+                    });
+
+                    it("add ArticulatedAnimation component", function(){
+                        //setComponent({
+                        //    type:"ambient",
+                        //    lightColor:color
+                        //})
+                        //
+                        //var data = builder.build(parseData);
+                        //
+                        //var component = getComponent(data);
+                        //expect(component).toBeInstanceOf(wd.AmbientLight);
+                        //expect(component.color).toEqual(color);
+
+
+
+                        //todo finish
+
+                        //setComponent({
+                        //})
+                        //
+                        //
+                        //var data = builder.build(parseData);
+                        //
+                        //var component = getComponent(data);
+                        //expect(component).toBeInstanceOf(wd.MeshRenderer);
+                    });
+                });
             });
         });
     });

@@ -417,6 +417,7 @@
 /// <reference path="asset/gltf/GLTFParser"/>
 /// <reference path="asset/gltf/GLTFGeometryParser"/>
 /// <reference path="asset/gltf/GLTFMaterialParser"/>
+/// <reference path="asset/gltf/GLTFArticulatedAnimationParser"/>
 /// <reference path="asset/gltf/GLTFUtils"/>
 
 /// <reference path="asset/wd/WDTag"/>

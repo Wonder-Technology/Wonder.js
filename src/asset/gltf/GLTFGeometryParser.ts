@@ -44,6 +44,7 @@ module wd{
 
         private _parseGeometry( primitive:IGLTFMeshPrimitive):IGLTFGeometry{
             var json:IGLTFJsonData = this._json,
+                arrayBufferMap = this._arrayBufferMap,
                 accessor:IGLTFAccessor = null,
                 bufferArr:any = null,
                 geometry:IGLTFGeometry = <any>{},
@@ -61,7 +62,7 @@ module wd{
                     let attribute = primitive.attributes[semantic];
 
                     accessor = json.accessors[attribute];
-                    bufferArr = this._getBufferArrFromAccessor(json, accessor);
+                    bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, arrayBufferMap);
 
                     if(semantic === "POSITION"){
                         vertices = [];
@@ -123,7 +124,7 @@ module wd{
 
             accessor = json.accessors[indices];
 
-            bufferArr = this._getBufferArrFromAccessor(json, accessor);
+            bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
 
             assert(bufferArr.length % 3 === 0, Log.info.FUNC_SHOULD("indices' count", "3 times"));
         })
@@ -139,7 +140,7 @@ module wd{
 
             accessor = json.accessors[indices];
 
-            bufferArr = this._getBufferArrFromAccessor(json, accessor);
+            bufferArr = GLTFUtils.getBufferArrFromAccessor(json, accessor, this._arrayBufferMap);
 
             for (let i = 0, len = bufferArr.length; i < len; i += 3) {
                 let aIndex = bufferArr[i],
@@ -216,51 +217,6 @@ module wd{
             }
 
             return drawMode;
-        }
-
-        private _getBufferArrFromAccessor(json:IGLTFJsonData, accessor: IGLTFAccessor): any{
-            var bufferView: IGLTFBufferView = json.bufferViews[accessor.bufferView];
-            var arrayBuffer: any = this._arrayBufferMap.getChild(bufferView.buffer);
-
-            var byteOffset = accessor.byteOffset + bufferView.byteOffset;
-            var count = accessor.count * this._getAccessorTypeSize(accessor);
-
-            switch (accessor.componentType) {
-                case 5120:
-                    return new Int8Array(arrayBuffer, byteOffset, count);
-                case 5121:
-                    return new Uint8Array(arrayBuffer, byteOffset, count);
-                case 5122:
-                    return new Int16Array(arrayBuffer, byteOffset, count);
-                case 5123:
-                    return new Uint16Array(arrayBuffer, byteOffset, count);
-                case 5126:
-                    return new Float32Array(arrayBuffer, byteOffset, count);
-                default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT(`componentType:${accessor.componentType}`));
-                    break;
-            }
-        }
-
-        private _getAccessorTypeSize(accessor: IGLTFAccessor): number{
-            var type = accessor.type;
-
-            switch (type) {
-                case "VEC2":
-                    return 2;
-                case "VEC3":
-                    return 3;
-                case "VEC4":
-                    return 4;
-                case "MAT2":
-                    return 4;
-                case "MAT3":
-                    return 9;
-                case "MAT4":
-                    return 16;
-                default:
-                    return 1;
-            }
         }
 
         private _normalizeTexCoords(texCoords:Array<number>){

@@ -27,6 +27,7 @@ module wd{
 
         public static createObjectData(){
             return {
+                id:null,
                 isContainer: false,
 
                 components:wdCb.Collection.create<IGLTFComponent>(),
@@ -46,6 +47,50 @@ module wd{
             }
 
             return color;
+        }
+
+        public static getBufferArrFromAccessor(json:IGLTFJsonData, accessor: IGLTFAccessor, arrayBufferMap:wdCb.Hash<any>): any{
+            var bufferView: IGLTFBufferView = json.bufferViews[accessor.bufferView],
+                arrayBuffer: any = arrayBufferMap.getChild(bufferView.buffer),
+                byteOffset = accessor.byteOffset + bufferView.byteOffset,
+                count = accessor.count * this.getAccessorTypeSize(accessor);
+
+            switch (accessor.componentType) {
+                case 5120:
+                    return new Int8Array(arrayBuffer, byteOffset, count);
+                case 5121:
+                    return new Uint8Array(arrayBuffer, byteOffset, count);
+                case 5122:
+                    return new Int16Array(arrayBuffer, byteOffset, count);
+                case 5123:
+                    return new Uint16Array(arrayBuffer, byteOffset, count);
+                case 5126:
+                    return new Float32Array(arrayBuffer, byteOffset, count);
+                default:
+                    Log.error(true, Log.info.FUNC_UNEXPECT(`componentType:${accessor.componentType}`));
+                    break;
+            }
+        }
+
+        public static getAccessorTypeSize(accessor: IGLTFAccessor): number{
+            var type = accessor.type;
+
+            switch (type) {
+                case "VEC2":
+                    return 2;
+                case "VEC3":
+                    return 3;
+                case "VEC4":
+                    return 4;
+                case "MAT2":
+                    return 4;
+                case "MAT3":
+                    return 9;
+                case "MAT4":
+                    return 16;
+                default:
+                    return 1;
+            }
         }
     }
 }

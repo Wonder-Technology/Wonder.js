@@ -16,6 +16,7 @@ module wd{
             return this._state === AnimationState.PAUSE;
         }
 
+        //todo private
         public interpolation:number = null;
         public currentKey:number = null;
         public currentAnimName:string = null;
@@ -93,6 +94,11 @@ module wd{
         }
 
         public update(elapsedTime:number){
+            //todo test
+            if(this._state === AnimationState.DEFAULT){
+                return;
+            }
+
             if(this._isCurrentKeyFinish(elapsedTime)){
                 this._updateCurrentKey();
             }

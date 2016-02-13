@@ -205,15 +205,13 @@ module wd {
 
     export interface IGLTFObjectData {
         name?:string;
+        id:string;
+
         isContainer:boolean;
 
         components: wdCb.Collection<IGLTFComponent>;
 
-
-        //parent:IGLTFParseData;
         children: wdCb.Collection<IGLTFObjectData>;
-
-        //currentScene: Object;
     }
 
 
@@ -221,19 +219,19 @@ module wd {
     }
 
     export interface IGLTFArticulatedAnimation extends IGLTFComponent{
-        keyFrameData:{
-            [animName:string]: {
-                frames:Array<{
-                    time:number,
-                    interpolationMethod:KeyFrameInterpolation,
+        [animName:string]: wdCb.Collection<IGLTFKeyFrameData>
+    }
 
-                    targets:Array<{
-                        target:ArticulatedAnimationTarget,
-                        data:any
-                    }>
-                }>
-            }
-        }
+    export interface IGLTFKeyFrameData{
+        time:number,
+        interpolationMethod:KeyFrameInterpolation,
+
+        targets:wdCb.Collection<IGLTFKeyFrameTargetData>
+    }
+
+    export interface IGLTFKeyFrameTargetData{
+        target:ArticulatedAnimationTarget,
+        data:any
     }
 
     export interface IGLTFTransform extends IGLTFComponent{

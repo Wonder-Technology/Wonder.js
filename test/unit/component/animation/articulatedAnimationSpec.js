@@ -11,8 +11,7 @@ describe("articulated animation", function () {
     });
 
     describe("integration test", function(){
-        var model,geo,material,anim;
-            //director,program;
+        var model,anim;
 
         function judgePos(pos){
             expect(testTool.getValues(

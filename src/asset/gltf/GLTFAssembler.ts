@@ -85,6 +85,9 @@ module wd{
                 else if(self._isGeometry(component)){
                     model.addComponent(self._createGeometry(<any>component));
                 }
+                else if(self._isArticulatedAnimation(component)){
+                    model.addComponent(self._createArticulatedAnimation(<any>component));
+                }
             });
         }
 
@@ -102,6 +105,17 @@ module wd{
 
         private _isGeometry(component:any){
             return !!component.material;
+        }
+
+        //todo move to utils
+        private _isArticulatedAnimation(component:any){
+            if(!JudgeUtils.isDirectObject(component)){
+                return false;
+            }
+
+            for(let animName in component){
+                return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
+            }
         }
 
         private _createTransform(component:IGLTFTransform){
@@ -237,6 +251,14 @@ module wd{
             else{
                 material.side = Side.FRONT;
             }
+        }
+
+        private _createArticulatedAnimation(component:IGLTFArticulatedAnimation){
+             var anim = ArticulatedAnimation.create();
+
+            anim.data = wdCb.Hash.create<wdCb.Collection<IGLTFKeyFrameData>>(component);
+
+            return anim;
         }
     }
 }
