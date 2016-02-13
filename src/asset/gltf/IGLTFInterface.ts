@@ -38,7 +38,9 @@ module wd {
         materials: {
             [id:string]: IGLTFMaterial
         };
-        animations: Object;
+        animations: {
+            [id:string]: IGLTFAnimation
+        };
         skins: Object;
         scene: string;
         scenes: {
@@ -85,6 +87,29 @@ module wd {
         translation?: Array<number>;
 
         extensions?:Object;
+    }
+
+    export interface IGLTFAnimation extends IGLTFChildRootProperty {
+        channels?: IGLTFAnimationChannel[];
+        parameters?: Object;
+        samplers?: Object;
+    }
+
+    export interface IGLTFAnimationChannel {
+        sampler: string;
+        target: IGLTFAnimationChannelTarget;
+    }
+
+    export interface IGLTFAnimationChannelTarget {
+        id: string;
+        path: string;
+    }
+
+    export interface IGLTFAnimationSampler {
+        input: string;
+        output: string;
+
+        interpolation?: string;
     }
 
     export interface IGLTFAsset {
@@ -195,6 +220,21 @@ module wd {
     export interface IGLTFComponent{
     }
 
+    export interface IGLTFArticulatedAnimation extends IGLTFComponent{
+        keyFrameData:{
+            [animName:string]: {
+                frames:Array<{
+                    time:number,
+                    interpolationMethod:KeyFrameInterpolation,
+
+                    targets:Array<{
+                        target:ArticulatedAnimationTarget,
+                        data:any
+                    }>
+                }>
+            }
+        }
+    }
 
     export interface IGLTFTransform extends IGLTFComponent{
         matrix?:Matrix4;

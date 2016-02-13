@@ -122,6 +122,10 @@
 
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
+/// <reference path="component/animation/ArticulatedAnimation"/>
+/// <reference path="component/animation/KeyFrameInterpolation"/>
+/// <reference path="component/animation/ArticulatedAnimationTarget"/>
+
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/GeometryUtils"/>
 /// <reference path="component/geometry/CustomGeometry"/>

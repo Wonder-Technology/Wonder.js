@@ -29,8 +29,8 @@
 
         //'test/unit/**',
 
-        'test/unit/**/GLTFParserSpec*',
-        'test/unit/**/GLTFAssemblerSpec*',
+        //'test/unit/**/GLTFParserSpec*',
+        //'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
@@ -119,7 +119,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        'test/unit/**/GameObjectSpec.js',
+        //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
@@ -131,13 +131,13 @@
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
         //'test/unit/asset/obj/OBJParserSpec.js',
-        'test/unit/asset/loaderSpec.js',
+        //'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
-        //'test/unit/component/**/*Animation*.js',
+        'test/unit/component/**/*Animation*.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
