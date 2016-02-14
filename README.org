@@ -46,14 +46,14 @@ Join us, We can create the amazing 3D world together!
   - RigidBody,Collision,Constraint,Compound
 - Animation
   - Morph
+  - Articulated
 - Camera
   - Perspective,Orthographic Camera
   - Arcball Control
   - Fly Control
 - Light
   - Direction,Point Light
-  - Diffuse Map
-  - Specular Map
+  - Diffuse Map,Specular Map,Emission Map
   - Normal Map
   - Mirror
   - Reflection,Refraction,Fresnel
@@ -70,6 +70,8 @@ Join us, We can create the amazing 3D world together!
   - Video Texture
   - Compressed Texture(DDS)
   - Cubemap Texture
+- Loader
+  - support load .gltf
 - Converter
   - OBJ Converter
   - MD2 Converter
@@ -84,7 +86,7 @@ Here shows a spinning cube sample:
       window.onload = function () {
           //set full screen and init engine
           wd.Main.setConfig({
-              screenSize: wd.EScreenSize.FULL
+              screenSize: wd.ScreenSize.FULL
           }).init();
 
           initSample();
@@ -183,3 +185,5 @@ Here shows a spinning cube sample:
 #+END_SRC
 * License
 MIT Licence
+
+
