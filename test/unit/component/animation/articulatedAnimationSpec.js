@@ -72,12 +72,12 @@ describe("articulated animation", function () {
                     "play": wdCb.Collection.create([
                         {
                             time:10,
-                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                            interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                    {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                    {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                    {target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                 ]
                             )
                         }
@@ -101,12 +101,12 @@ describe("articulated animation", function () {
                         "play": wdCb.Collection.create([
                             {
                                 time:0,
-                                interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                        {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                        {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                        {target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                     ]
                                 )
                             }
@@ -129,14 +129,14 @@ describe("articulated animation", function () {
                         "play": wdCb.Collection.create([
                             {
                                 time:firstKeyTime,
-                                interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
-                                        {target:wd.ArticulatedAnimationTarget.ROTATION,
+                                        {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
+                                        {target:wd.EArticulatedAnimationTarget.ROTATION,
                                             data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,30))},
-                                        {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
+                                        {target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
                                     ]
                                 )
 
@@ -144,12 +144,12 @@ describe("articulated animation", function () {
 
                             {
                                 time:secondKeyTime,
-                                interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                                 targets: wdCb.Collection.create(
                                     [
-                                        {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                        {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                        {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                        {target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                     ]
                                 )
 
@@ -287,21 +287,21 @@ describe("articulated animation", function () {
                     "play": wdCb.Collection.create([
                         {
                             time:firstKeyTime,
-                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                            interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)}
+                                    {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)}
                                 ]
                             )
                         },
                         {
                             time:secondKeyTime,
-                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+                            interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                    {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                                 ]
                             )
                         }

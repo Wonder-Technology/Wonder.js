@@ -118,7 +118,7 @@ describe("LightShaderLib", function () {
             });
 
             it("convert string to glsl variable", function(){
-                material.lightModel = wd.LightModel.BLINN;
+                material.lightModel = wd.ELightModel.BLINN;
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
@@ -126,7 +126,7 @@ describe("LightShaderLib", function () {
 
 
 
-                material.lightModel = wd.LightModel.PHONG;
+                material.lightModel = wd.ELightModel.PHONG;
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
@@ -134,14 +134,14 @@ describe("LightShaderLib", function () {
 
 
 
-                material.lightModel = wd.LightModel.CONSTANT;
+                material.lightModel = wd.ELightModel.CONSTANT;
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
                 expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 3);
             });
             it("not support LAMBERT", function () {
-                material.lightModel = wd.LightModel.LAMBERT;
+                material.lightModel = wd.ELightModel.LAMBERT;
 
                 expect(function(){
                     lib.sendShaderVariables(program, quadCmd, material);

@@ -45,13 +45,13 @@ module wd {
                         renderer.dirtyDuringCurrentLoop = false;
                     }
 
-                    renderer.state = UIRendererState.DIRTY;
+                    renderer.state = EUIRendererState.DIRTY;
 
                     renderer.resetDirty();
                 }
                 else{
-                    if(renderer.state !== UIRendererState.DIRTY){
-                        renderer.state = UIRendererState.NOT_DIRTY;
+                    if(renderer.state !== EUIRendererState.DIRTY){
+                        renderer.state = EUIRendererState.NOT_DIRTY;
                     }
                 }
             });
@@ -96,7 +96,7 @@ module wd {
             this.getAllChildren().forEach((child:EntityObject) => {
                 var renderer = self._getUIRenderer(child);
 
-                assert(renderer.state === UIRendererState.NORMAL, Log.info.FUNC_SHOULD("reset all UIRenderers->state"));
+                assert(renderer.state === EUIRendererState.NORMAL, Log.info.FUNC_SHOULD("reset all UIRenderers->state"));
             });
         })
         private _resetAllRendererState(){
@@ -105,7 +105,7 @@ module wd {
             this.forEach((child:UIObject) => {
                 var renderer = self._getUIRenderer(child);
 
-                renderer.state = UIRendererState.NORMAL;
+                renderer.state = EUIRendererState.NORMAL;
             });
         }
 

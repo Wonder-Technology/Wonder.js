@@ -1,7 +1,7 @@
 describe("UIStateMachine", function() {
     var sandbox = null;
     var Machine = wd.UIStateMachine;
-    var State = wd.UIState;
+    var State = wd.EUIState;
     var machine;
     var director;
     var ui;

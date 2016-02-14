@@ -1,5 +1,5 @@
 module wd{
-    export enum FontDimension{
+    export enum EFontDimension{
         AUTO = <any>"auto"
     }
 }

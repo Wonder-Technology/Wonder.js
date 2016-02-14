@@ -224,13 +224,13 @@ module wd {
 
     export interface IGLTFKeyFrameData{
         time:number,
-        interpolationMethod:KeyFrameInterpolation,
+        interpolationMethod:EKeyFrameInterpolation,
 
         targets:wdCb.Collection<IGLTFKeyFrameTargetData>
     }
 
     export interface IGLTFKeyFrameTargetData{
-        target:ArticulatedAnimationTarget,
+        target:EArticulatedAnimationTarget,
         data:any
     }
 
@@ -294,7 +294,7 @@ module wd {
         transparent?:boolean;
         opacity?: number
 
-        lightModel:LightModel;
+        lightModel:ELightModel;
 
 
         diffuseColor?: Color;

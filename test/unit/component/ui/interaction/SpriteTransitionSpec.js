@@ -1,7 +1,7 @@
 describe("SpriteTransition", function() {
     var sandbox = null;
     var SpriteTransition = wd.SpriteTransition;
-    var State = wd.UIState;
+    var State = wd.EUIState;
     var transition;
 
 

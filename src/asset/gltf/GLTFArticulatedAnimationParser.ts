@@ -90,14 +90,14 @@ module wd{
             switch (targetPath){
                 case "translation":
                     targets.addChild({
-                        target: ArticulatedAnimationTarget.TRANSLATION,
+                        target: EArticulatedAnimationTarget.TRANSLATION,
                         data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
                     });
                     this._arrayOffset += 3;
                     break;
                 case "rotation":
                     targets.addChild({
-                        target: ArticulatedAnimationTarget.ROTATION,
+                        target: EArticulatedAnimationTarget.ROTATION,
                         data: Quaternion.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2], bufferOutput[this._arrayOffset + 3])
                     });
 
@@ -105,7 +105,7 @@ module wd{
                     break;
                 case "scale":
                     targets.addChild({
-                        target: ArticulatedAnimationTarget.SCALE,
+                        target: EArticulatedAnimationTarget.SCALE,
                         data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
                     });
                     this._arrayOffset += 3;
@@ -161,7 +161,7 @@ module wd{
         private _convertTointerpolationMethod(jsonInterpolation:string){
             switch(jsonInterpolation){
                 case "LINEAR":
-                    return KeyFrameInterpolation.LINEAR;
+                    return EKeyFrameInterpolation.LINEAR;
                 default:
                     Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolation:${jsonInterpolation}`));
                     break;

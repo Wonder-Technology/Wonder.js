@@ -1,7 +1,7 @@
 describe("ColorTransition", function() {
     var sandbox = null;
     var ColorTransition = wd.ColorTransition;
-    var State = wd.UIState;
+    var State = wd.EUIState;
     var transition;
 
 

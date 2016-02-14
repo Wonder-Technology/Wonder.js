@@ -3,7 +3,7 @@ module wd{
         private _target:any = null;
         get target(){
             if(this._target === null){
-                this.changeState(UIState.NORMAL);
+                this.changeState(EUIState.NORMAL);
             }
 
             return this._target;
@@ -12,6 +12,6 @@ module wd{
             this._target = target;
         }
 
-        public abstract changeState(state:UIState);
+        public abstract changeState(state:EUIState);
     }
 }

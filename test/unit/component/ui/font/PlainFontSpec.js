@@ -213,7 +213,7 @@ describe("PlainFont", function () {
             //        height: 800
             //    })
             //    font.text = "阿斯";
-            //    setDimensions(wd.FontDimension.AUTO, wd.FontDimension.AUTO);
+            //    setDimensions(wd.EFontDimension.AUTO, wd.EFontDimension.AUTO);
             //
             //    font.init();
             //
@@ -366,8 +366,8 @@ describe("PlainFont", function () {
                 it("test use fill to draw", function(){
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
-                    font.xAlignment = wd.FontXAlignment.CENTER;
-                    font.yAlignment = wd.FontYAlignment.BOTTOM;
+                    font.xAlignment = wd.EFontXAlignment.CENTER;
+                    font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
                     font.update(1);
 
@@ -383,8 +383,8 @@ describe("PlainFont", function () {
                 it("test use fill to draw", function(){
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
-                    font.xAlignment = wd.FontXAlignment.RIGHT;
-                    font.yAlignment = wd.FontYAlignment.MIDDLE;
+                    font.xAlignment = wd.EFontXAlignment.RIGHT;
+                    font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
                     font.update(1);
 
@@ -427,8 +427,8 @@ describe("PlainFont", function () {
                 it("test use fill to draw", function(){
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
-                    font.xAlignment = wd.FontXAlignment.CENTER;
-                    font.yAlignment = wd.FontYAlignment.BOTTOM;
+                    font.xAlignment = wd.EFontXAlignment.CENTER;
+                    font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
                     font.update(1);
 
@@ -441,8 +441,8 @@ describe("PlainFont", function () {
                 it("test use fill to draw", function(){
                     var fillStyle = "rgba(10,10,10,1)";
                     font.enableFill(fillStyle);
-                    font.xAlignment = wd.FontXAlignment.RIGHT;
-                    font.yAlignment = wd.FontYAlignment.MIDDLE;
+                    font.xAlignment = wd.EFontXAlignment.RIGHT;
+                    font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
                     font.update(1);
 
@@ -586,7 +586,7 @@ describe("PlainFont", function () {
             });
             it("formatText when change width", function(){
                 setWidth(2);
-                font.xAlignment = wd.FontXAlignment.LEFT;
+                font.xAlignment = wd.EFontXAlignment.LEFT;
 
                 font.update();
 
@@ -601,21 +601,21 @@ describe("PlainFont", function () {
             });
             it("formatText when change height", function(){
                 setHeight(100);
-                font.yAlignment = wd.FontYAlignment.BOTTOM;
+                font.yAlignment = wd.EFontYAlignment.BOTTOM;
 
                 font.update();
 
                 expect(context.fillText.secondCall).toCalledWith("阿斯", -250, 0);
             });
             it("formatText change xAlignment", function(){
-                font.xAlignment = wd.FontXAlignment.RIGHT;
+                font.xAlignment = wd.EFontXAlignment.RIGHT;
 
                 font.update();
 
                 expect(context.fillText.secondCall).toCalledWith("阿斯", 150, -200);
             });
             it("formatText change yAlignment", function(){
-                font.yAlignment = wd.FontYAlignment.MIDDLE;
+                font.yAlignment = wd.EFontYAlignment.MIDDLE;
 
                 font.update();
 

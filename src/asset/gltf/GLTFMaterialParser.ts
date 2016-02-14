@@ -81,20 +81,20 @@ module wd{
         }
 
         private _getLightModel(technique:string){
-            var model:LightModel = null;
+            var model:ELightModel = null;
 
             switch (technique){
                 case "PHONG":
-                    model = LightModel.PHONG;
+                    model = ELightModel.PHONG;
                     break;
                 case "BLINN":
-                    model = LightModel.BLINN;
+                    model = ELightModel.BLINN;
                     break;
                 case "CONSTANT":
-                    model = LightModel.CONSTANT;
+                    model = ELightModel.CONSTANT;
                     break;
                 case "LAMBERT":
-                    model = LightModel.LAMBERT;
+                    model = ELightModel.LAMBERT;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`technique:${technique}`));

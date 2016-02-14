@@ -16,7 +16,7 @@ module wd {
                 return this._text;
             }
 
-            fontObject = this.getObject(ButtonObjectName.TEXT);
+            fontObject = this.getObject(EButtonObjectName.TEXT);
 
             if(fontObject){
                 return fontObject.getComponent(PlainFont).text;
@@ -33,7 +33,7 @@ module wd {
                 return;
             }
 
-            fontObject = this.getObject(ButtonObjectName.TEXT);
+            fontObject = this.getObject(EButtonObjectName.TEXT);
 
             if(fontObject){
                 fontObject.getComponent<PlainFont>(PlainFont).text = text;
@@ -44,7 +44,7 @@ module wd {
         }
 
         get isDisabled(){
-            return this._stateMachine.currentState === UIState.DISABLED;
+            return this._stateMachine.currentState === EUIState.DISABLED;
         }
 
         get currentState(){
@@ -58,7 +58,7 @@ module wd {
         private _stateMachine:UIStateMachine = UIStateMachine.create(this);
 
         public initWhenCreate() {
-            this.transitionMode = TransitionMode.SPRITE;
+            this.transitionMode = ETransitionMode.SPRITE;
             this.text = "button";
         }
 
@@ -83,36 +83,36 @@ module wd {
             this._mouseoutSubscription.dispose();
         }
 
-        public getObject(objectName:ButtonObjectName):UIObject{
+        public getObject(objectName:EButtonObjectName):UIObject{
             return this.entityObject.findChildByName(<any>objectName);
         }
 
-        public getObjectTransition(objectName:ButtonObjectName):Transition{
+        public getObjectTransition(objectName:EButtonObjectName):Transition{
             return this.transitionManager.getObjectTransition(objectName);
         }
 
         public enable() {
-            this._stateMachine.changeState(UIState.NORMAL);
+            this._stateMachine.changeState(EUIState.NORMAL);
         }
 
         public disable() {
-            this._stateMachine.changeState(UIState.DISABLED);
+            this._stateMachine.changeState(EUIState.DISABLED);
         }
 
         @require(function(elapsedTime:number){
-            assert(this.getObject(ButtonObjectName.BACKGROUND).hasComponent(Image), Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
+            assert(this.getObject(EButtonObjectName.BACKGROUND).hasComponent(Image), Log.info.FUNC_SHOULD("Button UIObject", "contain Image component"));
         })
         public update(elapsedTime:number) {
-            var target = this.transitionManager.getObjectTarget(ButtonObjectName.BACKGROUND);
+            var target = this.transitionManager.getObjectTarget(EButtonObjectName.BACKGROUND);
 
             if(!target){
-                let image = this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image);
+                let image = this.getObject(EButtonObjectName.BACKGROUND).getComponent<Image>(Image);
 
                 switch (this.p_transitionMode) {
-                    case TransitionMode.SPRITE:
+                    case ETransitionMode.SPRITE:
                         image.targetSource = null;
                         break;
-                    case TransitionMode.COLOR:
+                    case ETransitionMode.COLOR:
                         image.targetColor = null;
                         break;
                     default:
@@ -124,11 +124,11 @@ module wd {
             }
 
             switch (this.p_transitionMode) {
-                case TransitionMode.SPRITE:
-                    this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = target;
+                case ETransitionMode.SPRITE:
+                    this.getObject(EButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetSource = target;
                     break;
-                case TransitionMode.COLOR:
-                    this.getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetColor = target;
+                case ETransitionMode.COLOR:
+                    this.getObject(EButtonObjectName.BACKGROUND).getComponent<Image>(Image).targetColor = target;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT("transitionMode"));
@@ -150,7 +150,7 @@ module wd {
 
             object.transform.zIndex = 1;
 
-            object.name = <any>ButtonObjectName.BACKGROUND;
+            object.name = <any>EButtonObjectName.BACKGROUND;
 
             return object;
         }
@@ -162,8 +162,8 @@ module wd {
 
             font.text = this._text;
             font.enableFill("#000000");
-            font.xAlignment = FontXAlignment.CENTER;
-            font.yAlignment = FontYAlignment.MIDDLE;
+            font.xAlignment = EFontXAlignment.CENTER;
+            font.yAlignment = EFontYAlignment.MIDDLE;
 
             fontObject.addComponent(font);
 
@@ -174,13 +174,13 @@ module wd {
 
             fontObject.transform.zIndex = 2;
 
-            fontObject.name = <any>ButtonObjectName.TEXT;
+            fontObject.name = <any>EButtonObjectName.TEXT;
 
             return fontObject;
         }
 
         private _hasFontObject(){
-            return !!this.getObject(ButtonObjectName.TEXT);
+            return !!this.getObject(EButtonObjectName.TEXT);
         }
 
         private _bindEvent(){
@@ -191,7 +191,7 @@ module wd {
                     return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
-                    self._stateMachine.changeState(UIState.PRESSED);
+                    self._stateMachine.changeState(EUIState.PRESSED);
                 });
 
             this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
@@ -208,7 +208,7 @@ module wd {
                     return !self.isDisabled;
                 })
                 .subscribe((e:CustomEvent) => {
-                    self._stateMachine.changeState(UIState.HIGHLIGHT);
+                    self._stateMachine.changeState(EUIState.HIGHLIGHT);
                 });
 
             this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)

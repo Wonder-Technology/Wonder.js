@@ -21,11 +21,11 @@ module wd {
             }
         }
 
-        private _xAlignment:FontXAlignment = FontXAlignment.LEFT;
+        private _xAlignment:EFontXAlignment = EFontXAlignment.LEFT;
         get xAlignment(){
             return this._xAlignment;
         }
-        set xAlignment(xAlignment:FontXAlignment){
+        set xAlignment(xAlignment:EFontXAlignment){
             if(xAlignment !== this._xAlignment){
                 this._xAlignment = xAlignment;
 
@@ -301,7 +301,7 @@ module wd {
              else, adjust the chars of the line according to xAlignment(not line feed).
              */
 
-            if (this._xAlignment != FontXAlignment.LEFT) {
+            if (this._xAlignment != EFontXAlignment.LEFT) {
                 let line = [];
 
                 this._charFontList.forEach((charFontUIObject:UIObject) => {
@@ -395,10 +395,10 @@ module wd {
                     lineWidth = self._getLetterPosXRight(leftCornerPosition, lastCharFont);
 
                 switch (self._xAlignment) {
-                    case FontXAlignment.CENTER:
+                    case EFontXAlignment.CENTER:
                         shift = (self.width - lineWidth) / 2;
                         break;
-                    case FontXAlignment.RIGHT:
+                    case EFontXAlignment.RIGHT:
                         shift = self.width - lineWidth;
                         break;
                     default:

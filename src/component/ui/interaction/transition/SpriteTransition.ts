@@ -11,18 +11,18 @@ module wd{
         public pressedSprite:ImageTextureAsset = null;
         public disabledSprite:ImageTextureAsset = null;
 
-        public changeState(state:UIState){
+        public changeState(state:EUIState){
             switch (state){
-                case UIState.NORMAL:
+                case EUIState.NORMAL:
                     this.target = this.normalSprite;
                     break;
-                case UIState.HIGHLIGHT:
+                case EUIState.HIGHLIGHT:
                     this.target = this.highlightSprite;
                     break;
-                case UIState.PRESSED:
+                case EUIState.PRESSED:
                     this.target = this.pressedSprite;
                     break;
-                case UIState.DISABLED:
+                case EUIState.DISABLED:
                     this.target = this.disabledSprite;
                     break;
                 default:

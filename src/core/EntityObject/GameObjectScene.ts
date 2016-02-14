@@ -172,7 +172,7 @@ module wd {
         }
 
         public enable:boolean = false;
-        public engine:PhysicsEngineType = PhysicsEngineType.CANNON;
+        public engine:EPhysicsEngineType = EPhysicsEngineType.CANNON;
         public iterations:number = 10;
     }
 

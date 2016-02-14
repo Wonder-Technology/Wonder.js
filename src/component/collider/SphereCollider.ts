@@ -10,7 +10,7 @@ module wd {
 
         public center:Vector3 = Vector3.create(0, 0, 0);
         public radius:number = null;
-        public type:string = <any>ColliderType.SPHERE;
+        public type:string = <any>EColliderType.SPHERE;
 
         public createBoundingRegion(){
             return SphereBoundingRegion.create(this.entityObject);

@@ -123,8 +123,8 @@
 /// <reference path="component/animation/Animation"/>
 /// <reference path="component/animation/MorphAnimation"/>
 /// <reference path="component/animation/ArticulatedAnimation"/>
-/// <reference path="component/animation/KeyFrameInterpolation"/>
-/// <reference path="component/animation/ArticulatedAnimationTarget"/>
+/// <reference path="component/animation/EKeyFrameInterpolation"/>
+/// <reference path="component/animation/EArticulatedAnimationTarget"/>
 
 /// <reference path="component/geometry/Geometry"/>
 /// <reference path="component/geometry/GeometryUtils"/>
@@ -133,7 +133,7 @@
 /// <reference path="component/geometry/BoxGeometry"/>
 /// <reference path="component/geometry/RectGeometry"/>
 /// <reference path="component/geometry/PlaneGeometry"/>
-/// <reference path="component/geometry/SphereDrawMode"/>
+/// <reference path="component/geometry/ESphereDrawMode"/>
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>
 /// <reference path="component/geometry/data/GeometryData"/>
@@ -170,7 +170,7 @@
 /// <reference path="component/renderer/MeshRenderer"/>
 /// <reference path="component/renderer/SkyboxRenderer"/>
 /// <reference path="component/renderer/UIRenderer"/>
-/// <reference path="component/renderer/UIRendererState"/>
+/// <reference path="component/renderer/EUIRendererState"/>
 
 
 
@@ -193,7 +193,7 @@
 /// <reference path="component/collider/Shape"/>
 /// <reference path="component/collider/AABBShape"/>
 /// <reference path="component/collider/SphereShape"/>
-/// <reference path="component/collider/ColliderType"/>
+/// <reference path="component/collider/EColliderType"/>
 /// <reference path="component/collider/ColliderUtils"/>
 
 /// <reference path="component/physics/RigidBody"/>
@@ -205,7 +205,7 @@
 
 /// <reference path="component/physics/engine/PhysicsEngineFactory"/>
 /// <reference path="component/physics/engine/adapter/IPhysicsEngineAdapter"/>
-/// <reference path="component/physics/engine/adapter/PhysicsEngineType"/>
+/// <reference path="component/physics/engine/adapter/EPhysicsEngineType"/>
 
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonDataList"/>
 /// <reference path="component/physics/engine/adapter/cannon/structure/CannonGameObjectDataList"/>
@@ -241,15 +241,15 @@
 /// <reference path="component/light/DirectionLight"/>
 /// <reference path="component/light/PointLight"/>
 /// <reference path="component/light/Attenuation"/>
-/// <reference path="component/light/LightModel"/>
+/// <reference path="component/light/ELightModel"/>
 
 
 /// <reference path="component/ui/UI"/>
 
 
-/// <reference path="component/ui/font/FontXAlignment"/>
-/// <reference path="component/ui/font/FontYAlignment"/>
-/// <reference path="component/ui/font/FontDimension"/>
+/// <reference path="component/ui/font/EFontXAlignment"/>
+/// <reference path="component/ui/font/EFontYAlignment"/>
+/// <reference path="component/ui/font/EFontDimension"/>
 /// <reference path="component/ui/font/Font"/>
 /// <reference path="component/ui/font/PlainFont"/>
 /// <reference path="component/ui/font/BitmapFont"/>
@@ -261,15 +261,15 @@
 
 /// <reference path="component/ui/interaction/InteractionUI"/>
 /// <reference path="component/ui/interaction/button/Button"/>
-/// <reference path="component/ui/interaction/button/ButtonObjectName"/>
+/// <reference path="component/ui/interaction/button/EButtonObjectName"/>
 
-/// <reference path="component/ui/interaction/state/UIState"/>
+/// <reference path="component/ui/interaction/state/EUIState"/>
 /// <reference path="component/ui/interaction/state/UIStateMachine"/>
 
 /// <reference path="component/ui/interaction/transition/Transition"/>
 /// <reference path="component/ui/interaction/transition/SpriteTransition"/>
 /// <reference path="component/ui/interaction/transition/ColorTransition"/>
-/// <reference path="component/ui/interaction/transition/TransitionMode"/>
+/// <reference path="component/ui/interaction/transition/ETransitionMode"/>
 /// <reference path="component/ui/interaction/transition/TransitionManager"/>
 
 

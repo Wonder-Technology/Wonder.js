@@ -14,7 +14,7 @@ module wd {
         private _spriteTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
         private _colorTransitionMap:wdCb.Hash<Transition> = wdCb.Hash.create<Transition>();
 
-        public getObjectTransition(objectName:ButtonObjectName) {
+        public getObjectTransition(objectName:EButtonObjectName) {
             var result = this._getTransitionMap().getChild(<any>objectName);
 
             if (!result) {
@@ -26,11 +26,11 @@ module wd {
             return result;
         }
 
-        public getObjectTarget(objectName:ButtonObjectName){
+        public getObjectTarget(objectName:EButtonObjectName){
             return this.getObjectTransition(objectName).target;
         }
 
-        public changeState(state:UIState){
+        public changeState(state:EUIState){
             wdFrp.fromArray([
                     this._spriteTransitionMap,
                     this._colorTransitionMap
@@ -46,10 +46,10 @@ module wd {
             var map:wdCb.Hash<Transition> = null;
 
             switch (this._ui.transitionMode) {
-                case TransitionMode.SPRITE:
+                case ETransitionMode.SPRITE:
                     map = this._spriteTransitionMap;
                     break;
-                case TransitionMode.COLOR:
+                case ETransitionMode.COLOR:
                     map = this._colorTransitionMap;
                     break;
                 default:
@@ -64,10 +64,10 @@ module wd {
             var transition:Transition = null;
 
             switch (this._ui.transitionMode){
-                case TransitionMode.SPRITE:
+                case ETransitionMode.SPRITE:
                     transition = SpriteTransition.create();
                     break;
-                case TransitionMode.COLOR:
+                case ETransitionMode.COLOR:
                     transition = ColorTransition.create();
                     break;
                 default:

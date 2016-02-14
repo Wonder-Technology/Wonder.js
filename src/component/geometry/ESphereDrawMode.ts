@@ -1,5 +1,5 @@
 module wd{
-    export enum SphereDrawMode{
+    export enum ESphereDrawMode{
         LATITUDELONGTITUDE
         //DECOMPOSITION
     }

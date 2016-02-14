@@ -189,7 +189,7 @@ describe("BitmapFont", function () {
         //    }
         //
         //    font.text = "阿斯";
-        //    setDimensions(wd.FontDimension.AUTO);
+        //    setDimensions(wd.EFontDimension.AUTO);
         //
         //    font.init();
         //
@@ -358,7 +358,7 @@ describe("BitmapFont", function () {
 
         describe("test x alignment", function(){
             it("center", function(){
-                font.xAlignment = wd.FontXAlignment.CENTER;
+                font.xAlignment = wd.EFontXAlignment.CENTER;
                 font.text = "正1";
                 setWidth(10);
 
@@ -374,7 +374,7 @@ describe("BitmapFont", function () {
                 judgeDrawImage(1, 5.5, 2, 100, 200);
             });
             it("right", function(){
-                font.xAlignment = wd.FontXAlignment.RIGHT;
+                font.xAlignment = wd.EFontXAlignment.RIGHT;
                 font.text = "正1";
                 setWidth(10);
 
@@ -390,7 +390,7 @@ describe("BitmapFont", function () {
 
             describe("ignore space char in the end of line", function(){
                 it("test center x alignment", function(){
-                    font.xAlignment = wd.FontXAlignment.CENTER;
+                    font.xAlignment = wd.EFontXAlignment.CENTER;
                     font.text = "正1     ";
                     setWidth(100);
 
@@ -406,7 +406,7 @@ describe("BitmapFont", function () {
                     judgeDrawImage(1, 50.5, 2, 100, 200);
                 });
                 it("test right x alignment", function(){
-                    font.xAlignment = wd.FontXAlignment.RIGHT;
+                    font.xAlignment = wd.EFontXAlignment.RIGHT;
                     font.text = "正1   ";
                     setWidth(100);
 
@@ -780,7 +780,7 @@ describe("BitmapFont", function () {
                 beforeEach(function(){
                     font.text = "正ab";
                     setWidth(1000);
-                    font.xAlignment = wd.FontXAlignment.LEFT;
+                    font.xAlignment = wd.EFontXAlignment.LEFT;
 
                     director._init();
 
@@ -814,7 +814,7 @@ describe("BitmapFont", function () {
                     judgeDrawImage(5, 1, 102, 100, 200);
                 });
                 it("test change xAlignment", function(){
-                    font.xAlignment = wd.FontXAlignment.RIGHT;
+                    font.xAlignment = wd.EFontXAlignment.RIGHT;
 
                     director._loopBody(2);
 

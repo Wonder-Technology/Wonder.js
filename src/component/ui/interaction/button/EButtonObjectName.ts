@@ -1,5 +1,5 @@
 module wd{
-    export enum ButtonObjectName{
+    export enum EButtonObjectName{
         BACKGROUND = <any>"background",
         TEXT = <any>"text"
     }

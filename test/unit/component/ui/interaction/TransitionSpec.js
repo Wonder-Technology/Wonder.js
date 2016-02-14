@@ -27,7 +27,7 @@ describe("Transition", function() {
 
                 var target = transition.target;
 
-                expect(transition.changeState).toCalledWith(wd.UIState.NORMAL);
+                expect(transition.changeState).toCalledWith(wd.EUIState.NORMAL);
             });
         });
     });

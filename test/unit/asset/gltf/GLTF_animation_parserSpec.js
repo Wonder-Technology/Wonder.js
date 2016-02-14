@@ -94,10 +94,10 @@ describe("GLTF animation parser", function () {
                 function judgePos(keyIndex, time, posArr){
                     var key1 = animationComponent.animation_1.getChild(keyIndex);
                     expect(Math.floor(key1.time)).toEqual(time);
-                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
+                    expect(key1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(key1.targets.getCount()).toEqual(1);
                     var target1 = key1.targets.getChild(0);
-                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.TRANSLATION);
+                    expect(target1.target).toEqual(wd.EArticulatedAnimationTarget.TRANSLATION);
                     expect(target1.data).toBeInstanceOf(wd.Vector3);
                     expect(
                         testTool.getValues(target1.data, 2)
@@ -107,10 +107,10 @@ describe("GLTF animation parser", function () {
                 function judgeRotation(keyIndex, time){
                     var key1 = animationComponent.animation_0.getChild(keyIndex);
                     expect(key1.time).toEqual(time);
-                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
+                    expect(key1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(key1.targets.getCount()).toEqual(1);
                     var target1 = key1.targets.getChild(0);
-                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.ROTATION);
+                    expect(target1.target).toEqual(wd.EArticulatedAnimationTarget.ROTATION);
                     expect(target1.data).toBeInstanceOf(wd.Quaternion);
                 }
 

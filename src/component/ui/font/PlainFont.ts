@@ -51,11 +51,11 @@ module wd {
             }
         }
 
-        private _xAlignment:FontXAlignment = FontXAlignment.LEFT;
+        private _xAlignment:EFontXAlignment = EFontXAlignment.LEFT;
         get xAlignment(){
             return this._xAlignment;
         }
-        set xAlignment(xAlignment:FontXAlignment){
+        set xAlignment(xAlignment:EFontXAlignment){
             if(xAlignment !== this._xAlignment){
                 this._xAlignment = xAlignment;
 
@@ -64,11 +64,11 @@ module wd {
             }
         }
 
-        private _yAlignment:FontYAlignment = FontYAlignment.TOP;
+        private _yAlignment:EFontYAlignment = EFontYAlignment.TOP;
         get yAlignment(){
             return this._yAlignment;
         }
-        set yAlignment(yAlignment:FontYAlignment){
+        set yAlignment(yAlignment:EFontYAlignment){
             if(yAlignment !== this._yAlignment){
                 this._yAlignment = yAlignment;
 
@@ -311,18 +311,18 @@ module wd {
             /*! the lineHeight of last line is the height of font */
                 lineTotalHeight = (lineCount - 1) * lineHeight + fontClientHeight;
 
-            if (self.yAlignment === FontYAlignment.BOTTOM) {
+            if (self.yAlignment === EFontYAlignment.BOTTOM) {
                 y = y + self.height - lineTotalHeight;
             }
-            else if (self.yAlignment === FontYAlignment.MIDDLE) {
+            else if (self.yAlignment === EFontYAlignment.MIDDLE) {
                 y = y + (self.height - lineTotalHeight) / 2;
             }
 
             for (let str of this._strArr) {
-                if (self.xAlignment === FontXAlignment.RIGHT) {
+                if (self.xAlignment === EFontXAlignment.RIGHT) {
                     x = x + self.width - self._measure(str);
                 }
-                else if (self.xAlignment == FontXAlignment.CENTER) {
+                else if (self.xAlignment == EFontXAlignment.CENTER) {
                     x = x + (self.width - self._measure(str)) / 2;
                 }
 
@@ -354,17 +354,17 @@ module wd {
                 lineTotalHeight = fontClientHeight,
                 str = this._strArr[0];
 
-            if (self.yAlignment === FontYAlignment.BOTTOM) {
+            if (self.yAlignment === EFontYAlignment.BOTTOM) {
                 y = y + self.height - lineTotalHeight;
             }
-            else if (self.yAlignment === FontYAlignment.MIDDLE) {
+            else if (self.yAlignment === EFontYAlignment.MIDDLE) {
                 y = y + (self.height - lineTotalHeight) / 2;
             }
 
-            if (self.xAlignment === FontXAlignment.RIGHT) {
+            if (self.xAlignment === EFontXAlignment.RIGHT) {
                 x = x + self.width - self._measure(str);
             }
-            else if (self.xAlignment == FontXAlignment.CENTER) {
+            else if (self.xAlignment == EFontXAlignment.CENTER) {
                 x = x + (self.width - self._measure(str)) / 2;
             }
 

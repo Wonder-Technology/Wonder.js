@@ -1,5 +1,5 @@
 module wd{
-    export enum FontXAlignment{
+    export enum EFontXAlignment{
         LEFT,
         CENTER,
         RIGHT

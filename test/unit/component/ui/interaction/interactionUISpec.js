@@ -27,7 +27,7 @@ describe("InteractionUI", function() {
     //            });
     //
     //            it("if mode is SPRITE, create SpriteTransition", function(){
-    //                ui.transitionMode = wd.TransitionMode.SPRITE;
+    //                ui.transitionMode = wd.ETransitionMode.SPRITE;
     //
     //                expect(ui.transition).toBeInstanceOf(wd.SpriteTransition);
     //            });

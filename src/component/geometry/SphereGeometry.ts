@@ -9,7 +9,7 @@ module wd{
         }
 
         public radius:number = 1;
-        public sphereDrawMode:SphereDrawMode = SphereDrawMode.LATITUDELONGTITUDE;
+        public sphereDrawMode:ESphereDrawMode = ESphereDrawMode.LATITUDELONGTITUDE;
         public segments:number = 20;
 
         protected computeData(){
@@ -18,7 +18,7 @@ module wd{
                 segments = this.segments,
                 data = null;
 
-            if(sphereDrawMode === SphereDrawMode.LATITUDELONGTITUDE){
+            if(sphereDrawMode === ESphereDrawMode.LATITUDELONGTITUDE){
                 var { vertices, indices, normals, texCoords } = GetDataByLatitudeLongtitude.create(radius, segments).getData();
 
                 return {
@@ -27,7 +27,7 @@ module wd{
                     texCoords: texCoords
                 }
             }
-            //else if(sphereDrawMode === SphereDrawMode.DECOMPOSITION){
+            //else if(sphereDrawMode === ESphereDrawMode.DECOMPOSITION){
             //    data = GetDataByDecomposition.create(radius, segments).getData();
             //}
 

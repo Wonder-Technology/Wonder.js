@@ -1,5 +1,5 @@
 module wd{
-    export enum UIRendererState{
+    export enum EUIRendererState{
         NORMAL,
         DIRTY,
         NOT_DIRTY

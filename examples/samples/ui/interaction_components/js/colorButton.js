@@ -9,7 +9,7 @@ var sample;
 (function (sample) {
     var Button = wd.Button;
     var PlainFont = wd.PlainFont;
-    var ButtonObjectName = wd.ButtonObjectName;
+    var EButtonObjectName = wd.EButtonObjectName;
     var Image = wd.Image;
     var Color = wd.Color;
     var ColorButtonScript = (function () {
@@ -28,11 +28,11 @@ var sample;
             console.log("click");
         };
         ColorButtonScript.prototype._setText = function () {
-            var font = this._entityObject.getComponent(Button).getObject(ButtonObjectName.TEXT).getComponent(PlainFont);
+            var font = this._entityObject.getComponent(Button).getObject(EButtonObjectName.TEXT).getComponent(PlainFont);
             font.fontSize = 30;
         };
         ColorButtonScript.prototype._setBackground = function () {
-            var image = this._entityObject.getComponent(Button).getObject(ButtonObjectName.BACKGROUND).getComponent(Image);
+            var image = this._entityObject.getComponent(Button).getObject(EButtonObjectName.BACKGROUND).getComponent(Image);
             //if set Button->backgroundTransition->normalColor, background will use it as the source instead of the one setted here
             image.color = Color.create("rgb(255, 255, 0)");
         };

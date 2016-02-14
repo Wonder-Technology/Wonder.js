@@ -37,17 +37,17 @@ module wd{
                     var data = target.data;
 
                     switch (target.target){
-                        case ArticulatedAnimationTarget.TRANSLATION:
-                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:ArticulatedAnimationTarget === TRANSLATION, its data", "Vector3"));
+                        case EArticulatedAnimationTarget.TRANSLATION:
+                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget === TRANSLATION, its data", "Vector3"));
                             break;
-                        case ArticulatedAnimationTarget.ROTATION:
-                            assert(data instanceof Quaternion, Log.info.FUNC_MUST_BE("if target:ArticulatedAnimationTarget ===ROTATION, its data", "Quaternion"));
+                        case EArticulatedAnimationTarget.ROTATION:
+                            assert(data instanceof Quaternion, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget ===ROTATION, its data", "Quaternion"));
                             break;
-                        case ArticulatedAnimationTarget.SCALE:
-                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:ArticulatedAnimationTarget === SCALE, its data", "Vector3"));
+                        case EArticulatedAnimationTarget.SCALE:
+                            assert(data instanceof Vector3, Log.info.FUNC_MUST_BE("if target:EArticulatedAnimationTarget === SCALE, its data", "Vector3"));
                             break;
                         default:
-                            Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
+                            Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
                             break;
                     }
                 })
@@ -88,7 +88,7 @@ module wd{
 
         protected computeInterpolation(elapsedTime:number):void{
             switch (this._currentFrameData.interpolationMethod){
-                case KeyFrameInterpolation.LINEAR:
+                case EKeyFrameInterpolation.LINEAR:
                     if(this._currentFrameData.time - this._lastFrameTime === 0){
                         this._interpolation = 1;
                     }
@@ -114,17 +114,17 @@ module wd{
                     startFrameData = startFrameDataMap.getChild(<any>target.target);
 
                 switch (target.target){
-                    case ArticulatedAnimationTarget.TRANSLATION:
+                    case EArticulatedAnimationTarget.TRANSLATION:
                         transform.position = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
-                    case ArticulatedAnimationTarget.ROTATION:
+                    case EArticulatedAnimationTarget.ROTATION:
                         transform.rotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
                         break;
-                    case ArticulatedAnimationTarget.SCALE:
+                    case EArticulatedAnimationTarget.SCALE:
                         transform.scale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
                         break;
                 }
 
@@ -166,17 +166,17 @@ module wd{
                 var startFrameData = null;
 
                 switch (target.target){
-                    case ArticulatedAnimationTarget.TRANSLATION:
+                    case EArticulatedAnimationTarget.TRANSLATION:
                         startFrameData = transform.position;
                         break;
-                    case ArticulatedAnimationTarget.ROTATION:
+                    case EArticulatedAnimationTarget.ROTATION:
                         startFrameData = transform.rotation;
                         break;
-                    case ArticulatedAnimationTarget.SCALE:
+                    case EArticulatedAnimationTarget.SCALE:
                         startFrameData = transform.scale;
                         break;
                     default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
                         break;
                 }
 
@@ -221,19 +221,19 @@ module wd{
             });
         }
 
-        private _setTargetData(target:ArticulatedAnimationTarget, transform:ThreeDTransform, data:any){
+        private _setTargetData(target:EArticulatedAnimationTarget, transform:ThreeDTransform, data:any){
             switch (target){
-                case ArticulatedAnimationTarget.TRANSLATION:
+                case EArticulatedAnimationTarget.TRANSLATION:
                     transform.position = data;
                     break;
-                case ArticulatedAnimationTarget.ROTATION:
+                case EArticulatedAnimationTarget.ROTATION:
                     transform.rotation = data;
                     break;
-                case ArticulatedAnimationTarget.SCALE:
+                case EArticulatedAnimationTarget.SCALE:
                     transform.scale = data;
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target}`));
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target}`));
                     break;
             }
         }
@@ -243,13 +243,13 @@ module wd{
 
     export type ArticulatedAnimationFrameData = {
         time:number,
-        interpolationMethod:KeyFrameInterpolation,
+        interpolationMethod:EKeyFrameInterpolation,
 
         targets:wdCb.Collection<ArticulatedAnimationFrameTargetData>
     }
 
     export type ArticulatedAnimationFrameTargetData = {
-        target:ArticulatedAnimationTarget,
+        target:EArticulatedAnimationTarget,
         data:any
     }
 }

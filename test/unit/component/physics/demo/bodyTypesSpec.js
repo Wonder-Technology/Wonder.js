@@ -13,7 +13,7 @@ describe("physics bodyTypes demo", function () {
         director = wd.Director.getInstance();
 
 
-        physicsTool.setEngineType(wd.PhysicsEngineType.CANNON);
+        physicsTool.setEngineType(wd.EPhysicsEngineType.CANNON);
 
         physicsTool.setStartTime(sandbox, 0);
 

@@ -37,7 +37,7 @@ module wd {
 
         public context:any = null;
         public isClearCanvas:boolean = false;
-        public state:UIRendererState = UIRendererState.NORMAL;
+        public state:EUIRendererState = EUIRendererState.NORMAL;
         public canvas:HTMLCanvasElement = null;
 
         private _referenceList:wdCb.Collection<UIObject> = wdCb.Collection.create<UIObject>();

@@ -9,7 +9,7 @@ var sample;
 (function (sample) {
     var Button = wd.Button;
     var PlainFont = wd.PlainFont;
-    var ButtonObjectName = wd.ButtonObjectName;
+    var EButtonObjectName = wd.EButtonObjectName;
     var LoaderManager = wd.LoaderManager;
     var Image = wd.Image;
     var ColorButtonScript2 = (function () {
@@ -28,11 +28,11 @@ var sample;
             console.log("click");
         };
         ColorButtonScript2.prototype._setText = function () {
-            var font = this._entityObject.getComponent(Button).getObject(ButtonObjectName.TEXT).getComponent(PlainFont);
+            var font = this._entityObject.getComponent(Button).getObject(EButtonObjectName.TEXT).getComponent(PlainFont);
             font.fontSize = 30;
         };
         ColorButtonScript2.prototype._setBackground = function () {
-            var image = this._entityObject.getComponent(Button).getObject(ButtonObjectName.BACKGROUND).getComponent(Image);
+            var image = this._entityObject.getComponent(Button).getObject(EButtonObjectName.BACKGROUND).getComponent(Image);
             image.source = LoaderManager.getInstance().get("normal");
         };
         ColorButtonScript2 = __decorate([

@@ -1,5 +1,5 @@
 module wd{
-    export enum TransitionMode{
+    export enum ETransitionMode{
         SPRITE,
         COLOR
     }

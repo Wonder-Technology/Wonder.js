@@ -5,7 +5,7 @@ describe("Button", function() {
     var uiObject;
     var director;
     var renderer;
-    var ObjectName = wd.ButtonObjectName;
+    var ObjectName = wd.EButtonObjectName;
 
     function setWidth(width) {
         uiObject.transform.width = width;
@@ -192,8 +192,8 @@ describe("Button", function() {
                             expect(font._fillStyle).toEqual("#000000");
                         });
                         it("text->alignment is center", function(){
-                            expect(font.xAlignment).toEqual(wd.FontXAlignment.CENTER);
-                            expect(font.yAlignment).toEqual(wd.FontYAlignment.MIDDLE);
+                            expect(font.xAlignment).toEqual(wd.EFontXAlignment.CENTER);
+                            expect(font.yAlignment).toEqual(wd.EFontYAlignment.MIDDLE);
                         });
                         it("text->draw position equal button->draw position", function(){
                             expect(testTool.getValues(fontObject.transform.position)).toEqual([10, 20]);
@@ -286,8 +286,8 @@ describe("Button", function() {
                         var font = getFontObject().getComponent(wd.PlainFont);
                         expect(font.text).toEqual("a");
                         expect(font._fillEnabled).toBeTruthy();
-                        expect(font.xAlignment).toEqual(wd.FontXAlignment.CENTER);
-                        expect(font.yAlignment).toEqual(wd.FontYAlignment.MIDDLE);
+                        expect(font.xAlignment).toEqual(wd.EFontXAlignment.CENTER);
+                        expect(font.yAlignment).toEqual(wd.EFontYAlignment.MIDDLE);
                     });
                     it("add the same UIRenderer of Button", function () {
                         uiObject.init();
@@ -361,7 +361,7 @@ describe("Button", function() {
         describe("bind event", function(){
             var EventManager = wd.EventManager;
             var EngineEvent = wd.EngineEvent;
-            var State = wd.UIState;
+            var State = wd.EUIState;
 
             function trigger(engineEvent){
                 EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
@@ -435,7 +435,7 @@ describe("Button", function() {
     describe("dispose", function(){
         var EventManager = wd.EventManager;
         var EngineEvent = wd.EngineEvent;
-        var State = wd.UIState;
+        var State = wd.EUIState;
 
         function trigger(engineEvent){
             EventManager.trigger(uiObject, wd.CustomEvent.create(engineEvent));
@@ -517,7 +517,7 @@ describe("Button", function() {
                 source = wd.ImageTextureAsset.create({});
                 target = wd.ImageTextureAsset.create({a:1});
 
-                button.transitionMode = wd.TransitionMode.SPRITE;
+                button.transitionMode = wd.ETransitionMode.SPRITE;
             });
 
             describe("if background transition->target === null,", function(){
@@ -548,7 +548,7 @@ describe("Button", function() {
                     director.runUIObjectScene(1);
 
 
-                    button._stateMachine.changeState(wd.UIState.HIGHLIGHT);
+                    button._stateMachine.changeState(wd.EUIState.HIGHLIGHT);
 
                     director.runUIObjectScene(2);
 
@@ -633,7 +633,7 @@ describe("Button", function() {
                 color = wd.Color.create("rgb(1.0, 0.1, 0.0)");
                 target = wd.Color.create("rgb(0.0, 0.0, 1.0)");
 
-                button.transitionMode = wd.TransitionMode.COLOR;
+                button.transitionMode = wd.ETransitionMode.COLOR;
             });
 
             describe("if background transition->target === null,", function(){
@@ -667,7 +667,7 @@ describe("Button", function() {
                     director.runUIObjectScene(1);
 
 
-                    button._stateMachine.changeState(wd.UIState.HIGHLIGHT);
+                    button._stateMachine.changeState(wd.EUIState.HIGHLIGHT);
 
                     director.runUIObjectScene(2);
 
@@ -734,10 +734,10 @@ describe("Button", function() {
         });
 
         it("change state to NORMAL", function(){
-            expect(button.currentState).toEqual(wd.UIState.NORMAL);
+            expect(button.currentState).toEqual(wd.EUIState.NORMAL);
         });
         it("change transition->state", function(){
-            expect(button.transitionManager.changeState.secondCall).toCalledWith(wd.UIState.NORMAL);
+            expect(button.transitionManager.changeState.secondCall).toCalledWith(wd.EUIState.NORMAL);
         });
     });
 
@@ -752,7 +752,7 @@ describe("Button", function() {
             expect(button.isDisabled).toBeTruthy();
         });
         it("change transition->state", function(){
-            expect(button.transitionManager.changeState).toCalledWith(wd.UIState.DISABLED);
+            expect(button.transitionManager.changeState).toCalledWith(wd.EUIState.DISABLED);
         });
     });
 });

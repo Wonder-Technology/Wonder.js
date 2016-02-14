@@ -1,5 +1,5 @@
 module wd{
-    export enum LightModel{
+    export enum ELightModel{
         PHONG = <any>"PHONG",
         BLINN = <any>"BLINN",
         LAMBERT = <any>"LAMBERT",

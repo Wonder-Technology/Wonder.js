@@ -4,7 +4,7 @@ module sample {
     import PlainFont = wd.PlainFont;
     import UIObject = wd.UIObject;
     import MouseEvent = wd.MouseEvent;
-    import ButtonObjectName = wd.ButtonObjectName;
+    import EButtonObjectName = wd.EButtonObjectName;
     import LoaderManager = wd.LoaderManager;
     import Image = wd.Image;
 
@@ -30,13 +30,13 @@ module sample {
         }
 
         private _setText(){
-            var font = this._entityObject.getComponent<Button>(Button).getObject(ButtonObjectName.TEXT).getComponent<PlainFont>(PlainFont);
+            var font = this._entityObject.getComponent<Button>(Button).getObject(EButtonObjectName.TEXT).getComponent<PlainFont>(PlainFont);
 
             font.fontSize = 30;
         }
 
         private _setBackground(){
-            var image = this._entityObject.getComponent<Button>(Button).getObject(ButtonObjectName.BACKGROUND).getComponent<Image>(Image);
+            var image = this._entityObject.getComponent<Button>(Button).getObject(EButtonObjectName.BACKGROUND).getComponent<Image>(Image);
 
             //if set Button->backgroundTransition->normalSprite, background will use it as the source instead of the one setted here
             image.source = LoaderManager.getInstance().get("normal2");

@@ -46,7 +46,7 @@ var physicsTool = (function () {
         setEngineType: function (type) {
             var director = wd.Director.getInstance();
 
-            director.scene.physics.engine = type || wd.PhysicsEngineType.CANNON;
+            director.scene.physics.engine = type || wd.EPhysicsEngineType.CANNON;
         },
         setPhysicsSetting: function (setting) {
             var director = wd.Director.getInstance();

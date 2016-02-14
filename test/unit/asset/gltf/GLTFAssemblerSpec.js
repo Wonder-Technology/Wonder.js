@@ -470,7 +470,7 @@ describe("GLTFAssembler", function () {
                                     sandbox.stub(wd.Log, "log");
                                     setMaterial({
                                         type:"LightMaterial",
-                                        lightModel:wd.LightModel.LAMBERT
+                                        lightModel:wd.ELightModel.LAMBERT
                                     });
 
 
@@ -481,12 +481,12 @@ describe("GLTFAssembler", function () {
 
                                     expect(wd.Log.log).toCalledOnce();
                                     var material = getMaterial(data);
-                                    expect(material.lightModel).toEqual(wd.LightModel.PHONG);
+                                    expect(material.lightModel).toEqual(wd.ELightModel.PHONG);
                                 });
                                 it("else, set lightModel", function () {
                                     setMaterial({
                                         type:"LightMaterial",
-                                        lightModel:wd.LightModel.CONSTANT
+                                        lightModel:wd.ELightModel.CONSTANT
                                     });
 
 
@@ -496,7 +496,7 @@ describe("GLTFAssembler", function () {
 
 
                                     var material = getMaterial(data);
-                                    expect(material.lightModel).toEqual(wd.LightModel.CONSTANT);
+                                    expect(material.lightModel).toEqual(wd.ELightModel.CONSTANT);
                                 });
                             });
                         });
@@ -520,10 +520,10 @@ describe("GLTFAssembler", function () {
                             "animation_0": wdCb.Collection.create([
                                 {
                                     time: 1000,
-                                    interpolationMethod: wd.KeyFrameInterpolation.LINEAR,
+                                    interpolationMethod: wd.EKeyFrameInterpolation.LINEAR,
                                     targets: wdCb.Collection.create([
                                         {
-                                            target: wd.ArticulatedAnimationTarget.TRANSLATION,
+                                            target: wd.EArticulatedAnimationTarget.TRANSLATION,
                                             data: wd.Vector3.create(1, 1, 0)
                                         }
                                     ])

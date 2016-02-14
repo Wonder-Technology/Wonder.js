@@ -1,5 +1,5 @@
 module wd{
-    export enum FontYAlignment{
+    export enum EFontYAlignment{
         TOP,
         MIDDLE,
         BOTTOM

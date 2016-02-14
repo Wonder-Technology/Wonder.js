@@ -30,7 +30,7 @@ module wd {
         }
 
         private _isDirty() {
-            return this._uiObject.getComponent<UIRenderer>(UIRenderer).state === UIRendererState.DIRTY;
+            return this._uiObject.getComponent<UIRenderer>(UIRenderer).state === EUIRendererState.DIRTY;
         }
     }
 }

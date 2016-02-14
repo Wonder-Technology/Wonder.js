@@ -15,13 +15,13 @@ module wd{
         }
 
         get currentState(){
-            return this._stateHistory.top || UIState.NORMAL;
+            return this._stateHistory.top || EUIState.NORMAL;
         }
 
         private _ui:InteractionUI = null;
-        private _stateHistory:wdCb.Stack<UIState> = wdCb.Stack.create<UIState>();
+        private _stateHistory:wdCb.Stack<EUIState> = wdCb.Stack.create<EUIState>();
 
-        public changeState(state:UIState){
+        public changeState(state:EUIState){
             this._stateHistory.push(state);
 
             this.transitionManager.changeState(state);
@@ -29,14 +29,14 @@ module wd{
         }
 
         public backState(){
-            var lastState:UIState = null;
+            var lastState:EUIState = null;
 
             this._stateHistory.pop();
 
             lastState = this._stateHistory.top;
 
             if(!lastState){
-                lastState = UIState.NORMAL;
+                lastState = EUIState.NORMAL;
             }
 
             this.transitionManager.changeState(lastState);

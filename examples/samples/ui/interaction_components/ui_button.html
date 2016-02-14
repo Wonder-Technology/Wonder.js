@@ -78,9 +78,9 @@
             button.text = "I'm a button";
 
 
-            button.transitionMode = wd.TransitionMode.SPRITE;
+            button.transitionMode = wd.ETransitionMode.SPRITE;
 
-            var backgroundTransition = button.getObjectTransition(wd.ButtonObjectName.BACKGROUND);
+            var backgroundTransition = button.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
 
 //            backgroundTransition.normalSprite = wd.LoaderManager.getInstance().get("normal");
             backgroundTransition.highlightSprite = wd.LoaderManager.getInstance().get("highlight");
@@ -119,9 +119,9 @@
             button.text = "I'm a button";
 
 
-            button.transitionMode = wd.TransitionMode.COLOR;
+            button.transitionMode = wd.ETransitionMode.COLOR;
 
-            var backgroundTransition = button.getObjectTransition(wd.ButtonObjectName.BACKGROUND);
+            var backgroundTransition = button.getObjectTransition(wd.EButtonObjectName.BACKGROUND);
 
 //            backgroundTransition.normalColor = wd.Color.create("rgba(255, 0, 0, 0.2)");
             backgroundTransition.highlightColor = wd.Color.create("rgb(0, 255, 0)");

@@ -75,7 +75,7 @@ module wd{
             this._opacity = opacity;
         }
 
-        public lightModel:LightModel = LightModel.PHONG;
+        public lightModel:ELightModel = ELightModel.PHONG;
 
         public twoDShadowMapDatas:wdCb.Collection<TwoDShadowMapData> = wdCb.Collection.create<TwoDShadowMapData>();
         public cubemapShadowMapDatas:wdCb.Collection<CubemapShadowMapData> = wdCb.Collection.create<CubemapShadowMapData>();

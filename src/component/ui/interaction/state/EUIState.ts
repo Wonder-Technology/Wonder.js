@@ -1,5 +1,5 @@
 module wd{
-    export enum UIState{
+    export enum EUIState{
         NORMAL,
         HIGHLIGHT,
         PRESSED,

@@ -134,16 +134,16 @@ module wd{
             }]);
         }
 
-        @require(function(lightModel:LightModel){
-            assert(lightModel !== LightModel.LAMBERT, Log.info.FUNC_SHOULD_NOT("lightModel", "=== LightModel.LAMBERT"));
+        @require(function(lightModel:ELightModel){
+            assert(lightModel !== ELightModel.LAMBERT, Log.info.FUNC_SHOULD_NOT("lightModel", "=== ELightModel.LAMBERT"));
         })
-        private _convertLightModelToGLSLVariable(lightModel:LightModel){
+        private _convertLightModelToGLSLVariable(lightModel:ELightModel){
             switch (lightModel){
-                case LightModel.BLINN:
+                case ELightModel.BLINN:
                     return 1;
-                case LightModel.PHONG:
+                case ELightModel.PHONG:
                     return 2;
-                case LightModel.CONSTANT:
+                case ELightModel.CONSTANT:
                     return 3;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`lightModel:${lightModel}`));

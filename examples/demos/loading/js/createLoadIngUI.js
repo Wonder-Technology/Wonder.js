@@ -110,7 +110,7 @@ var loadingUI = (function(){
         bitmapFont.text = "loading:";
         bitmapFont.fntId = "myFont_fnt";
         bitmapFont.bitmapId = "myFont_image";
-        bitmapFont.xAlignment = wd.FontXAlignment.CENTER;
+        bitmapFont.xAlignment = wd.EFontXAlignment.CENTER;
 
 
         var uiObject = wd.UIObject.create();

@@ -1,10 +1,10 @@
 module wd{
     export class PhysicsEngineFactory{
-        public static create(type:PhysicsEngineType){
+        public static create(type:EPhysicsEngineType){
             var result:IPhysicsEngineAdapter = null;
 
             switch (type){
-                case PhysicsEngineType.CANNON:
+                case EPhysicsEngineType.CANNON:
                     result = CannonAdapter.create();
                     break;
                 default:

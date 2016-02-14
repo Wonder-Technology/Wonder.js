@@ -11,18 +11,18 @@ module wd{
         public pressedColor:Color = null;
         public disabledColor:Color = null;
 
-        public changeState(state:UIState){
+        public changeState(state:EUIState){
             switch (state){
-                case UIState.NORMAL:
+                case EUIState.NORMAL:
                     this.target = this.normalColor;
                     break;
-                case UIState.HIGHLIGHT:
+                case EUIState.HIGHLIGHT:
                     this.target = this.highlightColor;
                     break;
-                case UIState.PRESSED:
+                case EUIState.PRESSED:
                     this.target = this.pressedColor;
                     break;
-                case UIState.DISABLED:
+                case EUIState.DISABLED:
                     this.target = this.disabledColor;
                     break;
                 default:
