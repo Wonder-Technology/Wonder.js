@@ -10,7 +10,7 @@ module wd{
         public colors:Array<number> = null;
         public texCoords:Array<number> = null;
         public faces:Array<Face3> = null;
-        public morphTargets:wdCb.Hash<DYFileParseMorphTargetsData> = null;
+        public morphTargets:wdCb.Hash<MorphTargetsData> = null;
         public morphFaceNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
         public morphVertexNormals:wdCb.Hash<wdCb.Collection<Array<number>>> = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
@@ -81,7 +81,7 @@ module wd{
             return CommonBufferContainer.create(this.entityObject);
         }
 
-        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<DYFileParseMorphTargetsData>):GeometryData{
+        protected createGeometryData(vertices:Array<number>, faces:Array<Face3>, texCoords:Array<number>, colors:Array<number>, morphTargets:wdCb.Hash<MorphTargetsData>):GeometryData{
             if(this.hasAnimation()){
                 let geometryData = MorphGeometryData.create(this);
 

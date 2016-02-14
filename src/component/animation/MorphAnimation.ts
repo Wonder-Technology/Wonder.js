@@ -110,5 +110,7 @@ module wd{
             this._oldTime = elapsedTime;
         }
     }
+
+    export type MorphTargetsData = wdCb.Collection<Array<number>>
 }
 
