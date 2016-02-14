@@ -19,13 +19,13 @@ module wd{
         }
 
         public generateMipmaps:boolean = true;
-        public sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
-        public format:TextureFormat = TextureFormat.RGBA;
+        public sourceRegionMethod:ETextureSourceRegionMethod = ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        public format:ETextureFormat = ETextureFormat.RGBA;
         public source:any = TextureAsset.defaultTexture;
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
         public sourceRegion:RectRegion = null;
 
-        public sourceRegionMapping:TextureSourceRegionMapping = TextureSourceRegionMapping.CANVAS;
+        public sourceRegionMapping:ETextureSourceRegionMapping = ETextureSourceRegionMapping.CANVAS;
 
         public flipY:boolean = true;
         public premultiplyAlpha:boolean = false;
@@ -33,11 +33,11 @@ module wd{
 
         //todo extract TextureDefault class to save default setting?
 
-        public wrapS:TextureWrapMode = TextureWrapMode.CLAMP_TO_EDGE;
-        public wrapT:TextureWrapMode = TextureWrapMode.CLAMP_TO_EDGE;
-        public magFilter:TextureFilterMode = TextureFilterMode.LINEAR;
-        public minFilter:TextureFilterMode = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
-        public type:TextureType = TextureType.UNSIGNED_BYTE;
+        public wrapS:ETextureWrapMode = ETextureWrapMode.CLAMP_TO_EDGE;
+        public wrapT:ETextureWrapMode = ETextureWrapMode.CLAMP_TO_EDGE;
+        public magFilter:ETextureFilterMode = ETextureFilterMode.LINEAR;
+        public minFilter:ETextureFilterMode = ETextureFilterMode.LINEAR_MIPMAP_LINEAR;
+        public type:ETextureType = ETextureType.UNSIGNED_BYTE;
         public mipmaps:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public anisotropy:number = 0;
         public needUpdate:boolean = true;
@@ -61,7 +61,7 @@ module wd{
             cubemapFaceTexture.premultiplyAlpha = this.premultiplyAlpha;
             cubemapFaceTexture.unpackAlignment = this.unpackAlignment;
             cubemapFaceTexture.needUpdate = this.needUpdate;
-            cubemapFaceTexture.mode = EnvMapMode.BASIC;
+            cubemapFaceTexture.mode = EEnvMapMode.BASIC;
         }
 
         public copyTo(texture:BasicTexture){

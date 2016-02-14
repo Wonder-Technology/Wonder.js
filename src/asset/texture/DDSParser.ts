@@ -93,15 +93,15 @@ module wd{
             switch ( fourCC ) {
                 case FOURCC_DXT1:
                     blockBytes = 8;
-                    dds.format = TextureFormat.RGB_S3TC_DXT1;
+                    dds.format = ETextureFormat.RGB_S3TC_DXT1;
                     break;
                 case FOURCC_DXT3:
                     blockBytes = 16;
-                    dds.format = TextureFormat.RGBA_S3TC_DXT3;
+                    dds.format = ETextureFormat.RGBA_S3TC_DXT3;
                     break;
                 case FOURCC_DXT5:
                     blockBytes = 16;
-                    dds.format = TextureFormat.RGBA_S3TC_DXT5;
+                    dds.format = ETextureFormat.RGBA_S3TC_DXT5;
                     break;
                 default:
                     if ( header[off_RGBBitCount] == 32
@@ -111,7 +111,7 @@ module wd{
                         && header[off_ABitMask]&0xff000000  ) {
                         isRGBAUncompressed = true;
                         blockBytes = 64;
-                        dds.format = TextureFormat.RGBA;
+                        dds.format = ETextureFormat.RGBA;
                     }
                     else {
                         Log.error(true, "Unsupported FourCC code " + this._int32ToFourCC( fourCC ) );
@@ -227,7 +227,7 @@ module wd{
         public mipmaps:wdCb.Collection<CompressedTextureMipmap> = wdCb.Collection.create<CompressedTextureMipmap>();
         public width:number = 0;
         public height:number = 0;
-        public format:TextureFormat = null;
+        public format:ETextureFormat = null;
         public mipmapCount:number = 1;
         public isCubemap:boolean = false;
     }

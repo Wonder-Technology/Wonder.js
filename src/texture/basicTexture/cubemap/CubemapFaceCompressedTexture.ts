@@ -9,7 +9,7 @@ module wd{
         }
 
         public mipmaps:wdCb.Collection<CompressedTextureMipmap> = null;
-        public minFilter:TextureFilterMode = null;
+        public minFilter:ETextureFilterMode = null;
 
         public initWhenCreate(asset:CompressedTextureAsset){
             asset.copyToCubemapFaceTexture(this);

@@ -39,8 +39,8 @@ var tool = {
     },
     createGround: function () {
         var map = wd.LoaderManager.getInstance().get("ground").toTexture();
-        map.wrapS = wd.TextureWrapMode.REPEAT;
-        map.wrapT = wd.TextureWrapMode.REPEAT;
+        map.wrapS = wd.ETextureWrapMode.REPEAT;
+        map.wrapT = wd.ETextureWrapMode.REPEAT;
         map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 

@@ -9,9 +9,9 @@ module wd{
         }
 
         get sourceRegionMethod(){
-            Log.assert(this.p_sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support TextureSourceRegionMethod.DRAW_IN_CANVAS, will use TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
+            Log.assert(this.p_sourceRegionMethod === ETextureSourceRegionMethod.DRAW_IN_CANVAS, "compressed texture not support ETextureSourceRegionMethod.DRAW_IN_CANVAS, will use ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL instead");
 
-            return TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+            return ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         }
 
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {

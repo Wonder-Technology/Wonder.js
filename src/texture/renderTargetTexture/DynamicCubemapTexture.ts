@@ -26,7 +26,7 @@ module wd {
         public size:number = 256;
         public near:number = 0.1;
         public far:number = 100;
-        public mode:EnvMapMode = null;
+        public mode:EEnvMapMode = null;
 
         public init() {
             super.init();

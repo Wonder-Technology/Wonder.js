@@ -77,7 +77,7 @@ describe("DynamicCubemapTexture", function() {
         it("send texture sampler", function () {
             var pos1 = 100;
             program.getUniformLocation.onCall(0).returns(pos1);
-            texture.mode = wd.EnvMapMode.REFLECTION;
+            texture.mode = wd.EEnvMapMode.REFLECTION;
             var material = wd.BasicMaterial.create();
             material.envMap = texture;
 

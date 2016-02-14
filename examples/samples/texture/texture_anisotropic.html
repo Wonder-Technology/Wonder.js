@@ -34,7 +34,7 @@
 
         function createPlane() {
             var map = wd.LoaderManager.getInstance().get("texture").toTexture();
-            map.wrapS = map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.wrapS = map.wrapT = wd.ETextureWrapMode.REPEAT;
             map.repeatRegion = wd.RectRegion.create(0, 0, 512, 512);
             /*!annotate this line to see the difference*/
             map.anisotropy = wd.GPUDetector.getInstance().maxAnisotropy;

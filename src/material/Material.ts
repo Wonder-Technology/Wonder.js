@@ -138,7 +138,7 @@ module wd {
         public shading = Shading.FLAT;
         public refractionRatio:number = 0;
         public reflectivity:number = null;
-        public mapCombineMode:TextureCombineMode = TextureCombineMode.MIX;
+        public mapCombineMode:ETextureCombineMode = ETextureCombineMode.MIX;
         public mapMixRatio:number = 0.5;
         public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;

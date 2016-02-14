@@ -70,10 +70,10 @@
              when sourceRegionMethod is DRAW_IN_CANVAS, it can repeat
              */
             map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
-            map.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+            map.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
             map.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-            map.wrapS = wd.TextureWrapMode.REPEAT;
-            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.wrapS = wd.ETextureWrapMode.REPEAT;
+            map.wrapT = wd.ETextureWrapMode.REPEAT;
 
 
             var material = wd.BasicMaterial.create();

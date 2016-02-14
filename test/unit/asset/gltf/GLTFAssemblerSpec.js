@@ -92,7 +92,7 @@ describe("GLTFAssembler", function () {
                 var data = builder.build(parseData);
 
                 var model = getSingleModel(data);
-                expect(model.hasTag(wd.WDTag.CONTAINER)).toBeFalsy();
+                expect(model.hasTag(wd.EWDTag.CONTAINER)).toBeFalsy();
 
 
 
@@ -105,7 +105,7 @@ describe("GLTFAssembler", function () {
                 var data = builder.build(parseData);
 
                 var model = getSingleModel(data);
-                expect(model.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
+                expect(model.hasTag(wd.EWDTag.CONTAINER)).toBeTruthy();
             });
             it("build children", function () {
                 var data1 = {

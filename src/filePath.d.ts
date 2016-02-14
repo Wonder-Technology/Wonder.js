@@ -382,7 +382,7 @@
 /// <reference path="material/MapManager"/>
 
 
-/// <reference path="asset/AssetType"/>
+/// <reference path="asset/EAssetType"/>
 
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
@@ -399,15 +399,15 @@
 /// <reference path="asset/texture/ImageTextureAsset"/>
 /// <reference path="asset/texture/VideoTextureAsset"/>
 /// <reference path="asset/texture/CompressedTextureAsset"/>
-/// <reference path="asset/texture/TextureFilterMode"/>
-/// <reference path="asset/texture/TextureWrapMode"/>
-/// <reference path="asset/texture/TextureFormat"/>
-/// <reference path="asset/texture/TextureType"/>
-/// <reference path="asset/texture/EnvMapMode"/>
-/// <reference path="asset/texture/TextureCombineMode"/>
-/// <reference path="asset/texture/TextureSourceRegionMapping"/>
-/// <reference path="asset/texture/TextureSourceRegionMethod"/>
-/// <reference path="asset/texture/TextureTarget"/>
+/// <reference path="asset/texture/ETextureFilterMode"/>
+/// <reference path="asset/texture/ETextureWrapMode"/>
+/// <reference path="asset/texture/ETextureFormat"/>
+/// <reference path="asset/texture/ETextureType"/>
+/// <reference path="asset/texture/EEnvMapMode"/>
+/// <reference path="asset/texture/ETextureCombineMode"/>
+/// <reference path="asset/texture/ETextureSourceRegionMapping"/>
+/// <reference path="asset/texture/ETextureSourceRegionMethod"/>
+/// <reference path="asset/texture/ETextureTarget"/>
 /// <reference path="asset/LoaderManager"/>
 /// <reference path="asset/LoaderFactory"/>
 
@@ -420,7 +420,7 @@
 /// <reference path="asset/gltf/GLTFArticulatedAnimationParser"/>
 /// <reference path="asset/gltf/GLTFUtils"/>
 
-/// <reference path="asset/wd/WDTag"/>
+/// <reference path="asset/wd/EWDTag"/>
 /// <reference path="asset/wd/WDFileType"/>
 /// <reference path="asset/wd/WDLoader"/>
 /// <reference path="asset/wd/WDParser"/>

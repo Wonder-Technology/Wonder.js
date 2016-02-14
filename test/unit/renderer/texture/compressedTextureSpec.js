@@ -124,13 +124,13 @@ describe("compressed texture", function() {
                     it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(done){
                         loadCompressedTexture(function(texture){
                             texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                            texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                            texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
                             sandbox.stub(wd.Log, "assert");
 
                             texture.update(0);
 
                             expect(wd.Log.assert).toCalled();
-                            expect(texture.sourceRegionMethod).toEqual(wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                            expect(texture.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
 
                             done();
                         });
@@ -183,7 +183,7 @@ describe("compressed texture", function() {
                 });
                 it("if format is RGBA, use texImage2D", function(done){
                     loadCompressedTexture(function(texture){
-                        texture.format = wd.TextureFormat.RGBA;
+                        texture.format = wd.ETextureFormat.RGBA;
                         texture.mipmaps.removeAllChildren();
 
                         var mipmap1 = buildMipmap();

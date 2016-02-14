@@ -3,20 +3,20 @@ module wd{
         width:number;
         height:number;
         generateMipmaps:boolean;
-        sourceRegionMethod:TextureSourceRegionMethod;
-        format:TextureFormat;
+        sourceRegionMethod:ETextureSourceRegionMethod;
+        format:ETextureFormat;
         source:any;
         repeatRegion:RectRegion;
         sourceRegion:RectRegion;
-        sourceRegionMapping:TextureSourceRegionMapping;
+        sourceRegionMapping:ETextureSourceRegionMapping;
         flipY:boolean;
         premultiplyAlpha:boolean;
         unpackAlignment:number;
-        wrapS:TextureWrapMode;
-        wrapT:TextureWrapMode;
-        magFilter:TextureFilterMode;
-        minFilter:TextureFilterMode;
-        type:TextureType;
+        wrapS:ETextureWrapMode;
+        wrapT:ETextureWrapMode;
+        magFilter:ETextureFilterMode;
+        minFilter:ETextureFilterMode;
+        type:ETextureType;
         mipmaps:wdCb.Collection<any>;
         anisotropy:number;
         needUpdate:boolean;
@@ -26,31 +26,31 @@ module wd{
         generateMipmaps:boolean;
         width:number;
         height:number;
-        minFilter:TextureFilterMode;
-        magFilter:TextureFilterMode;
-        wrapS:TextureWrapMode;
-        wrapT:TextureWrapMode;
+        minFilter:ETextureFilterMode;
+        magFilter:ETextureFilterMode;
+        wrapS:ETextureWrapMode;
+        wrapT:ETextureWrapMode;
         anisotropy:number;
         premultiplyAlpha:boolean;
         unpackAlignment:number;
         needUpdate:boolean;
-        mode:EnvMapMode;
+        mode:EEnvMapMode;
     }
 
     export interface ICubemapFaceCompressedTextureAsset {
-        type:TextureType;
-        format:TextureFormat;
+        type:ETextureType;
+        format:ETextureFormat;
         width:number;
         height:number;
         mipmaps:wdCb.Collection<CompressedTextureMipmap>;
-        minFilter:TextureFilterMode;
+        minFilter:ETextureFilterMode;
     }
 
     export interface ICubemapFaceTwoDTextureAsset {
         sourceRegion:RectRegion;
-        sourceRegionMethod:TextureSourceRegionMethod;
-        type:TextureType;
-        format:TextureFormat;
+        sourceRegionMethod:ETextureSourceRegionMethod;
+        type:ETextureType;
+        format:ETextureFormat;
         width:number;
         height:number;
         source:any;

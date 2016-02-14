@@ -82,11 +82,11 @@ describe("BasicTexture", function() {
                 texture.width = 100;
                 texture.height = 100;
 
-                texture.sourceRegionMethod = wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+                texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
             });
 
             it("if sourceRegion is based on canvas coordinate system, convert it to webgl coordinate stystem", function(){
-                texture.sourceRegionMapping = wd.TextureSourceRegionMapping.CANVAS;
+                texture.sourceRegionMapping = wd.ETextureSourceRegionMapping.CANVAS;
                 texture.sourceRegion = wd.RectRegion.create(10, 20, 50, 40);
 
                 texture.sendData(program, 0);
@@ -94,7 +94,7 @@ describe("BasicTexture", function() {
                 expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
             });
             it("else, directly set it", function(){
-                texture.sourceRegionMapping = wd.TextureSourceRegionMapping.UV;
+                texture.sourceRegionMapping = wd.ETextureSourceRegionMapping.UV;
                 texture.sourceRegion = wd.RectRegion.create(0.1, 0.1, 0.5, 0.6);
 
                 texture.sendData(program, 0);

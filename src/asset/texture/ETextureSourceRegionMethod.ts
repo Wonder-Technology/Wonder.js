@@ -1,5 +1,5 @@
 module wd{
-    export enum TextureSourceRegionMethod{
+    export enum ETextureSourceRegionMethod{
         CHANGE_TEXCOORDS_IN_GLSL,
         DRAW_IN_CANVAS
     }

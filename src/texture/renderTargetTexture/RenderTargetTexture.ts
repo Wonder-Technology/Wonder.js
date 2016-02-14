@@ -5,10 +5,10 @@ module wd {
         public init(){
             //todo support mipmap?
             //this.generateMipmaps = false;
-            this.minFilter = TextureFilterMode.LINEAR;
-            this.magFilter = TextureFilterMode.LINEAR;
-            this.wrapS = TextureWrapMode.CLAMP_TO_EDGE;
-            this.wrapT = TextureWrapMode.CLAMP_TO_EDGE;
+            this.minFilter = ETextureFilterMode.LINEAR;
+            this.magFilter = ETextureFilterMode.LINEAR;
+            this.wrapS = ETextureWrapMode.CLAMP_TO_EDGE;
+            this.wrapT = ETextureWrapMode.CLAMP_TO_EDGE;
 
             return this;
         }

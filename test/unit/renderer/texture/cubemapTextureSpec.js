@@ -151,7 +151,7 @@ describe("cubemap texture", function() {
                 height:200
             });
             var region = wd.RectRegion.create(0, 0, 200, 200);
-            var type = wd.TextureType.UNSIGNED_SHORT_4_4_4_4;
+            var type = wd.ETextureType.UNSIGNED_SHORT_4_4_4_4;
 
             var texture = wd.CubemapTexture.create([
                 {asset:commonAsset},
@@ -206,7 +206,7 @@ describe("cubemap texture", function() {
         describe("if is all compressed cube face textures", function(){
             it("generateMipmaps is false", function(){
                 var asset = wd.CompressedTextureAsset.create();
-                asset.minFilter = wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                asset.minFilter = wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR;
 
                 var texture = wd.CubemapTexture.create([
                     {asset:asset},
@@ -218,13 +218,13 @@ describe("cubemap texture", function() {
                 ]);
 
                 expect(texture.generateMipmaps).toBeFalsy();
-                expect(texture.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                expect(texture.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
             });
             it("if there is one no mipmap asset at least, minFilter will convert to be non-mipmap filter", function(){
                 var asset = wd.CompressedTextureAsset.create();
-                asset.minFilter = wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                asset.minFilter = wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR;
                 var asset2 = wd.CompressedTextureAsset.create();
-                asset2.minFilter = wd.TextureFilterMode.LINEAR;
+                asset2.minFilter = wd.ETextureFilterMode.LINEAR;
 
                 var texture = wd.CubemapTexture.create([
                     {asset:asset},
@@ -236,7 +236,7 @@ describe("cubemap texture", function() {
                 ]);
 
                 expect(texture.generateMipmaps).toBeFalsy();
-                expect(texture.minFilter).toEqual(wd.TextureFilterMode.LINEAR);
+                expect(texture.minFilter).toEqual(wd.ETextureFilterMode.LINEAR);
             });
         });
         it("else, generateMipmaps is true", function(){
@@ -308,13 +308,13 @@ describe("cubemap texture", function() {
 
             it("only support DRAW_IN_CANVAS", function(){
                 texture.textures.forEach(function(face){
-                    expect(face.sourceRegionMethod).toEqual(wd.TextureSourceRegionMethod.DRAW_IN_CANVAS);
+                    expect(face.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS);
                 });
             });
             it("if set it to be not DRAW_IN_CANVAS, error", function(){
                 texture.textures.forEach(function(face){
                     expect(function() {
-                        face.sourceRegionMethod = wd.TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
+                        face.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL
                     }).toThrow();
                 });
             });
@@ -448,7 +448,7 @@ describe("cubemap texture", function() {
 
                     loadCompressedTexture(function(texture){
                         //texture.sourceRegion = wd.RectRegion.create(0, 0, 128, 128);
-                        //texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                        //texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
 
                         texture.update(0);
 
@@ -496,16 +496,16 @@ describe("cubemap texture", function() {
                          when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
                          */
                         texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-                        texture.wrapS = wd.TextureWrapMode.REPEAT;
-                        texture.wrapT = wd.TextureWrapMode.REPEAT;
+                        texture.wrapS = wd.ETextureWrapMode.REPEAT;
+                        texture.wrapT = wd.ETextureWrapMode.REPEAT;
 
                         texture.update(0);
 
                         expect(gl.texImage2D.callCount).toEqual(6);
                         expect(gl.texImage2D.firstCall).toCalledWith(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
                         expect(gl.texImage2D.secondCall).toCalledWith(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
-                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.TextureWrapMode.REPEAT);
-                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.TextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.ETextureWrapMode.REPEAT);
+                        expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.ETextureWrapMode.REPEAT);
 
                         texture.sendData(program, 0);
 
@@ -550,7 +550,7 @@ describe("cubemap texture", function() {
 
                         done();
                     }, function(asset){
-                        asset.format = wd.TextureFormat.RGBA;
+                        asset.format = wd.ETextureFormat.RGBA;
                         asset.mipmaps.removeAllChildren();
 
                         asset.mipmaps.addChild(mipmap1);
@@ -643,7 +643,7 @@ describe("cubemap texture", function() {
             load2DTexture(function(texture){
                 texture.update(0);
 
-                expect(gl.texParameteri.withArgs(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[wd.TextureFilterMode.LINEAR])).toCalledOnce()
+                expect(gl.texParameteri.withArgs(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[wd.ETextureFilterMode.LINEAR])).toCalledOnce()
                 expect(gl.generateMipmap).not.toCalled();
 
                 done();

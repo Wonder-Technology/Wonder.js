@@ -125,7 +125,7 @@ describe("BasicMaterial", function () {
 
 
             expect(program.getUniformLocation.withArgs("u_sampler2D1")).toCalledOnce();
-            expect(program.sendUniformData.withArgs("u_combineMode").firstCall.args[2]).toEqual(wd.TextureCombineMode.MIX);
+            expect(program.sendUniformData.withArgs("u_combineMode").firstCall.args[2]).toEqual(wd.ETextureCombineMode.MIX);
             expect(program.sendUniformData.withArgs("u_mixRatio").firstCall.args[2]).toEqual(0.5);
         });
         it("not support more than 2 maps", function () {
@@ -213,14 +213,14 @@ describe("BasicMaterial", function () {
 
         it("if no envMap, return", function () {
             material.envMap = null;
-            envMap.mode = wd.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
 
             expect(material.shader.hasLib(wd.ReflectionForBasicShaderLib)).toBeFalsy();
         });
         it("add normal shader lib", function () {
-            envMap.mode = wd.EnvMapMode.BASIC;
+            envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
             director._loopBody(1);
@@ -233,7 +233,7 @@ describe("BasicMaterial", function () {
             )
         });
         it("if mode is BASIC, add BasicEnvMapForBasicShaderLib", function () {
-            envMap.mode = wd.EnvMapMode.BASIC;
+            envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
 
@@ -245,7 +245,7 @@ describe("BasicMaterial", function () {
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
         });
         it("if mode is REFLECTION, add ReflectionShaderLib", function () {
-            envMap.mode = wd.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
 
@@ -258,7 +258,7 @@ describe("BasicMaterial", function () {
         });
         it("if mode is REFRACTION, add ReflectionShaderLib", function () {
             material.refractionRatio = 0.5;
-            envMap.mode = wd.EnvMapMode.REFRACTION;
+            envMap.mode = wd.EEnvMapMode.REFRACTION;
 
             director._init();
 
@@ -274,7 +274,7 @@ describe("BasicMaterial", function () {
         describe("if mode is FRESNEL, add FresnelForBasicShaderLib", function () {
             it("if reflectivity is setted, send it", function () {
                 material.reflectivity = 0.5;
-                envMap.mode = wd.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
 
@@ -288,7 +288,7 @@ describe("BasicMaterial", function () {
             });
             it("else, send u_reflectivity = NULL and send u_refractionRatio", function () {
                 material.refractionRatio = 0.5;
-                envMap.mode = wd.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
 

@@ -2,8 +2,8 @@ module wd {
     declare var Math:any;
 
     export class BasicTextureUtils extends TextureUtils{
-        public static isDrawPartOfTexture(sourceRegion:RectRegion, sourceRegionMethod:TextureSourceRegionMethod){
-            return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS;
+        public static isDrawPartOfTexture(sourceRegion:RectRegion, sourceRegionMethod:ETextureSourceRegionMethod){
+            return sourceRegion && sourceRegion.isNotEmpty() && sourceRegionMethod === ETextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
 
         public static drawPartOfTextureByCanvas(source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, wd:number, dWidth:number, dHeight:number){

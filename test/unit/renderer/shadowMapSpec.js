@@ -76,8 +76,8 @@ describe("shadow map", function() {
         //function createGround(){
         //    //var map = wd.LoaderManager.getInstance().get("ground").toTexture();
         //    var map = wd.ImageTexture.create();
-        //    map.wrapS = wd.TextureWrapMode.REPEAT;
-        //    map.wrapT = wd.TextureWrapMode.REPEAT;
+        //    map.wrapS = wd.ETextureWrapMode.REPEAT;
+        //    map.wrapT = wd.ETextureWrapMode.REPEAT;
         //    map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
         //
         //
@@ -269,8 +269,8 @@ describe("shadow map", function() {
 
         function createGround(position, eulerAngles) {
             var map = wd.ImageTexture.create();
-            map.wrapS = wd.TextureWrapMode.REPEAT;
-            map.wrapT = wd.TextureWrapMode.REPEAT;
+            map.wrapS = wd.ETextureWrapMode.REPEAT;
+            map.wrapT = wd.ETextureWrapMode.REPEAT;
             map.repeatRegion = wd.RectRegion.create(0.5, 0, 5, 5);
 
 

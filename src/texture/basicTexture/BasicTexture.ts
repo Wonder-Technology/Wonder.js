@@ -2,24 +2,24 @@ module wd{
     declare var Math:any;
 
     export abstract class BasicTexture extends Texture implements ITextureAsset{
-        protected p_sourceRegionMethod:TextureSourceRegionMethod = null;
+        protected p_sourceRegionMethod:ETextureSourceRegionMethod = null;
         get sourceRegionMethod(){
             return this.p_sourceRegionMethod;
         }
-        set sourceRegionMethod(sourceRegionMethod:TextureSourceRegionMethod){
+        set sourceRegionMethod(sourceRegionMethod:ETextureSourceRegionMethod){
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
         public generateMipmaps:boolean = null;
-        public format:TextureFormat = null;
+        public format:ETextureFormat = null;
         public source:any = null;
         public repeatRegion:RectRegion = null;
         public sourceRegion:RectRegion = null;
-        public sourceRegionMapping:TextureSourceRegionMapping = null;
+        public sourceRegionMapping:ETextureSourceRegionMapping = null;
         public flipY:boolean = null;
         public premultiplyAlpha:boolean = null;
         public unpackAlignment:number = null;
-        public type:TextureType = null;
+        public type:ETextureType = null;
         public mipmaps:wdCb.Collection<any> = null;
         public anisotropy:number = null;
         public needUpdate:boolean = null;
@@ -79,7 +79,7 @@ module wd{
         protected sendOtherData(program:Program, unit:number){
             var sourceRegion = null;
 
-            if(this.sourceRegion && this.sourceRegionMethod === TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
+            if(this.sourceRegion && this.sourceRegionMethod === ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
                 sourceRegion = this._convertSourceRegionToUV();
             }
             else{
@@ -149,10 +149,10 @@ module wd{
 
         //todo optimize: add dirty cache
         private _convertSourceRegionToUV(){
-            if(this.sourceRegionMapping === TextureSourceRegionMapping.CANVAS){
+            if(this.sourceRegionMapping === ETextureSourceRegionMapping.CANVAS){
                 return this._convertSourceRegionCanvasMapToUV(this.sourceRegion);
             }
-            else if(this.sourceRegionMapping === TextureSourceRegionMapping.UV){
+            else if(this.sourceRegionMapping === ETextureSourceRegionMapping.UV){
                 return this.sourceRegion;
             }
         }

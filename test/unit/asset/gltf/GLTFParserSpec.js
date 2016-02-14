@@ -911,12 +911,12 @@ describe("GLTFParser", function () {
 
                                         expect(map).toBeInstanceOf(wd.ImageTexture);
                                         expect(map.source).toEqual(image);
-                                        expect(map.format).toEqual(wd.TextureFormat.RGBA);
-                                        expect(map.type).toEqual(wd.TextureType.UNSIGNED_BYTE);
-                                        expect(map.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
-                                        expect(map.magFilter).toEqual(wd.TextureFilterMode.LINEAR);
-                                        expect(map.wrapS).toEqual(wd.TextureWrapMode.REPEAT);
-                                        expect(map.wrapT).toEqual(wd.TextureWrapMode.REPEAT);
+                                        expect(map.format).toEqual(wd.ETextureFormat.RGBA);
+                                        expect(map.type).toEqual(wd.ETextureType.UNSIGNED_BYTE);
+                                        expect(map.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                                        expect(map.magFilter).toEqual(wd.ETextureFilterMode.LINEAR);
+                                        expect(map.wrapS).toEqual(wd.ETextureWrapMode.REPEAT);
+                                        expect(map.wrapT).toEqual(wd.ETextureWrapMode.REPEAT);
                                     });
                                 });
                             });

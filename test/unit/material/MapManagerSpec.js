@@ -20,7 +20,7 @@ describe("MapManager", function() {
     describe("addMap", function(){
         it("test add common texture asset", function(){
             var asset = wd.ImageTextureAsset.create({});
-            asset.format = wd.TextureFormat.RGBA;
+            asset.format = wd.ETextureFormat.RGBA;
 
             manager.addMap(asset);
 
@@ -29,7 +29,7 @@ describe("MapManager", function() {
         });
         it("test add compressed texture asset", function(){
             var asset = wd.CompressedTextureAsset.create({});
-            asset.format = wd.TextureFormat.RGBA;
+            asset.format = wd.ETextureFormat.RGBA;
 
             manager.addMap(asset);
 

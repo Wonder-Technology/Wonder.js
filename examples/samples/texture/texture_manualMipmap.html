@@ -38,8 +38,8 @@
         function createSphere() {
             var canvas = mipmap(128, '#f00');
             var textureCanvas = wd.ImageTexture.create(canvas);
-            textureCanvas.wrapS = wd.TextureWrapMode.REPEAT;
-            textureCanvas.wrapT = wd.TextureWrapMode.REPEAT;
+            textureCanvas.wrapS = wd.ETextureWrapMode.REPEAT;
+            textureCanvas.wrapT = wd.ETextureWrapMode.REPEAT;
             textureCanvas.repeatRegion = wd.Vector4.create(0, 0, 10, 10);
             textureCanvas.mipmaps.addChild(canvas);
             textureCanvas.mipmaps.addChild(mipmap(64, '#0f0'));

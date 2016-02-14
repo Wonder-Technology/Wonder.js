@@ -1,5 +1,5 @@
 module wd{
-    export enum TextureFormat{
+    export enum ETextureFormat{
         RGB = <any>"RGB",
         RGBA = <any>"RGBA",
         ALPHA = <any>"ALPHA",

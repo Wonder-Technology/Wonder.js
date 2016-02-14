@@ -199,20 +199,20 @@ module wd{
         }
 
         private _getTextureType(type:number){
-            var textureType:TextureType = null;
+            var textureType:ETextureType = null;
 
             switch(type){
                 case 5121:
-                    textureType = TextureType.UNSIGNED_BYTE;
+                    textureType = ETextureType.UNSIGNED_BYTE;
                     break;
                 case 33635:
-                    textureType = TextureType.UNSIGNED_SHORT_5_6_5;
+                    textureType = ETextureType.UNSIGNED_SHORT_5_6_5;
                     break;
                 case 32819:
-                    textureType = TextureType.UNSIGNED_SHORT_4_4_4_4;
+                    textureType = ETextureType.UNSIGNED_SHORT_4_4_4_4;
                     break;
                 case 32820:
-                    textureType = TextureType.UNSIGNED_SHORT_5_5_5_1;
+                    textureType = ETextureType.UNSIGNED_SHORT_5_5_5_1;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`texture->type:${type}`));
@@ -223,23 +223,23 @@ module wd{
         }
 
         private _getTextureFormat(format:number){
-            var textureFormat:TextureFormat = null;
+            var textureFormat:ETextureFormat = null;
 
             switch(format){
                 case 6406:
-                    textureFormat = TextureFormat.ALPHA;
+                    textureFormat = ETextureFormat.ALPHA;
                     break;
                 case 6407:
-                    textureFormat = TextureFormat.RGB;
+                    textureFormat = ETextureFormat.RGB;
                     break;
                 case 6408:
-                    textureFormat = TextureFormat.RGBA;
+                    textureFormat = ETextureFormat.RGBA;
                     break;
                 case 6409:
-                    textureFormat = TextureFormat.LUMINANCE;
+                    textureFormat = ETextureFormat.LUMINANCE;
                     break;
                 case 6410:
-                    textureFormat = TextureFormat.LUMINANCE_ALPHA;
+                    textureFormat = ETextureFormat.LUMINANCE_ALPHA;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`texture->format:${format}`));
@@ -262,26 +262,26 @@ module wd{
         }
 
         private _getTextureFilter(filter:number){
-            var textureFilter:TextureFilterMode = null;
+            var textureFilter:ETextureFilterMode = null;
 
             switch (filter){
                 case 9728:
-                    textureFilter = TextureFilterMode.NEAREST;
+                    textureFilter = ETextureFilterMode.NEAREST;
                     break;
                 case 9729:
-                    textureFilter = TextureFilterMode.LINEAR;
+                    textureFilter = ETextureFilterMode.LINEAR;
                     break;
                 case 9984:
-                    textureFilter = TextureFilterMode.NEAREST_MIPMAP_MEAREST;
+                    textureFilter = ETextureFilterMode.NEAREST_MIPMAP_MEAREST;
                     break;
                 case 9985:
-                    textureFilter = TextureFilterMode.LINEAR_MIPMAP_NEAREST;
+                    textureFilter = ETextureFilterMode.LINEAR_MIPMAP_NEAREST;
                     break;
                 case 9986:
-                    textureFilter = TextureFilterMode.NEAREST_MIPMAP_LINEAR;
+                    textureFilter = ETextureFilterMode.NEAREST_MIPMAP_LINEAR;
                     break;
                 case 9987:
-                    textureFilter = TextureFilterMode.LINEAR_MIPMAP_LINEAR;
+                    textureFilter = ETextureFilterMode.LINEAR_MIPMAP_LINEAR;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`texture filter:${filter}`));
@@ -292,17 +292,17 @@ module wd{
         }
 
         private _getTextureWrap(wrap:number){
-            var textureWrap:TextureWrapMode = null;
+            var textureWrap:ETextureWrapMode = null;
 
             switch (wrap){
                 case 33071:
-                    textureWrap = TextureWrapMode.CLAMP_TO_EDGE;
+                    textureWrap = ETextureWrapMode.CLAMP_TO_EDGE;
                     break;
                 case 33648:
-                    textureWrap = TextureWrapMode.MIRRORED_REPEAT;
+                    textureWrap = ETextureWrapMode.MIRRORED_REPEAT;
                     break;
                 case 10497:
-                    textureWrap = TextureWrapMode.REPEAT;
+                    textureWrap = ETextureWrapMode.REPEAT;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`texture wrap:${wrap}`));

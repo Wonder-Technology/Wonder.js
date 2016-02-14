@@ -1,7 +1,7 @@
 module wd{
     export abstract class CubemapFaceTexture{
-        public type:TextureType = TextureType.UNSIGNED_BYTE;
-        public format:TextureFormat = null;
+        public type:ETextureType = ETextureType.UNSIGNED_BYTE;
+        public format:ETextureFormat = null;
         public width:number = null;
         public height:number = null;
 

@@ -1,6 +1,6 @@
 module wd {
     export abstract class CubemapRenderTargetTexture extends RenderTargetTexture {
-        protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
+        protected target:ETextureTarget = ETextureTarget.TEXTURE_CUBE_MAP;
 
         public createEmptyTexture() {
             var gl = DeviceManager.getInstance().gl,

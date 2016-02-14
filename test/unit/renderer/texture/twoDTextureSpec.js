@@ -108,8 +108,8 @@ describe("twoD texture", function() {
                      in this case, it can't repeat correctly! (because the texture is the whole texture, not the part)
 
                      texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-                     texture.wrapS = wd.TextureWrapMode.REPEAT;
-                     texture.wrapT = wd.TextureWrapMode.REPEAT;
+                     texture.wrapS = wd.ETextureWrapMode.REPEAT;
+                     texture.wrapT = wd.ETextureWrapMode.REPEAT;
                      */
 
                     texture.update(0);
@@ -125,19 +125,19 @@ describe("twoD texture", function() {
             });
             it("test sourceRegionMethod is DRAW_IN_CANVAS.", function (done) {
                 load2DTexture(function (texture) {
-                    texture.sourceRegionMethod = wd.TextureSourceRegionMethod.DRAW_IN_CANVAS;
+                    texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
                     /*!
                      when sourceRegionMethod is DRAW_IN_CANVAS, the texture will be part of the whole, so it can repeat correctly!
                      */
                     texture.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-                    texture.wrapS = wd.TextureWrapMode.REPEAT;
-                    texture.wrapT = wd.TextureWrapMode.REPEAT;
+                    texture.wrapS = wd.ETextureWrapMode.REPEAT;
+                    texture.wrapT = wd.ETextureWrapMode.REPEAT;
 
                     texture.update(0);
 
                     expect(gl.texImage2D).toCalledWith(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas);
-                    expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.TextureWrapMode.REPEAT);
-                    expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.TextureWrapMode.REPEAT);
+                    expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.ETextureWrapMode.REPEAT);
+                    expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.ETextureWrapMode.REPEAT);
 
                     texture.sendData(program, 0);
 

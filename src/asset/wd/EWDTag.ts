@@ -1,5 +1,5 @@
 module wd{
-    export enum WDTag{
+    export enum EWDTag{
         CONTAINER = <any>"CONTAINER"
     }
 }

@@ -29,7 +29,7 @@ module wd{
             cubemapFaceTexture.width = this.width;
             cubemapFaceTexture.height = this.height;
             cubemapFaceTexture.sourceRegion = this.sourceRegion;
-            cubemapFaceTexture.sourceRegionMethod = TextureSourceRegionMethod.DRAW_IN_CANVAS;
+            cubemapFaceTexture.sourceRegionMethod = ETextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
     }
 }

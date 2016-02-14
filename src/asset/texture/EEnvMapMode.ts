@@ -1,5 +1,5 @@
 module wd{
-    export enum EnvMapMode{
+    export enum EEnvMapMode{
         BASIC,
         REFLECTION,
         REFRACTION,

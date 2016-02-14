@@ -8,13 +8,13 @@ module wd{
         public width:number = null;
         public height:number = null;
         public variableData:MapVariableData = null;
-        public wrapS:TextureWrapMode = null;
-        public wrapT:TextureWrapMode = null;
-        public magFilter:TextureFilterMode = null;
-        public minFilter:TextureFilterMode = null;
+        public wrapS:ETextureWrapMode = null;
+        public wrapT:ETextureWrapMode = null;
+        public magFilter:ETextureFilterMode = null;
+        public minFilter:ETextureFilterMode = null;
         public glTexture:WebGLTexture = null;
 
-        protected target:TextureTarget = TextureTarget.TEXTURE_2D;
+        protected target:ETextureTarget = ETextureTarget.TEXTURE_2D;
 
 
         public abstract init();
@@ -47,12 +47,12 @@ module wd{
             delete this.glTexture;
         }
 
-        public filterFallback(filter:TextureFilterMode) {
-            if (filter === TextureFilterMode.NEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
-                return TextureFilterMode.NEAREST;
+        public filterFallback(filter:ETextureFilterMode) {
+            if (filter === ETextureFilterMode.NEAREST|| filter === ETextureFilterMode.NEAREST_MIPMAP_MEAREST|| filter === ETextureFilterMode.NEAREST_MIPMAP_LINEAR ) {
+                return ETextureFilterMode.NEAREST;
             }
 
-            return TextureFilterMode.LINEAR;
+            return ETextureFilterMode.LINEAR;
         }
 
         @virtual
@@ -78,10 +78,10 @@ module wd{
             var type = null;
 
             switch(this.target){
-                case TextureTarget.TEXTURE_2D:
+                case ETextureTarget.TEXTURE_2D:
                     type = VariableType.SAMPLER_2D;
                     break;
-                case TextureTarget.TEXTURE_CUBE_MAP:
+                case ETextureTarget.TEXTURE_CUBE_MAP:
                     type = VariableType.SAMPLER_CUBE;
                     break;
                 default:

@@ -1,5 +1,5 @@
 module wd{
-    export enum AssetType{
+    export enum EAssetType{
         UNKNOW,
         FONT
     }

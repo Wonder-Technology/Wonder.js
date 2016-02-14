@@ -1,13 +1,13 @@
 module wd{
     export class LoaderFactory{
-        public static create(type:AssetType, extname:string) {
+        public static create(type:EAssetType, extname:string) {
             var loader = null;
 
             switch (type){
-                case AssetType.FONT:
+                case EAssetType.FONT:
                     loader = FontLoader.getInstance();
                     break;
-                case AssetType.UNKNOW:
+                case EAssetType.UNKNOW:
                     loader = this._getLoaderByExtname(extname);
                     break;
                 default:

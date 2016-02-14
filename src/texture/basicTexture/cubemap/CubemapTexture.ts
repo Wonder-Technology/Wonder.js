@@ -16,9 +16,9 @@ module wd{
 
         public assets:Array<CubemapData> = null;
         public textures:wdCb.Collection<CubemapFaceTexture> = wdCb.Collection.create<CubemapFaceTexture>();
-        public mode:EnvMapMode = null;
+        public mode:EEnvMapMode = null;
 
-        protected target:TextureTarget = TextureTarget.TEXTURE_CUBE_MAP;
+        protected target:ETextureTarget = ETextureTarget.TEXTURE_CUBE_MAP;
 
         private _areAllCompressedAsset:boolean = false;
 
@@ -127,8 +127,8 @@ module wd{
             }).getCount() > 0;
         }
 
-        private _isMipmapFilter(filter:TextureFilterMode){
-            return filter === TextureFilterMode.LINEAR_MIPMAP_LINEAR || filter === TextureFilterMode.LINEAR_MIPMAP_NEAREST || filter === TextureFilterMode.NEAREST_MIPMAP_LINEAR ||filter === TextureFilterMode.NEAREST_MIPMAP_MEAREST;
+        private _isMipmapFilter(filter:ETextureFilterMode){
+            return filter === ETextureFilterMode.LINEAR_MIPMAP_LINEAR || filter === ETextureFilterMode.LINEAR_MIPMAP_NEAREST || filter === ETextureFilterMode.NEAREST_MIPMAP_LINEAR ||filter === ETextureFilterMode.NEAREST_MIPMAP_MEAREST;
         }
 
         private _getRepresentAsset(assets:Array<CubemapData>){
@@ -221,7 +221,7 @@ module wd{
     export type CubemapData = {
         asset:TextureAsset;
         sourceRegion?:RectRegion;
-        type?:TextureType;
+        type?:ETextureType;
     }
 }
 

@@ -155,14 +155,14 @@ describe("LightMaterial", function() {
 
         it("if no envMap, return", function(){
             material.envMap = null;
-            envMap.mode = wd.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
 
             expect(material.shader.hasLib(wd.ReflectionForLightShaderLib)).toBeFalsy();
         });
         it("if mode is BASIC, add BasicEnvMapForLightShaderLib", function(){
-            envMap.mode = wd.EnvMapMode.BASIC;
+            envMap.mode = wd.EEnvMapMode.BASIC;
 
             director._init();
 
@@ -174,7 +174,7 @@ describe("LightMaterial", function() {
             expect(program.sendUniformData.withArgs("u_cameraPos")).toCalledOnce();
         });
         it("if mode is REFLECTION, add ReflectionShaderLib", function(){
-            envMap.mode = wd.EnvMapMode.REFLECTION;
+            envMap.mode = wd.EEnvMapMode.REFLECTION;
 
             director._init();
 
@@ -187,7 +187,7 @@ describe("LightMaterial", function() {
         });
         it("if mode is REFRACTION, add ReflectionShaderLib", function(){
             material.refractionRatio = 0.5;
-            envMap.mode = wd.EnvMapMode.REFRACTION;
+            envMap.mode = wd.EEnvMapMode.REFRACTION;
 
             director._init();
 
@@ -203,7 +203,7 @@ describe("LightMaterial", function() {
         describe("if mode is FRESNEL, add FresnelForLightShaderLib", function(){
             it("if set reflectivity, send it", function(){
                 material.reflectivity = 0.5;
-                envMap.mode = wd.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
 
@@ -217,7 +217,7 @@ describe("LightMaterial", function() {
             });
             it("else, send u_reflectivity = NULL and send u_refractionRatio", function(){
                 material.refractionRatio = 0.5;
-                envMap.mode = wd.EnvMapMode.FRESNEL;
+                envMap.mode = wd.EEnvMapMode.FRESNEL;
 
                 director._init();
 

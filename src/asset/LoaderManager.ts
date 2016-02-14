@@ -31,7 +31,7 @@ module wd{
                 let assetArr = args[0];
 
                 return wdFrp.fromArray(assetArr).flatMap((asset) => {
-                    return self._createLoadMultiAssetStream(asset.type || AssetType.UNKNOW, asset.url, asset.id);
+                    return self._createLoadMultiAssetStream(asset.type || EAssetType.UNKNOW, asset.url, asset.id);
                 });
             }
         }
@@ -55,8 +55,8 @@ module wd{
             return loader ? loader.get(id) : null;
         }
 
-        private _createLoadMultiAssetStream(type:AssetType, url:string, id:string);
-        private _createLoadMultiAssetStream(type:AssetType, url:Array<string>, id:string);
+        private _createLoadMultiAssetStream(type:EAssetType, url:string, id:string);
+        private _createLoadMultiAssetStream(type:EAssetType, url:Array<string>, id:string);
 
         private _createLoadMultiAssetStream(...args){
             var type = args[0],
@@ -82,13 +82,13 @@ module wd{
         }
 
         private _createLoadSingleAssetStream(url, id){
-            var loader = this._getLoader(AssetType.UNKNOW, url);
+            var loader = this._getLoader(EAssetType.UNKNOW, url);
 
             return this._addToAssetTable(loader.load(url, id), id, loader);
         }
 
-        private _getLoader(type:AssetType, url:string);
-        private _getLoader(type:AssetType, url:Array<string>);
+        private _getLoader(type:EAssetType, url:string);
+        private _getLoader(type:EAssetType, url:Array<string>);
 
         private _getLoader(...args){
             var type = args[0],
@@ -114,7 +114,7 @@ module wd{
     }
 
     export type AssetData = {
-        type?:AssetType,
+        type?:EAssetType,
         url:Array<string>,
         id:string
     };

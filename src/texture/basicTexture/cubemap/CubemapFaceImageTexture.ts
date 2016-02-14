@@ -8,13 +8,13 @@ module wd{
         	return obj;
         }
 
-        @requireSetter(function(sourceRegionMethod:TextureSourceRegionMethod){
-            assert(sourceRegionMethod === TextureSourceRegionMethod.DRAW_IN_CANVAS, Log.info.FUNC_SUPPORT("cubemap twoD face texture->sourceRegionMethod only", "DRAW_IN_CANVAS"));
+        @requireSetter(function(sourceRegionMethod:ETextureSourceRegionMethod){
+            assert(sourceRegionMethod === ETextureSourceRegionMethod.DRAW_IN_CANVAS, Log.info.FUNC_SUPPORT("cubemap twoD face texture->sourceRegionMethod only", "DRAW_IN_CANVAS"));
         })
         get sourceRegionMethod(){
-            return TextureSourceRegionMethod.DRAW_IN_CANVAS;
+            return ETextureSourceRegionMethod.DRAW_IN_CANVAS;
         }
-        set sourceRegionMethod(sourceRegionMethod:TextureSourceRegionMethod){
+        set sourceRegionMethod(sourceRegionMethod:ETextureSourceRegionMethod){
             var a = sourceRegionMethod;
         }
 

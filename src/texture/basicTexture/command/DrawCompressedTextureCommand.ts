@@ -14,7 +14,7 @@ module wd{
 
             Log.error(this.format === null, Log.info.FUNC_NOT_SUPPORT(this.format));
 
-            if (this.format !== TextureFormat.RGBA) {
+            if (this.format !== ETextureFormat.RGBA) {
                 this.mipmaps.forEach((mipmap:CompressedTextureMipmap, index:number) => {
                     gl.compressedTexImage2D(self.glTarget, index, self.format, mipmap.width, mipmap.height, 0, self.getDrawTarget(mipmap.data));
                 });

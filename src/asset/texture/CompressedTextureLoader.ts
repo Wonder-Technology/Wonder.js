@@ -11,7 +11,7 @@ module wd{
                     asset.mipmaps = texDatas.mipmaps;
 
                     if (texDatas.mipmapCount == 1){
-                        asset.minFilter = TextureFilterMode.LINEAR;
+                        asset.minFilter = ETextureFilterMode.LINEAR;
                     }
 
                     asset.format = this._getCompressedFormat(texDatas.format);
@@ -22,10 +22,10 @@ module wd{
 
 
         //todo support pvr
-        private static _getCompressedFormat(format:TextureFormat){
+        private static _getCompressedFormat(format:ETextureFormat){
             var extension = GPUDetector.getInstance().extensionCompressedTextureS3TC;
 
-            if(format === TextureFormat.RGBA){
+            if(format === ETextureFormat.RGBA){
                 return format;
             }
 
@@ -34,16 +34,16 @@ module wd{
             }
 
             switch (format){
-                case TextureFormat.RGB_S3TC_DXT1:
+                case ETextureFormat.RGB_S3TC_DXT1:
                     format = extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
                     break;
-                case TextureFormat.RGBA_S3TC_DXT1:
+                case ETextureFormat.RGBA_S3TC_DXT1:
                     format = extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
                     break;
-                case TextureFormat.RGBA_S3TC_DXT3:
+                case ETextureFormat.RGBA_S3TC_DXT3:
                     format = extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
                     break;
-                case TextureFormat.RGBA_S3TC_DXT5:
+                case ETextureFormat.RGBA_S3TC_DXT5:
                     format = extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
                     break;
             }

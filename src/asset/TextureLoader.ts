@@ -32,7 +32,7 @@ module wd{
                         .map((image:HTMLImageElement) => {
                             var asset = ImageTextureAsset.create(image);
 
-                            asset.format = TextureFormat.RGB;
+                            asset.format = ETextureFormat.RGB;
 
                             return asset;
                         });

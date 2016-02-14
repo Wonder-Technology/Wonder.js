@@ -38,7 +38,7 @@ module wd{
                 }
 
                 if(self._isModelContainer(object)){
-                    model.addTag(<any>WDTag.CONTAINER);
+                    model.addTag(<any>EWDTag.CONTAINER);
                 }
 
                 self._addComponents(model, object.components);

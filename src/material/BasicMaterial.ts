@@ -75,20 +75,20 @@ module wd{
             this.addNormalShaderLib();
 
             switch (envMap.mode){
-                case EnvMapMode.BASIC:
+                case EEnvMapMode.BASIC:
                     this.shader.addLib(BasicEnvMapForBasicShaderLib.create());
                     break;
-                case EnvMapMode.REFLECTION:
+                case EEnvMapMode.REFLECTION:
                     this.shader.addLib(ReflectionForBasicShaderLib.create());
                     break;
-                case EnvMapMode.REFRACTION:
+                case EEnvMapMode.REFRACTION:
                     this.shader.addLib(RefractionForBasicShaderLib.create());
                     break;
-                case EnvMapMode.FRESNEL:
+                case EEnvMapMode.FRESNEL:
                     this.shader.addLib(FresnelForBasicShaderLib.create());
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_INVALID("EnvMapMode"));
+                    Log.error(true, Log.info.FUNC_INVALID("EEnvMapMode"));
                     break;
             }
         }

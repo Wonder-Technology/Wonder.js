@@ -53,7 +53,7 @@ module wd {
 
                     if(self._isModelContainer(object)){
                         //todo refactor?
-                        model.addTag(WDTag.CONTAINER);
+                        model.addTag(EWDTag.CONTAINER);
                     }
                     else{
                         geometry = ModelGeometry.create();

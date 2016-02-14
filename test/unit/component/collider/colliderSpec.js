@@ -219,7 +219,7 @@ describe("collider", function () {
 
             var objModel = result.getChild("models").getChild(1);
 
-            expect(objModel.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
+            expect(objModel.hasTag(wd.EWDTag.CONTAINER)).toBeTruthy();
 
 
 

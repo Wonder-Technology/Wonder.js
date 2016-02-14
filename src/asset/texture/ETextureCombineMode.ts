@@ -1,5 +1,5 @@
 module wd{
-    export enum TextureCombineMode{
+    export enum ETextureCombineMode{
         MIX,
         MULTIPLY,
         ADD

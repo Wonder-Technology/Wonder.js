@@ -1,9 +1,9 @@
 module wd{
     export abstract class DrawTextureCommand{
-        public format:TextureFormat = null;
-        public type:TextureType = null;
+        public format:ETextureFormat = null;
+        public type:ETextureType = null;
         public sourceRegion:RectRegion = null;
-        public sourceRegionMethod:TextureSourceRegionMethod = TextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        public sourceRegionMethod:ETextureSourceRegionMethod = ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
         public glTarget:any = null;
 
         public abstract execute();

@@ -84,9 +84,9 @@ describe("loader", function () {
                 var png = wd.LoaderManager.getInstance().get("png");
 
                 expect(jpg).toBeInstanceOf(wd.ImageTextureAsset);
-                expect(jpg.format).toEqual(wd.TextureFormat.RGB);
+                expect(jpg.format).toEqual(wd.ETextureFormat.RGB);
                 expect(png).toBeInstanceOf(wd.ImageTextureAsset);
-                expect(png.format).toEqual(wd.TextureFormat.RGBA);
+                expect(png.format).toEqual(wd.ETextureFormat.RGBA);
 
                 done();
             });
@@ -108,7 +108,7 @@ describe("loader", function () {
                 expect(dds).toBeInstanceOf(wd.CompressedTextureAsset);
                 expect(dds.format).toEqual("COMPRESSED_RGB_S3TC_DXT1_EXT");
                 expect(dds.mipmaps.getCount()).toEqual(10);
-                expect(dds.minFilter).toEqual(wd.TextureFilterMode.LINEAR_MIPMAP_LINEAR);
+                expect(dds.minFilter).toEqual(wd.ETextureFilterMode.LINEAR_MIPMAP_LINEAR);
 
                 done();
             });
@@ -234,7 +234,7 @@ describe("loader", function () {
 
 
 
-            expect(m2.hasTag(wd.WDTag.CONTAINER)).toBeTruthy();
+            expect(m2.hasTag(wd.EWDTag.CONTAINER)).toBeTruthy();
 
 
 
@@ -479,7 +479,7 @@ describe("loader", function () {
                 sandbox.spy(document.fonts, "load");
 
                 wd.LoaderManager.getInstance().load([
-                    {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                    {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
                 ]).subscribe(function (data) {
                 }, null, function () {
                     expect(document.fonts.load).toCalledOnce();
@@ -491,7 +491,7 @@ describe("loader", function () {
             describe("load .ttf", function(){
                 it("add style element with @font-face into body to load ttf font", function(done){
                     wd.LoaderManager.getInstance().load([
-                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                        {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
                     ]).subscribe(function(data){
                     }, null, function(){
                         expect($("style").length).toEqual(1);
@@ -502,7 +502,7 @@ describe("loader", function () {
                 });
                 it("dipose method should remove the added style element", function(done){
                     wd.LoaderManager.getInstance().load([
-                        {type: wd.AssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
+                        {type: wd.EAssetType.FONT, url: testTool.resPath + "test/res/font/Urdeutsch.ttf", id: "Urdeutsch"}
                     ]).subscribe(function(data){
                     }, null, function(){
                         expect($("style").length).toEqual(1);
@@ -540,7 +540,7 @@ describe("loader", function () {
                     var bitmap = wd.LoaderManager.getInstance().get("myFont_image");
 
                     expect(bitmap).toBeInstanceOf(wd.ImageTextureAsset);
-                    expect(bitmap.format).toEqual(wd.TextureFormat.RGBA);
+                    expect(bitmap.format).toEqual(wd.ETextureFormat.RGBA);
 
                     done();
                 });
