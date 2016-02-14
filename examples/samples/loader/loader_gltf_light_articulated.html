@@ -46,6 +46,20 @@
 //            anim.play("animation_0");
             anim.play("animation_1");
 
+
+
+
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.pause();
+//                anim.stop();
+            }, 1000);
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.resume();
+//                anim.play("animation_1");
+            }, 2000);
+
             return models;
         }
 

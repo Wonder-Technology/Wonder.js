@@ -18,7 +18,10 @@ describe("articulated animation", function () {
                 model.transform.position,
                 2
             )).toEqual(
-                pos
+                testTool.getValues(
+                    pos,
+                    2
+                )
             )
         }
 
@@ -40,6 +43,10 @@ describe("articulated animation", function () {
             )
         }
 
+        function setCurrentTime(time){
+            sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", time);
+        }
+
         beforeEach(function(){
         });
 
@@ -57,7 +64,7 @@ describe("articulated animation", function () {
                 model.addComponent(anim);
 
 
-                sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", 0);
+                setCurrentTime(0);
             });
 
             it("if not play animation, update nothing", function(){
@@ -157,12 +164,22 @@ describe("articulated animation", function () {
                     model.init();
                 });
 
-                it("test interpolation", function(){
-                    model.update(firstKeyTime/10);
+                describe("test interpolation", function(){
+                    it("test1", function () {
+                        model.update(firstKeyTime/10);
 
-                    judgePos([0.2,0.1,0]);
-                    judgeScale([1, 1.1, 1.2]);
-                    judgeRotation([0.5, 2.2, 2.8]);
+                        judgePos([0.2,0.1,0]);
+                        judgeScale([1, 1.1, 1.2]);
+                        judgeRotation([0.5, 2.2, 2.8]);
+                    });
+                    it("test2", function () {
+                        model.update(firstKeyTime/10);
+                        model.update(firstKeyTime/5);
+
+                        judgePos([0.4,0.2,0]);
+                        judgeScale([1, 1.2, 1.4]);
+                        judgeRotation([1.1, 4.4, 5.6]);
+                    });
                 });
 
                 describe("test finish first key", function () {
@@ -238,6 +255,147 @@ describe("articulated animation", function () {
                         judgeScale([1,2,3.9]);
                         judgeRotation([10,20,30]);
                     });
+                });
+            });
+        });
+
+        describe("test animation control", function(){
+            var firstKeyTime,secondKeyTime;
+
+            beforeEach(function(){
+                firstKeyTime = 10;
+                secondKeyTime = 15;
+
+                model = wd.GameObject.create();
+
+                anim = wd.ArticulatedAnimation.create();
+
+                model.addComponent(anim);
+
+
+                setCurrentTime(0);
+
+
+
+
+
+
+
+
+
+                anim.data = wdCb.Hash.create({
+                    "play": wdCb.Collection.create([
+                        {
+                            time:firstKeyTime,
+                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)}
+                                ]
+                            )
+                        },
+                        {
+                            time:secondKeyTime,
+                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                ]
+                            )
+                        }
+                    ])
+                });
+                model.init();
+            });
+
+            it("play,stop", function(){
+                anim.play("play");
+
+                model.update(1);
+
+                judgePos([0.2, 0.1, 0]);
+
+                anim.stop();
+
+
+
+
+
+                model.update(2);
+
+                judgePos([0.2, 0.1, 0]);
+
+                setCurrentTime(2);
+
+                anim.play("play");
+
+
+
+
+
+
+                model.update(4);
+
+                judgePos(
+                    wd.Vector3.create().lerp(
+                        wd.Vector3.create(0.2,0.1,0),
+                        wd.Vector3.create(2,1,0),
+                        (4 - 2) / 10
+                    ).toArray()
+                );
+            });
+
+            describe("pause,resume", function(){
+                beforeEach(function(){
+                    anim.play("play");
+
+                    model.update(1);
+
+                    judgePos([0.2, 0.1, 0]);
+
+                    setCurrentTime(1);
+
+                    anim.pause();
+
+
+
+
+                    model.update(2);
+
+                    judgePos([0.2, 0.1, 0]);
+
+                    setCurrentTime(2);
+
+                    anim.resume();
+                });
+
+                it("test in first key", function () {
+                    model.update(4);
+
+                    judgePos(
+                        wd.Vector3.create().lerp(
+                            wd.Vector3.create(0,0,0),
+                            wd.Vector3.create(2,1,0),
+                            (4 - (2 - 1)) / 10
+                        ).toArray()
+                    );
+                });
+                it("test switch to second key", function () {
+                    model.update(firstKeyTime + 2);
+
+                    judgePos(
+                        [2.2, 1, 0]
+                    );
+                });
+                it("test finish all keys", function () {
+                    model.update(firstKeyTime + 2);
+                    model.update(secondKeyTime + 2);
+
+                    judgePos(
+                        [2.9, 1, 0]
+                    );
                 });
             });
         });
