@@ -40,7 +40,7 @@ module wd{
 
         @require(function(animName:string){
             this.data.getChild(animName).forEach((data:ArticulatedAnimationKeyData) => {
-                assert(data.time > 0, Log.info.FUNC_SHOULD("time", "> 0"));
+                assert(data.time >= 0, Log.info.FUNC_SHOULD("time", ">= 0"));
 
                 assert(data.targets.getCount() > 0, Log.info.FUNC_SHOULD("ArticulatedAnimationKeyData->targets.getCount()", "> 0"));
 
@@ -100,7 +100,7 @@ module wd{
             }
 
             if(this._isCurrentKeyFinish(elapsedTime)){
-                this._updateCurrentKey();
+                this._updateCurrentKey(elapsedTime);
             }
             else{
                 this._isKeyChange = false;
@@ -116,14 +116,14 @@ module wd{
            return elapsedTime - this._beginElapsedTimeOfFirstKey > this._currentKeyData.time;
         }
 
-        private _updateCurrentKey(){
+        private _updateCurrentKey(elapsedTime:number){
             this._isKeyChange = true;
 
             this.currentKey++;
 
             if(this.currentKey >= this._keyCount){
                 this.currentKey = 0;
-                this._beginElapsedTimeOfFirstKey = this._currentAnimData.getChild(this._keyCount - 1).time;
+                this._beginElapsedTimeOfFirstKey = elapsedTime -  elapsedTime % this._currentAnimData.getChild(this._keyCount - 1).time;
                 this._lastKeyTime = 0;
             }
             else{
@@ -136,7 +136,12 @@ module wd{
         private _computeInterpolation(elapsedTime:number){
             switch (this._currentKeyData.interpolationMethod){
                 case KeyFrameInterpolation.LINEAR:
-                    this.interpolation = (elapsedTime - this._beginElapsedTimeOfFirstKey - this._lastKeyTime) / (this._currentKeyData.time - this._lastKeyTime);
+                    if(this._currentKeyData.time - this._lastKeyTime === 0){
+                        this.interpolation = 1;
+                    }
+                    else{
+                        this.interpolation = (elapsedTime - this._beginElapsedTimeOfFirstKey - this._lastKeyTime) / (this._currentKeyData.time - this._lastKeyTime);
+                    }
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${this._currentKeyData.interpolationMethod}`));

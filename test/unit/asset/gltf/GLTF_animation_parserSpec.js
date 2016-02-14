@@ -91,6 +91,29 @@ describe("GLTF animation parser", function () {
             describe("test only one node has animations", function(){
                 var object;
 
+                function judgePos(keyIndex, time, posArr){
+                    var key1 = animationComponent.animation_1.getChild(keyIndex);
+                    expect(Math.floor(key1.time)).toEqual(time);
+                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
+                    expect(key1.targets.getCount()).toEqual(1);
+                    var target1 = key1.targets.getChild(0);
+                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.TRANSLATION);
+                    expect(target1.data).toBeInstanceOf(wd.Vector3);
+                    expect(
+                        testTool.getValues(target1.data, 2)
+                    ).toEqual(posArr);
+                }
+
+                function judgeRotation(keyIndex, time){
+                    var key1 = animationComponent.animation_0.getChild(keyIndex);
+                    expect(key1.time).toEqual(time);
+                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
+                    expect(key1.targets.getCount()).toEqual(1);
+                    var target1 = key1.targets.getChild(0);
+                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.ROTATION);
+                    expect(target1.data).toBeInstanceOf(wd.Quaternion);
+                }
+
                 beforeEach(function(){
                     setJson({
                         "scenes": {
@@ -178,24 +201,18 @@ describe("GLTF animation parser", function () {
                     expect(object.components.getCount()).toEqual(1)
                 });
                 it("test animation_0", function(){
-                    expect(animationComponent.animation_0.getCount()).toEqual(1);
-                    var key1 = animationComponent.animation_0.getChild(0);
-                    expect(key1.time).toEqual(2500);
-                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
-                    expect(key1.targets.getCount()).toEqual(1);
-                    var target1 = key1.targets.getChild(0);
-                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.ROTATION);
-                    expect(target1.data).toBeInstanceOf(wd.Quaternion);
+                    expect(animationComponent.animation_0.getCount()).toEqual(2);
+
+                    judgeRotation(0, 1250);
+                    judgeRotation(1, 2500);
                 });
                 it("test animation_1", function(){
-                    expect(animationComponent.animation_1.getCount()).toEqual(1);
-                    var key1 = animationComponent.animation_1.getChild(0);
-                    expect(Math.floor(key1.time)).toEqual(3708);
-                    expect(key1.interpolationMethod).toEqual(wd.KeyFrameInterpolation.LINEAR);
-                    expect(key1.targets.getCount()).toEqual(1);
-                    var target1 = key1.targets.getChild(0);
-                    expect(target1.target).toEqual(wd.ArticulatedAnimationTarget.TRANSLATION);
-                    expect(target1.data).toBeInstanceOf(wd.Vector3);
+                    expect(animationComponent.animation_1.getCount()).toEqual(4);
+
+                    judgePos(0, 0, [0,0,0]);
+                    judgePos(1, 1250, [0,2.52,0]);
+                    judgePos(2, 2500, [0,2.52,0]);
+                    judgePos(3, 3708, [0,0,0]);
                 });
             });
 

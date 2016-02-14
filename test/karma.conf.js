@@ -29,8 +29,10 @@
 
         //'test/unit/**',
 
-        //'test/unit/**/GLTFParserSpec*',
-        //'test/unit/**/GLTFAssemblerSpec*',
+        'test/unit/**/*animation*',
+
+        'test/unit/**/GLTFParserSpec*',
+        'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 

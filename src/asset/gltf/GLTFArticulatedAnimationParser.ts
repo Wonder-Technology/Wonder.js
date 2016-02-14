@@ -15,15 +15,10 @@ module wd{
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
 
-            //var articulatedAnimationData:IGLTFArticulatedAnimation = <any>{};
-
             for(let animName in json.animations){
                 if(json.animations.hasOwnProperty(animName)){
                     let animation:IGLTFAnimation = json.animations[animName],
                         keyFrameDataList = wdCb.Collection.create<IGLTFKeyFrameData>();
-
-
-                    //articulatedAnimationData[animName] = keyFrameDataList;
 
 
                     for(let i = 0, len = animation.channels.length; i < len; i++){
@@ -62,15 +57,18 @@ module wd{
 
                         nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
 
-                        var keyFrameData:IGLTFKeyFrameData = <any>{};
-
-                        keyFrameDataList.addChild(keyFrameData);
 
                         var targetPath = channel.target.path;
 
                         var arrayOffset = 0;
 
                         for (let j = 0; j < bufferInput.length; j++) {
+
+                            var keyFrameData:IGLTFKeyFrameData = <any>{};
+
+                            keyFrameDataList.addChild(keyFrameData);
+
+
 
                             keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
                             keyFrameData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
