@@ -16,12 +16,11 @@ module wd{
             return this._state === AnimationState.PAUSE;
         }
 
-        //todo private
-        public interpolation:number = null;
-        public currentKey:number = null;
-        public currentAnimName:string = null;
         public data:ArticulatedAnimationData = null;
 
+        private _interpolation:number = null;
+        private _currentKey:number = null;
+        private _currentAnimName:string = null;
         private _beginElapsedTimeOfFirstKey:number = null;
         private _lastKeyTime:number = null;
         private _pauseTime:number = null;
@@ -70,26 +69,60 @@ module wd{
             })
         })
         public play(animName:string){
-            this.currentAnimName = animName;
-
+            this._currentAnimName = animName;
             this._currentAnimData = this.data.getChild(animName);
-
             this._resetAnim();
-
             this._saveStartKeyData();
-
             this._keyCount = this._currentAnimData.getCount();
             this._state = AnimationState.RUN;
         }
 
+        public pause(){
+            this._state = AnimationState.PAUSE;
+
+            this._pauseTime = this._getCurrentTime();
+        }
+
+        public resume(){
+            this._state = AnimationState.RUN;
+
+            this._isResume = true;
+            this._resumeTime = this._getCurrentTime();
+        }
+
+        public stop(){
+            this._state = AnimationState.STOP;
+        }
+
+        public update(elapsedTime:number){
+            if(this._state === AnimationState.DEFAULT || this.isStop || this.isPause){
+                return;
+            }
+
+            if(this._isResume){
+                this._isResume = false;
+                this._continueFromPausePoint();
+            }
+
+            if(this._isCurrentKeyFinish(elapsedTime)){
+                this._updateCurrentKey(elapsedTime);
+                this._updateTargetsToBeLastEndKeyData();
+                this._saveStartKeyData();
+            }
+            else{
+                this._isKeyChange = false;
+            }
+
+            this._computeInterpolation(elapsedTime);
+
+            this._updateTargets();
+        }
+
         private _resetAnim(){
             this._beginElapsedTimeOfFirstKey = this._getCurrentTime();
-
             this._lastKeyTime = 0;
-
             this._pauseDuration = 0;
-
-            this.currentKey = 0;
+            this._currentKey = 0;
 
             this._prevKeyData = null;
             this._updateCurrentKeyData();
@@ -132,55 +165,11 @@ module wd{
         }
 
         private _updateCurrentKeyData(){
-            this._currentKeyData = this._currentAnimData.getChild(this.currentKey);
-        }
-
-        public pause(){
-            this._state = AnimationState.PAUSE;
-            this._pauseTime = this._getCurrentTime();
-        }
-
-        public resume(){
-            this._state = AnimationState.RUN;
-
-            this._isResume = true;
-            this._resumeTime = this._getCurrentTime();
-        }
-
-        public stop(){
-            this._state = AnimationState.STOP;
-        }
-
-        public update(elapsedTime:number){
-            if(this._state === AnimationState.DEFAULT || this.isStop || this.isPause){
-                return;
-            }
-
-            if(this._isResume){
-                this._isResume = false;
-                this._continueFromPausePoint();
-            }
-
-            if(this._isCurrentKeyFinish(elapsedTime)){
-                this._updateCurrentKey(elapsedTime);
-
-
-                this._updateTargetsToBeLastEndKeyData();
-                this._saveStartKeyData();
-            }
-            else{
-                this._isKeyChange = false;
-            }
-
-
-            this._computeInterpolation(elapsedTime);
-
-            this._updateTargets();
+            this._currentKeyData = this._currentAnimData.getChild(this._currentKey);
         }
 
         private _continueFromPausePoint(){
             this._pauseDuration += this._resumeTime - this._pauseTime;
-            //this._oldTime = currentTime - (this._resumeTime - this._pauseTime) % this.duration;
         }
 
         private _isCurrentKeyFinish(elapsedTime:number){
@@ -190,16 +179,15 @@ module wd{
         private _updateCurrentKey(elapsedTime:number){
             this._isKeyChange = true;
 
-            this.currentKey++;
+            this._currentKey++;
 
-            if(this.currentKey >= this._keyCount){
-                this.currentKey = 0;
+            if(this._currentKey >= this._keyCount){
+                this._currentKey = 0;
                 this._beginElapsedTimeOfFirstKey = elapsedTime -  elapsedTime % this._currentAnimData.getChild(this._keyCount - 1).time;
-                //this._pauseDuration = 0;
                 this._lastKeyTime = 0;
             }
             else{
-                this._lastKeyTime = this._currentAnimData.getChild(this.currentKey - 1).time;
+                this._lastKeyTime = this._currentAnimData.getChild(this._currentKey - 1).time;
             }
 
             this._prevKeyData = this._currentKeyData;
@@ -210,10 +198,10 @@ module wd{
             switch (this._currentKeyData.interpolationMethod){
                 case KeyFrameInterpolation.LINEAR:
                     if(this._currentKeyData.time - this._lastKeyTime === 0){
-                        this.interpolation = 1;
+                        this._interpolation = 1;
                     }
                     else{
-                        this.interpolation = (elapsedTime - this._beginElapsedTimeOfFirstKey - this._pauseDuration - this._lastKeyTime) / (this._currentKeyData.time - this._lastKeyTime);
+                        this._interpolation = (elapsedTime - this._beginElapsedTimeOfFirstKey - this._pauseDuration - this._lastKeyTime) / (this._currentKeyData.time - this._lastKeyTime);
                     }
                     break;
                 default:
@@ -224,29 +212,29 @@ module wd{
 
         private _updateTargets(){
             var transform = this.entityObject.transform,
-                interpolation = this.interpolation,
+                interpolation = this._interpolation,
                 isKeyChange = this._isKeyChange,
                 prevEndKeyDataMap = this._prevEndKeyDataMap,
                 startKeyDataMap = this._startKeyDataMap;
 
             this._currentKeyData.targets.forEach((target:ArticulatedAnimationKeyTargetData) => {
-                var endKeyData = target.data;
+                var endKeyData = target.data,
+                    startKeyData = startKeyDataMap.getChild(<any>target.target);
 
                 switch (target.target){
                     case ArticulatedAnimationTarget.TRANSLATION:
-                        transform.position = Vector3.create().lerp(startKeyDataMap.getChild(<any>target.target), endKeyData, interpolation);
+                        transform.position = Vector3.create().lerp(startKeyData, endKeyData, interpolation);
                         break;
                     case ArticulatedAnimationTarget.ROTATION:
-                        transform.rotation = Quaternion.create().slerp(startKeyDataMap.getChild(<any>target.target), endKeyData, interpolation);
+                        transform.rotation = Quaternion.create().slerp(startKeyData, endKeyData, interpolation);
                         break;
                     case ArticulatedAnimationTarget.SCALE:
-                        transform.scale = Vector3.create().lerp(startKeyDataMap.getChild(<any>target.target), endKeyData, interpolation);
+                        transform.scale = Vector3.create().lerp(startKeyData, endKeyData, interpolation);
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
                         break;
                 }
-
 
                 if(isKeyChange || !prevEndKeyDataMap.hasChild(<any>target.target)){
                     prevEndKeyDataMap.addChild(<any>target.target, endKeyData);
@@ -293,7 +281,6 @@ module wd{
         STOP,
         PAUSE
     }
-
 
     export type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationKeyData>>
 
