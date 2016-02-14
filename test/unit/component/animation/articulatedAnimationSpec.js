@@ -60,6 +60,30 @@ describe("articulated animation", function () {
                 sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", 0);
             });
 
+            it("if not play animation, update nothing", function(){
+                anim.data = wdCb.Hash.create({
+                    "play": wdCb.Collection.create([
+                        {
+                            time:10,
+                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+
+                            targets: wdCb.Collection.create(
+                                [
+                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                    {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                ]
+                            )
+                        }
+                    ])
+                });
+                model.init();
+
+
+                model.update(1);
+
+
+                judgePos([0,0,0]);
+            });
 
             describe("test special cases", function(){
                 beforeEach(function(){

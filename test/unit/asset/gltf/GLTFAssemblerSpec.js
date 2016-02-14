@@ -515,33 +515,31 @@ describe("GLTFAssembler", function () {
                 });
 
                 describe("add animation component", function(){
-                    beforeEach(function(){
-                    });
-
                     it("add ArticulatedAnimation component", function(){
-                        //setComponent({
-                        //    type:"ambient",
-                        //    lightColor:color
-                        //})
-                        //
-                        //var data = builder.build(parseData);
-                        //
-                        //var component = getComponent(data);
-                        //expect(component).toBeInstanceOf(wd.AmbientLight);
-                        //expect(component.color).toEqual(color);
+                        var animData = {
+                            "animation_0": wdCb.Collection.create([
+                                {
+                                    time: 1000,
+                                    interpolationMethod: wd.KeyFrameInterpolation.LINEAR,
+                                    targets: wdCb.Collection.create([
+                                        {
+                                            target: wd.ArticulatedAnimationTarget.TRANSLATION,
+                                            data: wd.Vector3.create(1, 1, 0)
+                                        }
+                                    ])
+                                }
+                            ])
+                        };
+                        setComponent(animData);
 
 
+                        var data = builder.build(parseData);
 
-                        //todo finish
 
-                        //setComponent({
-                        //})
-                        //
-                        //
-                        //var data = builder.build(parseData);
-                        //
-                        //var component = getComponent(data);
-                        //expect(component).toBeInstanceOf(wd.MeshRenderer);
+                        var component = getComponent(data);
+                        expect(component).toBeInstanceOf(wd.ArticulatedAnimation);
+                        expect(component.data).toBeInstanceOf(wdCb.Hash);
+                        expect(component.data.getChildren()).toEqual(animData);
                     });
                 });
             });

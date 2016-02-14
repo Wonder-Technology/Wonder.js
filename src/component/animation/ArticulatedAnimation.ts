@@ -94,7 +94,6 @@ module wd{
         }
 
         public update(elapsedTime:number){
-            //todo test
             if(this._state === AnimationState.DEFAULT){
                 return;
             }
