@@ -274,7 +274,7 @@ module wd {
         texCoords?: Array<number>;
         faces:Array<Face3>;
 
-        drawMode:DrawMode;
+        drawMode:EDrawMode;
 
         //morphTargets: wdCb.Hash<wdCb.Collection<Array<number>>>;
         //morphNormals:wdCb.Hash<wdCb.Collection<Array<number>>>;

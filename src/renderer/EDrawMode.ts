@@ -1,5 +1,5 @@
 module wd{
-    export enum DrawMode{
+    export enum EDrawMode{
         POINTS = <any>"POINTS",
         LINES = <any>"LINES",
         LINE_LOOP = <any>"LINE_LOOP",

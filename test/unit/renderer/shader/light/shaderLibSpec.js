@@ -84,7 +84,7 @@ describe("shaderLibSpec", function () {
         var shaderDefinitionData = {
             attributes: {
                 "a_color": {
-                    type: wd.VariableType.FLOAT_3,
+                    type: wd.EVariableType.FLOAT_3,
                     value: [
                         1, 0, 0, 1,
                         1, 0, 0, 1,

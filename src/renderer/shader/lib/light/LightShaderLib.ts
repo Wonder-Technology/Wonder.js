@@ -52,19 +52,19 @@ module wd{
             pointLights.forEach((pointLight:GameObject, index:number) => {
                 var lightComponent:PointLight = pointLight.getComponent<PointLight>(PointLight);
 
-                program.sendStructureData(`u_pointLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
-                program.sendStructureData(`u_pointLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
+                program.sendStructureData(`u_pointLights[${index}].position`, EVariableType.FLOAT_3, lightComponent.position);
+                program.sendStructureData(`u_pointLights[${index}].color`, EVariableType.FLOAT_3, lightComponent.color.toVector3());
 
-                program.sendStructureData(`u_pointLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
-                program.sendStructureData(`u_pointLights[${index}].constant`, VariableType.FLOAT_1, lightComponent.constant);
-                program.sendStructureData(`u_pointLights[${index}].linear`, VariableType.FLOAT_1, lightComponent.linear);
-                program.sendStructureData(`u_pointLights[${index}].quadratic`, VariableType.FLOAT_1, lightComponent.quadratic);
+                program.sendStructureData(`u_pointLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
+                program.sendStructureData(`u_pointLights[${index}].constant`, EVariableType.FLOAT_1, lightComponent.constant);
+                program.sendStructureData(`u_pointLights[${index}].linear`, EVariableType.FLOAT_1, lightComponent.linear);
+                program.sendStructureData(`u_pointLights[${index}].quadratic`, EVariableType.FLOAT_1, lightComponent.quadratic);
 
                 if(lightComponent.range !== null){
-                    program.sendStructureData(`u_pointLights[${index}].range`, VariableType.FLOAT_1, lightComponent.range);
+                    program.sendStructureData(`u_pointLights[${index}].range`, EVariableType.FLOAT_1, lightComponent.range);
                 }
                 else{
-                    program.sendStructureData(`u_pointLights[${index}].range`, VariableType.FLOAT_1, ShaderChunk.NULL);
+                    program.sendStructureData(`u_pointLights[${index}].range`, EVariableType.FLOAT_1, ShaderChunk.NULL);
                 }
             });
         }
@@ -76,15 +76,15 @@ module wd{
                 var lightComponent:DirectionLight = directionLight.getComponent<DirectionLight>(DirectionLight);
 
                 if(self._isZero(lightComponent.position)){
-                    program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, DirectionLight.defaultPosition);
+                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.FLOAT_3, DirectionLight.defaultPosition);
                 }
                 else{
-                    program.sendStructureData(`u_directionLights[${index}].position`, VariableType.FLOAT_3, lightComponent.position);
+                    program.sendStructureData(`u_directionLights[${index}].position`, EVariableType.FLOAT_3, lightComponent.position);
                 }
 
-                program.sendStructureData(`u_directionLights[${index}].color`, VariableType.FLOAT_3, lightComponent.color.toVector3());
+                program.sendStructureData(`u_directionLights[${index}].color`, EVariableType.FLOAT_3, lightComponent.color.toVector3());
 
-                program.sendStructureData(`u_directionLights[${index}].intensity`, VariableType.FLOAT_1, lightComponent.intensity);
+                program.sendStructureData(`u_directionLights[${index}].intensity`, EVariableType.FLOAT_1, lightComponent.intensity);
             });
         }
 

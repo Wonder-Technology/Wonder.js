@@ -16,7 +16,7 @@ module wd{
 
             if(this.buffers){
                 this.buffers.geometryData.vertices = vertices;
-                this.buffers.removeCache(BufferDataType.VERTICE);
+                this.buffers.removeCache(EBufferDataType.VERTICE);
             }
         }
 
@@ -29,7 +29,7 @@ module wd{
 
             if(this.buffers) {
                 this.buffers.geometryData.texCoords = texCoords;
-                this.buffers.removeCache(BufferDataType.TEXCOORD);
+                this.buffers.removeCache(EBufferDataType.TEXCOORD);
             }
         }
 
@@ -41,7 +41,7 @@ module wd{
             this._colors = colors;
             if(this.buffers) {
                 this.buffers.geometryData.colors = colors;
-                this.buffers.removeCache(BufferDataType.COLOR);
+                this.buffers.removeCache(EBufferDataType.COLOR);
             }
         }
 
@@ -53,7 +53,7 @@ module wd{
             this._indices = indices;
             if(this.buffers) {
                 this.buffers.geometryData.faces = GeometryUtils.convertToFaces(indices, this.normals);
-                this.buffers.removeCache(BufferDataType.INDICE);
+                this.buffers.removeCache(EBufferDataType.INDICE);
             }
         }
 
@@ -65,7 +65,7 @@ module wd{
             this._normals = normals;
             if(this.buffers) {
                 this.buffers.geometryData.faces = GeometryUtils.convertToFaces(this.indices, normals);
-                this.buffers.removeCache(BufferDataType.NORMAL);
+                this.buffers.removeCache(EBufferDataType.NORMAL);
             }
         }
 

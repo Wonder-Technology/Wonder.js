@@ -20,7 +20,7 @@ describe("ShaderSourceBuilder", function () {
             lib1 = {
                 attributes: {
                     "a_color": {
-                        type: wd.VariableType.FLOAT_4,
+                        type: wd.EVariableType.FLOAT_4,
                         value: [
                             1, 0, 0, 1,
                             1, 0, 0, 1,
@@ -31,7 +31,7 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test1": {
-                        type: wd.VariableType.FLOAT_1,
+                        type: wd.EVariableType.FLOAT_1,
                         value: 1.0
                     }
                 },
@@ -70,7 +70,7 @@ describe("ShaderSourceBuilder", function () {
             lib2 = {
                 attributes: {
                     "a_position": {
-                        type: wd.VariableType.FLOAT_3,
+                        type: wd.EVariableType.FLOAT_3,
                         value: [
                             0, 0, 0,
                             1, 0, 0,
@@ -81,10 +81,10 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test2": {
-                        type: wd.VariableType.STRUCTURE,
+                        type: wd.EVariableType.STRUCTURE,
                         value: {
                             "b": {
-                                type:wd.VariableType.FLOAT_1,
+                                type:wd.EVariableType.FLOAT_1,
                                 value: function(){
                                     return 3.0;
                                 }
@@ -167,11 +167,11 @@ describe("ShaderSourceBuilder", function () {
             expect(builder.attributes.getChildren()).toEqual(
                 {
                     "a_color": {
-                        type: wd.VariableType.FLOAT_4,
+                        type: wd.EVariableType.FLOAT_4,
                         value: buffer
                     },
                     "a_position": {
-                        type: wd.VariableType.FLOAT_3,
+                        type: wd.EVariableType.FLOAT_3,
                         value: buffer
                     }
                 }
@@ -200,7 +200,7 @@ describe("ShaderSourceBuilder", function () {
                 },
                 uniforms: {
                     "u_test1": {
-                        type: wd.VariableType.FLOAT_1,
+                        type: wd.EVariableType.FLOAT_1,
                         value: 1.0
                     }
                 },
@@ -252,10 +252,10 @@ describe("ShaderSourceBuilder", function () {
             lib1 = {
                 uniforms: {
                     "u_test2": {
-                        type: wd.VariableType.STRUCTURE,
+                        type: wd.EVariableType.STRUCTURE,
                         value: {
                             "b": {
-                                type:wd.VariableType.FLOAT_1,
+                                type:wd.EVariableType.FLOAT_1,
                                 value: function(){
                                     return 3.0;
                                 }

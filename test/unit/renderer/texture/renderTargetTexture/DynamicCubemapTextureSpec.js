@@ -84,7 +84,7 @@ describe("DynamicCubemapTexture", function() {
             material.mapManager.sendData(program);
 
             expect(program.getUniformLocation).toCalledWith("u_samplerCube0");
-            expect(program.sendUniformData).toCalledWith(pos1, wd.VariableType.SAMPLER_CUBE, 0);
+            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_CUBE, 0);
         });
     });
 });

@@ -9,8 +9,8 @@ module wd{
         public type:string = "morphNormal";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-            if(quadCmd.buffers.hasChild(BufferDataType.NORMAL)){
-                let morphNormalData = quadCmd.buffers.getChild(BufferDataType.NORMAL);
+            if(quadCmd.buffers.hasChild(EBufferDataType.NORMAL)){
+                let morphNormalData = quadCmd.buffers.getChild(EBufferDataType.NORMAL);
 
                 this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
                 this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);

@@ -85,7 +85,7 @@ module wd {
 
             geometry = wd.CustomGeometry.create();
             geometry.material = material;
-            geometry.drawMode = DrawMode.LINES;
+            geometry.drawMode = EDrawMode.LINES;
             this.setDebugObjectGeometry(geometry, shape);
 
             renderer = wd.MeshRenderer.create();

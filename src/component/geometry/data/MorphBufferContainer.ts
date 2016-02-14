@@ -24,21 +24,21 @@ module wd {
         private _currentNormalBuffer:ArrayBuffer = null;
         private _nextNormalBuffer:ArrayBuffer = null;
 
-        @require(function (type:BufferDataType) {
+        @require(function (type:EBufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })
-        protected getVertice(type:BufferDataType) {
+        protected getVertice(type:EBufferDataType) {
             return this._getMorphData(type, this.geometryData.morphTargets);
         }
 
-        @require(function (type:BufferDataType) {
+        @require(function (type:EBufferDataType) {
             assert(this.geometryData.morphTargets && this.geometryData.morphTargets.getCount() > 0, Log.info.FUNC_SHOULD("set morphTargets"));
         })
-        protected getNormal(type:BufferDataType) {
+        protected getNormal(type:EBufferDataType) {
             return this._getMorphData(type, this.geometryData.morphNormals);
         }
 
-        private _getMorphData(type:BufferDataType, morphDataTargets:wdCb.Hash<wdCb.Collection<Array<number>>>):Array<ArrayBuffer> {
+        private _getMorphData(type:EBufferDataType, morphDataTargets:wdCb.Hash<wdCb.Collection<Array<number>>>):Array<ArrayBuffer> {
             var cacheData = null,
                 frames = null,
                 result = null;
@@ -57,8 +57,8 @@ module wd {
                 let currentBuffer = this._getCurrentBuffer(type),
                     nextBuffer = this._getNextBuffer(type);
 
-                currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, BufferType.FLOAT);
-                nextBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, BufferType.FLOAT);
+                currentBuffer.resetData(new Float32Array(frames.getChild(this._animation.currentFrame)), 3, EBufferType.FLOAT);
+                nextBuffer.resetData(new Float32Array(frames.getChild(this._animation.nextFrame)), 3, EBufferType.FLOAT);
 
 
                 result = [currentBuffer, nextBuffer];
@@ -95,11 +95,11 @@ module wd {
             return result;
         }
 
-        @require(function(type:BufferDataType){
-            assert(type === BufferDataType.VERTICE || type === BufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+        @require(function(type:EBufferDataType){
+            assert(type === EBufferDataType.VERTICE || type === EBufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
         })
-        private _getCurrentBuffer(type:BufferDataType){
-            if(type === BufferDataType.VERTICE){
+        private _getCurrentBuffer(type:EBufferDataType){
+            if(type === EBufferDataType.VERTICE){
                 this.createBufferOnlyOnce("_currentVerticeBuffer", ArrayBuffer);
 
                 return this._currentVerticeBuffer;
@@ -110,11 +110,11 @@ module wd {
             return this._currentNormalBuffer;
         }
 
-        @require(function(type:BufferDataType){
-            assert(type === BufferDataType.VERTICE || type === BufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+        @require(function(type:EBufferDataType){
+            assert(type === EBufferDataType.VERTICE || type === EBufferDataType.NORMAL, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
         })
-        private _getNextBuffer(type:BufferDataType){
-            if(type === BufferDataType.VERTICE){
+        private _getNextBuffer(type:EBufferDataType){
+            if(type === EBufferDataType.VERTICE){
                 this.createBufferOnlyOnce("_nextVerticeBuffer", ArrayBuffer);
 
                 return this._nextVerticeBuffer;
@@ -125,7 +125,7 @@ module wd {
             return this._nextNormalBuffer;
         }
 
-        private _isCacheNotChange(type:BufferDataType){
+        private _isCacheNotChange(type:EBufferDataType){
             return !this._isCacheChangeFlag[type];
         }
 
@@ -133,26 +133,26 @@ module wd {
             return this._animation.currentAnimName === null;
         }
 
-        @cache(function(type:BufferDataType){
+        @cache(function(type:EBufferDataType){
             return this.container.hasChild(this._getStaticDataCacheData(type));
         }, function(type){
             return this.container.getChild(this._getStaticDataCacheData(type))
         }, function(result, type){
             this.container.addChild(this._getStaticDataCacheData(type), result);
         })
-        private _getStaticData(type:BufferDataType){
+        private _getStaticData(type:EBufferDataType){
             var data = null,
                 result = null;
 
             switch(type){
-                case BufferDataType.VERTICE:
+                case EBufferDataType.VERTICE:
                     data = this.geometryData.vertices;
                     break;
-                case BufferDataType.NORMAL:
+                case EBufferDataType.NORMAL:
                     data = this.geometryData.normals;
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_SHOULD("type", "be BufferDataType.VERTICE or BufferDataType.NORMAL"));
+                    Log.error(true, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
                     break;
             }
 
@@ -160,17 +160,17 @@ module wd {
 
             result = [
                 this._getCurrentBuffer(type).resetData(
-                    new Float32Array(data), 3, BufferType.FLOAT
+                    new Float32Array(data), 3, EBufferType.FLOAT
                 ),
                 this._getNextBuffer(type).resetData(
-                    new Float32Array(data), 3, BufferType.FLOAT
+                    new Float32Array(data), 3, EBufferType.FLOAT
                 )
                 ];
 
             return result;
         }
 
-        private _getStaticDataCacheData(type:BufferDataType){
+        private _getStaticDataCacheData(type:EBufferDataType){
             return `static_${type}`;
         }
     }

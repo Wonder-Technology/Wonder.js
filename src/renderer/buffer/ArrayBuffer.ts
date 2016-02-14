@@ -1,7 +1,7 @@
 module wd{
     export class ArrayBuffer extends Buffer{
         public static create():ArrayBuffer;
-        public static create(data:any, size:number, type:BufferType, usage?:BufferUsage):ArrayBuffer;
+        public static create(data:any, size:number, type:EBufferType, usage?:EBufferUsage):ArrayBuffer;
 
         public static create(...args):ArrayBuffer {
             var obj = new this();
@@ -14,11 +14,11 @@ module wd{
         public size:number = null;
         public data:any = null;
 
-        private _type:BufferType = null;
+        private _type:EBufferType = null;
 
 
         public initWhenCreate();
-        public initWhenCreate(data:any, size:number, type:BufferType, usage?:BufferUsage);
+        public initWhenCreate(data:any, size:number, type:EBufferType, usage?:EBufferUsage);
 
         public initWhenCreate(...args) {
             var gl = DeviceManager.getInstance().gl;
@@ -36,8 +36,8 @@ module wd{
             else{
                 let data:any = args[0],
                     size:number = args[1],
-                    type:BufferType = args[2],
-                    usage:BufferUsage = args[3] || BufferUsage.STATIC_DRAW;
+                    type:EBufferType = args[2],
+                    usage:EBufferUsage = args[3] || EBufferUsage.STATIC_DRAW;
 
                 if(!data){
                     return null;
@@ -59,10 +59,10 @@ module wd{
             }
         }
 
-        @require(function(data:any, size:number = this.size, type:BufferType = this._type){
+        @require(function(data:any, size:number = this.size, type:EBufferType = this._type){
             assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
         })
-        public resetData(data:any, size:number = this.size, type:BufferType = this._type){
+        public resetData(data:any, size:number = this.size, type:EBufferType = this._type){
             var gl = DeviceManager.getInstance().gl;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);

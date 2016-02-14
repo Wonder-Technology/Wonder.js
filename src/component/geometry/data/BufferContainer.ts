@@ -18,38 +18,38 @@ module wd {
             var self = this;
 
             EventManager.on(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE, () => {
-                self.removeCache(BufferDataType.COLOR);
+                self.removeCache(EBufferDataType.COLOR);
             });
         }
 
-        public removeCache(type:BufferDataType){
+        public removeCache(type:EBufferDataType){
             this.container.removeChild(type);
         }
 
-        public getChild(type:BufferDataType) {
+        public getChild(type:EBufferDataType) {
             var result:any = null;
 
             switch (type) {
-                case BufferDataType.VERTICE:
+                case EBufferDataType.VERTICE:
                     result = this.getVertice(type);
                     break;
-                case BufferDataType.NORMAL:
+                case EBufferDataType.NORMAL:
                     result = this.getNormal(type);
                     break;
-                case BufferDataType.TANGENT:
+                case EBufferDataType.TANGENT:
                     result = this._getTangent(type);
                     break;
-                case BufferDataType.COLOR:
+                case EBufferDataType.COLOR:
                     result = this._getColor(type);
                     break;
-                case BufferDataType.INDICE:
+                case EBufferDataType.INDICE:
                     result = this._getIndice(type);
                     break;
-                case BufferDataType.TEXCOORD:
+                case EBufferDataType.TEXCOORD:
                     result = this._getTexCoord(type);
                     break;
                 default:
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`BufferDataType: ${type}`));
+                    wdCb.Log.error(true, wdCb.Log.info.FUNC_UNKNOW(`EBufferDataType: ${type}`));
                     break;
             }
 
@@ -57,7 +57,7 @@ module wd {
 
         }
 
-        public hasChild(type:BufferDataType) {
+        public hasChild(type:EBufferDataType) {
             var data = this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
             return !!data && data.length > 0;
@@ -80,7 +80,7 @@ module wd {
             this[bufferAttriName] = bufferClass.create();
         }
 
-        @cache(function(type:BufferDataType){
+        @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
         }, function(type){
             return this.container.getChild(<any>type)
@@ -93,12 +93,12 @@ module wd {
             this.createBufferOnlyOnce("_tangentBuffer", ArrayBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            this._tangentBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this._tangentBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
 
             return this._tangentBuffer;
         }
 
-        @cache(function(type:BufferDataType){
+        @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type);
         }, function(type){
             return this.container.getChild(<any>type)
@@ -111,12 +111,12 @@ module wd {
             this.createBufferOnlyOnce("_colorBuffer", ArrayBuffer);
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-            this._colorBuffer.resetData(new Float32Array(geometryData), 3, BufferType.FLOAT);
+            this._colorBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
 
             return this._colorBuffer;
         }
 
-        @cache(function(type:BufferDataType){
+        @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type);
         }, function(type){
             return this.container.getChild(<any>type)
@@ -130,12 +130,12 @@ module wd {
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
-            this._indiceBuffer.resetData(new Uint16Array(geometryData), BufferType.UNSIGNED_SHORT);
+            this._indiceBuffer.resetData(new Uint16Array(geometryData), EBufferType.UNSIGNED_SHORT);
 
             return this._indiceBuffer;
         }
 
-        @cache(function(type:BufferDataType){
+        @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type);
         }, function(type){
             return this.container.getChild(<any>type)
@@ -149,13 +149,13 @@ module wd {
 
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
-            this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, BufferType.FLOAT);
+            this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, EBufferType.FLOAT);
 
             return this._texCoordBuffer;
         }
 
-        private _needReCalcuteTangent(type:BufferDataType){
-            return this.geometryData.isTangentDirty && type === BufferDataType.TANGENT;
+        private _needReCalcuteTangent(type:EBufferDataType){
+            return this.geometryData.isTangentDirty && type === EBufferDataType.TANGENT;
         }
     }
 }

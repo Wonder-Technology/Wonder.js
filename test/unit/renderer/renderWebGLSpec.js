@@ -334,7 +334,7 @@ describe("renderWebGL", function() {
 
                     renderer.render();
 
-                    var indexBuffer = quadCmd.buffers.getChild(wd.BufferDataType.INDICE);
+                    var indexBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.INDICE);
 
                     expect(gl.bindBuffer.args.slice(-1)).toEqual([[gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer]]);
                     expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * 0);

@@ -1,7 +1,7 @@
 module wd{
     export class ElementBuffer extends Buffer{
         public static create():ElementBuffer;
-        public static create(data, type:BufferType, usage?:BufferUsage):ElementBuffer;
+        public static create(data, type:EBufferType, usage?:EBufferUsage):ElementBuffer;
 
         public static create(...args):ElementBuffer {
             var obj = new this();
@@ -16,11 +16,11 @@ module wd{
 
         public data:any = null;
 
-        private _type:BufferType = null;
+        private _type:EBufferType = null;
 
 
         public initWhenCreate();
-        public initWhenCreate(data:any, type:BufferType, usage?:BufferUsage);
+        public initWhenCreate(data:any, type:EBufferType, usage?:EBufferUsage);
 
         public initWhenCreate(...args) {
             var gl = DeviceManager.getInstance().gl;
@@ -37,8 +37,8 @@ module wd{
             }
             else{
                 let data:any = args[0],
-                    type:BufferType = args[1],
-                    usage:BufferUsage = args[2] || BufferUsage.STATIC_DRAW;
+                    type:EBufferType = args[1],
+                    usage:EBufferUsage = args[2] || EBufferUsage.STATIC_DRAW;
 
                 if(!data || !this._checkDataType(data, type)){
                     return null;
@@ -59,10 +59,10 @@ module wd{
             }
         }
 
-        @require(function(data:any, type:BufferType = this._type){
+        @require(function(data:any, type:EBufferType = this._type){
             assert(this.buffer, Log.info.FUNC_MUST("create gl buffer"));
         })
-        public resetData(data:any, type:BufferType = this._type){
+        public resetData(data:any, type:EBufferType = this._type){
             var gl = DeviceManager.getInstance().gl;
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
@@ -77,54 +77,54 @@ module wd{
             return this;
         }
 
-        private _checkDataType(data, type:BufferType){
+        private _checkDataType(data, type:EBufferType){
             var info = this._getInfo(type);
 
             return data instanceof info.typeClass;
         }
 
-        private _getInfo(type:BufferType):{typeClass:any,size:number}{
+        private _getInfo(type:EBufferType):{typeClass:any,size:number}{
             var info = null;
 
             switch (type){
-                case BufferType.UNSIGNED_BYTE:
+                case EBufferType.UNSIGNED_BYTE:
                     info = {
                         typeClass: Uint8Array,
                         size: 1
                     };
                     break;
-                case BufferType.SHORT:
+                case EBufferType.SHORT:
                     info = {
                         typeClass: Int16Array,
                         size: 2
                     };
                     break;
-                case BufferType.UNSIGNED_SHORT:
+                case EBufferType.UNSIGNED_SHORT:
                     info = {
                         typeClass: Uint16Array,
                         size: 2
                     };
                     break;
-                case BufferType.INT:
+                case EBufferType.INT:
                     info = {
                         typeClass: Int32Array,
                         size: 4
                     };
                     break;
-                case BufferType.UNSIGNED_INT:
+                case EBufferType.UNSIGNED_INT:
                     info = {
                         typeClass: Uint32Array,
                         size: 4
                     };
                     break;
-                case BufferType.FLOAT:
+                case EBufferType.FLOAT:
                     info = {
                         typeClass: Float32Array,
                         size: 4
                     };
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_INVALID("BufferType"));
+                    Log.error(true, Log.info.FUNC_INVALID("EBufferType"));
                     break;
             }
 

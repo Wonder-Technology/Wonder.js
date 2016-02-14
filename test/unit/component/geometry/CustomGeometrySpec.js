@@ -79,7 +79,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.vertices = newData;
 
-                expect(testTool.getValues(geo.buffers.getChild(wd.BufferDataType.VERTICE).data)).toEqual(
+                expect(testTool.getValues(geo.buffers.getChild(wd.EBufferDataType.VERTICE).data)).toEqual(
                     newData
                 );
             });
@@ -91,7 +91,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.texCoords = newData;
 
-                expect(testTool.getValues(geo.buffers.getChild(wd.BufferDataType.TEXCOORD).data)).toEqual(
+                expect(testTool.getValues(geo.buffers.getChild(wd.EBufferDataType.TEXCOORD).data)).toEqual(
                     newData
                 );
             });
@@ -103,7 +103,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.colors = newData;
 
-                expect(testTool.getValues(geo.buffers.getChild(wd.BufferDataType.COLOR).data)).toEqual(
+                expect(testTool.getValues(geo.buffers.getChild(wd.EBufferDataType.COLOR).data)).toEqual(
                     newData
                 );
             });
@@ -115,7 +115,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.normals = newData;
 
-                expect(testTool.getValues(geo.buffers.getChild(wd.BufferDataType.NORMAL).data)).toEqual(
+                expect(testTool.getValues(geo.buffers.getChild(wd.EBufferDataType.NORMAL).data)).toEqual(
                     newData
                 );
             });
@@ -125,7 +125,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.indices = newData;
 
-                expect(testTool.getValues(geo.buffers.getChild(wd.BufferDataType.INDICE).data)).toEqual(
+                expect(testTool.getValues(geo.buffers.getChild(wd.EBufferDataType.INDICE).data)).toEqual(
                     newData
                 );
             });
@@ -136,7 +136,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.indices = newData;
 
-                var buffer = geo.buffers.getChild(wd.BufferDataType.INDICE);
+                var buffer = geo.buffers.getChild(wd.EBufferDataType.INDICE);
 
                 expect(testTool.getValues(buffer.data)).toEqual(
                     newData
@@ -150,7 +150,7 @@ describe("CustomGeometry", function() {
                 ];
                 geo.indices = newData2;
 
-                var buffer2 = geo.buffers.getChild(wd.BufferDataType.INDICE);
+                var buffer2 = geo.buffers.getChild(wd.EBufferDataType.INDICE);
                 expect(testTool.getValues(buffer2.data)).toEqual(
                     newData2
                 );

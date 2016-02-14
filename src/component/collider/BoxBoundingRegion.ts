@@ -59,7 +59,7 @@ module wd {
             ];
 
             /*!
-             //todo optimize: set ElementBuffer to create Uint8Array, BufferType.UNSIGNED_BYTE
+             //todo optimize: set ElementBuffer to create Uint8Array, EBufferType.UNSIGNED_BYTE
              geometry add buffer type table?
              */
             geometry.indices = [

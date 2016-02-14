@@ -185,7 +185,7 @@ module wd{
         }
 
         private _parseDrawMode(mode:number){
-            var drawMode:DrawMode = null;
+            var drawMode:EDrawMode = null;
 
             if(!mode){
                 return null;
@@ -193,25 +193,25 @@ module wd{
 
             switch(mode){
                 case 0:
-                    drawMode = DrawMode.POINTS;
+                    drawMode = EDrawMode.POINTS;
                     break;
                 case 1:
-                    drawMode = DrawMode.LINES;
+                    drawMode = EDrawMode.LINES;
                     break;
                 case 2:
-                    drawMode = DrawMode.LINE_LOOP;
+                    drawMode = EDrawMode.LINE_LOOP;
                     break;
                 case 3:
-                    drawMode = DrawMode.LINE_STRIP;
+                    drawMode = EDrawMode.LINE_STRIP;
                     break;
                 case 4:
-                    drawMode = DrawMode.TRIANGLES;
+                    drawMode = EDrawMode.TRIANGLES;
                     break;
                 case 5:
-                    drawMode = DrawMode.TRIANGLE_STRIP;
+                    drawMode = EDrawMode.TRIANGLE_STRIP;
                     break;
                 case 6:
-                    drawMode = DrawMode.TRANGLE_FAN;
+                    drawMode = EDrawMode.TRANGLE_FAN;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_UNEXPECT(`mode:${mode}`));

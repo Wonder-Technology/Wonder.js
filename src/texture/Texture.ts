@@ -59,7 +59,7 @@ module wd{
         protected sendOtherData(program:Program, unit:number){
         }
 
-        protected getSamplerNameByVariableData(unit:number, type?:VariableType){
+        protected getSamplerNameByVariableData(unit:number, type?:EVariableType){
             var samplerName:string = null;
 
             if(this.variableData){
@@ -68,21 +68,21 @@ module wd{
                 }
             }
             else{
-                samplerName = type === VariableType.SAMPLER_2D ? `u_sampler2D${unit}` : `u_samplerCube${unit}`;
+                samplerName = type === EVariableType.SAMPLER_2D ? `u_sampler2D${unit}` : `u_samplerCube${unit}`;
             }
 
             return samplerName;
         }
 
-        protected getSamplerType():VariableType{
+        protected getSamplerType():EVariableType{
             var type = null;
 
             switch(this.target){
                 case ETextureTarget.TEXTURE_2D:
-                    type = VariableType.SAMPLER_2D;
+                    type = EVariableType.SAMPLER_2D;
                     break;
                 case ETextureTarget.TEXTURE_CUBE_MAP:
-                    type = VariableType.SAMPLER_CUBE;
+                    type = EVariableType.SAMPLER_CUBE;
                     break;
                 default:
                     break;

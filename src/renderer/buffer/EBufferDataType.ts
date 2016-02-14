@@ -1,5 +1,5 @@
 module wd {
-    export enum BufferDataType{
+    export enum EBufferDataType{
         VERTICE = <any>"VERTICE",
         INDICE = <any>"INDICE",
         NORMAL = <any>"NORMAL",

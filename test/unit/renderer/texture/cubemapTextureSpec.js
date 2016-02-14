@@ -422,14 +422,14 @@ describe("cubemap texture", function() {
             it("send cube texture unit index", function () {
                 texture.sendData(program, 100, 1);
 
-                expect(program.sendUniformData.firstCall).toCalledWith(100, wd.VariableType.SAMPLER_CUBE, 1);
+                expect(program.sendUniformData.firstCall).toCalledWith(100, wd.EVariableType.SAMPLER_CUBE, 1);
             });
             it("send u_repeatRegion", function(){
                 texture.repeatRegion = wd.RectRegion.create(0, 1, 2, 3);
 
                 texture.sendData(program, 100, 1);
 
-                expect(program.sendUniformData).toCalledWith("u_repeatRegion", wd.VariableType.FLOAT_4, texture.repeatRegion);
+                expect(program.sendUniformData).toCalledWith("u_repeatRegion", wd.EVariableType.FLOAT_4, texture.repeatRegion);
             });
         });
 

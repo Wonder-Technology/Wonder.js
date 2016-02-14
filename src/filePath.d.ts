@@ -298,10 +298,10 @@
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
-/// <reference path="renderer/DrawMode"/>
-/// <reference path="renderer/buffer/BufferType"/>
-/// <reference path="renderer/buffer/BufferDataType"/>
-/// <reference path="renderer/buffer/BufferUsage"/>
+/// <reference path="renderer/EDrawMode"/>
+/// <reference path="renderer/buffer/EBufferType"/>
+/// <reference path="renderer/buffer/EBufferDataType"/>
+/// <reference path="renderer/buffer/EBufferUsage"/>
 /// <reference path="renderer/buffer/Buffer"/>
 /// <reference path="renderer/buffer/ElementBuffer"/>
 /// <reference path="renderer/buffer/ArrayBuffer"/>
@@ -315,8 +315,8 @@
 
 /// <reference path="renderer/shader/Shader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
-/// <reference path="renderer/shader/variable/VariableType"/>
-/// <reference path="renderer/shader/variable/VariableCategory"/>
+/// <reference path="renderer/shader/variable/EVariableType"/>
+/// <reference path="renderer/shader/variable/EVariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
 /// <reference path="renderer/shader/variable/VariableTypeTable"/>
 /// <reference path="renderer/shader/variable/VariableNameTable"/>

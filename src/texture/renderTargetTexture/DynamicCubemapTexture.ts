@@ -40,7 +40,7 @@ module wd {
         }
 
         public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_CUBE);
+            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_CUBE);
         }
     }
 }

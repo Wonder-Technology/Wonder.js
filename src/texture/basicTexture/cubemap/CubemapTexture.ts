@@ -61,11 +61,11 @@ module wd{
         }
 
         public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_CUBE);
+            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_CUBE);
         }
 
         protected sendOtherData(program:Program, unit:number){
-            program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
+            program.sendUniformData("u_repeatRegion", EVariableType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

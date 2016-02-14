@@ -516,7 +516,7 @@ describe("GLTFParser", function () {
                 //);
                 expect(geo.colors).toBeUndefined();
                 geometryTool.judgeFaceIndices(geo.faces, indices);
-                expect(geo.drawMode).toEqual(wd.DrawMode.TRIANGLES);
+                expect(geo.drawMode).toEqual(wd.EDrawMode.TRIANGLES);
 
 
                 //expect(object1.children.getChild(0).name).toEqual("mat1");
@@ -571,7 +571,7 @@ describe("GLTFParser", function () {
                 //expect(geo.colors).toBeUndefined();
 
                 geometryTool.judgeFaceIndices(geo.faces, []);
-                expect(geo.drawMode).toEqual(wd.DrawMode.LINE_STRIP);
+                expect(geo.drawMode).toEqual(wd.EDrawMode.LINE_STRIP);
             });
 
             describe("parse material", function(){

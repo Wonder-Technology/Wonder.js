@@ -162,7 +162,7 @@ describe("MirrorTexture", function () {
             material.mapManager.sendData(program);
 
             expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
-            expect(program.sendUniformData).toCalledWith(pos1, wd.VariableType.SAMPLER_2D, 0);
+            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_2D, 0);
         });
     });
 });

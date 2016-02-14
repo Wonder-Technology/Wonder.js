@@ -74,7 +74,7 @@ describe("BasicTexture", function() {
         it("send texture unit index", function(){
             texture.sendData(program, 100, 1);
 
-            expect(program.sendUniformData.firstCall).toCalledWith(100, wd.VariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData.firstCall).toCalledWith(100, wd.EVariableType.SAMPLER_2D, 1);
         });
 
         describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){

@@ -11,8 +11,8 @@ module wd{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             super.sendShaderVariables(program, quadCmd, material);
 
-            if(quadCmd.buffers.hasChild(BufferDataType.TANGENT)){
-                this.sendAttributeData(program, "a_tangent", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.TANGENT));
+            if(quadCmd.buffers.hasChild(EBufferDataType.TANGENT)){
+                this.sendAttributeData(program, "a_tangent", <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.TANGENT));
             }
         }
 

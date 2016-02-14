@@ -70,7 +70,7 @@ module wd{
         }
 
         protected sendAttributeData(program:Program, name:string, data:any){
-            program.sendAttributeData(name, VariableType.BUFFER, data);
+            program.sendAttributeData(name, EVariableType.BUFFER, data);
         }
 
         @require(function(program:Program, name:string, data:any){

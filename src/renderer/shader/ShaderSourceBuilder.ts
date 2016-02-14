@@ -76,7 +76,7 @@ module wd{
 
             this.attributes
                 .filter((data:ShaderData) => {
-                    return (JudgeUtils.isArray(data.value) || JudgeUtils.isFloatArray(data.value)) && data.value !== VariableCategory.ENGINE;
+                    return (JudgeUtils.isArray(data.value) || JudgeUtils.isFloatArray(data.value)) && data.value !== EVariableCategory.ENGINE;
                 })
                 .forEach((data:ShaderData, key:string) => {
                     data.value = self._convertArrayToArrayBuffer(data.type, data.value);
@@ -268,7 +268,7 @@ module wd{
                 self = this;
 
             this.uniforms.filter((data:ShaderData, key:string) => {
-                return !!data && data.type !== VariableType.STRUCTURE && data.type !== VariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
+                return !!data && data.type !== EVariableType.STRUCTURE && data.type !== EVariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
                 }).forEach((data:ShaderData, key:string) => {
                     result += `uniform ${VariableTypeTable.getVariableType(data.type)} ${key};\n`;
                 });
@@ -280,33 +280,33 @@ module wd{
             return source.indexOf(key) !== -1;
         }
 
-        private _convertArrayToArrayBuffer(type:VariableType, value:Array<any>|Float32Array|Float64Array) {
+        private _convertArrayToArrayBuffer(type:EVariableType, value:Array<any>|Float32Array|Float64Array) {
             var size = this._getBufferSize(type);
 
             if(JudgeUtils.isArray(value)){
-                return ArrayBuffer.create(new Float32Array(value), size, BufferType.FLOAT);
+                return ArrayBuffer.create(new Float32Array(value), size, EBufferType.FLOAT);
             }
             else if(JudgeUtils.isFloatArray(value)){
-                return ArrayBuffer.create(value, size, BufferType.FLOAT);
+                return ArrayBuffer.create(value, size, EBufferType.FLOAT);
             }
         }
 
-        private _getBufferSize(type:VariableType){
+        private _getBufferSize(type:EVariableType){
             var size = null;
 
             switch (type){
-                case VariableType.FLOAT_1:
-                case VariableType.NUMBER_1:
+                case EVariableType.FLOAT_1:
+                case EVariableType.NUMBER_1:
                     size = 1;
                     break;
-                case VariableType.FLOAT_3:
+                case EVariableType.FLOAT_3:
                     size = 3;
                     break;
-                case VariableType.FLOAT_4:
+                case EVariableType.FLOAT_4:
                     size = 4;
                     break;
                 default:
-                    Log.error(true, Log.info.FUNC_UNEXPECT("VariableType", type));
+                    Log.error(true, Log.info.FUNC_UNEXPECT("EVariableType", type));
                     break;
             }
 

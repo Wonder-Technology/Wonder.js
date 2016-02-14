@@ -68,16 +68,16 @@ describe("Geometry", function() {
             });
 
             it("if the buffer is cached, return the cached one", function(){
-                var result1 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
+                var result1 = geo.buffers.getChild(wd.EBufferDataType.VERTICE);
 
-                var result2 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
+                var result2 = geo.buffers.getChild(wd.EBufferDataType.VERTICE);
 
                 expect(wd.ArrayBuffer.create).toCalledOnce();
                 expect(result1).toEqual(result2);
             });
             it("else, create buffer and add it to cache", function(){
-                var result1 = geo.buffers.getChild(wd.BufferDataType.NORMAL);
-                var result2 = geo.buffers.getChild(wd.BufferDataType.INDICE);
+                var result1 = geo.buffers.getChild(wd.EBufferDataType.NORMAL);
+                var result2 = geo.buffers.getChild(wd.EBufferDataType.INDICE);
 
                 expect(wd.ArrayBuffer.create).toCalledOnce();
                 expect(wd.ElementBuffer.create).toCalledOnce();
@@ -247,7 +247,7 @@ describe("Geometry", function() {
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.EBufferDataType.NORMAL).data
             )).toEqual(
                 [ -0.8164966, -0.4082483, -0.4082483,
                     -0.8164966, -0.4082483, -0.4082483,
@@ -262,7 +262,7 @@ describe("Geometry", function() {
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.EBufferDataType.NORMAL).data
             )).toEqual(
                 [
                     0, 0, 0, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023, 0.942809, -0.2357023, -0.2357023
@@ -281,7 +281,7 @@ describe("Geometry", function() {
 
             expect(
                 testTool.getValues(
-                    geo.buffers.getChild(wd.BufferDataType.NORMAL).data
+                    geo.buffers.getChild(wd.EBufferDataType.NORMAL).data
                 )
             ).toEqual(
                 [ -0.8164966, -0.4082483, -0.4082483,
@@ -298,7 +298,7 @@ describe("Geometry", function() {
             geo.init();
 
             expect(testTool.getValues(
-                geo.buffers.getChild(wd.BufferDataType.NORMAL).data
+                geo.buffers.getChild(wd.EBufferDataType.NORMAL).data
             )).toEqual(
                 [
                     0, 0, 0, 0.953171, -0.1187764, -0.2781315, 0.942809, -0.2357023, -0.2357023, 0.953171, -0.1187764, -0.2781315, 0.9486833, 0, -0.3162278
@@ -336,7 +336,7 @@ describe("Geometry", function() {
 
         describe('Geometry trigger its gameObject->"material change" event when change material', function(){
             it('BufferContainer remove color cache when event triggered', function(){
-                var colors = geo.buffers.getChild(wd.BufferDataType.COLOR);
+                var colors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
                 sandbox.spy(colors, "resetData");
 
                 expect(testTool.getValues(colors.data)).toEqual(
@@ -355,7 +355,7 @@ describe("Geometry", function() {
                 geo.material = newMaterial;
 
 
-                var newColors = geo.buffers.getChild(wd.BufferDataType.COLOR);
+                var newColors = geo.buffers.getChild(wd.EBufferDataType.COLOR);
 
                 expect(colors.resetData).toCalledOnce();
 

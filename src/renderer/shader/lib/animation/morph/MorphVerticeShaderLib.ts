@@ -12,8 +12,8 @@ module wd{
             assert(!!quadCmd.animation, Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
         })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-            if (quadCmd.buffers.hasChild(BufferDataType.VERTICE)) {
-                let morphVerticeData = quadCmd.buffers.getChild(BufferDataType.VERTICE);
+            if (quadCmd.buffers.hasChild(EBufferDataType.VERTICE)) {
+                let morphVerticeData = quadCmd.buffers.getChild(EBufferDataType.VERTICE);
 
 
                 this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);

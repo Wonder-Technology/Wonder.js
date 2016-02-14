@@ -1,5 +1,5 @@
 module wd {
-    export enum BufferType{
+    export enum EBufferType{
         BYTE = <any>"BYTE",
         UNSIGNED_BYTE = <any>"UNSIGNED_BYTE",
         SHORT = <any>"SHORT",

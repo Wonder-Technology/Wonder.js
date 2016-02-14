@@ -320,13 +320,13 @@ describe("morph animation", function () {
                 frameNormals2
             );
         });
-        it("fix bug: when invoke ModelGeometry.buffers->getChild(BufferDataType.VERTICE/BufferDataTYpe.NORMAL) multi times, it should use the cache after the first time, but actual is that it always generate vertices/normals each time", function(){
+        it("fix bug: when invoke ModelGeometry.buffers->getChild(EBufferDataType.VERTICE/BufferDataTYpe.NORMAL) multi times, it should use the cache after the first time, but actual is that it always generate vertices/normals each time", function(){
             anim.play("play", fps);
             director._init();
 
 
-            var vertices1 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
-            var vertices2 = geo.buffers.getChild(wd.BufferDataType.VERTICE);
+            var vertices1 = geo.buffers.getChild(wd.EBufferDataType.VERTICE);
+            var vertices2 = geo.buffers.getChild(wd.EBufferDataType.VERTICE);
 
             expect(vertices1[0].data).toEqual(vertices2[0].data);
             expect(vertices1[1].data).toEqual(vertices2[1].data);

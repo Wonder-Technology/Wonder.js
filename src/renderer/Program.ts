@@ -17,13 +17,13 @@ module wd{
             return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
         }
 
-        public sendUniformData(name:string, type:VariableType, data:any);
-        public sendUniformData(pos:WebGLUniformLocation, type:VariableType, data:any);
+        public sendUniformData(name:string, type:EVariableType, data:any);
+        public sendUniformData(pos:WebGLUniformLocation, type:EVariableType, data:any);
 
         public sendUniformData(...args){
             var gl = DeviceManager.getInstance().gl,
                 pos = null,
-                type:VariableType = null,
+                type:EVariableType = null,
                 data:any = null;
 
             if(args[0] === null || args[0] instanceof WebGLUniformLocation){
@@ -48,33 +48,33 @@ module wd{
             }
 
             switch (type){
-                case VariableType.FLOAT_1:
+                case EVariableType.FLOAT_1:
                     gl.uniform1f(pos, data);
                     break;
-                case VariableType.FLOAT_2:
+                case EVariableType.FLOAT_2:
                     gl.uniform2f(pos, data[0], data[1]);
                     break;
-                case VariableType.FLOAT_3:
+                case EVariableType.FLOAT_3:
                     data = this._convertToVector3(data);
                     gl.uniform3f(pos, data.x, data.y, data.z);
                     break;
-                case VariableType.FLOAT_4:
+                case EVariableType.FLOAT_4:
                     data = this._convertToVector4(data);
                     gl.uniform4f(pos, data.x, data.y, data.z, data.w);
                     break;
-                case VariableType.FLOAT_MAT3:
+                case EVariableType.FLOAT_MAT3:
                     gl.uniformMatrix3fv(pos,false, data.values);
                     break;
-                case VariableType.FLOAT_MAT4:
+                case EVariableType.FLOAT_MAT4:
                     gl.uniformMatrix4fv(pos,false, data.values);
                     break;
-                case VariableType.NUMBER_1:
-                case VariableType.SAMPLER_CUBE:
-                case VariableType.SAMPLER_2D:
+                case EVariableType.NUMBER_1:
+                case EVariableType.SAMPLER_CUBE:
+                case EVariableType.SAMPLER_2D:
                     gl.uniform1i(pos, data);
                     break;
                 default :
-                    Log.error(true, Log.info.FUNC_INVALID("VariableType:", type));
+                    Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
             }
         }
@@ -85,11 +85,11 @@ module wd{
 
             this._shader.uniforms
                 .filter((val:ShaderData) => {
-                    return val.value !== VariableCategory.ENGINE;
+                    return val.value !== EVariableCategory.ENGINE;
                 })
                 .forEach((val:ShaderData, key:string) => {
 
-                    if(val.type === VariableType.STRUCTURE){
+                    if(val.type === EVariableType.STRUCTURE){
                         Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
 
                         for(let i in val.value){
@@ -102,7 +102,7 @@ module wd{
                 });
         }
 
-        public sendAttributeData(name:string, type:VariableType, data:any){
+        public sendAttributeData(name:string, type:EVariableType, data:any){
             var gl = DeviceManager.getInstance().gl,
                 pos = null,
                 buffer:ArrayBuffer = null;
@@ -123,13 +123,13 @@ module wd{
             }
 
             switch (type){
-                case VariableType.BUFFER:
+                case EVariableType.BUFFER:
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
                     gl.vertexAttribPointer(pos, buffer.size, buffer.type, false, 0, 0);
                     gl.enableVertexAttribArray(pos);
                     break;
                 default :
-                    Log.error(true, Log.info.FUNC_INVALID("VariableType:", type));
+                    Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
             }
         }
@@ -139,14 +139,14 @@ module wd{
 
             this._shader.attributes
                 .filter((val:ShaderData) => {
-                    return val.value !== VariableCategory.ENGINE;
+                    return val.value !== EVariableCategory.ENGINE;
                 })
                 .forEach((val:ShaderData, key:string) => {
                     self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
                 });
         }
 
-        public sendStructureData(name:string, type:VariableType, data:any){
+        public sendStructureData(name:string, type:EVariableType, data:any){
             this.sendUniformData(name, type, data);
         }
 
@@ -222,7 +222,7 @@ module wd{
         }
 
         private _convertAttributeDataType(val:ShaderData){
-            return VariableType.BUFFER;
+            return EVariableType.BUFFER;
         }
 
         @require(function (data:any) {

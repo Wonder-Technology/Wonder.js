@@ -424,7 +424,7 @@ describe("BoxCollider", function () {
                                 director._loopBody(1);
 
 
-                                expect(testTool.getValues(debugGeo.buffers.getChild(wd.BufferDataType.VERTICE).data)).toEqual(
+                                expect(testTool.getValues(debugGeo.buffers.getChild(wd.EBufferDataType.VERTICE).data)).toEqual(
                                     [
                                         -5.0865006, -5.0865006, -5, -5.0865006, -5.0865006, 5, 5.0865006, -5.0865006, 5, 5.0865006, -5.0865006, -5, -5.0865006, 5.0865006, -5, -5.0865006, 5.0865006, 5, 5.0865006, 5.0865006, 5, 5.0865006, 5.0865006, -5
                                     ]
@@ -436,7 +436,7 @@ describe("BoxCollider", function () {
 
                                 expect(debugBox).toBeDefined();
                                 expect(testTool.getValues(debugBox.transform.position)).toEqual([2, 0, 0]);
-                                expect(testTool.getValues(debugGeo.buffers.getChild(wd.BufferDataType.VERTICE).data)).toEqual(
+                                expect(testTool.getValues(debugGeo.buffers.getChild(wd.EBufferDataType.VERTICE).data)).toEqual(
                                     [
                                         -5.1714516, -5.1714516, -5, -5.1714516, -5.1714516, 5, 5.1714516, -5.1714516, 5, 5.1714516, -5.1714516, -5, -5.1714516, 5.1714516, -5, -5.1714516, 5.1714516, 5, 5.1714516, 5.1714516, 5, 5.1714516, 5.1714516, -5
                                     ]

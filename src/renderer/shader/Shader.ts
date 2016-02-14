@@ -205,7 +205,7 @@ module wd{
     }
 
     export type ShaderData = {
-        type:VariableType;
+        type:EVariableType;
         value:any;
     }
 

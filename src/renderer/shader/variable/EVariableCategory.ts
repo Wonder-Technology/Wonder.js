@@ -1,5 +1,5 @@
 module wd{
-    export enum VariableCategory{
+    export enum EVariableCategory{
         /*! avoid to equal 0
         for example, when compare to texture index, it may equal texture 0
         */

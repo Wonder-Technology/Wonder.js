@@ -137,7 +137,7 @@ describe("ModelGeometry", function() {
                 geo.init();
 
 
-                var normals = geo.buffers.getChild(wd.BufferDataType.NORMAL);
+                var normals = geo.buffers.getChild(wd.EBufferDataType.NORMAL);
                 expect(normals.length).toEqual(2);
 
                 var currentBuffer = normals[0],
@@ -178,7 +178,7 @@ describe("ModelGeometry", function() {
                 //geo.computeMorphVertexNormals();
 
 
-                var normals = geo.buffers.getChild(wd.BufferDataType.NORMAL);
+                var normals = geo.buffers.getChild(wd.EBufferDataType.NORMAL);
                 expect(normals.length).toEqual(2);
 
                 var currentBuffer = normals[0],

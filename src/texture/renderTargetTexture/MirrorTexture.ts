@@ -17,7 +17,7 @@ module wd {
         }
 
         public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_2D);
+            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
         }
 
         public getPlane(){

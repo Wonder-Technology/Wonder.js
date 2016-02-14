@@ -191,9 +191,9 @@ module wd{
     //
     //        return {
     //            vertices: ArrayBuffer.create(new Float32Array(this._vertices),
-    //                3, BufferType.FLOAT),
+    //                3, EBufferType.FLOAT),
     //            indices: ElementBuffer.create(new Uint16Array(this._indices),
-    //                BufferType.UNSIGNED_SHORT)
+    //                EBufferType.UNSIGNED_SHORT)
     //        }
     //    }
     //

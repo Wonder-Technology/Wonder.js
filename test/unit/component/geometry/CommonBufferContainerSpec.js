@@ -17,8 +17,8 @@ describe("CommonBufferContainer", function() {
             geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
             container.geometryData = geometryData;
 
-            expect(container.hasChild(wd.BufferDataType.TEXCOORD)).toBeTruthy();
-            expect(container.hasChild(wd.BufferDataType.VERTICE)).toBeFalsy();
+            expect(container.hasChild(wd.EBufferDataType.TEXCOORD)).toBeTruthy();
+            expect(container.hasChild(wd.EBufferDataType.VERTICE)).toBeFalsy();
         });
     });
 
@@ -57,8 +57,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.BufferDataType.VERTICE);
-                var result2 = container.getChild(wd.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.EBufferDataType.VERTICE);
+                var result2 = container.getChild(wd.EBufferDataType.VERTICE);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -70,7 +70,7 @@ describe("CommonBufferContainer", function() {
 
             describe("else", function(){
                 it("update geometry buffer vbo data instead of creating new one", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.VERTICE);
                 });
             });
         });
@@ -91,8 +91,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.BufferDataType.NORMAL);
-                var result2 = container.getChild(wd.BufferDataType.NORMAL);
+                var result1 = container.getChild(wd.EBufferDataType.NORMAL);
+                var result2 = container.getChild(wd.EBufferDataType.NORMAL);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -104,7 +104,7 @@ describe("CommonBufferContainer", function() {
 
             describe("else", function(){
                 it("update geometry buffer vbo data instead of creating new one", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.NORMAL);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.NORMAL);
                 });
             });
         });
@@ -127,8 +127,8 @@ describe("CommonBufferContainer", function() {
             it("return calculated tangents firstly; return the last one if not dirty after", function(){
                 sandbox.spy(geometryData, "_calculateTangents");
 
-                var result1 = container.getChild(wd.BufferDataType.TANGENT);
-                var result2 = container.getChild(wd.BufferDataType.TANGENT);
+                var result1 = container.getChild(wd.EBufferDataType.TANGENT);
+                var result2 = container.getChild(wd.EBufferDataType.TANGENT);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -141,22 +141,22 @@ describe("CommonBufferContainer", function() {
             it("if change vertices or texCoords or faces, recompute tangents", function(){
                 sandbox.stub(geometryData, "_calculateTangents").returns([]);
 
-                container.getChild(wd.BufferDataType.TANGENT);
+                container.getChild(wd.EBufferDataType.TANGENT);
                 geometryData.vertices = [];
-                container.getChild(wd.BufferDataType.TANGENT);
+                container.getChild(wd.EBufferDataType.TANGENT);
                 geometryData.texCoords = [];
-                container.getChild(wd.BufferDataType.TANGENT);
+                container.getChild(wd.EBufferDataType.TANGENT);
                 geometryData.faces = geometryData.faces;
-                container.getChild(wd.BufferDataType.TANGENT);
+                container.getChild(wd.EBufferDataType.TANGENT);
 
 
-                container.getChild(wd.BufferDataType.TANGENT);
+                container.getChild(wd.EBufferDataType.TANGENT);
 
                 expect(geometryData._calculateTangents.callCount).toEqual(4);
             });
 
             it("update geometry buffer vbo data instead of creating new one", function(){
-                bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.TANGENT);
+                bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.TANGENT);
             });
         });
 
@@ -176,8 +176,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.BufferDataType.INDICE);
-                var result2 = container.getChild(wd.BufferDataType.INDICE);
+                var result1 = container.getChild(wd.EBufferDataType.INDICE);
+                var result2 = container.getChild(wd.EBufferDataType.INDICE);
 
                 expect(result1.data).toEqual(
                     new Uint16Array([
@@ -189,7 +189,7 @@ describe("CommonBufferContainer", function() {
 
             describe("else", function(){
                 it("update geometry buffer vbo data instead of creating new one", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.INDICE);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.INDICE);
                 });
             });
         });
@@ -210,8 +210,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.BufferDataType.COLOR);
-                var result2 = container.getChild(wd.BufferDataType.COLOR);
+                var result1 = container.getChild(wd.EBufferDataType.COLOR);
+                var result2 = container.getChild(wd.EBufferDataType.COLOR);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -223,7 +223,7 @@ describe("CommonBufferContainer", function() {
 
             describe("else", function(){
                 it("update geometry buffer vbo data instead of creating new one", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.COLOR);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.COLOR);
                 });
             });
         });
@@ -244,8 +244,8 @@ describe("CommonBufferContainer", function() {
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.BufferDataType.TEXCOORD);
-                var result2 = container.getChild(wd.BufferDataType.TEXCOORD);
+                var result1 = container.getChild(wd.EBufferDataType.TEXCOORD);
+                var result2 = container.getChild(wd.EBufferDataType.TEXCOORD);
 
                 expect(result1.data).toEqual(
                     new Float32Array([
@@ -257,7 +257,7 @@ describe("CommonBufferContainer", function() {
 
             describe("else", function(){
                 it("update geometry buffer vbo data instead of creating new one", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.TEXCOORD);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.TEXCOORD);
                 });
             });
         });

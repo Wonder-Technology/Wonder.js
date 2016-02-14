@@ -66,7 +66,7 @@ describe("MorphBufferContainer", function() {
             });
 
             it("if not play animation, return static data", function(){
-                var result1 = container.getChild(wd.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.EBufferDataType.VERTICE);
 
                 expect(result1.length).toEqual(2);
                 expect(result1[0].data).toEqual(
@@ -84,8 +84,8 @@ describe("MorphBufferContainer", function() {
             it("if cached, return cached data", function(){
                 animation.play("play", 10);
 
-                var result1 = container.getChild(wd.BufferDataType.VERTICE);
-                var result2 = container.getChild(wd.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.EBufferDataType.VERTICE);
+                var result2 = container.getChild(wd.EBufferDataType.VERTICE);
 
                 expect(result1.length).toEqual(2);
                 expect(result1[0].data).toEqual(
@@ -104,8 +104,8 @@ describe("MorphBufferContainer", function() {
                 animation.play("play", 10);
                 animation.isFrameChange = true;
 
-                var result1 = container.getChild(wd.BufferDataType.VERTICE);
-                var result2 = container.getChild(wd.BufferDataType.VERTICE);
+                var result1 = container.getChild(wd.EBufferDataType.VERTICE);
+                var result2 = container.getChild(wd.EBufferDataType.VERTICE);
 
                 expect(result1[0].type).toBeDefined();
                 expect(result1[1].type).toBeDefined();
@@ -114,12 +114,12 @@ describe("MorphBufferContainer", function() {
 
             describe("update geometry buffer vbo data instead of creating new one", function(){
                 it("test static data", function(){
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE, 2);
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.VERTICE, 2);
                 });
                 it("test morph data", function(){
                     animation.play("play", 10);
 
-                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.BufferDataType.VERTICE, 2, function(){
+                    bufferContainerTool.judgeUpdateBufferData(container, gl, wd.EBufferDataType.VERTICE, 2, function(){
                         expect(gl.bufferData.callCount).toEqual(4);
                         expect(gl.bufferData.getCall(0).args[2]).toEqual(gl.DYNAMIC_DRAW);
                         expect(gl.bufferData.getCall(1).args[2]).toEqual(gl.DYNAMIC_DRAW);

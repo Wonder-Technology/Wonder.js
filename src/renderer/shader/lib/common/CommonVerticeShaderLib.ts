@@ -19,8 +19,8 @@ module wd{
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
-            if (quadCmd.buffers.hasChild(BufferDataType.VERTICE)) {
-                this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild(BufferDataType.VERTICE));
+            if (quadCmd.buffers.hasChild(EBufferDataType.VERTICE)) {
+                this.sendAttributeData(program, "a_position", <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.VERTICE));
             }
         }
     }

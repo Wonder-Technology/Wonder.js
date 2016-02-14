@@ -25,9 +25,9 @@ describe("Program", function() {
             gl.UNSIGNED_SHORT = "UNSIGNED_SHORT";
             gl.getAttribLocation.returns(pos);
 
-            program.sendAttributeData("a_position", wd.VariableType.BUFFER, buffer);
+            program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
 
-            buffer = wd.ArrayBuffer.create([1,2, 3, 1.2,0.2,3.1, 3.3, 10.5, 9.1], 3, wd.BufferType.UNSIGNED_SHORT);
+            buffer = wd.ArrayBuffer.create([1,2, 3, 1.2,0.2,3.1, 3.3, 10.5, 9.1], 3, wd.EBufferType.UNSIGNED_SHORT);
 
         });
 
@@ -35,7 +35,7 @@ describe("Program", function() {
             expect(gl.bindBuffer).toCalledWith(gl.ARRAY_BUFFER, buffer.buffer);
         });
         it("attach buffer to attribute", function(){
-            expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl[wd.BufferType.UNSIGNED_SHORT], false, 0, 0);
+            expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl[wd.EBufferType.UNSIGNED_SHORT], false, 0, 0);
         });
         it("enable attribute", function(){
             expect(gl.enableVertexAttribArray).toCalledWith(pos);

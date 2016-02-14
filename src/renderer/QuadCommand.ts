@@ -14,7 +14,7 @@ module wd {
         public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
-        public drawMode:DrawMode = DrawMode.TRIANGLES;
+        public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public z:number = null;
         public material:Material = null;
         public animation:Animation = null;
@@ -37,8 +37,8 @@ module wd {
 
             this._setEffects();
 
-            if (this.buffers.hasChild(BufferDataType.INDICE)) {
-                let indexBuffer:ElementBuffer = <ElementBuffer>this.buffers.getChild(BufferDataType.INDICE);
+            if (this.buffers.hasChild(EBufferDataType.INDICE)) {
+                let indexBuffer:ElementBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
 
                 totalNum = indexBuffer.count;
 
@@ -46,7 +46,7 @@ module wd {
                 GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
             else {
-                vertexBuffer = this.buffers.getChild(BufferDataType.VERTICE);
+                vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
                 totalNum = vertexBuffer.count;
                 GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }

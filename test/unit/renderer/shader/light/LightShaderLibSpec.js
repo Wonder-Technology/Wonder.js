@@ -75,8 +75,8 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", wd.VariableType.FLOAT_3, wd.DirectionLight.defaultPosition);
-                expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", wd.VariableType.FLOAT_3, wd.Vector3.create(1, 0, 0));
+                expect(program.sendUniformData).toCalledWith("u_directionLights[0].position", wd.EVariableType.FLOAT_3, wd.DirectionLight.defaultPosition);
+                expect(program.sendUniformData).toCalledWith("u_directionLights[1].position", wd.EVariableType.FLOAT_3, wd.Vector3.create(1, 0, 0));
             });
         });
 
@@ -94,22 +94,22 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_pointLights[0].range", wd.VariableType.FLOAT_1, wd.ShaderChunk.NULL);
-                expect(program.sendUniformData).toCalledWith("u_pointLights[1].range", wd.VariableType.FLOAT_1, 1);
+                expect(program.sendUniformData).toCalledWith("u_pointLights[0].range", wd.EVariableType.FLOAT_1, wd.ShaderChunk.NULL);
+                expect(program.sendUniformData).toCalledWith("u_pointLights[1].range", wd.EVariableType.FLOAT_1, 1);
             });
         });
 
         it("send u_normalMatrix", function(){
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_normalMatrix", wd.VariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
+            expect(program.sendUniformData).toCalledWith("u_normalMatrix", wd.EVariableType.FLOAT_MAT3, mMatrix.copy().invertTo3x3().transpose());
         });
         it("send u_opacity", function(){
             material.opacity = 0.1;
 
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_opacity", wd.VariableType.FLOAT_1, 0.1);
+            expect(program.sendUniformData).toCalledWith("u_opacity", wd.EVariableType.FLOAT_1, 0.1);
         });
 
         describe("send u_lightModel", function(){
@@ -122,7 +122,7 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 1);
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 1);
 
 
 
@@ -130,7 +130,7 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 2);
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 2);
 
 
 
@@ -138,7 +138,7 @@ describe("LightShaderLib", function () {
 
                 lib.sendShaderVariables(program, quadCmd, material);
 
-                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.VariableType.NUMBER_1, 3);
+                expect(program.sendUniformData).toCalledWith("u_lightModel", wd.EVariableType.NUMBER_1, 3);
             });
             it("not support LAMBERT", function () {
                 material.lightModel = wd.ELightModel.LAMBERT;

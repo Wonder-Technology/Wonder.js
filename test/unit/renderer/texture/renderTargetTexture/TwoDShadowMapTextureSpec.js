@@ -46,8 +46,8 @@ describe("TwoDShadowMapTexture", function() {
             expect(program.getUniformLocation.secondCall).toCalledWith("u_twoDShadowMapSampler[0]");
             expect(program.getUniformLocation.thirdCall).toCalledWith("u_twoDShadowMapSampler[1]");
 
-            expect(program.sendUniformData).toCalledWith(pos1, wd.VariableType.SAMPLER_2D, 1);
-            expect(program.sendUniformData).toCalledWith(pos2, wd.VariableType.SAMPLER_2D, 2);
+            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_2D, 2);
         });
     });
 });

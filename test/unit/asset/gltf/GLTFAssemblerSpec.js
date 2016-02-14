@@ -356,7 +356,7 @@ describe("GLTFAssembler", function () {
                     });
                     it("add drawMode", function () {
                         setComponent({
-                            drawMode: wd.DrawMode.LINE_LOOP,
+                            drawMode: wd.EDrawMode.LINE_LOOP,
 
                             material:{
                                 type:"BasicMaterial"
@@ -366,7 +366,7 @@ describe("GLTFAssembler", function () {
                         var data = builder.build(parseData);
 
                         var component = getComponent(data);
-                        expect(component.drawMode).toEqual(wd.DrawMode.LINE_LOOP);
+                        expect(component.drawMode).toEqual(wd.EDrawMode.LINE_LOOP);
                     });
 
 

@@ -1,5 +1,5 @@
 module wd{
-    export enum VariableType{
+    export enum EVariableType{
         FLOAT_1,
         FLOAT_2,
         FLOAT_3,

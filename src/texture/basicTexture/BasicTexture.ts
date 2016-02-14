@@ -73,7 +73,7 @@ module wd{
         }
 
         public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, VariableType.SAMPLER_2D);
+            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
         }
 
         protected sendOtherData(program:Program, unit:number){
@@ -85,9 +85,9 @@ module wd{
             else{
                 sourceRegion = RectRegion.create(0, 0, 1, 1);
             }
-            program.sendUniformData("u_sourceRegion", VariableType.FLOAT_4, sourceRegion);
+            program.sendUniformData("u_sourceRegion", EVariableType.FLOAT_4, sourceRegion);
 
-            program.sendUniformData("u_repeatRegion", VariableType.FLOAT_4, this.repeatRegion);
+            program.sendUniformData("u_repeatRegion", EVariableType.FLOAT_4, this.repeatRegion);
 
             return this;
         }

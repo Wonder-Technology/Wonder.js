@@ -30,7 +30,7 @@ describe("custom shader", function () {
                 shaderDefinitionData = {
                     attributes: {
                         "a_color": {
-                            type: wd.VariableType.FLOAT_3,
+                            type: wd.EVariableType.FLOAT_3,
                             value: [
                                 1, 0, 0, 1,
                                 1, 0, 0, 1,
@@ -41,24 +41,24 @@ describe("custom shader", function () {
                     },
                     uniforms: {
                         "u_test1": {
-                            type: wd.VariableType.FLOAT_1,
+                            type: wd.EVariableType.FLOAT_1,
                             value: 1.0
                         },
                         "u_test2": {
-                            type: wd.VariableType.FLOAT_1,
+                            type: wd.EVariableType.FLOAT_1,
                             value: function () {
                                 return 2.0;
                             }
                         },
                         "u_test3": {
-                            type: wd.VariableType.STRUCTURE,
+                            type: wd.EVariableType.STRUCTURE,
                             value: {
                                 "a": {
-                                    type:wd.VariableType.NUMBER_1,
+                                    type:wd.EVariableType.NUMBER_1,
                                     value: 10
                                 },
                                 "b": {
-                                    type:wd.VariableType.FLOAT_1,
+                                    type:wd.EVariableType.FLOAT_1,
                                     value: function(){
                                         return 3.0;
                                     }
@@ -123,8 +123,8 @@ describe("custom shader", function () {
                 //    expect(commonShaderLib.attributes.getChildren()).toEqual(
                 //        {
                 //            a_position: {
-                //                type: wd.VariableType.FLOAT_3,
-                //                value: wd.VariableCategory.ENGINE
+                //                type: wd.EVariableType.FLOAT_3,
+                //                value: wd.EVariableCategory.ENGINE
                 //            }
                 //        }
                 //    )
@@ -140,8 +140,8 @@ describe("custom shader", function () {
                                 value:attributes.a_color.value
                             },
                             a_position: {
-                                type: wd.VariableType.FLOAT_3,
-                                value: wd.VariableCategory.ENGINE
+                                type: wd.EVariableType.FLOAT_3,
+                                value: wd.EVariableCategory.ENGINE
                             }
                         }
                     );
@@ -151,9 +151,9 @@ describe("custom shader", function () {
                             u_test2: {type: uniforms.u_test2.type, value: uniforms.u_test2.value},
                             u_test3: {type: uniforms.u_test3.type, value: uniforms.u_test3.value},
 
-                            u_mMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE},
-                            u_vMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE},
-                            u_pMatrix: {type: wd.VariableType.FLOAT_MAT4, value: wd.VariableCategory.ENGINE}
+                            u_mMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE},
+                            u_vMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE},
+                            u_pMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE}
                         }
                     );
                 });
@@ -182,7 +182,7 @@ describe("custom shader", function () {
                 });
                 it("send custom shader's attribute variables", function () {
                     expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_color");
-                    expect(program.sendAttributeData.secondCall.args[1]).toEqual(wd.VariableType.BUFFER);
+                    expect(program.sendAttributeData.secondCall.args[1]).toEqual(wd.EVariableType.BUFFER);
                     expect(program.sendAttributeData.secondCall.args[2]).toEqual(
                         [ 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1 ]
                     );
@@ -200,10 +200,10 @@ describe("custom shader", function () {
 
                     var uniforms = shaderDefinitionData.uniforms;
                     expect(program.sendUniformData.getCall(5).args).toEqual(
-                        ["u_test3.a", wd.VariableType.NUMBER_1, uniforms.u_test3.value.a.value]
+                        ["u_test3.a", wd.EVariableType.NUMBER_1, uniforms.u_test3.value.a.value]
                     );
                     expect(program.sendUniformData.getCall(6).args).toEqual(
-                        ["u_test3.b", wd.VariableType.FLOAT_1, uniforms.u_test3.value.b.value]
+                        ["u_test3.b", wd.EVariableType.FLOAT_1, uniforms.u_test3.value.b.value]
                     );
                 });
             });
