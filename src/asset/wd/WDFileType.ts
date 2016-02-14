@@ -1,6 +1,6 @@
 module wd {
-    export type DYFileJsonData = {
-        metadata:DYFileMetadata,
+    export type WDFileJsonData = {
+        metadata:WDFileMetadata,
         scene:{
             ambientColor?:Array<number>
         },
@@ -17,45 +17,45 @@ module wd {
                 opacity?: number
             }
         },
-        objects:Array<DYFileJsonObjectData>
+        objects:Array<WDFileJsonObjectData>
     }
 
-    export type DYFileJsonObjectData = {
+    export type WDFileJsonObjectData = {
         //todo support multi materials
         material:string,
         name:string,
 
         /*!for model geometry*/
         vertices?: Array<number>,
-        morphTargets: Array<DYFileJsonFrameData>,
+        morphTargets: Array<WDFileJsonFrameData>,
         normals?: Array<number>,
         colors?: Array<number>,
         uvs?: Array<number>,
         verticeIndices?: Array<number>,
         normalIndices?: Array<number>,
         uvIndices?: Array<number>,
-        children: Array<DYFileParseObjectData>
+        children: Array<WDFileParseObjectData>
 
         //todo /*!for other geometry*/
         //[otherParam:string]:any
     }
 
-    export type DYFileJsonFrameData = {
+    export type WDFileJsonFrameData = {
         name:string,
         vertices:Array<number>,
         normals?:Array<number>
     }
 
-    export type DYFileParseData = {
-        metadata:DYFileMetadata,
+    export type WDFileParseData = {
+        metadata:WDFileMetadata,
         scene:{
             ambientColor?: Color
         },
-        materials:wdCb.Hash<DYFileParseMaterialData>,
-        objects: wdCb.Collection<DYFileParseObjectData>
+        materials:wdCb.Hash<WDFileParseMaterialData>,
+        objects: wdCb.Collection<WDFileParseObjectData>
     }
 
-    export type DYFileParseMaterialData = {
+    export type WDFileParseMaterialData = {
         type: string,
         diffuseColor?: Color,
         specularColor?: Color,
@@ -72,7 +72,7 @@ module wd {
         opacity?: number
     }
 
-    export type DYFileParseObjectData = {
+    export type WDFileParseObjectData = {
         //todo now only support ModelGeometry, should support other geometry
         //geometryType:string,
 
@@ -92,21 +92,21 @@ module wd {
         //todo /*!for other geometry*/
         //[otherParam:string]:any
 
-        parent:DYFileParseObjectData,
-        children: wdCb.Collection<DYFileParseObjectData>
+        parent:WDFileParseObjectData,
+        children: wdCb.Collection<WDFileParseObjectData>
     }
 
-    export type DYFileParseMorphTargetsData = wdCb.Collection<Array<number>>
+    export type WDFileParseMorphTargetsData = wdCb.Collection<Array<number>>
 
-    export type DYFileResult = {
-        metadata:wdCb.Hash<DYFileMetadata>,
+    export type WDFileResult = {
+        metadata:wdCb.Hash<WDFileMetadata>,
         scene:wdCb.Hash<{
             ambientColor:Color
         }>,
         models:wdCb.Collection<GameObject>
     }
 
-    export type DYFileMetadata = {
+    export type WDFileMetadata = {
         formatVersion:number,
         description?:string,
         sourceFile:string,

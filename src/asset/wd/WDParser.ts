@@ -7,10 +7,10 @@ module wd {
             return obj;
         }
 
-        private _data:DYFileParseData = <any>{};
+        private _data:WDFileParseData = <any>{};
         private _objectParser = WDObjectParser.create();
 
-        public parse(json:DYFileJsonData):DYFileParseData {
+        public parse(json:WDFileJsonData):WDFileParseData {
             this._parseMetadata(json);
             this._parseScene(json);
             this._parseMaterial(json);
@@ -19,15 +19,15 @@ module wd {
             return this._data;
         }
 
-        private _parseMetadata(json:DYFileJsonData) {
+        private _parseMetadata(json:WDFileJsonData) {
             this._data.metadata = <any>json.metadata;
         }
 
-        private _parseObject(json:DYFileJsonData) {
+        private _parseObject(json:WDFileJsonData) {
             this._objectParser.parse(this._data, json);
         }
 
-        private _parseScene(json:DYFileJsonData) {
+        private _parseScene(json:WDFileJsonData) {
             this._data.scene = <any>json.scene;
 
             if (json.scene.ambientColor) {
@@ -35,7 +35,7 @@ module wd {
             }
         }
 
-        private _parseMaterial(json:DYFileJsonData) {
+        private _parseMaterial(json:WDFileJsonData) {
             this._data.materials = wdCb.Hash.create<any>(json.materials);
 
             this._data.materials.forEach((material:any) => {

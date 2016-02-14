@@ -11,7 +11,7 @@ module wd {
 
         private _wdParser:WDParser = WDParser.create();
         private _wdBuilder:WDBuilder = WDBuilder.create();
-        private _parseData:DYFileParseData = null;
+        private _parseData:WDFileParseData = null;
 
 
         protected loadAsset(url:string, id:string):wdFrp.Stream;
@@ -25,7 +25,7 @@ module wd {
                 self = this;
 
             return AjaxLoader.load(url, "json")
-                .flatMap((json:DYFileJsonData) => {
+                .flatMap((json:WDFileJsonData) => {
                     self._parseData = self._wdParser.parse(json);
 
                     return this._createLoadMapStream(url);
@@ -42,7 +42,7 @@ module wd {
                 parseData = this._parseData,
                 i = null;
 
-            parseData.materials.forEach((material:DYFileParseMaterialData) => {
+            parseData.materials.forEach((material:WDFileParseMaterialData) => {
                 var mapUrlArr = [];
 
                 if (material.diffuseMapUrl) {

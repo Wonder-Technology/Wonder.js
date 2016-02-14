@@ -7,7 +7,7 @@ module wd {
             return obj;
         }
 
-        public parse(data:DYFileParseData, json:DYFileJsonData):void {
+        public parse(data:WDFileParseData, json:WDFileJsonData):void {
             var parse = null,
                 self = this;
 
@@ -44,7 +44,7 @@ module wd {
             });
         }
 
-        private _isObjectContainer(object:DYFileJsonObjectData) {
+        private _isObjectContainer(object:WDFileJsonObjectData) {
             return !GeometryUtils.hasData(object.verticeIndices);
         }
 
@@ -252,16 +252,16 @@ module wd {
             assert(!object.uvIndices, Log.info.FUNC_SHOULD("object.uvIndices", "be removed"));
             assert(!object.normalIndices, Log.info.FUNC_SHOULD("object.normalIndices", "be removed"));
         })
-        private _removeRebundantIndiceData(object:DYFileJsonObjectData) {
+        private _removeRebundantIndiceData(object:WDFileJsonObjectData) {
             delete object.verticeIndices;
             delete object.uvIndices;
             delete object.normalIndices;
         }
 
-        private _removeObjectContainerData(object:DYFileParseObjectData) {
+        private _removeObjectContainerData(object:WDFileParseObjectData) {
             var remove = null;
 
-            remove = (object:DYFileParseObjectData) => {
+            remove = (object:WDFileParseObjectData) => {
                 if (object.isContainer) {
                     delete object.vertices;
                     delete object.uvs;
@@ -278,7 +278,7 @@ module wd {
             remove(object);
         }
 
-        private _findData(object:DYFileParseObjectData, dataName:string) {
+        private _findData(object:WDFileParseObjectData, dataName:string) {
             var data = null;
 
             do {
@@ -361,14 +361,14 @@ module wd {
             }
         }
 
-        private _setMorphTargets(object:DYFileParseObjectData, verticeIndices:Array<number>, normalIndices:Array<number>) {
+        private _setMorphTargets(object:WDFileParseObjectData, verticeIndices:Array<number>, normalIndices:Array<number>) {
             var objectMorphTargets = this._findData(object, "morphTargets"),
                 morphTargets = null,
                 morphNormals = null;
 
 
             if (GeometryUtils.hasData(objectMorphTargets)) {
-                morphTargets = wdCb.Hash.create<wdCb.Hash<DYFileParseMorphTargetsData>>();
+                morphTargets = wdCb.Hash.create<wdCb.Hash<WDFileParseMorphTargetsData>>();
                 morphNormals = wdCb.Hash.create<wdCb.Collection<Array<number>>>();
 
                 for (let frameData of objectMorphTargets) {

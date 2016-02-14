@@ -6,9 +6,9 @@ module wd {
             return obj;
         }
 
-        private _result:wdCb.Hash<DYFileResult> = wdCb.Hash.create<DYFileResult>();
+        private _result:wdCb.Hash<WDFileResult> = wdCb.Hash.create<WDFileResult>();
 
-        public build(parseData:DYFileParseData):wdCb.Hash<DYFileResult>{
+        public build(parseData:WDFileParseData):wdCb.Hash<WDFileResult>{
             this._buildMetadata(parseData);
             this._buildScene(parseData);
             this._buildModels(parseData);
@@ -17,7 +17,7 @@ module wd {
         }
 
 
-        private _buildMetadata(parseData:DYFileParseData){
+        private _buildMetadata(parseData:WDFileParseData){
             var metadata = wdCb.Hash.create<any>();
 
             for(let i in parseData.metadata){
@@ -29,7 +29,7 @@ module wd {
             this._result.addChild("metadata", metadata);
         }
 
-        private _buildScene(parseData:DYFileParseData){
+        private _buildScene(parseData:WDFileParseData){
             var scene = wdCb.Hash.create<any>();
 
             if(parseData.scene.ambientColor){
@@ -39,13 +39,13 @@ module wd {
             this._result.addChild("scene", scene);
         }
 
-        private _buildModels(parseData:DYFileParseData){
+        private _buildModels(parseData:WDFileParseData){
             var models = wdCb.Collection.create<GameObject>(),
                 self = this,
                 build = null;
 
-            build = (objects:wdCb.Collection<DYFileParseObjectData>, models:{addChild:Function}) => {
-                objects.forEach((object:DYFileParseObjectData) => {
+            build = (objects:wdCb.Collection<WDFileParseObjectData>, models:{addChild:Function}) => {
+                objects.forEach((object:WDFileParseObjectData) => {
                     var geometry = null,
                         model = null;
 
@@ -93,17 +93,17 @@ module wd {
             this._result.addChild("models", models);
         }
 
-        private _isModelContainer(object:DYFileParseObjectData){
+        private _isModelContainer(object:WDFileParseObjectData){
             return object.isContainer;
         }
 
-        private _buildMaterial(materialName:string, materials: wdCb.Hash<DYFileParseMaterialData>){
+        private _buildMaterial(materialName:string, materials: wdCb.Hash<WDFileParseMaterialData>){
             const DEFAULTYPE = "LightMaterial";
             var materialData = null,
                 type = null,
                 material = null;
 
-            [,materialData] = materials.findOne((material:DYFileParseMaterialData, name:string) => {
+            [,materialData] = materials.findOne((material:WDFileParseMaterialData, name:string) => {
                 return name === materialName;
             });
 
