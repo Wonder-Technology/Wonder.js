@@ -101,8 +101,8 @@ module wd {
 
             EventManager.off(this);
 
-            EventManager.off(<any>EngineEvent.STARTLOOP, this.startLoopHandler);
-            EventManager.off(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
+            EventManager.off(<any>EEngineEvent.STARTLOOP, this.startLoopHandler);
+            EventManager.off(<any>EEngineEvent.ENDLOOP, this.endLoopHandler);
 
             components = this.removeAllComponent();
 
@@ -388,12 +388,12 @@ module wd {
 
         @virtual
         protected bindStartLoopEvent(){
-            EventManager.on(<any>EngineEvent.STARTLOOP, this.startLoopHandler);
+            EventManager.on(<any>EEngineEvent.STARTLOOP, this.startLoopHandler);
         }
 
         @virtual
         protected bindEndLoopEvent(){
-            EventManager.on(<any>EngineEvent.ENDLOOP, this.endLoopHandler);
+            EventManager.on(<any>EEngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
         @virtual

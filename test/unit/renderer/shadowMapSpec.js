@@ -21,7 +21,7 @@ describe("shadow map", function() {
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 16;
             material.diffuseMap = wd.ImageTexture.create(wd.TextureLoader.getInstance().get("texture"));
-            material.shading = wd.Shading.SMOOTH;
+            material.shading = wd.EShading.SMOOTH;
 
 
             var geometry = wd.SphereGeometry.create();

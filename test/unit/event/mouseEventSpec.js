@@ -216,7 +216,7 @@ describe("mouse event", function () {
 
             manager.on(
                 {
-                    eventType: wd.EventType.MOUSE,
+                    eventType: wd.EEventType.MOUSE,
 
                     onClick: function (e) {
                         eventTarget = e;
@@ -314,12 +314,12 @@ describe("mouse event", function () {
         //    it("emit mouse event", function(){
         //        manager.emit(mesh1, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
         //
-        //        expect(eventTarget1.phase).toEqual(wd.EventPhase.EMIT);
+        //        expect(eventTarget1.phase).toEqual(wd.EEventPhase.EMIT);
         //        expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-        //        expect(eventTarget2.phase).toEqual(wd.EventPhase.EMIT);
+        //        expect(eventTarget2.phase).toEqual(wd.EEventPhase.EMIT);
         //        expect(eventTarget2.target.uid).toEqual(mesh1.uid);
         //        expect(eventTarget3).toBeNull();
-        //        expect(eventTarget4.phase).toEqual(wd.EventPhase.EMIT);
+        //        expect(eventTarget4.phase).toEqual(wd.EEventPhase.EMIT);
         //        expect(eventTarget4.target.uid).toEqual(mesh1.uid);
         //        expect(fakeObj.a).toCalledBefore(fakeObj.b);
         //        expect(fakeObj.b).toCalledBefore(fakeObj.d);
@@ -327,13 +327,13 @@ describe("mouse event", function () {
         //    it("broadcast mouse event", function(){
         //        manager.broadcast(mesh4, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
         //
-        //        expect(eventTarget4.phase).toEqual(wd.EventPhase.BROADCAST);
+        //        expect(eventTarget4.phase).toEqual(wd.EEventPhase.BROADCAST);
         //        expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-        //        expect(eventTarget2.phase).toEqual(wd.EventPhase.BROADCAST);
+        //        expect(eventTarget2.phase).toEqual(wd.EEventPhase.BROADCAST);
         //        expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-        //        expect(eventTarget1.phase).toEqual(wd.EventPhase.BROADCAST);
+        //        expect(eventTarget1.phase).toEqual(wd.EEventPhase.BROADCAST);
         //        expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-        //        expect(eventTarget3.phase).toEqual(wd.EventPhase.BROADCAST);
+        //        expect(eventTarget3.phase).toEqual(wd.EEventPhase.BROADCAST);
         //        expect(eventTarget3.target.uid).toEqual(mesh4.uid);
         //        expect(fakeObj.d).toCalledBefore(fakeObj.b);
         //        expect(fakeObj.b).toCalledBefore(fakeObj.a);

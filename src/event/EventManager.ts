@@ -16,13 +16,13 @@ module wd {
             if(args[0] instanceof EntityObject){
                 let eventName = args[1];
 
-                assert(EventTable.getEventType(eventName) === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
+                assert(EventTable.getEventType(eventName) === EEventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
             }
             else if(JudgeUtils.isDom(args[0])){
                 let eventName = args[1],
                     eventType = EventTable.getEventType(eventName);
 
-                assert(eventType === EventType.MOUSE || eventType === EventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
+                assert(eventType === EEventType.MOUSE || eventType === EEventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
             }
         })
         public static on(...args) {
@@ -111,13 +111,13 @@ module wd {
             if(args.length > 2 && args[0] instanceof EntityObject){
                 let eventName = args[1];
 
-                assert(EventTable.getEventType(eventName) === EventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
+                assert(EventTable.getEventType(eventName) === EEventType.CUSTOM, Log.info.FUNC_MUST_BE("event", "custom event"));
             }
             else if(args.length > 2 && JudgeUtils.isDom(args[0])){
                 let eventName = args[1],
                     eventType = EventTable.getEventType(eventName);
 
-                assert(eventType === EventType.MOUSE || eventType === EventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
+                assert(eventType === EEventType.MOUSE || eventType === EEventType.KEYBOARD, Log.info.FUNC_MUST_BE("event", "dom event"));
             }
         })
         public static off(...args) {

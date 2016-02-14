@@ -127,7 +127,7 @@ describe("event component", function () {
 
 
 
-                    var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                    var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
                     var eventName = wd.EventName.CLICK;
 
 
@@ -220,7 +220,7 @@ describe("event component", function () {
 
 
 
-                    var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                    var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
                     var eventName = wd.EventName.CLICK;
 
 
@@ -285,7 +285,7 @@ describe("event component", function () {
 
 
 
-                var engineEvent = wd.EngineEvent.MOUSE_CLICK;
+                var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
                 var eventName = wd.EventName.CLICK;
 
 
@@ -327,7 +327,7 @@ describe("event component", function () {
             });
         });
 
-        describe("test trigger Scene mouse event and trigger EngineEvent", function() {
+        describe("test trigger Scene mouse event and trigger EEngineEvent", function() {
             beforeEach(function () {
                 director.scene.addComponent(wd.Script.create(url));
             });
@@ -401,23 +401,23 @@ describe("event component", function () {
                     var sceneHandler = sandbox.stub();
                     var uiObject1Handler = sandbox.stub();
 
-                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_MOVE, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_MOVE, function (e) {
                         sceneHandler(e.name);
                     });
-                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_OVER, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_OVER, function (e) {
                         sceneHandler(e.name);
                     });
-                    wd.EventManager.on(director.scene, wd.EngineEvent.MOUSE_OUT, function (e) {
+                    wd.EventManager.on(director.scene, wd.EEngineEvent.MOUSE_OUT, function (e) {
                         sceneHandler(e.name);
                     });
 
-                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_MOVE, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_MOVE, function (e) {
                         uiObject1Handler(e.name);
                     });
-                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_OVER, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_OVER, function (e) {
                         uiObject1Handler(e.name);
                     });
-                    wd.EventManager.on(uiObject1, wd.EngineEvent.MOUSE_OUT, function (e) {
+                    wd.EventManager.on(uiObject1, wd.EEngineEvent.MOUSE_OUT, function (e) {
                         uiObject1Handler(e.name);
                     });
 
@@ -432,8 +432,8 @@ describe("event component", function () {
                     manager.trigger(wd.MouseEvent.create(inObject1FakeEvent, moveEventName));
 
                     expect(uiObject1Handler).toCalledBefore(sceneHandler);
-                    expect(uiObject1Handler).toCalledWith(wd.EngineEvent.MOUSE_OVER);
-                    expect(sceneHandler).toCalledWith(wd.EngineEvent.MOUSE_OVER);
+                    expect(uiObject1Handler).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
+                    expect(sceneHandler).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
 
 
 
@@ -442,15 +442,15 @@ describe("event component", function () {
 
 
                     expect(uiObject1Handler.secondCall).toCalledBefore(sceneHandler.secondCall);
-                    expect(uiObject1Handler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
-                    expect(sceneHandler.secondCall).toCalledWith(wd.EngineEvent.MOUSE_OUT);
-                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EngineEvent.MOUSE_OVER);
+                    expect(uiObject1Handler.secondCall).toCalledWith(wd.EEngineEvent.MOUSE_OUT);
+                    expect(sceneHandler.secondCall).toCalledWith(wd.EEngineEvent.MOUSE_OUT);
+                    expect(sceneHandler.getCall(2)).toCalledWith(wd.EEngineEvent.MOUSE_OVER);
                     expect(sceneHandler).toCalledThrice();
                 });
             });
         });
 
-        describe("test trigger UIObject mouse event script and trigger EngineEvent by judge hitting RectTransform->width,height", function(){
+        describe("test trigger UIObject mouse event script and trigger EEngineEvent by judge hitting RectTransform->width,height", function(){
             var uiObject;
 
             describe("test trigger single one", function(){
@@ -487,7 +487,7 @@ describe("event component", function () {
                         scriptTool.testScript(uiObject, "event", function(test, uiObject){
                             sandbox.spy(test, eventHandlerName);
 
-                            wd.EventManager.on(uiObject, wd.EngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
+                            wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
                                 expect(e).toBeInstanceOf(wd.CustomEvent);
                                 expect(e.userData).toBeInstanceOf(wd.MouseEvent);
                             });
@@ -591,7 +591,7 @@ describe("event component", function () {
 
                                 var event = test.onMouseDrag.args[0][0];
                                 expect(event.name).toEqual(wd.EventName.MOUSEDRAG);
-                                expect(event.type).toEqual(wd.EventType.MOUSE);
+                                expect(event.type).toEqual(wd.EEventType.MOUSE);
                                 expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                                 expect(event.locationInView.y).toEqual(fakeEvent.pageY);
                             }, function(test, time, gameObject){
@@ -616,7 +616,7 @@ describe("event component", function () {
             });
         });
 
-        describe("test trigger GameObject mouse event script and trigger EngineEvent by ray cast test", function(){
+        describe("test trigger GameObject mouse event script and trigger EEngineEvent by ray cast test", function(){
             var gameObject;
 
             beforeEach(function(){
@@ -651,7 +651,7 @@ describe("event component", function () {
                         sandbox.spy(test, "onMouseClick");
 
 
-                        wd.EventManager.on(gameObject, wd.EngineEvent["MOUSE_CLICK"], function(e){
+                        wd.EventManager.on(gameObject, wd.EEngineEvent["MOUSE_CLICK"], function(e){
                             expect(e).toBeInstanceOf(wd.CustomEvent);
                             expect(e.userData).toBeInstanceOf(wd.MouseEvent);
                         });

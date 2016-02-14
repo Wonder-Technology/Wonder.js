@@ -294,14 +294,14 @@ describe("custom event", function () {
         it("emit custom event", function(){
             manager.emit(mesh1, wd.CustomEvent.create(eventName));
 
-            expect(eventTarget1.phase).toEqual(wd.EventPhase.EMIT);
+            expect(eventTarget1.phase).toEqual(wd.EEventPhase.EMIT);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
             expect(eventTarget1.target.uid).toEqual(mesh1.uid);
-            expect(eventTarget2.phase).toEqual(wd.EventPhase.EMIT);
+            expect(eventTarget2.phase).toEqual(wd.EEventPhase.EMIT);
             expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
             expect(eventTarget2.target.uid).toEqual(mesh1.uid);
             expect(eventTarget3).toBeNull();
-            expect(eventTarget4.phase).toEqual(wd.EventPhase.EMIT);
+            expect(eventTarget4.phase).toEqual(wd.EEventPhase.EMIT);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
             expect(eventTarget4.target.uid).toEqual(mesh1.uid);
             expect(fakeObj.a).toCalledBefore(fakeObj.b);
@@ -310,16 +310,16 @@ describe("custom event", function () {
         it("broadcast custom event", function(){
             manager.broadcast(mesh4, wd.CustomEvent.create(eventName));
 
-            expect(eventTarget4.phase).toEqual(wd.EventPhase.BROADCAST);
+            expect(eventTarget4.phase).toEqual(wd.EEventPhase.BROADCAST);
             expect(eventTarget4.currentTarget.uid).toEqual(mesh4.uid);
             expect(eventTarget4.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget2.phase).toEqual(wd.EventPhase.BROADCAST);
+            expect(eventTarget2.phase).toEqual(wd.EEventPhase.BROADCAST);
             expect(eventTarget2.currentTarget.uid).toEqual(mesh2.uid);
             expect(eventTarget2.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget1.phase).toEqual(wd.EventPhase.BROADCAST);
+            expect(eventTarget1.phase).toEqual(wd.EEventPhase.BROADCAST);
             expect(eventTarget1.currentTarget.uid).toEqual(mesh1.uid);
             expect(eventTarget1.target.uid).toEqual(mesh4.uid);
-            expect(eventTarget3.phase).toEqual(wd.EventPhase.BROADCAST);
+            expect(eventTarget3.phase).toEqual(wd.EEventPhase.BROADCAST);
             expect(eventTarget3.currentTarget.uid).toEqual(mesh3.uid);
             expect(eventTarget3.target.uid).toEqual(mesh4.uid);
             expect(fakeObj.d).toCalledBefore(fakeObj.b);

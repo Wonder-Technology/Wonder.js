@@ -5,11 +5,11 @@ module wd{
                 eventType = EventTable.getEventType(eventName);
 
             switch (eventType){
-                case EventType.MOUSE:
-                case EventType.KEYBOARD:
+                case EEventType.MOUSE:
+                case EEventType.KEYBOARD:
                     binder = DomEventBinder.getInstance();
                     break;
-                case EventType.CUSTOM:
+                case EEventType.CUSTOM:
                     binder = CustomEventBinder.getInstance();
                     break;
                 default :

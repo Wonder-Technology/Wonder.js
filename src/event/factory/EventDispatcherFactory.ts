@@ -5,11 +5,11 @@ module wd{
                 eventType = event.type;
 
             switch (eventType){
-                case EventType.MOUSE:
-                case EventType.KEYBOARD:
+                case EEventType.MOUSE:
+                case EEventType.KEYBOARD:
                     dispatcher = DomEventDispatcher.getInstance();
                     break;
-                case EventType.CUSTOM:
+                case EEventType.CUSTOM:
                     dispatcher = CustomEventDispatcher.getInstance();
                     break;
                 default :

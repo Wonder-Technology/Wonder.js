@@ -10,8 +10,8 @@ module wd {
 
             super.init();
 
-            this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_WIDTH_CHANGE)
-                .merge(EventManager.fromEvent(this.entityObject, <any>EngineEvent.UI_HEIGHT_CHANGE))
+            this._sizeChangeEventSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.UI_WIDTH_CHANGE)
+                .merge(EventManager.fromEvent(this.entityObject, <any>EEngineEvent.UI_HEIGHT_CHANGE))
                 .subscribe(() => {
                     self.dirty = true;
                     self.needFormat = true;

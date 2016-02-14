@@ -116,11 +116,11 @@ module wd{
         public runUIObjectScene(elapseTime:number){
             var uiObjectScene:UIObjectScene = this.scene.uiObjectScene;
 
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.STARTLOOP));
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
             uiObjectScene.update(elapseTime);
 
-            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EngineEvent.ENDLOOP));
+            EventManager.trigger(uiObjectScene, CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         private _startLoop() {
@@ -158,7 +158,7 @@ module wd{
 
             this._initDomEvent();
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_GAMEOBJECT_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
 
             gameObjectScene.onEnter();
             gameObjectScene.init();
@@ -169,8 +169,8 @@ module wd{
             this._timeController.start();
             this.scheduler.start();
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT));
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _buildLoopStream(){
@@ -202,7 +202,7 @@ module wd{
 
             this._timeController.tick(elapseTime);
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.STARTLOOP));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
             this.scheduler.update(elapseTime);
 
@@ -213,7 +213,7 @@ module wd{
                 this.renderer.render();
             }
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.ENDLOOP));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
         }
 
         @execOnlyOnce("_isInitDomEvent")

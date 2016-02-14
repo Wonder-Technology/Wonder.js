@@ -47,7 +47,7 @@ module wd {
 
             super.init();
 
-            this._subscription = wdFrp.fromArray([EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_TRANSLATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_ROTATE), EventManager.fromEvent(this.entityObject, <any>EngineEvent.TRANSFORM_SCALE)])
+            this._subscription = wdFrp.fromArray([EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE), EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE), EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)])
             .mergeAll()
             .subscribe(() => {
                 self.dirty = true;

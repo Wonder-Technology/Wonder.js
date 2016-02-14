@@ -14,7 +14,7 @@
         wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: wd.ScreenSize.FULL
+            screenSize: wd.EScreenSize.FULL
         }).init();
 
         wd.LoaderManager.getInstance().load([
@@ -44,7 +44,7 @@
             model.getChildren()
                     .forEach(function (child) {
                         var material = child.getComponent(wd.Geometry).material;
-                        material.shading = wd.Shading.SMOOTH;
+                        material.shading = wd.EShading.SMOOTH;
                     });
 
             var action = wd.RepeatForever.create(wd.CallFunc.create(function () {

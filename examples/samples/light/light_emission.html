@@ -14,7 +14,7 @@
         wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: wd.ScreenSize.FULL
+            screenSize: wd.EScreenSize.FULL
         }).init();
 
         wd.LoaderManager.getInstance().load([
@@ -38,7 +38,7 @@
             material.color = wd.Color.create("#ffffff");
             material.shininess = 32;
             material.emissionColor = wd.Color.create("rgb(0, 100, 0)");
-            material.shading = wd.Shading.SMOOTH;
+            material.shading = wd.EShading.SMOOTH;
 
 
             var geometry = wd.SphereGeometry.create();

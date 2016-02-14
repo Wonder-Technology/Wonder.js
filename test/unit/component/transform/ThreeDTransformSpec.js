@@ -551,7 +551,7 @@ describe("ThreeDTransform", function(){
 
             tra1.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.ENDLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
             expect(tra1.isTranslate).toBeTruthy();
         });

@@ -191,7 +191,7 @@ module wd{
         public init(){
             var self = this;
 
-            this._endLoopSubscription = EventManager.fromEvent(<any>EngineEvent.ENDLOOP)
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
                     self._resetTransformFlag();
                 });

@@ -1,5 +1,5 @@
 module wd{
-    export enum Shading{
+    export enum EShading{
         FLAT,
         SMOOTH
     }

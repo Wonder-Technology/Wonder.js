@@ -278,7 +278,7 @@ describe("Director", function () {
         it("trigger STARTLOOP bind on uiObjectScene", function(){
             var sum = 0;
 
-            wd.EventManager.on(scene, wd.EngineEvent.STARTLOOP, function(){
+            wd.EventManager.on(scene, wd.EEngineEvent.STARTLOOP, function(){
                 sum++;
             });
 
@@ -294,7 +294,7 @@ describe("Director", function () {
         it("trigger ENDLOOP bind on uiObjectScene", function(){
             var sum = 0;
 
-            wd.EventManager.on(scene, wd.EngineEvent.ENDLOOP, function(){
+            wd.EventManager.on(scene, wd.EEngineEvent.ENDLOOP, function(){
                 sum++;
             });
 

@@ -7,7 +7,7 @@ describe("Geometry", function() {
         geo = new _class();
         geo.material = {
             init:sandbox.stub(),
-            shading: shading || wd.Shading.FLAT
+            shading: shading || wd.EShading.FLAT
         };
 
         return geo;
@@ -94,7 +94,7 @@ describe("Geometry", function() {
 
         describe("if cached", function(){
             beforeEach(function(){
-                geo.material.shading = wd.Shading.FLAT;
+                geo.material.shading = wd.EShading.FLAT;
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.faces = createFaces([0,2,1], [1,-1,0, 0,1,0,0,0,1]);
@@ -128,7 +128,7 @@ describe("Geometry", function() {
 
             describe("if material is flat shading", function(){
                 beforeEach(function(){
-                    geo.material.shading = wd.Shading.FLAT;
+                    geo.material.shading = wd.EShading.FLAT;
                 });
 
                 it("if not has face normal, compute it", function(){
@@ -159,7 +159,7 @@ describe("Geometry", function() {
 
             describe("if material is smooth shading", function(){
                 beforeEach(function(){
-                    geo.material.shading = wd.Shading.SMOOTH;
+                    geo.material.shading = wd.EShading.SMOOTH;
                 });
 
                 it("if not has vertex normal, compute it", function(){
@@ -197,7 +197,7 @@ describe("Geometry", function() {
 
         describe("if cached", function(){
             beforeEach(function(){
-                geo.material.shading = wd.Shading.FLAT;
+                geo.material.shading = wd.EShading.FLAT;
 
                 geo.vertices = [1,-1,0, 0,1,0,0,0,1];
                 geo.faces = createFaces([0,2,1]);
@@ -273,7 +273,7 @@ describe("Geometry", function() {
 
     describe("computeVertexNormals", function(){
         it("compute average vertex normal", function(){
-            geo = createGeometry(wd.ModelGeometry, wd.Shading.SMOOTH);
+            geo = createGeometry(wd.ModelGeometry, wd.EShading.SMOOTH);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1, 2,3,-2];
             geo.faces = createFaces([0,2,1, 2,3,1]);
 
@@ -291,7 +291,7 @@ describe("Geometry", function() {
             );
         });
         it("if faces not use all vertices data, then the normals will has empty data which are filled with 0", function(){
-            geo = createGeometry(wd.ModelGeometry, wd.Shading.SMOOTH);
+            geo = createGeometry(wd.ModelGeometry, wd.EShading.SMOOTH);
             geo.vertices = [1,-1,0, 0,1,0,0,0,1, 1, 2, 3, 10, 20, 30];
             geo.faces = createFaces([3,2,1, 4,3,1]);
 
@@ -314,12 +314,12 @@ describe("Geometry", function() {
             geo = new _class();
             geo.material = {
                 init:sandbox.stub(),
-                shading: shading || wd.Shading.FLAT
+                shading: shading || wd.EShading.FLAT
             };
             geo.material = wd.BasicMaterial.create();
 
             sandbox.stub(geo.material, "init");
-            sandbox.stub(geo.material, "shading", shading || wd.Shading.FLAT);
+            sandbox.stub(geo.material, "shading", shading || wd.EShading.FLAT);
 
             return geo;
         }

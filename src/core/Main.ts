@@ -17,7 +17,7 @@ module wd{
         public static setConfig({
             canvasId,
             isTest = DebugConfig.isTest,
-            screenSize = ScreenSize.FULL
+            screenSize = EScreenSize.FULL
             }){
             this.isTest = isTest;
             this.screenSize = screenSize;

@@ -114,7 +114,7 @@ describe("keyboard event", function () {
                 sum2 = 0;
 
             manager.on({
-                    eventType: wd.EventType.KEYBOARD,
+                    eventType: wd.EEventType.KEYBOARD,
 
                     onKeyPress: function (e) {
                         eventTarget = e;

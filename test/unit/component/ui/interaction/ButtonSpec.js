@@ -360,7 +360,7 @@ describe("Button", function() {
 
         describe("bind event", function(){
             var EventManager = wd.EventManager;
-            var EngineEvent = wd.EngineEvent;
+            var EEngineEvent = wd.EEngineEvent;
             var State = wd.EUIState;
 
             function trigger(engineEvent){
@@ -374,12 +374,12 @@ describe("Button", function() {
             describe("bind mousedown event", function(){
                 it("if disabled, return", function(){
                     button.disable();
-                    trigger(EngineEvent.MOUSE_DOWN);
+                    trigger(EEngineEvent.MOUSE_DOWN);
 
                     expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to PRESSED", function () {
-                    trigger(EngineEvent.MOUSE_DOWN);
+                    trigger(EEngineEvent.MOUSE_DOWN);
 
                     expect(button.currentState).toEqual(State.PRESSED);
                 });
@@ -389,13 +389,13 @@ describe("Button", function() {
             describe("bind mouseup event", function(){
                 it("if disabled, return", function(){
                     button.disable();
-                    trigger(EngineEvent.MOUSE_UP);
+                    trigger(EEngineEvent.MOUSE_UP);
 
                     expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, back state", function () {
-                    trigger(EngineEvent.MOUSE_DOWN);
-                    trigger(EngineEvent.MOUSE_UP);
+                    trigger(EEngineEvent.MOUSE_DOWN);
+                    trigger(EEngineEvent.MOUSE_UP);
 
                     expect(button.currentState).toEqual(State.NORMAL);
                 });
@@ -404,12 +404,12 @@ describe("Button", function() {
             describe("bind mouseover event", function(){
                 it("if disabled, return", function(){
                     button.disable();
-                    trigger(EngineEvent.MOUSE_OVER);
+                    trigger(EEngineEvent.MOUSE_OVER);
 
                     expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to HIGHLIGHT", function () {
-                    trigger(EngineEvent.MOUSE_OVER);
+                    trigger(EEngineEvent.MOUSE_OVER);
 
                     expect(button.currentState).toEqual(State.HIGHLIGHT);
                 });
@@ -418,13 +418,13 @@ describe("Button", function() {
             describe("bind mousedown event", function(){
                 it("if disabled, return", function(){
                     button.disable();
-                    trigger(EngineEvent.MOUSE_OVER);
+                    trigger(EEngineEvent.MOUSE_OVER);
 
                     expect(button.currentState).toEqual(State.DISABLED);
                 });
                 it("else, change state to PRESSED", function () {
-                    trigger(EngineEvent.MOUSE_OVER);
-                    trigger(EngineEvent.MOUSE_OUT);
+                    trigger(EEngineEvent.MOUSE_OVER);
+                    trigger(EEngineEvent.MOUSE_OUT);
 
                     expect(button.currentState).toEqual(State.NORMAL);
                 });
@@ -434,7 +434,7 @@ describe("Button", function() {
 
     describe("dispose", function(){
         var EventManager = wd.EventManager;
-        var EngineEvent = wd.EngineEvent;
+        var EEngineEvent = wd.EEngineEvent;
         var State = wd.EUIState;
 
         function trigger(engineEvent){
@@ -454,22 +454,22 @@ describe("Button", function() {
             });
             
             it("off mousedown event", function(){
-                trigger(EngineEvent.MOUSE_DOWN);
+                trigger(EEngineEvent.MOUSE_DOWN);
 
                 expect(button._stateMachine.changeState).not.toCalled();
             });
             it("off mouseup event", function(){
-                trigger(EngineEvent.MOUSE_UP);
+                trigger(EEngineEvent.MOUSE_UP);
 
                 expect(button._stateMachine.backState).not.toCalled();
             });
             it("off mouseover event", function(){
-                trigger(EngineEvent.MOUSE_OVER);
+                trigger(EEngineEvent.MOUSE_OVER);
 
                 expect(button._stateMachine.changeState).not.toCalled();
             });
             it("off mouseout event", function(){
-                trigger(EngineEvent.MOUSE_OUT);
+                trigger(EEngineEvent.MOUSE_OUT);
 
                 expect(button._stateMachine.backState).not.toCalled();
             });

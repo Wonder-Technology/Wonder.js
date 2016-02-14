@@ -33,7 +33,7 @@ describe("SourceLight", function() {
 
                     light.initWhenCreate();
 
-                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_GAMEOBJECT_INIT));
+                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
                 });
 
                 it("create shadow map", function(){
@@ -46,7 +46,7 @@ describe("SourceLight", function() {
                     expect(wd.Director.getInstance().scene.addRenderTargetRenderer).toCalledWith(renderer);
                 });
                 it("should only before_init once", function () {
-                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_GAMEOBJECT_INIT));
+                    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
 
                     expect(wd.Director.getInstance().scene.addRenderTargetRenderer).toCalledOnce();
                 });
@@ -74,7 +74,7 @@ describe("SourceLight", function() {
 
             light.initWhenCreate();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
         });
 
         it("if shadowMap exist, dispose it", function(){
@@ -92,7 +92,7 @@ describe("SourceLight", function() {
 
             light.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.BEFORE_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.BEFORE_GAMEOBJECT_INIT));
 
             expect(light.createShadowMap).not.toCalledTwice();
         });

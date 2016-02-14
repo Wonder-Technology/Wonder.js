@@ -215,7 +215,7 @@ var tool = {
         var material = wd.LightMaterial.create();
         material.envMap = texture;
         material.color = wd.Color.create("#ffffff");
-        material.shading = wd.Shading.SMOOTH;
+        material.shading = wd.EShading.SMOOTH;
         setFunc(material);
 
 

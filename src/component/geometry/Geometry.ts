@@ -9,7 +9,7 @@ module wd{
                 this._material = material;
                 this._material.geometry = this;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.MATERIAL_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_CHANGE));
             }
         }
 
@@ -65,7 +65,7 @@ module wd{
         }
 
         public isSmoothShading(){
-            return this._material.shading === Shading.SMOOTH;
+            return this._material.shading === EShading.SMOOTH;
         }
 
         public dispose(){

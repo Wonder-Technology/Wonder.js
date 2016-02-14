@@ -55,13 +55,13 @@ module wd{
             this._addScriptToEntityObject(entityObject, data);
             entityObject.execScript("onEnter", null, true);
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.BEFORE_GAMEOBJECT_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT));
 
             entityObject.execScript("init", null, true);
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
-            EventManager.trigger(CustomEvent.create(<any>EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            EventManager.trigger(CustomEvent.create(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
         }
 
         private _addScriptToEntityObject(entityObject:EntityObject, data:ScriptFileData){

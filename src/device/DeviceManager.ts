@@ -374,7 +374,7 @@ module wd {
                 width = null,
                 height = null;
 
-            if(screenSize === ScreenSize.FULL){
+            if(screenSize === EScreenSize.FULL){
                 x = 0;
                 y = 0;
                 width = root.innerWidth;

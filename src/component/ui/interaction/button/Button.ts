@@ -186,7 +186,7 @@ module wd {
         private _bindEvent(){
             var self = this;
 
-            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_DOWN)
+            this._mousedownSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_DOWN)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -194,7 +194,7 @@ module wd {
                     self._stateMachine.changeState(EUIState.PRESSED);
                 });
 
-            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_UP)
+            this._mouseupSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_UP)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -203,7 +203,7 @@ module wd {
                 });
 
 
-            this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OVER)
+            this._mouseoverSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_OVER)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })
@@ -211,7 +211,7 @@ module wd {
                     self._stateMachine.changeState(EUIState.HIGHLIGHT);
                 });
 
-            this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EngineEvent.MOUSE_OUT)
+            this._mouseoutSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MOUSE_OUT)
                 .filter((e:CustomEvent) => {
                     return !self.isDisabled;
                 })

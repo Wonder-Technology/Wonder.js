@@ -53,7 +53,7 @@ describe("DebugStatistics", function () {
 
             Debug.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
 
             expect(Debug.clear).toCalledOnce();
 
@@ -66,7 +66,7 @@ describe("DebugStatistics", function () {
 
 
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
 
             expect(Debug.clear).not.toCalledTwice();
         });

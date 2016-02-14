@@ -16,7 +16,7 @@ describe("CustomGeometry", function() {
     describe("set custom geometry data", function(){
         beforeEach(function(){
             var material = wd.BasicMaterial.create();
-            material.shading = wd.Shading.SMOOTH;
+            material.shading = wd.EShading.SMOOTH;
 
             geo.material = material;
             geo.vertices = [

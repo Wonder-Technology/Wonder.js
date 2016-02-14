@@ -14,7 +14,7 @@
         wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: wd.ScreenSize.FULL
+            screenSize: wd.EScreenSize.FULL
         }).init();
 
         wd.LoaderManager.getInstance().load([
@@ -40,7 +40,7 @@
             material.specularColor = wd.Color.create("rgb(0, 255, 0)");
             material.shininess = 32;
             material.diffuseMap = wd.LoaderManager.getInstance().get("diffuseMap").toTexture();
-            material.shading = wd.Shading.SMOOTH;
+            material.shading = wd.EShading.SMOOTH;
             material.lightModel = wd.ELightModel.PHONG;
 
 

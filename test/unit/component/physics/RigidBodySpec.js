@@ -22,7 +22,7 @@ describe("RigidBody", function() {
 
             body.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(body.addBody).toCalledOnce();
         });
@@ -31,8 +31,8 @@ describe("RigidBody", function() {
 
             body.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(body.addBody).toCalledOnce();
         });
@@ -42,7 +42,7 @@ describe("RigidBody", function() {
 
             body.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
 
             expect(body.addConstraint).toCalledOnce();
         });
@@ -51,8 +51,8 @@ describe("RigidBody", function() {
 
             body.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
 
             expect(body.addConstraint).toCalledOnce();
         });
@@ -71,14 +71,14 @@ describe("RigidBody", function() {
             body.init();
 
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
 
             expect(body.addBody).toCalledOnce();
 
             body.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(body.addBody).not.toCalledTwice();
         });
@@ -88,14 +88,14 @@ describe("RigidBody", function() {
             body.init();
 
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
 
 
             expect(body.addConstraint).toCalledOnce();
 
             body.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT));
 
             expect(body.addConstraint).not.toCalledTwice();
         });

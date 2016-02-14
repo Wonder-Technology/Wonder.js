@@ -155,7 +155,7 @@ module wd{
             if(width !== this._width){
                 this._width = width;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.UI_WIDTH_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_WIDTH_CHANGE));
             }
         }
 
@@ -167,7 +167,7 @@ module wd{
             if(height !== this._height){
                 this._height = height;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EngineEvent.UI_HEIGHT_CHANGE));
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_HEIGHT_CHANGE));
             }
         }
 
@@ -185,7 +185,7 @@ module wd{
             if(isTranslate){
                 this.dirtyLocal = true;
 
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_TRANSLATE));
+                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
 
 
                 this.setChildrenTransformState("isTranslate");
@@ -202,7 +202,7 @@ module wd{
             if(isRotate){
                 this.dirtyLocal = true;
 
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_ROTATE));
+                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
 
                 this.setChildrenTransformState("isRotate");
             }
@@ -218,7 +218,7 @@ module wd{
             if(isScale){
                 this.dirtyLocal = true;
 
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EngineEvent.TRANSFORM_SCALE));
+                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
 
                 this.setChildrenTransformState("isScale");
             }

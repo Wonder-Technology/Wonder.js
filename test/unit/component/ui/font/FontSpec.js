@@ -96,7 +96,7 @@ describe("Font", function () {
 
             font.dirty = false;
 
-            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_WIDTH_CHANGE));
+            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
 
             expect(font.dirty).toBeTruthy();
         });
@@ -105,7 +105,7 @@ describe("Font", function () {
 
             font.dirty = false;
 
-            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_HEIGHT_CHANGE));
+            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
 
             expect(font.dirty).toBeTruthy();
         });
@@ -121,12 +121,12 @@ describe("Font", function () {
         });
 
         it("off UI_WIDTH_CHANGE event", function(){
-            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_WIDTH_CHANGE));
+            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
 
             expect(font.needFormat).toBeFalsy();
         });
         it("off UI_HEIGHT_CHANGE event", function(){
-            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EngineEvent.UI_HEIGHT_CHANGE));
+            wd.EventManager.trigger(uiObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
 
             expect(font.needFormat).toBeFalsy();
         });

@@ -24,7 +24,7 @@ describe("VideoTexture", function() {
 
             texture.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
 
             expect(texture.needUpdate).toBeTruthy();
 
@@ -32,7 +32,7 @@ describe("VideoTexture", function() {
             texture.dispose();
             texture.needUpdate = false;
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
 
             expect(texture.needUpdate).toBeFalsy();
         });

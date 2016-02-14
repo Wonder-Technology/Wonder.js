@@ -120,7 +120,7 @@ module wd {
             return obj;
         }
 
-        protected p_type:EventType = EventType.KEYBOARD;
+        protected p_type:EEventType = EEventType.KEYBOARD;
 
         get ctrlKey(){
             return this.event.ctrlKey;

@@ -43,7 +43,7 @@ describe("BoxGeometry", function() {
         beforeEach(function(){
             geo.material = {
                 init: sandbox.stub(),
-                shading: wd.Shading.FLAT
+                shading: wd.EShading.FLAT
             }
         });
 
@@ -79,7 +79,7 @@ describe("BoxGeometry", function() {
                 ])
         });
         it("test smooth shading", function(){
-            geo.material.shading = wd.Shading.SMOOTH;
+            geo.material.shading = wd.EShading.SMOOTH;
 
             judgeOneSegemets();
         });

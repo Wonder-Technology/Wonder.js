@@ -14,7 +14,7 @@
         wd.Main.setConfig({
             //open contract check
             isTest: true,
-            screenSize: wd.ScreenSize.FULL
+            screenSize: wd.EScreenSize.FULL
         }).init();
 
         wd.LoaderManager.getInstance().load([
@@ -108,7 +108,7 @@
 
             var material = wd.BasicMaterial.create();
             material.envMap = cubemap;
-            material.shading = wd.Shading.SMOOTH;
+            material.shading = wd.EShading.SMOOTH;
 
             var geometry = wd.SphereGeometry.create();
             geometry.material = material;

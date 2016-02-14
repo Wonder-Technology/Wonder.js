@@ -55,7 +55,7 @@ module wd {
             /*!
             addBody should after its and its children's collider component init
              */
-            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_GAMEOBJECT_INIT)
+            this._afterInitSubscription = EventManager.fromEvent(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT)
                 .subscribe(() => {
                     self._afterInitHandler();
                 });
@@ -63,7 +63,7 @@ module wd {
             /*!
             add constraint should after all body added
              */
-            this._afterInitRigidbodyAddConstraintSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)
+            this._afterInitRigidbodyAddConstraintSubscription = EventManager.fromEvent(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT)
                 .subscribe(() => {
                     self._afterInitRigidbodyAddConstraintHandler();
                 });

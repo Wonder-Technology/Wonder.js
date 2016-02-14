@@ -7,7 +7,7 @@ module wd{
         public initWhenCreate(){
             var self = this;
 
-            this._beforeInitSubscription = EventManager.fromEvent(<any>EngineEvent.BEFORE_GAMEOBJECT_INIT)
+            this._beforeInitSubscription = EventManager.fromEvent(<any>EEngineEvent.BEFORE_GAMEOBJECT_INIT)
                 .subscribe(() => {
                     self.beforeInitHandler();
                 });

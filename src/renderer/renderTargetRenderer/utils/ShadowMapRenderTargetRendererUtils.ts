@@ -42,11 +42,11 @@ module wd {
         public bindEndLoop(func:Function){
             this._endLoopHandler = func;
 
-            EventManager.on(<any>EngineEvent.ENDLOOP,this._endLoopHandler);
+            EventManager.on(<any>EEngineEvent.ENDLOOP,this._endLoopHandler);
         }
 
         public unBindEndLoop(){
-            EventManager.off(<any>EngineEvent.ENDLOOP, this._endLoopHandler);
+            EventManager.off(<any>EEngineEvent.ENDLOOP, this._endLoopHandler);
         }
 
         public beforeRender(){

@@ -65,8 +65,8 @@ module wd {
         //todo treat picked item as the target
         private _bindCanvasEvent() {
             var self = this,
-                mousewheel = EventManager.fromEvent(Director.getInstance().scene, <any>EngineEvent.MOUSE_WHEEL),
-                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EngineEvent.MOUSE_DRAG),
+                mousewheel = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_WHEEL),
+                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_DRAG),
             keydown = EventManager.fromEvent(EventName.KEYDOWN);
 
             this._mouseDragSubscription = mousedrag.subscribe((e:CustomEvent) => {

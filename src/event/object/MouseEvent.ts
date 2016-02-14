@@ -69,13 +69,13 @@ module wd {
             if (bowser.msie) {
                 switch (e.button) {
                     case 1:
-                        mouseButton = MouseButton.LEFT;
+                        mouseButton = EMouseButton.LEFT;
                         break;
                     case 4:
-                        mouseButton = MouseButton.RIGHT;
+                        mouseButton = EMouseButton.RIGHT;
                         break;
                     case 2:
-                        mouseButton = MouseButton.CENTER;
+                        mouseButton = EMouseButton.CENTER;
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
@@ -85,13 +85,13 @@ module wd {
             else {
                 switch (e.button) {
                     case 0:
-                        mouseButton = MouseButton.LEFT;
+                        mouseButton = EMouseButton.LEFT;
                         break;
                     case 1:
-                        mouseButton = MouseButton.RIGHT;
+                        mouseButton = EMouseButton.RIGHT;
                         break;
                     case 2:
-                        mouseButton = MouseButton.CENTER;
+                        mouseButton = EMouseButton.CENTER;
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT("multi mouse button"));
@@ -156,7 +156,7 @@ module wd {
         public lastX:number = null;
         public lastY:number = null;
 
-        protected p_type:EventType = EventType.MOUSE;
+        protected p_type:EEventType = EEventType.MOUSE;
 
 
         public copy():MouseEvent{

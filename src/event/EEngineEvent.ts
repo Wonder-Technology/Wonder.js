@@ -1,5 +1,5 @@
 module wd{
-    export enum EngineEvent{
+    export enum EEngineEvent{
         /*! global event should add "dy_" prefix */
         STARTLOOP = <any>"dy_startLoop",
         ENDLOOP = <any>"dy_endLoop",

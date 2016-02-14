@@ -1,5 +1,5 @@
 module wd{
-    export enum EventPhase{
+    export enum EEventPhase{
         BROADCAST,
         EMIT
     }

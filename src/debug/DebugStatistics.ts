@@ -38,7 +38,7 @@ module wd{
         public static init(){
             var self = this;
 
-            this._startLoopSubscription = EventManager.fromEvent(<any>EngineEvent.STARTLOOP)
+            this._startLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.STARTLOOP)
             .subscribe(() => {
                 if(DebugConfig.showDebugPanel){
                     console.log(`totalGameObjects:${self.count.totalGameObjects}, renderGameObjects:${self.count.renderGameObjects}, drawCalls:${self.count.drawCalls}`);

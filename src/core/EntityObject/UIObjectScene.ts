@@ -58,11 +58,11 @@ module wd {
         }
 
         protected bindStartLoopEvent(){
-            EventManager.on(this, <any>EngineEvent.STARTLOOP, this.startLoopHandler);
+            EventManager.on(this, <any>EEngineEvent.STARTLOOP, this.startLoopHandler);
         }
 
         protected bindEndLoopEvent(){
-            EventManager.on(this, <any>EngineEvent.ENDLOOP, this.endLoopHandler);
+            EventManager.on(this, <any>EEngineEvent.ENDLOOP, this.endLoopHandler);
         }
 
         @require(function(uiObject:UIObject){

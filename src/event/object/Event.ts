@@ -5,7 +5,7 @@ module wd{
         }
 
 
-        protected p_type:EventType = null;
+        protected p_type:EEventType = null;
         get type(){
             Log.error(this.p_type === null, Log.info.ABSTRACT_ATTRIBUTE);
 
@@ -18,7 +18,7 @@ module wd{
         //currentTarget is always the object listening for the event
         public currentTarget:HTMLElement|EntityObject = null;
         public isStopPropagation:boolean = false;
-        public phase:EventPhase = null;
+        public phase:EEventPhase = null;
 
         public abstract copy();
 

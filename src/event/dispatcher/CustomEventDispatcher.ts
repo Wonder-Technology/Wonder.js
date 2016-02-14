@@ -68,7 +68,7 @@ module wd {
                 return;
             }
 
-            eventObject.phase = EventPhase.EMIT;
+            eventObject.phase = EEventPhase.EMIT;
             eventObject.target = target;
 
             do{
@@ -106,7 +106,7 @@ module wd {
                 return;
             }
 
-            eventObject.phase = EventPhase.BROADCAST;
+            eventObject.phase = EEventPhase.BROADCAST;
             eventObject.target = target;
 
             this._triggerWithUserData(target, eventObject, userData, true);

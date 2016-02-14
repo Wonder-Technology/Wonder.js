@@ -57,16 +57,16 @@
 /// <reference path="event/structure/CustomEventListenerMap"/>
 /// <reference path="event/structure/DomEventListenerMap"/>
 
-/// <reference path="event/object/EventType"/>
+/// <reference path="event/object/EEventType"/>
 /// <reference path="event/object/EventNameHandler"/>
-/// <reference path="event/object/EventPhase"/>
+/// <reference path="event/object/EEventPhase"/>
 /// <reference path="event/object/EventTable"/>
 /// <reference path="event/object/Event"/>
 /// <reference path="event/object/DomEvent"/>
 /// <reference path="event/object/MouseEvent"/>
 /// <reference path="event/object/KeyboardEvent"/>
 /// <reference path="event/object/CustomEvent"/>
-/// <reference path="event/object/MouseButton"/>
+/// <reference path="event/object/EMouseButton"/>
 /// <reference path="event/listener/EventListener"/>
 /// <reference path="event/handler/EventHandler"/>
 /// <reference path="event/handler/DomEventHandler"/>
@@ -91,7 +91,7 @@
 /// <reference path="event/factory/EventDispatcherFactory"/>
 
 /// <reference path="event/EventManager"/>
-/// <reference path="event/EngineEvent"/>
+/// <reference path="event/EEngineEvent"/>
 
 
 
@@ -378,7 +378,7 @@
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
 /// <reference path="material/ShaderMaterial"/>
-/// <reference path="material/Shading"/>
+/// <reference path="material/EShading"/>
 /// <reference path="material/MapManager"/>
 
 
@@ -435,7 +435,7 @@
 
 /// <reference path="device/DeviceManager"/>
 /// <reference path="device/GPUDetector"/>
-/// <reference path="device/ScreenSize"/>
+/// <reference path="device/EScreenSize"/>
 
 /// <reference path="structure/Point"/>
 /// <reference path="structure/Face3"/>

@@ -17,7 +17,7 @@ module wd {
         public init(){
             var self = this;
 
-            EventManager.on(this.entityObject, <any>EngineEvent.MATERIAL_CHANGE, () => {
+            EventManager.on(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE, () => {
                 self.removeCache(BufferDataType.COLOR);
             });
         }

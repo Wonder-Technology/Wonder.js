@@ -1,5 +1,5 @@
 module wd {
-    export enum EventType{
+    export enum EEventType{
         MOUSE,
         KEYBOARD,
         CUSTOM

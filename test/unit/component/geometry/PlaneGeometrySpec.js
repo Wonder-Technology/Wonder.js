@@ -15,7 +15,7 @@ describe("PlaneGeometry", function() {
         beforeEach(function(){
             geo.material = {
                 init: sandbox.stub(),
-                shading: wd.Shading.FLAT
+                shading: wd.EShading.FLAT
             }
         });
 

@@ -159,7 +159,7 @@ module wd{
 
             handlerName = EventTriggerTable.getScriptHandlerName(event.name);
 
-            customEvent = CustomEvent.create(<any>EngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]);
+            customEvent = CustomEvent.create(<any>EEngineEvent[EventTriggerTable.getScriptEngineEvent(event.name)]);
 
             customEvent.getDataFromDomEvent(event);
 

@@ -98,14 +98,14 @@ describe("Material", function() {
             material.init();
 
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
 
             expect(material.addShaderLib).toCalledOnce();
 
             material.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EngineEvent.AFTER_GAMEOBJECT_INIT));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(material.addShaderLib).not.toCalledTwice();
         });

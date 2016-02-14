@@ -135,7 +135,7 @@ module wd {
         public blend:boolean = false;
         public blendFuncSeparate:Array<BlendFunc> = null;
         public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
-        public shading = Shading.FLAT;
+        public shading = EShading.FLAT;
         public refractionRatio:number = 0;
         public reflectivity:number = null;
         public mapCombineMode:ETextureCombineMode = ETextureCombineMode.MIX;
@@ -155,7 +155,7 @@ module wd {
             this.shader.init();
             this.mapManager.init();
 
-            this._afterInitSubscription = EventManager.fromEvent(<any>EngineEvent.AFTER_GAMEOBJECT_INIT)
+            this._afterInitSubscription = EventManager.fromEvent(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT)
                 .subscribe(() => {
                     self._afterInitHandler();
                 });

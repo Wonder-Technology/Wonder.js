@@ -489,7 +489,7 @@ describe("Octree", function () {
                         sandbox.spy(test, "onMouseClick");
 
 
-                        wd.EventManager.on(gameObject, wd.EngineEvent["MOUSE_CLICK"], function(e){
+                        wd.EventManager.on(gameObject, wd.EEngineEvent["MOUSE_CLICK"], function(e){
                             expect(e).toBeInstanceOf(wd.CustomEvent);
                             expect(e.userData).toBeInstanceOf(wd.MouseEvent);
                         });

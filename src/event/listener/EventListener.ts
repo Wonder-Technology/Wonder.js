@@ -8,7 +8,7 @@ module wd {
             return obj;
         }
 
-        public eventType:EventType = null;
+        public eventType:EEventType = null;
         public priority:number = null;
         public handlerDataList:wdCb.Collection<EventHandlerData> = wdCb.Collection.create<EventHandlerData>();
 

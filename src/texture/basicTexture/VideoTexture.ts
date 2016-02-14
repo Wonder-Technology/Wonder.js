@@ -29,13 +29,13 @@ module wd{
                 }
             });
 
-            EventManager.on(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
+            EventManager.on(<any>EEngineEvent.STARTLOOP, this._startLoopHandler);
 
             return this;
         }
 
         public dispose(){
-            EventManager.off(<any>EngineEvent.STARTLOOP, this._startLoopHandler);
+            EventManager.off(<any>EEngineEvent.STARTLOOP, this._startLoopHandler);
         }
 
         protected needClampMaxSize(){

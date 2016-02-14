@@ -8,7 +8,7 @@ module wd {
 
         public userData:any = null;
 
-        protected p_type:EventType = EventType.CUSTOM;
+        protected p_type:EEventType = EEventType.CUSTOM;
 
 
         public copyPublicAttri(destination, source:any){

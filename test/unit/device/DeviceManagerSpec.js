@@ -70,7 +70,7 @@ describe("deviceManager", function() {
             var view = device.view;
 
             wd.Main.setConfig({
-                screenSize:wd.ScreenSize.FULL,
+                screenSize:wd.EScreenSize.FULL,
                 canvasId: "#event-test"
             }).init();
 

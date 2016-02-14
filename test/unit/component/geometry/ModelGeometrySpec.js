@@ -7,7 +7,7 @@ describe("ModelGeometry", function() {
         geo = new _class();
         geo.material = {
             init:sandbox.stub(),
-            shading: shading || wd.Shading.FLAT
+            shading: shading || wd.EShading.FLAT
         };
 
         return geo;
@@ -158,7 +158,7 @@ describe("ModelGeometry", function() {
         describe("compute morph vertexNormals", function(){
             it("compute each frame's average vertex normal", function(){
                 var model = wd.GameObject.create();
-                geo = createGeometry(Geometry, wd.Shading.SMOOTH);
+                geo = createGeometry(Geometry, wd.EShading.SMOOTH);
                 model.addComponent(geo);
                 model.addComponent(createAnimation());
 

@@ -1,5 +1,5 @@
 module wd {
-    export enum MouseButton{
+    export enum EMouseButton{
         LEFT,
         RIGHT,
         CENTER
