@@ -352,6 +352,97 @@ describe("GLTF animation parser", function () {
                     expect(animComponent2.animation_2).toBeDefined();
                 });
             });
+
+            describe("test animation attach to the child of node", function () {
+                beforeEach(function(){
+                    setJson({
+                        "scenes": {
+                            "defaultScene": {
+                                "nodes": [
+                                    "node_1"
+                                ]
+                            }
+                        },
+                        "animations": {
+                            "animation_0": {
+                                "channels": [
+                                    {
+                                        "sampler": "animation_0_rotation_sampler",
+                                        "target": {
+                                            "id": "node_11",
+                                            "path": "rotation"
+                                        }
+                                    }
+                                ],
+                                "parameters": {
+                                    "TIME": "animAccessor_0",
+                                    "rotation": "animAccessor_1"
+                                },
+                                "samplers": {
+                                    "animation_0_rotation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "rotation"
+                                    }
+                                }
+                            }
+                        },
+                        "nodes": {
+                            "node_1": {
+                                "children": [
+                                    "node_11"
+                                ],
+                                "name": "1"
+                            },
+                            "node_11": {
+                                "children": [
+                                ],
+                                "name": "2"
+                            }
+                        }
+                    })
+                });
+
+                it("test when the node is container", function () {
+                    var objects = wdCb.Collection.create([
+                        {
+                            id:"node_1",
+
+                            isContainer:true,
+
+                            components: wdCb.Collection.create(),
+
+                            children: wdCb.Collection.create([
+
+                                {
+                                    id:"node_11",
+
+                                    isContainer:false,
+
+                                    components: wdCb.Collection.create(),
+
+                                    children: wdCb.Collection.create()
+                                }
+                            ])
+                        }
+                    ])
+
+
+
+
+                    parser.parse(json, objects, arrayBufferMap);
+
+
+
+
+
+                    var object11 = objects.getChild(0).children.getChild(0);
+                    expect(object11.components.getCount()).toEqual(1)
+
+                    var animComponent11 = object11.components.getChild(0);
+                    expect(animComponent11.animation_0).toBeDefined();
+                });
+            });
         });
     });
 });

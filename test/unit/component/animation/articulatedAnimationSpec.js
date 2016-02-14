@@ -54,40 +54,6 @@ describe("articulated animation", function () {
 
                 anim = wd.ArticulatedAnimation.create();
 
-                anim.data = wdCb.Hash.create({
-                    "play": wdCb.Collection.create([
-                        {
-                            time:firstKeyTime,
-                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
-
-                            targets: wdCb.Collection.create(
-                                [
-                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
-                                    {target:wd.ArticulatedAnimationTarget.ROTATION,
-                                        data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,30))},
-                                    {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
-                                ]
-                            )
-
-                        },
-
-                        {
-                            time:secondKeyTime,
-                            interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
-
-                            targets: wdCb.Collection.create(
-                                [
-                                    {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                    {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
-                                ]
-                            )
-
-                        }
-                    ])
-                })
-
-
-
                 model.addComponent(anim);
 
 
@@ -97,7 +63,6 @@ describe("articulated animation", function () {
 
             describe("test special cases", function(){
                 beforeEach(function(){
-
                 });
 
                 it("test time === 0", function () {
@@ -117,11 +82,11 @@ describe("articulated animation", function () {
                         ])
                     });
                     anim.play("play");
-
                     model.init();
 
 
                     model.update(0);
+
 
                     judgePos([3,1,0]);
                 });
@@ -129,6 +94,40 @@ describe("articulated animation", function () {
 
             describe("test normal cases", function(){
                 beforeEach(function(){
+                    anim.data = wdCb.Hash.create({
+                        "play": wdCb.Collection.create([
+                            {
+                                time:firstKeyTime,
+                                interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(2,1,0)},
+                                        {target:wd.ArticulatedAnimationTarget.ROTATION,
+                                            data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,30))},
+                                        {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,3)}
+                                    ]
+                                )
+
+                            },
+
+                            {
+                                time:secondKeyTime,
+                                interpolationMethod:wd.KeyFrameInterpolation.LINEAR,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        {target:wd.ArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                        {target:wd.ArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                    ]
+                                )
+
+                            }
+                        ])
+                    })
+
+
+
                     anim.play("play");
 
                     model.init();

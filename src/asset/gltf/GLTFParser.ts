@@ -51,8 +51,10 @@ module wd{
             var self = this,
                 json = this._json,
                 objects = wdCb.Collection.create<IGLTFObjectData>();
-            var parse = (node:IGLTFNode) => {
+            var parse = (nodeId:string, node:IGLTFNode) => {
                 var object:IGLTFObjectData = GLTFUtils.createObjectData();
+
+                object.id = nodeId;
 
                 if(node.name){
                     object.name = node.name;
@@ -67,7 +69,7 @@ module wd{
 
                     mesh = json.meshes[node.meshes[0]];
 
-                    if(mesh.name){
+                    if(!node.name && mesh.name){
                         object.name = mesh.name;
                     }
 
@@ -92,8 +94,8 @@ module wd{
                 }
 
                 if(node.children){
-                    for(let child of node.children){
-                        object.children.addChild(parse(json.nodes[child]));
+                    for(let childId of node.children){
+                        object.children.addChild(parse(childId, json.nodes[childId]));
                     }
                 }
 
@@ -107,11 +109,7 @@ module wd{
             }
 
             for(let nodeId of json.scenes[json.scene].nodes){
-                let object = parse(json.nodes[nodeId]);
-
-                object.id = nodeId;
-
-                objects.addChild(object);
+                objects.addChild(parse(nodeId, json.nodes[nodeId]));
             }
 
             this._data.objects = objects;

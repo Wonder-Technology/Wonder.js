@@ -240,6 +240,105 @@ describe("GLTFParser", function () {
             expect(object2.id).toEqual("node_3");
         });
 
+        it("test id", function () {
+            setJson({
+                "scenes": {
+                    "defaultScene": {
+                        "nodes": [
+                            "node_1",
+                            "node_2"
+                        ]
+                    }
+                },
+                "nodes": {
+                    "node_1": {
+                        "children": [
+                            "node_11"
+                        ],
+                        "meshes": [
+                        ]
+                    },
+                    "node_11": {
+                        "children": [
+                        ],
+                        "meshes": [
+                        ]
+                    },
+                    "node_2": {
+                        "children": [
+                        ],
+                        "meshes": [
+                        ]
+                    }
+                }
+            })
+
+            var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+            expect(data.objects.getCount()).toEqual(2);
+            expect(data.objects.getChild(0).id).toEqual("node_1");
+            expect(data.objects.getChild(0).children.getChild(0).id).toEqual("node_11");
+            expect(data.objects.getChild(1).id).toEqual("node_2");
+        });
+
+        describe("test name", function(){
+            beforeEach(function(){
+            });
+
+            it("if !node->name&&mesh.name, use mesh->name to be object.name", function () {
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "name": "geo1",
+                            "primitives": [
+                            ]
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            //"name": "1",
+                            "meshes": [
+                                "geometry1"
+                            ]
+                        }
+                    }
+                })
+
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+                expect(data.objects.getCount()).toEqual(1);
+                expect(data.objects.getChild(0).name).toEqual("geo1");
+            });
+            it("else if node->name, use node->name to be object.name", function () {
+                setJson({
+                    "meshes": {
+                        "geometry1": {
+                            "name": "geo1",
+                            "primitives": [
+                            ]
+                        }
+                    },
+                    "nodes": {
+                        "node_1": {
+                            "children": [
+                            ],
+                            "name": "1",
+                            "meshes": [
+                                "geometry1"
+                            ]
+                        }
+                    }
+                })
+
+                var data = parser.parse(json, arrayBufferMap, wdCb.Hash.create());
+
+                expect(data.objects.getCount()).toEqual(1);
+                expect(data.objects.getChild(0).name).toEqual("1");
+            });
+        });
+
         describe("parse Geometry", function(){
             it("if node->meshes.length > 1, warn only use the first mesh", function(){
                 function isGeometry1(geometryData){

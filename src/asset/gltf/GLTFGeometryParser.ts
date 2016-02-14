@@ -33,8 +33,10 @@ module wd{
 
                 object.isContainer = true;
             }
-            else{
+            else if(mesh.primitives.length === 1){
                 object.components.addChild(this._parseGeometry(mesh.primitives[0]));
+            }
+            else{
             }
         }
 

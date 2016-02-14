@@ -37,9 +37,7 @@ module wd{
                         var bufferOutput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[outputData], arrayBufferMap);
 
                         var targetId = channel.target.id;
-                        var targetNode:IGLTFObjectData = objects.findOne((object:IGLTFObjectData) => {
-                            return object.id === targetId;
-                        });
+                        var targetNode:IGLTFObjectData = this._findNode(objects, targetId);
 
                         if (targetNode === null) {
                             Log.warn(`can't find node whose id is ${targetId} to attach to animation named ${animName}`);
@@ -108,6 +106,29 @@ module wd{
             }
 
             this._addAnimationComponent(nodeWithAnimationMap);
+        }
+
+        private _findNode(objects:wdCb.Collection<IGLTFObjectData>, targetId:string){
+            var find = (objects:wdCb.Collection<IGLTFObjectData>) => {
+                var result = objects.findOne((object:IGLTFObjectData) => {
+                    return object.id === targetId;
+                });
+
+                if(result){
+                    return result;
+                }
+
+                objects.forEach((object:IGLTFObjectData) => {
+                    result = find(object.children);
+                    if (result) {
+                        return wdCb.$BREAK;
+                    }
+                });
+
+                return result;
+            }
+
+            return find(objects);
         }
 
         @ensure(function(returnVal, nodeWithAnimationMap:wdCb.Hash<any>){
