@@ -41,9 +41,9 @@ module wd{
 
 
             if(this.skyboxCommand){
-                deviceManager.depthFunc = DepthFunction.LEQUAL;
+                deviceManager.depthFunc = EDepthFunction.LEQUAL;
                 this.skyboxCommand.execute();
-                deviceManager.depthFunc = DepthFunction.LESS;
+                deviceManager.depthFunc = EDepthFunction.LESS;
             }
 
             this._clearCommand();
@@ -55,7 +55,7 @@ module wd{
             deviceManager.depthTest = true;
             deviceManager.blend = false;
             deviceManager.setColorWrite(true, true, true, true);
-            deviceManager.side = Side.FRONT;
+            deviceManager.side = ESide.FRONT;
             deviceManager.depthWrite = true;
         }
 

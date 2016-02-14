@@ -34,7 +34,7 @@
 
         function createPlane() {
             var material = wd.BasicMaterial.create();
-            material.side = wd.Side.BOTH;
+            material.side = wd.ESide.BOTH;
             material.map =  wd.LoaderManager.getInstance().get("video").toTexture();
 
             wd.VideoManager.getInstance().play("video");

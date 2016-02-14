@@ -88,21 +88,21 @@ module wd {
 
             if (!highpAvailable) {
                 if (mediumpAvailable) {
-                    this.precision = GPUPrecision.MEDIUMP;
+                    this.precision = EGPUPrecision.MEDIUMP;
                     Log.warn(Log.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
                 }
                 else {
-                    this.precision = GPUPrecision.LOWP;
+                    this.precision = EGPUPrecision.LOWP;
                     Log.warn(Log.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
                 }
             }
             else{
-                this.precision = GPUPrecision.HIGHP;
+                this.precision = EGPUPrecision.HIGHP;
             }
         }
     }
 
-    export enum GPUPrecision{
+    export enum EGPUPrecision{
         HIGHP,
         MEDIUMP,
         LOWP

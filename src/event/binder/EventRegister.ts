@@ -5,10 +5,10 @@ module wd {
         public abstract register(...args):void;
         public abstract remove(...args):void;
 
-        public getEventRegisterDataList(eventName:EventName):any;
+        public getEventRegisterDataList(eventName:EEventName):any;
 
-        public getEventRegisterDataList(currentTarget:EntityObject, eventName:EventName):any;
-        public getEventRegisterDataList(dom:HTMLElement, eventName:EventName):any;
+        public getEventRegisterDataList(currentTarget:EntityObject, eventName:EEventName):any;
+        public getEventRegisterDataList(dom:HTMLElement, eventName:EEventName):any;
 
         public getEventRegisterDataList(...args) {
             var result:wdCb.Collection<EventRegisterData> = this.listenerMap.getChild.apply(this.listenerMap, args);
@@ -30,11 +30,11 @@ module wd {
             return this.listenerMap.forEach(func);
         }
 
-        public getChild(eventName:EventName);
+        public getChild(eventName:EEventName);
         public getChild(target:EntityObject);
 
-        public getChild(target:EntityObject, eventName:EventName);
-        public getChild(dom:HTMLElement, eventName:EventName);
+        public getChild(target:EntityObject, eventName:EEventName);
+        public getChild(dom:HTMLElement, eventName:EEventName);
 
         public getChild(...args) {
             return this.listenerMap.getChild.apply(

@@ -128,7 +128,7 @@ describe("event component", function () {
 
 
                     var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
-                    var eventName = wd.EventName.CLICK;
+                    var eventName = wd.EEventName.CLICK;
 
 
                     var sceneHandler = sandbox.stub();
@@ -221,7 +221,7 @@ describe("event component", function () {
 
 
                     var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
-                    var eventName = wd.EventName.CLICK;
+                    var eventName = wd.EEventName.CLICK;
 
 
                     var sceneHandler = sandbox.stub();
@@ -286,7 +286,7 @@ describe("event component", function () {
 
 
                 var engineEvent = wd.EEngineEvent.MOUSE_CLICK;
-                var eventName = wd.EventName.CLICK;
+                var eventName = wd.EEventName.CLICK;
 
 
                 var sceneHandler = sandbox.stub();
@@ -334,7 +334,7 @@ describe("event component", function () {
 
             describe("test trigger onMouseMove,onMouseOver,onMouseOut", function () {
                 function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name) {
-                    manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+                    manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
 
 
                     expect(test[eventHandlerName]).toCalledOnce();
@@ -396,7 +396,7 @@ describe("event component", function () {
 
 
 
-                    var moveEventName = wd.EventName.MOUSEMOVE;
+                    var moveEventName = wd.EEventName.MOUSEMOVE;
 
                     var sceneHandler = sandbox.stub();
                     var uiObject1Handler = sandbox.stub();
@@ -475,7 +475,7 @@ describe("event component", function () {
                             pageX: 300 - 200 / 2 - 1,
                             pageY:100 - 100 / 2
                         };
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).not.toCalled();
                     }, function(test, time, gameObject){
@@ -487,7 +487,7 @@ describe("event component", function () {
                         scriptTool.testScript(uiObject, "event", function(test, uiObject){
                             sandbox.spy(test, eventHandlerName);
 
-                            wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EventName[eventName])], function(e){
+                            wd.EventManager.on(uiObject, wd.EEngineEvent[wd.EventTriggerTable.getScriptEngineEvent(wd.EEventName[eventName])], function(e){
                                 expect(e).toBeInstanceOf(wd.CustomEvent);
                                 expect(e.userData).toBeInstanceOf(wd.MouseEvent);
                             });
@@ -497,7 +497,7 @@ describe("event component", function () {
                                 pageX: 300 - 200 / 2,
                                 pageY:100 - 100 / 2
                             };
-                            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+                            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
 
 
                             expect(test[eventHandlerName]).toCalledOnce();
@@ -516,7 +516,7 @@ describe("event component", function () {
 
                     describe("test trigger onMouseMove,onMouseOver,onMouseOut", function(){
                         function judgeEvent(test, fakeEvent, eventHandlerName, eventName, name){
-                            manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName[eventName]));
+                            manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName[eventName]));
 
 
                             expect(test[eventHandlerName]).toCalledOnce();
@@ -556,7 +556,7 @@ describe("event component", function () {
                                 manager.trigger(document.body, wd.MouseEvent.create({
                                     pageX: 300 - 200 / 2 - 1,
                                     pageY:100 - 100 / 2
-                                }, wd.EventName.MOUSEMOVE));
+                                }, wd.EEventName.MOUSEMOVE));
 
                                 expect(test.onMouseMove).not.toCalledTwice();
 
@@ -581,16 +581,16 @@ describe("event component", function () {
                                     pageY:100 - 100 / 2
                                 }
 
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
-                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEUP));
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+                                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEUP));
 
 
                                 expect(test.onMouseDrag).toCalledOnce();
 
 
                                 var event = test.onMouseDrag.args[0][0];
-                                expect(event.name).toEqual(wd.EventName.MOUSEDRAG);
+                                expect(event.name).toEqual(wd.EEventName.MOUSEDRAG);
                                 expect(event.type).toEqual(wd.EEventType.MOUSE);
                                 expect(event.locationInView.x).toEqual(fakeEvent.pageX);
                                 expect(event.locationInView.y).toEqual(fakeEvent.pageY);
@@ -641,7 +641,7 @@ describe("event component", function () {
                             pageY: view.height / 2
                         };
 
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).not.toCalled();
                     }, done);
@@ -661,7 +661,7 @@ describe("event component", function () {
                             pageX: view.width / 2,
                             pageY: view.height / 2
                         };
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
                     }, done);
@@ -690,7 +690,7 @@ describe("event component", function () {
 
                         director.pause();
 
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).not.toCalled();
 
@@ -698,7 +698,7 @@ describe("event component", function () {
 
                         director.resume();
 
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
                     }, function (test, time, gameObject) {
@@ -718,7 +718,7 @@ describe("event component", function () {
 
 
 
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
 
@@ -726,7 +726,7 @@ describe("event component", function () {
 
                         director.stop();
 
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
 
                         expect(test.onMouseClick).not.toCalledTwice();

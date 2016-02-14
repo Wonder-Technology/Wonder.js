@@ -36,7 +36,7 @@
         function createTriangle() {
             var material = wd.BasicMaterial.create();
             material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), wd.LoaderManager.getInstance().get("texture2").toTexture()];
-            material.side = wd.Side.BOTH;
+            material.side = wd.ESide.BOTH;
 
 
             var geometry = wd.TriangleGeometry.create();

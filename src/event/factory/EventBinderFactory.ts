@@ -1,6 +1,6 @@
 module wd{
     export class EventBinderFactory{
-        public static createEventBinder(eventName:EventName){
+        public static createEventBinder(eventName:EEventName){
             let binder = null,
                 eventType = EventTable.getEventType(eventName);
 

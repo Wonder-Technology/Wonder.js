@@ -101,18 +101,18 @@ describe("ArcballCameraController", function () {
 
             director._init();
 
-            triggerDomEvent(wd.EventName.MOUSEDOWN);
-            triggerDomEvent(wd.EventName.MOUSEMOVE);
-            triggerDomEvent(wd.EventName.MOUSEUP);
+            triggerDomEvent(wd.EEventName.MOUSEDOWN);
+            triggerDomEvent(wd.EEventName.MOUSEMOVE);
+            triggerDomEvent(wd.EEventName.MOUSEUP);
 
             expect(controller._changeOrbit).toCalledOnce();
 
 
-            triggerDomEvent(wd.EventName.MOUSEWHEEL, document.body);
+            triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
 
             expect(controller._changeDistance).toCalledOnce();
 
-            triggerKeyboardDomEvent(wd.EventName.KEYDOWN);
+            triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
 
             expect(controller._changeTarget).toCalledOnce();
 
@@ -120,11 +120,11 @@ describe("ArcballCameraController", function () {
 
             controller.dispose();
 
-            triggerDomEvent(wd.EventName.MOUSEDOWN);
-            triggerDomEvent(wd.EventName.MOUSEMOVE);
-            triggerDomEvent(wd.EventName.MOUSEUP);
-            triggerDomEvent(wd.EventName.MOUSEWHEEL, document.body);
-            triggerKeyboardDomEvent(wd.EventName.KEYDOWN);
+            triggerDomEvent(wd.EEventName.MOUSEDOWN);
+            triggerDomEvent(wd.EEventName.MOUSEMOVE);
+            triggerDomEvent(wd.EEventName.MOUSEUP);
+            triggerDomEvent(wd.EEventName.MOUSEWHEEL, document.body);
+            triggerKeyboardDomEvent(wd.EEventName.KEYDOWN);
 
 
             expect(controller._changeOrbit).toCalledOnce();
@@ -148,11 +148,11 @@ describe("ArcballCameraController", function () {
 
             prepare(sandbox);
 
-            manager.on(wd.EventName.MOUSEDOWN, function(e){
+            manager.on(wd.EEventName.MOUSEDOWN, function(e){
             });
-            manager.on(wd.EventName.MOUSEMOVE, function(e){
+            manager.on(wd.EEventName.MOUSEMOVE, function(e){
             });
-            manager.on(wd.EventName.MOUSEUP, function(e){
+            manager.on(wd.EEventName.MOUSEUP, function(e){
             });
 
 
@@ -163,14 +163,14 @@ describe("ArcballCameraController", function () {
 
             director._init();
 
-            triggerDomEvent(wd.EventName.MOUSEDOWN);
-            triggerDomEvent(wd.EventName.MOUSEMOVE);
-            triggerDomEvent(wd.EventName.MOUSEUP);
+            triggerDomEvent(wd.EEventName.MOUSEDOWN);
+            triggerDomEvent(wd.EEventName.MOUSEMOVE);
+            triggerDomEvent(wd.EEventName.MOUSEUP);
 
 
-            triggerDomEvent(wd.EventName.MOUSEDOWN);
-            triggerDomEvent(wd.EventName.MOUSEMOVE);
-            triggerDomEvent(wd.EventName.MOUSEUP);
+            triggerDomEvent(wd.EEventName.MOUSEDOWN);
+            triggerDomEvent(wd.EEventName.MOUSEMOVE);
+            triggerDomEvent(wd.EEventName.MOUSEUP);
 
             expect(controller._changeOrbit).toCalledTwice();
         });

@@ -1,6 +1,6 @@
 module wd {
     export abstract class DomEvent extends Event{
-        constructor(event:any, eventName:EventName) {
+        constructor(event:any, eventName:EEventName) {
             super(eventName);
 
             this.event = event;

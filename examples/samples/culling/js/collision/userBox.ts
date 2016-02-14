@@ -23,7 +23,7 @@ module sample{
 
             var self = this;
 
-            wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
+            wd.EventManager.fromEvent(wd.EEventName.KEYDOWN)
                 .subscribe(function(e){
                     var keyState = e.keyState,
                         x = 0,

@@ -20,7 +20,7 @@ module wd {
             return this.texture.renderList;
         }
         protected renderRenderer(renderer){
-            this._setSceneSide(Side.BACK);
+            this._setSceneSide(ESide.BACK);
             renderer.render();
             this._setSceneSide(null);
         }
@@ -46,7 +46,7 @@ module wd {
             return GameObject.create().addComponent(wd.BasicCameraController.create(mirrorCameraComponent)).init();
         }
 
-        private _setSceneSide(side:Side){
+        private _setSceneSide(side:ESide){
             var scene = Director.getInstance().scene;
 
             scene.side = side;

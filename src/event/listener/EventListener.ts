@@ -43,7 +43,7 @@ module wd {
     }
 
     export type EventHandlerData = {
-        eventName:EventName;
+        eventName:EEventName;
         handler:Function;
     }
 }

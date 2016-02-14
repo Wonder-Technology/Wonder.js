@@ -1,6 +1,6 @@
 module wd{
     export abstract class Event{
-        constructor(eventName:EventName) {
+        constructor(eventName:EEventName) {
             this.name = eventName;
         }
 
@@ -12,7 +12,7 @@ module wd{
             return this.p_type;
         }
 
-        public name:EventName = null;
+        public name:EEventName = null;
         //target is the actual target that received the event.
         public target:HTMLElement|EntityObject;
         //currentTarget is always the object listening for the event

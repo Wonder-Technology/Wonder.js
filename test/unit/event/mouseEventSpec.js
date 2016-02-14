@@ -43,18 +43,18 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                manager.on(wd.EventName.CLICK, function (e) {
+                manager.on(wd.EEventName.CLICK, function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                 expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-                expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+                expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
                 expect(sum).toEqual(1);
 
-                manager.off(wd.EventName.CLICK);
-                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                manager.off(wd.EEventName.CLICK);
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -62,19 +62,19 @@ describe("mouse event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                var subscription = manager.fromEvent(wd.EventName.CLICK)
+                var subscription = manager.fromEvent(wd.EEventName.CLICK)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                 expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-                expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+                expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                 expect(sum).toEqual(1);
             });
@@ -95,35 +95,35 @@ describe("mouse event", function () {
                             sum++;
                         };
 
-                        manager.on(dom, wd.EventName.CLICK, handler1);
+                        manager.on(dom, wd.EEventName.CLICK, handler1);
 
 
 
-                        manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         //not trigger
                         expect(sum).toEqual(0);
 
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(1);
                         expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-                        expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+                        expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
                     });
 
                     it("test off(eventName)", function(){
-                        manager.off(wd.EventName.CLICK);
+                        manager.off(wd.EEventName.CLICK);
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(1);
 
                     });
                     it("test off(dom, eventName)", function(){
-                        manager.off(dom, wd.EventName.CLICK);
+                        manager.off(dom, wd.EEventName.CLICK);
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(1);
                     });
@@ -133,26 +133,26 @@ describe("mouse event", function () {
                             sum2++;
                         };
 
-                        manager.on(dom, wd.EventName.CLICK, handler2);
+                        manager.on(dom, wd.EEventName.CLICK, handler2);
 
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(2);
                         expect(sum2).toEqual(1);
 
-                        manager.off(dom, wd.EventName.CLICK, handler2);
+                        manager.off(dom, wd.EEventName.CLICK, handler2);
 
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(3);
                         expect(sum2).toEqual(1);
 
 
-                        manager.off(dom, wd.EventName.CLICK, handler1);
+                        manager.off(dom, wd.EEventName.CLICK, handler1);
 
-                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(sum).toEqual(3);
                         expect(sum2).toEqual(1);
@@ -163,28 +163,28 @@ describe("mouse event", function () {
                         sum = 0;
                     var dom = canvas;
 
-                    var subscription = manager.fromEvent(dom, wd.EventName.CLICK)
+                    var subscription = manager.fromEvent(dom, wd.EEventName.CLICK)
                         .subscribe(function (e) {
                             eventTarget = e;
                             sum++;
                         });
 
-                    manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                    manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                     //not trigger
                     expect(sum).toEqual(0);
 
 
-                    manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                    manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                     expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-                    expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+                    expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
                     expect(sum).toEqual(1);
 
 
 
                     subscription.dispose();
-                    manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                    manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                     expect(sum).toEqual(1);
 
@@ -195,16 +195,16 @@ describe("mouse event", function () {
                         sum = 0;
                     var dom = document.body;
 
-                    var subscription = manager.fromEvent(dom, wd.EventName.CLICK)
+                    var subscription = manager.fromEvent(dom, wd.EEventName.CLICK)
                         .subscribe(function (e) {
                             eventTarget = e;
                             sum++;
                         });
 
-                    eventTool.triggerDomEvent(wd.EventName.CLICK, dom);
+                    eventTool.triggerDomEvent(wd.EEventName.CLICK, dom);
 
                     expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-                    expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+                    expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
                     expect(sum).toEqual(1);
                     expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
                 });
@@ -224,13 +224,13 @@ describe("mouse event", function () {
                     }
                 }
             );
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
             expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-            expect(eventTarget.name).toEqual(wd.EventName.CLICK);
+            expect(eventTarget.name).toEqual(wd.EEventName.CLICK);
 
-            manager.off(wd.EventName.CLICK);
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+            manager.off(wd.EEventName.CLICK);
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
             expect(sum).toEqual(1);
         });
@@ -242,24 +242,24 @@ describe("mouse event", function () {
                     b:sandbox.stub()
                 };
 
-            var subscription1 = manager.fromEvent(wd.EventName.MOUSEDOWN, 1)
+            var subscription1 = manager.fromEvent(wd.EEventName.MOUSEDOWN, 1)
                 .subscribe(function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 });
-            var subscription2 = manager.fromEvent(wd.EventName.MOUSEDOWN, 2)
+            var subscription2 = manager.fromEvent(wd.EEventName.MOUSEDOWN, 2)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
 
             expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
-            expect(eventTarget.name).toEqual(wd.EventName.MOUSEDOWN);
+            expect(eventTarget.name).toEqual(wd.EEventName.MOUSEDOWN);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             subscription2.dispose();
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
 
             expect(fakeObj.a).toCalledTwice();
             expect(fakeObj.b).toCalledOnce();
@@ -289,22 +289,22 @@ describe("mouse event", function () {
         //            d:sandbox.stub()
         //        }
         //
-        //        manager.fromEvent(mesh1, wd.EventName.MOUSEDOWN)
+        //        manager.fromEvent(mesh1, wd.EEventName.MOUSEDOWN)
         //            .subscribe(function (e) {
         //                eventTarget1 = e;
         //                fakeObj.a();
         //            });
-        //        manager.fromEvent(mesh2, wd.EventName.MOUSEDOWN)
+        //        manager.fromEvent(mesh2, wd.EEventName.MOUSEDOWN)
         //            .subscribe(function (e) {
         //                eventTarget2 = e;
         //                fakeObj.b();
         //            });
-        //        manager.fromEvent(mesh3, wd.EventName.MOUSEDOWN)
+        //        manager.fromEvent(mesh3, wd.EEventName.MOUSEDOWN)
         //            .subscribe(function (e) {
         //                eventTarget3 = e;
         //                fakeObj.c();
         //            });
-        //        manager.fromEvent(mesh4, wd.EventName.MOUSEDOWN)
+        //        manager.fromEvent(mesh4, wd.EEventName.MOUSEDOWN)
         //            .subscribe(function (e) {
         //                eventTarget4 = e;
         //                fakeObj.d();
@@ -312,7 +312,7 @@ describe("mouse event", function () {
         //    });
         //
         //    it("emit mouse event", function(){
-        //        manager.emit(mesh1, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+        //        manager.emit(mesh1, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
         //
         //        expect(eventTarget1.phase).toEqual(wd.EEventPhase.EMIT);
         //        expect(eventTarget1.target.uid).toEqual(mesh1.uid);
@@ -325,7 +325,7 @@ describe("mouse event", function () {
         //        expect(fakeObj.b).toCalledBefore(fakeObj.d);
         //    });
         //    it("broadcast mouse event", function(){
-        //        manager.broadcast(mesh4, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+        //        manager.broadcast(mesh4, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
         //
         //        expect(eventTarget4.phase).toEqual(wd.EEventPhase.BROADCAST);
         //        expect(eventTarget4.target.uid).toEqual(mesh4.uid);
@@ -348,14 +348,14 @@ describe("mouse event", function () {
             var dom = document.body;
 
             expect(function(){
-                manager.emit(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+                manager.emit(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
             }).toThrow();
         });
         it("not support broadcast mouse event", function(){
             var dom = document.body;
 
             expect(function(){
-                manager.broadcast(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEDOWN));
+                manager.broadcast(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
             }).toThrow();
         });
     });
@@ -368,12 +368,12 @@ describe("mouse event", function () {
                 pageY:20
             }
 
-            manager.on(wd.EventName.MOUSEMOVE,function (e) {
+            manager.on(wd.EEventName.MOUSEMOVE,function (e) {
                     eventTarget = e;
                 });
 
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
-            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EEventName.MOUSEMOVE));
 
             expect(eventTarget).toBeInstanceOf(wd.MouseEvent);
             expect(eventTarget.lastX).toEqual(fakeEvent.pageX);
@@ -389,8 +389,8 @@ describe("mouse event", function () {
         sandbox.stub(wd.MouseEventHandler.getInstance(), "_saveLocation");
 
 
-        manager.fromEvent(wd.EventName.MOUSEDOWN).flatMap(function(e){
-                return manager.fromEvent(wd.EventName.MOUSEMOVE).takeUntil(manager.fromEvent(wd.EventName.MOUSEUP));
+        manager.fromEvent(wd.EEventName.MOUSEDOWN).flatMap(function(e){
+                return manager.fromEvent(wd.EEventName.MOUSEMOVE).takeUntil(manager.fromEvent(wd.EEventName.MOUSEUP));
             })
             .subscribe(function(e){
                 sum1++;
@@ -400,22 +400,22 @@ describe("mouse event", function () {
 
         var _saveLocation = wd.MouseEventHandler.getInstance()._saveLocation;
 
-        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
-        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
-        eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEMOVE);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEUP);
 
         expect(_saveLocation).toCalledOnce();
         expect(_saveLocation).toCalledAfter(stub);
 
 
-        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEMOVE);
 
         expect(_saveLocation).toCalledOnce();
 
 
-        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
-        eventTool.triggerDomEvent(wd.EventName.MOUSEMOVE);
-        eventTool.triggerDomEvent(wd.EventName.MOUSEUP);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEMOVE);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEUP);
 
 
         expect(_saveLocation).toCalledTwice();
@@ -433,13 +433,13 @@ describe("mouse event", function () {
             sum = 0;
             sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
             target = wd.Director.getInstance().scene;
-            subscription = manager.fromEvent(wd.EventName.MOUSEDOWN).subscribe(function(e){
+            subscription = manager.fromEvent(wd.EEventName.MOUSEDOWN).subscribe(function(e){
                 sum++;
             })
         });
 
         it("use subscription.dispose to off event binded by fromEvent", function(){
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -449,19 +449,19 @@ describe("mouse event", function () {
             subscription.dispose();
 
 
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -471,13 +471,13 @@ describe("mouse event", function () {
             manager.off();
 
 
-            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
 
             expect(sum).toEqual(1);
             expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -504,14 +504,14 @@ describe("mouse event", function () {
                 pageY:20
             }
 
-            manager.on(wd.EventName.MOUSEMOVE,function (e) {
+            manager.on(wd.EEventName.MOUSEMOVE,function (e) {
             });
-            manager.on(wd.EventName.MOUSEMOVE,function (e) {
+            manager.on(wd.EEventName.MOUSEMOVE,function (e) {
                 movementDelta.push(e.movementDelta);
             });
 
-            manager.trigger(wd.MouseEvent.create(fakeEvent1, wd.EventName.MOUSEMOVE));
-            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent1, wd.EEventName.MOUSEMOVE));
+            manager.trigger(wd.MouseEvent.create(fakeEvent2, wd.EEventName.MOUSEMOVE));
 
 
             var movementDelta = movementDelta[1];

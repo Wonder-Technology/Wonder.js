@@ -14,8 +14,8 @@ module wd {
 
         //public keyState:any = {};
 
-        public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
-        public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
 
         public on(...args) {
             var eventName = null,
@@ -38,7 +38,7 @@ module wd {
             this.handler(this.getDefaultDom(), eventName, handler, priority);
         }
 
-        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){
+        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EEventName){
             var eventObj = this._createEventObject(dom, event, eventName);
 
             EventManager.trigger(dom, eventObj);
@@ -48,14 +48,14 @@ module wd {
             return document.body;
         }
 
-        protected addEngineHandler(eventName:EventName, handler:(event:KeyboardEvent) => void){
+        protected addEngineHandler(eventName:EEventName, handler:(event:KeyboardEvent) => void){
             var resultHandler = null;
 
             switch (eventName){
-                case EventName.KEYDOWN:
+                case EEventName.KEYDOWN:
                     resultHandler = this._handleKeyDown(handler);
                     break;
-                case EventName.KEYUP:
+                case EEventName.KEYUP:
                     resultHandler = this._handleKeyUp(handler);
                     break;
                 default:
@@ -113,7 +113,7 @@ module wd {
             }
         }
 
-        private _createEventObject(dom:HTMLElement, event:any, eventName:EventName) {
+        private _createEventObject(dom:HTMLElement, event:any, eventName:EEventName) {
             var obj = KeyboardEvent.create(event ? event : root.event, eventName);
 
             obj.target = dom;

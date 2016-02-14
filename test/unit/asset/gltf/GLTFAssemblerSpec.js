@@ -410,7 +410,7 @@ describe("GLTFAssembler", function () {
                             var data = builder.build(parseData);
 
                             var material = getMaterial(data);
-                            expect(material.side).toEqual(wd.Side.FRONT);
+                            expect(material.side).toEqual(wd.ESide.FRONT);
 
 
 
@@ -426,7 +426,7 @@ describe("GLTFAssembler", function () {
 
                         var material = getMaterial(data);
                         expect(material).toBeInstanceOf(wd.BasicMaterial);
-                            expect(material.side).toEqual(wd.Side.BOTH);
+                            expect(material.side).toEqual(wd.ESide.BOTH);
                         });
 
                         describe("else if type === 'LightMaterial', add LightMaterial", function(){
@@ -455,7 +455,7 @@ describe("GLTFAssembler", function () {
 
                                 var material = getMaterial(data);
                                 expect(material).toBeInstanceOf(wd.LightMaterial);
-                                expect(material.side).toEqual(wd.Side.BOTH);
+                                expect(material.side).toEqual(wd.ESide.BOTH);
                                 judgeColorEqual(material.color, materialData.diffuseColor);
                                 judgeColorEqual(material.specularColor, materialData.specularColor);
 

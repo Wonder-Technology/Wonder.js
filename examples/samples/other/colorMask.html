@@ -35,8 +35,8 @@
             material.color= wd.Color.create("rgb(255, 0, 0)");
             material.opacity = 0.4;
             material.blend = true;
-            material.blendSrc = wd.BlendFunc.SRC_ALPHA;
-            material.blendDst = wd.BlendFunc.ONE_MINUS_SRC_ALPHA;
+            material.blendSrc = wd.EBlendFunc.SRC_ALPHA;
+            material.blendDst = wd.EBlendFunc.ONE_MINUS_SRC_ALPHA;
             material.redWrite = false;
 
 
@@ -62,8 +62,8 @@
             material.color= wd.Color.create("rgb(0, 55, 55)");
             material.opacity = 0.4;
             material.blend = true;
-            material.blendSrc = wd.BlendFunc.SRC_ALPHA;
-            material.blendDst = wd.BlendFunc.ONE_MINUS_SRC_ALPHA;
+            material.blendSrc = wd.EBlendFunc.SRC_ALPHA;
+            material.blendDst = wd.EBlendFunc.ONE_MINUS_SRC_ALPHA;
 
 
             var geometry = wd.TriangleGeometry.create();
@@ -83,7 +83,7 @@
         function createTriangle3() {
             var material = wd.BasicMaterial.create();
             material.color= wd.Color.create("rgb(255, 0, 255)");
-            material.blendType = wd.BlendType.NORMAL;
+            material.blendType = wd.EBlendType.NORMAL;
             material.alphaWrite = false;
 
 

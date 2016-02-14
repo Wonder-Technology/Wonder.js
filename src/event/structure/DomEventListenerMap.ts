@@ -10,8 +10,8 @@ module wd{
 
         protected listenerMap:wdCb.Hash<wdCb.Collection<DomEventRegisterData>>;
 
-        public getChild(eventName:EventName):wdCb.Collection<DomEventRegisterData>;
-        public getChild(dom:HTMLElement, eventName:EventName):wdCb.Collection<DomEventRegisterData>;
+        public getChild(eventName:EEventName):wdCb.Collection<DomEventRegisterData>;
+        public getChild(dom:HTMLElement, eventName:EEventName):wdCb.Collection<DomEventRegisterData>;
 
         public getChild(...args):any{
             if(args.length === 1){
@@ -27,12 +27,12 @@ module wd{
             }
         }
 
-        public removeChild(eventName:EventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        public removeChild(eventName:EEventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
 
-        public removeChild(eventName:EventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
-        public removeChild(dom:HTMLElement, eventName:EventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        public removeChild(eventName:EEventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        public removeChild(dom:HTMLElement, eventName:EEventName):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
 
-        public removeChild(dom:HTMLElement, eventName:EventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
+        public removeChild(dom:HTMLElement, eventName:EEventName, handler:Function):wdCb.Collection<wdCb.Collection<DomEventOffData>>;
 
 
         public removeChild(...args):wdCb.Collection<wdCb.Collection<DomEventOffData>>{
@@ -109,7 +109,7 @@ module wd{
             return `${DomEventListenerMap.eventSeparator}`;
         }
 
-        protected buildKey(dom:HTMLElement, eventName:EventName):string{
+        protected buildKey(dom:HTMLElement, eventName:EEventName):string{
             return `${this._buildKeyPrefix(dom)}${DomEventListenerMap.eventSeparator}${eventName}`;
         }
 
@@ -132,7 +132,7 @@ module wd{
 
     export type DomEventOffData = {
         dom:HTMLElement,
-        eventName:EventName,
+        eventName:EEventName,
         domHandler:Function
     }
 }

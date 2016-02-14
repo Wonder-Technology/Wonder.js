@@ -3,21 +3,21 @@ module wd {
      const _table = wdCb.Hash.create<EEventType>();
 
     //todo not declare "<any>"!
-    _table.addChild(<any>EventName.CLICK, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOVER, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEOUT, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEMOVE, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEDOWN, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEUP, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEWHEEL, EEventType.MOUSE);
-    _table.addChild(<any>EventName.MOUSEDRAG, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.CLICK, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEOVER, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEOUT, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEMOVE, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEDOWN, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEUP, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEWHEEL, EEventType.MOUSE);
+    _table.addChild(<any>EEventName.MOUSEDRAG, EEventType.MOUSE);
 
-    _table.addChild(<any>EventName.KEYDOWN, EEventType.KEYBOARD);
-    _table.addChild(<any>EventName.KEYPRESS, EEventType.KEYBOARD);
-    _table.addChild(<any>EventName.KEYUP, EEventType.KEYBOARD);
+    _table.addChild(<any>EEventName.KEYDOWN, EEventType.KEYBOARD);
+    _table.addChild(<any>EEventName.KEYPRESS, EEventType.KEYBOARD);
+    _table.addChild(<any>EEventName.KEYUP, EEventType.KEYBOARD);
 
     export class EventTable {
-        public static getEventType(eventName:EventName):EEventType {
+        public static getEventType(eventName:EEventName):EEventType {
             var result = _table.getChild(<any>eventName);
 
             if(result === void 0){

@@ -36,14 +36,14 @@ describe("dom event", function () {
         sandbox.spy(wd.MouseEventHandler.getInstance(), "triggerDomEvent");
         target = wd.Director.getInstance().scene;
 
-        subscription = manager.fromEvent(wd.EventName.MOUSEDOWN).subscribe(function(e){
+        subscription = manager.fromEvent(wd.EEventName.MOUSEDOWN).subscribe(function(e){
             sum++;
         });
-        manager.on(wd.EventName.MOUSEDOWN, function(e){
+        manager.on(wd.EEventName.MOUSEDOWN, function(e){
             sum++;
         });
 
-        eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN);
+        eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN);
 
         expect(sum).toEqual(2);
         expect(wd.MouseEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -57,7 +57,7 @@ describe("dom event", function () {
                 sandbox.stub(bowser, "firefox", true);
                 target = wd.Director.getInstance().scene;
 
-                manager.on(wd.EventName.MOUSEWHEEL, function(e){
+                manager.on(wd.EEventName.MOUSEWHEEL, function(e){
                     sum++;
                 });
 
@@ -72,7 +72,7 @@ describe("dom event", function () {
                 sandbox.stub(bowser, "chrome", true);
                 target = wd.Director.getInstance().scene;
 
-                manager.on(wd.EventName.MOUSEWHEEL, function(e){
+                manager.on(wd.EEventName.MOUSEWHEEL, function(e){
                     sum++;
                 });
 
@@ -95,24 +95,24 @@ describe("dom event", function () {
             sum3 = 0;
             sum4 = 0;
 
-            manager.on(wd.EventName.MOUSEWHEEL, function(e){
+            manager.on(wd.EEventName.MOUSEWHEEL, function(e){
                 sum1++;
             });
-            manager.on(document.body, wd.EventName.MOUSEDOWN, function(e){
+            manager.on(document.body, wd.EEventName.MOUSEDOWN, function(e){
                 sum2++;
             });
-            manager.on(document.body, wd.EventName.MOUSEDOWN, function(e){
+            manager.on(document.body, wd.EEventName.MOUSEDOWN, function(e){
                 sum3++;
             });
-            manager.on(wd.EventName.KEYUP, function(e){
+            manager.on(wd.EEventName.KEYUP, function(e){
                 sum4++;
             });
 
 
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum1).toEqual(1);
             expect(sum2).toEqual(1);
@@ -123,9 +123,9 @@ describe("dom event", function () {
         it("test off()", function(){
             manager.off();
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum1).toEqual(1);
             expect(sum2).toEqual(1);
@@ -135,9 +135,9 @@ describe("dom event", function () {
         it("test off(dom)", function(){
             manager.off(wd.DeviceManager.getInstance().view.dom);
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
 
             //not off
@@ -151,9 +151,9 @@ describe("dom event", function () {
 
             manager.off(document.body);
 
-            eventTool.triggerDomEvent(wd.EventName.MOUSEWHEEL);
-            eventTool.triggerDomEvent(wd.EventName.MOUSEDOWN, document.body);
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEWHEEL);
+            eventTool.triggerDomEvent(wd.EEventName.MOUSEDOWN, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
 
             expect(sum1).toEqual(2);

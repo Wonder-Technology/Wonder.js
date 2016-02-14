@@ -13,7 +13,7 @@ module wd {
         protected listenerMap:CustomEventListenerMap = CustomEventListenerMap.create();
 
 
-        public register(target:EntityObject, eventName:EventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
+        public register(target:EntityObject, eventName:EEventName, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
             this.listenerMap.appendChild(target, eventName, <CustomEventRegisterData>{
                 target: target,
                 eventName: eventName,
@@ -24,14 +24,14 @@ module wd {
             });
         }
 
-        public remove(eventName:EventName);
+        public remove(eventName:EEventName);
         public remove(target:EntityObject);
 
-        public remove(eventName:EventName, handler:Function);
-        public remove(uid:number, eventName:EventName);
-        public remove(target:EntityObject, eventName:EventName);
+        public remove(eventName:EEventName, handler:Function);
+        public remove(uid:number, eventName:EEventName);
+        public remove(target:EntityObject, eventName:EEventName);
 
-        public remove(target:EntityObject, eventName:EventName, handler:Function);
+        public remove(target:EntityObject, eventName:EEventName, handler:Function);
 
 
         public remove(...args) {

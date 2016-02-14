@@ -44,10 +44,10 @@ module wd {
             }
         }
 
-        public side:Side = null;
+        public side:ESide = null;
         public shadowMap = {
             enable: true,
-            softType: ShadowMapSoftType.NONE
+            softType: EShadowMapSoftType.NONE
         };
         public shader:Shader = null;
         public isUseProgram:boolean = false;
@@ -179,10 +179,10 @@ module wd {
 
     export type ShadowMapConfig = {
         enable:boolean;
-        softType:ShadowMapSoftType
+        softType:EShadowMapSoftType
     }
 
-    export enum ShadowMapSoftType{
+    export enum EShadowMapSoftType{
         NONE,
         PCF
     }

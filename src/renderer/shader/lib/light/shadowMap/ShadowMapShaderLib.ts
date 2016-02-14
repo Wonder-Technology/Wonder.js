@@ -17,7 +17,7 @@ module wd{
 
 
 
-            if(scene.shadowMap.softType === ShadowMapSoftType.PCF){
+            if(scene.shadowMap.softType === EShadowMapSoftType.PCF){
                 this.fsSourceDefineList.addChildren([{
                     name: "SHADOWMAP_TYPE_PCF"
                 }]);

@@ -9,7 +9,7 @@ module wd{
         }
 
         public initWhenCreate(){
-            this.side = Side.BACK;
+            this.side = ESide.BACK;
         }
 
         protected addShaderLib(){

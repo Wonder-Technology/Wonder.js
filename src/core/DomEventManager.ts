@@ -19,10 +19,10 @@ module wd{
 
             return wdFrp.fromArray(
                 [
-                    EventManager.fromEvent(EventName.CLICK),
-                    EventManager.fromEvent(EventName.MOUSEDOWN),
-                    EventManager.fromEvent(EventName.MOUSEUP),
-                    EventManager.fromEvent(EventName.MOUSEWHEEL),
+                    EventManager.fromEvent(EEventName.CLICK),
+                    EventManager.fromEvent(EEventName.MOUSEDOWN),
+                    EventManager.fromEvent(EEventName.MOUSEUP),
+                    EventManager.fromEvent(EEventName.MOUSEWHEEL),
                     this._buildMouseDragStream()
                 ]
                 )
@@ -34,7 +34,7 @@ module wd{
                     return self._getMouseEventTriggerListData(e);
                 })
                 .merge(
-                    EventManager.fromEvent(EventName.MOUSEMOVE)
+                    EventManager.fromEvent(EEventName.MOUSEMOVE)
                         .filter((e:MouseEvent) => {
                             return !Director.getInstance().isPause ;
                         })
@@ -66,12 +66,12 @@ module wd{
             /*!
              here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
              */
-            return EventManager.fromEvent(document, EventName.MOUSEDOWN)
+            return EventManager.fromEvent(document, EEventName.MOUSEDOWN)
                 .flatMap((e:MouseEvent) => {
-                    return EventManager.fromEvent(document, EventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EventName.MOUSEUP));
+                    return EventManager.fromEvent(document, EEventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EEventName.MOUSEUP));
                 })
                 .map((e:MouseEvent) => {
-                    e.name = EventName.MOUSEDRAG;
+                    e.name = EEventName.MOUSEDRAG;
 
                     return e;
                 })
@@ -111,30 +111,30 @@ module wd{
 
         private _setMouseOverTag(objects:wdCb.Collection<EntityObject>){
             objects.forEach((object:EntityObject) => {
-                object.addTag(<any>EventTag.MOUSE_OVER);
+                object.addTag(<any>EEventTag.MOUSE_OVER);
             })
         }
 
         private _setMouseOutTag(objects:wdCb.Collection<EntityObject>){
             objects.forEach((object:EntityObject) => {
-                object.addTag(<any>EventTag.MOUSE_OUT);
+                object.addTag(<any>EEventTag.MOUSE_OUT);
             })
         }
 
         private _setEventNameByEventTag(object:EntityObject, e:MouseEvent){
-            if(object.hasTag(<any>EventTag.MOUSE_OVER)){
-                e.name = EventName.MOUSEOVER;
+            if(object.hasTag(<any>EEventTag.MOUSE_OVER)){
+                e.name = EEventName.MOUSEOVER;
             }
-            else if(object.hasTag(<any>EventTag.MOUSE_OUT)){
-                e.name = EventName.MOUSEOUT;
+            else if(object.hasTag(<any>EEventTag.MOUSE_OUT)){
+                e.name = EEventName.MOUSEOUT;
             }
 
             return e;
         }
 
         private _removeEventTag(object:EntityObject){
-            object.removeTag(<any>EventTag.MOUSE_OVER);
-            object.removeTag(<any>EventTag.MOUSE_OUT);
+            object.removeTag(<any>EEventTag.MOUSE_OVER);
+            object.removeTag(<any>EEventTag.MOUSE_OUT);
         }
 
         private _trigger(e:MouseEvent, entityObject:EntityObject);
@@ -301,7 +301,7 @@ module wd{
         }
     }
 
-    enum EventTag{
+    enum EEventTag{
         MOUSE_OVER = <any>"MOUSE_OVER",
         MOUSE_OUT = <any>"MOUSE_OUT"
     }

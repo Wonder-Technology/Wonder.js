@@ -37,7 +37,7 @@ module wd {
         get side(){
             return this.gameObjectScene.side;
         }
-        set side(side:Side){
+        set side(side:ESide){
             this.gameObjectScene.side = side;
         }
         

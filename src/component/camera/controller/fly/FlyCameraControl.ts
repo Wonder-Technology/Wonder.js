@@ -68,7 +68,7 @@ module wd {
             var self = this,
                 rotateSpeed = this.rotateSpeed,
                 mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_DRAG),
-                keydown = EventManager.fromEvent(EventName.KEYDOWN),
+                keydown = EventManager.fromEvent(EEventName.KEYDOWN),
                 canvas = Director.getInstance().view;
 
             this._mouseDragSubscription = mousedrag

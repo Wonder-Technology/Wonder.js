@@ -13,7 +13,7 @@ module wd {
         protected listenerMap:DomEventListenerMap = DomEventListenerMap.create();
 
 
-        public register(dom:HTMLElement, eventName:EventName, eventData:wdCb.Hash<any>, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
+        public register(dom:HTMLElement, eventName:EEventName, eventData:wdCb.Hash<any>, handler:Function, originHandler:Function, domHandler:Function, priority:number) {
             this.listenerMap.appendChild(dom, eventName, <DomEventRegisterData>{
                 dom: dom,
                 eventName: eventName,
@@ -26,12 +26,12 @@ module wd {
             });
         }
 
-        public remove(eventName:EventName);
+        public remove(eventName:EEventName);
 
-        public remove(eventName:EventName, handler:Function);
-        public remove(dom:HTMLElement, eventName:EventName);
+        public remove(eventName:EEventName, handler:Function);
+        public remove(dom:HTMLElement, eventName:EEventName);
 
-        public remove(dom:HTMLElement, eventName:EventName, handler:Function);
+        public remove(dom:HTMLElement, eventName:EEventName, handler:Function);
 
 
         public remove(...args) {
@@ -55,7 +55,7 @@ module wd {
             return result;
         }
 
-        public isBinded(dom:HTMLElement, eventName:EventName) {
+        public isBinded(dom:HTMLElement, eventName:EEventName) {
             return this.listenerMap.hasChild(dom, eventName);
         }
 
@@ -63,7 +63,7 @@ module wd {
             return this.listenerMap.isDom(key, dom, list);
         }
 
-        public getDomHandler(dom:HTMLElement, eventName:EventName) {
+        public getDomHandler(dom:HTMLElement, eventName:EEventName) {
             var list:wdCb.Collection<DomEventRegisterData> = this.getChild(dom, eventName);
 
             if (list && list.getCount() > 0) {

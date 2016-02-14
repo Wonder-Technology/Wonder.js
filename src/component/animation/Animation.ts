@@ -1,19 +1,19 @@
 module wd{
     export abstract class Animation extends Component{
         get isStart(){
-            return this.state === AnimationState.RUN;
+            return this.state === EAnimationState.RUN;
         }
         get isStop(){
-            return this.state === AnimationState.STOP;
+            return this.state === EAnimationState.STOP;
         }
         get isPause(){
-            return this.state === AnimationState.PAUSE;
+            return this.state === EAnimationState.PAUSE;
         }
 
         public entityObject:GameObject;
         public isFrameChange:boolean = false;
 
-        protected state:AnimationState = AnimationState.DEFAULT;
+        protected state:EAnimationState = EAnimationState.DEFAULT;
         protected pauseTime:number = null;
         protected resumeTime:number = null;
 
@@ -22,24 +22,24 @@ module wd{
         public abstract play(animName:string, fps:number):void;
 
         public pause(){
-            this.state = AnimationState.PAUSE;
+            this.state = EAnimationState.PAUSE;
 
             this.pauseTime = this.getPauseTime();
         }
 
         public resume(){
-            this.state = AnimationState.RUN;
+            this.state = EAnimationState.RUN;
 
             this._isResume = true;
             this.resumeTime = this.getResumeTime();
         }
 
         public stop(){
-            this.state = AnimationState.STOP;
+            this.state = EAnimationState.STOP;
         }
 
         public update(elapsedTime:number){
-            if(this.state === AnimationState.DEFAULT || this.isStop){
+            if(this.state === EAnimationState.DEFAULT || this.isStop){
                 return;
             }
 
@@ -78,7 +78,7 @@ module wd{
         protected abstract updateTargets():void;
     }
 
-    export enum AnimationState{
+    export enum EAnimationState{
         DEFAULT,
         RUN,
         STOP,

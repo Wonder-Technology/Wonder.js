@@ -38,7 +38,7 @@
             director.scene.addChild(createDirectionLight([sphere, box, ground]));
             director.scene.addChild(createCamera());
 
-            director.scene.shadowMap.softType = wd.ShadowMapSoftType.PCF;
+            director.scene.shadowMap.softType = wd.EShadowMapSoftType.PCF;
 
             director.start();
         }

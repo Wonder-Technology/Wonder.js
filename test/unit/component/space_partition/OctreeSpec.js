@@ -499,7 +499,7 @@ describe("Octree", function () {
                             pageX: view.width / 2,
                             pageY: view.height / 2
                         };
-                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+                        manager.trigger(document.body, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
 
                         expect(test.onMouseClick).toCalledOnce();
                     }, done, true);

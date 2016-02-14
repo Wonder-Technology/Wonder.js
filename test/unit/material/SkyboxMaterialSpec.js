@@ -13,7 +13,7 @@ describe("SkyboxMaterial", function() {
     it("set side to be BACK", function(){
         material = wd.SkyboxMaterial.create();
 
-        expect(material.side).toEqual(wd.Side.BACK);
+        expect(material.side).toEqual(wd.ESide.BACK);
     });
 });
 

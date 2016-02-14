@@ -2,15 +2,15 @@ module wd {
     export class EventManager {
         public static on(listener:{}|EventListener):void;
 
-        public static on(eventName:EventName|string, handler:Function):void;
+        public static on(eventName:EEventName|string, handler:Function):void;
         public static on(dom:HTMLElement, listener:{}|EventListener):void;
 
-        public static on(eventName:EventName|string, handler:Function, priority:number):void;
-        public static on(target:EntityObject, eventName:EventName|string, handler:Function):void;
-        public static on(dom:HTMLElement, eventName:EventName|string, handler:Function):void;
+        public static on(eventName:EEventName|string, handler:Function, priority:number):void;
+        public static on(target:EntityObject, eventName:EEventName|string, handler:Function):void;
+        public static on(dom:HTMLElement, eventName:EEventName|string, handler:Function):void;
 
-        public static on(target:EntityObject, eventName:EventName|string, handler:Function, priority:number):void;
-        public static on(dom:HTMLElement, eventName:EventName|string, handler:Function, priority:number):void;
+        public static on(target:EntityObject, eventName:EEventName|string, handler:Function, priority:number):void;
+        public static on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args[0] instanceof EntityObject){
@@ -95,16 +95,16 @@ module wd {
 
         public static off():void;
 
-        public static off(eventName:EventName|string):void;
+        public static off(eventName:EEventName|string):void;
         public static off(target:EntityObject):void;
         public static off(dom:HTMLElement):void;
 
-        public static off(eventName:EventName|string, handler:Function):void;
-        public static off(target:EntityObject, eventName:EventName|string):void;
-        public static off(dom:HTMLElement, eventName:EventName):void;
+        public static off(eventName:EEventName|string, handler:Function):void;
+        public static off(target:EntityObject, eventName:EEventName|string):void;
+        public static off(dom:HTMLElement, eventName:EEventName):void;
 
-        public static off(target:EntityObject, eventName:EventName|string, handler:Function):void;
-        public static off(dom:HTMLElement, eventName:EventName, handler:Function):void;
+        public static off(target:EntityObject, eventName:EEventName|string, handler:Function):void;
+        public static off(dom:HTMLElement, eventName:EEventName, handler:Function):void;
 
 
         @require(function(...args){
@@ -280,14 +280,14 @@ module wd {
             eventDispatcher.emit.apply(eventDispatcher, args);
         }
 
-        public static fromEvent(eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(eventName:EEventName):wdFrp.FromEventPatternStream;
 
-        public static fromEvent(eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
-        public static fromEvent(target:EntityObject, eventName:EventName):wdFrp.FromEventPatternStream;
-        public static fromEvent(dom:HTMLElement, eventName:EventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EEventName):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EEventName):wdFrp.FromEventPatternStream;
 
-        public static fromEvent(target:EntityObject, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
-        public static fromEvent(dom:HTMLElement, eventName:EventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(target:EntityObject, eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
+        public static fromEvent(dom:HTMLElement, eventName:EEventName, priority:number):wdFrp.FromEventPatternStream;
 
         public static fromEvent(...args):any {
             var addHandler = null,

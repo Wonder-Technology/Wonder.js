@@ -277,7 +277,7 @@ describe("shadow map", function() {
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffdd99");
             material.shininess = 32;
-            material.side = wd.Side.BOTH;
+            material.side = wd.ESide.BOTH;
             material.diffuseMap = map;
 
 

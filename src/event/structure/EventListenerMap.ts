@@ -6,8 +6,8 @@ module wd{
         public abstract removeChild(...args):any;
 
         public hasChild(func:(...args) => boolean):boolean;
-        public hasChild(target:EntityObject, eventName:EventName):boolean;
-        public hasChild(dom:HTMLElement, eventName:EventName):boolean;
+        public hasChild(target:EntityObject, eventName:EEventName):boolean;
+        public hasChild(dom:HTMLElement, eventName:EEventName):boolean;
 
         public hasChild(...args){
             if(args.length === 1 && JudgeUtils.isFunction(args[0])){
@@ -22,7 +22,7 @@ module wd{
             }
         }
 
-        public appendChild(target:EntityObject|HTMLElement, eventName:EventName, data:any){
+        public appendChild(target:EntityObject|HTMLElement, eventName:EEventName, data:any){
             this.listenerMap.appendChild(
                 this.buildKey(target, eventName),
                 data
@@ -37,7 +37,7 @@ module wd{
             return this.listenerMap.forEach(func);
         }
 
-        public getEventNameFromKey(key:string):EventName{
+        public getEventNameFromKey(key:string):EEventName{
             var separator = this.getEventSeparator();
 
             return key.indexOf(separator) > -1 ? <any>key.split(separator)[1] : key;
@@ -48,7 +48,7 @@ module wd{
         protected abstract getEventSeparator():string;
 
 
-        protected isEventName(key:string, eventName:EventName){
+        protected isEventName(key:string, eventName:EEventName){
             return key.indexOf(`${this.getEventSeparator()}${eventName}`) > -1
                 || key === <any>eventName;
         }

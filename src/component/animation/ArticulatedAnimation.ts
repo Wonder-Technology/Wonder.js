@@ -59,7 +59,7 @@ module wd{
             this._resetAnim();
             this._saveStartFrameData();
             this._frameCount = this._currentAnimData.getCount();
-            this.state = AnimationState.RUN;
+            this.state = EAnimationState.RUN;
         }
 
         protected getPauseTime(){

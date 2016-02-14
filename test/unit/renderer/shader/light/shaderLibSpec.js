@@ -40,7 +40,7 @@ describe("shaderLibSpec", function () {
 
 
 
-                scene.shadowMap.softType = wd.ShadowMapSoftType.PCF;
+                scene.shadowMap.softType = wd.EShadowMapSoftType.PCF;
                 shader = new wd.Shader();
                 shader.program = program;
                 Lib = wd.TwoDShadowMapShaderLib;
@@ -57,7 +57,7 @@ describe("shaderLibSpec", function () {
             it("pcf can be opened or closed in runtime", function () {
                 shader.update(quadCmd, material);
 
-                scene.shadowMap.softType = wd.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 
@@ -68,7 +68,7 @@ describe("shaderLibSpec", function () {
 
                 shader.update(quadCmd, material);
 
-                scene.shadowMap.softType = wd.ShadowMapSoftType.NONE;
+                scene.shadowMap.softType = wd.EShadowMapSoftType.NONE;
 
                 shader.update(quadCmd, material);
 

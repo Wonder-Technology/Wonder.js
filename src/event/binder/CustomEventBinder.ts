@@ -9,12 +9,12 @@ module wd {
             return this._instance;
         }
 
-        public on(eventName:EventName|string, handler:Function):void;
+        public on(eventName:EEventName|string, handler:Function):void;
 
-        public on(eventName:EventName|string, handler:Function, priority:number):void;
-        public on(target:EntityObject, eventName:EventName|string, handler:Function):void;
+        public on(eventName:EEventName|string, handler:Function, priority:number):void;
+        public on(target:EntityObject, eventName:EEventName|string, handler:Function):void;
 
-        public on(target:EntityObject, eventName:EventName|string, handler:Function, priority:number):void;
+        public on(target:EntityObject, eventName:EEventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args.length === 1){
@@ -77,13 +77,13 @@ module wd {
 
         public off():void;
 
-        public off(eventName:EventName|string):void;
+        public off(eventName:EEventName|string):void;
         public off(target:EntityObject):void;
 
-        public off(eventName:EventName|string, handler:Function):void;
-        public off(target:EntityObject, eventName:EventName|string):void;
+        public off(eventName:EEventName|string, handler:Function):void;
+        public off(target:EntityObject, eventName:EEventName|string):void;
 
-        public off(target:EntityObject, eventName:EventName|string, handler:Function):void;
+        public off(target:EntityObject, eventName:EEventName|string, handler:Function):void;
 
         public off(...args) {
             var eventRegister = CustomEventRegister.getInstance();

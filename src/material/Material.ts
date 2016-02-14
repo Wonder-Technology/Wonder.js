@@ -4,83 +4,83 @@ module wd {
             return this.shader.program;
         }
 
-        private _blendType:BlendType = null;
+        private _blendType:EBlendType = null;
         get blendType(){
             if(this._blendType){
                 return this._blendType;
             }
 
-            if ( (this.blendSrc === BlendFunc.ONE)
-                && (this.blendDst === BlendFunc.ZERO)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.NONE;
+            if ( (this.blendSrc === EBlendFunc.ONE)
+                && (this.blendDst === EBlendFunc.ZERO)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.NONE;
             }
-            else if ((this.blendSrc === BlendFunc.SRC_ALPHA)
-                && (this.blendDst === BlendFunc.ONE_MINUS_SRC_ALPHA)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.NORMAL;
+            else if ((this.blendSrc === EBlendFunc.SRC_ALPHA)
+                && (this.blendDst === EBlendFunc.ONE_MINUS_SRC_ALPHA)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.NORMAL;
             }
-            else if ((this.blendSrc === BlendFunc.ONE)
-                && (this.blendDst === BlendFunc.ONE)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.ADDITIVE;
+            else if ((this.blendSrc === EBlendFunc.ONE)
+                && (this.blendDst === EBlendFunc.ONE)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.ADDITIVE;
             }
-            else if ((this.blendSrc === BlendFunc.SRC_ALPHA)
-                && (this.blendDst === BlendFunc.ONE)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.ADDITIVEALPHA;
+            else if ((this.blendSrc === EBlendFunc.SRC_ALPHA)
+                && (this.blendDst === EBlendFunc.ONE)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.ADDITIVEALPHA;
             }
-            else if ((this.blendSrc === BlendFunc.DST_COLOR)
-                && (this.blendDst === BlendFunc.ZERO)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.MULTIPLICATIVE;
+            else if ((this.blendSrc === EBlendFunc.DST_COLOR)
+                && (this.blendDst === EBlendFunc.ZERO)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.MULTIPLICATIVE;
             }
-            else if ((this.blendSrc === BlendFunc.ONE)
-                && (this.blendDst === BlendFunc.ONE_MINUS_SRC_ALPHA)
-                && (this.blendEquation === BlendEquation.ADD)) {
-                return BlendType.PREMULTIPLIED;
+            else if ((this.blendSrc === EBlendFunc.ONE)
+                && (this.blendDst === EBlendFunc.ONE_MINUS_SRC_ALPHA)
+                && (this.blendEquation === EBlendEquation.ADD)) {
+                return EBlendType.PREMULTIPLIED;
             }
             else {
-                return BlendType.NORMAL;
+                return EBlendType.NORMAL;
             }
         }
-        set blendType(blendType:BlendType){
+        set blendType(blendType:EBlendType){
             switch (blendType) {
-                case BlendType.NONE:
+                case EBlendType.NONE:
                     this.blend = false;
-                    this.blendSrc = BlendFunc.ONE;
-                    this.blendDst = BlendFunc.ZERO;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.ONE;
+                    this.blendDst = EBlendFunc.ZERO;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
-                case BlendType.NORMAL:
+                case EBlendType.NORMAL:
                     this.blend = true;
-                    this.blendSrc = BlendFunc.SRC_ALPHA;
-                    this.blendDst = BlendFunc.ONE_MINUS_SRC_ALPHA;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.SRC_ALPHA;
+                    this.blendDst = EBlendFunc.ONE_MINUS_SRC_ALPHA;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
-                case BlendType.PREMULTIPLIED:
+                case EBlendType.PREMULTIPLIED:
                     this.blend = true;
-                    this.blendSrc = BlendFunc.ONE;
-                    this.blendDst = BlendFunc.ONE_MINUS_SRC_ALPHA;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.ONE;
+                    this.blendDst = EBlendFunc.ONE_MINUS_SRC_ALPHA;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
-                case BlendType.ADDITIVE:
+                case EBlendType.ADDITIVE:
                     this.blend = true;
-                    this.blendSrc = BlendFunc.ONE;
-                    this.blendDst = BlendFunc.ONE;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.ONE;
+                    this.blendDst = EBlendFunc.ONE;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
-                case BlendType.ADDITIVEALPHA:
+                case EBlendType.ADDITIVEALPHA:
                     this.blend = true;
-                    this.blendSrc = BlendFunc.SRC_ALPHA;
-                    this.blendDst = BlendFunc.ONE;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.SRC_ALPHA;
+                    this.blendDst = EBlendFunc.ONE;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
-                case BlendType.MULTIPLICATIVE:
+                case EBlendType.MULTIPLICATIVE:
                     this.blend = true;
-                    this.blendSrc = BlendFunc.DST_COLOR;
-                    this.blendDst = BlendFunc.ZERO;
-                    this.blendEquation = BlendEquation.ADD;
+                    this.blendSrc = EBlendFunc.DST_COLOR;
+                    this.blendDst = EBlendFunc.ZERO;
+                    this.blendEquation = EBlendEquation.ADD;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("blendType"));
@@ -97,29 +97,29 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
-        private _blendSrc:BlendFunc= BlendFunc.ONE;
+        private _blendSrc:EBlendFunc= EBlendFunc.ONE;
         get blendSrc(){
             return this._blendSrc;
         }
-        set blendSrc(blendSrc:BlendFunc){
+        set blendSrc(blendSrc:EBlendFunc){
             this._blendSrc = blendSrc;
             this.blendFuncSeparate = null;
         }
 
-        private _blendDst:BlendFunc= BlendFunc.ZERO;
+        private _blendDst:EBlendFunc= EBlendFunc.ZERO;
         get blendDst(){
             return this._blendDst;
         }
-        set blendDst(blendDst:BlendFunc){
+        set blendDst(blendDst:EBlendFunc){
             this._blendDst = blendDst;
             this.blendFuncSeparate = null;
         }
 
-        private _blendEquation:BlendEquation = BlendEquation.ADD;
+        private _blendEquation:EBlendEquation = EBlendEquation.ADD;
         get blendEquation(){
             return this._blendEquation;
         }
-        set blendEquation(blendEquation:BlendEquation){
+        set blendEquation(blendEquation:EBlendEquation){
             this._blendEquation = blendEquation;
             this.blendEquationSeparate = null;
         }
@@ -130,11 +130,11 @@ module wd {
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
         public alphaWrite:boolean = true;
-        public polygonOffsetMode:PolygonOffsetMode = PolygonOffsetMode.NONE;
-        public side:Side = Side.FRONT;
+        public polygonOffsetMode:EPolygonOffsetMode = EPolygonOffsetMode.NONE;
+        public side:ESide = ESide.FRONT;
         public blend:boolean = false;
-        public blendFuncSeparate:Array<BlendFunc> = null;
-        public blendEquationSeparate:Array<BlendEquation> = [BlendEquation.ADD, BlendEquation.ADD];
+        public blendFuncSeparate:Array<EBlendFunc> = null;
+        public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
         public refractionRatio:number = 0;
         public reflectivity:number = null;

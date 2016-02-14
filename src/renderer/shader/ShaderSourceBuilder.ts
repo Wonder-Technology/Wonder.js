@@ -234,13 +234,13 @@ module wd{
                 result = null;
 
             switch (precision){
-                case GPUPrecision.HIGHP:
+                case EGPUPrecision.HIGHP:
                     result = ShaderChunk.highp_fragment.top;
                     break;
-                case GPUPrecision.MEDIUMP:
+                case EGPUPrecision.MEDIUMP:
                     result = ShaderChunk.mediump_fragment.top;
                     break;
-                case GPUPrecision.LOWP:
+                case EGPUPrecision.LOWP:
                     result = ShaderChunk.lowp_fragment.top;
                     break;
                 default:

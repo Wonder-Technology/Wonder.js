@@ -46,8 +46,8 @@
             model.findChildrenByName("wing")
                     .forEach(function (wing) {
                         var wingMaterial = wing.getComponent(wd.Geometry).material;
-                        wingMaterial.side = wd.Side.BOTH;
-                        wingMaterial.blendFuncSeparate = [wd.BlendFunc.SRC_ALPHA, wd.BlendFunc.ONE_MINUS_SRC_ALPHA, wd.BlendFunc.ONE, wd.BlendFunc.ONE_MINUS_SRC_ALPHA];
+                        wingMaterial.side = wd.ESide.BOTH;
+                        wingMaterial.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
                     });
 
             model.getChildren()

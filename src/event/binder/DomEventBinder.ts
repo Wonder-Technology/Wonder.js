@@ -11,13 +11,13 @@ module wd {
 
         public on(listener:{}|EventListener):void;
 
-        public on(eventName:EventName|string, handler:Function):void;
+        public on(eventName:EEventName|string, handler:Function):void;
         public on(dom:HTMLElement, listener:{}|EventListener):void;
 
-        public on(eventName:EventName|string, handler:Function, priority:number):void;
-        public on(dom:HTMLElement, eventName:EventName|string, handler:Function):void;
+        public on(eventName:EEventName|string, handler:Function, priority:number):void;
+        public on(dom:HTMLElement, eventName:EEventName|string, handler:Function):void;
 
-        public on(dom:HTMLElement, eventName:EventName|string, handler:Function, priority:number):void;
+        public on(dom:HTMLElement, eventName:EEventName|string, handler:Function, priority:number):void;
 
         @require(function(...args){
             if(args.length === 1){
@@ -94,13 +94,13 @@ module wd {
 
         public off():void;
 
-        public off(eventName:EventName|string):void;
+        public off(eventName:EEventName|string):void;
         public off(dom:HTMLElement):void;
 
-        public off(eventName:EventName|string, handler:Function):void;
-        public off(dom:HTMLElement, eventName:EventName):void;
+        public off(eventName:EEventName|string, handler:Function):void;
+        public off(dom:HTMLElement, eventName:EEventName):void;
 
-        public off(dom:HTMLElement, eventName:EventName, handler:Function):void;
+        public off(dom:HTMLElement, eventName:EEventName, handler:Function):void;
 
         public off(...args) {
             var eventRegister = DomEventRegister.getInstance();

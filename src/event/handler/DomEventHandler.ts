@@ -1,11 +1,11 @@
 module wd {
     export abstract class DomEventHandler extends EventHandler{
-        public off(eventName:EventName):void;
+        public off(eventName:EEventName):void;
 
-        public off(eventName:EventName, handler:Function):void;
-        public off(dom:HTMLElement, eventName:EventName):void;
+        public off(eventName:EEventName, handler:Function):void;
+        public off(dom:HTMLElement, eventName:EEventName):void;
 
-        public off(dom:HTMLElement, eventName:EventName, handler:Function):void;
+        public off(dom:HTMLElement, eventName:EEventName, handler:Function):void;
 
         public off(...args) {
             var self = this,
@@ -58,8 +58,8 @@ module wd {
             });
         }
 
-        protected abstract triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName);
-        protected abstract addEngineHandler(eventName:EventName, handler:Function);
+        protected abstract triggerDomEvent(dom:HTMLElement, event:Event, eventName:EEventName);
+        protected abstract addEngineHandler(eventName:EEventName, handler:Function);
         protected abstract getDefaultDom():HTMLElement;
         protected abstract createEventData():wdCb.Hash<any>;
 
@@ -67,7 +67,7 @@ module wd {
         protected clearHandler(){
         }
 
-        protected buildDomHandler(dom:HTMLElement, eventName:EventName){
+        protected buildDomHandler(dom:HTMLElement, eventName:EEventName){
             var self = this,
                 context = root;
 
@@ -76,7 +76,7 @@ module wd {
             });
         }
 
-        protected handler(dom:HTMLElement, eventName:EventName, handler:Function, priority:number){
+        protected handler(dom:HTMLElement, eventName:EEventName, handler:Function, priority:number){
             var domHandler = null,
                 originHandler = handler;
 
@@ -100,7 +100,7 @@ module wd {
             );
         }
 
-        private _bind(dom:HTMLElement, eventName:EventName){
+        private _bind(dom:HTMLElement, eventName:EEventName){
             var domHandler = null;
 
             domHandler = this.buildDomHandler(dom, eventName);

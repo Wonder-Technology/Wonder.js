@@ -51,7 +51,7 @@ describe("event", function () {
             };
             target2 = wd.GameObject.create();
 
-            manager.on(dom, wd.EventName.CLICK, function (e) {
+            manager.on(dom, wd.EEventName.CLICK, function (e) {
                 eventTarget = e;
                 sum++;
             });
@@ -79,7 +79,7 @@ describe("event", function () {
         });
         it("off all", function(){
             manager.off();
-            manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EventName.CLICK));
+            manager.trigger(dom, wd.MouseEvent.create(fakeEvent, wd.EEventName.CLICK));
             manager.trigger(target, wd.CustomEvent.create(eventName1));
             manager.trigger(target, wd.CustomEvent.create(eventName2));
             manager.trigger(target2, wd.CustomEvent.create(eventName1));
@@ -216,7 +216,7 @@ describe("event", function () {
     //
     //    //manager.on(scene,
     //    //    {
-    //    //        eventName: EventName.MOUSE,
+    //    //        eventName: EEventName.MOUSE,
     //
     //    //        onClick: function (e) {
     //    //            expect(e instanceof wd.Event).toBeTruthy();

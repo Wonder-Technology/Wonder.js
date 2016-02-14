@@ -2,7 +2,7 @@ module wd {
     declare var document:any;
 
     export class MouseEvent extends DomEvent{
-        public static create(event:any, eventName:EventName) {
+        public static create(event:any, eventName:EEventName) {
             var obj = new this(event, eventName);
 
             return obj;

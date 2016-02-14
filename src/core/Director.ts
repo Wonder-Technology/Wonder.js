@@ -1,5 +1,5 @@
 module wd{
-    enum GameState{
+    enum EGameState{
         NORMAL,
         STOP,
         PAUSE
@@ -27,15 +27,15 @@ module wd{
         }
 
         get isNormal(){
-            return this._gameState === GameState.NORMAL;
+            return this._gameState === EGameState.NORMAL;
         }
 
         get isStop(){
-            return this._gameState === GameState.STOP;
+            return this._gameState === EGameState.STOP;
         }
 
         get isPause(){
-            return this._gameState === GameState.PAUSE;
+            return this._gameState === EGameState.PAUSE;
         }
 
         get isTimeChange(){
@@ -56,7 +56,7 @@ module wd{
 
         private _gameLoop:wdFrp.IDisposable = null;
         private _eventSubscription:wdFrp.IDisposable = null;
-        private _gameState:GameState = GameState.NORMAL;
+        private _gameState:EGameState = EGameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
         private _domEventManager:DomEventManager = DomEventManager.create();
 
@@ -68,31 +68,31 @@ module wd{
         }
 
         public start(){
-            this._gameState = GameState.NORMAL;
+            this._gameState = EGameState.NORMAL;
 
             this._startLoop();
         }
 
         public stop(){
             this._gameLoop && this._gameLoop.dispose();
-            this._gameState = GameState.STOP;
+            this._gameState = EGameState.STOP;
             this._timeController.stop();
             this.scheduler.stop();
             this._eventSubscription && this._eventSubscription.dispose();
         }
 
         public pause(){
-            if (this._gameState === GameState.PAUSE) {
+            if (this._gameState === EGameState.PAUSE) {
                 return;
             }
 
-            this._gameState = GameState.PAUSE;
+            this._gameState = EGameState.PAUSE;
             this._timeController.pause();
             this.scheduler.pause();
         }
 
         public resume(){
-            this._gameState = GameState.NORMAL;
+            this._gameState = EGameState.NORMAL;
             this._timeController.resume();
             this.scheduler.resume();
         }
@@ -180,7 +180,7 @@ module wd{
         private _loopBody(time) {
             var elapseTime = null;
 
-            if(this._gameState === GameState.PAUSE || this._gameState === GameState.STOP){
+            if(this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP){
                 return false;
             }
 

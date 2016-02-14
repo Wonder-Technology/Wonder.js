@@ -36,7 +36,7 @@ describe("renderWebGL", function() {
             expect(gl.blendFunc).not.toCalled();
             expect(gl.blendEquation).not.toCalled();
             expect(gl.colorMask).toCalledOnce();
-            expect(deviceManager.side).toEqual(wd.Side.FRONT);
+            expect(deviceManager.side).toEqual(wd.ESide.FRONT);
             expect(gl.cullFace).toCalledWith(gl.BACK);
             expect(deviceManager.depthWrite).toBeTruthy();
         });
@@ -271,25 +271,25 @@ describe("renderWebGL", function() {
                         expect(deviceManager.polygonOffsetMode).toEqual(material.polygonOffsetMode);
                     });
                     it("set side:if set SceneDispatcher->side, use it", function(){
-                        wd.Director.getInstance().scene.side = wd.Side.BACK;
+                        wd.Director.getInstance().scene.side = wd.ESide.BACK;
 
                         renderer.render();
 
-                        expect(deviceManager.side).toEqual(wd.Side.BACK);
+                        expect(deviceManager.side).toEqual(wd.ESide.BACK);
                     });
                     it("else, use material->side", function () {
-                        material.side = wd.Side.BOTH;
+                        material.side = wd.ESide.BOTH;
 
                         renderer.render();
 
-                        expect(deviceManager.side).toEqual(wd.Side.BOTH);
+                        expect(deviceManager.side).toEqual(wd.ESide.BOTH);
                     });
                     it("if set material->blendSrc/Dst,blendEquation, use it", function () {
                         material.blend = true;
-                        material.blendFuncSeparate = [wd.BlendFunc.SRC_ALPHA, wd.BlendFunc.ONE_MINUS_SRC_ALPHA, wd.BlendFunc.ONE, wd.BlendFunc.ONE_MINUS_SRC_ALPHA];
-                        material.blendEquationSeparate = [wd.BlendEquation.ADD, wd.BlendEquation.ADD];
-                        material.blendSrc = wd.BlendFunc.SRC_ALPHA;
-                        material.blendDst = wd.BlendFunc.ONE;
+                        material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
+                        material.blendSrc = wd.EBlendFunc.SRC_ALPHA;
+                        material.blendDst = wd.EBlendFunc.ONE;
 
                         renderer.render();
 
@@ -300,8 +300,8 @@ describe("renderWebGL", function() {
                     });
                     it("if set material->blendFuncSeparate && blendEquationSeparate, use it", function(){
                         material.blend = true;
-                        material.blendFuncSeparate = [wd.BlendFunc.SRC_ALPHA, wd.BlendFunc.ONE_MINUS_SRC_ALPHA, wd.BlendFunc.ONE, wd.BlendFunc.ONE_MINUS_SRC_ALPHA];
-                        material.blendEquationSeparate = [wd.BlendEquation.ADD, wd.BlendEquation.ADD];
+                        material.blendFuncSeparate = [wd.EBlendFunc.SRC_ALPHA, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA, wd.EBlendFunc.ONE, wd.EBlendFunc.ONE_MINUS_SRC_ALPHA];
+                        material.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
 
                         renderer.render();
 

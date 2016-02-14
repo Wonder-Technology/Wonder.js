@@ -111,11 +111,11 @@ module wd {
             }
         }
 
-        private _depthFunc:DepthFunction = null;
+        private _depthFunc:EDepthFunction = null;
         get depthFunc(){
             return this._depthFunc;
         }
-        set depthFunc(depthFunc:DepthFunction){
+        set depthFunc(depthFunc:EDepthFunction){
             var gl = this.gl;
 
             if (this._depthFunc !== depthFunc) {
@@ -126,28 +126,28 @@ module wd {
         }
 
 
-        private _side:Side = null;
+        private _side:ESide = null;
         get side() {
             return this._side;
         }
 
-        set side(side:Side) {
+        set side(side:ESide) {
             var gl = this.gl;
 
             if (this._side !== side) {
                 switch (side) {
-                    case Side.NONE:
+                    case ESide.NONE:
                         gl.enable(gl.CULL_FACE);
                         gl.cullFace(gl.FRONT_AND_BACK);
                         break;
-                    case Side.BOTH:
+                    case ESide.BOTH:
                         gl.disable(gl.CULL_FACE);
                         break;
-                    case Side.FRONT:
+                    case ESide.FRONT:
                         gl.enable(gl.CULL_FACE);
                         gl.cullFace(gl.BACK);
                         break;
-                    case Side.BACK:
+                    case ESide.BACK:
                         gl.enable(gl.CULL_FACE);
                         gl.cullFace(gl.FRONT);
                         break;
@@ -169,28 +169,28 @@ module wd {
          */
         public polygonOffset:Vector2 = null;
 
-        private _polygonOffsetMode:PolygonOffsetMode = null;
+        private _polygonOffsetMode:EPolygonOffsetMode = null;
         get polygonOffsetMode(){
             return this._polygonOffsetMode;
         }
-        set polygonOffsetMode(polygonOffsetMode:PolygonOffsetMode){
+        set polygonOffsetMode(polygonOffsetMode:EPolygonOffsetMode){
             var gl = this.gl;
 
             if (this._polygonOffsetMode !== polygonOffsetMode) {
                 switch (polygonOffsetMode){
-                    case PolygonOffsetMode.NONE:
+                    case EPolygonOffsetMode.NONE:
                         gl.polygonOffset(0.0, 0.0);
                         gl.disable(gl.POLYGON_OFFSET_FILL);
                         break;
-                    case PolygonOffsetMode.IN:
+                    case EPolygonOffsetMode.IN:
                         gl.enable(gl.POLYGON_OFFSET_FILL);
                         gl.polygonOffset(1.0, 1.0);
                         break;
-                    case PolygonOffsetMode.OUT:
+                    case EPolygonOffsetMode.OUT:
                         gl.enable(gl.POLYGON_OFFSET_FILL);
                         gl.polygonOffset(-1.0, -1.0);
                         break;
-                    case PolygonOffsetMode.CUSTOM:
+                    case EPolygonOffsetMode.CUSTOM:
                         gl.enable(gl.POLYGON_OFFSET_FILL);
                         Log.error(!this.polygonOffset, Log.info.FUNC_MUST_DEFINE("polygonOffset"));
                         gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
@@ -252,7 +252,7 @@ module wd {
          * @param {pc.BLENDMODE} blendSrc The source blend function.
          * @param {pc.BLENDMODE} blendDst The destination blend function.
          */
-        public setBlendFunc(blendSrc:BlendFunc, blendDst:BlendFunc) {
+        public setBlendFunc(blendSrc:EBlendFunc, blendDst:EBlendFunc) {
             if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
                 this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
                 this._blendSrc = blendSrc;
@@ -275,14 +275,14 @@ module wd {
          * @description Configures the blending equation. .
          * @param blendEquation The blend equation.
          */
-        public setBlendEquation(blendEquation:BlendEquation) {
+        public setBlendEquation(blendEquation:EBlendEquation) {
             if (this._blendEquation !== blendEquation) {
                 this._blend && this.gl.blendEquation(this.gl[blendEquation]);
                 this._blendEquation = blendEquation;
             }
         }
 
-        public setBlendFuncSeparate(blendFuncSeparate:Array<BlendFunc>) {
+        public setBlendFuncSeparate(blendFuncSeparate:Array<EBlendFunc>) {
             var gl = this.gl;
 
             if (!this._blendFuncSeparate || this._blendFuncSeparate[0] !== blendFuncSeparate[0] || this._blendFuncSeparate[1] !== blendFuncSeparate[1]) {
@@ -291,7 +291,7 @@ module wd {
             }
         }
 
-        public setBlendEquationSeparate(blendEquationSeparate:Array<BlendEquation>) {
+        public setBlendEquationSeparate(blendEquationSeparate:Array<EBlendEquation>) {
             var gl = this.gl;
 
             if (!this._blendEquationSeparate || this._blendEquationSeparate[0] !== blendEquationSeparate[0] || this._blendEquationSeparate[1] !== blendEquationSeparate[1]) {
@@ -333,11 +333,11 @@ module wd {
         private _writeGreen:boolean = null;
         private _writeBlue:boolean = null;
         private _writeAlpha:boolean = null;
-        private _blendSrc:BlendFunc = null;
-        private _blendDst:BlendFunc = null;
-        private _blendEquation: BlendEquation = null;
-        private _blendFuncSeparate:Array<BlendFunc> = null;
-        private _blendEquationSeparate:Array<BlendEquation> = null;
+        private _blendSrc:EBlendFunc = null;
+        private _blendDst:EBlendFunc = null;
+        private _blendEquation: EBlendEquation = null;
+        private _blendFuncSeparate:Array<EBlendFunc> = null;
+        private _blendEquationSeparate:Array<EBlendEquation> = null;
 
         public clear(options:any) {
             var gl = this.gl,
@@ -398,7 +398,7 @@ module wd {
         }
     }
 
-    export enum DepthFunction{
+    export enum EDepthFunction{
         NEVER = <any>"NEVER",
         ALWAYS = <any>"ALWAYS",
         LESS = <any>"LESS",
@@ -409,7 +409,7 @@ module wd {
         NOTEQUAL = <any>"NOTEQUAL"
     }
 
-    export enum Side{
+    export enum ESide{
         NONE,
         BOTH,
         //CCW
@@ -418,14 +418,14 @@ module wd {
         FRONT
     }
 
-    export enum PolygonOffsetMode{
+    export enum EPolygonOffsetMode{
         NONE,
         IN,
         OUT,
         CUSTOM
     }
 
-    export enum BlendFunc{
+    export enum EBlendFunc{
         ZERO = <any>"ZEOR",
         ONE = <any>"ONE",
         SRC_COLOR = <any>"SRC_COLOR",
@@ -439,13 +439,13 @@ module wd {
         ONE_MINUS_DST_ALPH = <any>"ONE_MINUS_DST_ALPHA"
     }
 
-    export enum BlendEquation{
+    export enum EBlendEquation{
         ADD = <any>"FUNC_ADD",
         SUBTRACT = <any>"FUNC_SUBTRACT",
         REVERSE_SUBTRAC = <any>"FUNC_REVERSE_SUBTRACT"
     }
 
-    export enum BlendType{
+    export enum EBlendType{
         NONE,
         NORMAL,
         ADDITIVE,
@@ -454,7 +454,7 @@ module wd {
         PREMULTIPLIED
     }
 
-    export enum CanvasType{
+    export enum ECanvasType{
         UI = <any>"UI"
     }
 

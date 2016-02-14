@@ -10,9 +10,9 @@ module wd{
 
         protected listenerMap:wdCb.Hash<wdCb.Collection<CustomEventRegisterData>>;
 
-        public getChild(eventName:EventName):wdCb.Collection<CustomEventRegisterData>;
+        public getChild(eventName:EEventName):wdCb.Collection<CustomEventRegisterData>;
         public getChild(target:EntityObject):wdCb.Collection<CustomEventRegisterData>;
-        public getChild(target:EntityObject, eventName:EventName):wdCb.Collection<CustomEventRegisterData>;
+        public getChild(target:EntityObject, eventName:EEventName):wdCb.Collection<CustomEventRegisterData>;
 
         public getChild(...args):any{
             var self = this;
@@ -37,14 +37,14 @@ module wd{
             }
         }
 
-        public removeChild(eventName:EventName):void;
+        public removeChild(eventName:EEventName):void;
         public removeChild(target:EntityObject):void;
 
-        public removeChild(eventName:EventName, handler:Function):void;
-        public removeChild(uid:number, eventName:EventName):void;
-        public removeChild(target:EntityObject, eventName:EventName):void;
+        public removeChild(eventName:EEventName, handler:Function):void;
+        public removeChild(uid:number, eventName:EEventName):void;
+        public removeChild(target:EntityObject, eventName:EEventName):void;
 
-        public removeChild(target:EntityObject, eventName:EventName, handler:Function):void;
+        public removeChild(target:EntityObject, eventName:EEventName, handler:Function):void;
 
 
         public removeChild(...args):void{
@@ -124,8 +124,8 @@ module wd{
             return `${CustomEventListenerMap.eventSeparator}`;
         }
 
-        protected buildKey(uid:number, eventName:EventName):string;
-        protected buildKey(target:EntityObject, eventName:EventName):string;
+        protected buildKey(uid:number, eventName:EEventName):string;
+        protected buildKey(target:EntityObject, eventName:EEventName):string;
 
         protected buildKey(...args):string{
             if(JudgeUtils.isNumber(args[0])){
@@ -147,7 +147,7 @@ module wd{
             }
         }
 
-        private _buildKeyWithUid(uid:number, eventName:EventName){
+        private _buildKeyWithUid(uid:number, eventName:EEventName){
             return `${this._buildKeyPrefix(uid)}${CustomEventListenerMap.eventSeparator}${eventName}`;
         }
 

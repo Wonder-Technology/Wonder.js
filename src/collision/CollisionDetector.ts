@@ -39,7 +39,7 @@ module wd{
                             self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(targetCollideObjects, sourceObject, ["onContact"]);
                         }
 
-                        sourceObject.addTag(<any>CollisionTag.COLLIDED);
+                        sourceObject.addTag(<any>ECollisionTag.COLLIDED);
                         self._lastCollideObjects = targetCollideObjects;
                     }
                     else{
@@ -48,7 +48,7 @@ module wd{
                             self._triggerCollisionEventOfCollideObjectWhichHasRigidBody(self._lastCollideObjects, sourceObject, ["onCollisionEnd"]);
                         }
 
-                        sourceObject.removeTag(<any>CollisionTag.COLLIDED);
+                        sourceObject.removeTag(<any>ECollisionTag.COLLIDED);
                     }
                 });
             });
@@ -122,7 +122,7 @@ module wd{
                 targetCollideObjects.addChild(targetObject);
             }
             else if(
-                !(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(<any>CollisionTag.COLLIDED))
+                !(this._isNotTransform(sourceObject) && this._isNotTransform(targetObject) && !sourceObject.hasTag(<any>ECollisionTag.COLLIDED))
                 && sourceCollider.isCollide(targetObject)
             ){
                 targetCollideObjects.addChild(targetObject);
@@ -219,11 +219,11 @@ module wd{
         }
 
         private _isCollisionStart(entityObject:GameObject){
-            return !entityObject.hasTag(<any>CollisionTag.COLLIDED);
+            return !entityObject.hasTag(<any>ECollisionTag.COLLIDED);
         }
 
         private _isCollisionEnd(entityObject:GameObject){
-            return entityObject.hasTag(<any>CollisionTag.COLLIDED);
+            return entityObject.hasTag(<any>ECollisionTag.COLLIDED);
         }
 
         private _triggerCollisionEventOfCollideObjectWhichHasRigidBody(collideObjects:wdCb.Collection<GameObject>, currentGameObject:GameObject, eventList:Array<string>){
@@ -242,7 +242,7 @@ module wd{
         }
     }
 
-    enum CollisionTag{
+    enum ECollisionTag{
         COLLIDED = <any>"COLLIDED"
     }
 }

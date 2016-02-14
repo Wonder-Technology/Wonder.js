@@ -41,7 +41,7 @@ module wd{
         protected getVsChunk(...args){
             var type = args.length === 0 ? this.type : args[0];
 
-            return this._getChunk(type, ShaderLibType.vs);
+            return this._getChunk(type, EShaderLibType.vs);
         }
 
         protected getFsChunk();
@@ -50,15 +50,15 @@ module wd{
         protected getFsChunk(...args){
             var type = args.length === 0 ? this.type : args[0];
 
-            return this._getChunk(type, ShaderLibType.fs);
+            return this._getChunk(type, EShaderLibType.fs);
         }
 
         protected setVsSource(vs:GLSLChunk, operator:string="="){
-            this._setSource(vs, ShaderLibType.vs, operator);
+            this._setSource(vs, EShaderLibType.vs, operator);
         }
 
         protected setFsSource(fs:GLSLChunk, operator:string="="){
-            this._setSource(fs, ShaderLibType.fs, operator);
+            this._setSource(fs, EShaderLibType.fs, operator);
         }
 
         protected addAttributeVariable(variableArr:Array<string>){
@@ -100,14 +100,14 @@ module wd{
             this.fsSourceBody = "";
         }
 
-        private _getChunk(type:string, sourceType:ShaderLibType){
+        private _getChunk(type:string, sourceType:EShaderLibType){
             var key = null;
 
             if(type.indexOf(".glsl") > -1){
                 key =  `${wdCb.PathUtils.basename(type, ".glsl")}`;
             }
             else{
-                if(sourceType === ShaderLibType.vs){
+                if(sourceType === EShaderLibType.vs){
                     key = `${type}_vertex`;
                 }
                 else{
@@ -118,7 +118,7 @@ module wd{
             return ShaderChunk[key] ? ShaderChunk[key] : ShaderChunk.empty;
         }
 
-        private _setSource(chunk:GLSLChunk, sourceType:ShaderLibType, operator:string) {
+        private _setSource(chunk:GLSLChunk, sourceType:EShaderLibType, operator:string) {
             if(!chunk){
                 return;
             }
@@ -155,7 +155,7 @@ module wd{
         }
     }
 
-    enum ShaderLibType{
+    enum EShaderLibType{
         vs=<any>"vs",
         fs=<any>"fs"
     }

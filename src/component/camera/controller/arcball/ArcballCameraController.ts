@@ -67,7 +67,7 @@ module wd {
             var self = this,
                 mousewheel = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_WHEEL),
                 mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_DRAG),
-            keydown = EventManager.fromEvent(EventName.KEYDOWN);
+            keydown = EventManager.fromEvent(EEventName.KEYDOWN);
 
             this._mouseDragSubscription = mousedrag.subscribe((e:CustomEvent) => {
                 self._changeOrbit(e.userData);

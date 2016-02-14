@@ -99,7 +99,7 @@ module wd{
                 this._isStartFromStop = true;
             }
 
-            this.state = AnimationState.RUN;
+            this.state = EAnimationState.RUN;
         }
 
         private _floor(time:number){

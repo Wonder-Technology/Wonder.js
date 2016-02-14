@@ -1,18 +1,18 @@
 module wd{
-    enum BrowserIdentifier{
+    enum EBrowserIdentifier{
         FALLBACK = <any>"fallback",
         FIREFOX = <any>"firefox",
         CHROME = <any>"chrome"
     }
 
-    export enum EventName{
+    export enum EEventName{
         CLICK = <any>"click",
         MOUSEOVER = <any>"mouseover",
         MOUSEUP = <any>"mouseup",
         MOUSEOUT = <any>"mouseout",
         MOUSEMOVE = <any>"mousemove",
         MOUSEDOWN = <any>"mousedown",
-        MOUSEWHEEL = <any>`mousewheel|DOMMouseScroll*${BrowserIdentifier.FIREFOX}`,
+        MOUSEWHEEL = <any>`mousewheel|DOMMouseScroll*${EBrowserIdentifier.FIREFOX}`,
         MOUSEDRAG = <any>"mousedrag",
 
         KEYDOWN = <any>"keydown",
@@ -24,7 +24,7 @@ module wd{
         BROWSER_IDENTIFIER = '*';
 
     export class EventNameHandler{
-        public static handleEventName(domEventName:EventName){
+        public static handleEventName(domEventName:EEventName){
             var eventName:string = <any>domEventName,
                 fallbackEventName = null,
                 specifyBrowserEventNameArr = [],
@@ -56,12 +56,12 @@ module wd{
                 let [domEventName, browserIdentifier] = eventName.split(BROWSER_IDENTIFIER);
 
                 switch (<any>browserIdentifier){
-                    case BrowserIdentifier.CHROME:
+                    case EBrowserIdentifier.CHROME:
                         if(bowser.chrome){
                             result = domEventName;
                         }
                         break;
-                    case BrowserIdentifier.FIREFOX:
+                    case EBrowserIdentifier.FIREFOX:
                         if(bowser.firefox){
                             result = domEventName;
                         }

@@ -239,10 +239,10 @@ module wd{
 
         private _setBasicDataOfMaterial(material:Material, materialData:IGLTFMaterial){
             if(!!materialData.doubleSided && materialData.doubleSided === true){
-                material.side = Side.BOTH;
+                material.side = ESide.BOTH;
             }
             else{
-                material.side = Side.FRONT;
+                material.side = ESide.FRONT;
             }
         }
 

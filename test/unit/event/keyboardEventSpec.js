@@ -41,14 +41,14 @@ describe("keyboard event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                manager.on(wd.EventName.KEYDOWN, function (e) {
+                manager.on(wd.EEventName.KEYDOWN, function (e) {
                     eventTarget = e;
                     sum++;
                 });
-                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
                 expect(eventTarget).toBeInstanceOf(wd.KeyboardEvent);
-                expect(eventTarget.name).toEqual(wd.EventName.KEYDOWN);
+                expect(eventTarget.name).toEqual(wd.EEventName.KEYDOWN);
                 expect(eventTarget.keyCode).toEqual(fakeEvent.keyCode);
                 expect(eventTarget.key).toEqual("a");
                 expect(eventTarget.ctrlKey).toEqual(fakeEvent.ctrlKey);
@@ -58,8 +58,8 @@ describe("keyboard event", function () {
 
                 expect(sum).toEqual(1);
 
-                manager.off(wd.EventName.KEYDOWN);
-                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+                manager.off(wd.EEventName.KEYDOWN);
+                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
                 expect(sum).toEqual(1);
             });
@@ -67,15 +67,15 @@ describe("keyboard event", function () {
                 var eventTarget = null,
                     sum = 0;
 
-                var subscription = manager.fromEvent(wd.EventName.KEYDOWN)
+                var subscription = manager.fromEvent(wd.EEventName.KEYDOWN)
                     .subscribe(function (e) {
                         eventTarget = e;
                         sum++;
                     });
-                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
                 expect(eventTarget).toBeInstanceOf(wd.KeyboardEvent);
-                expect(eventTarget.name).toEqual(wd.EventName.KEYDOWN);
+                expect(eventTarget.name).toEqual(wd.EEventName.KEYDOWN);
                 expect(eventTarget.keyCode).toEqual(fakeEvent.keyCode);
                 expect(eventTarget.key).toEqual("a");
                 expect(eventTarget.ctrlKey).toEqual(fakeEvent.ctrlKey);
@@ -85,7 +85,7 @@ describe("keyboard event", function () {
                 expect(sum).toEqual(1);
 
                 subscription.dispose();
-                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+                manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
                 expect(sum).toEqual(1);
             });
@@ -96,13 +96,13 @@ describe("keyboard event", function () {
 
             sandbox.stub(wd.Log, "warn");
 
-            manager.on(document.createElement("div") ,wd.EventName.KEYDOWN, function (e) {
+            manager.on(document.createElement("div") ,wd.EEventName.KEYDOWN, function (e) {
                 sum++;
             });
 
             expect(wd.Log.warn).toCalledOnce();
 
-            manager.trigger(document.body, wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+            manager.trigger(document.body, wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
             expect(sum).toEqual(1);
         });
@@ -125,18 +125,18 @@ describe("keyboard event", function () {
                         sum2++;
                     }
                 });
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYPRESS));
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYUP));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYPRESS));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYUP));
 
             expect(eventTarget).toBeInstanceOf(wd.KeyboardEvent);
-            expect(eventTarget.name).toEqual(wd.EventName.KEYPRESS);
+            expect(eventTarget.name).toEqual(wd.EEventName.KEYPRESS);
             expect(eventTarget2).toBeInstanceOf(wd.KeyboardEvent);
-            expect(eventTarget2.name).toEqual(wd.EventName.KEYUP);
+            expect(eventTarget2.name).toEqual(wd.EEventName.KEYUP);
 
-            manager.off(wd.EventName.KEYPRESS);
-            manager.off(wd.EventName.KEYUP);
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYPRESS));
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYUP));
+            manager.off(wd.EEventName.KEYPRESS);
+            manager.off(wd.EEventName.KEYUP);
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYPRESS));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYUP));
 
             expect(sum).toEqual(1);
             expect(sum2).toEqual(1);
@@ -149,24 +149,24 @@ describe("keyboard event", function () {
                     b:sandbox.stub()
                 };
 
-            var subscription1 = manager.fromEvent(wd.EventName.KEYDOWN, 1)
+            var subscription1 = manager.fromEvent(wd.EEventName.KEYDOWN, 1)
                 .subscribe(function (e) {
                     eventTarget = e;
                     fakeObj.a();
                 });
-            var subscription2 = manager.fromEvent(wd.EventName.KEYDOWN, 2)
+            var subscription2 = manager.fromEvent(wd.EEventName.KEYDOWN, 2)
                 .subscribe(function (e) {
                     eventTarget2 = e;
                     fakeObj.b();
                 });
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
             expect(eventTarget).toBeInstanceOf(wd.KeyboardEvent);
-            expect(eventTarget.name).toEqual(wd.EventName.KEYDOWN);
+            expect(eventTarget.name).toEqual(wd.EEventName.KEYDOWN);
             expect(fakeObj.b).toCalledBefore(fakeObj.a);
 
             subscription2.dispose();
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
             expect(fakeObj.a).toCalledTwice();
             expect(fakeObj.b).toCalledOnce();
@@ -178,10 +178,10 @@ describe("keyboard event", function () {
             function judge(event, key){
                 var eventTarget = null;
 
-                manager.on(wd.EventName.KEYDOWN, function (e) {
+                manager.on(wd.EEventName.KEYDOWN, function (e) {
                     eventTarget = e;
                 });
-                manager.trigger(wd.KeyboardEvent.create(event, wd.EventName.KEYDOWN));
+                manager.trigger(wd.KeyboardEvent.create(event, wd.EEventName.KEYDOWN));
 
                 expect(eventTarget.key).toEqual(key);
             }
@@ -220,13 +220,13 @@ describe("keyboard event", function () {
         beforeEach(function(){
             sum = 0;
             sandbox.spy(wd.KeyboardEventHandler.getInstance(), "triggerDomEvent");
-            subscription = manager.fromEvent(wd.EventName.KEYUP).subscribe(function(e){
+            subscription = manager.fromEvent(wd.EEventName.KEYUP).subscribe(function(e){
                 sum++;
             })
         });
 
         it("use subscription.dispose to off event binded by fromEvent", function(){
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -236,19 +236,19 @@ describe("keyboard event", function () {
             subscription.dispose();
 
 
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
         });
         it("use EventManager.off", function(){
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
@@ -257,13 +257,13 @@ describe("keyboard event", function () {
             manager.off();
 
 
-            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EventName.KEYDOWN));
+            manager.trigger(wd.KeyboardEvent.create(fakeEvent, wd.EEventName.KEYDOWN));
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();
 
 
-            eventTool.triggerDomEvent(wd.EventName.KEYUP, document.body);
+            eventTool.triggerDomEvent(wd.EEventName.KEYUP, document.body);
 
             expect(sum).toEqual(1);
             expect(wd.KeyboardEventHandler.getInstance().triggerDomEvent).toCalledOnce();

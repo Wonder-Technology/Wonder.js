@@ -20,8 +20,8 @@ module wd {
         //public lastY:number = null;
 
 
-        public on(eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
-        public on(dom:HTMLElement, eventName:EventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
+        public on(dom:HTMLElement, eventName:EEventName, handler:(event:MouseEvent) => void, priority:number);
 
         @require(function(...args){
             if(args.length === 4){
@@ -57,17 +57,17 @@ module wd {
             return document.body;
         }
 
-        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EventName){
+        protected triggerDomEvent(dom:HTMLElement, event:Event, eventName:EEventName){
             var eventObj = this._createEventObject(dom, event, eventName);
 
             EventManager.trigger(dom, eventObj);
         }
 
-        protected addEngineHandler(eventName:EventName, handler:(event:MouseEvent) => void){
+        protected addEngineHandler(eventName:EEventName, handler:(event:MouseEvent) => void){
             var resultHandler = null;
 
             switch (eventName){
-                case EventName.MOUSEMOVE:
+                case EEventName.MOUSEMOVE:
                     resultHandler = this._handleMove(handler);
                     break;
                 default:
@@ -99,7 +99,7 @@ module wd {
             };
         }
 
-        private _createEventObject(dom:HTMLElement, event:any, eventName:EventName) {
+        private _createEventObject(dom:HTMLElement, event:any, eventName:EEventName) {
             var obj = MouseEvent.create(event ? event : root.event, eventName);
 
             obj.target = dom;

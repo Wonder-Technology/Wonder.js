@@ -6,7 +6,7 @@ describe("custom shader", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
-        sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.GPUPrecision.HIGHP);
+        sandbox.stub(wd.GPUDetector.getInstance(), "precision", wd.EGPUPrecision.HIGHP);
         gl = wd.DeviceManager.getInstance().gl;
 
         material = new wd.ShaderMaterial();

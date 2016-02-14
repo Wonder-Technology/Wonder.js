@@ -20,7 +20,7 @@ var sample;
             this._collidingMaterial.color = wd.Color.create("rgb(255,0,0)");
             this._collidingMaterial.init();
             this._originMaterial = this._gameObject.getComponent(wd.Geometry).material;
-            wd.EventManager.fromEvent(wd.EventName.KEYDOWN)
+            wd.EventManager.fromEvent(wd.EEventName.KEYDOWN)
                 .subscribe(function (e) {
                 var keyState = e.keyState, x = 0, z = 0, moveSpeedX = 0.5, moveSpeedZ = 0.5;
                 if (keyState["a"]) {
