@@ -54,6 +54,19 @@
             var anim = model.getComponent(wd.Animation);
             anim.play("stand", 10);
 
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.pause();
+//                anim.stop();
+            }, 1000);
+
+            wd.Director.getInstance().scheduler.scheduleTime(function(){
+                anim.resume();
+//                anim.play("stand", 10);
+            }, 2000);
+
+
+
             model.transform.rotate(0, -90, 0);
 
             return model;

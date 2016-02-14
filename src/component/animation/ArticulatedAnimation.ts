@@ -6,35 +6,20 @@ module wd{
             return obj;
         }
 
-        get isStart(){
-            return this._state === AnimationState.RUN;
-        }
-        get isStop(){
-            return this._state === AnimationState.STOP;
-        }
-        get isPause(){
-            return this._state === AnimationState.PAUSE;
-        }
-
         public data:ArticulatedAnimationData = null;
 
         private _interpolation:number = null;
-        private _currentKey:number = null;
+        private _currentFrame:number = null;
         private _currentAnimName:string = null;
-        private _beginElapsedTimeOfFirstKey:number = null;
-        private _lastKeyTime:number = null;
-        private _pauseTime:number = null;
-        private _resumeTime:number = null;
+        private _beginElapsedTimeOfFirstFrame:number = null;
+        private _lastFrameTime:number = null;
         private _pauseDuration:number = null;
-        private _keyCount:number = null;
-        private _state:AnimationState = AnimationState.DEFAULT;
-        private _currentAnimData:wdCb.Collection<ArticulatedAnimationKeyData> = null;
-        private _currentKeyData:ArticulatedAnimationKeyData = null;
-        private _prevKeyData:ArticulatedAnimationKeyData = null;
-        private _isKeyChange:boolean = false;
-        private _isResume:boolean = false;
-        private _prevEndKeyDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
-        private _startKeyDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _frameCount:number = null;
+        private _currentAnimData:wdCb.Collection<ArticulatedAnimationFrameData> = null;
+        private _currentFrameData:ArticulatedAnimationFrameData = null;
+        private _prevFrameData:ArticulatedAnimationFrameData = null;
+        private _prevEndFrameDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _startFrameDataMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
 
         public init(){
         }
@@ -43,12 +28,12 @@ module wd{
         }
 
         @require(function(animName:string){
-            this.data.getChild(animName).forEach((data:ArticulatedAnimationKeyData) => {
+            this.data.getChild(animName).forEach((data:ArticulatedAnimationFrameData) => {
                 assert(data.time >= 0, Log.info.FUNC_SHOULD("time", ">= 0"));
 
-                assert(data.targets.getCount() > 0, Log.info.FUNC_SHOULD("ArticulatedAnimationKeyData->targets.getCount()", "> 0"));
+                assert(data.targets.getCount() > 0, Log.info.FUNC_SHOULD("ArticulatedAnimationFrameData->targets.getCount()", "> 0"));
 
-                data.targets.forEach((target:ArticulatedAnimationKeyTargetData) => {
+                data.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                     var data = target.data;
 
                     switch (target.target){
@@ -72,63 +57,98 @@ module wd{
             this._currentAnimName = animName;
             this._currentAnimData = this.data.getChild(animName);
             this._resetAnim();
-            this._saveStartKeyData();
-            this._keyCount = this._currentAnimData.getCount();
-            this._state = AnimationState.RUN;
+            this._saveStartFrameData();
+            this._frameCount = this._currentAnimData.getCount();
+            this.state = AnimationState.RUN;
         }
 
-        public pause(){
-            this._state = AnimationState.PAUSE;
-
-            this._pauseTime = this._getCurrentTime();
+        protected getPauseTime(){
+            return this._getCurrentTime();
         }
 
-        public resume(){
-            this._state = AnimationState.RUN;
-
-            this._isResume = true;
-            this._resumeTime = this._getCurrentTime();
+        protected getResumeTime(){
+            return this._getCurrentTime();
         }
 
-        public stop(){
-            this._state = AnimationState.STOP;
+        protected handleWhenPause(elapsedTime:number):void{
         }
 
-        public update(elapsedTime:number){
-            if(this._state === AnimationState.DEFAULT || this.isStop || this.isPause){
-                return;
-            }
+        protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
+            this._updateCurrentFrame(elapsedTime);
+            this._updateTargetsToBeLastEndFrameData();
+            this._saveStartFrameData();
+        }
 
-            if(this._isResume){
-                this._isResume = false;
-                this._continueFromPausePoint();
-            }
+        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+        }
 
-            if(this._isCurrentKeyFinish(elapsedTime)){
-                this._updateCurrentKey(elapsedTime);
-                this._updateTargetsToBeLastEndKeyData();
-                this._saveStartKeyData();
-            }
-            else{
-                this._isKeyChange = false;
-            }
+        protected isCurrentFrameFinish(elapsedTime:number):boolean{
+            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration > this._currentFrameData.time;
+        }
 
-            this._computeInterpolation(elapsedTime);
+        protected computeInterpolation(elapsedTime:number):void{
+            switch (this._currentFrameData.interpolationMethod){
+                case KeyFrameInterpolation.LINEAR:
+                    if(this._currentFrameData.time - this._lastFrameTime === 0){
+                        this._interpolation = 1;
+                    }
+                    else{
+                        this._interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration - this._lastFrameTime) / (this._currentFrameData.time - this._lastFrameTime);
+                    }
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${this._currentFrameData.interpolationMethod}`));
+                    break
+            }
+        }
 
-            this._updateTargets();
+        protected updateTargets():void{
+            var transform = this.entityObject.transform,
+                interpolation = this._interpolation,
+                isFrameChange = this.isFrameChange,
+                prevEndFrameDataMap = this._prevEndFrameDataMap,
+                startFrameDataMap = this._startFrameDataMap;
+
+            this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
+                var endFrameData = target.data,
+                    startFrameData = startFrameDataMap.getChild(<any>target.target);
+
+                switch (target.target){
+                    case ArticulatedAnimationTarget.TRANSLATION:
+                        transform.position = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                        break;
+                    case ArticulatedAnimationTarget.ROTATION:
+                        transform.rotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
+                        break;
+                    case ArticulatedAnimationTarget.SCALE:
+                        transform.scale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                        break;
+                    default:
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
+                        break;
+                }
+
+                if(isFrameChange || !prevEndFrameDataMap.hasChild(<any>target.target)){
+                    prevEndFrameDataMap.addChild(<any>target.target, endFrameData);
+                }
+            });
+        }
+
+        protected continueFromPausePoint(elapsedTime:number){
+            this._pauseDuration += this.resumeTime - this.pauseTime;
         }
 
         private _resetAnim(){
-            this._beginElapsedTimeOfFirstKey = this._getCurrentTime();
-            this._lastKeyTime = 0;
+            this._beginElapsedTimeOfFirstFrame = this._getCurrentTime();
+            this._lastFrameTime = 0;
             this._pauseDuration = 0;
-            this._currentKey = 0;
+            this._currentFrame = 0;
 
-            this._prevKeyData = null;
-            this._updateCurrentKeyData();
+            this._prevFrameData = null;
+            this._updateCurrentFrameData();
 
-            this._prevEndKeyDataMap.removeAllChildren();
-            this._startKeyDataMap.removeAllChildren();
+            this._prevEndFrameDataMap.removeAllChildren();
+            this._startFrameDataMap.removeAllChildren();
         }
 
         private _getCurrentTime(){
@@ -136,124 +156,68 @@ module wd{
         }
 
         @require(function(){
-            assert(this._currentKeyData !== null, Log.info.FUNC_SHOULD("set currentKeyData"));
+            assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
         })
-        private _saveStartKeyData(){
-            var startKeyDataMap = this._startKeyDataMap,
+        private _saveStartFrameData(){
+            var startFrameDataMap = this._startFrameDataMap,
                 transform = this.entityObject.transform;
 
-            this._currentKeyData.targets.forEach((target:ArticulatedAnimationKeyTargetData) => {
-                var startKeyData = null;
+            this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
+                var startFrameData = null;
 
                 switch (target.target){
                     case ArticulatedAnimationTarget.TRANSLATION:
-                        startKeyData = transform.position;
+                        startFrameData = transform.position;
                         break;
                     case ArticulatedAnimationTarget.ROTATION:
-                        startKeyData = transform.rotation;
+                        startFrameData = transform.rotation;
                         break;
                     case ArticulatedAnimationTarget.SCALE:
-                        startKeyData = transform.scale;
+                        startFrameData = transform.scale;
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
                         break;
                 }
 
-                startKeyDataMap.addChild(<any>target.target, startKeyData);
+                startFrameDataMap.addChild(<any>target.target, startFrameData);
             });
         }
 
-        private _updateCurrentKeyData(){
-            this._currentKeyData = this._currentAnimData.getChild(this._currentKey);
+        private _updateCurrentFrameData(){
+            this._currentFrameData = this._currentAnimData.getChild(this._currentFrame);
         }
 
-        private _continueFromPausePoint(){
-            this._pauseDuration += this._resumeTime - this._pauseTime;
-        }
+        private _updateCurrentFrame(elapsedTime:number){
+            this.isFrameChange = true;
 
-        private _isCurrentKeyFinish(elapsedTime:number){
-           return elapsedTime - this._beginElapsedTimeOfFirstKey - this._pauseDuration > this._currentKeyData.time;
-        }
+            this._currentFrame++;
 
-        private _updateCurrentKey(elapsedTime:number){
-            this._isKeyChange = true;
-
-            this._currentKey++;
-
-            if(this._currentKey >= this._keyCount){
-                this._currentKey = 0;
-                this._beginElapsedTimeOfFirstKey = elapsedTime -  elapsedTime % this._currentAnimData.getChild(this._keyCount - 1).time;
-                this._lastKeyTime = 0;
+            if(this._currentFrame >= this._frameCount){
+                this._currentFrame = 0;
+                this._beginElapsedTimeOfFirstFrame = elapsedTime -  elapsedTime % this._currentAnimData.getChild(this._frameCount - 1).time;
+                this._lastFrameTime = 0;
             }
             else{
-                this._lastKeyTime = this._currentAnimData.getChild(this._currentKey - 1).time;
+                this._lastFrameTime = this._currentAnimData.getChild(this._currentFrame - 1).time;
             }
 
-            this._prevKeyData = this._currentKeyData;
-            this._updateCurrentKeyData();
-        }
-
-        private _computeInterpolation(elapsedTime:number){
-            switch (this._currentKeyData.interpolationMethod){
-                case KeyFrameInterpolation.LINEAR:
-                    if(this._currentKeyData.time - this._lastKeyTime === 0){
-                        this._interpolation = 1;
-                    }
-                    else{
-                        this._interpolation = (elapsedTime - this._beginElapsedTimeOfFirstKey - this._pauseDuration - this._lastKeyTime) / (this._currentKeyData.time - this._lastKeyTime);
-                    }
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${this._currentKeyData.interpolationMethod}`));
-                    break
-            }
-        }
-
-        private _updateTargets(){
-            var transform = this.entityObject.transform,
-                interpolation = this._interpolation,
-                isKeyChange = this._isKeyChange,
-                prevEndKeyDataMap = this._prevEndKeyDataMap,
-                startKeyDataMap = this._startKeyDataMap;
-
-            this._currentKeyData.targets.forEach((target:ArticulatedAnimationKeyTargetData) => {
-                var endKeyData = target.data,
-                    startKeyData = startKeyDataMap.getChild(<any>target.target);
-
-                switch (target.target){
-                    case ArticulatedAnimationTarget.TRANSLATION:
-                        transform.position = Vector3.create().lerp(startKeyData, endKeyData, interpolation);
-                        break;
-                    case ArticulatedAnimationTarget.ROTATION:
-                        transform.rotation = Quaternion.create().slerp(startKeyData, endKeyData, interpolation);
-                        break;
-                    case ArticulatedAnimationTarget.SCALE:
-                        transform.scale = Vector3.create().lerp(startKeyData, endKeyData, interpolation);
-                        break;
-                    default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`ArticulatedAnimationTarget:${target.target}`));
-                        break;
-                }
-
-                if(isKeyChange || !prevEndKeyDataMap.hasChild(<any>target.target)){
-                    prevEndKeyDataMap.addChild(<any>target.target, endKeyData);
-                }
-            });
+            this._prevFrameData = this._currentFrameData;
+            this._updateCurrentFrameData();
         }
 
         @require(function(){
-            assert(this._prevKeyData !== null, Log.info.FUNC_SHOULD_NOT("prevKeyData", "be null"));
+            assert(this._prevFrameData !== null, Log.info.FUNC_SHOULD_NOT("prevFrameData", "be null"));
         })
-        private _updateTargetsToBeLastEndKeyData(){
+        private _updateTargetsToBeLastEndFrameData(){
             var self = this,
                 transform = this.entityObject.transform,
-                prevEndKeyDataMap = this._prevEndKeyDataMap;
+                prevEndFrameDataMap = this._prevEndFrameDataMap;
 
-            this._prevKeyData.targets.forEach((target:ArticulatedAnimationKeyTargetData) => {
-                var prevEndKeyData = prevEndKeyDataMap.hasChild(<any>target.target) ? prevEndKeyDataMap.getChild(<any>target.target) : target.data;
+            this._prevFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
+                var prevEndFrameData = prevEndFrameDataMap.hasChild(<any>target.target) ? prevEndFrameDataMap.getChild(<any>target.target) : target.data;
 
-                self._setTargetData(target.target, transform, prevEndKeyData);
+                self._setTargetData(target.target, transform, prevEndFrameData);
             });
         }
 
@@ -275,23 +239,16 @@ module wd{
         }
     }
 
-    enum AnimationState{
-        DEFAULT,
-        RUN,
-        STOP,
-        PAUSE
-    }
+    export type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationFrameData>>
 
-    export type ArticulatedAnimationData = wdCb.Hash<wdCb.Collection<ArticulatedAnimationKeyData>>
-
-    export type ArticulatedAnimationKeyData = {
+    export type ArticulatedAnimationFrameData = {
         time:number,
         interpolationMethod:KeyFrameInterpolation,
 
-        targets:wdCb.Collection<ArticulatedAnimationKeyTargetData>
+        targets:wdCb.Collection<ArticulatedAnimationFrameTargetData>
     }
 
-    export type ArticulatedAnimationKeyTargetData = {
+    export type ArticulatedAnimationFrameTargetData = {
         target:ArticulatedAnimationTarget,
         data:any
     }

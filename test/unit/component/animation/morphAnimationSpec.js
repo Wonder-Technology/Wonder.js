@@ -126,6 +126,10 @@ describe("morph animation", function () {
             )
         }
 
+        function setCurrentTime(time){
+            sandbox.stub(wd.Director.getInstance()._timeController, "elapsed", time);
+        }
+
 
         beforeEach(function(){
             vertice = [1,-1,0, 0,1,0,0,0,1, 2,3,-2, 10,5,1,  -10, 2, -2];
@@ -248,6 +252,8 @@ describe("morph animation", function () {
                     frameNormals1,
                     frameNormals2
                 );
+
+                setCurrentTime(1);
 
                 anim.pause();
 

@@ -6,32 +6,16 @@ module wd{
         	return obj;
         }
 
-        get isStart(){
-            return this._state === AnimationState.RUN;
-        }
-        get isStop(){
-            return this._state === AnimationState.STOP;
-        }
-        get isPause(){
-            return this._state === AnimationState.PAUSE;
-        }
-
         public interpolation:number = 0;
         public currentFrame:number = 0;
         public nextFrame:number = 1;
         public duration:number = null;
         public fps:number = null;
         public currentAnimName:string = null;
-        public isFrameChange:boolean = false;
 
-        private _currentTime:number = 0;
         private _oldTime:number = 0;
         private _frameCount:number = null;
-        private _state:AnimationState = AnimationState.DEFAULT;
-        private _isResume:boolean = false;
         private _isStartFromStop:boolean = false;
-        private _pauseTime:number = null;
-        private _resumeTime:number = null;
 
         public init(){
         }
@@ -61,63 +45,52 @@ module wd{
             this._start();
         }
 
-        public pause(){
-            this._state = AnimationState.PAUSE;
-            this._pauseTime = this._currentTime;
+        protected getPauseTime(){
+            return Director.getInstance().elapsed;
         }
 
-        public resume(){
-            this._state = AnimationState.RUN;
-
-            this._isResume = true;
-            this._resumeTime = this._oldTime;
+        protected getResumeTime(){
+            return this._oldTime;
         }
 
-        public stop(){
-            this._state = AnimationState.STOP;
+        protected handleWhenPause(elapsedTime:number):void{
+            this._oldTime = elapsedTime;
         }
 
-        public update(elapsedTime:number){
-            if(this._state === AnimationState.DEFAULT){
-                return;
+        protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
+            this.isFrameChange = true;
+            this._oldTime = this._floor(elapsedTime);
+
+            this.currentFrame = this.nextFrame;
+            this.nextFrame ++;
+            if(this.nextFrame >= this._frameCount){
+                this.nextFrame = 0;
             }
+        }
 
-            if(this.isStop || this.isPause){
-                this._oldTime = elapsedTime;
-                return;
-            }
-
-            if(this._isResume){
-                this._isResume = false;
-                this._continueFromPausePoint(elapsedTime);
-            }
-
-            this._currentTime = elapsedTime;
-
+        protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
             if(this._isStartFromStop){
                 this._isStartFromStop = false;
-                this._resetAnim();
+                this._resetAnim(elapsedTime);
             }
+        }
 
-            if(this._currentTime - this._oldTime > this.duration){
-                this.isFrameChange = true;
-                this._oldTime = this._floor(this._currentTime);
+        protected isCurrentFrameFinish(elapsedTime:number):boolean{
+            return elapsedTime - this._oldTime > this.duration;
+        }
 
-                this.currentFrame = this.nextFrame;
-                this.nextFrame ++;
-                if(this.nextFrame >= this._frameCount){
-                    this.nextFrame = 0;
-                }
-            }
-            else{
-                this.isFrameChange = false;
-            }
+        protected computeInterpolation(elapsedTime:number):void{
+            this.interpolation = this.fps * (elapsedTime - this._oldTime) / 1000;
+        }
 
-            this.interpolation = this.fps * (this._currentTime - this._oldTime) / 1000;
+        protected updateTargets():void{
+        }
+
+        protected continueFromPausePoint(elapsedTime:number){
+            this._oldTime = elapsedTime - (this.resumeTime - this.pauseTime) % this.duration;
         }
 
         private _start(){
-            this._currentTime = 0;
             this._oldTime = 0;
             this.currentFrame = 0;
             this.nextFrame = this.currentFrame + 1;
@@ -126,27 +99,16 @@ module wd{
                 this._isStartFromStop = true;
             }
 
-            this._state = AnimationState.RUN;
+            this.state = AnimationState.RUN;
         }
 
         private _floor(time:number){
             return time - time % this.duration;
         }
 
-        private _resetAnim(){
-            this._oldTime = this._currentTime;
+        private _resetAnim(elapsedTime:number){
+            this._oldTime = elapsedTime;
         }
-
-        private _continueFromPausePoint(currentTime:number){
-            this._oldTime = currentTime - (this._resumeTime - this._pauseTime) % this.duration;
-        }
-    }
-
-    enum AnimationState{
-        DEFAULT,
-        RUN,
-        STOP,
-        PAUSE
     }
 }
 
