@@ -27,7 +27,7 @@
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createDefaultCamera());
-            director.scene.addChildren(setModelAndReture());
+            director.scene.addChildren(setModelAndReturn());
 
 
             /*!
@@ -35,12 +35,12 @@
             0: default camera
             1: gltf camera
              */
-            director.scene.currentCamera = 1;
+            director.scene.currentCamera = 0;
 
             director.start();
         }
 
-        function setModelAndReture() {
+        function setModelAndReturn() {
             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
             var model = models.getChild(0);

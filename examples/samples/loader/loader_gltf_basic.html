@@ -26,7 +26,7 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren(setModelAndReture());
+            director.scene.addChildren(setModelAndReturn());
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -34,7 +34,7 @@
             director.start();
         }
 
-        function setModelAndReture() {
+        function setModelAndReturn() {
             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
             var model = models.getChild(0);
