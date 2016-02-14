@@ -8,6 +8,7 @@ module wd{
 
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _json:IGLTFJsonData = null;
+        private _arrayOffset:number = null;
 
         public parse(json:IGLTFJsonData, objects:wdCb.Collection<IGLTFObjectData>, arrayBufferMap:wdCb.Hash<any>):void{
             var nodeWithAnimationMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
@@ -20,92 +21,101 @@ module wd{
                     let animation:IGLTFAnimation = json.animations[animName],
                         keyFrameDataList = wdCb.Collection.create<IGLTFKeyFrameData>();
 
-
                     for(let i = 0, len = animation.channels.length; i < len; i++){
-                        let channel = animation.channels[i],
-                            sampler:IGLTFAnimationSampler = animation.samplers[channel.sampler];
+                        let channel:IGLTFAnimationChannel = animation.channels[i],
+                            sampler:IGLTFAnimationSampler = animation.samplers[channel.sampler],
+                            targetId:string = null,
+                            targetNode:IGLTFObjectData = null;
 
                         if (!sampler) {
                             continue;
                         }
 
+                        targetId = channel.target.id;
 
-                        var inputData = animation.parameters[sampler.input];
-                        var outputData = animation.parameters[sampler.output];
-
-                        var bufferInput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
-                        var bufferOutput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[outputData], arrayBufferMap);
-
-                        var targetId = channel.target.id;
-                        var targetNode:IGLTFObjectData = this._findNode(objects, targetId);
+                        targetNode = this._findNode(objects, targetId);
 
                         if (targetNode === null) {
                             Log.warn(`can't find node whose id is ${targetId} to attach to animation named ${animName}`);
                             continue;
                         }
-                        //
-                        //targetNode.components.addChild(articulatedAnimationData);
 
-                        if(!nodeWithAnimationMap.hasChild(targetId)){
-                            nodeWithAnimationMap.addChild(targetId, {
-                                node:targetNode,
-                                animationData:{}
-                            });
-                        }
-
-                        nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
-
-
-                        var targetPath = channel.target.path;
-
-                        var arrayOffset = 0;
-
-                        for (let j = 0; j < bufferInput.length; j++) {
-
-                            var keyFrameData:IGLTFKeyFrameData = <any>{};
-
-                            keyFrameDataList.addChild(keyFrameData);
-
-
-
-                            keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
-                            keyFrameData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
-                            keyFrameData.targets = wdCb.Collection.create<IGLTFKeyFrameTargetData>();
-
-
-                            switch (targetPath){
-                                case "translation":
-                                    keyFrameData.targets.addChild({
-                                        target: ArticulatedAnimationTarget.TRANSLATION,
-                                        data: Vector3.create(bufferOutput[arrayOffset], bufferOutput[arrayOffset + 1], bufferOutput[arrayOffset + 2])
-                                    });
-                                    arrayOffset += 3;
-                                    break;
-                                    case "rotation":
-                                        keyFrameData.targets.addChild({
-                                            target: ArticulatedAnimationTarget.ROTATION,
-                                            data: Quaternion.create(bufferOutput[arrayOffset], bufferOutput[arrayOffset + 1], bufferOutput[arrayOffset + 2], bufferOutput[arrayOffset + 3])
-                                        });
-
-                                        arrayOffset += 4;
-                                    break;
-                                case "scale":
-                                    keyFrameData.targets.addChild({
-                                        target: ArticulatedAnimationTarget.SCALE,
-                                        data: Vector3.create(bufferOutput[arrayOffset], bufferOutput[arrayOffset + 1], bufferOutput[arrayOffset + 2])
-                                    });
-                                    arrayOffset += 3;
-                                    break;
-                                default:
-                                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`path:${targetPath}`));
-                                    break;
-                            }
-                        }
+                        this._addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, animName, keyFrameDataList);
+                        this._addKeyFrameDatas(keyFrameDataList, channel, animation, sampler);
                     }
                 }
             }
 
             this._addAnimationComponent(nodeWithAnimationMap);
+        }
+
+        private _addAnimationToNode(nodeWithAnimationMap:wdCb.Hash<any>, targetId:string, targetNode:IGLTFObjectData, animName:string, keyFrameDataList:wdCb.Collection<IGLTFKeyFrameData>){
+            if(!nodeWithAnimationMap.hasChild(targetId)){
+                nodeWithAnimationMap.addChild(targetId, {
+                    node:targetNode,
+                    animationData:{}
+                });
+            }
+
+            nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
+        }
+
+        private _addKeyFrameDatas(keyFrameDataList:wdCb.Collection<IGLTFKeyFrameData>, channel:IGLTFAnimationChannel, animation:IGLTFAnimation, sampler:IGLTFAnimationSampler){
+            var targetPath = channel.target.path,
+                json = this._json,
+                arrayBufferMap = this._arrayBufferMap,
+                inputData = animation.parameters[sampler.input],
+                bufferInput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
+
+            this._arrayOffset = 0;
+
+            for (let j = 0; j < bufferInput.length; j++) {
+
+                let keyFrameData:IGLTFKeyFrameData = <any>{};
+
+                keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
+                keyFrameData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
+                keyFrameData.targets = this._getKeyFrameDataTargets(targetPath, animation, sampler);
+
+
+                keyFrameDataList.addChild(keyFrameData);
+            }
+        }
+
+        private _getKeyFrameDataTargets(targetPath:string, animation:IGLTFAnimation, sampler:IGLTFAnimationSampler){
+            var targets = wdCb.Collection.create<IGLTFKeyFrameTargetData>(),
+                outputData = animation.parameters[sampler.output],
+                bufferOutput = GLTFUtils.getBufferArrFromAccessor(this._json, this._json.accessors[outputData], this._arrayBufferMap);
+
+            switch (targetPath){
+                case "translation":
+                    targets.addChild({
+                        target: ArticulatedAnimationTarget.TRANSLATION,
+                        data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
+                    });
+                    this._arrayOffset += 3;
+                    break;
+                case "rotation":
+                    targets.addChild({
+                        target: ArticulatedAnimationTarget.ROTATION,
+                        data: Quaternion.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2], bufferOutput[this._arrayOffset + 3])
+                    });
+
+                    this._arrayOffset += 4;
+                    break;
+                case "scale":
+                    targets.addChild({
+                        target: ArticulatedAnimationTarget.SCALE,
+                        data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
+                    });
+                    this._arrayOffset += 3;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`path:${targetPath}`));
+                    break;
+            }
+
+            return targets;
         }
 
         private _findNode(objects:wdCb.Collection<IGLTFObjectData>, targetId:string){
@@ -132,11 +142,9 @@ module wd{
         }
 
         @ensure(function(returnVal, nodeWithAnimationMap:wdCb.Hash<any>){
-            var self = this;
-
             nodeWithAnimationMap.forEach(({node, animationData}) => {
                 assert(node.components.filter((component:IGLTFComponent) => {
-                    return self._isIGLTFArticulatedAnimation(component);
+                    return GLTFUtils.isIGLTFArticulatedAnimation(component);
                 }).getCount() <= 1, Log.info.FUNC_SHOULD("node", "only has 1 IGLTFArticulatedAnimation component"));
             })
         })
@@ -144,17 +152,6 @@ module wd{
             nodeWithAnimationMap.forEach(({node, animationData}) => {
                 node.components.addChild(animationData);
             });
-        }
-
-        //todo move to utils
-        private _isIGLTFArticulatedAnimation(component:IGLTFArticulatedAnimation){
-            if(!JudgeUtils.isDirectObject(component)){
-                return false;
-            }
-
-            for(let animName in component){
-                return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
-            }
         }
 
         private _convertSecondToMillisecond(time:number){

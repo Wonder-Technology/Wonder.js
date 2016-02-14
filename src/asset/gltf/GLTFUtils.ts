@@ -92,5 +92,15 @@ module wd{
                     return 1;
             }
         }
+
+        public static isIGLTFArticulatedAnimation(component:IGLTFComponent){
+            if(!JudgeUtils.isDirectObject(component)){
+                return false;
+            }
+
+            for(let animName in component){
+                return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
+            }
+        }
     }
 }

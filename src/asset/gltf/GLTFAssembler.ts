@@ -107,15 +107,8 @@ module wd{
             return !!component.material;
         }
 
-        //todo move to utils
         private _isArticulatedAnimation(component:any){
-            if(!JudgeUtils.isDirectObject(component)){
-                return false;
-            }
-
-            for(let animName in component){
-                return component[animName] instanceof wdCb.Collection && component[animName].getCount() > 0 && component[animName].getChild(0).time !== void 0;
-            }
+            return GLTFUtils.isIGLTFArticulatedAnimation(component);
         }
 
         private _createTransform(component:IGLTFTransform){
