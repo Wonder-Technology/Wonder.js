@@ -83,21 +83,17 @@ module wd {
         }
 
         public addChild(child:GameObject):GameObject{
-            if(this._isCamera(child)){
-                this._cameraList.addChild(child);
+            var cameraList = this._getCameras(child),
+                lightList = this._getLights(child);
+
+            if(cameraList.getCount() > 0){
+                this._cameraList.addChildren(cameraList);
             }
-            else if(this._isLight(child)){
-                this._lightManager.addChild(child);
+            if(lightList.getCount() > 0){
+                this._lightManager.addChildren(lightList);
             }
 
             return <GameObject>super.addChild(child);
-        }
-
-        @require(function(cameraObject:GameObject){
-            assert(cameraObject.hasComponent(CameraController), Log.info.FUNC_SHOULD("only add camera object"));
-        })
-        public addToCameraList(cameraObject:GameObject){
-            this._cameraList.addChild(cameraObject);
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
@@ -136,6 +132,32 @@ module wd {
 
         protected createTransform(){
             return null;
+        }
+
+        private _getCameras(gameObject:GameObject){
+            return this._find(gameObject, this._isCamera);
+        }
+
+        private _getLights(gameObject:GameObject){
+            return this._find(gameObject, this._isLight);
+        }
+
+        private _find(gameObject:GameObject, judgeFunc){
+            var self = this,
+                resultArr:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+            var find = (gameObject:GameObject) => {
+                if(judgeFunc.call(self, gameObject)){
+                    resultArr.addChild(gameObject);
+                }
+
+                gameObject.forEach((child:GameObject) => {
+                    find(child);
+                });
+            }
+
+            find(gameObject);
+
+            return resultArr;
         }
 
         private _isCamera(child:GameObject){

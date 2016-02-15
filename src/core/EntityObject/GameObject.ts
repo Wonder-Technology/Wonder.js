@@ -19,14 +19,6 @@ module wd {
             return this.getComponent<SpacePartition>(SpacePartition);
         }
 
-        public addChild(child:GameObject):EntityObject {
-            if(child.hasComponent(CameraController)){
-                Director.getInstance().scene.gameObjectScene.addToCameraList(child);
-            }
-
-            return super.addChild(child);
-        }
-
         protected createTransform(){
             return ThreeDTransform.create();
         }

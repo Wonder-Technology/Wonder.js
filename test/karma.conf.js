@@ -27,12 +27,12 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
-        'test/unit/**/*animation*',
+        //'test/unit/**/*animation*',
 
-        'test/unit/**/GLTFParserSpec*',
-        'test/unit/**/GLTFAssemblerSpec*',
+        //'test/unit/**/GLTFParserSpec*',
+        //'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
@@ -93,7 +93,7 @@
         //'test/unit/**/LightShaderLibSpec*',
 
         //'test/unit/**/SceneDispatcherSpec*',
-        //'test/unit/**/GameObjectSceneSpec*',
+        'test/unit/**/GameObjectSceneSpec*',
 
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
@@ -121,7 +121,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        //'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
@@ -139,7 +139,7 @@
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
-        'test/unit/component/**/*Animation*.js',
+        //'test/unit/component/**/*Animation*.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',

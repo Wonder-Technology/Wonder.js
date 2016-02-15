@@ -69,6 +69,86 @@ describe("GameObjectScene", function() {
         });
     });
 
+    describe("addChild", function(){
+        beforeEach(function(){
+        });
+
+        describe("add camera object", function(){
+            beforeEach(function(){
+            });
+
+            it("if gameObject or its children has CameraController component,  add it to GameObjectScene->_cameraList", function(){
+                var cameraObject1 = testTool.createCamera();
+                var cameraObject2 = testTool.createCamera();
+                var cameraObject3 = testTool.createCamera();
+                var cameraObject4 = testTool.createCamera();
+
+                cameraObject3.addChild(cameraObject4);
+
+                var gameObject = wd.GameObject.create();
+                gameObject.addChildren([cameraObject2, cameraObject3]);
+
+
+
+
+
+                scene.addChild(gameObject);
+                scene.addChild(cameraObject1);
+
+
+
+
+
+                var cameraList = scene._cameraList;
+
+                expect(cameraList.getCount()).toEqual(4);
+                expect(cameraList.getChildren()).toEqual([cameraObject2, cameraObject3, cameraObject4, cameraObject1]);
+            });
+        });
+
+        describe("add light object", function(){
+            function createLight(){
+                var obj = wd.GameObject.create();
+
+                obj.addComponent(wd.PointLight.create());
+                obj.addComponent(wd.MeshRenderer.create());
+
+                return obj;
+            }
+
+            beforeEach(function(){
+            });
+
+            it("if gameObject or its children has Light component,  add it to GameObjectScene->_lightManager", function(){
+                var lightObject1 = createLight();
+                var lightObject2 = createLight();
+                var lightObject3 = createLight();
+                var lightObject4 = createLight();
+
+                lightObject3.addChild(lightObject4);
+
+                var gameObject = wd.GameObject.create();
+                gameObject.addChildren([lightObject2, lightObject3]);
+
+
+
+
+
+                scene.addChild(gameObject);
+                scene.addChild(lightObject1);
+
+
+
+
+
+                var lightManager = scene._lightManager;
+
+                expect(lightManager.pointLights.getCount()).toEqual(4);
+                expect(lightManager.pointLights.getChildren()).toEqual([lightObject2, lightObject3, lightObject4, lightObject1]);
+            });
+        });
+    });
+
     describe("test with child", function() {
         beforeEach(function () {
             gameObject1 = wd.GameObject.create();

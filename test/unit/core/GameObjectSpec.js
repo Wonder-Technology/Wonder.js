@@ -14,22 +14,6 @@ describe("GameObject", function() {
         sandbox.restore();
     });
 
-    describe("addChild", function(){
-        beforeEach(function(){
-
-        });
-
-        it("add camera object to GameObjectScene->cameraList", function(){
-            var cameraObject = testTool.createCamera();
-
-            gameObject.addChild(cameraObject);
-            var director = wd.Director.getInstance();
-            director.scene.addChild(gameObject);
-
-            expect(director.scene.currentCamera).toEqual(cameraObject);
-        });
-    });
-
     describe("findChildByUid", function(){
         it("match uid, return the first result.", function(){
             var parent = GameObject.create();

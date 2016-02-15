@@ -34,6 +34,14 @@ module wd {
                  Log.error(true, Log.info.FUNC_INVALID("light"));
             }
         }
+
+        public addChildren(lightList:wdCb.Collection<GameObject>){
+            var self = this;
+
+            lightList.forEach((light:GameObject) => {
+                self.addChild(light);
+            })
+        }
     }
 }
 
