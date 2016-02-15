@@ -1,52 +1,103 @@
 module wd{
     export class GLTFArticulatedAnimationParser{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         private _arrayBufferMap:wdCb.Hash<any> = null;
         private _json:IGLTFJsonData = null;
-        private _arrayOffset:number = null;
+        private _translationArrayOffset:number = null;
+        private _rotationArrayOffset:number = null;
+        private _scaleArrayOffset:number = null;
 
         public parse(json:IGLTFJsonData, objects:wdCb.Collection<IGLTFObjectData>, arrayBufferMap:wdCb.Hash<any>):void{
-            var nodeWithAnimationMap:wdCb.Hash<any> = wdCb.Hash.create<any>();
+            var nodeWithAnimationMap:wdCb.Hash<any> = wdCb.Hash.create<any>(),
+                self = this;
 
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
 
-            for(let animName in json.animations){
-                if(json.animations.hasOwnProperty(animName)){
-                    let animation:IGLTFAnimation = json.animations[animName],
-                        keyFrameDataList = wdCb.Collection.create<IGLTFKeyFrameData>();
+            for(let animId in json.animations){
+                if(json.animations.hasOwnProperty(animId)){
+                    let animation:IGLTFAnimation = json.animations[animId],
+                        nodeWithChannelMap = wdCb.Hash.create<IGLTFAnimationChannel>();
 
-                    for(let i = 0, len = animation.channels.length; i < len; i++){
+
+                    for(let i = 0, len = animation.channels.length; i < len; i++) {
                         let channel:IGLTFAnimationChannel = animation.channels[i],
-                            sampler:IGLTFAnimationSampler = animation.samplers[channel.sampler],
-                            targetId:string = null,
-                            targetNode:IGLTFObjectData = null;
+                            targetId:string = channel.target.id;
 
-                        if (!sampler) {
-                            continue;
-                        }
+                        nodeWithChannelMap.appendChild(targetId, channel);
+                    }
 
-                        targetId = channel.target.id;
-
-                        targetNode = this._findNode(objects, targetId);
+                    nodeWithChannelMap.forEach((channelList:wdCb.Collection<IGLTFAnimationChannel>, targetId:string) => {
+                        var keyFrameDataList = wdCb.Collection.create<IGLTFKeyFrameData>(),
+                            targetNode = self._findNode(objects, targetId),
+                            inputData = null,
+                            bufferInput = null;
 
                         if (targetNode === null) {
-                            Log.warn(`can't find node whose id is ${targetId} to attach to animation named ${animName}`);
-                            continue;
+                            Log.warn(`can't find node whose id is ${targetId} to attach to animation named ${animId}`);
+                            return;
                         }
 
-                        this._addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, animName, keyFrameDataList);
-                        this._addKeyFrameDatas(keyFrameDataList, channel, animation, sampler);
-                    }
+                        self._addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, self._getAnimName(animation, animId), keyFrameDataList);
+
+                        inputData = self._getInputData(animation, channelList);
+                        bufferInput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
+
+                        this._translationArrayOffset = 0;
+                        this._rotationArrayOffset = 0;
+                        this._scaleArrayOffset = 0;
+
+                        for (let j = 0; j < bufferInput.length; j++) {
+                            let keyFrameData:IGLTFKeyFrameData = <any>{};
+
+                            keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
+
+                            keyFrameData.targets = this._getKeyFrameDataTargets(animation, channelList);
+
+                            keyFrameDataList.addChild(keyFrameData);
+                        }
+                    });
                 }
             }
 
             this._addAnimationComponent(nodeWithAnimationMap);
+        }
+
+        private _getAnimName(animation:IGLTFAnimation, animId:string){
+            return animation.name ? animation.name : animId;
+        }
+
+        @require(function(animation:IGLTFAnimation, channelList:wdCb.Collection<IGLTFAnimationChannel>){
+            var inputSamplerList = wdCb.Collection.create<string>();
+
+            for(let samplerId in animation.samplers) {
+                if (animation.samplers.hasOwnProperty(samplerId)) {
+                    let sampelr = animation.samplers[samplerId];
+
+                    inputSamplerList.addChild(sampelr.input);
+                }
+            }
+
+            assert(inputSamplerList.removeRepeatItems().getCount() === 1, Log.info.FUNC_SHOULD("all sampler->input", "be the same"));
+        })
+        private _getInputData(animation:IGLTFAnimation, channelList:wdCb.Collection<IGLTFAnimationChannel>){
+            var result = null;
+
+            channelList.forEach((channel:IGLTFAnimationChannel) => {
+                var sampler:IGLTFAnimationSampler = animation.samplers[channel.sampler];
+
+                if (sampler) {
+                    result = animation.parameters[sampler.input];
+                    return wdCb.$BREAK;
+                }
+            });
+
+            return result;
         }
 
         private _addAnimationToNode(nodeWithAnimationMap:wdCb.Hash<any>, targetId:string, targetNode:IGLTFObjectData, animName:string, keyFrameDataList:wdCb.Collection<IGLTFKeyFrameData>){
@@ -60,60 +111,56 @@ module wd{
             nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
         }
 
-        private _addKeyFrameDatas(keyFrameDataList:wdCb.Collection<IGLTFKeyFrameData>, channel:IGLTFAnimationChannel, animation:IGLTFAnimation, sampler:IGLTFAnimationSampler){
-            var targetPath = channel.target.path,
-                json = this._json,
-                arrayBufferMap = this._arrayBufferMap,
-                inputData = animation.parameters[sampler.input],
-                bufferInput = GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
-
-            this._arrayOffset = 0;
-
-            for (let j = 0; j < bufferInput.length; j++) {
-
-                let keyFrameData:IGLTFKeyFrameData = <any>{};
-
-                keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
-                keyFrameData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
-                keyFrameData.targets = this._getKeyFrameDataTargets(targetPath, animation, sampler);
+        private _getKeyFrameDataTargets(animation:IGLTFAnimation, channelList:wdCb.Collection<IGLTFAnimationChannel>){
+            var targets = wdCb.Collection.create<IGLTFKeyFrameTargetData>();
 
 
-                keyFrameDataList.addChild(keyFrameData);
-            }
-        }
+            channelList.forEach((channel:IGLTFAnimationChannel) => {
+                var sampler:IGLTFAnimationSampler = animation.samplers[channel.sampler],
+                    outputData:any = null,
+                    bufferOutput:any = null,
+                    targetPath:string = null,
+                    targetData:IGLTFKeyFrameTargetData = <any>{};
 
-        private _getKeyFrameDataTargets(targetPath:string, animation:IGLTFAnimation, sampler:IGLTFAnimationSampler){
-            var targets = wdCb.Collection.create<IGLTFKeyFrameTargetData>(),
-                outputData = animation.parameters[sampler.output],
+                if (!sampler) {
+                    return;
+                }
+
+                targetPath = channel.target.path;
+
+                outputData = animation.parameters[sampler.output];
                 bufferOutput = GLTFUtils.getBufferArrFromAccessor(this._json, this._json.accessors[outputData], this._arrayBufferMap);
 
-            switch (targetPath){
-                case "translation":
-                    targets.addChild({
-                        target: EArticulatedAnimationTarget.TRANSLATION,
-                        data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
-                    });
-                    this._arrayOffset += 3;
-                    break;
-                case "rotation":
-                    targets.addChild({
-                        target: EArticulatedAnimationTarget.ROTATION,
-                        data: Quaternion.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2], bufferOutput[this._arrayOffset + 3])
-                    });
 
-                    this._arrayOffset += 4;
-                    break;
-                case "scale":
-                    targets.addChild({
-                        target: EArticulatedAnimationTarget.SCALE,
-                        data: Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
-                    });
-                    this._arrayOffset += 3;
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`path:${targetPath}`));
-                    break;
-            }
+                targetData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
+
+                switch (targetPath){
+                    case "translation":
+                        targetData.target = EArticulatedAnimationTarget.TRANSLATION;
+                        targetData.data = Vector3.create(bufferOutput[this._translationArrayOffset], bufferOutput[this._translationArrayOffset + 1], bufferOutput[this._translationArrayOffset + 2]);
+
+                        this._translationArrayOffset += 3;
+                        break;
+                    case "rotation":
+                        targetData.target = EArticulatedAnimationTarget.ROTATION;
+                        targetData.data = Quaternion.create(bufferOutput[this._rotationArrayOffset], bufferOutput[this._rotationArrayOffset + 1], bufferOutput[this._rotationArrayOffset + 2], bufferOutput[this._rotationArrayOffset + 3]);
+
+                        this._rotationArrayOffset += 4;
+                        break;
+                    case "scale":
+                        targetData.target = EArticulatedAnimationTarget.SCALE;
+                        targetData.data = Vector3.create(bufferOutput[this._scaleArrayOffset], bufferOutput[this._scaleArrayOffset + 1], bufferOutput[this._scaleArrayOffset + 2]);
+
+                        this._scaleArrayOffset += 3;
+                        break;
+                    default:
+                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`path:${targetPath}`));
+                        break;
+                }
+
+
+                targets.addChild(targetData);
+            });
 
             return targets;
         }
@@ -144,8 +191,8 @@ module wd{
         @ensure(function(returnVal, nodeWithAnimationMap:wdCb.Hash<any>){
             nodeWithAnimationMap.forEach(({node, animationData}) => {
                 assert(node.components.filter((component:IGLTFComponent) => {
-                    return GLTFUtils.isIGLTFArticulatedAnimation(component);
-                }).getCount() <= 1, Log.info.FUNC_SHOULD("node", "only has 1 IGLTFArticulatedAnimation component"));
+                        return GLTFUtils.isIGLTFArticulatedAnimation(component);
+                    }).getCount() <= 1, Log.info.FUNC_SHOULD("node", "only has 1 IGLTFArticulatedAnimation component"));
             })
         })
         private _addAnimationComponent(nodeWithAnimationMap:wdCb.Hash<any>){

@@ -62,9 +62,11 @@ module wd{
                 this.isFrameChange = false;
             }
 
-            this.computeInterpolation(elapsedTime);
+            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime);
 
-            this.updateTargets();
+            //this.computeInterpolation(elapsedTime);
+            //
+            //this.updateTargets();
         }
 
         protected abstract getPauseTime():number;
@@ -72,10 +74,11 @@ module wd{
         protected abstract handleWhenPause(elapsedTime:number):void;
         protected abstract handleWhenCurrentFrameFinish(elapsedTime:number):void;
         protected abstract handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
+        protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
         protected abstract continueFromPausePoint(elapsedTime:number):void;
         protected abstract isCurrentFrameFinish(elapsedTime:number):boolean;
-        protected abstract computeInterpolation(elapsedTime:number):void;
-        protected abstract updateTargets():void;
+        //protected abstract computeInterpolation(elapsedTime:number):void;
+        //protected abstract updateTargets():void;
     }
 
     export enum EAnimationState{

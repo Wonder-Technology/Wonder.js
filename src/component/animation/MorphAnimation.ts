@@ -79,11 +79,8 @@ module wd{
             return elapsedTime - this._oldTime > this.duration;
         }
 
-        protected computeInterpolation(elapsedTime:number):void{
-            this.interpolation = this.fps * (elapsedTime - this._oldTime) / 1000;
-        }
-
-        protected updateTargets():void{
+        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+            this._computeInterpolation(elapsedTime);
         }
 
         protected continueFromPausePoint(elapsedTime:number){
@@ -108,6 +105,10 @@ module wd{
 
         private _resetAnim(elapsedTime:number){
             this._oldTime = elapsedTime;
+        }
+
+        private _computeInterpolation(elapsedTime:number):void{
+            this.interpolation = this.fps * (elapsedTime - this._oldTime) / 1000;
         }
     }
 

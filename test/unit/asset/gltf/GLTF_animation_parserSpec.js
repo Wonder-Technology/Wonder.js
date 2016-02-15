@@ -88,15 +88,260 @@ describe("GLTF animation parser", function () {
                 sandbox.stub(arrayBufferMap, "getChild").returns(Utils.decodeArrayBuffer(json.buffers.input.uri));
             });
 
+            describe("test multi channels", function () {
+                var objects;
+
+                function createObject(id){
+                    return {
+                        id:id,
+
+                            isContainer:false,
+
+                        components: wdCb.Collection.create(),
+
+                        children: wdCb.Collection.create()
+                    };
+                }
+
+                beforeEach(function(){
+                });
+
+                it("test all channels->target->id are the same", function () {
+                    setJson({
+                        "scenes": {
+                            "defaultScene": {
+                                "nodes": [
+                                    "node_1"
+                                ]
+                            }
+                        },
+                        "nodes": {
+                            "node_1": {
+                                "children": [
+                                ],
+                                "name": "1"
+                            }
+                        },
+                        "animations": {
+                            "animation_0": {
+                                "channels": [
+                                    {
+                                        "sampler": "animation_0_rotation_sampler",
+                                        "target": {
+                                            "id": "node_1",
+                                            "path": "rotation"
+                                        }
+                                    },
+                                    {
+                                        "sampler": "animation_0_translation_sampler",
+                                        "target": {
+                                            "id": "node_1",
+                                            "path": "translation"
+                                        }
+                                    }
+                                ],
+                                "parameters": {
+                                    "TIME": "animAccessor_0",
+                                    "rotation": "animAccessor_2",
+                                    //"translation": "animAccessor_2"
+                                    //"TIME": "animAccessor_2",
+                                    "translation": "animAccessor_3"
+                                },
+                                "samplers": {
+                                    "animation_0_rotation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "rotation"
+                                    },
+                                    "animation_0_translation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "translation"
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                    objects = wdCb.Collection.create([
+                        createObject("node_1")
+                    ])
+
+
+
+
+
+
+                    parser.parse(json, objects, arrayBufferMap);
+
+
+
+
+
+
+                    object = objects.getChild(0);
+                    animationComponent = object.components.getChild(0);
+
+                    expect(animationComponent.animation_0.getCount()).toEqual(2);
+
+
+                    var key1 = animationComponent.animation_0.getChild(0);
+                    expect(key1.targets.getCount()).toEqual(2);
+
+
+                    var target1 = key1.targets.getChild(0);
+                    expect(target1.target).toEqual(wd.EArticulatedAnimationTarget.ROTATION);
+                    expect(target1.data).toBeInstanceOf(wd.Quaternion);
+
+
+                    var target2 = key1.targets.getChild(1);
+                    expect(target2.target).toEqual(wd.EArticulatedAnimationTarget.TRANSLATION);
+                    expect(target2.data).toBeInstanceOf(wd.Vector3);
+                    expect(
+                        testTool.getValues(
+                            target2.data,
+                            2
+                        )
+                    ).toEqual([0,0,0]);
+
+
+
+                    var key2 = animationComponent.animation_0.getChild(1);
+                    var target2 = key2.targets.getChild(1);
+
+                    expect(
+                        testTool.getValues(
+                            target2.data,
+                            2
+                        )
+                    ).toEqual([0,2.52,0]);
+                });
+                it("test channels->target->id are different", function () {
+                    setJson({
+                        "scenes": {
+                            "defaultScene": {
+                                "nodes": [
+                                    "node_1",
+                                    "node_2"
+                                ]
+                            }
+                        },
+                        "nodes": {
+                            "node_1": {
+                                "children": [
+                                ],
+                                "name": "1"
+                            },
+                            "node_2": {
+                                "children": [
+                                ],
+                                "name": "2"
+                            }
+                        },
+                        "animations": {
+                            "animation_0": {
+                                "channels": [
+                                    {
+                                        "sampler": "animation_0_rotation_sampler",
+                                        "target": {
+                                            "id": "node_1",
+                                            "path": "rotation"
+                                        }
+                                    },
+                                    {
+                                        "sampler": "animation_0_translation_sampler",
+                                        "target": {
+                                            "id": "node_1",
+                                            "path": "translation"
+                                        }
+                                    },
+                                    {
+                                        "sampler": "animation_0_node2_translation_sampler",
+                                        "target": {
+                                            "id": "node_2",
+                                            "path": "translation"
+                                        }
+                                    }
+                                ],
+                                "parameters": {
+                                    "TIME": "animAccessor_0",
+                                    "rotation": "animAccessor_1",
+                                    "translation": "animAccessor_2"
+                                },
+                                "samplers": {
+                                    "animation_0_rotation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "rotation"
+                                    },
+                                    "animation_0_translation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "translation"
+                                    },
+
+                                    "animation_0_node2_translation_sampler": {
+                                        "input": "TIME",
+                                        "interpolation": "LINEAR",
+                                        "output": "translation"
+                                    }
+                                }
+                            }
+                        }
+                    })
+
+                    objects = wdCb.Collection.create([
+                        createObject("node_1"),
+                        createObject("node_2")
+                    ])
+
+
+
+
+
+
+                    parser.parse(json, objects, arrayBufferMap);
+
+
+
+
+
+
+
+
+                    var object1 = objects.getChild(0);
+                    var animationComponent1 = object1.components.getChild(0);
+
+                    expect(animationComponent1.animation_0.getCount()).toEqual(2);
+
+
+                    var key1 = animationComponent1.animation_0.getChild(0);
+                    expect(key1.targets.getCount()).toEqual(2);
+
+
+
+
+
+                    var object2 = objects.getChild(1);
+                    var animationComponent2 = object2.components.getChild(0);
+
+                    expect(animationComponent2.animation_0.getCount()).toEqual(2);
+
+
+                    var key1 = animationComponent2.animation_0.getChild(0);
+                    expect(key1.targets.getCount()).toEqual(1);
+                });
+            });
+
             describe("test only one node has animations", function(){
                 var object;
 
                 function judgePos(keyIndex, time, posArr){
-                    var key1 = animationComponent.animation_1.getChild(keyIndex);
+                    var key1 = animationComponent.stop.getChild(keyIndex);
                     expect(Math.floor(key1.time)).toEqual(time);
-                    expect(key1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(key1.targets.getCount()).toEqual(1);
                     var target1 = key1.targets.getChild(0);
+                    expect(target1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(target1.target).toEqual(wd.EArticulatedAnimationTarget.TRANSLATION);
                     expect(target1.data).toBeInstanceOf(wd.Vector3);
                     expect(
@@ -107,9 +352,9 @@ describe("GLTF animation parser", function () {
                 function judgeRotation(keyIndex, time){
                     var key1 = animationComponent.animation_0.getChild(keyIndex);
                     expect(key1.time).toEqual(time);
-                    expect(key1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(key1.targets.getCount()).toEqual(1);
                     var target1 = key1.targets.getChild(0);
+                    expect(target1.interpolationMethod).toEqual(wd.EKeyFrameInterpolation.LINEAR);
                     expect(target1.target).toEqual(wd.EArticulatedAnimationTarget.ROTATION);
                     expect(target1.data).toBeInstanceOf(wd.Quaternion);
                 }
@@ -147,6 +392,7 @@ describe("GLTF animation parser", function () {
                                 }
                             },
                             "animation_1": {
+                                "name":"stop",
                                 "channels": [
                                     {
                                         "sampler": "animation_1_translation_sampler",
@@ -197,6 +443,12 @@ describe("GLTF animation parser", function () {
                     animationComponent = object.components.getChild(0);
                 });
 
+
+                it("if animation:IGLTFAnimation->name exist, regard it as animation name; else, use animId as animation name", function () {
+                    expect(animationComponent.animation_0).toBeDefined();
+                    expect(animationComponent.animation_1).not.toBeDefined();
+                    expect(animationComponent.stop).toBeDefined();
+                });
                 it("test node should only has 1 animation component", function(){
                     expect(object.components.getCount()).toEqual(1)
                 });
@@ -206,8 +458,8 @@ describe("GLTF animation parser", function () {
                     judgeRotation(0, 1250);
                     judgeRotation(1, 2500);
                 });
-                it("test animation_1", function(){
-                    expect(animationComponent.animation_1.getCount()).toEqual(4);
+                it("test animation_1(named 'stop')", function(){
+                    expect(animationComponent.stop.getCount()).toEqual(4);
 
                     judgePos(0, 0, [0,0,0]);
                     judgePos(1, 1250, [0,2.52,0]);

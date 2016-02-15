@@ -8,7 +8,6 @@ module wd{
 
         public data:ArticulatedAnimationData = null;
 
-        private _interpolation:number = null;
         private _currentFrame:number = null;
         private _currentAnimName:string = null;
         private _beginElapsedTimeOfFirstFrame:number = null;
@@ -27,8 +26,26 @@ module wd{
         public dispose(){
         }
 
-        @require(function(animName:string){
-            this.data.getChild(animName).forEach((data:ArticulatedAnimationFrameData) => {
+
+        public play(animName:string);
+        public play(animIndex:number);
+
+        @require(function(...args){
+            if(JudgeUtils.isNumber(args[0])){
+                let animIndex:number = args[0];
+
+                assert(this.data.getCount() >= animIndex + 1, Log.info.FUNC_NOT_EXIST(`animation index:${animIndex}`));
+            }
+            else if(JudgeUtils.isString(args[0])){
+                let animName:string = args[0];
+
+                assert(this.data.hasChild(animName), Log.info.FUNC_NOT_EXIST(`animation name:${animName}`));
+            }
+        })
+        @ensure(function(){
+            assert(!!this._currentAnimData, Log.info.FUNC_NOT_EXIST(`animation name:${this._currentAnimName}`));
+
+            this._currentAnimData.forEach((data:ArticulatedAnimationFrameData) => {
                 assert(data.time >= 0, Log.info.FUNC_SHOULD("time", ">= 0"));
 
                 assert(data.targets.getCount() > 0, Log.info.FUNC_SHOULD("ArticulatedAnimationFrameData->targets.getCount()", "> 0"));
@@ -53,11 +70,33 @@ module wd{
                 })
             })
         })
-        public play(animName:string){
-            this._currentAnimName = animName;
-            this._currentAnimData = this.data.getChild(animName);
+        public play(...args){
+            if(JudgeUtils.isNumber(args[0])){
+                let animIndex:number = args[0],
+                    i = 0,
+                    self = this;
+
+                this.data.forEach((data:wdCb.Collection<ArticulatedAnimationFrameData>, animName:string) => {
+                    if(animIndex === i){
+                        self._currentAnimName = animName;
+                        self._currentAnimData = data;
+
+                        return wdCb.$BREAK;
+                    }
+
+                    i++;
+                });
+            }
+            else if(JudgeUtils.isString(args[0])){
+                let animName:string = args[0];
+
+                this._currentAnimName = animName;
+                this._currentAnimData = this.data.getChild(animName);
+            }
+
             this._resetAnim();
             this._saveStartFrameData();
+
             this._frameCount = this._currentAnimData.getCount();
             this.state = EAnimationState.RUN;
         }
@@ -80,38 +119,34 @@ module wd{
         }
 
         protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+            if(this._beginElapsedTimeOfFirstFrame === null){
+                this._beginElapsedTimeOfFirstFrame = this._getCurrentTime();
+            }
         }
 
         protected isCurrentFrameFinish(elapsedTime:number):boolean{
             return elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration > this._currentFrameData.time;
         }
 
-        protected computeInterpolation(elapsedTime:number):void{
-            switch (this._currentFrameData.interpolationMethod){
-                case EKeyFrameInterpolation.LINEAR:
-                    if(this._currentFrameData.time - this._lastFrameTime === 0){
-                        this._interpolation = 1;
-                    }
-                    else{
-                        this._interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration - this._lastFrameTime) / (this._currentFrameData.time - this._lastFrameTime);
-                    }
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${this._currentFrameData.interpolationMethod}`));
-                    break
-            }
+        protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
+            this._updateTargets(elapsedTime);
         }
 
-        protected updateTargets():void{
-            var transform = this.entityObject.transform,
-                interpolation = this._interpolation,
+        protected continueFromPausePoint(elapsedTime:number){
+            this._pauseDuration += this.resumeTime - this.pauseTime;
+        }
+
+        private _updateTargets(elapsedTime:number):void{
+            var self = this,
+                transform = this.entityObject.transform,
                 isFrameChange = this.isFrameChange,
                 prevEndFrameDataMap = this._prevEndFrameDataMap,
                 startFrameDataMap = this._startFrameDataMap;
 
             this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
                 var endFrameData = target.data,
-                    startFrameData = startFrameDataMap.getChild(<any>target.target);
+                    startFrameData = startFrameDataMap.getChild(<any>target.target),
+                    interpolation = self._computeInterpolation(elapsedTime, target.interpolationMethod);
 
                 switch (target.target){
                     case EArticulatedAnimationTarget.TRANSLATION:
@@ -134,12 +169,28 @@ module wd{
             });
         }
 
-        protected continueFromPausePoint(elapsedTime:number){
-            this._pauseDuration += this.resumeTime - this.pauseTime;
+        private _computeInterpolation(elapsedTime:number, interpolationMethod:EKeyFrameInterpolation){
+            var interpolation:number = null;
+
+            switch (interpolationMethod){
+                case EKeyFrameInterpolation.LINEAR:
+                    if(this._currentFrameData.time - this._lastFrameTime === 0){
+                        interpolation = 1;
+                    }
+                    else{
+                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration - this._lastFrameTime) / (this._currentFrameData.time - this._lastFrameTime);
+                    }
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`interpolationMethod:${interpolationMethod}`));
+                    break
+            }
+
+            return interpolation;
         }
 
         private _resetAnim(){
-            this._beginElapsedTimeOfFirstFrame = this._getCurrentTime();
+            this._beginElapsedTimeOfFirstFrame = null;
             this._lastFrameTime = 0;
             this._pauseDuration = 0;
             this._currentFrame = 0;
@@ -243,12 +294,12 @@ module wd{
 
     export type ArticulatedAnimationFrameData = {
         time:number,
-        interpolationMethod:EKeyFrameInterpolation,
 
         targets:wdCb.Collection<ArticulatedAnimationFrameTargetData>
     }
 
     export type ArticulatedAnimationFrameTargetData = {
+        interpolationMethod:EKeyFrameInterpolation,
         target:EArticulatedAnimationTarget,
         data:any
     }

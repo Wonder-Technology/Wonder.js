@@ -224,12 +224,13 @@ module wd {
 
     export interface IGLTFKeyFrameData{
         time:number,
-        interpolationMethod:EKeyFrameInterpolation,
+        //interpolationMethod:EKeyFrameInterpolation,
 
         targets:wdCb.Collection<IGLTFKeyFrameTargetData>
     }
 
     export interface IGLTFKeyFrameTargetData{
+        interpolationMethod:EKeyFrameInterpolation,
         target:EArticulatedAnimationTarget,
         data:any
     }
