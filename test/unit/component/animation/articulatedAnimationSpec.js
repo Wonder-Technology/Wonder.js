@@ -91,7 +91,7 @@ describe("articulated animation", function () {
 
                 judgePos([0,0,0]);
             });
-            
+
             describe("test special cases", function(){
                 beforeEach(function(){
                 });
@@ -124,6 +124,78 @@ describe("articulated animation", function () {
 
                     judgePos([3,1,0]);
                 });
+
+                describe("test when one loop pass more than 1 frames(this may occur when fps is too low so that each loop's time is big)", function () {
+                    beforeEach(function(){
+                        anim.data = wdCb.Hash.create({
+                            "play": wdCb.Collection.create([
+                                {
+                                    time:10,
+
+                                    targets: wdCb.Collection.create(
+                                        [
+                                            {
+                                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
+                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                data: wd.Vector3.create(2,1,0)
+                                            }
+                                        ]
+                                    )
+                                },
+                                {
+                                    time:20,
+
+                                    targets: wdCb.Collection.create(
+                                        [
+                                            {
+                                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
+                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                data: wd.Vector3.create(3,1,0)
+                                            }
+                                        ]
+                                    )
+                                },
+                                {
+                                    time:30,
+
+                                    targets: wdCb.Collection.create(
+                                        [
+                                            {
+                                                interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
+                                                target:wd.EArticulatedAnimationTarget.TRANSLATION,
+                                                data: wd.Vector3.create(4,1,0)
+                                            }
+                                        ]
+                                    )
+                                }
+
+                            ])
+                        });
+                        anim.play("play");
+                        model.init();
+                    });
+
+                    it("test not finish all keys", function () {
+                        model.update(1);
+                        model.update(21);
+
+
+                        judgePos([3.1,1,0]);
+                    });
+                    it("test finish all keys", function () {
+                        model.update(11);
+                        model.update(31);
+
+
+                        judgePos([3.8,1,0]);
+                    });
+                    it("test2 finish all keys", function () {
+                        model.update(31);
+
+
+                        judgePos([3.8,1,0]);
+                    });
+                });
             });
 
             describe("test normal cases", function(){
@@ -148,6 +220,7 @@ describe("articulated animation", function () {
                                 targets: wdCb.Collection.create(
                                     [
                                         {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.ROTATION, data: wd.Quaternion.create().setFromEulerAngles(wd.Vector3.create(10,20,40))},
                                         {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
                                     ]
                                 )
@@ -205,14 +278,14 @@ describe("articulated animation", function () {
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
-                        judgeRotation([10,20,30]);
+                        judgeRotation([10,20,32]);
                     });
                     it("test3", function(){
                         model.update(firstKeyTime + 1);
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
-                        judgeRotation([10,20,30]);
+                        judgeRotation([10,20,32]);
                     });
                 });
 
@@ -222,7 +295,7 @@ describe("articulated animation", function () {
 
                     judgePos([2.2,1,0]);
                     judgeScale([1,2,3.2]);
-                    judgeRotation([10,20,30]);
+                    judgeRotation([10,20,32]);
                 });
                 it("test finish second key", function () {
                     model.update(firstKeyTime);
@@ -230,7 +303,7 @@ describe("articulated animation", function () {
 
                     judgePos([3,1,0]);
                     judgeScale([1,2,4]);
-                    judgeRotation([10,20,30]);
+                    judgeRotation([10,20,40]);
                 });
 
                 describe("test finish all keys", function(){
@@ -244,7 +317,7 @@ describe("articulated animation", function () {
 
                         judgePos([2.8,1,0]);
                         judgeScale([1,2,3.8]);
-                        judgeRotation([10,20,30]);
+                        judgeRotation([10,20,38]);
                     });
                     it("test second key", function () {
                         model.update(secondKeyTime + 1);
@@ -252,7 +325,7 @@ describe("articulated animation", function () {
 
                         judgePos([2.2,1,0]);
                         judgeScale([1,2,3.2]);
-                        judgeRotation([10,20,30]);
+                        judgeRotation([10,20,32]);
                     });
                     it("test finish all key twice", function () {
                         model.update(secondKeyTime + 1);
@@ -262,7 +335,7 @@ describe("articulated animation", function () {
 
                         judgePos([2.9,1,0]);
                         judgeScale([1,2,3.9]);
-                        judgeRotation([10,20,30]);
+                        judgeRotation([10,20,39]);
                     });
                 });
             });

@@ -23,14 +23,20 @@ module wd{
             this.pauseTime = null;
         }
 
+        @ensure(function(){
+            assert(this.elapsed >= 0, Log.info.FUNC_SHOULD(`elapsed:${this.elapsed}`, ">= 0"));
+        })
         public computeElapseTime(time:number){
             if(this.pauseElapsed){
                 this.elapsed = time - this.pauseElapsed - this.startTime;
-
-                return this.elapsed;
+            }
+            else{
+                this.elapsed = time - this.startTime;
             }
 
-            this.elapsed = time - this.startTime;
+            if(this.elapsed < 0){
+                this.elapsed = 0;
+            }
 
             return this.elapsed;
         }

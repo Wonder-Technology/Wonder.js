@@ -77,8 +77,6 @@ module wd{
         protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
         protected abstract continueFromPausePoint(elapsedTime:number):void;
         protected abstract isCurrentFrameFinish(elapsedTime:number):boolean;
-        //protected abstract computeInterpolation(elapsedTime:number):void;
-        //protected abstract updateTargets():void;
     }
 
     export enum EAnimationState{
