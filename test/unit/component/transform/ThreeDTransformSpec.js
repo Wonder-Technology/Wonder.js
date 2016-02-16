@@ -20,21 +20,13 @@ describe("ThreeDTransform", function(){
 
     it("the change of parent before setted as parent will affect child", function(){
         var tra2 = Transform.create();
-        var tra3 = Transform.create();
-        tra2.rotate(Vector3.create(0, 180, 0));
+        tra2.translate(1,1,1);
         tra1.parent = tra2;
-        tra3.parent = tra2;
 
-        tra2.translateLocal(Vector3.create(1, 1, 1));
-        tra1.translateLocal(Vector3.create(1, 1, 1));
-        tra3.translate(Vector3.create(1, 1, 1));
-
-        expect(getValues(tra2.position)).toEqual([-1, 1, -1]);
-        expect(getValues(tra2.localPosition)).toEqual([-1, 1, -1]);
-        expect(getValues(tra1.position)).toEqual([-2, 2, -2]);
-        expect(getValues(tra1.localPosition)).toEqual([1, 1, 1]);
-        expect(getValues(tra3.position)).toEqual([0, 2, 0]);
-        expect(getValues(tra3.localPosition)).toEqual([-1, 1, -1]);
+        expect(getValues(tra2.position)).toEqual([1,1,1]);
+        expect(getValues(tra2.localPosition)).toEqual([1,1,1]);
+        expect(getValues(tra1.position)).toEqual([1,1,1]);
+        expect(getValues(tra1.localPosition)).toEqual([0,0,0]);
     });
 
     describe("localPosition/localRotation/localScale is the value relative to the parent transform", function(){

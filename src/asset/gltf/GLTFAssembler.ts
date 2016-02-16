@@ -41,14 +41,14 @@ module wd{
                     model.addTag(<any>EWDTag.CONTAINER);
                 }
 
-                self._addComponents(model, object.components);
+                self._addComponentsFromGLTF(model, object.components);
 
                 model.addComponent(MeshRenderer.create());
 
                 if(object.children){
                     object.children.forEach((child:IGLTFObjectData) => {
                         model.addChild(build(child));
-                    })
+                    });
                 }
 
                 return model;
@@ -69,7 +69,7 @@ module wd{
             return object.isContainer;
         }
 
-        private _addComponents(model:GameObject, components:wdCb.Collection<IGLTFComponent>){
+        private _addComponentsFromGLTF(model:GameObject, components:wdCb.Collection<IGLTFComponent>){
             var self = this;
 
             components.forEach((component:IGLTFComponent) => {
@@ -115,14 +115,14 @@ module wd{
             var transform:ThreeDTransform = ThreeDTransform.create();
 
             if(component.matrix){
-                transform.position = component.matrix.getTranslation();
-                transform.rotation = component.matrix.getRotation();
-                transform.scale = component.matrix.getScale();
+                transform.localPosition = component.matrix.getTranslation();
+                transform.localRotation = component.matrix.getRotation();
+                transform.localScale = component.matrix.getScale();
             }
             else{
-                transform.position = component.position;
-                transform.rotation = component.rotation;
-                transform.scale = component.scale;
+                transform.localPosition = component.position;
+                transform.localRotation = component.rotation;
+                transform.localScale = component.scale;
             }
 
             return transform;

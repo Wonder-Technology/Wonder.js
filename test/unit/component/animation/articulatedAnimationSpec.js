@@ -15,7 +15,7 @@ describe("articulated animation", function () {
 
         function judgePos(pos){
             expect(testTool.getValues(
-                model.transform.position,
+                model.transform.localPosition,
                 2
             )).toEqual(
                 testTool.getValues(
@@ -27,7 +27,7 @@ describe("articulated animation", function () {
 
         function judgeScale(scale){
             expect(testTool.getValues(
-                model.transform.scale,
+                model.transform.localScale,
                 2
             )).toEqual(
                 scale
@@ -36,7 +36,7 @@ describe("articulated animation", function () {
 
         function judgeRotation(eulerAngles){
             expect(testTool.getValues(
-                model.transform.eulerAngles,
+                model.transform.localEulerAngles,
                 1
             )).toEqual(
                 eulerAngles
@@ -50,7 +50,7 @@ describe("articulated animation", function () {
         beforeEach(function(){
         });
 
-        describe("update position/scale/rotation in each key", function(){
+        describe("update position/scale/rotation in each key(should set transform->local TRS instead of global TRS, because the transform in .gltf is in local coordinate system)", function(){
             var firstKeyTime,secondKeyTime;
 
             beforeEach(function(){
@@ -91,7 +91,7 @@ describe("articulated animation", function () {
 
                 judgePos([0,0,0]);
             });
-
+            
             describe("test special cases", function(){
                 beforeEach(function(){
                 });
@@ -160,7 +160,17 @@ describe("articulated animation", function () {
 
                     anim.play("play");
 
-                    model.init();
+                    //model.init();
+
+                    var parentModel = wd.GameObject.create();
+                    parentModel.transform.position = wd.Vector3.create(1,1,1);
+                    parentModel.transform.rotate(2,2,2);
+                    parentModel.transform.scale = wd.Vector3.create(3,3,3);
+
+                    parentModel.addChild(model);
+                    //model.transform.parent = parentModel.transform.parent;
+
+                    parentModel.init();
                 });
 
                 describe("test interpolation", function(){

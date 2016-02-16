@@ -150,13 +150,13 @@ module wd{
 
                 switch (target.target){
                     case EArticulatedAnimationTarget.TRANSLATION:
-                        transform.position = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                        transform.localPosition = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     case EArticulatedAnimationTarget.ROTATION:
-                        transform.rotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
+                        transform.localRotation = Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
                         break;
                     case EArticulatedAnimationTarget.SCALE:
-                        transform.scale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
+                        transform.localScale = Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
@@ -218,13 +218,13 @@ module wd{
 
                 switch (target.target){
                     case EArticulatedAnimationTarget.TRANSLATION:
-                        startFrameData = transform.position;
+                        startFrameData = transform.localPosition;
                         break;
                     case EArticulatedAnimationTarget.ROTATION:
-                        startFrameData = transform.rotation;
+                        startFrameData = transform.localRotation;
                         break;
                     case EArticulatedAnimationTarget.SCALE:
-                        startFrameData = transform.scale;
+                        startFrameData = transform.localScale;
                         break;
                     default:
                         Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
@@ -275,13 +275,13 @@ module wd{
         private _setTargetData(target:EArticulatedAnimationTarget, transform:ThreeDTransform, data:any){
             switch (target){
                 case EArticulatedAnimationTarget.TRANSLATION:
-                    transform.position = data;
+                    transform.localPosition = data;
                     break;
                 case EArticulatedAnimationTarget.ROTATION:
-                    transform.rotation = data;
+                    transform.localRotation = data;
                     break;
                 case EArticulatedAnimationTarget.SCALE:
-                    transform.scale = data;
+                    transform.localScale = data;
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target}`));
