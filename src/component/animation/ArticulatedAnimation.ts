@@ -12,8 +12,6 @@ module wd{
         private _currentAnimName:string = null;
         private _beginElapsedTimeOfFirstFrame:number = null;
         private _prevFrameTime:number = null;
-        private _pauseDuration:number = null;
-        private _frameCount:number = null;
         private _currentAnimData:wdCb.Collection<ArticulatedAnimationFrameData> = null;
         private _currentFrameData:ArticulatedAnimationFrameData = null;
         private _prevFrameData:ArticulatedAnimationFrameData = null;
@@ -92,25 +90,19 @@ module wd{
                 this._currentAnimData = this.data.getChild(animName);
             }
 
-            this._resetAnim();
+            this.resetAnim();
             this._saveStartFrameData();
 
-            this._frameCount = this._currentAnimData.getCount();
+            this.frameCount = this._currentAnimData.getCount();
             this.state = EAnimationState.RUN;
-        }
-
-        protected getPauseTime(){
-            return this._getCurrentTime();
-        }
-
-        protected getResumeTime(){
-            return this._getCurrentTime();
         }
 
         protected handleWhenPause(elapsedTime:number):void{
         }
 
         protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
+            this.isFrameChange = true;
+
             this._updateFrame(elapsedTime);
             this._updateTargetsToBeLastEndFrameData();
             this._saveStartFrameData();
@@ -118,23 +110,31 @@ module wd{
 
         protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
             if(this._beginElapsedTimeOfFirstFrame === null){
-                this._beginElapsedTimeOfFirstFrame = this._getCurrentTime();
+                this._beginElapsedTimeOfFirstFrame = this.getCurrentTime();
             }
         }
 
         @require(function(elapsedTime:number){
-            assert(elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsedTime of current frame:${elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration}`, ">= 0"));
+            assert(elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsedTime of current frame:${elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration}`, ">= 0"));
         })
         protected isCurrentFrameFinish(elapsedTime:number):boolean{
-            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration > this._currentFrameData.time;
+            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
         }
 
         protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
             this._updateTargets(elapsedTime);
         }
 
-        protected continueFromPausePoint(elapsedTime:number){
-            this._pauseDuration += this.resumeTime - this.pauseTime;
+        protected resetAnim(){
+            this._beginElapsedTimeOfFirstFrame = null;
+            this._prevFrameTime = 0;
+            this.pauseDuration = 0;
+            this._currentFrame = 0;
+
+            this._prevFrameData = null;
+            this._updateCurrentFrameData();
+
+            this._startFrameDataMap.removeAllChildren();
         }
 
         private _updateTargets(elapsedTime:number):void{
@@ -176,7 +176,7 @@ module wd{
                         interpolation = 1;
                     }
                     else{
-                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
+                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
                     }
                     break;
                 default:
@@ -185,22 +185,6 @@ module wd{
             }
 
             return interpolation;
-        }
-
-        private _resetAnim(){
-            this._beginElapsedTimeOfFirstFrame = null;
-            this._prevFrameTime = 0;
-            this._pauseDuration = 0;
-            this._currentFrame = 0;
-
-            this._prevFrameData = null;
-            this._updateCurrentFrameData();
-
-            this._startFrameDataMap.removeAllChildren();
-        }
-
-        private _getCurrentTime(){
-            return Director.getInstance().elapsed;
         }
 
         @require(function(){
@@ -237,8 +221,6 @@ module wd{
         }
 
         private _updateFrame(elapsedTime:number){
-            this.isFrameChange = true;
-
             this._updateCurrentFrameIndex(elapsedTime);
 
             if(this._isFinishAllFrames()){
@@ -246,7 +228,7 @@ module wd{
                 this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime);
                 this._prevFrameTime = 0;
 
-                this._prevFrameData = this._currentAnimData.getChild(this._frameCount - 1);
+                this._prevFrameData = this._currentAnimData.getChild(this.frameCount - 1);
                 this._updateCurrentFrameData();
             }
             else{
@@ -255,16 +237,16 @@ module wd{
         }
 
         @require(function(elapsedTime:number){
-            var lastEndFrameTime = this._currentAnimData.getChild(this._frameCount - 1).time;
+            var lastEndFrameTime = this._currentAnimData.getChild(this.frameCount - 1).time;
 
             assert(elapsedTime >= lastEndFrameTime, Log.info.FUNC_SHOULD(`elapsedTime:${elapsedTime}`, `>= lastEndFrameTime:${lastEndFrameTime}`));
         })
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime:number){
-            return elapsedTime -  elapsedTime % this._currentAnimData.getChild(this._frameCount - 1).time;
+            return elapsedTime -  elapsedTime % this._currentAnimData.getChild(this.frameCount - 1).time;
         }
 
         private _isFinishAllFrames(){
-            return this._currentFrame >= this._frameCount;
+            return this._currentFrame >= this.frameCount;
         }
 
         private _updateCurrentFrameIndex(elapsedTime:number){

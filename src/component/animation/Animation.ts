@@ -16,6 +16,8 @@ module wd{
         protected state:EAnimationState = EAnimationState.DEFAULT;
         protected pauseTime:number = null;
         protected resumeTime:number = null;
+        protected pauseDuration:number = null;
+        protected frameCount:number = null;
 
         private _isResume:boolean = false;
 
@@ -69,14 +71,28 @@ module wd{
             //this.updateTargets();
         }
 
-        protected abstract getPauseTime():number;
-        protected abstract getResumeTime():number;
         protected abstract handleWhenPause(elapsedTime:number):void;
         protected abstract handleWhenCurrentFrameFinish(elapsedTime:number):void;
         protected abstract handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
         protected abstract handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void;
-        protected abstract continueFromPausePoint(elapsedTime:number):void;
         protected abstract isCurrentFrameFinish(elapsedTime:number):boolean;
+        protected abstract resetAnim():void;
+
+        protected getPauseTime(){
+            return this.getCurrentTime();
+        }
+
+        protected getResumeTime(){
+            return this.getCurrentTime();
+        }
+
+        protected getCurrentTime(){
+            return Director.getInstance().elapsed;
+        }
+
+        protected continueFromPausePoint(elapsedTime:number){
+            this.pauseDuration += this.resumeTime - this.pauseTime;
+        }
     }
 
     export enum EAnimationState{
