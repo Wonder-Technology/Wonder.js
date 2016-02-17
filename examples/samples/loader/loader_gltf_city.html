@@ -23,15 +23,17 @@
             initSample();
         });
 
+        //todo remove camera white box
+
         function initSample() {
             var director = wd.Director.getInstance();
 
-            var camera = createCamera();
-            director.scene.addChild(camera);
+            director.scene.addChild(createCamera());
+
             director.scene.addChildren(setModelAndReturn());
 
 
-            director.scene.currentCamera = 0;
+            director.scene.currentCamera = 1;
 
             director.start();
         }
@@ -40,6 +42,16 @@
             var models = wd.LoaderManager.getInstance().get("model").getChild("models");
 
             models.getChild(0).forEach(function(model){
+                if(model.name.indexOf("cam01-box") > -1){
+                    /*!
+                    .gltf camera data is wrong!?
+                    so here I add custom camera to animated camera object named cam01-box defined in .gltf
+                     */
+                    model.addComponent(createBasicCameraController());
+                }
+
+
+
                 if(model.hasComponent(wd.ArticulatedAnimation)){
                     var anim = model.getComponent(wd.ArticulatedAnimation);
 
@@ -71,6 +83,18 @@
             camera.addComponent(controller);
 
             return camera;
+        }
+
+        function createBasicCameraController() {
+            var view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 10000;
+
+            return wd.BasicCameraController.create(cameraComponent);
         }
     }
 
