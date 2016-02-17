@@ -67,17 +67,41 @@ describe("articulated animation", function () {
                 setCurrentTime(0);
             });
 
+            describe("play", function(){
+                it("can specify animation index", function(){
+                    anim.data = wdCb.Hash.create({
+                        "play": wdCb.Collection.create([
+                            {
+                                time:10,
+
+                                targets: wdCb.Collection.create(
+                                    [
+                                        {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
+                                    ]
+                                )
+                            }
+                        ])
+                    });
+                    model.init();
+
+                    anim.play(0);
+
+                    model.update(1);
+
+
+                    judgePos([0.3, 0.1, 0]);
+                });
+            });
+
             it("if not play animation, update nothing", function(){
                 anim.data = wdCb.Hash.create({
                     "play": wdCb.Collection.create([
                         {
                             time:10,
-                            interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,
 
                             targets: wdCb.Collection.create(
                                 [
-                                    {target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)},
-                                    {target:wd.EArticulatedAnimationTarget.SCALE, data: wd.Vector3.create(1,2,4)}
+                                    {interpolationMethod:wd.EKeyFrameInterpolation.LINEAR,target:wd.EArticulatedAnimationTarget.TRANSLATION, data: wd.Vector3.create(3,1,0)}
                                 ]
                             )
                         }
