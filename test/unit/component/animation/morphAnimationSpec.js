@@ -4,6 +4,8 @@ describe("morph animation", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -13,6 +15,7 @@ describe("morph animation", function () {
     describe("integration test", function(){
         var model,geo,material,anim,fps,
             director,program;
+        var duration;
         var vertice,normals;
         var frameVertice1,frameVertice2,frameVertice3;
         var frameNormals1,frameNormals2,frameNormals3;
@@ -62,6 +65,7 @@ describe("morph animation", function () {
 
 
             fps = 10;
+            duration = 100;
 
 
             director = wd.Director.getInstance();
@@ -154,46 +158,61 @@ describe("morph animation", function () {
                 ];
 
             prepare();
+
+
+            setCurrentTime(0);
         });
 
-        it("test morph vertices and normals sended in multi frames", function(){
-            anim.play("play", fps);
-            director._init();
+        describe("test morph vertices and normals sended in multi frames", function(){
+            beforeEach(function(){
+                anim.play("play", fps);
+                director._init();
+            });
+
+            it("test interpolation", function () {
+                director._run(duration / 100);
 
 
-            director._run(1);
+                expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
 
-
-            expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
-
-            judgeFirstFrameState(0);
-
-
-
-
-
-            director._run(100);
-
-            expect(program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]).toEqual(1);
-
-            judgeFirstFrameState(1);
+                judgeFirstFrameState(0);
 
 
 
 
-            director._run(150);
-
-            expect(program.sendUniformData.withArgs("u_interpolation").thirdCall.args[2]).toEqual(0.5);
-
-            judgeSecondFrameState(2);
+                director._run(duration);
 
 
+                expect(program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]).toEqual(1);
 
-            director._run(201);
+                judgeFirstFrameState(1);
+            });
 
-            expect(program.sendUniformData.withArgs("u_interpolation").getCall(3).args[2]).toEqual(0.01);
+            describe("test finish first frame", function () {
+                it("test1", function(){
+                    director._run(duration + 1);
 
-            judgeThirdFrameState(3);
+
+                    expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
+
+                    judgeSecondFrameState(0);
+                });
+                it("test2", function(){
+                    director._run(duration * 0.9);
+
+
+                    expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.9);
+                    judgeFirstFrameState(0);
+
+
+                    director._run(duration * 1.1);
+
+                    expect(testTool.getValues(
+                        program.sendUniformData.withArgs("u_interpolation").secondCall.args[2]), 1).toEqual(0.1);
+
+                    judgeSecondFrameState(1);
+                });
+            });
         });
 
         describe("test animation control", function(){
@@ -205,78 +224,120 @@ describe("morph animation", function () {
                 director._run(1);
 
                 expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
-                judgeFrameState(0,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
 
-
+                judgeFirstFrameState(0);
 
                 anim.stop();
 
 
+
+
+
                 director._run(101);
                 expect(program.sendUniformData.withArgs("u_interpolation").getCall(1).args[2]).toEqual(0.01);
-                judgeFrameState(1,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
 
+                judgeFirstFrameState(1);
+
+                setCurrentTime(101);
 
                 anim.play("play", fps);
 
-                director._run(203);
-                expect(program.sendUniformData.withArgs("u_interpolation").getCall(2).args[2]).toEqual(0);
-                judgeFrameState(2,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
+
+
+
+                director._run(104);
+                expect(program.sendUniformData.withArgs("u_interpolation").getCall(2).args[2]).toEqual(0.03);
+
+                judgeFirstFrameState(2);
             });
-            it("pause,resume", function(){
-                anim.play("play", fps);
 
-                director._init();
+            describe("pause,resume", function(){
+                it("", function () {
+                    anim.play("play", fps);
 
-                director._run(1);
+                    director._init();
 
-                expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
-                judgeFrameState(0,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
+                    director._run(1);
 
-                setCurrentTime(1);
+                    expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
+                    judgeFrameState(0,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
 
-                anim.pause();
+                    setCurrentTime(1);
+
+                    anim.pause();
 
 
-                director._run(150);
-                expect(program.sendUniformData.withArgs("u_interpolation").getCall(1).args[2]).toEqual(0.01);
-                judgeFrameState(1,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
+                    director._run(150);
+                    expect(program.sendUniformData.withArgs("u_interpolation").getCall(1).args[2]).toEqual(0.01);
+                    judgeFrameState(1,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
 
-                anim.resume();
+                    setCurrentTime(150);
 
-                director._run(200);
-                expect(program.sendUniformData.withArgs("u_interpolation").getCall(2).args[2]).toEqual(0.49);
-                judgeFrameState(2,
-                    frameVertice1,
-                    frameVertice2,
-                    frameNormals1,
-                    frameNormals2
-                );
+                    anim.resume();
+
+
+
+                    director._run(200);
+                    expect(program.sendUniformData.withArgs("u_interpolation").getCall(2).args[2]).toEqual(0.51);
+                    judgeFrameState(2,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
+                });
+                it("", function () {
+                    anim.play("play", fps);
+
+                    director._init();
+
+                    director._run(1);
+
+                    expect(program.sendUniformData.withArgs("u_interpolation").firstCall.args[2]).toEqual(0.01);
+                    judgeFrameState(0,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
+
+                    setCurrentTime(1);
+
+                    anim.pause();
+
+
+                    director._run(2);
+                    expect(program.sendUniformData.withArgs("u_interpolation").getCall(1).args[2]).toEqual(0.01);
+                    judgeFrameState(1,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
+
+                    setCurrentTime(2);
+
+                    anim.resume();
+
+                    director._run(52);
+                    expect(program.sendUniformData.withArgs("u_interpolation").getCall(2).args[2]).toEqual(0.51);
+                    judgeFrameState(2,
+                        frameVertice1,
+                        frameVertice2,
+                        frameNormals1,
+                        frameNormals2
+                    );
+                });
             });
         });
 

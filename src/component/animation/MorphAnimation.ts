@@ -6,16 +6,25 @@ module wd{
         	return obj;
         }
 
+        get nextFrame(){
+            var nextFrame = this.currentFrame + 1;
+
+            if(nextFrame >= this._frameCount){
+                nextFrame = 0;
+            }
+
+            return nextFrame;
+        }
+
         public interpolation:number = 0;
         public currentFrame:number = 0;
-        public nextFrame:number = 1;
         public duration:number = null;
         public fps:number = null;
         public currentAnimName:string = null;
 
-        private _oldTime:number = 0;
+        private _prevFrameEndTime:number = null;
         private _frameCount:number = null;
-        private _isStartFromStop:boolean = false;
+        private _pauseDuration:number = null;
 
         public init(){
         }
@@ -46,37 +55,43 @@ module wd{
         }
 
         protected getPauseTime(){
-            return Director.getInstance().elapsed;
+            return this._getCurrentTime();
         }
 
         protected getResumeTime(){
-            return this._oldTime;
+            return this._getCurrentTime();
+        }
+
+        private _getCurrentTime(){
+            return Director.getInstance().elapsed;
         }
 
         protected handleWhenPause(elapsedTime:number):void{
-            this._oldTime = elapsedTime;
         }
 
         protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
             this.isFrameChange = true;
-            this._oldTime = this._floor(elapsedTime);
 
-            this.currentFrame = this.nextFrame;
-            this.nextFrame ++;
-            if(this.nextFrame >= this._frameCount){
-                this.nextFrame = 0;
+            this._prevFrameEndTime = (elapsedTime - this._pauseDuration) - (elapsedTime - this._pauseDuration) % this.duration;
+
+            this.currentFrame++;
+
+            if(this.currentFrame >= this._frameCount){
+                this.currentFrame = 0;
             }
         }
 
         protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
-            if(this._isStartFromStop){
-                this._isStartFromStop = false;
-                this._resetAnim(elapsedTime);
+            if(this._prevFrameEndTime === null){
+                this._prevFrameEndTime = this._getCurrentTime();
             }
         }
 
+        @require(function(elapsedTime:number){
+            assert(elapsedTime - this._prevFrameEndTime - this._pauseDuration >= 0, Log.info.FUNC_SHOULD(`elapsedTime of current frame:${elapsedTime - this._prevFrameEndTime - this._pauseDuration}`, ">= 0"));
+        })
         protected isCurrentFrameFinish(elapsedTime:number):boolean{
-            return elapsedTime - this._oldTime > this.duration;
+            return elapsedTime - this._prevFrameEndTime - this._pauseDuration > this.duration;
         }
 
         protected handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
@@ -84,31 +99,24 @@ module wd{
         }
 
         protected continueFromPausePoint(elapsedTime:number){
-            this._oldTime = elapsedTime - (this.resumeTime - this.pauseTime) % this.duration;
+            this._pauseDuration += this.resumeTime - this.pauseTime;
         }
 
         private _start(){
-            this._oldTime = 0;
+            this._prevFrameEndTime = null;
             this.currentFrame = 0;
-            this.nextFrame = this.currentFrame + 1;
+            this._pauseDuration = 0;
 
-            if(this.isStop){
-                this._isStartFromStop = true;
-            }
-
-            this.state = EAnimationState.RUN;
+            this.state = EAnimationState.RUN;//
         }
 
-        private _floor(time:number){
-            return time - time % this.duration;
-        }
+        @ensure(function(){
+            var interpolation = this.interpolation;
 
-        private _resetAnim(elapsedTime:number){
-            this._oldTime = elapsedTime;
-        }
-
+            assert(interpolation >= 0 && interpolation <= 1 , Log.info.FUNC_SHOULD(`interpolation(${interpolation}`, ">= 0 && <= 1"));
+        })
         private _computeInterpolation(elapsedTime:number):void{
-            this.interpolation = this.fps * (elapsedTime - this._oldTime) / 1000;
+            this.interpolation = this.fps * (elapsedTime - this._prevFrameEndTime - this._pauseDuration) / 1000;
         }
     }
 
