@@ -84,7 +84,14 @@ describe("Material", function() {
         beforeEach(function(){
             
         });
-        
+
+        it("dispose shader", function(){
+            sandbox.stub(material.shader, "dispose");
+
+            material.dispose();
+
+            expect(material.shader.dispose).toCalledOnce();
+        });
         it("dispose mapManager", function(){
             sandbox.stub(material.mapManager, "dispose");
 

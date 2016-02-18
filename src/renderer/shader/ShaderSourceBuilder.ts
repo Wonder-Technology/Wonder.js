@@ -103,6 +103,13 @@ module wd{
             this.fsSourceBody = "";
         }
 
+        public dispose(){
+            this.clearShaderDefinition();
+
+            this.attributesFromShaderLib.removeAllChildren();
+            this.uniformsFromShaderLib.removeAllChildren();
+        }
+
         private _readLibSource(libs:wdCb.Collection<ShaderLib>){
             var self = this,
                 vsSourceTop = "",

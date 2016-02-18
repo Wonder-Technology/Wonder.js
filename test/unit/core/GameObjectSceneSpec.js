@@ -189,8 +189,8 @@ describe("GameObjectScene", function() {
             it("bind global hook", function () {
                 scene.init();
 
-                wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
-                wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
                 expect(gameObject1.onStartLoop).toCalledOnce();
                 expect(gameObject2.onStartLoop).toCalledOnce();

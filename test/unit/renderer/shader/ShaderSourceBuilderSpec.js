@@ -1,4 +1,3 @@
-//todo extract buildShaderLib function
 describe("ShaderSourceBuilder", function () {
     var sandbox = null;
     var builder = null;
@@ -187,6 +186,26 @@ describe("ShaderSourceBuilder", function () {
                 }
             )
         });
+    });
+
+    describe("dispose", function(){
+        it("clear shader definition", function(){
+            sandbox.stub(builder, "clearShaderDefinition");
+
+            builder.dispose();
+
+            expect(builder.clearShaderDefinition).toCalledOnce();
+        });
+        it("clear attributesFromShaderLib,uniformsFromShaderLib", function () {
+            sandbox.stub(builder.attributesFromShaderLib, "removeAllChildren");
+            sandbox.stub(builder.uniformsFromShaderLib, "removeAllChildren");
+
+            builder.dispose();
+
+            expect(builder.attributesFromShaderLib.removeAllChildren).toCalledOnce();
+            expect(builder.uniformsFromShaderLib.removeAllChildren).toCalledOnce();
+        });
+
     });
 
     describe("auto generate uniform variables", function(){

@@ -1,6 +1,7 @@
 module wd{
     export abstract class ShaderLib{
         public type:string = ABSTRACT_ATTRIBUTE;
+        public shader:Shader = null;
 
         public attributes:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
         public uniforms:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
@@ -33,6 +34,14 @@ module wd{
 
             vs && this.setVsSource(vs);
             fs && this.setFsSource(fs);
+        }
+
+        @virtual
+        public init(){
+        }
+
+        @virtual
+        public dispose(){
         }
 
         protected getVsChunk();

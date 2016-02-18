@@ -15,7 +15,7 @@ describe("VideoTexture", function() {
     });
 
     describe("dispose", function(){
-        it("off dy_startLoop handler", function(){
+        it("off startLoop handler", function(){
             var asset = wd.VideoTextureAsset.create({
                 isStop:false
             });

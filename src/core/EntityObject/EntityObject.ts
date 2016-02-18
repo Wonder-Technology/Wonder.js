@@ -398,10 +398,6 @@ module wd {
 
         @virtual
         protected getRenderList(){
-            if(this.children.getCount() > 100){
-                console.log(this.children.getCount());
-            }
-
             return this.children;
         }
 

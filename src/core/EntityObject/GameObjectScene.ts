@@ -45,10 +45,7 @@ module wd {
         }
 
         public side:ESide = null;
-        public shadowMap = {
-            enable: true,
-            softType: EShadowMapSoftType.NONE
-        };
+        public shadowMap = ShadowMapModel.create(this);
         public shader:Shader = null;
         public isUseProgram:boolean = false;
         public physics = PhysicsConfig.create();
@@ -207,6 +204,42 @@ module wd {
     export enum EShadowMapSoftType{
         NONE,
         PCF
+    }
+
+    class ShadowMapModel{
+        public static create(scene:GameObjectScene) {
+        	var obj = new this(scene);
+
+        	return obj;
+        }
+
+        private _scene:GameObjectScene = null;
+
+        constructor(scene:GameObjectScene){
+            this._scene = scene;
+        }
+
+        private _enable:boolean = true;
+        get enable(){
+            return this._enable;
+        }
+        set enable(enable:boolean){
+            this._enable = enable;
+
+            //todo send event if need
+        }
+
+        private _softType:EShadowMapSoftType = EShadowMapSoftType.NONE;
+        get softType(){
+            return this._softType;
+        }
+        set softType(softType:EShadowMapSoftType){
+            if(softType !== this._softType){
+                EventManager.broadcast(this._scene, CustomEvent.create(<any>EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE));
+
+                this._softType = softType;
+            }
+        }
     }
 }
 

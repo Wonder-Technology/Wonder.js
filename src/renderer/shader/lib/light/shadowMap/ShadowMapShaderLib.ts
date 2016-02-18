@@ -1,5 +1,20 @@
 module wd{
     export abstract class ShadowMapShaderLib extends ShaderLib{
+        private _softTypeChangeSubscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var shader = this.shader;
+
+            this._softTypeChangeSubscription = EventManager.fromEvent(Director.getInstance().scene.gameObjectScene, <any>EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE)
+                .subscribe(() => {
+                    shader.libDirty = true;
+                });
+        }
+
+        public dispose(){
+            this._softTypeChangeSubscription && this._softTypeChangeSubscription.dispose();
+        }
+
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 

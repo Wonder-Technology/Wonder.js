@@ -1,28 +1,30 @@
 module wd{
     export enum EEngineEvent{
-        /*! global event should add "dy_" prefix */
-        STARTLOOP = <any>"dy_startLoop",
-        ENDLOOP = <any>"dy_endLoop",
-        BEFORE_GAMEOBJECT_INIT = <any>"dy_beforeGameObjectInit",
-        AFTER_GAMEOBJECT_INIT = <any>"dy_afterGameObjectInit",
-        AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"dy_afterGameObjectInit_rigidBody_addConstraint",
+        /*! global event should add "wd_" prefix */
+        STARTLOOP = <any>"wd_startLoop",
+        ENDLOOP = <any>"wd_endLoop",
+        BEFORE_GAMEOBJECT_INIT = <any>"wd_beforeGameObjectInit",
+        AFTER_GAMEOBJECT_INIT = <any>"wd_afterGameObjectInit",
+        AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT = <any>"wd_afterGameObjectInit_rigidBowd_addConstraint",
 
-        MOUSE_CLICK = <any>"dy_mouseclick",
-        MOUSE_DOWN = <any>"dy_mousedown",
-        MOUSE_UP = <any>"dy_mouseup",
-        MOUSE_MOVE = <any>"dy_mousemove",
-        MOUSE_OVER = <any>"dy_mouseover",
-        MOUSE_OUT = <any>"dy_mouseout",
-        MOUSE_WHEEL = <any>"dy_mousewheel",
-        MOUSE_DRAG = <any>"dy_mousedrag",
+        MOUSE_CLICK = <any>"wd_mouseclick",
+        MOUSE_DOWN = <any>"wd_mousedown",
+        MOUSE_UP = <any>"wd_mouseup",
+        MOUSE_MOVE = <any>"wd_mousemove",
+        MOUSE_OVER = <any>"wd_mouseover",
+        MOUSE_OUT = <any>"wd_mouseout",
+        MOUSE_WHEEL = <any>"wd_mousewheel",
+        MOUSE_DRAG = <any>"wd_mousedrag",
 
-        MATERIAL_CHANGE = <any>"dy_material_change",
+        MATERIAL_CHANGE = <any>"wd_material_change",
 
-        UI_WIDTH_CHANGE = <any>"dy_ui_width_change",
-        UI_HEIGHT_CHANGE = <any>"dy_ui_height_change",
+        UI_WIDTH_CHANGE = <any>"wd_ui_width_change",
+        UI_HEIGHT_CHANGE = <any>"wd_ui_height_change",
 
-        TRANSFORM_TRANSLATE = <any>"dy_transform_translate",
-        TRANSFORM_ROTATE = <any>"dy_transform_rotate",
-        TRANSFORM_SCALE = <any>"dy_transform_scale"
+        TRANSFORM_TRANSLATE = <any>"wd_transform_translate",
+        TRANSFORM_ROTATE = <any>"wd_transform_rotate",
+        TRANSFORM_SCALE = <any>"wd_transform_scale",
+
+        SHADOWMAP_SOFTTYPE_CHANGE = <any>"wd_shadowMap_softType_change"
     }
 }

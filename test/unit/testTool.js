@@ -48,6 +48,8 @@ var testTool = (function () {
                 activeTexture: sandbox.stub(),
                 bindTexture: sandbox.stub(),
                 deleteShader: sandbox.stub(),
+                deleteProgram: sandbox.stub(),
+
                 bindAttribLocation: sandbox.stub(),
                 linkProgram: sandbox.stub(),
                 attachShader: sandbox.stub(),

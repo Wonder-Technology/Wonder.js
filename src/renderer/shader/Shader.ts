@@ -51,6 +51,7 @@ module wd{
         }
 
         public program:Program = Program.create();
+        public libDirty:boolean = true;
 
         private _definitionDataDirty:boolean = true;
         private _libs: wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
@@ -74,12 +75,28 @@ module wd{
         }
 
         public init(){
+            this._libs.forEach((lib:ShaderLib) => {
+                lib.init();
+            });
+        }
+
+        public dispose(){
+            this.program.dispose();
+            this.attributes.removeAllChildren();
+            this.uniforms.removeAllChildren();
+
+            this._libs.forEach((lib:ShaderLib) => {
+                lib.dispose();
+            });
         }
 
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;
 
-            this.buildDefinitionData(quadCmd, material);
+            if(this.libDirty){
+                this.buildDefinitionData(quadCmd, material);
+                this.libDirty = false;
+            }
 
             if(this._definitionDataDirty){
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
@@ -119,12 +136,38 @@ module wd{
             }
         }
 
+        @ensure(function(){
+            var self = this;
+
+            this._libs.forEach((lib:ShaderLib) => {
+                assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
+            });
+
+            assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
+        })
         public addLib(lib:ShaderLib){
             this._libs.addChild(lib);
+
+            lib.shader = this;
+
+            this.libDirty = true;
         }
 
+        @ensure(function(){
+            var self = this;
+
+            this._libs.forEach((lib:ShaderLib) => {
+                assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
+            });
+
+            assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
+        })
         public addShaderLibToTop(lib:ShaderLib){
             this._libs.unShiftChild(lib);
+
+            lib.shader = this;
+
+            this.libDirty = true;
         }
 
         public getLib(libClass:Function){
@@ -141,14 +184,20 @@ module wd{
         public removeLib(func:Function);
 
         public removeLib(...args){
+            this.libDirty = true;
+
             return this._libs.removeChild(args[0]);
         }
 
         public removeAllLibs(){
+            this.libDirty = true;
+
             this._libs.removeAllChildren();
         }
 
         public sortLib(func:(a:ShaderLib, b:ShaderLib) => any){
+            this.libDirty = true;
+
             this._libs = this._libs.sort(func);
         }
 

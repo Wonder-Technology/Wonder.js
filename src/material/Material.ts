@@ -162,6 +162,7 @@ module wd {
         }
 
         public dispose(){
+            this.shader.dispose();
             this.mapManager.dispose();
 
             this._afterInitSubscription && this._afterInitSubscription.dispose();

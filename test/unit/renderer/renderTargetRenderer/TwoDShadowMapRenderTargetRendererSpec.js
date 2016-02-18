@@ -71,7 +71,7 @@ tool.init_beforeEach = function(self){
 
             self.renderTargetRenderer.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
             expect(self.renderTargetRenderer._shadowMapRendererUtils.clearTwoDShadowMapData.callCount).toEqual(6);
         });

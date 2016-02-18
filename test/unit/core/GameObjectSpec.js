@@ -92,7 +92,7 @@ describe("GameObject", function() {
     });
 
     describe("dispose", function(){
-        it("off dy_startLoop,dy_endLoop event->exec script handler", function(){
+        it("off startLoop,endLoop event->exec script handler", function(){
             var script = {
                 onStartLoop:sandbox.stub(),
                 onEndLoop:sandbox.stub()
@@ -101,8 +101,8 @@ describe("GameObject", function() {
 
             gameObject.init();
 
-            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
-            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
             expect(script.onStartLoop).toCalledOnce();
             expect(script.onEndLoop).toCalledOnce();
@@ -110,8 +110,8 @@ describe("GameObject", function() {
 
             gameObject.dispose();
 
-            wd.EventManager.trigger(wd.CustomEvent.create("dy_startLoop"));
-            wd.EventManager.trigger(wd.CustomEvent.create("dy_endLoop"));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.STARTLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
 
 
             expect(script.onStartLoop).toCalledOnce();

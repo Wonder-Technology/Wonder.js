@@ -27,13 +27,18 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
-        'test/unit/**/*animation*',
-        'test/unit/component/**/*Animation*.js',
+        'test/unit/**/Shader*',
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*ShaderLib*',
 
-        'test/unit/**/GLTFParserSpec*',
-        'test/unit/**/GLTFAssemblerSpec*',
+        //'test/unit/**/*animation*',
+        //'test/unit/component/**/*Animation*.js',
+        //'test/unit/component/**/morphAnimation*.js',
+
+        //'test/unit/**/GLTFParserSpec*',
+        //'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
