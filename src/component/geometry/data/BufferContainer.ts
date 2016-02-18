@@ -19,7 +19,10 @@ module wd {
 
             EventManager.on(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE, () => {
                 self.removeCache(EBufferDataType.COLOR);
+                self.geometryData.colorDirty = true;
             });
+
+            this.geometryData.init();
         }
 
         public removeCache(type:EBufferDataType){
@@ -67,6 +70,8 @@ module wd {
             this.container.forEach((buffer:Buffer) => {
                 buffer.dispose();
             });
+
+            this.geometryData.dispose();
         }
 
         protected abstract getVertice(type);

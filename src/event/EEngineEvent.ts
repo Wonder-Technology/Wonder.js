@@ -17,6 +17,7 @@ module wd{
         MOUSE_DRAG = <any>"wd_mousedrag",
 
         MATERIAL_CHANGE = <any>"wd_material_change",
+        MATERIAL_COLOR_CHANGE = <any>"wd_material_color_change",
 
         UI_WIDTH_CHANGE = <any>"wd_ui_width_change",
         UI_HEIGHT_CHANGE = <any>"wd_ui_height_change",

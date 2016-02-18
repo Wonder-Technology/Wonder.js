@@ -199,7 +199,7 @@ describe("CommonBufferContainer", function() {
                 geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
                 geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
                 geo.texCoords = [];
-                geo.colors = [0.1,0.2,0.3,0.2,0.1,0.002];
+                geo.colors = [0.1,0.2,0.3,0.2,0.1,0.002, 0.1,0.1,0.1];
 
 
                 geo.init();
@@ -215,7 +215,7 @@ describe("CommonBufferContainer", function() {
 
                 expect(result1.data).toEqual(
                     new Float32Array([
-                        0.10000000149011612,0.20000000298023224,0.30000001192092896,0.20000000298023224,0.10000000149011612,0.0020000000949949026
+                        0.10000000149011612,0.20000000298023224,0.30000001192092896,0.20000000298023224,0.10000000149011612,0.0020000000949949026,0.10000000149011612,0.10000000149011612,0.10000000149011612
                     ])
                 );
                 expect(result2===result1).toBeTruthy();

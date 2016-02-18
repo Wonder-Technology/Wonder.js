@@ -21,6 +21,8 @@ describe("Geometry", function() {
         sandbox = sinon.sandbox.create();
         Geometry = wd.Geometry;
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
         testTool.clearInstance();
@@ -54,9 +56,7 @@ describe("Geometry", function() {
             expect(geo.buffers.geometryData.normals).toEqual(jasmine.any(Array));
             expect(geo.buffers.geometryData.texCoords).toEqual(jasmine.any(Array));
             expect(geo.buffers.geometryData.colors).toEqual(
-                [
-                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-                ]
+                [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
             );
             expect(wd.ArrayBuffer.create).not.toCalled();
             expect(wd.ElementBuffer.create).not.toCalled();
@@ -238,6 +238,79 @@ describe("Geometry", function() {
         });
     });
 
+    describe("get color data", function(){
+        beforeEach(function(){
+            geo = createGeometry(wd.ModelGeometry);
+        });
+
+        describe("if cached", function(){
+            var data;
+
+            beforeEach(function(){
+                geo.material.shading = wd.EShading.FLAT;
+                geo.material.color = wd.Color.create("rgb(1.0,0.0,0.0)");
+
+                geo.vertices = [1,-1,0, 0,1,0,0,0,1];
+                geo.faces = createFaces([0,2,1]);
+
+                geo.init();
+
+                data = geo.buffers.geometryData;
+            });
+
+            it("if not change color data, return cached data", function(){
+                var colors1 = data.colors;
+                var colors2 = data.colors;
+
+                expect(colors1.length).not.toEqual(0);
+                expect(colors2 === colors1).toBeTruthy();
+            });
+
+            it("if set color data, return changed data", function(){
+                var colors2 = [1,0,0.1, 1,1,1, 1,1,1];
+                data.colors = colors2;
+
+                expect(data.colors).toEqual(colors2);
+            });
+            
+            describe("if change material.color", function(){
+                beforeEach(function(){
+                });
+                
+                it("if not set color data, return changed data from material", function(){
+                    geo.material.color = wd.Color.create("rgb(1.0,1.0,0.0)");
+
+                    expect(data.colors).toEqual([1, 1, 0, 1, 1, 0, 1, 1, 0]);
+                });
+                it("else, return setted color data", function () {
+                    var colors = [1,0,0.1, 1,1,1, 1,1,1];
+                    data.colors = colors;
+
+                    geo.material.color = wd.Color.create("rgb(1.0,1.0,0.0)");
+
+                    expect(data.colors).toEqual(colors);
+                });
+
+            });
+
+            it("if change material, return data from new material->color", function(){
+                var newMaterial = new wd.Material();
+                newMaterial.color = wd.Color.create("rgb(1.0,1.0,0.0)");
+
+                geo.material = newMaterial;
+
+                expect(data.colors).toEqual([1, 1, 0, 1, 1, 0, 1, 1, 0]);
+            });
+        });
+
+        describe("else", function(){
+            beforeEach(function(){
+            });
+
+            //todo more test
+        });
+    });
+
     describe("computeFaceNormals", function(){
         it("compute normal based on triangle point", function(){
             geo = createGeometry(wd.ModelGeometry);
@@ -340,9 +413,7 @@ describe("Geometry", function() {
                 sandbox.spy(colors, "resetData");
 
                 expect(testTool.getValues(colors.data)).toEqual(
-                    [
-                        0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667
-                    ]
+                    [ 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667, 0.0666667 ]
                 );
 
 
@@ -360,9 +431,7 @@ describe("Geometry", function() {
                 expect(colors.resetData).toCalledOnce();
 
                 expect(testTool.getValues(newColors.data)).toEqual(
-                    [
-                        0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333
-                    ]
+                    [ 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333, 0.1333333 ]
                 );
             });
         });

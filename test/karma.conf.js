@@ -29,9 +29,12 @@
 
         'test/unit/**',
 
-        'test/unit/**/Shader*',
-        'test/unit/**/shaderLibSpec*',
-        'test/unit/**/*ShaderLib*',
+        'test/unit/**/GeometryData*',
+        'test/unit/**/BufferContainer*',
+
+        //'test/unit/**/Shader*',
+        //'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/*ShaderLib*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -143,7 +146,7 @@
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        //'test/unit/component/**/GeometrySpec.js',
+        'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

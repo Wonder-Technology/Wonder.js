@@ -54,7 +54,7 @@ module wd {
         @requireGetter(function(){
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("geometry", "has faces"));
         })
-        @ensureGetter(function (normals) {
+        @ensureGetter(function (normals:Array<number>) {
             for(let data of normals){
                 assert(JudgeUtils.isNumber(data), Log.info.FUNC_SHOULD("normals data", "be number"));
             }
@@ -93,7 +93,7 @@ module wd {
         @requireGetter(function(){
             assert(this._faces.length > 0, Log.info.FUNC_SHOULD("geometry", "has faces"));
         })
-        @ensureGetter(function (normals) {
+        @ensureGetter(function (normals:Array<number>) {
             for(let data of normals){
                 assert(JudgeUtils.isNumber(data), Log.info.FUNC_SHOULD("normals data", "be number"));
             }
@@ -166,12 +166,27 @@ module wd {
         }
 
         private _colors:Array<number> = null;
+        @ensureGetter(function (colors:Array<number>) {
+            assert(colors.length === this._vertices.length, Log.info.FUNC_SHOULD(`colors.length:${colors.length}`, `=== vertices.length:${this._vertices.length}`));
+        })
+        @cacheGetter(function(){
+            return !this.colorDirty && this._colorCache;
+        }, function(){
+            return this._colorCache;
+        }, function(result){
+            this._colorCache = result;
+            this.colorDirty = false;
+        })
         get colors() {
-            return this._getColors(this._colors, this._vertices);
-        }
+            if(this._needGetColorsFromMaterial()){
+                return this._getColorsFromMaterial(this._vertices);
+            }
 
+            return this._colors;
+        }
         set colors(colors:Array<number>) {
             this._colors = colors;
+            this.colorDirty = true;
         }
 
         private _tangents:Array<number> = null;
@@ -186,6 +201,7 @@ module wd {
         }
 
         public isTangentDirty:boolean = true;
+        public colorDirty:boolean = true;
 
         protected geometry:Geometry = null;
 
@@ -193,8 +209,29 @@ module wd {
         private _normalFromFaceCache:Array<number> = null;
         private _normalFromVertexCache:Array<number> = null;
         private _indiceCache:Array<number> = null;
+        private _colorCache:Array<number> = null;
         private _normalDirty:boolean = true;
         private _indiceDirty:boolean = true;
+        private _materialColorChangeSubscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var self = this;
+
+            this._materialColorChangeSubscription =
+                wdFrp.fromArray([
+                        EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE),
+                        EventManager.fromEvent(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_CHANGE)
+                    ])
+                    .subscribe(() => {
+                        if(self._needGetColorsFromMaterial()){
+                            self.colorDirty = true;
+                        }
+                    });
+        }
+
+        public dispose(){
+            this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
+        }
 
         @require(function(){
             assert(GeometryUtils.hasData(this.vertices), Log.info.FUNC_MUST("contain vertices"));
@@ -296,30 +333,21 @@ module wd {
             return normals;
         }
 
-        private _getColors(colors:Array<number>, vertices:Array<number>) {
-            if (colors && colors.length > 0) {
-                return colors;
-            }
-            else {
-                return this._getColorsFromMaterial(vertices);
-            }
-        }
-
-        //todo optimize:add cache
         private _getColorsFromMaterial(vertices:Array<number>) {
             var arr = [],
                 i = 0,
-                material = this.geometry.material,
-                color = material.color,
+                color = this.geometry.material.color,
+                r = color.r,
+                g = color.g,
+                b = color.b,
                 len = null;
 
-            wdCb.Log.error(!vertices || vertices.length === 0, wdCb.Log.info.FUNC_MUST("has vertice data"));
-
-            len = vertices.length;
+            len = vertices.length / 3;
 
             for (i = 0; i < len; i++) {
-                arr.push(color.r, color.g, color.b);
+                arr.push(r, g, b);
             }
+
             return arr;
         }
 
@@ -430,6 +458,12 @@ module wd {
             }
 
             return tangents;
+        }
+
+        private _needGetColorsFromMaterial(){
+            var colors = this._colors;
+
+            return !colors || colors.length === 0;
         }
     }
 }

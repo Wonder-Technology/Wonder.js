@@ -124,8 +124,21 @@ module wd {
             this.blendEquationSeparate = null;
         }
 
+        private _color:Color = Color.create("#ffffff");
+        get color(){
+            return this._color;
+        }
+        set color(color:Color){
+            if(!this._isColorEqual(color, this._color)){
+                if(this.geometry && this.geometry.entityObject){
+                    EventManager.trigger(this.geometry.entityObject, <any>EEngineEvent.MATERIAL_COLOR_CHANGE);
+                }
+
+                this._color = color;
+            }
+        }
+
         public shader:Shader = Shader.create();
-        public color:Color = Color.create("#ffffff");
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -244,6 +257,10 @@ module wd {
         private _afterInitHandler(){
             this._addTopShaderLib();
             this.addShaderLib();
+        }
+
+        private _isColorEqual(color1:Color, color2:Color){
+            return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         }
     }
 
