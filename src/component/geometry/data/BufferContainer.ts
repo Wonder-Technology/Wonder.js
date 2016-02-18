@@ -160,7 +160,7 @@ module wd {
         }
 
         private _needReCalcuteTangent(type:EBufferDataType){
-            return this.geometryData.isTangentDirty && type === EBufferDataType.TANGENT;
+            return this.geometryData.tangentDirty && type === EBufferDataType.TANGENT;
         }
     }
 }

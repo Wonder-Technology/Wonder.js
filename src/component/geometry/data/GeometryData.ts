@@ -11,7 +11,7 @@ module wd {
 
         set vertices(vertices:Array<number>) {
             this._vertices = vertices;
-            this.isTangentDirty = true;
+            this.tangentDirty = true;
         }
 
         @requireGetter(function () {
@@ -162,7 +162,7 @@ module wd {
 
         set texCoords(texCoords:Array<number>) {
             this._texCoords = texCoords;
-            this.isTangentDirty = true;
+            this.tangentDirty = true;
         }
 
         private _colors:Array<number> = null;
@@ -191,8 +191,8 @@ module wd {
 
         private _tangents:Array<number> = null;
         get tangents() {
-            if (this.isTangentDirty) {
-                this.isTangentDirty = false;
+            if (this.tangentDirty) {
+                this.tangentDirty = false;
 
                 this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
             }
@@ -200,7 +200,7 @@ module wd {
             return this._tangents;
         }
 
-        public isTangentDirty:boolean = true;
+        public tangentDirty:boolean = true;
         public colorDirty:boolean = true;
 
         protected geometry:Geometry = null;
@@ -291,7 +291,7 @@ module wd {
 
         @virtual
         protected onChangeFace(){
-            this.isTangentDirty = true;
+            this.tangentDirty = true;
             this._normalDirty = true;
             this._indiceDirty = true;
         }
