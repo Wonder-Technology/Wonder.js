@@ -29,8 +29,8 @@
 
         'test/unit/**',
 
-        'test/unit/**/GeometryData*',
-        'test/unit/**/BufferContainer*',
+        //'test/unit/**/GeometryData*',
+        //'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
         //'test/unit/**/shaderLibSpec*',
@@ -45,7 +45,7 @@
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -74,7 +74,7 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/UIObjectSpec*',
 
 
         //'test/unit/**/ButtonSpec*',
@@ -130,7 +130,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        //'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
@@ -146,7 +146,7 @@
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        'test/unit/component/**/GeometrySpec.js',
+        //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

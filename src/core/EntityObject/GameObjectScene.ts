@@ -206,7 +206,7 @@ module wd {
         PCF
     }
 
-    class ShadowMapModel{
+    export class ShadowMapModel{
         public static create(scene:GameObjectScene) {
         	var obj = new this(scene);
 

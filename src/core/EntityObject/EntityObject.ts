@@ -31,6 +31,12 @@ module wd {
             this._transform = transform;
         }
 
+        set componentDirty(componentDirty:boolean){
+            if(componentDirty === true){
+                this._clearCache();
+            }
+        }
+
         public name:string = null;
         public parent:EntityObject = null;
 
@@ -42,6 +48,8 @@ module wd {
         protected components:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
+        private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
+        private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
 
         @virtual
         public initWhenCreate(){
@@ -113,6 +121,8 @@ module wd {
             this.forEach((child:EntityObject) => {
                 child.dispose();
             });
+
+            this._clearCache();
         }
 
         public hasChild(child:EntityObject):boolean {
@@ -195,6 +205,13 @@ module wd {
             });
         }
 
+        @cache(function(_class:any){
+            return this._getComponentCache.hasChild(_class.name);
+        }, function(_class:any){
+            return this._getComponentCache.getChild(_class.name);
+        }, function(result, _class:any){
+            this._getComponentCache.addChild(_class.name, result);
+        })
         public getComponent<T>(_class:Function):T{
             return this.components.findOne((component:Component) => {
                 return component instanceof _class;
@@ -230,6 +247,13 @@ module wd {
         public hasComponent(component:Component):boolean;
         public hasComponent(_class:Function):boolean;
 
+        @cache(function(...args){
+            return this._hasComponentCache.hasChild(this._getHasComponentCacheKey(args));
+        }, function(...args){
+            return this._hasComponentCache.getChild(this._getHasComponentCacheKey(args));
+        }, function(result, ...args){
+            this._hasComponentCache.addChild(this._getHasComponentCacheKey(args), result);
+        })
         public hasComponent(...args){
             if(args[0] instanceof Component){
                 let component = args[0];
@@ -241,7 +265,7 @@ module wd {
 
                 return this.components.hasChild((component) => {
                     return component instanceof _class;
-                })
+                });
             }
         }
 
@@ -254,6 +278,8 @@ module wd {
             this.components.addChild(component);
 
             component.addToObject(this);
+
+            this.componentDirty = true;
 
             return this;
         }
@@ -275,6 +301,8 @@ module wd {
 
             this._removeComponentHandler(component);
 
+            this.componentDirty = true;
+
             return this;
         }
 
@@ -288,6 +316,8 @@ module wd {
             }, this);
 
             this.components.removeAllChildren();
+
+            this.componentDirty = true;
 
             return result;
         }
@@ -407,11 +437,11 @@ module wd {
             }
 
             this.components.filter((component:Component) => {
-                return !(component instanceof Geometry);
-            })
-            .forEach((component:Component) => {
-                component.init();
-            });
+                    return !(component instanceof Geometry);
+                })
+                .forEach((component:Component) => {
+                    component.init();
+                });
         }
 
         protected getAllChildren(){
@@ -478,5 +508,24 @@ module wd {
         private _buildScriptHistoryKey(scriptName:string, method:string){
             return `${scriptName}_${method}`;
         }
+
+        private _getHasComponentCacheKey(args:any){
+            if(args[0] instanceof Component){
+                let component:Component = args[0];
+
+                return String(component.uid);
+            }
+            else{
+                let _class:any = args[0];
+
+                return String(_class.name);
+            }
+        }
+
+        private _clearCache(){
+            this._hasComponentCache.removeAllChildren();
+            this._getComponentCache.removeAllChildren();
+        }
     }
 }
+
