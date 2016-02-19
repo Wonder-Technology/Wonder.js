@@ -7,6 +7,13 @@ module wd{
         }
 
         private _localToWorldMatrix:Matrix4 = null;
+        @cacheGetter(function(){
+            return this._localToWorldMatrixCache !== null;
+        }, function(){
+            return this._localToWorldMatrixCache;
+        }, function(result){
+            this._localToWorldMatrixCache = result;
+        })
         get localToWorldMatrix(){
             return this.getMatrix("sync", "_localToWorldMatrix");
         }
@@ -146,6 +153,7 @@ module wd{
 
             if(isTranslate){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 this.setChildrenTransformState("isTranslate");
             }
@@ -160,6 +168,7 @@ module wd{
 
             if(isRotate){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 this.setChildrenTransformState("isRotate");
             }
@@ -174,6 +183,7 @@ module wd{
 
             if(isScale){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 this.setChildrenTransformState("isScale");
             }
@@ -186,6 +196,7 @@ module wd{
 
         private _localToParentMatrix:Matrix4 = Matrix4.create();
         private _endLoopSubscription:wdFrp.IDisposable = null;
+        private _localToWorldMatrixCache:Matrix4 = null;
 
 
         public init(){
@@ -194,6 +205,7 @@ module wd{
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
                     self._resetTransformFlag();
+                    self._clearCache();
                 });
         }
 
@@ -390,6 +402,10 @@ module wd{
             this.isTranslate = false;
             this.isScale = false;
             this.isRotate = false;
+        }
+
+        private _clearCache(){
+            this._localToWorldMatrixCache = null;
         }
     }
 }
