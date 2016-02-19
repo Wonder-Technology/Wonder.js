@@ -7,11 +7,25 @@ module wd{
         }
 
         private _rotationMatrix:Matrix3 = null;
+        @cacheGetter(function(){
+            return this._rotationMatrixCache !== null;
+        }, function(){
+            return this._rotationMatrixCache;
+        }, function(result){
+            this._rotationMatrixCache = result;
+        })
         get rotationMatrix(){
             return this.getMatrix("syncRotation", "_rotationMatrix");
         }
 
         private _localPositionAndScaleMatrix:Matrix3 = Matrix3.create();
+        @cacheGetter(function(){
+            return this._localPositionAndScaleMatrixCache !== null;
+        }, function(){
+            return this._localPositionAndScaleMatrixCache;
+        }, function(result){
+            this._localPositionAndScaleMatrixCache = result;
+        })
         get localPositionAndScaleMatrix(){
             return this.getMatrix("syncPositionAndScale", "_localPositionAndScaleMatrix");
         }
@@ -184,6 +198,7 @@ module wd{
 
             if(isTranslate){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
 
@@ -201,6 +216,7 @@ module wd{
 
             if(isRotate){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
 
@@ -217,6 +233,7 @@ module wd{
 
             if(isScale){
                 this.dirtyLocal = true;
+                this._clearCache();
 
                 EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
 
@@ -234,6 +251,24 @@ module wd{
 
         private _localRotationMatrix:Matrix3 = Matrix3.create();
         private _localToParentMatrix:Matrix3 = Matrix3.create();
+        private _rotationMatrixCache:Matrix3 = null;
+        private _localPositionAndScaleMatrixCache:Matrix3 = null;
+        private _endLoopSubscription:wdFrp.IDisposable = null;
+
+        public init(){
+            var self = this;
+
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+                .subscribe(() => {
+                    self._clearCache();
+                });
+        }
+
+        public dispose(){
+            super.dispose();
+
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
+        }
 
         public syncRotation(){
             if(this.dirtyRotation){
@@ -410,6 +445,11 @@ module wd{
             }
 
             return this.p_parent.scale;
+        }
+
+        private _clearCache(){
+            this._rotationMatrixCache = null;
+            this._localPositionAndScaleMatrixCache = null;
         }
     }
 }

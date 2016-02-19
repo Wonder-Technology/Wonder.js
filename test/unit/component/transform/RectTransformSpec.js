@@ -18,6 +18,57 @@ describe("RectTransform", function(){
         sandbox.restore();
     });
 
+    describe("test cache", function(){
+        var matrix;
+
+        function clearCacheJudge(getMethod, getAttr){
+            sandbox.stub(tra1, getMethod).returns(matrix);
+            var m1 = tra1[getAttr];
+
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+            var m2 = tra1[getAttr];
+
+            expect(m1 === m2).toBeTruthy();
+            expect(tra1[getMethod]).toCalledTwice();
+        }
+
+        beforeEach(function(){
+            matrix = wd.Matrix4.create();
+        });
+
+
+        it("rotationMatrix(getter)", function(){
+            sandbox.stub(tra1, "getMatrix");
+
+            var m1 = tra1.rotationMatrix;
+            var m2 = tra1.rotationMatrix;
+
+            expect(m1 === m2).toBeTruthy();
+            expect(tra1.getMatrix).toCalledOnce();
+        });
+        it("localPositionAndScaleMatrix(getter)", function(){
+            sandbox.stub(tra1, "getMatrix");
+
+            var m1 = tra1.localPositionAndScaleMatrix;
+            var m2 = tra1.localPositionAndScaleMatrix;
+
+            expect(m1 === m2).toBeTruthy();
+            expect(tra1.getMatrix).toCalledOnce();
+        });
+
+        it("clear rotationMatrix cache on EndLoop", function () {
+            tra1.init();
+            clearCacheJudge("getMatrix", "rotationMatrix");
+        });
+        it("clear localToWorldMatrix cache on EndLoop", function () {
+            tra1.init();
+            clearCacheJudge("getMatrix", "localPositionAndScaleMatrix");
+        });
+        // more:clear cache when set isXXX true
+        // already tested
+    });
+
     describe("localPosition/localScale is the value relative to the parent transform", function(){
         var tra2;
 
@@ -566,37 +617,60 @@ describe("RectTransform", function(){
     });
 
     describe("test state", function(){
-        describe("isTranslate", function(){
-            it("if set it to be true, set dirtyLocal to be true", function(){
-                tra1.translate(0,1);
+        describe("isTranslate", function () {
+            describe("if set it to be true", function () {
+                it("set dirtyLocal to be true", function () {
+                    tra1.translate(0, 1);
 
-                expect(tra1.dirtyLocal).toBeTruthy();
-            });
-            it("change children state", function(){
-                var tra2 = Transform.create();
-                tra1.parent = tra2;
+                    expect(tra1.dirtyLocal).toBeTruthy();
+                });
+                it("clear cache", function () {
+                    var m = tra1.rotationMatrix;
+                    var m2 = tra1.localPositionAndScaleMatrix;
 
-                tra2.translate(0,1);
+                    tra1.translate(0, 1);
 
-                expect(tra2.isTranslate).toBeTruthy();
-                expect(tra1.isTranslate).toBeTruthy();
+                    expect(tra1._rotationMatrixCache).toBeNull();
+                    expect(tra1._localPositionAndScaleMatrixCache).toBeNull();
+                });
+                it("change children state", function () {
+                    var tra2 = Transform.create();
+                    tra1.parent = tra2;
+
+                    tra2.translate(0, 1);
+
+                    expect(tra2.isTranslate).toBeTruthy();
+                    expect(tra1.isTranslate).toBeTruthy();
+                });
             });
         });
 
-        describe("isRotate", function(){
-            it("if set it to be true, set dirtyRotation to be true", function(){
-                tra1.rotate(45);
+        describe("isRotate", function () {
+            describe("if set it to be true", function () {
+                it("if set it to be true, set dirtyLocal to be true", function () {
+                    tra1.rotate(45);
 
-                expect(tra1.dirtyRotation).toBeTruthy();
-            });
-            it("change children state", function(){
-                var tra2 = Transform.create();
-                tra1.parent = tra2;
+                    expect(tra1.dirtyLocal).toBeTruthy();
+                });
+                it("clear cache", function () {
+                    var m = tra1.rotationMatrix;
+                    var m2 = tra1.localPositionAndScaleMatrix;
 
-                tra2.rotate(45);
+                    tra1.rotate(45);
 
-                expect(tra2.isRotate).toBeTruthy();
-                expect(tra1.isRotate).toBeTruthy();
+                    expect(tra1._rotationMatrixCache).toBeNull();
+                    expect(tra1._localPositionAndScaleMatrixCache).toBeNull();
+
+                });
+                it("change children state", function () {
+                    var tra2 = Transform.create();
+                    tra1.parent = tra2;
+
+                    tra2.rotate(45);
+
+                    expect(tra2.isRotate).toBeTruthy();
+                    expect(tra1.isRotate).toBeTruthy();
+                });
             });
         });
 
@@ -614,6 +688,35 @@ describe("RectTransform", function(){
 
                 expect(tra2.isScale).toBeTruthy();
                 expect(tra1.isScale).toBeTruthy();
+            });
+        });
+
+        describe("isScale", function () {
+            describe("if set it to be true", function () {
+                it("if set it to be true, set dirtyLocal to be true", function () {
+                    tra1.scale = wd.Vector2.create(1,1);
+
+                    expect(tra1.dirtyLocal).toBeTruthy();
+                });
+                it("clear cache", function () {
+                    var m = tra1.rotationMatrix;
+                    var m2 = tra1.localPositionAndScaleMatrix;
+
+                    tra1.scale = wd.Vector2.create(1,1);
+
+                    expect(tra1._rotationMatrixCache).toBeNull();
+                    expect(tra1._localPositionAndScaleMatrixCache).toBeNull();
+
+                });
+                it("change children state", function () {
+                    var tra2 = Transform.create();
+                    tra1.parent = tra2;
+
+                    tra2.scale = wd.Vector2.create(1,1);
+
+                    expect(tra2.isScale).toBeTruthy();
+                    expect(tra1.isScale).toBeTruthy();
+                });
             });
         });
     });
