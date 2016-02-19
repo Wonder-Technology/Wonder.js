@@ -52,6 +52,15 @@ module wd {
             }
         }
 
+        @require(function(){
+            var material = this.material;
+
+            if(material.blendFuncSeparate && material.blendEquationSeparate){
+            }
+            else{
+                wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
+            }
+        })
         private _setEffects(){
             var deviceManager = DeviceManager.getInstance(),
                 material = this.material;
@@ -67,8 +76,6 @@ module wd {
                 deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
             }
             else{
-                wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
-
                 deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
                 deviceManager.setBlendEquation(material.blendEquation);
             }
