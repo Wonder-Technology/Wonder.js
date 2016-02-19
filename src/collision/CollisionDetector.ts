@@ -9,6 +9,7 @@ module wd{
         private _lastCollideObjects:wdCb.Collection<GameObject> = null;
         private _collisionTable:wdCb.Hash<wdCb.Collection<GameObject>> = wdCb.Hash.create<wdCb.Collection<GameObject>>();
 
+        //todo optimize collision
         public detect(scene:GameObjectScene){
             //todo optimize:use worker
             var checkTargetList = scene.filter((entityObject:GameObject) => {

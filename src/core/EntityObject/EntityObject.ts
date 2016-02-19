@@ -50,6 +50,10 @@ module wd {
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
+        private _geometry:Geometry = null;
+        private _rendererComponent:RendererComponent = null;
+        private _animation:Animation = null;
+        private _collider:Collider = null;
 
         @virtual
         public initWhenCreate(){
@@ -275,6 +279,19 @@ module wd {
                 return this;
             }
 
+            if(component instanceof Geometry){
+                this._geometry = component;
+            }
+            else if(component instanceof RendererComponent){
+                this._rendererComponent = component;
+            }
+            else if(component instanceof Animation){
+                this._animation = component;
+            }
+            else if(component instanceof Collider){
+                this._collider = component;
+            }
+
             this.components.addChild(component);
 
             component.addToObject(this);
@@ -406,6 +423,12 @@ module wd {
             });
         }
 
+        public getComponentCount(_class:Function){
+            return this.components.filter((component:Component) => {
+                return component instanceof _class;
+            }).getCount();
+        }
+
         protected abstract createTransform():Transform;
 
         @virtual
@@ -463,34 +486,28 @@ module wd {
             assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
-            return this.getComponent<Geometry>(Geometry);
+            return this._geometry;
         }
 
         @require(function(){
             assert(this.getComponentCount(Animation) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 animation component"));
         })
         private _getAnimation():Animation{
-            return this.getComponent<Animation>(Animation);
+            return this._animation;
         }
 
         @require(function(){
             assert(this.getComponentCount(RendererComponent) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 rendererComponent"));
         })
         private _getRendererComponent():RendererComponent{
-            return this.getComponent<RendererComponent>(RendererComponent);
+            return this._rendererComponent;
         }
 
         @require(function(){
             assert(this.getComponentCount(Collider) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
         })
         private _getCollider():Collider{
-            return this.getComponent<Collider>(Collider);
-        }
-
-        public getComponentCount(_class:Function){
-            return this.components.filter((component:Component) => {
-                return component instanceof _class;
-            }).getCount();
+            return this._collider;
         }
 
         private _removeComponentHandler(component:Component){

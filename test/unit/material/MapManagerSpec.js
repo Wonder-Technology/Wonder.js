@@ -50,22 +50,22 @@ describe("MapManager", function() {
         });
     });
 
-        it("set env map", function(){
-            var asset = {
-                asset: wd.CompressedTextureAsset.create({})
-            };
-            var texture1 = wd.CubemapTexture.create(
-                [asset,asset, asset, asset, asset, asset ]
-            );
-            var texture2 = wd.CubemapTexture.create(
-                [asset,asset, asset, asset, asset, asset ]
-            );
+    it("set env map", function(){
+        var asset = {
+            asset: wd.CompressedTextureAsset.create({})
+        };
+        var texture1 = wd.CubemapTexture.create(
+            [asset,asset, asset, asset, asset, asset ]
+        );
+        var texture2 = wd.CubemapTexture.create(
+            [asset,asset, asset, asset, asset, asset ]
+        );
 
-            manager.setEnvMap(texture1);
-            manager.setEnvMap(texture2);
+        manager.setEnvMap(texture1);
+        manager.setEnvMap(texture2);
 
-            expect(manager.getEnvMap()).toEqual(texture2);
-        });
+        expect(manager.getEnvMap()).toEqual(texture2);
+    });
 
     describe("dispose", function(){
         it("dispose all textures, clear container", function(){
@@ -94,7 +94,66 @@ describe("MapManager", function() {
             expect(texture1.dispose).toCalledOnce();
             expect(twoTexture.dispose).toCalledOnce();
             expect(compressedTexture.dispose).toCalledOnce();
-            expect(manager._textures.getCount()).toEqual(0);
+            expect(manager._mapTable.getCount()).toEqual(0);
+        });
+    });
+    
+    describe("_getMapList", function(){
+        beforeEach(function(){
+        });
+
+        describe("test cache", function(){
+            var texture;
+
+            beforeEach(function(){
+                sandbox.spy(manager._mapTable, "toCollection");
+                texture = wd.ImageTexture.create({});
+
+                manager.addMap(texture);
+            });
+
+            it("if cached, return cached data", function(){
+                var list1 = manager._getMapList();
+                var list2 = manager._getMapList();
+
+                expect(list1 === list2).toBeTruthy();
+                expect(manager._mapTable.toCollection).toCalledOnce();
+            });
+
+            describe("if texture dirty, not cache", function(){
+                beforeEach(function(){
+
+                });
+
+                it("addMap make texture dirty", function(){
+                    var texture2 = wd.ImageTexture.create({});
+                    var list1 = manager._getMapList();
+
+                    manager.addMap(texture2);
+
+                    var list2 = manager._getMapList();
+
+                    expect(manager._mapTable.toCollection).toCalledTwice();
+                });
+                it("removeAllChildren make texture dirty", function(){
+                    var list1 = manager._getMapList();
+
+                    manager.removeAllChildren();
+
+                    var list2 = manager._getMapList();
+
+                    expect(manager._mapTable.toCollection).toCalledTwice();
+                });
+                it("set empty envMap make texture dirty", function(){
+                    var list1 = manager._getMapList();
+
+                    manager.setEnvMap(null);
+
+                    var list2 = manager._getMapList();
+
+                    expect(manager._mapTable.toCollection).toCalledTwice();
+                });
+            });
         });
     });
     

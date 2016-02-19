@@ -29,6 +29,8 @@
 
         'test/unit/**',
 
+        'test/unit/**/MapManager*',
+
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
@@ -45,7 +47,7 @@
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -74,7 +76,7 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
+        //'test/unit/**/UIObjectSpec*',
 
 
         //'test/unit/**/ButtonSpec*',
@@ -130,7 +132,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        'test/unit/**/GameObjectSpec.js',
+        //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',

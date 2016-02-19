@@ -1,9 +1,9 @@
 module wd{
     export class MapManager{
         public static create(material:Material) {
-        	var obj = new this(material);
+            var obj = new this(material);
 
-        	return obj;
+            return obj;
         }
 
         constructor(material:Material){
@@ -11,13 +11,16 @@ module wd{
         }
 
         private _material:Material = null;
-        private _textures:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _mapTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _mirrorMap:MirrorTexture = null;
+        private _textureDirty:boolean = false;
+        private _mapListCache:wdCb.Collection<Texture> = null;
 
         public init(){
-            this._getMapList().forEach((texture:Texture) => {
-                texture.init();
-            });
+            this._getMapList()
+                .forEach((texture:Texture) => {
+                    texture.init();
+                });
         }
 
         public addMap(asset:TextureAsset);
@@ -27,14 +30,14 @@ module wd{
 
         public addMap(...args){
             var map = null;
-                if(args[0] instanceof TextureAsset){
-                    let asset:TextureAsset = args[0];
+            if(args[0] instanceof TextureAsset){
+                let asset:TextureAsset = args[0];
 
-                    map = asset.toTexture();
-                }
-                else if(args[0] instanceof Texture){
-                    map = args[0];
-                }
+                map = asset.toTexture();
+            }
+            else if(args[0] instanceof Texture){
+                map = args[0];
+            }
 
             if(args.length === 2){
                 let option = args[1];
@@ -43,11 +46,13 @@ module wd{
             }
 
             map.material = this._material;
-            this._textures.appendChild("map", map);
+            this._mapTable.appendChild("map", map);
+
+            this._textureDirty = true;
         }
 
         public getMap(index:number){
-            return this._textures.getChild("map").getChild(index);
+            return this._mapTable.getChild("map").getChild(index);
         }
 
         public hasMap(func:(...args) => boolean);
@@ -56,7 +61,7 @@ module wd{
         public hasMap(...args){
             var maps = null;
 
-            maps = this._textures.getChild("map");
+            maps = this._mapTable.getChild("map");
 
             return maps && maps.hasChild(args[0]);
         }
@@ -67,13 +72,13 @@ module wd{
 
         public getMapCount(...args){
             if(args.length === 0){
-                let map = this._textures.getChild("map");
+                let map = this._mapTable.getChild("map");
 
                 return map ? map.getCount() : 0;
             }
             else{
                 let filterFunc = args[0],
-                    map = this._textures.getChild("map");
+                    map = this._mapTable.getChild("map");
 
                 return map ? map.filter(filterFunc).getCount() : 0;
             }
@@ -104,13 +109,16 @@ module wd{
         }
 
         public removeAllChildren(){
-            this._textures.removeAllChildren();
+            this._mapTable.removeAllChildren();
+
+            this._textureDirty = true;
         }
 
         public dispose(){
-            this._getMapList().forEach((texture:Texture) => {
-                texture.dispose();
-            });
+            this._getMapList()
+                .forEach((texture:Texture) => {
+                    texture.dispose();
+                });
 
             this.removeAllChildren();
         }
@@ -126,25 +134,34 @@ module wd{
         }
 
         public sendData(program:Program){
-            this._getMapList().forEach((texture:Texture, index:number) => {
-                var samplerName = texture.getSamplerName(index),
-                    pos = program.getUniformLocation(samplerName);
+            this._getMapList()
+                .forEach((texture:Texture, index:number) => {
+                    var samplerName = texture.getSamplerName(index),
+                        pos = program.getUniformLocation(samplerName);
 
-                if(program.isUniformDataNotExistByLocation(pos)){
-                    return;
-                }
+                    if(program.isUniformDataNotExistByLocation(pos)){
+                        return;
+                    }
 
-                texture.bindToUnit(index);
-                texture.sendData(program, pos, index);
-            });
+                    texture.bindToUnit(index);
+                    texture.sendData(program, pos, index);
+                });
         }
 
+        @cache(function(){
+            return !this._textureDirty && !!this._mapListCache;
+        }, function(){
+            return this._mapListCache;
+        }, function(mapList:wdCb.Collection<Texture>){
+            this._mapListCache = mapList;
+            this._textureDirty = false;
+        })
         private _getMapList(){
-            return this._textures.toCollection();
+            return this._mapTable.toCollection();
         }
 
         private _getMap<T>(key:string):T{
-            return this._textures.getChild(key);
+            return this._mapTable.getChild(key);
         }
 
         private _setMap(key:string, map:Texture);
@@ -168,11 +185,12 @@ module wd{
 
             map.material = this._material;
 
-            this._textures.addChild(key, map);
+            this._mapTable.addChild(key, map);
         }
 
         private _removeMap(key:string, map:Texture){
-            this._textures.removeChild(key);
+            this._mapTable.removeChild(key);
+            this._textureDirty = true;
         }
 
         private _setMapOption(map:Texture, option:MapVariableData){
