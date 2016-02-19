@@ -20,8 +20,9 @@ describe("CameraController", function () {
 
     describe("test cache", function(){
         var matrix;
+        var object;
 
-        function clearCacheJudge(getMethod, getAttr){
+        function judgeClearCache(getMethod, getAttr){
             sandbox.stub(controller, getMethod).returns(matrix);
             var m1 = controller[getAttr];
 
@@ -35,47 +36,35 @@ describe("CameraController", function () {
 
         beforeEach(function(){
             matrix = wd.Matrix4.create();
-            var object = wd.GameObject.create();
+            object = wd.GameObject.create();
             object.addComponent(controller);
             controller.init();
         });
 
-        it("cameraToWorldMatrix(getter)", function(){
-            sandbox.spy(controller, "_getCameraToWorldMatrix");
+        describe("worldToCameraMatrix(getter)", function(){
+            beforeEach(function(){
+                sandbox.spy(controller, "_getWorldToCameraMatrix");
+            });
 
-            var m1 = controller.cameraToWorldMatrix;
-            var m2 = controller.cameraToWorldMatrix;
+            it("if entityObject is transform, not cache", function () {
+                var m1 = controller.worldToCameraMatrix;
+                object.transform.rotate(1,1,1);
+                var m2 = controller.worldToCameraMatrix;
 
-            expect(m1 === m2).toBeTruthy();
-            expect(controller._getCameraToWorldMatrix).toCalledOnce();
-        });
-        it("worldToCameraMatrix(getter)", function(){
-            sandbox.spy(controller, "_getWorldToCameraMatrix");
+                expect(m1 === m2).toBeFalsy();
+                expect(controller._getWorldToCameraMatrix).toCalledTwice();
+            });
+            it("else, cache", function () {
+                var m1 = controller.worldToCameraMatrix;
+                var m2 = controller.worldToCameraMatrix;
 
-            var m1 = controller.worldToCameraMatrix;
-            var m2 = controller.worldToCameraMatrix;
-
-            expect(m1 === m2).toBeTruthy();
-            expect(controller._getWorldToCameraMatrix).toCalledOnce();
-        });
-        it("pMatrix(getter)", function(){
-            sandbox.spy(controller, "_getPMatrix");
-
-            var m1 = controller.pMatrix;
-            var m2 = controller.pMatrix;
-
-            expect(m1 === m2).toBeTruthy();
-            expect(controller._getPMatrix).toCalledOnce();
+                expect(m1 === m2).toBeTruthy();
+                expect(controller._getWorldToCameraMatrix).toCalledOnce();
+            });
         });
 
-        it("clear cameraToWorldMatrix cache on EndLoop", function () {
-            clearCacheJudge("_getCameraToWorldMatrix", "cameraToWorldMatrix");
-        });
         it("clear worldToCameraMatrix cache on EndLoop", function () {
-            clearCacheJudge("_getWorldToCameraMatrix", "worldToCameraMatrix");
-        });
-        it("clear pMatrix cache on EndLoop", function () {
-            clearCacheJudge("_getPMatrix", "pMatrix");
+            judgeClearCache("_getWorldToCameraMatrix", "worldToCameraMatrix");
         });
     });
 

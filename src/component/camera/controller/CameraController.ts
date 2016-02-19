@@ -6,19 +6,12 @@ module wd {
             this.camera = cameraComponent;
         }
 
-        @cacheGetter(function(){
-            return this._cameraToworldMatrixCache !== null;
-        }, function(){
-            return this._cameraToworldMatrixCache;
-        }, function(result){
-            this._cameraToworldMatrixCache = result;
-        })
         get cameraToWorldMatrix(){
-            return this._getCameraToWorldMatrix();
+            return this.camera.cameraToWorldMatrix;
         }
 
         @cacheGetter(function(){
-            return this._worldToCameraMatrixCache !== null;
+            return !this.entityObject.transform.isTransform && this._worldToCameraMatrixCache !== null;
         }, function(){
             return this._worldToCameraMatrixCache;
         }, function(result){
@@ -31,15 +24,8 @@ module wd {
             this.camera.worldToCameraMatrix = matrix;
         }
 
-        @cacheGetter(function(){
-            return this._pMatrixCache !== null;
-        }, function(){
-            return this._pMatrixCache;
-        }, function(result){
-            this._pMatrixCache = result;
-        })
         get pMatrix(){
-            return this._getPMatrix();
+            return this.camera.pMatrix;
         }
         set pMatrix(pMatrix:Matrix4){
             this.camera.pMatrix = pMatrix;
@@ -50,8 +36,6 @@ module wd {
         public camera:Camera = null;
 
         private _worldToCameraMatrixCache:Matrix4 = null;
-        private _cameraToworldMatrixCache:Matrix4 = null;
-        private _pMatrixCache:Matrix4 = null;
         private _endLoopSubscription:wdFrp.IDisposable = null;
 
         public init() {
@@ -161,21 +145,11 @@ module wd {
         }
 
         private _clearCache(){
-            this._cameraToworldMatrixCache = null;
             this._worldToCameraMatrixCache = null;
-            this._pMatrixCache = null;
-        }
-
-        private _getCameraToWorldMatrix(){
-            return this.camera.cameraToWorldMatrix;
         }
 
         private _getWorldToCameraMatrix(){
             return this.camera.worldToCameraMatrix;
-        }
-
-        private _getPMatrix(){
-            return this.camera.pMatrix;
         }
     }
 }
