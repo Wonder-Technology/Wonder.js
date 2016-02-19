@@ -50,6 +50,10 @@ module wd{
             this._fsSource = fsSource;
         }
 
+        get dirty(){
+            return this.libDirty || this._definitionDataDirty;
+        }
+
         public program:Program = Program.create();
         public libDirty:boolean = true;
 

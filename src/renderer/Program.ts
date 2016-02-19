@@ -8,11 +8,20 @@ module wd{
 
         private _program:any = null;
         private _shader:Shader = null;
+        private _getAttribLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        private _getUniformLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
 
         public use(){
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
+        @cache(function(name:string){
+            return !this._shader.dirty && this._getUniformLocationCache.hasChild(name);
+        }, function(name:string){
+            return this._getUniformLocationCache.getChild(name);
+        }, function(pos:number, name:string){
+            this._getUniformLocationCache.addChild(name, pos);
+        })
         public getUniformLocation(name:string){
             return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
         }
@@ -80,6 +89,18 @@ module wd{
         }
 
         //todo support STRUCTURES
+        @require(function(){
+            this._shader.uniforms
+                .filter((val:ShaderData) => {
+                    return val.value !== EVariableCategory.ENGINE;
+                })
+                .forEach((val:ShaderData, key:string) => {
+
+                    if(val.type === EVariableType.STRUCTURE){
+                        Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
+                    }
+                });
+        })
         public sendUniformDataFromCustomShader(){
             var self = this;
 
@@ -90,8 +111,6 @@ module wd{
                 .forEach((val:ShaderData, key:string) => {
 
                     if(val.type === EVariableType.STRUCTURE){
-                        Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
-
                         for(let i in val.value){
                             self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
                         }
@@ -102,12 +121,17 @@ module wd{
                 });
         }
 
+        @require(function(name:string, type:EVariableType, data:any){
+            if(data && JudgeUtils.isFunction(data)){
+                Log.error(!(data instanceof ArrayBuffer), Log.info.FUNC_MUST_BE("ArrayBuffer"));
+            }
+        })
         public sendAttributeData(name:string, type:EVariableType, data:any){
             var gl = DeviceManager.getInstance().gl,
-                pos = null,
+                pos:number = null,
                 buffer:ArrayBuffer = null;
 
-            pos= gl.getAttribLocation(this._program, name);
+            pos= this._getAttribLocation(gl, name);
 
             if (pos === -1 || data === null) {
                 return;
@@ -115,8 +139,6 @@ module wd{
 
             if(JudgeUtils.isFunction(data)){
                 buffer = data();
-
-                Log.error(!(data instanceof ArrayBuffer), Log.info.FUNC_MUST_BE("ArrayBuffer"));
             }
             else{
                 buffer = data;
@@ -186,6 +208,9 @@ module wd{
 
              require your particular case the warning doesn't have much meaning. It looks like you are only drawing a single point. But it would not be easy for the browser to figure that out so it just warns you anytime you draw and attribute 0 is not enabled.
              */
+            /*!
+             Always have vertex attrib 0 array enabled. If you draw with vertex attrib 0 array disabled, you will force the browser to do complicated emulation when running on desktop OpenGL (e.g. on Mac OSX). This is because in desktop OpenGL, nothing gets drawn if vertex attrib 0 is not array-enabled. You can use bindAttribLocation() to force a vertex attribute to use location 0, and use enableVertexAttribArray() to make it array-enabled.
+             */
             gl.bindAttribLocation( this._program, 0, "a_position");
 
 
@@ -245,6 +270,17 @@ module wd{
             }
 
             return data;
+        }
+
+        @cache(function(gl:any, name:string){
+            return !this._shader.dirty && this._getAttribLocationCache.hasChild(name);
+        }, function(gl:any, name:string){
+            return this._getAttribLocationCache.getChild(name);
+        }, function(pos:number, gl:any, name:string){
+            this._getAttribLocationCache.addChild(name, pos);
+        })
+        private _getAttribLocation(gl:any, name:string){
+            return gl.getAttribLocation(this._program, name);
         }
     }
 }

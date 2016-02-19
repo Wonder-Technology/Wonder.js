@@ -29,7 +29,7 @@
 
         'test/unit/**',
 
-        'test/unit/**/MapManager*',
+        //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
@@ -61,7 +61,7 @@
 
         //'test/unit/**/MirrorRender*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 
@@ -112,7 +112,7 @@
         //'test/unit/**/SphereShapeSpec*',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        //'test/unit/**/ProgramSpec.js',
+        'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',

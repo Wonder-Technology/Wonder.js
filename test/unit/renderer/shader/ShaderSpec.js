@@ -11,6 +11,25 @@ describe("Shader", function() {
     afterEach(function () {
         sandbox.restore();
     });
+    
+    describe("dirty(getter)", function(){
+        it("if libDirty or definitionDataDirty, shader dirty", function(){
+            shader.libDirty = true;
+            shader._definitionDataDirty = false;
+
+            expect(shader.dirty).toBeTruthy();
+
+            shader.libDirty = false;
+            shader._definitionDataDirty = true;
+
+            expect(shader.dirty).toBeTruthy();
+
+            shader.libDirty = false;
+            shader._definitionDataDirty = false;
+
+            expect(shader.dirty).toBeFalsy();
+        });
+    });
 
     describe("init", function(){
         beforeEach(function(){

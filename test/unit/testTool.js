@@ -176,6 +176,16 @@ var testTool = (function () {
                 set: setterFunc
             });
         },
+        stubGetter: function (sinon, object, attri, getterFunc) {
+            sinon.stub(object, attri, {
+                get: getterFunc
+            });
+        },
+        stubSetter: function (sinon, object, attri, setterFunc) {
+            sinon.stub(object, attri, {
+                set: setterFunc
+            });
+        },
         clearInstance: function () {
             wd.EventManager.off();
 

@@ -190,6 +190,8 @@ describe("MapManager", function() {
 
 
             program = new wd.Program();
+            var shader = wd.Shader.create();
+            program.initWithShader(shader);
 
             gl.getUniformLocation.returns(null);
         });
