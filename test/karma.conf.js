@@ -29,14 +29,17 @@
 
         //'test/unit/**',
 
+
+        //'test/unit/**/CameraController*',
+
         //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
-        'test/unit/**/shaderLibSpec*',
-        'test/unit/**/*Shader*',
+        //'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -93,9 +96,9 @@
 
         //'test/unit/**/ImageSpec*',
 
-        //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
-        //'test/unit/**/TransformSpec*',
+        'test/unit/**/ThreeDTransformSpec.js',
+        'test/unit/**/RectTransformSpec*',
+        'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
 
@@ -115,7 +118,7 @@
         'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
-        //'test/unit/**/*ColliderSpec.js',
+        'test/unit/**/*ColliderSpec.js',
         //'test/unit/**/colliderSpec.js',
         //'test/unit/**/collider/optimizeSpec.js',
         //'test/unit/**/collider/*',

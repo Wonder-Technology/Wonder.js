@@ -30,6 +30,8 @@ module wd{
             return this.getMatrix("syncPositionAndScale", "_localPositionAndScaleMatrix");
         }
 
+        //todo optimize:position, rotation, ... add cache
+
         private _position:Vector2 = Vector2.create();
         get position(){
             this._position = this.localPositionAndScaleMatrix.getTranslation();

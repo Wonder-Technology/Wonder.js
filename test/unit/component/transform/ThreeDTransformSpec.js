@@ -21,7 +21,17 @@ describe("ThreeDTransform", function(){
     describe("test cache", function(){
         var matrix;
 
-        function clearCacheJudge(getMethod, getAttr){
+        function judgeCache(stubFunc, getAttr, judgeStubFunc){
+            stubFunc();
+
+            var m1 = tra1[getAttr];
+            var m2 = tra1[getAttr];
+
+            expect(m1 === m2).toBeTruthy();
+            judgeStubFunc();
+        }
+
+        function judgeClearCache(getMethod, getAttr){
             sandbox.stub(tra1, getMethod).returns(matrix);
             var m1 = tra1[getAttr];
 
@@ -38,19 +48,73 @@ describe("ThreeDTransform", function(){
         });
 
         it("localToWorldMatrix(getter)", function(){
-            sandbox.stub(tra1, "getMatrix");
-
-            var m1 = tra1.localToWorldMatrix;
-            var m2 = tra1.localToWorldMatrix;
-
-            expect(m1 === m2).toBeTruthy();
-            expect(tra1.getMatrix).toCalledOnce();
+            judgeCache(function(){
+                sandbox.stub(tra1, "getMatrix");
+            }, "localToWorldMatrix", function(){
+                expect(tra1.getMatrix).toCalledOnce();
+            });
+        });
+        it("position(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(tra1.localToWorldMatrix, "getTranslation");
+            }, "position", function(){
+                expect(tra1.localToWorldMatrix.getTranslation).toCalledOnce();
+            });
+        });
+        it("rotation(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(tra1._rotation, "setFromMatrix");
+            }, "rotation", function(){
+                expect(tra1._rotation.setFromMatrix).toCalledOnce();
+            });
+        });
+        it("scale(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(tra1.localToWorldMatrix, "getScale");
+            }, "scale", function(){
+                expect(tra1.localToWorldMatrix.getScale).toCalledOnce();
+            });
+        });
+        it("eulerAngles(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(tra1.localToWorldMatrix, "getEulerAngles");
+            }, "eulerAngles", function(){
+                expect(tra1.localToWorldMatrix.getEulerAngles).toCalledOnce();
+            });
+        });
+        it("localEulerAngles(getter)", function(){
+            judgeCache(function(){
+                sandbox.stub(tra1._localRotation, "getEulerAngles");
+            }, "localEulerAngles", function(){
+                expect(tra1._localRotation.getEulerAngles).toCalledOnce();
+            });
         });
 
-        it("clear localToWorldMatrix cache on EndLoop", function () {
-            tra1.init();
-            clearCacheJudge("getMatrix", "localToWorldMatrix");
+        describe("clear cache on EndLoop", function(){
+            beforeEach(function(){
+                tra1.init();
+            });
+
+            it("clear localToWorldMatrix cache", function () {
+                judgeClearCache("getMatrix", "localToWorldMatrix");
+            });
+            it("clear position,rotation,scale,eulerAngles,localEulerAngles cache", function () {
+                var m1 = tra1.position;
+                var m2 = tra1.rotation;
+                var m3 = tra1.scale;
+                var m4 = tra1.eulerAngles;
+                var m5 = tra1.localEulerAngles;
+
+                wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+
+                expect(tra1._positionCache).toBeNull();
+                expect(tra1._rotationCache).toBeNull();
+                expect(tra1._scaleCache).toBeNull();
+                expect(tra1._eulerAnglesCache).toBeNull();
+                expect(tra1._localEulerAnglesCache).toBeNull();
+            });
         });
+
         // more:clear cache when set isXXX true
         // already tested
     });

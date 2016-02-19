@@ -19,6 +19,13 @@ module wd{
         }
 
         private _position:Vector3 = Vector3.create();
+        @cacheGetter(function(){
+            return this._positionCache !== null;
+        }, function(){
+            return this._positionCache;
+        }, function(result){
+            this._positionCache = result;
+        })
         get position(){
             this._position = this.localToWorldMatrix.getTranslation();
 
@@ -36,6 +43,13 @@ module wd{
         }
 
         private _rotation:Quaternion = Quaternion.create(0, 0, 0, 1);
+        @cacheGetter(function(){
+            return this._rotationCache !== null;
+        }, function(){
+            return this._rotationCache;
+        }, function(result){
+            this._rotationCache = result;
+        })
         get rotation(){
             this._rotation.setFromMatrix(this.localToWorldMatrix);
 
@@ -53,6 +67,13 @@ module wd{
         }
 
         private _scale:Vector3 = Vector3.create(1, 1, 1);
+        @cacheGetter(function(){
+            return this._scaleCache !== null;
+        }, function(){
+            return this._scaleCache;
+        }, function(result){
+            this._scaleCache = result;
+        })
         get scale(){
             this._scale = this.localToWorldMatrix.getScale();
 
@@ -70,6 +91,13 @@ module wd{
         }
 
         private _eulerAngles:Vector3 = null;
+        @cacheGetter(function(){
+            return this._eulerAnglesCache !== null;
+        }, function(){
+            return this._eulerAnglesCache;
+        }, function(result){
+            this._eulerAnglesCache = result;
+        })
         get eulerAngles(){
             this._eulerAngles = this.localToWorldMatrix.getEulerAngles();
             return this._eulerAngles;
@@ -105,6 +133,13 @@ module wd{
         }
 
         private _localEulerAngles:Vector3 = null;
+        @cacheGetter(function(){
+            return this._localEulerAnglesCache !== null;
+        }, function(){
+            return this._localEulerAnglesCache;
+        }, function(result){
+            this._localEulerAnglesCache = result;
+        })
         get localEulerAngles(){
             this._localEulerAngles = this._localRotation.getEulerAngles();
             return this._localEulerAngles;
@@ -148,6 +183,11 @@ module wd{
         private _localToParentMatrix:Matrix4 = Matrix4.create();
         private _endLoopSubscription:wdFrp.IDisposable = null;
         private _localToWorldMatrixCache:Matrix4 = null;
+        private _positionCache:Vector3 = null;
+        private _rotationCache:Vector3 = null;
+        private _scaleCache:Vector3 = null;
+        private _eulerAnglesCache:Vector3 = null;
+        private _localEulerAnglesCache:Vector3 = null;
 
 
         public init(){
@@ -351,6 +391,11 @@ module wd{
 
         protected clearCache(){
             this._localToWorldMatrixCache = null;
+            this._positionCache = null;
+            this._rotationCache = null;
+            this._scaleCache = null;
+            this._eulerAnglesCache = null;
+            this._localEulerAnglesCache = null;
         }
 
         private _resetTransformFlag(){
