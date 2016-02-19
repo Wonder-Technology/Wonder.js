@@ -140,55 +140,6 @@ module wd{
         }
 
 
-        get isTransform(){
-            return this.isTranslate || this.isRotate || this.isScale;
-        }
-
-        private _isTranslate:boolean = false;
-        get isTranslate(){
-            return this._isTranslate;
-        }
-        set isTranslate(isTranslate:boolean){
-            this._isTranslate = isTranslate;
-
-            if(isTranslate){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                this.setChildrenTransformState("isTranslate");
-            }
-        }
-
-        private _isRotate:boolean = false;
-        get isRotate(){
-            return this._isRotate;
-        }
-        set isRotate(isRotate:boolean){
-            this._isRotate = isRotate;
-
-            if(isRotate){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                this.setChildrenTransformState("isRotate");
-            }
-        }
-
-        private _isScale:boolean = false;
-        get isScale(){
-            return this._isScale;
-        }
-        set isScale(isScale:boolean){
-            this._isScale = isScale;
-
-            if(isScale){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                this.setChildrenTransformState("isScale");
-            }
-        }
-
         public dirtyWorld:boolean = null;
 
         protected p_parent:ThreeDTransform;
@@ -205,7 +156,7 @@ module wd{
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
                     self._resetTransformFlag();
-                    self._clearCache();
+                    self.clearCache();
                 });
         }
 
@@ -398,14 +349,14 @@ module wd{
             return this;
         }
 
+        protected clearCache(){
+            this._localToWorldMatrixCache = null;
+        }
+
         private _resetTransformFlag(){
             this.isTranslate = false;
             this.isScale = false;
             this.isRotate = false;
-        }
-
-        private _clearCache(){
-            this._localToWorldMatrixCache = null;
         }
     }
 }

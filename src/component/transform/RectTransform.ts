@@ -185,61 +185,6 @@ module wd{
             }
         }
 
-        get isTransform(){
-            return this.isTranslate || this.isRotate || this.isScale;
-        }
-
-        private _isTranslate:boolean = false;
-        get isTranslate(){
-            return this._isTranslate;
-        }
-        set isTranslate(isTranslate:boolean){
-            this._isTranslate = isTranslate;
-
-            if(isTranslate){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
-
-
-                this.setChildrenTransformState("isTranslate");
-            }
-        }
-
-        private _isRotate:boolean = false;
-        get isRotate(){
-            return this._isRotate;
-        }
-        set isRotate(isRotate:boolean){
-            this._isRotate = isRotate;
-
-            if(isRotate){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
-
-                this.setChildrenTransformState("isRotate");
-            }
-        }
-
-        private _isScale:boolean = false;
-        get isScale(){
-            return this._isScale;
-        }
-        set isScale(isScale:boolean){
-            this._isScale = isScale;
-
-            if(isScale){
-                this.dirtyLocal = true;
-                this._clearCache();
-
-                EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
-
-                this.setChildrenTransformState("isScale");
-            }
-        }
 
         public dirtyRotation:boolean = true;
         public dirtyPositionAndScale:boolean = true;
@@ -260,7 +205,7 @@ module wd{
 
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
-                    self._clearCache();
+                    self.clearCache();
                 });
         }
 
@@ -405,6 +350,23 @@ module wd{
             this.setChildrenTransformState("isScale");
         }
 
+        protected handleWhenSetIsTranslate():void{
+            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
+        }
+
+        protected handleWhenSetIsRotate():void{
+            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
+        }
+
+        protected handleWhenSetIsScale():void{
+            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
+        }
+
+        protected clearCache(){
+            this._rotationMatrixCache = null;
+            this._localPositionAndScaleMatrixCache = null;
+        }
+
         private _rotateAroundCanvasOriginPoint(angle:number){
             this._localRotationMatrix.rotate(angle);
 
@@ -445,11 +407,6 @@ module wd{
             }
 
             return this.p_parent.scale;
-        }
-
-        private _clearCache(){
-            this._rotationMatrixCache = null;
-            this._localPositionAndScaleMatrixCache = null;
         }
     }
 }
