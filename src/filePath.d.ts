@@ -20,7 +20,6 @@
 /// <reference path="definition/typescript/decorator/control"/>
 
 /// <reference path="definition/Global"/>
-/// <reference path="definition/Variable"/>
 
 
 /// <reference path="math/Global"/>
@@ -478,3 +477,9 @@
 
 /// <reference path="video/Video"/>
 /// <reference path="video/VideoManager"/>
+
+
+
+
+
+/// <reference path="definition/Variable"/>

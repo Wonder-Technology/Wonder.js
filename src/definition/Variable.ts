@@ -1,15 +1,14 @@
-module wd{
-    export var root:any;
-}
-
 declare var global:any,window:Window;
 
-Object.defineProperty(wd, "root", {
-    get: function() {
-        if(wd.JudgeUtils.isNodeJs()){
-            return global;
-        }
+module wd{
+    export var root:any;
 
-        return window;
+    if(JudgeUtils.isNodeJs()){
+        root = global;
     }
-});
+    else{
+        root = window;
+    }
+}
+
+
