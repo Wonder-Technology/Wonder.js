@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         //'test/unit/**/MapManager*',
 
@@ -35,8 +35,8 @@
         //'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
-        //'test/unit/**/shaderLibSpec*',
-        //'test/unit/**/*ShaderLib*',
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -61,7 +61,7 @@
 
         //'test/unit/**/MirrorRender*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 

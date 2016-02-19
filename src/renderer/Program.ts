@@ -10,6 +10,8 @@ module wd{
         private _shader:Shader = null;
         private _getAttribLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
         private _getUniformLocationCache:wdCb.Hash<number> = wdCb.Hash.create<number>();
+        private _attributesFromCustomShaderCache:wdCb.Hash<ShaderData> = null;
+        private _uniformsFromCustomShaderCache:wdCb.Hash<ShaderData> = null;
 
         public use(){
             DeviceManager.getInstance().gl.useProgram(this._program);
@@ -104,10 +106,7 @@ module wd{
         public sendUniformDataFromCustomShader(){
             var self = this;
 
-            this._shader.uniforms
-                .filter((val:ShaderData) => {
-                    return val.value !== EVariableCategory.ENGINE;
-                })
+            this._getUniformsFromCustomShader()
                 .forEach((val:ShaderData, key:string) => {
 
                     if(val.type === EVariableType.STRUCTURE){
@@ -159,10 +158,7 @@ module wd{
         public sendAttributeDataFromCustomShader(){
             var self = this;
 
-            this._shader.attributes
-                .filter((val:ShaderData) => {
-                    return val.value !== EVariableCategory.ENGINE;
-                })
+            this._getAttributesFromCustomShader()
                 .forEach((val:ShaderData, key:string) => {
                     self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
                 });
@@ -281,6 +277,34 @@ module wd{
         })
         private _getAttribLocation(gl:any, name:string){
             return gl.getAttribLocation(this._program, name);
+        }
+
+        @cache(function(){
+            return !this._shader.dirty && this._attributesFromCustomShaderCache !== null;
+        }, function(){
+            return this._attributesFromCustomShaderCache;
+        }, function(result){
+            this._attributesFromCustomShaderCache = result;
+        })
+        private _getAttributesFromCustomShader(){
+            return this._shader.attributes
+                .filter((val:ShaderData) => {
+                    return val.value !== EVariableCategory.ENGINE;
+                });
+        }
+
+        @cache(function(){
+            return !this._shader.dirty && this._uniformsFromCustomShaderCache !== null;
+        }, function(){
+            return this._uniformsFromCustomShaderCache;
+        }, function(result){
+            this._uniformsFromCustomShaderCache = result;
+        })
+        private _getUniformsFromCustomShader(){
+            return this._shader.uniforms
+                .filter((val:ShaderData) => {
+                    return val.value !== EVariableCategory.ENGINE;
+                });
         }
     }
 }

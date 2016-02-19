@@ -4,6 +4,12 @@ describe("Program", function() {
     var gl = null;
     var device;
 
+    function setShaderDirty(dirty){
+        testTool.stubGetter(sinon, program._shader, "dirty", function(){
+            return dirty;
+        });
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         device = wd.DeviceManager.getInstance();
@@ -31,9 +37,7 @@ describe("Program", function() {
             });
 
             it("if shader dirty, no cache", function () {
-                testTool.stubGetter(sinon, program._shader, "dirty", function(){
-                    return true;
-                });
+                setShaderDirty(true);
 
                 var result1 = program.getUniformLocation("u_mMatrix");
                 var result2 = program.getUniformLocation("u_mMatrix");
@@ -42,9 +46,7 @@ describe("Program", function() {
                 expect(device.gl.getUniformLocation).toCalledTwice();
             });
             it("else, if cached, return cached data", function () {
-                testTool.stubGetter(sinon, program._shader, "dirty", function(){
-                    return false;
-                });
+                setShaderDirty(false);
                 var result1 = program.getUniformLocation("u_mMatrix");
                 var result2 = program.getUniformLocation("u_mMatrix");
 
@@ -77,9 +79,7 @@ describe("Program", function() {
             });
 
             it("if shader dirty, no cache", function () {
-                testTool.stubGetter(sinon, program._shader, "dirty", function(){
-                    return true;
-                });
+                setShaderDirty(true);
 
                 program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
                 program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
@@ -87,9 +87,7 @@ describe("Program", function() {
                 expect(device.gl.getAttribLocation).toCalledTwice();
             });
             it("else, if cached, return cached data", function () {
-                testTool.stubGetter(sinon, program._shader, "dirty", function(){
-                    return false;
-                });
+                setShaderDirty(false);
 
                 program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
                 program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
@@ -112,6 +110,94 @@ describe("Program", function() {
             program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
 
             expect(gl.enableVertexAttribArray).toCalledWith(pos);
+        });
+    });
+
+    describe("sendAttributeDataFromCustomShader", function(){
+        var shader;
+
+        beforeEach(function(){
+            shader = wd.Shader.create();
+
+            program.initWithShader(shader);
+        });
+
+        describe("test cache", function(){
+            beforeEach(function(){
+                sandbox.stub(program, "sendAttributeData");
+                shader.attributes = wdCb.Hash.create({
+                    "a_a1": {
+                        type:wd.EVariableType.FLOAT_1,
+                        value:1.0
+                    },
+                    "a_a2": {
+                        type:wd.EVariableType.FLOAT_1,
+                        value:wd.EVariableCategory.ENGINE
+                    }
+                });
+                sandbox.spy(shader.attributes, "filter");
+            });
+
+            it("if shader dirty, not cache", function(){
+                setShaderDirty(true);
+
+                program.sendAttributeDataFromCustomShader();
+                program.sendAttributeDataFromCustomShader();
+
+                expect(shader.attributes.filter).toCalledTwice();
+            });
+            it("else, return cached data", function () {
+                setShaderDirty(false);
+
+                program.sendAttributeDataFromCustomShader();
+                program.sendAttributeDataFromCustomShader();
+
+                expect(shader.attributes.filter).toCalledOnce();
+            });
+        });
+    });
+
+    describe("sendUniformDataFromCustomShader", function(){
+        var shader;
+
+        beforeEach(function(){
+            shader = wd.Shader.create();
+
+            program.initWithShader(shader);
+        });
+
+        describe("test cache", function(){
+            beforeEach(function(){
+                sandbox.stub(program, "sendUniformData");
+                shader.uniforms = wdCb.Hash.create({
+                    "u_a1": {
+                        type:wd.EVariableType.FLOAT_1,
+                        value:1.0
+                    },
+                    "u_a2": {
+                        type:wd.EVariableType.FLOAT_1,
+                        value:wd.EVariableCategory.ENGINE
+                    }
+                });
+                sandbox.spy(shader.uniforms, "filter");
+            });
+
+            it("if shader dirty, not cache", function(){
+                setShaderDirty(true);
+
+                program.sendUniformDataFromCustomShader();
+                program.sendUniformDataFromCustomShader();
+
+                expect(shader.uniforms.filter).toCalledTwice();
+            });
+            it("else, return cached data", function () {
+                setShaderDirty(false);
+
+                program.sendUniformDataFromCustomShader();
+                program.sendUniformDataFromCustomShader();
+
+                expect(shader.uniforms.filter).toCalledOnce();
+            });
         });
     });
 });

@@ -99,14 +99,11 @@ module wd{
 
             if(this.libDirty){
                 this.buildDefinitionData(quadCmd, material);
-                this.libDirty = false;
             }
 
             if(this._definitionDataDirty){
                 //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
                 this.program.initWithShader(this);
-
-                this._definitionDataDirty = false;
             }
 
             this.program.use();
@@ -115,11 +112,13 @@ module wd{
                 lib.sendShaderVariables(program, quadCmd, material);
             });
 
-
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
 
             material.mapManager.sendData(program);
+
+            this.libDirty = false;
+            this._definitionDataDirty = false;
         }
 
         public hasLib(lib:ShaderLib);
@@ -207,6 +206,8 @@ module wd{
 
         public read(definitionData:ShaderDefinitionData){
             this._sourceBuilder.read(definitionData);
+
+            this.libDirty = true;
         }
 
         public buildDefinitionData(quadCmd:QuadCommand, material:Material){
