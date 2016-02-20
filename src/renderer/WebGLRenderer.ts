@@ -29,16 +29,28 @@ module wd{
         }
 
         public render(){
-            var deviceManager = DeviceManager.getInstance();
+            var deviceManager = DeviceManager.getInstance(),
+                opaqueCommands = [],
+                transparentCommands = [];
 
             deviceManager.clear(this._clearOptions);
 
-            this._renderOpaqueCommands();
+            this._commandQueue.forEach((command:QuadCommand) => {
+                if(command.material.blend){
+                    transparentCommands.push(command);
+                }
+                else{
+                    opaqueCommands.push(command);
+                }
+            });
 
-            deviceManager.depthWrite = false;
-            this._renderSortedTransparentCommands();
-            deviceManager.depthWrite = true;
+            this._renderOpaqueCommands(opaqueCommands);
 
+            if(transparentCommands.length > 0){
+                deviceManager.depthWrite = false;
+                this._renderSortedTransparentCommands(transparentCommands);
+                deviceManager.depthWrite = true;
+            }
 
             if(this.skyboxCommand){
                 deviceManager.depthFunc = EDepthFunction.LEQUAL;
@@ -65,30 +77,30 @@ module wd{
             });
         }
 
-        private _renderOpaqueCommands() {
-            this._commandQueue
-                .removeChild((command:QuadCommand) => {
-                    return !command.material.blend;
-                })
-                .forEach((command:QuadCommand) => {
-                    command.execute();
-                });
+        private _renderOpaqueCommands(opaqueCommands:Array<QuadCommand>) {
+            for(let command of opaqueCommands){
+                command.execute();
+            }
         }
 
-        private _renderSortedTransparentCommands() {
-            var self = this;
+        @require(function(transparentCommands:Array<QuadCommand>){
+            assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
+        })
+        private _renderSortedTransparentCommands(transparentCommands:Array<QuadCommand>) {
+            var self = this,
+                cameraPositionZ = Director.getInstance().scene.currentCamera.transform.position.z;
 
-            this._commandQueue
+            transparentCommands
                 .sort((a:QuadCommand, b:QuadCommand) => {
-                    return self._getObjectToCameraZDistance(b) - self._getObjectToCameraZDistance(a);
+                    return self._getObjectToCameraZDistance(cameraPositionZ, b) - self._getObjectToCameraZDistance(cameraPositionZ, a);
                 })
                 .forEach((command:QuadCommand) => {
                     command.execute();
                 });
         }
 
-        private _getObjectToCameraZDistance(quad){
-            return Director.getInstance().scene.currentCamera.transform.position.z - quad.z;
+        private _getObjectToCameraZDistance(cameraPositionZ:number, quad:QuadCommand){
+            return cameraPositionZ - quad.z;
         }
 
         private _clearCommand(){

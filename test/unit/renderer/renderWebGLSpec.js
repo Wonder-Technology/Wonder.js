@@ -262,6 +262,8 @@ describe("renderWebGL", function() {
 
                         result = addCommand();
                         material = result.material;
+
+                        sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera());
                     });
 
                     it("set colorWrite,polygonOffsetMode", function(){
