@@ -267,7 +267,7 @@ module wd {
             else{
                 let _class = args[0];
 
-                return this.components.hasChild((component) => {
+                return this.components.hasChildWithFunc((component) => {
                     return component instanceof _class;
                 });
             }
@@ -526,6 +526,9 @@ module wd {
             return `${scriptName}_${method}`;
         }
 
+        @ensure(function(key:string){
+            assert(JudgeUtils.isString(key), Log.info.FUNC_SHOULD(`key:${key}`, "be string"));
+        })
         private _getHasComponentCacheKey(args:any){
             if(args[0] instanceof Component){
                 let component:Component = args[0];
@@ -535,7 +538,7 @@ module wd {
             else{
                 let _class:any = args[0];
 
-                return String(_class.name);
+                return _class.name;
             }
         }
 

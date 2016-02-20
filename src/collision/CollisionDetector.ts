@@ -141,7 +141,7 @@ module wd{
                 return false;
             }
 
-            return targetCollideObjects.hasChild((targetCollideObject:GameObject) => {
+            return targetCollideObjects.hasChildWithFunc((targetCollideObject:GameObject) => {
                 return JudgeUtils.isEqual(targetCollideObject, sourceObject);
             });
         }

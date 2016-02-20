@@ -29,7 +29,7 @@ module wd {
         }
 
         public containTag(tag:string) {
-            return this._tagList.hasChild((t:string) => {
+            return this._tagList.hasChildWithFunc((t:string) => {
                 return t.indexOf(tag) > -1;
             })
         }

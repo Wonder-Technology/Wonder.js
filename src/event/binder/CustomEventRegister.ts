@@ -81,7 +81,7 @@ module wd {
         }
 
         private _isAllEventHandlerRemoved(target:EntityObject) {
-            return !this.listenerMap.hasChild((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
+            return !this.listenerMap.hasChildWithFunc((list:wdCb.Collection<CustomEventRegisterData>, key:string) => {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
             });
         }

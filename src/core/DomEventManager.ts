@@ -87,7 +87,7 @@ module wd{
             else{
                 //todo optimize
                 lastTriggerList.forEach((lastObject:EntityObject) => {
-                    if(!currentTriggerList.hasChild((currentObject:EntityObject) => {
+                    if(!currentTriggerList.hasChildWithFunc((currentObject:EntityObject) => {
                             return JudgeUtils.isEqual(currentObject, lastObject);
                         })){
                         mouseoutObjects.addChild(lastObject);
@@ -95,7 +95,7 @@ module wd{
                 });
 
                 currentTriggerList.forEach((currentObject:EntityObject) => {
-                    if(!lastTriggerList.hasChild((lastObject:EntityObject) => {
+                    if(!lastTriggerList.hasChildWithFunc((lastObject:EntityObject) => {
                             return JudgeUtils.isEqual(currentObject, lastObject);
                         })){
                         mouseoverObjects.addChild(currentObject);

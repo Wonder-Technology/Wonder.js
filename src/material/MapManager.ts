@@ -63,7 +63,16 @@ module wd{
 
             maps = this._mapTable.getChild("map");
 
-            return maps && maps.hasChild(args[0]);
+            if(!maps){
+                return false;
+            }
+
+            if(JudgeUtils.isFunction(args[0])){
+                return maps.hasChildWithFunc(args[0]);
+            }
+            else{
+                return maps.hasChild(args[0]);
+            }
         }
 
 

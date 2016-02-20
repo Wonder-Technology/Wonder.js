@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
 
         //'test/unit/**/CameraController*',

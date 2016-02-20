@@ -144,7 +144,7 @@ module wd {
                 return false;
             }
 
-            return data.hasChild(([uvIndex, verticeIndex]) => {
+            return data.hasChildWithFunc(([uvIndex, verticeIndex]) => {
                 return uvIndex === targetUvIndex;
             });
         }

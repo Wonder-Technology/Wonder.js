@@ -133,7 +133,7 @@ module wd{
             else{
                 let _class = args[0];
 
-                return this._libs.hasChild((lib:ShaderLib) => {
+                return this._libs.hasChildWithFunc((lib:ShaderLib) => {
                     return lib instanceof _class;
                 })
             }

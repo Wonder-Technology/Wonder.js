@@ -5,21 +5,19 @@ module wd{
         public abstract getChild(...args):wdCb.Collection<any>;
         public abstract removeChild(...args):any;
 
-        public hasChild(func:(...args) => boolean):boolean;
         public hasChild(target:EntityObject, eventName:EEventName):boolean;
         public hasChild(dom:HTMLElement, eventName:EEventName):boolean;
 
         public hasChild(...args){
-            if(args.length === 1 && JudgeUtils.isFunction(args[0])){
-                return this.listenerMap.hasChild(args[0]);
-            }
-            else{
-                let target = args[0],
-                    eventName = args[1],
-                    list = this.listenerMap.getChild(this.buildKey(target, eventName));
+            let target = args[0],
+                eventName = args[1],
+                list = this.listenerMap.getChild(this.buildKey(target, eventName));
 
-                return list && list.getCount() > 0;
-            }
+            return list && list.getCount() > 0;
+        }
+
+        public hasChildWithFunc(func:(...args) => boolean):boolean{
+            return this.listenerMap.hasChildWithFunc(func);
         }
 
         public appendChild(target:EntityObject|HTMLElement, eventName:EEventName, data:any){

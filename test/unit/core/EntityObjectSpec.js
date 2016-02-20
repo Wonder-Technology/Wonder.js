@@ -80,6 +80,7 @@ describe("EntityObject", function() {
         describe("test cache", function(){
             beforeEach(function(){
                 sandbox.spy(entityObject.components, "hasChild");
+                sandbox.spy(entityObject.components, "hasChildWithFunc");
             });
 
             describe("if cached, return cache data", function(){
@@ -89,7 +90,7 @@ describe("EntityObject", function() {
 
                     expect(hasComponent1).toBeTruthy();
                     expect(hasComponent2).toBeTruthy();
-                    expect(entityObject.components.hasChild).toCalledOnce();
+                    expect(entityObject.components.hasChildWithFunc).toCalledOnce();
                 });
                 it("test param is Component instance", function () {
                     var hasComponent1 = entityObject.hasComponent(component);
