@@ -98,7 +98,7 @@ describe("MapManager", function() {
         });
     });
     
-    describe("_getMapList", function(){
+    describe("_getMapArr", function(){
         beforeEach(function(){
         });
 
@@ -106,18 +106,18 @@ describe("MapManager", function() {
             var texture;
 
             beforeEach(function(){
-                sandbox.spy(manager._mapTable, "toCollection");
+                sandbox.spy(manager._mapTable, "toArray");
                 texture = wd.ImageTexture.create({});
 
                 manager.addMap(texture);
             });
 
             it("if cached, return cached data", function(){
-                var list1 = manager._getMapList();
-                var list2 = manager._getMapList();
+                var list1 = manager._getMapArr();
+                var list2 = manager._getMapArr();
 
                 expect(list1 === list2).toBeTruthy();
-                expect(manager._mapTable.toCollection).toCalledOnce();
+                expect(manager._mapTable.toArray).toCalledOnce();
             });
 
             describe("if texture dirty, not cache", function(){
@@ -127,31 +127,31 @@ describe("MapManager", function() {
 
                 it("addMap make texture dirty", function(){
                     var texture2 = wd.ImageTexture.create({});
-                    var list1 = manager._getMapList();
+                    var list1 = manager._getMapArr();
 
                     manager.addMap(texture2);
 
-                    var list2 = manager._getMapList();
+                    var list2 = manager._getMapArr();
 
-                    expect(manager._mapTable.toCollection).toCalledTwice();
+                    expect(manager._mapTable.toArray).toCalledTwice();
                 });
                 it("removeAllChildren make texture dirty", function(){
-                    var list1 = manager._getMapList();
+                    var list1 = manager._getMapArr();
 
                     manager.removeAllChildren();
 
-                    var list2 = manager._getMapList();
+                    var list2 = manager._getMapArr();
 
-                    expect(manager._mapTable.toCollection).toCalledTwice();
+                    expect(manager._mapTable.toArray).toCalledTwice();
                 });
                 it("set empty envMap make texture dirty", function(){
-                    var list1 = manager._getMapList();
+                    var list1 = manager._getMapArr();
 
                     manager.setEnvMap(null);
 
-                    var list2 = manager._getMapList();
+                    var list2 = manager._getMapArr();
 
-                    expect(manager._mapTable.toCollection).toCalledTwice();
+                    expect(manager._mapTable.toArray).toCalledTwice();
                 });
             });
         });
@@ -183,7 +183,7 @@ describe("MapManager", function() {
                 samplerData: 1
             });
 
-            manager._getMapList().forEach(function(texture){
+            manager._getMapArr().forEach(function(texture){
                 sandbox.stub(texture, "bindToUnit");
                 sandbox.stub(texture, "sendData");
             });
