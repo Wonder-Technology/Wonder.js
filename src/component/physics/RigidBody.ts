@@ -23,7 +23,7 @@ module wd {
             return  this._children;
         }
         set children(children:any){
-            if(JudgeUtils.isArray(children)){
+            if(JudgeUtils.isArrayExactly(children)){
                 let arr = <Array<GameObject>>children;
 
                 this._children = wdCb.Collection.create<GameObject>(arr);

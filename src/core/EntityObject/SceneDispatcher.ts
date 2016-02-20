@@ -156,7 +156,7 @@ module wd {
                     self.addChild(child);
                 });
             }
-            else if(JudgeUtils.isArray(args[0])){
+            else if(JudgeUtils.isArrayExactly(args[0])){
                 let children:Array<EntityObject> = <Array<EntityObject>>args[0];
 
                 for(let child of children){

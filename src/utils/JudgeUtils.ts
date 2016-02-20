@@ -47,5 +47,9 @@ module wd {
         public static isComponenet(component:Component){
             return component.entityObject !== undefined;
         }
+
+        public static isDom(obj) {
+            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
+        }
     }
 }

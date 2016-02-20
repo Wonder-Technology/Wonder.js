@@ -16,7 +16,7 @@ module wd{
             return this._shadowRenderList;
         }
         @requireSetter(function(shadowRenderList:any){
-            assert(JudgeUtils.isArray(shadowRenderList), Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
+            assert(JudgeUtils.isArrayExactly(shadowRenderList), Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
         })
         set shadowRenderList(shadowRenderList:any) {
             this._shadowRenderList = wdCb.Collection.create<GameObject>(shadowRenderList);

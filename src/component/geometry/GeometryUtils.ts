@@ -27,7 +27,7 @@ module wd {
 
         @require(function(data){
             if(data){
-                assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || JudgeUtils.isArray(data), Log.info.FUNC_SHOULD("data",  "be Array or Collection or Hash"));
+                assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data",  "be Array or Collection or Hash"));
             }
         })
         public static hasData(data:any){

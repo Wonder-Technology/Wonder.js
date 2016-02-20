@@ -127,7 +127,7 @@ module wd{
                 return;
             }
 
-            if(JudgeUtils.isArray(colorData)){
+            if(JudgeUtils.isArrayExactly(colorData)){
                 material[`${colorName}Color`] = GLTFUtils.getColor(colorData);
             }
             else{

@@ -85,7 +85,7 @@ module wd {
             var resultList = wdCb.Collection.create<GameObject>();
 
             renderList.forEach((list) => {
-                //if(list instanceof wdCb.Collection || JudgeUtils.isArray(list)){
+                //if(list instanceof wdCb.Collection || JudgeUtils.isArrayExactly(list)){
                 resultList.addChildren(list);
                 //}
                 //else{

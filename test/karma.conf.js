@@ -37,9 +37,9 @@
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
-        'test/unit/**/Shader*',
-        'test/unit/**/shaderLibSpec*',
-        'test/unit/**/*Shader*',
+        //'test/unit/**/Shader*',
+        //'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -52,7 +52,7 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        //'test/unit/component/physics/**/eventSpec*',
+        'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -76,49 +76,49 @@
 
         //'test/unit/**/MainSpec*',
 
-        //'test/unit/component/event/eventSpec*',
+        'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
-
-
+        //
+        //
         //'test/unit/**/ButtonSpec*',
         //'test/unit/**/UIStateMachineSpec*',
-
+        //
         //'test/unit/**/FontSpec*',
         //'test/unit/**/PlainFontSpec*',
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
-
-        //'test/unit/**/DirectorSpec*',
-
+        //
+        'test/unit/**/DirectorSpec*',
+        //
         //'test/unit/**/ProgressBarSpec*',
-
+        //
         //'test/unit/**/ImageSpec*',
-
-        'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
-        'test/unit/**/TransformSpec*',
+        //
+        //'test/unit/**/ThreeDTransformSpec.js',
+        //'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
-
+        //
         //'test/unit/**/UIObjectSpec*',
-
+        //
         //'test/unit/**/LightShaderLibSpec*',
-
+        //
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
-
+        //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        'test/unit/**/ProgramSpec.js',
+        //'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
-        'test/unit/**/*ColliderSpec.js',
+        //'test/unit/**/*ColliderSpec.js',
         //'test/unit/**/colliderSpec.js',
         //'test/unit/**/collider/optimizeSpec.js',
         //'test/unit/**/collider/*',
@@ -139,15 +139,15 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/*MaterialSpec.js',
-        //'test/unit/**/scriptSpec.js',
-
-        //'test/unit/**/*ControllerSpec.js',
+      //  'test/unit/**/scriptSpec.js',
+      //
+      //  'test/unit/**/*ControllerSpec.js',
       //'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
-        //'test/unit/asset/obj/OBJParserSpec.js',
-        //'test/unit/asset/loaderSpec.js',
+      //  'test/unit/asset/obj/OBJParserSpec.js',
+      //  'test/unit/asset/loaderSpec.js',
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',

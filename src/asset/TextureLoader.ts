@@ -13,7 +13,7 @@ module wd{
         protected loadAsset(url:Array<string>, id:string):wdFrp.Stream;
 
         @require(function (...args) {
-            assert(!JudgeUtils.isArray(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
+            assert(!JudgeUtils.isArrayExactly(args[0]), Log.info.FUNC_MUST_BE("url", "string"));
         })
         protected loadAsset(...args):wdFrp.Stream {
             var extname = null,

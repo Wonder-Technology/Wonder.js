@@ -16,7 +16,7 @@ module wd{
                 stream = null;
 
             if(args.length === 1){
-                if(JudgeUtils.isArray(url)){
+                if(JudgeUtils.isArrayExactly(url)){
                     id = url.join("-");
                 }
                 else{
@@ -67,7 +67,7 @@ module wd{
             var path = null,
                 err = null;
 
-            if(JudgeUtils.isArray(args[0])){
+            if(JudgeUtils.isArrayExactly(args[0])){
                 path = args[0].join(",");
             }
             else{

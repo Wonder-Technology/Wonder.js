@@ -71,7 +71,7 @@ module wd{
             fontStr = `@font-face { font-family:${familyName}; src:`;
 
             //todo verify whether can url be arr
-            if (JudgeUtils.isArray(args[0])) {
+            if (JudgeUtils.isArrayExactly(args[0])) {
                 let urlArr = args[0];
 
                 for(let url of urlArr){

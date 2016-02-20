@@ -5,7 +5,7 @@ module wd {
             return this._renderList;
         }
         set renderList(renderList:any) {
-            if (JudgeUtils.isArray(renderList)) {
+            if (JudgeUtils.isArrayExactly(renderList)) {
                 this._renderList = wdCb.Collection.create<GameObject>(renderList);
             }
             else if (renderList instanceof wdCb.Collection) {

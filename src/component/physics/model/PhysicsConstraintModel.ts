@@ -154,7 +154,7 @@ module wd{
         }
 
         public addChildren(arg:Array<PointToPointConstraint>|wdCb.List<PointToPointConstraint>){
-            if(JudgeUtils.isArray(arg)){
+            if(JudgeUtils.isArrayExactly(arg)){
                 for(let constraint of <Array<PointToPointConstraint>>arg){
                     this.addChild(constraint);
                 }

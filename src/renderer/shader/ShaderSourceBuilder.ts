@@ -76,7 +76,7 @@ module wd{
 
             this.attributes
                 .filter((data:ShaderData) => {
-                    return (JudgeUtils.isArray(data.value) || JudgeUtils.isFloatArray(data.value)) && data.value !== EVariableCategory.ENGINE;
+                    return (JudgeUtils.isArrayExactly(data.value) || JudgeUtils.isFloatArray(data.value)) && data.value !== EVariableCategory.ENGINE;
                 })
                 .forEach((data:ShaderData, key:string) => {
                     data.value = self._convertArrayToArrayBuffer(data.type, data.value);
@@ -290,7 +290,7 @@ module wd{
         private _convertArrayToArrayBuffer(type:EVariableType, value:Array<any>|Float32Array|Float64Array) {
             var size = this._getBufferSize(type);
 
-            if(JudgeUtils.isArray(value)){
+            if(JudgeUtils.isArrayExactly(value)){
                 return ArrayBuffer.create(new Float32Array(value), size, EBufferType.FLOAT);
             }
             else if(JudgeUtils.isFloatArray(value)){

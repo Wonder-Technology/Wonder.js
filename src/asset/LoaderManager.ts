@@ -94,7 +94,7 @@ module wd{
             var type = args[0],
                 extname:string = null;
 
-            if(JudgeUtils.isArray(args[1])){
+            if(JudgeUtils.isArrayExactly(args[1])){
                 extname = wdCb.PathUtils.extname(args[1][0]);
             }
             else{

@@ -58,7 +58,7 @@ module wd{
                 if(shadowRenderList.hasOwnProperty(direction)){
                     let list = shadowRenderList[direction];
 
-                    assert(JudgeUtils.isArray(list) || shadowRenderList instanceof wdCb.Hash, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
+                    assert(JudgeUtils.isArrayExactly(list) || shadowRenderList instanceof wdCb.Hash, Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
                 }
             }
 
