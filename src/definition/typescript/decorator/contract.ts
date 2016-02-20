@@ -24,10 +24,10 @@ module wd{
             var value = descriptor.value;
 
             descriptor.value = function (...args) {
-                var result = value.apply(this, args),
-                    params = [result].concat(args);
+                var result = value.apply(this, args);
 
                 if(Main.isTest) {
+                    let params = [result].concat(args);
                     OutFunc.apply(this, params);
                 }
 
@@ -93,10 +93,10 @@ module wd{
             var setter = descriptor.set;
 
             descriptor.set = function(val) {
-                var result = setter.call(this, val),
-                    params = [result, val];
+                var result = setter.call(this, val);
 
                 if(Main.isTest){
+                    let params = [result, val];
                     OutFunc.apply(this, params);
                 }
             };
