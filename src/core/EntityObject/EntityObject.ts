@@ -216,7 +216,7 @@ module wd {
         }, function(result, _class:any){
             this._getComponentCache.addChild(_class.name, result);
         })
-        public getComponent<T>(_class:Function):T{
+        public getComponent<T>(_class:any):T{
             return this.components.findOne((component:Component) => {
                 return component instanceof _class;
             });
@@ -251,26 +251,34 @@ module wd {
         public hasComponent(component:Component):boolean;
         public hasComponent(_class:Function):boolean;
 
-        @cache(function(...args){
-            return this._hasComponentCache.hasChild(this._getHasComponentCacheKey(args));
-        }, function(...args){
-            return this._hasComponentCache.getChild(this._getHasComponentCacheKey(args));
-        }, function(result, ...args){
-            this._hasComponentCache.addChild(this._getHasComponentCacheKey(args), result);
-        })
+        /*!
+         not use @cache,
+         here judge return data of "getChild", so it don't need to invoke "hasChild"
+         */
         public hasComponent(...args){
+            var key = this._getHasComponentCacheKey(args[0]),
+                result = this._hasComponentCache.getChild(key);
+
+            if(result !== void 0){
+                return result;
+            }
+
             if(JudgeUtils.isComponenet(args[0])){
                 let component = args[0];
 
-                return this.components.hasChild(component);
+                result = this.components.hasChild(component);
             }
             else{
                 let _class = args[0];
 
-                return this.components.hasChildWithFunc((component) => {
+                result = this.components.hasChildWithFunc((component) => {
                     return component instanceof _class;
                 });
             }
+
+            this._hasComponentCache.addChild(key, result);
+
+            return result;
         }
 
         public addComponent(component:Component){
@@ -529,7 +537,7 @@ module wd {
         @ensure(function(key:string){
             assert(JudgeUtils.isString(key), Log.info.FUNC_SHOULD(`key:${key}`, "be string"));
         })
-        private _getHasComponentCacheKey(args:any){
+        private _getHasComponentCacheKey(...args){
             if(JudgeUtils.isComponenet(args[0])){
                 let component:Component = args[0];
 
