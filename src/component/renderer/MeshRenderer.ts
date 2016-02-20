@@ -21,7 +21,8 @@ module wd {
         protected createDrawCommand(renderer:Renderer, geometry:Geometry, camera:GameObject){
              var quadCmd = renderer.createQuadCommand(),
                 cameraComponent = camera.getComponent<CameraController>(CameraController),
-                material:Material = geometry.material;
+                material:Material = geometry.material,
+                 position:Vector3 = this.entityObject.transform.position;
 
             quadCmd.buffers = geometry.buffers;
 
@@ -36,7 +37,7 @@ module wd {
 
             quadCmd.material = material;
 
-            quadCmd.z = this.entityObject.transform.position.z;
+            quadCmd.z = position.z;
 
 
             return quadCmd;

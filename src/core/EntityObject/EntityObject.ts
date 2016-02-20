@@ -259,7 +259,7 @@ module wd {
             this._hasComponentCache.addChild(this._getHasComponentCacheKey(args), result);
         })
         public hasComponent(...args){
-            if(args[0] instanceof Component){
+            if(JudgeUtils.isComponenet(args[0])){
                 let component = args[0];
 
                 return this.components.hasChild(component);
@@ -530,7 +530,7 @@ module wd {
             assert(JudgeUtils.isString(key), Log.info.FUNC_SHOULD(`key:${key}`, "be string"));
         })
         private _getHasComponentCacheKey(args:any){
-            if(args[0] instanceof Component){
+            if(JudgeUtils.isComponenet(args[0])){
                 let component:Component = args[0];
 
                 return String(component.uid);

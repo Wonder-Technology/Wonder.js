@@ -28,9 +28,9 @@ module wd{
                 child.update(elapsedTime);
             });
 
-            removeQueue.forEach(function (child:Action) {
+            for (let child of removeQueue){
                 child.entityObject.removeComponent(child);
-            });
+            }
         }
     }
 }

@@ -133,12 +133,11 @@ module wd{
         }
 
         public update(){
-            this._getMapList()
-                .filter((texture:Texture) => {
-                    return texture instanceof BasicTexture && texture.needUpdate;
-                })
-                .forEach((texture:BasicTexture, index:number) => {
-                    texture.update(index);
+            return this._getMapList()
+                .forEach((texture:any, index:number) => {
+                    if(texture.needUpdate && texture instanceof BasicTexture){
+                        texture.update(index);
+                    }
                 });
         }
 

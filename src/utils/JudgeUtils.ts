@@ -43,5 +43,9 @@ module wd {
         public static isSelf(self:Entity, entityObject:Entity){
             return self.uid === entityObject.uid;
         }
+
+        public static isComponenet(component:Component){
+            return component.entityObject !== undefined;
+        }
     }
 }
