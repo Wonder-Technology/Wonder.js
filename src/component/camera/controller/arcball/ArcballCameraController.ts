@@ -12,6 +12,7 @@ module wd {
         public moveSpeedX:number = 1;
         public moveSpeedY:number = 1;
         public rotateSpeed:number = 1;
+        public wheelSpeed:number = 1;
         public distance:number = 10;
         public phi:number = Math.PI / 2;
         public theta:number = Math.PI / 2;
@@ -127,7 +128,7 @@ module wd {
         private _changeDistance(e:MouseEvent){
             this._isChange = true;
 
-            this.distance -= e.wheel;
+            this.distance -= this.wheelSpeed * e.wheel;
             this._contrainDistance();
         }
 
