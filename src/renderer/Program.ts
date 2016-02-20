@@ -17,15 +17,26 @@ module wd{
             DeviceManager.getInstance().gl.useProgram(this._program);
         }
 
-        @cache(function(name:string){
-            return !this._shader.dirty && this._getUniformLocationCache.hasChild(name);
-        }, function(name:string){
-            return this._getUniformLocationCache.getChild(name);
-        }, function(pos:number, name:string){
-            this._getUniformLocationCache.addChild(name, pos);
-        })
+        /*!
+         not use @cache,
+         here judge return pos of "getChild", so it don't need to invoke "hasChild"
+         */
         public getUniformLocation(name:string){
-            return DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+            var pos = null;
+
+            if(!this._shader.dirty){
+                pos = this._getUniformLocationCache.getChild(name);
+
+                if(pos !== void 0){
+                    return pos;
+                }
+            }
+
+            pos = DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+
+            this._getUniformLocationCache.addChild(name, pos);
+
+            return pos;
         }
 
         public sendUniformData(name:string, type:EVariableType, data:any);
@@ -37,17 +48,17 @@ module wd{
                 type:EVariableType = null,
                 data:any = null;
 
-            if(args[0] === null || args[0] instanceof WebGLUniformLocation){
-                pos = args[0];
-            }
-            else{
+            type = args[1];
+            data = args[2];
+
+            if(JudgeUtils.isString(args[0])){
                 let name:string = args[0];
 
                 pos = this.getUniformLocation(name);
             }
-
-            type = args[1];
-            data = args[2];
+            else{
+                pos = args[0];
+            }
 
 
             if (this.isUniformDataNotExistByLocation(pos) || data === null) {
@@ -66,12 +77,12 @@ module wd{
                     gl.uniform2f(pos, data[0], data[1]);
                     break;
                 case EVariableType.FLOAT_3:
-                    data = this._convertToVector3(data);
-                    gl.uniform3f(pos, data.x, data.y, data.z);
+                    data = this._convertToArray3(data);
+                    gl.uniform3f(pos, data[0], data[1], data[2]);
                     break;
                 case EVariableType.FLOAT_4:
-                    data = this._convertToVector4(data);
-                    gl.uniform4f(pos, data.x, data.y, data.z, data.w);
+                    data = this._convertToArray4(data);
+                    gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
                     break;
                 case EVariableType.FLOAT_MAT3:
                     gl.uniformMatrix3fv(pos,false, data.values);
@@ -246,37 +257,54 @@ module wd{
             return EVariableType.BUFFER;
         }
 
+        private _convertToArray3(data:Array<number>);
+        private _convertToArray3(data:Vector3);
+
         @require(function (data:any) {
             assert(JudgeUtils.isArray(data) || data instanceof Vector3, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
         })
-        private _convertToVector3(data:any) {
-            if (JudgeUtils.isArray(data)) {
-                return Vector3.create(data[0], data[1], data[2]);
+        private _convertToArray3(data:any) {
+            if(JudgeUtils.isArray(data)){
+                return data;
             }
 
-            return data;
+            return [data.x, data.y, data.z];
         }
+
+        private _convertToArray4(data:Array<number>);
+        private _convertToArray4(data:Vector4);
 
         @require(function (data:any) {
             assert(JudgeUtils.isArray(data) || data instanceof Vector4, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
         })
-        private _convertToVector4(data:any) {
+        private _convertToArray4(data:any) {
             if(JudgeUtils.isArray(data)){
-                return Vector4.create(data[0], data[1], data[2], data[3]);
+                return data;
             }
 
-            return data;
+            return [data.x, data.y, data.z, data.w];
         }
 
-        @cache(function(gl:any, name:string){
-            return !this._shader.dirty && this._getAttribLocationCache.hasChild(name);
-        }, function(gl:any, name:string){
-            return this._getAttribLocationCache.getChild(name);
-        }, function(pos:number, gl:any, name:string){
-            this._getAttribLocationCache.addChild(name, pos);
-        })
+        /*!
+         not use @cache,
+         here judge return pos of "getChild", so it don't need to invoke "hasChild"
+         */
         private _getAttribLocation(gl:any, name:string){
-            return gl.getAttribLocation(this._program, name);
+            var pos = null;
+
+            if(!this._shader.dirty){
+                pos = this._getAttribLocationCache.getChild(name);
+
+                if(pos !== void 0){
+                    return pos;
+                }
+            }
+
+            pos = gl.getAttribLocation(this._program, name);
+
+            this._getAttribLocationCache.addChild(name, pos);
+
+            return pos;
         }
 
         @cache(function(){
