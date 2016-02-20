@@ -202,6 +202,13 @@ module wd {
 
                 assert(event instanceof CustomEvent, Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
             }
+            else if(args.length === 2 && args[0] instanceof EntityObject){
+            }
+            else if(args.length === 2){
+                if(args[0]){
+                    assert(JudgeUtils.isDom(args[0]), Log.info.FUNC_MUST_BE("the first param", "dom"));
+                }
+            }
             else if(args[0] instanceof EntityObject){
                 let event = args[1];
 
@@ -209,34 +216,36 @@ module wd {
             }
         })
         public static trigger(...args) {
-            if(args.length === 1){
+            var length = args.length;
+
+            if(length === 1){
                 let event = args[0],
                     eventDispatcher = EventDispatcherFactory.createEventDispatcher(event);
 
                 eventDispatcher.trigger(event);
             }
-            else if(args.length === 2 && args[0] instanceof Event){
+            else if(length === 2 && EventUtils.isEvent(args[0])){
                 let event = args[0],
                     userData = args[1],
                     eventDispatcher = CustomEventDispatcher.getInstance();
 
                 eventDispatcher.trigger(event, userData);
             }
-            else if(args.length === 2 && args[0] instanceof EntityObject){
+            else if(length === 2 && EventUtils.isEntityObject(args[0])){
                 let target = args[0],
                     event = args[1],
                     eventDispatcher = CustomEventDispatcher.getInstance();
 
                 eventDispatcher.trigger(target, event);
             }
-            else if(args.length === 2 && JudgeUtils.isDom(args[0])){
+            else if(length === 2){
                 let dom = args[0],
                     event = args[1],
                     eventDispatcher = DomEventDispatcher.getInstance();
 
                 eventDispatcher.trigger(dom, event);
             }
-            else if(args.length === 3){
+            else if(length === 3){
                 let target = args[0],
                     event = args[1],
                     userData = args[2],
@@ -244,7 +253,7 @@ module wd {
 
                 eventDispatcher.trigger(target, event, userData);
             }
-            else if(args.length === 4){
+            else if(length === 4){
                 let target = args[0],
                     event = args[1],
                     userData = args[2],
@@ -254,7 +263,6 @@ module wd {
                 eventDispatcher.trigger(target, event, userData, notSetTarget);
             }
         }
-
 
         public static broadcast(target:EntityObject, event:Event);
         public static broadcast(target:EntityObject, event:Event, userData:any);

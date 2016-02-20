@@ -52,7 +52,7 @@
 
         //'test/unit/**/EntityObjectSpec*',
 
-        'test/unit/component/physics/**/eventSpec*',
+        //'test/unit/component/physics/**/eventSpec*',
 
         //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
@@ -159,7 +159,7 @@
         //'test/unit/core/*.js',
         //'test/unit/renderer/**',
         //'test/unit/device/*.js',
-        //'test/unit/event/**',
+        'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',
         //'test/unit/event/keyboardEv*.js',

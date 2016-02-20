@@ -89,6 +89,8 @@
 /// <reference path="event/factory/EventBinderFactory"/>
 /// <reference path="event/factory/EventDispatcherFactory"/>
 
+/// <reference path="event/utils/EventUtils"/>
+
 /// <reference path="event/EventManager"/>
 /// <reference path="event/EEngineEvent"/>
 

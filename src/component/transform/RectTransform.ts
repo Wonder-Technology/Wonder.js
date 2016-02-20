@@ -171,7 +171,9 @@ module wd{
             if(width !== this._width){
                 this._width = width;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_WIDTH_CHANGE));
+                if(this.entityObject){
+                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_WIDTH_CHANGE));
+                }
             }
         }
 
@@ -183,7 +185,9 @@ module wd{
             if(height !== this._height){
                 this._height = height;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_HEIGHT_CHANGE));
+                if(this.entityObject){
+                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.UI_HEIGHT_CHANGE));
+                }
             }
         }
 

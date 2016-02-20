@@ -20,14 +20,16 @@ module wd {
         public trigger(target:EntityObject, event:Event, userData:any, notSetTarget:boolean):boolean;
 
         public trigger(...args):boolean {
-            if(args.length === 1){
+            var length = args.length;
+
+            if(length === 1){
                 let event = args[0],
                     eventType = event.type;
 
                 return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event);
             }
-            else if(args.length === 2 && (args[0] instanceof Event)){
+            else if(length === 2 && EventUtils.isEvent(args[0])){
                 let event = args[0],
                     userData = args[1],
                     eventType = event.type;
@@ -35,7 +37,8 @@ module wd {
                 return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event, userData);
             }
-            else if((args.length === 2 && args[0] instanceof EntityObject) || (args.length === 3 && JudgeUtils.isBoolean(args[2]))){
+            else if((length === 2 && EventUtils.isEntityObject(args[0])) || (length === 3 && JudgeUtils.isBoolean(args[2]))){
+            //else if((length === 2 && args[0] instanceof EntityObject) || (length === 3 && JudgeUtils.isBoolean(args[2]))){
                 let target = args[0],
                     event = args[1],
                     notSetTarget = args[2] === void 0 ? false : args[2],
@@ -44,7 +47,7 @@ module wd {
                 return EventHandlerFactory.createEventHandler(eventType)
                     .trigger(target, event, notSetTarget);
             }
-            else if(args.length === 3 || args.length === 4){
+            else if(length === 3 || length === 4){
                 let target = args[0],
                     event = args[1],
                     userData = args[2],

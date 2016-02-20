@@ -9,7 +9,9 @@ module wd{
                 this._material = material;
                 this._material.geometry = this;
 
-                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_CHANGE));
+                if(this.entityObject){
+                    EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.MATERIAL_CHANGE));
+                }
             }
         }
 
