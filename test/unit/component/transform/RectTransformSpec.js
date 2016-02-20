@@ -21,17 +21,17 @@ describe("RectTransform", function(){
     describe("test cache", function(){
         var matrix;
 
-        function clearCacheJudge(getMethod, getAttr){
-            sandbox.stub(tra1, getMethod).returns(matrix);
-            var m1 = tra1[getAttr];
-
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
-
-            var m2 = tra1[getAttr];
-
-            expect(m1 === m2).toBeTruthy();
-            expect(tra1[getMethod]).toCalledTwice();
-        }
+        //function clearCacheJudge(getMethod, getAttr){
+        //    sandbox.stub(tra1, getMethod).returns(matrix);
+        //    var m1 = tra1[getAttr];
+        //
+        //    wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+        //
+        //    var m2 = tra1[getAttr];
+        //
+        //    expect(m1 === m2).toBeTruthy();
+        //    expect(tra1[getMethod]).toCalledTwice();
+        //}
 
         beforeEach(function(){
             matrix = wd.Matrix4.create();
@@ -57,14 +57,14 @@ describe("RectTransform", function(){
             expect(tra1.getMatrix).toCalledOnce();
         });
 
-        it("clear rotationMatrix cache on EndLoop", function () {
-            tra1.init();
-            clearCacheJudge("getMatrix", "rotationMatrix");
-        });
-        it("clear localToWorldMatrix cache on EndLoop", function () {
-            tra1.init();
-            clearCacheJudge("getMatrix", "localPositionAndScaleMatrix");
-        });
+        //it("clear rotationMatrix cache on EndLoop", function () {
+        //    tra1.init();
+        //    clearCacheJudge("getMatrix", "rotationMatrix");
+        //});
+        //it("clear localToWorldMatrix cache on EndLoop", function () {
+        //    tra1.init();
+        //    clearCacheJudge("getMatrix", "localPositionAndScaleMatrix");
+        //});
         // more:clear cache when set isXXX true
         // already tested
     });

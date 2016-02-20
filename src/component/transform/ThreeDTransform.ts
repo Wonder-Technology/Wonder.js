@@ -196,7 +196,6 @@ module wd{
             this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
                 .subscribe(() => {
                     self._resetTransformFlag();
-                    self.clearCache();
                 });
         }
 

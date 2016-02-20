@@ -200,21 +200,11 @@ module wd{
         private _localToParentMatrix:Matrix3 = Matrix3.create();
         private _rotationMatrixCache:Matrix3 = null;
         private _localPositionAndScaleMatrixCache:Matrix3 = null;
-        private _endLoopSubscription:wdFrp.IDisposable = null;
 
         public init(){
-            var self = this;
-
-            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
-                .subscribe(() => {
-                    self.clearCache();
-                });
         }
 
         public dispose(){
-            super.dispose();
-
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
         }
 
         public syncRotation(){
