@@ -19,9 +19,13 @@ module wd{
         }
 
         private _sendAttributeVariables(program: Program, quadCmd:QuadCommand){
-            if (quadCmd.buffers.hasChild(EBufferDataType.NORMAL)) {
-                this.sendAttributeData(program, "a_normal", <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.NORMAL));
+            var normalBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.NORMAL);
+
+            if(!normalBuffer){
+                return;
             }
+
+            this.sendAttributeData(program, "a_normal", normalBuffer);
         }
     }
 }

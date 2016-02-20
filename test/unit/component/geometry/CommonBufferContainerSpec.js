@@ -11,16 +11,16 @@ describe("CommonBufferContainer", function() {
         sandbox.restore();
     });
 
-    describe("hasChild", function(){
-        it("if geometryData has data which is corresponding to the buffer, then return true; else return false", function(){
-            var geometryData = new wd.GeometryData();
-            geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
-            container.geometryData = geometryData;
-
-            expect(container.hasChild(wd.EBufferDataType.TEXCOORD)).toBeTruthy();
-            expect(container.hasChild(wd.EBufferDataType.VERTICE)).toBeFalsy();
-        });
-    });
+    //describe("hasChild", function(){
+    //    it("if geometryData has data which is corresponding to the buffer, then return true; else return false", function(){
+    //        var geometryData = new wd.GeometryData();
+    //        geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
+    //        container.geometryData = geometryData;
+    //
+    //        expect(container.hasChild(wd.EBufferDataType.TEXCOORD)).toBeTruthy();
+    //        expect(container.hasChild(wd.EBufferDataType.VERTICE)).toBeFalsy();
+    //    });
+    //});
 
     describe("get data buffer", function(){
         var geo,geometryData;

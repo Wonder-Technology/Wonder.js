@@ -9,11 +9,17 @@ module wd{
         public type:string = "normalMap";
 
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+            var tangentBuffer:ArrayBuffer = null;
+
             super.sendShaderVariables(program, quadCmd, material);
 
-            if(quadCmd.buffers.hasChild(EBufferDataType.TANGENT)){
-                this.sendAttributeData(program, "a_tangent", <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.TANGENT));
+            tangentBuffer = quadCmd.buffers.getChild(EBufferDataType.TANGENT);
+
+            if(!tangentBuffer){
+                return;
             }
+
+            this.sendAttributeData(program, "a_tangent", tangentBuffer);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

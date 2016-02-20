@@ -60,12 +60,6 @@ module wd {
 
         }
 
-        public hasChild(type:EBufferDataType) {
-            var data = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-
-            return !!data && data.length > 0;
-        }
-
         public dispose(){
             this.container.forEach((buffer:Buffer) => {
                 buffer.dispose();
@@ -85,6 +79,10 @@ module wd {
             this[bufferAttriName] = bufferClass.create();
         }
 
+        protected hasData(data:Array<number>) {
+            return data && data.length > 0;
+        }
+
         @cache(function(type:EBufferDataType){
             return this.container.hasChild(<any>type) && !this._needReCalcuteTangent(type);
         }, function(type){
@@ -95,9 +93,14 @@ module wd {
         private _getTangent(type){
             var geometryData = null;
 
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+
+            if(!this.hasData(geometryData)){
+                return null;
+            }
+
             this.createBufferOnlyOnce("_tangentBuffer", ArrayBuffer);
 
-            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             this._tangentBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
 
             return this._tangentBuffer;
@@ -113,9 +116,14 @@ module wd {
         private _getColor(type) {
             var geometryData = null;
 
+            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+
+            if(!this.hasData(geometryData)){
+                return null;
+            }
+
             this.createBufferOnlyOnce("_colorBuffer", ArrayBuffer);
 
-            geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
             this._colorBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
 
             return this._colorBuffer;
@@ -131,9 +139,13 @@ module wd {
         private _getIndice(type){
             var geometryData = null;
 
-            this.createBufferOnlyOnce("_indiceBuffer", ElementBuffer);
-
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+
+            if(!this.hasData(geometryData)){
+                return null;
+            }
+
+            this.createBufferOnlyOnce("_indiceBuffer", ElementBuffer);
 
             this._indiceBuffer.resetData(new Uint16Array(geometryData), EBufferType.UNSIGNED_SHORT);
 
@@ -150,9 +162,13 @@ module wd {
         private _getTexCoord(type){
             var geometryData = null;
 
-            this.createBufferOnlyOnce("_texCoordBuffer", ArrayBuffer);
-
             geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
+
+            if(!this.hasData(geometryData)){
+                return null;
+            }
+
+            this.createBufferOnlyOnce("_texCoordBuffer", ArrayBuffer);
 
             this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, EBufferType.FLOAT);
 

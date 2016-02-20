@@ -12,13 +12,14 @@ module wd{
             assert(!!quadCmd.animation, Log.info.FUNC_SHOULD("entityObject", "add MorphAnimation component"));
         })
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
-            if (quadCmd.buffers.hasChild(EBufferDataType.VERTICE)) {
-                let morphVerticeData = quadCmd.buffers.getChild(EBufferDataType.VERTICE);
+            var morphVerticeData = quadCmd.buffers.getChild(EBufferDataType.VERTICE);
 
-
-                this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
-                this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
+            if(!morphVerticeData){
+                return;
             }
+
+            this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
+            this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

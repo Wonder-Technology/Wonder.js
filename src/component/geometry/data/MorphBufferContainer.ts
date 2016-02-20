@@ -47,6 +47,10 @@ module wd {
                 return this._getStaticData(type);
             }
 
+            if(morphDataTargets.getCount() === 0){
+                return null;
+            }
+
             frames = morphDataTargets.getChild(this._animation.currentAnimName);
 
             wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD(`"${this._animation.currentAnimName}" animation`, "contain frame data"));
@@ -154,6 +158,10 @@ module wd {
                 default:
                     Log.error(true, Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
                     break;
+            }
+
+            if(!this.hasData(data)){
+                return null;
             }
 
             this._animation.interpolation = 0;

@@ -30,22 +30,23 @@ module wd {
         }
 
         private _draw() {
-            var totalNum = 0,
-                startOffset = 0,
-                vertexBuffer = null,
+            var totalNum:number = 0,
+                startOffset:number = 0,
+                vertexBuffer:ArrayBuffer = null,
+                indexBuffer:ElementBuffer = null,
                 gl = DeviceManager.getInstance().gl;
 
             this._setEffects();
 
-            if (this.buffers.hasChild(EBufferDataType.INDICE)) {
-                let indexBuffer:ElementBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
+            indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
 
+            if(indexBuffer){
                 totalNum = indexBuffer.count;
 
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
             }
-            else {
+            else{
                 vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
                 totalNum = vertexBuffer.count;
                 GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);

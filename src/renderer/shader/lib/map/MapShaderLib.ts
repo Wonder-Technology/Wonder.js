@@ -1,9 +1,13 @@
 module wd{
     export abstract class MapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
-            if (quadCmd.buffers.hasChild(EBufferDataType.TEXCOORD)) {
-                this.sendAttributeData(program, "a_texCoord", <ArrayBuffer>quadCmd.buffers.getChild(EBufferDataType.TEXCOORD));
+            var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD);
+
+            if(!texCoordBuffer){
+                return;
             }
+
+            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){

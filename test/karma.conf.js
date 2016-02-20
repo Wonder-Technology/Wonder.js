@@ -37,9 +37,9 @@
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
-        //'test/unit/**/Shader*',
-        //'test/unit/**/shaderLibSpec*',
-        //'test/unit/**/*Shader*',
+        'test/unit/**/Shader*',
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',

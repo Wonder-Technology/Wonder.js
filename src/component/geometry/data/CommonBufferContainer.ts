@@ -21,6 +21,10 @@ module wd {
         protected getVertice(type:EBufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
 
+            if(!this.hasData(geometryData)){
+                return null;
+            }
+
             this.createBufferOnlyOnce("_verticeBuffer", ArrayBuffer);
 
             this._verticeBuffer.resetData(new Float32Array(geometryData), 3, EBufferType.FLOAT);
@@ -37,6 +41,10 @@ module wd {
         })
         protected getNormal(type:EBufferDataType) {
             var geometryData= this.geometryData[BufferDataTable.getGeometryDataName(type)];
+
+            if(!this.hasData(geometryData)){
+                return null;
+            }
 
             this.createBufferOnlyOnce("_normalBuffer", ArrayBuffer);
 

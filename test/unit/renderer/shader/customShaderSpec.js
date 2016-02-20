@@ -102,8 +102,7 @@ describe("custom shader", function () {
 
                     quadCmd = wd.QuadCommand.create();
                     sandbox.stub(quadCmd, "buffers", {
-                        hasChild:sandbox.stub().returns(true),
-                        getChild:sandbox.stub()
+                        getChild:sandbox.stub().returns({})
                     });
 
 
