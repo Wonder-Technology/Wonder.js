@@ -39,6 +39,8 @@ module wd {
 
             quadCmd.z = position.z;
 
+            quadCmd.blend = material.blend;
+
 
             return quadCmd;
         }

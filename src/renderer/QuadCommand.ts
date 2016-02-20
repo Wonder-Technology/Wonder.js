@@ -16,27 +16,30 @@ module wd {
         public pMatrix:Matrix4 = null;
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
         public z:number = null;
+        public blend:boolean = false;
         public material:Material = null;
         public animation:Animation = null;
 
         public execute() {
-            this.material.updateTexture();
-            this.material.updateShader(this);
+            var material = this.material;
 
-            this._draw();
+            material.updateTexture();
+            material.updateShader(this);
+
+            this._draw(material);
         }
 
         public init() {
         }
 
-        private _draw() {
+        private _draw(material:Material) {
             var totalNum:number = 0,
                 startOffset:number = 0,
                 vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = null,
                 gl = DeviceManager.getInstance().gl;
 
-            this._setEffects();
+            this._setEffects(material);
 
             indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
 
@@ -53,18 +56,15 @@ module wd {
             }
         }
 
-        @require(function(){
-            var material = this.material;
-
+        @require(function(material:Material){
             if(material.blendFuncSeparate && material.blendEquationSeparate){
             }
             else{
                 wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
             }
         })
-        private _setEffects(){
-            var deviceManager = DeviceManager.getInstance(),
-                material = this.material;
+        private _setEffects(material:Material){
+            var deviceManager = DeviceManager.getInstance();
 
             deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
             deviceManager.polygonOffsetMode = material.polygonOffsetMode;

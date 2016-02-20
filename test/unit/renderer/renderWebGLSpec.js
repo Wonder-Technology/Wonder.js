@@ -89,6 +89,8 @@ describe("renderWebGL", function() {
 
             quadCmd.material = material;
 
+            quadCmd.blend = material.blend;
+
             renderer.addCommand(quadCmd);
 
             sandbox.stub(material.mapManager, "update");
@@ -162,10 +164,10 @@ describe("renderWebGL", function() {
             sandbox.stub(quad3, "execute");
             sandbox.stub(quad4, "execute");
 
-            material1.blend = true;
-            material2.blend = true;
-            material3.blend = false;
-            material4.blend = false;
+            quad1.blend = true;
+            quad2.blend = true;
+            quad3.blend = false;
+            quad4.blend = false;
 
             sandbox.stub(wd.Director.getInstance().scene, "currentCamera", testTool.createCamera(wd.Vector3.create(0, 0, 10)));
 

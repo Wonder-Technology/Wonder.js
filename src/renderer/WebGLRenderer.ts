@@ -30,21 +30,18 @@ module wd{
 
         public render(){
             var deviceManager = DeviceManager.getInstance(),
-                opaqueCommands = [],
                 transparentCommands = [];
 
             deviceManager.clear(this._clearOptions);
 
             this._commandQueue.forEach((command:QuadCommand) => {
-                if(command.material.blend){
+                if(command.blend){
                     transparentCommands.push(command);
                 }
                 else{
-                    opaqueCommands.push(command);
+                    command.execute();
                 }
             });
-
-            this._renderOpaqueCommands(opaqueCommands);
 
             if(transparentCommands.length > 0){
                 deviceManager.depthWrite = false;
@@ -75,12 +72,6 @@ module wd{
             this._setClearOptions({
                 color:color
             });
-        }
-
-        private _renderOpaqueCommands(opaqueCommands:Array<QuadCommand>) {
-            for(let command of opaqueCommands){
-                command.execute();
-            }
         }
 
         @require(function(transparentCommands:Array<QuadCommand>){
