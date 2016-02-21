@@ -32,7 +32,7 @@
 
         //'test/unit/**/CameraController*',
 
-        //'test/unit/**/MapManager*',
+        'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
@@ -45,12 +45,12 @@
         //'test/unit/component/**/*Animation*.js',
         //'test/unit/component/**/morphAnimation*.js',
 
-        //'test/unit/**/GLTFParserSpec*',
-        //'test/unit/**/GLTFAssemblerSpec*',
+        'test/unit/**/GLTFParserSpec*',
+        'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -90,14 +90,14 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        'test/unit/**/DirectorSpec*',
+        //'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
         //'test/unit/**/ImageSpec*',
         //
         //'test/unit/**/ThreeDTransformSpec.js',
-        //'test/unit/**/RectTransformSpec*',
+        'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
@@ -159,7 +159,7 @@
         //'test/unit/core/*.js',
         //'test/unit/renderer/**',
         //'test/unit/device/*.js',
-        'test/unit/event/**',
+        //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',
         //'test/unit/event/keyboardEv*.js',

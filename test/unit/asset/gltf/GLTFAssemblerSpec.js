@@ -2,8 +2,7 @@ describe("GLTFAssembler", function () {
     var sandbox = null;
     var builder = null;
     var parseData = null;
-    var Collection = wdCb.Collection,
-        Hash = wdCb.Hash;
+    var Collection = wdCb.Collection;
     var Vector2 = wd.Vector2;
     var Vector3 = wd.Vector3;
 
@@ -430,7 +429,7 @@ describe("GLTFAssembler", function () {
                         });
 
                         describe("else if type === 'LightMaterial', add LightMaterial", function(){
-                            it("test", function(){
+                            it("common test", function(){
                                 var materialData = {
                                     type:"LightMaterial",
                                     doubleSided:true,
@@ -441,7 +440,10 @@ describe("GLTFAssembler", function () {
                                     diffuseMap:wd.ImageTexture.create({}),
                                     specularMap:wd.ImageTexture.create({a:1}),
 
-                                    shininess: 10
+                                    shininess: 10,
+
+                                    transparent:true,
+                                    opacity: 0
                                 };
                                 setMaterial(materialData);
 
@@ -463,6 +465,55 @@ describe("GLTFAssembler", function () {
                                 expect(material.specularMap).toEqual(materialData.specularMap);
 
                                 expect(material.shininess).toEqual(materialData.shininess);
+                            });
+                            describe("test set blend", function () {
+                                it("set blendType to be NORMAL", function () {
+                                    var materialData = {
+                                        type:"LightMaterial",
+
+                                        transparent:true,
+                                        opacity: 0.1
+                                    };
+                                    setMaterial(materialData);
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+
+
+                                    var material = getMaterial(data);
+                                    expect(material).toBeInstanceOf(wd.LightMaterial);
+                                    expect(material.blend).toBeTruthy();
+                                    expect(material.opacity).toEqual(0.1);
+                                    expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
+                                });
+                                it("test opacity = 0", function () {
+                                    var materialData = {
+                                        type:"LightMaterial",
+
+                                        transparent:true,
+                                        opacity: 0
+                                    };
+                                    setMaterial(materialData);
+
+
+
+
+                                    var data = builder.build(parseData);
+
+
+
+
+                                    var material = getMaterial(data);
+                                    expect(material).toBeInstanceOf(wd.LightMaterial);
+
+                                    expect(material.blend).toBeTruthy();
+                                    expect(material.opacity).toEqual(0);
+                                    expect(material.blendType).toEqual(wd.EBlendType.NORMAL);
+                                });
                             });
 
                             describe("test lightModel", function(){

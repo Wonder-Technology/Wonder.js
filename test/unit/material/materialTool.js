@@ -25,7 +25,7 @@ var materialTool = (function () {
 
             material.opacity = 0.0;
 
-            expect(material.blend).toBeFalsy();
+            expect(material.blend).toBeTruthy();
             expect(material.opacity).toEqual(0.0);
 
             material.opacity = 1.0;

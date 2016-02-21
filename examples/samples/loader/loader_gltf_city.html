@@ -13,7 +13,7 @@
     window.onload = function () {
         wd.Main.setConfig({
             //open contract check
-            isTest: true,
+            isTest: false,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
@@ -22,8 +22,6 @@
         ]).subscribe(null, null, function () {
             initSample();
         });
-
-        //todo remove camera white box
 
         function initSample() {
             var director = wd.Director.getInstance();

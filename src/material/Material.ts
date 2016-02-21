@@ -219,7 +219,7 @@ module wd {
         }
 
         protected setBlendByOpacity(opacity:number){
-            if(opacity < 1.0 && opacity > 0.0){
+            if(opacity < 1.0 && opacity >= 0.0){
                 this.blend = true;
             }
             else{

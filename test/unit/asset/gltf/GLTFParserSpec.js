@@ -757,8 +757,14 @@ describe("GLTFParser", function () {
                                         "KHR_materials_common": {
                                             "doubleSided": false,
                                             "transparent": true,
-                                            "transparency": 0.2,
-                                            "technique": "PHONG"
+                                            "technique": "PHONG",
+                                            "values":{
+
+                                                "transparency": {
+                                                    "type": 5126,
+                                                    "value": 0.2
+                                                }
+                                            }
                                         }
                                     }
                                 }

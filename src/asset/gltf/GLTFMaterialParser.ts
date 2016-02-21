@@ -37,8 +37,8 @@ module wd{
             materialExtension = materialData.extensions.KHR_materials_common;
 
             GLTFUtils.addData(material, "doubleSided", materialExtension.doubleSided);
-            GLTFUtils.addData(material, "transparent", materialExtension.transparent);
-            GLTFUtils.addData(material, "opacity", materialExtension.transparency);
+            GLTFUtils.addData(material, "transparent", Boolean(materialExtension.transparent));
+            //GLTFUtils.addData(material, "opacity", materialExtension.transparency);
 
             //todo parse jointCount
 
@@ -119,6 +119,10 @@ module wd{
 
             if(values.shininess){
                 material.shininess = values.shininess.value;
+            }
+
+            if(values.transparency){
+                material.opacity = values.transparency.value;
             }
         }
 

@@ -212,8 +212,9 @@ module wd{
 
             this._setBasicDataOfMaterial(material, materialData);
 
-            if(!!materialData.transparent && materialData.transparent === true && materialData.opacity){
+            if(materialData.transparent === true && materialData.opacity !== void 0){
                 material.opacity = materialData.opacity;
+                material.blendType = EBlendType.NORMAL;
             }
 
             if(materialData.lightModel === ELightModel.LAMBERT){
