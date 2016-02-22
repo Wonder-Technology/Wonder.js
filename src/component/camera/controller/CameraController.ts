@@ -91,7 +91,7 @@ module wd {
 
         public getPlanes():Array<Plane> {
             var frustumPlanes = [],
-                transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix);
+                transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix, true);
 
             for (var index = 0; index < 6; index++) {
                 frustumPlanes.push(Plane.create(0, 0, 0, 0));

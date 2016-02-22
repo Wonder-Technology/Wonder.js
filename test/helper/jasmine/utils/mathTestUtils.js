@@ -40,6 +40,14 @@ var mathTestUtils = (function () {
             else if(this.isMatrix(target)){
                 return expect(this.getValues(mat1.values)).toEqual(this.getValues(target.values));
             }
+        },
+        isMatrixNotEqual: function(mat1, target){
+            if(this.isFloat32Array(target)){
+                return expect(this.getValues(mat1.values)).not.toEqual(this.getValues(target));
+            }
+            else if(this.isMatrix(target)){
+                return expect(this.getValues(mat1.values)).not.toEqual(this.getValues(target.values));
+            }
         }
     }
 }());

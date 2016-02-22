@@ -43,11 +43,11 @@ module wd {
                 shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
                 lightPos: this.light.position,
                 //todo optimize: compute vpMatrix once here or when render shadowRenderList
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
             });
 
             material.buildTwoDShadowMapData = {
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
             };
         }
 

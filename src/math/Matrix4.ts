@@ -581,15 +581,21 @@ module wd{
             return this;
         }
 
-        public applyMatrix (other:Matrix4):Matrix4{
+        public applyMatrix (other:Matrix4, notChangeSelf:boolean = false):Matrix4{
             var a = this,
                 b = other.copy();
 
-            //this.values = MathUtils.multiply(a, b);
-                //b*a，而不是a*b
-                //这是因为在webgl中，向量是右乘的，
-                //此处希望坐标向量先进行this.values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
-                this.values = b.multiply(a).values;
+            /*!
+             b*a，而不是a*b
+             这是因为在webgl中，向量是右乘的，
+             此处希望坐标向量先进行this.values的变换，然后进行other.values的变换，因此要b*a，从而在右乘向量时为b*a*vec
+             */
+
+            if(notChangeSelf){
+                return b.multiply(a);
+            }
+
+            this.values = b.multiply(a).values;
 
             return this;
         }

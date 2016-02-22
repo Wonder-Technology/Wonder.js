@@ -245,6 +245,17 @@ describe("Matrix4", function(){
 
            mathTestUtils.isMatrixEqual(result, mat.multiply(matrixCopy));
        });
+        it("if the second param is true, not change self", function(){
+            var mat = Matrix4.create();
+            mat.setTranslate(1,2,3);
+            matrix.setTranslate(10,11,12);
+            var matrixCopy = matrix.copy();
+
+            var result = matrix.applyMatrix(mat, true);
+
+            mathTestUtils.isMatrixEqual(result, mat.multiply(matrixCopy));
+            mathTestUtils.isMatrixNotEqual(result, matrix);
+        });
     });
 
     describe("multiply", function(){
