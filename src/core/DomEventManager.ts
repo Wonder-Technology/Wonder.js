@@ -3,16 +3,20 @@ module wd{
 
     export class DomEventManager{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         get scene():SceneDispatcher{
             return Director.getInstance().scene;
         }
 
+        public designatedTriggerList = null;
+
         private _lastTriggerList:any = null;
+        private _isDragEventTriggering:boolean = false;
+        private _triggerListOfDragEvent = null;
 
         public initDomEvent(){
             var self = this;
@@ -28,33 +32,20 @@ module wd{
                 )
                 .mergeAll()
                 .filter((e:MouseEvent) => {
-                    return !Director.getInstance().isPause ;
+                    return !Director.getInstance().isPause;
                 })
                 .map((e:MouseEvent) => {
-                    return self._getMouseEventTriggerListData(e);
+                    var triggerList = self._getMouseEventTriggerList(e);
+
+                    if(self._isDragEventTriggering){
+                        self._triggerListOfDragEvent = triggerList;
+                    }
+
+                    return self._getMouseEventTriggerListData(e, triggerList);
                 })
                 .merge(
-                    EventManager.fromEvent(EEventName.MOUSEMOVE)
-                        .filter((e:MouseEvent) => {
-                            return !Director.getInstance().isPause ;
-                        })
-                        .map((e:MouseEvent) => {
-                            var triggerList = self._getMouseEventTriggerList(e);
-                            var {mouseoverObjects, mouseoutObjects} = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList);
-
-                            self._setMouseOverTag(mouseoverObjects);
-                            self._setMouseOutTag(mouseoutObjects);
-
-                            self._lastTriggerList = triggerList.copy();
-
-                            triggerList = mouseoutObjects.addChildren(triggerList);
-
-                            return self._getMouseEventTriggerListData(e, triggerList);
-                        })
+                    this._buildMouseMoveStream()
                 )
-                .filter(([triggerList, e]) => {
-                    return triggerList.getCount() > 0;
-                })
                 .subscribe(([triggerList, e]) => {
                     triggerList.forEach((entityObject:EntityObject) => {
                         self._trigger(e.copy(), entityObject);
@@ -63,17 +54,58 @@ module wd{
         }
 
         private _buildMouseDragStream(){
+            var self = this;
+
             /*!
              here bind on document(not on document.body), so the event handler binded will not affected by other event handler binded on the same event
              */
             return EventManager.fromEvent(document, EEventName.MOUSEDOWN)
                 .flatMap((e:MouseEvent) => {
-                    return EventManager.fromEvent(document, EEventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EEventName.MOUSEUP));
+                    return EventManager.fromEvent(document, EEventName.MOUSEMOVE).takeUntil(EventManager.fromEvent(document, EEventName.MOUSEUP)
+                        .do((e:MouseEvent) => {
+                            self._isDragEventTriggering = false;
+                        })
+                    );
                 })
                 .map((e:MouseEvent) => {
                     e.name = EEventName.MOUSEDRAG;
 
+                    self._isDragEventTriggering = true;
+
                     return e;
+                })
+        }
+
+        private _buildMouseMoveStream(){
+            var self = this;
+
+            return EventManager.fromEvent(EEventName.MOUSEMOVE)
+                .filter((e:MouseEvent) => {
+                    return !Director.getInstance().isPause;
+                })
+                .map((e:MouseEvent) => {
+                    var triggerList = null;
+
+                    if(self.designatedTriggerList){
+                        triggerList = self.designatedTriggerList;
+                    }
+                    else if(self._isDragEventTriggering){
+                        triggerList = self._triggerListOfDragEvent;
+                    }
+                    else{
+                        triggerList = self._getMouseEventTriggerList(e);
+                    }
+
+                    var {mouseoverObjects, mouseoutObjects} = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList);
+
+                    self._setMouseOverTag(mouseoverObjects);
+                    self._setMouseOutTag(mouseoutObjects);
+
+                    self._lastTriggerList = triggerList.copy();
+
+                    triggerList = mouseoutObjects.addChildren(triggerList);
+
+                    return self._getMouseEventTriggerListData(e, triggerList);
                 })
         }
 
@@ -178,8 +210,13 @@ module wd{
         private _getMouseEventTriggerList(e:MouseEvent){
             var topGameObject:GameObject = null,
                 topUIObject:UIObject = null,
-                triggerList = wdCb.Collection.create<EntityObject>();
+                triggerList:wdCb.Collection<EntityObject> = null;
 
+            if(this.designatedTriggerList){
+                return this.designatedTriggerList;
+            }
+
+            triggerList = wdCb.Collection.create<EntityObject>();
 
             topGameObject = this._findTopGameObject(e, this.scene.gameObjectScene);
             topUIObject = this._findTopUIObject(e, this.scene.uiObjectScene);
@@ -283,21 +320,8 @@ module wd{
             return detector.isTrigger(e);
         }
 
-        private _getMouseEventTriggerListData(e:MouseEvent);
-        private _getMouseEventTriggerListData(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>);
-
-        private _getMouseEventTriggerListData(...args){
-            if(args.length === 1){
-                let e:MouseEvent = args[0];
-
-                return [this._getMouseEventTriggerList(e), e];
-            }
-            else{
-                let e:MouseEvent = args[0],
-                    triggerList:wdCb.Collection<EntityObject> = args[1];
-
-                return [triggerList, e];
-            }
+        private _getMouseEventTriggerListData(e:MouseEvent, triggerList:wdCb.Collection<EntityObject>){
+            return [triggerList, e];
         }
     }
 

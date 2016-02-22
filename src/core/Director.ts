@@ -53,12 +53,12 @@ module wd{
         public scene:SceneDispatcher = null;
         public scheduler:Scheduler = null;
         public renderer:Renderer= null;
+        public domEventManager:DomEventManager = DomEventManager.create();
 
         private _gameLoop:wdFrp.IDisposable = null;
         private _eventSubscription:wdFrp.IDisposable = null;
         private _gameState:EGameState = EGameState.NORMAL;
         private _timeController:DirectorTimeController= DirectorTimeController.create();
-        private _domEventManager:DomEventManager = DomEventManager.create();
 
 
         public initWhenCreate(){
@@ -218,7 +218,7 @@ module wd{
 
         @execOnlyOnce("_isInitDomEvent")
         private _initDomEvent(){
-            this._eventSubscription = this._domEventManager.initDomEvent();
+            this._eventSubscription = this.domEventManager.initDomEvent();
         }
     }
 }

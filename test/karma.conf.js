@@ -32,7 +32,7 @@
 
         //'test/unit/**/CameraController*',
 
-        'test/unit/**/MapManager*',
+        //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
@@ -45,12 +45,12 @@
         //'test/unit/component/**/*Animation*.js',
         //'test/unit/component/**/morphAnimation*.js',
 
-        'test/unit/**/GLTFParserSpec*',
-        'test/unit/**/GLTFAssemblerSpec*',
+        //'test/unit/**/GLTFParserSpec*',
+        //'test/unit/**/GLTFAssemblerSpec*',
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -76,7 +76,7 @@
 
         //'test/unit/**/MainSpec*',
 
-        'test/unit/component/event/eventSpec*',
+        //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
         //'test/unit/**/UIObjectSpec*',
@@ -97,7 +97,7 @@
         //'test/unit/**/ImageSpec*',
         //
         //'test/unit/**/ThreeDTransformSpec.js',
-        'test/unit/**/RectTransformSpec*',
+        //'test/unit/**/RectTransformSpec*',
         //'test/unit/**/TransformSpec*',
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
@@ -138,6 +138,7 @@
         //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
+        //'test/unit/**/FlyCameraController*',
         //'test/unit/**/*MaterialSpec.js',
       //  'test/unit/**/scriptSpec.js',
       //

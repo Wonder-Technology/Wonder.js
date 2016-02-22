@@ -26,7 +26,11 @@ module wd {
         private _keydownSubscription:wdFrp.IDisposable = null;
 
         public init() {
+            var director = Director.getInstance();
+
             super.init();
+
+            director.domEventManager.designatedTriggerList = wdCb.Collection.create<EntityObject>([director.scene]);
 
             this._bindCanvasEvent();
         }
@@ -60,15 +64,19 @@ module wd {
         public dispose() {
             super.dispose();
 
+            Director.getInstance().domEventManager.designatedTriggerList = null;
+
             this._removeEvent();
         }
 
         //todo treat picked item as the target
         private _bindCanvasEvent() {
             var self = this,
-                mousewheel = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_WHEEL),
-                mousedrag = EventManager.fromEvent(Director.getInstance().scene, <any>EEngineEvent.MOUSE_DRAG),
+                scene = Director.getInstance().scene,
+                mousewheel = EventManager.fromEvent(scene, <any>EEngineEvent.MOUSE_WHEEL),
+                mousedrag = EventManager.fromEvent(scene, <any>EEngineEvent.MOUSE_DRAG),
             keydown = EventManager.fromEvent(EEventName.KEYDOWN);
+
 
             this._mouseDragSubscription = mousedrag.subscribe((e:CustomEvent) => {
                 self._changeOrbit(e.userData);

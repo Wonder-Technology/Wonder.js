@@ -242,27 +242,27 @@ describe("Director", function () {
 
     describe("init dom event", function(){
         beforeEach(function(){
-            sandbox.stub(director._domEventManager, "initDomEvent");
+            sandbox.stub(director.domEventManager, "initDomEvent");
         });
 
         it("initUIObjectScene can init dom event", function(){
             director.initUIObjectScene();
 
-            expect(director._domEventManager.initDomEvent).toCalledOnce();
+            expect(director.domEventManager.initDomEvent).toCalledOnce();
         });
         it("_init can init dom event", function(){
             director._init();
 
-            expect(director._domEventManager.initDomEvent).toCalledOnce();
+            expect(director.domEventManager.initDomEvent).toCalledOnce();
         });
         it("can only init once", function(){
             director.initUIObjectScene();
 
-            expect(director._domEventManager.initDomEvent).toCalledOnce();
+            expect(director.domEventManager.initDomEvent).toCalledOnce();
 
             director._init();
 
-            expect(director._domEventManager.initDomEvent).toCalledOnce();
+            expect(director.domEventManager.initDomEvent).toCalledOnce();
         });
     });
 

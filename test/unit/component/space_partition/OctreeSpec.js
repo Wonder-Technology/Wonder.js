@@ -520,7 +520,7 @@ describe("Octree", function () {
 
                     var fakeMouseEvent = wd.MouseEvent.create(fakeEvent);
 
-                    var domEventManager = director._domEventManager;
+                    var domEventManager = director.domEventManager;
 
                     director.scene.addChild(testTool.createCamera());
                     director.scene.addChild(octreeObject);

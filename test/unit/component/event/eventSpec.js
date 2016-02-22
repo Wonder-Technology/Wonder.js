@@ -735,6 +735,58 @@ describe("event component", function () {
                 });
             });
         });
+
+
+        describe("optimize", function() {
+            var domEventManager;
+
+            beforeEach(function () {
+                domEventManager = director.domEventManager;
+            });
+
+            it("if mousedrag event is triggering, the mousemove event directly get triggerList from mousedrag event", function () {
+                director._init();
+
+                sandbox.spy(domEventManager, "_findTopGameObject");
+
+
+
+                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+
+                expect(domEventManager._findTopGameObject.callCount).toEqual(1);
+
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+                expect(domEventManager._findTopGameObject.callCount).not.toEqual(2);
+            });
+
+            it("if designate the triggerList, just use it and not to find triggerList", function () {
+                director._init();
+
+                sandbox.spy(domEventManager, "_findTopGameObject");
+                sandbox.spy(domEventManager, "_trigger");
+
+                domEventManager.designatedTriggerList = wdCb.Collection.create([director.scene]);
+
+
+
+                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEDOWN));
+                manager.trigger(document, wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+
+                expect(director.domEventManager._findTopGameObject.callCount).toEqual(0);
+                expect(director.domEventManager._trigger).toCalledOnce();
+                expect(director.domEventManager._trigger.args[0][1]).toEqual(director.scene);
+
+                manager.trigger(wd.MouseEvent.create(fakeEvent, wd.EEventName.MOUSEMOVE));
+
+                expect(director.domEventManager._findTopGameObject.callCount).toEqual(0);
+                expect(director.domEventManager._trigger).toCalledTwice();
+                expect(director.domEventManager._trigger.args[1][1]).toEqual(director.scene);
+            });
+        });
     });
 });
 
