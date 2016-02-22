@@ -26,11 +26,7 @@ module wd {
         private _keydownSubscription:wdFrp.IDisposable = null;
 
         public init() {
-            var director = Director.getInstance();
-
             super.init();
-
-            director.domEventManager.designatedTriggerList = wdCb.Collection.create<EntityObject>([director.scene]);
 
             this._bindCanvasEvent();
         }
@@ -63,8 +59,6 @@ module wd {
 
         public dispose() {
             super.dispose();
-
-            Director.getInstance().domEventManager.designatedTriggerList = null;
 
             this._removeEvent();
         }

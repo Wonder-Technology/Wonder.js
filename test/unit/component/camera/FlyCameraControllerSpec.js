@@ -52,30 +52,30 @@ describe("FlyCameraController", function () {
 
     testTool.shouldExecRunTest("test more");
 
-    describe("optimize", function() {
-        var director;
-
-        beforeEach(function(){
-            director = wd.Director.getInstance();
-
-
-            prepareOrthoCamera(sandbox);
-        });
-
-        describe("not to find triggerList when event trigger, directly use scene as the triggerList", function () {
-            it("when init, set Director.domEventManager.designatedTriggerList = scene", function () {
-                controller.init();
-
-                expect(director.domEventManager.designatedTriggerList.getChildren()).toEqual([director.scene]);
-            });
-            it("when dispose, restore", function () {
-                controller.init();
-
-                controller.dispose();
-
-                expect(director.domEventManager.designatedTriggerList).toBeNull();
-            });
-        });
-    });
+    //describe("optimize", function() {
+    //    var director;
+    //
+    //    beforeEach(function(){
+    //        director = wd.Director.getInstance();
+    //
+    //
+    //        prepareOrthoCamera(sandbox);
+    //    });
+    //
+    //    describe("not to find triggerList when event trigger, directly use scene as the triggerList", function () {
+    //        it("when init, set Director.domEventManager.designatedTriggerList = scene", function () {
+    //            controller.init();
+    //
+    //            expect(director.domEventManager.designatedTriggerList.getChildren()).toEqual([director.scene]);
+    //        });
+    //        it("when dispose, restore", function () {
+    //            controller.init();
+    //
+    //            controller.dispose();
+    //
+    //            expect(director.domEventManager.designatedTriggerList).toBeNull();
+    //        });
+    //    });
+    //});
 });
 

@@ -20,11 +20,7 @@ module wd {
         private _control:FlyCameraControl = null;
 
         public init() {
-            var director = Director.getInstance();
-
             super.init();
-
-            director.domEventManager.designatedTriggerList = wdCb.Collection.create<EntityObject>([director.scene]);
 
             this._control.init(this.entityObject);
         }
@@ -37,8 +33,6 @@ module wd {
 
         public dispose() {
             super.dispose();
-
-            Director.getInstance().domEventManager.designatedTriggerList = null;
 
             this._control.dispose();
         }
