@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
 
         //'test/unit/**/CameraController*',
@@ -66,7 +66,7 @@
 
         //'test/unit/**/renderWebGL*',
 
-        //'test/unit/**/ColorSpec*',
+        'test/unit/**/ColorSpec*',
 
         //'test/unit/**/interactionUISpec*',
         //'test/unit/**/TransitionSpec*',

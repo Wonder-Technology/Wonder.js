@@ -100,5 +100,62 @@ describe("Color", function() {
             expect(Color.create("#ffffff").toString()).toEqual("#ffffff");
         });
     });
+
+    describe("optimize", function(){
+        beforeEach(function(){
+        });
+
+        describe("cache", function(){
+            function judgeToVector(_class, methodName){
+                it("if cached, return cache data", function(){
+                    var c = Color.create("rgba(1.0,0.1,0.2,0.3)");
+                    sandbox.spy(_class, "create");
+
+                    var v1 = c[methodName]();
+                    expect(_class.create).toCalledOnce();
+
+                    var v2 = c[methodName]();
+                    expect(_class.create).not.toCalledTwice();
+
+                    expect(v1 === v2).toBeTruthy();
+                });
+                it("if change r/g/b/a, not cache", function () {
+                    var c = Color.create("rgba(1.0,0.1,0.2,0.3)");
+                    sandbox.spy(_class, "create");
+
+                    var v1 = c[methodName]();
+                    expect(_class.create).toCalledOnce();
+
+                    c.r = 0.2;
+                    var v2 = c[methodName]();
+                    expect(_class.create).toCalledTwice();
+                    expect(v1 === v2).toBeFalsy();
+
+                    c.g = 0.2;
+                    var v3 = c[methodName]();
+                    expect(_class.create.callCount).toEqual(3);
+                    expect(v2 === v3).toBeFalsy();
+
+                    c.b = 0.5;
+                    var v4 = c[methodName]();
+                    expect(_class.create.callCount).toEqual(4);
+                    expect(v3 === v4).toBeFalsy();
+
+                    c.a = 0.5;
+                    var v5 = c[methodName]();
+                    expect(_class.create.callCount).toEqual(5);
+                    expect(v4 === v5).toBeFalsy();
+                });
+            }
+
+            describe("toVector3", function(){
+                judgeToVector(wd.Vector3, "toVector3");
+            });
+
+            describe("toVector4", function(){
+                judgeToVector(wd.Vector4, "toVector4");
+            });
+        });
+    });
 });
 

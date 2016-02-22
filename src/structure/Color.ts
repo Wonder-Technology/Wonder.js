@@ -10,12 +10,63 @@ module wd{
             return obj;
         }
 
-        public r:number = null;
-        public g:number = null;
-        public b:number = null;
-        public a:number = null;
+        set dirty(dirty:boolean){
+            if(dirty){
+                this._clearCache();
+            }
+        }
+
+        private _r:number = null;
+        get r(){
+            return this._r;
+        }
+        set r(r:number){
+            if(this._r !== r){
+                this.dirty = true;
+
+                this._r = r;
+            }
+        }
+
+        private _g:number = null;
+        get g(){
+            return this._g;
+        }
+        set g(g:number){
+            if(this._g !== g){
+                this.dirty = true;
+
+                this._g = g;
+            }
+        }
+
+        private _b:number = null;
+        get b(){
+            return this._b;
+        }
+        set b(b:number){
+            if(this._b !== b){
+                this.dirty = true;
+
+                this._b = b;
+            }
+        }
+
+        private _a:number = null;
+        get a(){
+            return this._a;
+        }
+        set a(a:number){
+            if(this._a !== a){
+                this.dirty = true;
+
+                this._a = a;
+            }
+        }
 
         private _colorString:string = null;
+        private _colorVec3Cache:Vector3 = null;
+        private _colorVec4Cache:Vector4 = null;
 
         public initWhenCreate(colorVal?:string) {
             if(!colorVal){
@@ -26,10 +77,24 @@ module wd{
             this._setColor(colorVal);
         }
 
+        @cache(function(){
+            return this._colorVec3Cache !== null;
+        }, function(){
+            return this._colorVec3Cache;
+        }, function(result){
+            this._colorVec3Cache = result;
+        })
         public toVector3(){
             return Vector3.create(this.r, this.g, this.b);
         }
 
+        @cache(function(){
+            return this._colorVec4Cache !== null;
+        }, function(){
+            return this._colorVec4Cache;
+        }, function(result){
+            this._colorVec4Cache = result;
+        })
         public toVector4(){
             return Vector4.create(this.r, this.g, this.b, this.a);
         }
@@ -117,6 +182,11 @@ module wd{
             this.a = 1;
 
             return this;
+        }
+
+        private _clearCache(){
+            this._colorVec3Cache = null;
+            this._colorVec4Cache = null;
         }
     }
 }
