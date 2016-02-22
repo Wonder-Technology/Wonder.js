@@ -236,12 +236,20 @@ module wd {
                     event = args[1],
                     eventDispatcher = CustomEventDispatcher.getInstance();
 
+                if(!target){
+                    return;
+                }
+
                 eventDispatcher.trigger(target, event);
             }
             else if(length === 2){
                 let dom = args[0],
                     event = args[1],
                     eventDispatcher = DomEventDispatcher.getInstance();
+
+                if(!dom){
+                    return;
+                }
 
                 eventDispatcher.trigger(dom, event);
             }
@@ -251,6 +259,10 @@ module wd {
                     userData = args[2],
                     eventDispatcher = CustomEventDispatcher.getInstance();
 
+                if(!target){
+                    return;
+                }
+
                 eventDispatcher.trigger(target, event, userData);
             }
             else if(length === 4){
@@ -259,6 +271,10 @@ module wd {
                     userData = args[2],
                     notSetTarget = args[3],
                     eventDispatcher = CustomEventDispatcher.getInstance();
+
+                if(!target){
+                    return;
+                }
 
                 eventDispatcher.trigger(target, event, userData, notSetTarget);
             }

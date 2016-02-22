@@ -90,7 +90,7 @@ module wd{
         set localPosition(position:Vector2){
             this._localPosition = position.copy();
 
-            this.isTranslate = true;
+            this.isLocalTranslate = true;
         }
 
         private _localScale:Vector2 = Vector2.create(1, 1);
@@ -100,7 +100,7 @@ module wd{
         set localScale(scale:Vector2){
             this._localScale = scale.copy();
 
-            this.isScale = true;
+            this.isLocalScale = true;
         }
 
         //todo extract RootRectTransform?
@@ -338,24 +338,25 @@ module wd{
          can refer to http://www.senocular.com/flash/tutorials/transformmatrix/
          */
 
+        protected handleWhenSetTransformState(transformState:ETransformState):void{
+            var eventName:string = null;
 
+            switch (transformState){
+                case ETransformState.ISTRANSLATE:
+                    eventName = <any>EEngineEvent.TRANSFORM_TRANSLATE;
+                    break;
+                case ETransformState.ISROTATE:
+                    eventName = <any>EEngineEvent.TRANSFORM_ROTATE;
+                    break;
+                case ETransformState.ISSCALE:
+                    eventName = <any>EEngineEvent.TRANSFORM_SCALE;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNKNOW(`transformState:${transformState}`));
+                    break;
+            }
 
-        public setChildrenTransform(){
-            this.setChildrenTransformState("isTranslate");
-            this.setChildrenTransformState("isRotate");
-            this.setChildrenTransformState("isScale");
-        }
-
-        protected handleWhenSetIsTranslate():void{
-            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_TRANSLATE));
-        }
-
-        protected handleWhenSetIsRotate():void{
-            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_ROTATE));
-        }
-
-        protected handleWhenSetIsScale():void{
-            EventManager.broadcast(this.entityObject, CustomEvent.create(<any>EEngineEvent.TRANSFORM_SCALE));
+            EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
         }
 
         protected clearCache(){

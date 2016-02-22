@@ -119,7 +119,7 @@ module wd{
         set localPosition(position:Vector3){
             this._localPosition = position.copy();
 
-            this.isTranslate = true;
+            this.isLocalTranslate = true;
         }
 
         private _localRotation:Quaternion = Quaternion.create(0, 0, 0, 1);
@@ -129,7 +129,7 @@ module wd{
         set localRotation(rotation:Quaternion){
             this._localRotation = rotation.copy();
 
-            this.isRotate = true;
+            this.isLocalRotate = true;
         }
 
         private _localEulerAngles:Vector3 = null;
@@ -142,12 +142,13 @@ module wd{
         })
         get localEulerAngles(){
             this._localEulerAngles = this._localRotation.getEulerAngles();
+
             return this._localEulerAngles;
         }
         set localEulerAngles(localEulerAngles:Vector3){
             this._localRotation.setFromEulerAngles(localEulerAngles);
 
-            this.isRotate = true;
+            this.isLocalRotate = true;
         }
 
         private _localScale:Vector3 = Vector3.create(1, 1, 1);
@@ -157,7 +158,7 @@ module wd{
         set localScale(scale:Vector3){
             this._localScale = scale.copy();
 
-            this.isScale = true;
+            this.isLocalScale = true;
         }
 
         get up(){

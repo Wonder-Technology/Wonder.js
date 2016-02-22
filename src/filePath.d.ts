@@ -115,6 +115,7 @@
 /// <reference path="component/transform/Transform"/>
 /// <reference path="component/transform/ThreeDTransform"/>
 /// <reference path="component/transform/RectTransform"/>
+/// <reference path="component/transform/ETransformState"/>
 
 /// <reference path="component/container/ComponentContainer"/>
 /// <reference path="component/container/ActionManager"/>

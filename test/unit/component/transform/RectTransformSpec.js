@@ -674,23 +674,6 @@ describe("RectTransform", function(){
             });
         });
 
-        describe("isScale", function(){
-            it("if set it to be true, set dirtyLocal to be true", function(){
-                tra1.scale = wd.Vector2.create(1,1);
-
-                expect(tra1.dirtyLocal).toBeTruthy();
-            });
-            it("change children state", function(){
-                var tra2 = Transform.create();
-                tra1.parent = tra2;
-
-                tra2.scale = wd.Vector2.create(1,1);
-
-                expect(tra2.isScale).toBeTruthy();
-                expect(tra1.isScale).toBeTruthy();
-            });
-        });
-
         describe("isScale", function () {
             describe("if set it to be true", function () {
                 it("if set it to be true, set dirtyLocal to be true", function () {

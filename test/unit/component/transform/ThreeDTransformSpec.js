@@ -190,6 +190,8 @@ describe("ThreeDTransform", function(){
             expect(getValues(obj.transform.position)).toEqual([10, 0, 0]);
         });
         it("set local position", function(){
+            sandbox.stub(tra3, "_setLocalTransformState");
+            sandbox.stub(tra2, "_setLocalTransformState");
             tra3.localPosition = Vector3.create(1, 1, 1);
             tra2.localPosition = Vector3.create(3, 3, 3);
 
@@ -199,6 +201,9 @@ describe("ThreeDTransform", function(){
             expect(getValues(tra3.localPosition)).toEqual([1, 1, 1]);
             expect(getValues(tra1.position)).toEqual([4, 5, 6]);
             expect(getValues(tra1.localPosition)).toEqual([1, 2, 3]);
+
+            expect(tra3._setLocalTransformState).toCalledOnce();
+            expect(tra2._setLocalTransformState).toCalledOnce();
         });
     });
 
@@ -278,6 +283,10 @@ describe("ThreeDTransform", function(){
 
         it("set local scale", function(){
             var tra2 = Transform.create();
+            sandbox.stub(tra2, "_setLocalTransformState");
+            sandbox.stub(tra1, "_setLocalTransformState");
+
+
             tra2.localScale = Vector3.create(2, 2, 0.5);
             tra1.parent = tra2;
 
@@ -288,6 +297,9 @@ describe("ThreeDTransform", function(){
             expect(getValues(tra2.scale)).toEqual([2, 1, 1]);
             expect(getValues(tra1.localScale)).toEqual([1, 2, 2]);
             expect(getValues(tra1.scale)).toEqual([2, 2, 2]);
+
+            expect(tra2._setLocalTransformState).toCalledTwice();
+            expect(tra1._setLocalTransformState).toCalledOnce();
         });
     });
 

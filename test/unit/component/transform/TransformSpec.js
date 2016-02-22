@@ -46,4 +46,56 @@ describe("Transform", function(){
             expect(newParent.addChild).toCalledWith(tra1);
         });
     });
+
+    describe("set local transform state", function(){
+        var tra2;
+
+        beforeEach(function(){
+            tra2 = new Transform();
+            tra2.clearCache = sandbox.stub();
+            tra1.clearCache = sandbox.stub();
+
+            tra1.parent = tra2;
+
+
+            sandbox.spy(tra2, "handleWhenSetTransformState");
+            sandbox.spy(tra1, "handleWhenSetTransformState");
+        });
+
+        describe("not invoke handleWhenSetTransformState, just clear cache and set dirtyLocal = true", function(){
+            it("test isLocalTranslate", function(){
+                tra2.isLocalTranslate = true;
+
+                expect(tra2.handleWhenSetTransformState).not.toCalled();
+                expect(tra2.clearCache).toCalledOnce();
+                expect(tra2.dirtyLocal).toBeTruthy();
+
+                expect(tra1.handleWhenSetTransformState).not.toCalled();
+                expect(tra1.clearCache).toCalledOnce();
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+            it("test isLocalRotate", function(){
+                tra2.isLocalRotate = true;
+
+                expect(tra2.handleWhenSetTransformState).not.toCalled();
+                expect(tra2.clearCache).toCalledOnce();
+                expect(tra2.dirtyLocal).toBeTruthy();
+
+                expect(tra1.handleWhenSetTransformState).not.toCalled();
+                expect(tra1.clearCache).toCalledOnce();
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+            it("test isLocalScale", function(){
+                tra2.isLocalScale = true;
+
+                expect(tra2.handleWhenSetTransformState).not.toCalled();
+                expect(tra2.clearCache).toCalledOnce();
+                expect(tra2.dirtyLocal).toBeTruthy();
+
+                expect(tra1.handleWhenSetTransformState).not.toCalled();
+                expect(tra1.clearCache).toCalledOnce();
+                expect(tra1.dirtyLocal).toBeTruthy();
+            });
+        });
+    });
 });

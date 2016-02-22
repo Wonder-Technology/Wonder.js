@@ -17,15 +17,7 @@ module wd{
             return this._isTranslate;
         }
         set isTranslate(isTranslate:boolean){
-            this._isTranslate = isTranslate;
-
-            if(isTranslate){
-                this.dirtyLocal = true;
-                this.clearCache();
-                this.handleWhenSetIsTranslate();
-
-                this.setChildrenTransformState("isTranslate");
-            }
+            this._setGlobalTransformState(ETransformState.ISTRANSLATE, isTranslate);
         }
 
         private _isRotate:boolean = false;
@@ -33,15 +25,7 @@ module wd{
             return this._isRotate;
         }
         set isRotate(isRotate:boolean){
-            this._isRotate = isRotate;
-
-            if(isRotate){
-                this.dirtyLocal = true;
-                this.clearCache();
-                this.handleWhenSetIsRotate();
-
-                this.setChildrenTransformState("isRotate");
-            }
+            this._setGlobalTransformState(ETransformState.ISROTATE, isRotate);
         }
 
         private _isScale:boolean = false;
@@ -49,15 +33,19 @@ module wd{
             return this._isScale;
         }
         set isScale(isScale:boolean){
-            this._isScale = isScale;
+            this._setGlobalTransformState(ETransformState.ISSCALE, isScale);
+        }
 
-            if(isScale){
-                this.dirtyLocal = true;
-                this.clearCache();
-                this.handleWhenSetIsScale();
+        set isLocalTranslate(isTranslate:boolean){
+            this._setLocalTransformState(ETransformState.ISLOCALTRANSLATE, isTranslate);
+        }
 
-                this.setChildrenTransformState("isScale");
-            }
+        set isLocalRotate(isRotate:boolean){
+            this._setLocalTransformState(ETransformState.ISLOCALROTATE, isRotate);
+        }
+
+        set isLocalScale(isScale:boolean){
+            this._setLocalTransformState(ETransformState.ISLOCALSCALE, isScale);
         }
 
         public dirtyLocal:boolean = true;
@@ -73,18 +61,18 @@ module wd{
             this.children.removeChild(child);
         }
 
+        public setChildrenTransformState(transformState:ETransformState, state:boolean){
+            if(state){
+                this.children.forEach((child:Transform) => {
+                    child[transformState] = true;
+                });
+            }
+        }
+
         protected abstract clearCache():void;
 
         @virtual
-        protected handleWhenSetIsTranslate():void{
-        }
-
-        @virtual
-        protected handleWhenSetIsRotate():void{
-        }
-
-        @virtual
-        protected handleWhenSetIsScale():void{
+        protected handleWhenSetTransformState(transformState:ETransformState):void{
         }
 
         protected setParent(parent:Transform){
@@ -122,13 +110,29 @@ module wd{
             return this[matrixAttriName];
         }
 
-        protected setChildrenTransformState(transformState:string){
-            if(this[transformState]){
-                this.children.forEach((child:Transform) => {
-                    child[transformState] = true;
-                });
+        private _setGlobalTransformState(transformState:ETransformState, state:boolean){
+            this[`_${transformState}`] = state;
+
+            if(state){
+                this.dirtyLocal = true;
+                this.clearCache();
+                this.handleWhenSetTransformState(transformState);
+            }
+
+            if(state){
+                this.setChildrenTransformState(transformState, state);
             }
         }
 
+        private _setLocalTransformState(transformState:ETransformState, state:boolean){
+            if(state){
+                this.dirtyLocal = true;
+                this.clearCache();
+            }
+
+            if(state){
+                this.setChildrenTransformState(transformState, state);
+            }
+        }
     }
 }
