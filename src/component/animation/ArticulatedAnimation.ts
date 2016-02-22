@@ -91,7 +91,7 @@ module wd{
             }
 
             this.resetAnim();
-            this._saveStartFrameData();
+            this._saveStartFrameData(this.entityObject.transform);
 
             this.frameCount = this._currentAnimData.getCount();
             this.state = EAnimationState.RUN;
@@ -104,8 +104,7 @@ module wd{
             this.isFrameChange = true;
 
             this._updateFrame(elapsedTime);
-            this._updateTargetsToBeLastEndFrameData();
-            this._saveStartFrameData();
+            this._saveStartFrameData(this._prevFrameData);
         }
 
         protected handleBeforeJudgeWhetherCurrentFrameFinish(elapsedTime:number):void{
@@ -187,33 +186,38 @@ module wd{
             return interpolation;
         }
 
-        @require(function(){
-            assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
+
+        private _saveStartFrameData(frameData:ArticulatedAnimationFrameData);
+        private _saveStartFrameData(startTransform:ThreeDTransform);
+
+        @require(function(...args){
+            if(this._isFrameData(args[0])){
+                let frameData:ArticulatedAnimationFrameData = args[0];
+
+                assert(this._currentFrameData !== null, Log.info.FUNC_SHOULD("set currentFrameData"));
+
+                this._currentFrameData.targets.forEach((currentTarget:ArticulatedAnimationFrameTargetData, index:number) => {
+                    assert(frameData.targets.getChild(index).target === currentTarget.target, Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
+                });
+            }
         })
-        private _saveStartFrameData(){
-            var startFrameDataMap = this._startFrameDataMap,
-                transform = this.entityObject.transform;
+        private _saveStartFrameData(...args){
+            var startFrameDataMap = this._startFrameDataMap;
 
-            this._currentFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
-                var startFrameData = null;
+            if(this._isFrameData(args[0])){
+                let frameData:ArticulatedAnimationFrameData = args[0];
 
-                switch (target.target){
-                    case EArticulatedAnimationTarget.TRANSLATION:
-                        startFrameData = transform.localPosition;
-                        break;
-                    case EArticulatedAnimationTarget.ROTATION:
-                        startFrameData = transform.localRotation;
-                        break;
-                    case EArticulatedAnimationTarget.SCALE:
-                        startFrameData = transform.localScale;
-                        break;
-                    default:
-                        Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target.target}`));
-                        break;
-                }
+                frameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
+                    startFrameDataMap.addChild(<any>target.target, target.data);
+                });
+            }
+            else{
+                let transform:ThreeDTransform = args[0];
 
-                startFrameDataMap.addChild(<any>target.target, startFrameData);
-            });
+                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.TRANSLATION, transform.localPosition);
+                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.ROTATION, transform.localRotation);
+                startFrameDataMap.addChild(<any>EArticulatedAnimationTarget.SCALE, transform.localScale);
+            }
         }
 
         private _updateCurrentFrameData(){
@@ -258,33 +262,8 @@ module wd{
             }while(!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsedTime));
         }
 
-        @require(function(){
-            assert(this._prevFrameData !== null, Log.info.FUNC_SHOULD_NOT("prevFrameData", "be null"));
-        })
-        private _updateTargetsToBeLastEndFrameData(){
-            var self = this,
-                transform = this.entityObject.transform;
-
-            this._prevFrameData.targets.forEach((target:ArticulatedAnimationFrameTargetData) => {
-                self._setTargetData(target.target, transform, target.data);
-            });
-        }
-
-        private _setTargetData(target:EArticulatedAnimationTarget, transform:ThreeDTransform, data:any){
-            switch (target){
-                case EArticulatedAnimationTarget.TRANSLATION:
-                    transform.localPosition = data;
-                    break;
-                case EArticulatedAnimationTarget.ROTATION:
-                    transform.localRotation = data;
-                    break;
-                case EArticulatedAnimationTarget.SCALE:
-                    transform.localScale = data;
-                    break;
-                default:
-                    Log.error(true, Log.info.FUNC_NOT_SUPPORT(`EArticulatedAnimationTarget:${target}`));
-                    break;
-            }
+        private _isFrameData(data:any){
+            return data.time !== void 0 && data.targets !== void 0;
         }
     }
 
