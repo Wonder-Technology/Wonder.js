@@ -1913,32 +1913,41 @@
 
 var wdCb;
 (function (wdCb) {
+    var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
     var JudgeUtils = (function () {
         function JudgeUtils() {
         }
-        JudgeUtils.isArray = function (val) {
-            return Object.prototype.toString.call(val) === "[object Array]";
+        JudgeUtils.isArray = function (arr) {
+            var length = arr && arr.length;
+            return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
         };
-        JudgeUtils.isFunction = function (func) {
-            return Object.prototype.toString.call(func) === "[object Function]";
+        JudgeUtils.isArrayExactly = function (arr) {
+            return Object.prototype.toString.call(arr) === "[object Array]";
         };
-        JudgeUtils.isNumber = function (obj) {
-            return Object.prototype.toString.call(obj) === "[object Number]";
+        JudgeUtils.isNumber = function (num) {
+            return typeof num == "number";
+        };
+        JudgeUtils.isNumberExactly = function (num) {
+            return Object.prototype.toString.call(num) === "[object Number]";
         };
         JudgeUtils.isString = function (str) {
+            return typeof str == "string";
+        };
+        JudgeUtils.isStringExactly = function (str) {
             return Object.prototype.toString.call(str) === "[object String]";
         };
-        JudgeUtils.isBoolean = function (obj) {
-            return Object.prototype.toString.call(obj) === "[object Boolean]";
+        JudgeUtils.isBoolean = function (bool) {
+            return bool === true || bool === false || toString.call(bool) === '[boolect Boolean]';
         };
         JudgeUtils.isDom = function (obj) {
-            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
+            return !!(obj && obj.nodeType === 1);
+        };
+        JudgeUtils.isObject = function (obj) {
+            var type = typeof obj;
+            return type === 'function' || type === 'object' && !!obj;
         };
         JudgeUtils.isDirectObject = function (obj) {
-            if (Object.prototype.toString.call(obj) === "[object Object]") {
-                return true;
-            }
-            return false;
+            return Object.prototype.toString.call(obj) === "[object Object]";
         };
         JudgeUtils.isHostMethod = function (object, property) {
             var type = typeof object[property];
@@ -1949,9 +1958,22 @@ var wdCb;
         JudgeUtils.isNodeJs = function () {
             return ((typeof global != "undefined" && global.module) || (typeof module != "undefined")) && typeof module.exports != "undefined";
         };
+        JudgeUtils.isFunction = function (func) {
+            return true;
+        };
         return JudgeUtils;
     })();
     wdCb.JudgeUtils = JudgeUtils;
+    if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+        JudgeUtils.isFunction = function (func) {
+            return typeof func == 'function';
+        };
+    }
+    else {
+        JudgeUtils.isFunction = function (func) {
+            return Object.prototype.toString.call(func) === "[object Function]";
+        };
+    }
 })(wdCb || (wdCb = {}));
 
 var wdCb;
@@ -2204,23 +2226,26 @@ var wdCb;
         List.prototype.getCount = function () {
             return this.children.length;
         };
-        List.prototype.hasChild = function (arg) {
-            if (wdCb.JudgeUtils.isFunction(arguments[0])) {
-                var func = arguments[0];
-                return this._contain(this.children, function (c, i) {
-                    return func(c, i);
-                });
-            }
-            var child = arguments[0];
-            return this._contain(this.children, function (c, i) {
-                if (c === child
-                    || (c.uid && child.uid && c.uid === child.uid)) {
+        List.prototype.hasChild = function (child) {
+            var c = null, children = this.children;
+            for (var i = 0, len = children.length; i < len; i++) {
+                c = children[i];
+                if (child.uid && c.uid && child.uid == c.uid) {
                     return true;
                 }
-                else {
-                    return false;
+                else if (child === c) {
+                    return true;
                 }
-            });
+            }
+            return false;
+        };
+        List.prototype.hasChildWithFunc = function (func) {
+            for (var i = 0, len = this.children.length; i < len; i++) {
+                if (func(this.children[i], i)) {
+                    return true;
+                }
+            }
+            return false;
         };
         List.prototype.getChildren = function () {
             return this.children;
@@ -2285,33 +2310,6 @@ var wdCb;
             }
             return result;
         };
-        List.prototype._indexOf = function (arr, arg) {
-            var result = -1;
-            if (wdCb.JudgeUtils.isFunction(arg)) {
-                var func = arg;
-                this._forEach(arr, function (value, index) {
-                    if (!!func.call(null, value, index)) {
-                        result = index;
-                        return wdCb.$BREAK;
-                    }
-                });
-            }
-            else {
-                var val = arg;
-                this._forEach(arr, function (value, index) {
-                    if (val === value
-                        || (value.contain && value.contain(val))
-                        || (value.indexOf && value.indexOf(val) > -1)) {
-                        result = index;
-                        return wdCb.$BREAK;
-                    }
-                });
-            }
-            return result;
-        };
-        List.prototype._contain = function (arr, arg) {
-            return this._indexOf(arr, arg) > -1;
-        };
         List.prototype._forEach = function (arr, func, context) {
             var scope = context || wdCb.root, i = 0, len = arr.length;
             for (i = 0; i < len; i++) {
@@ -2363,13 +2361,13 @@ var wdCb;
                 : Collection.create(wdCb.ExtendUtils.extend([], this.children));
         };
         Collection.prototype.filter = function (func) {
-            var scope = this.children, result = [];
-            this.forEach(function (value, index) {
-                if (!func.call(scope, value, index)) {
-                    return;
+            var children = this.children, result = [], value = null;
+            for (var i = 0, len = children.length; i < len; i++) {
+                value = children[i];
+                if (func.call(children, value, i)) {
+                    result.push(value);
                 }
-                result.push(value);
-            });
+            }
             return Collection.create(result);
         };
         Collection.prototype.findOne = function (func) {
@@ -2505,7 +2503,7 @@ var wdCb;
             if (wdCb.JudgeUtils.isString(arg)) {
                 var key = arg;
                 result.push(this._children[key]);
-                this._children[key] = undefined;
+                this._children[key] = void 0;
                 delete this._children[key];
             }
             else if (wdCb.JudgeUtils.isFunction(arg)) {
@@ -2513,7 +2511,7 @@ var wdCb;
                 this.forEach(function (val, key) {
                     if (func(val, key)) {
                         result.push(self_1._children[key]);
-                        self_1._children[key] = undefined;
+                        self_1._children[key] = void 0;
                         delete self_1._children[key];
                     }
                 });
@@ -2523,23 +2521,22 @@ var wdCb;
         Hash.prototype.removeAllChildren = function () {
             this._children = {};
         };
-        Hash.prototype.hasChild = function (arg) {
-            if (wdCb.JudgeUtils.isFunction(arguments[0])) {
-                var func = arguments[0], result = false;
-                this.forEach(function (val, key) {
-                    if (func(val, key)) {
-                        result = true;
-                        return wdCb.$BREAK;
-                    }
-                });
-                return result;
-            }
-            var key = arguments[0];
-            return !!this._children[key];
+        Hash.prototype.hasChild = function (key) {
+            return this._children[key] !== void 0;
+        };
+        Hash.prototype.hasChildWithFunc = function (func) {
+            var result = false;
+            this.forEach(function (val, key) {
+                if (func(val, key)) {
+                    result = true;
+                    return wdCb.$BREAK;
+                }
+            });
+            return result;
         };
         Hash.prototype.forEach = function (func, context) {
-            var i = null, children = this._children;
-            for (i in children) {
+            var children = this._children;
+            for (var i in children) {
                 if (children.hasOwnProperty(i)) {
                     if (func.call(context, children[i], i) === wdCb.$BREAK) {
                         break;
@@ -2549,13 +2546,15 @@ var wdCb;
             return this;
         };
         Hash.prototype.filter = function (func) {
-            var result = {}, scope = this._children;
-            this.forEach(function (val, key) {
-                if (!func.call(scope, val, key)) {
-                    return;
+            var result = {}, children = this._children, value = null;
+            for (var key in children) {
+                if (children.hasOwnProperty(key)) {
+                    value = children[key];
+                    if (func.call(children, value, key)) {
+                        result[key] = value;
+                    }
                 }
-                result[key] = val;
-            });
+            }
             return Hash.create(result);
         };
         Hash.prototype.findOne = function (func) {
@@ -2586,11 +2585,20 @@ var wdCb;
                 if (val instanceof wdCb.Collection) {
                     result.addChildren(val);
                 }
-                else if (val instanceof Hash) {
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_NOT_SUPPORT("toCollection", "value is Hash"));
-                }
                 else {
                     result.addChild(val);
+                }
+            });
+            return result;
+        };
+        Hash.prototype.toArray = function () {
+            var result = [];
+            this.forEach(function (val, key) {
+                if (val instanceof wdCb.Collection) {
+                    result = result.concat(val.getChildren());
+                }
+                else {
+                    result.push(val);
                 }
             });
             return result;

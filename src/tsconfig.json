@@ -24,7 +24,6 @@
 		"definition/typescript/decorator/script.ts",
 		"definition/typescript/decorator/control.ts",
 		"definition/Global.ts",
-		"definition/Variable.ts",
 		"math/Global.ts",
 		"math/Vector2.ts",
 		"math/Vector3.ts",
@@ -80,6 +79,7 @@
 		"event/factory/EventHandlerFactory.ts",
 		"event/factory/EventBinderFactory.ts",
 		"event/factory/EventDispatcherFactory.ts",
+		"event/utils/EventUtils.ts",
 		"event/EventManager.ts",
 		"event/EEngineEvent.ts",
 		"component/event/detector/EventTriggerDetector.ts",
@@ -94,6 +94,7 @@
 		"component/transform/Transform.ts",
 		"component/transform/ThreeDTransform.ts",
 		"component/transform/RectTransform.ts",
+		"component/transform/ETransformState.ts",
 		"component/container/ComponentContainer.ts",
 		"component/container/ActionManager.ts",
 		"component/container/UIManager.ts",
@@ -391,6 +392,7 @@
 		"texture/basicTexture/command/DrawMipmapTwoDTextureCommand.ts",
 		"texture/basicTexture/command/DrawNoMipmapTwoDTextureCommand.ts",
 		"video/Video.ts",
-		"video/VideoManager.ts"
+		"video/VideoManager.ts",
+		"definition/Variable.ts"
 	]
 }

@@ -1913,32 +1913,41 @@
 
 var wdCb;
 (function (wdCb) {
+    var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
     var JudgeUtils = (function () {
         function JudgeUtils() {
         }
-        JudgeUtils.isArray = function (val) {
-            return Object.prototype.toString.call(val) === "[object Array]";
+        JudgeUtils.isArray = function (arr) {
+            var length = arr && arr.length;
+            return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
         };
-        JudgeUtils.isFunction = function (func) {
-            return Object.prototype.toString.call(func) === "[object Function]";
+        JudgeUtils.isArrayExactly = function (arr) {
+            return Object.prototype.toString.call(arr) === "[object Array]";
         };
-        JudgeUtils.isNumber = function (obj) {
-            return Object.prototype.toString.call(obj) === "[object Number]";
+        JudgeUtils.isNumber = function (num) {
+            return typeof num == "number";
+        };
+        JudgeUtils.isNumberExactly = function (num) {
+            return Object.prototype.toString.call(num) === "[object Number]";
         };
         JudgeUtils.isString = function (str) {
+            return typeof str == "string";
+        };
+        JudgeUtils.isStringExactly = function (str) {
             return Object.prototype.toString.call(str) === "[object String]";
         };
-        JudgeUtils.isBoolean = function (obj) {
-            return Object.prototype.toString.call(obj) === "[object Boolean]";
+        JudgeUtils.isBoolean = function (bool) {
+            return bool === true || bool === false || toString.call(bool) === '[boolect Boolean]';
         };
         JudgeUtils.isDom = function (obj) {
-            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
+            return !!(obj && obj.nodeType === 1);
+        };
+        JudgeUtils.isObject = function (obj) {
+            var type = typeof obj;
+            return type === 'function' || type === 'object' && !!obj;
         };
         JudgeUtils.isDirectObject = function (obj) {
-            if (Object.prototype.toString.call(obj) === "[object Object]") {
-                return true;
-            }
-            return false;
+            return Object.prototype.toString.call(obj) === "[object Object]";
         };
         JudgeUtils.isHostMethod = function (object, property) {
             var type = typeof object[property];
@@ -1949,9 +1958,22 @@ var wdCb;
         JudgeUtils.isNodeJs = function () {
             return ((typeof global != "undefined" && global.module) || (typeof module != "undefined")) && typeof module.exports != "undefined";
         };
+        JudgeUtils.isFunction = function (func) {
+            return true;
+        };
         return JudgeUtils;
     })();
     wdCb.JudgeUtils = JudgeUtils;
+    if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+        JudgeUtils.isFunction = function (func) {
+            return typeof func == 'function';
+        };
+    }
+    else {
+        JudgeUtils.isFunction = function (func) {
+            return Object.prototype.toString.call(func) === "[object Function]";
+        };
+    }
 })(wdCb || (wdCb = {}));
 
 var wdCb;
@@ -2204,23 +2226,26 @@ var wdCb;
         List.prototype.getCount = function () {
             return this.children.length;
         };
-        List.prototype.hasChild = function (arg) {
-            if (wdCb.JudgeUtils.isFunction(arguments[0])) {
-                var func = arguments[0];
-                return this._contain(this.children, function (c, i) {
-                    return func(c, i);
-                });
-            }
-            var child = arguments[0];
-            return this._contain(this.children, function (c, i) {
-                if (c === child
-                    || (c.uid && child.uid && c.uid === child.uid)) {
+        List.prototype.hasChild = function (child) {
+            var c = null, children = this.children;
+            for (var i = 0, len = children.length; i < len; i++) {
+                c = children[i];
+                if (child.uid && c.uid && child.uid == c.uid) {
                     return true;
                 }
-                else {
-                    return false;
+                else if (child === c) {
+                    return true;
                 }
-            });
+            }
+            return false;
+        };
+        List.prototype.hasChildWithFunc = function (func) {
+            for (var i = 0, len = this.children.length; i < len; i++) {
+                if (func(this.children[i], i)) {
+                    return true;
+                }
+            }
+            return false;
         };
         List.prototype.getChildren = function () {
             return this.children;
@@ -2285,33 +2310,6 @@ var wdCb;
             }
             return result;
         };
-        List.prototype._indexOf = function (arr, arg) {
-            var result = -1;
-            if (wdCb.JudgeUtils.isFunction(arg)) {
-                var func = arg;
-                this._forEach(arr, function (value, index) {
-                    if (!!func.call(null, value, index)) {
-                        result = index;
-                        return wdCb.$BREAK;
-                    }
-                });
-            }
-            else {
-                var val = arg;
-                this._forEach(arr, function (value, index) {
-                    if (val === value
-                        || (value.contain && value.contain(val))
-                        || (value.indexOf && value.indexOf(val) > -1)) {
-                        result = index;
-                        return wdCb.$BREAK;
-                    }
-                });
-            }
-            return result;
-        };
-        List.prototype._contain = function (arr, arg) {
-            return this._indexOf(arr, arg) > -1;
-        };
         List.prototype._forEach = function (arr, func, context) {
             var scope = context || wdCb.root, i = 0, len = arr.length;
             for (i = 0; i < len; i++) {
@@ -2363,13 +2361,13 @@ var wdCb;
                 : Collection.create(wdCb.ExtendUtils.extend([], this.children));
         };
         Collection.prototype.filter = function (func) {
-            var scope = this.children, result = [];
-            this.forEach(function (value, index) {
-                if (!func.call(scope, value, index)) {
-                    return;
+            var children = this.children, result = [], value = null;
+            for (var i = 0, len = children.length; i < len; i++) {
+                value = children[i];
+                if (func.call(children, value, i)) {
+                    result.push(value);
                 }
-                result.push(value);
-            });
+            }
             return Collection.create(result);
         };
         Collection.prototype.findOne = function (func) {
@@ -2505,7 +2503,7 @@ var wdCb;
             if (wdCb.JudgeUtils.isString(arg)) {
                 var key = arg;
                 result.push(this._children[key]);
-                this._children[key] = undefined;
+                this._children[key] = void 0;
                 delete this._children[key];
             }
             else if (wdCb.JudgeUtils.isFunction(arg)) {
@@ -2513,7 +2511,7 @@ var wdCb;
                 this.forEach(function (val, key) {
                     if (func(val, key)) {
                         result.push(self_1._children[key]);
-                        self_1._children[key] = undefined;
+                        self_1._children[key] = void 0;
                         delete self_1._children[key];
                     }
                 });
@@ -2523,23 +2521,22 @@ var wdCb;
         Hash.prototype.removeAllChildren = function () {
             this._children = {};
         };
-        Hash.prototype.hasChild = function (arg) {
-            if (wdCb.JudgeUtils.isFunction(arguments[0])) {
-                var func = arguments[0], result = false;
-                this.forEach(function (val, key) {
-                    if (func(val, key)) {
-                        result = true;
-                        return wdCb.$BREAK;
-                    }
-                });
-                return result;
-            }
-            var key = arguments[0];
-            return !!this._children[key];
+        Hash.prototype.hasChild = function (key) {
+            return this._children[key] !== void 0;
+        };
+        Hash.prototype.hasChildWithFunc = function (func) {
+            var result = false;
+            this.forEach(function (val, key) {
+                if (func(val, key)) {
+                    result = true;
+                    return wdCb.$BREAK;
+                }
+            });
+            return result;
         };
         Hash.prototype.forEach = function (func, context) {
-            var i = null, children = this._children;
-            for (i in children) {
+            var children = this._children;
+            for (var i in children) {
                 if (children.hasOwnProperty(i)) {
                     if (func.call(context, children[i], i) === wdCb.$BREAK) {
                         break;
@@ -2549,13 +2546,15 @@ var wdCb;
             return this;
         };
         Hash.prototype.filter = function (func) {
-            var result = {}, scope = this._children;
-            this.forEach(function (val, key) {
-                if (!func.call(scope, val, key)) {
-                    return;
+            var result = {}, children = this._children, value = null;
+            for (var key in children) {
+                if (children.hasOwnProperty(key)) {
+                    value = children[key];
+                    if (func.call(children, value, key)) {
+                        result[key] = value;
+                    }
                 }
-                result[key] = val;
-            });
+            }
             return Hash.create(result);
         };
         Hash.prototype.findOne = function (func) {
@@ -2586,11 +2585,20 @@ var wdCb;
                 if (val instanceof wdCb.Collection) {
                     result.addChildren(val);
                 }
-                else if (val instanceof Hash) {
-                    wdCb.Log.error(true, wdCb.Log.info.FUNC_NOT_SUPPORT("toCollection", "value is Hash"));
-                }
                 else {
                     result.addChild(val);
+                }
+            });
+            return result;
+        };
+        Hash.prototype.toArray = function () {
+            var result = [];
+            this.forEach(function (val, key) {
+                if (val instanceof wdCb.Collection) {
+                    result = result.concat(val.getChildren());
+                }
+                else {
+                    result.push(val);
                 }
             });
             return result;
@@ -5733,8 +5741,9 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                var result = value.apply(this, args), params = [result].concat(args);
+                var result = value.apply(this, args);
                 if (wd.Main.isTest) {
+                    var params = [result].concat(args);
                     OutFunc.apply(this, params);
                 }
                 return result;
@@ -5787,8 +5796,9 @@ var wd;
         return function (target, name, descriptor) {
             var setter = descriptor.set;
             descriptor.set = function (val) {
-                var result = setter.call(this, val), params = [result, val];
+                var result = setter.call(this, val);
                 if (wd.Main.isTest) {
+                    var params = [result, val];
                     OutFunc.apply(this, params);
                 }
             };
@@ -5944,18 +5954,6 @@ var wd;
 (function (wd) {
     wd.ABSTRACT_ATTRIBUTE = null;
 })(wd || (wd = {}));
-
-var wd;
-(function (wd) {
-})(wd || (wd = {}));
-Object.defineProperty(wd, "root", {
-    get: function () {
-        if (wd.JudgeUtils.isNodeJs()) {
-            return global;
-        }
-        return window;
-    }
-});
 
 var wd;
 (function (wd) {
@@ -6881,8 +6879,12 @@ var wd;
             this.applyMatrix(Matrix4.create().setPerspective(fovy, aspect, near, far));
             return this;
         };
-        Matrix4.prototype.applyMatrix = function (other) {
+        Matrix4.prototype.applyMatrix = function (other, notChangeSelf) {
+            if (notChangeSelf === void 0) { notChangeSelf = false; }
             var a = this, b = other.copy();
+            if (notChangeSelf) {
+                return b.multiply(a);
+            }
             this.values = b.multiply(a).values;
             return this;
         };
@@ -7756,7 +7758,7 @@ var wd;
             return this._tagList.hasChild(tag);
         };
         Entity.prototype.containTag = function (tag) {
-            return this._tagList.hasChild(function (t) {
+            return this._tagList.hasChildWithFunc(function (t) {
                 return t.indexOf(tag) > -1;
             });
         };
@@ -8079,11 +8081,11 @@ var wd;
             this.scene = null;
             this.scheduler = null;
             this.renderer = null;
+            this.domEventManager = wd.DomEventManager.create();
             this._gameLoop = null;
             this._eventSubscription = null;
             this._gameState = EGameState.NORMAL;
             this._timeController = wd.DirectorTimeController.create();
-            this._domEventManager = wd.DomEventManager.create();
         }
         Director.getInstance = function () {
             if (this._instance === null) {
@@ -8253,7 +8255,7 @@ var wd;
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
         };
         Director.prototype._initDomEvent = function () {
-            this._eventSubscription = this._domEventManager.initDomEvent();
+            this._eventSubscription = this.domEventManager.initDomEvent();
         };
         Director._instance = null;
         __decorate([
@@ -8308,7 +8310,10 @@ var wd;
 (function (wd) {
     var DomEventManager = (function () {
         function DomEventManager() {
+            this.designatedTriggerList = null;
             this._lastTriggerList = null;
+            this._isDragEventTriggering = false;
+            this._triggerListOfDragEvent = null;
         }
         DomEventManager.create = function () {
             var obj = new this();
@@ -8335,25 +8340,13 @@ var wd;
                 return !wd.Director.getInstance().isPause;
             })
                 .map(function (e) {
-                return self._getMouseEventTriggerListData(e);
-            })
-                .merge(wd.EventManager.fromEvent(wd.EEventName.MOUSEMOVE)
-                .filter(function (e) {
-                return !wd.Director.getInstance().isPause;
-            })
-                .map(function (e) {
                 var triggerList = self._getMouseEventTriggerList(e);
-                var _a = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList), mouseoverObjects = _a.mouseoverObjects, mouseoutObjects = _a.mouseoutObjects;
-                self._setMouseOverTag(mouseoverObjects);
-                self._setMouseOutTag(mouseoutObjects);
-                self._lastTriggerList = triggerList.copy();
-                triggerList = mouseoutObjects.addChildren(triggerList);
+                if (self._isDragEventTriggering) {
+                    self._triggerListOfDragEvent = triggerList;
+                }
                 return self._getMouseEventTriggerListData(e, triggerList);
-            }))
-                .filter(function (_a) {
-                var triggerList = _a[0], e = _a[1];
-                return triggerList.getCount() > 0;
             })
+                .merge(this._buildMouseMoveStream())
                 .subscribe(function (_a) {
                 var triggerList = _a[0], e = _a[1];
                 triggerList.forEach(function (entityObject) {
@@ -8362,13 +8355,43 @@ var wd;
             });
         };
         DomEventManager.prototype._buildMouseDragStream = function () {
+            var self = this;
             return wd.EventManager.fromEvent(document, wd.EEventName.MOUSEDOWN)
                 .flatMap(function (e) {
-                return wd.EventManager.fromEvent(document, wd.EEventName.MOUSEMOVE).takeUntil(wd.EventManager.fromEvent(document, wd.EEventName.MOUSEUP));
+                return wd.EventManager.fromEvent(document, wd.EEventName.MOUSEMOVE).takeUntil(wd.EventManager.fromEvent(document, wd.EEventName.MOUSEUP)
+                    .do(function (e) {
+                    self._isDragEventTriggering = false;
+                }));
             })
                 .map(function (e) {
                 e.name = wd.EEventName.MOUSEDRAG;
+                self._isDragEventTriggering = true;
                 return e;
+            });
+        };
+        DomEventManager.prototype._buildMouseMoveStream = function () {
+            var self = this;
+            return wd.EventManager.fromEvent(wd.EEventName.MOUSEMOVE)
+                .filter(function (e) {
+                return !wd.Director.getInstance().isPause;
+            })
+                .map(function (e) {
+                var triggerList = null;
+                if (self.designatedTriggerList) {
+                    triggerList = self.designatedTriggerList;
+                }
+                else if (self._isDragEventTriggering) {
+                    triggerList = self._triggerListOfDragEvent;
+                }
+                else {
+                    triggerList = self._getMouseEventTriggerList(e);
+                }
+                var _a = self._getMouseOverAndMouseOutObject(triggerList, self._lastTriggerList), mouseoverObjects = _a.mouseoverObjects, mouseoutObjects = _a.mouseoutObjects;
+                self._setMouseOverTag(mouseoverObjects);
+                self._setMouseOutTag(mouseoutObjects);
+                self._lastTriggerList = triggerList.copy();
+                triggerList = mouseoutObjects.addChildren(triggerList);
+                return self._getMouseEventTriggerListData(e, triggerList);
             });
         };
         DomEventManager.prototype._getMouseOverAndMouseOutObject = function (currentTriggerList, lastTriggerList) {
@@ -8378,14 +8401,14 @@ var wd;
             }
             else {
                 lastTriggerList.forEach(function (lastObject) {
-                    if (!currentTriggerList.hasChild(function (currentObject) {
+                    if (!currentTriggerList.hasChildWithFunc(function (currentObject) {
                         return wd.JudgeUtils.isEqual(currentObject, lastObject);
                     })) {
                         mouseoutObjects.addChild(lastObject);
                     }
                 });
                 currentTriggerList.forEach(function (currentObject) {
-                    if (!lastTriggerList.hasChild(function (lastObject) {
+                    if (!lastTriggerList.hasChildWithFunc(function (lastObject) {
                         return wd.JudgeUtils.isEqual(currentObject, lastObject);
                     })) {
                         mouseoverObjects.addChild(currentObject);
@@ -8445,7 +8468,11 @@ var wd;
             }
         };
         DomEventManager.prototype._getMouseEventTriggerList = function (e) {
-            var topGameObject = null, topUIObject = null, triggerList = wdCb.Collection.create();
+            var topGameObject = null, topUIObject = null, triggerList = null;
+            if (this.designatedTriggerList) {
+                return this.designatedTriggerList;
+            }
+            triggerList = wdCb.Collection.create();
             topGameObject = this._findTopGameObject(e, this.scene.gameObjectScene);
             topUIObject = this._findTopUIObject(e, this.scene.uiObjectScene);
             if (topGameObject) {
@@ -8524,19 +8551,8 @@ var wd;
             var detector = this.scene.getComponent(wd.EventTriggerDetector);
             return detector.isTrigger(e);
         };
-        DomEventManager.prototype._getMouseEventTriggerListData = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            if (args.length === 1) {
-                var e = args[0];
-                return [this._getMouseEventTriggerList(e), e];
-            }
-            else {
-                var e = args[0], triggerList = args[1];
-                return [triggerList, e];
-            }
+        DomEventManager.prototype._getMouseEventTriggerListData = function (e, triggerList) {
+            return [triggerList, e];
         };
         return DomEventManager;
     }());
@@ -8576,6 +8592,12 @@ var wd;
             this.endLoopHandler = null;
             this.components = wdCb.Collection.create();
             this._scriptExecuteHistory = wdCb.Hash.create();
+            this._hasComponentCache = wdCb.Hash.create();
+            this._getComponentCache = wdCb.Hash.create();
+            this._geometry = null;
+            this._rendererComponent = null;
+            this._animation = null;
+            this._collider = null;
         }
         Object.defineProperty(EntityObject.prototype, "scriptList", {
             get: function () {
@@ -8607,6 +8629,15 @@ var wd;
                 }
                 this.addComponent(transform);
                 this._transform = transform;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(EntityObject.prototype, "componentDirty", {
+            set: function (componentDirty) {
+                if (componentDirty === true) {
+                    this._clearCache();
+                }
             },
             enumerable: true,
             configurable: true
@@ -8662,6 +8693,7 @@ var wd;
             this.forEach(function (child) {
                 child.dispose();
             });
+            this._clearCache();
         };
         EntityObject.prototype.hasChild = function (child) {
             return this.children.hasChild(child);
@@ -8749,24 +8781,43 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (args[0] instanceof wd.Component) {
+            var key = this._getHasComponentCacheKey(args[0]), result = this._hasComponentCache.getChild(key);
+            if (result !== void 0) {
+                return result;
+            }
+            if (wd.JudgeUtils.isComponenet(args[0])) {
                 var component = args[0];
-                return this.components.hasChild(component);
+                result = this.components.hasChild(component);
             }
             else {
                 var _class_1 = args[0];
-                return this.components.hasChild(function (component) {
+                result = this.components.hasChildWithFunc(function (component) {
                     return component instanceof _class_1;
                 });
             }
+            this._hasComponentCache.addChild(key, result);
+            return result;
         };
         EntityObject.prototype.addComponent = function (component) {
             if (this.hasComponent(component)) {
                 wd.Log.assert(false, "the component already exist");
                 return this;
             }
+            if (component instanceof wd.Geometry) {
+                this._geometry = component;
+            }
+            else if (component instanceof wd.RendererComponent) {
+                this._rendererComponent = component;
+            }
+            else if (component instanceof wd.Animation) {
+                this._animation = component;
+            }
+            else if (component instanceof wd.Collider) {
+                this._collider = component;
+            }
             this.components.addChild(component);
             component.addToObject(this);
+            this.componentDirty = true;
             return this;
         };
         EntityObject.prototype.removeComponent = function () {
@@ -8783,6 +8834,7 @@ var wd;
             }
             this.components.removeChild(component);
             this._removeComponentHandler(component);
+            this.componentDirty = true;
             return this;
         };
         EntityObject.prototype.removeAllComponent = function () {
@@ -8793,6 +8845,7 @@ var wd;
                 result.addChild(component);
             }, this);
             this.components.removeAllChildren();
+            this.componentDirty = true;
             return result;
         };
         EntityObject.prototype.render = function (renderer, camera) {
@@ -8855,6 +8908,11 @@ var wd;
                 script[method] && (arg ? script[method](arg) : script[method]());
             });
         };
+        EntityObject.prototype.getComponentCount = function (_class) {
+            return this.components.filter(function (component) {
+                return component instanceof _class;
+            }).getCount();
+        };
         EntityObject.prototype.beforeUpdateChildren = function (elapsedTime) {
         };
         EntityObject.prototype.afterInitChildren = function () {
@@ -8866,9 +8924,6 @@ var wd;
             wd.EventManager.on(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
         };
         EntityObject.prototype.getRenderList = function () {
-            if (this.children.getCount() > 100) {
-                console.log(this.children.getCount());
-            }
             return this.children;
         };
         EntityObject.prototype.initComponent = function () {
@@ -8894,21 +8949,16 @@ var wd;
             return result;
         };
         EntityObject.prototype._getGeometry = function () {
-            return this.getComponent(wd.Geometry);
+            return this._geometry;
         };
         EntityObject.prototype._getAnimation = function () {
-            return this.getComponent(wd.Animation);
+            return this._animation;
         };
         EntityObject.prototype._getRendererComponent = function () {
-            return this.getComponent(wd.RendererComponent);
+            return this._rendererComponent;
         };
         EntityObject.prototype._getCollider = function () {
-            return this.getComponent(wd.Collider);
-        };
-        EntityObject.prototype.getComponentCount = function (_class) {
-            return this.components.filter(function (component) {
-                return component instanceof _class;
-            }).getCount();
+            return this._collider;
         };
         EntityObject.prototype._removeComponentHandler = function (component) {
             component.removeFromObject(this);
@@ -8922,9 +8972,36 @@ var wd;
         EntityObject.prototype._buildScriptHistoryKey = function (scriptName, method) {
             return scriptName + "_" + method;
         };
+        EntityObject.prototype._getHasComponentCacheKey = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (wd.JudgeUtils.isComponenet(args[0])) {
+                var component = args[0];
+                return String(component.uid);
+            }
+            else {
+                var _class = args[0];
+                return _class.name;
+            }
+        };
+        EntityObject.prototype._clearCache = function () {
+            this._hasComponentCache.removeAllChildren();
+            this._getComponentCache.removeAllChildren();
+        };
         __decorate([
             wd.virtual
         ], EntityObject.prototype, "initWhenCreate", null);
+        __decorate([
+            wd.cache(function (_class) {
+                return this._getComponentCache.hasChild(_class.name);
+            }, function (_class) {
+                return this._getComponentCache.getChild(_class.name);
+            }, function (result, _class) {
+                this._getComponentCache.addChild(_class.name, result);
+            })
+        ], EntityObject.prototype, "getComponent", null);
         __decorate([
             wd.virtual
         ], EntityObject.prototype, "beforeUpdateChildren", null);
@@ -8960,6 +9037,11 @@ var wd;
                 wd.assert(this.getComponentCount(wd.Collider) <= 1, wd.Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 collider component"));
             })
         ], EntityObject.prototype, "_getCollider", null);
+        __decorate([
+            wd.ensure(function (key) {
+                wd.assert(wd.JudgeUtils.isString(key), wd.Log.info.FUNC_SHOULD("key:" + key, "be string"));
+            })
+        ], EntityObject.prototype, "_getHasComponentCacheKey", null);
         return EntityObject;
     }(wd.Entity));
     wd.EntityObject = EntityObject;
@@ -9041,12 +9123,6 @@ var wd;
         };
         GameObject.prototype.getSpacePartition = function () {
             return this.getComponent(wd.SpacePartition);
-        };
-        GameObject.prototype.addChild = function (child) {
-            if (child.hasComponent(wd.CameraController)) {
-                wd.Director.getInstance().scene.gameObjectScene.addToCameraList(child);
-            }
-            return _super.prototype.addChild.call(this, child);
         };
         GameObject.prototype.createTransform = function () {
             return wd.ThreeDTransform.create();
@@ -9245,7 +9321,7 @@ var wd;
                     self_1.addChild(child);
                 });
             }
-            else if (wd.JudgeUtils.isArray(args[0])) {
+            else if (wd.JudgeUtils.isArrayExactly(args[0])) {
                 var children = args[0];
                 for (var _a = 0, children_1 = children; _a < children_1.length; _a++) {
                     var child = children_1[_a];
@@ -9359,10 +9435,7 @@ var wd;
             _super.apply(this, arguments);
             this._currentCamera = null;
             this.side = null;
-            this.shadowMap = {
-                enable: true,
-                softType: EShadowMapSoftType.NONE
-            };
+            this.shadowMap = ShadowMapModel.create(this);
             this.shader = null;
             this.isUseProgram = false;
             this.physics = PhysicsConfig.create();
@@ -9432,16 +9505,14 @@ var wd;
             this.isUseProgram = false;
         };
         GameObjectScene.prototype.addChild = function (child) {
-            if (this._isCamera(child)) {
-                this._cameraList.addChild(child);
+            var cameraList = this._getCameras(child), lightList = this._getLights(child);
+            if (cameraList.getCount() > 0) {
+                this._cameraList.addChildren(cameraList);
             }
-            else if (this._isLight(child)) {
-                this._lightManager.addChild(child);
+            if (lightList.getCount() > 0) {
+                this._lightManager.addChildren(lightList);
             }
             return _super.prototype.addChild.call(this, child);
-        };
-        GameObjectScene.prototype.addToCameraList = function (cameraObject) {
-            this._cameraList.addChild(cameraObject);
         };
         GameObjectScene.prototype.addRenderTargetRenderer = function (renderTargetRenderer) {
             this._renderTargetRenderers.addChild(renderTargetRenderer);
@@ -9470,6 +9541,25 @@ var wd;
         GameObjectScene.prototype.createTransform = function () {
             return null;
         };
+        GameObjectScene.prototype._getCameras = function (gameObject) {
+            return this._find(gameObject, this._isCamera);
+        };
+        GameObjectScene.prototype._getLights = function (gameObject) {
+            return this._find(gameObject, this._isLight);
+        };
+        GameObjectScene.prototype._find = function (gameObject, judgeFunc) {
+            var self = this, resultArr = wdCb.Collection.create();
+            var find = function (gameObject) {
+                if (judgeFunc.call(self, gameObject)) {
+                    resultArr.addChild(gameObject);
+                }
+                gameObject.forEach(function (child) {
+                    find(child);
+                });
+            };
+            find(gameObject);
+            return resultArr;
+        };
         GameObjectScene.prototype._isCamera = function (child) {
             return child.hasComponent(wd.CameraController);
         };
@@ -9490,11 +9580,6 @@ var wd;
                 }
             })
         ], GameObjectScene.prototype, "currentCamera", null);
-        __decorate([
-            wd.require(function (cameraObject) {
-                wd.assert(cameraObject.hasComponent(wd.CameraController), wd.Log.info.FUNC_SHOULD("only add camera object"));
-            })
-        ], GameObjectScene.prototype, "addToCameraList", null);
         return GameObjectScene;
     }(wd.Scene));
     wd.GameObjectScene = GameObjectScene;
@@ -9530,6 +9615,43 @@ var wd;
         EShadowMapSoftType[EShadowMapSoftType["PCF"] = 1] = "PCF";
     })(wd.EShadowMapSoftType || (wd.EShadowMapSoftType = {}));
     var EShadowMapSoftType = wd.EShadowMapSoftType;
+    var ShadowMapModel = (function () {
+        function ShadowMapModel(scene) {
+            this._scene = null;
+            this._enable = true;
+            this._softType = EShadowMapSoftType.NONE;
+            this._scene = scene;
+        }
+        ShadowMapModel.create = function (scene) {
+            var obj = new this(scene);
+            return obj;
+        };
+        Object.defineProperty(ShadowMapModel.prototype, "enable", {
+            get: function () {
+                return this._enable;
+            },
+            set: function (enable) {
+                this._enable = enable;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShadowMapModel.prototype, "softType", {
+            get: function () {
+                return this._softType;
+            },
+            set: function (softType) {
+                if (softType !== this._softType) {
+                    wd.EventManager.broadcast(this._scene, wd.CustomEvent.create(wd.EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE));
+                    this._softType = softType;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ShadowMapModel;
+    }());
+    wd.ShadowMapModel = ShadowMapModel;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -9815,7 +9937,7 @@ var wd;
             if (!targetCollideObjects) {
                 return false;
             }
-            return targetCollideObjects.hasChild(function (targetCollideObject) {
+            return targetCollideObjects.hasChildWithFunc(function (targetCollideObject) {
                 return wd.JudgeUtils.isEqual(targetCollideObject, sourceObject);
             });
         };
@@ -9917,13 +10039,11 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (args.length === 1 && wd.JudgeUtils.isFunction(args[0])) {
-                return this.listenerMap.hasChild(args[0]);
-            }
-            else {
-                var target = args[0], eventName = args[1], list = this.listenerMap.getChild(this.buildKey(target, eventName));
-                return list && list.getCount() > 0;
-            }
+            var target = args[0], eventName = args[1], list = this.listenerMap.getChild(this.buildKey(target, eventName));
+            return list && list.getCount() > 0;
+        };
+        EventListenerMap.prototype.hasChildWithFunc = function (func) {
+            return this.listenerMap.hasChildWithFunc(func);
         };
         EventListenerMap.prototype.appendChild = function (target, eventName, data) {
             this.listenerMap.appendChild(this.buildKey(target, eventName), data);
@@ -11282,22 +11402,23 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (args.length === 1) {
+            var length = args.length;
+            if (length === 1) {
                 var event_1 = args[0], eventType = event_1.type;
                 return wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event_1);
             }
-            else if (args.length === 2 && (args[0] instanceof wd.Event)) {
+            else if (length === 2 && wd.EventUtils.isEvent(args[0])) {
                 var event_2 = args[0], userData = args[1], eventType = event_2.type;
                 return wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event_2, userData);
             }
-            else if ((args.length === 2 && args[0] instanceof wd.EntityObject) || (args.length === 3 && wd.JudgeUtils.isBoolean(args[2]))) {
+            else if ((length === 2 && wd.EventUtils.isEntityObject(args[0])) || (length === 3 && wd.JudgeUtils.isBoolean(args[2]))) {
                 var target = args[0], event_3 = args[1], notSetTarget = args[2] === void 0 ? false : args[2], eventType = event_3.type;
                 return wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(target, event_3, notSetTarget);
             }
-            else if (args.length === 3 || args.length === 4) {
+            else if (length === 3 || length === 4) {
                 var target = args[0], event_4 = args[1], userData = args[2], notSetTarget = args[3] === void 0 ? false : args[3], eventType = event_4.type;
                 return wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(target, event_4, userData, notSetTarget);
@@ -11376,7 +11497,7 @@ var wd;
                 wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(event_1);
             }
-            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+            else if (args.length === 2) {
                 var dom = args[0], event_2 = args[1], eventType = event_2.type;
                 wd.EventHandlerFactory.createEventHandler(eventType)
                     .trigger(dom, event_2);
@@ -11496,7 +11617,7 @@ var wd;
             return this.listenerMap.isTarget(key, target, list);
         };
         CustomEventRegister.prototype._isAllEventHandlerRemoved = function (target) {
-            return !this.listenerMap.hasChild(function (list, key) {
+            return !this.listenerMap.hasChildWithFunc(function (list, key) {
                 return key.indexOf(String(target.uid)) > -1 && (list && list.getCount() > 0);
             });
         };
@@ -11951,6 +12072,22 @@ var wd;
     wd.EventDispatcherFactory = EventDispatcherFactory;
 })(wd || (wd = {}));
 
+var wd;
+(function (wd) {
+    var EventUtils = (function () {
+        function EventUtils() {
+        }
+        EventUtils.isEvent = function (arg) {
+            return arg && arg.currentTarget !== void 0;
+        };
+        EventUtils.isEntityObject = function (arg) {
+            return arg && arg.scriptList !== void 0;
+        };
+        return EventUtils;
+    }());
+    wd.EventUtils = EventUtils;
+})(wd || (wd = {}));
+
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -12048,28 +12185,41 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            if (args.length === 1) {
+            var length = args.length;
+            if (length === 1) {
                 var event_1 = args[0], eventDispatcher = wd.EventDispatcherFactory.createEventDispatcher(event_1);
                 eventDispatcher.trigger(event_1);
             }
-            else if (args.length === 2 && args[0] instanceof wd.Event) {
+            else if (length === 2 && wd.EventUtils.isEvent(args[0])) {
                 var event_2 = args[0], userData = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
                 eventDispatcher.trigger(event_2, userData);
             }
-            else if (args.length === 2 && args[0] instanceof wd.EntityObject) {
+            else if (length === 2 && wd.EventUtils.isEntityObject(args[0])) {
                 var target = args[0], event_3 = args[1], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                if (!target) {
+                    return;
+                }
                 eventDispatcher.trigger(target, event_3);
             }
-            else if (args.length === 2 && wd.JudgeUtils.isDom(args[0])) {
+            else if (length === 2) {
                 var dom = args[0], event_4 = args[1], eventDispatcher = wd.DomEventDispatcher.getInstance();
+                if (!dom) {
+                    return;
+                }
                 eventDispatcher.trigger(dom, event_4);
             }
-            else if (args.length === 3) {
+            else if (length === 3) {
                 var target = args[0], event_5 = args[1], userData = args[2], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                if (!target) {
+                    return;
+                }
                 eventDispatcher.trigger(target, event_5, userData);
             }
-            else if (args.length === 4) {
+            else if (length === 4) {
                 var target = args[0], event_6 = args[1], userData = args[2], notSetTarget = args[3], eventDispatcher = wd.CustomEventDispatcher.getInstance();
+                if (!target) {
+                    return;
+                }
                 eventDispatcher.trigger(target, event_6, userData, notSetTarget);
             }
         };
@@ -12178,6 +12328,13 @@ var wd;
                     var event_7 = args[0];
                     wd.assert(event_7 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
                 }
+                else if (args.length === 2 && args[0] instanceof wd.EntityObject) {
+                }
+                else if (args.length === 2) {
+                    if (args[0]) {
+                        wd.assert(wd.JudgeUtils.isDom(args[0]), wd.Log.info.FUNC_MUST_BE("the first param", "dom"));
+                    }
+                }
                 else if (args[0] instanceof wd.EntityObject) {
                     var event_8 = args[1];
                     wd.assert(event_8 instanceof wd.CustomEvent, wd.Log.info.FUNC_MUST_BE("event type", "CUSTOM"));
@@ -12207,25 +12364,27 @@ var wd;
 var wd;
 (function (wd) {
     (function (EEngineEvent) {
-        EEngineEvent[EEngineEvent["STARTLOOP"] = "dy_startLoop"] = "STARTLOOP";
-        EEngineEvent[EEngineEvent["ENDLOOP"] = "dy_endLoop"] = "ENDLOOP";
-        EEngineEvent[EEngineEvent["BEFORE_GAMEOBJECT_INIT"] = "dy_beforeGameObjectInit"] = "BEFORE_GAMEOBJECT_INIT";
-        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT"] = "dy_afterGameObjectInit"] = "AFTER_GAMEOBJECT_INIT";
-        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT"] = "dy_afterGameObjectInit_rigidBody_addConstraint"] = "AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT";
-        EEngineEvent[EEngineEvent["MOUSE_CLICK"] = "dy_mouseclick"] = "MOUSE_CLICK";
-        EEngineEvent[EEngineEvent["MOUSE_DOWN"] = "dy_mousedown"] = "MOUSE_DOWN";
-        EEngineEvent[EEngineEvent["MOUSE_UP"] = "dy_mouseup"] = "MOUSE_UP";
-        EEngineEvent[EEngineEvent["MOUSE_MOVE"] = "dy_mousemove"] = "MOUSE_MOVE";
-        EEngineEvent[EEngineEvent["MOUSE_OVER"] = "dy_mouseover"] = "MOUSE_OVER";
-        EEngineEvent[EEngineEvent["MOUSE_OUT"] = "dy_mouseout"] = "MOUSE_OUT";
-        EEngineEvent[EEngineEvent["MOUSE_WHEEL"] = "dy_mousewheel"] = "MOUSE_WHEEL";
-        EEngineEvent[EEngineEvent["MOUSE_DRAG"] = "dy_mousedrag"] = "MOUSE_DRAG";
-        EEngineEvent[EEngineEvent["MATERIAL_CHANGE"] = "dy_material_change"] = "MATERIAL_CHANGE";
-        EEngineEvent[EEngineEvent["UI_WIDTH_CHANGE"] = "dy_ui_width_change"] = "UI_WIDTH_CHANGE";
-        EEngineEvent[EEngineEvent["UI_HEIGHT_CHANGE"] = "dy_ui_height_change"] = "UI_HEIGHT_CHANGE";
-        EEngineEvent[EEngineEvent["TRANSFORM_TRANSLATE"] = "dy_transform_translate"] = "TRANSFORM_TRANSLATE";
-        EEngineEvent[EEngineEvent["TRANSFORM_ROTATE"] = "dy_transform_rotate"] = "TRANSFORM_ROTATE";
-        EEngineEvent[EEngineEvent["TRANSFORM_SCALE"] = "dy_transform_scale"] = "TRANSFORM_SCALE";
+        EEngineEvent[EEngineEvent["STARTLOOP"] = "wd_startLoop"] = "STARTLOOP";
+        EEngineEvent[EEngineEvent["ENDLOOP"] = "wd_endLoop"] = "ENDLOOP";
+        EEngineEvent[EEngineEvent["BEFORE_GAMEOBJECT_INIT"] = "wd_beforeGameObjectInit"] = "BEFORE_GAMEOBJECT_INIT";
+        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT"] = "wd_afterGameObjectInit"] = "AFTER_GAMEOBJECT_INIT";
+        EEngineEvent[EEngineEvent["AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT"] = "wd_afterGameObjectInit_rigidBowd_addConstraint"] = "AFTER_GAMEOBJECT_INIT_RIGIDBODY_ADD_CONSTRAINT";
+        EEngineEvent[EEngineEvent["MOUSE_CLICK"] = "wd_mouseclick"] = "MOUSE_CLICK";
+        EEngineEvent[EEngineEvent["MOUSE_DOWN"] = "wd_mousedown"] = "MOUSE_DOWN";
+        EEngineEvent[EEngineEvent["MOUSE_UP"] = "wd_mouseup"] = "MOUSE_UP";
+        EEngineEvent[EEngineEvent["MOUSE_MOVE"] = "wd_mousemove"] = "MOUSE_MOVE";
+        EEngineEvent[EEngineEvent["MOUSE_OVER"] = "wd_mouseover"] = "MOUSE_OVER";
+        EEngineEvent[EEngineEvent["MOUSE_OUT"] = "wd_mouseout"] = "MOUSE_OUT";
+        EEngineEvent[EEngineEvent["MOUSE_WHEEL"] = "wd_mousewheel"] = "MOUSE_WHEEL";
+        EEngineEvent[EEngineEvent["MOUSE_DRAG"] = "wd_mousedrag"] = "MOUSE_DRAG";
+        EEngineEvent[EEngineEvent["MATERIAL_CHANGE"] = "wd_material_change"] = "MATERIAL_CHANGE";
+        EEngineEvent[EEngineEvent["MATERIAL_COLOR_CHANGE"] = "wd_material_color_change"] = "MATERIAL_COLOR_CHANGE";
+        EEngineEvent[EEngineEvent["UI_WIDTH_CHANGE"] = "wd_ui_width_change"] = "UI_WIDTH_CHANGE";
+        EEngineEvent[EEngineEvent["UI_HEIGHT_CHANGE"] = "wd_ui_height_change"] = "UI_HEIGHT_CHANGE";
+        EEngineEvent[EEngineEvent["TRANSFORM_TRANSLATE"] = "wd_transform_translate"] = "TRANSFORM_TRANSLATE";
+        EEngineEvent[EEngineEvent["TRANSFORM_ROTATE"] = "wd_transform_rotate"] = "TRANSFORM_ROTATE";
+        EEngineEvent[EEngineEvent["TRANSFORM_SCALE"] = "wd_transform_scale"] = "TRANSFORM_SCALE";
+        EEngineEvent[EEngineEvent["SHADOWMAP_SOFTTYPE_CHANGE"] = "wd_shadowMap_softType_change"] = "SHADOWMAP_SOFTTYPE_CHANGE";
     })(wd.EEngineEvent || (wd.EEngineEvent = {}));
     var EEngineEvent = wd.EEngineEvent;
 })(wd || (wd = {}));
@@ -12446,6 +12605,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var Transform = (function (_super) {
@@ -12453,6 +12618,9 @@ var wd;
         function Transform() {
             _super.apply(this, arguments);
             this.p_parent = null;
+            this._isTranslate = false;
+            this._isRotate = false;
+            this._isScale = false;
             this.dirtyLocal = true;
             this.children = wdCb.Collection.create();
         }
@@ -12466,11 +12634,78 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Transform.prototype, "isTransform", {
+            get: function () {
+                return this.isTranslate || this.isRotate || this.isScale;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isTranslate", {
+            get: function () {
+                return this._isTranslate;
+            },
+            set: function (isTranslate) {
+                this._setGlobalTransformState(wd.ETransformState.ISTRANSLATE, isTranslate);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isRotate", {
+            get: function () {
+                return this._isRotate;
+            },
+            set: function (isRotate) {
+                this._setGlobalTransformState(wd.ETransformState.ISROTATE, isRotate);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isScale", {
+            get: function () {
+                return this._isScale;
+            },
+            set: function (isScale) {
+                this._setGlobalTransformState(wd.ETransformState.ISSCALE, isScale);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isLocalTranslate", {
+            set: function (isTranslate) {
+                this._setLocalTransformState(wd.ETransformState.ISLOCALTRANSLATE, isTranslate);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isLocalRotate", {
+            set: function (isRotate) {
+                this._setLocalTransformState(wd.ETransformState.ISLOCALROTATE, isRotate);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Transform.prototype, "isLocalScale", {
+            set: function (isScale) {
+                this._setLocalTransformState(wd.ETransformState.ISLOCALSCALE, isScale);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Transform.prototype.addChild = function (child) {
             this.children.addChild(child);
         };
         Transform.prototype.removeChild = function (child) {
             this.children.removeChild(child);
+        };
+        Transform.prototype.setChildrenTransformState = function (transformState, state) {
+            if (state) {
+                this.children.forEach(function (child) {
+                    child[transformState] = true;
+                });
+            }
+        };
+        Transform.prototype.handleWhenSetTransformState = function (transformState) {
         };
         Transform.prototype.setParent = function (parent) {
             if (this.p_parent) {
@@ -12495,13 +12730,29 @@ var wd;
             });
             return this[matrixAttriName];
         };
-        Transform.prototype.setChildrenTransformState = function (transformState) {
-            if (this[transformState]) {
-                this.children.forEach(function (child) {
-                    child[transformState] = true;
-                });
+        Transform.prototype._setGlobalTransformState = function (transformState, state) {
+            this[("_" + transformState)] = state;
+            if (state) {
+                this.dirtyLocal = true;
+                this.clearCache();
+                this.handleWhenSetTransformState(transformState);
+            }
+            if (state) {
+                this.setChildrenTransformState(transformState, state);
             }
         };
+        Transform.prototype._setLocalTransformState = function (transformState, state) {
+            if (state) {
+                this.dirtyLocal = true;
+                this.clearCache();
+            }
+            if (state) {
+                this.setChildrenTransformState(transformState, state);
+            }
+        };
+        __decorate([
+            wd.virtual
+        ], Transform.prototype, "handleWhenSetTransformState", null);
         return Transform;
     }(wd.Component));
     wd.Transform = Transform;
@@ -12511,6 +12762,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var wd;
 (function (wd) {
@@ -12527,12 +12784,15 @@ var wd;
             this._localRotation = wd.Quaternion.create(0, 0, 0, 1);
             this._localEulerAngles = null;
             this._localScale = wd.Vector3.create(1, 1, 1);
-            this._isTranslate = false;
-            this._isRotate = false;
-            this._isScale = false;
             this.dirtyWorld = null;
             this._localToParentMatrix = wd.Matrix4.create();
             this._endLoopSubscription = null;
+            this._localToWorldMatrixCache = null;
+            this._positionCache = null;
+            this._rotationCache = null;
+            this._scaleCache = null;
+            this._eulerAnglesCache = null;
+            this._localEulerAnglesCache = null;
         }
         ThreeDTransform.create = function () {
             var obj = new this();
@@ -12617,7 +12877,7 @@ var wd;
             },
             set: function (position) {
                 this._localPosition = position.copy();
-                this.isTranslate = true;
+                this.isLocalTranslate = true;
             },
             enumerable: true,
             configurable: true
@@ -12628,7 +12888,7 @@ var wd;
             },
             set: function (rotation) {
                 this._localRotation = rotation.copy();
-                this.isRotate = true;
+                this.isLocalRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -12640,7 +12900,7 @@ var wd;
             },
             set: function (localEulerAngles) {
                 this._localRotation.setFromEulerAngles(localEulerAngles);
-                this.isRotate = true;
+                this.isLocalRotate = true;
             },
             enumerable: true,
             configurable: true
@@ -12651,7 +12911,7 @@ var wd;
             },
             set: function (scale) {
                 this._localScale = scale.copy();
-                this.isScale = true;
+                this.isLocalScale = true;
             },
             enumerable: true,
             configurable: true
@@ -12673,55 +12933,6 @@ var wd;
         Object.defineProperty(ThreeDTransform.prototype, "forward", {
             get: function () {
                 return this.localToWorldMatrix.getZ().normalize().scale(-1);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ThreeDTransform.prototype, "isTransform", {
-            get: function () {
-                return this.isTranslate || this.isRotate || this.isScale;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ThreeDTransform.prototype, "isTranslate", {
-            get: function () {
-                return this._isTranslate;
-            },
-            set: function (isTranslate) {
-                this._isTranslate = isTranslate;
-                if (isTranslate) {
-                    this.dirtyLocal = true;
-                    this.setChildrenTransformState("isTranslate");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ThreeDTransform.prototype, "isRotate", {
-            get: function () {
-                return this._isRotate;
-            },
-            set: function (isRotate) {
-                this._isRotate = isRotate;
-                if (isRotate) {
-                    this.dirtyLocal = true;
-                    this.setChildrenTransformState("isRotate");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ThreeDTransform.prototype, "isScale", {
-            get: function () {
-                return this._isScale;
-            },
-            set: function (isScale) {
-                this._isScale = isScale;
-                if (isScale) {
-                    this.dirtyLocal = true;
-                    this.setChildrenTransformState("isScale");
-                }
             },
             enumerable: true,
             configurable: true
@@ -12875,11 +13086,91 @@ var wd;
             this.rotation = wd.Quaternion.create().setFromMatrix(wd.Matrix4.create().setLookAt(this.position, target, up));
             return this;
         };
+        ThreeDTransform.prototype.clearCache = function () {
+            this._localToWorldMatrixCache = null;
+            this._positionCache = null;
+            this._rotationCache = null;
+            this._scaleCache = null;
+            this._eulerAnglesCache = null;
+            this._localEulerAnglesCache = null;
+        };
+        ThreeDTransform.prototype.handleWhenSetTransformState = function (transformState) {
+            var eventName = null;
+            switch (transformState) {
+                case wd.ETransformState.ISTRANSLATE:
+                    eventName = wd.EEngineEvent.TRANSFORM_TRANSLATE;
+                    break;
+                case wd.ETransformState.ISROTATE:
+                    eventName = wd.EEngineEvent.TRANSFORM_ROTATE;
+                    break;
+                case wd.ETransformState.ISSCALE:
+                    eventName = wd.EEngineEvent.TRANSFORM_SCALE;
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_UNKNOW("transformState:" + transformState));
+                    break;
+            }
+            wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(eventName));
+        };
         ThreeDTransform.prototype._resetTransformFlag = function () {
             this.isTranslate = false;
             this.isScale = false;
             this.isRotate = false;
         };
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._localToWorldMatrixCache !== null;
+            }, function () {
+                return this._localToWorldMatrixCache;
+            }, function (result) {
+                this._localToWorldMatrixCache = result;
+            })
+        ], ThreeDTransform.prototype, "localToWorldMatrix", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._positionCache !== null;
+            }, function () {
+                return this._positionCache;
+            }, function (result) {
+                this._positionCache = result;
+            })
+        ], ThreeDTransform.prototype, "position", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._rotationCache !== null;
+            }, function () {
+                return this._rotationCache;
+            }, function (result) {
+                this._rotationCache = result;
+            })
+        ], ThreeDTransform.prototype, "rotation", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._scaleCache !== null;
+            }, function () {
+                return this._scaleCache;
+            }, function (result) {
+                this._scaleCache = result;
+            })
+        ], ThreeDTransform.prototype, "scale", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._eulerAnglesCache !== null;
+            }, function () {
+                return this._eulerAnglesCache;
+            }, function (result) {
+                this._eulerAnglesCache = result;
+            })
+        ], ThreeDTransform.prototype, "eulerAngles", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._localEulerAnglesCache !== null;
+            }, function () {
+                return this._localEulerAnglesCache;
+            }, function (result) {
+                this._localEulerAnglesCache = result;
+            })
+        ], ThreeDTransform.prototype, "localEulerAngles", null);
         return ThreeDTransform;
     }(wd.Transform));
     wd.ThreeDTransform = ThreeDTransform;
@@ -12913,15 +13204,14 @@ var wd;
             this._anchorY = wd.Vector2.create(0.5, 0.5);
             this._width = null;
             this._height = null;
-            this._isTranslate = false;
-            this._isRotate = false;
-            this._isScale = false;
             this.dirtyRotation = true;
             this.dirtyPositionAndScale = true;
             this.pivot = wd.Vector2.create(0, 0);
             this.zIndex = 1;
             this._localRotationMatrix = wd.Matrix3.create();
             this._localToParentMatrix = wd.Matrix3.create();
+            this._rotationMatrixCache = null;
+            this._localPositionAndScaleMatrixCache = null;
         }
         RectTransform.create = function () {
             var obj = new this();
@@ -12995,7 +13285,7 @@ var wd;
             },
             set: function (position) {
                 this._localPosition = position.copy();
-                this.isTranslate = true;
+                this.isLocalTranslate = true;
             },
             enumerable: true,
             configurable: true
@@ -13006,7 +13296,7 @@ var wd;
             },
             set: function (scale) {
                 this._localScale = scale.copy();
-                this.isScale = true;
+                this.isLocalScale = true;
             },
             enumerable: true,
             configurable: true
@@ -13056,7 +13346,9 @@ var wd;
             set: function (width) {
                 if (width !== this._width) {
                     this._width = width;
-                    wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
+                    if (this.entityObject) {
+                        wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_WIDTH_CHANGE));
+                    }
                 }
             },
             enumerable: true,
@@ -13069,64 +13361,18 @@ var wd;
             set: function (height) {
                 if (height !== this._height) {
                     this._height = height;
-                    wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
+                    if (this.entityObject) {
+                        wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.UI_HEIGHT_CHANGE));
+                    }
                 }
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(RectTransform.prototype, "isTransform", {
-            get: function () {
-                return this.isTranslate || this.isRotate || this.isScale;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RectTransform.prototype, "isTranslate", {
-            get: function () {
-                return this._isTranslate;
-            },
-            set: function (isTranslate) {
-                this._isTranslate = isTranslate;
-                if (isTranslate) {
-                    this.dirtyLocal = true;
-                    wd.EventManager.broadcast(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_TRANSLATE));
-                    this.setChildrenTransformState("isTranslate");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RectTransform.prototype, "isRotate", {
-            get: function () {
-                return this._isRotate;
-            },
-            set: function (isRotate) {
-                this._isRotate = isRotate;
-                if (isRotate) {
-                    this.dirtyLocal = true;
-                    wd.EventManager.broadcast(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_ROTATE));
-                    this.setChildrenTransformState("isRotate");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RectTransform.prototype, "isScale", {
-            get: function () {
-                return this._isScale;
-            },
-            set: function (isScale) {
-                this._isScale = isScale;
-                if (isScale) {
-                    this.dirtyLocal = true;
-                    wd.EventManager.broadcast(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_SCALE));
-                    this.setChildrenTransformState("isScale");
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+        RectTransform.prototype.init = function () {
+        };
+        RectTransform.prototype.dispose = function () {
+        };
         RectTransform.prototype.syncRotation = function () {
             if (this.dirtyRotation) {
                 if (this.p_parent === null) {
@@ -13215,10 +13461,27 @@ var wd;
         RectTransform.prototype.resetRotation = function () {
             this._localRotationMatrix.setIdentity();
         };
-        RectTransform.prototype.setChildrenTransform = function () {
-            this.setChildrenTransformState("isTranslate");
-            this.setChildrenTransformState("isRotate");
-            this.setChildrenTransformState("isScale");
+        RectTransform.prototype.handleWhenSetTransformState = function (transformState) {
+            var eventName = null;
+            switch (transformState) {
+                case wd.ETransformState.ISTRANSLATE:
+                    eventName = wd.EEngineEvent.TRANSFORM_TRANSLATE;
+                    break;
+                case wd.ETransformState.ISROTATE:
+                    eventName = wd.EEngineEvent.TRANSFORM_ROTATE;
+                    break;
+                case wd.ETransformState.ISSCALE:
+                    eventName = wd.EEngineEvent.TRANSFORM_SCALE;
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_UNKNOW("transformState:" + transformState));
+                    break;
+            }
+            wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(eventName));
+        };
+        RectTransform.prototype.clearCache = function () {
+            this._rotationMatrixCache = null;
+            this._localPositionAndScaleMatrixCache = null;
         };
         RectTransform.prototype._rotateAroundCanvasOriginPoint = function (angle) {
             this._localRotationMatrix.rotate(angle);
@@ -13251,6 +13514,24 @@ var wd;
             return this.p_parent.scale;
         };
         __decorate([
+            wd.cacheGetter(function () {
+                return this._rotationMatrixCache !== null;
+            }, function () {
+                return this._rotationMatrixCache;
+            }, function (result) {
+                this._rotationMatrixCache = result;
+            })
+        ], RectTransform.prototype, "rotationMatrix", null);
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._localPositionAndScaleMatrixCache !== null;
+            }, function () {
+                return this._localPositionAndScaleMatrixCache;
+            }, function (result) {
+                this._localPositionAndScaleMatrixCache = result;
+            })
+        ], RectTransform.prototype, "localPositionAndScaleMatrix", null);
+        __decorate([
             wd.requireSetter(function (anchorX) {
                 wd.assert(anchorX.x <= anchorX.y, wd.Log.info.FUNC_SHOULD("minX", "<= maxY"));
                 wd.assert(anchorX.x >= 0 && anchorX.x <= 1, wd.Log.info.FUNC_SHOULD("minX", ">= 0 && <= 1"));
@@ -13267,6 +13548,19 @@ var wd;
         return RectTransform;
     }(wd.Transform));
     wd.RectTransform = RectTransform;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    (function (ETransformState) {
+        ETransformState[ETransformState["ISTRANSLATE"] = "isTranslate"] = "ISTRANSLATE";
+        ETransformState[ETransformState["ISROTATE"] = "isRotate"] = "ISROTATE";
+        ETransformState[ETransformState["ISSCALE"] = "isScale"] = "ISSCALE";
+        ETransformState[ETransformState["ISLOCALTRANSLATE"] = "isLocalTranslate"] = "ISLOCALTRANSLATE";
+        ETransformState[ETransformState["ISLOCALROTATE"] = "isLocalRotate"] = "ISLOCALROTATE";
+        ETransformState[ETransformState["ISLOCALSCALE"] = "isLocalScale"] = "ISLOCALSCALE";
+    })(wd.ETransformState || (wd.ETransformState = {}));
+    var ETransformState = wd.ETransformState;
 })(wd || (wd = {}));
 
 var wd;
@@ -13320,9 +13614,10 @@ var wd;
                 }
                 child.update(elapsedTime);
             });
-            removeQueue.forEach(function (child) {
+            for (var _i = 0, removeQueue_1 = removeQueue; _i < removeQueue_1.length; _i++) {
+                var child = removeQueue_1[_i];
                 child.entityObject.removeComponent(child);
-            });
+            }
         };
         return ActionManager;
     }(wd.ComponentContainer));
@@ -13421,6 +13716,12 @@ var wd;
                 wd.Log.error(true, wd.Log.info.FUNC_INVALID("light"));
             }
         };
+        LightManager.prototype.addChildren = function (lightList) {
+            var self = this;
+            lightList.forEach(function (light) {
+                self.addChild(light);
+            });
+        };
         return LightManager;
     }());
     wd.LightManager = LightManager;
@@ -13441,6 +13742,8 @@ var wd;
             this.state = EAnimationState.DEFAULT;
             this.pauseTime = null;
             this.resumeTime = null;
+            this.pauseDuration = null;
+            this.frameCount = null;
             this._isResume = false;
         }
         Object.defineProperty(Animation.prototype, "isStart", {
@@ -13495,8 +13798,19 @@ var wd;
             else {
                 this.isFrameChange = false;
             }
-            this.computeInterpolation(elapsedTime);
-            this.updateTargets();
+            this.handleAfterJudgeWhetherCurrentFrameFinish(elapsedTime);
+        };
+        Animation.prototype.getPauseTime = function () {
+            return this.getCurrentTime();
+        };
+        Animation.prototype.getResumeTime = function () {
+            return this.getCurrentTime();
+        };
+        Animation.prototype.getCurrentTime = function () {
+            return wd.Director.getInstance().elapsed;
+        };
+        Animation.prototype.continueFromPausePoint = function (elapsedTime) {
+            this.pauseDuration += this.resumeTime - this.pauseTime;
         };
         return Animation;
     }(wd.Component));
@@ -13529,18 +13843,26 @@ var wd;
             _super.apply(this, arguments);
             this.interpolation = 0;
             this.currentFrame = 0;
-            this.nextFrame = 1;
             this.duration = null;
             this.fps = null;
             this.currentAnimName = null;
-            this._oldTime = 0;
-            this._frameCount = null;
-            this._isStartFromStop = false;
+            this._prevFrameEndTime = null;
         }
         MorphAnimation.create = function () {
             var obj = new this();
             return obj;
         };
+        Object.defineProperty(MorphAnimation.prototype, "nextFrame", {
+            get: function () {
+                var nextFrame = this.currentFrame + 1;
+                if (nextFrame >= this.frameCount) {
+                    nextFrame = 0;
+                }
+                return nextFrame;
+            },
+            enumerable: true,
+            configurable: true
+        });
         MorphAnimation.prototype.init = function () {
         };
         MorphAnimation.prototype.dispose = function () {
@@ -13550,58 +13872,41 @@ var wd;
             this.currentAnimName = animName;
             this.fps = fps;
             this.duration = 1.0 / fps * 1000;
-            this._frameCount = geometry.morphTargets.getChild(animName).getCount();
-            this._start();
-        };
-        MorphAnimation.prototype.getPauseTime = function () {
-            return wd.Director.getInstance().elapsed;
-        };
-        MorphAnimation.prototype.getResumeTime = function () {
-            return this._oldTime;
+            this.frameCount = geometry.morphTargets.getChild(animName).getCount();
+            this.resetAnim();
+            this.state = wd.EAnimationState.RUN;
         };
         MorphAnimation.prototype.handleWhenPause = function (elapsedTime) {
-            this._oldTime = elapsedTime;
         };
         MorphAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsedTime) {
             this.isFrameChange = true;
-            this._oldTime = this._floor(elapsedTime);
-            this.currentFrame = this.nextFrame;
-            this.nextFrame++;
-            if (this.nextFrame >= this._frameCount) {
-                this.nextFrame = 0;
+            this._prevFrameEndTime = (elapsedTime - this.pauseDuration) - (elapsedTime - this.pauseDuration) % this.duration;
+            this.currentFrame++;
+            if (this._isFinishAllFrames()) {
+                this.currentFrame = 0;
             }
         };
         MorphAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
-            if (this._isStartFromStop) {
-                this._isStartFromStop = false;
-                this._resetAnim(elapsedTime);
+            if (this._prevFrameEndTime === null) {
+                this._prevFrameEndTime = this.getCurrentTime();
             }
         };
         MorphAnimation.prototype.isCurrentFrameFinish = function (elapsedTime) {
-            return elapsedTime - this._oldTime > this.duration;
+            return elapsedTime - this._prevFrameEndTime - this.pauseDuration > this.duration;
         };
-        MorphAnimation.prototype.computeInterpolation = function (elapsedTime) {
-            this.interpolation = this.fps * (elapsedTime - this._oldTime) / 1000;
+        MorphAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
+            this._computeInterpolation(elapsedTime);
         };
-        MorphAnimation.prototype.updateTargets = function () {
-        };
-        MorphAnimation.prototype.continueFromPausePoint = function (elapsedTime) {
-            this._oldTime = elapsedTime - (this.resumeTime - this.pauseTime) % this.duration;
-        };
-        MorphAnimation.prototype._start = function () {
-            this._oldTime = 0;
+        MorphAnimation.prototype.resetAnim = function () {
+            this._prevFrameEndTime = null;
             this.currentFrame = 0;
-            this.nextFrame = this.currentFrame + 1;
-            if (this.isStop) {
-                this._isStartFromStop = true;
-            }
-            this.state = wd.EAnimationState.RUN;
+            this.pauseDuration = 0;
         };
-        MorphAnimation.prototype._floor = function (time) {
-            return time - time % this.duration;
+        MorphAnimation.prototype._computeInterpolation = function (elapsedTime) {
+            this.interpolation = this.fps * (elapsedTime - this._prevFrameEndTime - this.pauseDuration) / 1000;
         };
-        MorphAnimation.prototype._resetAnim = function (elapsedTime) {
-            this._oldTime = elapsedTime;
+        MorphAnimation.prototype._isFinishAllFrames = function () {
+            return this.currentFrame >= this.frameCount;
         };
         __decorate([
             wd.require(function (animName, fps) {
@@ -13610,9 +13915,20 @@ var wd;
                 wd.assert(geometry.morphTargets.getChild(animName) && geometry.morphTargets.getChild(animName).getCount() > 0, wd.Log.info.FUNC_NOT_EXIST("\"" + animName + "\" animation"));
             }),
             wd.ensure(function () {
-                wd.assert(this._frameCount > 1, wd.Log.info.FUNC_SHOULD("frames.count", "> 1"));
+                wd.assert(this.frameCount > 1, wd.Log.info.FUNC_SHOULD("frames.count", "> 1"));
             })
         ], MorphAnimation.prototype, "play", null);
+        __decorate([
+            wd.require(function (elapsedTime) {
+                wd.assert(elapsedTime - this._prevFrameEndTime - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsedTime of current frame:" + (elapsedTime - this._prevFrameEndTime - this.pauseDuration), ">= 0"));
+            })
+        ], MorphAnimation.prototype, "isCurrentFrameFinish", null);
+        __decorate([
+            wd.ensure(function () {
+                var interpolation = this.interpolation;
+                wd.assert(interpolation >= 0 && interpolation <= 1, wd.Log.info.FUNC_SHOULD("interpolation(" + interpolation, ">= 0 && <= 1"));
+            })
+        ], MorphAnimation.prototype, "_computeInterpolation", null);
         return MorphAnimation;
     }(wd.Animation));
     wd.MorphAnimation = MorphAnimation;
@@ -13636,17 +13952,13 @@ var wd;
         function ArticulatedAnimation() {
             _super.apply(this, arguments);
             this.data = null;
-            this._interpolation = null;
             this._currentFrame = null;
             this._currentAnimName = null;
             this._beginElapsedTimeOfFirstFrame = null;
-            this._lastFrameTime = null;
-            this._pauseDuration = null;
-            this._frameCount = null;
+            this._prevFrameTime = null;
             this._currentAnimData = null;
             this._currentFrameData = null;
             this._prevFrameData = null;
-            this._prevEndFrameDataMap = wdCb.Hash.create();
             this._startFrameDataMap = wdCb.Hash.create();
         }
         ArticulatedAnimation.create = function () {
@@ -13657,150 +13969,165 @@ var wd;
         };
         ArticulatedAnimation.prototype.dispose = function () {
         };
-        ArticulatedAnimation.prototype.play = function (animName) {
-            this._currentAnimName = animName;
-            this._currentAnimData = this.data.getChild(animName);
-            this._resetAnim();
-            this._saveStartFrameData();
-            this._frameCount = this._currentAnimData.getCount();
+        ArticulatedAnimation.prototype.play = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            if (wd.JudgeUtils.isNumber(args[0])) {
+                var animIndex_1 = args[0], i_1 = 0, self_1 = this;
+                this.data.forEach(function (data, animName) {
+                    if (animIndex_1 === i_1) {
+                        self_1._currentAnimName = animName;
+                        self_1._currentAnimData = data;
+                        return wdCb.$BREAK;
+                    }
+                    i_1++;
+                });
+            }
+            else if (wd.JudgeUtils.isString(args[0])) {
+                var animName = args[0];
+                this._currentAnimName = animName;
+                this._currentAnimData = this.data.getChild(animName);
+            }
+            this.resetAnim();
+            this._saveStartFrameData(this.entityObject.transform);
+            this.frameCount = this._currentAnimData.getCount();
             this.state = wd.EAnimationState.RUN;
-        };
-        ArticulatedAnimation.prototype.getPauseTime = function () {
-            return this._getCurrentTime();
-        };
-        ArticulatedAnimation.prototype.getResumeTime = function () {
-            return this._getCurrentTime();
         };
         ArticulatedAnimation.prototype.handleWhenPause = function (elapsedTime) {
         };
         ArticulatedAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsedTime) {
-            this._updateCurrentFrame(elapsedTime);
-            this._updateTargetsToBeLastEndFrameData();
-            this._saveStartFrameData();
+            this.isFrameChange = true;
+            this._updateFrame(elapsedTime);
+            this._saveStartFrameData(this._prevFrameData);
         };
         ArticulatedAnimation.prototype.handleBeforeJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
-        };
-        ArticulatedAnimation.prototype.isCurrentFrameFinish = function (elapsedTime) {
-            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration > this._currentFrameData.time;
-        };
-        ArticulatedAnimation.prototype.computeInterpolation = function (elapsedTime) {
-            switch (this._currentFrameData.interpolationMethod) {
-                case wd.EKeyFrameInterpolation.LINEAR:
-                    if (this._currentFrameData.time - this._lastFrameTime === 0) {
-                        this._interpolation = 1;
-                    }
-                    else {
-                        this._interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this._pauseDuration - this._lastFrameTime) / (this._currentFrameData.time - this._lastFrameTime);
-                    }
-                    break;
-                default:
-                    wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("interpolationMethod:" + this._currentFrameData.interpolationMethod));
-                    break;
+            if (this._beginElapsedTimeOfFirstFrame === null) {
+                this._beginElapsedTimeOfFirstFrame = this.getCurrentTime();
             }
         };
-        ArticulatedAnimation.prototype.updateTargets = function () {
-            var transform = this.entityObject.transform, interpolation = this._interpolation, isFrameChange = this.isFrameChange, prevEndFrameDataMap = this._prevEndFrameDataMap, startFrameDataMap = this._startFrameDataMap;
-            this._currentFrameData.targets.forEach(function (target) {
-                var endFrameData = target.data, startFrameData = startFrameDataMap.getChild(target.target);
-                switch (target.target) {
-                    case wd.EArticulatedAnimationTarget.TRANSLATION:
-                        transform.position = wd.Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                        break;
-                    case wd.EArticulatedAnimationTarget.ROTATION:
-                        transform.rotation = wd.Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
-                        break;
-                    case wd.EArticulatedAnimationTarget.SCALE:
-                        transform.scale = wd.Vector3.create().lerp(startFrameData, endFrameData, interpolation);
-                        break;
-                    default:
-                        wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("EArticulatedAnimationTarget:" + target.target));
-                        break;
-                }
-                if (isFrameChange || !prevEndFrameDataMap.hasChild(target.target)) {
-                    prevEndFrameDataMap.addChild(target.target, endFrameData);
-                }
-            });
+        ArticulatedAnimation.prototype.isCurrentFrameFinish = function (elapsedTime) {
+            return elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration > this._currentFrameData.time;
         };
-        ArticulatedAnimation.prototype.continueFromPausePoint = function (elapsedTime) {
-            this._pauseDuration += this.resumeTime - this.pauseTime;
+        ArticulatedAnimation.prototype.handleAfterJudgeWhetherCurrentFrameFinish = function (elapsedTime) {
+            this._updateTargets(elapsedTime);
         };
-        ArticulatedAnimation.prototype._resetAnim = function () {
-            this._beginElapsedTimeOfFirstFrame = this._getCurrentTime();
-            this._lastFrameTime = 0;
-            this._pauseDuration = 0;
+        ArticulatedAnimation.prototype.resetAnim = function () {
+            this._beginElapsedTimeOfFirstFrame = null;
+            this._prevFrameTime = 0;
+            this.pauseDuration = 0;
             this._currentFrame = 0;
             this._prevFrameData = null;
             this._updateCurrentFrameData();
-            this._prevEndFrameDataMap.removeAllChildren();
             this._startFrameDataMap.removeAllChildren();
         };
-        ArticulatedAnimation.prototype._getCurrentTime = function () {
-            return wd.Director.getInstance().elapsed;
-        };
-        ArticulatedAnimation.prototype._saveStartFrameData = function () {
-            var startFrameDataMap = this._startFrameDataMap, transform = this.entityObject.transform;
+        ArticulatedAnimation.prototype._updateTargets = function (elapsedTime) {
+            var self = this, transform = this.entityObject.transform, startFrameDataMap = this._startFrameDataMap;
             this._currentFrameData.targets.forEach(function (target) {
-                var startFrameData = null;
+                var endFrameData = target.data, startFrameData = startFrameDataMap.getChild(target.target), interpolation = self._computeInterpolation(elapsedTime, target.interpolationMethod);
                 switch (target.target) {
                     case wd.EArticulatedAnimationTarget.TRANSLATION:
-                        startFrameData = transform.position;
+                        transform.localPosition = wd.Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     case wd.EArticulatedAnimationTarget.ROTATION:
-                        startFrameData = transform.rotation;
+                        transform.localRotation = wd.Quaternion.create().slerp(startFrameData, endFrameData, interpolation);
                         break;
                     case wd.EArticulatedAnimationTarget.SCALE:
-                        startFrameData = transform.scale;
+                        transform.localScale = wd.Vector3.create().lerp(startFrameData, endFrameData, interpolation);
                         break;
                     default:
                         wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("EArticulatedAnimationTarget:" + target.target));
                         break;
                 }
-                startFrameDataMap.addChild(target.target, startFrameData);
             });
+        };
+        ArticulatedAnimation.prototype._computeInterpolation = function (elapsedTime, interpolationMethod) {
+            var interpolation = null;
+            switch (interpolationMethod) {
+                case wd.EKeyFrameInterpolation.LINEAR:
+                    if (this._currentFrameData.time - this._prevFrameTime === 0) {
+                        interpolation = 1;
+                    }
+                    else {
+                        interpolation = (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration - this._prevFrameTime) / (this._currentFrameData.time - this._prevFrameTime);
+                    }
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("interpolationMethod:" + interpolationMethod));
+                    break;
+            }
+            return interpolation;
+        };
+        ArticulatedAnimation.prototype._saveStartFrameData = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var startFrameDataMap = this._startFrameDataMap;
+            if (this._isFrameData(args[0])) {
+                var frameData = args[0];
+                frameData.targets.forEach(function (target) {
+                    startFrameDataMap.addChild(target.target, target.data);
+                });
+            }
+            else {
+                var transform = args[0];
+                startFrameDataMap.addChild(wd.EArticulatedAnimationTarget.TRANSLATION, transform.localPosition);
+                startFrameDataMap.addChild(wd.EArticulatedAnimationTarget.ROTATION, transform.localRotation);
+                startFrameDataMap.addChild(wd.EArticulatedAnimationTarget.SCALE, transform.localScale);
+            }
         };
         ArticulatedAnimation.prototype._updateCurrentFrameData = function () {
             this._currentFrameData = this._currentAnimData.getChild(this._currentFrame);
         };
-        ArticulatedAnimation.prototype._updateCurrentFrame = function (elapsedTime) {
-            this.isFrameChange = true;
-            this._currentFrame++;
-            if (this._currentFrame >= this._frameCount) {
+        ArticulatedAnimation.prototype._updateFrame = function (elapsedTime) {
+            this._updateCurrentFrameIndex(elapsedTime);
+            if (this._isFinishAllFrames()) {
                 this._currentFrame = 0;
-                this._beginElapsedTimeOfFirstFrame = elapsedTime - elapsedTime % this._currentAnimData.getChild(this._frameCount - 1).time;
-                this._lastFrameTime = 0;
+                this._beginElapsedTimeOfFirstFrame = this._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime);
+                this._prevFrameTime = 0;
+                this._prevFrameData = this._currentAnimData.getChild(this.frameCount - 1);
+                this._updateCurrentFrameData();
             }
             else {
-                this._lastFrameTime = this._currentAnimData.getChild(this._currentFrame - 1).time;
+                this._prevFrameTime = this._currentAnimData.getChild(this._currentFrame - 1).time;
             }
-            this._prevFrameData = this._currentFrameData;
-            this._updateCurrentFrameData();
         };
-        ArticulatedAnimation.prototype._updateTargetsToBeLastEndFrameData = function () {
-            var self = this, transform = this.entityObject.transform, prevEndFrameDataMap = this._prevEndFrameDataMap;
-            this._prevFrameData.targets.forEach(function (target) {
-                var prevEndFrameData = prevEndFrameDataMap.hasChild(target.target) ? prevEndFrameDataMap.getChild(target.target) : target.data;
-                self._setTargetData(target.target, transform, prevEndFrameData);
-            });
+        ArticulatedAnimation.prototype._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames = function (elapsedTime) {
+            return elapsedTime - elapsedTime % this._currentAnimData.getChild(this.frameCount - 1).time;
         };
-        ArticulatedAnimation.prototype._setTargetData = function (target, transform, data) {
-            switch (target) {
-                case wd.EArticulatedAnimationTarget.TRANSLATION:
-                    transform.position = data;
-                    break;
-                case wd.EArticulatedAnimationTarget.ROTATION:
-                    transform.rotation = data;
-                    break;
-                case wd.EArticulatedAnimationTarget.SCALE:
-                    transform.scale = data;
-                    break;
-                default:
-                    wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("EArticulatedAnimationTarget:" + target));
-                    break;
-            }
+        ArticulatedAnimation.prototype._isFinishAllFrames = function () {
+            return this._currentFrame >= this.frameCount;
+        };
+        ArticulatedAnimation.prototype._updateCurrentFrameIndex = function (elapsedTime) {
+            do {
+                this._currentFrame++;
+                this._prevFrameData = this._currentFrameData;
+                this._updateCurrentFrameData();
+            } while (!this._isFinishAllFrames() && this.isCurrentFrameFinish(elapsedTime));
+        };
+        ArticulatedAnimation.prototype._isFrameData = function (data) {
+            return data.time !== void 0 && data.targets !== void 0;
         };
         __decorate([
-            wd.require(function (animName) {
-                this.data.getChild(animName).forEach(function (data) {
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (wd.JudgeUtils.isNumber(args[0])) {
+                    var animIndex = args[0];
+                    wd.assert(this.data.getCount() >= animIndex + 1, wd.Log.info.FUNC_NOT_EXIST("animation index:" + animIndex));
+                }
+                else if (wd.JudgeUtils.isString(args[0])) {
+                    var animName = args[0];
+                    wd.assert(this.data.hasChild(animName), wd.Log.info.FUNC_NOT_EXIST("animation name:" + animName));
+                }
+            }),
+            wd.ensure(function () {
+                wd.assert(!!this._currentAnimData, wd.Log.info.FUNC_NOT_EXIST("animation name:" + this._currentAnimName));
+                this._currentAnimData.forEach(function (data) {
                     wd.assert(data.time >= 0, wd.Log.info.FUNC_SHOULD("time", ">= 0"));
                     wd.assert(data.targets.getCount() > 0, wd.Log.info.FUNC_SHOULD("ArticulatedAnimationFrameData->targets.getCount()", "> 0"));
                     data.targets.forEach(function (target) {
@@ -13824,15 +14151,36 @@ var wd;
             })
         ], ArticulatedAnimation.prototype, "play", null);
         __decorate([
+            wd.require(function (elapsedTime) {
+                wd.assert(elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration >= 0, wd.Log.info.FUNC_SHOULD("elapsedTime of current frame:" + (elapsedTime - this._beginElapsedTimeOfFirstFrame - this.pauseDuration), ">= 0"));
+            })
+        ], ArticulatedAnimation.prototype, "isCurrentFrameFinish", null);
+        __decorate([
+            wd.ensure(function (interpolation, elapsedTime, interpolationMethod) {
+                wd.assert(interpolation >= 0 && interpolation <= 1, wd.Log.info.FUNC_SHOULD("interpolation:" + interpolation, ">= 0 && <= 1"));
+            })
+        ], ArticulatedAnimation.prototype, "_computeInterpolation", null);
+        __decorate([
             wd.require(function () {
-                wd.assert(this._currentFrameData !== null, wd.Log.info.FUNC_SHOULD("set currentFrameData"));
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                if (this._isFrameData(args[0])) {
+                    var frameData_1 = args[0];
+                    wd.assert(this._currentFrameData !== null, wd.Log.info.FUNC_SHOULD("set currentFrameData"));
+                    this._currentFrameData.targets.forEach(function (currentTarget, index) {
+                        wd.assert(frameData_1.targets.getChild(index).target === currentTarget.target, wd.Log.info.FUNC_SHOULD("the current frame and the start frame", "modify the same targets"));
+                    });
+                }
             })
         ], ArticulatedAnimation.prototype, "_saveStartFrameData", null);
         __decorate([
-            wd.require(function () {
-                wd.assert(this._prevFrameData !== null, wd.Log.info.FUNC_SHOULD_NOT("prevFrameData", "be null"));
+            wd.require(function (elapsedTime) {
+                var lastEndFrameTime = this._currentAnimData.getChild(this.frameCount - 1).time;
+                wd.assert(elapsedTime >= lastEndFrameTime, wd.Log.info.FUNC_SHOULD("elapsedTime:" + elapsedTime, ">= lastEndFrameTime:" + lastEndFrameTime));
             })
-        ], ArticulatedAnimation.prototype, "_updateTargetsToBeLastEndFrameData", null);
+        ], ArticulatedAnimation.prototype, "_getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames", null);
         return ArticulatedAnimation;
     }(wd.Animation));
     wd.ArticulatedAnimation = ArticulatedAnimation;
@@ -13885,7 +14233,9 @@ var wd;
                 if (!wd.JudgeUtils.isEqual(material, this._material)) {
                     this._material = material;
                     this._material.geometry = this;
-                    wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_CHANGE));
+                    if (this.entityObject) {
+                        wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.MATERIAL_CHANGE));
+                    }
                 }
             },
             enumerable: true,
@@ -14042,7 +14392,7 @@ var wd;
         __decorate([
             wd.require(function (data) {
                 if (data) {
-                    wd.assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || wd.JudgeUtils.isArray(data), wd.Log.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
+                    wd.assert(data instanceof wdCb.Collection || data instanceof wdCb.Hash || wd.JudgeUtils.isArrayExactly(data), wd.Log.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
                 }
             })
         ], GeometryUtils, "hasData", null);
@@ -14648,14 +14998,17 @@ var wd;
             this._texCoords = null;
             this._colors = null;
             this._tangents = null;
-            this.isTangentDirty = true;
+            this.tangentDirty = true;
+            this.colorDirty = true;
             this.geometry = null;
             this._normalCache = null;
             this._normalFromFaceCache = null;
             this._normalFromVertexCache = null;
             this._indiceCache = null;
+            this._colorCache = null;
             this._normalDirty = true;
             this._indiceDirty = true;
+            this._materialColorChangeSubscription = null;
             this.geometry = geometry;
         }
         Object.defineProperty(GeometryData.prototype, "vertices", {
@@ -14664,7 +15017,7 @@ var wd;
             },
             set: function (vertices) {
                 this._vertices = vertices;
-                this.isTangentDirty = true;
+                this.tangentDirty = true;
             },
             enumerable: true,
             configurable: true
@@ -14752,25 +15105,29 @@ var wd;
             },
             set: function (texCoords) {
                 this._texCoords = texCoords;
-                this.isTangentDirty = true;
+                this.tangentDirty = true;
             },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(GeometryData.prototype, "colors", {
             get: function () {
-                return this._getColors(this._colors, this._vertices);
+                if (this._needGetColorsFromMaterial()) {
+                    return this._getColorsFromMaterial(this._vertices);
+                }
+                return this._colors;
             },
             set: function (colors) {
                 this._colors = colors;
+                this.colorDirty = true;
             },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(GeometryData.prototype, "tangents", {
             get: function () {
-                if (this.isTangentDirty) {
-                    this.isTangentDirty = false;
+                if (this.tangentDirty) {
+                    this.tangentDirty = false;
                     this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
                 }
                 return this._tangents;
@@ -14778,6 +15135,22 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        GeometryData.prototype.init = function () {
+            var self = this;
+            this._materialColorChangeSubscription =
+                wdFrp.fromArray([
+                    wd.EventManager.fromEvent(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_COLOR_CHANGE),
+                    wd.EventManager.fromEvent(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_CHANGE)
+                ])
+                    .subscribe(function () {
+                    if (self._needGetColorsFromMaterial()) {
+                        self.colorDirty = true;
+                    }
+                });
+        };
+        GeometryData.prototype.dispose = function () {
+            this._materialColorChangeSubscription && this._materialColorChangeSubscription.dispose();
+        };
         GeometryData.prototype.computeFaceNormals = function () {
             var vertices = this._vertices;
             for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
@@ -14819,7 +15192,7 @@ var wd;
             return true;
         };
         GeometryData.prototype.onChangeFace = function () {
-            this.isTangentDirty = true;
+            this.tangentDirty = true;
             this._normalDirty = true;
             this._indiceDirty = true;
         };
@@ -14846,20 +15219,11 @@ var wd;
             }
             return normals;
         };
-        GeometryData.prototype._getColors = function (colors, vertices) {
-            if (colors && colors.length > 0) {
-                return colors;
-            }
-            else {
-                return this._getColorsFromMaterial(vertices);
-            }
-        };
         GeometryData.prototype._getColorsFromMaterial = function (vertices) {
-            var arr = [], i = 0, material = this.geometry.material, color = material.color, len = null;
-            wdCb.Log.error(!vertices || vertices.length === 0, wdCb.Log.info.FUNC_MUST("has vertice data"));
-            len = vertices.length;
+            var arr = [], i = 0, color = this.geometry.material.color, r = color.r, g = color.g, b = color.b, len = null;
+            len = vertices.length / 3;
             for (i = 0; i < len; i++) {
-                arr.push(color.r, color.g, color.b);
+                arr.push(r, g, b);
             }
             return arr;
         };
@@ -14932,6 +15296,10 @@ var wd;
             }
             return tangents;
         };
+        GeometryData.prototype._needGetColorsFromMaterial = function () {
+            var colors = this._colors;
+            return !colors || colors.length === 0;
+        };
         __decorate([
             wd.requireGetter(function () {
                 wd.assert(this._faces.length > 0, wd.Log.info.FUNC_SHOULD("faces.count", "> 0"));
@@ -15002,6 +15370,19 @@ var wd;
                 this._indiceDirty = false;
             })
         ], GeometryData.prototype, "indices", null);
+        __decorate([
+            wd.ensureGetter(function (colors) {
+                wd.assert(colors.length === this._vertices.length, wd.Log.info.FUNC_SHOULD("colors.length:" + colors.length, "=== vertices.length:" + this._vertices.length));
+            }),
+            wd.cacheGetter(function () {
+                return !this.colorDirty && this._colorCache;
+            }, function () {
+                return this._colorCache;
+            }, function (result) {
+                this._colorCache = result;
+                this.colorDirty = false;
+            })
+        ], GeometryData.prototype, "colors", null);
         __decorate([
             wd.require(function () {
                 wd.assert(wd.GeometryUtils.hasData(this.vertices), wd.Log.info.FUNC_MUST("contain vertices"));
@@ -15172,7 +15553,9 @@ var wd;
             var self = this;
             wd.EventManager.on(this.entityObject, wd.EEngineEvent.MATERIAL_CHANGE, function () {
                 self.removeCache(wd.EBufferDataType.COLOR);
+                self.geometryData.colorDirty = true;
             });
+            this.geometryData.init();
         };
         BufferContainer.prototype.removeCache = function (type) {
             this.container.removeChild(type);
@@ -15204,14 +15587,11 @@ var wd;
             }
             return result;
         };
-        BufferContainer.prototype.hasChild = function (type) {
-            var data = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
-            return !!data && data.length > 0;
-        };
         BufferContainer.prototype.dispose = function () {
             this.container.forEach(function (buffer) {
                 buffer.dispose();
             });
+            this.geometryData.dispose();
         };
         BufferContainer.prototype.createBufferOnlyOnce = function (bufferAttriName, bufferClass) {
             if (this[bufferAttriName]) {
@@ -15219,36 +15599,51 @@ var wd;
             }
             this[bufferAttriName] = bufferClass.create();
         };
+        BufferContainer.prototype.hasData = function (data) {
+            return data && data.length > 0;
+        };
         BufferContainer.prototype._getTangent = function (type) {
             var geometryData = null;
-            this.createBufferOnlyOnce("_tangentBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
+            this.createBufferOnlyOnce("_tangentBuffer", wd.ArrayBuffer);
             this._tangentBuffer.resetData(new Float32Array(geometryData), 3, wd.EBufferType.FLOAT);
             return this._tangentBuffer;
         };
         BufferContainer.prototype._getColor = function (type) {
             var geometryData = null;
-            this.createBufferOnlyOnce("_colorBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
+            this.createBufferOnlyOnce("_colorBuffer", wd.ArrayBuffer);
             this._colorBuffer.resetData(new Float32Array(geometryData), 3, wd.EBufferType.FLOAT);
             return this._colorBuffer;
         };
         BufferContainer.prototype._getIndice = function (type) {
             var geometryData = null;
-            this.createBufferOnlyOnce("_indiceBuffer", wd.ElementBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
+            this.createBufferOnlyOnce("_indiceBuffer", wd.ElementBuffer);
             this._indiceBuffer.resetData(new Uint16Array(geometryData), wd.EBufferType.UNSIGNED_SHORT);
             return this._indiceBuffer;
         };
         BufferContainer.prototype._getTexCoord = function (type) {
             var geometryData = null;
-            this.createBufferOnlyOnce("_texCoordBuffer", wd.ArrayBuffer);
             geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
+            this.createBufferOnlyOnce("_texCoordBuffer", wd.ArrayBuffer);
             this._texCoordBuffer.resetData(new Float32Array(geometryData), 2, wd.EBufferType.FLOAT);
             return this._texCoordBuffer;
         };
         BufferContainer.prototype._needReCalcuteTangent = function (type) {
-            return this.geometryData.isTangentDirty && type === wd.EBufferDataType.TANGENT;
+            return this.geometryData.tangentDirty && type === wd.EBufferDataType.TANGENT;
         };
         __decorate([
             wd.cache(function (type) {
@@ -15317,12 +15712,18 @@ var wd;
         };
         CommonBufferContainer.prototype.getVertice = function (type) {
             var geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
             this.createBufferOnlyOnce("_verticeBuffer", wd.ArrayBuffer);
             this._verticeBuffer.resetData(new Float32Array(geometryData), 3, wd.EBufferType.FLOAT);
             return this._verticeBuffer;
         };
         CommonBufferContainer.prototype.getNormal = function (type) {
             var geometryData = this.geometryData[wd.BufferDataTable.getGeometryDataName(type)];
+            if (!this.hasData(geometryData)) {
+                return null;
+            }
             this.createBufferOnlyOnce("_normalBuffer", wd.ArrayBuffer);
             this._normalBuffer.resetData(new Float32Array(geometryData), 3, wd.EBufferType.FLOAT);
             return this._normalBuffer;
@@ -15391,6 +15792,9 @@ var wd;
             if (this._isNotPlayAnimation()) {
                 return this._getStaticData(type);
             }
+            if (morphDataTargets.getCount() === 0) {
+                return null;
+            }
             frames = morphDataTargets.getChild(this._animation.currentAnimName);
             wdCb.Log.error(!frames, wdCb.Log.info.FUNC_SHOULD("\"" + this._animation.currentAnimName + "\" animation", "contain frame data"));
             cacheData = this.container.getChild(type);
@@ -15455,6 +15859,9 @@ var wd;
                     wd.Log.error(true, wd.Log.info.FUNC_SHOULD("type", "be EBufferDataType.VERTICE or EBufferDataType.NORMAL"));
                     break;
             }
+            if (!this.hasData(data)) {
+                return null;
+            }
             this._animation.interpolation = 0;
             result = [
                 this._getCurrentBuffer(type).resetData(new Float32Array(data), 3, wd.EBufferType.FLOAT),
@@ -15518,7 +15925,7 @@ var wd;
         }
         Object.defineProperty(Camera.prototype, "cameraToWorldMatrix", {
             get: function () {
-                return this.entityObject.transform.localToWorldMatrix.copy();
+                return this.entityObject.transform.localToWorldMatrix;
             },
             enumerable: true,
             configurable: true
@@ -15528,7 +15935,7 @@ var wd;
                 if (this._worldToCameraMatrix) {
                     return this._worldToCameraMatrix;
                 }
-                return this.cameraToWorldMatrix.invert();
+                return this.cameraToWorldMatrix.copy().invert();
             },
             set: function (matrix) {
                 this._worldToCameraMatrix = matrix;
@@ -15738,6 +16145,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var CameraController = (function (_super) {
@@ -15745,6 +16158,8 @@ var wd;
         function CameraController(cameraComponent) {
             _super.call(this);
             this.camera = null;
+            this._worldToCameraMatrixCache = null;
+            this._clearCacheSubscription = null;
             this.camera = cameraComponent;
         }
         Object.defineProperty(CameraController.prototype, "cameraToWorldMatrix", {
@@ -15756,7 +16171,7 @@ var wd;
         });
         Object.defineProperty(CameraController.prototype, "worldToCameraMatrix", {
             get: function () {
-                return this.camera.worldToCameraMatrix;
+                return this._getWorldToCameraMatrix();
             },
             set: function (matrix) {
                 this.camera.worldToCameraMatrix = matrix;
@@ -15775,14 +16190,26 @@ var wd;
             configurable: true
         });
         CameraController.prototype.init = function () {
+            var self = this;
             this.camera.entityObject = this.entityObject;
             this.camera.init();
+            this._clearCacheSubscription = wdFrp.fromArray([
+                wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP),
+                wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.TRANSFORM_TRANSLATE),
+                wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.TRANSFORM_ROTATE),
+                wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.TRANSFORM_SCALE)
+            ])
+                .mergeAll()
+                .subscribe(function () {
+                self._clearCache();
+            });
         };
         CameraController.prototype.update = function (elapsedTime) {
             this.camera.update(elapsedTime);
         };
         CameraController.prototype.dispose = function () {
             this.camera.dispose();
+            this._clearCacheSubscription && this._clearCacheSubscription.dispose();
         };
         CameraController.prototype.isIntersectWithRay = function (entityObject, screenX, screenY) {
             var shape = null;
@@ -15800,7 +16227,7 @@ var wd;
             return this.camera.convertScreenToWorld(screenX, screenY, distanceFromCamera);
         };
         CameraController.prototype.getPlanes = function () {
-            var frustumPlanes = [], transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix);
+            var frustumPlanes = [], transform = this.worldToCameraMatrix.applyMatrix(this.pMatrix, true);
             for (var index = 0; index < 6; index++) {
                 frustumPlanes.push(wd.Plane.create(0, 0, 0, 0));
             }
@@ -15839,6 +16266,21 @@ var wd;
             frustumPlanes[5].d = transform.values[15] + transform.values[13];
             frustumPlanes[5].normalize();
         };
+        CameraController.prototype._clearCache = function () {
+            this._worldToCameraMatrixCache = null;
+        };
+        CameraController.prototype._getWorldToCameraMatrix = function () {
+            return this.camera.worldToCameraMatrix;
+        };
+        __decorate([
+            wd.cacheGetter(function () {
+                return this._worldToCameraMatrixCache !== null;
+            }, function () {
+                return this._worldToCameraMatrixCache;
+            }, function (result) {
+                this._worldToCameraMatrixCache = result;
+            })
+        ], CameraController.prototype, "worldToCameraMatrix", null);
         return CameraController;
     }(wd.Component));
     wd.CameraController = CameraController;
@@ -16051,6 +16493,7 @@ var wd;
             this.moveSpeedX = 1;
             this.moveSpeedY = 1;
             this.rotateSpeed = 1;
+            this.wheelSpeed = 1;
             this.distance = 10;
             this.phi = Math.PI / 2;
             this.theta = Math.PI / 2;
@@ -16088,7 +16531,7 @@ var wd;
             this._removeEvent();
         };
         ArcballCameraController.prototype._bindCanvasEvent = function () {
-            var self = this, mousewheel = wd.EventManager.fromEvent(wd.Director.getInstance().scene, wd.EEngineEvent.MOUSE_WHEEL), mousedrag = wd.EventManager.fromEvent(wd.Director.getInstance().scene, wd.EEngineEvent.MOUSE_DRAG), keydown = wd.EventManager.fromEvent(wd.EEventName.KEYDOWN);
+            var self = this, scene = wd.Director.getInstance().scene, mousewheel = wd.EventManager.fromEvent(scene, wd.EEngineEvent.MOUSE_WHEEL), mousedrag = wd.EventManager.fromEvent(scene, wd.EEngineEvent.MOUSE_DRAG), keydown = wd.EventManager.fromEvent(wd.EEventName.KEYDOWN);
             this._mouseDragSubscription = mousedrag.subscribe(function (e) {
                 self._changeOrbit(e.userData);
             });
@@ -16128,7 +16571,7 @@ var wd;
         };
         ArcballCameraController.prototype._changeDistance = function (e) {
             this._isChange = true;
-            this.distance -= e.wheel;
+            this.distance -= this.wheelSpeed * e.wheel;
             this._contrainDistance();
         };
         ArcballCameraController.prototype._contrainDistance = function () {
@@ -17202,7 +17645,7 @@ var wd;
             renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
         };
         MeshRenderer.prototype.createDrawCommand = function (renderer, geometry, camera) {
-            var quadCmd = renderer.createQuadCommand(), cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material;
+            var quadCmd = renderer.createQuadCommand(), cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material, position = this.entityObject.transform.position;
             quadCmd.buffers = geometry.buffers;
             quadCmd.animation = geometry.entityObject.getComponent(wd.Animation);
             quadCmd.drawMode = geometry.drawMode;
@@ -17210,7 +17653,8 @@ var wd;
             quadCmd.vMatrix = cameraComponent.worldToCameraMatrix;
             quadCmd.pMatrix = cameraComponent.pMatrix;
             quadCmd.material = material;
-            quadCmd.z = this.entityObject.transform.position.z;
+            quadCmd.z = position.z;
+            quadCmd.blend = material.blend;
             return quadCmd;
         };
         __decorate([
@@ -18504,7 +18948,7 @@ var wd;
                 return this._children;
             },
             set: function (children) {
-                if (wd.JudgeUtils.isArray(children)) {
+                if (wd.JudgeUtils.isArrayExactly(children)) {
                     var arr = children;
                     this._children = wdCb.Collection.create(arr);
                 }
@@ -18997,7 +19441,7 @@ var wd;
         };
         PointToPointConstraintList.prototype.addChildren = function (arg) {
             var _this = this;
-            if (wd.JudgeUtils.isArray(arg)) {
+            if (wd.JudgeUtils.isArrayExactly(arg)) {
                 for (var _i = 0, _a = arg; _i < _a.length; _i++) {
                     var constraint = _a[_i];
                     this.addChild(constraint);
@@ -20197,7 +20641,7 @@ var wd;
         DirectionLight.defaultPosition = wd.Vector3.create(0, 0, 1);
         __decorate([
             wd.requireSetter(function (shadowRenderList) {
-                wd.assert(wd.JudgeUtils.isArray(shadowRenderList), wd.Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
+                wd.assert(wd.JudgeUtils.isArrayExactly(shadowRenderList), wd.Log.info.FUNC_MUST_BE("shadowRenderList", "array"));
             })
         ], DirectionLight.prototype, "shadowRenderList", null);
         return DirectionLight;
@@ -20311,7 +20755,7 @@ var wd;
                 for (var direction in shadowRenderList) {
                     if (shadowRenderList.hasOwnProperty(direction)) {
                         var list = shadowRenderList[direction];
-                        wd.assert(wd.JudgeUtils.isArray(list) || shadowRenderList instanceof wdCb.Hash, wd.Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
+                        wd.assert(wd.JudgeUtils.isArrayExactly(list) || shadowRenderList instanceof wdCb.Hash, wd.Log.info.FUNC_MUST_BE("renderList in each direction of shadowRenderList", "array"));
                     }
                 }
             })
@@ -22165,6 +22609,12 @@ var wd;
         JudgeUtils.isSelf = function (self, entityObject) {
             return self.uid === entityObject.uid;
         };
+        JudgeUtils.isComponenet = function (component) {
+            return component.entityObject !== void 0;
+        };
+        JudgeUtils.isDom = function (obj) {
+            return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
+        };
         return JudgeUtils;
     }(wdCb.JudgeUtils));
     wd.JudgeUtils = JudgeUtils;
@@ -22279,6 +22729,12 @@ var wd;
     wd.Log = Log;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var TimeController = (function () {
@@ -22305,11 +22761,20 @@ var wd;
         TimeController.prototype.computeElapseTime = function (time) {
             if (this.pauseElapsed) {
                 this.elapsed = time - this.pauseElapsed - this.startTime;
-                return this.elapsed;
             }
-            this.elapsed = time - this.startTime;
+            else {
+                this.elapsed = time - this.startTime;
+            }
+            if (this.elapsed < 0) {
+                this.elapsed = 0;
+            }
             return this.elapsed;
         };
+        __decorate([
+            wd.ensure(function () {
+                wd.assert(this.elapsed >= 0, wd.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+            })
+        ], TimeController.prototype, "computeElapseTime", null);
         return TimeController;
     }());
     wd.TimeController = TimeController;
@@ -23101,10 +23566,10 @@ var wd;
                 shadowDarkness: this.light.shadowDarkness,
                 shadowSize: [this.light.shadowMapWidth, this.light.shadowMapHeight],
                 lightPos: this.light.position,
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
             });
             material.buildTwoDShadowMapData = {
-                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix)
+                vpMatrixFromLight: cameraComponent.worldToCameraMatrix.applyMatrix(cameraComponent.pMatrix, true)
             };
         };
         TwoDShadowMapRenderTargetRendererUtils.prototype.addShadowMap = function (material, shadowMap) {
@@ -23139,6 +23604,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var WebGLRenderer = (function (_super) {
@@ -23168,12 +23639,21 @@ var wd;
             return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
         };
         WebGLRenderer.prototype.render = function () {
-            var deviceManager = wd.DeviceManager.getInstance();
+            var deviceManager = wd.DeviceManager.getInstance(), transparentCommands = [];
             deviceManager.clear(this._clearOptions);
-            this._renderOpaqueCommands();
-            deviceManager.depthWrite = false;
-            this._renderSortedTransparentCommands();
-            deviceManager.depthWrite = true;
+            this._commandQueue.forEach(function (command) {
+                if (command.blend) {
+                    transparentCommands.push(command);
+                }
+                else {
+                    command.execute();
+                }
+            });
+            if (transparentCommands.length > 0) {
+                deviceManager.depthWrite = false;
+                this._renderSortedTransparentCommands(transparentCommands);
+                deviceManager.depthWrite = true;
+            }
             if (this.skyboxCommand) {
                 deviceManager.depthFunc = wd.EDepthFunction.LEQUAL;
                 this.skyboxCommand.execute();
@@ -23194,27 +23674,18 @@ var wd;
                 color: color
             });
         };
-        WebGLRenderer.prototype._renderOpaqueCommands = function () {
-            this._commandQueue
-                .removeChild(function (command) {
-                return !command.material.blend;
-            })
-                .forEach(function (command) {
-                command.execute();
-            });
-        };
-        WebGLRenderer.prototype._renderSortedTransparentCommands = function () {
-            var self = this;
-            this._commandQueue
+        WebGLRenderer.prototype._renderSortedTransparentCommands = function (transparentCommands) {
+            var self = this, cameraPositionZ = wd.Director.getInstance().scene.currentCamera.transform.position.z;
+            transparentCommands
                 .sort(function (a, b) {
-                return self._getObjectToCameraZDistance(b) - self._getObjectToCameraZDistance(a);
+                return self._getObjectToCameraZDistance(cameraPositionZ, b) - self._getObjectToCameraZDistance(cameraPositionZ, a);
             })
                 .forEach(function (command) {
                 command.execute();
             });
         };
-        WebGLRenderer.prototype._getObjectToCameraZDistance = function (quad) {
-            return wd.Director.getInstance().scene.currentCamera.transform.position.z - quad.z;
+        WebGLRenderer.prototype._getObjectToCameraZDistance = function (cameraPositionZ, quad) {
+            return cameraPositionZ - quad.z;
         };
         WebGLRenderer.prototype._clearCommand = function () {
             this._commandQueue.removeAllChildren();
@@ -23223,6 +23694,11 @@ var wd;
         WebGLRenderer.prototype._setClearOptions = function (clearOptions) {
             wdCb.ExtendUtils.extend(this._clearOptions, clearOptions);
         };
+        __decorate([
+            wd.require(function (transparentCommands) {
+                wd.assert(!!wd.Director.getInstance().scene.currentCamera, wd.Log.info.FUNC_NOT_EXIST("current camera"));
+            })
+        ], WebGLRenderer.prototype, "_renderSortedTransparentCommands", null);
         return WebGLRenderer;
     }(wd.Renderer));
     wd.WebGLRenderer = WebGLRenderer;
@@ -23518,6 +23994,12 @@ var wd;
     wd.ArrayBuffer = ArrayBuffer;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
@@ -23532,9 +24014,13 @@ var wd;
         }
         BufferDataTable.getGeometryDataName = function (type) {
             var result = _table.getChild(type);
-            wd.Log.error(result === void 0, wd.Log.info.FUNC_NOT_EXIST(type, "in BufferDataTable"));
             return result;
         };
+        __decorate([
+            wd.ensure(function (result, type) {
+                wd.Log.error(result === void 0, wd.Log.info.FUNC_NOT_EXIST(type, "in BufferDataTable"));
+            })
+        ], BufferDataTable, "getGeometryDataName", null);
         return BufferDataTable;
     }());
     wd.BufferDataTable = BufferDataTable;
@@ -23552,6 +24038,10 @@ var wd;
         function Program() {
             this._program = null;
             this._shader = null;
+            this._getAttribLocationCache = wdCb.Hash.create();
+            this._getUniformLocationCache = wdCb.Hash.create();
+            this._attributesFromCustomShaderCache = null;
+            this._uniformsFromCustomShaderCache = null;
         }
         Program.create = function () {
             var obj = new this();
@@ -23561,7 +24051,16 @@ var wd;
             wd.DeviceManager.getInstance().gl.useProgram(this._program);
         };
         Program.prototype.getUniformLocation = function (name) {
-            return wd.DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+            var pos = null;
+            if (!this._shader.dirty) {
+                pos = this._getUniformLocationCache.getChild(name);
+                if (pos !== void 0) {
+                    return pos;
+                }
+            }
+            pos = wd.DeviceManager.getInstance().gl.getUniformLocation(this._program, name);
+            this._getUniformLocationCache.addChild(name, pos);
+            return pos;
         };
         Program.prototype.sendUniformData = function () {
             var args = [];
@@ -23569,15 +24068,15 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             var gl = wd.DeviceManager.getInstance().gl, pos = null, type = null, data = null;
-            if (args[0] === null || args[0] instanceof WebGLUniformLocation) {
-                pos = args[0];
-            }
-            else {
+            type = args[1];
+            data = args[2];
+            if (wd.JudgeUtils.isString(args[0])) {
                 var name_1 = args[0];
                 pos = this.getUniformLocation(name_1);
             }
-            type = args[1];
-            data = args[2];
+            else {
+                pos = args[0];
+            }
             if (this.isUniformDataNotExistByLocation(pos) || data === null) {
                 return;
             }
@@ -23592,12 +24091,12 @@ var wd;
                     gl.uniform2f(pos, data[0], data[1]);
                     break;
                 case wd.EVariableType.FLOAT_3:
-                    data = this._convertToVector3(data);
-                    gl.uniform3f(pos, data.x, data.y, data.z);
+                    data = this._convertToArray3(data);
+                    gl.uniform3f(pos, data[0], data[1], data[2]);
                     break;
                 case wd.EVariableType.FLOAT_4:
-                    data = this._convertToVector4(data);
-                    gl.uniform4f(pos, data.x, data.y, data.z, data.w);
+                    data = this._convertToArray4(data);
+                    gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
                     break;
                 case wd.EVariableType.FLOAT_MAT3:
                     gl.uniformMatrix3fv(pos, false, data.values);
@@ -23617,13 +24116,9 @@ var wd;
         };
         Program.prototype.sendUniformDataFromCustomShader = function () {
             var self = this;
-            this._shader.uniforms
-                .filter(function (val) {
-                return val.value !== wd.EVariableCategory.ENGINE;
-            })
+            this._getUniformsFromCustomShader()
                 .forEach(function (val, key) {
                 if (val.type === wd.EVariableType.STRUCTURE) {
-                    wd.Log.error(!wd.JudgeUtils.isDirectObject(val.value), wd.Log.info.FUNC_MUST_BE("value's type", "object{}"));
                     for (var i in val.value) {
                         self.sendStructureData(key + "." + i, val.value[i].type, val.value[i].value);
                     }
@@ -23635,13 +24130,12 @@ var wd;
         };
         Program.prototype.sendAttributeData = function (name, type, data) {
             var gl = wd.DeviceManager.getInstance().gl, pos = null, buffer = null;
-            pos = gl.getAttribLocation(this._program, name);
+            pos = this._getAttribLocation(gl, name);
             if (pos === -1 || data === null) {
                 return;
             }
             if (wd.JudgeUtils.isFunction(data)) {
                 buffer = data();
-                wd.Log.error(!(data instanceof wd.ArrayBuffer), wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
             }
             else {
                 buffer = data;
@@ -23659,10 +24153,7 @@ var wd;
         };
         Program.prototype.sendAttributeDataFromCustomShader = function () {
             var self = this;
-            this._shader.attributes
-                .filter(function (val) {
-                return val.value !== wd.EVariableCategory.ENGINE;
-            })
+            this._getAttributesFromCustomShader()
                 .forEach(function (val, key) {
                 self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
             });
@@ -23696,45 +24187,115 @@ var wd;
         Program.prototype._convertAttributeDataType = function (val) {
             return wd.EVariableType.BUFFER;
         };
-        Program.prototype._convertToVector3 = function (data) {
+        Program.prototype._convertToArray3 = function (data) {
             if (wd.JudgeUtils.isArray(data)) {
-                return wd.Vector3.create(data[0], data[1], data[2]);
+                return data;
             }
-            return data;
+            return [data.x, data.y, data.z];
         };
-        Program.prototype._convertToVector4 = function (data) {
+        Program.prototype._convertToArray4 = function (data) {
             if (wd.JudgeUtils.isArray(data)) {
-                return wd.Vector4.create(data[0], data[1], data[2], data[3]);
+                return data;
             }
-            return data;
+            return [data.x, data.y, data.z, data.w];
         };
+        Program.prototype._getAttribLocation = function (gl, name) {
+            var pos = null;
+            if (!this._shader.dirty) {
+                pos = this._getAttribLocationCache.getChild(name);
+                if (pos !== void 0) {
+                    return pos;
+                }
+            }
+            pos = gl.getAttribLocation(this._program, name);
+            this._getAttribLocationCache.addChild(name, pos);
+            return pos;
+        };
+        Program.prototype._getAttributesFromCustomShader = function () {
+            return this._shader.attributes
+                .filter(function (val) {
+                return val.value !== wd.EVariableCategory.ENGINE;
+            });
+        };
+        Program.prototype._getUniformsFromCustomShader = function () {
+            return this._shader.uniforms
+                .filter(function (val) {
+                return val.value !== wd.EVariableCategory.ENGINE;
+            });
+        };
+        __decorate([
+            wd.require(function () {
+                this._shader.uniforms
+                    .filter(function (val) {
+                    return val.value !== wd.EVariableCategory.ENGINE;
+                })
+                    .forEach(function (val, key) {
+                    if (val.type === wd.EVariableType.STRUCTURE) {
+                        wd.Log.error(!wd.JudgeUtils.isDirectObject(val.value), wd.Log.info.FUNC_MUST_BE("value's type", "object{}"));
+                    }
+                });
+            })
+        ], Program.prototype, "sendUniformDataFromCustomShader", null);
+        __decorate([
+            wd.require(function (name, type, data) {
+                if (data && wd.JudgeUtils.isFunction(data)) {
+                    wd.Log.error(!(data instanceof wd.ArrayBuffer), wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+                }
+            })
+        ], Program.prototype, "sendAttributeData", null);
         __decorate([
             wd.require(function (data) {
                 wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector3, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
             })
-        ], Program.prototype, "_convertToVector3", null);
+        ], Program.prototype, "_convertToArray3", null);
         __decorate([
             wd.require(function (data) {
                 wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector4, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector4> stucture"));
             })
-        ], Program.prototype, "_convertToVector4", null);
+        ], Program.prototype, "_convertToArray4", null);
+        __decorate([
+            wd.cache(function () {
+                return !this._shader.dirty && this._attributesFromCustomShaderCache !== null;
+            }, function () {
+                return this._attributesFromCustomShaderCache;
+            }, function (result) {
+                this._attributesFromCustomShaderCache = result;
+            })
+        ], Program.prototype, "_getAttributesFromCustomShader", null);
+        __decorate([
+            wd.cache(function () {
+                return !this._shader.dirty && this._uniformsFromCustomShaderCache !== null;
+            }, function () {
+                return this._uniformsFromCustomShaderCache;
+            }, function (result) {
+                this._uniformsFromCustomShaderCache = result;
+            })
+        ], Program.prototype, "_getUniformsFromCustomShader", null);
         return Program;
     }());
     wd.Program = Program;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var QuadCommand = (function () {
         function QuadCommand() {
+            this._mMatrix = null;
             this.buffers = null;
-            this.mMatrix = null;
             this.vMatrix = null;
             this.pMatrix = null;
             this.drawMode = wd.EDrawMode.TRIANGLES;
             this.z = null;
+            this.blend = false;
             this.material = null;
             this.animation = null;
+            this._normalMatrixCache = null;
         }
         QuadCommand.create = function () {
             var obj = new this();
@@ -23747,18 +24308,37 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(QuadCommand.prototype, "normalMatrix", {
+            get: function () {
+                return this.mMatrix.invertTo3x3().transpose();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QuadCommand.prototype, "mMatrix", {
+            get: function () {
+                return this._mMatrix;
+            },
+            set: function (mMatrix) {
+                this._mMatrix = mMatrix;
+                this._normalMatrixCache = null;
+            },
+            enumerable: true,
+            configurable: true
+        });
         QuadCommand.prototype.execute = function () {
-            this.material.updateTexture();
-            this.material.updateShader(this);
-            this._draw();
+            var material = this.material;
+            material.updateTexture();
+            material.updateShader(this);
+            this._draw(material);
         };
         QuadCommand.prototype.init = function () {
         };
-        QuadCommand.prototype._draw = function () {
-            var totalNum = 0, startOffset = 0, vertexBuffer = null, gl = wd.DeviceManager.getInstance().gl;
-            this._setEffects();
-            if (this.buffers.hasChild(wd.EBufferDataType.INDICE)) {
-                var indexBuffer = this.buffers.getChild(wd.EBufferDataType.INDICE);
+        QuadCommand.prototype._draw = function (material) {
+            var totalNum = 0, startOffset = 0, vertexBuffer = null, indexBuffer = null, gl = wd.DeviceManager.getInstance().gl;
+            this._setEffects(material);
+            indexBuffer = this.buffers.getChild(wd.EBufferDataType.INDICE);
+            if (indexBuffer) {
                 totalNum = indexBuffer.count;
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
                 wd.GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
@@ -23769,8 +24349,8 @@ var wd;
                 wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
             }
         };
-        QuadCommand.prototype._setEffects = function () {
-            var deviceManager = wd.DeviceManager.getInstance(), material = this.material;
+        QuadCommand.prototype._setEffects = function (material) {
+            var deviceManager = wd.DeviceManager.getInstance();
             deviceManager.setColorWrite(material.redWrite, material.greenWrite, material.blueWrite, material.alphaWrite);
             deviceManager.polygonOffsetMode = material.polygonOffsetMode;
             deviceManager.side = this._getSide();
@@ -23780,7 +24360,6 @@ var wd;
                 deviceManager.setBlendEquationSeparate(material.blendEquationSeparate);
             }
             else {
-                wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
                 deviceManager.setBlendFunc(material.blendSrc, material.blendDst);
                 deviceManager.setBlendEquation(material.blendEquation);
             }
@@ -23789,6 +24368,27 @@ var wd;
             var scene = wd.Director.getInstance().scene;
             return scene.side ? scene.side : this.material.side;
         };
+        __decorate([
+            wd.requireGetter(function () {
+                wd.assert(!!this.mMatrix, wd.Log.info.FUNC_NOT_EXIST("mMatrix"));
+            }),
+            wd.cacheGetter(function () {
+                return this._normalMatrixCache !== null;
+            }, function () {
+                return this._normalMatrixCache;
+            }, function (result) {
+                this._normalMatrixCache = result;
+            })
+        ], QuadCommand.prototype, "normalMatrix", null);
+        __decorate([
+            wd.require(function (material) {
+                if (material.blendFuncSeparate && material.blendEquationSeparate) {
+                }
+                else {
+                    wdCb.Log.error(!material.blendSrc || !material.blendDst || !material.blendEquation, wdCb.Log.info.FUNC_MUST("material.blendSrc || material.blendDst || material.blendEquation", "be set"));
+                }
+            })
+        ], QuadCommand.prototype, "_setEffects", null);
         return QuadCommand;
     }());
     wd.QuadCommand = QuadCommand;
@@ -23888,6 +24488,12 @@ var wd;
     wd.FrameBuffer = FrameBuffer;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var Shader = (function () {
@@ -23897,6 +24503,7 @@ var wd;
             this._vsSource = "";
             this._fsSource = "";
             this.program = wd.Program.create();
+            this.libDirty = true;
             this._definitionDataDirty = true;
             this._libs = wdCb.Collection.create();
             this._sourceBuilder = wd.ShaderSourceBuilder.create();
@@ -23957,6 +24564,13 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Shader.prototype, "dirty", {
+            get: function () {
+                return this.libDirty || this._definitionDataDirty;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Shader.prototype.createVsShader = function () {
             var gl = wd.DeviceManager.getInstance().gl;
             return this._initShader(gl.createShader(gl.VERTEX_SHADER), this.vsSource);
@@ -23970,13 +24584,25 @@ var wd;
                 && this.fsSource === other.fsSource;
         };
         Shader.prototype.init = function () {
+            this._libs.forEach(function (lib) {
+                lib.init();
+            });
+        };
+        Shader.prototype.dispose = function () {
+            this.program.dispose();
+            this.attributes.removeAllChildren();
+            this.uniforms.removeAllChildren();
+            this._libs.forEach(function (lib) {
+                lib.dispose();
+            });
         };
         Shader.prototype.update = function (quadCmd, material) {
             var program = this.program;
-            this.buildDefinitionData(quadCmd, material);
+            if (this.libDirty) {
+                this.buildDefinitionData(quadCmd, material);
+            }
             if (this._definitionDataDirty) {
                 this.program.initWithShader(this);
-                this._definitionDataDirty = false;
             }
             this.program.use();
             this._libs.forEach(function (lib) {
@@ -23985,6 +24611,8 @@ var wd;
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
             material.mapManager.sendData(program);
+            this.libDirty = false;
+            this._definitionDataDirty = false;
         };
         Shader.prototype.hasLib = function () {
             var args = [];
@@ -23997,16 +24625,20 @@ var wd;
             }
             else {
                 var _class_1 = args[0];
-                return this._libs.hasChild(function (lib) {
+                return this._libs.hasChildWithFunc(function (lib) {
                     return lib instanceof _class_1;
                 });
             }
         };
         Shader.prototype.addLib = function (lib) {
             this._libs.addChild(lib);
+            lib.shader = this;
+            this.libDirty = true;
         };
         Shader.prototype.addShaderLibToTop = function (lib) {
             this._libs.unShiftChild(lib);
+            lib.shader = this;
+            this.libDirty = true;
         };
         Shader.prototype.getLib = function (libClass) {
             return this._libs.findOne(function (lib) {
@@ -24021,16 +24653,20 @@ var wd;
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
+            this.libDirty = true;
             return this._libs.removeChild(args[0]);
         };
         Shader.prototype.removeAllLibs = function () {
+            this.libDirty = true;
             this._libs.removeAllChildren();
         };
         Shader.prototype.sortLib = function (func) {
+            this.libDirty = true;
             this._libs = this._libs.sort(func);
         };
         Shader.prototype.read = function (definitionData) {
             this._sourceBuilder.read(definitionData);
+            this.libDirty = true;
         };
         Shader.prototype.buildDefinitionData = function (quadCmd, material) {
             this._libs.forEach(function (lib) {
@@ -24068,6 +24704,24 @@ var wd;
             });
             return result;
         };
+        __decorate([
+            wd.ensure(function () {
+                var self = this;
+                this._libs.forEach(function (lib) {
+                    wd.assert(wd.JudgeUtils.isEqual(lib.shader, self), wd.Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
+                });
+                wd.assert(this.libDirty === true, wd.Log.info.FUNC_SHOULD("libDirty", "be true"));
+            })
+        ], Shader.prototype, "addLib", null);
+        __decorate([
+            wd.ensure(function () {
+                var self = this;
+                this._libs.forEach(function (lib) {
+                    wd.assert(wd.JudgeUtils.isEqual(lib.shader, self), wd.Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
+                });
+                wd.assert(this.libDirty === true, wd.Log.info.FUNC_SHOULD("libDirty", "be true"));
+            })
+        ], Shader.prototype, "addShaderLibToTop", null);
         return Shader;
     }());
     wd.Shader = Shader;
@@ -24141,7 +24795,7 @@ var wd;
             this._buildFsSource();
             this.attributes
                 .filter(function (data) {
-                return (wd.JudgeUtils.isArray(data.value) || wd.JudgeUtils.isFloatArray(data.value)) && data.value !== wd.EVariableCategory.ENGINE;
+                return (wd.JudgeUtils.isArrayExactly(data.value) || wd.JudgeUtils.isFloatArray(data.value)) && data.value !== wd.EVariableCategory.ENGINE;
             })
                 .forEach(function (data, key) {
                 data.value = self._convertArrayToArrayBuffer(data.type, data.value);
@@ -24164,6 +24818,11 @@ var wd;
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+        };
+        ShaderSourceBuilder.prototype.dispose = function () {
+            this.clearShaderDefinition();
+            this.attributesFromShaderLib.removeAllChildren();
+            this.uniformsFromShaderLib.removeAllChildren();
         };
         ShaderSourceBuilder.prototype._readLibSource = function (libs) {
             var self = this, vsSourceTop = "", vsSourceDefine = "", vsSourceVarDeclare = "", vsSourceFuncDeclare = "", vsSourceFuncDefine = "", vsSourceBody = "", fsSourceTop = "", fsSourceDefine = "", fsSourceVarDeclare = "", fsSourceFuncDeclare = "", fsSourceFuncDefine = "", fsSourceBody = "";
@@ -24295,7 +24954,7 @@ var wd;
         };
         ShaderSourceBuilder.prototype._convertArrayToArrayBuffer = function (type, value) {
             var size = this._getBufferSize(type);
-            if (wd.JudgeUtils.isArray(value)) {
+            if (wd.JudgeUtils.isArrayExactly(value)) {
                 return wd.ArrayBuffer.create(new Float32Array(value), size, wd.EBufferType.FLOAT);
             }
             else if (wd.JudgeUtils.isFloatArray(value)) {
@@ -24589,6 +25248,7 @@ var wd;
     var ShaderLib = (function () {
         function ShaderLib() {
             this.type = wd.ABSTRACT_ATTRIBUTE;
+            this.shader = null;
             this.attributes = wdCb.Hash.create();
             this.uniforms = wdCb.Hash.create();
             this.vsSourceTop = "";
@@ -24613,6 +25273,10 @@ var wd;
             fs = this.getFsChunk();
             vs && this.setVsSource(vs);
             fs && this.setFsSource(fs);
+        };
+        ShaderLib.prototype.init = function () {
+        };
+        ShaderLib.prototype.dispose = function () {
         };
         ShaderLib.prototype.getVsChunk = function () {
             var args = [];
@@ -24719,6 +25383,12 @@ var wd;
             wd.virtual
         ], ShaderLib.prototype, "setShaderDefinition", null);
         __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "dispose", null);
+        __decorate([
             wd.require(function (program, name, data) {
                 wd.assert(!!wd.VariableLib[name], name + " should exist in VariableLib");
             })
@@ -24793,9 +25463,11 @@ var wd;
             this.addAttributeVariable(["a_position"]);
         };
         CommonVerticeShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.VERTICE)) {
-                this.sendAttributeData(program, "a_position", quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE));
+            var verticeBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE);
+            if (!verticeBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_position", verticeBuffer);
         };
         return CommonVerticeShaderLib;
     }(wd.ShaderLib));
@@ -24827,9 +25499,11 @@ var wd;
             this.addAttributeVariable(["a_normal"]);
         };
         CommonNormalShaderLib.prototype._sendAttributeVariables = function (program, quadCmd) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.NORMAL)) {
-                this.sendAttributeData(program, "a_normal", quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL));
+            var normalBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL);
+            if (!normalBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_normal", normalBuffer);
         };
         return CommonNormalShaderLib;
     }(wd.ShaderLib));
@@ -24854,10 +25528,12 @@ var wd;
             return obj;
         };
         BasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.COLOR)) {
-                this.sendAttributeData(program, "a_color", quadCmd.buffers.getChild(wd.EBufferDataType.COLOR));
-                this.sendUniformData(program, "u_opacity", material.opacity);
+            var colorBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.COLOR);
+            if (!colorBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_color", colorBuffer);
+            this.sendUniformData(program, "u_opacity", material.opacity);
         };
         BasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -24959,11 +25635,12 @@ var wd;
             return obj;
         };
         MorphVerticeShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.VERTICE)) {
-                var morphVerticeData = quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE);
-                this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
-                this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
+            var morphVerticeData = quadCmd.buffers.getChild(wd.EBufferDataType.VERTICE);
+            if (!morphVerticeData) {
+                return;
             }
+            this.sendAttributeData(program, "a_currentFramePosition", morphVerticeData[0]);
+            this.sendAttributeData(program, "a_nextFramePosition", morphVerticeData[1]);
         };
         MorphVerticeShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -24997,11 +25674,12 @@ var wd;
             return obj;
         };
         MorphNormalShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.NORMAL)) {
-                var morphNormalData = quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL);
-                this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
-                this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
+            var morphNormalData = quadCmd.buffers.getChild(wd.EBufferDataType.NORMAL);
+            if (!morphNormalData) {
+                return;
             }
+            this.sendAttributeData(program, "a_currentFrameNormal", morphNormalData[0]);
+            this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
         };
         MorphNormalShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -25053,7 +25731,7 @@ var wd;
             _super.apply(this, arguments);
         }
         EnvMapForBasicShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
+            this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
             this.sendUniformData(program, "u_cameraPos", wd.Director.getInstance().scene.currentCamera.transform.position);
         };
         EnvMapForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
@@ -25356,9 +26034,11 @@ var wd;
             _super.apply(this, arguments);
         }
         MapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.TEXCOORD)) {
-                this.sendAttributeData(program, "a_texCoord", quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD));
+            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
+            if (!texCoordBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
         };
         MapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -25519,7 +26199,7 @@ var wd;
             return obj;
         };
         LightShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_normalMatrix", quadCmd.mMatrix.copy().invertTo3x3().transpose());
+            this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
             this.sendUniformData(program, "u_cameraPos", wd.Director.getInstance().scene.currentCamera.transform.position);
             this.sendUniformData(program, "u_shininess", material.shininess);
             this.sendUniformData(program, "u_opacity", material.opacity);
@@ -25665,9 +26345,11 @@ var wd;
             _super.apply(this, arguments);
         }
         LightMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.TEXCOORD)) {
-                this.sendAttributeData(program, "a_texCoord", quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD));
+            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
+            if (!texCoordBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
         };
         LightMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -25781,10 +26463,13 @@ var wd;
             return obj;
         };
         NormalMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            var tangentBuffer = null;
             _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
-            if (quadCmd.buffers.hasChild(wd.EBufferDataType.TANGENT)) {
-                this.sendAttributeData(program, "a_tangent", quadCmd.buffers.getChild(wd.EBufferDataType.TANGENT));
+            tangentBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TANGENT);
+            if (!tangentBuffer) {
+                return;
             }
+            this.sendAttributeData(program, "a_tangent", tangentBuffer);
         };
         NormalMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
@@ -26029,7 +26714,18 @@ var wd;
         __extends(ShadowMapShaderLib, _super);
         function ShadowMapShaderLib() {
             _super.apply(this, arguments);
+            this._softTypeChangeSubscription = null;
         }
+        ShadowMapShaderLib.prototype.init = function () {
+            var shader = this.shader;
+            this._softTypeChangeSubscription = wd.EventManager.fromEvent(wd.Director.getInstance().scene.gameObjectScene, wd.EEngineEvent.SHADOWMAP_SOFTTYPE_CHANGE)
+                .subscribe(function () {
+                shader.libDirty = true;
+            });
+        };
+        ShadowMapShaderLib.prototype.dispose = function () {
+            this._softTypeChangeSubscription && this._softTypeChangeSubscription.dispose();
+        };
         ShadowMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this._setShadowMapSource();
@@ -26177,8 +26873,8 @@ var wd;
             this._blendSrc = wd.EBlendFunc.ONE;
             this._blendDst = wd.EBlendFunc.ZERO;
             this._blendEquation = wd.EBlendEquation.ADD;
+            this._color = wd.Color.create("#ffffff");
             this.shader = wd.Shader.create();
-            this.color = wd.Color.create("#ffffff");
             this.redWrite = true;
             this.greenWrite = true;
             this.blueWrite = true;
@@ -26333,6 +27029,21 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Material.prototype, "color", {
+            get: function () {
+                return this._color;
+            },
+            set: function (color) {
+                if (!this._isColorEqual(color, this._color)) {
+                    if (this.geometry && this.geometry.entityObject) {
+                        wd.EventManager.trigger(this.geometry.entityObject, wd.EEngineEvent.MATERIAL_COLOR_CHANGE);
+                    }
+                    this._color = color;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Material.prototype.init = function () {
             var self = this;
             this.shader.init();
@@ -26343,6 +27054,7 @@ var wd;
             });
         };
         Material.prototype.dispose = function () {
+            this.shader.dispose();
             this.mapManager.dispose();
             this._afterInitSubscription && this._afterInitSubscription.dispose();
         };
@@ -26376,7 +27088,7 @@ var wd;
             }
         };
         Material.prototype.setBlendByOpacity = function (opacity) {
-            if (opacity < 1.0 && opacity > 0.0) {
+            if (opacity < 1.0 && opacity >= 0.0) {
                 this.blend = true;
             }
             else {
@@ -26406,6 +27118,9 @@ var wd;
         Material.prototype._afterInitHandler = function () {
             this._addTopShaderLib();
             this.addShaderLib();
+        };
+        Material.prototype._isColorEqual = function (color1, color2) {
+            return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         };
         __decorate([
             wd.require(function () {
@@ -26809,13 +27524,21 @@ var wd;
     var EShading = wd.EShading;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var MapManager = (function () {
         function MapManager(material) {
             this._material = null;
-            this._textures = wdCb.Hash.create();
+            this._mapTable = wdCb.Hash.create();
             this._mirrorMap = null;
+            this._textureDirty = false;
+            this._mapArrCache = null;
             this._material = material;
         }
         MapManager.create = function (material) {
@@ -26823,9 +27546,11 @@ var wd;
             return obj;
         };
         MapManager.prototype.init = function () {
-            this._getMapList().forEach(function (texture) {
+            var mapList = this._getMapArr();
+            for (var i = 0, len = mapList.length; i < len; i++) {
+                var texture = mapList[i];
                 texture.init();
-            });
+            }
         };
         MapManager.prototype.addMap = function () {
             var args = [];
@@ -26845,10 +27570,11 @@ var wd;
                 this._setMapOption(map, option);
             }
             map.material = this._material;
-            this._textures.appendChild("map", map);
+            this._mapTable.appendChild("map", map);
+            this._textureDirty = true;
         };
         MapManager.prototype.getMap = function (index) {
-            return this._textures.getChild("map").getChild(index);
+            return this._mapTable.getChild("map").getChild(index);
         };
         MapManager.prototype.hasMap = function () {
             var args = [];
@@ -26856,8 +27582,16 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             var maps = null;
-            maps = this._textures.getChild("map");
-            return maps && maps.hasChild(args[0]);
+            maps = this._mapTable.getChild("map");
+            if (!maps) {
+                return false;
+            }
+            if (wd.JudgeUtils.isFunction(args[0])) {
+                return maps.hasChildWithFunc(args[0]);
+            }
+            else {
+                return maps.hasChild(args[0]);
+            }
         };
         MapManager.prototype.getMapCount = function () {
             var args = [];
@@ -26865,11 +27599,11 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             if (args.length === 0) {
-                var map = this._textures.getChild("map");
+                var map = this._mapTable.getChild("map");
                 return map ? map.getCount() : 0;
             }
             else {
-                var filterFunc = args[0], map = this._textures.getChild("map");
+                var filterFunc = args[0], map = this._mapTable.getChild("map");
                 return map ? map.filter(filterFunc).getCount() : 0;
             }
         };
@@ -26892,38 +27626,42 @@ var wd;
             return map === this._mirrorMap;
         };
         MapManager.prototype.removeAllChildren = function () {
-            this._textures.removeAllChildren();
+            this._mapTable.removeAllChildren();
+            this._textureDirty = true;
         };
         MapManager.prototype.dispose = function () {
-            this._getMapList().forEach(function (texture) {
+            var mapList = this._getMapArr();
+            for (var i = 0, len = mapList.length; i < len; i++) {
+                var texture = mapList[i];
                 texture.dispose();
-            });
+            }
             this.removeAllChildren();
         };
         MapManager.prototype.update = function () {
-            this._getMapList()
-                .filter(function (texture) {
-                return texture instanceof wd.BasicTexture && texture.needUpdate;
-            })
-                .forEach(function (texture, index) {
-                texture.update(index);
-            });
+            var mapList = this._getMapArr();
+            for (var i = 0, len = mapList.length; i < len; i++) {
+                var texture = mapList[i];
+                if (texture.needUpdate && texture instanceof wd.BasicTexture) {
+                    texture.update(i);
+                }
+            }
         };
         MapManager.prototype.sendData = function (program) {
-            this._getMapList().forEach(function (texture, index) {
-                var samplerName = texture.getSamplerName(index), pos = program.getUniformLocation(samplerName);
+            var mapList = this._getMapArr();
+            for (var i = 0, len = mapList.length; i < len; i++) {
+                var texture = mapList[i], samplerName = texture.getSamplerName(i), pos = program.getUniformLocation(samplerName);
                 if (program.isUniformDataNotExistByLocation(pos)) {
                     return;
                 }
-                texture.bindToUnit(index);
-                texture.sendData(program, pos, index);
-            });
+                texture.bindToUnit(i);
+                texture.sendData(program, pos, i);
+            }
         };
-        MapManager.prototype._getMapList = function () {
-            return this._textures.toCollection();
+        MapManager.prototype._getMapArr = function () {
+            return this._mapTable.toArray();
         };
         MapManager.prototype._getMap = function (key) {
-            return this._textures.getChild(key);
+            return this._mapTable.getChild(key);
         };
         MapManager.prototype._setMap = function () {
             var args = [];
@@ -26940,14 +27678,25 @@ var wd;
                 this._setMapOption(map, option);
             }
             map.material = this._material;
-            this._textures.addChild(key, map);
+            this._mapTable.addChild(key, map);
         };
         MapManager.prototype._removeMap = function (key, map) {
-            this._textures.removeChild(key);
+            this._mapTable.removeChild(key);
+            this._textureDirty = true;
         };
         MapManager.prototype._setMapOption = function (map, option) {
             map.variableData = option;
         };
+        __decorate([
+            wd.cache(function () {
+                return !this._textureDirty && this._mapArrCache;
+            }, function () {
+                return this._mapArrCache;
+            }, function (mapList) {
+                this._mapArrCache = mapList;
+                this._textureDirty = false;
+            })
+        ], MapManager.prototype, "_getMapArr", null);
         return MapManager;
     }());
     wd.MapManager = MapManager;
@@ -26975,7 +27724,7 @@ var wd;
             }
             var url = args[0], id = null, self = this, data = null, stream = null;
             if (args.length === 1) {
-                if (wd.JudgeUtils.isArray(url)) {
+                if (wd.JudgeUtils.isArrayExactly(url)) {
                     id = url.join("-");
                 }
                 else {
@@ -27014,7 +27763,7 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             var path = null, err = null;
-            if (wd.JudgeUtils.isArray(args[0])) {
+            if (wd.JudgeUtils.isArrayExactly(args[0])) {
                 path = args[0].join(",");
             }
             else {
@@ -27067,7 +27816,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], GLSLLoader.prototype, "loadAsset", null);
         return GLSLLoader;
@@ -27144,7 +27893,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], JsLoader.prototype, "loadAsset", null);
         return JsLoader;
@@ -27265,7 +28014,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], TextureLoader.prototype, "loadAsset", null);
         return TextureLoader;
@@ -27898,7 +28647,7 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             var type = args[0], extname = null;
-            if (wd.JudgeUtils.isArray(args[1])) {
+            if (wd.JudgeUtils.isArrayExactly(args[1])) {
                 extname = wdCb.PathUtils.extname(args[1][0]);
             }
             else {
@@ -28087,7 +28836,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], GLTFLoader.prototype, "loadAsset", null);
         return GLTFLoader;
@@ -28129,7 +28878,7 @@ var wd;
                 if (self._isModelContainer(object)) {
                     model.addTag(wd.EWDTag.CONTAINER);
                 }
-                self._addComponents(model, object.components);
+                self._addComponentsFromGLTF(model, object.components);
                 model.addComponent(wd.MeshRenderer.create());
                 if (object.children) {
                     object.children.forEach(function (child) {
@@ -28149,7 +28898,7 @@ var wd;
         GLTFAssembler.prototype._isModelContainer = function (object) {
             return object.isContainer;
         };
-        GLTFAssembler.prototype._addComponents = function (model, components) {
+        GLTFAssembler.prototype._addComponentsFromGLTF = function (model, components) {
             var self = this;
             components.forEach(function (component) {
                 if (self._isTransform(component)) {
@@ -28187,14 +28936,14 @@ var wd;
         GLTFAssembler.prototype._createTransform = function (component) {
             var transform = wd.ThreeDTransform.create();
             if (component.matrix) {
-                transform.position = component.matrix.getTranslation();
-                transform.rotation = component.matrix.getRotation();
-                transform.scale = component.matrix.getScale();
+                transform.localPosition = component.matrix.getTranslation();
+                transform.localRotation = component.matrix.getRotation();
+                transform.localScale = component.matrix.getScale();
             }
             else {
-                transform.position = component.position;
-                transform.rotation = component.rotation;
-                transform.scale = component.scale;
+                transform.localPosition = component.position;
+                transform.localRotation = component.rotation;
+                transform.localScale = component.scale;
             }
             return transform;
         };
@@ -28258,8 +29007,9 @@ var wd;
         GLTFAssembler.prototype._createLightMaterial = function (materialData) {
             var material = wd.LightMaterial.create();
             this._setBasicDataOfMaterial(material, materialData);
-            if (!!materialData.transparent && materialData.transparent === true && materialData.opacity) {
+            if (materialData.transparent === true && materialData.opacity !== void 0) {
                 material.opacity = materialData.opacity;
+                material.blendType = wd.EBlendType.NORMAL;
             }
             if (materialData.lightModel === wd.ELightModel.LAMBERT) {
                 wd.Log.log(wd.Log.info.FUNC_NOT_SUPPORT("LAMBERT light model, use PHONG light model instead"));
@@ -28691,8 +29441,7 @@ var wd;
             wd.Log.error(!materialData.extensions || !materialData.extensions.KHR_materials_common, wd.Log.info.FUNC_SHOULD("materials", "define KHR_materials_common extensions"));
             materialExtension = materialData.extensions.KHR_materials_common;
             wd.GLTFUtils.addData(material, "doubleSided", materialExtension.doubleSided);
-            wd.GLTFUtils.addData(material, "transparent", materialExtension.transparent);
-            wd.GLTFUtils.addData(material, "opacity", materialExtension.transparency);
+            wd.GLTFUtils.addData(material, "transparent", Boolean(materialExtension.transparent));
             material.type = this._getMaterialType(materialExtension.technique);
             material.lightModel = this._getLightModel(materialExtension.technique);
             this._addMaterialExtensionValues(material, materialExtension.values);
@@ -28754,12 +29503,15 @@ var wd;
             if (values.shininess) {
                 material.shininess = values.shininess.value;
             }
+            if (values.transparency) {
+                material.opacity = values.transparency.value;
+            }
         };
         GLTFMaterialParser.prototype._addMaterialLightColor = function (material, colorName, colorData) {
             if (!colorData) {
                 return;
             }
-            if (wd.JudgeUtils.isArray(colorData)) {
+            if (wd.JudgeUtils.isArrayExactly(colorData)) {
                 material[(colorName + "Color")] = wd.GLTFUtils.getColor(colorData);
             }
             else {
@@ -28927,36 +29679,65 @@ var wd;
         function GLTFArticulatedAnimationParser() {
             this._arrayBufferMap = null;
             this._json = null;
-            this._arrayOffset = null;
+            this._translationArrayOffset = null;
+            this._rotationArrayOffset = null;
+            this._scaleArrayOffset = null;
         }
         GLTFArticulatedAnimationParser.create = function () {
             var obj = new this();
             return obj;
         };
         GLTFArticulatedAnimationParser.prototype.parse = function (json, objects, arrayBufferMap) {
-            var nodeWithAnimationMap = wdCb.Hash.create();
+            var _this = this;
+            var nodeWithAnimationMap = wdCb.Hash.create(), self = this;
             this._json = json;
             this._arrayBufferMap = arrayBufferMap;
-            for (var animName in json.animations) {
-                if (json.animations.hasOwnProperty(animName)) {
-                    var animation = json.animations[animName], keyFrameDataList = wdCb.Collection.create();
-                    for (var i = 0, len = animation.channels.length; i < len; i++) {
-                        var channel = animation.channels[i], sampler = animation.samplers[channel.sampler], targetId = null, targetNode = null;
-                        if (!sampler) {
-                            continue;
-                        }
-                        targetId = channel.target.id;
-                        targetNode = this._findNode(objects, targetId);
-                        if (targetNode === null) {
-                            wd.Log.warn("can't find node whose id is " + targetId + " to attach to animation named " + animName);
-                            continue;
-                        }
-                        this._addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, animName, keyFrameDataList);
-                        this._addKeyFrameDatas(keyFrameDataList, channel, animation, sampler);
+            var _loop_1 = function(animId) {
+                if (json.animations.hasOwnProperty(animId)) {
+                    var animation_1 = json.animations[animId], nodeWithChannelMap = wdCb.Hash.create();
+                    for (var i = 0, len = animation_1.channels.length; i < len; i++) {
+                        var channel = animation_1.channels[i], targetId = channel.target.id;
+                        nodeWithChannelMap.appendChild(targetId, channel);
                     }
+                    nodeWithChannelMap.forEach(function (channelList, targetId) {
+                        var keyFrameDataList = wdCb.Collection.create(), targetNode = self._findNode(objects, targetId), inputData = null, bufferInput = null;
+                        if (targetNode === null) {
+                            wd.Log.warn("can't find node whose id is " + targetId + " to attach to animation named " + animId);
+                            return;
+                        }
+                        self._addAnimationToNode(nodeWithAnimationMap, targetId, targetNode, self._getAnimName(animation_1, animId), keyFrameDataList);
+                        inputData = self._getInputData(animation_1, channelList);
+                        bufferInput = wd.GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
+                        _this._translationArrayOffset = 0;
+                        _this._rotationArrayOffset = 0;
+                        _this._scaleArrayOffset = 0;
+                        for (var j = 0; j < bufferInput.length; j++) {
+                            var keyFrameData = {};
+                            keyFrameData.time = _this._convertSecondToMillisecond(bufferInput[j]);
+                            keyFrameData.targets = _this._getKeyFrameDataTargets(animation_1, channelList);
+                            keyFrameDataList.addChild(keyFrameData);
+                        }
+                    });
                 }
+            };
+            for (var animId in json.animations) {
+                _loop_1(animId);
             }
             this._addAnimationComponent(nodeWithAnimationMap);
+        };
+        GLTFArticulatedAnimationParser.prototype._getAnimName = function (animation, animId) {
+            return animation.name ? animation.name : animId;
+        };
+        GLTFArticulatedAnimationParser.prototype._getInputData = function (animation, channelList) {
+            var result = null;
+            channelList.forEach(function (channel) {
+                var sampler = animation.samplers[channel.sampler];
+                if (sampler) {
+                    result = animation.parameters[sampler.input];
+                    return wdCb.$BREAK;
+                }
+            });
+            return result;
         };
         GLTFArticulatedAnimationParser.prototype._addAnimationToNode = function (nodeWithAnimationMap, targetId, targetNode, animName, keyFrameDataList) {
             if (!nodeWithAnimationMap.hasChild(targetId)) {
@@ -28967,45 +29748,40 @@ var wd;
             }
             nodeWithAnimationMap.getChild(targetId).animationData[animName] = keyFrameDataList;
         };
-        GLTFArticulatedAnimationParser.prototype._addKeyFrameDatas = function (keyFrameDataList, channel, animation, sampler) {
-            var targetPath = channel.target.path, json = this._json, arrayBufferMap = this._arrayBufferMap, inputData = animation.parameters[sampler.input], bufferInput = wd.GLTFUtils.getBufferArrFromAccessor(json, json.accessors[inputData], arrayBufferMap);
-            this._arrayOffset = 0;
-            for (var j = 0; j < bufferInput.length; j++) {
-                var keyFrameData = {};
-                keyFrameData.time = this._convertSecondToMillisecond(bufferInput[j]);
-                keyFrameData.interpolationMethod = this._convertTointerpolationMethod(sampler.interpolation);
-                keyFrameData.targets = this._getKeyFrameDataTargets(targetPath, animation, sampler);
-                keyFrameDataList.addChild(keyFrameData);
-            }
-        };
-        GLTFArticulatedAnimationParser.prototype._getKeyFrameDataTargets = function (targetPath, animation, sampler) {
-            var targets = wdCb.Collection.create(), outputData = animation.parameters[sampler.output], bufferOutput = wd.GLTFUtils.getBufferArrFromAccessor(this._json, this._json.accessors[outputData], this._arrayBufferMap);
-            switch (targetPath) {
-                case "translation":
-                    targets.addChild({
-                        target: wd.EArticulatedAnimationTarget.TRANSLATION,
-                        data: wd.Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
-                    });
-                    this._arrayOffset += 3;
-                    break;
-                case "rotation":
-                    targets.addChild({
-                        target: wd.EArticulatedAnimationTarget.ROTATION,
-                        data: wd.Quaternion.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2], bufferOutput[this._arrayOffset + 3])
-                    });
-                    this._arrayOffset += 4;
-                    break;
-                case "scale":
-                    targets.addChild({
-                        target: wd.EArticulatedAnimationTarget.SCALE,
-                        data: wd.Vector3.create(bufferOutput[this._arrayOffset], bufferOutput[this._arrayOffset + 1], bufferOutput[this._arrayOffset + 2])
-                    });
-                    this._arrayOffset += 3;
-                    break;
-                default:
-                    wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("path:" + targetPath));
-                    break;
-            }
+        GLTFArticulatedAnimationParser.prototype._getKeyFrameDataTargets = function (animation, channelList) {
+            var _this = this;
+            var targets = wdCb.Collection.create();
+            channelList.forEach(function (channel) {
+                var sampler = animation.samplers[channel.sampler], outputData = null, bufferOutput = null, targetPath = null, targetData = {};
+                if (!sampler) {
+                    return;
+                }
+                targetPath = channel.target.path;
+                outputData = animation.parameters[sampler.output];
+                bufferOutput = wd.GLTFUtils.getBufferArrFromAccessor(_this._json, _this._json.accessors[outputData], _this._arrayBufferMap);
+                targetData.interpolationMethod = _this._convertTointerpolationMethod(sampler.interpolation);
+                switch (targetPath) {
+                    case "translation":
+                        targetData.target = wd.EArticulatedAnimationTarget.TRANSLATION;
+                        targetData.data = wd.Vector3.create(bufferOutput[_this._translationArrayOffset], bufferOutput[_this._translationArrayOffset + 1], bufferOutput[_this._translationArrayOffset + 2]);
+                        _this._translationArrayOffset += 3;
+                        break;
+                    case "rotation":
+                        targetData.target = wd.EArticulatedAnimationTarget.ROTATION;
+                        targetData.data = wd.Quaternion.create(bufferOutput[_this._rotationArrayOffset], bufferOutput[_this._rotationArrayOffset + 1], bufferOutput[_this._rotationArrayOffset + 2], bufferOutput[_this._rotationArrayOffset + 3]);
+                        _this._rotationArrayOffset += 4;
+                        break;
+                    case "scale":
+                        targetData.target = wd.EArticulatedAnimationTarget.SCALE;
+                        targetData.data = wd.Vector3.create(bufferOutput[_this._scaleArrayOffset], bufferOutput[_this._scaleArrayOffset + 1], bufferOutput[_this._scaleArrayOffset + 2]);
+                        _this._scaleArrayOffset += 3;
+                        break;
+                    default:
+                        wd.Log.error(true, wd.Log.info.FUNC_NOT_SUPPORT("path:" + targetPath));
+                        break;
+                }
+                targets.addChild(targetData);
+            });
             return targets;
         };
         GLTFArticulatedAnimationParser.prototype._findNode = function (objects, targetId) {
@@ -29044,6 +29820,18 @@ var wd;
                     break;
             }
         };
+        __decorate([
+            wd.require(function (animation, channelList) {
+                var inputSamplerList = wdCb.Collection.create();
+                for (var samplerId in animation.samplers) {
+                    if (animation.samplers.hasOwnProperty(samplerId)) {
+                        var sampelr = animation.samplers[samplerId];
+                        inputSamplerList.addChild(sampelr.input);
+                    }
+                }
+                wd.assert(inputSamplerList.removeRepeatItems().getCount() === 1, wd.Log.info.FUNC_SHOULD("all sampler->input", "be the same"));
+            })
+        ], GLTFArticulatedAnimationParser.prototype, "_getInputData", null);
         __decorate([
             wd.ensure(function (returnVal, nodeWithAnimationMap) {
                 nodeWithAnimationMap.forEach(function (_a) {
@@ -29231,7 +30019,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], WDLoader.prototype, "loadAsset", null);
         return WDLoader;
@@ -29393,7 +30181,7 @@ var wd;
             if (!data) {
                 return false;
             }
-            return data.hasChild(function (_a) {
+            return data.hasChildWithFunc(function (_a) {
                 var uvIndex = _a[0], verticeIndex = _a[1];
                 return uvIndex === targetUvIndex;
             });
@@ -29744,7 +30532,7 @@ var wd;
             var fontStyleEle = wdCb.DomQuery.create("<style id=\"" + familyName + "\"></style>"), fontStr = null;
             fontStyleEle.prependTo("body");
             fontStr = "@font-face { font-family:" + familyName + "; src:";
-            if (wd.JudgeUtils.isArray(args[0])) {
+            if (wd.JudgeUtils.isArrayExactly(args[0])) {
                 var urlArr = args[0];
                 for (var _i = 0, urlArr_1 = urlArr; _i < urlArr_1.length; _i++) {
                     var url = urlArr_1[_i];
@@ -29874,7 +30662,7 @@ var wd;
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i - 0] = arguments[_i];
                 }
-                wd.assert(!wd.JudgeUtils.isArray(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
             })
         ], FntLoader.prototype, "loadAsset", null);
         return FntLoader;
@@ -30522,21 +31310,90 @@ var wd;
     wd.ViewWebGL = ViewWebGL;
 })(wd || (wd = {}));
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var Color = (function () {
         function Color() {
-            this.r = null;
-            this.g = null;
-            this.b = null;
-            this.a = null;
+            this._r = null;
+            this._g = null;
+            this._b = null;
+            this._a = null;
             this._colorString = null;
+            this._colorVec3Cache = null;
+            this._colorVec4Cache = null;
         }
         Color.create = function (colorVal) {
             var obj = new this();
             obj.initWhenCreate(colorVal);
             return obj;
         };
+        Object.defineProperty(Color.prototype, "dirty", {
+            set: function (dirty) {
+                if (dirty) {
+                    this._clearCache();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Color.prototype, "r", {
+            get: function () {
+                return this._r;
+            },
+            set: function (r) {
+                if (this._r !== r) {
+                    this.dirty = true;
+                    this._r = r;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Color.prototype, "g", {
+            get: function () {
+                return this._g;
+            },
+            set: function (g) {
+                if (this._g !== g) {
+                    this.dirty = true;
+                    this._g = g;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Color.prototype, "b", {
+            get: function () {
+                return this._b;
+            },
+            set: function (b) {
+                if (this._b !== b) {
+                    this.dirty = true;
+                    this._b = b;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Color.prototype, "a", {
+            get: function () {
+                return this._a;
+            },
+            set: function (a) {
+                if (this._a !== a) {
+                    this.dirty = true;
+                    this._a = a;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Color.prototype.initWhenCreate = function (colorVal) {
             if (!colorVal) {
                 return;
@@ -30598,6 +31455,28 @@ var wd;
             this.a = 1;
             return this;
         };
+        Color.prototype._clearCache = function () {
+            this._colorVec3Cache = null;
+            this._colorVec4Cache = null;
+        };
+        __decorate([
+            wd.cache(function () {
+                return this._colorVec3Cache !== null;
+            }, function () {
+                return this._colorVec3Cache;
+            }, function (result) {
+                this._colorVec3Cache = result;
+            })
+        ], Color.prototype, "toVector3", null);
+        __decorate([
+            wd.cache(function () {
+                return this._colorVec4Cache !== null;
+            }, function () {
+                return this._colorVec4Cache;
+            }, function (result) {
+                this._colorVec4Cache = result;
+            })
+        ], Color.prototype, "toVector4", null);
         return Color;
     }());
     wd.Color = Color;
@@ -30824,7 +31703,7 @@ var wd;
                 return this._renderList;
             },
             set: function (renderList) {
-                if (wd.JudgeUtils.isArray(renderList)) {
+                if (wd.JudgeUtils.isArrayExactly(renderList)) {
                     this._renderList = wdCb.Collection.create(renderList);
                 }
                 else if (renderList instanceof wdCb.Collection) {
@@ -31927,6 +32806,16 @@ var wd;
 
 var wd;
 (function (wd) {
+    if (wd.JudgeUtils.isNodeJs()) {
+        wd.root = global;
+    }
+    else {
+        wd.root = window;
+    }
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
     var ShaderChunk = (function () {
         function ShaderChunk() {
         }
@@ -31944,15 +32833,15 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
-        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
-        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
         ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec3 materialDiffuse = getMaterialDiffuse();\n        vec3 materialSpecular = getMaterialSpecular();\n        vec3 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = u_emission * materialEmission;\n\n        vec3 ambientColor = u_ambient * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n        vec3 diffuseColor = diff * color * materialDiffuse * intensity;\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * intensity;\n\n        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n                attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec3 calcTotalLight(vec3 norm, vec3 viewDir){\n        vec3 totalLight = vec3(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
+        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
+        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
+        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
         ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
         ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
