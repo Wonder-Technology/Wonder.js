@@ -398,6 +398,27 @@ module wd{
             this._localEulerAnglesCache = null;
         }
 
+        protected handleWhenSetTransformState(transformState:ETransformState):void{
+            var eventName:string = null;
+
+            switch (transformState){
+                case ETransformState.ISTRANSLATE:
+                    eventName = <any>EEngineEvent.TRANSFORM_TRANSLATE;
+                    break;
+                case ETransformState.ISROTATE:
+                    eventName = <any>EEngineEvent.TRANSFORM_ROTATE;
+                    break;
+                case ETransformState.ISSCALE:
+                    eventName = <any>EEngineEvent.TRANSFORM_SCALE;
+                    break;
+                default:
+                    Log.error(true, Log.info.FUNC_UNKNOW(`transformState:${transformState}`));
+                    break;
+            }
+
+            EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
+        }
+
         private _resetTransformFlag(){
             this.isTranslate = false;
             this.isScale = false;

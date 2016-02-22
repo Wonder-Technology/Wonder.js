@@ -26,9 +26,7 @@ describe("Camera", function() {
     it("get cameraToWorldMatrix", function () {
         var matrix = {};
         setTransform({
-            localToWorldMatrix: {
-                copy: sandbox.stub().returns(matrix)
-            }
+            localToWorldMatrix: matrix
         });
 
         expect(camera.cameraToWorldMatrix).toEqual(matrix);

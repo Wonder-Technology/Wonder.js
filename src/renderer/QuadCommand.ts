@@ -10,8 +10,31 @@ module wd {
             return this.material.program;
         }
 
+        @requireGetter(function(){
+            assert(!!this.mMatrix, Log.info.FUNC_NOT_EXIST("mMatrix"));
+        })
+        @cacheGetter(function(){
+            return this._normalMatrixCache !== null;
+        }, function(){
+            return this._normalMatrixCache;
+        }, function(result){
+            this._normalMatrixCache = result;
+        })
+        get normalMatrix(){
+            return this.mMatrix.invertTo3x3().transpose();
+        }
+
+        private _mMatrix:Matrix4 = null;
+        get mMatrix(){
+            return this._mMatrix;
+        }
+        set mMatrix(mMatrix:Matrix4){
+            this._mMatrix = mMatrix;
+
+            this._normalMatrixCache = null;
+        }
+
         public buffers:BufferContainer = null;
-        public mMatrix:Matrix4 = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
         public drawMode:EDrawMode = EDrawMode.TRIANGLES;
@@ -19,6 +42,8 @@ module wd {
         public blend:boolean = false;
         public material:Material = null;
         public animation:Animation = null;
+
+        private _normalMatrixCache:Matrix4 = null;
 
         public execute() {
             var material = this.material;

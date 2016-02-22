@@ -11,7 +11,7 @@ module wd {
         }
 
         @cacheGetter(function(){
-            return !this.entityObject.transform.isTransform && this._worldToCameraMatrixCache !== null;
+            return this._worldToCameraMatrixCache !== null;
         }, function(){
             return this._worldToCameraMatrixCache;
         }, function(result){
@@ -36,7 +36,7 @@ module wd {
         public camera:Camera = null;
 
         private _worldToCameraMatrixCache:Matrix4 = null;
-        private _endLoopSubscription:wdFrp.IDisposable = null;
+        private _clearCacheSubscription:wdFrp.IDisposable = null;
 
         public init() {
             var self = this;
@@ -44,7 +44,13 @@ module wd {
             this.camera.entityObject = <GameObject>this.entityObject;
             this.camera.init();
 
-            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+            this._clearCacheSubscription = wdFrp.fromArray([
+                    EventManager.fromEvent(<any>EEngineEvent.ENDLOOP),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_TRANSLATE),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_ROTATE),
+                    EventManager.fromEvent(this.entityObject, <any>EEngineEvent.TRANSFORM_SCALE)
+                ])
+                .mergeAll()
                 .subscribe(() => {
                     self._clearCache();
                 });
@@ -57,7 +63,7 @@ module wd {
         public dispose(){
             this.camera.dispose();
 
-            this._endLoopSubscription && this._endLoopSubscription.dispose();
+            this._clearCacheSubscription && this._clearCacheSubscription.dispose();
         }
 
         public isIntersectWithRay(entityObject:GameObject, screenX:number, screenY:number):boolean{
@@ -98,7 +104,7 @@ module wd {
 
         private _setPlanes(transform:Matrix4, frustumPlanes: Array<Plane>): void {
             /*!
-            refer to http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+             refer to http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
              */
 
             // Near

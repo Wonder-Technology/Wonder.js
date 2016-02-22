@@ -6,7 +6,7 @@ module wd{
             assert(this.entityObject, Log.info.FUNC_MUST_DEFINE("entityObject"));
         })
         get cameraToWorldMatrix(){
-            return this.entityObject.transform.localToWorldMatrix.copy();
+            return this.entityObject.transform.localToWorldMatrix;
         }
 
         private _worldToCameraMatrix = null;
@@ -15,7 +15,7 @@ module wd{
                 return this._worldToCameraMatrix;
             }
 
-            return this.cameraToWorldMatrix.invert();
+            return this.cameraToWorldMatrix.copy().invert();
         }
         set worldToCameraMatrix(matrix:Matrix4){
             this._worldToCameraMatrix = matrix;

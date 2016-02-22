@@ -22,17 +22,30 @@ describe("CameraController", function () {
         var matrix;
         var object;
 
-        function judgeClearCache(getMethod, getAttr){
+        function judgeClearCacheOnEndLoop(getMethod, getAttr, eventName){
             sandbox.stub(controller, getMethod).returns(matrix);
             var m1 = controller[getAttr];
 
-            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(eventName));
 
             var m2 = controller[getAttr];
 
             expect(m1 === m2).toBeTruthy();
             expect(controller[getMethod]).toCalledTwice();
         }
+
+        function judgeClearCacheOnTransform(getMethod, getAttr, eventName){
+            sandbox.stub(controller, getMethod).returns(matrix);
+            var m1 = controller[getAttr];
+
+            wd.EventManager.trigger(controller.entityObject, wd.CustomEvent.create(eventName));
+
+            var m2 = controller[getAttr];
+
+            expect(m1 === m2).toBeTruthy();
+            expect(controller[getMethod]).toCalledTwice();
+        }
+
 
         beforeEach(function(){
             matrix = wd.Matrix4.create();
@@ -63,8 +76,17 @@ describe("CameraController", function () {
             });
         });
 
-        it("clear worldToCameraMatrix cache on EndLoop", function () {
-            judgeClearCache("_getWorldToCameraMatrix", "worldToCameraMatrix");
+        it("clear worldToCameraMatrix cache on EndLoop event", function () {
+            judgeClearCacheOnEndLoop("_getWorldToCameraMatrix", "worldToCameraMatrix", wd.EEngineEvent.ENDLOOP);
+        });
+        it("clear worldToCameraMatrix cache on TRANSFORM_TRANSLATE event", function () {
+            judgeClearCacheOnTransform("_getWorldToCameraMatrix", "worldToCameraMatrix", wd.EEngineEvent.TRANSFORM_TRANSLATE);
+        });
+        it("clear worldToCameraMatrix cache on TRANSFORM_ROTATE event", function () {
+            judgeClearCacheOnTransform("_getWorldToCameraMatrix", "worldToCameraMatrix", wd.EEngineEvent.TRANSFORM_ROTATE);
+        });
+        it("clear worldToCameraMatrix cache on TRANSFORM_SCALE event", function () {
+            judgeClearCacheOnTransform("_getWorldToCameraMatrix", "worldToCameraMatrix", wd.EEngineEvent.TRANSFORM_SCALE);
         });
     });
 
@@ -73,7 +95,7 @@ describe("CameraController", function () {
 
         });
 
-        it("unbind endloop event", function(){
+        it("unbind clear cache event", function(){
             var object = wd.GameObject.create();
             object.addComponent(controller);
             controller.init();
@@ -82,6 +104,9 @@ describe("CameraController", function () {
             controller.dispose();
 
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.ENDLOOP));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_TRANSLATE));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_ROTATE));
+            wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.TRANSFORM_SCALE));
 
             expect(controller._cameraToworldMatrixCache).not.toBeNull();
         });

@@ -45,7 +45,7 @@ module wd {
         }
 
         public static isComponenet(component:Component){
-            return component.entityObject !== undefined;
+            return component.entityObject !== void 0;
         }
 
         public static isDom(obj) {
