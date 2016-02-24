@@ -33,7 +33,7 @@ module wd {
 
         set componentDirty(componentDirty:boolean){
             if(componentDirty === true){
-                this._clearCache();
+                this.clearCache();
             }
         }
 
@@ -50,7 +50,7 @@ module wd {
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
-        private _geometry:Geometry = null;
+        //private _geometry:Geometry = null;
         private _rendererComponent:RendererComponent = null;
         private _animation:Animation = null;
         private _collider:Collider = null;
@@ -126,7 +126,12 @@ module wd {
                 child.dispose();
             });
 
-            this._clearCache();
+            this.clearCache();
+        }
+
+        public clearCache(){
+            this._hasComponentCache.removeAllChildren();
+            this._getComponentCache.removeAllChildren();
         }
 
         public hasChild(child:EntityObject):boolean {
@@ -287,10 +292,10 @@ module wd {
                 return this;
             }
 
-            if(component instanceof Geometry){
-                this._geometry = component;
-            }
-            else if(component instanceof RendererComponent){
+            //if(component instanceof Geometry){
+            //    this._geometry = component;
+            //}
+            if(component instanceof RendererComponent){
                 this._rendererComponent = component;
             }
             else if(component instanceof Animation){
@@ -494,7 +499,8 @@ module wd {
             assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
-            return this._geometry;
+            //return this._geometry;
+            return this.getComponent<Geometry>(Geometry);
         }
 
         @require(function(){
@@ -548,11 +554,6 @@ module wd {
 
                 return _class.name;
             }
-        }
-
-        private _clearCache(){
-            this._hasComponentCache.removeAllChildren();
-            this._getComponentCache.removeAllChildren();
         }
     }
 }

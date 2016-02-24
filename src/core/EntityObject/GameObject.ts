@@ -19,6 +19,35 @@ module wd {
             return this.getComponent<SpacePartition>(SpacePartition);
         }
 
+        public getComponent<T>(_class:any):T{
+            //todo optimize "instanceof"
+            //todo refactor
+            if(_class.name === "Geometry"){
+                let lod:LODController = this.getComponent<LODController>(LODController),
+                    geometry:Geometry = null;
+
+                if(lod) {
+                    geometry = lod.activeGeometry;
+
+                    if(geometry){
+                        return <any>geometry;
+                    }
+                }
+            }
+
+            return <any>super.getComponent(_class);
+        }
+
+        public update(elapsedTime:number):void {
+            var lod = this.getComponent<LODController>(LODController);
+
+            if(lod){
+                lod.update(elapsedTime);
+            }
+
+            super.update(elapsedTime);
+        }
+
         protected createTransform(){
             return ThreeDTransform.create();
         }

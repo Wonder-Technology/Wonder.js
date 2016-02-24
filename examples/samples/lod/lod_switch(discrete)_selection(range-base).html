@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>lod with discrete switch and range-base selection</title>
+
+    <script src="../../../dist/wd.innerLib.js" type="text/javascript"></script>
+    <script src="../../../dist/wd.debug.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest: false,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+
+        var director = wd.Director.getInstance();
+
+
+        director.scene.addChildren(createSpheres());
+
+        director.scene.addChild(createAmbientLight());
+        director.scene.addChild(createDirectionLight());
+
+        director.scene.addChild(createCamera());
+
+
+        director.start();
+
+
+        function createSpheres(){
+            var spheres = [];
+            var count = 2;
+            var scale = 4;
+
+            for (var x = -count; x <= count; x++) {
+                for (var y = -count; y <= count; y++) {
+                    for (var z = 5; z < 10; z++) {
+                        var sphere = createSphere();
+
+                        sphere.transform.position = wd.Vector3.create(x * scale, y * scale, z * scale);
+
+                        spheres.push(sphere);
+                    }
+                }
+            }
+
+            return spheres;
+        }
+
+        function createSphere(){
+            var geometry = createSphereGeometry(wd.Color.create("rgb(1.0, 0.0, 0.0)"), 20);
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+
+
+            var geometryLevel1 = createSphereGeometry(wd.Color.create("rgb(0.0, 1.0, 0.0)"), 5);
+            var geometryLevel2 = createSphereGeometry(wd.Color.create("#ffffff"), 2);
+
+            var lod = wd.LODController.create();
+
+            lod.addGeometryLevel(15, geometryLevel1);
+            lod.addGeometryLevel(30, geometryLevel2);
+
+
+            gameObject.addComponent(lod);
+
+            return gameObject;
+        }
+
+        function createSphereGeometry(color, segments){
+            var material = wd.LightMaterial.create();
+            material.color = color;
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 1;
+            geometry.segments = segments;
+
+
+            return geometry;
+        }
+
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(wd.Vector3.create(0, 50, 50));
+
+            return directionLight;
+        }
+
+        function createCamera() {
+            var camera = wd.GameObject.create(),
+                    view = wd.Director.getInstance().view,
+                    cameraComponent = wd.PerspectiveCamera.create();
+
+            cameraComponent.fovy = 60;
+            cameraComponent.aspect = view.width / view.height;
+            cameraComponent.near = 0.1;
+            cameraComponent.far = 10000;
+
+            var controller = wd.ArcballCameraController.create(cameraComponent);
+
+            controller.distance = 50;
+
+
+            camera.addComponent(controller);
+
+
+            return camera;
+        }
+    };
+</script>
+</body>
+</html>

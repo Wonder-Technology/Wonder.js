@@ -96,6 +96,7 @@
 
 
 
+/// <reference path="component/lod/LODController"/>
 
 /// <reference path="component/event/detector/EventTriggerDetector"/>
 /// <reference path="component/event/detector/UIEventTriggerDetector"/>
