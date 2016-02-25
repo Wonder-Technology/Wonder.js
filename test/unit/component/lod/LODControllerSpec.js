@@ -165,12 +165,44 @@ describe("LODController", function() {
     });
 
     describe("update", function(){
-        beforeEach(function(){
+        var currentCamera;
 
+        function setCameraPos(pos){
+            currentCamera.transform.position = pos;
+        }
+
+        beforeEach(function(){
+            model = prepareTool.createSphere();
+
+
+            lod.entityObject = model;
+
+            geoLevel1 = createGeo();
+
+            geoLevel2 = createGeo();
+
+            lod.addGeometryLevel(15, geoLevel1);
+            lod.addGeometryLevel(30, geoLevel2);
+
+
+            currentCamera = {
+                transform: {
+                    position: wd.Vector3.create(0,0,0)
+                }
+            };
+
+            sandbox.stub(wd.Director.getInstance(), "scene", {
+                currentCamera:currentCamera
+            });
         });
 
-        it("", function(){
+        it("if change activeGeometry, trigger component_change event", function(){
+            setCameraPos(wd.Vector3.create(0,15,0));
+            sandbox.stub(wd.EventManager, "trigger");
 
+            lod.update(1);
+
+            expect(wd.EventManager.trigger).toCalledWith(model, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
         });
     });
 });

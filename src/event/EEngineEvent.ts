@@ -26,6 +26,9 @@ module wd{
         TRANSFORM_ROTATE = <any>"wd_transform_rotate",
         TRANSFORM_SCALE = <any>"wd_transform_scale",
 
-        SHADOWMAP_SOFTTYPE_CHANGE = <any>"wd_shadowMap_softType_change"
+        SHADOWMAP_SOFTTYPE_CHANGE = <any>"wd_shadowMap_softType_change",
+
+
+        COMPONENT_CHANGE = <any>"wd_component_change"
     }
 }

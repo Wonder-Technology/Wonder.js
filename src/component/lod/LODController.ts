@@ -60,8 +60,7 @@ module wd{
             if(activeGeometry && !JudgeUtils.isEqual(activeGeometry, this.activeGeometry)){
                 this.activeGeometry = activeGeometry;
 
-                //todo refactor?
-                this.entityObject.clearCache();
+                EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.COMPONENT_CHANGE));
             }
 
             if(useOriginGeometry){

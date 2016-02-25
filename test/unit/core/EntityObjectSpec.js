@@ -186,4 +186,50 @@ describe("EntityObject", function() {
             //todo test more
         });
     });
+
+    describe("init", function(){
+        beforeEach(function(){
+
+        });
+
+        describe("bind component_change event", function(){
+            beforeEach(function(){
+                entityObject.init();
+
+                sandbox.stub(entityObject, "clearCache");
+            });
+
+            it("clear cache", function(){
+                wd.EventManager.trigger(entityObject, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
+
+                expect(entityObject.clearCache).toCalledOnce();
+            });
+        });
+
+        //todo test more
+    });
+
+
+    describe("dispose", function(){
+        beforeEach(function(){
+        });
+
+        it("unbind component_change event", function(){
+            entityObject.init();
+            sandbox.stub(entityObject, "_onComponentChange");
+
+            wd.EventManager.trigger(entityObject, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
+
+            expect(entityObject._onComponentChange).toCalledOnce();
+
+
+            entityObject.dispose();
+
+
+            wd.EventManager.trigger(entityObject, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
+
+            expect(entityObject._onComponentChange).not.toCalledTwice();
+        });
+        //todo test more
+    });
 });

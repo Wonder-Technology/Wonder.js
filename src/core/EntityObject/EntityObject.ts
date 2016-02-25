@@ -50,10 +50,10 @@ module wd {
         private _scriptExecuteHistory:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _hasComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
         private _getComponentCache:wdCb.Hash<boolean> = wdCb.Hash.create<boolean>();
-        //private _geometry:Geometry = null;
         private _rendererComponent:RendererComponent = null;
         private _animation:Animation = null;
         private _collider:Collider = null;
+        private _componentChangeSubscription:wdFrp.IDisposable = null;
 
         @virtual
         public initWhenCreate(){
@@ -61,6 +61,8 @@ module wd {
         }
 
         public init() {
+            var self = this;
+
             this.startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
                 this.onStartLoop();
             });
@@ -70,6 +72,11 @@ module wd {
 
             this.bindStartLoopEvent();
             this.bindEndLoopEvent();
+
+            this._componentChangeSubscription = EventManager.fromEvent(this, <any>EEngineEvent.COMPONENT_CHANGE)
+            .subscribe(() => {
+                    self._onComponentChange();
+            });
 
             this.initComponent();
 
@@ -116,6 +123,8 @@ module wd {
             EventManager.off(<any>EEngineEvent.STARTLOOP, this.startLoopHandler);
             EventManager.off(<any>EEngineEvent.ENDLOOP, this.endLoopHandler);
 
+            this._componentChangeSubscription && this._componentChangeSubscription.dispose();
+
             components = this.removeAllComponent();
 
             components.forEach((component:Component) => {
@@ -125,13 +134,6 @@ module wd {
             this.forEach((child:EntityObject) => {
                 child.dispose();
             });
-
-            this.clearCache();
-        }
-
-        public clearCache(){
-            this._hasComponentCache.removeAllChildren();
-            this._getComponentCache.removeAllChildren();
         }
 
         public hasChild(child:EntityObject):boolean {
@@ -292,9 +294,6 @@ module wd {
                 return this;
             }
 
-            //if(component instanceof Geometry){
-            //    this._geometry = component;
-            //}
             if(component instanceof RendererComponent){
                 this._rendererComponent = component;
             }
@@ -495,11 +494,15 @@ module wd {
             return result;
         }
 
+        public clearCache(){
+            this._hasComponentCache.removeAllChildren();
+            this._getComponentCache.removeAllChildren();
+        }
+
         @require(function(){
             assert(this.getComponentCount(Geometry) <= 1, Log.info.FUNC_SHOULD_NOT("entityObject", "contain more than 1 geometry component"));
         })
         private _getGeometry():Geometry{
-            //return this._geometry;
             return this.getComponent<Geometry>(Geometry);
         }
 
@@ -554,6 +557,10 @@ module wd {
 
                 return _class.name;
             }
+        }
+
+        private _onComponentChange(){
+            this.clearCache();
         }
     }
 }

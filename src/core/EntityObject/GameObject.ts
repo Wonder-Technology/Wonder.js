@@ -20,18 +20,11 @@ module wd {
         }
 
         public getComponent<T>(_class:any):T{
-            //todo optimize "instanceof"
-            //todo refactor
-            if(_class.name === "Geometry"){
-                let lod:LODController = this.getComponent<LODController>(LODController),
-                    geometry:Geometry = null;
+            if(this._isGeometry(_class)){
+                let lod:LODController = this.getComponent<LODController>(LODController);
 
-                if(lod) {
-                    geometry = lod.activeGeometry;
-
-                    if(geometry){
-                        return <any>geometry;
-                    }
+                if(lod && lod.activeGeometry) {
+                    return <any>lod.activeGeometry;
                 }
             }
 
@@ -64,6 +57,10 @@ module wd {
             if(this.hasComponent(Octree)){
                 return this.getSpacePartition().build();
             }
+        }
+
+        private _isGeometry(_class:any){
+            return _class.name === "Geometry";
         }
     }
 }
