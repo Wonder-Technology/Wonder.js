@@ -13,11 +13,13 @@ module wd {
         private _texCoordBuffer:ArrayBuffer = null;
         private _tangentBuffer:ArrayBuffer = null;
         private _indiceBuffer:ElementBuffer = null;
+        private _materialChangeSubscription:wdFrp.IDisposable = null;
 
         public init(){
             var self = this;
 
-            EventManager.on(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE, () => {
+            this._materialChangeSubscription = EventManager.fromEvent(this.entityObject, <any>EEngineEvent.MATERIAL_CHANGE)
+            .subscribe(() => {
                 self.removeCache(EBufferDataType.COLOR);
                 self.geometryData.colorDirty = true;
             });
@@ -66,6 +68,8 @@ module wd {
             });
 
             this.geometryData.dispose();
+
+            this._materialChangeSubscription && this._materialChangeSubscription.dispose();
         }
 
         public createBuffersFromGeometryData(){

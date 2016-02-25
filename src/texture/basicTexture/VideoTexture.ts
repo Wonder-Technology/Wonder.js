@@ -9,7 +9,7 @@ module wd{
         }
 
         private _video:Video = null;
-        private _startLoopHandler:() => void = null;
+        private _startLoopSubscription:wdFrp.IDisposable = null;
 
         public initWhenCreate(asset:VideoTextureAsset){
             super.initWhenCreate(asset);
@@ -18,24 +18,25 @@ module wd{
         }
 
         public init(){
+            var self = this;
+
             super.init();
 
-            this._startLoopHandler = wdCb.FunctionUtils.bind(this, () => {
-                if(this._video.isStop){
-                    this.needUpdate = false;
+            this._startLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.STARTLOOP)
+            .subscribe(() => {
+                if(self._video.isStop){
+                    self.needUpdate = false;
                 }
                 else{
-                    this.needUpdate = true;
+                    self.needUpdate = true;
                 }
             });
-
-            EventManager.on(<any>EEngineEvent.STARTLOOP, this._startLoopHandler);
 
             return this;
         }
 
         public dispose(){
-            EventManager.off(<any>EEngineEvent.STARTLOOP, this._startLoopHandler);
+            this._startLoopSubscription && this._startLoopSubscription.dispose();
         }
 
         protected needClampMaxSize(){

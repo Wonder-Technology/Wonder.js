@@ -9,7 +9,7 @@ module wd {
 
         protected light:Light = null;
 
-        private _endLoopHandler:Function = null;
+        private _endLoopSubscription:wdFrp.IDisposable = null;
         private _shader:Shader = null;
 
         public initWhenCreate(){
@@ -40,13 +40,14 @@ module wd {
         }
 
         public bindEndLoop(func:Function){
-            this._endLoopHandler = func;
-
-            EventManager.on(<any>EEngineEvent.ENDLOOP,this._endLoopHandler);
+            this._endLoopSubscription = EventManager.fromEvent(<any>EEngineEvent.ENDLOOP)
+                .subscribe(() => {
+                    func();
+                })
         }
 
         public unBindEndLoop(){
-            EventManager.off(<any>EEngineEvent.ENDLOOP, this._endLoopHandler);
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
         }
 
         public beforeRender(){

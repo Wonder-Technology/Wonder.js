@@ -36,7 +36,7 @@
         //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
-        //'test/unit/**/BufferContainer*',
+        'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
         //'test/unit/**/shaderLibSpec*',
@@ -55,7 +55,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        'test/unit/**/OctreeSpec*',
+        //'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 
@@ -80,7 +80,7 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        //'test/unit/**/UIObjectSpec*',
+        'test/unit/**/UIObjectSpec*',
         //
         //
         //'test/unit/**/ButtonSpec*',
@@ -103,7 +103,6 @@
         //'test/unit/**/component/**',
         //'test/unit/**/PanelSpec*',
         //
-        //'test/unit/**/UIObjectSpec*',
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
@@ -136,7 +135,7 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        //'test/unit/**/GameObjectSpec.js',
+        'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
@@ -144,7 +143,7 @@
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
-      //'test/unit/renderer/shadowMapSpec.js',
+      'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
@@ -159,7 +158,7 @@
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        //'test/unit/renderer/**',
+        'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
