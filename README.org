@@ -29,6 +29,8 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- LOD
+  - Geometry LOD
 - Space Partition
   - Octree
 - Event System
@@ -185,5 +187,6 @@ Here shows a spinning cube sample:
 #+END_SRC
 * License
 MIT Licence
+
 
 

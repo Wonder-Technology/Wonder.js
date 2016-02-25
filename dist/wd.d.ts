@@ -2286,6 +2286,7 @@ declare module wd {
         componentDirty: boolean;
         name: string;
         parent: EntityObject;
+        isVisible: boolean;
         actionManager: ActionManager;
         protected children: wdCb.Collection<any>;
         protected startLoopHandler: () => void;
@@ -2294,10 +2295,10 @@ declare module wd {
         private _scriptExecuteHistory;
         private _hasComponentCache;
         private _getComponentCache;
-        private _geometry;
         private _rendererComponent;
         private _animation;
         private _collider;
+        private _componentChangeSubscription;
         initWhenCreate(): void;
         init(): this;
         onStartLoop(): void;
@@ -2346,6 +2347,7 @@ declare module wd {
         protected getRenderList(): wdCb.Collection<any>;
         protected initComponent(): void;
         protected getAllChildren(): wdCb.Collection<EntityObject>;
+        clearCache(): void;
         private _getGeometry();
         private _getAnimation();
         private _getRendererComponent();
@@ -2355,7 +2357,7 @@ declare module wd {
         private _isScriptExecuted(scriptName, method);
         private _buildScriptHistoryKey(scriptName, method);
         private _getHasComponentCacheKey(...args);
-        private _clearCache();
+        private _onComponentChange();
     }
 }
 
@@ -2380,9 +2382,12 @@ declare module wd {
         name: string;
         protected children: wdCb.Collection<GameObject>;
         getSpacePartition(): SpacePartition;
+        getComponent<T>(_class: any): T;
+        update(elapsedTime: number): void;
         protected createTransform(): ThreeDTransform;
         protected getRenderList(): wdCb.Collection<GameObject>;
         protected afterInitChildren(): void;
+        private _isGeometry(_class);
     }
 }
 
@@ -2514,13 +2519,6 @@ declare module wd {
         private _isNotDirtyDuringThisLoop(renderer);
         private _resetTransformFlag(uiObject);
         private _sortSiblingChildren();
-    }
-}
-
-declare module wd {
-    class Skybox extends GameObject {
-        static create(): Skybox;
-        initWhenCreate(): void;
     }
 }
 
@@ -3086,6 +3084,26 @@ declare module wd {
         TRANSFORM_ROTATE,
         TRANSFORM_SCALE,
         SHADOWMAP_SOFTTYPE_CHANGE,
+        COMPONENT_CHANGE,
+    }
+}
+
+declare module wd {
+    class LODController extends Component {
+        static create(): LODController;
+        entityObject: GameObject;
+        activeGeometry: Geometry;
+        private _levelList;
+        private _originGeometry;
+        init(): void;
+        addGeometryLevel(distanceBetweenCameraAndObject: any, levelGeometry: Geometry): void;
+        update(elapsedTime: number): void;
+    }
+}
+
+declare module wd {
+    enum ELODGeometryState {
+        INVISIBLE = 0,
     }
 }
 
@@ -3506,6 +3524,7 @@ declare module wd {
         dispose(): void;
         computeFaceNormals(): void;
         computeVertexNormals(): void;
+        createBuffersFromGeometryData(): void;
         protected abstract computeData(): GeometryDataType;
         protected computeNormals(): void;
         protected createBufferContainer(): BufferContainer;
@@ -3729,10 +3748,12 @@ declare module wd {
         private _texCoordBuffer;
         private _tangentBuffer;
         private _indiceBuffer;
+        private _materialChangeSubscription;
         init(): void;
         removeCache(type: EBufferDataType): void;
         getChild(type: EBufferDataType): any;
         dispose(): void;
+        createBuffersFromGeometryData(): void;
         protected abstract getVertice(type: any): any;
         protected abstract getNormal(type: any): any;
         protected createBufferOnlyOnce(bufferAttriName: string, bufferClass: any): void;
@@ -5571,7 +5592,7 @@ declare module wd {
         constructor(light: Light, texture: Texture);
         texture: Texture;
         protected light: Light;
-        private _endLoopHandler;
+        private _endLoopSubscription;
         private _shader;
         initWhenCreate(): void;
         init(): void;
@@ -5621,6 +5642,7 @@ declare module wd {
         abstract addCommand(command: QuadCommand): any;
         abstract hasCommand(): boolean;
         abstract render(): any;
+        abstract clear(): any;
         init(): void;
     }
 }
@@ -5633,6 +5655,7 @@ declare module wd {
         createQuadCommand(): QuadCommand;
         addCommand(command: QuadCommand): void;
         hasCommand(): boolean;
+        clear(): void;
         render(): void;
         init(): void;
         setClearColor(color: Color): void;
@@ -5837,6 +5860,7 @@ declare module wd {
         init(): void;
         dispose(): void;
         update(quadCmd: QuadCommand, material: Material): void;
+        judgeRefreshShader(): void;
         hasLib(lib: ShaderLib): any;
         hasLib(_class: Function): any;
         addLib(lib: ShaderLib): void;
@@ -6495,7 +6519,6 @@ declare module wd {
         private _addTopShaderLib();
         private _addShaderLibToTop(lib);
         private _hasAnimation();
-        private _afterInitHandler();
         private _isColorEqual(color1, color2);
     }
     type MapVariableData = {
@@ -7999,7 +8022,7 @@ declare module wd {
     class VideoTexture extends CommonTexture {
         static create(asset: VideoTextureAsset): VideoTexture;
         private _video;
-        private _startLoopHandler;
+        private _startLoopSubscription;
         initWhenCreate(asset: VideoTextureAsset): void;
         init(): this;
         dispose(): void;

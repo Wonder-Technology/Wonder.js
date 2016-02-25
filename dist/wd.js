@@ -8249,6 +8249,7 @@ var wd;
             this.scheduler.update(elapseTime);
             gameObjectScene.update(elapseTime);
             gameObjectScene.render(this.renderer);
+            this.renderer.clear();
             if (this.renderer.hasCommand()) {
                 this.renderer.render();
             }
@@ -8586,6 +8587,7 @@ var wd;
             this._transform = null;
             this.name = null;
             this.parent = null;
+            this.isVisible = true;
             this.actionManager = wd.ActionManager.create();
             this.children = wdCb.Collection.create();
             this.startLoopHandler = null;
@@ -8594,10 +8596,10 @@ var wd;
             this._scriptExecuteHistory = wdCb.Hash.create();
             this._hasComponentCache = wdCb.Hash.create();
             this._getComponentCache = wdCb.Hash.create();
-            this._geometry = null;
             this._rendererComponent = null;
             this._animation = null;
             this._collider = null;
+            this._componentChangeSubscription = null;
         }
         Object.defineProperty(EntityObject.prototype, "scriptList", {
             get: function () {
@@ -8636,7 +8638,7 @@ var wd;
         Object.defineProperty(EntityObject.prototype, "componentDirty", {
             set: function (componentDirty) {
                 if (componentDirty === true) {
-                    this._clearCache();
+                    this.clearCache();
                 }
             },
             enumerable: true,
@@ -8647,6 +8649,7 @@ var wd;
         };
         EntityObject.prototype.init = function () {
             var _this = this;
+            var self = this;
             this.startLoopHandler = wdCb.FunctionUtils.bind(this, function () {
                 _this.onStartLoop();
             });
@@ -8655,6 +8658,10 @@ var wd;
             });
             this.bindStartLoopEvent();
             this.bindEndLoopEvent();
+            this._componentChangeSubscription = wd.EventManager.fromEvent(this, wd.EEngineEvent.COMPONENT_CHANGE)
+                .subscribe(function () {
+                self._onComponentChange();
+            });
             this.initComponent();
             this.forEach(function (child) {
                 child.init();
@@ -8686,6 +8693,7 @@ var wd;
             wd.EventManager.off(this);
             wd.EventManager.off(wd.EEngineEvent.STARTLOOP, this.startLoopHandler);
             wd.EventManager.off(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
+            this._componentChangeSubscription && this._componentChangeSubscription.dispose();
             components = this.removeAllComponent();
             components.forEach(function (component) {
                 component.dispose();
@@ -8693,7 +8701,6 @@ var wd;
             this.forEach(function (child) {
                 child.dispose();
             });
-            this._clearCache();
         };
         EntityObject.prototype.hasChild = function (child) {
             return this.children.hasChild(child);
@@ -8803,10 +8810,7 @@ var wd;
                 wd.Log.assert(false, "the component already exist");
                 return this;
             }
-            if (component instanceof wd.Geometry) {
-                this._geometry = component;
-            }
-            else if (component instanceof wd.RendererComponent) {
+            if (component instanceof wd.RendererComponent) {
                 this._rendererComponent = component;
             }
             else if (component instanceof wd.Animation) {
@@ -8849,7 +8853,12 @@ var wd;
             return result;
         };
         EntityObject.prototype.render = function (renderer, camera) {
-            var geometry = this._getGeometry(), rendererComponent = this._getRendererComponent();
+            var geometry = null, rendererComponent = null;
+            if (!this.isVisible) {
+                return;
+            }
+            geometry = this._getGeometry();
+            rendererComponent = this._getRendererComponent();
             if (rendererComponent && geometry) {
                 rendererComponent.render(renderer, geometry, camera);
                 wd.DebugStatistics.count.renderGameObjects++;
@@ -8924,6 +8933,9 @@ var wd;
             wd.EventManager.on(wd.EEngineEvent.ENDLOOP, this.endLoopHandler);
         };
         EntityObject.prototype.getRenderList = function () {
+            if (!this.isVisible) {
+                return null;
+            }
             return this.children;
         };
         EntityObject.prototype.initComponent = function () {
@@ -8948,8 +8960,12 @@ var wd;
             getChildren(this);
             return result;
         };
+        EntityObject.prototype.clearCache = function () {
+            this._hasComponentCache.removeAllChildren();
+            this._getComponentCache.removeAllChildren();
+        };
         EntityObject.prototype._getGeometry = function () {
-            return this._geometry;
+            return this.getComponent(wd.Geometry);
         };
         EntityObject.prototype._getAnimation = function () {
             return this._animation;
@@ -8986,9 +9002,8 @@ var wd;
                 return _class.name;
             }
         };
-        EntityObject.prototype._clearCache = function () {
-            this._hasComponentCache.removeAllChildren();
-            this._getComponentCache.removeAllChildren();
+        EntityObject.prototype._onComponentChange = function () {
+            this.clearCache();
         };
         __decorate([
             wd.virtual
@@ -9124,6 +9139,22 @@ var wd;
         GameObject.prototype.getSpacePartition = function () {
             return this.getComponent(wd.SpacePartition);
         };
+        GameObject.prototype.getComponent = function (_class) {
+            if (this._isGeometry(_class)) {
+                var lod = this.getComponent(wd.LODController);
+                if (lod && lod.activeGeometry) {
+                    return lod.activeGeometry;
+                }
+            }
+            return _super.prototype.getComponent.call(this, _class);
+        };
+        GameObject.prototype.update = function (elapsedTime) {
+            var lod = this.getComponent(wd.LODController);
+            if (lod) {
+                lod.update(elapsedTime);
+            }
+            _super.prototype.update.call(this, elapsedTime);
+        };
         GameObject.prototype.createTransform = function () {
             return wd.ThreeDTransform.create();
         };
@@ -9137,6 +9168,9 @@ var wd;
             if (this.hasComponent(wd.Octree)) {
                 return this.getSpacePartition().build();
             }
+        };
+        GameObject.prototype._isGeometry = function (_class) {
+            return _class.name === "Geometry";
         };
         return GameObject;
     }(wd.EntityObject));
@@ -9800,32 +9834,6 @@ var wd;
         return UIObjectScene;
     }(wd.Scene));
     wd.UIObjectScene = UIObjectScene;
-})(wd || (wd = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var wd;
-(function (wd) {
-    var Skybox = (function (_super) {
-        __extends(Skybox, _super);
-        function Skybox() {
-            _super.apply(this, arguments);
-        }
-        Skybox.create = function () {
-            var obj = new this();
-            obj.initWhenCreate();
-            return obj;
-        };
-        Skybox.prototype.initWhenCreate = function () {
-            _super.prototype.initWhenCreate.call(this);
-            this.addComponent(wd.SkyboxRenderer.create());
-        };
-        return Skybox;
-    }(wd.GameObject));
-    wd.Skybox = Skybox;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -12385,8 +12393,91 @@ var wd;
         EEngineEvent[EEngineEvent["TRANSFORM_ROTATE"] = "wd_transform_rotate"] = "TRANSFORM_ROTATE";
         EEngineEvent[EEngineEvent["TRANSFORM_SCALE"] = "wd_transform_scale"] = "TRANSFORM_SCALE";
         EEngineEvent[EEngineEvent["SHADOWMAP_SOFTTYPE_CHANGE"] = "wd_shadowMap_softType_change"] = "SHADOWMAP_SOFTTYPE_CHANGE";
+        EEngineEvent[EEngineEvent["COMPONENT_CHANGE"] = "wd_component_change"] = "COMPONENT_CHANGE";
     })(wd.EEngineEvent || (wd.EEngineEvent = {}));
     var EEngineEvent = wd.EEngineEvent;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var LODController = (function (_super) {
+        __extends(LODController, _super);
+        function LODController() {
+            _super.apply(this, arguments);
+            this.activeGeometry = null;
+            this._levelList = wdCb.Collection.create();
+            this._originGeometry = null;
+        }
+        LODController.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        LODController.prototype.init = function () {
+            var entityObject = this.entityObject;
+            this.activeGeometry = entityObject.getComponent(wd.Geometry);
+            this._originGeometry = this.activeGeometry;
+            this._levelList
+                .filter(function (_a) {
+                var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
+                return !!geometry;
+            })
+                .forEach(function (_a) {
+                var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
+                geometry.entityObject = entityObject;
+                geometry.init();
+                geometry.createBuffersFromGeometryData();
+            });
+            _super.prototype.init.call(this);
+        };
+        LODController.prototype.addGeometryLevel = function (distanceBetweenCameraAndObject, levelGeometry) {
+            this._levelList.addChild({
+                distanceBetweenCameraAndObject: distanceBetweenCameraAndObject,
+                geometry: levelGeometry
+            });
+            this._levelList.sort(function (levelData1, levelData2) {
+                return levelData2.distanceBetweenCameraAndObject - levelData1.distanceBetweenCameraAndObject;
+            }, true);
+        };
+        LODController.prototype.update = function (elapsedTime) {
+            var currentDistanceBetweenCameraAndObject = wd.Vector3.create().sub2(wd.Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(), useOriginGeometry = true, activeGeometry = null;
+            this._levelList.forEach(function (_a) {
+                var geometry = _a.geometry, distanceBetweenCameraAndObject = _a.distanceBetweenCameraAndObject;
+                if (currentDistanceBetweenCameraAndObject >= distanceBetweenCameraAndObject) {
+                    activeGeometry = geometry;
+                    useOriginGeometry = false;
+                    return wdCb.$BREAK;
+                }
+            });
+            if (activeGeometry === wd.ELODGeometryState.INVISIBLE) {
+                this.activeGeometry = null;
+                this.entityObject.isVisible = false;
+                return;
+            }
+            this.entityObject.isVisible = true;
+            if (activeGeometry && !wd.JudgeUtils.isEqual(activeGeometry, this.activeGeometry)) {
+                this.activeGeometry = activeGeometry;
+                wd.EventManager.trigger(this.entityObject, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
+            }
+            else if (useOriginGeometry) {
+                this.activeGeometry = this._originGeometry;
+            }
+        };
+        return LODController;
+    }(wd.Component));
+    wd.LODController = LODController;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    (function (ELODGeometryState) {
+        ELODGeometryState[ELODGeometryState["INVISIBLE"] = 0] = "INVISIBLE";
+    })(wd.ELODGeometryState || (wd.ELODGeometryState = {}));
+    var ELODGeometryState = wd.ELODGeometryState;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -14276,6 +14367,9 @@ var wd;
         Geometry.prototype.computeVertexNormals = function () {
             this.buffers.geometryData.computeVertexNormals();
         };
+        Geometry.prototype.createBuffersFromGeometryData = function () {
+            this.buffers.createBuffersFromGeometryData();
+        };
         Geometry.prototype.computeNormals = function () {
             if (this.isSmoothShading()) {
                 if (!this.hasVertexNormals()) {
@@ -14324,6 +14418,11 @@ var wd;
                 wd.assert(this.buffers && this.buffers.geometryData, wd.Log.info.FUNC_MUST_DEFINE("buffers->geometryData"));
             })
         ], Geometry.prototype, "computeFaceNormals", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(!!this.buffers, wd.Log.info.FUNC_NOT_EXIST("buffers"));
+            })
+        ], Geometry.prototype, "createBuffersFromGeometryData", null);
         __decorate([
             wd.virtual
         ], Geometry.prototype, "computeNormals", null);
@@ -15128,7 +15227,9 @@ var wd;
             get: function () {
                 if (this.tangentDirty) {
                     this.tangentDirty = false;
-                    this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
+                    if (wd.GeometryUtils.hasData(this.normals) && wd.GeometryUtils.hasData(this.texCoords) && wd.GeometryUtils.hasData(this.indices)) {
+                        this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
+                    }
                 }
                 return this._tangents;
             },
@@ -15307,9 +15408,6 @@ var wd;
                     var face = _a[_i];
                     if (this.geometry.isSmoothShading()) {
                         wd.assert(face.vertexNormals && face.vertexNormals.getCount() === 3, wd.Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
-                    }
-                    else {
-                        wd.assert(face.hasFaceNormal(), wd.Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
                     }
                 }
             }),
@@ -15547,11 +15645,13 @@ var wd;
             this._texCoordBuffer = null;
             this._tangentBuffer = null;
             this._indiceBuffer = null;
+            this._materialChangeSubscription = null;
             this.entityObject = entityObject;
         }
         BufferContainer.prototype.init = function () {
             var self = this;
-            wd.EventManager.on(this.entityObject, wd.EEngineEvent.MATERIAL_CHANGE, function () {
+            this._materialChangeSubscription = wd.EventManager.fromEvent(this.entityObject, wd.EEngineEvent.MATERIAL_CHANGE)
+                .subscribe(function () {
                 self.removeCache(wd.EBufferDataType.COLOR);
                 self.geometryData.colorDirty = true;
             });
@@ -15592,6 +15692,15 @@ var wd;
                 buffer.dispose();
             });
             this.geometryData.dispose();
+            this._materialChangeSubscription && this._materialChangeSubscription.dispose();
+        };
+        BufferContainer.prototype.createBuffersFromGeometryData = function () {
+            this.getChild(wd.EBufferDataType.VERTICE);
+            this.getChild(wd.EBufferDataType.NORMAL);
+            this.getChild(wd.EBufferDataType.TANGENT);
+            this.getChild(wd.EBufferDataType.COLOR);
+            this.getChild(wd.EBufferDataType.INDICE);
+            this.getChild(wd.EBufferDataType.TEXCOORD);
         };
         BufferContainer.prototype.createBufferOnlyOnce = function (bufferAttriName, bufferClass) {
             if (this[bufferAttriName]) {
@@ -18038,7 +18147,9 @@ var wd;
                     });
                     return;
                 }
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.entityObjectList.filter(function (entityObject) {
+                    return entityObject.isVisible;
+                }));
             }
         };
         OctreeNode.prototype.findAndAddToIntersectList = function (ray, selectionList) {
@@ -22944,6 +23055,7 @@ var wd;
             this.getRenderList().forEach(function (child) {
                 child.render(renderer, renderCamera);
             });
+            renderer.clear();
             this.renderRenderer(renderer);
             this.frameBufferOperator.unBind();
             this.frameBufferOperator.restoreViewport();
@@ -23163,6 +23275,7 @@ var wd;
                 faceRenderList.forEach(function (child) {
                     child.render(renderer, renderCamera);
                 });
+                renderer.clear();
                 renderer.render();
             }
             if (this._needCreateCamera(position)) {
@@ -23388,7 +23501,7 @@ var wd;
         function ShadowMapRenderTargetRendererUtils(light, texture) {
             this.texture = null;
             this.light = null;
-            this._endLoopHandler = null;
+            this._endLoopSubscription = null;
             this._shader = null;
             this.light = light;
             this.texture = texture;
@@ -23413,11 +23526,13 @@ var wd;
             this.setMaterialShadowMapData(material, target, shadowMapCamera);
         };
         ShadowMapRenderTargetRendererUtils.prototype.bindEndLoop = function (func) {
-            this._endLoopHandler = func;
-            wd.EventManager.on(wd.EEngineEvent.ENDLOOP, this._endLoopHandler);
+            this._endLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.ENDLOOP)
+                .subscribe(function () {
+                func();
+            });
         };
         ShadowMapRenderTargetRendererUtils.prototype.unBindEndLoop = function () {
-            wd.EventManager.off(wd.EEngineEvent.ENDLOOP, this._endLoopHandler);
+            this._endLoopSubscription && this._endLoopSubscription.dispose();
         };
         ShadowMapRenderTargetRendererUtils.prototype.beforeRender = function () {
             var scene = wd.Director.getInstance().scene;
@@ -23618,7 +23733,7 @@ var wd;
             _super.apply(this, arguments);
             this._commandQueue = wdCb.Collection.create();
             this._clearOptions = {
-                color: wd.Color.create("#000000")
+                color: wd.Color.create("#ffffff")
             };
         }
         WebGLRenderer.create = function () {
@@ -23638,9 +23753,11 @@ var wd;
         WebGLRenderer.prototype.hasCommand = function () {
             return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
         };
+        WebGLRenderer.prototype.clear = function () {
+            wd.DeviceManager.getInstance().clear(this._clearOptions);
+        };
         WebGLRenderer.prototype.render = function () {
             var deviceManager = wd.DeviceManager.getInstance(), transparentCommands = [];
-            deviceManager.clear(this._clearOptions);
             this._commandQueue.forEach(function (command) {
                 if (command.blend) {
                     transparentCommands.push(command);
@@ -24587,6 +24704,7 @@ var wd;
             this._libs.forEach(function (lib) {
                 lib.init();
             });
+            this.judgeRefreshShader();
         };
         Shader.prototype.dispose = function () {
             this.program.dispose();
@@ -24598,12 +24716,7 @@ var wd;
         };
         Shader.prototype.update = function (quadCmd, material) {
             var program = this.program;
-            if (this.libDirty) {
-                this.buildDefinitionData(quadCmd, material);
-            }
-            if (this._definitionDataDirty) {
-                this.program.initWithShader(this);
-            }
+            this.judgeRefreshShader();
             this.program.use();
             this._libs.forEach(function (lib) {
                 lib.sendShaderVariables(program, quadCmd, material);
@@ -24611,6 +24724,14 @@ var wd;
             program.sendAttributeDataFromCustomShader();
             program.sendUniformDataFromCustomShader();
             material.mapManager.sendData(program);
+        };
+        Shader.prototype.judgeRefreshShader = function () {
+            if (this.libDirty) {
+                this.buildDefinitionData(null, wd.LightMaterial.create());
+            }
+            if (this._definitionDataDirty) {
+                this.program.initWithShader(this);
+            }
             this.libDirty = false;
             this._definitionDataDirty = false;
         };
@@ -27045,13 +27166,10 @@ var wd;
             configurable: true
         });
         Material.prototype.init = function () {
-            var self = this;
+            this._addTopShaderLib();
+            this.addShaderLib();
             this.shader.init();
             this.mapManager.init();
-            this._afterInitSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT)
-                .subscribe(function () {
-                self._afterInitHandler();
-            });
         };
         Material.prototype.dispose = function () {
             this.shader.dispose();
@@ -27115,10 +27233,6 @@ var wd;
             }
             return false;
         };
-        Material.prototype._afterInitHandler = function () {
-            this._addTopShaderLib();
-            this.addShaderLib();
-        };
         Material.prototype._isColorEqual = function (color1, color2) {
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         };
@@ -27130,9 +27244,6 @@ var wd;
         __decorate([
             wd.virtual
         ], Material.prototype, "addShaderLib", null);
-        __decorate([
-            wd.execOnlyOnce("_isAfterInit")
-        ], Material.prototype, "_afterInitHandler", null);
         return Material;
     }());
     wd.Material = Material;
@@ -32163,7 +32274,7 @@ var wd;
         function VideoTexture() {
             _super.apply(this, arguments);
             this._video = null;
-            this._startLoopHandler = null;
+            this._startLoopSubscription = null;
         }
         VideoTexture.create = function (asset) {
             var obj = new this();
@@ -32175,21 +32286,21 @@ var wd;
             this._video = asset.video;
         };
         VideoTexture.prototype.init = function () {
-            var _this = this;
+            var self = this;
             _super.prototype.init.call(this);
-            this._startLoopHandler = wdCb.FunctionUtils.bind(this, function () {
-                if (_this._video.isStop) {
-                    _this.needUpdate = false;
+            this._startLoopSubscription = wd.EventManager.fromEvent(wd.EEngineEvent.STARTLOOP)
+                .subscribe(function () {
+                if (self._video.isStop) {
+                    self.needUpdate = false;
                 }
                 else {
-                    _this.needUpdate = true;
+                    self.needUpdate = true;
                 }
             });
-            wd.EventManager.on(wd.EEngineEvent.STARTLOOP, this._startLoopHandler);
             return this;
         };
         VideoTexture.prototype.dispose = function () {
-            wd.EventManager.off(wd.EEngineEvent.STARTLOOP, this._startLoopHandler);
+            this._startLoopSubscription && this._startLoopSubscription.dispose();
         };
         VideoTexture.prototype.needClampMaxSize = function () {
             return false;
