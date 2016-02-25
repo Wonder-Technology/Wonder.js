@@ -87,6 +87,13 @@ module wd{
             this.buffers.geometryData.computeVertexNormals();
         }
 
+        @require(function(){
+            assert(!!this.buffers, Log.info.FUNC_NOT_EXIST("buffers"));
+        })
+        public createBuffersFromGeometryData(){
+            this.buffers.createBuffersFromGeometryData();
+        }
+
         protected abstract computeData(): GeometryDataType;
 
         @virtual

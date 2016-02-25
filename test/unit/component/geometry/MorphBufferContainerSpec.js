@@ -20,17 +20,41 @@ describe("MorphBufferContainer", function() {
             return animation;
         }
 
+        function prepareBufferContainer(){
+            container.geometryData = geometryData;
+
+
+            container.init();
+        }
+
         beforeEach(function(){
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
             gl = wd.DeviceManager.getInstance().gl;
 
             geo = new wd.ModelGeometry();
-            geo.material = {
-                init:sandbox.stub()
-            }
+            geo.material = wd.BasicMaterial.create();
 
-            geo.morphTargets = wdCb.Hash.create({
+
+            geometryData = wd.MorphGeometryData.create(geo);
+
+            geo.geometryData = geometryData;
+
+
+            animation = createAnimation();
+
+
+
+            model = wd.GameObject.create();
+            model.addComponent(geo);
+
+            model.addComponent(animation);
+
+
+            container = wd.MorphBufferContainer.create(model, animation);
+
+
+            geometryData.morphTargets = wdCb.Hash.create({
                 "play": wdCb.Collection.create(
                     [
                         [1, -1, 0, 0, 1, 0, 0, 0, 1],
@@ -40,11 +64,8 @@ describe("MorphBufferContainer", function() {
                 )
             });
 
-            model = wd.GameObject.create();
-            model.addComponent(geo);
 
-            animation = createAnimation();
-            model.addComponent(animation);
+            geo.morphTargets = geometryData.morphTargets;
         });
         afterEach(function(){
             testTool.clearInstance();
@@ -52,17 +73,13 @@ describe("MorphBufferContainer", function() {
 
         describe("get vertice buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,-1,0, 0,1,0,0,0,1];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
-                geo.texCoords = [];
-                geo.colors = [];
+                geometryData.vertices = [1,-1,0, 0,1,0,0,0,1];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [];
+                geometryData.colors = [];
 
 
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if not play animation, return static data", function(){

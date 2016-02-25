@@ -21,9 +21,9 @@ module wd {
                 if (this.geometry.isSmoothShading()) {
                     assert(face.vertexNormals && face.vertexNormals.getCount() === 3, Log.info.FUNC_SHOULD("faces->vertexNormals.count", "=== 3"));
                 }
-                else {
-                    assert(face.hasFaceNormal(), Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
-                }
+                //else {
+                //    assert(face.hasFaceNormal(), Log.info.FUNC_SHOULD("faces->faceNormal", "has data"));
+                //}
             }
         })
         @cacheGetter(function(){
@@ -194,7 +194,9 @@ module wd {
             if (this.tangentDirty) {
                 this.tangentDirty = false;
 
-                this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
+                if(GeometryUtils.hasData(this.normals) && GeometryUtils.hasData(this.texCoords) && GeometryUtils.hasData(this.indices)){
+                    this._tangents = this._calculateTangents(this._vertices, this.normals, this.texCoords, this.indices);
+                }
             }
 
             return this._tangents;

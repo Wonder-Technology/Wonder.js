@@ -2,6 +2,20 @@ describe("LODController", function() {
     var sandbox = null;
     var lod = null;
 
+    var model;
+    var geoLevel1,geoLevel2;
+    var geo;
+
+    function createGeo(){
+        var geoLevel1 = wd.SphereGeometry.create();
+
+        var matLevel1 = wd.LightMaterial.create();
+
+        geoLevel1.material = matLevel1;
+
+        return geoLevel1;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         lod = wd.LODController.create();
@@ -28,20 +42,7 @@ describe("LODController", function() {
         });
 
         describe("select level geometry by range-base", function(){
-            var model;
-            var geo;
             var renderer;
-            var geoLevel1,geoLevel2;
-
-            function createLevelGeo(){
-                var geoLevel1 = wd.SphereGeometry.create();
-
-                var matLevel1 = wd.LightMaterial.create();
-
-                geoLevel1.material = matLevel1;
-
-                return geoLevel1;
-            }
 
             function judgeSelectGeometry(callCount, geo){
                 expect(renderer.render.getCall(callCount).args[1]).toEqual(geo);
@@ -58,9 +59,9 @@ describe("LODController", function() {
                 renderer = model.getComponent(wd.MeshRenderer);
                 sandbox.stub(renderer, "render");
 
-                geoLevel1 = createLevelGeo();
+                geoLevel1 = createGeo();
 
-                geoLevel2 = createLevelGeo();
+                geoLevel2 = createGeo();
 
                 lod.addGeometryLevel(15, geoLevel1);
                 lod.addGeometryLevel(30, geoLevel2);
@@ -124,11 +125,42 @@ describe("LODController", function() {
 
     describe("init", function(){
         beforeEach(function(){
+            model = prepareTool.createSphere();
 
+
+            lod.entityObject = model;
+
+            geoLevel1 = createGeo();
+
+            geoLevel2 = createGeo();
+
+            lod.addGeometryLevel(15, geoLevel1);
+            lod.addGeometryLevel(30, geoLevel2);
+
+
+            sandbox.stub(geoLevel1, "init");
+            sandbox.stub(geoLevel1, "createBuffersFromGeometryData");
+
+            sandbox.stub(geoLevel2, "init");
+            sandbox.stub(geoLevel2, "createBuffersFromGeometryData");
         });
 
-        it("", function(){
+        it("set active geometry to be object->geometry", function () {
+            lod.init();
 
+            expect(lod.activeGeometry).toEqual(model.getComponent(wd.Geometry));
+        });
+        it("init level geometrys", function(){
+            lod.init();
+
+            expect(geoLevel1.init).toCalledOnce();
+            expect(geoLevel2.init).toCalledOnce();
+        });
+        it("create level geometrys->buffers from geometryData to improve lod switch performance", function(){
+            lod.init();
+
+            expect(geoLevel1.createBuffersFromGeometryData).toCalledOnce();
+            expect(geoLevel2.createBuffersFromGeometryData).toCalledOnce();
         });
     });
 

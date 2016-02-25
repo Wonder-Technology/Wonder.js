@@ -24,16 +24,32 @@ describe("CommonBufferContainer", function() {
 
     describe("get data buffer", function(){
         var geo,geometryData;
+        var result1,result2;
+
+        function prepareBufferContainer(){
+            container.geometryData = geometryData;
+
+
+            container.init();
+        }
+
+        function judgeCache(data){
+            expect(result1.data).toEqual(
+                data
+            );
+            expect(result2===result1).toBeTruthy();
+            expect(gl.createBuffer.callCount).toEqual(1);
+        }
 
         beforeEach(function(){
             geo = new wd.ModelGeometry();
-            geo.material = {
-                init:sandbox.stub()
-            }
+            geo.material = wd.BasicMaterial.create();
 
             sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
             gl = wd.DeviceManager.getInstance().gl;
+
+            geometryData = wd.CommonGeometryData.create(geo);
 
             testTool.openContractCheck(sandbox);
         });
@@ -43,29 +59,23 @@ describe("CommonBufferContainer", function() {
 
         describe("get vertice buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
-                geo.texCoords = [];
-                geo.colors = [];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [];
+                geometryData.colors = [];
 
-
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.EBufferDataType.VERTICE);
-                var result2 = container.getChild(wd.EBufferDataType.VERTICE);
+                result1 = container.getChild(wd.EBufferDataType.VERTICE);
+                result2 = container.getChild(wd.EBufferDataType.VERTICE);
 
-                expect(result1.data).toEqual(
-                    new Float32Array([
+
+                judgeCache(new Float32Array([
                         1,2,2,10,4,-1,-3,5,1.2000000476837158
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
             });
 
             describe("else", function(){
@@ -77,29 +87,22 @@ describe("CommonBufferContainer", function() {
 
         describe("get normal buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1], [1,2,2,10,4,-1,-3,5,1.2]);
-                geo.texCoords = [];
-                geo.colors = [];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1], [1,2,2,10,4,-1,-3,5,1.2]);
+                geometryData.texCoords = [];
+                geometryData.colors = [];
 
-
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.EBufferDataType.NORMAL);
-                var result2 = container.getChild(wd.EBufferDataType.NORMAL);
+                result1 = container.getChild(wd.EBufferDataType.NORMAL);
+                result2 = container.getChild(wd.EBufferDataType.NORMAL);
 
-                expect(result1.data).toEqual(
-                    new Float32Array([
-                        1,2,2,1,2,2,1,2,2
+                judgeCache(new Float32Array([
+                    1,2,2,1,2,2,1,2,2
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
             });
 
             describe("else", function(){
@@ -111,40 +114,36 @@ describe("CommonBufferContainer", function() {
 
         describe("get tangent buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1], [0,2,2,-3,4,-1,-3,5,1.2]);
-                geo.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
-                geo.colors = [];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1], [0,2,2,-3,4,-1,-3,5,1.2]);
+                geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
+                geometryData.colors = [];
 
 
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("return calculated tangents firstly; return the last one if not dirty after", function(){
                 sandbox.spy(geometryData, "_calculateTangents");
 
-                var result1 = container.getChild(wd.EBufferDataType.TANGENT);
-                var result2 = container.getChild(wd.EBufferDataType.TANGENT);
+                result1 = container.getChild(wd.EBufferDataType.TANGENT);
+                result2 = container.getChild(wd.EBufferDataType.TANGENT);
 
-                expect(result1.data).toEqual(
+                judgeCache(
                     new Float32Array([
                         0.8285171389579773,0.552344799041748,0.0920574814081192,-1,0.8285171389579773,0.552344799041748,0.0920574814081192,-1,0.8285171389579773,0.552344799041748,0.0920574814081192,-1
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
+
                 expect(geometryData._calculateTangents).toCalledOnce();
             });
             it("if change vertices or texCoords or faces, recompute tangents", function(){
                 sandbox.stub(geometryData, "_calculateTangents").returns([]);
 
                 container.getChild(wd.EBufferDataType.TANGENT);
-                geometryData.vertices = [];
+                geometryData.vertices = [1,2,3];
                 container.getChild(wd.EBufferDataType.TANGENT);
-                geometryData.texCoords = [];
+                geometryData.texCoords = [0.1,0.2];
                 container.getChild(wd.EBufferDataType.TANGENT);
                 geometryData.faces = geometryData.faces;
                 container.getChild(wd.EBufferDataType.TANGENT);
@@ -162,29 +161,24 @@ describe("CommonBufferContainer", function() {
 
         describe("get indice buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
-                geo.texCoords = [];
-                geo.colors = [];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [];
+                geometryData.colors = [];
 
-
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.EBufferDataType.INDICE);
-                var result2 = container.getChild(wd.EBufferDataType.INDICE);
+                result1 = container.getChild(wd.EBufferDataType.INDICE);
+                result2 = container.getChild(wd.EBufferDataType.INDICE);
 
-                expect(result1.data).toEqual(
+
+                judgeCache(
                     new Uint16Array([
                         0, 2, 1
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
             });
 
             describe("else", function(){
@@ -196,29 +190,24 @@ describe("CommonBufferContainer", function() {
 
         describe("get color buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
-                geo.texCoords = [];
-                geo.colors = [0.1,0.2,0.3,0.2,0.1,0.002, 0.1,0.1,0.1];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [];
+                geometryData.colors = [0.1,0.2,0.3,0.2,0.1,0.002, 0.1,0.1,0.1];
 
 
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.EBufferDataType.COLOR);
-                var result2 = container.getChild(wd.EBufferDataType.COLOR);
+                result1 = container.getChild(wd.EBufferDataType.COLOR);
+                result2 = container.getChild(wd.EBufferDataType.COLOR);
 
-                expect(result1.data).toEqual(
+                judgeCache(
                     new Float32Array([
                         0.10000000149011612,0.20000000298023224,0.30000001192092896,0.20000000298023224,0.10000000149011612,0.0020000000949949026,0.10000000149011612,0.10000000149011612,0.10000000149011612
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
             });
 
             describe("else", function(){
@@ -230,29 +219,24 @@ describe("CommonBufferContainer", function() {
 
         describe("get texCoord buffer", function(){
             beforeEach(function(){
-                geo.vertices = [1,2,2,10,4,-1,-3,5,1.2];
-                geo.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
-                geo.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
-                geo.colors = [];
+                geometryData.vertices = [1,2,2,10,4,-1,-3,5,1.2];
+                geometryData.faces = wd.GeometryUtils.convertToFaces([0,2,1]);
+                geometryData.texCoords = [0.1,0.2,0.3,0.2,0.1,0.002];
+                geometryData.colors = [];
 
 
-                geo.init();
-
-
-                geometryData = geo.buffers.geometryData;
-                container = geo.buffers;
+                prepareBufferContainer();
             });
 
             it("if cached, return cached data", function(){
-                var result1 = container.getChild(wd.EBufferDataType.TEXCOORD);
-                var result2 = container.getChild(wd.EBufferDataType.TEXCOORD);
+                result1 = container.getChild(wd.EBufferDataType.TEXCOORD);
+                result2 = container.getChild(wd.EBufferDataType.TEXCOORD);
 
-                expect(result1.data).toEqual(
+                judgeCache(
                     new Float32Array([
                         0.10000000149011612,0.20000000298023224,0.30000001192092896,0.20000000298023224,0.10000000149011612,0.0020000000949949026
                     ])
                 );
-                expect(result2===result1).toBeTruthy();
             });
 
             describe("else", function(){

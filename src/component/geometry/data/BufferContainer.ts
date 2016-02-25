@@ -68,6 +68,15 @@ module wd {
             this.geometryData.dispose();
         }
 
+        public createBuffersFromGeometryData(){
+            this.getChild(EBufferDataType.VERTICE);
+            this.getChild(EBufferDataType.NORMAL);
+            this.getChild(EBufferDataType.TANGENT);
+            this.getChild(EBufferDataType.COLOR);
+            this.getChild(EBufferDataType.INDICE);
+            this.getChild(EBufferDataType.TEXCOORD);
+        }
+
         protected abstract getVertice(type);
         protected abstract getNormal(type);
 

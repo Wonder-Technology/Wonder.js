@@ -45,21 +45,31 @@ describe("Geometry", function() {
             geo.material.color = wd.Color.create("#ffffff");
         });
 
-        it("only create BufferContainer and add geometry data when init", function(){
-            expect(geo.buffers).toBeNull();
+        describe("when init", function(){
+            beforeEach(function(){
 
-            geo.init();
+            });
 
-            expect(geo.buffers).toBeInstanceOf(wd.BufferContainer);
-            expect(geo.buffers.geometryData.vertices).toEqual(jasmine.any(Array));
-            expect(geo.buffers.geometryData.indices).toEqual(jasmine.any(Array));
-            expect(geo.buffers.geometryData.normals).toEqual(jasmine.any(Array));
-            expect(geo.buffers.geometryData.texCoords).toEqual(jasmine.any(Array));
-            expect(geo.buffers.geometryData.colors).toEqual(
-                [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
-            );
-            expect(wd.ArrayBuffer.create).not.toCalled();
-            expect(wd.ElementBuffer.create).not.toCalled();
+            it("create BufferContainer and add geometry data", function(){
+                expect(geo.buffers).toBeNull();
+
+                geo.init();
+
+                expect(geo.buffers).toBeInstanceOf(wd.BufferContainer);
+                expect(geo.buffers.geometryData.vertices).toEqual(jasmine.any(Array));
+                expect(geo.buffers.geometryData.indices).toEqual(jasmine.any(Array));
+                expect(geo.buffers.geometryData.normals).toEqual(jasmine.any(Array));
+                expect(geo.buffers.geometryData.texCoords).toEqual(jasmine.any(Array));
+                expect(geo.buffers.geometryData.colors).toEqual(
+                    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
+                );
+            });
+            it("not create buffers", function () {
+                geo.init();
+
+                expect(wd.ArrayBuffer.create).not.toCalled();
+                expect(wd.ElementBuffer.create).not.toCalled();
+            });
         });
 
         describe("when invoke BufferContainer->getChild", function(){
@@ -84,7 +94,7 @@ describe("Geometry", function() {
                 expect(result1).toEqual(arrayBuffer);
                 expect(result2).toEqual(eleBuffer);
             });
-        })
+        });
     });
 
     describe("get normal data", function(){
@@ -437,20 +447,30 @@ describe("Geometry", function() {
         });
 
         it('just "init material" instead of "add to geometry and init material" when "change material", so that material->init is not related to geometry', function(){
+            //var newMaterial = wd.BasicMaterial.create();
+            //newMaterial.color = wd.Color.create("#222222");
+            //
+            //newMaterial.init();
+            //
+            //expect(newMaterial.shader.getLibs().getCount()).toEqual(0);
+            //
+            //
+            //
+            //
+            //prepareTool.prepareGeo(sandbox, wd.GameObject.create(), geo, newMaterial);
+            //
+            //var director = wd.Director.getInstance();
+            //director._init();
+            //
+            //expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
+
+
+
             var newMaterial = wd.BasicMaterial.create();
+
             newMaterial.color = wd.Color.create("#222222");
 
             newMaterial.init();
-
-            expect(newMaterial.shader.getLibs().getCount()).toEqual(0);
-
-
-
-
-            prepareTool.prepareGeo(sandbox, wd.GameObject.create(), geo, newMaterial);
-
-            var director = wd.Director.getInstance();
-            director._init();
 
             expect(newMaterial.shader.getLibs().getCount()).not.toEqual(0);
         });

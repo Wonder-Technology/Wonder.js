@@ -16,7 +16,7 @@ module wd{
         public init(){
             var entityObject = this.entityObject;
 
-            this.activeGeometry = this.entityObject.getComponent<Geometry>(Geometry);
+            this.activeGeometry = entityObject.getComponent<Geometry>(Geometry);
 
             this._originGeometry = this.activeGeometry;
 
@@ -24,6 +24,8 @@ module wd{
                 geometry.entityObject = entityObject;
 
                 geometry.init();
+
+                geometry.createBuffersFromGeometryData();
             });
 
             super.init();

@@ -36,7 +36,7 @@
         //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
-        //'test/unit/**/BufferContainer*',
+        'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
         //'test/unit/**/shaderLibSpec*',
@@ -156,8 +156,8 @@
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/MaterialSpec.js',
-        //'test/unit/**/CommonBufferContainerSpec.js',
-        //'test/unit/**/MorphBufferContainerSpec.js',
+        'test/unit/**/CommonBufferContainerSpec.js',
+        'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
         //'test/unit/renderer/**',
         //'test/unit/device/*.js',

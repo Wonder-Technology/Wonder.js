@@ -25,5 +25,16 @@ var bufferContainerTool = {
             expect(gl.bufferData).toCalledTwice();
             expect(gl.bufferData.secondCall.args[2]).toEqual(gl.DYNAMIC_DRAW);
         }
+    },
+    initGeoWithoutCache: function (geo){
+
+        container.geometryData = geometryData;
+
+
+        //not cache
+        sandbox.stub(geo.buffers, "cacheAllGeometryData");
+
+
+        container.init();
     }
 }
