@@ -45,7 +45,6 @@
 /// <reference path="core/entityObject/Scene"/>
 /// <reference path="core/entityObject/GameObjectScene"/>
 /// <reference path="core/entityObject/UIObjectScene"/>
-/// <reference path="core/entityObject/Skybox"/>
 
 
 /// <reference path="collision/CollisionDetector"/>

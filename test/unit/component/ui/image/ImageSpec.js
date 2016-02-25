@@ -33,6 +33,8 @@ describe("Image", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         testTool.openContractCheck(sandbox);
 
         director = wd.Director.getInstance();
