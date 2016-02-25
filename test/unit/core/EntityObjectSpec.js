@@ -209,7 +209,6 @@ describe("EntityObject", function() {
         //todo test more
     });
 
-
     describe("dispose", function(){
         beforeEach(function(){
         });
@@ -229,6 +228,20 @@ describe("EntityObject", function() {
             wd.EventManager.trigger(entityObject, wd.CustomEvent.create(wd.EEngineEvent.COMPONENT_CHANGE));
 
             expect(entityObject._onComponentChange).not.toCalledTwice();
+        });
+        //todo test more
+    });
+
+    describe("render", function(){
+        it("if not visible, return", function(){
+            entityObject.isVisible = false;
+            sandbox.spy(entityObject, "getComponent");
+            var renderer = wd.WebGLRenderer.create();
+            var camera = wd.GameObject.create();
+
+            entityObject.render(renderer, camera);
+
+            expect(entityObject.getComponent).not.toCalled();
         });
         //todo test more
     });

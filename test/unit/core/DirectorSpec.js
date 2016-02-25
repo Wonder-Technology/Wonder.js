@@ -308,7 +308,15 @@ describe("Director", function () {
         beforeEach(function(){
         });
 
-        it("if renderer has command, render renderer", function(){
+        it("renderer->clear", function(){
+            sandbox.stub(director.renderer, "clear");
+
+            director._runGameObjectScene(1);
+
+            expect(director.renderer.clear).toCalledOnce();
+        });
+
+        it("if renderer has command, renderer->render", function(){
             sandbox.stub(director.renderer, "render");
 
             director._runGameObjectScene(1);

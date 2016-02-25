@@ -39,6 +39,7 @@ module wd {
 
         public name:string = null;
         public parent:EntityObject = null;
+        public isVisible:boolean = true;
 
         public actionManager:ActionManager = ActionManager.create();
 
@@ -352,8 +353,15 @@ module wd {
         }
 
         public render(renderer:Renderer, camera:GameObject):void {
-            var geometry = this._getGeometry(),
-                rendererComponent = this._getRendererComponent();
+            var geometry = null,
+                rendererComponent = null;
+
+            if(!this.isVisible){
+                return;
+            }
+
+            geometry = this._getGeometry();
+            rendererComponent = this._getRendererComponent();
 
             if(rendererComponent && geometry){
                 rendererComponent.render(renderer, geometry,  camera);
@@ -463,6 +471,10 @@ module wd {
 
         @virtual
         protected getRenderList(){
+            if(!this.isVisible){
+                return null;
+            }
+
             return this.children;
         }
 

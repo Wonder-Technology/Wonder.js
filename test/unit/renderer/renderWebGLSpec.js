@@ -42,6 +42,16 @@ describe("renderWebGL", function() {
         });
     });
 
+    describe("clear", function(){
+        it("clear by clearOptions", function(){
+            sandbox.stub(deviceManager, "clear");
+
+            renderer.clear();
+
+            expect(deviceManager.clear).toCalledWith(renderer._clearOptions);
+        });
+    });
+
     describe("render", function(){
         var gl, program,mMatrix,vMatrix,pMatrix;
 
@@ -136,15 +146,6 @@ describe("renderWebGL", function() {
             };
         });
 
-        it("clear by clearOptions", function(){
-            sandbox.stub(deviceManager, "clear");
-            var result = addCommand();
-            sandbox.stub(result.quadCmd, "execute");
-
-            renderer.render();
-
-            expect(deviceManager.clear).toCalledWith(renderer._clearOptions);
-        });
         it("fist, render opaque commands;then lock depth buffer and render sorted transparent commands; then unlock depth buffer", function(){
             var result1 = addCommand();
             var result2 = addCommand();

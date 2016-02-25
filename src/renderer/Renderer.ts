@@ -6,6 +6,7 @@ module wd{
         public abstract addCommand(command:QuadCommand);
         public abstract hasCommand():boolean;
         public abstract render();
+        public abstract clear();
 
         public init(){
         }

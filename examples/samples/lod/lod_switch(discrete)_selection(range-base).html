@@ -11,7 +11,7 @@
 <script>
     window.onload = function () {
         wd.Main.setConfig({
-            isTest: false,
+            isTest: true,
             screenSize: wd.EScreenSize.FULL
         }).init();
 
@@ -68,6 +68,7 @@
 
             lod.addGeometryLevel(15, geometryLevel1);
             lod.addGeometryLevel(30, geometryLevel2);
+            lod.addGeometryLevel(40, wd.ELODGeometryState.INVISIBLE);
 
 
             gameObject.addComponent(lod);

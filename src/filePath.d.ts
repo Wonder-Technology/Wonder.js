@@ -97,6 +97,7 @@
 
 
 /// <reference path="component/lod/LODController"/>
+/// <reference path="component/lod/ELODGeometryState"/>
 
 /// <reference path="component/event/detector/EventTriggerDetector"/>
 /// <reference path="component/event/detector/UIEventTriggerDetector"/>

@@ -209,6 +209,8 @@ module wd{
             gameObjectScene.update(elapseTime);
             gameObjectScene.render(this.renderer);
 
+            this.renderer.clear();
+
             if(this.renderer.hasCommand()){
                 this.renderer.render();
             }

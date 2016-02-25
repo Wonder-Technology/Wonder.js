@@ -1,9 +1,9 @@
 module wd{
     export class LODController extends Component{
         public static create() {
-        	var obj = new this();
+            var obj = new this();
 
-        	return obj;
+            return obj;
         }
 
         public entityObject:GameObject;
@@ -20,13 +20,17 @@ module wd{
 
             this._originGeometry = this.activeGeometry;
 
-            this._levelList.forEach(({geometry, distanceBetweenCameraAndObject}) => {
-                geometry.entityObject = entityObject;
+            this._levelList
+                .filter(({geometry, distanceBetweenCameraAndObject}) => {
+                    return !!geometry;
+                })
+                .forEach(({geometry, distanceBetweenCameraAndObject}) => {
+                    geometry.entityObject = entityObject;
 
-                geometry.init();
+                    geometry.init();
 
-                geometry.createBuffersFromGeometryData();
-            });
+                    geometry.createBuffersFromGeometryData();
+                });
 
             super.init();
         }
@@ -46,7 +50,7 @@ module wd{
             //todo optimize: only when camera move, then compute lod; reduce compute rate
             var currentDistanceBetweenCameraAndObject:number = Vector3.create().sub2(Director.getInstance().scene.currentCamera.transform.position, this.entityObject.transform.position).length(),
                 useOriginGeometry:boolean = true,
-                activeGeometry:Geometry = null;
+                activeGeometry:any = null;
 
             this._levelList.forEach(({geometry, distanceBetweenCameraAndObject}) => {
                 if(currentDistanceBetweenCameraAndObject >= distanceBetweenCameraAndObject){
@@ -57,13 +61,21 @@ module wd{
                 }
             });
 
+            if(activeGeometry === ELODGeometryState.INVISIBLE){
+                this.activeGeometry = null;
+                this.entityObject.isVisible = false;
+
+                return;
+            }
+
+            this.entityObject.isVisible = true;
+
             if(activeGeometry && !JudgeUtils.isEqual(activeGeometry, this.activeGeometry)){
                 this.activeGeometry = activeGeometry;
 
                 EventManager.trigger(this.entityObject, CustomEvent.create(<any>EEngineEvent.COMPONENT_CHANGE));
             }
-
-            if(useOriginGeometry){
+            else if(useOriginGeometry){
                 this.activeGeometry = this._originGeometry;
             }
         }

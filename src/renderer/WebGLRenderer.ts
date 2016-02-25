@@ -28,11 +28,13 @@ module wd{
             return this._commandQueue.getCount() > 0 || !!this.skyboxCommand;
         }
 
+        public clear(){
+            DeviceManager.getInstance().clear(this._clearOptions);
+        }
+
         public render(){
             var deviceManager = DeviceManager.getInstance(),
                 transparentCommands = [];
-
-            deviceManager.clear(this._clearOptions);
 
             this._commandQueue.forEach((command:QuadCommand) => {
                 if(command.blend){

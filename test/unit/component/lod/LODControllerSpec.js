@@ -65,6 +65,7 @@ describe("LODController", function() {
 
                 lod.addGeometryLevel(15, geoLevel1);
                 lod.addGeometryLevel(30, geoLevel2);
+                lod.addGeometryLevel(40, wd.ELODGeometryState.INVISIBLE);
 
                 model.addComponent(lod);
 
@@ -79,19 +80,26 @@ describe("LODController", function() {
 
                 judgeSelectGeometry(0, geo);
             });
-            it("if distance of camera->position to object->position >= level1 distance, use level1 geometry", function () {
+            it("if distance of camera->position to object->position >= geoLevel1 distance, use level1 geometry", function () {
                 setCameraPos(wd.Vector3.create(15, 0, 0));
 
                 director._run(1);
 
                 judgeSelectGeometry(0, geoLevel1);
             });
-            it("if distance of camera->position to object->position >= level2 distance, use level2 geometry", function () {
+            it("if distance of camera->position to object->position >= geoLevel2 distance, use level2 geometry", function () {
                 setCameraPos(wd.Vector3.create(30, 0, 0));
 
                 director._run(1);
 
                 judgeSelectGeometry(0, geoLevel2);
+            });
+            it("if distance of camera->position to object->position >= 40, object.isVisible should be false", function () {
+                setCameraPos(wd.Vector3.create(40, 0, 0));
+
+                director._run(1);
+
+                expect(model.isVisible).toBeFalsy();
             });
             it("if distance of camera->position to object->position < level1 distance, use object->geometry", function () {
                 setCameraPos(wd.Vector3.create(10, 0, 0));
@@ -105,7 +113,7 @@ describe("LODController", function() {
                 beforeEach(function () {
                 });
 
-                it("if distance of camera->position to object->position >= level2 distance happen multi times, it should always use level2 geometry", function () {
+                it("if distance of camera->position to object->position >= geoLevel2 distance happen multi times, it should always use level2 geometry", function () {
                     setCameraPos(wd.Vector3.create(30, 0, 0));
 
                     director._run(1);
@@ -118,6 +126,19 @@ describe("LODController", function() {
                     director._run(2);
 
                     judgeSelectGeometry(1, geoLevel2);
+                });
+                it("if switch from invisible to visible, object.isVisible should be true", function () {
+                    setCameraPos(wd.Vector3.create(41, 0, 0));
+
+                    director._run(1);
+
+
+
+                    setCameraPos(wd.Vector3.create(30, 0, 0));
+
+                    director._run(2);
+
+                    expect(model.isVisible).toBeTruthy();
                 });
             });
         });

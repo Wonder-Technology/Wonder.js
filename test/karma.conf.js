@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
         'test/unit/**/lod/*',
 
@@ -35,12 +35,12 @@
 
         //'test/unit/**/MapManager*',
 
-        'test/unit/**/GeometryData*',
+        //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
 
-        'test/unit/**/Shader*',
-        'test/unit/**/shaderLibSpec*',
-        'test/unit/**/*Shader*',
+        //'test/unit/**/Shader*',
+        //'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
         //'test/unit/component/**/*Animation*.js',
@@ -51,7 +51,7 @@
 
         //'test/unit/**/Debug*',
 
-        //'test/unit/**/EntityObjectSpec*',
+        'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -65,7 +65,7 @@
 
         //'test/unit/**/MirrorRender*',
 
-        //'test/unit/**/renderWebGL*',
+        'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 
@@ -91,7 +91,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        //'test/unit/**/DirectorSpec*',
+        'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
