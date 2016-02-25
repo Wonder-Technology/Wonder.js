@@ -229,7 +229,8 @@ var CubemapRenderTargetTool = YYC.Class({
 
 
                     renderer = {
-                        render: self.sandbox.stub()
+                        render: self.sandbox.stub(),
+                        clear: self.sandbox.stub()
                     };
 
 
@@ -337,6 +338,11 @@ var CubemapRenderTargetTool = YYC.Class({
                         });
                     });
 
+                    it("invoke renderer's clear method", function(){
+                        self.renderTargetRenderer.render(renderer, camera);
+
+                        expect(renderer.clear.callCount).toEqual(6);
+                    });
                     it("invoke renderer's render method", function(){
                         self.renderTargetRenderer.render(renderer, camera);
 

@@ -163,7 +163,8 @@ var TwoDRenderTargetTool = YYC.Class({
 
 
                             renderer = {
-                                render: self.sandbox.stub()
+                                render: self.sandbox.stub(),
+                                clear: self.sandbox.stub()
                             };
 
                     self.render.beforeEach(self, renderObj1, renderObj2, texture);
@@ -217,6 +218,14 @@ renderCamera = {};
                     expect(renderObj2.render).toCalledWith(renderer, renderCamera);
                     expect(renderObj1.render).toCalledBefore(renderObj2.render);
                 });
+
+
+                it("invoke renderer's clear method", function(){
+                    self.renderTargetRenderer.render(renderer, camera);
+
+                    expect(renderer.clear).toCalledOnce();
+                });
+
 
                 testTool.multiIt(self.render.invoke_renderer_render, function(){
                     return [renderer, camera, renderObj1, renderObj2];

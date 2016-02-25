@@ -67,6 +67,8 @@ module wd {
                 faceRenderList.forEach((child:GameObject) => {
                     child.render(renderer, renderCamera)
                 });
+
+                renderer.clear();
                 renderer.render();
             }
 

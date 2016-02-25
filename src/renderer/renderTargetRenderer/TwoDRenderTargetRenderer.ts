@@ -47,6 +47,7 @@ module wd {
                 child.render(renderer, renderCamera);
             });
 
+            renderer.clear();
             this.renderRenderer(renderer);
 
             this.frameBufferOperator.unBind();

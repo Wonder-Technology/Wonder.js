@@ -70,6 +70,15 @@
 
             gameObject.transform.translate(position);
 
+
+
+            var action = wd.RepeatForever.create(wd.CallFunc.create(function(){
+                gameObject.transform.rotate(0, 1, 0);
+            }));
+
+            gameObject.addComponent(action);
+
+
             return gameObject;
         }
 
