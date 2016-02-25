@@ -423,6 +423,24 @@ describe("Octree", function () {
 
                     expect(obj1.render).toCalledOnce();
                 });
+                it("if entityObject is invisible, remove it from render list", function(){
+                    createCamera(Vector3.create(0,0,0), Vector3.create(10,10,10));
+
+                    obj1 = createObj([10, 10, 10]);
+                    obj1.isVisible = false;
+
+                    octreeObject.addChild(obj1);
+
+                    director.scene.addChild(octreeObject);
+
+
+                    director._init();
+
+                    director._run(1);
+
+
+                    expect(obj1.render).not.toCalled();
+                });
             });
         });
     });

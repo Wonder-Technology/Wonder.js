@@ -55,7 +55,7 @@
 
         //'test/unit/component/physics/**/eventSpec*',
 
-        //'test/unit/**/OctreeSpec*',
+        'test/unit/**/OctreeSpec*',
         //'test/unit/**/CollisionDetectorSpec*',
         //'test/unit/**/BoundingRegionUtilsSpec*',
 

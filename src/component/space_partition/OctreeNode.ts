@@ -66,7 +66,9 @@ module wd{
                     return;
                 }
 
-                selectionList.addChildren(this.entityObjectList);
+                selectionList.addChildren(this.entityObjectList.filter((entityObject:EntityObject) => {
+                    return entityObject.isVisible;
+                }));
             }
         }
 
