@@ -33,7 +33,7 @@ describe("Shader", function() {
 
     describe("init", function(){
         beforeEach(function(){
-            
+            sandbox.stub(shader, "judgeRefreshShader");
         });
         
         it("init shader libs", function(){
@@ -44,6 +44,43 @@ describe("Shader", function() {
             shader.init();
 
             expect(lib.init).toCalledOnce();
+        });
+        it("judge refresh shader", function () {
+            shader.init();
+
+            expect(shader.judgeRefreshShader).toCalledOnce();
+        });
+    });
+
+    describe("judgeRefreshShader", function(){
+        beforeEach(function(){
+            sandbox.stub(shader, "buildDefinitionData");
+            sandbox.stub(shader.program, "initWithShader");
+        });
+
+        it("if lib dirty, build definitionData", function(){
+            shader.libDirty = true;
+
+            shader.judgeRefreshShader();
+
+            expect(shader.buildDefinitionData).toCalledOnce();
+        });
+        it("if definitionData dirty , program init with shader", function(){
+            shader._definitionDataDirty = false;
+            shader.fsSource = "aaa";
+
+            shader.judgeRefreshShader();
+
+            expect(shader.program.initWithShader).toCalledWith(shader);
+        });
+        it("set libDirty, _definitionDataDirty = false", function () {
+            shader.libDirty = true;
+            shader.fsSource = "aaa";
+
+            shader.judgeRefreshShader();
+
+            expect(shader.libDirty).toBeFalsy();
+            expect(shader._definitionDataDirty).toBeFalsy();
         });
     });
     

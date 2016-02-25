@@ -56,10 +56,13 @@ describe("Material", function() {
 
         MaterialScript.prototype.init = function(){
             newMaterial = new wd.Material();
-            newMaterial.init();
+
 
             sandbox.stub(newMaterial, "_addTopShaderLib");
             sandbox.stub(newMaterial, "addShaderLib");
+
+            newMaterial.init();
+
         }
 
         beforeEach(function(){

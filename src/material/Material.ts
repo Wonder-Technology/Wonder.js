@@ -163,15 +163,12 @@ module wd {
             assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
         })
         public init(){
-            var self = this;
+            this._addTopShaderLib();
+            this.addShaderLib();
 
             this.shader.init();
-            this.mapManager.init();
 
-            this._afterInitSubscription = EventManager.fromEvent(<any>EEngineEvent.AFTER_GAMEOBJECT_INIT)
-                .subscribe(() => {
-                    self._afterInitHandler();
-                });
+            this.mapManager.init();
         }
 
         public dispose(){
@@ -251,12 +248,6 @@ module wd {
             }
 
             return false;
-        }
-
-        @execOnlyOnce("_isAfterInit")
-        private _afterInitHandler(){
-            this._addTopShaderLib();
-            this.addShaderLib();
         }
 
         private _isColorEqual(color1:Color, color2:Color){

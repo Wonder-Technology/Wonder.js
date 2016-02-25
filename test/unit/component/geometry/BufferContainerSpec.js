@@ -13,17 +13,14 @@ describe("BufferContainer", function() {
         sandbox.restore();
     });
 
-    describe("init", function(){
-        beforeEach(function(){
-        });
-
-        it("cache all GeometryData", function(){
+    describe("createBuffersFromGeometryData", function(){
+        it("create all buffers from GeometryData", function(){
             var geometryData = new wd.GeometryData();
             container.geometryData = geometryData;
             sandbox.stub(geometryData, "init");
             sandbox.stub(container, "getChild");
 
-            container.init();
+            container.createBuffersFromGeometryData();
 
             expect(container.getChild.callCount).toEqual(6);
             expect(container.getChild.getCall(0)).toCalledWith(wd.EBufferDataType.VERTICE);
@@ -33,7 +30,6 @@ describe("BufferContainer", function() {
             expect(container.getChild.getCall(4)).toCalledWith(wd.EBufferDataType.INDICE);
             expect(container.getChild.getCall(5)).toCalledWith(wd.EBufferDataType.TEXCOORD);
         });
-        //todo test more
     });
 
     describe("dispose", function(){

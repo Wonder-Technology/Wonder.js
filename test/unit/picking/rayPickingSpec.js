@@ -6,6 +6,11 @@ describe("rayPicking", function () {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+
         Vector3 = wd.Vector3;
 
         sandbox.stub(wd.DeviceManager.getInstance(), "view", {

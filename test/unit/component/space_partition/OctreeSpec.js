@@ -19,7 +19,11 @@ describe("Octree", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
         testTool.openContractCheck(sandbox);
+
+
 
         tree = Octree.create();
 

@@ -7,6 +7,8 @@ describe("CollisionDetector", function () {
         sandbox = sinon.sandbox.create();
 
         detector = Detector.create();
+
+        sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
     });
     afterEach(function () {
         sandbox.restore();

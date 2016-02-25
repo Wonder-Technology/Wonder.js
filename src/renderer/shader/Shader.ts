@@ -82,6 +82,8 @@ module wd{
             this._libs.forEach((lib:ShaderLib) => {
                 lib.init();
             });
+
+            this.judgeRefreshShader();
         }
 
         public dispose(){
@@ -97,14 +99,7 @@ module wd{
         public update(quadCmd:QuadCommand, material:Material){
             var program = this.program;
 
-            if(this.libDirty){
-                this.buildDefinitionData(quadCmd, material);
-            }
-
-            if(this._definitionDataDirty){
-                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-                this.program.initWithShader(this);
-            }
+            this.judgeRefreshShader();
 
             this.program.use();
 
@@ -116,6 +111,18 @@ module wd{
             program.sendUniformDataFromCustomShader();
 
             material.mapManager.sendData(program);
+        }
+
+        public judgeRefreshShader(){
+            if(this.libDirty){
+                this.buildDefinitionData(null, LightMaterial.create());
+            }
+
+            if(this._definitionDataDirty){
+                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+                this.program.initWithShader(this);
+            }
+
 
             this.libDirty = false;
             this._definitionDataDirty = false;
