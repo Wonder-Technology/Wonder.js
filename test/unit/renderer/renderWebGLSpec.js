@@ -19,11 +19,11 @@ describe("renderWebGL", function() {
     });
 
     describe("init", function(){
-        it("set clearColorOptions to color:#000000, alpha:1", function(){
+        it("set clearColorOptions to color:#ffffff, alpha:1", function(){
             renderer.init();
 
             expect(renderer._clearOptions.color).toEqual(
-                wd.Color.create("#000000")
+                wd.Color.create("#ffffff")
             );
         });
         it("init depthTest, blend, colorWrite, side, depthWrite", function(){

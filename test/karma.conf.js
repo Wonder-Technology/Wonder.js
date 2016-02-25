@@ -27,16 +27,16 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
-        'test/unit/**/lod/*',
+        //'test/unit/**/lod/*',
 
         //'test/unit/**/CameraController*',
 
         //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
-        'test/unit/**/BufferContainer*',
+        //'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
         //'test/unit/**/shaderLibSpec*',
@@ -51,7 +51,7 @@
 
         //'test/unit/**/Debug*',
 
-        'test/unit/**/EntityObjectSpec*',
+        //'test/unit/**/EntityObjectSpec*',
 
         //'test/unit/component/physics/**/eventSpec*',
 
@@ -65,7 +65,7 @@
 
         //'test/unit/**/MirrorRender*',
 
-        'test/unit/**/renderWebGL*',
+        //'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 
@@ -80,7 +80,7 @@
         //'test/unit/component/event/eventSpec*',
 
         //'test/unit/**/ui/**',
-        'test/unit/**/UIObjectSpec*',
+        //'test/unit/**/UIObjectSpec*',
         //
         //
         //'test/unit/**/ButtonSpec*',
@@ -91,7 +91,7 @@
         //'test/unit/**/UIRendererSpec*',
         //'test/unit/**/BitmapFontSpec*',
         //
-        'test/unit/**/DirectorSpec*',
+        //'test/unit/**/DirectorSpec*',
         //
         //'test/unit/**/ProgressBarSpec*',
         //
@@ -135,15 +135,15 @@
         //'test/unit/**/physics/**/bounce*',
         //'test/unit/**/physics/**/constraint*',
         //'test/unit/**/physics/**/compound*',
-        'test/unit/**/GameObjectSpec.js',
+        //'test/unit/**/GameObjectSpec.js',
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        'test/unit/**/*MaterialSpec.js',
+        //'test/unit/**/*MaterialSpec.js',
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
-      'test/unit/renderer/shadowMapSpec.js',
+      //'test/unit/renderer/shadowMapSpec.js',
       //'test/unit/core/Tran*.js',
       //  'test/unit/asset/*.js',
       //  'test/unit/asset/obj/*.js',
@@ -152,13 +152,13 @@
         //'test/unit/asset/wd/WDParserSpec.js',
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
-        'test/unit/component/**/GeometrySpec.js',
-        'test/unit/component/**/ModelGeometrySpec.js',
-        'test/unit/**/MaterialSpec.js',
+        //'test/unit/component/**/GeometrySpec.js',
+        //'test/unit/component/**/ModelGeometrySpec.js',
+        //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        'test/unit/renderer/**',
+        //'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',

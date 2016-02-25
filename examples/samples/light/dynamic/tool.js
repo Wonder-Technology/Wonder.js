@@ -39,7 +39,9 @@ var tool = {
         geometry.depth = 100;
 
 
-        this.skybox = wd.Skybox.create();
+        this.skybox = wd.GameObject.create();
+
+        this.skybox.addComponent(wd.SkyboxRenderer.create());
         this.skybox.addComponent(geometry);
 
 

@@ -45,7 +45,9 @@ var scene = (function(){
         geometry.depth = 5;
 
 
-        var gameObject = wd.Skybox.create();
+        var gameObject = wd.GameObject.create();
+
+        gameObject.addComponent(wd.SkyboxRenderer.create());
         gameObject.addComponent(geometry);
 
         return gameObject;
