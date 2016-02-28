@@ -30,8 +30,8 @@
             var director = wd.Director.getInstance();
 
             director.scene.addChild(createTerrain());
-//            director.scene.addChild(createAmbientLight());
-//            director.scene.addChild(createDirectionLight());
+            director.scene.addChild(createAmbientLight());
+            director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
             director.start();
@@ -39,13 +39,14 @@
 
         function createTerrain() {
             var groundMap = wd.LoaderManager.getInstance().get("ground").toTexture();
-            groundMap.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
-            groundMap.wrapS = wd.ETextureWrapMode.REPEAT;
-            groundMap.wrapT = wd.ETextureWrapMode.REPEAT;
+//            groundMap.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+//            groundMap.wrapS = wd.ETextureWrapMode.REPEAT;
+//            groundMap.wrapT = wd.ETextureWrapMode.REPEAT;
 
 
-            var material = wd.BasicMaterial.create();
-            material.map = groundMap;
+            var material = wd.LightMaterial.create();
+            material.diffuseMap = groundMap;
+            material.shading = wd.EShading.SMOOTH;
 
 
             var geometry = wd.TerrainGeometry.create();
@@ -68,29 +69,29 @@
             return gameObject;
         }
 
-//        function createAmbientLight() {
-//            var ambientLightComponent = wd.AmbientLight.create();
-//            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
-//
-//            var ambientLight = wd.GameObject.create();
-//            ambientLight.addComponent(ambientLightComponent);
-//
-//            return ambientLight;
-//        }
-//
-//        function createDirectionLight() {
-//            var directionLightComponent = wd.DirectionLight.create();
-//            directionLightComponent.color = wd.Color.create("#1f8888");
-//            directionLightComponent.intensity = 1;
-//
-//
-//            var directionLight = wd.GameObject.create();
-//            directionLight.addComponent(directionLightComponent);
-//
-//            directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
-//
-//            return directionLight;
-//        }
+        function createAmbientLight() {
+            var ambientLightComponent = wd.AmbientLight.create();
+            ambientLightComponent.color = wd.Color.create("rgb(30, 30, 30)");
+
+            var ambientLight = wd.GameObject.create();
+            ambientLight.addComponent(ambientLightComponent);
+
+            return ambientLight;
+        }
+
+        function createDirectionLight() {
+            var directionLightComponent = wd.DirectionLight.create();
+            directionLightComponent.color = wd.Color.create("#ffffff");
+            directionLightComponent.intensity = 1;
+
+
+            var directionLight = wd.GameObject.create();
+            directionLight.addComponent(directionLightComponent);
+
+            directionLight.transform.translate(wd.Vector3.create(10, 20, 30));
+
+            return directionLight;
+        }
 
         function createCamera() {
             var camera = wd.GameObject.create(),
