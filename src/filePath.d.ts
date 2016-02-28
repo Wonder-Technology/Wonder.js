@@ -139,6 +139,8 @@
 /// <reference path="component/geometry/ESphereDrawMode"/>
 /// <reference path="component/geometry/SphereGeometry"/>
 /// <reference path="component/geometry/TriangleGeometry"/>
+/// <reference path="component/geometry/TerrainGeometry"/>
+
 /// <reference path="component/geometry/data/GeometryData"/>
 /// <reference path="component/geometry/data/CommonGeometryData"/>
 /// <reference path="component/geometry/data/MorphGeometryData"/>
