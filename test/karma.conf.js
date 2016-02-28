@@ -29,6 +29,12 @@
 
         //'test/unit/**',
 
+        'test/unit/renderer/**/DiffuseMapShaderLib*',
+
+        'test/unit/renderer/**/LightMapShaderLib*',
+
+        'test/unit/texture/**/BasicTextuer*',
+
         //'test/unit/**/lod/*',
 
         //'test/unit/**/lod/*',
@@ -141,7 +147,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/*MaterialSpec.js',
+        'test/unit/**/*MaterialSpec.js',
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
@@ -155,7 +161,7 @@
         //'test/unit/asset/wd/WDBuilderSpec.js',
         //'test/unit/math/*.js',
         //'test/unit/component/**/GeometrySpec.js',
-        'test/unit/component/**/TerrainGeometrySpec.js',
+        //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
         //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',

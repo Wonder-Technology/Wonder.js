@@ -39,6 +39,19 @@ describe("LightMaterial", function() {
 
             judgeHasLib(wd.LightCommonShaderLib);
         });
+        it("if lightMap exist, add its shader lib", function(){
+            material.lightMap = map;
+
+            rendererTool.triggerMaterialAddShaderLib(material);
+
+            judgeHasLib(wd.LightMapShaderLib);
+        });
+        it("else, add NoLightMapShaderLib", function () {
+            rendererTool.triggerMaterialAddShaderLib(material);
+
+            judgeHasLib(wd.NoLightMapShaderLib);
+
+        });
         it("if diffuseMap exist, add its shader lib", function(){
             material.diffuseMap = map;
 

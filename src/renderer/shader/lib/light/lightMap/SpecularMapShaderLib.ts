@@ -1,5 +1,5 @@
 module wd{
-    export class SpecularMapShaderLib extends LightMapShaderLib{
+    export class SpecularMapShaderLib extends BaseLightMapShaderLib{
         public static create() {
             var obj = new this();
 

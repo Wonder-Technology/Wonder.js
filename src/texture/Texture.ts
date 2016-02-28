@@ -37,7 +37,7 @@ module wd{
         public sendData(program:Program, pos:WebGLUniformLocation, unit:number){
             program.sendUniformData(pos, this.getSamplerType(), unit);
 
-            this.sendOtherData(program, unit);
+            //this.sendOtherData(program, unit);
         }
 
         public dispose(){
@@ -55,9 +55,9 @@ module wd{
             return ETextureFilterMode.LINEAR;
         }
 
-        @virtual
-        protected sendOtherData(program:Program, unit:number){
-        }
+        //@virtual
+        //protected sendOtherData(program:Program, unit:number){
+        //}
 
         protected getSamplerNameByVariableData(unit:number, type?:EVariableType){
             var samplerName:string = null;

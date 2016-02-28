@@ -24,6 +24,7 @@ float getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDi
 
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
+        vec3 materialLight = getMaterialLight();
         vec3 materialDiffuse = getMaterialDiffuse();
         vec3 materialSpecular = getMaterialSpecular();
         vec3 materialEmission = getMaterialEmission();
@@ -33,7 +34,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 emissionColor = u_emission * materialEmission;
 
-        vec3 ambientColor = u_ambient * materialDiffuse;
+        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse;
 
 
         if(u_lightModel == 3){

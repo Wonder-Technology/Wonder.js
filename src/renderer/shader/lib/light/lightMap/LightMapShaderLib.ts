@@ -1,19 +1,23 @@
 module wd{
-    export abstract class LightMapShaderLib extends ShaderLib{
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD);
+    export class LightMapShaderLib extends BaseLightMapShaderLib{
+        public static create() {
+            var obj = new this();
 
-            if(!texCoordBuffer){
-                return;
-            }
+            return obj;
+        }
 
-            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+        public type:string = "lightMap";
+
+        protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+            this.sendUniformData(program, "u_lightMapIntensity", material.lightMapIntensity);
         }
 
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
-            this.addAttributeVariable(["a_texCoord"]);
+            this.addUniformVariable([
+                VariableNameTable.getVariableName("lightMap"), "u_lightMapIntensity"
+            ]);
         }
     }
 }

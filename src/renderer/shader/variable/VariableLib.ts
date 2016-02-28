@@ -82,6 +82,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_lightMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_diffuseMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
@@ -127,7 +132,17 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_diffuseSourceRegion:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_repeatRegion:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_diffuseRepeatRegion:ShaderVariable = {
             type:EVariableType.FLOAT_4,
             value:EVariableCategory.ENGINE
         };
@@ -138,6 +153,11 @@ module wd{
         };
 
         public static u_mixRatio:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_lightMapIntensity:ShaderVariable = {
             type:EVariableType.FLOAT_1,
             value:EVariableCategory.ENGINE
         };

@@ -6,11 +6,23 @@ module wd{
             return obj;
         }
 
-        private _diffuseMap:Texture = null;
+        private _lightMap:ImageTexture = null;
+        get lightMap(){
+            return this._lightMap;
+        }
+        set lightMap(lightMap:ImageTexture){
+            this.addMap(lightMap, {
+                samplerVariableName: VariableNameTable.getVariableName("lightMap")
+            });
+
+            this._lightMap = lightMap;
+        }
+
+        private _diffuseMap:ImageTexture = null;
         get diffuseMap(){
             return this._diffuseMap;
         }
-        set diffuseMap(diffuseMap:Texture){
+        set diffuseMap(diffuseMap:ImageTexture){
             this.addMap(diffuseMap, {
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
             });
@@ -18,11 +30,11 @@ module wd{
             this._diffuseMap = diffuseMap;
         }
 
-        private _specularMap:Texture = null;
+        private _specularMap:ImageTexture = null;
         get specularMap(){
             return this._specularMap;
         }
-        set specularMap(specularMap:Texture){
+        set specularMap(specularMap:ImageTexture){
             this.addMap(specularMap, {
                 samplerVariableName: VariableNameTable.getVariableName("specularMap")
             });
@@ -30,11 +42,11 @@ module wd{
             this._specularMap = specularMap;
         }
 
-        private _emissionMap:Texture = null;
+        private _emissionMap:ImageTexture = null;
         get emissionMap(){
             return this._emissionMap;
         }
-        set emissionMap(emissionMap:Texture){
+        set emissionMap(emissionMap:ImageTexture){
             this.addMap(emissionMap, {
                 samplerVariableName: VariableNameTable.getVariableName("emissionMap")
             });
@@ -42,11 +54,11 @@ module wd{
             this._emissionMap = emissionMap;
         }
 
-        private _normalMap:Texture = null;
+        private _normalMap:ImageTexture = null;
         get normalMap(){
             return this._normalMap;
         }
-        set normalMap(normalMap:Texture){
+        set normalMap(normalMap:ImageTexture){
             this.addMap(normalMap, {
                 samplerVariableName: VariableNameTable.getVariableName("normalMap")
             });
@@ -86,6 +98,7 @@ module wd{
 
         public specularColor:Color = Color.create("0x111111");
         public emissionColor:Color = Color.create("0x111111");
+        public lightMapIntensity:number = 1;
 
         private _twoDShadowMapSamplerIndex:number = 0;
         private _cubemapShadowMapSamplerIndex:number = 0;
@@ -142,6 +155,13 @@ module wd{
 
         private _setLightMapShaderLib(){
             var scene:SceneDispatcher = Director.getInstance().scene;
+
+            if(this._lightMap){
+                this.shader.addLib(LightMapShaderLib.create());
+            }
+            else{
+                this.shader.addLib(NoLightMapShaderLib.create());
+            }
 
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.create());

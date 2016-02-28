@@ -10,11 +10,22 @@ module wd{
             this.p_sourceRegionMethod = sourceRegionMethod;
         }
 
+        private _sourceRegion:RectRegion = null;
+        get sourceRegion(){
+            if(this._sourceRegion && this.sourceRegionMethod === ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
+                return this._convertSourceRegionToUV(this._sourceRegion);
+            }
+
+            return RectRegion.create(0, 0, 1, 1);
+        }
+        set sourceRegion(sourceRegion:RectRegion){
+            this._sourceRegion = sourceRegion;
+        }
+
         public generateMipmaps:boolean = null;
         public format:ETextureFormat = null;
         public source:any = null;
         public repeatRegion:RectRegion = null;
-        public sourceRegion:RectRegion = null;
         public sourceRegionMapping:ETextureSourceRegionMapping = null;
         public flipY:boolean = null;
         public premultiplyAlpha:boolean = null;
@@ -76,21 +87,22 @@ module wd{
             return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
         }
 
-        protected sendOtherData(program:Program, unit:number){
-            var sourceRegion = null;
-
-            if(this.sourceRegion && this.sourceRegionMethod === ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
-                sourceRegion = this._convertSourceRegionToUV();
-            }
-            else{
-                sourceRegion = RectRegion.create(0, 0, 1, 1);
-            }
-            program.sendUniformData("u_sourceRegion", EVariableType.FLOAT_4, sourceRegion);
-
-            program.sendUniformData("u_repeatRegion", EVariableType.FLOAT_4, this.repeatRegion);
-
-            return this;
-        }
+        //todo optimize: if no need, not send these data
+        //protected sendOtherData(program:Program, unit:number){
+        //    //var sourceRegion = null;
+        //    //
+        //    //if(this.sourceRegion && this.sourceRegionMethod === ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL){
+        //    //    sourceRegion = this._convertSourceRegionToUV();
+        //    //}
+        //    //else{
+        //    //    sourceRegion = RectRegion.create(0, 0, 1, 1);
+        //    //}
+        //    //program.sendUniformData("u_sourceRegion", EVariableType.FLOAT_4, sourceRegion);
+        //    //
+        //    //program.sendUniformData("u_repeatRegion", EVariableType.FLOAT_4, this.repeatRegion);
+        //    //
+        //    //return this;
+        //}
 
         protected abstract allocateSourceToTexture(isSourcePowerOfTwo:boolean);
 
@@ -148,12 +160,12 @@ module wd{
         }
 
         //todo optimize: add dirty cache
-        private _convertSourceRegionToUV(){
+        private _convertSourceRegionToUV(sourceRegion:RectRegion){
             if(this.sourceRegionMapping === ETextureSourceRegionMapping.CANVAS){
-                return this._convertSourceRegionCanvasMapToUV(this.sourceRegion);
+                return this._convertSourceRegionCanvasMapToUV(sourceRegion);
             }
             else if(this.sourceRegionMapping === ETextureSourceRegionMapping.UV){
-                return this.sourceRegion;
+                return sourceRegion;
             }
         }
     }

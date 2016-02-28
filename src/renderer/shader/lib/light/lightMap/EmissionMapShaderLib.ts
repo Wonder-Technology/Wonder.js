@@ -1,5 +1,5 @@
 module wd{
-    export class EmissionMapShaderLib extends LightMapShaderLib{
+    export class EmissionMapShaderLib extends BaseLightMapShaderLib{
         public static create() {
             var obj = new this();
 

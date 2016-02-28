@@ -1,5 +1,5 @@
 module wd{
-    export class DiffuseMapShaderLib extends LightMapShaderLib{
+    export class DiffuseMapShaderLib extends BaseLightMapShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,12 +8,24 @@ module wd{
 
         public type:string = "diffuseMap";
 
+        @require(function(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+            assert(!!material.diffuseMap, Log.info.FUNC_MUST_DEFINE("diffuseMap"));
+        })
+        protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+            var diffuseMap = material.diffuseMap;
+
+            this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegion);
+            this.sendUniformData(program, "u_diffuseRepeatRegion", diffuseMap.repeatRegion);
+
+            return this;
+        }
+
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
                 VariableNameTable.getVariableName("diffuseMap"),
-                "u_sourceRegion", "u_repeatRegion"
+                "u_diffuseSourceRegion", "u_diffuseRepeatRegion"
             ]);
         }
     }

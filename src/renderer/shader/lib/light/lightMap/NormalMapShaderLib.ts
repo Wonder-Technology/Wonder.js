@@ -1,5 +1,5 @@
 module wd{
-    export class NormalMapShaderLib extends LightMapShaderLib{
+    export class NormalMapShaderLib extends BaseLightMapShaderLib{
         public static create() {
             var obj = new this();
 

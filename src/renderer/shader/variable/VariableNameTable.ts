@@ -1,6 +1,7 @@
 module wd{
     const _table = wdCb.Hash.create<string>();
 
+    _table.addChild("lightMap", "u_lightMapSampler");
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
     _table.addChild("specularMap", "u_specularMapSampler");
     _table.addChild("emissionMap", "u_emissionMapSampler");
