@@ -19,6 +19,7 @@ module wd{
 
         public heightMap:BasicTexture = null;
 
+
         protected computeData(): GeometryDataType{
             // Getting height map data
             var canvas = document.createElement("canvas");
@@ -45,7 +46,7 @@ module wd{
             var indices = [];
             var vertices = [];
             var normals = [];
-            //var texCoords = [];
+            var texCoords = [];
             var row, col;
             var subdivisions = this.subdivisions,
                 width = this.range.width,
@@ -75,7 +76,7 @@ module wd{
 
                     vertices.push(x, y, z);
                     //normals.push(0, 0, 0);
-                    //texCoords.push(col / options.subdivisions, 1.0 - row / options.subdivisions);
+                    texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
                 }
             }
 
@@ -100,8 +101,8 @@ module wd{
 
             return {
                 vertices: vertices,
-                faces: GeometryUtils.convertToFaces(indices, normals)
-                //texCoords: texCoords
+                faces: GeometryUtils.convertToFaces(indices, normals),
+                texCoords: texCoords
             };
         }
     }
