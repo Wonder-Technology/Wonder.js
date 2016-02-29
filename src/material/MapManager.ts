@@ -31,8 +31,12 @@ module wd{
         public addMap(map:Texture);
         public addMap(map:Texture, option:MapVariableData);
 
+        @require(function(...args){
+            assert(args[0] instanceof TextureAsset || args[0] instanceof Texture, Log.info.FUNC_SHOULD("arguments[0]", "be TextureAsset || Texture"));
+        })
         public addMap(...args){
-            var map = null;
+            var map:Texture = null;
+
             if(args[0] instanceof TextureAsset){
                 let asset:TextureAsset = args[0];
 
@@ -56,6 +60,20 @@ module wd{
 
         public getMap(index:number){
             return this._mapTable.getChild("map").getChild(index);
+        }
+
+        @ensure(function(mapList:wdCb.Collection<BasicTexture>){
+            mapList.forEach((map:BasicTexture) => {
+                assert(map instanceof BasicTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture"));
+            })
+        })
+        public getMapList():wdCb.Collection<BasicTexture>{
+            var self = this;
+
+            return this._mapTable.getChild("map")
+                .filter((map:Texture) => {
+                    return !self.isMirrorMap(map);
+                });
         }
 
         public hasMap(func:(...args) => boolean);

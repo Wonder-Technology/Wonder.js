@@ -105,8 +105,8 @@ describe("BasicMaterial", function () {
             director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
-            expect(program.sendUniformData.withArgs("u_sourceRegion")).toCalledOnce();
-            expect(program.sendUniformData.withArgs("u_repeatRegion")).toCalledOnce();
+            expect(program.sendUniformData.withArgs("u_map0SourceRegion")).toCalledOnce();
+            expect(program.sendUniformData.withArgs("u_map0RepeatRegion")).toCalledOnce();
         });
         it("if add two maps, add MultiMapShaderLib", function () {
             material.map = [wd.ImageTexture.create(), wd.ImageTexture.create()];
@@ -119,8 +119,10 @@ describe("BasicMaterial", function () {
             director._loopBody(1);
 
             expect(program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
-            expect(program.sendUniformData.withArgs("u_sourceRegion")).toCalledTwice();
-            expect(program.sendUniformData.withArgs("u_repeatRegion")).toCalledTwice();
+            expect(program.sendUniformData.withArgs("u_map0SourceRegion")).toCalledOnce();
+            expect(program.sendUniformData.withArgs("u_map0RepeatRegion")).toCalledOnce();
+            expect(program.sendUniformData.withArgs("u_map1SourceRegion")).toCalledOnce();
+            expect(program.sendUniformData.withArgs("u_map1RepeatRegion")).toCalledOnce();
 
 
 
@@ -129,6 +131,8 @@ describe("BasicMaterial", function () {
             expect(program.sendUniformData.withArgs("u_mixRatio").firstCall.args[2]).toEqual(0.5);
         });
         it("not support more than 2 maps", function () {
+            testTool.openContractCheck(sandbox);
+
             expect(function () {
                 material.map = [wd.ImageTexture.create(), wd.ImageTexture.create(), wd.ImageTexture.create()];
             }).toThrow();

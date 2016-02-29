@@ -19,7 +19,9 @@
 
         wd.LoaderManager.getInstance().load([
             {url: "../../asset/texture/multi.png", id: "multiTexture"},
-            {url: "../../asset/texture/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"}
+            {url: "../../asset/texture/compressed/disturb_dxt1_nomip.dds", id:"compressedTexture"},
+            {url: "../../asset/texture/1.jpg", id: "texture1"},
+            {url: "../../asset/texture/2.jpg", id: "texture2"}
         ]).subscribe(null, null, function () {
             initSample();
         });
@@ -29,8 +31,9 @@
 
             director.scene.addChild(createRect1());
             director.scene.addChild(createRect2());
-
             director.scene.addChild(createRect3());
+            director.scene.addChild(createMultiTexturesTriangle());
+
             director.scene.addChild(createCamera());
 
             director.start();
@@ -71,6 +74,7 @@
              */
             map.sourceRegion = wd.RectRegion.create(0, 0, 64, 64);
             map.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+//            map.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
             map.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
             map.wrapS = wd.ETextureWrapMode.REPEAT;
             map.wrapT = wd.ETextureWrapMode.REPEAT;
@@ -90,7 +94,7 @@
             gameObject.addComponent(geometry);
             gameObject.addComponent(wd.MeshRenderer.create());
 
-            gameObject.transform.translate(0, 0, 0);
+            gameObject.transform.translate(0, 2, 0);
 
             return gameObject;
         }
@@ -118,6 +122,37 @@
             gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.translate(8, 0, 0);
+
+            return gameObject;
+        }
+
+        function createMultiTexturesTriangle() {
+            var material = wd.BasicMaterial.create();
+            material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), wd.LoaderManager.getInstance().get("texture2").toTexture()];
+
+            var map0 = material.mapList.getChild(0);
+            map0.sourceRegion = wd.RectRegion.create(0, 64, 128,128);
+//            map0.repeatRegion = wd.RectRegion.create(0, 0, 2, 2);
+//            map0.wrapS = wd.ETextureWrapMode.REPEAT;
+//            map0.wrapT = wd.ETextureWrapMode.REPEAT;
+
+
+            material.side = wd.ESide.BOTH;
+
+
+            var geometry = wd.TriangleGeometry.create();
+            geometry.material = material;
+            geometry.width = 5;
+            geometry.height = 5;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+
+            gameObject.transform.translate(0, -3, 0);
+
 
             return gameObject;
         }

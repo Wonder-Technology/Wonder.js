@@ -14,7 +14,7 @@ module wd{
 
         public mipmaps:wdCb.Collection<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>;
 
-        public toTexture():Texture{
+        public toTexture():ImageTexture{
             return ImageTexture.create(this);
         }
 

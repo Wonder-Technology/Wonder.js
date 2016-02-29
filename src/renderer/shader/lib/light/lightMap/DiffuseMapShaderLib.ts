@@ -14,7 +14,7 @@ module wd{
         protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             var diffuseMap = material.diffuseMap;
 
-            this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegion);
+            this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
             this.sendUniformData(program, "u_diffuseRepeatRegion", diffuseMap.repeatRegion);
 
             return this;

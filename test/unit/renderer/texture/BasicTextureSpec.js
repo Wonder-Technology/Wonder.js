@@ -77,6 +77,12 @@ describe("BasicTexture", function() {
             expect(program.sendUniformData.firstCall).toCalledWith(100, wd.EVariableType.SAMPLER_2D, 1);
         });
 
+    });
+
+    describe("sourceRegionForGLSL(getter)", function(){
+        beforeEach(function(){
+        });
+
         describe("if sourceRegionMethod is CHANGE_TEXCOORDS_IN_GLSL", function(){
             beforeEach(function(){
                 texture.width = 100;
@@ -89,19 +95,26 @@ describe("BasicTexture", function() {
                 texture.sourceRegionMapping = wd.ETextureSourceRegionMapping.CANVAS;
                 texture.sourceRegion = wd.RectRegion.create(10, 20, 50, 40);
 
-                texture.sendData(program, 0);
+                var sourceRegion = texture.sourceRegionForGLSL;
 
-                expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
+                expect(testTool.getValues(sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.4, 0.5, 0.4 )));
             });
             it("else, directly set it", function(){
                 texture.sourceRegionMapping = wd.ETextureSourceRegionMapping.UV;
                 texture.sourceRegion = wd.RectRegion.create(0.1, 0.1, 0.5, 0.6);
 
-                texture.sendData(program, 0);
+                var sourceRegion = texture.sourceRegionForGLSL;
 
-                expect(testTool.getValues(texture.sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.1, 0.5, 0.6)));
-
+                expect(testTool.getValues(sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.1, 0.5, 0.6)));
             });
+        });
+
+        it("else, return (0,0,1,1)", function () {
+            texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+
+            var sourceRegion = texture.sourceRegionForGLSL;
+
+            expect(testTool.getValues(sourceRegion)).toEqual(testTool.getValues(wd.RectRegion.create(0,0,1,1)));
         });
     });
 

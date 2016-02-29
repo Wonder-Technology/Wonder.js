@@ -64,12 +64,6 @@ module wd{
             return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_CUBE);
         }
 
-        protected sendOtherData(program:Program, unit:number){
-            program.sendUniformData("u_repeatRegion", EVariableType.FLOAT_4, this.repeatRegion);
-
-            return this;
-        }
-
         protected allocateSourceToTexture(isSourcePowerOfTwo:boolean) {
             if(this._areAllCompressedAsset){
                 this.textures.forEach((texture:CubemapFaceCompressedTexture, i:number) => {

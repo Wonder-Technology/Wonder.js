@@ -1,9 +1,11 @@
 @varDeclare
-varying vec2 v_mapCoord;
+varying vec2 v_mapCoord0;
 @end
 
 
 @body
-    vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;
-    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;
+    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;
+
+    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;
 @end
+

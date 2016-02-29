@@ -37,7 +37,7 @@ describe("DiffuseMapShaderLib", function () {
 
             lib.sendShaderVariables(program, quadCmd, material);
 
-            expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.sourceRegion);
+            expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.sourceRegionForGLSL);
         });
         it("send diffuseRepeatRegion", function () {
             material.diffuseMap = wd.ImageTexture.create({});

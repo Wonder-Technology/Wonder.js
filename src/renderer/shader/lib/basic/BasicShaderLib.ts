@@ -24,7 +24,7 @@ module wd{
             this.sendUniformData(program, "u_opacity", material.opacity);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:BasicMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_color"]);

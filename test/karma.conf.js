@@ -33,7 +33,8 @@
 
         'test/unit/renderer/**/LightMapShaderLib*',
 
-        'test/unit/texture/**/BasicTextuer*',
+
+        'test/unit/renderer/texture/*',
 
         //'test/unit/**/lod/*',
 

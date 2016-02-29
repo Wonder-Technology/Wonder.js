@@ -127,7 +127,12 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_sourceRegion:ShaderVariable = {
+        public static u_map0SourceRegion:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_map1SourceRegion:ShaderVariable = {
             type:EVariableType.FLOAT_4,
             value:EVariableCategory.ENGINE
         };
@@ -137,7 +142,12 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_repeatRegion:ShaderVariable = {
+        public static u_map0RepeatRegion:ShaderVariable = {
+            type:EVariableType.FLOAT_4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_map1RepeatRegion:ShaderVariable = {
             type:EVariableType.FLOAT_4,
             value:EVariableCategory.ENGINE
         };

@@ -5,15 +5,29 @@ module wd{
 
             return obj;
         }
-        
+
+        @ensureGetter(function(mapList:wdCb.Collection<Texture>){
+            assert(mapList.getCount() <= 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+        })
+        get mapList(){
+            return this.mapManager.getMapList();
+        }
+
+        @requireSetter(function(map:any){
+            if(map instanceof Texture || map instanceof TextureAsset){
+            }
+            else{
+                let mapArr:Array<any> = arguments[0];
+
+                wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+            }
+        })
         set map(map:any){
             if(map instanceof Texture || map instanceof TextureAsset){
                 this.addMap(map);
             }
             else{
-                let mapArr:Array<any> = (arguments[0]);
-
-                wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                let mapArr:Array<any> = arguments[0];
 
                 for(let m of mapArr){
                     this.addMap(m);

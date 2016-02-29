@@ -92,50 +92,64 @@ describe("compressed texture", function() {
             var canvas,ctx;
 
             beforeEach(function(){
-                ctx = {
-                    drawImage:sandbox.stub()
-                };
-                canvas = {
-                    getContext: sandbox.stub().returns(ctx)
-                };
-                sandbox.stub(document, "createElement").returns(canvas);
-                texture.width = 100;
-                texture.height = 100;
-
-                program = {
-                    sendUniformData:sandbox.stub()
-                };
+                //ctx = {
+                //    drawImage:sandbox.stub()
+                //};
+                //canvas = {
+                //    getContext: sandbox.stub().returns(ctx)
+                //};
+                //sandbox.stub(document, "createElement").returns(canvas);
+                //texture.width = 100;
+                //texture.height = 100;
+                //
+                //program = {
+                //    sendUniformData:sandbox.stub()
+                //};
+                //
+                texture = wd.CompressedTexture.create(wd.CompressedTextureAsset.create());
             });
 
-                describe("sourceRegionMethod always be CHANGE_TEXCOORDS_IN_GLSL, because canvas->drawImage can't draw the compressed texture's data.", function(){
-                    it("test default", function(done){
-                        loadCompressedTexture(function(texture){
-                            texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+            describe("sourceRegionMethod always be CHANGE_TEXCOORDS_IN_GLSL, because canvas->drawImage can't draw the compressed texture's data.", function(){
+                it("test default", function(){
+                    //loadCompressedTexture(function(texture){
+                    //    texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                    //
+                    //    texture.update(0);
+                    //
+                    //    texture.sendData(program, 0);
+                    //
+                    //    expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
+                    //
+                    //    done();
+                    //});
 
-                            texture.update(0);
-
-                            texture.sendData(program, 0);
-
-                            expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0.1, 0.6, 0.1, 0.2)));
-
-                            done();
-                        });
-                    });
-                    it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(done){
-                        loadCompressedTexture(function(texture){
-                            texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
-                            texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
-                            sandbox.stub(wd.Log, "assert");
-
-                            texture.update(0);
-
-                            expect(wd.Log.assert).toCalled();
-                            expect(texture.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
-
-                            done();
-                        });
-                    });
+                    expect(texture.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
                 });
+                it("if it's DRAW_IN_CANVAS, assertion and still be CHANGE_TEXCOORDS_IN_GLSL", function(){
+                    //loadCompressedTexture(function(texture){
+                    //    texture.sourceRegion = wd.RectRegion.create(12.8, 25.6, 12.8, 25.6);
+                    //    texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+                    //    sandbox.stub(wd.Log, "assert");
+                    //
+                    //    texture.update(0);
+                    //
+                    //    expect(wd.Log.assert).toCalled();
+                    //    expect(texture.sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                    //
+                    //    done();
+                    //});
+
+
+                    texture.sourceRegionMethod = wd.ETextureSourceRegionMethod.DRAW_IN_CANVAS;
+                    sandbox.stub(wd.Log, "assert");
+
+
+                    var sourceRegionMethod = texture.sourceRegionMethod;
+
+                    expect(wd.Log.assert).toCalledOnce();
+                    expect(sourceRegionMethod).toEqual(wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL);
+                });
+            });
         });
 
         describe("mipmap", function(){

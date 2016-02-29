@@ -424,13 +424,13 @@ describe("cubemap texture", function() {
 
                 expect(program.sendUniformData.firstCall).toCalledWith(100, wd.EVariableType.SAMPLER_CUBE, 1);
             });
-            it("send u_repeatRegion", function(){
-                texture.repeatRegion = wd.RectRegion.create(0, 1, 2, 3);
-
-                texture.sendData(program, 100, 1);
-
-                expect(program.sendUniformData).toCalledWith("u_repeatRegion", wd.EVariableType.FLOAT_4, texture.repeatRegion);
-            });
+            //it("send u_repeatRegion", function(){
+            //    texture.repeatRegion = wd.RectRegion.create(0, 1, 2, 3);
+            //
+            //    texture.sendData(program, 100, 1);
+            //
+            //    expect(program.sendUniformData).toCalledWith("u_repeatRegion", wd.EVariableType.FLOAT_4, texture.repeatRegion);
+            //});
         });
 
         describe("sourceRegion", function(){
@@ -455,7 +455,8 @@ describe("cubemap texture", function() {
                         texture.sendData(program, 0);
 
                         expect(wd.BasicTextureUtils.drawPartOfTextureByCanvas).not.toCalled();
-                        expect(program.sendUniformData).toCalledTwice();
+                        //expect(program.sendUniformData).toCalledTwice();
+                        expect(program.sendUniformData).toCalledOnce();
 
                         done();
                     }, function(asset){
@@ -507,9 +508,9 @@ describe("cubemap texture", function() {
                         expect(gl.texParameteri.firstCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wd.ETextureWrapMode.REPEAT);
                         expect(gl.texParameteri.secondCall).toCalledWith(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wd.ETextureWrapMode.REPEAT);
 
-                        texture.sendData(program, 0);
-
-                        expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0, 0, 2, 2)));
+                        //texture.sendData(program, 0);
+                        //
+                        //expect(testTool.getValues(program.sendUniformData.secondCall.args[2])).toEqual(testTool.getValues(wd.RectRegion.create(0, 0, 2, 2)));
 
                         done();
                     }, function(asset){
