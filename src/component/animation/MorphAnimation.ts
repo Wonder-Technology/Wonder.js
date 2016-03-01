@@ -60,7 +60,7 @@ module wd{
         protected handleWhenCurrentFrameFinish(elapsedTime:number):void{
             this.isFrameChange = true;
 
-            this._prevFrameEndTime = (elapsedTime - this.pauseDuration) - (elapsedTime - this.pauseDuration) % this.duration;
+            this._prevFrameEndTime = MathUtils.maxFloorIntegralMultiple((elapsedTime - this.pauseDuration), this.duration);
 
             this.currentFrame++;
 

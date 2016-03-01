@@ -29,12 +29,12 @@
 
         //'test/unit/**',
 
-        'test/unit/renderer/**/DiffuseMapShaderLib*',
-
-        'test/unit/renderer/**/LightMapShaderLib*',
-
-
-        'test/unit/renderer/texture/*',
+        //'test/unit/renderer/**/DiffuseMapShaderLib*',
+        //
+        //'test/unit/renderer/**/LightMapShaderLib*',
+        //
+        //
+        //'test/unit/renderer/texture/*',
 
         //'test/unit/**/lod/*',
 
@@ -51,8 +51,8 @@
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*Shader*',
 
-        //'test/unit/**/*animation*',
-        //'test/unit/component/**/*Animation*.js',
+        'test/unit/**/*animation*',
+        'test/unit/component/**/*Animation*.js',
         //'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
@@ -118,7 +118,7 @@
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
-        //'test/unit/**/MathUtils*',
+        'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
@@ -148,7 +148,7 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        'test/unit/**/*MaterialSpec.js',
+        //'test/unit/**/*MaterialSpec.js',
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',

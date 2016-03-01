@@ -38,6 +38,39 @@ module wd {
 
             return Math.floor(Math.random() * (max - min) + min);
         }
+
+        @ensure(function(val){
+            assert(val >= 0);
+        })
+        public static mod(a:number, b:number) {
+            var n = Math.floor(a / b);
+
+            a -= n * b;
+
+            if (a < 0) {
+                a += b;
+            }
+
+            return a;
+        }
+
+        @require(function(a:number, b:number){
+            assert(a >= 0 && b >= 0, Log.info.FUNC_SHOULD("param", ">= 0"));
+        })
+        @ensure(function(val){
+            assert(val >= 0);
+        })
+        public static maxFloorIntegralMultiple(a:number, b:number) {
+            if(b == 0){
+                return a;
+            }
+
+            if(a < b){
+                return 0;
+            }
+
+            return Math.floor(a / b) * b;
+        }
     }
 }
 

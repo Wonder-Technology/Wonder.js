@@ -5,6 +5,8 @@ describe("MathUtils", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Utils = wd.MathUtils;
+
+        testTool.openContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
@@ -32,6 +34,29 @@ describe("MathUtils", function() {
             expect(num2).toEqual(jasmine.any(Number));
             expect(num2 <= 3).toBeTruthy();
             expect(num2 >= 2).toBeTruthy();
+        });
+    });
+    
+    describe("mod", function(){
+        it("gives the positive remainder obtained when dividing a by b", function(){
+            expect(Utils.mod(10,2)).toEqual(0);
+            expect(Utils.mod(10,3)).toEqual(1);
+            expect(Utils.mod(2,3)).toEqual(2);
+
+            expect(Utils.mod(-2,3)).toEqual(1);
+            expect(Utils.mod(-5,3)).toEqual(1);
+        });
+    });
+
+    describe("maxFloorIntegralMultiple", function(){
+        it("gives the max number which is times of b and <= a", function(){
+            expect(Utils.maxFloorIntegralMultiple(10,2)).toEqual(10);
+            expect(Utils.maxFloorIntegralMultiple(10,3)).toEqual(9);
+
+            expect(Utils.maxFloorIntegralMultiple(2,3)).toEqual(0);
+
+            expect(function(){Utils.maxFloorIntegralMultiple(-2,3)}).toThrow();
+            expect(function(){Utils.maxFloorIntegralMultiple(2,-3)}).toThrow();
         });
     });
 });

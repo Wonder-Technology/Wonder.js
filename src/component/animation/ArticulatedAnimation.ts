@@ -246,7 +246,7 @@ module wd{
             assert(elapsedTime >= lastEndFrameTime, Log.info.FUNC_SHOULD(`elapsedTime:${elapsedTime}`, `>= lastEndFrameTime:${lastEndFrameTime}`));
         })
         private _getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames(elapsedTime:number){
-            return elapsedTime -  elapsedTime % this._currentAnimData.getChild(this.frameCount - 1).time;
+            return MathUtils.maxFloorIntegralMultiple(elapsedTime, this._currentAnimData.getChild(this.frameCount - 1).time);
         }
 
         private _isFinishAllFrames(){
