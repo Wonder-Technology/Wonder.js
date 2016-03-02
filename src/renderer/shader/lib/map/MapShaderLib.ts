@@ -2,8 +2,8 @@ module wd{
     export abstract class MapShaderLib extends ShaderLib{
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:BasicMaterial) {
             var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD),
-                mapList:wdCb.Collection<BasicTexture> = null,
-                map0:BasicTexture = null;
+                mapList:wdCb.Collection<BasicTexture|ProceduralTexture> = null,
+                map0:BasicTexture|ProceduralTexture = null;
 
             if(!texCoordBuffer){
                 return;

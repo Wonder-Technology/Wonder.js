@@ -58,60 +58,72 @@ module wd{
             this._textureDirty = true;
         }
 
-        public getMap(index:number){
-            return this._mapTable.getChild("map").getChild(index);
+        public getMap(index:number);
+        public getMap(func:(map:Texture) => boolean);
+
+        public getMap(...args){
+            var mapList = this._mapTable.getChild("map");
+
+            if(JudgeUtils.isNumber(args[0])){
+                let index:number = args[0];
+
+                return mapList.getChild(index);
+            }
+            else{
+                let func = args[0];
+
+                return mapList.findOne(func);
+            }
         }
 
-        @ensure(function(mapList:wdCb.Collection<BasicTexture>){
-            mapList.forEach((map:BasicTexture) => {
-                assert(map instanceof BasicTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture"));
+        public getProceduralMap():ProceduralTexture{
+            return this.getMap((map:Texture) => {
+                return map instanceof ProceduralTexture;
+            });
+        }
+
+        @ensure(function(mapList:wdCb.Collection<BasicTexture|ProceduralTexture>){
+            mapList.forEach((map:BasicTexture|ProceduralTexture) => {
+                assert(map instanceof BasicTexture || map instanceof ProceduralTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));
             })
         })
-        public getMapList():wdCb.Collection<BasicTexture>{
-            var self = this;
+        public getMapList():wdCb.Collection<BasicTexture|ProceduralTexture>{
+            var self = this,
+                map = this._mapTable.getChild("map");
 
-            return this._mapTable.getChild("map")
+            return map ? this._mapTable.getChild("map")
                 .filter((map:Texture) => {
                     return !self.isMirrorMap(map);
-                });
+                }) : wdCb.Collection.create<BasicTexture|ProceduralTexture>();
         }
 
         public hasMap(func:(...args) => boolean);
         public hasMap(map:Texture);
 
         public hasMap(...args){
-            var maps = null;
+            var mapList:wdCb.Collection<Texture> = null;
 
-            maps = this._mapTable.getChild("map");
+            mapList = this._mapTable.getChild("map");
 
-            if(!maps){
+            if(!mapList){
                 return false;
             }
 
             if(JudgeUtils.isFunction(args[0])){
-                return maps.hasChildWithFunc(args[0]);
+                return mapList.hasChildWithFunc(args[0]);
             }
             else{
-                return maps.hasChild(args[0]);
+                return mapList.hasChild(args[0]);
             }
         }
 
+        public getMapCount(){
+            var self = this,
+                map = this._mapTable.getChild("map");
 
-        public getMapCount();
-        public getMapCount(filterFunc:(map:Texture) => boolean);
-
-        public getMapCount(...args){
-            if(args.length === 0){
-                let map = this._mapTable.getChild("map");
-
-                return map ? map.getCount() : 0;
-            }
-            else{
-                let filterFunc = args[0],
-                    map = this._mapTable.getChild("map");
-
-                return map ? map.filter(filterFunc).getCount() : 0;
-            }
+            return map ? map.filter((map:Texture) => {
+                return !self.isMirrorMap(map);
+            }).getCount() : 0;
         }
 
         public getEnvMap(){

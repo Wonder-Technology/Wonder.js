@@ -182,7 +182,7 @@ module wd{
                 this.shader.addLib(DiffuseMapShaderLib.create());
 
                 if(this._diffuseMap instanceof ProceduralTexture){
-                    this._addProceduralShaderLib(this._diffuseMap);
+                    this.addProceduralShaderLib(this._diffuseMap);
                 }
             }
             else{
@@ -222,19 +222,6 @@ module wd{
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.create());
-            }
-        }
-
-        //todo BasicMaterial add procedural shaderLib
-        @require(function(proceduralTexture:Texture){
-            assert(proceduralTexture instanceof ProceduralTexture, Log.info.FUNC_SHOULD("arguments[0]", "be ProceduralTexture"));
-        })
-        private _addProceduralShaderLib(proceduralTexture:Texture){
-            if(proceduralTexture instanceof MarbleProceduralTexture){
-                this.proceduralShader.addLib(MarbleProceduralShaderLib.create(proceduralTexture));
-            }
-            else{
-                Log.error(true, Log.info.FUNC_UNEXPECT("proceduralTexture"));
             }
         }
 

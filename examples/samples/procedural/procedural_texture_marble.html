@@ -16,12 +16,17 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        initSample();
+        wd.LoaderManager.getInstance().load([
+            {url: "../../asset/texture/1.jpg", id: "texture1"}
+        ]).subscribe(null, null, function () {
+            initSample();
+        });
 
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChild(createPlane());
+//            director.scene.addChildren([createPlane1(), createPlane2()]);
+            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -29,7 +34,7 @@
             director.start();
         }
 
-        function createPlane() {
+        function createPlane1() {
             var marbleTexture = wd.MarbleProceduralTexture.create();
             marbleTexture.tilesHeightNumber = 3;
             marbleTexture.tilesWidthNumber = 4;
@@ -53,6 +58,64 @@
             gameObject.addComponent(wd.MeshRenderer.create());
 
             gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(50,0,0);
+
+            return gameObject;
+        }
+
+        function createPlane2() {
+            var marbleTexture = wd.MarbleProceduralTexture.create();
+            marbleTexture.tilesHeightNumber = 2;
+            marbleTexture.tilesWidthNumber = 2;
+            marbleTexture.amplitude = 10;
+
+
+            var material = wd.BasicMaterial.create();
+            material.map = marbleTexture;
+
+
+            var geometry = wd.PlaneGeometry.create();
+            geometry.material = material;
+            geometry.width = 20;
+            geometry.height = 20;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(-50,0,0);
+
+            return gameObject;
+        }
+
+        function createPlane3() {
+            var marbleTexture = wd.MarbleProceduralTexture.create();
+            marbleTexture.tilesHeightNumber = 5;
+            marbleTexture.tilesWidthNumber = 5;
+            marbleTexture.amplitude = 5;
+
+
+            var material = wd.BasicMaterial.create();
+            material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), marbleTexture];
+
+
+            var geometry = wd.PlaneGeometry.create();
+            geometry.material = material;
+            geometry.width = 20;
+            geometry.height = 20;
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(geometry);
+
+            gameObject.addComponent(wd.MeshRenderer.create());
+
+            gameObject.transform.rotate(wd.Vector3.create(90,0,0));
+
+            gameObject.transform.translate(0,0,0);
 
             return gameObject;
         }
@@ -92,7 +155,7 @@
             cameraComponent.far = 1000;
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
-            controller.distance = 40;
+            controller.distance = 100;
 
             camera.addComponent(controller);
 

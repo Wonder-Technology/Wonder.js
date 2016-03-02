@@ -232,6 +232,18 @@ module wd {
             }
         }
 
+        @require(function(proceduralTexture:Texture){
+            assert(proceduralTexture instanceof ProceduralTexture, Log.info.FUNC_SHOULD("arguments[0]", "be ProceduralTexture"));
+        })
+        protected addProceduralShaderLib(proceduralTexture:Texture){
+            if(proceduralTexture instanceof MarbleProceduralTexture){
+                this.proceduralShader.addLib(MarbleProceduralShaderLib.create(proceduralTexture));
+            }
+            else{
+                Log.error(true, Log.info.FUNC_UNEXPECT("proceduralTexture"));
+            }
+        }
+
         private _addTopShaderLib(){
             this.shader.addLib(CommonShaderLib.create());
 

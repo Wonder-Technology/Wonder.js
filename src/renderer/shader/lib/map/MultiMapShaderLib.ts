@@ -12,7 +12,7 @@ module wd{
 
 
         protected sendMapShaderVariables(program:Program, quadCmd:QuadCommand, material:BasicMaterial){
-            var mapList:wdCb.Collection<BasicTexture> = material.mapList,
+            var mapList:wdCb.Collection<BasicTexture|ProceduralTexture> = material.mapList,
                 map1 = mapList.getChild(1);
 
             this.sendUniformData(program, "u_combineMode", material.mapCombineMode);
