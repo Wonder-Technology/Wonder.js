@@ -29,11 +29,14 @@
             var sphere = createSphere();
             var box = createBox();
 
+            var pointLight = createPointLight();
+
             director.scene.addChild(sphere);
             director.scene.addChild(box);
-            director.scene.addChild(createMirror(sphere, box));
+            director.scene.addChild(createMirror(sphere, box, pointLight));
             director.scene.addChild(createAmbientLight());
-            director.scene.addChild(createPointLight());
+
+            director.scene.addChild(pointLight);
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
 
@@ -82,14 +85,14 @@
             return gameObject;
         }
 
-        function createMirror(sphere, box){
+        function createMirror(sphere, box, pointLight){
             var texture = wd.MirrorTexture.create();
             texture.width = 1024;
             texture.height = 1024;
-            texture.renderList = [sphere, box];
+            texture.renderList = [sphere, box, pointLight];
 
             var material = wd.BasicMaterial.create();
-            material.color = wd.Color.create("#889999");
+            material.color = wd.Color.create("#555555");
             material.side = wd.ESide.BOTH;
             material.mirrorMap = texture;
 
