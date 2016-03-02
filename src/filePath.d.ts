@@ -301,6 +301,9 @@
 /// <reference path="renderer/renderTargetRenderer/utils/ShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
+/// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
+
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
 /// <reference path="renderer/EDrawMode"/>
@@ -312,13 +315,17 @@
 /// <reference path="renderer/buffer/ArrayBuffer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
+/// <reference path="renderer/RenderCommand"/>
 /// <reference path="renderer/QuadCommand"/>
+/// <reference path="renderer/ProceduralCommand"/>
 
 /// <reference path="renderer/GlUtils"/>
 
 /// <reference path="renderer/buffer/FrameBuffer"/>
 
 /// <reference path="renderer/shader/Shader"/>
+/// <reference path="renderer/shader/CommonShader"/>
+/// <reference path="renderer/shader/ProceduralShader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
 /// <reference path="renderer/shader/variable/EVariableType"/>
 /// <reference path="renderer/shader/variable/EVariableCategory"/>
@@ -352,6 +359,9 @@
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
 /// <reference path="renderer/shader/lib/mirror/MirrorForBasicShaderLib"/>
+
+/// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
+/// <reference path="renderer/shader/lib/procedural/MarbleProceduralShaderLib"/>
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
@@ -465,6 +475,10 @@
 /// <reference path="texture/renderTargetTexture/CubemapRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
+
+/// <reference path="texture/renderTargetTexture/proceduralTexture/ProceduralTexture"/>
+/// <reference path="texture/renderTargetTexture/proceduralTexture/MarbleProceduralTexture"/>
+
 
 /// <reference path="texture/basicTexture/BasicTexture"/>
 /// <reference path="texture/basicTexture/TwoDTexture"/>

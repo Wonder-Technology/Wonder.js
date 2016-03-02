@@ -1,11 +1,5 @@
 module wd{
-    export class Shader{
-        public static create(){
-        	var obj = new this();
-
-        	return obj;
-        }
-
+    export abstract class Shader{
         private _attributes:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         get attributes(){
             return this._attributes;
@@ -57,9 +51,10 @@ module wd{
         public program:Program = Program.create();
         public libDirty:boolean = true;
 
+        protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
+        protected sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
+
         private _definitionDataDirty:boolean = true;
-        private _libs: wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
-        private _sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;
@@ -75,11 +70,11 @@ module wd{
 
         public isEqual(other:Shader){
             return this.vsSource === other.vsSource
-            && this.fsSource === other.fsSource;
+                && this.fsSource === other.fsSource;
         }
 
         public init(){
-            this._libs.forEach((lib:ShaderLib) => {
+            this.libs.forEach((lib:ShaderLib) => {
                 lib.init();
             });
 
@@ -91,27 +86,12 @@ module wd{
             this.attributes.removeAllChildren();
             this.uniforms.removeAllChildren();
 
-            this._libs.forEach((lib:ShaderLib) => {
+            this.libs.forEach((lib:ShaderLib) => {
                 lib.dispose();
             });
         }
 
-        public update(quadCmd:QuadCommand, material:Material){
-            var program = this.program;
-
-            this.judgeRefreshShader();
-
-            this.program.use();
-
-            this._libs.forEach((lib:ShaderLib) => {
-                lib.sendShaderVariables(program, quadCmd, material);
-            });
-
-            program.sendAttributeDataFromCustomShader();
-            program.sendUniformDataFromCustomShader();
-
-            material.mapManager.sendData(program);
-        }
+        public abstract update(cmd:RenderCommand, material:Material);
 
         public judgeRefreshShader(){
             if(this.libDirty){
@@ -135,12 +115,12 @@ module wd{
             if(args[0] instanceof ShaderLib){
                 let lib:ShaderLib = args[0];
 
-                return this._libs.hasChild(lib);
+                return this.libs.hasChild(lib);
             }
             else{
                 let _class = args[0];
 
-                return this._libs.hasChildWithFunc((lib:ShaderLib) => {
+                return this.libs.hasChildWithFunc((lib:ShaderLib) => {
                     return lib instanceof _class;
                 })
             }
@@ -149,31 +129,33 @@ module wd{
         @ensure(function(){
             var self = this;
 
-            this._libs.forEach((lib:ShaderLib) => {
+            this.libs.forEach((lib:ShaderLib) => {
                 assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
             });
 
             assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
         })
         public addLib(lib:ShaderLib){
-            this._libs.addChild(lib);
+            this.libs.addChild(lib);
 
             lib.shader = this;
 
             this.libDirty = true;
         }
 
-        @ensure(function(){
+        @ensure(function(val, lib:ShaderLib){
             var self = this;
 
-            this._libs.forEach((lib:ShaderLib) => {
+            assert(JudgeUtils.isEqual(lib, this.libs.getChild(0)), Log.info.FUNC_SHOULD("add shader lib to the top"));
+
+            this.libs.forEach((lib:ShaderLib) => {
                 assert(JudgeUtils.isEqual(lib.shader, self), Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
             });
 
             assert(this.libDirty === true, Log.info.FUNC_SHOULD("libDirty", "be true"));
         })
         public addShaderLibToTop(lib:ShaderLib){
-            this._libs.unShiftChild(lib);
+            this.libs.unShiftChild(lib);
 
             lib.shader = this;
 
@@ -181,13 +163,13 @@ module wd{
         }
 
         public getLib(libClass:Function){
-            return this._libs.findOne((lib:ShaderLib) => {
+            return this.libs.findOne((lib:ShaderLib) => {
                 return lib instanceof libClass;
             });
         }
 
         public getLibs(){
-            return this._libs;
+            return this.libs;
         }
 
         public removeLib(lib:ShaderLib);
@@ -196,40 +178,40 @@ module wd{
         public removeLib(...args){
             this.libDirty = true;
 
-            return this._libs.removeChild(args[0]);
+            return this.libs.removeChild(args[0]);
         }
 
         public removeAllLibs(){
             this.libDirty = true;
 
-            this._libs.removeAllChildren();
+            this.libs.removeAllChildren();
         }
 
         public sortLib(func:(a:ShaderLib, b:ShaderLib) => any){
             this.libDirty = true;
 
-            this._libs = this._libs.sort(func);
+            this.libs = this.libs.sort(func);
         }
+        //
+        //public read(definitionData:ShaderDefinitionData){
+        //    this.sourceBuilder.read(definitionData);
+        //
+        //    this.libDirty = true;
+        //}
 
-        public read(definitionData:ShaderDefinitionData){
-            this._sourceBuilder.read(definitionData);
-
-            this.libDirty = true;
-        }
-
-        public buildDefinitionData(quadCmd:QuadCommand, material:Material){
-            this._libs.forEach((lib:ShaderLib) => {
-                lib.setShaderDefinition(quadCmd, material);
+        public buildDefinitionData(cmd:RenderCommand, material:Material){
+            this.libs.forEach((lib:ShaderLib) => {
+                lib.setShaderDefinition(cmd, material);
             });
 
-            this._sourceBuilder.clearShaderDefinition();
+            this.sourceBuilder.clearShaderDefinition();
 
-            this._sourceBuilder.build(this._libs);
+            this.sourceBuilder.build(this.libs);
 
-            this.attributes = this._sourceBuilder.attributes;
-            this.uniforms = this._sourceBuilder.uniforms;
-            this.vsSource = this._sourceBuilder.vsSource;
-            this.fsSource = this._sourceBuilder.fsSource;
+            this.attributes = this.sourceBuilder.attributes;
+            this.uniforms = this.sourceBuilder.uniforms;
+            this.vsSource = this.sourceBuilder.vsSource;
+            this.fsSource = this.sourceBuilder.fsSource;
         }
 
         private _initShader(shader, source){

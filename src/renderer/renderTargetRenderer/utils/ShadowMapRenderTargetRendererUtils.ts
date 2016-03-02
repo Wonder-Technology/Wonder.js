@@ -10,7 +10,7 @@ module wd {
         protected light:Light = null;
 
         private _endLoopSubscription:wdFrp.IDisposable = null;
-        private _shader:Shader = null;
+        private _shader:CommonShader = null;
 
         public initWhenCreate(){
             this.texture.width = this.light.shadowMapWidth;
@@ -63,7 +63,7 @@ module wd {
         }
 
         public createShaderWithShaderLib(lib:BuildShadowMapShaderLib){
-            this._shader = Shader.create();
+            this._shader = CommonShader.create();
             this._shader.addLib(CommonShaderLib.create());
             this._shader.addLib(CommonVerticeShaderLib.create());
             this._shader.addLib(lib);

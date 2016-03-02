@@ -5,6 +5,7 @@ module wd {
         protected frameBuffer:WebGLFramebuffer = null;
         protected renderBuffer:WebGLRenderbuffer= null;
 
+        protected abstract createCamera(...args):GameObject;
         protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
         protected abstract getRenderList():wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer:Renderer);

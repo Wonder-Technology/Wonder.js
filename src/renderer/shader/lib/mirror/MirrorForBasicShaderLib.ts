@@ -15,7 +15,9 @@ module wd{
         public setShaderDefinition(quadCmd:QuadCommand, material:Material){
             super.setShaderDefinition(quadCmd, material);
 
-            this.addUniformVariable(["u_mirrorSampler"]);
+            this.addUniformVariable([
+                VariableNameTable.getVariableName("mirrorReflectionMap")
+            ]);
         }
     }
 }

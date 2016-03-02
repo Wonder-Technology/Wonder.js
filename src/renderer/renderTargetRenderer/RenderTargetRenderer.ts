@@ -16,9 +16,23 @@ module wd {
             this.initFrameBuffer();
         }
 
-        public render(renderer:Renderer, camera:GameObject){
+        public render(renderer:Renderer);
+        public render(renderer:Renderer, camera:GameObject);
+
+        public render(...args){
+            var renderer:Renderer = args[0];
+
             this.beforeRender();
-            this.renderFrameBufferTexture(renderer, camera);
+
+            if(args.length === 1){
+                this.renderFrameBufferTexture(renderer);
+            }
+            else{
+                let camera:GameObject = args[1];
+
+                this.renderFrameBufferTexture(renderer, camera);
+            }
+
             this.afterRender();
         }
 
@@ -30,9 +44,8 @@ module wd {
 
 
         protected abstract initFrameBuffer();
-        protected abstract renderFrameBufferTexture(renderer:Renderer, camera:GameObject);
+        protected abstract renderFrameBufferTexture(renderer:Renderer, camera?:GameObject);
         protected abstract disposeFrameBuffer();
-        protected abstract createCamera(...args):GameObject;
 
         @virtual
         protected beforeRender(){

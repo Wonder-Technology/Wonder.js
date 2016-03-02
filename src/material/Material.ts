@@ -138,7 +138,8 @@ module wd {
             }
         }
 
-        public shader:Shader = Shader.create();
+        public shader:CommonShader = CommonShader.create();
+        public proceduralShader:ProceduralShader = ProceduralShader.create();
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -167,12 +168,15 @@ module wd {
             this.addShaderLib();
 
             this.shader.init();
+            this.proceduralShader.init();
 
             this.mapManager.init();
         }
 
         public dispose(){
             this.shader.dispose();
+            this.proceduralShader.dispose();
+
             this.mapManager.dispose();
 
             this._afterInitSubscription && this._afterInitSubscription.dispose();
@@ -191,6 +195,10 @@ module wd {
             else{
                 this.shader.update(quadCmd, this);
             }
+        }
+
+        public updateProceduralShader(cmd:ProceduralCommand){
+            this.proceduralShader.update(cmd, this);
         }
 
         @virtual

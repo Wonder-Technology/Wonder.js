@@ -159,6 +159,8 @@ module wd{
         public update(){
             var mapList = this._getMapArr();
 
+            //todo refactor: filter->not update render texture
+
             for(let i = 0, len = mapList.length; i < len; i++){
                 let texture = mapList[i];
 
@@ -179,9 +181,13 @@ module wd{
                 if(program.isUniformDataNotExistByLocation(pos)){
                     return;
                 }
+                //todo optimize: if render texture, not judge isExist
 
                 texture.bindToUnit(i);
-                texture.sendData(program, pos, i);
+
+                //if(texture instanceof BasicTexture){
+                    texture.sendData(program, pos, i);
+                //}
             }
         }
 

@@ -1,5 +1,5 @@
 module wd {
-    export class QuadCommand {
+    export class QuadCommand extends RenderCommand{
         public static create():QuadCommand {
             var obj = new this();
 

@@ -51,7 +51,7 @@ module wd {
         get shader(){
             return this.gameObjectScene.shader;
         }
-        set shader(shader:Shader){
+        set shader(shader:CommonShader){
             this.gameObjectScene.shader = shader;
         }
 
@@ -95,7 +95,7 @@ module wd {
             this.addComponent(SceneEventTriggerDetector.create());
         }
 
-        public useProgram(shader:Shader){
+        public useProgram(shader:CommonShader){
             this.gameObjectScene.useProgram(shader);
         }
 
@@ -118,6 +118,10 @@ module wd {
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
             return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
+        }
+
+        public addProceduralRender(renderTargetRenderer:ProceduralRenderTargetRenderer){
+            return this.gameObjectScene.addProceduralRender(renderTargetRenderer);
         }
 
         public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){

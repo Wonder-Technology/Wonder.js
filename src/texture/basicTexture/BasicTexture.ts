@@ -48,6 +48,7 @@ module wd{
             var gl = DeviceManager.getInstance().gl,
                 isSourcePowerOfTwo = this.isSourcePowerOfTwo();
 
+            //todo optimize: bind once? not bind in sendData?
             this.bindToUnit(index);
 
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);

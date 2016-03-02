@@ -9,10 +9,14 @@ module wd{
         public type:string = "diffuseMap";
 
         @require(function(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            assert(!!material.diffuseMap, Log.info.FUNC_MUST_DEFINE("diffuseMap"));
+            var diffuseMap:any = material.diffuseMap;
+
+            assert(!!diffuseMap, Log.info.FUNC_MUST_DEFINE("diffuseMap"));
+
+            assert(!!diffuseMap.sourceRegionForGLSL && !!diffuseMap.repeatRegion, Log.info.FUNC_SHOULD("material.diffuseMap", "has sourceRegionForGLSL,repeatRegion data"));
         })
         protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
-            var diffuseMap = material.diffuseMap;
+            var diffuseMap:ImageTexture|ProceduralTexture = <ImageTexture|ProceduralTexture>material.diffuseMap;
 
             this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
             this.sendUniformData(program, "u_diffuseRepeatRegion", diffuseMap.repeatRegion);

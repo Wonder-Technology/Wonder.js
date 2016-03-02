@@ -10,6 +10,9 @@ module wd{
         get lightMap(){
             return this._lightMap;
         }
+        @requireSetter(function(lightMap:ImageTexture){
+            assert(lightMap instanceof ImageTexture, Log.info.FUNC_SHOULD("lightMap", "be ImageTexture"));
+        })
         set lightMap(lightMap:ImageTexture){
             this.addMap(lightMap, {
                 samplerVariableName: VariableNameTable.getVariableName("lightMap")
@@ -18,11 +21,14 @@ module wd{
             this._lightMap = lightMap;
         }
 
-        private _diffuseMap:ImageTexture = null;
+        private _diffuseMap:Texture = null;
         get diffuseMap(){
             return this._diffuseMap;
         }
-        set diffuseMap(diffuseMap:ImageTexture){
+        @requireSetter(function(diffuseMap:ImageTexture){
+            assert(diffuseMap instanceof ImageTexture || diffuseMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("diffuseMap", "be ImageTexture or ProceduralTexture"));
+        })
+        set diffuseMap(diffuseMap:Texture){
             this.addMap(diffuseMap, {
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
             });
@@ -34,6 +40,9 @@ module wd{
         get specularMap(){
             return this._specularMap;
         }
+        @requireSetter(function(specularMap:ImageTexture){
+            assert(specularMap instanceof ImageTexture, Log.info.FUNC_SHOULD("specularMap", "be ImageTexture"));
+        })
         set specularMap(specularMap:ImageTexture){
             this.addMap(specularMap, {
                 samplerVariableName: VariableNameTable.getVariableName("specularMap")
@@ -46,6 +55,9 @@ module wd{
         get emissionMap(){
             return this._emissionMap;
         }
+        @requireSetter(function(emissionMap:ImageTexture){
+            assert(emissionMap instanceof ImageTexture, Log.info.FUNC_SHOULD("emissionMap", "be ImageTexture"));
+        })
         set emissionMap(emissionMap:ImageTexture){
             this.addMap(emissionMap, {
                 samplerVariableName: VariableNameTable.getVariableName("emissionMap")
@@ -58,6 +70,9 @@ module wd{
         get normalMap(){
             return this._normalMap;
         }
+        @requireSetter(function(normalMap:ImageTexture){
+            assert(normalMap instanceof ImageTexture, Log.info.FUNC_SHOULD("normalMap", "be ImageTexture"));
+        })
         set normalMap(normalMap:ImageTexture){
             this.addMap(normalMap, {
                 samplerVariableName: VariableNameTable.getVariableName("normalMap")
@@ -165,6 +180,10 @@ module wd{
 
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.create());
+
+                if(this._diffuseMap instanceof ProceduralTexture){
+                    this._addProceduralShaderLib(this._diffuseMap);
+                }
             }
             else{
                 this.shader.addLib(NoDiffuseMapShaderLib.create());
@@ -203,6 +222,19 @@ module wd{
             }
             else{
                 this.shader.addLib(NoShadowMapShaderLib.create());
+            }
+        }
+
+        //todo BasicMaterial add procedural shaderLib
+        @require(function(proceduralTexture:Texture){
+            assert(proceduralTexture instanceof ProceduralTexture, Log.info.FUNC_SHOULD("arguments[0]", "be ProceduralTexture"));
+        })
+        private _addProceduralShaderLib(proceduralTexture:Texture){
+            if(proceduralTexture instanceof MarbleProceduralTexture){
+                this.proceduralShader.addLib(MarbleProceduralShaderLib.create(proceduralTexture));
+            }
+            else{
+                Log.error(true, Log.info.FUNC_UNEXPECT("proceduralTexture"));
             }
         }
 

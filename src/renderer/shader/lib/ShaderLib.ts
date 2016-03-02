@@ -20,10 +20,10 @@ module wd{
         public vsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public fsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
-        public abstract sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material);
+        public abstract sendShaderVariables(program: Program, cmd:RenderCommand, material:Material);
 
         @virtual
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(cmd:RenderCommand, material:Material){
             var vs = null,
                 fs = null;
 

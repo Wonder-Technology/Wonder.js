@@ -7,6 +7,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static a_positionVec2:ShaderVariable = {
+            type:EVariableType.FLOAT_2,
+            value:EVariableCategory.ENGINE
+        };
+
         public static a_currentFramePosition:ShaderVariable = {
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
@@ -239,6 +244,31 @@ module wd{
 
         public static u_interpolation:ShaderVariable = {
             type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_tilesHeightNumber:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_tilesWidthNumber:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_amplitude:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_marbleColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_jointColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
         };
     }

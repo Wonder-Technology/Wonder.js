@@ -46,13 +46,14 @@ module wd {
 
         public side:ESide = null;
         public shadowMap = ShadowMapModel.create(this);
-        public shader:Shader = null;
+        public shader:CommonShader = null;
         public isUseProgram:boolean = false;
         public physics = PhysicsConfig.create();
         public physicsEngineAdapter:IPhysicsEngineAdapter = null;
 
         private _lightManager:LightManager = LightManager.create();
-        private _renderTargetRenderers:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
+        private _renderTargetRendererList:wdCb.Collection<RenderTargetRenderer> = wdCb.Collection.create<RenderTargetRenderer>();
+        private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
 
@@ -64,12 +65,13 @@ module wd {
 
             super.init();
 
-            this._renderTargetRenderers.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
+            this._renderTargetRendererList.forEach((renderTargetRenderer:RenderTargetRenderer) => renderTargetRenderer.init());
+            this._proceduralRendererList.forEach((renderTargetRenderer:ProceduralRenderTargetRenderer) => renderTargetRenderer.init());
 
             return this;
         }
 
-        public useProgram(shader:Shader){
+        public useProgram(shader:CommonShader){
             this.isUseProgram = true;
 
             this.shader = shader;
@@ -94,11 +96,15 @@ module wd {
         }
 
         public addRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this._renderTargetRenderers.addChild(renderTargetRenderer);
+            this._renderTargetRendererList.addChild(renderTargetRenderer);
+        }
+
+        public addProceduralRender(renderTargetRenderer:ProceduralRenderTargetRenderer){
+            this._proceduralRendererList.addChild(renderTargetRenderer);
         }
 
         public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){
-            this._renderTargetRenderers.removeChild(renderTargetRenderer);
+            this._renderTargetRendererList.removeChild(renderTargetRenderer);
         }
 
         public update(elapsedTime:number){
@@ -120,9 +126,11 @@ module wd {
         public render(renderer:Renderer) {
             var self = this;
 
-            this._renderTargetRenderers.forEach((target:RenderTargetRenderer) =>{
+            this._renderTargetRendererList.forEach((target:RenderTargetRenderer) =>{
                 target.render(renderer, self.currentCamera);
             });
+
+            this._renderProceduralRenderer(renderer);
 
             super.render(renderer, this.currentCamera);
         }
@@ -130,6 +138,28 @@ module wd {
         protected createTransform(){
             return null;
         }
+
+
+
+
+
+        //todo refactor
+
+        private _isProceduralRendererRendered:boolean = false;
+
+        //todo support update ProceduralRenderer(exec multi times)
+        //todo judge procedural, only draw once(animated should draw multi times)
+        @execOnlyOnce("_isProceduralRendererRendered")
+        private _renderProceduralRenderer(renderer){
+            this._proceduralRendererList.forEach((target:ProceduralRenderTargetRenderer) =>{
+                target.render(renderer);
+            });
+        }
+
+
+
+
+
 
         private _getCameras(gameObject:GameObject){
             return this._find(gameObject, this._isCamera);
