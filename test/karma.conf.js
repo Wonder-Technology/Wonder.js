@@ -37,7 +37,9 @@
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
-        'test/unit/**/*ShaderSpec*',
+        'test/unit/**/*ProceduralShaderLib*',
+
+        //'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',
