@@ -15,7 +15,7 @@ module wd {
         public init(){
             super.init();
 
-            Director.getInstance().scene.addProceduralRenderTargetRenderer(MarbleProceduralRenderTargetRenderer.create(this));
+            Director.getInstance().scene.addProceduralRenderTargetRenderer(ProceduralRenderTargetRenderer.create(this));
 
             return this;
         }

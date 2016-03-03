@@ -1,5 +1,13 @@
 module wd {
-    export abstract class ProceduralRenderTargetRenderer extends RenderTargetRenderer{
+    export class ProceduralRenderTargetRenderer extends RenderTargetRenderer{
+        public static create(texture:MarbleProceduralTexture) {
+            var obj = new this(texture);
+
+            obj.initWhenCreate();
+
+            return obj;
+        }
+
         protected texture:ProceduralTexture;
 
         protected frameBuffer:WebGLFramebuffer = null;

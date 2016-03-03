@@ -302,7 +302,6 @@
 /// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
 
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
