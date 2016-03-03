@@ -27,7 +27,7 @@ describe("Material", function() {
         });
 
         it("if SceneDispatcher use program, update SceneDispatcher's shader", function(){
-            scene.useProgram(wd.Shader.create());
+            scene.useProgram(wd.CommonShader.create());
             sandbox.stub(scene.shader, "update");
             var quadCmd = {};
 
@@ -118,6 +118,18 @@ describe("Material", function() {
             wd.EventManager.trigger(wd.CustomEvent.create(wd.EEngineEvent.AFTER_GAMEOBJECT_INIT));
 
             expect(material.addShaderLib).not.toCalledTwice();
+        });
+    });
+
+    describe("addProceduralShaderLib", function(){
+        beforeEach(function(){
+            sandbox.stub(material.proceduralShader, "addLib");
+        });
+
+        it("if texture is MarbleProceduralTexture, add MarbleProceduralShaderLib", function(){
+            material.addProceduralShaderLib(wd.MarbleProceduralTexture.create());
+
+            expect(material.proceduralShader.addLib.firstCall.args[0]).toEqual(jasmine.any(wd.MarbleProceduralShaderLib));
         });
     });
 });

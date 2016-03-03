@@ -29,6 +29,13 @@
 
         //'test/unit/**',
 
+        'test/unit/**/*MaterialSpec.js',
+        'test/unit/**/MaterialSpec.js',
+        //
+        'test/unit/**/MapManager*',
+
+        'test/unit/renderer/**',
+
         //'test/unit/renderer/**/DiffuseMapShaderLib*',
         //
         //'test/unit/renderer/**/LightMapShaderLib*',
@@ -42,7 +49,6 @@
 
         //'test/unit/**/CameraController*',
 
-        //'test/unit/**/MapManager*',
 
         //'test/unit/**/GeometryData*',
         //'test/unit/**/BufferContainer*',
@@ -51,8 +57,8 @@
         //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*Shader*',
 
-        'test/unit/**/*animation*',
-        'test/unit/component/**/*Animation*.js',
+        //'test/unit/**/*animation*',
+        //'test/unit/component/**/*Animation*.js',
         //'test/unit/component/**/morphAnimation*.js',
 
         //'test/unit/**/GLTFParserSpec*',
@@ -118,7 +124,7 @@
         //'test/unit/**/SceneDispatcherSpec*',
         //'test/unit/**/GameObjectSceneSpec*',
         //
-        'test/unit/**/MathUtils*',
+        //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',
         //'test/unit/**/AABBShapeSpec*',
         //'test/unit/**/SphereShapeSpec*',
@@ -148,7 +154,6 @@
         //'test/unit/**/*Shape*.js',
         //'test/unit/**/Arcball*',
         //'test/unit/**/FlyCameraController*',
-        //'test/unit/**/*MaterialSpec.js',
       //  'test/unit/**/scriptSpec.js',
       //
       //  'test/unit/**/*ControllerSpec.js',
@@ -164,11 +169,9 @@
         //'test/unit/component/**/GeometrySpec.js',
         //'test/unit/component/**/TerrainGeometrySpec.js',
         //'test/unit/component/**/ModelGeometrySpec.js',
-        //'test/unit/**/MaterialSpec.js',
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        //'test/unit/renderer/**',
         //'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',

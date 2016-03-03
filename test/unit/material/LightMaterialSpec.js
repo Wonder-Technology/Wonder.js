@@ -26,6 +26,10 @@ describe("LightMaterial", function() {
             expect(material.shader.hasLib(libClass)).toBeTruthy();
         }
 
+        function judgeHasProceduralLib(libClass){
+            expect(material.proceduralShader.hasLib(libClass)).toBeTruthy();
+        }
+
         beforeEach(function(){
             sandbox.stub(material.mapManager, "init");
             sandbox.stub(material.shader, "init");
@@ -52,19 +56,36 @@ describe("LightMaterial", function() {
             judgeHasLib(wd.NoLightMapShaderLib);
 
         });
-        it("if diffuseMap exist, add its shader lib", function(){
-            material.diffuseMap = map;
 
-            rendererTool.triggerMaterialAddShaderLib(material);
+        describe("judge diffuseMap", function(){
+            beforeEach(function(){
 
-            judgeHasLib(wd.DiffuseMapShaderLib);
+            });
+
+            describe("if diffuseMap exist", function(){
+                it("add its shader lib", function () {
+                    material.diffuseMap = map;
+
+                    rendererTool.triggerMaterialAddShaderLib(material);
+
+                    judgeHasLib(wd.DiffuseMapShaderLib);
+                });
+                it("if diffuseMap is procedural texture, add procedural shader lib", function () {
+                    material.diffuseMap = wd.MarbleProceduralTexture.create();
+
+                    rendererTool.triggerMaterialAddShaderLib(material);
+
+                    judgeHasProceduralLib(wd.MarbleProceduralShaderLib);
+                });
+            });
+            it("else, add NoDiffuseMapShaderLib", function () {
+                rendererTool.triggerMaterialAddShaderLib(material);
+
+                judgeHasLib(wd.NoDiffuseMapShaderLib);
+
+            });
         });
-        it("else, add NoDiffuseMapShaderLib", function () {
-            rendererTool.triggerMaterialAddShaderLib(material);
 
-            judgeHasLib(wd.NoDiffuseMapShaderLib);
-
-        });
         it("if specularMap exist, add its shader lib", function(){
             material.specularMap = map;
 
@@ -246,4 +267,3 @@ describe("LightMaterial", function() {
         })
     });
 });
-

@@ -14,7 +14,7 @@ describe("ShadowMapShaderLib", function () {
 
     describe("dispose", function(){
         it("unbind SHADOWMAP_SOFTTYPE_CHANGE event", function(){
-            var shader = wd.Shader.create();
+            var shader = wd.CommonShader.create();
             shader.addLib(lib);
             lib.shader.libDirty = false;
             lib.init();

@@ -41,7 +41,7 @@ describe("shaderLibSpec", function () {
 
 
                 scene.shadowMap.softType = wd.EShadowMapSoftType.PCF;
-                shader = new wd.Shader();
+                shader = new wd.CommonShader();
                 shader.program = program;
                 Lib = wd.TwoDShadowMapShaderLib;
                 lib = Lib.create();

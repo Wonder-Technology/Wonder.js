@@ -61,7 +61,7 @@ describe("renderWebGL", function() {
             quadCmd = renderer.createQuadCommand();
             var vsSource = "",
                 fsSource = "";
-            shader = wd.Shader.create( vsSource, fsSource );
+            shader = wd.CommonShader.create( vsSource, fsSource );
 
 
             material = wd.BasicMaterial.create();

@@ -49,12 +49,12 @@ module wd{
         }
 
         public program:Program = Program.create();
-        public libDirty:boolean = true;
+        public libDirty:boolean = false;
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
         protected sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
 
-        private _definitionDataDirty:boolean = true;
+        private _definitionDataDirty:boolean = false;
 
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;

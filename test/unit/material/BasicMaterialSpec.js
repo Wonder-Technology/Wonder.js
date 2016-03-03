@@ -137,6 +137,35 @@ describe("BasicMaterial", function () {
                 material.map = [wd.ImageTexture.create(), wd.ImageTexture.create(), wd.ImageTexture.create()];
             }).toThrow();
         });
+        describe("if has procedural map, add procedural shader lib", function () {
+            beforeEach(function(){
+                sandbox.stub(material, "addProceduralShaderLib");
+            });
+
+            it("test single map", function () {
+                material.map = wd.MarbleProceduralTexture.create();
+
+                material.init();
+
+                expect(material.addProceduralShaderLib).toCalledOnce();
+            });
+            describe("test multi maps", function () {
+                it("test1", function () {
+                    material.map = [wd.MarbleProceduralTexture.create(), wd.ImageTexture.create()];
+
+                    material.init();
+
+                    expect(material.addProceduralShaderLib).toCalledOnce();
+                });
+                it("test2", function () {
+                    material.map = [wd.MarbleProceduralTexture.create(), wd.MarbleProceduralTexture.create()];
+
+                    material.init();
+
+                    expect(material.addProceduralShaderLib).toCalledOnce();
+                });
+            });
+        });
     });
 
     describe("set mirror map shader lib", function () {
@@ -173,6 +202,8 @@ describe("BasicMaterial", function () {
             texture.width = 256;
             texture.height = 256;
             texture.renderList = [];
+            sandbox.stub(texture, "bindToUnit");
+            sandbox.stub(texture, "sendData");
 
             material.mirrorMap = texture;
 
@@ -183,7 +214,8 @@ describe("BasicMaterial", function () {
 
             director._loopBody(1);
 
-            expect(program.getUniformLocation.withArgs("u_mirrorSampler")).toCalledOnce();
+            expect(texture.bindToUnit).toCalledWith(0);
+            expect(texture.sendData).not.toCalled();
         });
     });
 

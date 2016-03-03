@@ -17,7 +17,7 @@ module wd{
         private _mapArrCache:Array<Texture> = null;
 
         public init(){
-            var mapList = this._getMapArr();
+            var mapList = this._getAllMapArr();
 
             for(let i = 0, len = mapList.length; i < len; i++){
                 let texture = mapList[i];
@@ -58,26 +58,8 @@ module wd{
             this._textureDirty = true;
         }
 
-        public getMap(index:number);
-        public getMap(func:(map:Texture) => boolean);
-
-        public getMap(...args){
-            var mapList = this._mapTable.getChild("map");
-
-            if(JudgeUtils.isNumber(args[0])){
-                let index:number = args[0];
-
-                return mapList.getChild(index);
-            }
-            else{
-                let func = args[0];
-
-                return mapList.findOne(func);
-            }
-        }
-
         public getProceduralMap():ProceduralTexture{
-            return this.getMap((map:Texture) => {
+            return <ProceduralTexture>this.getMapList().findOne((map:Texture) => {
                 return map instanceof ProceduralTexture;
             });
         }
@@ -88,12 +70,11 @@ module wd{
             })
         })
         public getMapList():wdCb.Collection<BasicTexture|ProceduralTexture>{
-            var self = this,
-                map = this._mapTable.getChild("map");
+            var map = this._mapTable.getChild("map");
 
             return map ? this._mapTable.getChild("map")
                 .filter((map:Texture) => {
-                    return !self.isMirrorMap(map);
+                    return map instanceof BasicTexture || map instanceof ProceduralTexture;
                 }) : wdCb.Collection.create<BasicTexture|ProceduralTexture>();
         }
 
@@ -118,16 +99,11 @@ module wd{
         }
 
         public getMapCount(){
-            var self = this,
-                map = this._mapTable.getChild("map");
-
-            return map ? map.filter((map:Texture) => {
-                return !self.isMirrorMap(map);
-            }).getCount() : 0;
+            return this.getMapList().getCount();
         }
 
         public getEnvMap(){
-            return this._getMap<CubemapTexture>("envMap");
+            return this._getMapByType<CubemapTexture>("envMap");
         }
 
         public setEnvMap(envMap:CubemapTexture){
@@ -157,7 +133,7 @@ module wd{
         }
 
         public dispose(){
-            var mapList = this._getMapArr();
+            var mapList = this._getAllMapArr();
 
             for(let i = 0, len = mapList.length; i < len; i++){
                 let texture = mapList[i];
@@ -169,9 +145,7 @@ module wd{
         }
 
         public update(){
-            var mapList = this._getMapArr();
-
-            //todo refactor: filter->not update render texture
+            var mapList = this._getAllMapArr();
 
             for(let i = 0, len = mapList.length; i < len; i++){
                 let texture = mapList[i];
@@ -183,9 +157,16 @@ module wd{
         }
 
         public sendData(program:Program){
-            var mapList = this._getMapArr();
+            var mapList = this._getAllMapArr(),
+                len = mapList.length;
 
-            for(let i = 0, len = mapList.length; i < len; i++){
+            if(len === 1){
+                mapList[0].bindToUnit(0);
+
+                return;
+            }
+
+            for(let i = 0; i < len; i++){
                 let texture = mapList[i],
                     samplerName = texture.getSamplerName(i),
                     pos = program.getUniformLocation(samplerName);
@@ -193,13 +174,9 @@ module wd{
                 if(program.isUniformDataNotExistByLocation(pos)){
                     return;
                 }
-                //todo optimize: if render texture, not judge isExist
 
                 texture.bindToUnit(i);
-
-                //if(texture instanceof BasicTexture){
-                    texture.sendData(program, pos, i);
-                //}
+                texture.sendData(program, pos, i);
             }
         }
 
@@ -211,11 +188,11 @@ module wd{
             this._mapArrCache = mapList;
             this._textureDirty = false;
         })
-        private _getMapArr(){
+        private _getAllMapArr(){
             return this._mapTable.toArray();
         }
 
-        private _getMap<T>(key:string):T{
+        private _getMapByType<T>(key:string):T{
             return this._mapTable.getChild(key);
         }
 

@@ -114,29 +114,4 @@ describe("Shader", function() {
         });
 
     });
-    
-    describe("update", function(){
-        var quadCmd,material;
-
-        beforeEach(function(){
-            quadCmd = wd.QuadCommand.create();
-            material = new wd.Material();
-
-            sandbox.stub(shader.program, "initWithShader");
-            sandbox.stub(shader.program, "use");
-            sandbox.stub(shader.program, "sendAttributeDataFromCustomShader");
-            sandbox.stub(shader.program, "sendUniformDataFromCustomShader");
-        });
-        
-        it("if shader.libDirty === false, not build definition data", function(){
-            sandbox.stub(shader, "buildDefinitionData");
-            shader.libDirty = false;
-
-            shader.update(quadCmd, material);
-
-            expect(shader.buildDefinitionData).not.toCalled();
-        });
-
-        //todo more tests
-    });
 });

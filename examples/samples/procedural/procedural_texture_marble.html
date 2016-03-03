@@ -25,7 +25,6 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-//            director.scene.addChildren([createPlane1(), createPlane2()]);
             director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
@@ -44,6 +43,7 @@
 
             var material = wd.LightMaterial.create();
             material.specularColor = wd.Color.create("#ffffff");
+            material.specularMap = wd.LoaderManager.getInstance().get("texture1").toTexture();
             material.diffuseMap = marbleTexture;
 
 

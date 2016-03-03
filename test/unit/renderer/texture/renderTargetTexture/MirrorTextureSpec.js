@@ -154,15 +154,26 @@ describe("MirrorTexture", function () {
         });
 
         it("send mirror sampler", function () {
-            var pos1 = 100;
-            program.getUniformLocation.onCall(0).returns(pos1);
+            var pos2 = 100;
+            program.getUniformLocation.onCall(1).returns(pos2);
             var material = wd.BasicMaterial.create();
+
+            var map = new wd.ImageTexture();
+            material.map = map;
+
             material.mirrorMap = texture;
+
+
+
+
 
             material.mapManager.sendData(program);
 
+
+
+
             expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
-            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_2D, 0);
+            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_2D, 1);
         });
     });
 });

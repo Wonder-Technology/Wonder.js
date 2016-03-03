@@ -75,16 +75,25 @@ describe("DynamicCubemapTexture", function() {
         });
 
         it("send texture sampler", function () {
-            var pos1 = 100;
-            program.getUniformLocation.onCall(0).returns(pos1);
-            texture.mode = wd.EEnvMapMode.REFLECTION;
+            var pos2 = 100;
+            program.getUniformLocation.onCall(1).returns(pos2);
             var material = wd.BasicMaterial.create();
+            var map = new wd.ImageTexture();
+            material.map = map;
+
+            texture.mode = wd.EEnvMapMode.REFLECTION;
             material.envMap = texture;
+
+
+
 
             material.mapManager.sendData(program);
 
-            expect(program.getUniformLocation).toCalledWith("u_samplerCube0");
-            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_CUBE, 0);
+
+
+
+            expect(program.getUniformLocation).toCalledWith("u_samplerCube1");
+            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_CUBE, 1);
         });
     });
 });

@@ -33,7 +33,7 @@ describe("Program", function() {
         describe("test cache", function(){
             beforeEach(function(){
                 device.gl.getUniformLocation.returns(pos);
-                program.initWithShader(wd.Shader.create());
+                program.initWithShader(wd.CommonShader.create());
             });
 
             it("if shader dirty, no cache", function () {
@@ -62,7 +62,7 @@ describe("Program", function() {
         var pos;
 
         beforeEach(function(){
-            program.initWithShader(wd.Shader.create());
+            program.initWithShader(wd.CommonShader.create());
 
             pos = 1000;
             gl.UNSIGNED_SHORT = "UNSIGNED_SHORT";
@@ -117,7 +117,7 @@ describe("Program", function() {
         var shader;
 
         beforeEach(function(){
-            shader = wd.Shader.create();
+            shader = wd.CommonShader.create();
 
             program.initWithShader(shader);
         });
@@ -161,7 +161,7 @@ describe("Program", function() {
         var shader;
 
         beforeEach(function(){
-            shader = wd.Shader.create();
+            shader = wd.CommonShader.create();
 
             program.initWithShader(shader);
         });
