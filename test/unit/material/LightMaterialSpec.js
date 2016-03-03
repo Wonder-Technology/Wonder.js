@@ -18,6 +18,14 @@ describe("LightMaterial", function() {
         });
     });
 
+    describe("test default value", function () {
+        it("test specularColor,emissionColor", function () {
+            expect(material.specularColor).toEqual(wd.Color.create("#ffffff"));
+            expect(material.emissionColor).toEqual(wd.Color.create("rgba(0,0,0,0)"));
+        });
+    });
+
+
     describe("add shader lib", function(){
         var map,
             scene;
