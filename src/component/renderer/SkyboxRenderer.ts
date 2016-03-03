@@ -7,7 +7,7 @@ module wd {
         }
 
         public render(renderer:Renderer, geometry:Geometry, camera:GameObject):void {
-            renderer.skyboxCommand = this.createDrawCommand(renderer, geometry, camera);
+            renderer.skyboxCommand = this.createDrawCommand(geometry, camera);
         }
     }
 }

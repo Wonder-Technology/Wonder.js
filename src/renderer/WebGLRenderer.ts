@@ -6,16 +6,12 @@ module wd{
             return obj;
         }
 
-        private _commandQueue:wdCb.Collection<QuadCommand> = wdCb.Collection.create<QuadCommand>();
+        private _commandQueue:wdCb.Collection<RenderCommand> = wdCb.Collection.create<RenderCommand>();
         private _clearOptions:any = {
             color:Color.create("#ffffff")
         };
 
-        public createQuadCommand():QuadCommand{
-            return QuadCommand.create();
-        }
-
-        public addCommand(command:QuadCommand){
+        public addCommand(command:RenderCommand){
             if(this._commandQueue.hasChild(command)){
                 return;
             }
@@ -36,7 +32,7 @@ module wd{
             var deviceManager = DeviceManager.getInstance(),
                 transparentCommands = [];
 
-            this._commandQueue.forEach((command:QuadCommand) => {
+            this._commandQueue.forEach((command:RenderCommand) => {
                 if(command.blend){
                     transparentCommands.push(command);
                 }
@@ -76,24 +72,24 @@ module wd{
             });
         }
 
-        @require(function(transparentCommands:Array<QuadCommand>){
+        @require(function(transparentCommands:Array<RenderCommand>){
             assert(!!Director.getInstance().scene.currentCamera, Log.info.FUNC_NOT_EXIST("current camera"));
         })
-        private _renderSortedTransparentCommands(transparentCommands:Array<QuadCommand>) {
+        private _renderSortedTransparentCommands(transparentCommands:Array<RenderCommand>) {
             var self = this,
                 cameraPositionZ = Director.getInstance().scene.currentCamera.transform.position.z;
 
             transparentCommands
-                .sort((a:QuadCommand, b:QuadCommand) => {
+                .sort((a:RenderCommand, b:RenderCommand) => {
                     return self._getObjectToCameraZDistance(cameraPositionZ, b) - self._getObjectToCameraZDistance(cameraPositionZ, a);
                 })
-                .forEach((command:QuadCommand) => {
+                .forEach((command:RenderCommand) => {
                     command.execute();
                 });
         }
 
-        private _getObjectToCameraZDistance(cameraPositionZ:number, quad:QuadCommand){
-            return cameraPositionZ - quad.z;
+        private _getObjectToCameraZDistance(cameraPositionZ:number, cmd:RenderCommand){
+            return cameraPositionZ - cmd.z;
         }
 
         private _clearCommand(){

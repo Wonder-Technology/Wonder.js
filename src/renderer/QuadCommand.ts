@@ -37,9 +37,6 @@ module wd {
         public buffers:BufferContainer = null;
         public vMatrix:Matrix4 = null;
         public pMatrix:Matrix4 = null;
-        public drawMode:EDrawMode = EDrawMode.TRIANGLES;
-        public z:number = null;
-        public blend:boolean = false;
         public material:Material = null;
         public animation:Animation = null;
 
@@ -54,12 +51,8 @@ module wd {
             this._draw(material);
         }
 
-        public init() {
-        }
-
         private _draw(material:Material) {
-            var totalNum:number = 0,
-                startOffset:number = 0,
+            var startOffset:number = 0,
                 vertexBuffer:ArrayBuffer = null,
                 indexBuffer:ElementBuffer = null,
                 gl = DeviceManager.getInstance().gl;
@@ -69,15 +62,11 @@ module wd {
             indexBuffer = <ElementBuffer>this.buffers.getChild(EBufferDataType.INDICE);
 
             if(indexBuffer){
-                totalNum = indexBuffer.count;
-
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-                GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                this.drawElements(indexBuffer);
             }
             else{
                 vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
-                totalNum = vertexBuffer.count;
-                GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
+                GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
             }
         }
 

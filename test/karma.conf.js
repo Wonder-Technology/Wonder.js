@@ -29,12 +29,16 @@
 
         //'test/unit/**',
 
-        'test/unit/**/*MaterialSpec.js',
-        'test/unit/**/MaterialSpec.js',
+        //'test/unit/**/*MaterialSpec.js',
+        //'test/unit/**/MaterialSpec.js',
         //
-        'test/unit/**/MapManager*',
+        //'test/unit/**/MapManager*',
 
-        'test/unit/renderer/**',
+        //'test/unit/renderer/**',
+        //'test/unit/renderer/renderTargetRenderer/**',
+
+        'test/unit/**/renderWebGL*',
+        'test/unit/**/*CommandSpec*',
 
         //'test/unit/renderer/**/DiffuseMapShaderLib*',
         //
@@ -80,7 +84,6 @@
 
         //'test/unit/**/MirrorRender*',
 
-        //'test/unit/**/renderWebGL*',
 
         //'test/unit/**/ColorSpec*',
 
