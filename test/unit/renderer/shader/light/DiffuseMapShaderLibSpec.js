@@ -30,22 +30,43 @@ describe("DiffuseMapShaderLib", function () {
             sandbox.stub(program, "sendUniformData");
         });
 
-        it("send diffuseSourceRegion", function () {
-            material.diffuseMap = wd.ImageTexture.create({});
-            material.diffuseMap.sourceRegion = wd.RectRegion.create(0,64,100,200);
-            material.diffuseMap.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
+        describe("if diffuseMap is BasicTexture", function(){
+            beforeEach(function(){
+                material.diffuseMap = wd.ImageTexture.create({});
+            });
 
-            lib.sendShaderVariables(program, quadCmd, material);
+            it("send diffuseSourceRegion", function () {
+                material.diffuseMap.sourceRegion = wd.RectRegion.create(0,64,100,200);
+                material.diffuseMap.sourceRegionMethod = wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL;
 
-            expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.sourceRegionForGLSL);
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.sourceRegionForGLSL);
+            });
+            it("send diffuseRepeatRegion", function () {
+                material.diffuseMap.repeatRegion = wd.RectRegion.create(0,64,100,200);
+
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.repeatRegion);
+            });
         });
-        it("send diffuseRepeatRegion", function () {
-            material.diffuseMap = wd.ImageTexture.create({});
-            material.diffuseMap.repeatRegion = wd.RectRegion.create(0,64,100,200);
 
-            lib.sendShaderVariables(program, quadCmd, material);
+        describe("if diffuseMap is ProceduralTexture, send the default value", function(){
+            beforeEach(function(){
+                material.diffuseMap = wd.MarbleProceduralTexture.create();
+            });
 
-            expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.FLOAT_4, material.diffuseMap.repeatRegion);
+            it("send diffuseSourceRegion", function () {
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_diffuseSourceRegion", wd.EVariableType.FLOAT_4, wd.RectRegion.create(0, 0, 1, 1));
+            });
+            it("send diffuseRepeatRegion", function () {
+                lib.sendShaderVariables(program, quadCmd, material);
+
+                expect(program.sendUniformData).toCalledWith("u_diffuseRepeatRegion", wd.EVariableType.FLOAT_4, wd.RectRegion.create(0, 0, 1, 1));
+            });
         });
     });
 
