@@ -29,6 +29,8 @@
 
         //'test/unit/**',
 
+        'test/unit/texture/**',
+
         //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/MaterialSpec.js',
         //
@@ -37,7 +39,7 @@
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
-        'test/unit/**/*ProceduralShaderLib*',
+        //'test/unit/**/*ProceduralShaderLib*',
 
         //'test/unit/**/*ShaderSpec*',
 
@@ -49,7 +51,6 @@
         //'test/unit/renderer/**/LightMapShaderLib*',
         //
         //
-        //'test/unit/renderer/texture/*',
 
         //'test/unit/**/lod/*',
 
