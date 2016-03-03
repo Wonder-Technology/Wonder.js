@@ -29,7 +29,7 @@
 
         //'test/unit/**',
 
-        //'test/unit/texture/**',
+        'test/unit/texture/**',
 
         //'test/unit/**/*MaterialSpec.js',
         //'test/unit/**/MaterialSpec.js',
@@ -39,14 +39,14 @@
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
-        'test/unit/**/*ProceduralShaderLib*',
+        //'test/unit/**/*ProceduralShaderLib*',
 
         //'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',
 
-        'test/unit/renderer/**/DiffuseMapShaderLib*',
+        //'test/unit/renderer/**/DiffuseMapShaderLib*',
         //
         //'test/unit/renderer/**/LightMapShaderLib*',
         //
