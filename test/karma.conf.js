@@ -37,8 +37,10 @@
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
-        'test/unit/**/renderWebGL*',
-        'test/unit/**/*CommandSpec*',
+        'test/unit/**/*ShaderSpec*',
+
+        //'test/unit/**/renderWebGL*',
+        //'test/unit/**/*CommandSpec*',
 
         //'test/unit/renderer/**/DiffuseMapShaderLib*',
         //

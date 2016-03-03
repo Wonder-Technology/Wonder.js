@@ -29,4 +29,21 @@ module wd{
             this.libDirty = true;
         }
     }
+
+    export type ShaderDefinitionData = {
+        vsSourceTop:string;
+        vsSourceDefine:string;
+        vsSourceVarDeclare:string;
+        vsSourceFuncDeclare:string;
+        vsSourceFuncDefine:string;
+        vsSourceBody:string;
+        fsSourceTop:string;
+        fsSourceDefine:string;
+        fsSourceVarDeclare:string;
+        fsSourceFuncDeclare:string;
+        fsSourceFuncDefine:string;
+        fsSourceBody:string;
+        attributes:ShaderData|wdCb.Hash<ShaderData>;
+        uniforms:ShaderData|wdCb.Hash<ShaderData>;
+    }
 }

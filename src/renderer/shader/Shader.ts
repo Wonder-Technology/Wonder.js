@@ -192,12 +192,6 @@ module wd{
 
             this.libs = this.libs.sort(func);
         }
-        //
-        //public read(definitionData:ShaderDefinitionData){
-        //    this.sourceBuilder.read(definitionData);
-        //
-        //    this.libDirty = true;
-        //}
 
         public buildDefinitionData(cmd:RenderCommand, material:Material){
             this.libs.forEach((lib:ShaderLib) => {
@@ -250,22 +244,5 @@ module wd{
     export type ShaderData = {
         type:EVariableType;
         value:any;
-    }
-
-    export type ShaderDefinitionData = {
-        vsSourceTop:string;
-        vsSourceDefine:string;
-        vsSourceVarDeclare:string;
-        vsSourceFuncDeclare:string;
-        vsSourceFuncDefine:string;
-        vsSourceBody:string;
-        fsSourceTop:string;
-        fsSourceDefine:string;
-        fsSourceVarDeclare:string;
-        fsSourceFuncDeclare:string;
-        fsSourceFuncDefine:string;
-        fsSourceBody:string;
-        attributes:ShaderData|wdCb.Hash<ShaderData>;
-        uniforms:ShaderData|wdCb.Hash<ShaderData>;
     }
 }
