@@ -56,6 +56,7 @@ module wd {
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
+        private _isProceduralRendererRendered:boolean = false;
 
         public init(){
             if(this.physics.enable){
@@ -99,7 +100,7 @@ module wd {
             this._renderTargetRendererList.addChild(renderTargetRenderer);
         }
 
-        public addProceduralRender(renderTargetRenderer:ProceduralRenderTargetRenderer){
+        public addProceduralRenderTargetRenderer(renderTargetRenderer:ProceduralRenderTargetRenderer){
             this._proceduralRendererList.addChild(renderTargetRenderer);
         }
 
@@ -139,27 +140,13 @@ module wd {
             return null;
         }
 
-
-
-
-
-        //todo refactor
-
-        private _isProceduralRendererRendered:boolean = false;
-
         //todo support update ProceduralRenderer(exec multi times)
-        //todo judge procedural, only draw once(animated should draw multi times)
         @execOnlyOnce("_isProceduralRendererRendered")
         private _renderProceduralRenderer(renderer){
             this._proceduralRendererList.forEach((target:ProceduralRenderTargetRenderer) =>{
                 target.render(renderer);
             });
         }
-
-
-
-
-
 
         private _getCameras(gameObject:GameObject){
             return this._find(gameObject, this._isCamera);

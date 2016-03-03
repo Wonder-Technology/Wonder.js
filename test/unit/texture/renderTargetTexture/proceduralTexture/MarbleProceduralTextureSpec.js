@@ -19,11 +19,11 @@ describe("MarbleProceduralTexture", function () {
 
     describe("init", function(){
         it("add MarbleProceduralRenderTargetRenderer to scene", function(){
-            sandbox.stub(wd.Director.getInstance().scene, "addProceduralRender");
+            sandbox.stub(wd.Director.getInstance().scene, "addProceduralRenderTargetRenderer");
 
             texture.init();
 
-            expect(wd.Director.getInstance().scene.addProceduralRender.firstCall.args[0]).toEqual(jasmine.any(wd.MarbleProceduralRenderTargetRenderer));
+            expect(wd.Director.getInstance().scene.addProceduralRenderTargetRenderer.firstCall.args[0]).toEqual(jasmine.any(wd.MarbleProceduralRenderTargetRenderer));
         });
     });
 

@@ -264,13 +264,24 @@ describe("SceneDispatcher", function() {
     });
 
     describe("addRenderTargetRenderer", function(){
-        it("add renderTargetRenderer with renderTargetTexture", function(){
+        it("add renderTargetRenderer", function(){
             var renderer = {
             };
 
             scene.addRenderTargetRenderer(renderer);
 
-            expect(scene.gameObjectScene._renderTargetRenderers.hasChild(renderer)).toBeTruthy();
+            expect(scene.gameObjectScene._renderTargetRendererList.hasChild(renderer)).toBeTruthy();
+        });
+    });
+
+    describe("addProceduralRenderTargetRenderer", function(){
+        it("add proceduralRenderTargetRenderer", function(){
+            var renderer = {
+            };
+
+            scene.addProceduralRenderTargetRenderer(renderer);
+
+            expect(scene.gameObjectScene._proceduralRendererList.hasChild(renderer)).toBeTruthy();
         });
     });
 

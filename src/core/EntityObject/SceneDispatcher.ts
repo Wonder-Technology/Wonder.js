@@ -120,8 +120,8 @@ module wd {
             return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
         }
 
-        public addProceduralRender(renderTargetRenderer:ProceduralRenderTargetRenderer){
-            return this.gameObjectScene.addProceduralRender(renderTargetRenderer);
+        public addProceduralRenderTargetRenderer(renderTargetRenderer:ProceduralRenderTargetRenderer){
+            return this.gameObjectScene.addProceduralRenderTargetRenderer(renderTargetRenderer);
         }
 
         public removeRenderTargetRenderer(renderTargetRenderer:RenderTargetRenderer){

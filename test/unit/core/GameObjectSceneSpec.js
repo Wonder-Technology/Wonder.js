@@ -331,6 +331,23 @@ describe("GameObjectScene", function() {
 
             expect(renderTargetRenderer.render).toCalledWith(renderer, camera);
         });
+
+        describe("render proceduralRenderTargetRenderers", function(){
+            it("only render once", function () {
+                var proceduralRenderTargetRenderer = {
+                    init: sandbox.stub(),
+                    render: sandbox.stub()
+                };
+                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+
+                scene.render(renderer);
+                scene.render(renderer);
+
+                expect(proceduralRenderTargetRenderer.render).toCalledOnce();
+                expect(proceduralRenderTargetRenderer.render).toCalledWith(renderer);
+            });
+        });
+
         it("render rendererComponent", function(){
             var rendererComponent = new wd.RendererComponent();
             geometry = new wd.Geometry();
