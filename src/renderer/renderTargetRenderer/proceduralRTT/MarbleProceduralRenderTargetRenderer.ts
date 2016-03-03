@@ -9,20 +9,6 @@ module wd {
         }
 
         protected texture:MarbleProceduralTexture;
-
-
-        //protected beforeRenderFrameBufferTexture(renderCamera:GameObject){
-        //}
-
-        //protected getRenderList():wdCb.Collection<GameObject>{
-        //    return wdCb.Collection.create([this.texture.entityObject]);
-        //}
-
-        //protected renderRenderer(renderer){
-        //    //this._setSceneSide(ESide.BACK);
-        //    renderer.render();
-        //    //this._setSceneSide(null);
-        //}
     }
 }
 

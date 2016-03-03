@@ -22,17 +22,21 @@ module wd {
             ]), EBufferType.UNSIGNED_SHORT);
         }
 
+        public dispose(){
+            super.dispose();
+
+            this._indexBuffer.dispose();
+            this._vertexBuffer.dispose();
+        }
 
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
                 gl = DeviceManager.getInstance().gl;
 
             this.frameBuffer = frameBuffer.createFrameBuffer();
-            //this.renderBuffer = frameBuffer.createRenderBuffer();
 
             frameBuffer.bindFrameBuffer(this.frameBuffer);
             frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
-            //frameBuffer.attachRenderBuffer("DEPTH_ATTACHMENT", this.renderBuffer);
             frameBuffer.check();
             frameBuffer.unBind();
         }
@@ -42,21 +46,9 @@ module wd {
             this.texture.bindToUnit(0);
             this.frameBufferOperator.setViewport();
 
-
-            var command = ProceduralCommand.create();
-
-            command.vertexBuffer = this._vertexBuffer;
-            command.indexBuffer = this._indexBuffer;
-
-            command.material = this.texture.material;
-
-
-
-            renderer.addCommand(command);
-
+            renderer.addCommand(this._createRenderCommand());
 
             renderer.clear();
-            //this.renderRenderer(renderer);
             renderer.render();
 
             this.frameBufferOperator.unBind();
@@ -67,7 +59,16 @@ module wd {
             var gl = DeviceManager.getInstance().gl;
 
             gl.deleteFramebuffer(this.frameBuffer);
-            //gl.deleteRenderbuffer(this.renderBuffer);
+        }
+
+        private _createRenderCommand(){
+            var command = ProceduralCommand.create();
+
+            command.vertexBuffer = this._vertexBuffer;
+            command.indexBuffer = this._indexBuffer;
+            command.material = this.texture.material;
+
+            return command;
         }
     }
 }
