@@ -1,11 +1,11 @@
 module wd{
-    export abstract class EnvMapForBasicShaderLib extends ShaderLib{
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
+    export abstract class EnvMapForBasicShaderLib extends EngineShaderLib{
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
             this.sendUniformData(program, "u_normalMatrix", quadCmd.normalMatrix);
             this.sendUniformData(program, "u_cameraPos", Director.getInstance().scene.currentCamera.transform.position);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_samplerCube0", "u_cameraPos", "u_normalMatrix"]);

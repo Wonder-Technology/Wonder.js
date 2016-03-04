@@ -1,5 +1,5 @@
 module wd{
-    export class LightShaderLib extends ShaderLib{
+    export class LightShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -21,7 +21,7 @@ module wd{
             this._sendLightVariables(program);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_normalMatrix", "u_cameraPos", "u_shininess", "u_ambient", "u_opacity", "u_isBothSide", "u_lightModel"]);
@@ -94,7 +94,7 @@ module wd{
             return val[0] === 0 && val[1] === 0 && val[2] === 0;
         }
 
-        private _setLightDefinition(material:Material){
+        private _setLightDefinition(material:EngineMaterial){
             var scene:SceneDispatcher = wd.Director.getInstance().scene,
                 directionLights:wdCb.Collection<GameObject> = scene.directionLights,
                 pointLights:wdCb.Collection<GameObject> = scene.pointLights,

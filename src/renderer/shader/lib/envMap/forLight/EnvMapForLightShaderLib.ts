@@ -1,9 +1,9 @@
 module wd{
-    export abstract class EnvMapForLightShaderLib extends ShaderLib{
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
+    export abstract class EnvMapForLightShaderLib extends EngineShaderLib{
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_samplerCube0"]);

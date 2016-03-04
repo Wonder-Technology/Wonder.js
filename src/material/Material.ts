@@ -138,7 +138,7 @@ module wd {
             }
         }
 
-        public shader:CommonShader = CommonShader.create();
+        public shader:Shader = this.createShader();
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -149,23 +149,10 @@ module wd {
         public blendFuncSeparate:Array<EBlendFunc> = null;
         public blendEquationSeparate:Array<EBlendEquation> = [EBlendEquation.ADD, EBlendEquation.ADD];
         public shading = EShading.FLAT;
-        public refractionRatio:number = 0;
-        public reflectivity:number = null;
-        public mapCombineMode:ETextureCombineMode = ETextureCombineMode.MIX;
-        public mapMixRatio:number = 0.5;
         public mapManager:MapManager = MapManager.create(this);
         public geometry:Geometry = null;
 
-        private _afterInitSubscription:wdFrp.IDisposable = null;
-
-
-        @require(function(){
-            assert(!(this.mirrorMap && this.envMap), Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
-        })
         public init(){
-            this._addTopShaderLib();
-            this.addShaderLib();
-
             this.shader.init();
 
             this.mapManager.init();
@@ -175,8 +162,6 @@ module wd {
             this.shader.dispose();
 
             this.mapManager.dispose();
-
-            this._afterInitSubscription && this._afterInitSubscription.dispose();
         }
 
         public updateTexture(){
@@ -194,9 +179,7 @@ module wd {
             }
         }
 
-        @virtual
-        protected addShaderLib(){
-        }
+        protected abstract createShader():Shader;
 
         protected addMap(asset:TextureAsset);
         protected addMap(asset:TextureAsset, option:MapVariableData);
@@ -205,50 +188,6 @@ module wd {
 
         protected addMap(...args){
             this.mapManager.addMap.apply(this.mapManager, args);
-        }
-
-        protected addNormalShaderLib(){
-            if(this._hasAnimation() && !this.shader.hasLib(MorphNormalShaderLib)){
-                this._addShaderLibToTop(MorphNormalShaderLib.create());
-            }
-            else if(!this.shader.hasLib(CommonNormalShaderLib)){
-                this._addShaderLibToTop(CommonNormalShaderLib.create());
-            }
-        }
-
-        protected setBlendByOpacity(opacity:number){
-            if(opacity < 1.0 && opacity >= 0.0){
-                this.blend = true;
-            }
-            else{
-                this.blend = false;
-            }
-        }
-
-        private _addTopShaderLib(){
-            this.shader.addLib(CommonShaderLib.create());
-
-            if(this._hasAnimation()){
-                this.shader.addLib(MorphCommonShaderLib.create());
-                this.shader.addLib(MorphVerticeShaderLib.create());
-            }
-            else{
-                this.shader.addLib(CommonVerticeShaderLib.create());
-            }
-        }
-
-        private _addShaderLibToTop(lib:ShaderLib){
-            this.shader.addShaderLibToTop(lib);
-        }
-
-        private _hasAnimation(){
-            if(this.geometry instanceof ModelGeometry){
-                let geo = <any>(this.geometry);
-
-                return geo.hasAnimation();
-            }
-
-            return false;
         }
 
         private _isColorEqual(color1:Color, color2:Color){

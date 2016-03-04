@@ -1,5 +1,5 @@
 module wd{
-    export class BasicShaderLib extends ShaderLib{
+    export class BasicShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 

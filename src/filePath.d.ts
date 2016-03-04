@@ -325,17 +325,23 @@
 /// <reference path="renderer/buffer/FrameBuffer"/>
 
 /// <reference path="renderer/shader/Shader"/>
+/// <reference path="renderer/shader/CustomShader"/>
+/// <reference path="renderer/shader/EngineShader"/>
 /// <reference path="renderer/shader/CommonShader"/>
 /// <reference path="renderer/shader/ProceduralShader"/>
 /// <reference path="renderer/shader/CommonProceduralShader"/>
 /// <reference path="renderer/shader/CustomProceduralShader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
+/// <reference path="renderer/shader/CustomShaderSourceBuilder"/>
+/// <reference path="renderer/shader/EngineShaderSourceBuilder"/>
 /// <reference path="renderer/shader/variable/EVariableType"/>
 /// <reference path="renderer/shader/variable/EVariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
 /// <reference path="renderer/shader/variable/VariableTypeTable"/>
 /// <reference path="renderer/shader/variable/VariableNameTable"/>
 /// <reference path="renderer/shader/lib/ShaderLib"/>
+/// <reference path="renderer/shader/lib/CustomShaderLib"/>
+/// <reference path="renderer/shader/lib/EngineShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonVerticeShaderLib"/>
 /// <reference path="renderer/shader/lib/common/CommonNormalShaderLib"/>
@@ -395,6 +401,7 @@
 
 
 /// <reference path="material/Material"/>
+/// <reference path="material/EngineMaterial"/>
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>

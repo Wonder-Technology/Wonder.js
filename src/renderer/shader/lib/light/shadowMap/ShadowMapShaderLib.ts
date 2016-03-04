@@ -1,5 +1,5 @@
 module wd{
-    export abstract class ShadowMapShaderLib extends ShaderLib{
+    export abstract class ShadowMapShaderLib extends EngineShaderLib{
         private _softTypeChangeSubscription:wdFrp.IDisposable = null;
 
         public init(){
@@ -15,7 +15,7 @@ module wd{
             this._softTypeChangeSubscription && this._softTypeChangeSubscription.dispose();
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this._setShadowMapSource();

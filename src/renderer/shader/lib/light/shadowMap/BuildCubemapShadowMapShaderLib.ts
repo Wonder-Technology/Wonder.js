@@ -13,7 +13,7 @@ module wd{
             this.sendUniformData(program, "u_farPlane", material.buildCubemapShadowMapData.farPlane);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([

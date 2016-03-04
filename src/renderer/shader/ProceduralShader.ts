@@ -1,5 +1,5 @@
 module wd{
-    export abstract class ProceduralShader extends Shader{
+    export abstract class ProceduralShader extends EngineShader{
         protected libs:wdCb.Collection<ProceduralShaderLib>;
 
         public update(cmd:ProceduralCommand){

@@ -16,7 +16,7 @@ module wd{
 
         private _proceduralTexture:MarbleProceduralTexture = null;
 
-        //public sendShaderVariables(program:Program, cmd:ProceduralCommand, material:Material){
+        //public sendShaderVariables(program:Program, cmd:ProceduralCommand, material:EngineMaterial){
         public sendShaderVariables(program:Program, cmd:ProceduralCommand){
             var texture:MarbleProceduralTexture = this._proceduralTexture;
 
@@ -28,7 +28,7 @@ module wd{
             this.sendUniformData(program, "u_jointColor", texture.jointColor.toVector3());
         }
 
-        //public setShaderDefinition(cmd:ProceduralCommand, material:Material){
+        //public setShaderDefinition(cmd:ProceduralCommand, material:EngineMaterial){
         public setShaderDefinition(cmd:ProceduralCommand){
             //super.setShaderDefinition(cmd, material);
             super.setShaderDefinition(cmd);

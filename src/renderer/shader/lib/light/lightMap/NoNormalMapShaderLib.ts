@@ -1,5 +1,5 @@
 module wd{
-    export class NoNormalMapShaderLib extends ShaderLib{
+    export class NoNormalMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 

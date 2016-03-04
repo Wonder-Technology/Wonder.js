@@ -65,9 +65,9 @@ module wd{
                 return;
             }
 
-            if(JudgeUtils.isFunction(data)){
-                data = data();
-            }
+            //if(JudgeUtils.isFunction(data)){
+            //    data = data();
+            //}
 
             switch (type){
                 case EVariableType.FLOAT_1:
@@ -101,35 +101,35 @@ module wd{
             }
         }
 
-        //todo support STRUCTURES
-        @require(function(){
-            this._shader.uniforms
-                .filter((val:ShaderData) => {
-                    return val.value !== EVariableCategory.ENGINE;
-                })
-                .forEach((val:ShaderData, key:string) => {
-
-                    if(val.type === EVariableType.STRUCTURE){
-                        Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
-                    }
-                });
-        })
-        public sendUniformDataFromCustomShader(){
-            var self = this;
-
-            this._getUniformsFromCustomShader()
-                .forEach((val:ShaderData, key:string) => {
-
-                    if(val.type === EVariableType.STRUCTURE){
-                        for(let i in val.value){
-                            self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
-                        }
-                    }
-                    else{
-                        self.sendUniformData(key, val.type, val.value);
-                    }
-                });
-        }
+        ////todo support STRUCTURES
+        //@require(function(){
+        //    this._shader.uniforms
+        //        .filter((val:ShaderData) => {
+        //            return val.value !== EVariableCategory.ENGINE;
+        //        })
+        //        .forEach((val:ShaderData, key:string) => {
+        //
+        //            if(val.type === EVariableType.STRUCTURE){
+        //                Log.error(!JudgeUtils.isDirectObject(val.value), Log.info.FUNC_MUST_BE("value's type", "object{}"));
+        //            }
+        //        });
+        //})
+        //public sendUniformDataFromCustomShader(){
+        //    var self = this;
+        //
+        //    this._getUniformsFromCustomShader()
+        //        .forEach((val:ShaderData, key:string) => {
+        //
+        //            if(val.type === EVariableType.STRUCTURE){
+        //                for(let i in val.value){
+        //                    self.sendStructureData(`${key}.${i}`, val.value[i].type, val.value[i].value);
+        //                }
+        //            }
+        //            else{
+        //                self.sendUniformData(key, val.type, val.value);
+        //            }
+        //        });
+        //}
 
         @require(function(name:string, type:EVariableType, data:any){
             if(data && JudgeUtils.isFunction(data)){
@@ -141,18 +141,18 @@ module wd{
                 pos:number = null,
                 buffer:ArrayBuffer = null;
 
-            pos= this._getAttribLocation(gl, name);
+            pos = this._getAttribLocation(gl, name);
 
             if (pos === -1 || data === null) {
                 return;
             }
 
-            if(JudgeUtils.isFunction(data)){
-                buffer = data();
-            }
-            else{
-                buffer = data;
-            }
+            //if(JudgeUtils.isFunction(data)){
+            //    buffer = data();
+            //}
+            //else{
+            buffer = data;
+            //}
 
             switch (type){
                 case EVariableType.BUFFER:
@@ -166,14 +166,14 @@ module wd{
             }
         }
 
-        public sendAttributeDataFromCustomShader(){
-            var self = this;
-
-            this._getAttributesFromCustomShader()
-                .forEach((val:ShaderData, key:string) => {
-                    self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
-                });
-        }
+        //public sendAttributeDataFromCustomShader(){
+        //    var self = this;
+        //
+        //    this._getAttributesFromCustomShader()
+        //        .forEach((val:ShaderData, key:string) => {
+        //            self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
+        //        });
+        //}
 
         public sendStructureData(name:string, type:EVariableType, data:any){
             this.sendUniformData(name, type, data);
@@ -307,33 +307,34 @@ module wd{
             return pos;
         }
 
-        @cache(function(){
-            return !this._shader.dirty && this._attributesFromCustomShaderCache !== null;
-        }, function(){
-            return this._attributesFromCustomShaderCache;
-        }, function(result){
-            this._attributesFromCustomShaderCache = result;
-        })
-        private _getAttributesFromCustomShader(){
-            return this._shader.attributes
-                .filter((val:ShaderData) => {
-                    return val.value !== EVariableCategory.ENGINE;
-                });
-        }
+        //@cache(function(){
+        //    return !this._shader.dirty && this._attributesFromCustomShaderCache !== null;
+        //}, function(){
+        //    return this._attributesFromCustomShaderCache;
+        //}, function(result){
+        //    this._attributesFromCustomShaderCache = result;
+        //})
+        //private _getAttributesFromCustomShader(){
+        //    return this._shader.attributes
+        //        .filter((val:ShaderData) => {
+        //            //todo change ENGINE
+        //            return val.value !== EVariableCategory.ENGINE;
+        //        });
+        //}
 
-        @cache(function(){
-            return !this._shader.dirty && this._uniformsFromCustomShaderCache !== null;
-        }, function(){
-            return this._uniformsFromCustomShaderCache;
-        }, function(result){
-            this._uniformsFromCustomShaderCache = result;
-        })
-        private _getUniformsFromCustomShader(){
-            return this._shader.uniforms
-                .filter((val:ShaderData) => {
-                    return val.value !== EVariableCategory.ENGINE;
-                });
-        }
+        //@cache(function(){
+        //    return !this._shader.dirty && this._uniformsFromCustomShaderCache !== null;
+        //}, function(){
+        //    return this._uniformsFromCustomShaderCache;
+        //}, function(result){
+        //    this._uniformsFromCustomShaderCache = result;
+        //})
+        //private _getUniformsFromCustomShader(){
+        //    return this._shader.uniforms
+        //        .filter((val:ShaderData) => {
+        //            return val.value !== EVariableCategory.ENGINE;
+        //        });
+        //}
     }
 }
 

@@ -1,5 +1,5 @@
 module wd{
-    export class SkyboxShaderLib extends ShaderLib{
+    export class SkyboxShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,10 +8,10 @@ module wd{
 
         public type:string = "skybox";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_samplerCube0"]);

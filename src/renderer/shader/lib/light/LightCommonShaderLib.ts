@@ -1,5 +1,5 @@
 module wd{
-    export class LightCommonShaderLib extends ShaderLib{
+    export class LightCommonShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -13,7 +13,7 @@ module wd{
 
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.setVsSource(this.getVsChunk("light_common.glsl"));

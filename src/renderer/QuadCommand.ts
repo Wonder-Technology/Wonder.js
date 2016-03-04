@@ -24,6 +24,20 @@ module wd {
             return this.mMatrix.invertTo3x3().transpose();
         }
 
+        @requireGetter(function(){
+            assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
+        })
+        @cacheGetter(function(){
+            return this._mvpMatrixCache !== null;
+        }, function(){
+            return this._mvpMatrixCache;
+        }, function(result){
+            this._mvpMatrixCache = result;
+        })
+        get mvpMatrix(){
+            return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
+        }
+
         private _mMatrix:Matrix4 = null;
         get mMatrix(){
             return this._mMatrix;
@@ -41,6 +55,7 @@ module wd {
         public animation:Animation = null;
 
         private _normalMatrixCache:Matrix4 = null;
+        private _mvpMatrixCache:Matrix4 = null;
 
         public execute() {
             var material = this.material;

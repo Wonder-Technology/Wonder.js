@@ -1,5 +1,5 @@
 module wd{
-    export abstract class BaseLightMapShaderLib extends ShaderLib{
+    export abstract class BaseLightMapShaderLib extends EngineShaderLib{
         public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             var texCoordBuffer:ArrayBuffer = quadCmd.buffers.getChild(EBufferDataType.TEXCOORD);
 
@@ -12,7 +12,7 @@ module wd{
             this.sendBaseLightMapShaderVariables(program, quadCmd, material);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_texCoord"]);

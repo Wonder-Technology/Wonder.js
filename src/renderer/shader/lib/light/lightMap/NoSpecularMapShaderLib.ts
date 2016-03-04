@@ -1,5 +1,5 @@
 module wd{
-    export class NoSpecularMapShaderLib extends ShaderLib{
+    export class NoSpecularMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -12,7 +12,7 @@ module wd{
             this.sendUniformData(program, "u_specular", material.specularColor.toVector3());
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_specular"]);

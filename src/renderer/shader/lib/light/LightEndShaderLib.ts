@@ -1,5 +1,5 @@
 module wd{
-    export class LightEndShaderLib extends ShaderLib{
+    export class LightEndShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 

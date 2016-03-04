@@ -1,5 +1,5 @@
 module wd{
-    export class NoEmissionMapShaderLib extends ShaderLib{
+    export class NoEmissionMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -12,7 +12,7 @@ module wd{
             this.sendUniformData(program, "u_emission", material.emissionColor.toVector3());
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_emission"]);

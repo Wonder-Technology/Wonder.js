@@ -1,5 +1,5 @@
 module wd{
-    export class TotalShadowMapShaderLib extends ShaderLib{
+    export class TotalShadowMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 

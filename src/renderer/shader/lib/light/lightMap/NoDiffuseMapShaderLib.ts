@@ -1,5 +1,5 @@
 module wd{
-    export class NoDiffuseMapShaderLib extends ShaderLib{
+    export class NoDiffuseMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -12,7 +12,7 @@ module wd{
             this.sendUniformData(program, "u_diffuse", material.color.toVector3());
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_diffuse"]);

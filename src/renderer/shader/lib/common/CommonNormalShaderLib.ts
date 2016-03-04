@@ -1,5 +1,5 @@
 module wd{
-    export class CommonNormalShaderLib extends ShaderLib{
+    export class CommonNormalShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,11 +8,11 @@ module wd{
 
         public type:string = "commonNormal";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             this._sendAttributeVariables(program, quadCmd);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_normal"]);

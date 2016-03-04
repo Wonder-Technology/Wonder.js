@@ -1,5 +1,5 @@
 module wd{
-    export class BasicEndShaderLib extends ShaderLib{
+    export class BasicEndShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "basicEnd";
 
-        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:EngineMaterial){
         }
     }
 }

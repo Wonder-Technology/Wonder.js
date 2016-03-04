@@ -1,5 +1,5 @@
 module wd{
-    export class CommonShaderLib extends ShaderLib{
+    export class CommonShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,13 +8,13 @@ module wd{
 
         public type:string = "common";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             this.sendUniformData(program, "u_mMatrix", quadCmd.mMatrix);
             this.sendUniformData(program, "u_vMatrix", quadCmd.vMatrix);
             this.sendUniformData(program, "u_pMatrix", quadCmd.pMatrix);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             //todo use VariableLib.xxx?

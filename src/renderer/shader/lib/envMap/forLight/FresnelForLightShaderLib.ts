@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "fresnel_forLight";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material) {
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
             if(material.reflectivity !== null){
                 this.sendUniformData(program, "u_reflectivity", material.reflectivity);
@@ -19,7 +19,7 @@ module wd{
             }
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable(["u_refractionRatio", "u_reflectivity"]);

@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "reflection_forLight";
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.setEnvMapSource();

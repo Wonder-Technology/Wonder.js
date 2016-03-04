@@ -1,5 +1,5 @@
 module wd{
-    export class SkyboxMaterial extends Material{
+    export class SkyboxMaterial extends EngineMaterial{
         public static create() {
             var obj = new this();
 

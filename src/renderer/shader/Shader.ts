@@ -52,9 +52,13 @@ module wd{
         public libDirty:boolean = false;
 
         protected libs:wdCb.Collection<ShaderLib> = wdCb.Collection.create<ShaderLib>();
-        protected sourceBuilder:ShaderSourceBuilder = ShaderSourceBuilder.create();
+        protected sourceBuilder:ShaderSourceBuilder = this.createShaderSourceBuilder();
 
         private _definitionDataDirty:boolean = false;
+
+        public abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
+
+        public abstract update(cmd:RenderCommand, material:Material);
 
         public createVsShader(){
             var gl = DeviceManager.getInstance().gl;
@@ -90,8 +94,6 @@ module wd{
                 lib.dispose();
             });
         }
-
-        public abstract update(cmd:RenderCommand, material:Material);
 
         public judgeRefreshShader(){
             if(this.libDirty){
@@ -193,20 +195,7 @@ module wd{
             this.libs = this.libs.sort(func);
         }
 
-        public buildDefinitionData(cmd:RenderCommand, material:Material){
-            this.libs.forEach((lib:ShaderLib) => {
-                lib.setShaderDefinition(cmd, material);
-            });
-
-            this.sourceBuilder.clearShaderDefinition();
-
-            this.sourceBuilder.build(this.libs);
-
-            this.attributes = this.sourceBuilder.attributes;
-            this.uniforms = this.sourceBuilder.uniforms;
-            this.vsSource = this.sourceBuilder.vsSource;
-            this.fsSource = this.sourceBuilder.fsSource;
-        }
+        protected abstract createShaderSourceBuilder():ShaderSourceBuilder;
 
         private _initShader(shader, source){
             var gl = DeviceManager.getInstance().gl;

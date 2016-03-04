@@ -1,5 +1,5 @@
 module wd{
-    export class CommonShader extends Shader{
+    export class CommonShader extends EngineShader{
         public static create(){
         	var obj = new this();
 
@@ -13,37 +13,11 @@ module wd{
 
             this.program.use();
 
-            this.libs.forEach((lib:ShaderLib) => {
+            this.libs.forEach((lib:EngineShaderLib) => {
                 lib.sendShaderVariables(program, quadCmd, material);
             });
 
-            program.sendAttributeDataFromCustomShader();
-            program.sendUniformDataFromCustomShader();
-
             material.mapManager.sendData(program);
         }
-
-        public read(definitionData:ShaderDefinitionData){
-            this.sourceBuilder.read(definitionData);
-
-            this.libDirty = true;
-        }
-    }
-
-    export type ShaderDefinitionData = {
-        vsSourceTop:string;
-        vsSourceDefine:string;
-        vsSourceVarDeclare:string;
-        vsSourceFuncDeclare:string;
-        vsSourceFuncDefine:string;
-        vsSourceBody:string;
-        fsSourceTop:string;
-        fsSourceDefine:string;
-        fsSourceVarDeclare:string;
-        fsSourceFuncDeclare:string;
-        fsSourceFuncDefine:string;
-        fsSourceBody:string;
-        attributes:ShaderData|wdCb.Hash<ShaderData>;
-        uniforms:ShaderData|wdCb.Hash<ShaderData>;
     }
 }

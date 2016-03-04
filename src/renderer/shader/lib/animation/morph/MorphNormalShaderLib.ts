@@ -1,5 +1,5 @@
 module wd{
-    export class MorphNormalShaderLib extends ShaderLib{
+    export class MorphNormalShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "morphNormal";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
             var morphNormalData = quadCmd.buffers.getChild(EBufferDataType.NORMAL);
 
             if(!morphNormalData){
@@ -19,7 +19,7 @@ module wd{
             this.sendAttributeData(program, "a_nextFrameNormal", morphNormalData[1]);
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addAttributeVariable(["a_currentFrameNormal", "a_nextFrameNormal"]);

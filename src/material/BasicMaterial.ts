@@ -1,5 +1,5 @@
 module wd{
-    export class BasicMaterial extends Material{
+    export class BasicMaterial extends EngineMaterial{
         public static create() {
             var obj = new this();
 

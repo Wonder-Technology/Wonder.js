@@ -1,6 +1,6 @@
 module wd{
-    export abstract class BuildShadowMapShaderLib extends ShaderLib{
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+    export abstract class BuildShadowMapShaderLib extends EngineShaderLib{
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.setFsSource(this.getFsChunk("commonBuildShadowMap_fragment.glsl"));

@@ -1,5 +1,7 @@
 module wd{
-    export abstract class ProceduralShaderLib extends ShaderLib{
+    export abstract class ProceduralShaderLib extends EngineShaderLib{
+        public shader:ProceduralShader;
+
         public abstract sendShaderVariables(program: Program, cmd:ProceduralCommand);
 
         @virtual

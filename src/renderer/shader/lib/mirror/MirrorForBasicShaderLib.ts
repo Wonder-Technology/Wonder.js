@@ -1,5 +1,5 @@
 module wd{
-    export class MirrorForBasicShaderLib extends ShaderLib{
+    export class MirrorForBasicShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -9,10 +9,10 @@ module wd{
 
         public type:string = "mirror_forBasic";
 
-        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:Material){
+        public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
         }
 
-        public setShaderDefinition(quadCmd:QuadCommand, material:Material){
+        public setShaderDefinition(quadCmd:QuadCommand, material:EngineMaterial){
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
