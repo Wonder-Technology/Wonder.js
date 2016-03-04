@@ -71,8 +71,7 @@ module wd{
 
         private _setMapShaderLib(){
             var mapManager = this.mapManager,
-                mapCount = mapManager.getMapCount(),
-                procedureTexture = null;
+                mapCount = mapManager.getMapCount();
 
             if(mapCount > 0){
                 if(mapCount > 1){
@@ -81,12 +80,6 @@ module wd{
                 else{
                     this.shader.addLib(BasicMapShaderLib.create());
                 }
-            }
-
-            procedureTexture = mapManager.getProceduralMap();
-
-            if(procedureTexture){
-                this.addProceduralShaderLib(procedureTexture);
             }
         }
 

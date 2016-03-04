@@ -302,6 +302,8 @@
 /// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/proceduralRTT/CustomProceduralRenderTargetRenderer"/>
 
 /// <reference path="renderer/Renderer"/>
 /// <reference path="renderer/WebGLRenderer"/>
@@ -325,6 +327,8 @@
 /// <reference path="renderer/shader/Shader"/>
 /// <reference path="renderer/shader/CommonShader"/>
 /// <reference path="renderer/shader/ProceduralShader"/>
+/// <reference path="renderer/shader/CommonProceduralShader"/>
+/// <reference path="renderer/shader/CustomProceduralShader"/>
 /// <reference path="renderer/shader/ShaderSourceBuilder"/>
 /// <reference path="renderer/shader/variable/EVariableType"/>
 /// <reference path="renderer/shader/variable/EVariableCategory"/>
@@ -361,6 +365,7 @@
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/MarbleProceduralShaderLib"/>
+/// <reference path="renderer/shader/lib/procedural/CustomProceduralShaderLib"/>
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
@@ -403,6 +408,7 @@
 /// <reference path="asset/Loader"/>
 /// <reference path="asset/GLSLLoader"/>
 /// <reference path="asset/JsLoader"/>
+/// <reference path="asset/JSONLoader"/>
 /// <reference path="asset/VideoLoader"/>
 /// <reference path="asset/TextureLoader"/>
 /// <reference path="asset/utils/ImageLoader"/>
@@ -477,6 +483,7 @@
 
 /// <reference path="texture/renderTargetTexture/proceduralTexture/ProceduralTexture"/>
 /// <reference path="texture/renderTargetTexture/proceduralTexture/MarbleProceduralTexture"/>
+/// <reference path="texture/renderTargetTexture/proceduralTexture/CustomProceduralTexture"/>
 
 
 /// <reference path="texture/basicTexture/BasicTexture"/>

@@ -139,7 +139,6 @@ module wd {
         }
 
         public shader:CommonShader = CommonShader.create();
-        public proceduralShader:ProceduralShader = ProceduralShader.create();
         public redWrite:boolean = true;
         public greenWrite:boolean = true;
         public blueWrite:boolean = true;
@@ -168,14 +167,12 @@ module wd {
             this.addShaderLib();
 
             this.shader.init();
-            this.proceduralShader.init();
 
             this.mapManager.init();
         }
 
         public dispose(){
             this.shader.dispose();
-            this.proceduralShader.dispose();
 
             this.mapManager.dispose();
 
@@ -195,10 +192,6 @@ module wd {
             else{
                 this.shader.update(quadCmd, this);
             }
-        }
-
-        public updateProceduralShader(cmd:ProceduralCommand){
-            this.proceduralShader.update(cmd, this);
         }
 
         @virtual
@@ -229,18 +222,6 @@ module wd {
             }
             else{
                 this.blend = false;
-            }
-        }
-
-        @require(function(proceduralTexture:Texture){
-            assert(proceduralTexture instanceof ProceduralTexture, Log.info.FUNC_SHOULD("arguments[0]", "be ProceduralTexture"));
-        })
-        protected addProceduralShaderLib(proceduralTexture:Texture){
-            if(proceduralTexture instanceof MarbleProceduralTexture){
-                this.proceduralShader.addLib(MarbleProceduralShaderLib.create(proceduralTexture));
-            }
-            else{
-                Log.error(true, Log.info.FUNC_UNEXPECT("proceduralTexture"));
             }
         }
 

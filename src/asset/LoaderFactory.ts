@@ -26,6 +26,9 @@ module wd{
             var loader = null;
 
             switch (extname){
+                case ".json":
+                    loader = JSONLoader.getInstance();
+                    break;
                 case ".js":
                     loader = JsLoader.getInstance();
                     break;

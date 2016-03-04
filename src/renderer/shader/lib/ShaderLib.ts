@@ -11,12 +11,15 @@ module wd{
         public vsSourceFuncDeclare:string = "";
         public vsSourceFuncDefine:string = "";
         public vsSourceBody:string = "";
+        public vsSource:string = null;
+
         public fsSourceTop:string = "";
         public fsSourceDefine:string = "";
         public fsSourceVarDeclare:string = "";
         public fsSourceFuncDeclare:string = "";
         public fsSourceFuncDefine:string = "";
         public fsSourceBody:string = "";
+        public fsSource:string = null;
         public vsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
         public fsSourceDefineList:wdCb.Collection<any> = wdCb.Collection.create<any>();
 
@@ -62,12 +65,28 @@ module wd{
             return this._getChunk(type, EShaderLibType.fs);
         }
 
-        protected setVsSource(vs:GLSLChunk, operator:string="="){
-            this._setSource(vs, EShaderLibType.vs, operator);
+        @require(function(){
+            assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
+        })
+        protected setVsSource(vs:GLSLChunk|string, operator:string="="){
+            if(JudgeUtils.isString(vs)){
+                this.vsSource = <string>vs;
+            }
+            else{
+                this._setSource(vs, EShaderLibType.vs, operator);
+            }
         }
 
-        protected setFsSource(fs:GLSLChunk, operator:string="="){
-            this._setSource(fs, EShaderLibType.fs, operator);
+        @require(function(){
+            assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
+        })
+        protected setFsSource(fs:GLSLChunk|string, operator:string="="){
+            if(JudgeUtils.isString(fs)){
+                this.fsSource = <string>fs;
+            }
+            else{
+                this._setSource(fs, EShaderLibType.fs, operator);
+            }
         }
 
         protected addAttributeVariable(variableArr:Array<string>){
@@ -101,12 +120,15 @@ module wd{
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
+            this.vsSource = null;
+
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+            this.fsSource = null;
         }
 
         private _getChunk(type:string, sourceType:EShaderLibType){

@@ -1,14 +1,8 @@
 module wd{
-    export class ProceduralShader extends Shader{
-        public static create(){
-            var obj = new this();
-
-            return obj;
-        }
-
+    export abstract class ProceduralShader extends Shader{
         protected libs:wdCb.Collection<ProceduralShaderLib>;
 
-        public update(cmd:ProceduralCommand, material:Material){
+        public update(cmd:ProceduralCommand){
             var program = this.program;
 
             this.judgeRefreshShader();
@@ -16,7 +10,7 @@ module wd{
             this.program.use();
 
             this.libs.forEach((lib:ProceduralShaderLib) => {
-                lib.sendShaderVariables(program, cmd, material);
+                lib.sendShaderVariables(program, cmd);
             });
         }
 

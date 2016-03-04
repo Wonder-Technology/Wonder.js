@@ -1,19 +1,12 @@
 module wd {
-    export class ProceduralRenderTargetRenderer extends RenderTargetRenderer{
-        public static create(texture:MarbleProceduralTexture) {
-            var obj = new this(texture);
-
-            obj.initWhenCreate();
-
-            return obj;
-        }
-
+    export abstract class ProceduralRenderTargetRenderer extends RenderTargetRenderer{
         protected texture:ProceduralTexture;
 
         protected frameBuffer:WebGLFramebuffer = null;
 
         private _indexBuffer:ElementBuffer = null;
         private _vertexBuffer:ArrayBuffer = null;
+        private _shader:ProceduralShader = null;
 
         public init(){
             super.init();
@@ -28,6 +21,9 @@ module wd {
                 0, 1, 2,
                 0, 2, 3
             ]), EBufferType.UNSIGNED_SHORT);
+
+            this._shader = this.createShader();
+            this._shader.init();
         }
 
         public dispose(){
@@ -35,7 +31,10 @@ module wd {
 
             this._indexBuffer.dispose();
             this._vertexBuffer.dispose();
+            this._shader.dispose();
         }
+
+        protected abstract createShader():ProceduralShader;
 
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
@@ -74,7 +73,7 @@ module wd {
 
             command.vertexBuffer = this._vertexBuffer;
             command.indexBuffer = this._indexBuffer;
-            command.material = this.texture.material;
+            command.shader = this._shader;
 
             return command;
         }

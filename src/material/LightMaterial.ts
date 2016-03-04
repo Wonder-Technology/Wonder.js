@@ -180,9 +180,9 @@ module wd{
             if(this._diffuseMap){
                 this.shader.addLib(DiffuseMapShaderLib.create());
 
-                if(this._diffuseMap instanceof ProceduralTexture){
-                    this.addProceduralShaderLib(this._diffuseMap);
-                }
+                //if(this._diffuseMap instanceof ProceduralTexture){
+                //    this.addProceduralShaderLib(this._diffuseMap);
+                //}
             }
             else{
                 this.shader.addLib(NoDiffuseMapShaderLib.create());

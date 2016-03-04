@@ -241,8 +241,10 @@ module wd{
         }
     }
 
+    //todo
     export type ShaderData = {
         type:EVariableType;
-        value:any;
+        value?:any;
+        textureId?:string;
     }
 }

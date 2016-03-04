@@ -6,7 +6,7 @@ module wd {
             return obj;
         }
 
-        public material:Material = null;
+        public shader:ProceduralShader = null;
         public indexBuffer:ElementBuffer = null;
         public vertexBuffer:ArrayBuffer = null;
 
@@ -16,9 +16,11 @@ module wd {
         }
 
         public execute() {
-            var material = this.material;
+            //var material = this.material;
 
-            material.updateProceduralShader(this);
+            //material.updateProceduralShader(this);
+
+            this.shader.update(this);
 
             this.drawElements(this.indexBuffer);
         }

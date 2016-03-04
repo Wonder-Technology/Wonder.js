@@ -1,0 +1,17 @@
+{
+  "uniforms": {
+    "u_dirtAmplifier": {
+      "type": "FLOAT_1",
+      "value": "6.0"
+    },
+    "u_dirtSampler": {
+      "type": "SAMPLER_2D",
+      "textureId": "dirt"
+    },
+    "u_grassSampler": {
+      "type": "SAMPLER_2D",
+      "textureId": "grass"
+    }
+  },
+  "fsSourceId": "fs"
+}

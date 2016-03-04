@@ -66,13 +66,22 @@ module wd{
             this.fsSourceBodyFromShaderLib = definitionData.fsSourceBody || "";
         }
 
+        @require(function(libs:wdCb.Collection<ShaderLib>){
+            assert(this.vsSource === null, Log.info.FUNC_SHOULD("vsSource", "be null"));
+            assert(this.fsSource === null, Log.info.FUNC_SHOULD("fsSource", "be null"));
+        })
         public build(libs:wdCb.Collection<ShaderLib>){
             var self = this;
 
             this._readLibSource(libs);
 
-            this._buildVsSource();
-            this._buildFsSource();
+            //todo refactor
+            if(this.vsSource === null){
+                this._buildVsSource();
+            }
+            if(this.fsSource === null){
+                this._buildFsSource();
+            }
 
             this.attributes
                 .filter((data:ShaderData) => {
@@ -95,12 +104,15 @@ module wd{
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
+            this.vsSource = null;
+
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+            this.fsSource = null;
         }
 
         public dispose(){
@@ -110,8 +122,13 @@ module wd{
             this.uniformsFromShaderLib.removeAllChildren();
         }
 
+        @require(function(libs:wdCb.Collection<ShaderLib>){
+
+        })
         private _readLibSource(libs:wdCb.Collection<ShaderLib>){
             var self = this,
+                vsSource = null,
+                fsSource = null,
                 vsSourceTop = "",
                 vsSourceDefine = "",
                 vsSourceVarDeclare = "",
@@ -125,44 +142,89 @@ module wd{
                 fsSourceFuncDefine = "",
                 fsSourceBody = "";
 
+            //todo refactor
+            var setSourceLibs = libs.filter((lib:ShaderLib) => {
+                return lib.vsSource !== null || lib.fsSource !== null;
+            });
+
+            var setVsSourceLib = setSourceLibs.findOne((lib:ShaderLib) => {
+                return lib.vsSource !== null;
+            });
+
+            if(setVsSourceLib){
+                vsSource = setVsSourceLib.vsSource;
+            }
+
+            var setFsSourceLib = setSourceLibs.findOne((lib:ShaderLib) => {
+                return lib.fsSource !== null;
+            });
+
+            if(setFsSourceLib){
+                fsSource = setFsSourceLib.fsSource;
+            }
+
+
+
+
             libs.forEach((lib:ShaderLib) => {
                 self.attributes.addChildren(lib.attributes);
                 self.uniforms.addChildren(lib.uniforms);
 
-                vsSourceTop += lib.vsSourceTop;
-                vsSourceDefine += lib.vsSourceDefine;
-                vsSourceVarDeclare += lib.vsSourceVarDeclare;
-                vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
-                vsSourceFuncDefine += lib.vsSourceFuncDefine;
-                vsSourceBody += lib.vsSourceBody;
+                if(vsSource === null){
+                    vsSourceTop += lib.vsSourceTop;
+                    vsSourceDefine += lib.vsSourceDefine;
+                    vsSourceVarDeclare += lib.vsSourceVarDeclare;
+                    vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
+                    vsSourceFuncDefine += lib.vsSourceFuncDefine;
+                    vsSourceBody += lib.vsSourceBody;
 
-                fsSourceTop += lib.fsSourceTop;
-                fsSourceDefine += lib.fsSourceDefine;
-                fsSourceVarDeclare += lib.fsSourceVarDeclare;
-                fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
-                fsSourceFuncDefine += lib.fsSourceFuncDefine;
-                fsSourceBody += lib.fsSourceBody;
+                    self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                }
 
-                self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
-                self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                if(fsSource === null){
+                    fsSourceTop += lib.fsSourceTop;
+                    fsSourceDefine += lib.fsSourceDefine;
+                    fsSourceVarDeclare += lib.fsSourceVarDeclare;
+                    fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
+                    fsSourceFuncDefine += lib.fsSourceFuncDefine;
+                    fsSourceBody += lib.fsSourceBody;
+
+                    self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                }
             });
+
+
+            //todo set custom shader
 
             /*! ensure shader lib's code is before custom shader's source */
             this.attributes.addChildren(this.attributesFromShaderLib);
             this.uniforms.addChildren(this.uniformsFromShaderLib);
-            this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
-            this.vsSourceDefine = vsSourceDefine + this.vsSourceDefineFromShaderLib;
-            this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclareFromShaderLib;
-            this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclareFromShaderLib;
-            this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefineFromShaderLib;
-            this.vsSourceBody = vsSourceBody + this.vsSourceBodyFromShaderLib;
 
-            this.fsSourceTop = fsSourceTop + this.fsSourceTopFromShaderLib;
-            this.fsSourceDefine = fsSourceDefine + this.fsSourceDefineFromShaderLib;
-            this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclareFromShaderLib;
-            this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclareFromShaderLib;
-            this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefineFromShaderLib;
-            this.fsSourceBody = fsSourceBody + this.fsSourceBodyFromShaderLib;
+
+            if(vsSource !== null){
+                this.vsSource = vsSource;
+            }
+            else{
+                this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
+                this.vsSourceDefine = vsSourceDefine + this.vsSourceDefineFromShaderLib;
+                this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclareFromShaderLib;
+                this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclareFromShaderLib;
+                this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefineFromShaderLib;
+                this.vsSourceBody = vsSourceBody + this.vsSourceBodyFromShaderLib;
+            }
+
+
+            if(fsSource !== null){
+                this.fsSource = fsSource;
+            }
+            else{
+                this.fsSourceTop = fsSourceTop + this.fsSourceTopFromShaderLib;
+                this.fsSourceDefine = fsSourceDefine + this.fsSourceDefineFromShaderLib;
+                this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclareFromShaderLib;
+                this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclareFromShaderLib;
+                this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefineFromShaderLib;
+                this.fsSourceBody = fsSourceBody + this.fsSourceBodyFromShaderLib;
+            }
         }
 
         private _buildVsSource(){
