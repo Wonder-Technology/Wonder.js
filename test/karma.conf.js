@@ -27,12 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        'test/unit/**',
+        //'test/unit/**',
 
-        'test/unit/texture/**',
+        //'test/unit/texture/**',
 
-        //'test/unit/**/*MaterialSpec.js',
-        //'test/unit/**/MaterialSpec.js',
+        'test/unit/**/material/**.js',
         //
         //'test/unit/**/MapManager*',
 
@@ -129,8 +128,8 @@
         //
         //'test/unit/**/LightShaderLibSpec*',
         //
-        'test/unit/**/SceneDispatcherSpec*',
-        'test/unit/**/GameObjectSceneSpec*',
+        //'test/unit/**/SceneDispatcherSpec*',
+        //'test/unit/**/GameObjectSceneSpec*',
         //
         //'test/unit/**/MathUtils*',
         //'test/unit/**/rayPicking*',

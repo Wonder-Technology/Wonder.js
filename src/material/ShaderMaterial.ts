@@ -9,7 +9,7 @@ module wd{
         public shader:CustomShader;
 
         @ensure(function(){
-            //todo check lib count === 1;
+            assert(this.shader.getLibs().getCount() === 1 && this.shader.hasLib(CustomShaderLib), Log.info.FUNC_SHOULD("only has CustomShaderLib, not has other shader libs"));
         })
         public init(){
             this.shader.addLib(CustomShaderLib.create());

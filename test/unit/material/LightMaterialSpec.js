@@ -62,7 +62,6 @@ describe("LightMaterial", function() {
             rendererTool.triggerMaterialAddShaderLib(material);
 
             judgeHasLib(wd.NoLightMapShaderLib);
-
         });
 
         describe("judge diffuseMap", function(){
@@ -77,13 +76,6 @@ describe("LightMaterial", function() {
                     rendererTool.triggerMaterialAddShaderLib(material);
 
                     judgeHasLib(wd.DiffuseMapShaderLib);
-                });
-                it("if diffuseMap is procedural texture, add procedural shader lib", function () {
-                    material.diffuseMap = wd.MarbleProceduralTexture.create();
-
-                    rendererTool.triggerMaterialAddShaderLib(material);
-
-                    judgeHasProceduralLib(wd.MarbleProceduralShaderLib);
                 });
             });
             it("else, add NoDiffuseMapShaderLib", function () {

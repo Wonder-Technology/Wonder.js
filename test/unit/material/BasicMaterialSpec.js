@@ -137,35 +137,6 @@ describe("BasicMaterial", function () {
                 material.map = [wd.ImageTexture.create(), wd.ImageTexture.create(), wd.ImageTexture.create()];
             }).toThrow();
         });
-        describe("if has procedural map, add procedural shader lib", function () {
-            beforeEach(function(){
-                sandbox.stub(material, "addProceduralShaderLib");
-            });
-
-            it("test single map", function () {
-                material.map = wd.MarbleProceduralTexture.create();
-
-                material.init();
-
-                expect(material.addProceduralShaderLib).toCalledOnce();
-            });
-            describe("test multi maps", function () {
-                it("test1", function () {
-                    material.map = [wd.MarbleProceduralTexture.create(), wd.ImageTexture.create()];
-
-                    material.init();
-
-                    expect(material.addProceduralShaderLib).toCalledOnce();
-                });
-                it("test2", function () {
-                    material.map = [wd.MarbleProceduralTexture.create(), wd.MarbleProceduralTexture.create()];
-
-                    material.init();
-
-                    expect(material.addProceduralShaderLib).toCalledOnce();
-                });
-            });
-        });
     });
 
     describe("set mirror map shader lib", function () {
