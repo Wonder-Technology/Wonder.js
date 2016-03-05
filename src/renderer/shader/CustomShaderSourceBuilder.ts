@@ -19,11 +19,7 @@ module wd{
             this.fsSource = LoaderManager.getInstance().get(definitionData.fsSourceId);
         }
 
-        @require(function(libs:wdCb.Collection<ShaderLib>){
-            assert(this.vsSource !== null, Log.info.FUNC_MUST_DEFINE("vsSource"));
-            assert(this.fsSource !== null, Log.info.FUNC_MUST_DEFINE("fsSource"));
-        })
-        public build(libs:wdCb.Collection<ShaderLib>){
+        public build(){
             this.convertAttributesData();
         }
 

@@ -40,8 +40,11 @@
 
         //'test/unit/**/*ProceduralShaderLib*',
 
-        'test/unit/**/ShaderSpec*',
-        'test/unit/**/*ShaderSpec*',
+        'test/unit/**/ShaderSourceBuilderSpec*',
+        'test/unit/**/*ShaderSourceBuilderSpec*',
+
+        //'test/unit/**/ShaderSpec*',
+        //'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',

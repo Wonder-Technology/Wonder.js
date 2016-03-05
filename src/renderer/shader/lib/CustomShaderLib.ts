@@ -53,6 +53,10 @@ module wd{
             }
         }
 
+        private _getAttributeType(type:EVariableType){
+            return EVariableType.BUFFER;
+        }
+
         private _getUniformData(data:any, cmd:QuadCommand){
             switch (data){
                 case "MODEL_VIEW_PROJECTION":
@@ -92,7 +96,7 @@ module wd{
         }
 
         private _sendAttributeDataFromCustomShader(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
-            program.sendAttributeData(name, EVariableType.BUFFER, this._getAttributeData(value, type, cmd));
+            program.sendAttributeData(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
         }
     }
 }

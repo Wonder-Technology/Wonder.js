@@ -98,6 +98,8 @@ module wd{
         @require(function(name:string, type:EVariableType, data:any){
             if(data){
                 assert(data instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));
+
+                assert(type === EVariableType.BUFFER, Log.info.FUNC_SHOULD("type", `be EVariableType.BUFFER, but actual is ${type}`));
             }
         })
         public sendAttributeData(name:string, type:EVariableType, data:any){

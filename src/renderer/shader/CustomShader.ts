@@ -39,7 +39,7 @@ module wd{
         }
 
         public buildDefinitionData(cmd:RenderCommand, material:Material){
-            this.sourceBuilder.build(this.libs);
+            this.sourceBuilder.build();
 
             this.attributes = this.sourceBuilder.attributes;
             this.uniforms = this.sourceBuilder.uniforms;

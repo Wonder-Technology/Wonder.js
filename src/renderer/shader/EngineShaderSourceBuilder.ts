@@ -31,7 +31,6 @@ module wd{
         public build(libs:wdCb.Collection<EngineShaderLib>){
             this._readLibSource(libs);
 
-            //todo refactor
             if(this.vsSource === null){
                 this._buildVsSource();
             }
@@ -66,9 +65,43 @@ module wd{
         }
 
         private _readLibSource(libs:wdCb.Collection<EngineShaderLib>){
-            var self = this,
-                vsSource = null,
-                fsSource = null,
+            var setSourceLibs = libs.filter((lib:EngineShaderLib) => {
+                return lib.vsSource !== null || lib.fsSource !== null;
+            });
+
+            this._judgeAndSetVsSource(setSourceLibs);
+            this._judgeAndSetFsSource(setSourceLibs);
+
+            this._judgeAndSetPartSource(libs);
+        }
+
+        private _judgeAndSetVsSource(setSourceLibs:wdCb.Collection<EngineShaderLib>){
+            var setVsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
+                return lib.vsSource !== null;
+            });
+
+            if(setVsSourceLib){
+                this.vsSource = setVsSourceLib.vsSource;
+            }
+        }
+
+        private _judgeAndSetFsSource(setSourceLibs:wdCb.Collection<EngineShaderLib>){
+            var setFsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
+                return lib.fsSource !== null;
+            });
+
+            if(setFsSourceLib){
+                this.fsSource = setFsSourceLib.fsSource;
+            }
+        }
+
+        private _judgeAndSetPartSource(libs:wdCb.Collection<EngineShaderLib>){
+            var vsSource = this.vsSource,
+                fsSource = this.fsSource,
+                attributes = this.attributes,
+                uniforms = this.uniforms,
+                vsSourceDefineList = this.vsSourceDefineList,
+                fsSourceDefineList = this.fsSourceDefineList,
                 vsSourceTop = "",
                 vsSourceDefine = "",
                 vsSourceVarDeclare = "",
@@ -82,33 +115,10 @@ module wd{
                 fsSourceFuncDefine = "",
                 fsSourceBody = "";
 
-            //todo refactor
-            var setSourceLibs = libs.filter((lib:EngineShaderLib) => {
-                return lib.vsSource !== null || lib.fsSource !== null;
-            });
-
-            var setVsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
-                return lib.vsSource !== null;
-            });
-
-            if(setVsSourceLib){
-                vsSource = setVsSourceLib.vsSource;
-            }
-
-            var setFsSourceLib = setSourceLibs.findOne((lib:EngineShaderLib) => {
-                return lib.fsSource !== null;
-            });
-
-            if(setFsSourceLib){
-                fsSource = setFsSourceLib.fsSource;
-            }
-
-
-
 
             libs.forEach((lib:EngineShaderLib) => {
-                self.attributes.addChildren(lib.attributes);
-                self.uniforms.addChildren(lib.uniforms);
+                attributes.addChildren(lib.attributes);
+                uniforms.addChildren(lib.uniforms);
 
                 if(vsSource === null){
                     vsSourceTop += lib.vsSourceTop;
@@ -118,7 +128,7 @@ module wd{
                     vsSourceFuncDefine += lib.vsSourceFuncDefine;
                     vsSourceBody += lib.vsSourceBody;
 
-                    self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                    vsSourceDefineList.addChildren(lib.vsSourceDefineList);
                 }
 
                 if(fsSource === null){
@@ -129,29 +139,11 @@ module wd{
                     fsSourceFuncDefine += lib.fsSourceFuncDefine;
                     fsSourceBody += lib.fsSourceBody;
 
-                    self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                    fsSourceDefineList.addChildren(lib.fsSourceDefineList);
                 }
             });
 
-
-            //todo set custom shader
-
-            /*! ensure shader lib's code is before custom shader's source */
-            //this.attributes.addChildren(this.attributesFromEngineShaderLib);
-            //this.uniforms.addChildren(this.uniformsFromEngineShaderLib);
-
-
-            if(vsSource !== null){
-                this.vsSource = vsSource;
-            }
-            else{
-                //this.vsSourceTop = vsSourceTop + this.vsSourceTopFromEngineShaderLib;
-                //this.vsSourceDefine = vsSourceDefine + this.vsSourceDefineFromEngineShaderLib;
-                //this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclareFromEngineShaderLib;
-                //this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclareFromEngineShaderLib;
-                //this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefineFromEngineShaderLib;
-                //this.vsSourceBody = vsSourceBody + this.vsSourceBodyFromEngineShaderLib;
-
+            if(vsSource === null){
                 this.vsSourceTop = vsSourceTop;
                 this.vsSourceDefine = vsSourceDefine;
                 this.vsSourceVarDeclare = vsSourceVarDeclare;
@@ -160,18 +152,7 @@ module wd{
                 this.vsSourceBody = vsSourceBody;
             }
 
-
-            if(fsSource !== null){
-                this.fsSource = fsSource;
-            }
-            else{
-                //this.fsSourceTop = fsSourceTop + this.fsSourceTopFromEngineShaderLib;
-                //this.fsSourceDefine = fsSourceDefine + this.fsSourceDefineFromEngineShaderLib;
-                //this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclareFromEngineShaderLib;
-                //this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclareFromEngineShaderLib;
-                //this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefineFromEngineShaderLib;
-                //this.fsSourceBody = fsSourceBody + this.fsSourceBodyFromEngineShaderLib;
-
+            if(fsSource === null){
                 this.fsSourceTop = fsSourceTop;
                 this.fsSourceDefine = fsSourceDefine;
                 this.fsSourceVarDeclare = fsSourceVarDeclare;

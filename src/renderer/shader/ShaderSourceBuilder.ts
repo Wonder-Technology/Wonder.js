@@ -5,7 +5,7 @@ module wd{
         public vsSource:string = null;
         public fsSource:string = null;
 
-        public abstract build(libs:wdCb.Collection<ShaderLib>):void;
+        public abstract build(...args):void;
 
         public abstract clearShaderDefinition():void;
 
@@ -27,7 +27,6 @@ module wd{
                 })
                 .forEach((data:ShaderData, key:string) => {
                     data.value = self._convertArrayToArrayBuffer(data.type, data.value);
-                    data.type = EVariableType.BUFFER;
                 });
         }
 
