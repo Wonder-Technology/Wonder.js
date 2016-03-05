@@ -46,11 +46,30 @@ module wd {
             this._mMatrix = mMatrix;
 
             this._normalMatrixCache = null;
+            this._mvpMatrixCache = null;
+        }
+
+        private _vMatrix:Matrix4 = null;
+        get vMatrix(){
+            return this._vMatrix;
+        }
+        set vMatrix(vMatrix:Matrix4){
+            this._vMatrix = vMatrix;
+
+            this._mvpMatrixCache = null;
+        }
+
+        private _pMatrix:Matrix4 = null;
+        get pMatrix(){
+            return this._pMatrix;
+        }
+        set pMatrix(pMatrix:Matrix4){
+            this._pMatrix = pMatrix;
+
+            this._mvpMatrixCache = null;
         }
 
         public buffers:BufferContainer = null;
-        public vMatrix:Matrix4 = null;
-        public pMatrix:Matrix4 = null;
         public material:Material = null;
         public animation:Animation = null;
 

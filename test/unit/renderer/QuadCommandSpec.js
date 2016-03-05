@@ -1,15 +1,151 @@
 describe("QuadCommand", function() {
     var sandbox = null;
     var deviceManager = null;
+    var cmd;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         deviceManager = wd.DeviceManager.getInstance();
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
+
+        cmd = wd.QuadCommand.create();
     });
     afterEach(function () {
         testTool.clearInstance();
         sandbox.restore();
+    });
+
+    describe("normalMatrix(getter)", function(){
+        beforeEach(function(){
+        });
+
+        it("get normal matrix", function(){
+            var mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+            cmd.mMatrix = mMatrix.copy();
+
+            expect(cmd.normalMatrix.values).toEqual(
+                cmd.mMatrix.invertTo3x3().transpose().values
+            );
+            expect(
+                testTool.getValues(
+                    cmd.mMatrix.values
+                )
+            ).toEqual(
+                testTool.getValues(
+                    mMatrix.values
+                )
+            );
+        });
+
+        describe("test cache", function(){
+            var changedMatrix;
+
+            beforeEach(function(){
+                cmd.mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+
+                changedMatrix = wd.Matrix4.create([ 100, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+            });
+
+            it("if cached, return cached data", function(){
+                sandbox.spy(cmd.mMatrix, "invertTo3x3");
+
+                var m1 = cmd.normalMatrix;
+                expect(cmd.mMatrix.invertTo3x3).toCalledOnce();
+
+                var m2 = cmd.normalMatrix;
+
+
+                expect(m1.values).toEqual(m2.values);
+                expect(cmd.mMatrix.invertTo3x3).not.toCalledTwice();
+            });
+            it("if change mMatrix, clear cache", function () {
+                var m1 = cmd.normalMatrix;
+
+                cmd.mMatrix = changedMatrix;
+
+                var m2 = cmd.normalMatrix;
+
+                expect(m1.values).not.toEqual(m2.values);
+            });
+        });
+    });
+
+    describe("mvpMatrix(getter)", function(){
+        beforeEach(function(){
+        });
+
+        it("get mvp matrix", function(){
+            var mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+            cmd.mMatrix = mMatrix.copy();
+            cmd.vMatrix = wd.Matrix4.create([ 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+            cmd.pMatrix = wd.Matrix4.create([ 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+
+            expect(cmd.mvpMatrix.values).toEqual(
+                cmd.mMatrix.applyMatrix(cmd.vMatrix, true).applyMatrix(cmd.pMatrix, false).values
+            );
+
+            expect(
+                testTool.getValues(
+                    cmd.mMatrix.values
+                )
+            ).toEqual(
+                testTool.getValues(
+                    mMatrix.values
+                )
+            );
+        });
+
+        describe("test cache", function(){
+            var changedMatrix;
+
+            beforeEach(function(){
+                cmd.mMatrix = wd.Matrix4.create([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+                cmd.vMatrix = wd.Matrix4.create([ 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+                cmd.pMatrix = wd.Matrix4.create([ 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+
+                changedMatrix = wd.Matrix4.create([ 100, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1 ]);
+            });
+
+            it("if cached, return cached data", function(){
+                sandbox.spy(cmd.mMatrix, "applyMatrix");
+
+                var m1 = cmd.mvpMatrix;
+                expect(cmd.mMatrix.applyMatrix).toCalledOnce();
+
+                var m2 = cmd.mvpMatrix;
+
+
+                expect(m1.values).toEqual(m2.values);
+                expect(cmd.mMatrix.applyMatrix).not.toCalledTwice();
+            });
+            it("if change mMatrix, clear cache", function () {
+                var m1 = cmd.mvpMatrix;
+
+                cmd.mMatrix = changedMatrix;
+
+                var m2 = cmd.mvpMatrix;
+
+                expect(m1.values).not.toEqual(m2.values);
+            });
+            it("if change vMatrix, clear cache", function () {
+                var m1 = cmd.mvpMatrix;
+
+                cmd.vMatrix = changedMatrix;
+
+                var m2 = cmd.mvpMatrix;
+
+                expect(m1.values).not.toEqual(m2.values);
+            });
+            it("if change pMatrix, clear cache", function () {
+                var m1 = cmd.mvpMatrix;
+
+                cmd.pMatrix = changedMatrix;
+
+                var m2 = cmd.mvpMatrix;
+
+                expect(m1.values).not.toEqual(m2.values);
+            });
+        });
     });
 
     describe("execute", function(){

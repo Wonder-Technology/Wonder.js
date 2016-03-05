@@ -16,10 +16,6 @@ module wd {
         }
 
         public execute() {
-            //var material = this.material;
-
-            //material.updateProceduralShader(this);
-
             this.shader.update(this);
 
             this.drawElements(this.indexBuffer);

@@ -31,11 +31,11 @@
 
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**.js',
+        //'test/unit/**/material/**.js',
         //
         //'test/unit/**/MapManager*',
 
-        //'test/unit/renderer/**',
+        'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
         //'test/unit/**/*ProceduralShaderLib*',

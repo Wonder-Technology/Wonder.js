@@ -34,8 +34,8 @@ describe("ProceduralCommand", function() {
         beforeEach(function(){
             gl = wd.DeviceManager.getInstance().gl;
 
-            cmd.material = {
-                updateProceduralShader:sandbox.stub()
+            cmd.shader = {
+                update:sandbox.stub()
             };
 
             cmd.indexBuffer = wd.ElementBuffer.create(new Uint16Array([
@@ -47,7 +47,7 @@ describe("ProceduralCommand", function() {
         it("update procedural shader", function(){
             cmd.execute();
 
-            expect(cmd.material.updateProceduralShader).toCalledWith(cmd);
+            expect(cmd.shader.update).toCalledWith(cmd);
         });
 
         it("drawElements", function(){
