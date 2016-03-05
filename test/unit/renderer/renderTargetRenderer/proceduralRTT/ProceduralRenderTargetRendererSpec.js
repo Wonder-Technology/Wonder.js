@@ -1,9 +1,11 @@
-describe("MirrorRenderTargetRenderer", function () {
+describe("ProceduralRenderTargetRenderer", function () {
     var gl = null;
     var sandbox = null;
     var renderTargetRenderer;
 
     var frameBufferOperator,frameBuffer,glTexture, texture;
+
+    var shader;
 
     function prepareForInit(){
         frameBuffer = {};
@@ -25,6 +27,13 @@ describe("MirrorRenderTargetRenderer", function () {
             glTexture:glTexture
         };
         renderTargetRenderer.texture = texture;
+
+        shader = {
+            init:sandbox.stub(),
+            dispose:sandbox.stub()
+        }
+
+        wd.ProceduralRenderTargetRenderer.prototype.createShader = sandbox.stub().returns(shader);
     }
 
     beforeEach(function () {
@@ -79,6 +88,16 @@ describe("MirrorRenderTargetRenderer", function () {
                 0, 1, 2,
                 0, 2, 3
             ]), wd.EBufferType.UNSIGNED_SHORT));
+        });
+        it("create shader", function () {
+            renderTargetRenderer.init();
+
+            expect(renderTargetRenderer.createShader).toCalledOnce();
+        });
+        it("init shader", function () {
+            renderTargetRenderer.init();
+
+            expect(shader.init).toCalledOnce();
         });
     });
 
@@ -136,7 +155,7 @@ describe("MirrorRenderTargetRenderer", function () {
                 expect(renderer.addCommand).toCalledOnce();
                 expect(renderer.addCommand.firstCall.args[0]).toEqual(jasmine.any(wd.ProceduralCommand));
             });
-            it("pass vertexBuffer,indexBuffer,material to command", function () {
+            it("pass vertexBuffer,indexBuffer,shader to command", function () {
                 var material = wd.BasicMaterial.create();
                 texture.material = material;
                 renderTargetRenderer.init();
@@ -147,7 +166,7 @@ describe("MirrorRenderTargetRenderer", function () {
                 var command = renderer.addCommand.firstCall.args[0];
                 expect(command.vertexBuffer).toEqual(renderTargetRenderer._vertexBuffer);
                 expect(command.indexBuffer).toEqual(renderTargetRenderer._indexBuffer);
-                expect(command.material).toEqual(material);
+                expect(command.shader).toEqual(shader);
             });
         });
 
@@ -178,6 +197,8 @@ describe("MirrorRenderTargetRenderer", function () {
             sandbox.stub(renderTargetRenderer._vertexBuffer, "dispose");
             sandbox.stub(renderTargetRenderer._indexBuffer, "dispose");
 
+            //renderTargetRenderer.init();
+
             renderTargetRenderer.dispose();
         });
 
@@ -194,7 +215,9 @@ describe("MirrorRenderTargetRenderer", function () {
             expect(renderTargetRenderer._vertexBuffer.dispose).toCalledOnce();
             expect(renderTargetRenderer._indexBuffer.dispose).toCalledOnce();
         });
-
+        it("dispose shader", function () {
+            expect(renderTargetRenderer._shader.dispose).toCalledOnce();
+        });
     });
 });
 
