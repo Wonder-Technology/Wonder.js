@@ -13,9 +13,5 @@ module wd{
         @virtual
         public dispose(){
         }
-
-        protected sendAttributeData(program:Program, name:string, data:any){
-            program.sendAttributeData(name, EVariableType.BUFFER, data);
-        }
     }
 }

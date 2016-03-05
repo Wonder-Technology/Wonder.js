@@ -13,12 +13,12 @@ describe("ProceduralShader", function() {
     });
 
     describe("update", function(){
-        var quadCmd,material;
+        var cmd,material;
         var lib;
 
         beforeEach(function(){
-            quadCmd = wd.QuadCommand.create();
-            material = new wd.Material();
+            cmd = wd.ProceduralCommand.create();
+            material = wd.BasicMaterial.create();
 
             shader.program = wd.Program.create();
 
@@ -33,18 +33,18 @@ describe("ProceduralShader", function() {
         });
 
         it("judge to refresh shader", function(){
-            shader.update(quadCmd, material);
+            shader.update(cmd, material);
 
             expect(shader.judgeRefreshShader).toCalledOnce();
         });
         it("use program", function () {
-            shader.update(quadCmd, material);
+            shader.update(cmd, material);
 
             expect(shader.program.use).toCalledOnce();
             expect(shader.program.use).toCalledBefore(lib.sendShaderVariables);
         });
         it("send shaderLib->variables", function () {
-            shader.update(quadCmd, material);
+            shader.update(cmd, material);
 
             expect(lib.sendShaderVariables).toCalledOnce();
         });

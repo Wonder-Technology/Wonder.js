@@ -4,6 +4,9 @@ describe("Shader", function() {
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+
+        wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
+
         shader = new wd.Shader();
 
         testTool.openContractCheck(sandbox);
@@ -11,7 +14,20 @@ describe("Shader", function() {
     afterEach(function () {
         sandbox.restore();
     });
-    
+
+    describe("constructor", function(){
+        beforeEach(function(){
+            wd.Shader.prototype.createShaderSourceBuilder = sandbox.stub().returns(new wd.ShaderSourceBuilder());
+
+            shader = new wd.Shader();
+        });
+
+        it("create shaderSourceBuilder", function () {
+            expect(shader.createShaderSourceBuilder).toCalledOnce();
+        });
+    });
+
+
     describe("dirty(getter)", function(){
         it("if libDirty or definitionDataDirty, shader dirty", function(){
             shader.libDirty = true;
@@ -54,7 +70,7 @@ describe("Shader", function() {
 
     describe("judgeRefreshShader", function(){
         beforeEach(function(){
-            sandbox.stub(shader, "buildDefinitionData");
+            shader.buildDefinitionData = sandbox.stub();
             sandbox.stub(shader.program, "initWithShader");
         });
 

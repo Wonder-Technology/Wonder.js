@@ -19,6 +19,10 @@ describe("custom shader", function () {
     describe("integration test", function() {
         describe("set custom shader", function () {
             var shader, shaderDefinitionData,program;
+            var map;
+            var vsSource,fsSource;
+            var colors;
+
             beforeEach(function () {
                 shader = material.shader;
                 program = shader.program;
@@ -27,65 +31,108 @@ describe("custom shader", function () {
                     return testTool.getValues(arr);
                 });
 
+                colors = [
+                    1, 0, 0,
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1
+                ];
+
                 shaderDefinitionData = {
                     attributes: {
+                        "a_position":{
+                            "type":"FLOAT_3",
+                            "value": "POSITION"
+                        },
+                        "a_texCoord":{
+                            "type":"FLOAT_2",
+                            "value": "TEXCOORD"
+                        },
                         "a_color": {
-                            type: wd.EVariableType.FLOAT_3,
-                            value: [
-                                1, 0, 0, 1,
-                                1, 0, 0, 1,
-                                0, 1, 0, 1,
-                                0, 0, 1, 1
-                            ]
+                            type: "FLOAT_3",
+                            value: colors
                         }
                     },
                     uniforms: {
+                        "u_mvpMatrix": {
+                            "type": "FLOAT_MAT4",
+                            "value": "MODEL_VIEW_PROJECTION"
+                        },
                         "u_test1": {
-                            type: wd.EVariableType.FLOAT_1,
-                            value: 1.0
+                            type: "FLOAT_1",
+                            value: 1.1
                         },
                         "u_test2": {
-                            type: wd.EVariableType.FLOAT_1,
-                            value: function () {
-                                return 2.0;
-                            }
+                            type: "FLOAT_1",
+                            value: 2.0
                         },
                         "u_test3": {
-                            type: wd.EVariableType.STRUCTURE,
+                            type: "STRUCTURE",
                             value: {
                                 "a": {
-                                    type:wd.EVariableType.NUMBER_1,
+                                    type:"NUMBER_1",
                                     value: 10
                                 },
                                 "b": {
-                                    type:wd.EVariableType.FLOAT_1,
-                                    value: function(){
-                                        return 3.0;
-                                    }
+                                    type:"FLOAT_1",
+                                    value: 3.3
                                 }
                             }
+                        },
+                        "u_sampler2D": {
+                            "type": "SAMPLER_2D",
+                            "textureId": "texture"
                         }
                     },
-                    vsSourceVarDeclare: [
-                        "varying vec4 v_color;"
-                    ].join("\n"),
-                    vsSourceBody: [
+                    vsSourceId: "vsSourceId",
+                    fsSourceId: "fsSourceId"
+                };
+
+                sandbox.stub(wd.LoaderManager.getInstance(), "get");
+
+                vsSource = [
+                        "attribute vec3 a_position;",
+                        "attribute vec2 a_texCoord;",
+                        "varying vec3 v_color;",
+                        "varying vec2 v_texCoord;",
+                        "uniform mat4 u_mvpMatrix;",
+
+                        "void main(void){",
                         "v_color = a_color;",
+                        "v_texCoord = a_texCoord;",
                         "float a = u_test1;",
-                        "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * a_position;"
-                    ].join("\n"),
-                    fsSourceVarDeclare: [
-                        "varying vec4 v_color;",
+                        "gl_Position = u_mvpMatrix * vec4(a_position, 1.0);",
+                        "}"
+                ].join("\n");
+
+                wd.LoaderManager.getInstance().get.withArgs("vsSourceId").returns(vsSource);
+
+                fsSource = [
+                        "uniform sampler2D u_sampler2D;",
+                        "varying vec3 v_color;",
+                        "varying vec2 v_texCoord;",
+
                         "uniform float u_test2;",
                         "struct Test3{float b;};",
-                        "Test3 u_test3;"
-                    ].join("\n"),
-                    fsSourceBody: [
+                        "Test3 u_test3;",
+
+                        "void main(void){",
                         "float a = u_test2;",
                         "float b = u_test3.b;",
-                        "gl_FragColor = v_color;"
-                    ].join("\n")
-                };
+                        "gl_FragColor = vec4(v_color, 1.0) * texture2D(u_sampler2D, v_texCoord);",
+                        "}"
+                    ].join("\n");
+
+                wd.LoaderManager.getInstance().get.withArgs("fsSourceId").returns(fsSource);
+
+                map = wd.ImageTexture.create({});
+                sandbox.stub(map, "bindToUnit");
+
+                wd.LoaderManager.getInstance().get.withArgs("texture").returns(map);
+
+
+
+                wd.LoaderManager.getInstance().get.withArgs("definitionDataId").returns(shaderDefinitionData);
             });
 
             describe("init shader", function () {
@@ -93,17 +140,24 @@ describe("custom shader", function () {
 
             describe("update shader", function () {
                 var quadCmd;
+                var vertices,texCoords;
 
                 beforeEach(function () {
-                    sandbox.stub(material.mapManager, "sendData");
+                    sandbox.spy(material.mapManager, "sendData");
                     sandbox.stub(shader.program, "sendAttributeData");
                     sandbox.stub(shader.program, "sendUniformData");
                     sandbox.stub(shader.program, "use");
 
                     quadCmd = wd.QuadCommand.create();
-                    sandbox.stub(quadCmd, "buffers", {
-                        getChild:sandbox.stub().returns({})
-                    });
+
+
+                    vertices = [1,2,3];
+                    texCoords = [0.1,0.2];
+
+                    quadCmd.buffers = {
+                        getChild:sandbox.stub()
+                    };
+
 
 
                     quadCmd.mMatrix = wd.Matrix4.create();
@@ -111,23 +165,16 @@ describe("custom shader", function () {
                     quadCmd.pMatrix = wd.Matrix4.create();
 
 
-                    shader.read(shaderDefinitionData);
+                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertices);
+                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns(texCoords);
+
+
+                    material.read("definitionDataId");
+
                     rendererTool.triggerMaterialAddShaderLib(material);
                     material.updateShader(quadCmd);
                 });
 
-                //it("set CommonShaderLib->definition", function(){
-                //    var commonShaderLib = shader._libs.getChild(0);
-                //
-                //    expect(commonShaderLib.attributes.getChildren()).toEqual(
-                //        {
-                //            a_position: {
-                //                type: wd.EVariableType.FLOAT_3,
-                //                value: wd.EVariableCategory.ENGINE
-                //            }
-                //        }
-                //    )
-                //});
                 it("build definition data", function () {
                     var attributes = shaderDefinitionData.attributes;
                     var uniforms = shaderDefinitionData.uniforms;
@@ -139,22 +186,28 @@ describe("custom shader", function () {
                                 value:attributes.a_color.value
                             },
                             a_position: {
-                                type: wd.EVariableType.FLOAT_3,
-                                value: wd.EVariableCategory.ENGINE
+                                type: attributes.a_position.type,
+                                value: attributes.a_position.value,
+                            },
+                            a_texCoord: {
+                                type: attributes.a_texCoord.type,
+                                value: attributes.a_texCoord.value
                             }
                         }
                     );
                     expect(shader.uniforms.getChildren()).toEqual(
                         {
+                            u_mvpMatrix: {type: uniforms.u_mvpMatrix.type, value: uniforms.u_mvpMatrix.value},
                             u_test1: {type: uniforms.u_test1.type, value: uniforms.u_test1.value},
                             u_test2: {type: uniforms.u_test2.type, value: uniforms.u_test2.value},
                             u_test3: {type: uniforms.u_test3.type, value: uniforms.u_test3.value},
 
-                            u_mMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE},
-                            u_vMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE},
-                            u_pMatrix: {type: wd.EVariableType.FLOAT_MAT4, value: wd.EVariableCategory.ENGINE}
+                            u_sampler2D: {type: uniforms.u_sampler2D.type, textureId: uniforms.u_sampler2D.textureId}
                         }
                     );
+
+                    expect(shader.vsSource).toEqual(vsSource);
+                    expect(shader.fsSource).toEqual(fsSource);
                 });
                 it("if definition data change, program will reset shader", function () {
                     expect(gl.attachShader).toCalledTwice();
@@ -162,48 +215,33 @@ describe("custom shader", function () {
                 it("use program", function(){
                     expect(program.use).toCalledAfter(gl.attachShader);
                 });
-                it("send CommonShaderLib->variables", function () {
+                it("send attribute data", function () {
                     expect(program.sendAttributeData).toCalledAfter(program.use);
 
-                    expect(program.sendAttributeData.firstCall.args[0]).toEqual("a_position");
-                    expect(quadCmd.buffers.getChild.firstCall).toCalledWith("VERTICE");
+                    expect(program.sendAttributeData).toCalledWith("a_position", wd.EVariableType.BUFFER, vertices);
+                    expect(program.sendAttributeData).toCalledWith("a_texCoord", wd.EVariableType.BUFFER, texCoords);
 
-                    expect(program.sendUniformData.firstCall.args[0]).toEqual("u_mMatrix");
-                    expect(program.sendUniformData.firstCall.args[2]).toEqual(quadCmd.mMatrix);
-                    expect(program.sendUniformData.secondCall.args[0]).toEqual("u_vMatrix");
-                    expect(program.sendUniformData.secondCall.args[2]).toEqual(quadCmd.vMatrix);
-                    expect(program.sendUniformData.thirdCall.args[0]).toEqual("u_pMatrix");
-                    expect(program.sendUniformData.thirdCall.args[2]).toEqual(quadCmd.pMatrix);
+                    expect(program.sendAttributeData).toCalledWith("a_color", wd.EVariableType.BUFFER, colors);
+
                 });
+                it("send uniforms data", function () {
+                    expect(program.sendUniformData).toCalledAfter(program.use);
 
-                it("send texture's variables", function () {
-                    expect(material.mapManager.sendData).toCalledWith(shader.program);
+                    expect(program.sendUniformData).toCalledWith("u_mvpMatrix", wd.EVariableType.FLOAT_MAT4, quadCmd.mMatrix.applyMatrix(quadCmd.vMatrix, true).applyMatrix(quadCmd.pMatrix, false));
+
+
+                    expect(program.sendUniformData).toCalledWith("u_test1", wd.EVariableType.FLOAT_1, 1.1);
+                    expect(program.sendUniformData).toCalledWith("u_test2", wd.EVariableType.FLOAT_1, 2.0);
+
+                    expect(program.sendUniformData).toCalledWith("u_test3.a", wd.EVariableType.NUMBER_1, 10);
+                    expect(program.sendUniformData).toCalledWith("u_test3.b", wd.EVariableType.FLOAT_1, 3.3);
                 });
-                it("send custom shader's attribute variables", function () {
-                    expect(program.sendAttributeData.secondCall.args[0]).toEqual("a_color");
-                    expect(program.sendAttributeData.secondCall.args[1]).toEqual(wd.EVariableType.BUFFER);
-                    expect(program.sendAttributeData.secondCall.args[2]).toEqual(
-                        [ 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1 ]
-                    );
+                it("ShaderMaterial should add the correspond twoD maps of uniformData->sampler2D ", function () {
+                    expect(material.mapManager.sendData).toCalledOnce();
+                    expect(material.mapManager.hasMap(map)).toBeTruthy();
                 });
-                it("send custom shader's uniform variables", function () {
-                    expect(program.sendUniformData.getCall(3).args[0]).toEqual("u_test1");
-                    expect(program.sendUniformData.getCall(3).args[1]).toEqual(shaderDefinitionData.uniforms.u_test1.type);
-                    expect(program.sendUniformData.getCall(3).args[2]).toEqual(shaderDefinitionData.uniforms.u_test1.value);
-
-
-                    expect(program.sendUniformData.getCall(4).args[0]).toEqual("u_test2");
-                    expect(program.sendUniformData.getCall(4).args[1]).toEqual(shaderDefinitionData.uniforms.u_test2.type);
-                    expect(program.sendUniformData.getCall(4).args[2]).toEqual(shaderDefinitionData.uniforms.u_test2.value);
-
-
-                    var uniforms = shaderDefinitionData.uniforms;
-                    expect(program.sendUniformData.getCall(5).args).toEqual(
-                        ["u_test3.a", wd.EVariableType.NUMBER_1, uniforms.u_test3.value.a.value]
-                    );
-                    expect(program.sendUniformData.getCall(6).args).toEqual(
-                        ["u_test3.b", wd.EVariableType.FLOAT_1, uniforms.u_test3.value.b.value]
-                    );
+                it("send map data", function () {
+                    expect(map.bindToUnit).toCalledOnce();
                 });
             });
         });

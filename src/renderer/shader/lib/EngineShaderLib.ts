@@ -38,6 +38,10 @@ module wd{
             fs && this.setFsSource(fs);
         }
 
+        protected sendAttributeData(program:Program, name:string, data:any){
+            program.sendAttributeData(name, EVariableType.BUFFER, data);
+        }
+
         @require(function(program:Program, name:string, data:any){
             assert(!!VariableLib[name], `${name} should exist in VariableLib`);
         })

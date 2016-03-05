@@ -35,12 +35,13 @@
         //
         //'test/unit/**/MapManager*',
 
-        'test/unit/renderer/**',
+        //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',
 
         //'test/unit/**/*ProceduralShaderLib*',
 
-        //'test/unit/**/*ShaderSpec*',
+        'test/unit/**/ShaderSpec*',
+        'test/unit/**/*ShaderSpec*',
 
         //'test/unit/**/renderWebGL*',
         //'test/unit/**/*CommandSpec*',

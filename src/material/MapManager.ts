@@ -58,12 +58,6 @@ module wd{
             this._textureDirty = true;
         }
 
-        public getProceduralMap():ProceduralTexture{
-            return <ProceduralTexture>this.getMapList().findOne((map:Texture) => {
-                return map instanceof ProceduralTexture;
-            });
-        }
-
         @ensure(function(mapList:wdCb.Collection<BasicTexture|ProceduralTexture>){
             mapList.forEach((map:BasicTexture|ProceduralTexture) => {
                 assert(map instanceof BasicTexture || map instanceof ProceduralTexture, Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));

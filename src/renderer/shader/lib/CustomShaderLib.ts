@@ -13,12 +13,12 @@ module wd{
                 shader:CustomShader = this.shader;
 
                 shader.attributes.forEach((attribute:ShaderData, name:string) => {
-                    self.sendAttributeData(program, name, this._getAttributeData(attribute.value, attribute.type, cmd));
+                    self._sendAttributeDataFromCustomShader(name, attribute.type, attribute.value, program, cmd);
                 });
 
             shader.uniforms.forEach((uniform:ShaderData, name:string) => {
                 if(uniform.type !== EVariableType.SAMPLER_2D){
-                    program.sendUniformData(name, uniform.type, this._getUniformData(uniform.value, cmd));
+                    self._sendUniformDataFromCustomShader(name, uniform.type, uniform.value, program, cmd);
                 }
             })
         }
@@ -33,6 +33,9 @@ module wd{
                     assert(type === EVariableType.FLOAT_2, Log.info.FUNC_SHOULD("type", "be EVariableType.FLOAT_2"));
                     break;
             }
+        })
+        @ensure(function(data:Buffer){
+            assert(data && data instanceof Buffer, Log.info.FUNC_SHOULD("attributeData", `be Buffer, but actual is ${data}`));
         })
         private _getAttributeData(data:any, type:EVariableType, cmd:QuadCommand){
             switch (data){
@@ -60,6 +63,36 @@ module wd{
                 default:
                     return data;
             }
+        }
+
+        //todo support STRUCTURES
+        @require(function(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
+            assert(type !== EVariableType.SAMPLER_2D && type !== EVariableType.SAMPLER_CUBE, Log.info.FUNC_SHOULD_NOT("type", `be SAMPLER_2D or SAMPLER_CUBE, but actual is ${type}`));
+
+            assert(type !== EVariableType.STRUCTURES, Log.info.FUNC_NOT_SUPPORT("type === STRUCTURES"));
+
+
+            if (type === wd.EVariableType.STRUCTURE) {
+                assert(JudgeUtils.isDirectObject(value), Log.info.FUNC_MUST_BE("value", "object when type === STRUCTURE"));
+            }
+        })
+        private _sendUniformDataFromCustomShader(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
+            if (type === wd.EVariableType.STRUCTURE) {
+                for (let fieldName in value) {
+                    if(value.hasOwnProperty(fieldName)){
+                        let fieldValue:ShaderData = value[fieldName];
+
+                        program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, this._getUniformData(fieldValue.value, cmd));
+                    }
+                }
+            }
+            else {
+                program.sendUniformData(name, type, this._getUniformData(value, cmd));
+            }
+        }
+
+        private _sendAttributeDataFromCustomShader(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
+            program.sendAttributeData(name, EVariableType.BUFFER, this._getAttributeData(value, type, cmd));
         }
     }
 }
