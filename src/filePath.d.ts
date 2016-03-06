@@ -335,6 +335,7 @@
 /// <reference path="renderer/shader/CustomShaderSourceBuilder"/>
 /// <reference path="renderer/shader/EngineShaderSourceBuilder"/>
 /// <reference path="renderer/shader/variable/EVariableType"/>
+/// <reference path="renderer/shader/variable/EVariableSemantic"/>
 /// <reference path="renderer/shader/variable/EVariableCategory"/>
 /// <reference path="renderer/shader/variable/VariableLib"/>
 /// <reference path="renderer/shader/variable/VariableTypeTable"/>

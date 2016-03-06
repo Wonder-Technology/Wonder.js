@@ -29,6 +29,11 @@
 
         //'test/unit/**',
 
+
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*ShaderLib*',
+        'test/unit/**/ShaderLib*',
+
         //'test/unit/texture/**',
 
         //'test/unit/**/material/**.js',
@@ -40,8 +45,8 @@
 
         //'test/unit/**/*ProceduralShaderLib*',
 
-        'test/unit/**/ShaderSourceBuilderSpec*',
-        'test/unit/**/*ShaderSourceBuilderSpec*',
+        //'test/unit/**/ShaderSourceBuilderSpec*',
+        //'test/unit/**/*ShaderSourceBuilderSpec*',
 
         //'test/unit/**/ShaderSpec*',
         //'test/unit/**/*ShaderSpec*',
@@ -66,7 +71,6 @@
         //'test/unit/**/BufferContainer*',
 
         //'test/unit/**/Shader*',
-        //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*Shader*',
 
         //'test/unit/**/*animation*',
@@ -183,7 +187,7 @@
         //'test/unit/**/CommonBufferContainerSpec.js',
         //'test/unit/**/MorphBufferContainerSpec.js',
         //'test/unit/core/*.js',
-        //'test/unit/device/*.js',
+        'test/unit/device/*.js',
         //'test/unit/event/**',
         //'test/unit/event/mouseEv*.js',
         //'test/unit/event/customEv*.js',

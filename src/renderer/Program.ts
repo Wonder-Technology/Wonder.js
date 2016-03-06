@@ -65,7 +65,7 @@ module wd{
 
             switch (type){
                 case EVariableType.FLOAT_1:
-                    gl.uniform1f(pos, data);
+                    gl.uniform1f(pos, Number(data));
                     break;
                 case EVariableType.FLOAT_2:
                     gl.uniform2f(pos, data[0], data[1]);

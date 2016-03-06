@@ -2,14 +2,13 @@ describe("MarbleProceduralShaderLib", function () {
     var sandbox = null;
     var Lib = null;
     var lib = null;
-    var cmd,program,material;
+    var cmd,program;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
         Lib = wd.MarbleProceduralShaderLib;
         lib = new Lib();
 
-        material = new wd.LightMaterial();
         cmd = new wd.ProceduralCommand();
         program = new wd.Program();
 
@@ -45,27 +44,27 @@ describe("MarbleProceduralShaderLib", function () {
                 1, -1
             ]), 2, wd.EBufferType.FLOAT);
 
-            lib.sendShaderVariables(program, cmd, material);
+            lib.sendShaderVariables(program, cmd);
 
             expect(program.sendAttributeData).toCalledWith("a_positionVec2", wd.EVariableType.BUFFER, cmd.vertexBuffer);
         });
         it("send u_tilesHeightNumber", function () {
-            lib.sendShaderVariables(program, cmd, material);
+            lib.sendShaderVariables(program, cmd);
 
             expect(program.sendUniformData).toCalledWith("u_tilesHeightNumber", wd.EVariableType.FLOAT_1, lib._proceduralTexture.tilesHeightNumber);
         });
         it("send u_tilesWidthNumber", function () {
-            lib.sendShaderVariables(program, cmd, material);
+            lib.sendShaderVariables(program, cmd);
 
             expect(program.sendUniformData).toCalledWith("u_tilesWidthNumber", wd.EVariableType.FLOAT_1, lib._proceduralTexture.tilesWidthNumber);
         });
         it("send u_amplitude", function () {
-            lib.sendShaderVariables(program, cmd, material);
+            lib.sendShaderVariables(program, cmd);
 
             expect(program.sendUniformData).toCalledWith("u_amplitude", wd.EVariableType.FLOAT_1, lib._proceduralTexture.amplitude);
         });
         it("send u_jointColor", function () {
-            lib.sendShaderVariables(program, cmd, material);
+            lib.sendShaderVariables(program, cmd);
 
             expect(program.sendUniformData).toCalledWith("u_jointColor", wd.EVariableType.FLOAT_3, lib._proceduralTexture.jointColor.toVector3());
         });
@@ -79,7 +78,7 @@ describe("MarbleProceduralShaderLib", function () {
             sandbox.stub(lib, "addAttributeVariable");
             sandbox.stub(lib, "addUniformVariable");
 
-            lib.setShaderDefinition(cmd, material);
+            lib.setShaderDefinition(cmd);
 
             attributeVariableArr = lib.addAttributeVariable.args[0][0];
             uniformVariableArr = lib.addUniformVariable.args[0][0];

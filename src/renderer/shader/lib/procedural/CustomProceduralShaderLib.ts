@@ -18,17 +18,13 @@ module wd{
 
         public sendShaderVariables(program:Program, cmd:ProceduralCommand){
             var texture:CustomProceduralTexture = this._proceduralTexture,
-                uniformMap = texture.uniformMap;
+                uniformMap:wdCb.Hash<ShaderData> = texture.uniformMap;
 
             this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
 
-            for (let name in uniformMap){
-                if(uniformMap.hasOwnProperty(name)){
-                    let uniform = uniformMap[name];
-
-                    program.sendUniformData(name, uniform.type, uniform.data);
-                }
-            }
+            uniformMap.forEach((uniform:ShaderData, name:string) => {
+                program.sendUniformData(name, uniform.type, uniform.value);
+            });
         }
 
         public setShaderDefinition(cmd:ProceduralCommand){

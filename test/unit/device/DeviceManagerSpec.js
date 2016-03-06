@@ -93,8 +93,28 @@ describe("deviceManager", function() {
             expect(view.width).toEqual(50);
             expect(view.height > 0).toBeTruthy();
             expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
+            expect(device.viewport).toEqual(wd.RectRegion.create(0, 0, view.width, view.height));
             expect($("#event-test").css("left")).toEqual("10px");
             expect($("#event-test").css("top")).toEqual("0px");
+        });
+    });
+    
+    describe("setViewport", function(){
+        beforeEach(function(){
+        });
+        
+        it("save viewport data", function(){
+            device.setViewport(1,2,3,4);
+
+            expect(device.viewport.x).toEqual(1);
+            expect(device.viewport.y).toEqual(2);
+            expect(device.viewport.width).toEqual(3);
+            expect(device.viewport.height).toEqual(4);
+        });
+        it("set gl->viewport", function () {
+            device.setViewport(1,2,3,4);
+
+            expect(device.gl.viewport).toCalledWith(1,2,3,4);
         });
     });
 });

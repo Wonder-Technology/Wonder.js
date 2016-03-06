@@ -14,6 +14,7 @@ module wd {
 
         public view:IView = null;
         public gl:WebGLRenderingContext = null;
+        public viewport:RectRegion = RectRegion.create();
 
         /*!
         test order:
@@ -79,6 +80,7 @@ module wd {
          * @param {Number} h The height of the viewport in pixels.
          */
         public setViewport(x:number, y:number, width:number, height:number) {
+            this.viewport.set(x, y, width, height);
             this.gl.viewport(x, y, width, height);
         }
 
@@ -244,6 +246,7 @@ module wd {
                 this._blend = blend;
             }
         }
+
 
         /**
          * @function
