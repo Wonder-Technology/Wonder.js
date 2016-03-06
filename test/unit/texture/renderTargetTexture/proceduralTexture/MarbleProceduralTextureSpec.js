@@ -23,7 +23,7 @@ describe("MarbleProceduralTexture", function () {
 
             texture.init();
 
-            expect(wd.Director.getInstance().scene.addProceduralRenderTargetRenderer.firstCall.args[0]).toEqual(jasmine.any(wd.ProceduralRenderTargetRenderer));
+            expect(wd.Director.getInstance().scene.addProceduralRenderTargetRenderer.firstCall.args[0]).toEqual(jasmine.any(wd.MarbleProceduralRenderTargetRenderer));
         });
     });
 

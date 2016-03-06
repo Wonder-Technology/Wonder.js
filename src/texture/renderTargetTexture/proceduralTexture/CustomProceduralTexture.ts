@@ -6,6 +6,10 @@ module wd {
         	return obj;
         }
 
+        public mapManager:MapManager = MapManager.create(null);
+        public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
+        public fsSource:string = null;
+
         public init(){
             super.init();
 
@@ -46,11 +50,6 @@ module wd {
                 }
             }
         }
-
-        public mapManager:MapManager = MapManager.create(null);
-
-        public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
-        public fsSource:string = null;
     }
 
     //todo refactor

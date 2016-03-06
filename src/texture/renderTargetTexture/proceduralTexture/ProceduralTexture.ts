@@ -6,7 +6,6 @@ module wd {
 
         public repeatRegion:RectRegion = RectRegion.create(0, 0, 1, 1);
 
-        //todo test
         public needUpdate:boolean = false;
     }
 }
