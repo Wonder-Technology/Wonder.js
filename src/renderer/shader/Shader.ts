@@ -56,8 +56,6 @@ module wd{
 
         private _definitionDataDirty:boolean = false;
 
-        public abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
-
         public abstract update(cmd:RenderCommand, material:Material);
 
         public createVsShader(){
@@ -70,11 +68,6 @@ module wd{
             var gl = DeviceManager.getInstance().gl;
 
             return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
-        }
-
-        public isEqual(other:Shader){
-            return this.vsSource === other.vsSource
-                && this.fsSource === other.fsSource;
         }
 
         public init(){
@@ -93,21 +86,6 @@ module wd{
             this.libs.forEach((lib:ShaderLib) => {
                 lib.dispose();
             });
-        }
-
-        public judgeRefreshShader(){
-            if(this.libDirty){
-                this.buildDefinitionData(null, LightMaterial.create());
-            }
-
-            if(this._definitionDataDirty){
-                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
-                this.program.initWithShader(this);
-            }
-
-
-            this.libDirty = false;
-            this._definitionDataDirty = false;
         }
 
         public hasLib(lib:ShaderLib);
@@ -192,10 +170,27 @@ module wd{
         public sortLib(func:(a:ShaderLib, b:ShaderLib) => any){
             this.libDirty = true;
 
-            this.libs = this.libs.sort(func);
+            this.libs.sort(func, true);
         }
 
         protected abstract createShaderSourceBuilder():ShaderSourceBuilder;
+        protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
+
+
+        protected judgeRefreshShader(){
+            if(this.libDirty){
+                this.buildDefinitionData(null, LightMaterial.create());
+            }
+
+            if(this._definitionDataDirty){
+                //todo optimize: batch init program(if it's the same as the last program, not initWithShader)
+                this.program.initWithShader(this);
+            }
+
+
+            this.libDirty = false;
+            this._definitionDataDirty = false;
+        }
 
         private _initShader(shader, source){
             var gl = DeviceManager.getInstance().gl;

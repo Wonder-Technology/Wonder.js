@@ -38,7 +38,7 @@ module wd{
             });
         }
 
-        public buildDefinitionData(cmd:RenderCommand, material:Material){
+        protected buildDefinitionData(cmd:RenderCommand, material:Material){
             this.sourceBuilder.build();
 
             this.attributes = this.sourceBuilder.attributes;

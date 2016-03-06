@@ -3,7 +3,7 @@ module wd{
         protected sourceBuilder:EngineShaderSourceBuilder;
         protected libs:wdCb.Collection<EngineShaderLib>;
 
-        public buildDefinitionData(cmd:RenderCommand, material:Material){
+        protected buildDefinitionData(cmd:RenderCommand, material:Material){
             this.libs.forEach((lib:EngineShaderLib) => {
                 lib.setShaderDefinition(cmd, material);
             });
