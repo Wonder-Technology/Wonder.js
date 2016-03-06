@@ -78,7 +78,6 @@ module wd {
         }
 
         public computeTime(){
-            //this.time += this.refreshRatio * 0.1;
             this.time += 0.1;
         }
     }

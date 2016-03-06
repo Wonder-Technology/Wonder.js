@@ -30,18 +30,18 @@
         'test/unit/**',
 
 
-        //'test/unit/**/shaderLibSpec*',
-        //'test/unit/**/*ShaderLib*',
-        //'test/unit/**/ShaderLib*',
+        'test/unit/**/shaderLibSpec*',
+        'test/unit/**/*ShaderLib*',
+        'test/unit/**/ShaderLib*',
 
-        //'test/unit/texture/**',
+        'test/unit/texture/**',
 
         //'test/unit/**/material/**.js',
         //
         //'test/unit/**/MapManager*',
 
         //'test/unit/renderer/**',
-        //'test/unit/renderer/renderTargetRenderer/**',
+        'test/unit/renderer/renderTargetRenderer/**',
 
         //'test/unit/**/*ProceduralShaderLib*',
 
@@ -145,7 +145,7 @@
         //'test/unit/**/SphereShapeSpec*',
         //'test/unit/**/ActionManagerSpec*',
         //'test/unit/**/TwoDShadow*Spec.js',
-        //'test/unit/**/ProgramSpec.js',
+        'test/unit/**/ProgramSpec.js',
         //'test/unit/**/*CustomGeo*.js',
         //'test/unit/**/SphereColliderSpec.js',
         //'test/unit/**/*ColliderSpec.js',

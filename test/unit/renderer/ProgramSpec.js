@@ -75,7 +75,6 @@ describe("Program", function() {
 
         describe("test cache", function(){
             beforeEach(function(){
-                device.gl.getAttribLocation.returns(pos);
             });
 
             it("if shader dirty, no cache", function () {
@@ -110,6 +109,102 @@ describe("Program", function() {
             program.sendAttributeData("a_position", wd.EVariableType.BUFFER, buffer);
 
             expect(gl.enableVertexAttribArray).toCalledWith(pos);
+        });
+    });
+
+    describe("sendUniformData", function(){
+        var pos;
+
+        beforeEach(function(){
+            program.initWithShader(wd.CommonShader.create());
+
+            pos = 1000;
+            gl.UNSIGNED_SHORT = "UNSIGNED_SHORT";
+
+            gl.getUniformLocation.returns(pos);
+
+        });
+
+        describe("test cache", function(){
+            beforeEach(function(){
+            });
+
+            it("if shader dirty, no cache", function () {
+                setShaderDirty(true);
+
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_1, 1);
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_1, 1);
+
+                expect(device.gl.getUniformLocation).toCalledTwice();
+            });
+            it("else, if cached, return cached data", function () {
+                setShaderDirty(false);
+
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_1, 1);
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_1, 1);
+
+                expect(device.gl.getUniformLocation).toCalledOnce();
+            });
+        });
+
+        describe("test send FLOAT_1", function () {
+            it("convert data to number", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_1, "1");
+
+                expect(gl.uniform1f).toCalledWith(pos, 1);
+            });
+        });
+
+        describe("test send FLOAT_2", function () {
+            it("convert data to array", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_2, wd.Vector2.create(1,2));
+
+                expect(gl.uniform2f).toCalledWith(pos, 1, 2);
+            });
+        });
+
+        describe("test send FLOAT_3", function () {
+            it("convert data to array", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_3, wd.Vector3.create(1,2,3));
+
+                expect(gl.uniform3f).toCalledWith(pos, 1, 2, 3);
+            });
+        });
+
+        describe("test send FLOAT_4", function () {
+            it("convert data to array", function () {
+                program.sendUniformData("u_a", wd.EVariableType.FLOAT_4, wd.Vector4.create(1,2,3,4));
+
+                expect(gl.uniform4f).toCalledWith(pos, 1, 2, 3, 4);
+            });
+        });
+
+        it("test send FLOAT_MAT3", function () {
+            var mat = wd.Matrix3.create();
+            program.sendUniformData("u_a", wd.EVariableType.FLOAT_MAT3, mat);
+
+            expect(gl.uniformMatrix3fv).toCalledWith(pos, false, mat.values);
+        });
+        it("test send FLOAT_MAT4", function () {
+            var mat = wd.Matrix4.create();
+            program.sendUniformData("u_a", wd.EVariableType.FLOAT_MAT4, mat);
+
+            expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
+        });
+        it("test send NUMBER_1", function () {
+                program.sendUniformData("u_a", wd.EVariableType.NUMBER_1, "1");
+
+                expect(gl.uniform1i).toCalledWith(pos, 1);
+        });
+        it("test send SAMPLER_CUBE", function () {
+            program.sendUniformData("u_a", wd.EVariableType.SAMPLER_CUBE, 1);
+
+            expect(gl.uniform1i).toCalledWith(pos, 1);
+        });
+        it("test send SAMPLER_2D", function () {
+            program.sendUniformData("u_a", wd.EVariableType.SAMPLER_2D, 1);
+
+            expect(gl.uniform1i).toCalledWith(pos, 1);
         });
     });
 });

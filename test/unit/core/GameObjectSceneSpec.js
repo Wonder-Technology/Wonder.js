@@ -333,18 +333,36 @@ describe("GameObjectScene", function() {
         });
 
         describe("render proceduralRenderTargetRenderers", function(){
-            it("only render once", function () {
-                var proceduralRenderTargetRenderer = {
-                    init: sandbox.stub(),
-                    render: sandbox.stub()
-                };
+            it("render FireProceduralRenderTargetRenderer every frame", function () {
+                var proceduralRenderTargetRenderer = new wd.FireProceduralRenderTargetRenderer();
+                sandbox.stub(proceduralRenderTargetRenderer, "render");
+
+
                 scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
 
                 scene.render(renderer);
                 scene.render(renderer);
 
-                expect(proceduralRenderTargetRenderer.render).toCalledOnce();
+
+                expect(proceduralRenderTargetRenderer.render).toCalledTwice();
                 expect(proceduralRenderTargetRenderer.render).toCalledWith(renderer);
+            });
+            it("render MarbleProceduralRenderTargetRenderer,CustomProceduralRenderTargetRenderer only once", function () {
+                var proceduralRenderTargetRenderer = new wd.MarbleProceduralRenderTargetRenderer();
+                var proceduralRenderTargetRenderer2 = new wd.CustomProceduralRenderTargetRenderer();
+                sandbox.stub(proceduralRenderTargetRenderer, "render");
+                sandbox.stub(proceduralRenderTargetRenderer2, "render");
+
+
+                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer2);
+
+                scene.render(renderer);
+                scene.render(renderer);
+
+
+                expect(proceduralRenderTargetRenderer.render).toCalledOnce();
+                expect(proceduralRenderTargetRenderer2.render).toCalledOnce();
             });
         });
 

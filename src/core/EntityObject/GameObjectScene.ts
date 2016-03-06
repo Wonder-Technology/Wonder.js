@@ -56,7 +56,6 @@ module wd {
         private _proceduralRendererList:wdCb.Collection<ProceduralRenderTargetRenderer> = wdCb.Collection.create<ProceduralRenderTargetRenderer>();
         private _collisionDetector:CollisionDetector = CollisionDetector.create();
         private _cameraList:wdCb.Collection<GameObject> = wdCb.Collection.create<GameObject>();
-        private _isProceduralRendererRendered:boolean = false;
 
         public init(){
             if(this.physics.enable){
@@ -140,8 +139,6 @@ module wd {
             return null;
         }
 
-        //todo support update ProceduralRenderer(exec multi times)
-        //@execOnlyOnce("_isProceduralRendererRendered")
         private _renderProceduralRenderer(renderer){
             this._proceduralRendererList.filter((target:ProceduralRenderTargetRenderer) =>{
                     return target.needRender();

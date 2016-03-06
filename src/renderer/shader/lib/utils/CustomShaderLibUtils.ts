@@ -49,7 +49,7 @@ module wd{
                 if(data.hasOwnProperty(fieldName)){
                     let fieldValue:ShaderData = data[fieldName];
 
-                    program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, fieldValue);
+                    program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, fieldValue.value);
                 }
             }
         }
