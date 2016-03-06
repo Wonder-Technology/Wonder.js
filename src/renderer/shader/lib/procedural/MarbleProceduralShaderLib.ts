@@ -19,8 +19,6 @@ module wd{
         public sendShaderVariables(program:Program, cmd:ProceduralCommand){
             var texture:MarbleProceduralTexture = this._proceduralTexture;
 
-            this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
-
             this.sendUniformData(program, "u_tilesHeightNumber", texture.tilesHeightNumber);
             this.sendUniformData(program, "u_tilesWidthNumber", texture.tilesWidthNumber);
             this.sendUniformData(program, "u_amplitude", texture.amplitude);
@@ -29,8 +27,6 @@ module wd{
 
         public setShaderDefinition(cmd:ProceduralCommand){
             super.setShaderDefinition(cmd);
-
-            this.addAttributeVariable(["a_positionVec2"]);
 
             this.addUniformVariable([
                 "u_tilesHeightNumber", "u_tilesWidthNumber", "u_amplitude", "u_jointColor"

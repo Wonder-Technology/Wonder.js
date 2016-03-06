@@ -1,4 +1,3 @@
-//todo move to common
 @varDeclare
 varying vec2 v_texCoord;
 const vec2 MADD=vec2(0.5,0.5);

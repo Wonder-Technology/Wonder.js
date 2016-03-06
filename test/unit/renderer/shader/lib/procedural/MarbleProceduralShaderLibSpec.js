@@ -32,22 +32,9 @@ describe("MarbleProceduralShaderLib", function () {
                 jointColor:wd.Color.create("#111111")
             };
 
-            sandbox.stub(program, "sendAttributeData");
             sandbox.stub(program, "sendUniformData");
         });
 
-        it("send a_positionVec2", function () {
-            cmd.vertexBuffer = wd.ArrayBuffer.create(new Float32Array([
-                1, 1,
-                -1, 1,
-                -1, -1,
-                1, -1
-            ]), 2, wd.EBufferType.FLOAT);
-
-            lib.sendShaderVariables(program, cmd);
-
-            expect(program.sendAttributeData).toCalledWith("a_positionVec2", wd.EVariableType.BUFFER, cmd.vertexBuffer);
-        });
         it("send u_tilesHeightNumber", function () {
             lib.sendShaderVariables(program, cmd);
 
@@ -72,21 +59,15 @@ describe("MarbleProceduralShaderLib", function () {
 
     describe("setShaderDefinition", function(){
         var uniformVariableArr;
-        var attributeVariableArr;
 
         beforeEach(function(){
-            sandbox.stub(lib, "addAttributeVariable");
             sandbox.stub(lib, "addUniformVariable");
 
             lib.setShaderDefinition(cmd);
 
-            attributeVariableArr = lib.addAttributeVariable.args[0][0];
             uniformVariableArr = lib.addUniformVariable.args[0][0];
         });
 
-        it("send a_positionVec2", function(){
-            expect(attributeVariableArr.indexOf("a_positionVec2") > -1).toBeTruthy();
-        });
         it("send u_tilesHeightNumber", function(){
             expect(uniformVariableArr.indexOf("u_tilesHeightNumber") > -1).toBeTruthy();
         });

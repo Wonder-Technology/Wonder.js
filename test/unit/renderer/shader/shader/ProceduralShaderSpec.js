@@ -12,6 +12,21 @@ describe("ProceduralShader", function() {
         sandbox.restore();
     });
 
+    describe("init", function(){
+        beforeEach(function(){
+        });
+
+        it("add CommonProceduralShaderLib", function(){
+            sandbox.stub(shader, "judgeRefreshShader");
+            shader.addLib(wd.CustomProceduralShaderLib.create());
+
+            shader.init();
+
+            expect(shader.getLibs().getCount()).toEqual(2);
+            expect(shader.getLibs().getChild(1)).toEqual(jasmine.any(wd.CommonProceduralShaderLib));
+        });
+    });
+
     describe("update", function(){
         var cmd,material;
         var lib;
@@ -50,24 +65,24 @@ describe("ProceduralShader", function() {
         });
     });
 
-    describe("addLib", function(){
-        beforeEach(function(){
-        });
-
-        it("if already has one, replace it with new one", function(){
-            var lib1 = {
-                a:1,
-                sendShaderVariables:sandbox.stub()
-            }
-            var lib2 = {
-                sendShaderVariables:sandbox.stub()
-            }
-
-            shader.addLib(lib1);
-            shader.addLib(lib2);
-
-            expect(shader.getLibs().getCount()).toEqual(1);
-            expect(shader.getLibs().getChild(0)).toEqual(lib2);
-        });
-    });
+    //describe("addLib", function(){
+    //    beforeEach(function(){
+    //    });
+    //
+    //    it("if already has one, replace it with new one", function(){
+    //        var lib1 = {
+    //            a:1,
+    //            sendShaderVariables:sandbox.stub()
+    //        }
+    //        var lib2 = {
+    //            sendShaderVariables:sandbox.stub()
+    //        }
+    //
+    //        shader.addLib(lib1);
+    //        shader.addLib(lib2);
+    //
+    //        expect(shader.getLibs().getCount()).toEqual(1);
+    //        expect(shader.getLibs().getChild(0)).toEqual(lib2);
+    //    });
+    //});
 });

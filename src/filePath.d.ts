@@ -373,6 +373,7 @@
 /// <reference path="renderer/shader/lib/mirror/MirrorForBasicShaderLib"/>
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
+/// <reference path="renderer/shader/lib/procedural/CommonProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/MarbleProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/CustomProceduralShaderLib"/>
 
