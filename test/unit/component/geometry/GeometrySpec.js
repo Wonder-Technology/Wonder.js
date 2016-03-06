@@ -304,7 +304,7 @@ describe("Geometry", function() {
             });
 
             it("if change material, return data from new material->color", function(){
-                var newMaterial = new wd.Material();
+                var newMaterial = new wd.BasicMaterial();
                 newMaterial.color = wd.Color.create("rgb(1.0,1.0,0.0)");
 
                 geo.material = newMaterial;

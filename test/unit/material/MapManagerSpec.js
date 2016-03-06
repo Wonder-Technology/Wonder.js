@@ -157,18 +157,6 @@ describe("MapManager", function() {
 
     });
 
-    describe("getProceduralMap", function(){
-        beforeEach(function(){
-        });
-
-        it("get first procedural map", function(){
-            var proceduralTexture = wd.MarbleProceduralTexture.create();
-            manager.addMap(proceduralTexture);
-
-            expect(manager.getProceduralMap()).toEqual(proceduralTexture);
-        });
-    });
-
     describe("getMapCount", function(){
         beforeEach(function(){
 
