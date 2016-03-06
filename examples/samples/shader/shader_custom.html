@@ -36,36 +36,7 @@
         }
 
         function createRect() {
-//            var shaderDefinitionData = {
-//                attributes:  {
-//                    "a_color": {
-//                        type:wd.evariabletype.float_4,
-//                        value: [
-//                            1, 0, 0, 1,
-//                            1, 0, 0, 1,
-//                            0, 1, 0, 1,
-//                            0, 0, 1, 1
-//                        ]
-//                    }
-//                },
-//                vsSourceVarDeclare: [
-//                    "varying vec4 v_color;"
-//                ].join("\n"),
-//                vsSourceBody: [
-//                    "v_color = a_color;",
-//                    "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);"
-//                ].join("\n"),
-//                fsSourceVarDeclare: [
-//                    "varying vec4 v_color;"
-//                ].join("\n"),
-//                fsSourceBody: [
-//                    "gl_FragColor = v_color;"
-//                ].join("\n")
-//            };
-
             var material = wd.ShaderMaterial.create();
-//            material.shader.read(shaderDefinitionData);
-//            material.shader.read("shaderConfig");
             material.read("shaderConfig");
 
 

@@ -22,11 +22,21 @@ module wd {
             return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
         }
 
+        //todo support SAMPLER_CUBE type
         @require(function(shaderConfigId:string){
-            //todo check no attributes;no STRUCTURE/S/SAMPLER_CUBE type
+            var shaderConfig:CustomProceduralTextureShaderDefinitionData = LoaderManager.getInstance().get(shaderConfigId),
+                uniforms:Object = shaderConfig.uniforms;
+
+            for (let name in uniforms) {
+                if (uniforms.hasOwnProperty(name)) {
+                    let uniform:ShaderData = uniforms[name];
+
+                    assert(uniform.type !== EVariableType.SAMPLER_CUBE, Log.info.FUNC_NOT_SUPPORT("uniforms", "EVariableType.SAMPLER_CUBE type"));
+                }
+            }
         })
         @ensure(function(){
-            assert(this.fsSource !== null, Log.info.FUNC_SHOULD("get fragment glsl source"));
+            assert(this.fsSource !== null, Log.info.FUNC_SHOULD("read fragment glsl source"));
         })
         public read(shaderConfigId:string){
             var shaderConfig:CustomProceduralTextureShaderDefinitionData = LoaderManager.getInstance().get(shaderConfigId),
@@ -52,7 +62,6 @@ module wd {
         }
     }
 
-    //todo refactor
     export type CustomProceduralTextureShaderDefinitionData = {
         uniforms:wdCb.Hash<ShaderData>;
         fsSourceId:string

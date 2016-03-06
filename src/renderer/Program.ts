@@ -87,7 +87,7 @@ module wd{
                 case EVariableType.NUMBER_1:
                 case EVariableType.SAMPLER_CUBE:
                 case EVariableType.SAMPLER_2D:
-                    gl.uniform1i(pos, data);
+                    gl.uniform1i(pos, Number(data));
                     break;
                 default :
                     Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));

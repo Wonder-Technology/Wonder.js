@@ -20,7 +20,6 @@ module wd{
         public update(cmd:ProceduralCommand){
             super.update(cmd);
 
-            //todo
             this._texture.mapManager.update();
             this._texture.mapManager.sendData(this.program);
         }

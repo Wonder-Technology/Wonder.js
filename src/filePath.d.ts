@@ -342,6 +342,7 @@
 /// <reference path="renderer/shader/variable/VariableLib"/>
 /// <reference path="renderer/shader/variable/VariableTypeTable"/>
 /// <reference path="renderer/shader/variable/VariableNameTable"/>
+
 /// <reference path="renderer/shader/lib/ShaderLib"/>
 /// <reference path="renderer/shader/lib/CustomShaderLib"/>
 /// <reference path="renderer/shader/lib/EngineShaderLib"/>
@@ -399,6 +400,9 @@
 /// <reference path="renderer/shader/lib/light/shadowMap/TwoDShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/shadowMap/CubemapShadowMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/shadowMap/NoShadowMapShaderLib"/>
+
+/// <reference path="renderer/shader/lib/utils/CustomShaderLibUtils"/>
+
 /// <reference path="renderer/shader/chunk/ShaderChunk"/>
 
 /// <reference path="renderer/shader/snippet/ShaderSnippet"/>

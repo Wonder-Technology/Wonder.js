@@ -21,7 +21,7 @@ module wd{
                 uniformMap:wdCb.Hash<ShaderData> = texture.uniformMap;
 
             uniformMap.forEach((uniform:ShaderData, name:string) => {
-                program.sendUniformData(name, uniform.type, uniform.value);
+                CustomShaderLibUtils.sendUniformData(name, uniform.type, uniform.value, program);
             });
         }
 
