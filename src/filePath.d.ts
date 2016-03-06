@@ -12,6 +12,8 @@
 /// <reference path="extend/wdFrp"/>
 
 
+
+
 /// <reference path="definition/typescript/decorator/contract"/>
 /// <reference path="definition/typescript/decorator/cache"/>
 /// <reference path="definition/typescript/decorator/virtual"/>
@@ -302,9 +304,6 @@
 /// <reference path="renderer/renderTargetRenderer/utils/CubemapShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/proceduralRTT/FireProceduralRenderTargetRenderer"/>
-/// <reference path="renderer/renderTargetRenderer/proceduralRTT/CustomProceduralRenderTargetRenderer"/>
 
 /// <reference path="renderer/renderer/Renderer"/>
 /// <reference path="renderer/renderer/WebGLRenderer"/>
@@ -375,10 +374,6 @@
 /// <reference path="renderer/shader/lib/mirror/MirrorForBasicShaderLib"/>
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
-/// <reference path="renderer/shader/lib/procedural/CommonProceduralShaderLib"/>
-/// <reference path="renderer/shader/lib/procedural/MarbleProceduralShaderLib"/>
-/// <reference path="renderer/shader/lib/procedural/FireProceduralShaderLib"/>
-/// <reference path="renderer/shader/lib/procedural/CustomProceduralShaderLib"/>
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
@@ -499,9 +494,6 @@
 /// <reference path="texture/renderTargetTexture/DynamicCubemapTexture"/>
 
 /// <reference path="texture/renderTargetTexture/proceduralTexture/ProceduralTexture"/>
-/// <reference path="texture/renderTargetTexture/proceduralTexture/MarbleProceduralTexture"/>
-/// <reference path="texture/renderTargetTexture/proceduralTexture/FireProceduralTexture"/>
-/// <reference path="texture/renderTargetTexture/proceduralTexture/CustomProceduralTexture"/>
 
 
 /// <reference path="texture/basicTexture/BasicTexture"/>
@@ -529,3 +521,24 @@
 
 
 /// <reference path="definition/Variable"/>
+
+
+
+
+
+
+
+/// <reference path="lib/procedural_texture_lib/common/CommonProceduralShaderLib"/>
+
+/// <reference path="lib/procedural_texture_lib/fire/FireProceduralShaderLib"/>
+/// <reference path="lib/procedural_texture_lib/fire/FireProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/fire/FireProceduralTexture"/>
+
+/// <reference path="lib/procedural_texture_lib/marble/MarbleProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/marble/MarbleProceduralTexture"/>
+/// <reference path="lib/procedural_texture_lib/marble/MarbleProceduralShaderLib"/>
+
+/// <reference path="lib/procedural_texture_lib/custom/CustomProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/custom/CustomProceduralTexture"/>
+/// <reference path="lib/procedural_texture_lib/custom/CustomProceduralShaderLib"/>
+

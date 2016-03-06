@@ -8,7 +8,7 @@ var Parser = require("./parser").GLSLParser;
 
 var PLUGIN_NAME = "ShaderChunk";
 
-var glslPath = "src/renderer/shader/chunk/glsl/**/*.glsl";
+var glslPathArr = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 var destFilePath = "src/renderer/shader/chunk/ShaderChunk.ts";
 
 gulp.task("createShaderChunk", function(){
@@ -35,7 +35,7 @@ gulp.task("createShaderChunk", function(){
     result += buildDefine();
 
 
-    return gulp.src(glslPath)
+    return gulp.src(glslPathArr)
         .pipe(through(function (file, encoding, callback) {
         var fileContent = null,
             filePath = null,

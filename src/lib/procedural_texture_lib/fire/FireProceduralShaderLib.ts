@@ -28,7 +28,7 @@ module wd{
 
             texture.fireColorMap.forEach((color:Color, name:string) => {
                 program.sendStructureData(`u_fireColor.${name}`, EVariableType.FLOAT_3, color.toVector3());
-            })
+            });
         }
 
         public setShaderDefinition(cmd:ProceduralCommand){
