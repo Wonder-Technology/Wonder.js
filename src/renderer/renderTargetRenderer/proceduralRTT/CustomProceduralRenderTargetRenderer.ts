@@ -10,6 +10,14 @@ module wd {
 
         protected texture:CustomProceduralTexture;
 
+        public needRender():boolean{
+            if(this.texture.isAnimate){
+                return true;
+            }
+
+            return super.needRender();
+        }
+
         protected createShader(){
             var shader = CustomProceduralShader.create(this.texture);
 

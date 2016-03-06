@@ -10,6 +10,8 @@ module wd {
         public uniformMap:wdCb.Hash<ShaderData> = wdCb.Hash.create<ShaderData>();
         public fsSource:string = null;
 
+        public isAnimate:boolean = false;
+
         public init(){
             super.init();
 

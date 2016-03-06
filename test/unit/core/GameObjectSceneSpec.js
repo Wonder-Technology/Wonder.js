@@ -347,22 +347,51 @@ describe("GameObjectScene", function() {
                 expect(proceduralRenderTargetRenderer.render).toCalledTwice();
                 expect(proceduralRenderTargetRenderer.render).toCalledWith(renderer);
             });
-            it("render MarbleProceduralRenderTargetRenderer,CustomProceduralRenderTargetRenderer only once", function () {
+            it("render MarbleProceduralRenderTargetRenderer only once", function () {
                 var proceduralRenderTargetRenderer = new wd.MarbleProceduralRenderTargetRenderer();
-                var proceduralRenderTargetRenderer2 = new wd.CustomProceduralRenderTargetRenderer();
                 sandbox.stub(proceduralRenderTargetRenderer, "render");
-                sandbox.stub(proceduralRenderTargetRenderer2, "render");
 
 
                 scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
-                scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer2);
 
                 scene.render(renderer);
                 scene.render(renderer);
 
 
                 expect(proceduralRenderTargetRenderer.render).toCalledOnce();
-                expect(proceduralRenderTargetRenderer2.render).toCalledOnce();
+            });
+
+            describe("CustomProceduralRenderTargetRenderer", function(){
+                var proceduralRenderTargetRenderer;
+
+                function run(isAnimate){
+                    var texture = wd.CustomProceduralTexture.create();
+                    texture.isAnimate = isAnimate;
+
+                    proceduralRenderTargetRenderer = wd.CustomProceduralRenderTargetRenderer.create(texture);
+                    sandbox.stub(proceduralRenderTargetRenderer, "render");
+
+                    scene.addProceduralRenderTargetRenderer(proceduralRenderTargetRenderer);
+
+
+
+                    scene.render(renderer);
+                    scene.render(renderer);
+                }
+
+                beforeEach(function(){
+                });
+
+                it("if isAnimate === true, render every frame", function(){
+                    run(true);
+
+                    expect(proceduralRenderTargetRenderer.render).toCalledTwice();
+                });
+                it("else, render only once", function () {
+                    run(false);
+
+                    expect(proceduralRenderTargetRenderer.render).toCalledOnce();
+                });
             });
         });
 

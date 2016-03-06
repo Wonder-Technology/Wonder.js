@@ -10,6 +10,11 @@ describe("CustomProceduralTexture", function () {
         sandbox.restore();
     });
 
+    it("test default value", function () {
+        expect(texture.isAnimate).toBeFalsy();
+    });
+
+
     describe("init", function(){
         it("add CustomProceduralRenderTargetRenderer to scene", function(){
             sandbox.stub(wd.Director.getInstance().scene, "addProceduralRenderTargetRenderer");
