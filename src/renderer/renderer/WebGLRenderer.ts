@@ -8,7 +8,7 @@ module wd{
 
         private _commandQueue:wdCb.Collection<RenderCommand> = wdCb.Collection.create<RenderCommand>();
         private _clearOptions:any = {
-            color:Color.create("#ffffff")
+            color:Color.create("#000000")
         };
 
         public addCommand(command:RenderCommand){
