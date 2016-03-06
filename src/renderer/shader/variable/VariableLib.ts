@@ -262,13 +262,33 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_marbleColor:ShaderVariable = {
+        public static u_jointColor:ShaderVariable = {
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
         };
 
-        public static u_jointColor:ShaderVariable = {
-            type:EVariableType.FLOAT_3,
+        public static u_time:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_speed:ShaderVariable = {
+            type:EVariableType.FLOAT_2,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_shift:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_alphaThreshold:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_fireColor:ShaderVariable = {
+            type:EVariableType.STRUCTURE,
             value:EVariableCategory.ENGINE
         };
     }

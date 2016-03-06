@@ -303,6 +303,7 @@
 /// <reference path="renderer/renderTargetRenderer/utils/TwoDShadowMapRenderTargetRendererUtils"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/ProceduralRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/proceduralRTT/FireProceduralRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/CustomProceduralRenderTargetRenderer"/>
 
 /// <reference path="renderer/renderer/Renderer"/>
@@ -376,6 +377,7 @@
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/CommonProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/MarbleProceduralShaderLib"/>
+/// <reference path="renderer/shader/lib/procedural/FireProceduralShaderLib"/>
 /// <reference path="renderer/shader/lib/procedural/CustomProceduralShaderLib"/>
 
 /// <reference path="renderer/shader/lib/light/LightCommonShaderLib"/>
@@ -498,6 +500,7 @@
 
 /// <reference path="texture/renderTargetTexture/proceduralTexture/ProceduralTexture"/>
 /// <reference path="texture/renderTargetTexture/proceduralTexture/MarbleProceduralTexture"/>
+/// <reference path="texture/renderTargetTexture/proceduralTexture/FireProceduralTexture"/>
 /// <reference path="texture/renderTargetTexture/proceduralTexture/CustomProceduralTexture"/>
 
 

@@ -68,6 +68,7 @@ module wd{
                     gl.uniform1f(pos, Number(data));
                     break;
                 case EVariableType.FLOAT_2:
+                    data = this._convertToArray2(data);
                     gl.uniform2f(pos, data[0], data[1]);
                     break;
                 case EVariableType.FLOAT_3:
@@ -203,6 +204,20 @@ module wd{
 
         public isUniformDataNotExistByLocation(pos:any){
             return pos === null;
+        }
+
+        private _convertToArray2(data:Array<number>);
+        private _convertToArray2(data:Vector2);
+
+        @require(function (data:any) {
+            assert(JudgeUtils.isArray(data) || data instanceof Vector2, Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector2> stucture"));
+        })
+        private _convertToArray2(data:any) {
+            if(JudgeUtils.isArray(data)){
+                return data;
+            }
+
+            return [data.x, data.y];
         }
 
         private _convertToArray3(data:Array<number>);

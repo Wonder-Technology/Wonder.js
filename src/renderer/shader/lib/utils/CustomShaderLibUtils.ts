@@ -13,13 +13,7 @@ module wd{
         })
         public static sendUniformData(name:string, type:EVariableType, value:any, program:Program){
             if (type === wd.EVariableType.STRUCTURE) {
-                for (let fieldName in value) {
-                    if(value.hasOwnProperty(fieldName)){
-                        let fieldValue:ShaderData = value[fieldName];
-
-                        program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, fieldValue.value);
-                    }
-                }
+                this._sendStructureData(name, value, program);
             }
             else {
                 program.sendUniformData(name, type, value);
@@ -39,13 +33,7 @@ module wd{
         })
         public static sendUniformDataWithSemantic(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
             if (type === wd.EVariableType.STRUCTURE) {
-                for (let fieldName in value) {
-                    if(value.hasOwnProperty(fieldName)){
-                        let fieldValue:ShaderData = value[fieldName];
-
-                        program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, this._getUniformData(fieldValue.value, cmd));
-                    }
-                }
+                this._sendStructureDataWithSemantic(name, value, program, cmd);
             }
             else {
                 program.sendUniformData(name, type, this._getUniformData(value, cmd));
@@ -54,6 +42,26 @@ module wd{
 
         public static sendAttributeDataWithSemantic(name:string, type:EVariableType, value:any, program:Program, cmd:QuadCommand){
             program.sendAttributeData(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
+        }
+
+        private static _sendStructureData(name:string, data:Object, program:Program){
+            for (let fieldName in data) {
+                if(data.hasOwnProperty(fieldName)){
+                    let fieldValue:ShaderData = data[fieldName];
+
+                    program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, fieldValue);
+                }
+            }
+        }
+
+        private static _sendStructureDataWithSemantic(name:string, data:Object, program:Program, cmd:QuadCommand){
+            for (let fieldName in data) {
+                if(data.hasOwnProperty(fieldName)){
+                    let fieldValue:ShaderData = data[fieldName];
+
+                    program.sendStructureData(`${name}.${fieldName}`, fieldValue.type, this._getUniformData(fieldValue.value, cmd));
+                }
+            }
         }
 
         @require(function(data:any, type:EVariableType, cmd:QuadCommand){

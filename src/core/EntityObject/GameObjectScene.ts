@@ -141,11 +141,14 @@ module wd {
         }
 
         //todo support update ProceduralRenderer(exec multi times)
-        @execOnlyOnce("_isProceduralRendererRendered")
+        //@execOnlyOnce("_isProceduralRendererRendered")
         private _renderProceduralRenderer(renderer){
-            this._proceduralRendererList.forEach((target:ProceduralRenderTargetRenderer) =>{
-                target.render(renderer);
-            });
+            this._proceduralRendererList.filter((target:ProceduralRenderTargetRenderer) =>{
+                    return target.needRender();
+                })
+                .forEach((target:ProceduralRenderTargetRenderer) =>{
+                    target.render(renderer);
+                });
         }
 
         private _getCameras(gameObject:GameObject){
