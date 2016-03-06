@@ -18,10 +18,6 @@ module wd {
             return this;
         }
 
-        public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
-        }
-
         //todo support SAMPLER_CUBE type
         @require(function(shaderConfigId:string){
             var shaderConfig:CustomProceduralTextureShaderDefinitionData = LoaderManager.getInstance().get(shaderConfigId),

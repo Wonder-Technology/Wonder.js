@@ -5,32 +5,6 @@ const vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);
 @end
 
 @funcDefine
-float rand(vec2 n) {
-	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
-float noise(vec2 n) {
-	const vec2 d = vec2(0.0, 1.0);
-	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
-	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
-}
-
-float turbulence(vec2 P)
-{
-	float val = 0.0;
-	float freq = 1.0;
-	for (int i = 0; i < 4; i++)
-	{
-		val += abs(noise(P*freq) / freq);
-		freq *= 2.07;
-	}
-	return val;
-}
-
-float round(float number){
-	return sign(number)*floor(abs(number) + 0.5);
-}
-
 vec3 marble_color(float x)
 {
 	vec3 col;

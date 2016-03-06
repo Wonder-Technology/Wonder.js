@@ -19,10 +19,6 @@ module wd {
 
             return this;
         }
-
-        public getSamplerName(unit:number){
-            return this.getSamplerNameByVariableData(unit, EVariableType.SAMPLER_2D);
-        }
     }
 }
 
