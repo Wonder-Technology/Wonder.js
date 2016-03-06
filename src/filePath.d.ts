@@ -305,8 +305,8 @@
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/MarbleProceduralRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/proceduralRTT/CustomProceduralRenderTargetRenderer"/>
 
-/// <reference path="renderer/Renderer"/>
-/// <reference path="renderer/WebGLRenderer"/>
+/// <reference path="renderer/renderer/Renderer"/>
+/// <reference path="renderer/renderer/WebGLRenderer"/>
 /// <reference path="renderer/EDrawMode"/>
 /// <reference path="renderer/buffer/EBufferType"/>
 /// <reference path="renderer/buffer/EBufferDataType"/>
@@ -316,24 +316,26 @@
 /// <reference path="renderer/buffer/ArrayBuffer"/>
 /// <reference path="renderer/buffer/BufferDataTable"/>
 /// <reference path="renderer/Program"/>
-/// <reference path="renderer/RenderCommand"/>
-/// <reference path="renderer/QuadCommand"/>
-/// <reference path="renderer/ProceduralCommand"/>
+/// <reference path="renderer/command/RenderCommand"/>
+/// <reference path="renderer/command/QuadCommand"/>
+/// <reference path="renderer/command/ProceduralCommand"/>
 
 /// <reference path="renderer/GlUtils"/>
 
 /// <reference path="renderer/buffer/FrameBuffer"/>
 
-/// <reference path="renderer/shader/Shader"/>
-/// <reference path="renderer/shader/CustomShader"/>
-/// <reference path="renderer/shader/EngineShader"/>
-/// <reference path="renderer/shader/CommonShader"/>
-/// <reference path="renderer/shader/ProceduralShader"/>
-/// <reference path="renderer/shader/CommonProceduralShader"/>
-/// <reference path="renderer/shader/CustomProceduralShader"/>
-/// <reference path="renderer/shader/ShaderSourceBuilder"/>
-/// <reference path="renderer/shader/CustomShaderSourceBuilder"/>
-/// <reference path="renderer/shader/EngineShaderSourceBuilder"/>
+/// <reference path="renderer/shader/shader/Shader"/>
+/// <reference path="renderer/shader/shader/CustomShader"/>
+/// <reference path="renderer/shader/shader/EngineShader"/>
+/// <reference path="renderer/shader/shader/CommonShader"/>
+/// <reference path="renderer/shader/shader/ProceduralShader"/>
+/// <reference path="renderer/shader/shader/CommonProceduralShader"/>
+/// <reference path="renderer/shader/shader/CustomProceduralShader"/>
+
+/// <reference path="renderer/shader/sourceBuilder/ShaderSourceBuilder"/>
+/// <reference path="renderer/shader/sourceBuilder/CustomShaderSourceBuilder"/>
+/// <reference path="renderer/shader/sourceBuilder/EngineShaderSourceBuilder"/>
+
 /// <reference path="renderer/shader/variable/EVariableType"/>
 /// <reference path="renderer/shader/variable/EVariableSemantic"/>
 /// <reference path="renderer/shader/variable/EVariableCategory"/>
