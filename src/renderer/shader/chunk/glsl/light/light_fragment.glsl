@@ -32,7 +32,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
         float dotResultBetweenNormAndLight = dot(normal, lightDir);
         float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-        vec3 emissionColor = u_emission * materialEmission;
+        vec3 emissionColor = materialEmission;
 
         vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse;
 
