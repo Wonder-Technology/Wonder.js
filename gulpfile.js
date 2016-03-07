@@ -17,7 +17,7 @@ gulp.task("buildCI", gulpSync.sync(["clean", "createInnerFile", "compileTsConfig
 
 
 var tsFilePaths = ["src/*.ts", "src/**/*.ts"];
-var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl"];
+var glslFilePaths = ["src/renderer/shader/chunk/glsl/**/*.glsl", "src/lib/**/*.glsl"];
 
 gulp.task("watch", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
