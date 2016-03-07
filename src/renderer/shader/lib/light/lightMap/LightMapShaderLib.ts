@@ -8,7 +8,7 @@ module wd{
 
         public type:string = "lightMap";
 
-        protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             this.sendUniformData(program, "u_lightMapIntensity", material.lightMapIntensity);
         }
 

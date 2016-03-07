@@ -162,6 +162,62 @@ describe("terrain material", function() {
                 });
             });
         });
+
+        describe("send glsl data", function(){
+            beforeEach(function(){
+
+            });
+
+            describe("send a_texCoord", function () {
+                it("send it even material has no map expect layer map", function () {
+                    map1 = wd.ImageTexture.create();
+                    map2 = wd.MarbleProceduralTexture.create();
+                    //map3 = wd.ImageTexture.create();
+
+
+                    sandbox.stub(map1, "init");
+                    sandbox.stub(map2, "init");
+                    //sandbox.stub(map3, "init");
+
+
+
+                    material.layer.mapDataList = wdCb.Collection.create([
+                        {
+                            minHeight:10,
+                            maxHeight:20,
+                            diffuseMap:map1
+                        },
+                        {
+                            minHeight:20,
+                            maxHeight:50,
+                            diffuseMap:map2
+                        }
+                    ]);
+
+
+
+                    material.init();
+
+
+
+                    quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns([0.1,0.2]);
+
+
+
+
+
+
+                    var pos = 1;
+                    sandbox.stub(material.program, "getUniformLocation").returns(pos);
+
+
+                    material.updateShader(quadCmd);
+
+
+                    expect(material.program.sendAttributeData.withArgs("a_texCoord")).toCalledOnce();
+                });
+            });
+        });
     });
 });
 

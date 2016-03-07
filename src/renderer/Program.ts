@@ -40,6 +40,7 @@ module wd{
         public sendUniformData(name:string, type:EVariableType, data:any);
         public sendUniformData(pos:WebGLUniformLocation, type:EVariableType, data:any);
 
+        //todo ensure: only send data of the same name one time in one frame
         public sendUniformData(...args){
             var gl = DeviceManager.getInstance().gl,
                 pos = null,
@@ -99,6 +100,7 @@ module wd{
             }
         }
 
+        //todo ensure: only send data of the same name one time in one frame
         @require(function(name:string, type:EVariableType, data:any){
             if(data){
                 assert(data instanceof ArrayBuffer, Log.info.FUNC_MUST_BE("ArrayBuffer"));

@@ -176,6 +176,8 @@ module wd{
         private _setLightMapShaderLib(){
             var scene:SceneDispatcher = Director.getInstance().scene;
 
+            this.shader.addLib(CommonLightMapShaderLib.create());
+
             if(this._lightMap){
                 this.shader.addLib(LightMapShaderLib.create());
             }

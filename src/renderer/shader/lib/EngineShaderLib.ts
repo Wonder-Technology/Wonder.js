@@ -2,7 +2,7 @@ module wd{
     export abstract class EngineShaderLib extends ShaderLib{
         public shader:EngineShader;
 
-        public type:string = ABSTRACT_ATTRIBUTE;
+        public type:string = null;
 
         public attributes:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
         public uniforms:wdCb.Hash<ShaderVariable> = wdCb.Hash.create<ShaderVariable>();
@@ -132,6 +132,10 @@ module wd{
 
         private _getChunk(type:string, sourceType:EShaderLibType){
             var key = null;
+
+            if(!type){
+                return null;
+            }
 
             if(type.indexOf(".glsl") > -1){
                 key =  `${wdCb.PathUtils.basename(type, ".glsl")}`;

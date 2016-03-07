@@ -379,6 +379,7 @@
 /// <reference path="renderer/shader/lib/light/LightShaderLib"/>
 /// <reference path="renderer/shader/lib/light/LightEndShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/BaseLightMapShaderLib"/>
+/// <reference path="renderer/shader/lib/light/lightMap/CommonLightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/LightMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/DiffuseMapShaderLib"/>
 /// <reference path="renderer/shader/lib/light/lightMap/SpecularMapShaderLib"/>

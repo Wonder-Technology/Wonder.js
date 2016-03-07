@@ -15,7 +15,7 @@ module wd{
 
             assert(!!diffuseMap.sourceRegionForGLSL && !!diffuseMap.repeatRegion, Log.info.FUNC_SHOULD("material.diffuseMap", "has sourceRegionForGLSL,repeatRegion data"));
         })
-        protected sendBaseLightMapShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
+        public sendShaderVariables(program: Program, quadCmd:QuadCommand, material:LightMaterial){
             var diffuseMap:ImageTexture|ProceduralTexture = <ImageTexture|ProceduralTexture>material.diffuseMap;
 
             this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
