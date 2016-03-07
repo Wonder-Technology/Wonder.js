@@ -730,6 +730,35 @@ beforeEach(function () {
                             pass: actual.calledWith.apply(actual, expectedArg),
                             message: message
                         }
+                    },
+                    negativeCompare: function (actual, expected) {
+                        var actualArg = getActualArg(actual),
+                            expectedArg = null,
+                            message = null,
+                            toString = function(arg){
+                                try{
+                                    return Tool.convert.toString(arg).slice(1, -1);
+                                }
+                                catch(e){
+                                    return arg.toString();
+                                }
+                            };
+
+                        expectedArg = Array.prototype.slice.call(arguments, 1);
+
+
+                        message = "Expected not to called with " + toString(expectedArg);
+
+                        if(!_isCalled(actual)){
+                            message += ", but actual is called";
+                        }
+                        else{
+                            message += ", but actual is called with " + toString(actualArg);
+                        }
+                        return {
+                            pass: !(actual.calledWith.apply(actual, expectedArg)),
+                            message: message
+                        }
                     }
                 };
             },
