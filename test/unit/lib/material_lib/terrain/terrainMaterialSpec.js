@@ -6,8 +6,6 @@ describe("terrain material", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        wd.GPUDetector.getInstance().maxTextureUnit = 16;
-
 
         sandbox.stub(wd.DeviceManager.getInstance(), "gl", testTool.buildFakeGl(sandbox));
 
@@ -54,27 +52,6 @@ describe("terrain material", function() {
                     },
                     {
                         minHeight:19,
-                        maxHeight:50,
-                        diffuseMap:{}
-                    }
-                ]);
-            }).toThrow();
-        });
-        it("require that map count shouldn't exceed maxTextureUnit", function(){
-            testTool.openContractCheck(sandbox);
-
-            wd.GPUDetector.getInstance().maxTextureUnit = 1;
-
-
-            expect(function(){
-                material.layer.mapDataList = wdCb.Collection.create([
-                    {
-                        minHeight:10,
-                        maxHeight:20,
-                        diffuseMap:{}
-                    },
-                    {
-                        minHeight:30,
                         maxHeight:50,
                         diffuseMap:{}
                     }

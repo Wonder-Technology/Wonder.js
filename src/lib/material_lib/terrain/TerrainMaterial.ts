@@ -43,8 +43,6 @@ module wd{
                         assert(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight, Log.info.FUNC_SHOULD_NOT("height range", "overlap"));
                 });
             });
-
-            assert(mapDataList.getCount() <= GPUDetector.getInstance().maxTextureUnit, Log.info.FUNC_SHOULD_NOT("count of maps", `exceed maxTextureUnit:${GPUDetector.getInstance().maxTextureUnit}, but actual is ${mapDataList.getCount()}`));
         })
         get mapDataList(){
             return this._mapDataList;
