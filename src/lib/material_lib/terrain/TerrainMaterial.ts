@@ -9,8 +9,6 @@ module wd{
         public layer:Layer = Layer.create();
 
         public init(){
-            //todo sort mapdata
-
             this.mapManager.addArrayMap("u_layerSampler2Ds", this.layer.mapArray);
 
             super.init();
@@ -30,12 +28,23 @@ module wd{
             return obj;
         }
 
-
-        private _mapDataList:wdCb.Collection<TerrainLayerMapData> = null;
+        private _mapDataList:wdCb.Collection<TerrainLayerMapData> = wdCb.Collection.create<TerrainLayerMapData>();
         @requireSetter(function(mapDataList:wdCb.Collection<TerrainLayerMapData>){
-            //todo check not overlap
-            //todo check contain diffuseMap
-            //todo check not exceed max unit
+            mapDataList.forEach((mapData:TerrainLayerMapData) => {
+                assert(mapData.minHeight < mapData.maxHeight, Log.info.FUNC_SHOULD("minHeight", "< maxHeight"));
+            });
+
+            mapDataList.forEach((mapData:TerrainLayerMapData) => {
+                mapDataList
+                    .filter((data:TerrainLayerMapData) => {
+                        return data.minHeight !== mapData.minHeight || data.maxHeight !== mapData.maxHeight;
+                    })
+                    .forEach((data:TerrainLayerMapData) => {
+                        assert(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight, Log.info.FUNC_SHOULD_NOT("height range", "overlap"));
+                });
+            });
+
+            assert(mapDataList.getCount() <= GPUDetector.getInstance().maxTextureUnit, Log.info.FUNC_SHOULD_NOT("count of maps", `exceed maxTextureUnit:${GPUDetector.getInstance().maxTextureUnit}, but actual is ${mapDataList.getCount()}`));
         })
         get mapDataList(){
             return this._mapDataList;
@@ -45,7 +54,9 @@ module wd{
         }
 
         @ensureGetter(function(mapArray:Array<Texture>){
-            //todo check has map
+            for(let map of mapArray){
+                assert(map instanceof Texture, Log.info.FUNC_SHOULD("return Array<Texture>"));
+            }
         })
         get mapArray(){
             var arr:Array<Texture> = [];

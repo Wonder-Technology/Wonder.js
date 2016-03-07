@@ -34,6 +34,8 @@ var testTool = (function () {
                 uniform4f: sandbox.stub(),
                 uniformMatrix3fv: sandbox.stub(),
                 uniform1f: sandbox.stub(),
+                uniform1iv :sandbox.stub(),
+
                 drawArrays: sandbox.stub(),
                 drawElements: sandbox.stub(),
 
