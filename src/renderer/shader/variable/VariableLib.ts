@@ -291,6 +291,16 @@ module wd{
             type:EVariableType.STRUCTURE,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_layerHeightDatas:ShaderVariable = {
+            type:EVariableType.STRUCTURES,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_layerSampler2Ds:ShaderVariable = {
+            type:EVariableType.SAMPLER_ARRAY,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

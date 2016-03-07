@@ -153,7 +153,7 @@ module wd {
         public geometry:Geometry = null;
 
         public init(){
-            this.shader.init();
+            this.shader.init(this);
 
             this.mapManager.init();
         }

@@ -13,7 +13,7 @@ module wd{
         public update(quadCmd:QuadCommand, material:ShaderMaterial){
             var program = this.program;
 
-            this.judgeRefreshShader();
+            this.judgeRefreshShader(material);
 
             this.program.use();
 

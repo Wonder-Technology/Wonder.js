@@ -186,7 +186,6 @@ describe("BasicMaterial", function () {
             director._loopBody(1);
 
             expect(texture.bindToUnit).toCalledWith(0);
-            expect(texture.sendData).not.toCalled();
         });
     });
 

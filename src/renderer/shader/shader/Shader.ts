@@ -70,12 +70,12 @@ module wd{
             return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
         }
 
-        public init(){
+        public init(material:Material){
             this.libs.forEach((lib:ShaderLib) => {
                 lib.init();
             });
 
-            this.judgeRefreshShader();
+            this.judgeRefreshShader(material);
         }
 
         public dispose(){
@@ -177,9 +177,9 @@ module wd{
         protected abstract buildDefinitionData(cmd:RenderCommand, material:Material):void;
 
 
-        protected judgeRefreshShader(){
+        protected judgeRefreshShader(material:Material){
             if(this.libDirty){
-                this.buildDefinitionData(null, LightMaterial.create());
+                this.buildDefinitionData(null, material);
             }
 
             if(this._definitionDataDirty){

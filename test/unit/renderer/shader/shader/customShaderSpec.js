@@ -147,22 +147,11 @@ describe("custom shader", function () {
                     sandbox.stub(shader.program, "sendUniformData");
                     sandbox.stub(shader.program, "use");
 
-                    quadCmd = wd.QuadCommand.create();
+                    quadCmd = rendererTool.createQuadCommand(sandbox);
 
 
                     vertices = [1,2,3];
                     texCoords = [0.1,0.2];
-
-                    quadCmd.buffers = {
-                        getChild:sandbox.stub()
-                    };
-
-
-
-                    quadCmd.mMatrix = wd.Matrix4.create();
-                    quadCmd.vMatrix = wd.Matrix4.create();
-                    quadCmd.pMatrix = wd.Matrix4.create();
-
 
                     quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.VERTICE).returns(vertices);
                     quadCmd.buffers.getChild.withArgs(wd.EBufferDataType.TEXCOORD).returns(texCoords);

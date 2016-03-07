@@ -169,7 +169,7 @@ describe("MapManager", function() {
         });
     });
 
-    describe("_getAllMapArr", function(){
+    describe("_getAllMaps", function(){
         beforeEach(function(){
         });
 
@@ -184,8 +184,8 @@ describe("MapManager", function() {
             });
 
             it("if cached, return cached data", function(){
-                var list1 = manager._getAllMapArr();
-                var list2 = manager._getAllMapArr();
+                var list1 = manager._getAllMaps();
+                var list2 = manager._getAllMaps();
 
                 expect(list1 === list2).toBeTruthy();
                 expect(manager._mapTable.toArray).toCalledOnce();
@@ -198,29 +198,29 @@ describe("MapManager", function() {
 
                 it("addMap make texture dirty", function(){
                     var texture2 = wd.ImageTexture.create({});
-                    var list1 = manager._getAllMapArr();
+                    var list1 = manager._getAllMaps();
 
                     manager.addMap(texture2);
 
-                    var list2 = manager._getAllMapArr();
+                    var list2 = manager._getAllMaps();
 
                     expect(manager._mapTable.toArray).toCalledTwice();
                 });
                 it("removeAllChildren make texture dirty", function(){
-                    var list1 = manager._getAllMapArr();
+                    var list1 = manager._getAllMaps();
 
                     manager.removeAllChildren();
 
-                    var list2 = manager._getAllMapArr();
+                    var list2 = manager._getAllMaps();
 
                     expect(manager._mapTable.toArray).toCalledTwice();
                 });
                 it("set empty envMap make texture dirty", function(){
-                    var list1 = manager._getAllMapArr();
+                    var list1 = manager._getAllMaps();
 
                     manager.setEnvMap(null);
 
-                    var list2 = manager._getAllMapArr();
+                    var list2 = manager._getAllMaps();
 
                     expect(manager._mapTable.toArray).toCalledTwice();
                 });
@@ -271,15 +271,15 @@ describe("MapManager", function() {
             program.initWithShader(shader);
         });
 
-        it("if count of maps is 1, not send texture data", function () {
-            var map = new wd.ImageTexture();
-            sandbox.stub(map, "sendData");
-            manager.addMap(map)
-
-            manager.sendData(program);
-
-            expect(map.sendData).not.toCalled();
-        });
+        //it("if count of maps is 1, not send texture data", function () {
+        //    var map = new wd.ImageTexture();
+        //    sandbox.stub(map, "sendData");
+        //    manager.addMap(map)
+        //
+        //    manager.sendData(program);
+        //
+        //    expect(map.sendData).not.toCalled();
+        //});
 
         describe("else", function(){
             beforeEach(function(){

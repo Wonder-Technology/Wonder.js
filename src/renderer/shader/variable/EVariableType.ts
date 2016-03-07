@@ -11,7 +11,9 @@ module wd{
         SAMPLER_2D = <any>"SAMPLER_2D",
         NUMBER_1 = <any>"NUMBER_1",
         STRUCTURE = <any>"STRUCTURE",
-        STRUCTURES = <any>"STRUCTURES"
+        STRUCTURES = <any>"STRUCTURES",
+
+        SAMPLER_ARRAY = <any>"SAMPLER_ARRAY"
     }
 }
 

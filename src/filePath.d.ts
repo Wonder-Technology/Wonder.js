@@ -542,3 +542,8 @@
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralShaderLib"/>
 
+
+
+/// <reference path="lib/material_lib/terrain/TerrainMaterial"/>
+/// <reference path="lib/material_lib/terrain/TerrainLayerShaderLib"/>
+

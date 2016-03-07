@@ -5,13 +5,13 @@ module wd{
         public init(){
             this.addLib(CommonProceduralShaderLib.create());
 
-            super.init();
+            super.init(null);
         }
 
         public update(cmd:ProceduralCommand){
             var program = this.program;
 
-            this.judgeRefreshShader();
+            this.judgeRefreshShader(null);
 
             this.program.use();
 

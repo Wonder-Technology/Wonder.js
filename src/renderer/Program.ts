@@ -90,6 +90,9 @@ module wd{
                 case EVariableType.SAMPLER_2D:
                     gl.uniform1i(pos, Number(data));
                     break;
+                case EVariableType.SAMPLER_ARRAY:
+                    this._sendSampleArray(gl, pos, data);
+                    break;
                 default :
                     Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
@@ -268,6 +271,17 @@ module wd{
             this._getAttribLocationCache.addChild(name, pos);
 
             return pos;
+        }
+
+        @require(function(gl:any, pos:string, data:Array<number>){
+            assert(JudgeUtils.isArrayExactly(data), Log.info.FUNC_SHOULD("data", `be array, but actual is ${data}`));
+
+            for(let unit of data){
+                assert(JudgeUtils.isNumber(unit), Log.info.FUNC_SHOULD("data", `be Array<number>, but actual is ${data}`));
+            }
+        })
+        private _sendSampleArray(gl:any, pos:string, data:Array<number>){
+            gl.uniform1iv(pos, data);
         }
     }
 }

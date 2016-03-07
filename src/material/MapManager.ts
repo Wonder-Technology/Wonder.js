@@ -12,15 +12,16 @@ module wd{
 
         private _material:Material = null;
         private _mapTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
+        private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
         private _mirrorMap:MirrorTexture = null;
         private _textureDirty:boolean = false;
         private _mapArrCache:Array<Texture> = null;
 
         public init(){
-            var mapList = this._getAllMapArr();
+            var mapArr = this._getAllMaps();
 
-            for(let i = 0, len = mapList.length; i < len; i++){
-                let texture = mapList[i];
+            for(let i = 0, len = mapArr.length; i < len; i++){
+                let texture = mapArr[i];
 
                 texture.init();
             }
@@ -54,6 +55,15 @@ module wd{
 
             map.material = this._material;
             this._mapTable.appendChild("map", map);
+
+            this._textureDirty = true;
+        }
+
+        public addArrayMap(samplerName:string, mapArray:Array<Texture>){
+            this._arrayMapList.addChild({
+                samplerName:samplerName,
+                mapArray:mapArray
+            });
 
             this._textureDirty = true;
         }
@@ -122,15 +132,16 @@ module wd{
 
         public removeAllChildren(){
             this._mapTable.removeAllChildren();
+            this._arrayMapList.removeAllChildren();
 
             this._textureDirty = true;
         }
 
         public dispose(){
-            var mapList = this._getAllMapArr();
+            var mapArr = this._getAllMaps();
 
-            for(let i = 0, len = mapList.length; i < len; i++){
-                let texture = mapList[i];
+            for(let i = 0, len = mapArr.length; i < len; i++){
+                let texture = mapArr[i];
 
                 texture.dispose();
             }
@@ -139,20 +150,20 @@ module wd{
         }
 
         public bind(){
-            var mapList = this._getAllMapArr();
+            var mapArr = this._getAllMaps();
 
-            for(let i = 0, len = mapList.length; i < len; i++){
-                let texture = mapList[i];
+            for(let i = 0, len = mapArr.length; i < len; i++){
+                let texture = mapArr[i];
 
                 texture.bindToUnit(i);
             }
         }
 
         public update(){
-            var mapList = this._getAllMapArr();
+            var mapArr = this._getAllMaps();
 
-            for(let i = 0, len = mapList.length; i < len; i++){
-                let texture = mapList[i];
+            for(let i = 0, len = mapArr.length; i < len; i++){
+                let texture = mapArr[i];
 
                 if(texture.needUpdate && texture instanceof BasicTexture){
                     texture.update(i);
@@ -161,15 +172,21 @@ module wd{
         }
 
         public sendData(program:Program){
-            var mapList = this._getAllMapArr(),
-                len = mapList.length;
+            this._sendSingleMapData(program);
+            this._sendArrayMapData(program);
+        }
 
-            if(len === 1){
-                return;
-            }
+        private _sendSingleMapData(program:Program){
+            var mapArr = this._getAllSingMaps(),
+                len = mapArr.length;
+
+            //todo modify test
+            //if(len === 1){
+            //    return;
+            //}
 
             for(let i = 0; i < len; i++){
-                let texture = mapList[i],
+                let texture = mapArr[i],
                     samplerName = texture.getSamplerName(i),
                     pos = program.getUniformLocation(samplerName);
 
@@ -181,6 +198,46 @@ module wd{
             }
         }
 
+        private _sendArrayMapData(program:Program){
+            var self = this,
+                maxUnitOfBindedSingleMap = this._getMaxUnitOfBindedSingleMap();
+
+            this._arrayMapList.forEach((mapData:ArrayMapData) => {
+                let arrayMapCount = mapData.mapArray.length;
+
+
+
+                //program.sendUniformData(mapData.samplerName, EVariableType.SAMPLER_ARRAY, mapData.mapArray);
+                //todo unit array
+                program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
+
+
+                maxUnitOfBindedSingleMap += arrayMapCount;
+            });
+        }
+
+        @ensure(function(arr:Array<number>, startUnit:number, endUnit:number){
+            assert(arr.length === endUnit - startUnit, Log.info.FUNC_SHOULD("length", `be ${endUnit - startUnit}, but actual is ${arr.length}`));
+            assert(arr[0] === startUnit, Log.info.FUNC_SHOULD("first element", `be ${startUnit}, but actual is ${arr[0]}`));
+            assert(arr[arr.length - 1] === endUnit - 1, Log.info.FUNC_SHOULD("last element", `be ${endUnit - 1}, but actual is ${arr[arr.length - 1]}`));
+        })
+        private _generateArrayMapUnitArray(startUnit:number, endUnit:number){
+            var arr = [];
+
+            while(endUnit > startUnit){
+                arr.push(startUnit);
+
+                startUnit++;
+            }
+
+            return arr;
+        }
+
+        @ensure(function(mapArr:Array<Texture>){
+            for(let map of mapArr){
+                assert(map instanceof Texture, Log.info.FUNC_SHOULD("each element", "be Texture"));
+            }
+        })
         @cache(function(){
             return !this._textureDirty && this._mapArrCache;
         }, function(){
@@ -189,8 +246,49 @@ module wd{
             this._mapArrCache = mapList;
             this._textureDirty = false;
         })
-        private _getAllMapArr(){
+        private _getAllMaps(){
+            //var arrayMap = [];
+            //
+            //this._arrayMapList.forEach((mapData:ArrayMapData) => {
+            //    arrayMap = arrayMap.concat(mapData.mapList.toArray());
+            //});
+
+            //return [].concat(this._mapTable.toArray(), arrayMap);
+            //return [].concat(this._mapTable.toArray(), this._getAllArrayMaps());
+            return [].concat(this._getAllSingMaps(), this._getAllArrayMaps());
+        }
+
+        private _getMaxUnitOfBindedSingleMap(){
+            return this._getAllSingMaps().length;
+        }
+
+        //todo add cache
+        private _getAllSingMaps(){
             return this._mapTable.toArray();
+        }
+
+        @ensure(function(mapArr:Array<Texture>){
+            for(let map of mapArr){
+                assert(map instanceof Texture, Log.info.FUNC_SHOULD("each element", "be Texture"));
+            }
+        })
+        //todo add cache
+        //@cache(function(){
+        //    return !this._textureDirty && this._mapArrCache;
+        //}, function(){
+        //    return this._mapArrCache;
+        //}, function(mapList:wdCb.Collection<Texture>){
+        //    this._mapArrCache = mapList;
+        //    this._textureDirty = false;
+        //})
+        private _getAllArrayMaps(){
+            var arrayMap = [];
+
+            this._arrayMapList.forEach((mapData:ArrayMapData) => {
+                arrayMap = arrayMap.concat(mapData.mapArray);
+            });
+
+            return arrayMap;
         }
 
         private _getMapByType<T>(key:string):T{
@@ -234,5 +332,10 @@ module wd{
     export type MapVariableData = {
         samplerVariableName?: string;
         samplerData?:any
+    }
+
+    export type ArrayMapData = {
+        samplerName:string;
+        mapArray:Array<Texture>;
     }
 }
