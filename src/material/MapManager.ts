@@ -138,6 +138,16 @@ module wd{
             this.removeAllChildren();
         }
 
+        public bind(){
+            var mapList = this._getAllMapArr();
+
+            for(let i = 0, len = mapList.length; i < len; i++){
+                let texture = mapList[i];
+
+                texture.bindToUnit(i);
+            }
+        }
+
         public update(){
             var mapList = this._getAllMapArr();
 
@@ -155,8 +165,6 @@ module wd{
                 len = mapList.length;
 
             if(len === 1){
-                mapList[0].bindToUnit(0);
-
                 return;
             }
 
@@ -169,7 +177,6 @@ module wd{
                     return;
                 }
 
-                texture.bindToUnit(i);
                 texture.sendData(program, pos, i);
             }
         }

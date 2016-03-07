@@ -227,7 +227,10 @@ describe("MapManager", function() {
             });
         });
     });
-    
+
+    describe("bind", function(){
+    });
+
     describe("update", function(){
         beforeEach(function(){
             addAllTypeMaps();
@@ -268,15 +271,13 @@ describe("MapManager", function() {
             program.initWithShader(shader);
         });
 
-        it("if count of maps is 1, bind texture and not send texture data", function () {
+        it("if count of maps is 1, not send texture data", function () {
             var map = new wd.ImageTexture();
-            sandbox.stub(map, "bindToUnit");
             sandbox.stub(map, "sendData");
             manager.addMap(map)
 
             manager.sendData(program);
 
-            expect(map.bindToUnit).toCalledWith(0);
             expect(map.sendData).not.toCalled();
         });
 
@@ -317,17 +318,6 @@ describe("MapManager", function() {
                     gl.getUniformLocation.onCall(6).returns(pos7);
                 });
 
-                it("bind texture", function(){
-                    manager.sendData(program);
-
-                    expect(twoDTexture.bindToUnit).toCalledWith(0);
-                    expect(compressedTexture.bindToUnit).toCalledWith(1);
-                        expect(proceduralTexture.bindToUnit).toCalledWith(2);
-                        expect(mirrorTexture.bindToUnit).toCalledWith(3);
-                        expect(twoDShadowMap.bindToUnit).toCalledWith(4);
-                        expect(cubemapShadowMap.bindToUnit).toCalledWith(5);
-                    expect(cubemapTexture.bindToUnit).toCalledWith(6);
-                });
                 it("send texture data", function(){
                     manager.sendData(program);
 

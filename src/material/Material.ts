@@ -168,6 +168,14 @@ module wd {
             this.mapManager.update();
         }
 
+        public bindTexture(){
+            this.mapManager.bind();
+        }
+
+        public sendTexture(program){
+            this.mapManager.sendData(program);
+        }
+
         public updateShader(quadCmd:QuadCommand){
             var scene:SceneDispatcher = Director.getInstance().scene;
 

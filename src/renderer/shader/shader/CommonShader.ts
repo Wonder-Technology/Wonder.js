@@ -17,7 +17,7 @@ module wd{
                 lib.sendShaderVariables(program, quadCmd, material);
             });
 
-            material.mapManager.sendData(program);
+            material.sendTexture(program);
         }
     }
 }

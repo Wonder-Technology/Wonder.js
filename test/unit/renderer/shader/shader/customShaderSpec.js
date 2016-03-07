@@ -126,7 +126,6 @@ describe("custom shader", function () {
                 wd.LoaderManager.getInstance().get.withArgs("fsSourceId").returns(fsSource);
 
                 map = wd.ImageTexture.create({});
-                sandbox.stub(map, "bindToUnit");
 
                 wd.LoaderManager.getInstance().get.withArgs("texture").returns(map);
 
@@ -172,6 +171,7 @@ describe("custom shader", function () {
                     material.read("definitionDataId");
 
                     rendererTool.triggerMaterialAddShaderLib(material);
+
                     material.updateShader(quadCmd);
                 });
 
@@ -237,11 +237,10 @@ describe("custom shader", function () {
                     expect(program.sendUniformData).toCalledWith("u_test3.b", wd.EVariableType.FLOAT_1, 3.3);
                 });
                 it("ShaderMaterial should add the correspond twoD maps of uniformData->sampler2D ", function () {
-                    expect(material.mapManager.sendData).toCalledOnce();
                     expect(material.mapManager.hasMap(map)).toBeTruthy();
                 });
                 it("send map data", function () {
-                    expect(map.bindToUnit).toCalledOnce();
+                    expect(material.mapManager.sendData).toCalledOnce();
                 });
             });
         });
