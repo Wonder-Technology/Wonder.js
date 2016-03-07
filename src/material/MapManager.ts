@@ -230,4 +230,9 @@ module wd{
             map.variableData = option;
         }
     }
+
+    export type MapVariableData = {
+        samplerVariableName?: string;
+        samplerData?:any
+    }
 }

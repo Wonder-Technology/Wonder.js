@@ -56,7 +56,7 @@ describe("ShaderMaterial", function () {
 
             var map = wd.ImageTextureAsset.create({}).toTexture();
             wd.LoaderManager.getInstance().get.withArgs("texture").returns(map);
-            sandbox.stub(material, "addMap");
+            sandbox.stub(material.mapManager, "addMap");
 
 
 
@@ -65,7 +65,7 @@ describe("ShaderMaterial", function () {
 
 
 
-            expect(material.addMap).toCalledWith(map, {
+            expect(material.mapManager.addMap).toCalledWith(map, {
                 samplerVariableName:"u_sampler2D"
             });
         });

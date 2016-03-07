@@ -24,13 +24,13 @@ module wd{
         })
         set map(map:any){
             if(map instanceof Texture || map instanceof TextureAsset){
-                this.addMap(map);
+                this.mapManager.addMap(map);
             }
             else{
                 let mapArr:Array<any> = arguments[0];
 
                 for(let m of mapArr){
-                    this.addMap(m);
+                    this.mapManager.addMap(m);
                 }
             }
         }

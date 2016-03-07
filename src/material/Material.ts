@@ -189,22 +189,8 @@ module wd {
 
         protected abstract createShader():Shader;
 
-        protected addMap(asset:TextureAsset);
-        protected addMap(asset:TextureAsset, option:MapVariableData);
-        protected addMap(map:Texture);
-        protected addMap(map:Texture, option:MapVariableData);
-
-        protected addMap(...args){
-            this.mapManager.addMap.apply(this.mapManager, args);
-        }
-
         private _isColorEqual(color1:Color, color2:Color){
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         }
-    }
-
-    export type MapVariableData = {
-        samplerVariableName?: string;
-        samplerData?:any
     }
 }

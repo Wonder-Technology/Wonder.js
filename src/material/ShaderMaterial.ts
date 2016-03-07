@@ -21,7 +21,7 @@ module wd{
             this.shader.read(LoaderManager.getInstance().get(definitionDataId));
 
             this.shader.getSampler2DUniformsAfterRead().forEach((uniform:ShaderData, name:string) => {
-                this.addMap(<TwoDTexture>LoaderManager.getInstance().get(uniform.textureId), {
+                this.mapManager.addMap(<TwoDTexture>LoaderManager.getInstance().get(uniform.textureId), {
                     samplerVariableName: name
                 });
             });

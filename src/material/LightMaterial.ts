@@ -14,7 +14,7 @@ module wd{
             assert(lightMap instanceof ImageTexture || lightMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
         })
         set lightMap(lightMap:Texture){
-            this.addMap(lightMap, {
+            this.mapManager.addMap(lightMap, {
                 samplerVariableName: VariableNameTable.getVariableName("lightMap")
             });
 
@@ -29,7 +29,7 @@ module wd{
             assert(diffuseMap instanceof ImageTexture || diffuseMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("diffuseMap", "be ImageTexture or ProceduralTexture"));
         })
         set diffuseMap(diffuseMap:Texture){
-            this.addMap(diffuseMap, {
+            this.mapManager.addMap(diffuseMap, {
                 samplerVariableName: VariableNameTable.getVariableName("diffuseMap")
             });
 
@@ -44,7 +44,7 @@ module wd{
             assert(specularMap instanceof ImageTexture || specularMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("specularMap", "be ImageTexture or ProceduralTexture"));
         })
         set specularMap(specularMap:Texture){
-            this.addMap(specularMap, {
+            this.mapManager.addMap(specularMap, {
                 samplerVariableName: VariableNameTable.getVariableName("specularMap")
             });
 
@@ -59,7 +59,7 @@ module wd{
             assert(emissionMap instanceof ImageTexture || emissionMap instanceof ProceduralTexture, Log.info.FUNC_SHOULD("emissionMap", "be ImageTexture or ProceduralTexture"));
         })
         set emissionMap(emissionMap:Texture){
-            this.addMap(emissionMap, {
+            this.mapManager.addMap(emissionMap, {
                 samplerVariableName: VariableNameTable.getVariableName("emissionMap")
             });
 
@@ -74,7 +74,7 @@ module wd{
             assert(normalMap instanceof ImageTexture, Log.info.FUNC_SHOULD("normalMap", "be ImageTexture"));
         })
         set normalMap(normalMap:ImageTexture){
-            this.addMap(normalMap, {
+            this.mapManager.addMap(normalMap, {
                 samplerVariableName: VariableNameTable.getVariableName("normalMap")
             });
 
@@ -118,14 +118,14 @@ module wd{
         private _cubemapShadowMapSamplerIndex:number = 0;
 
         public addTwoDShadowMap(shadowMap:TwoDShadowMapTexture){
-            this.addMap(shadowMap, {
+            this.mapManager.addMap(shadowMap, {
                 samplerData: this._twoDShadowMapSamplerIndex
             });
             this._twoDShadowMapSamplerIndex++;
         }
 
         public addCubemapShadowMap(shadowMap:CubemapShadowMapTexture){
-            this.addMap(shadowMap, {
+            this.mapManager.addMap(shadowMap, {
                 samplerData: this._cubemapShadowMapSamplerIndex
             });
             this._cubemapShadowMapSamplerIndex++;
@@ -151,6 +151,10 @@ module wd{
             this.cubemapShadowMapDatas.removeAllChildren();
         }
 
+        @virtual
+        protected addExtendShaderLib(){
+        }
+
         protected addShaderLib(){
             var envMap = null;
 
@@ -163,6 +167,8 @@ module wd{
             if(envMap){
                 this._setEnvMapShaderLib(envMap);
             }
+
+            this.addExtendShaderLib();
 
             this.shader.addLib(LightEndShaderLib.create());
         }
