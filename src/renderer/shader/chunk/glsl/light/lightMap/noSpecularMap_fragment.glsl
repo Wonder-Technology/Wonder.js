@@ -1,5 +1,5 @@
 @funcDefine
-    vec3 getMaterialSpecular() {
+    vec4 getMaterialSpecular() {
         return u_specular;
     }
 @end

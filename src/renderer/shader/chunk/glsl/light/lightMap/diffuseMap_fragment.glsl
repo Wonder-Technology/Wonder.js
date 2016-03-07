@@ -3,7 +3,7 @@
 @end
 
 @funcDefine
-    vec3 getMaterialDiffuse() {
-        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));
+    vec4 getMaterialDiffuse() {
+        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);
     }
 @end

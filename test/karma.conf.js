@@ -27,11 +27,11 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         'test/unit/**/terrain*',
 
-        //'test/unit/**/shaderLibSpec*',
+        'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',
         //'test/unit/**/ShaderLib*',
         //

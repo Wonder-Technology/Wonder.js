@@ -3,7 +3,7 @@
 @end
 
 @funcDefine
-    vec3 getMaterialEmission() {
-        return vec3(texture2D(u_emissionMapSampler, v_emissionMapTexCoord));
+    vec4 getMaterialEmission() {
+        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);
     }
 @end

@@ -48,6 +48,6 @@ vec3 marble_color(float x)
 		color = marble_color(t);
 	}
 
-	gl_FragColor = vec4(color, 0.0);
+	gl_FragColor = vec4(color, 1.0);
 @end
 

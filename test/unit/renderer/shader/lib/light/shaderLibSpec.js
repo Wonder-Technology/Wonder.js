@@ -53,6 +53,11 @@ describe("shaderLibSpec", function () {
 
 
 
+
+        wd.Director.getInstance().scene = wd.SceneDispatcher.create();
+
+        wd.Director.getInstance().scene.currentCamera = wd.GameObject.create()
+
         material.updateShader(quadCmd);
 
 

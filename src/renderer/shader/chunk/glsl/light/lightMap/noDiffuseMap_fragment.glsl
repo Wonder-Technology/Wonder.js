@@ -1,5 +1,5 @@
 @funcDefine
-    vec3 getMaterialDiffuse() {
+    vec4 getMaterialDiffuse() {
         return u_diffuse;
     }
 @end

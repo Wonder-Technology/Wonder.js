@@ -4,7 +4,7 @@ varying vec3 v_worldPosition;
 #if POINT_LIGHTS_COUNT > 0
 struct PointLight {
     vec3 position;
-    vec3 color;
+    vec4 color;
     float intensity;
 
     float range;
@@ -23,7 +23,7 @@ struct DirectionLight {
 
     float intensity;
 
-    vec3 color;
+    vec4 color;
 };
 uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
