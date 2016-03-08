@@ -1,7 +1,5 @@
 @varDeclare
 varying vec2 v_texCoord;
-
-uniform vec3 u_roadColor;
 @end
 
 @body

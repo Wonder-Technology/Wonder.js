@@ -1,8 +1,5 @@
 @varDeclare
 varying vec2 v_texCoord;
-
-uniform float u_ampScale;
-uniform vec3 u_woodColor;
 @end
 
 @body

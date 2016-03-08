@@ -1,8 +1,5 @@
 @varDeclare
 varying vec2 v_texCoord;
-
-uniform vec4 u_skyColor;
-uniform vec4 u_cloudColor;
 @end
 
 @body

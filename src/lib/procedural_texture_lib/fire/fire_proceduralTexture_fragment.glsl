@@ -10,11 +10,6 @@ struct FireColor {
     vec3 c6;
 };
 uniform FireColor u_fireColor;
-
-uniform float u_time;
-uniform vec2 u_speed;
-uniform float u_shift;
-uniform float u_alphaThreshold;
 @end
 
 @body

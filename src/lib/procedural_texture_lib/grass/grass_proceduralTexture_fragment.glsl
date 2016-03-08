@@ -1,10 +1,5 @@
 @varDeclare
 varying vec2 v_texCoord;
-
-uniform vec3 u_herb1Color;
-uniform vec3 u_herb2Color;
-uniform vec3 u_herb3Color;
-uniform vec3 u_groundColor;
 @end
 
 @body
