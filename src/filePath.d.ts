@@ -539,6 +539,10 @@
 /// <reference path="lib/procedural_texture_lib/marble/MarbleProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/marble/MarbleProceduralShaderLib"/>
 
+/// <reference path="lib/procedural_texture_lib/grass/GrassProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/grass/GrassProceduralTexture"/>
+/// <reference path="lib/procedural_texture_lib/grass/GrassProceduralShaderLib"/>
+
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralRenderTargetRenderer"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralShaderLib"/>

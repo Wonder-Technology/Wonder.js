@@ -301,6 +301,26 @@ module wd{
             type:EVariableType.SAMPLER_ARRAY,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_herb1Color:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_herb2Color:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_herb3Color:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_groundColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

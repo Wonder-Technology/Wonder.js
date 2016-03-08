@@ -117,7 +117,6 @@ describe("terrain material", function() {
 
 
 
-                    //todo try comment this code
                     material.diffuseMap = map3;
 
 
@@ -129,17 +128,12 @@ describe("terrain material", function() {
 
 
 
-                    material.bindTexture();
+                    material.bindAndUpdateTexture();
 
 
                     expect(map3.bindToUnit).toCalledWith(0);
                     expect(map1.bindToUnit).toCalledWith(1);
                     expect(map2.bindToUnit).toCalledWith(2);
-
-
-
-
-                    material.updateTexture();
 
                     expect(map3.update).toCalledOnce();
                     expect(map1.update).toCalledOnce();
@@ -151,17 +145,18 @@ describe("terrain material", function() {
 
 
 
-                    var pos = 1;
-                    sandbox.stub(material.program, "getUniformLocation").returns(pos);
 
 
+                    sandbox.stub(map1, "getSamplerName").returns("u_sampler1");
+                    sandbox.stub(map2, "getSamplerName").returns("u_sampler2");
+                    sandbox.stub(map3, "getSamplerName").returns("u_sampler3");
 
                     material.updateShader(quadCmd);
 
 
-                    expect(material.program.sendUniformData).toCalledWith(pos, wd.EVariableType.SAMPLER_2D, 0);
-                    expect(material.program.sendUniformData).not.toCalledWith(pos, wd.EVariableType.SAMPLER_2D, 1);
-                    expect(material.program.sendUniformData).not.toCalledWith(pos, wd.EVariableType.SAMPLER_2D, 2);
+                    expect(material.program.sendUniformData).toCalledWith("u_sampler3", wd.EVariableType.SAMPLER_2D, 0);
+                    expect(material.program.sendUniformData).not.toCalledWith("u_sampler1", wd.EVariableType.SAMPLER_2D, 1);
+                    expect(material.program.sendUniformData).not.toCalledWith("u_sampler2", wd.EVariableType.SAMPLER_2D, 2);
 
                     expect(material.program.sendUniformData).toCalledWith("u_layerSampler2Ds[0]", wd.EVariableType.SAMPLER_ARRAY, [1,2]);
                 });
@@ -270,11 +265,6 @@ describe("terrain material", function() {
 
 
 
-
-                    var pos = 1;
-                    sandbox.stub(material.program, "getUniformLocation").returns(pos);
-
-
                     material.updateShader(quadCmd);
 
 
@@ -304,9 +294,6 @@ describe("terrain material", function() {
                     ]);
 
 
-
-                    var pos = 1;
-                    sandbox.stub(material.program, "getUniformLocation").returns(pos);
 
                     material.init();
 
