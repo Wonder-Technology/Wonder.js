@@ -42,9 +42,10 @@ vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, ve
         }
 
 
-        vec4 diffuseColor = color * materialDiffuse * intensity;
+        vec4 diffuseColor = color * materialDiffuse;
 
-        diffuseColor = vec4(diff * vec3(diffuseColor), diffuseColor.a);
+        //not affect alpha data
+        diffuseColor = vec4(diff * vec3(diffuseColor) * intensity, diffuseColor.a);
 
 
         float spec = 0.0;
@@ -56,12 +57,14 @@ vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, ve
                 spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
         }
 
-        vec4 specularColor = spec * materialSpecular * intensity;
+        //not affect alpha data
+        vec4 specularColor = vec4(spec * vec3(materialSpecular) * intensity, materialSpecular.a);
 
+        vec4 tColor = diffuseColor + specularColor;
 
-        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
+        //not affect alpha data
+        return emissionColor + ambientColor + vec4(attenuation * vec3(tColor), tColor.a);
 }
-
 
 
 
