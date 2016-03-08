@@ -21,8 +21,7 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-//            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
-            director.scene.addChildren([createPlane1()]);
+            director.scene.addChildren([createPlane1(), createPlane2()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -31,16 +30,17 @@
         }
 
         function createPlane1() {
-            var grassTexture = wd.GrassProceduralTexture.create();
-//            marbleTexture.tilesHeightNumber = 3;
-//            marbleTexture.tilesWidthNumber = 4;
-//            marbleTexture.amplitude = 10;
-//            marbleTexture.jointColor = wd.Color.create("rgb(0.9, 0.1, 0.1)");
+            return createPlane(wd.GrassProceduralTexture.create(), wd.Vector3.create(-100, 50, 0))
+        }
+
+        function createPlane2() {
+            return createPlane(wd.WoodProceduralTexture.create(), wd.Vector3.create(-50, 50, 0))
+        }
 
 
+        function createPlane(proceduralTexture, position) {
             var material = wd.LightMaterial.create();
-//            material.specularMap = wd.LoaderManager.getInstance().get("texture1").toTexture();
-            material.diffuseMap = grassTexture;
+            material.diffuseMap = proceduralTexture;
 
 
             var geometry = wd.PlaneGeometry.create();
@@ -55,7 +55,7 @@
 
             gameObject.transform.rotate(wd.Vector3.create(90,0,0));
 
-            gameObject.transform.translate(-100,50,0);
+            gameObject.transform.position = position;
 
             return gameObject;
         }

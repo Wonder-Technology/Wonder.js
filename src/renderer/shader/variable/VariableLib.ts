@@ -321,6 +321,16 @@ module wd{
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_ampScale:ShaderVariable = {
+            type:EVariableType.FLOAT_1,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_woodColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

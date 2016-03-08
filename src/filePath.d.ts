@@ -543,10 +543,13 @@
 /// <reference path="lib/procedural_texture_lib/grass/GrassProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/grass/GrassProceduralShaderLib"/>
 
+/// <reference path="lib/procedural_texture_lib/wood/WoodProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/wood/WoodProceduralTexture"/>
+/// <reference path="lib/procedural_texture_lib/wood/WoodProceduralShaderLib"/>
+
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralRenderTargetRenderer"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralShaderLib"/>
-
 
 
 /// <reference path="lib/material_lib/terrain/TerrainMaterial"/>
