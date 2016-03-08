@@ -92,8 +92,7 @@ describe("DynamicCubemapTexture", function() {
 
 
 
-            expect(program.getUniformLocation).toCalledWith("u_samplerCube1");
-            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_CUBE, 1);
+            expect(program.sendUniformData).toCalledWith("u_samplerCube1", wd.EVariableType.SAMPLER_CUBE, 1);
         });
     });
 });

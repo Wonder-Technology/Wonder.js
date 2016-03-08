@@ -41,11 +41,8 @@ describe("CubemapShadowMapTexture", function() {
 
             material.mapManager.sendData(program);
 
-            expect(program.getUniformLocation.secondCall).toCalledWith("u_cubemapShadowMapSampler[0]");
-            expect(program.getUniformLocation.thirdCall).toCalledWith("u_cubemapShadowMapSampler[1]");
-
-            expect(program.sendUniformData).toCalledWith(pos1, wd.EVariableType.SAMPLER_CUBE, 1);
-            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_CUBE, 2);
+            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[0]", wd.EVariableType.SAMPLER_CUBE, 1);
+            expect(program.sendUniformData).toCalledWith("u_cubemapShadowMapSampler[1]", wd.EVariableType.SAMPLER_CUBE, 2);
         });
     });
 });

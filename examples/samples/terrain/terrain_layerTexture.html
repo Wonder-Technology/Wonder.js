@@ -61,7 +61,6 @@
 
 //            material.layer.blendMethod = wd.ETerrainLayerBlendMethod.CUT;
 
-            //todo try comment this code
             material.diffuseMap = groundMap;
 
             material.shading = wd.EShading.SMOOTH;
@@ -125,7 +124,7 @@
 
             var controller = wd.ArcballCameraController.create(cameraComponent);
             controller.theta = Math.PI / 2.2;
-            controller.distance = 50;
+            controller.distance = 100;
 
             camera.addComponent(controller);
 

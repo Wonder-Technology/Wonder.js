@@ -29,15 +29,17 @@
 
         'test/unit/**',
 
-        'test/unit/**/terrain*',
+        //'test/unit/lib/**',
 
-        'test/unit/**/shaderLibSpec*',
+        //'test/unit/**/terrain*',
+
+        //'test/unit/**/shaderLibSpec*',
         //'test/unit/**/*ShaderLib*',
         //'test/unit/**/ShaderLib*',
         //
         //'test/unit/texture/**',
 
-        'test/unit/**/material/**',
+        //'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 

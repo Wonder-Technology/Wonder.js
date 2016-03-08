@@ -126,11 +126,6 @@ describe("BasicTexture", function() {
             });
         });
 
-        it("bind texture unit and active it", function(){
-            texture.update(0);
-
-            expect(texture.bindToUnit).toCalledWith(0);
-        });
         it("if source's size exceed max size, then make souce to be canvas and scale the canvas", function(done){
             texture.source = new Image();
             texture.source.src = testTool.resPath + "test/res/1.jpg";

@@ -148,7 +148,7 @@ describe("Texture", function() {
                     mapManager.addMap(texture1);
                     mapManager.addMap(texture2);
 
-                    mapManager.update();
+                    mapManager.bindAndUpdate();
 
                     expect(gl.activeTexture.firstCall).toCalledWith(gl.TEXTURE0);
                     expect(gl.activeTexture.firstCall).toCalledBefore(gl.texImage2D.firstCall);
@@ -168,7 +168,7 @@ describe("Texture", function() {
                     mapManager.addMap(texture1);
                     mapManager.addMap(texture2);
 
-                    mapManager.update();
+                    mapManager.bindAndUpdate();
 
                     expect(wd.Log.warn).toCalledOnce();
 

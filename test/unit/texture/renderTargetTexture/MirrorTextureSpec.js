@@ -172,8 +172,7 @@ describe("MirrorTexture", function () {
 
 
 
-            expect(program.getUniformLocation).toCalledWith("u_mirrorSampler");
-            expect(program.sendUniformData).toCalledWith(pos2, wd.EVariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith("u_mirrorSampler", wd.EVariableType.SAMPLER_2D, 1);
         });
     });
 });

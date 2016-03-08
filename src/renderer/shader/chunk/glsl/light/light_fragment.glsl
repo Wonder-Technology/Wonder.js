@@ -41,7 +41,10 @@ vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, ve
             return emissionColor + ambientColor;
         }
 
-        vec4 diffuseColor = diff * color * materialDiffuse * intensity;
+
+        vec4 diffuseColor = color * materialDiffuse * intensity;
+
+        diffuseColor = vec4(diff * vec3(diffuseColor), diffuseColor.a);
 
 
         float spec = 0.0;
@@ -54,6 +57,7 @@ vec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, ve
         }
 
         vec4 specularColor = spec * materialSpecular * intensity;
+
 
         return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
 }
