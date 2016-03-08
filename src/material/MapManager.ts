@@ -149,23 +149,15 @@ module wd{
             this.removeAllChildren();
         }
 
-        public bind(){
+        public bindAndUpdate(){
             var mapArr = this._getAllMaps();
 
             for(let i = 0, len = mapArr.length; i < len; i++){
                 let texture = mapArr[i];
 
                 texture.bindToUnit(i);
-            }
-        }
 
-        public update(){
-            var mapArr = this._getAllMaps();
-
-            for(let i = 0, len = mapArr.length; i < len; i++){
-                let texture = mapArr[i];
-
-                if(texture.needUpdate && texture instanceof BasicTexture){
+                if(texture.needUpdate){
                     texture.update(i);
                 }
             }
@@ -179,11 +171,6 @@ module wd{
         private _sendSingleMapData(program:Program){
             var mapArr = this._getAllSingMaps(),
                 len = mapArr.length;
-
-            //todo modify test
-            //if(len === 1){
-            //    return;
-            //}
 
             for(let i = 0; i < len; i++){
                 let texture = mapArr[i],

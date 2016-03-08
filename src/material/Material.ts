@@ -164,12 +164,8 @@ module wd {
             this.mapManager.dispose();
         }
 
-        public updateTexture(){
-            this.mapManager.update();
-        }
-
-        public bindTexture(){
-            this.mapManager.bind();
+        public bindAndUpdateTexture(){
+            this.mapManager.bindAndUpdate();
         }
 
         public sendTexture(program){

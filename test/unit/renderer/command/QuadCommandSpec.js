@@ -197,11 +197,8 @@ describe("QuadCommand", function() {
 
             quadCmd.blend = material.blend;
 
-            //renderer.addCommand(quadCmd);
 
-            sandbox.stub(material.mapManager, "update");
-            sandbox.stub(material.mapManager, "sendData");
-            sandbox.stub(material, "updateTexture");
+            sandbox.stub(material, "bindAndUpdateTexture");
             sandbox.stub(material, "updateShader");
 
             return {
@@ -233,12 +230,12 @@ describe("QuadCommand", function() {
             gl = wd.DeviceManager.getInstance().gl;
         });
 
-        it("update texture", function(){
+        it("bind and update texture", function(){
             var result = addCommand();
 
             result.quadCmd.execute();
 
-            expect(result.material.updateTexture).toCalledOnce();
+            expect(result.material.bindAndUpdateTexture).toCalledOnce();
         });
         it("update shader", function(){
             var result = addCommand();

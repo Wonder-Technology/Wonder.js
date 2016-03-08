@@ -2,6 +2,10 @@ module wd {
     export abstract class RenderTargetTexture extends Texture {
         public abstract createEmptyTexture();
 
+        public initWhenCreate(){
+            this.needUpdate = false;
+        }
+
         public init(){
             //todo support mipmap?
             //this.generateMipmaps = false;
@@ -11,6 +15,9 @@ module wd {
             this.wrapT = ETextureWrapMode.CLAMP_TO_EDGE;
 
             return this;
+        }
+
+        public update(){
         }
 
         public getPosition(){

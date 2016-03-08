@@ -13,12 +13,14 @@ module wd{
         public magFilter:ETextureFilterMode = null;
         public minFilter:ETextureFilterMode = null;
         public glTexture:WebGLTexture = null;
+        public needUpdate:boolean = null;
 
         protected target:ETextureTarget = ETextureTarget.TEXTURE_2D;
 
 
-        public abstract init();
+        public abstract init():void;
         public abstract getSamplerName(unit:number):string;
+        public abstract update():void;
 
         public bindToUnit (unit:number) {
             var gl = DeviceManager.getInstance().gl,

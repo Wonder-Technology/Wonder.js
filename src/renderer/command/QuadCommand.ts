@@ -79,8 +79,7 @@ module wd {
         public execute() {
             var material = this.material;
 
-            material.bindTexture();
-            material.updateTexture();
+            material.bindAndUpdateTexture();
             material.updateShader(this);
 
             this._draw(material);

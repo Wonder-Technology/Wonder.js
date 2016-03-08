@@ -30,7 +30,6 @@ module wd{
         public type:ETextureType = null;
         public mipmaps:wdCb.Collection<any> = null;
         public anisotropy:number = null;
-        public needUpdate:boolean = null;
 
         public initWhenCreate(...args){
             var gl = DeviceManager.getInstance().gl;
@@ -39,16 +38,16 @@ module wd{
             this.glTexture = gl.createTexture();
 
             //_this.info.memory.textures ++;
+
+            this.needUpdate = true;
         }
 
         public init(){
         }
 
-        public update(index:number){
+        public update(){
             var gl = DeviceManager.getInstance().gl,
                 isSourcePowerOfTwo = this.isSourcePowerOfTwo();
-
-            this.bindToUnit(index);
 
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
 

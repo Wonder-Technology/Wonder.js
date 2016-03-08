@@ -33,23 +33,23 @@ describe("CustomProceduralShader", function() {
 
         it("update correspond maps from custom procedural texture data", function () {
             var texture = wd.CustomProceduralTexture.create();
-            sandbox.stub(texture.mapManager, "update");
+            sandbox.stub(texture.mapManager, "bindAndUpdate");
             shader._texture = texture;
 
             shader.update(cmd);
 
-            expect(texture.mapManager.update).toCalledOnce();
+            expect(texture.mapManager.bindAndUpdate).toCalledOnce();
         });
         it("send data of correspond maps", function () {
             var texture = wd.CustomProceduralTexture.create();
-            sandbox.stub(texture.mapManager, "update");
+            sandbox.stub(texture.mapManager, "bindAndUpdate");
             sandbox.stub(texture.mapManager, "sendData");
             shader._texture = texture;
 
             shader.update(cmd);
 
             expect(texture.mapManager.sendData).toCalledOnce();
-            expect(texture.mapManager.sendData).toCalledAfter(texture.mapManager.update);
+            expect(texture.mapManager.sendData).toCalledAfter(texture.mapManager.bindAndUpdate);
         });
     });
 });

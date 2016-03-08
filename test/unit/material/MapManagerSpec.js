@@ -228,40 +228,6 @@ describe("MapManager", function() {
         });
     });
 
-    describe("bind", function(){
-    });
-
-    describe("update", function(){
-        beforeEach(function(){
-            addAllTypeMaps();
-        });
-
-        it("update twoDTexture,compressTexture,envMap", function () {
-            sandbox.stub(twoDTexture, "update");
-            sandbox.stub(compressedTexture, "update");
-            sandbox.stub(cubemapTexture, "update");
-
-            manager.update();
-
-            expect(twoDTexture.update).toCalledOnce();
-            expect(compressedTexture.update).toCalledOnce();
-            expect(cubemapTexture.update).toCalledOnce();
-        });
-        it("not update proceduralMap,mirrorMap,shadowMap", function(){
-            proceduralTexture.update = sandbox.stub();
-            mirrorTexture.update = sandbox.stub();
-            twoDShadowMap.update = sandbox.stub();
-            cubemapShadowMap.update = sandbox.stub();
-
-            manager.update();
-
-            expect(proceduralTexture.update).not.toCalled();
-            expect(mirrorTexture.update).not.toCalled();
-            expect(twoDShadowMap.update).not.toCalled();
-            expect(cubemapShadowMap.update).not.toCalled();
-        });
-    });
-    
     describe("sendData", function(){
         var program;
 
@@ -332,4 +298,53 @@ describe("MapManager", function() {
             });
         });
     });
+
+    describe("bindAndUpdate", function () {
+        var program;
+
+        beforeEach(function(){
+            addAllTypeMaps();
+            stubAllTypeMaps(function(texture){
+                sandbox.stub(texture, "bindToUnit");
+            })
+            program = wd.Program.create();
+            sandbox.stub(program, "getUniformLocation").returns(1);
+        });
+
+        it("bind texture only one time in one frame", function () {
+            manager.bindAndUpdate();
+            manager.sendData(program);
+
+            expect(twoDTexture.bindToUnit).toCalledOnce();
+            expect(cubemapShadowMap.bindToUnit).toCalledOnce();
+            expect(cubemapTexture.bindToUnit).toCalledOnce();
+            expect(proceduralTexture.bindToUnit).toCalledOnce();
+        });
+        it("bind texture every frame", function () {
+            manager.bindAndUpdate();
+            manager.sendData(program);
+
+            manager.bindAndUpdate();
+            manager.sendData(program);
+
+
+            expect(twoDTexture.bindToUnit).toCalledTwice();
+            expect(cubemapShadowMap.bindToUnit).toCalledTwice();
+            expect(cubemapTexture.bindToUnit).toCalledTwice();
+            expect(proceduralTexture.bindToUnit).toCalledTwice();
+        });
+        it("bind texture, then update texture, then bind and update the next one", function () {
+            stubAllTypeMaps(function(texture){
+                sandbox.stub(texture, "update");
+            })
+
+            manager.bindAndUpdate();
+
+
+            expect(twoDTexture.bindToUnit).toCalledBefore(twoDTexture.update);
+            expect(twoDTexture.update).toCalledBefore(compressedTexture.bindToUnit);
+            expect(compressedTexture.bindToUnit).toCalledBefore(compressedTexture.update);
+        });
+    });
 });
+
