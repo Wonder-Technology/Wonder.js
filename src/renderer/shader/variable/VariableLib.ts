@@ -331,6 +331,11 @@ module wd{
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_roadColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {
