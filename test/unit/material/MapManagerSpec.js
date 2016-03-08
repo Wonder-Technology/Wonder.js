@@ -230,72 +230,34 @@ describe("MapManager", function() {
 
     describe("sendData", function(){
         var program;
+        var samplerName;
 
         beforeEach(function(){
             program = new wd.Program();
             var shader = wd.CommonShader.create();
             program.initWithShader(shader);
+
+            samplerName = "u_sampler";
+
+            addAllTypeMaps();
+
+            stubAllTypeMaps(function(texture){
+                sandbox.stub(texture, "sendData");
+
+                sandbox.stub(texture, "getSamplerName").returns(samplerName);
+            });
         });
 
-        //it("if count of maps is 1, not send texture data", function () {
-        //    var map = new wd.ImageTexture();
-        //    sandbox.stub(map, "sendData");
-        //    manager.addMap(map)
-        //
-        //    manager.sendData(program);
-        //
-        //    expect(map.sendData).not.toCalled();
-        //});
+        it("send texture data", function(){
+            manager.sendData(program);
 
-        describe("else", function(){
-            beforeEach(function(){
-                addAllTypeMaps();
-
-                stubAllTypeMaps(function(texture){
-                    sandbox.stub(texture, "bindToUnit");
-                    sandbox.stub(texture, "sendData");
-                })
-            });
-
-            it("if sampler is not in glsl, return", function(){
-                gl.getUniformLocation.returns(null);
-
-                manager.sendData(program);
-
-                expect(twoDTexture.bindToUnit).not.toCalled();
-            });
-
-            describe("else", function(){
-                var pos1 = 100,
-                    pos2 = 200,
-                    pos3 = 300,
-                    pos4 = 400,
-                    pos5 = 500,
-                    pos6 = 600,
-                    pos7 = 700;
-
-                beforeEach(function(){
-                    gl.getUniformLocation.onCall(0).returns(pos1);
-                    gl.getUniformLocation.onCall(1).returns(pos2);
-                    gl.getUniformLocation.onCall(2).returns(pos3);
-                    gl.getUniformLocation.onCall(3).returns(pos4);
-                    gl.getUniformLocation.onCall(4).returns(pos5);
-                    gl.getUniformLocation.onCall(5).returns(pos6);
-                    gl.getUniformLocation.onCall(6).returns(pos7);
-                });
-
-                it("send texture data", function(){
-                    manager.sendData(program);
-
-                    expect(twoDTexture.sendData).toCalledWith(program, pos1, 0);
-                    expect(compressedTexture.sendData).toCalledWith(program, pos2, 1);
-                    expect(proceduralTexture.sendData).toCalledWith(program, pos3, 2);
-                    expect(mirrorTexture.sendData).toCalledWith(program, pos4, 3);
-                    expect(twoDShadowMap.sendData).toCalledWith(program, pos5, 4);
-                    expect(cubemapShadowMap.sendData).toCalledWith(program, pos6, 5);
-                    expect(cubemapTexture.sendData).toCalledWith(program, pos7, 6);
-                });
-            });
+            expect(twoDTexture.sendData).toCalledWith(program, samplerName, 0);
+            expect(compressedTexture.sendData).toCalledWith(program, samplerName, 1);
+            expect(proceduralTexture.sendData).toCalledWith(program, samplerName, 2);
+            expect(mirrorTexture.sendData).toCalledWith(program, samplerName, 3);
+            expect(twoDShadowMap.sendData).toCalledWith(program, samplerName, 4);
+            expect(cubemapShadowMap.sendData).toCalledWith(program, samplerName, 5);
+            expect(cubemapTexture.sendData).toCalledWith(program, samplerName, 6);
         });
     });
 

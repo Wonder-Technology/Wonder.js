@@ -173,15 +173,9 @@ module wd{
                 len = mapArr.length;
 
             for(let i = 0; i < len; i++){
-                let texture = mapArr[i],
-                    samplerName = texture.getSamplerName(i),
-                    pos = program.getUniformLocation(samplerName);
+                let texture = mapArr[i];
 
-                if(program.isUniformDataNotExistByLocation(pos)){
-                    return;
-                }
-
-                texture.sendData(program, pos, i);
+                texture.sendData(program, texture.getSamplerName(i), i);
             }
         }
 

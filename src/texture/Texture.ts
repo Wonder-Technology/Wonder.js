@@ -36,8 +36,8 @@ module wd{
             return this;
         }
 
-        public sendData(program:Program, pos:WebGLUniformLocation, unit:number){
-            program.sendUniformData(pos, this.getSamplerType(), unit);
+        public sendData(program:Program, name:string, unit:number){
+            program.sendUniformData(name, this.getSamplerType(), unit);
         }
 
         public dispose(){
