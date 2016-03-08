@@ -21,7 +21,7 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3()]);
+            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3(), createPlane4()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -39,6 +39,10 @@
 
         function createPlane3() {
             return createPlane(wd.RoadProceduralTexture.create(), wd.Vector3.create(0, 50, 0))
+        }
+
+        function createPlane4() {
+            return createPlane(wd.CloudProceduralTexture.create(), wd.Vector3.create(50, 50, 0))
         }
 
         function createPlane(proceduralTexture, position) {
