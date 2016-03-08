@@ -346,6 +346,11 @@ module wd{
             type:EVariableType.FLOAT_4,
             value:EVariableCategory.ENGINE
         };
+
+        public static u_brickColor:ShaderVariable = {
+            type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
     }
 
     export type ShaderVariable = {

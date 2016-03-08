@@ -555,6 +555,10 @@
 /// <reference path="lib/procedural_texture_lib/cloud/CloudProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/cloud/CloudProceduralShaderLib"/>
 
+/// <reference path="lib/procedural_texture_lib/brick/BrickProceduralRenderTargetRenderer"/>
+/// <reference path="lib/procedural_texture_lib/brick/BrickProceduralTexture"/>
+/// <reference path="lib/procedural_texture_lib/brick/BrickProceduralShaderLib"/>
+
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralRenderTargetRenderer"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralTexture"/>
 /// <reference path="lib/procedural_texture_lib/custom/CustomProceduralShaderLib"/>

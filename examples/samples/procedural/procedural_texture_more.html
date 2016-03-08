@@ -21,7 +21,7 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3(), createPlane4()]);
+            director.scene.addChildren([createPlane1(), createPlane2(), createPlane3(), createPlane4(), createPlane5()]);
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
             director.scene.addChild(createCamera());
@@ -30,19 +30,23 @@
         }
 
         function createPlane1() {
-            return createPlane(wd.GrassProceduralTexture.create(), wd.Vector3.create(-100, 50, 0))
+            return createPlane(wd.GrassProceduralTexture.create(), wd.Vector3.create(-100, 0, 0))
         }
 
         function createPlane2() {
-            return createPlane(wd.WoodProceduralTexture.create(), wd.Vector3.create(-50, 50, 0))
+            return createPlane(wd.WoodProceduralTexture.create(), wd.Vector3.create(-50, 0, 0))
         }
 
         function createPlane3() {
-            return createPlane(wd.RoadProceduralTexture.create(), wd.Vector3.create(0, 50, 0))
+            return createPlane(wd.RoadProceduralTexture.create(), wd.Vector3.create(0, 0, 0))
         }
 
         function createPlane4() {
-            return createPlane(wd.CloudProceduralTexture.create(), wd.Vector3.create(50, 50, 0))
+            return createPlane(wd.CloudProceduralTexture.create(), wd.Vector3.create(50, 0, 0))
+        }
+
+        function createPlane5() {
+            return createPlane(wd.BrickProceduralTexture.create(), wd.Vector3.create(100, 0, 0))
         }
 
         function createPlane(proceduralTexture, position) {
