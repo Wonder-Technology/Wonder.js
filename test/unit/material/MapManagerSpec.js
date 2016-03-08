@@ -169,6 +169,100 @@ describe("MapManager", function() {
         });
     });
 
+    describe("test cache", function(){
+        function judge(testMethodName, spyFunc, expectFunc){
+            describe("test cache", function(){
+                var texture;
+
+                beforeEach(function(){
+                    spyFunc();
+                    texture = wd.ImageTexture.create({});
+
+                    manager.addMap(texture);
+                });
+
+                it("if cached, return cached data", function(){
+                    var list1 = manager[testMethodName]();
+                    var list2 = manager[testMethodName]();
+
+                    expect(list1 === list2).toBeTruthy();
+                    expect(expectFunc()).toCalledOnce();
+                });
+
+                describe("if texture dirty, not cache", function(){
+                    beforeEach(function(){
+
+                    });
+
+                    it("addMap make texture dirty", function(){
+                        var texture2 = wd.ImageTexture.create({});
+                        var list1 = manager[testMethodName]();
+
+                        manager.addMap(texture2);
+
+                        var list2 = manager[testMethodName]();
+
+                        expect(expectFunc()).toCalledTwice();
+                    });
+                    it("addArrayMap make texture dirty", function(){
+                        var texture1 = wd.ImageTexture.create({a:1});
+                        var texture2 = wd.ImageTexture.create({});
+                        var list1 = manager[testMethodName]();
+
+                        manager.addArrayMap("u_layerSampler2Ds", [texture1,texture2]);
+
+                        var list2 = manager[testMethodName]();
+
+                        expect(expectFunc()).toCalledTwice();
+                    });
+                    it("addMap make texture dirty", function(){
+                        var texture2 = wd.ImageTexture.create({});
+                        var list1 = manager[testMethodName]();
+
+                        manager.addMap(texture2);
+
+                        var list2 = manager[testMethodName]();
+
+                        expect(expectFunc()).toCalledTwice();
+                    });
+                    it("removeAllChildren make texture dirty", function(){
+                        var list1 = manager[testMethodName]();
+
+                        manager.removeAllChildren();
+
+                        var list2 = manager[testMethodName]();
+
+                        expect(expectFunc()).toCalledTwice();
+                    });
+                    it("set empty envMap make texture dirty", function(){
+                        var list1 = manager[testMethodName]();
+
+                        manager.setEnvMap(null);
+
+                        var list2 = manager[testMethodName]();
+
+                        expect(expectFunc()).toCalledTwice();
+                    });
+                });
+            });
+        }
+
+        beforeEach(function(){
+        });
+
+        judge("_getAllMaps", function(){
+            sandbox.spy(manager, "_getAllSingleMaps");
+        }, function(){
+            return manager._getAllSingleMaps;
+        });
+
+        judge("_getAllSingleMaps", function(){
+            sandbox.spy(manager._mapTable, "toArray");
+        }, function(){
+            return manager._mapTable.toArray;
+        });
+    });
+
     describe("_getAllMaps", function(){
         beforeEach(function(){
         });

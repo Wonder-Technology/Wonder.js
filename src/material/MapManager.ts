@@ -15,7 +15,8 @@ module wd{
         private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
         private _mirrorMap:MirrorTexture = null;
         private _textureDirty:boolean = false;
-        private _mapArrCache:Array<Texture> = null;
+        private _allMapsCache:Array<Texture> = null;
+        private _allSingleMapsCache:Array<Texture> = null;
 
         public init(){
             var mapArr = this._getAllMaps();
@@ -169,7 +170,7 @@ module wd{
         }
 
         private _sendSingleMapData(program:Program){
-            var mapArr = this._getAllSingMaps(),
+            var mapArr = this._getAllSingleMaps(),
                 len = mapArr.length;
 
             for(let i = 0; i < len; i++){
@@ -186,12 +187,7 @@ module wd{
             this._arrayMapList.forEach((mapData:ArrayMapData) => {
                 let arrayMapCount = mapData.mapArray.length;
 
-
-
-                //program.sendUniformData(mapData.samplerName, EVariableType.SAMPLER_ARRAY, mapData.mapArray);
-                //todo unit array
                 program.sendUniformData(`${mapData.samplerName}[0]`, EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
-
 
                 maxUnitOfBindedSingleMap += arrayMapCount;
             });
@@ -220,31 +216,30 @@ module wd{
             }
         })
         @cache(function(){
-            return !this._textureDirty && this._mapArrCache;
+            return !this._textureDirty && this._allMapsCache;
         }, function(){
-            return this._mapArrCache;
+            return this._allMapsCache;
         }, function(mapList:wdCb.Collection<Texture>){
-            this._mapArrCache = mapList;
+            this._allMapsCache = mapList;
             this._textureDirty = false;
         })
         private _getAllMaps(){
-            //var arrayMap = [];
-            //
-            //this._arrayMapList.forEach((mapData:ArrayMapData) => {
-            //    arrayMap = arrayMap.concat(mapData.mapList.toArray());
-            //});
-
-            //return [].concat(this._mapTable.toArray(), arrayMap);
-            //return [].concat(this._mapTable.toArray(), this._getAllArrayMaps());
-            return [].concat(this._getAllSingMaps(), this._getAllArrayMaps());
+            return [].concat(this._getAllSingleMaps(), this._getAllArrayMaps());
         }
 
         private _getMaxUnitOfBindedSingleMap(){
-            return this._getAllSingMaps().length;
+            return this._getAllSingleMaps().length;
         }
 
-        //todo add cache
-        private _getAllSingMaps(){
+        @cache(function(){
+            return !this._textureDirty && this._allSingleMapsCache;
+        }, function(){
+            return this._allSingleMapsCache;
+        }, function(mapList:wdCb.Collection<Texture>){
+            this._allSingleMapsCache = mapList;
+            this._textureDirty = false;
+        })
+        private _getAllSingleMaps(){
             return this._mapTable.toArray();
         }
 
@@ -253,15 +248,6 @@ module wd{
                 assert(map instanceof Texture, Log.info.FUNC_SHOULD("each element", "be Texture"));
             }
         })
-        //todo add cache
-        //@cache(function(){
-        //    return !this._textureDirty && this._mapArrCache;
-        //}, function(){
-        //    return this._mapArrCache;
-        //}, function(mapList:wdCb.Collection<Texture>){
-        //    this._mapArrCache = mapList;
-        //    this._textureDirty = false;
-        //})
         private _getAllArrayMaps(){
             var arrayMap = [];
 
