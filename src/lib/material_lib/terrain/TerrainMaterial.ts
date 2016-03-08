@@ -21,7 +21,7 @@ module wd{
         }
     }
 
-    class Layer{
+    export class Layer{
         public static create() {
             var obj = new this();
 
