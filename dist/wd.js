@@ -9325,6 +9325,9 @@ var wd;
         SceneDispatcher.prototype.addRenderTargetRenderer = function (renderTargetRenderer) {
             return this.gameObjectScene.addRenderTargetRenderer(renderTargetRenderer);
         };
+        SceneDispatcher.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
+            return this.gameObjectScene.addProceduralRenderTargetRenderer(renderTargetRenderer);
+        };
         SceneDispatcher.prototype.removeRenderTargetRenderer = function (renderTargetRenderer) {
             this.gameObjectScene.removeRenderTargetRenderer(renderTargetRenderer);
         };
@@ -9475,7 +9478,8 @@ var wd;
             this.physics = PhysicsConfig.create();
             this.physicsEngineAdapter = null;
             this._lightManager = wd.LightManager.create();
-            this._renderTargetRenderers = wdCb.Collection.create();
+            this._renderTargetRendererList = wdCb.Collection.create();
+            this._proceduralRendererList = wdCb.Collection.create();
             this._collisionDetector = wd.CollisionDetector.create();
             this._cameraList = wdCb.Collection.create();
         }
@@ -9528,7 +9532,8 @@ var wd;
                 this.physicsEngineAdapter.init();
             }
             _super.prototype.init.call(this);
-            this._renderTargetRenderers.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
+            this._renderTargetRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
+            this._proceduralRendererList.forEach(function (renderTargetRenderer) { return renderTargetRenderer.init(); });
             return this;
         };
         GameObjectScene.prototype.useProgram = function (shader) {
@@ -9549,10 +9554,13 @@ var wd;
             return _super.prototype.addChild.call(this, child);
         };
         GameObjectScene.prototype.addRenderTargetRenderer = function (renderTargetRenderer) {
-            this._renderTargetRenderers.addChild(renderTargetRenderer);
+            this._renderTargetRendererList.addChild(renderTargetRenderer);
+        };
+        GameObjectScene.prototype.addProceduralRenderTargetRenderer = function (renderTargetRenderer) {
+            this._proceduralRendererList.addChild(renderTargetRenderer);
         };
         GameObjectScene.prototype.removeRenderTargetRenderer = function (renderTargetRenderer) {
-            this._renderTargetRenderers.removeChild(renderTargetRenderer);
+            this._renderTargetRendererList.removeChild(renderTargetRenderer);
         };
         GameObjectScene.prototype.update = function (elapsedTime) {
             var currentCameraComponent = this._getCurrentCameraComponent();
@@ -9567,13 +9575,22 @@ var wd;
         };
         GameObjectScene.prototype.render = function (renderer) {
             var self = this;
-            this._renderTargetRenderers.forEach(function (target) {
+            this._renderTargetRendererList.forEach(function (target) {
                 target.render(renderer, self.currentCamera);
             });
+            this._renderProceduralRenderer(renderer);
             _super.prototype.render.call(this, renderer, this.currentCamera);
         };
         GameObjectScene.prototype.createTransform = function () {
             return null;
+        };
+        GameObjectScene.prototype._renderProceduralRenderer = function (renderer) {
+            this._proceduralRendererList.filter(function (target) {
+                return target.needRender();
+            })
+                .forEach(function (target) {
+                target.render(renderer);
+            });
         };
         GameObjectScene.prototype._getCameras = function (gameObject) {
             return this._find(gameObject, this._isCamera);
@@ -13971,7 +13988,7 @@ var wd;
         };
         MorphAnimation.prototype.handleWhenCurrentFrameFinish = function (elapsedTime) {
             this.isFrameChange = true;
-            this._prevFrameEndTime = (elapsedTime - this.pauseDuration) - (elapsedTime - this.pauseDuration) % this.duration;
+            this._prevFrameEndTime = wd.MathUtils.maxFloorIntegralMultiple((elapsedTime - this.pauseDuration), this.duration);
             this.currentFrame++;
             if (this._isFinishAllFrames()) {
                 this.currentFrame = 0;
@@ -14186,7 +14203,7 @@ var wd;
             }
         };
         ArticulatedAnimation.prototype._getBeginElapsedTimeOfFirstFrameWhenFinishAllFrames = function (elapsedTime) {
-            return elapsedTime - elapsedTime % this._currentAnimData.getChild(this.frameCount - 1).time;
+            return wd.MathUtils.maxFloorIntegralMultiple(elapsedTime, this._currentAnimData.getChild(this.frameCount - 1).time);
         };
         ArticulatedAnimation.prototype._isFinishAllFrames = function () {
             return this._currentFrame >= this.frameCount;
@@ -15080,6 +15097,79 @@ var wd;
         return TriangleGeometry;
     }(wd.Geometry));
     wd.TriangleGeometry = TriangleGeometry;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var TerrainGeometry = (function (_super) {
+        __extends(TerrainGeometry, _super);
+        function TerrainGeometry() {
+            _super.apply(this, arguments);
+            this.subdivisions = 1;
+            this.range = {
+                width: 10,
+                height: 10
+            };
+            this.minHeight = 0;
+            this.maxHeight = 10;
+            this.heightMapAsset = null;
+        }
+        TerrainGeometry.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        TerrainGeometry.prototype.computeData = function () {
+            var image = this.heightMapAsset.source, bufferWidth = image.width, bufferHeight = image.height;
+            return this._createGroundFromHeightMap(this._readHeightMapData(image, bufferWidth, bufferHeight), bufferWidth, bufferHeight);
+        };
+        TerrainGeometry.prototype._readHeightMapData = function (image, bufferWidth, bufferHeight) {
+            var canvas = document.createElement("canvas"), context = canvas.getContext("2d");
+            canvas.width = bufferWidth;
+            canvas.height = bufferHeight;
+            context.drawImage(image, 0, 0);
+            return context.getImageData(0, 0, bufferWidth, bufferHeight).data;
+        };
+        TerrainGeometry.prototype._createGroundFromHeightMap = function (buffer, bufferWidth, bufferHeight) {
+            var vertices = [], normals = [], texCoords = [], subdivisions = this.subdivisions, width = this.range.width, height = this.range.height;
+            for (var row = 0; row <= subdivisions; row++) {
+                for (var col = 0; col <= subdivisions; col++) {
+                    var x = (col * width) / subdivisions - (width / 2.0), z = ((subdivisions - row) * height) / subdivisions - (height / 2.0);
+                    vertices.push(x, this._getHeight(x, z, buffer, bufferWidth, bufferHeight), z);
+                    texCoords.push(col / subdivisions, 1.0 - row / subdivisions);
+                }
+            }
+            return {
+                vertices: vertices,
+                faces: wd.GeometryUtils.convertToFaces(this._getIndices(), normals),
+                texCoords: texCoords
+            };
+        };
+        TerrainGeometry.prototype._getHeight = function (x, z, buffer, bufferWidth, bufferHeight) {
+            var width = this.range.width, height = this.range.height, heightMapX = (((x + width / 2) / width) * (bufferWidth - 1)) | 0, heightMapY = ((1.0 - (z + height / 2) / height) * (bufferHeight - 1)) | 0, pos = (heightMapX + heightMapY * bufferWidth) * 4, r = buffer[pos] / 255.0, g = buffer[pos + 1] / 255.0, b = buffer[pos + 2] / 255.0, gradient = r * 0.3 + g * 0.59 + b * 0.11, minHeight = this.minHeight, maxHeight = this.maxHeight;
+            return minHeight + (maxHeight - minHeight) * gradient;
+        };
+        TerrainGeometry.prototype._getIndices = function () {
+            var indices = [], subdivisions = this.subdivisions;
+            for (var row = 0; row < subdivisions; row++) {
+                for (var col = 0; col < subdivisions; col++) {
+                    indices.push(col + row * (subdivisions + 1));
+                    indices.push(col + 1 + row * (subdivisions + 1));
+                    indices.push(col + 1 + (row + 1) * (subdivisions + 1));
+                    indices.push(col + row * (subdivisions + 1));
+                    indices.push(col + 1 + (row + 1) * (subdivisions + 1));
+                    indices.push(col + (row + 1) * (subdivisions + 1));
+                }
+            }
+            return indices;
+        };
+        return TerrainGeometry;
+    }(wd.Geometry));
+    wd.TerrainGeometry = TerrainGeometry;
 })(wd || (wd = {}));
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -17751,10 +17841,10 @@ var wd;
             return obj;
         };
         MeshRenderer.prototype.render = function (renderer, geometry, camera) {
-            renderer.addCommand(this.createDrawCommand(renderer, geometry, camera));
+            renderer.addCommand(this.createDrawCommand(geometry, camera));
         };
-        MeshRenderer.prototype.createDrawCommand = function (renderer, geometry, camera) {
-            var quadCmd = renderer.createQuadCommand(), cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material, position = this.entityObject.transform.position;
+        MeshRenderer.prototype.createDrawCommand = function (geometry, camera) {
+            var quadCmd = wd.QuadCommand.create(), cameraComponent = camera.getComponent(wd.CameraController), material = geometry.material, position = this.entityObject.transform.position;
             quadCmd.buffers = geometry.buffers;
             quadCmd.animation = geometry.entityObject.getComponent(wd.Animation);
             quadCmd.drawMode = geometry.drawMode;
@@ -17767,7 +17857,7 @@ var wd;
             return quadCmd;
         };
         __decorate([
-            wd.require(function (renderer, geometry, camera) {
+            wd.require(function (geometry, camera) {
                 var controller = camera.getComponent(wd.CameraController);
                 wd.assert(!!controller && !!controller.camera, wd.Log.info.FUNC_MUST("camera", "add Camera Component"));
                 wd.assert(!!geometry, wd.Log.info.FUNC_MUST("Mesh", "add geometry component"));
@@ -17795,7 +17885,7 @@ var wd;
             return obj;
         };
         SkyboxRenderer.prototype.render = function (renderer, geometry, camera) {
-            renderer.skyboxCommand = this.createDrawCommand(renderer, geometry, camera);
+            renderer.skyboxCommand = this.createDrawCommand(geometry, camera);
         };
         return SkyboxRenderer;
     }(wd.MeshRenderer));
@@ -22761,11 +22851,41 @@ var wd;
             var max = max + 1;
             return Math.floor(Math.random() * (max - min) + min);
         };
+        MathUtils.mod = function (a, b) {
+            var n = Math.floor(a / b);
+            a -= n * b;
+            if (a < 0) {
+                a += b;
+            }
+            return a;
+        };
+        MathUtils.maxFloorIntegralMultiple = function (a, b) {
+            if (b == 0) {
+                return a;
+            }
+            if (a < b) {
+                return 0;
+            }
+            return Math.floor(a / b) * b;
+        };
         __decorate([
             wd.require(function (min, max) {
                 wd.assert(min < max, wd.Log.info.FUNC_SHOULD("min", "< max"));
             })
         ], MathUtils, "generateInteger", null);
+        __decorate([
+            wd.ensure(function (val) {
+                wd.assert(val >= 0);
+            })
+        ], MathUtils, "mod", null);
+        __decorate([
+            wd.require(function (a, b) {
+                wd.assert(a >= 0 && b >= 0, wd.Log.info.FUNC_SHOULD("param", ">= 0"));
+            }),
+            wd.ensure(function (val) {
+                wd.assert(val >= 0);
+            })
+        ], MathUtils, "maxFloorIntegralMultiple", null);
         return MathUtils;
     }());
     wd.MathUtils = MathUtils;
@@ -22992,9 +23112,20 @@ var wd;
             this.texture.createEmptyTexture();
             this.initFrameBuffer();
         };
-        RenderTargetRenderer.prototype.render = function (renderer, camera) {
+        RenderTargetRenderer.prototype.render = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var renderer = args[0];
             this.beforeRender();
-            this.renderFrameBufferTexture(renderer, camera);
+            if (args.length === 1) {
+                this.renderFrameBufferTexture(renderer);
+            }
+            else {
+                var camera = args[1];
+                this.renderFrameBufferTexture(renderer, camera);
+            }
             this.afterRender();
         };
         RenderTargetRenderer.prototype.dispose = function () {
@@ -23543,7 +23674,7 @@ var wd;
             scene.unUseProgram();
         };
         ShadowMapRenderTargetRendererUtils.prototype.createShaderWithShaderLib = function (lib) {
-            this._shader = wd.Shader.create();
+            this._shader = wd.CommonShader.create();
             this._shader.addLib(wd.CommonShaderLib.create());
             this._shader.addLib(wd.CommonVerticeShaderLib.create());
             this._shader.addLib(lib);
@@ -23701,6 +23832,94 @@ var wd;
     wd.TwoDShadowMapRenderTargetRendererUtils = TwoDShadowMapRenderTargetRendererUtils;
 })(wd || (wd = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var ProceduralRenderTargetRenderer = (function (_super) {
+        __extends(ProceduralRenderTargetRenderer, _super);
+        function ProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+            this.frameBuffer = null;
+            this._indexBuffer = null;
+            this._vertexBuffer = null;
+            this._shader = null;
+            this._isRendered = false;
+        }
+        ProceduralRenderTargetRenderer.prototype.needRender = function () {
+            if (this._isRendered) {
+                return false;
+            }
+            this._isRendered = true;
+            return true;
+        };
+        ProceduralRenderTargetRenderer.prototype.init = function () {
+            _super.prototype.init.call(this);
+            this._vertexBuffer = wd.ArrayBuffer.create(new Float32Array([
+                1, 1,
+                -1, 1,
+                -1, -1,
+                1, -1
+            ]), 2, wd.EBufferType.FLOAT);
+            this._indexBuffer = wd.ElementBuffer.create(new Uint16Array([
+                0, 1, 2,
+                0, 2, 3
+            ]), wd.EBufferType.UNSIGNED_SHORT);
+            this._shader = this.createShader();
+            this._shader.init();
+        };
+        ProceduralRenderTargetRenderer.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+            this._indexBuffer.dispose();
+            this._vertexBuffer.dispose();
+            this._shader.dispose();
+        };
+        ProceduralRenderTargetRenderer.prototype.initFrameBuffer = function () {
+            var frameBuffer = this.frameBufferOperator, gl = wd.DeviceManager.getInstance().gl;
+            this.frameBuffer = frameBuffer.createFrameBuffer();
+            frameBuffer.bindFrameBuffer(this.frameBuffer);
+            frameBuffer.attachTexture(gl.TEXTURE_2D, this.texture.glTexture);
+            frameBuffer.check();
+            frameBuffer.unBind();
+        };
+        ProceduralRenderTargetRenderer.prototype.renderFrameBufferTexture = function (renderer) {
+            this.frameBufferOperator.bindFrameBuffer(this.frameBuffer);
+            this.texture.bindToUnit(0);
+            this.frameBufferOperator.setViewport();
+            renderer.addCommand(this._createRenderCommand());
+            renderer.clear();
+            renderer.render();
+            this.frameBufferOperator.unBind();
+            this.frameBufferOperator.restoreViewport();
+        };
+        ProceduralRenderTargetRenderer.prototype.disposeFrameBuffer = function () {
+            var gl = wd.DeviceManager.getInstance().gl;
+            gl.deleteFramebuffer(this.frameBuffer);
+        };
+        ProceduralRenderTargetRenderer.prototype._createRenderCommand = function () {
+            var command = wd.ProceduralCommand.create();
+            command.vertexBuffer = this._vertexBuffer;
+            command.indexBuffer = this._indexBuffer;
+            command.shader = this._shader;
+            return command;
+        };
+        __decorate([
+            wd.virtual
+        ], ProceduralRenderTargetRenderer.prototype, "needRender", null);
+        return ProceduralRenderTargetRenderer;
+    }(wd.RenderTargetRenderer));
+    wd.ProceduralRenderTargetRenderer = ProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
 var wd;
 (function (wd) {
     var Renderer = (function () {
@@ -23733,15 +23952,12 @@ var wd;
             _super.apply(this, arguments);
             this._commandQueue = wdCb.Collection.create();
             this._clearOptions = {
-                color: wd.Color.create("#ffffff")
+                color: wd.Color.create("#000000")
             };
         }
         WebGLRenderer.create = function () {
             var obj = new this();
             return obj;
-        };
-        WebGLRenderer.prototype.createQuadCommand = function () {
-            return wd.QuadCommand.create();
         };
         WebGLRenderer.prototype.addCommand = function (command) {
             if (this._commandQueue.hasChild(command)) {
@@ -23801,8 +24017,8 @@ var wd;
                 command.execute();
             });
         };
-        WebGLRenderer.prototype._getObjectToCameraZDistance = function (cameraPositionZ, quad) {
-            return cameraPositionZ - quad.z;
+        WebGLRenderer.prototype._getObjectToCameraZDistance = function (cameraPositionZ, cmd) {
+            return cameraPositionZ - cmd.z;
         };
         WebGLRenderer.prototype._clearCommand = function () {
             this._commandQueue.removeAllChildren();
@@ -24157,8 +24373,6 @@ var wd;
             this._shader = null;
             this._getAttribLocationCache = wdCb.Hash.create();
             this._getUniformLocationCache = wdCb.Hash.create();
-            this._attributesFromCustomShaderCache = null;
-            this._uniformsFromCustomShaderCache = null;
         }
         Program.create = function () {
             var obj = new this();
@@ -24197,14 +24411,12 @@ var wd;
             if (this.isUniformDataNotExistByLocation(pos) || data === null) {
                 return;
             }
-            if (wd.JudgeUtils.isFunction(data)) {
-                data = data();
-            }
             switch (type) {
                 case wd.EVariableType.FLOAT_1:
-                    gl.uniform1f(pos, data);
+                    gl.uniform1f(pos, Number(data));
                     break;
                 case wd.EVariableType.FLOAT_2:
+                    data = this._convertToArray2(data);
                     gl.uniform2f(pos, data[0], data[1]);
                     break;
                 case wd.EVariableType.FLOAT_3:
@@ -24224,26 +24436,15 @@ var wd;
                 case wd.EVariableType.NUMBER_1:
                 case wd.EVariableType.SAMPLER_CUBE:
                 case wd.EVariableType.SAMPLER_2D:
-                    gl.uniform1i(pos, data);
+                    gl.uniform1i(pos, Number(data));
+                    break;
+                case wd.EVariableType.SAMPLER_ARRAY:
+                    this._sendSampleArray(gl, pos, data);
                     break;
                 default:
                     wd.Log.error(true, wd.Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
             }
-        };
-        Program.prototype.sendUniformDataFromCustomShader = function () {
-            var self = this;
-            this._getUniformsFromCustomShader()
-                .forEach(function (val, key) {
-                if (val.type === wd.EVariableType.STRUCTURE) {
-                    for (var i in val.value) {
-                        self.sendStructureData(key + "." + i, val.value[i].type, val.value[i].value);
-                    }
-                }
-                else {
-                    self.sendUniformData(key, val.type, val.value);
-                }
-            });
         };
         Program.prototype.sendAttributeData = function (name, type, data) {
             var gl = wd.DeviceManager.getInstance().gl, pos = null, buffer = null;
@@ -24251,12 +24452,7 @@ var wd;
             if (pos === -1 || data === null) {
                 return;
             }
-            if (wd.JudgeUtils.isFunction(data)) {
-                buffer = data();
-            }
-            else {
-                buffer = data;
-            }
+            buffer = data;
             switch (type) {
                 case wd.EVariableType.BUFFER:
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
@@ -24267,13 +24463,6 @@ var wd;
                     wd.Log.error(true, wd.Log.info.FUNC_INVALID("EVariableType:", type));
                     break;
             }
-        };
-        Program.prototype.sendAttributeDataFromCustomShader = function () {
-            var self = this;
-            this._getAttributesFromCustomShader()
-                .forEach(function (val, key) {
-                self.sendAttributeData(key, self._convertAttributeDataType(val), val.value);
-            });
         };
         Program.prototype.sendStructureData = function (name, type, data) {
             this.sendUniformData(name, type, data);
@@ -24301,8 +24490,11 @@ var wd;
         Program.prototype.isUniformDataNotExistByLocation = function (pos) {
             return pos === null;
         };
-        Program.prototype._convertAttributeDataType = function (val) {
-            return wd.EVariableType.BUFFER;
+        Program.prototype._convertToArray2 = function (data) {
+            if (wd.JudgeUtils.isArray(data)) {
+                return data;
+            }
+            return [data.x, data.y];
         };
         Program.prototype._convertToArray3 = function (data) {
             if (wd.JudgeUtils.isArray(data)) {
@@ -24328,38 +24520,22 @@ var wd;
             this._getAttribLocationCache.addChild(name, pos);
             return pos;
         };
-        Program.prototype._getAttributesFromCustomShader = function () {
-            return this._shader.attributes
-                .filter(function (val) {
-                return val.value !== wd.EVariableCategory.ENGINE;
-            });
+        Program.prototype._sendSampleArray = function (gl, pos, data) {
+            gl.uniform1iv(pos, data);
         };
-        Program.prototype._getUniformsFromCustomShader = function () {
-            return this._shader.uniforms
-                .filter(function (val) {
-                return val.value !== wd.EVariableCategory.ENGINE;
-            });
-        };
-        __decorate([
-            wd.require(function () {
-                this._shader.uniforms
-                    .filter(function (val) {
-                    return val.value !== wd.EVariableCategory.ENGINE;
-                })
-                    .forEach(function (val, key) {
-                    if (val.type === wd.EVariableType.STRUCTURE) {
-                        wd.Log.error(!wd.JudgeUtils.isDirectObject(val.value), wd.Log.info.FUNC_MUST_BE("value's type", "object{}"));
-                    }
-                });
-            })
-        ], Program.prototype, "sendUniformDataFromCustomShader", null);
         __decorate([
             wd.require(function (name, type, data) {
-                if (data && wd.JudgeUtils.isFunction(data)) {
-                    wd.Log.error(!(data instanceof wd.ArrayBuffer), wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+                if (data) {
+                    wd.assert(data instanceof wd.ArrayBuffer, wd.Log.info.FUNC_MUST_BE("ArrayBuffer"));
+                    wd.assert(type === wd.EVariableType.BUFFER, wd.Log.info.FUNC_SHOULD("type", "be EVariableType.BUFFER, but actual is " + type));
                 }
             })
         ], Program.prototype, "sendAttributeData", null);
+        __decorate([
+            wd.require(function (data) {
+                wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector2, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector2> stucture"));
+            })
+        ], Program.prototype, "_convertToArray2", null);
         __decorate([
             wd.require(function (data) {
                 wd.assert(wd.JudgeUtils.isArray(data) || data instanceof wd.Vector3, wd.Log.info.FUNC_MUST_BE("shader->attributes->value", "Array<Array<any>> or Array<Vector3> stucture"));
@@ -24371,23 +24547,14 @@ var wd;
             })
         ], Program.prototype, "_convertToArray4", null);
         __decorate([
-            wd.cache(function () {
-                return !this._shader.dirty && this._attributesFromCustomShaderCache !== null;
-            }, function () {
-                return this._attributesFromCustomShaderCache;
-            }, function (result) {
-                this._attributesFromCustomShaderCache = result;
+            wd.require(function (gl, pos, data) {
+                wd.assert(wd.JudgeUtils.isArrayExactly(data), wd.Log.info.FUNC_SHOULD("data", "be array, but actual is " + data));
+                for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+                    var unit = data_1[_i];
+                    wd.assert(wd.JudgeUtils.isNumber(unit), wd.Log.info.FUNC_SHOULD("data", "be Array<number>, but actual is " + data));
+                }
             })
-        ], Program.prototype, "_getAttributesFromCustomShader", null);
-        __decorate([
-            wd.cache(function () {
-                return !this._shader.dirty && this._uniformsFromCustomShaderCache !== null;
-            }, function () {
-                return this._uniformsFromCustomShaderCache;
-            }, function (result) {
-                this._uniformsFromCustomShaderCache = result;
-            })
-        ], Program.prototype, "_getUniformsFromCustomShader", null);
+        ], Program.prototype, "_sendSampleArray", null);
         return Program;
     }());
     wd.Program = Program;
@@ -24401,18 +24568,52 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var wd;
 (function (wd) {
-    var QuadCommand = (function () {
-        function QuadCommand() {
-            this._mMatrix = null;
-            this.buffers = null;
-            this.vMatrix = null;
-            this.pMatrix = null;
+    var RenderCommand = (function () {
+        function RenderCommand() {
             this.drawMode = wd.EDrawMode.TRIANGLES;
-            this.z = null;
             this.blend = false;
+            this.z = null;
+        }
+        RenderCommand.prototype.init = function () {
+        };
+        RenderCommand.prototype.drawElements = function (indexBuffer) {
+            var startOffset = 0, gl = wd.DeviceManager.getInstance().gl;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
+            wd.GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, indexBuffer.type, indexBuffer.typeSize * startOffset);
+        };
+        __decorate([
+            wd.virtual
+        ], RenderCommand.prototype, "init", null);
+        return RenderCommand;
+    }());
+    wd.RenderCommand = RenderCommand;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var QuadCommand = (function (_super) {
+        __extends(QuadCommand, _super);
+        function QuadCommand() {
+            _super.apply(this, arguments);
+            this._mMatrix = null;
+            this._vMatrix = null;
+            this._pMatrix = null;
+            this.buffers = null;
             this.material = null;
             this.animation = null;
             this._normalMatrixCache = null;
+            this._mvpMatrixCache = null;
         }
         QuadCommand.create = function () {
             var obj = new this();
@@ -24432,6 +24633,13 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(QuadCommand.prototype, "mvpMatrix", {
+            get: function () {
+                return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(QuadCommand.prototype, "mMatrix", {
             get: function () {
                 return this._mMatrix;
@@ -24439,31 +24647,49 @@ var wd;
             set: function (mMatrix) {
                 this._mMatrix = mMatrix;
                 this._normalMatrixCache = null;
+                this._mvpMatrixCache = null;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QuadCommand.prototype, "vMatrix", {
+            get: function () {
+                return this._vMatrix;
+            },
+            set: function (vMatrix) {
+                this._vMatrix = vMatrix;
+                this._mvpMatrixCache = null;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QuadCommand.prototype, "pMatrix", {
+            get: function () {
+                return this._pMatrix;
+            },
+            set: function (pMatrix) {
+                this._pMatrix = pMatrix;
+                this._mvpMatrixCache = null;
             },
             enumerable: true,
             configurable: true
         });
         QuadCommand.prototype.execute = function () {
             var material = this.material;
-            material.updateTexture();
+            material.bindAndUpdateTexture();
             material.updateShader(this);
             this._draw(material);
         };
-        QuadCommand.prototype.init = function () {
-        };
         QuadCommand.prototype._draw = function (material) {
-            var totalNum = 0, startOffset = 0, vertexBuffer = null, indexBuffer = null, gl = wd.DeviceManager.getInstance().gl;
+            var startOffset = 0, vertexBuffer = null, indexBuffer = null, gl = wd.DeviceManager.getInstance().gl;
             this._setEffects(material);
             indexBuffer = this.buffers.getChild(wd.EBufferDataType.INDICE);
             if (indexBuffer) {
-                totalNum = indexBuffer.count;
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-                wd.GlUtils.drawElements(gl[this.drawMode], totalNum, indexBuffer.type, indexBuffer.typeSize * startOffset);
+                this.drawElements(indexBuffer);
             }
             else {
                 vertexBuffer = this.buffers.getChild(wd.EBufferDataType.VERTICE);
-                totalNum = vertexBuffer.count;
-                wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, totalNum);
+                wd.GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
             }
         };
         QuadCommand.prototype._setEffects = function (material) {
@@ -24498,6 +24724,18 @@ var wd;
             })
         ], QuadCommand.prototype, "normalMatrix", null);
         __decorate([
+            wd.requireGetter(function () {
+                wd.assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, wd.Log.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
+            }),
+            wd.cacheGetter(function () {
+                return this._mvpMatrixCache !== null;
+            }, function () {
+                return this._mvpMatrixCache;
+            }, function (result) {
+                this._mvpMatrixCache = result;
+            })
+        ], QuadCommand.prototype, "mvpMatrix", null);
+        __decorate([
             wd.require(function (material) {
                 if (material.blendFuncSeparate && material.blendEquationSeparate) {
                 }
@@ -24507,8 +24745,40 @@ var wd;
             })
         ], QuadCommand.prototype, "_setEffects", null);
         return QuadCommand;
-    }());
+    }(wd.RenderCommand));
     wd.QuadCommand = QuadCommand;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var ProceduralCommand = (function (_super) {
+        __extends(ProceduralCommand, _super);
+        function ProceduralCommand() {
+            _super.apply(this, arguments);
+            this.shader = null;
+            this.indexBuffer = null;
+            this.vertexBuffer = null;
+        }
+        ProceduralCommand.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        ProceduralCommand.prototype.init = function () {
+            this.blend = false;
+            this.drawMode = wd.EDrawMode.TRIANGLES;
+        };
+        ProceduralCommand.prototype.execute = function () {
+            this.shader.update(this);
+            this.drawElements(this.indexBuffer);
+        };
+        return ProceduralCommand;
+    }(wd.RenderCommand));
+    wd.ProceduralCommand = ProceduralCommand;
 })(wd || (wd = {}));
 
 var wd;
@@ -24620,15 +24890,11 @@ var wd;
             this._vsSource = "";
             this._fsSource = "";
             this.program = wd.Program.create();
-            this.libDirty = true;
-            this._definitionDataDirty = true;
-            this._libs = wdCb.Collection.create();
-            this._sourceBuilder = wd.ShaderSourceBuilder.create();
+            this.libDirty = false;
+            this.libs = wdCb.Collection.create();
+            this.sourceBuilder = this.createShaderSourceBuilder();
+            this._definitionDataDirty = false;
         }
-        Shader.create = function () {
-            var obj = new this();
-            return obj;
-        };
         Object.defineProperty(Shader.prototype, "attributes", {
             get: function () {
                 return this._attributes;
@@ -24696,44 +24962,19 @@ var wd;
             var gl = wd.DeviceManager.getInstance().gl;
             return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
         };
-        Shader.prototype.isEqual = function (other) {
-            return this.vsSource === other.vsSource
-                && this.fsSource === other.fsSource;
-        };
-        Shader.prototype.init = function () {
-            this._libs.forEach(function (lib) {
+        Shader.prototype.init = function (material) {
+            this.libs.forEach(function (lib) {
                 lib.init();
             });
-            this.judgeRefreshShader();
+            this.judgeRefreshShader(material);
         };
         Shader.prototype.dispose = function () {
             this.program.dispose();
             this.attributes.removeAllChildren();
             this.uniforms.removeAllChildren();
-            this._libs.forEach(function (lib) {
+            this.libs.forEach(function (lib) {
                 lib.dispose();
             });
-        };
-        Shader.prototype.update = function (quadCmd, material) {
-            var program = this.program;
-            this.judgeRefreshShader();
-            this.program.use();
-            this._libs.forEach(function (lib) {
-                lib.sendShaderVariables(program, quadCmd, material);
-            });
-            program.sendAttributeDataFromCustomShader();
-            program.sendUniformDataFromCustomShader();
-            material.mapManager.sendData(program);
-        };
-        Shader.prototype.judgeRefreshShader = function () {
-            if (this.libDirty) {
-                this.buildDefinitionData(null, wd.LightMaterial.create());
-            }
-            if (this._definitionDataDirty) {
-                this.program.initWithShader(this);
-            }
-            this.libDirty = false;
-            this._definitionDataDirty = false;
         };
         Shader.prototype.hasLib = function () {
             var args = [];
@@ -24742,32 +24983,32 @@ var wd;
             }
             if (args[0] instanceof wd.ShaderLib) {
                 var lib = args[0];
-                return this._libs.hasChild(lib);
+                return this.libs.hasChild(lib);
             }
             else {
                 var _class_1 = args[0];
-                return this._libs.hasChildWithFunc(function (lib) {
+                return this.libs.hasChildWithFunc(function (lib) {
                     return lib instanceof _class_1;
                 });
             }
         };
         Shader.prototype.addLib = function (lib) {
-            this._libs.addChild(lib);
+            this.libs.addChild(lib);
             lib.shader = this;
             this.libDirty = true;
         };
         Shader.prototype.addShaderLibToTop = function (lib) {
-            this._libs.unShiftChild(lib);
+            this.libs.unShiftChild(lib);
             lib.shader = this;
             this.libDirty = true;
         };
         Shader.prototype.getLib = function (libClass) {
-            return this._libs.findOne(function (lib) {
+            return this.libs.findOne(function (lib) {
                 return lib instanceof libClass;
             });
         };
         Shader.prototype.getLibs = function () {
-            return this._libs;
+            return this.libs;
         };
         Shader.prototype.removeLib = function () {
             var args = [];
@@ -24775,30 +25016,25 @@ var wd;
                 args[_i - 0] = arguments[_i];
             }
             this.libDirty = true;
-            return this._libs.removeChild(args[0]);
+            return this.libs.removeChild(args[0]);
         };
         Shader.prototype.removeAllLibs = function () {
             this.libDirty = true;
-            this._libs.removeAllChildren();
+            this.libs.removeAllChildren();
         };
         Shader.prototype.sortLib = function (func) {
             this.libDirty = true;
-            this._libs = this._libs.sort(func);
+            this.libs.sort(func, true);
         };
-        Shader.prototype.read = function (definitionData) {
-            this._sourceBuilder.read(definitionData);
-            this.libDirty = true;
-        };
-        Shader.prototype.buildDefinitionData = function (quadCmd, material) {
-            this._libs.forEach(function (lib) {
-                lib.setShaderDefinition(quadCmd, material);
-            });
-            this._sourceBuilder.clearShaderDefinition();
-            this._sourceBuilder.build(this._libs);
-            this.attributes = this._sourceBuilder.attributes;
-            this.uniforms = this._sourceBuilder.uniforms;
-            this.vsSource = this._sourceBuilder.vsSource;
-            this.fsSource = this._sourceBuilder.fsSource;
+        Shader.prototype.judgeRefreshShader = function (material) {
+            if (this.libDirty) {
+                this.buildDefinitionData(null, material);
+            }
+            if (this._definitionDataDirty) {
+                this.program.initWithShader(this);
+            }
+            this.libDirty = false;
+            this._definitionDataDirty = false;
         };
         Shader.prototype._initShader = function (shader, source) {
             var gl = wd.DeviceManager.getInstance().gl;
@@ -24828,16 +25064,17 @@ var wd;
         __decorate([
             wd.ensure(function () {
                 var self = this;
-                this._libs.forEach(function (lib) {
+                this.libs.forEach(function (lib) {
                     wd.assert(wd.JudgeUtils.isEqual(lib.shader, self), wd.Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
                 });
                 wd.assert(this.libDirty === true, wd.Log.info.FUNC_SHOULD("libDirty", "be true"));
             })
         ], Shader.prototype, "addLib", null);
         __decorate([
-            wd.ensure(function () {
+            wd.ensure(function (val, lib) {
                 var self = this;
-                this._libs.forEach(function (lib) {
+                wd.assert(wd.JudgeUtils.isEqual(lib, this.libs.getChild(0)), wd.Log.info.FUNC_SHOULD("add shader lib to the top"));
+                this.libs.forEach(function (lib) {
                     wd.assert(wd.JudgeUtils.isEqual(lib.shader, self), wd.Log.info.FUNC_SHOULD("set ShaderLib.shader to be this"));
                 });
                 wd.assert(this.libDirty === true, wd.Log.info.FUNC_SHOULD("libDirty", "be true"));
@@ -24848,20 +25085,329 @@ var wd;
     wd.Shader = Shader;
 })(wd || (wd = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomShader = (function (_super) {
+        __extends(CustomShader, _super);
+        function CustomShader() {
+            _super.apply(this, arguments);
+        }
+        CustomShader.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CustomShader.prototype.update = function (quadCmd, material) {
+            var program = this.program;
+            this.judgeRefreshShader(material);
+            this.program.use();
+            this.libs.forEach(function (lib) {
+                lib.sendShaderVariables(program, quadCmd, material);
+            });
+            material.sendTexture(program);
+        };
+        CustomShader.prototype.read = function (definitionData) {
+            this.sourceBuilder.clearShaderDefinition();
+            this.sourceBuilder.read(definitionData);
+            this.libDirty = true;
+        };
+        CustomShader.prototype.getSampler2DUniformsAfterRead = function () {
+            return this.sourceBuilder.uniforms.filter(function (uniform, name) {
+                return uniform.type === wd.EVariableType.SAMPLER_2D;
+            });
+        };
+        CustomShader.prototype.buildDefinitionData = function (cmd, material) {
+            this.sourceBuilder.build();
+            this.attributes = this.sourceBuilder.attributes;
+            this.uniforms = this.sourceBuilder.uniforms;
+            this.vsSource = this.sourceBuilder.vsSource;
+            this.fsSource = this.sourceBuilder.fsSource;
+        };
+        CustomShader.prototype.createShaderSourceBuilder = function () {
+            return wd.CustomShaderSourceBuilder.create();
+        };
+        return CustomShader;
+    }(wd.Shader));
+    wd.CustomShader = CustomShader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var EngineShader = (function (_super) {
+        __extends(EngineShader, _super);
+        function EngineShader() {
+            _super.apply(this, arguments);
+        }
+        EngineShader.prototype.buildDefinitionData = function (cmd, material) {
+            this.libs.forEach(function (lib) {
+                lib.setShaderDefinition(cmd, material);
+            });
+            this.sourceBuilder.clearShaderDefinition();
+            this.sourceBuilder.build(this.libs);
+            this.attributes = this.sourceBuilder.attributes;
+            this.uniforms = this.sourceBuilder.uniforms;
+            this.vsSource = this.sourceBuilder.vsSource;
+            this.fsSource = this.sourceBuilder.fsSource;
+        };
+        EngineShader.prototype.createShaderSourceBuilder = function () {
+            return wd.EngineShaderSourceBuilder.create();
+        };
+        return EngineShader;
+    }(wd.Shader));
+    wd.EngineShader = EngineShader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CommonShader = (function (_super) {
+        __extends(CommonShader, _super);
+        function CommonShader() {
+            _super.apply(this, arguments);
+        }
+        CommonShader.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonShader.prototype.update = function (quadCmd, material) {
+            var program = this.program;
+            this.judgeRefreshShader(material);
+            this.program.use();
+            this.libs.forEach(function (lib) {
+                lib.sendShaderVariables(program, quadCmd, material);
+            });
+            material.sendTexture(program);
+        };
+        return CommonShader;
+    }(wd.EngineShader));
+    wd.CommonShader = CommonShader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var ProceduralShader = (function (_super) {
+        __extends(ProceduralShader, _super);
+        function ProceduralShader() {
+            _super.apply(this, arguments);
+        }
+        ProceduralShader.prototype.init = function () {
+            this.addLib(wd.CommonProceduralShaderLib.create());
+            _super.prototype.init.call(this, null);
+        };
+        ProceduralShader.prototype.update = function (cmd) {
+            var program = this.program;
+            this.judgeRefreshShader(null);
+            this.program.use();
+            this.libs.forEach(function (lib) {
+                lib.sendShaderVariables(program, cmd);
+            });
+        };
+        return ProceduralShader;
+    }(wd.EngineShader));
+    wd.ProceduralShader = ProceduralShader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CommonProceduralShader = (function (_super) {
+        __extends(CommonProceduralShader, _super);
+        function CommonProceduralShader() {
+            _super.apply(this, arguments);
+        }
+        CommonProceduralShader.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        return CommonProceduralShader;
+    }(wd.ProceduralShader));
+    wd.CommonProceduralShader = CommonProceduralShader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomProceduralShader = (function (_super) {
+        __extends(CustomProceduralShader, _super);
+        function CustomProceduralShader(texture) {
+            _super.call(this);
+            this._texture = null;
+            this._texture = texture;
+        }
+        CustomProceduralShader.create = function (texture) {
+            var obj = new this(texture);
+            return obj;
+        };
+        CustomProceduralShader.prototype.update = function (cmd) {
+            _super.prototype.update.call(this, cmd);
+            this._texture.mapManager.bindAndUpdate();
+            this._texture.mapManager.sendData(this.program);
+        };
+        return CustomProceduralShader;
+    }(wd.ProceduralShader));
+    wd.CustomProceduralShader = CustomProceduralShader;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var ShaderSourceBuilder = (function () {
         function ShaderSourceBuilder() {
             this.attributes = wdCb.Hash.create();
             this.uniforms = wdCb.Hash.create();
-            this.vsSource = "";
+            this.vsSource = null;
+            this.fsSource = null;
+        }
+        ShaderSourceBuilder.prototype.dispose = function () {
+            this.clearShaderDefinition();
+        };
+        ShaderSourceBuilder.prototype.convertAttributesData = function () {
+            var self = this;
+            this.attributes
+                .filter(function (data) {
+                return data.value !== wd.EVariableCategory.ENGINE && wd.JudgeUtils.isArrayExactly(data.value);
+            })
+                .forEach(function (data, key) {
+                data.value = self._convertArrayToArrayBuffer(data.type, data.value);
+            });
+        };
+        ShaderSourceBuilder.prototype._convertArrayToArrayBuffer = function (type, value) {
+            var size = this._getBufferSize(type);
+            return wd.ArrayBuffer.create(new Float32Array(value), size, wd.EBufferType.FLOAT);
+        };
+        ShaderSourceBuilder.prototype._getBufferSize = function (type) {
+            var size = null;
+            switch (type) {
+                case wd.EVariableType.FLOAT_1:
+                case wd.EVariableType.NUMBER_1:
+                    size = 1;
+                    break;
+                case wd.EVariableType.FLOAT_2:
+                    size = 2;
+                    break;
+                case wd.EVariableType.FLOAT_3:
+                    size = 3;
+                    break;
+                case wd.EVariableType.FLOAT_4:
+                    size = 4;
+                    break;
+                default:
+                    wd.Log.error(true, wd.Log.info.FUNC_UNEXPECT("EVariableType", type));
+                    break;
+            }
+            return size;
+        };
+        __decorate([
+            wd.require(function () {
+                this.attributes.forEach(function (data) {
+                    wd.assert(!wd.JudgeUtils.isFloatArray(data.value), wd.Log.info.FUNC_SHOULD_NOT("attribute->value", "be Float array"));
+                });
+            })
+        ], ShaderSourceBuilder.prototype, "convertAttributesData", null);
+        __decorate([
+            wd.require(function (type, value) {
+                wd.assert(wd.JudgeUtils.isArrayExactly(value), wd.Log.info.FUNC_SHOULD("value:" + value, "be array"));
+            })
+        ], ShaderSourceBuilder.prototype, "_convertArrayToArrayBuffer", null);
+        return ShaderSourceBuilder;
+    }());
+    wd.ShaderSourceBuilder = ShaderSourceBuilder;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomShaderSourceBuilder = (function (_super) {
+        __extends(CustomShaderSourceBuilder, _super);
+        function CustomShaderSourceBuilder() {
+            _super.apply(this, arguments);
+        }
+        CustomShaderSourceBuilder.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CustomShaderSourceBuilder.prototype.read = function (definitionData) {
+            if (definitionData.attributes) {
+                this.attributes = wdCb.Hash.create(definitionData.attributes);
+            }
+            if (definitionData.uniforms) {
+                this.uniforms = wdCb.Hash.create(definitionData.uniforms);
+            }
+            this.vsSource = wd.LoaderManager.getInstance().get(definitionData.vsSourceId);
+            this.fsSource = wd.LoaderManager.getInstance().get(definitionData.fsSourceId);
+        };
+        CustomShaderSourceBuilder.prototype.build = function () {
+            this.convertAttributesData();
+        };
+        CustomShaderSourceBuilder.prototype.clearShaderDefinition = function () {
+            this.attributes.removeAllChildren();
+            this.uniforms.removeAllChildren();
+            this.vsSource = null;
+            this.fsSource = null;
+        };
+        return CustomShaderSourceBuilder;
+    }(wd.ShaderSourceBuilder));
+    wd.CustomShaderSourceBuilder = CustomShaderSourceBuilder;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var EngineShaderSourceBuilder = (function (_super) {
+        __extends(EngineShaderSourceBuilder, _super);
+        function EngineShaderSourceBuilder() {
+            _super.apply(this, arguments);
             this.vsSourceTop = "";
             this.vsSourceDefine = "";
             this.vsSourceVarDeclare = "";
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
-            this.fsSource = "";
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
@@ -24870,59 +25416,22 @@ var wd;
             this.fsSourceBody = "";
             this.vsSourceDefineList = wdCb.Collection.create();
             this.fsSourceDefineList = wdCb.Collection.create();
-            this.attributesFromShaderLib = wdCb.Hash.create();
-            this.uniformsFromShaderLib = wdCb.Hash.create();
-            this.vsSourceTopFromShaderLib = "";
-            this.vsSourceDefineFromShaderLib = "";
-            this.vsSourceVarDeclareFromShaderLib = "";
-            this.vsSourceFuncDeclareFromShaderLib = "";
-            this.vsSourceFuncDefineFromShaderLib = "";
-            this.vsSourceBodyFromShaderLib = "";
-            this.fsSourceTopFromShaderLib = "";
-            this.fsSourceDefineFromShaderLib = "";
-            this.fsSourceVarDeclareFromShaderLib = "";
-            this.fsSourceFuncDeclareFromShaderLib = "";
-            this.fsSourceFuncDefineFromShaderLib = "";
-            this.fsSourceBodyFromShaderLib = "";
         }
-        ShaderSourceBuilder.create = function () {
+        EngineShaderSourceBuilder.create = function () {
             var obj = new this();
             return obj;
         };
-        ShaderSourceBuilder.prototype.read = function (definitionData) {
-            if (definitionData.attributes) {
-                this.attributesFromShaderLib = (definitionData.attributes instanceof wdCb.Hash ? definitionData.attributes : wdCb.Hash.create(definitionData.attributes));
-            }
-            if (definitionData.uniforms) {
-                this.uniformsFromShaderLib = (definitionData.uniforms instanceof wdCb.Hash ? definitionData.uniforms : wdCb.Hash.create(definitionData.uniforms));
-            }
-            this.vsSourceTopFromShaderLib = definitionData.vsSourceTop || "";
-            this.vsSourceDefineFromShaderLib = definitionData.vsSourceDefine || "";
-            this.vsSourceVarDeclareFromShaderLib = definitionData.vsSourceVarDeclare || "";
-            this.vsSourceFuncDeclareFromShaderLib = definitionData.vsSourceFuncDeclare || "";
-            this.vsSourceFuncDefineFromShaderLib = definitionData.vsSourceFuncDefine || "";
-            this.vsSourceBodyFromShaderLib = definitionData.vsSourceBody || "";
-            this.fsSourceTopFromShaderLib = definitionData.fsSourceTop || "";
-            this.fsSourceDefineFromShaderLib = definitionData.fsSourceDefine || "";
-            this.fsSourceVarDeclareFromShaderLib = definitionData.fsSourceVarDeclare || "";
-            this.fsSourceFuncDeclareFromShaderLib = definitionData.fsSourceFuncDeclare || "";
-            this.fsSourceFuncDefineFromShaderLib = definitionData.fsSourceFuncDefine || "";
-            this.fsSourceBodyFromShaderLib = definitionData.fsSourceBody || "";
-        };
-        ShaderSourceBuilder.prototype.build = function (libs) {
-            var self = this;
+        EngineShaderSourceBuilder.prototype.build = function (libs) {
             this._readLibSource(libs);
-            this._buildVsSource();
-            this._buildFsSource();
-            this.attributes
-                .filter(function (data) {
-                return (wd.JudgeUtils.isArrayExactly(data.value) || wd.JudgeUtils.isFloatArray(data.value)) && data.value !== wd.EVariableCategory.ENGINE;
-            })
-                .forEach(function (data, key) {
-                data.value = self._convertArrayToArrayBuffer(data.type, data.value);
-            });
+            if (this.vsSource === null) {
+                this._buildVsSource();
+            }
+            if (this.fsSource === null) {
+                this._buildFsSource();
+            }
+            this.convertAttributesData();
         };
-        ShaderSourceBuilder.prototype.clearShaderDefinition = function () {
+        EngineShaderSourceBuilder.prototype.clearShaderDefinition = function () {
             this.attributes.removeAllChildren();
             this.uniforms.removeAllChildren();
             this.vsSourceDefineList.removeAllChildren();
@@ -24933,96 +25442,123 @@ var wd;
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
+            this.vsSource = null;
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+            this.fsSource = null;
         };
-        ShaderSourceBuilder.prototype.dispose = function () {
-            this.clearShaderDefinition();
-            this.attributesFromShaderLib.removeAllChildren();
-            this.uniformsFromShaderLib.removeAllChildren();
-        };
-        ShaderSourceBuilder.prototype._readLibSource = function (libs) {
-            var self = this, vsSourceTop = "", vsSourceDefine = "", vsSourceVarDeclare = "", vsSourceFuncDeclare = "", vsSourceFuncDefine = "", vsSourceBody = "", fsSourceTop = "", fsSourceDefine = "", fsSourceVarDeclare = "", fsSourceFuncDeclare = "", fsSourceFuncDefine = "", fsSourceBody = "";
-            libs.forEach(function (lib) {
-                self.attributes.addChildren(lib.attributes);
-                self.uniforms.addChildren(lib.uniforms);
-                vsSourceTop += lib.vsSourceTop;
-                vsSourceDefine += lib.vsSourceDefine;
-                vsSourceVarDeclare += lib.vsSourceVarDeclare;
-                vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
-                vsSourceFuncDefine += lib.vsSourceFuncDefine;
-                vsSourceBody += lib.vsSourceBody;
-                fsSourceTop += lib.fsSourceTop;
-                fsSourceDefine += lib.fsSourceDefine;
-                fsSourceVarDeclare += lib.fsSourceVarDeclare;
-                fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
-                fsSourceFuncDefine += lib.fsSourceFuncDefine;
-                fsSourceBody += lib.fsSourceBody;
-                self.vsSourceDefineList.addChildren(lib.vsSourceDefineList);
-                self.fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+        EngineShaderSourceBuilder.prototype._readLibSource = function (libs) {
+            var setSourceLibs = libs.filter(function (lib) {
+                return lib.vsSource !== null || lib.fsSource !== null;
             });
-            this.attributes.addChildren(this.attributesFromShaderLib);
-            this.uniforms.addChildren(this.uniformsFromShaderLib);
-            this.vsSourceTop = vsSourceTop + this.vsSourceTopFromShaderLib;
-            this.vsSourceDefine = vsSourceDefine + this.vsSourceDefineFromShaderLib;
-            this.vsSourceVarDeclare = vsSourceVarDeclare + this.vsSourceVarDeclareFromShaderLib;
-            this.vsSourceFuncDeclare = vsSourceFuncDeclare + this.vsSourceFuncDeclareFromShaderLib;
-            this.vsSourceFuncDefine = vsSourceFuncDefine + this.vsSourceFuncDefineFromShaderLib;
-            this.vsSourceBody = vsSourceBody + this.vsSourceBodyFromShaderLib;
-            this.fsSourceTop = fsSourceTop + this.fsSourceTopFromShaderLib;
-            this.fsSourceDefine = fsSourceDefine + this.fsSourceDefineFromShaderLib;
-            this.fsSourceVarDeclare = fsSourceVarDeclare + this.fsSourceVarDeclareFromShaderLib;
-            this.fsSourceFuncDeclare = fsSourceFuncDeclare + this.fsSourceFuncDeclareFromShaderLib;
-            this.fsSourceFuncDefine = fsSourceFuncDefine + this.fsSourceFuncDefineFromShaderLib;
-            this.fsSourceBody = fsSourceBody + this.fsSourceBodyFromShaderLib;
+            this._judgeAndSetVsSource(setSourceLibs);
+            this._judgeAndSetFsSource(setSourceLibs);
+            this._judgeAndSetPartSource(libs);
         };
-        ShaderSourceBuilder.prototype._buildVsSource = function () {
+        EngineShaderSourceBuilder.prototype._judgeAndSetVsSource = function (setSourceLibs) {
+            var setVsSourceLib = setSourceLibs.findOne(function (lib) {
+                return lib.vsSource !== null;
+            });
+            if (setVsSourceLib) {
+                this.vsSource = setVsSourceLib.vsSource;
+            }
+        };
+        EngineShaderSourceBuilder.prototype._judgeAndSetFsSource = function (setSourceLibs) {
+            var setFsSourceLib = setSourceLibs.findOne(function (lib) {
+                return lib.fsSource !== null;
+            });
+            if (setFsSourceLib) {
+                this.fsSource = setFsSourceLib.fsSource;
+            }
+        };
+        EngineShaderSourceBuilder.prototype._judgeAndSetPartSource = function (libs) {
+            var vsSource = this.vsSource, fsSource = this.fsSource, attributes = this.attributes, uniforms = this.uniforms, vsSourceDefineList = this.vsSourceDefineList, fsSourceDefineList = this.fsSourceDefineList, vsSourceTop = "", vsSourceDefine = "", vsSourceVarDeclare = "", vsSourceFuncDeclare = "", vsSourceFuncDefine = "", vsSourceBody = "", fsSourceTop = "", fsSourceDefine = "", fsSourceVarDeclare = "", fsSourceFuncDeclare = "", fsSourceFuncDefine = "", fsSourceBody = "";
+            libs.forEach(function (lib) {
+                attributes.addChildren(lib.attributes);
+                uniforms.addChildren(lib.uniforms);
+                if (vsSource === null) {
+                    vsSourceTop += lib.vsSourceTop;
+                    vsSourceDefine += lib.vsSourceDefine;
+                    vsSourceVarDeclare += lib.vsSourceVarDeclare;
+                    vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
+                    vsSourceFuncDefine += lib.vsSourceFuncDefine;
+                    vsSourceBody += lib.vsSourceBody;
+                    vsSourceDefineList.addChildren(lib.vsSourceDefineList);
+                }
+                if (fsSource === null) {
+                    fsSourceTop += lib.fsSourceTop;
+                    fsSourceDefine += lib.fsSourceDefine;
+                    fsSourceVarDeclare += lib.fsSourceVarDeclare;
+                    fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
+                    fsSourceFuncDefine += lib.fsSourceFuncDefine;
+                    fsSourceBody += lib.fsSourceBody;
+                    fsSourceDefineList.addChildren(lib.fsSourceDefineList);
+                }
+            });
+            if (vsSource === null) {
+                this.vsSourceTop = vsSourceTop;
+                this.vsSourceDefine = vsSourceDefine;
+                this.vsSourceVarDeclare = vsSourceVarDeclare;
+                this.vsSourceFuncDeclare = vsSourceFuncDeclare;
+                this.vsSourceFuncDefine = vsSourceFuncDefine;
+                this.vsSourceBody = vsSourceBody;
+            }
+            if (fsSource === null) {
+                this.fsSourceTop = fsSourceTop;
+                this.fsSourceDefine = fsSourceDefine;
+                this.fsSourceVarDeclare = fsSourceVarDeclare;
+                this.fsSourceFuncDeclare = fsSourceFuncDeclare;
+                this.fsSourceFuncDefine = fsSourceFuncDefine;
+                this.fsSourceBody = fsSourceBody;
+            }
+        };
+        EngineShaderSourceBuilder.prototype._buildVsSource = function () {
             this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceVarDeclare() + this._buildVsSourceFuncDeclare() + this._buildVsSourceFuncDefine() + this._buildVsSourceBody();
         };
-        ShaderSourceBuilder.prototype._buildFsSource = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSource = function () {
             this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
         };
-        ShaderSourceBuilder.prototype._buildVsSourceTop = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceTop = function () {
             return this._getPrecisionSource() + this.vsSourceTop;
         };
-        ShaderSourceBuilder.prototype._buildVsSourceDefine = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceDefine = function () {
             return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
         };
-        ShaderSourceBuilder.prototype._buildVsSourceVarDeclare = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceVarDeclare = function () {
             return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceVarDeclare, this.vsSourceFuncDefine, this.vsSourceBody) + this.vsSourceVarDeclare;
         };
-        ShaderSourceBuilder.prototype._buildVsSourceFuncDeclare = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceFuncDeclare = function () {
             return this.vsSourceFuncDeclare;
         };
-        ShaderSourceBuilder.prototype._buildVsSourceFuncDefine = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceFuncDefine = function () {
             return this.vsSourceFuncDefine;
         };
-        ShaderSourceBuilder.prototype._buildVsSourceBody = function () {
+        EngineShaderSourceBuilder.prototype._buildVsSourceBody = function () {
             return wd.ShaderSnippet.main_begin + this.vsSourceBody + wd.ShaderSnippet.main_end;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceTop = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceTop = function () {
             return this._getPrecisionSource() + this.fsSourceTop;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceDefine = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceDefine = function () {
             return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceVarDeclare = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceVarDeclare = function () {
             return this._generateUniformSource(this.fsSourceVarDeclare, this.fsSourceFuncDefine, this.fsSourceBody) + this.fsSourceVarDeclare;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceFuncDeclare = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceFuncDeclare = function () {
             return this.fsSourceFuncDeclare;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceFuncDefine = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceFuncDefine = function () {
             return this.fsSourceFuncDefine;
         };
-        ShaderSourceBuilder.prototype._buildFsSourceBody = function () {
+        EngineShaderSourceBuilder.prototype._buildFsSourceBody = function () {
             return wd.ShaderSnippet.main_begin + this.fsSourceBody + wd.ShaderSnippet.main_end;
         };
-        ShaderSourceBuilder.prototype._buildSourceDefine = function (defineList) {
+        EngineShaderSourceBuilder.prototype._buildSourceDefine = function (defineList) {
             var result = "";
             defineList.forEach(function (define) {
                 if (define.value === void 0) {
@@ -25034,7 +25570,7 @@ var wd;
             });
             return result;
         };
-        ShaderSourceBuilder.prototype._getPrecisionSource = function () {
+        EngineShaderSourceBuilder.prototype._getPrecisionSource = function () {
             var precision = wd.GPUDetector.getInstance().precision, result = null;
             switch (precision) {
                 case wd.EGPUPrecision.HIGHP:
@@ -25052,7 +25588,7 @@ var wd;
             }
             return result;
         };
-        ShaderSourceBuilder.prototype._generateAttributeSource = function () {
+        EngineShaderSourceBuilder.prototype._generateAttributeSource = function () {
             var result = "";
             this.attributes.filter(function (data, key) {
                 return !!data;
@@ -25061,7 +25597,7 @@ var wd;
             });
             return result;
         };
-        ShaderSourceBuilder.prototype._generateUniformSource = function (sourceVarDeclare, sourceFuncDefine, sourceBody) {
+        EngineShaderSourceBuilder.prototype._generateUniformSource = function (sourceVarDeclare, sourceFuncDefine, sourceBody) {
             var result = "", self = this;
             this.uniforms.filter(function (data, key) {
                 return !!data && data.type !== wd.EVariableType.STRUCTURE && data.type !== wd.EVariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
@@ -25070,59 +25606,63 @@ var wd;
             });
             return result;
         };
-        ShaderSourceBuilder.prototype._isExistInSource = function (key, source) {
+        EngineShaderSourceBuilder.prototype._isExistInSource = function (key, source) {
             return source.indexOf(key) !== -1;
         };
-        ShaderSourceBuilder.prototype._convertArrayToArrayBuffer = function (type, value) {
-            var size = this._getBufferSize(type);
-            if (wd.JudgeUtils.isArrayExactly(value)) {
-                return wd.ArrayBuffer.create(new Float32Array(value), size, wd.EBufferType.FLOAT);
-            }
-            else if (wd.JudgeUtils.isFloatArray(value)) {
-                return wd.ArrayBuffer.create(value, size, wd.EBufferType.FLOAT);
-            }
-        };
-        ShaderSourceBuilder.prototype._getBufferSize = function (type) {
-            var size = null;
-            switch (type) {
-                case wd.EVariableType.FLOAT_1:
-                case wd.EVariableType.NUMBER_1:
-                    size = 1;
-                    break;
-                case wd.EVariableType.FLOAT_3:
-                    size = 3;
-                    break;
-                case wd.EVariableType.FLOAT_4:
-                    size = 4;
-                    break;
-                default:
-                    wd.Log.error(true, wd.Log.info.FUNC_UNEXPECT("EVariableType", type));
-                    break;
-            }
-            return size;
-        };
-        return ShaderSourceBuilder;
-    }());
-    wd.ShaderSourceBuilder = ShaderSourceBuilder;
+        __decorate([
+            wd.require(function (libs) {
+                wd.assert(this.vsSource === null, wd.Log.info.FUNC_SHOULD("vsSource", "be null"));
+                wd.assert(this.fsSource === null, wd.Log.info.FUNC_SHOULD("fsSource", "be null"));
+            })
+        ], EngineShaderSourceBuilder.prototype, "build", null);
+        return EngineShaderSourceBuilder;
+    }(wd.ShaderSourceBuilder));
+    wd.EngineShaderSourceBuilder = EngineShaderSourceBuilder;
 })(wd || (wd = {}));
 
 var wd;
 (function (wd) {
     (function (EVariableType) {
-        EVariableType[EVariableType["FLOAT_1"] = 0] = "FLOAT_1";
-        EVariableType[EVariableType["FLOAT_2"] = 1] = "FLOAT_2";
-        EVariableType[EVariableType["FLOAT_3"] = 2] = "FLOAT_3";
-        EVariableType[EVariableType["FLOAT_4"] = 3] = "FLOAT_4";
-        EVariableType[EVariableType["FLOAT_MAT3"] = 4] = "FLOAT_MAT3";
-        EVariableType[EVariableType["FLOAT_MAT4"] = 5] = "FLOAT_MAT4";
-        EVariableType[EVariableType["BUFFER"] = 6] = "BUFFER";
-        EVariableType[EVariableType["SAMPLER_CUBE"] = 7] = "SAMPLER_CUBE";
-        EVariableType[EVariableType["SAMPLER_2D"] = 8] = "SAMPLER_2D";
-        EVariableType[EVariableType["NUMBER_1"] = 9] = "NUMBER_1";
-        EVariableType[EVariableType["STRUCTURE"] = 10] = "STRUCTURE";
-        EVariableType[EVariableType["STRUCTURES"] = 11] = "STRUCTURES";
+        EVariableType[EVariableType["FLOAT_1"] = "FLOAT_1"] = "FLOAT_1";
+        EVariableType[EVariableType["FLOAT_2"] = "FLOAT_2"] = "FLOAT_2";
+        EVariableType[EVariableType["FLOAT_3"] = "FLOAT_3"] = "FLOAT_3";
+        EVariableType[EVariableType["FLOAT_4"] = "FLOAT_4"] = "FLOAT_4";
+        EVariableType[EVariableType["FLOAT_MAT3"] = "FLOAT_MAT3"] = "FLOAT_MAT3";
+        EVariableType[EVariableType["FLOAT_MAT4"] = "FLOAT_MAT4"] = "FLOAT_MAT4";
+        EVariableType[EVariableType["BUFFER"] = "BUFFER"] = "BUFFER";
+        EVariableType[EVariableType["SAMPLER_CUBE"] = "SAMPLER_CUBE"] = "SAMPLER_CUBE";
+        EVariableType[EVariableType["SAMPLER_2D"] = "SAMPLER_2D"] = "SAMPLER_2D";
+        EVariableType[EVariableType["NUMBER_1"] = "NUMBER_1"] = "NUMBER_1";
+        EVariableType[EVariableType["STRUCTURE"] = "STRUCTURE"] = "STRUCTURE";
+        EVariableType[EVariableType["STRUCTURES"] = "STRUCTURES"] = "STRUCTURES";
+        EVariableType[EVariableType["SAMPLER_ARRAY"] = "SAMPLER_ARRAY"] = "SAMPLER_ARRAY";
     })(wd.EVariableType || (wd.EVariableType = {}));
     var EVariableType = wd.EVariableType;
+})(wd || (wd = {}));
+
+var wd;
+(function (wd) {
+    (function (EVariableSemantic) {
+        EVariableSemantic[EVariableSemantic["POSITION"] = "POSITION"] = "POSITION";
+        EVariableSemantic[EVariableSemantic["NORMAL"] = "NORMAL"] = "NORMAL";
+        EVariableSemantic[EVariableSemantic["TEXCOORD"] = "TEXCOORD"] = "TEXCOORD";
+        EVariableSemantic[EVariableSemantic["TANGENT"] = "TANGENT"] = "TANGENT";
+        EVariableSemantic[EVariableSemantic["COLOR"] = "COLOR"] = "COLOR";
+        EVariableSemantic[EVariableSemantic["MODEL"] = "MODEL"] = "MODEL";
+        EVariableSemantic[EVariableSemantic["VIEW"] = "VIEW"] = "VIEW";
+        EVariableSemantic[EVariableSemantic["PROJECTION"] = "PROJECTION"] = "PROJECTION";
+        EVariableSemantic[EVariableSemantic["MODEL_VIEW"] = "MODEL_VIEW"] = "MODEL_VIEW";
+        EVariableSemantic[EVariableSemantic["MODEL_VIEW_PROJECTION"] = "MODEL_VIEW_PROJECTION"] = "MODEL_VIEW_PROJECTION";
+        EVariableSemantic[EVariableSemantic["MODEL_INVERSE"] = "MODEL_INVERSE"] = "MODEL_INVERSE";
+        EVariableSemantic[EVariableSemantic["VIEW_INVERSE"] = "VIEW_INVERSE"] = "VIEW_INVERSE";
+        EVariableSemantic[EVariableSemantic["PROJECTION_INVERSE"] = "PROJECTION_INVERSE"] = "PROJECTION_INVERSE";
+        EVariableSemantic[EVariableSemantic["MODEL_VIEW_INVERSE"] = "MODEL_VIEW_INVERSE"] = "MODEL_VIEW_INVERSE";
+        EVariableSemantic[EVariableSemantic["MODEL_VIEW_PROJECTION_INVERSE"] = "MODEL_VIEW_PROJECTION_INVERSE"] = "MODEL_VIEW_PROJECTION_INVERSE";
+        EVariableSemantic[EVariableSemantic["MODEL_INVERSE_TRANSPOSE"] = "MODEL_INVERSE_TRANSPOSE"] = "MODEL_INVERSE_TRANSPOSE";
+        EVariableSemantic[EVariableSemantic["MODEL_VIEW_INVERSE_TRANSPOSE"] = "MODEL_VIEW_INVERSE_TRANSPOSE"] = "MODEL_VIEW_INVERSE_TRANSPOSE";
+        EVariableSemantic[EVariableSemantic["VIEWPORT"] = "VIEWPORT"] = "VIEWPORT";
+    })(wd.EVariableSemantic || (wd.EVariableSemantic = {}));
+    var EVariableSemantic = wd.EVariableSemantic;
 })(wd || (wd = {}));
 
 var wd;
@@ -25141,6 +25681,10 @@ var wd;
         }
         VariableLib.a_position = {
             type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.a_positionVec2 = {
+            type: wd.EVariableType.FLOAT_2,
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.a_currentFramePosition = {
@@ -25203,6 +25747,10 @@ var wd;
             type: wd.EVariableType.SAMPLER_2D,
             value: wd.EVariableCategory.ENGINE
         };
+        VariableLib.u_lightMapSampler = {
+            type: wd.EVariableType.SAMPLER_2D,
+            value: wd.EVariableCategory.ENGINE
+        };
         VariableLib.u_diffuseMapSampler = {
             type: wd.EVariableType.SAMPLER_2D,
             value: wd.EVariableCategory.ENGINE
@@ -25235,11 +25783,27 @@ var wd;
             type: wd.EVariableType.FLOAT_1,
             value: wd.EVariableCategory.ENGINE
         };
-        VariableLib.u_sourceRegion = {
+        VariableLib.u_map0SourceRegion = {
             type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
-        VariableLib.u_repeatRegion = {
+        VariableLib.u_map1SourceRegion = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_diffuseSourceRegion = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_map0RepeatRegion = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_map1RepeatRegion = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_diffuseRepeatRegion = {
             type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
@@ -25251,16 +25815,20 @@ var wd;
             type: wd.EVariableType.FLOAT_1,
             value: wd.EVariableCategory.ENGINE
         };
+        VariableLib.u_lightMapIntensity = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
         VariableLib.u_diffuse = {
-            type: wd.EVariableType.FLOAT_3,
+            type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.u_specular = {
-            type: wd.EVariableType.FLOAT_3,
+            type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.u_emission = {
-            type: wd.EVariableType.FLOAT_3,
+            type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.u_shininess = {
@@ -25280,7 +25848,7 @@ var wd;
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.u_ambient = {
-            type: wd.EVariableType.FLOAT_3,
+            type: wd.EVariableType.FLOAT_4,
             value: wd.EVariableCategory.ENGINE
         };
         VariableLib.u_directionLights = {
@@ -25305,6 +25873,90 @@ var wd;
         };
         VariableLib.u_interpolation = {
             type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_tilesHeightNumber = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_tilesWidthNumber = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_amplitude = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_jointColor = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_time = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_speed = {
+            type: wd.EVariableType.FLOAT_2,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_shift = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_alphaThreshold = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_fireColor = {
+            type: wd.EVariableType.STRUCTURE,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_layerHeightDatas = {
+            type: wd.EVariableType.STRUCTURES,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_layerSampler2Ds = {
+            type: wd.EVariableType.SAMPLER_ARRAY,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_herb1Color = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_herb2Color = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_herb3Color = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_groundColor = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_ampScale = {
+            type: wd.EVariableType.FLOAT_1,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_woodColor = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_roadColor = {
+            type: wd.EVariableType.FLOAT_3,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_skyColor = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_cloudColor = {
+            type: wd.EVariableType.FLOAT_4,
+            value: wd.EVariableCategory.ENGINE
+        };
+        VariableLib.u_brickColor = {
+            type: wd.EVariableType.FLOAT_3,
             value: wd.EVariableCategory.ENGINE
         };
         return VariableLib;
@@ -25340,6 +25992,7 @@ var wd;
 var wd;
 (function (wd) {
     var _table = wdCb.Hash.create();
+    _table.addChild("lightMap", "u_lightMapSampler");
     _table.addChild("diffuseMap", "u_diffuseMapSampler");
     _table.addChild("specularMap", "u_specularMapSampler");
     _table.addChild("emissionMap", "u_emissionMapSampler");
@@ -25368,8 +26021,78 @@ var wd;
 (function (wd) {
     var ShaderLib = (function () {
         function ShaderLib() {
-            this.type = wd.ABSTRACT_ATTRIBUTE;
             this.shader = null;
+        }
+        ShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+        };
+        ShaderLib.prototype.init = function () {
+        };
+        ShaderLib.prototype.dispose = function () {
+        };
+        __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "sendShaderVariables", null);
+        __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], ShaderLib.prototype, "dispose", null);
+        return ShaderLib;
+    }());
+    wd.ShaderLib = ShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomShaderLib = (function (_super) {
+        __extends(CustomShaderLib, _super);
+        function CustomShaderLib() {
+            _super.apply(this, arguments);
+        }
+        CustomShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CustomShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            var shader = this.shader;
+            shader.attributes.forEach(function (attribute, name) {
+                wd.CustomShaderLibUtils.sendAttributeDataWithSemantic(name, attribute.type, attribute.value, program, cmd);
+            });
+            shader.uniforms.forEach(function (uniform, name) {
+                if (uniform.type !== wd.EVariableType.SAMPLER_2D) {
+                    wd.CustomShaderLibUtils.sendUniformDataWithSemantic(name, uniform.type, uniform.value, program, cmd);
+                }
+            });
+        };
+        return CustomShaderLib;
+    }(wd.ShaderLib));
+    wd.CustomShaderLib = CustomShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var EngineShaderLib = (function (_super) {
+        __extends(EngineShaderLib, _super);
+        function EngineShaderLib() {
+            _super.apply(this, arguments);
+            this.type = null;
             this.attributes = wdCb.Hash.create();
             this.uniforms = wdCb.Hash.create();
             this.vsSourceTop = "";
@@ -25378,16 +26101,18 @@ var wd;
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
+            this.vsSource = null;
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+            this.fsSource = null;
             this.vsSourceDefineList = wdCb.Collection.create();
             this.fsSourceDefineList = wdCb.Collection.create();
         }
-        ShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+        EngineShaderLib.prototype.setShaderDefinition = function (cmd, material) {
             var vs = null, fs = null;
             this._clearShaderDefinition();
             vs = this.getVsChunk();
@@ -25395,11 +26120,13 @@ var wd;
             vs && this.setVsSource(vs);
             fs && this.setFsSource(fs);
         };
-        ShaderLib.prototype.init = function () {
+        EngineShaderLib.prototype.sendAttributeData = function (program, name, data) {
+            program.sendAttributeData(name, wd.EVariableType.BUFFER, data);
         };
-        ShaderLib.prototype.dispose = function () {
+        EngineShaderLib.prototype.sendUniformData = function (program, name, data) {
+            program.sendUniformData(name, wd.VariableLib[name].type, data);
         };
-        ShaderLib.prototype.getVsChunk = function () {
+        EngineShaderLib.prototype.getVsChunk = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -25407,7 +26134,7 @@ var wd;
             var type = args.length === 0 ? this.type : args[0];
             return this._getChunk(type, EShaderLibType.vs);
         };
-        ShaderLib.prototype.getFsChunk = function () {
+        EngineShaderLib.prototype.getFsChunk = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
@@ -25415,27 +26142,37 @@ var wd;
             var type = args.length === 0 ? this.type : args[0];
             return this._getChunk(type, EShaderLibType.fs);
         };
-        ShaderLib.prototype.setVsSource = function (vs, operator) {
+        EngineShaderLib.prototype.setVsSource = function (vs, operator) {
             if (operator === void 0) { operator = "="; }
-            this._setSource(vs, EShaderLibType.vs, operator);
+            if (wd.JudgeUtils.isString(vs)) {
+                this.vsSource = vs;
+            }
+            else {
+                this._setSource(vs, EShaderLibType.vs, operator);
+            }
         };
-        ShaderLib.prototype.setFsSource = function (fs, operator) {
+        EngineShaderLib.prototype.setFsSource = function (fs, operator) {
             if (operator === void 0) { operator = "="; }
-            this._setSource(fs, EShaderLibType.fs, operator);
+            if (wd.JudgeUtils.isString(fs)) {
+                this.fsSource = fs;
+            }
+            else {
+                this._setSource(fs, EShaderLibType.fs, operator);
+            }
         };
-        ShaderLib.prototype.addAttributeVariable = function (variableArr) {
+        EngineShaderLib.prototype.addAttributeVariable = function (variableArr) {
             this._addVariable(this.attributes, variableArr);
         };
-        ShaderLib.prototype.addUniformVariable = function (variableArr) {
+        EngineShaderLib.prototype.addUniformVariable = function (variableArr) {
             this._addVariable(this.uniforms, variableArr);
         };
-        ShaderLib.prototype.sendAttributeData = function (program, name, data) {
-            program.sendAttributeData(name, wd.EVariableType.BUFFER, data);
+        EngineShaderLib.prototype._addVariable = function (target, variableArr) {
+            variableArr.forEach(function (variable) {
+                wd.Log.assert(wd.VariableLib[variable], wd.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
+                target.addChild(variable, wd.VariableLib[variable]);
+            });
         };
-        ShaderLib.prototype.sendUniformData = function (program, name, data) {
-            program.sendUniformData(name, wd.VariableLib[name].type, data);
-        };
-        ShaderLib.prototype._clearShaderDefinition = function () {
+        EngineShaderLib.prototype._clearShaderDefinition = function () {
             this.attributes.removeAllChildren();
             this.uniforms.removeAllChildren();
             this.vsSourceDefineList.removeAllChildren();
@@ -25446,15 +26183,20 @@ var wd;
             this.vsSourceFuncDeclare = "";
             this.vsSourceFuncDefine = "";
             this.vsSourceBody = "";
+            this.vsSource = null;
             this.fsSourceTop = "";
             this.fsSourceDefine = "";
             this.fsSourceVarDeclare = "";
             this.fsSourceFuncDeclare = "";
             this.fsSourceFuncDefine = "";
             this.fsSourceBody = "";
+            this.fsSource = null;
         };
-        ShaderLib.prototype._getChunk = function (type, sourceType) {
+        EngineShaderLib.prototype._getChunk = function (type, sourceType) {
             var key = null;
+            if (!type) {
+                return null;
+            }
             if (type.indexOf(".glsl") > -1) {
                 key = "" + wdCb.PathUtils.basename(type, ".glsl");
             }
@@ -25468,7 +26210,7 @@ var wd;
             }
             return wd.ShaderChunk[key] ? wd.ShaderChunk[key] : wd.ShaderChunk.empty;
         };
-        ShaderLib.prototype._setSource = function (chunk, sourceType, operator) {
+        EngineShaderLib.prototype._setSource = function (chunk, sourceType, operator) {
             if (!chunk) {
                 return;
             }
@@ -25494,29 +26236,27 @@ var wd;
                     break;
             }
         };
-        ShaderLib.prototype._addVariable = function (target, variableArr) {
-            variableArr.forEach(function (variable) {
-                wd.Log.assert(wd.VariableLib[variable], wd.Log.info.FUNC_SHOULD(variable, "exist in VariableLib"));
-                target.addChild(variable, wd.VariableLib[variable]);
-            });
-        };
         __decorate([
             wd.virtual
-        ], ShaderLib.prototype, "setShaderDefinition", null);
-        __decorate([
-            wd.virtual
-        ], ShaderLib.prototype, "init", null);
-        __decorate([
-            wd.virtual
-        ], ShaderLib.prototype, "dispose", null);
+        ], EngineShaderLib.prototype, "setShaderDefinition", null);
         __decorate([
             wd.require(function (program, name, data) {
                 wd.assert(!!wd.VariableLib[name], name + " should exist in VariableLib");
             })
-        ], ShaderLib.prototype, "sendUniformData", null);
-        return ShaderLib;
-    }());
-    wd.ShaderLib = ShaderLib;
+        ], EngineShaderLib.prototype, "sendUniformData", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.vsSource === null, wd.Log.info.FUNC_SHOULD("vsSource", "be null"));
+            })
+        ], EngineShaderLib.prototype, "setVsSource", null);
+        __decorate([
+            wd.require(function () {
+                wd.assert(this.fsSource === null, wd.Log.info.FUNC_SHOULD("fsSource", "be null"));
+            })
+        ], EngineShaderLib.prototype, "setFsSource", null);
+        return EngineShaderLib;
+    }(wd.ShaderLib));
+    wd.EngineShaderLib = EngineShaderLib;
     var EShaderLibType;
     (function (EShaderLibType) {
         EShaderLibType[EShaderLibType["vs"] = "vs"] = "vs";
@@ -25555,7 +26295,7 @@ var wd;
             this.fsSourceFuncDefine = wd.ShaderChunk.common_function.funcDefine + wd.ShaderChunk.common_fragment.funcDefine;
         };
         return CommonShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.CommonShaderLib = CommonShaderLib;
 })(wd || (wd = {}));
 
@@ -25591,7 +26331,7 @@ var wd;
             this.sendAttributeData(program, "a_position", verticeBuffer);
         };
         return CommonVerticeShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.CommonVerticeShaderLib = CommonVerticeShaderLib;
 })(wd || (wd = {}));
 
@@ -25627,7 +26367,7 @@ var wd;
             this.sendAttributeData(program, "a_normal", normalBuffer);
         };
         return CommonNormalShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.CommonNormalShaderLib = CommonNormalShaderLib;
 })(wd || (wd = {}));
 
@@ -25663,7 +26403,7 @@ var wd;
             this.vsSourceBody = wd.ShaderSnippet.setPos_mvp + wd.ShaderChunk.basic_vertex.body;
         };
         return BasicShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.BasicShaderLib = BasicShaderLib;
 })(wd || (wd = {}));
 
@@ -25687,7 +26427,7 @@ var wd;
         BasicEndShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
         return BasicEndShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.BasicEndShaderLib = BasicEndShaderLib;
 })(wd || (wd = {}));
 
@@ -25728,7 +26468,7 @@ var wd;
             })
         ], MorphCommonShaderLib.prototype, "sendShaderVariables", null);
         return MorphCommonShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.MorphCommonShaderLib = MorphCommonShaderLib;
 })(wd || (wd = {}));
 
@@ -25773,7 +26513,7 @@ var wd;
             })
         ], MorphVerticeShaderLib.prototype, "sendShaderVariables", null);
         return MorphVerticeShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.MorphVerticeShaderLib = MorphVerticeShaderLib;
 })(wd || (wd = {}));
 
@@ -25807,7 +26547,7 @@ var wd;
             this.addAttributeVariable(["a_currentFrameNormal", "a_nextFrameNormal"]);
         };
         return MorphNormalShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.MorphNormalShaderLib = MorphNormalShaderLib;
 })(wd || (wd = {}));
 
@@ -25835,7 +26575,7 @@ var wd;
             this.addUniformVariable(["u_samplerCube0"]);
         };
         return SkyboxShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.SkyboxShaderLib = SkyboxShaderLib;
 })(wd || (wd = {}));
 
@@ -25871,7 +26611,7 @@ var wd;
             this.setFsSource(fs);
         };
         return EnvMapForBasicShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.EnvMapForBasicShaderLib = EnvMapForBasicShaderLib;
 })(wd || (wd = {}));
 
@@ -26019,7 +26759,7 @@ var wd;
             this.setFsSource(fs);
         };
         return EnvMapForLightShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.EnvMapForLightShaderLib = EnvMapForLightShaderLib;
 })(wd || (wd = {}));
 
@@ -26147,6 +26887,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var MapShaderLib = (function (_super) {
@@ -26155,17 +26901,24 @@ var wd;
             _super.apply(this, arguments);
         }
         MapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
+            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD), mapList = null, map0 = null;
             if (!texCoordBuffer) {
                 return;
             }
             this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+            mapList = material.mapList;
+            map0 = mapList.getChild(0);
+            this.sendUniformData(program, "u_map0SourceRegion", map0.sourceRegionForGLSL);
+            this.sendUniformData(program, "u_map0RepeatRegion", map0.repeatRegion);
+            this.sendMapShaderVariables(program, quadCmd, material);
         };
         MapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addAttributeVariable(["a_texCoord"]);
-            this.addUniformVariable(["u_sampler2D0", "u_sourceRegion", "u_repeatRegion"]);
+            this.addUniformVariable(["u_sampler2D0", "u_map0SourceRegion", "u_map0RepeatRegion"]);
             this._setMapSource();
+        };
+        MapShaderLib.prototype.sendMapShaderVariables = function (program, quadCmd, material) {
         };
         MapShaderLib.prototype._setMapSource = function () {
             var vs = this.getVsChunk("map_forBasic"), fs = this.getFsChunk("map_forBasic");
@@ -26177,8 +26930,11 @@ var wd;
             this.vsSourceBody = vs.body;
             this.setFsSource(fs);
         };
+        __decorate([
+            wd.virtual
+        ], MapShaderLib.prototype, "sendMapShaderVariables", null);
         return MapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.MapShaderLib = MapShaderLib;
 })(wd || (wd = {}));
 
@@ -26221,14 +26977,22 @@ var wd;
             var obj = new this();
             return obj;
         };
-        MultiMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            _super.prototype.sendShaderVariables.call(this, program, quadCmd, material);
+        MultiMapShaderLib.prototype.sendMapShaderVariables = function (program, quadCmd, material) {
+            var mapList = material.mapList, map1 = mapList.getChild(1);
             this.sendUniformData(program, "u_combineMode", material.mapCombineMode);
             this.sendUniformData(program, "u_mixRatio", material.mapMixRatio);
+            this.sendUniformData(program, "u_map1SourceRegion", map1.sourceRegionForGLSL);
+            this.sendUniformData(program, "u_map1RepeatRegion", map1.repeatRegion);
         };
         MultiMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addUniformVariable(["u_sampler2D1", "u_combineMode", "u_mixRatio"]);
+            this.addUniformVariable([
+                "u_sampler2D1", "u_combineMode", "u_mixRatio",
+                "u_map1SourceRegion", "u_map1RepeatRegion"
+            ]);
+            this.vsSourceVarDeclare += this.getVsChunk().varDeclare;
+            this.vsSourceBody += this.getVsChunk().body;
+            this.fsSourceVarDeclare = this.getFsChunk().varDeclare;
             this.fsSourceFuncDefine = this.getFsChunk().funcDefine;
             this.fsSourceBody = this.getFsChunk().body;
         };
@@ -26258,11 +27022,42 @@ var wd;
         };
         MirrorForBasicShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addUniformVariable(["u_mirrorSampler"]);
+            this.addUniformVariable([
+                wd.VariableNameTable.getVariableName("mirrorReflectionMap")
+            ]);
         };
         return MirrorForBasicShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.MirrorForBasicShaderLib = MirrorForBasicShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var ProceduralShaderLib = (function (_super) {
+        __extends(ProceduralShaderLib, _super);
+        function ProceduralShaderLib() {
+            _super.apply(this, arguments);
+        }
+        ProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd, null);
+        };
+        __decorate([
+            wd.virtual
+        ], ProceduralShaderLib.prototype, "setShaderDefinition", null);
+        return ProceduralShaderLib;
+    }(wd.EngineShaderLib));
+    wd.ProceduralShaderLib = ProceduralShaderLib;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -26292,7 +27087,7 @@ var wd;
             this.setFsSource(this.getFsChunk(), "+");
         };
         return LightCommonShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.LightCommonShaderLib = LightCommonShaderLib;
 })(wd || (wd = {}));
 
@@ -26335,7 +27130,7 @@ var wd;
         LightShaderLib.prototype._sendLightVariables = function (program) {
             var scene = wd.Director.getInstance().scene, directionLights = scene.directionLights, ambientLight = scene.ambientLight, pointLights = scene.pointLights;
             if (ambientLight) {
-                this.sendUniformData(program, "u_ambient", ambientLight.getComponent(wd.AmbientLight).color.toVector3());
+                this.sendUniformData(program, "u_ambient", ambientLight.getComponent(wd.AmbientLight).color.toVector4());
             }
             if (pointLights) {
                 this._sendPointLightVariables(program, pointLights);
@@ -26348,7 +27143,7 @@ var wd;
             pointLights.forEach(function (pointLight, index) {
                 var lightComponent = pointLight.getComponent(wd.PointLight);
                 program.sendStructureData("u_pointLights[" + index + "].position", wd.EVariableType.FLOAT_3, lightComponent.position);
-                program.sendStructureData("u_pointLights[" + index + "].color", wd.EVariableType.FLOAT_3, lightComponent.color.toVector3());
+                program.sendStructureData("u_pointLights[" + index + "].color", wd.EVariableType.FLOAT_4, lightComponent.color.toVector4());
                 program.sendStructureData("u_pointLights[" + index + "].intensity", wd.EVariableType.FLOAT_1, lightComponent.intensity);
                 program.sendStructureData("u_pointLights[" + index + "].constant", wd.EVariableType.FLOAT_1, lightComponent.constant);
                 program.sendStructureData("u_pointLights[" + index + "].linear", wd.EVariableType.FLOAT_1, lightComponent.linear);
@@ -26371,7 +27166,7 @@ var wd;
                 else {
                     program.sendStructureData("u_directionLights[" + index + "].position", wd.EVariableType.FLOAT_3, lightComponent.position);
                 }
-                program.sendStructureData("u_directionLights[" + index + "].color", wd.EVariableType.FLOAT_3, lightComponent.color.toVector3());
+                program.sendStructureData("u_directionLights[" + index + "].color", wd.EVariableType.FLOAT_4, lightComponent.color.toVector4());
                 program.sendStructureData("u_directionLights[" + index + "].intensity", wd.EVariableType.FLOAT_1, lightComponent.intensity);
             });
         };
@@ -26425,7 +27220,7 @@ var wd;
             })
         ], LightShaderLib.prototype, "_convertLightModelToGLSLVariable", null);
         return LightShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.LightShaderLib = LightShaderLib;
 })(wd || (wd = {}));
 
@@ -26449,8 +27244,59 @@ var wd;
         LightEndShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
         return LightEndShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.LightEndShaderLib = LightEndShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var BaseLightMapShaderLib = (function (_super) {
+        __extends(BaseLightMapShaderLib, _super);
+        function BaseLightMapShaderLib() {
+            _super.apply(this, arguments);
+        }
+        BaseLightMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        };
+        return BaseLightMapShaderLib;
+    }(wd.EngineShaderLib));
+    wd.BaseLightMapShaderLib = BaseLightMapShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CommonLightMapShaderLib = (function (_super) {
+        __extends(CommonLightMapShaderLib, _super);
+        function CommonLightMapShaderLib() {
+            _super.apply(this, arguments);
+        }
+        CommonLightMapShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonLightMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
+            if (!texCoordBuffer) {
+                return;
+            }
+            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+        };
+        CommonLightMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
+            this.addAttributeVariable(["a_texCoord"]);
+        };
+        return CommonLightMapShaderLib;
+    }(wd.EngineShaderLib));
+    wd.CommonLightMapShaderLib = CommonLightMapShaderLib;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -26464,20 +27310,23 @@ var wd;
         __extends(LightMapShaderLib, _super);
         function LightMapShaderLib() {
             _super.apply(this, arguments);
+            this.type = "lightMap";
         }
+        LightMapShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
         LightMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            var texCoordBuffer = quadCmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
-            if (!texCoordBuffer) {
-                return;
-            }
-            this.sendAttributeData(program, "a_texCoord", texCoordBuffer);
+            this.sendUniformData(program, "u_lightMapIntensity", material.lightMapIntensity);
         };
         LightMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
-            this.addAttributeVariable(["a_texCoord"]);
+            this.addUniformVariable([
+                wd.VariableNameTable.getVariableName("lightMap"), "u_lightMapIntensity"
+            ]);
         };
         return LightMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.BaseLightMapShaderLib));
     wd.LightMapShaderLib = LightMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26485,6 +27334,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var wd;
 (function (wd) {
@@ -26498,15 +27353,28 @@ var wd;
             var obj = new this();
             return obj;
         };
+        DiffuseMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+            var diffuseMap = material.diffuseMap;
+            this.sendUniformData(program, "u_diffuseSourceRegion", diffuseMap.sourceRegionForGLSL);
+            this.sendUniformData(program, "u_diffuseRepeatRegion", diffuseMap.repeatRegion);
+            return this;
+        };
         DiffuseMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable([
                 wd.VariableNameTable.getVariableName("diffuseMap"),
-                "u_sourceRegion", "u_repeatRegion"
+                "u_diffuseSourceRegion", "u_diffuseRepeatRegion"
             ]);
         };
+        __decorate([
+            wd.require(function (program, quadCmd, material) {
+                var diffuseMap = material.diffuseMap;
+                wd.assert(!!diffuseMap, wd.Log.info.FUNC_MUST_DEFINE("diffuseMap"));
+                wd.assert(!!diffuseMap.sourceRegionForGLSL && !!diffuseMap.repeatRegion, wd.Log.info.FUNC_SHOULD("material.diffuseMap", "has sourceRegionForGLSL,repeatRegion data"));
+            })
+        ], DiffuseMapShaderLib.prototype, "sendShaderVariables", null);
         return DiffuseMapShaderLib;
-    }(wd.LightMapShaderLib));
+    }(wd.BaseLightMapShaderLib));
     wd.DiffuseMapShaderLib = DiffuseMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26534,7 +27402,7 @@ var wd;
             ]);
         };
         return SpecularMapShaderLib;
-    }(wd.LightMapShaderLib));
+    }(wd.BaseLightMapShaderLib));
     wd.SpecularMapShaderLib = SpecularMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26562,7 +27430,7 @@ var wd;
             ]);
         };
         return EmissionMapShaderLib;
-    }(wd.LightMapShaderLib));
+    }(wd.BaseLightMapShaderLib));
     wd.EmissionMapShaderLib = EmissionMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26600,8 +27468,32 @@ var wd;
             ]);
         };
         return NormalMapShaderLib;
-    }(wd.LightMapShaderLib));
+    }(wd.BaseLightMapShaderLib));
     wd.NormalMapShaderLib = NormalMapShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var NoLightMapShaderLib = (function (_super) {
+        __extends(NoLightMapShaderLib, _super);
+        function NoLightMapShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "noLightMap";
+        }
+        NoLightMapShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        NoLightMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
+        };
+        return NoLightMapShaderLib;
+    }(wd.EngineShaderLib));
+    wd.NoLightMapShaderLib = NoLightMapShaderLib;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -26622,14 +27514,14 @@ var wd;
             return obj;
         };
         NoDiffuseMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_diffuse", material.color.toVector3());
+            this.sendUniformData(program, "u_diffuse", material.color.toVector4());
         };
         NoDiffuseMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_diffuse"]);
         };
         return NoDiffuseMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.NoDiffuseMapShaderLib = NoDiffuseMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26651,14 +27543,14 @@ var wd;
             return obj;
         };
         NoSpecularMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_specular", material.specularColor.toVector3());
+            this.sendUniformData(program, "u_specular", material.specularColor.toVector4());
         };
         NoSpecularMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_specular"]);
         };
         return NoSpecularMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.NoSpecularMapShaderLib = NoSpecularMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26680,14 +27572,14 @@ var wd;
             return obj;
         };
         NoEmissionMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
-            this.sendUniformData(program, "u_emission", material.emissionColor.toVector3());
+            this.sendUniformData(program, "u_emission", material.emissionColor.toVector4());
         };
         NoEmissionMapShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
             _super.prototype.setShaderDefinition.call(this, quadCmd, material);
             this.addUniformVariable(["u_emission"]);
         };
         return NoEmissionMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.NoEmissionMapShaderLib = NoEmissionMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26711,7 +27603,7 @@ var wd;
         NoNormalMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
         return NoNormalMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.NoNormalMapShaderLib = NoNormalMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26733,7 +27625,7 @@ var wd;
             this.setFsSource(this.getFsChunk(), "+");
         };
         return BuildShadowMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.BuildShadowMapShaderLib = BuildShadowMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26820,7 +27712,7 @@ var wd;
         TotalShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
         return TotalShadowMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.TotalShadowMapShaderLib = TotalShadowMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26878,7 +27770,7 @@ var wd;
             ]);
         };
         return ShadowMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.ShadowMapShaderLib = ShadowMapShaderLib;
 })(wd || (wd = {}));
 
@@ -26963,8 +27855,145 @@ var wd;
         NoShadowMapShaderLib.prototype.sendShaderVariables = function (program, quadCmd, material) {
         };
         return NoShadowMapShaderLib;
-    }(wd.ShaderLib));
+    }(wd.EngineShaderLib));
     wd.NoShadowMapShaderLib = NoShadowMapShaderLib;
+})(wd || (wd = {}));
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var CustomShaderLibUtils = (function () {
+        function CustomShaderLibUtils() {
+        }
+        CustomShaderLibUtils.sendUniformData = function (name, type, value, program) {
+            if (type === wd.EVariableType.STRUCTURE) {
+                this._sendStructureData(name, value, program);
+            }
+            else {
+                program.sendUniformData(name, type, value);
+            }
+        };
+        CustomShaderLibUtils.sendUniformDataWithSemantic = function (name, type, value, program, cmd) {
+            if (type === wd.EVariableType.STRUCTURE) {
+                this._sendStructureDataWithSemantic(name, value, program, cmd);
+            }
+            else {
+                program.sendUniformData(name, type, this._getUniformData(value, cmd));
+            }
+        };
+        CustomShaderLibUtils.sendAttributeDataWithSemantic = function (name, type, value, program, cmd) {
+            program.sendAttributeData(name, this._getAttributeType(type), this._getAttributeData(value, type, cmd));
+        };
+        CustomShaderLibUtils._sendStructureData = function (name, data, program) {
+            for (var fieldName in data) {
+                if (data.hasOwnProperty(fieldName)) {
+                    var fieldValue = data[fieldName];
+                    program.sendStructureData(name + "." + fieldName, fieldValue.type, fieldValue.value);
+                }
+            }
+        };
+        CustomShaderLibUtils._sendStructureDataWithSemantic = function (name, data, program, cmd) {
+            for (var fieldName in data) {
+                if (data.hasOwnProperty(fieldName)) {
+                    var fieldValue = data[fieldName];
+                    program.sendStructureData(name + "." + fieldName, fieldValue.type, this._getUniformData(fieldValue.value, cmd));
+                }
+            }
+        };
+        CustomShaderLibUtils._getAttributeData = function (data, type, cmd) {
+            switch (data) {
+                case wd.EVariableSemantic.POSITION:
+                    return cmd.buffers.getChild(wd.EBufferDataType.VERTICE);
+                case wd.EVariableSemantic.TEXCOORD:
+                    return cmd.buffers.getChild(wd.EBufferDataType.TEXCOORD);
+                case wd.EVariableSemantic.COLOR:
+                    return cmd.buffers.getChild(wd.EBufferDataType.COLOR);
+                case wd.EVariableSemantic.NORMAL:
+                    return cmd.buffers.getChild(wd.EBufferDataType.NORMAL);
+                case wd.EVariableSemantic.TANGENT:
+                    return cmd.buffers.getChild(wd.EBufferDataType.TANGENT);
+                default:
+                    return data;
+            }
+        };
+        CustomShaderLibUtils._getAttributeType = function (type) {
+            return wd.EVariableType.BUFFER;
+        };
+        CustomShaderLibUtils._getUniformData = function (data, cmd) {
+            switch (data) {
+                case wd.EVariableSemantic.MODEL:
+                    return cmd.mMatrix;
+                case wd.EVariableSemantic.VIEW:
+                    return cmd.vMatrix;
+                case wd.EVariableSemantic.PROJECTION:
+                    return cmd.pMatrix;
+                case wd.EVariableSemantic.MODEL_VIEW_PROJECTION:
+                    return cmd.mvpMatrix;
+                case wd.EVariableSemantic.MODEL_INVERSE:
+                    return cmd.mMatrix.copy().invert();
+                case wd.EVariableSemantic.VIEW_INVERSE:
+                    return cmd.vMatrix.copy().invert();
+                case wd.EVariableSemantic.PROJECTION_INVERSE:
+                    return cmd.pMatrix.copy().invert();
+                case wd.EVariableSemantic.MODEL_VIEW_INVERSE:
+                    return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).invert();
+                case wd.EVariableSemantic.MODEL_VIEW_PROJECTION_INVERSE:
+                    return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).applyMatrix(cmd.pMatrix, false).invert();
+                case wd.EVariableSemantic.MODEL_INVERSE_TRANSPOSE:
+                    return cmd.normalMatrix;
+                case wd.EVariableSemantic.MODEL_VIEW_INVERSE_TRANSPOSE:
+                    return cmd.mMatrix.applyMatrix(cmd.vMatrix, true).invertTo3x3().transpose();
+                case wd.EVariableSemantic.VIEWPORT:
+                    return wd.DeviceManager.getInstance().viewport;
+                default:
+                    return data;
+            }
+        };
+        __decorate([
+            wd.require(function (name, type, value, program) {
+                wd.assert(type !== wd.EVariableType.SAMPLER_2D && type !== wd.EVariableType.SAMPLER_CUBE, wd.Log.info.FUNC_SHOULD_NOT("type", "be SAMPLER_2D or SAMPLER_CUBE, but actual is " + type));
+                wd.assert(type !== wd.EVariableType.STRUCTURES, wd.Log.info.FUNC_NOT_SUPPORT("type === STRUCTURES"));
+                if (type === wd.EVariableType.STRUCTURE) {
+                    wd.assert(wd.JudgeUtils.isDirectObject(value), wd.Log.info.FUNC_MUST_BE("value", "object when type === STRUCTURE"));
+                }
+            })
+        ], CustomShaderLibUtils, "sendUniformData", null);
+        __decorate([
+            wd.require(function (name, type, value, program, cmd) {
+                wd.assert(type !== wd.EVariableType.SAMPLER_2D && type !== wd.EVariableType.SAMPLER_CUBE, wd.Log.info.FUNC_SHOULD_NOT("type", "be SAMPLER_2D or SAMPLER_CUBE, but actual is " + type));
+                wd.assert(type !== wd.EVariableType.STRUCTURES, wd.Log.info.FUNC_NOT_SUPPORT("type === STRUCTURES"));
+                if (type === wd.EVariableType.STRUCTURE) {
+                    wd.assert(wd.JudgeUtils.isDirectObject(value), wd.Log.info.FUNC_MUST_BE("value", "object when type === STRUCTURE"));
+                }
+            })
+        ], CustomShaderLibUtils, "sendUniformDataWithSemantic", null);
+        __decorate([
+            wd.require(function (data, type, cmd) {
+                wd.assert(data !== "INDICE", wd.Log.info.FUNC_NOT_SUPPORT("semantic:INDICE"));
+                switch (data) {
+                    case "POSITION":
+                    case "COLOR":
+                    case "NORMAL":
+                    case "TANGENT":
+                        wd.assert(type === wd.EVariableType.FLOAT_3, wd.Log.info.FUNC_SHOULD("type", "be EVariableType.FLOAT_3"));
+                        break;
+                    case "TEXCOORD":
+                        wd.assert(type === wd.EVariableType.FLOAT_2, wd.Log.info.FUNC_SHOULD("type", "be EVariableType.FLOAT_2"));
+                        break;
+                }
+            }),
+            wd.ensure(function (data) {
+                wd.assert(data && data instanceof wd.Buffer, wd.Log.info.FUNC_SHOULD("attributeData", "be Buffer, but actual is " + data));
+            })
+        ], CustomShaderLibUtils, "_getAttributeData", null);
+        return CustomShaderLibUtils;
+    }());
+    wd.CustomShaderLibUtils = CustomShaderLibUtils;
 })(wd || (wd = {}));
 
 var wd;
@@ -26980,12 +28009,6 @@ var wd;
     wd.ShaderSnippet = ShaderSnippet;
 })(wd || (wd = {}));
 
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var wd;
 (function (wd) {
     var Material = (function () {
@@ -26995,7 +28018,7 @@ var wd;
             this._blendDst = wd.EBlendFunc.ZERO;
             this._blendEquation = wd.EBlendEquation.ADD;
             this._color = wd.Color.create("#ffffff");
-            this.shader = wd.Shader.create();
+            this.shader = this.createShader();
             this.redWrite = true;
             this.greenWrite = true;
             this.blueWrite = true;
@@ -27006,13 +28029,8 @@ var wd;
             this.blendFuncSeparate = null;
             this.blendEquationSeparate = [wd.EBlendEquation.ADD, wd.EBlendEquation.ADD];
             this.shading = wd.EShading.FLAT;
-            this.refractionRatio = 0;
-            this.reflectivity = null;
-            this.mapCombineMode = wd.ETextureCombineMode.MIX;
-            this.mapMixRatio = 0.5;
             this.mapManager = wd.MapManager.create(this);
             this.geometry = null;
-            this._afterInitSubscription = null;
         }
         Object.defineProperty(Material.prototype, "program", {
             get: function () {
@@ -27166,18 +28184,18 @@ var wd;
             configurable: true
         });
         Material.prototype.init = function () {
-            this._addTopShaderLib();
-            this.addShaderLib();
-            this.shader.init();
+            this.shader.init(this);
             this.mapManager.init();
         };
         Material.prototype.dispose = function () {
             this.shader.dispose();
             this.mapManager.dispose();
-            this._afterInitSubscription && this._afterInitSubscription.dispose();
         };
-        Material.prototype.updateTexture = function () {
-            this.mapManager.update();
+        Material.prototype.bindAndUpdateTexture = function () {
+            this.mapManager.bindAndUpdate();
+        };
+        Material.prototype.sendTexture = function (program) {
+            this.mapManager.sendData(program);
         };
         Material.prototype.updateShader = function (quadCmd) {
             var scene = wd.Director.getInstance().scene;
@@ -27188,62 +28206,9 @@ var wd;
                 this.shader.update(quadCmd, this);
             }
         };
-        Material.prototype.addShaderLib = function () {
-        };
-        Material.prototype.addMap = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            this.mapManager.addMap.apply(this.mapManager, args);
-        };
-        Material.prototype.addNormalShaderLib = function () {
-            if (this._hasAnimation() && !this.shader.hasLib(wd.MorphNormalShaderLib)) {
-                this._addShaderLibToTop(wd.MorphNormalShaderLib.create());
-            }
-            else if (!this.shader.hasLib(wd.CommonNormalShaderLib)) {
-                this._addShaderLibToTop(wd.CommonNormalShaderLib.create());
-            }
-        };
-        Material.prototype.setBlendByOpacity = function (opacity) {
-            if (opacity < 1.0 && opacity >= 0.0) {
-                this.blend = true;
-            }
-            else {
-                this.blend = false;
-            }
-        };
-        Material.prototype._addTopShaderLib = function () {
-            this.shader.addLib(wd.CommonShaderLib.create());
-            if (this._hasAnimation()) {
-                this.shader.addLib(wd.MorphCommonShaderLib.create());
-                this.shader.addLib(wd.MorphVerticeShaderLib.create());
-            }
-            else {
-                this.shader.addLib(wd.CommonVerticeShaderLib.create());
-            }
-        };
-        Material.prototype._addShaderLibToTop = function (lib) {
-            this.shader.addShaderLibToTop(lib);
-        };
-        Material.prototype._hasAnimation = function () {
-            if (this.geometry instanceof wd.ModelGeometry) {
-                var geo = (this.geometry);
-                return geo.hasAnimation();
-            }
-            return false;
-        };
         Material.prototype._isColorEqual = function (color1, color2) {
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
         };
-        __decorate([
-            wd.require(function () {
-                wd.assert(!(this.mirrorMap && this.envMap), wd.Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
-            })
-        ], Material.prototype, "init", null);
-        __decorate([
-            wd.virtual
-        ], Material.prototype, "addShaderLib", null);
         return Material;
     }());
     wd.Material = Material;
@@ -27253,6 +28218,93 @@ var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var EngineMaterial = (function (_super) {
+        __extends(EngineMaterial, _super);
+        function EngineMaterial() {
+            _super.apply(this, arguments);
+            this.refractionRatio = 0;
+            this.reflectivity = null;
+            this.mapCombineMode = wd.ETextureCombineMode.MIX;
+            this.mapMixRatio = 0.5;
+        }
+        EngineMaterial.prototype.init = function () {
+            this._addTopShaderLib();
+            this.addShaderLib();
+            _super.prototype.init.call(this);
+        };
+        EngineMaterial.prototype.addShaderLib = function () {
+        };
+        EngineMaterial.prototype.addNormalShaderLib = function () {
+            if (this._hasAnimation() && !this.shader.hasLib(wd.MorphNormalShaderLib)) {
+                this._addShaderLibToTop(wd.MorphNormalShaderLib.create());
+            }
+            else if (!this.shader.hasLib(wd.CommonNormalShaderLib)) {
+                this._addShaderLibToTop(wd.CommonNormalShaderLib.create());
+            }
+        };
+        EngineMaterial.prototype.setBlendByOpacity = function (opacity) {
+            if (opacity < 1.0 && opacity >= 0.0) {
+                this.blend = true;
+            }
+            else {
+                this.blend = false;
+            }
+        };
+        EngineMaterial.prototype.createShader = function () {
+            return wd.CommonShader.create();
+        };
+        EngineMaterial.prototype._addTopShaderLib = function () {
+            this.shader.addLib(wd.CommonShaderLib.create());
+            if (this._hasAnimation()) {
+                this.shader.addLib(wd.MorphCommonShaderLib.create());
+                this.shader.addLib(wd.MorphVerticeShaderLib.create());
+            }
+            else {
+                this.shader.addLib(wd.CommonVerticeShaderLib.create());
+            }
+        };
+        EngineMaterial.prototype._addShaderLibToTop = function (lib) {
+            this.shader.addShaderLibToTop(lib);
+        };
+        EngineMaterial.prototype._hasAnimation = function () {
+            if (this.geometry instanceof wd.ModelGeometry) {
+                var geo = (this.geometry);
+                return geo.hasAnimation();
+            }
+            return false;
+        };
+        __decorate([
+            wd.require(function () {
+                wd.assert(!(this.mirrorMap && this.envMap), wd.Log.info.FUNC_SHOULD_NOT("mirrorMap and envMap", "be set both"));
+            })
+        ], EngineMaterial.prototype, "init", null);
+        __decorate([
+            wd.virtual
+        ], EngineMaterial.prototype, "addShaderLib", null);
+        return EngineMaterial;
+    }(wd.Material));
+    wd.EngineMaterial = EngineMaterial;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var wd;
 (function (wd) {
@@ -27266,17 +28318,23 @@ var wd;
             var obj = new this();
             return obj;
         };
+        Object.defineProperty(BasicMaterial.prototype, "mapList", {
+            get: function () {
+                return this.mapManager.getMapList();
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(BasicMaterial.prototype, "map", {
             set: function (map) {
                 if (map instanceof wd.Texture || map instanceof wd.TextureAsset) {
-                    this.addMap(map);
+                    this.mapManager.addMap(map);
                 }
                 else {
-                    var mapArr = (arguments[0]);
-                    wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                    var mapArr = arguments[0];
                     for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
                         var m = mapArr_1[_i];
-                        this.addMap(m);
+                        this.mapManager.addMap(m);
                     }
                 }
             },
@@ -27316,9 +28374,7 @@ var wd;
             this.shader.addLib(wd.BasicEndShaderLib.create());
         };
         BasicMaterial.prototype._setMapShaderLib = function () {
-            var mapManager = this.mapManager, mapCount = mapManager.getMapCount(function (map) {
-                return !mapManager.isMirrorMap(map);
-            });
+            var mapManager = this.mapManager, mapCount = mapManager.getMapCount();
             if (mapCount > 0) {
                 if (mapCount > 1) {
                     this.shader.addLib(wd.MultiMapShaderLib.create());
@@ -27353,8 +28409,23 @@ var wd;
                 this.shader.addLib(wd.MirrorForBasicShaderLib.create());
             }
         };
+        __decorate([
+            wd.ensureGetter(function (mapList) {
+                wd.assert(mapList.getCount() <= 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+            })
+        ], BasicMaterial.prototype, "mapList", null);
+        __decorate([
+            wd.requireSetter(function (map) {
+                if (map instanceof wd.Texture || map instanceof wd.TextureAsset) {
+                }
+                else {
+                    var mapArr = arguments[0];
+                    wdCb.Log.error(mapArr.length > 2, wdCb.Log.info.FUNC_SUPPORT("only", "map.count <= 2"));
+                }
+            })
+        ], BasicMaterial.prototype, "map", null);
         return BasicMaterial;
-    }(wd.Material));
+    }(wd.EngineMaterial));
     wd.BasicMaterial = BasicMaterial;
 })(wd || (wd = {}));
 
@@ -27382,7 +28453,7 @@ var wd;
             this.shader.addLib(wd.SkyboxShaderLib.create());
         };
         return SkyboxMaterial;
-    }(wd.Material));
+    }(wd.EngineMaterial));
     wd.SkyboxMaterial = SkyboxMaterial;
 })(wd || (wd = {}));
 
@@ -27391,12 +28462,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var wd;
 (function (wd) {
     var LightMaterial = (function (_super) {
         __extends(LightMaterial, _super);
         function LightMaterial() {
             _super.apply(this, arguments);
+            this._lightMap = null;
             this._diffuseMap = null;
             this._specularMap = null;
             this._emissionMap = null;
@@ -27408,8 +28486,9 @@ var wd;
             this.cubemapShadowMapDatas = wdCb.Collection.create();
             this.buildTwoDShadowMapData = null;
             this.buildCubemapShadowMapData = null;
-            this.specularColor = wd.Color.create("0x111111");
-            this.emissionColor = wd.Color.create("0x111111");
+            this.specularColor = wd.Color.create("#ffffff");
+            this.emissionColor = wd.Color.create("rgba(0,0,0,0)");
+            this.lightMapIntensity = 1;
             this._twoDShadowMapSamplerIndex = 0;
             this._cubemapShadowMapSamplerIndex = 0;
         }
@@ -27417,12 +28496,25 @@ var wd;
             var obj = new this();
             return obj;
         };
+        Object.defineProperty(LightMaterial.prototype, "lightMap", {
+            get: function () {
+                return this._lightMap;
+            },
+            set: function (lightMap) {
+                this.mapManager.addMap(lightMap, {
+                    samplerVariableName: wd.VariableNameTable.getVariableName("lightMap")
+                });
+                this._lightMap = lightMap;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(LightMaterial.prototype, "diffuseMap", {
             get: function () {
                 return this._diffuseMap;
             },
             set: function (diffuseMap) {
-                this.addMap(diffuseMap, {
+                this.mapManager.addMap(diffuseMap, {
                     samplerVariableName: wd.VariableNameTable.getVariableName("diffuseMap")
                 });
                 this._diffuseMap = diffuseMap;
@@ -27435,7 +28527,7 @@ var wd;
                 return this._specularMap;
             },
             set: function (specularMap) {
-                this.addMap(specularMap, {
+                this.mapManager.addMap(specularMap, {
                     samplerVariableName: wd.VariableNameTable.getVariableName("specularMap")
                 });
                 this._specularMap = specularMap;
@@ -27448,7 +28540,7 @@ var wd;
                 return this._emissionMap;
             },
             set: function (emissionMap) {
-                this.addMap(emissionMap, {
+                this.mapManager.addMap(emissionMap, {
                     samplerVariableName: wd.VariableNameTable.getVariableName("emissionMap")
                 });
                 this._emissionMap = emissionMap;
@@ -27461,7 +28553,7 @@ var wd;
                 return this._normalMap;
             },
             set: function (normalMap) {
-                this.addMap(normalMap, {
+                this.mapManager.addMap(normalMap, {
                     samplerVariableName: wd.VariableNameTable.getVariableName("normalMap")
                 });
                 this._normalMap = normalMap;
@@ -27494,13 +28586,13 @@ var wd;
             configurable: true
         });
         LightMaterial.prototype.addTwoDShadowMap = function (shadowMap) {
-            this.addMap(shadowMap, {
+            this.mapManager.addMap(shadowMap, {
                 samplerData: this._twoDShadowMapSamplerIndex
             });
             this._twoDShadowMapSamplerIndex++;
         };
         LightMaterial.prototype.addCubemapShadowMap = function (shadowMap) {
-            this.addMap(shadowMap, {
+            this.mapManager.addMap(shadowMap, {
                 samplerData: this._cubemapShadowMapSamplerIndex
             });
             this._cubemapShadowMapSamplerIndex++;
@@ -27520,6 +28612,8 @@ var wd;
         LightMaterial.prototype.clearCubemapShadowMapData = function () {
             this.cubemapShadowMapDatas.removeAllChildren();
         };
+        LightMaterial.prototype.addExtendShaderLib = function () {
+        };
         LightMaterial.prototype.addShaderLib = function () {
             var envMap = null;
             this.addNormalShaderLib();
@@ -27530,10 +28624,18 @@ var wd;
             if (envMap) {
                 this._setEnvMapShaderLib(envMap);
             }
+            this.addExtendShaderLib();
             this.shader.addLib(wd.LightEndShaderLib.create());
         };
         LightMaterial.prototype._setLightMapShaderLib = function () {
             var scene = wd.Director.getInstance().scene;
+            this.shader.addLib(wd.CommonLightMapShaderLib.create());
+            if (this._lightMap) {
+                this.shader.addLib(wd.LightMapShaderLib.create());
+            }
+            else {
+                this.shader.addLib(wd.NoLightMapShaderLib.create());
+            }
             if (this._diffuseMap) {
                 this.shader.addLib(wd.DiffuseMapShaderLib.create());
             }
@@ -27600,8 +28702,36 @@ var wd;
                 return map instanceof wd.CubemapShadowMapTexture;
             });
         };
+        __decorate([
+            wd.requireSetter(function (lightMap) {
+                wd.assert(lightMap instanceof wd.ImageTexture || lightMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("lightMap", "be ImageTexture or ProceduralTexture"));
+            })
+        ], LightMaterial.prototype, "lightMap", null);
+        __decorate([
+            wd.requireSetter(function (diffuseMap) {
+                wd.assert(diffuseMap instanceof wd.ImageTexture || diffuseMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("diffuseMap", "be ImageTexture or ProceduralTexture"));
+            })
+        ], LightMaterial.prototype, "diffuseMap", null);
+        __decorate([
+            wd.requireSetter(function (specularMap) {
+                wd.assert(specularMap instanceof wd.ImageTexture || specularMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("specularMap", "be ImageTexture or ProceduralTexture"));
+            })
+        ], LightMaterial.prototype, "specularMap", null);
+        __decorate([
+            wd.requireSetter(function (emissionMap) {
+                wd.assert(emissionMap instanceof wd.ImageTexture || emissionMap instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("emissionMap", "be ImageTexture or ProceduralTexture"));
+            })
+        ], LightMaterial.prototype, "emissionMap", null);
+        __decorate([
+            wd.requireSetter(function (normalMap) {
+                wd.assert(normalMap instanceof wd.ImageTexture, wd.Log.info.FUNC_SHOULD("normalMap", "be ImageTexture"));
+            })
+        ], LightMaterial.prototype, "normalMap", null);
+        __decorate([
+            wd.virtual
+        ], LightMaterial.prototype, "addExtendShaderLib", null);
         return LightMaterial;
-    }(wd.Material));
+    }(wd.EngineMaterial));
     wd.LightMaterial = LightMaterial;
 })(wd || (wd = {}));
 
@@ -27609,6 +28739,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var wd;
 (function (wd) {
@@ -27621,6 +28757,27 @@ var wd;
             var obj = new this();
             return obj;
         };
+        ShaderMaterial.prototype.init = function () {
+            this.shader.addLib(wd.CustomShaderLib.create());
+            _super.prototype.init.call(this);
+        };
+        ShaderMaterial.prototype.read = function (definitionDataId) {
+            var _this = this;
+            this.shader.read(wd.LoaderManager.getInstance().get(definitionDataId));
+            this.shader.getSampler2DUniformsAfterRead().forEach(function (uniform, name) {
+                _this.mapManager.addMap(wd.LoaderManager.getInstance().get(uniform.textureId), {
+                    samplerVariableName: name
+                });
+            });
+        };
+        ShaderMaterial.prototype.createShader = function () {
+            return wd.CustomShader.create();
+        };
+        __decorate([
+            wd.ensure(function () {
+                wd.assert(this.shader.getLibs().getCount() === 1 && this.shader.hasLib(wd.CustomShaderLib), wd.Log.info.FUNC_SHOULD("only has CustomShaderLib, not has other shader libs"));
+            })
+        ], ShaderMaterial.prototype, "init", null);
         return ShaderMaterial;
     }(wd.Material));
     wd.ShaderMaterial = ShaderMaterial;
@@ -27647,9 +28804,11 @@ var wd;
         function MapManager(material) {
             this._material = null;
             this._mapTable = wdCb.Hash.create();
+            this._arrayMapList = wdCb.Collection.create();
             this._mirrorMap = null;
             this._textureDirty = false;
-            this._mapArrCache = null;
+            this._allMapsCache = null;
+            this._allSingleMapsCache = null;
             this._material = material;
         }
         MapManager.create = function (material) {
@@ -27657,9 +28816,9 @@ var wd;
             return obj;
         };
         MapManager.prototype.init = function () {
-            var mapList = this._getMapArr();
-            for (var i = 0, len = mapList.length; i < len; i++) {
-                var texture = mapList[i];
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
                 texture.init();
             }
         };
@@ -27684,42 +28843,42 @@ var wd;
             this._mapTable.appendChild("map", map);
             this._textureDirty = true;
         };
-        MapManager.prototype.getMap = function (index) {
-            return this._mapTable.getChild("map").getChild(index);
+        MapManager.prototype.addArrayMap = function (samplerName, mapArray) {
+            this._arrayMapList.addChild({
+                samplerName: samplerName,
+                mapArray: mapArray
+            });
+            this._textureDirty = true;
+        };
+        MapManager.prototype.getMapList = function () {
+            var map = this._mapTable.getChild("map");
+            return map ? this._mapTable.getChild("map")
+                .filter(function (map) {
+                return map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture;
+            }) : wdCb.Collection.create();
         };
         MapManager.prototype.hasMap = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i - 0] = arguments[_i];
             }
-            var maps = null;
-            maps = this._mapTable.getChild("map");
-            if (!maps) {
+            var mapList = null;
+            mapList = this._mapTable.getChild("map");
+            if (!mapList) {
                 return false;
             }
             if (wd.JudgeUtils.isFunction(args[0])) {
-                return maps.hasChildWithFunc(args[0]);
+                return mapList.hasChildWithFunc(args[0]);
             }
             else {
-                return maps.hasChild(args[0]);
+                return mapList.hasChild(args[0]);
             }
         };
         MapManager.prototype.getMapCount = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
-            }
-            if (args.length === 0) {
-                var map = this._mapTable.getChild("map");
-                return map ? map.getCount() : 0;
-            }
-            else {
-                var filterFunc = args[0], map = this._mapTable.getChild("map");
-                return map ? map.filter(filterFunc).getCount() : 0;
-            }
+            return this.getMapList().getCount();
         };
         MapManager.prototype.getEnvMap = function () {
-            return this._getMap("envMap");
+            return this._getMapByType("envMap");
         };
         MapManager.prototype.setEnvMap = function (envMap) {
             this._setMap("envMap", envMap);
@@ -27738,40 +28897,71 @@ var wd;
         };
         MapManager.prototype.removeAllChildren = function () {
             this._mapTable.removeAllChildren();
+            this._arrayMapList.removeAllChildren();
             this._textureDirty = true;
         };
         MapManager.prototype.dispose = function () {
-            var mapList = this._getMapArr();
-            for (var i = 0, len = mapList.length; i < len; i++) {
-                var texture = mapList[i];
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
                 texture.dispose();
             }
             this.removeAllChildren();
         };
-        MapManager.prototype.update = function () {
-            var mapList = this._getMapArr();
-            for (var i = 0, len = mapList.length; i < len; i++) {
-                var texture = mapList[i];
-                if (texture.needUpdate && texture instanceof wd.BasicTexture) {
+        MapManager.prototype.bindAndUpdate = function () {
+            var mapArr = this._getAllMaps();
+            for (var i = 0, len = mapArr.length; i < len; i++) {
+                var texture = mapArr[i];
+                texture.bindToUnit(i);
+                if (texture.needUpdate) {
                     texture.update(i);
                 }
             }
         };
         MapManager.prototype.sendData = function (program) {
-            var mapList = this._getMapArr();
-            for (var i = 0, len = mapList.length; i < len; i++) {
-                var texture = mapList[i], samplerName = texture.getSamplerName(i), pos = program.getUniformLocation(samplerName);
-                if (program.isUniformDataNotExistByLocation(pos)) {
-                    return;
-                }
-                texture.bindToUnit(i);
-                texture.sendData(program, pos, i);
+            this._sendSingleMapData(program);
+            this._sendArrayMapData(program);
+        };
+        MapManager.prototype._sendSingleMapData = function (program) {
+            var mapArr = this._getAllSingleMaps(), len = mapArr.length;
+            for (var i = 0; i < len; i++) {
+                var texture = mapArr[i];
+                texture.sendData(program, texture.getSamplerName(i), i);
             }
         };
-        MapManager.prototype._getMapArr = function () {
+        MapManager.prototype._sendArrayMapData = function (program) {
+            var self = this, maxUnitOfBindedSingleMap = this._getMaxUnitOfBindedSingleMap();
+            this._arrayMapList.forEach(function (mapData) {
+                var arrayMapCount = mapData.mapArray.length;
+                program.sendUniformData(mapData.samplerName + "[0]", wd.EVariableType.SAMPLER_ARRAY, self._generateArrayMapUnitArray(maxUnitOfBindedSingleMap, maxUnitOfBindedSingleMap + arrayMapCount));
+                maxUnitOfBindedSingleMap += arrayMapCount;
+            });
+        };
+        MapManager.prototype._generateArrayMapUnitArray = function (startUnit, endUnit) {
+            var arr = [];
+            while (endUnit > startUnit) {
+                arr.push(startUnit);
+                startUnit++;
+            }
+            return arr;
+        };
+        MapManager.prototype._getAllMaps = function () {
+            return [].concat(this._getAllSingleMaps(), this._getAllArrayMaps());
+        };
+        MapManager.prototype._getMaxUnitOfBindedSingleMap = function () {
+            return this._getAllSingleMaps().length;
+        };
+        MapManager.prototype._getAllSingleMaps = function () {
             return this._mapTable.toArray();
         };
-        MapManager.prototype._getMap = function (key) {
+        MapManager.prototype._getAllArrayMaps = function () {
+            var arrayMap = [];
+            this._arrayMapList.forEach(function (mapData) {
+                arrayMap = arrayMap.concat(mapData.mapArray);
+            });
+            return arrayMap;
+        };
+        MapManager.prototype._getMapByType = function (key) {
             return this._mapTable.getChild(key);
         };
         MapManager.prototype._setMap = function () {
@@ -27799,15 +28989,62 @@ var wd;
             map.variableData = option;
         };
         __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(args[0] instanceof wd.TextureAsset || args[0] instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("arguments[0]", "be TextureAsset || Texture"));
+            })
+        ], MapManager.prototype, "addMap", null);
+        __decorate([
+            wd.ensure(function (mapList) {
+                mapList.forEach(function (map) {
+                    wd.assert(map instanceof wd.BasicTexture || map instanceof wd.ProceduralTexture, wd.Log.info.FUNC_SHOULD("mapList", "only contain BasicTexture or ProceduralTexture"));
+                });
+            })
+        ], MapManager.prototype, "getMapList", null);
+        __decorate([
+            wd.ensure(function (arr, startUnit, endUnit) {
+                wd.assert(arr.length === endUnit - startUnit, wd.Log.info.FUNC_SHOULD("length", "be " + (endUnit - startUnit) + ", but actual is " + arr.length));
+                wd.assert(arr[0] === startUnit, wd.Log.info.FUNC_SHOULD("first element", "be " + startUnit + ", but actual is " + arr[0]));
+                wd.assert(arr[arr.length - 1] === endUnit - 1, wd.Log.info.FUNC_SHOULD("last element", "be " + (endUnit - 1) + ", but actual is " + arr[arr.length - 1]));
+            })
+        ], MapManager.prototype, "_generateArrayMapUnitArray", null);
+        __decorate([
+            wd.ensure(function (mapArr) {
+                for (var _i = 0, mapArr_1 = mapArr; _i < mapArr_1.length; _i++) {
+                    var map = mapArr_1[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
+                }
+            }),
             wd.cache(function () {
-                return !this._textureDirty && this._mapArrCache;
+                return !this._textureDirty && this._allMapsCache;
             }, function () {
-                return this._mapArrCache;
+                return this._allMapsCache;
             }, function (mapList) {
-                this._mapArrCache = mapList;
+                this._allMapsCache = mapList;
                 this._textureDirty = false;
             })
-        ], MapManager.prototype, "_getMapArr", null);
+        ], MapManager.prototype, "_getAllMaps", null);
+        __decorate([
+            wd.cache(function () {
+                return !this._textureDirty && this._allSingleMapsCache;
+            }, function () {
+                return this._allSingleMapsCache;
+            }, function (mapList) {
+                this._allSingleMapsCache = mapList;
+                this._textureDirty = false;
+            })
+        ], MapManager.prototype, "_getAllSingleMaps", null);
+        __decorate([
+            wd.ensure(function (mapArr) {
+                for (var _i = 0, mapArr_2 = mapArr; _i < mapArr_2.length; _i++) {
+                    var map = mapArr_2[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("each element", "be Texture"));
+                }
+            })
+        ], MapManager.prototype, "_getAllArrayMaps", null);
         return MapManager;
     }());
     wd.MapManager = MapManager;
@@ -28010,6 +29247,53 @@ var wd;
         return JsLoader;
     }(wd.Loader));
     wd.JsLoader = JsLoader;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var JSONLoader = (function (_super) {
+        __extends(JSONLoader, _super);
+        function JSONLoader() {
+            _super.apply(this, arguments);
+        }
+        JSONLoader.getInstance = function () {
+            if (this._instance === null) {
+                this._instance = new this();
+            }
+            return this._instance;
+        };
+        JSONLoader.prototype.loadAsset = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
+            var url = args[0];
+            return wd.AjaxLoader.load(url, "json");
+        };
+        JSONLoader._instance = null;
+        __decorate([
+            wd.require(function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                wd.assert(!wd.JudgeUtils.isArrayExactly(args[0]), wd.Log.info.FUNC_MUST_BE("url", "string"));
+            })
+        ], JSONLoader.prototype, "loadAsset", null);
+        return JSONLoader;
+    }(wd.Loader));
+    wd.JSONLoader = JSONLoader;
 })(wd || (wd = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {
@@ -28804,6 +30088,9 @@ var wd;
         LoaderFactory._getLoaderByExtname = function (extname) {
             var loader = null;
             switch (extname) {
+                case ".json":
+                    loader = wd.JSONLoader.getInstance();
+                    break;
                 case ".js":
                     loader = wd.JsLoader.getInstance();
                     break;
@@ -30793,6 +32080,7 @@ var wd;
         function DeviceManager() {
             this.view = null;
             this.gl = null;
+            this.viewport = wd.RectRegion.create();
             this._scissorTest = null;
             this._depthTest = null;
             this._depthFunc = null;
@@ -30841,6 +32129,7 @@ var wd;
             }
         };
         DeviceManager.prototype.setViewport = function (x, y, width, height) {
+            this.viewport.set(x, y, width, height);
             this.gl.viewport(x, y, width, height);
         };
         Object.defineProperty(DeviceManager.prototype, "depthTest", {
@@ -31612,6 +32901,7 @@ var wd;
             this.magFilter = null;
             this.minFilter = null;
             this.glTexture = null;
+            this.needUpdate = null;
             this.target = wd.ETextureTarget.TEXTURE_2D;
         }
         Object.defineProperty(Texture.prototype, "geometry", {
@@ -31630,9 +32920,8 @@ var wd;
             gl.bindTexture(gl[this.target], this.glTexture);
             return this;
         };
-        Texture.prototype.sendData = function (program, pos, unit) {
-            program.sendUniformData(pos, this.getSamplerType(), unit);
-            this.sendOtherData(program, unit);
+        Texture.prototype.sendData = function (program, name, unit) {
+            program.sendUniformData(name, this.getSamplerType(), unit);
         };
         Texture.prototype.dispose = function () {
             var gl = wd.DeviceManager.getInstance().gl;
@@ -31644,8 +32933,6 @@ var wd;
                 return wd.ETextureFilterMode.NEAREST;
             }
             return wd.ETextureFilterMode.LINEAR;
-        };
-        Texture.prototype.sendOtherData = function (program, unit) {
         };
         Texture.prototype.getSamplerNameByVariableData = function (unit, type) {
             var samplerName = null;
@@ -31691,9 +32978,6 @@ var wd;
                 gl.texParameteri(textureType, gl.TEXTURE_MIN_FILTER, gl[this.filterFallback(this.minFilter)]);
             }
         };
-        __decorate([
-            wd.virtual
-        ], Texture.prototype, "sendOtherData", null);
         __decorate([
             wd.virtual
         ], Texture.prototype, "isSourcePowerOfTwo", null);
@@ -31773,12 +33057,17 @@ var wd;
         function RenderTargetTexture() {
             _super.apply(this, arguments);
         }
+        RenderTargetTexture.prototype.initWhenCreate = function () {
+            this.needUpdate = false;
+        };
         RenderTargetTexture.prototype.init = function () {
             this.minFilter = wd.ETextureFilterMode.LINEAR;
             this.magFilter = wd.ETextureFilterMode.LINEAR;
             this.wrapS = wd.ETextureWrapMode.CLAMP_TO_EDGE;
             this.wrapT = wd.ETextureWrapMode.CLAMP_TO_EDGE;
             return this;
+        };
+        RenderTargetTexture.prototype.update = function () {
         };
         RenderTargetTexture.prototype.getPosition = function () {
             return this.geometry.entityObject.transform.position;
@@ -31872,6 +33161,7 @@ var wd;
         }
         MirrorTexture.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         MirrorTexture.prototype.init = function () {
@@ -31913,6 +33203,7 @@ var wd;
         }
         TwoDShadowMapTexture.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         TwoDShadowMapTexture.prototype.getSamplerName = function (unit) {
@@ -31968,6 +33259,7 @@ var wd;
         }
         CubemapShadowMapTexture.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         CubemapShadowMapTexture.prototype.getSamplerName = function (unit) {
@@ -31998,6 +33290,7 @@ var wd;
         }
         DynamicCubemapTexture.create = function () {
             var obj = new this();
+            obj.initWhenCreate();
             return obj;
         };
         Object.defineProperty(DynamicCubemapTexture.prototype, "renderList", {
@@ -32038,6 +33331,34 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var wd;
+(function (wd) {
+    var ProceduralTexture = (function (_super) {
+        __extends(ProceduralTexture, _super);
+        function ProceduralTexture() {
+            _super.apply(this, arguments);
+            this.repeatRegion = wd.RectRegion.create(0, 0, 1, 1);
+        }
+        Object.defineProperty(ProceduralTexture.prototype, "sourceRegionForGLSL", {
+            get: function () {
+                return wd.RectRegion.create(0, 0, 1, 1);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ProceduralTexture.prototype.getSamplerName = function (unit) {
+            return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_2D);
+        };
+        return ProceduralTexture;
+    }(wd.TwoDRenderTargetTexture));
+    wd.ProceduralTexture = ProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -32063,7 +33384,6 @@ var wd;
             this.type = null;
             this.mipmaps = null;
             this.anisotropy = null;
-            this.needUpdate = null;
         }
         Object.defineProperty(BasicTexture.prototype, "sourceRegionMethod", {
             get: function () {
@@ -32075,6 +33395,16 @@ var wd;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(BasicTexture.prototype, "sourceRegionForGLSL", {
+            get: function () {
+                if (this.sourceRegion && this.sourceRegionMethod === wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL) {
+                    return this._convertSourceRegionToUV(this.sourceRegion);
+                }
+                return wd.RectRegion.create(0, 0, 1, 1);
+            },
+            enumerable: true,
+            configurable: true
+        });
         BasicTexture.prototype.initWhenCreate = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
@@ -32082,12 +33412,12 @@ var wd;
             }
             var gl = wd.DeviceManager.getInstance().gl;
             this.glTexture = gl.createTexture();
+            this.needUpdate = true;
         };
         BasicTexture.prototype.init = function () {
         };
-        BasicTexture.prototype.update = function (index) {
+        BasicTexture.prototype.update = function () {
             var gl = wd.DeviceManager.getInstance().gl, isSourcePowerOfTwo = this.isSourcePowerOfTwo();
-            this.bindToUnit(index);
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
             gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
@@ -32108,18 +33438,6 @@ var wd;
         };
         BasicTexture.prototype.getSamplerName = function (unit) {
             return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_2D);
-        };
-        BasicTexture.prototype.sendOtherData = function (program, unit) {
-            var sourceRegion = null;
-            if (this.sourceRegion && this.sourceRegionMethod === wd.ETextureSourceRegionMethod.CHANGE_TEXCOORDS_IN_GLSL) {
-                sourceRegion = this._convertSourceRegionToUV();
-            }
-            else {
-                sourceRegion = wd.RectRegion.create(0, 0, 1, 1);
-            }
-            program.sendUniformData("u_sourceRegion", wd.EVariableType.FLOAT_4, sourceRegion);
-            program.sendUniformData("u_repeatRegion", wd.EVariableType.FLOAT_4, this.repeatRegion);
-            return this;
         };
         BasicTexture.prototype.needClampMaxSize = function () {
             if (!this.source) {
@@ -32152,12 +33470,12 @@ var wd;
             region.y = 1 - region.y - region.height;
             return region;
         };
-        BasicTexture.prototype._convertSourceRegionToUV = function () {
+        BasicTexture.prototype._convertSourceRegionToUV = function (sourceRegion) {
             if (this.sourceRegionMapping === wd.ETextureSourceRegionMapping.CANVAS) {
-                return this._convertSourceRegionCanvasMapToUV(this.sourceRegion);
+                return this._convertSourceRegionCanvasMapToUV(sourceRegion);
             }
             else if (this.sourceRegionMapping === wd.ETextureSourceRegionMapping.UV) {
-                return this.sourceRegion;
+                return sourceRegion;
             }
         };
         __decorate([
@@ -32362,10 +33680,6 @@ var wd;
         };
         CubemapTexture.prototype.getSamplerName = function (unit) {
             return this.getSamplerNameByVariableData(unit, wd.EVariableType.SAMPLER_CUBE);
-        };
-        CubemapTexture.prototype.sendOtherData = function (program, unit) {
-            program.sendUniformData("u_repeatRegion", wd.EVariableType.FLOAT_4, this.repeatRegion);
-            return this;
         };
         CubemapTexture.prototype.allocateSourceToTexture = function (isSourcePowerOfTwo) {
             if (this._areAllCompressedAsset) {
@@ -32925,6 +34239,1049 @@ var wd;
     }
 })(wd || (wd = {}));
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CommonProceduralShaderLib = (function (_super) {
+        __extends(CommonProceduralShaderLib, _super);
+        function CommonProceduralShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "common_proceduralTexture";
+        }
+        CommonProceduralShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        CommonProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            this.sendAttributeData(program, "a_positionVec2", cmd.vertexBuffer);
+        };
+        CommonProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addAttributeVariable(["a_positionVec2"]);
+        };
+        return CommonProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.CommonProceduralShaderLib = CommonProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var FireProceduralShaderLib = (function (_super) {
+        __extends(FireProceduralShaderLib, _super);
+        function FireProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "fire_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        FireProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        FireProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            texture.computeTime();
+            this.sendUniformData(program, "u_time", texture.time);
+            this.sendUniformData(program, "u_speed", texture.speed);
+            this.sendUniformData(program, "u_shift", texture.shift);
+            this.sendUniformData(program, "u_alphaThreshold", texture.alphaThreshold);
+            texture.fireColorMap.forEach(function (color, name) {
+                program.sendStructureData("u_fireColor." + name, wd.EVariableType.FLOAT_3, color.toVector3());
+            });
+        };
+        FireProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_time", "u_speed", "u_shift", "u_alphaThreshold", "u_fireColor"
+            ]);
+        };
+        return FireProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.FireProceduralShaderLib = FireProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var FireProceduralRenderTargetRenderer = (function (_super) {
+        __extends(FireProceduralRenderTargetRenderer, _super);
+        function FireProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        FireProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        FireProceduralRenderTargetRenderer.prototype.needRender = function () {
+            return true;
+        };
+        FireProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.FireProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return FireProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.FireProceduralRenderTargetRenderer = FireProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var FireProceduralTexture = (function (_super) {
+        __extends(FireProceduralTexture, _super);
+        function FireProceduralTexture() {
+            _super.apply(this, arguments);
+            this._fireColorMap = null;
+            this.fireColorType = EFireProceduralTextureColorType.RED;
+            this.speed = wd.Vector2.create(0.5, 0.3);
+            this.alphaThreshold = 0.5;
+            this.shift = 1;
+            this.time = 0;
+        }
+        FireProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        Object.defineProperty(FireProceduralTexture.prototype, "fireColorMap", {
+            get: function () {
+                switch (this.fireColorType) {
+                    case EFireProceduralTextureColorType.CUSTOM:
+                        return this._fireColorMap;
+                    case EFireProceduralTextureColorType.RED:
+                        return wdCb.Hash.create({
+                            "c1": wd.Color.create("rgb(0.5, 0.0, 0.1)"),
+                            "c2": wd.Color.create("rgb(0.9, 0.0, 0.0)"),
+                            "c3": wd.Color.create("rgb(0.2, 0.0, 0.0)"),
+                            "c4": wd.Color.create("rgb(1.0, 0.9, 0.0)"),
+                            "c5": wd.Color.create("rgb(0.1, 0.1, 0.1)"),
+                            "c6": wd.Color.create("rgb(0.9, 0.9, 0.9)")
+                        });
+                    case EFireProceduralTextureColorType.BLUE:
+                        return wdCb.Hash.create({
+                            "c1": wd.Color.create("rgb(0.1, 0.0, 0.5)"),
+                            "c2": wd.Color.create("rgb(0.0, 0.0, 0.5)"),
+                            "c3": wd.Color.create("rgb(0.1, 0.0, 0.2)"),
+                            "c4": wd.Color.create("rgb(0.0, 0.0, 1.0)"),
+                            "c5": wd.Color.create("rgb(0.1, 0.2, 0.3)"),
+                            "c6": wd.Color.create("rgb(0.0, 0.2, 0.9)")
+                        });
+                    case EFireProceduralTextureColorType.PURPLE:
+                        return wdCb.Hash.create({
+                            "c1": wd.Color.create("rgb(0.5, 0.0, 1.0)"),
+                            "c2": wd.Color.create("rgb(0.9, 0.0, 1.0)"),
+                            "c3": wd.Color.create("rgb(0.2, 0.0, 1.0)"),
+                            "c4": wd.Color.create("rgb(1.0, 0.9, 1.0)"),
+                            "c5": wd.Color.create("rgb(0.1, 0.1, 1.0)"),
+                            "c6": wd.Color.create("rgb(0.9, 0.9, 1.0)")
+                        });
+                    case EFireProceduralTextureColorType.GREEN:
+                        return wdCb.Hash.create({
+                            "c1": wd.Color.create("rgb(0.5, 1.0, 0.0)"),
+                            "c2": wd.Color.create("rgb(0.5, 1.0, 0.0)"),
+                            "c3": wd.Color.create("rgb(0.3, 0.4, 0.0)"),
+                            "c4": wd.Color.create("rgb(0.5, 1.0, 0.0)"),
+                            "c5": wd.Color.create("rgb(0.2, 0.0, 0.0)"),
+                            "c6": wd.Color.create("rgb(0.5, 1.0, 0.0)")
+                        });
+                    default:
+                        wd.Log.error(true, wd.Log.info.FUNC_UNEXPECT("fireColorType:" + this.fireColorType));
+                        break;
+                }
+            },
+            set: function (fireColorMap) {
+                this._fireColorMap = fireColorMap;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FireProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.FireProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        FireProceduralTexture.prototype.computeTime = function () {
+            this.time += 0.1;
+        };
+        __decorate([
+            wd.requireSetter(function (fireColorMap) {
+                wd.assert(fireColorMap.getCount() === 6, wd.Log.info.FUNC_SHOULD("contain 6 colors"));
+            }),
+            wd.ensureGetter(function (value) {
+                wd.assert(value.getCount() === 6, wd.Log.info.FUNC_SHOULD("contain 6 colors"));
+            })
+        ], FireProceduralTexture.prototype, "fireColorMap", null);
+        return FireProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.FireProceduralTexture = FireProceduralTexture;
+    (function (EFireProceduralTextureColorType) {
+        EFireProceduralTextureColorType[EFireProceduralTextureColorType["CUSTOM"] = 0] = "CUSTOM";
+        EFireProceduralTextureColorType[EFireProceduralTextureColorType["RED"] = 1] = "RED";
+        EFireProceduralTextureColorType[EFireProceduralTextureColorType["PURPLE"] = 2] = "PURPLE";
+        EFireProceduralTextureColorType[EFireProceduralTextureColorType["GREEN"] = 3] = "GREEN";
+        EFireProceduralTextureColorType[EFireProceduralTextureColorType["BLUE"] = 4] = "BLUE";
+    })(wd.EFireProceduralTextureColorType || (wd.EFireProceduralTextureColorType = {}));
+    var EFireProceduralTextureColorType = wd.EFireProceduralTextureColorType;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var MarbleProceduralRenderTargetRenderer = (function (_super) {
+        __extends(MarbleProceduralRenderTargetRenderer, _super);
+        function MarbleProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        MarbleProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        MarbleProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.MarbleProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return MarbleProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.MarbleProceduralRenderTargetRenderer = MarbleProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var MarbleProceduralTexture = (function (_super) {
+        __extends(MarbleProceduralTexture, _super);
+        function MarbleProceduralTexture() {
+            _super.apply(this, arguments);
+            this.tilesHeightNumber = 3;
+            this.tilesWidthNumber = 3;
+            this.amplitude = 9;
+            this.jointColor = wd.Color.create("rgb(0.72, 0.72, 0.72)");
+        }
+        MarbleProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        MarbleProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.MarbleProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return MarbleProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.MarbleProceduralTexture = MarbleProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var MarbleProceduralShaderLib = (function (_super) {
+        __extends(MarbleProceduralShaderLib, _super);
+        function MarbleProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "marble_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        MarbleProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        MarbleProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_tilesHeightNumber", texture.tilesHeightNumber);
+            this.sendUniformData(program, "u_tilesWidthNumber", texture.tilesWidthNumber);
+            this.sendUniformData(program, "u_amplitude", texture.amplitude);
+            this.sendUniformData(program, "u_jointColor", texture.jointColor.toVector3());
+        };
+        MarbleProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_tilesHeightNumber", "u_tilesWidthNumber", "u_amplitude", "u_jointColor"
+            ]);
+        };
+        return MarbleProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.MarbleProceduralShaderLib = MarbleProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var GrassProceduralRenderTargetRenderer = (function (_super) {
+        __extends(GrassProceduralRenderTargetRenderer, _super);
+        function GrassProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        GrassProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        GrassProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.GrassProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return GrassProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.GrassProceduralRenderTargetRenderer = GrassProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var GrassProceduralTexture = (function (_super) {
+        __extends(GrassProceduralTexture, _super);
+        function GrassProceduralTexture() {
+            _super.apply(this, arguments);
+            this.herb1Color = wd.Color.create("rgb(0.29, 0.38, 0.02)");
+            this.herb2Color = wd.Color.create("rgb(0.36, 0.49, 0.09)");
+            this.herb3Color = wd.Color.create("rgb(0.51, 0.6, 0.28)");
+            this.groundColor = wd.Color.create("rgb(1.0,1.0,1.0)");
+        }
+        GrassProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        GrassProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.GrassProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return GrassProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.GrassProceduralTexture = GrassProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var GrassProceduralShaderLib = (function (_super) {
+        __extends(GrassProceduralShaderLib, _super);
+        function GrassProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "grass_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        GrassProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        GrassProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_herb1Color", texture.herb1Color.toVector3());
+            this.sendUniformData(program, "u_herb2Color", texture.herb2Color.toVector3());
+            this.sendUniformData(program, "u_herb3Color", texture.herb3Color.toVector3());
+            this.sendUniformData(program, "u_groundColor", texture.groundColor.toVector3());
+        };
+        GrassProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_herb1Color", "u_herb2Color", "u_herb3Color", "u_groundColor"
+            ]);
+        };
+        return GrassProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.GrassProceduralShaderLib = GrassProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var WoodProceduralRenderTargetRenderer = (function (_super) {
+        __extends(WoodProceduralRenderTargetRenderer, _super);
+        function WoodProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        WoodProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        WoodProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.WoodProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return WoodProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.WoodProceduralRenderTargetRenderer = WoodProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var WoodProceduralTexture = (function (_super) {
+        __extends(WoodProceduralTexture, _super);
+        function WoodProceduralTexture() {
+            _super.apply(this, arguments);
+            this.ampScale = 100.0;
+            this.woodColor = wd.Color.create("rgb(0.32, 0.17, 0.09)");
+        }
+        WoodProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        WoodProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.WoodProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return WoodProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.WoodProceduralTexture = WoodProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var WoodProceduralShaderLib = (function (_super) {
+        __extends(WoodProceduralShaderLib, _super);
+        function WoodProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "wood_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        WoodProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        WoodProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_ampScale", texture.ampScale);
+            this.sendUniformData(program, "u_woodColor", texture.woodColor.toVector3());
+        };
+        WoodProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_ampScale", "u_woodColor"
+            ]);
+        };
+        return WoodProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.WoodProceduralShaderLib = WoodProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var RoadProceduralRenderTargetRenderer = (function (_super) {
+        __extends(RoadProceduralRenderTargetRenderer, _super);
+        function RoadProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        RoadProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        RoadProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.RoadProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return RoadProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.RoadProceduralRenderTargetRenderer = RoadProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var RoadProceduralTexture = (function (_super) {
+        __extends(RoadProceduralTexture, _super);
+        function RoadProceduralTexture() {
+            _super.apply(this, arguments);
+            this.roadColor = wd.Color.create("rgb(0.53, 0.53, 0.53)");
+        }
+        RoadProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        RoadProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.RoadProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return RoadProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.RoadProceduralTexture = RoadProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var RoadProceduralShaderLib = (function (_super) {
+        __extends(RoadProceduralShaderLib, _super);
+        function RoadProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "road_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        RoadProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        RoadProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_roadColor", texture.roadColor.toVector3());
+        };
+        RoadProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_roadColor"
+            ]);
+        };
+        return RoadProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.RoadProceduralShaderLib = RoadProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CloudProceduralRenderTargetRenderer = (function (_super) {
+        __extends(CloudProceduralRenderTargetRenderer, _super);
+        function CloudProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        CloudProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        CloudProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.CloudProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return CloudProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.CloudProceduralRenderTargetRenderer = CloudProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CloudProceduralTexture = (function (_super) {
+        __extends(CloudProceduralTexture, _super);
+        function CloudProceduralTexture() {
+            _super.apply(this, arguments);
+            this.skyColor = wd.Color.create("rgb(0.15, 0.68, 1.0)");
+            this.cloudColor = wd.Color.create("rgb(1.0, 1.0, 1.0)");
+        }
+        CloudProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        CloudProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.CloudProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return CloudProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.CloudProceduralTexture = CloudProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CloudProceduralShaderLib = (function (_super) {
+        __extends(CloudProceduralShaderLib, _super);
+        function CloudProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "cloud_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        CloudProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        CloudProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_skyColor", texture.skyColor.toVector4());
+            this.sendUniformData(program, "u_cloudColor", texture.cloudColor.toVector4());
+        };
+        CloudProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_skyColor", "u_cloudColor"
+            ]);
+        };
+        return CloudProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.CloudProceduralShaderLib = CloudProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var BrickProceduralRenderTargetRenderer = (function (_super) {
+        __extends(BrickProceduralRenderTargetRenderer, _super);
+        function BrickProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        BrickProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        BrickProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CommonProceduralShader.create();
+            shader.addLib(wd.BrickProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return BrickProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.BrickProceduralRenderTargetRenderer = BrickProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var BrickProceduralTexture = (function (_super) {
+        __extends(BrickProceduralTexture, _super);
+        function BrickProceduralTexture() {
+            _super.apply(this, arguments);
+            this.tilesHeightNumber = 15;
+            this.tilesWidthNumber = 5;
+            this.brickColor = wd.Color.create("rgb(0.77, 0.47, 0.40)");
+            this.jointColor = wd.Color.create("rgb(0.72, 0.72, 0.72)");
+        }
+        BrickProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        BrickProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.BrickProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        return BrickProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.BrickProceduralTexture = BrickProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var BrickProceduralShaderLib = (function (_super) {
+        __extends(BrickProceduralShaderLib, _super);
+        function BrickProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "brick_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        BrickProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        BrickProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture;
+            this.sendUniformData(program, "u_tilesWidthNumber", texture.tilesWidthNumber);
+            this.sendUniformData(program, "u_tilesHeightNumber", texture.tilesHeightNumber);
+            this.sendUniformData(program, "u_brickColor", texture.brickColor.toVector3());
+            this.sendUniformData(program, "u_jointColor", texture.jointColor.toVector3());
+        };
+        BrickProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.addUniformVariable([
+                "u_tilesHeightNumber", "u_tilesWidthNumber", "u_brickColor", "u_jointColor"
+            ]);
+        };
+        return BrickProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.BrickProceduralShaderLib = BrickProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomProceduralRenderTargetRenderer = (function (_super) {
+        __extends(CustomProceduralRenderTargetRenderer, _super);
+        function CustomProceduralRenderTargetRenderer() {
+            _super.apply(this, arguments);
+        }
+        CustomProceduralRenderTargetRenderer.create = function (texture) {
+            var obj = new this(texture);
+            obj.initWhenCreate();
+            return obj;
+        };
+        CustomProceduralRenderTargetRenderer.prototype.needRender = function () {
+            if (this.texture.isAnimate) {
+                return true;
+            }
+            return _super.prototype.needRender.call(this);
+        };
+        CustomProceduralRenderTargetRenderer.prototype.createShader = function () {
+            var shader = wd.CustomProceduralShader.create(this.texture);
+            shader.addLib(wd.CustomProceduralShaderLib.create(this.texture));
+            return shader;
+        };
+        return CustomProceduralRenderTargetRenderer;
+    }(wd.ProceduralRenderTargetRenderer));
+    wd.CustomProceduralRenderTargetRenderer = CustomProceduralRenderTargetRenderer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var CustomProceduralTexture = (function (_super) {
+        __extends(CustomProceduralTexture, _super);
+        function CustomProceduralTexture() {
+            _super.apply(this, arguments);
+            this.mapManager = wd.MapManager.create(null);
+            this.uniformMap = wdCb.Hash.create();
+            this.fsSource = null;
+            this.isAnimate = false;
+        }
+        CustomProceduralTexture.create = function () {
+            var obj = new this();
+            obj.initWhenCreate();
+            return obj;
+        };
+        CustomProceduralTexture.prototype.init = function () {
+            _super.prototype.init.call(this);
+            wd.Director.getInstance().scene.addProceduralRenderTargetRenderer(wd.CustomProceduralRenderTargetRenderer.create(this));
+            return this;
+        };
+        CustomProceduralTexture.prototype.read = function (shaderConfigId) {
+            var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
+            this.fsSource = wd.LoaderManager.getInstance().get(shaderConfig.fsSourceId);
+            for (var name_1 in uniforms) {
+                if (uniforms.hasOwnProperty(name_1)) {
+                    var uniform = uniforms[name_1];
+                    if (uniform.type === wd.EVariableType.SAMPLER_2D) {
+                        this.mapManager.addMap(wd.LoaderManager.getInstance().get(uniform.textureId), {
+                            samplerVariableName: name_1
+                        });
+                    }
+                    else {
+                        this.uniformMap.addChild(name_1, uniform);
+                    }
+                }
+            }
+        };
+        __decorate([
+            wd.require(function (shaderConfigId) {
+                var shaderConfig = wd.LoaderManager.getInstance().get(shaderConfigId), uniforms = shaderConfig.uniforms;
+                for (var name_2 in uniforms) {
+                    if (uniforms.hasOwnProperty(name_2)) {
+                        var uniform = uniforms[name_2];
+                        wd.assert(uniform.type !== wd.EVariableType.SAMPLER_CUBE, wd.Log.info.FUNC_NOT_SUPPORT("uniforms", "EVariableType.SAMPLER_CUBE type"));
+                    }
+                }
+            }),
+            wd.ensure(function () {
+                wd.assert(this.fsSource !== null, wd.Log.info.FUNC_SHOULD("read fragment glsl source"));
+            })
+        ], CustomProceduralTexture.prototype, "read", null);
+        return CustomProceduralTexture;
+    }(wd.ProceduralTexture));
+    wd.CustomProceduralTexture = CustomProceduralTexture;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var wd;
+(function (wd) {
+    var CustomProceduralShaderLib = (function (_super) {
+        __extends(CustomProceduralShaderLib, _super);
+        function CustomProceduralShaderLib(proceduralTexture) {
+            _super.call(this);
+            this.type = "custom_proceduralTexture";
+            this._proceduralTexture = null;
+            this._proceduralTexture = proceduralTexture;
+        }
+        CustomProceduralShaderLib.create = function (proceduralTexture) {
+            var obj = new this(proceduralTexture);
+            return obj;
+        };
+        CustomProceduralShaderLib.prototype.sendShaderVariables = function (program, cmd) {
+            var texture = this._proceduralTexture, uniformMap = texture.uniformMap;
+            uniformMap.forEach(function (uniform, name) {
+                wd.CustomShaderLibUtils.sendUniformData(name, uniform.type, uniform.value, program);
+            });
+        };
+        CustomProceduralShaderLib.prototype.setShaderDefinition = function (cmd) {
+            var texture = this._proceduralTexture;
+            _super.prototype.setShaderDefinition.call(this, cmd);
+            this.setFsSource(texture.fsSource);
+        };
+        return CustomProceduralShaderLib;
+    }(wd.ProceduralShaderLib));
+    wd.CustomProceduralShaderLib = CustomProceduralShaderLib;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var TerrainMaterial = (function (_super) {
+        __extends(TerrainMaterial, _super);
+        function TerrainMaterial() {
+            _super.apply(this, arguments);
+            this.layer = Layer.create();
+        }
+        TerrainMaterial.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        TerrainMaterial.prototype.init = function () {
+            this.mapManager.addArrayMap("u_layerSampler2Ds", this.layer.mapArray);
+            _super.prototype.init.call(this);
+        };
+        TerrainMaterial.prototype.addExtendShaderLib = function () {
+            if (this.layer.mapDataList.getCount() > 0) {
+                this.shader.addLib(wd.TerrainLayerShaderLib.create());
+            }
+        };
+        return TerrainMaterial;
+    }(wd.LightMaterial));
+    wd.TerrainMaterial = TerrainMaterial;
+    var Layer = (function () {
+        function Layer() {
+            this._mapDataList = wdCb.Collection.create();
+        }
+        Layer.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        Object.defineProperty(Layer.prototype, "mapDataList", {
+            get: function () {
+                return this._mapDataList;
+            },
+            set: function (mapDataList) {
+                this._mapDataList = mapDataList;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layer.prototype, "mapArray", {
+            get: function () {
+                var arr = [];
+                this._mapDataList.forEach(function (data) {
+                    arr.push(data.diffuseMap);
+                });
+                return arr;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        __decorate([
+            wd.requireSetter(function (mapDataList) {
+                mapDataList.forEach(function (mapData) {
+                    wd.assert(mapData.minHeight < mapData.maxHeight, wd.Log.info.FUNC_SHOULD("minHeight", "< maxHeight"));
+                });
+                mapDataList.forEach(function (mapData) {
+                    mapDataList
+                        .filter(function (data) {
+                        return data.minHeight !== mapData.minHeight || data.maxHeight !== mapData.maxHeight;
+                    })
+                        .forEach(function (data) {
+                        wd.assert(mapData.minHeight >= data.maxHeight || mapData.maxHeight <= data.minHeight, wd.Log.info.FUNC_SHOULD_NOT("height range", "overlap"));
+                    });
+                });
+            })
+        ], Layer.prototype, "mapDataList", null);
+        __decorate([
+            wd.ensureGetter(function (mapArray) {
+                for (var _i = 0, mapArray_1 = mapArray; _i < mapArray_1.length; _i++) {
+                    var map = mapArray_1[_i];
+                    wd.assert(map instanceof wd.Texture, wd.Log.info.FUNC_SHOULD("return Array<Texture>"));
+                }
+            })
+        ], Layer.prototype, "mapArray", null);
+        return Layer;
+    }());
+    wd.Layer = Layer;
+})(wd || (wd = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var wd;
+(function (wd) {
+    var TerrainLayerShaderLib = (function (_super) {
+        __extends(TerrainLayerShaderLib, _super);
+        function TerrainLayerShaderLib() {
+            _super.apply(this, arguments);
+            this.type = "terrainLayer";
+        }
+        TerrainLayerShaderLib.create = function () {
+            var obj = new this();
+            return obj;
+        };
+        TerrainLayerShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
+            material.layer.mapDataList.forEach(function (mapData, index) {
+                program.sendStructureData("u_layerHeightDatas[" + index + "].minHeight", wd.EVariableType.FLOAT_1, mapData.minHeight);
+                program.sendStructureData("u_layerHeightDatas[" + index + "].maxHeight", wd.EVariableType.FLOAT_1, mapData.maxHeight);
+            });
+        };
+        TerrainLayerShaderLib.prototype.setShaderDefinition = function (quadCmd, material) {
+            _super.prototype.setShaderDefinition.call(this, quadCmd, material);
+            this.addUniformVariable(["u_layerHeightDatas", "u_layerSampler2Ds"]);
+            this.fsSourceDefineList.addChildren([{
+                    name: "LAYER_COUNT",
+                    value: material.layer.mapDataList.getCount()
+                }]);
+        };
+        __decorate([
+            wd.require(function (quadCmd, material) {
+                wd.assert(!!material, wd.Log.info.FUNC_NOT_EXIST("param:material"));
+                wd.assert(material.layer.mapDataList.getCount() >= 0, wd.Log.info.FUNC_SHOULD("TerrainMaterial->layer->mapDataList->count", ">= 0"));
+            })
+        ], TerrainLayerShaderLib.prototype, "setShaderDefinition", null);
+        return TerrainLayerShaderLib;
+    }(wd.EngineShaderLib));
+    wd.TerrainLayerShaderLib = TerrainLayerShaderLib;
+})(wd || (wd = {}));
+
 var wd;
 (function (wd) {
     var ShaderChunk = (function () {
@@ -32944,19 +35301,36 @@ var wd;
         ShaderChunk.highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
         ShaderChunk.mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec3 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec3 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
+        ShaderChunk.lightCommon_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.lightCommon_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n#if POINT_LIGHTS_COUNT > 0\nstruct PointLight {\n    vec3 position;\n    vec4 color;\n    float intensity;\n\n    float range;\n    float constant;\n    float linear;\n    float quadratic;\n};\nuniform PointLight u_pointLights[POINT_LIGHTS_COUNT];\n\n#endif\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\nstruct DirectionLight {\n    vec3 position;\n\n    float intensity;\n\n    vec4 color;\n};\nuniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];\n#endif\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n", };
         ShaderChunk.lightEnd_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n", };
         ShaderChunk.light_common = { top: "", define: "", varDeclare: "", funcDeclare: "vec3 getDirectionLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos);\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);\n", funcDefine: "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n    //return vec3(0.0) - lightPos;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos){\n    return lightPos - v_worldPosition;\n}\nvec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n", body: "", };
-        ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec3 materialDiffuse = getMaterialDiffuse();\n        vec3 materialSpecular = getMaterialSpecular();\n        vec3 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = u_emission * materialEmission;\n\n        vec3 ambientColor = u_ambient * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n        vec3 diffuseColor = diff * color * materialDiffuse * intensity;\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * intensity;\n\n        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n                attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec3 calcTotalLight(vec3 norm, vec3 viewDir){\n        vec3 totalLight = vec3(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = vec4(calcTotalLight(normal, viewDir), 1.0);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
+        ShaderChunk.light_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec4 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec4 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec4 materialSpecular = getMaterialSpecular();\n        vec4 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec4 emissionColor = materialEmission;\n\n        vec4 ambientColor = (u_ambient + materialLight) * materialDiffuse;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n\n        vec4 diffuseColor = color * materialDiffuse * intensity;\n\n        diffuseColor = vec4(diff * vec3(diffuseColor), diffuseColor.a);\n\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec4 specularColor = spec * materialSpecular * intensity;\n\n\n        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n", body: "vec3 normal = normalize(getNormal());\n\n#ifdef BOTH_SIDE\nnormal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));\n#endif\n\nvec3 viewDir = normalize(getViewDir());\n\nvec4 totalColor = calcTotalLight(normal, viewDir);\n\ntotalColor *= vec4(getShadowVisibility(), 1.0);\n", };
         ShaderChunk.light_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
-        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord);\n", };
-        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_mapCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n", };
-        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = texture2D(u_sampler2D0, v_mapCoord);\n            vec4 color1 = texture2D(u_sampler2D1, v_mapCoord);\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
+        ShaderChunk.map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n", };
+        ShaderChunk.map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n\n    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n", };
+        ShaderChunk.multi_map_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord0;\nvarying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "vec4 getMapColor(){\n            vec4 color0 = vec4(texture2D(u_sampler2D0, v_mapCoord0).xyz, 1.0);\n            vec4 color1 = vec4(texture2D(u_sampler2D1, v_mapCoord1).xyz, 1.0);\n\n            if(u_combineMode == 0){\n                return mix(color0, color1, u_mixRatio);\n            }\n            else if(u_combineMode == 1){\n                return color0 * color1;\n            }\n            else if(u_combineMode == 2){\n                return color0 + color1;\n            }\n		}\n", body: "totalColor *= getMapColor();\n", };
+        ShaderChunk.multi_map_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec2 v_mapCoord1;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord1 = a_texCoord * u_map1SourceRegion.zw + u_map1SourceRegion.xy;\n\n    v_mapCoord1 = sourceTexCoord1 * u_map1RepeatRegion.zw + u_map1RepeatRegion.xy;\n", };
         ShaderChunk.mirror_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "//todo add more blend way to mix mirror color and textureColor\n		float blendOverlay(float base, float blend) {\n			return( base < 0.5 ? ( 2.0 * base * blend ) : (1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );\n		}\n		vec4 getMirrorColor(in vec4 materialColor){\n			vec4 color = texture2DProj(u_mirrorSampler, v_mirrorCoord);\n\n			color = vec4(blendOverlay(materialColor.r, color.r), blendOverlay(materialColor.g, color.g), blendOverlay(materialColor.b, color.b), 1.0);\n\n			return color;\n		}\n", body: "totalColor = getMirrorColor(totalColor);\n", };
         ShaderChunk.mirror_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec4 v_mirrorCoord;\n", funcDeclare: "", funcDefine: "", body: "mat4 textureMatrix = mat4(\n                        0.5, 0.0, 0.0, 0.0,\n                        0.0, 0.5, 0.0, 0.0,\n                        0.0, 0.0, 0.5, 0.0,\n                        0.5, 0.5, 0.5, 1.0\n);\n\nv_mirrorCoord = textureMatrix * gl_Position;\n", };
         ShaderChunk.skybox_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.skybox_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "vec4 pos = u_pMatrix * mat4(mat3(u_vMatrix)) * u_mMatrix * vec4(a_position, 1.0);\n\n    gl_Position = pos.xyww;\n\n    v_dir = a_position;\n", };
+        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_diffuseSourceRegion.zw + u_diffuseSourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseRepeatRegion.zw + u_diffuseRepeatRegion.xy;\n", };
+        ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return texture2D(u_emissionMapSampler, v_emissionMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.emissionMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_emissionMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.lightMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return texture2D(u_lightMapSampler, v_lightMapTexCoord) * u_lightMapIntensity;\n    }\n", body: "", };
+        ShaderChunk.lightMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_lightMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_lightMapTexCoord = a_texCoord;\n", };
+        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
+        ShaderChunk.noEmissionMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialEmission() {\n        return u_emission;\n    }\n", body: "", };
+        ShaderChunk.noLightMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialLight() {\n        return vec4(0.0);\n    }\n", body: "", };
+        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
+        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "//v_normal = normalize( vec3(u_normalMatrix * vec4(a_normal, 1.0)));\n    v_normal = normalize( u_normalMatrix * a_normal);\n", };
+        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
+        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
+        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(){\n            //vec3 T = normalize(normalMatrix * tangent);\n            //vec3 B = normalize(normalMatrix * bitangent);\n            //vec3 N = normalize(normalMatrix * normal);\n\n            vec3 T = normalize(u_normalMatrix * a_tangent);\n            vec3 N = normalize(u_normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN();\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
+        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getMaterialSpecular() {\n        return texture2D(u_specularMapSampler, v_specularMapTexCoord);\n    }\n", body: "", };
+        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
         ShaderChunk.basic_envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_dir);\n", };
         ShaderChunk.basic_envMap_forBasic_vertex = { top: "", define: "", varDeclare: "varying vec3 v_dir;\n", funcDeclare: "", funcDefine: "", body: "v_dir = a_position;\n", };
         ShaderChunk.envMap_forBasic_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\nvarying vec3 v_position;\n", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_position - u_cameraPos);\n", };
@@ -32964,26 +35338,6 @@ var wd;
         ShaderChunk.fresnel_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(v_normal));\n", };
         ShaderChunk.reflection_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(v_normal)));\n", };
         ShaderChunk.refraction_forBasic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, normalize(v_normal), u_refractionRatio));\n", };
-        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
-        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
-        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
-        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
-        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
-        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
-        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
-        ShaderChunk.diffuseMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return vec3(texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord));\n    }\n", body: "", };
-        ShaderChunk.diffuseMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_diffuseMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "vec2 sourceTexCoord = a_texCoord * u_sourceRegion.zw + u_sourceRegion.xy;\n    v_diffuseMapTexCoord = sourceTexCoord * u_repeatRegion.zw + u_repeatRegion.xy;\n    //v_diffuseMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.emissionMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialEmission() {\n        return vec3(texture2D(u_emissionMapSampler, v_emissionMapTexCoord));\n    }\n", body: "", };
-        ShaderChunk.emissionMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_emissionMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_emissionMapTexCoord = a_texCoord;\n", };
-        ShaderChunk.noDiffuseMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n", body: "", };
-        ShaderChunk.noEmissionMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialEmission() {\n        return u_emission;\n    }\n", body: "", };
-        ShaderChunk.noNormalMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "vec3 getNormal();\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\nvec3 getNormal(){\n    return v_normal;\n}\n\n", body: "", };
-        ShaderChunk.noNormalMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_normal;\n", funcDeclare: "", funcDefine: "", body: "//v_normal = normalize( vec3(u_normalMatrix * vec4(a_normal, 1.0)));\n    v_normal = normalize( u_normalMatrix * a_normal);\n", };
-        ShaderChunk.noSpecularMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return u_specular;\n    }\n", body: "", };
-        ShaderChunk.normalMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\nvarying vec3 v_viewDir;\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "vec3 getNormal();\n\nvec3 getLightDir(vec3 lightPos);\n\n", funcDefine: "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_pointLightDir[x];\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return v_directionLightDir[x];\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return v_viewDir;\n}\nvec3 getNormal(){\n        // Obtain normal from normal map in range [0,1]\n        vec3 normal = texture2D(u_normalMapSampler, v_normalMapTexCoord).rgb;\n\n        // Transform normal vector to range [-1,1]\n        return normalize(normal * 2.0 - 1.0);  // this normal is in tangent space\n}\n", body: "", };
-        ShaderChunk.normalMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_normalMapTexCoord;\n	varying vec3 v_viewDir;\n\n\n#if POINT_LIGHTS_COUNT > 0\nvarying vec3 v_pointLightDir[POINT_LIGHTS_COUNT];\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvarying vec3 v_directionLightDir[DIRECTION_LIGHTS_COUNT];\n#endif\n\n", funcDeclare: "", funcDefine: "mat3 computeTBN(){\n            //vec3 T = normalize(normalMatrix * tangent);\n            //vec3 B = normalize(normalMatrix * bitangent);\n            //vec3 N = normalize(normalMatrix * normal);\n\n            vec3 T = normalize(u_normalMatrix * a_tangent);\n            vec3 N = normalize(u_normalMatrix * a_normal);\n            // re-orthogonalize T with respect to N\n            T = normalize(T - dot(T, N) * N);\n            // then retrieve perpendicular vector B with the cross product of T and N\n            vec3 B = cross(T, N);\n\n\n            return transpose(mat3(T, B, N));\n        }\n", body: "mat3 TBN = computeTBN();\n\n    //v_tangentLightPos = TBN * light.position;\n    //v_tangentCameraPos  = TBN * u_cameraPos;\n    //v_tangentPos  = TBN * v_position;\n\n\n    vec3 tangentPosition = TBN * vec3(u_mMatrix * vec4(a_position, 1.0));\n\n    v_normalMapTexCoord = a_texCoord;\n\n    v_viewDir = normalize(TBN * u_cameraPos - tangentPosition);\n\n\n#if POINT_LIGHTS_COUNT > 0\n       for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n            //not normalize for computing distance\n            v_pointLightDir[i] = TBN * getPointLightDirByLightPos(u_pointLights[i].position, tangentPosition);\n       }\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\n       for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n            v_directionLightDir[i] = normalize(- TBN * getDirectionLightDirByLightPos(u_directionLights[i].position));\n       }\n#endif\n\n", };
-        ShaderChunk.specularMap_fragment = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "vec3 getMaterialSpecular() {\n        return vec3(texture2D(u_specularMapSampler, v_specularMapTexCoord));\n    }\n", body: "", };
-        ShaderChunk.specularMap_vertex = { top: "", define: "", varDeclare: "varying vec2 v_specularMapTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_specularMapTexCoord = a_texCoord;\n", };
         ShaderChunk.buildCubemapShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "\n// get distance between fragment and light source\n    float lightDistance = length(v_worldPosition - u_lightPos);\n\n    // map to [0,1] range by dividing by farPlane\n    lightDistance = lightDistance / u_farPlane;\n\n\ngl_FragData[0] = packDepth(lightDistance);\n\n\n//gl_FragColor = vec4(0.5, 0.0, 1.0, 1.0);\n//gl_FragData[0] = vec4(lightDistance, 1.0, 1.0, 1.0);\n", };
         ShaderChunk.buildCubemapShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec3 v_worldPosition;\n", funcDeclare: "", funcDefine: "", body: "v_worldPosition = vec3(u_mMatrix * vec4(a_position, 1.0));\n    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n", };
         ShaderChunk.buildTwoDShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragData[0] = packDepth(gl_FragCoord.z);\n", };
@@ -32994,6 +35348,24 @@ var wd;
         ShaderChunk.totalShadowMap_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "float getShadowBias(vec3 lightDir, float shadowBias);\nfloat unpackDepth(vec4 rgbaDepth);\n", funcDefine: "float getShadowBias(vec3 lightDir, float shadowBias){\n    float bias = shadowBias;\n\n    if(shadowBias == NULL){\n        bias = 0.005;\n    }\n\n\n     /*!\n     A shadow bias of 0.005 solves the issues of our scene by a large extent, but some surfaces that have a steep angle to the light source might still produce shadow acne. A more solid approach would be to change the amount of bias based on the surface angle towards the light: something we can solve with the dot product:\n     */\n\n     return max(bias * (1.0 - dot(normalize(getNormal()), lightDir)), bias);\n\n    //return bias;\n}\n\nfloat unpackDepth(vec4 rgbaDepth) {\n    const vec4 bitShift = vec4(1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0);\n    return dot(rgbaDepth, bitShift);\n}\n\nvec3 getShadowVisibility() {\n    vec3 shadowColor = vec3(1.0);\n    vec3 twoDLightDir = vec3(0.0);\n    vec3 cubemapLightDir = vec3(0.0);\n\n\n    //to normalMap, the lightDir use the origin one instead of normalMap's lightDir here(the lightDir is used for computing shadowBias, the origin one is enough for it)\n\n    #if TWOD_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n        twoDLightDir = getDirectionLightDirByLightPos(u_twoDLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getTwoDShadowVisibility(twoDLightDir, u_twoDShadowMapSampler[i], v_positionFromLight[i], u_twoDShadowBias[i], u_twoDShadowDarkness[i], u_twoDShadowSize[i]);\n	}\n	#endif\n\n\n	#if CUBEMAP_SHADOWMAP_COUNT > 0\n	for( int i = 0; i < CUBEMAP_SHADOWMAP_COUNT; i ++ ) {\n        cubemapLightDir = getPointLightDirByLightPos(u_cubemapLightPos[i]);\n\n	////if is opposite to direction of light rays, no shadow\n\n        shadowColor *= getCubemapShadowVisibility(cubemapLightDir, u_cubemapShadowMapSampler[i], u_cubemapLightPos[i], u_farPlane[i], u_cubemapShadowBias[i], u_cubemapShadowDarkness[i]);\n	}\n	#endif\n\n	return shadowColor;\n}\n\n", body: "", };
         ShaderChunk.twoDShadowMap_fragment = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\n	uniform sampler2D u_twoDShadowMapSampler[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowDarkness[ TWOD_SHADOWMAP_COUNT ];\n	uniform float u_twoDShadowBias[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec2 u_twoDShadowSize[ TWOD_SHADOWMAP_COUNT ];\n	uniform vec3 u_twoDLightPos[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "// PCF\nfloat getTwoDShadowVisibilityByPCF(float currentDepth, vec2 shadowCoord, sampler2D twoDShadowMapSampler, float shadowBias, float shadowDarkness, vec2 shadowMapSize){\n\n    float shadow = 0.0;\n    vec2 texelSize = vec2(1.0 / shadowMapSize[0], 1.0 / shadowMapSize[1]);\n\n    for(int x = -1; x <= 1; ++x)\n    {\n        for(int y = -1; y <= 1; ++y)\n        {\n            float pcfDepth = unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord + vec2(x, y) * texelSize));\n            shadow += currentDepth - shadowBias > pcfDepth  ? shadowDarkness : 1.0;\n        }\n    }\n    shadow /= 9.0;\n\n    return shadow;\n}\n\n\n\nfloat getTwoDShadowVisibility(vec3 lightDir, sampler2D twoDShadowMapSampler, vec4 v_positionFromLight, float shadowBias, float shadowDarkness, vec2 shadowSize) {\n    //project texture\n    vec3 shadowCoord = (v_positionFromLight.xyz / v_positionFromLight.w) / 2.0 + 0.5;\n    //vec3 shadowCoord = vec3(0.5, 0.5, 0.5);\n\n    #ifdef SHADOWMAP_TYPE_PCF\n    // Percentage-close filtering\n    // (9 pixel kernel)\n    return getTwoDShadowVisibilityByPCF(shadowCoord.z, shadowCoord.xy, twoDShadowMapSampler, getShadowBias(lightDir, shadowBias), shadowDarkness, shadowSize);\n\n    #else\n    return shadowCoord.z > unpackDepth(texture2D(twoDShadowMapSampler, shadowCoord.xy)) + getShadowBias(lightDir, shadowBias) ? shadowDarkness : 1.0;\n    #endif\n}\n", body: "", };
         ShaderChunk.twoDShadowMap_vertex = { top: "", define: "", varDeclare: "varying vec4 v_positionFromLight[ TWOD_SHADOWMAP_COUNT ];\nuniform mat4 u_vpMatrixFromLight[ TWOD_SHADOWMAP_COUNT ];\n", funcDeclare: "", funcDefine: "", body: "for( int i = 0; i < TWOD_SHADOWMAP_COUNT; i ++ ) {\n    v_positionFromLight[i] = u_vpMatrixFromLight[i] * vec4(v_worldPosition, 1.0);\n	}\n", };
+        ShaderChunk.basic_envMap_forLight_fragment = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, v_basicEnvMap_dir);\n", };
+        ShaderChunk.basic_envMap_forLight_vertex = { top: "", define: "", varDeclare: "varying vec3 v_basicEnvMap_dir;\n", funcDeclare: "", funcDefine: "", body: "v_basicEnvMap_dir = a_position;\n", };
+        ShaderChunk.envMap_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec3 inDir = normalize(v_worldPosition - u_cameraPos);\n", };
+        ShaderChunk.envMap_forLight_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "", };
+        ShaderChunk.fresnel_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float computeFresnelRatio(vec3 inDir, vec3 normal, float refractionRatio){\n    float f = pow(1.0 - refractionRatio, 2.0) / pow(1.0 + refractionRatio, 2.0);\n    float fresnelPower = 5.0;\n    float ratio = f + (1.0 - f) * pow((1.0 - dot(inDir, normal)), fresnelPower);\n\n    return ratio / 100.0;\n}\n\nvec4 getEnvMapTotalColor(vec3 inDir, vec3 normal){\n    vec3 reflectDir = reflect(inDir, normal);\n    vec3 refractDir = refract(inDir, normal, u_refractionRatio);\n\n    vec4 reflectColor = textureCube(u_samplerCube0, reflectDir);\n    vec4 refractColor = textureCube(u_samplerCube0, refractDir);\n\n    vec4 totalColor = vec4(0.0);\n\n	if(u_reflectivity != NULL){\n        totalColor = mix(reflectColor, refractColor, u_reflectivity);\n	}\n	else{\n        totalColor = mix(reflectColor, refractColor, computeFresnelRatio(inDir, normal, u_refractionRatio));\n	}\n\n	return totalColor;\n}\n", body: "totalColor *= getEnvMapTotalColor(inDir, normalize(getNormal()));\n", };
+        ShaderChunk.reflection_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, reflect(inDir, normalize(getNormal())));\n", };
+        ShaderChunk.refraction_forLight_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "totalColor *= textureCube(u_samplerCube0, refract(inDir, getNormal(), u_refractionRatio));\n", };
+        ShaderChunk.terrainLayer_fragment = { top: "", define: "", varDeclare: "struct LayerHeightData {\n    float minHeight;\n    float maxHeight;\n};\nuniform LayerHeightData u_layerHeightDatas[LAYER_COUNT];\n//sampler2D can't be contained in struct\nuniform sampler2D u_layerSampler2Ds[LAYER_COUNT];\n\n\nvarying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "vec4 getLayerTextureColor(in sampler2D layerSampler2Ds[LAYER_COUNT], in LayerHeightData layerHeightDatas[LAYER_COUNT]){\n    vec4 color = vec4(0.0);\n    bool isInLayer = false;\n\n    float height = v_worldPosition.y;\n\n    for(int i = 0; i < LAYER_COUNT; i++){\n        if(height >= layerHeightDatas[i].minHeight && height <= layerHeightDatas[i].maxHeight){\n            //todo blend color\n            color += texture2D(layerSampler2Ds[i], v_layerTexCoord);\n\n            isInLayer = true;\n\n            break;\n        }\n    }\n\n    return isInLayer ? color : vec4(1.0);\n}\n", body: "\ntotalColor *= getLayerTextureColor(u_layerSampler2Ds, u_layerHeightDatas);\n", };
+        ShaderChunk.terrainLayer_vertex = { top: "", define: "", varDeclare: "varying vec2 v_layerTexCoord;\n", funcDeclare: "", funcDefine: "", body: "v_layerTexCoord = a_texCoord;\n", };
+        ShaderChunk.cloud_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "gl_FragColor = mix(u_skyColor, u_cloudColor, fbm(v_texCoord * 12.0));\n", };
+        ShaderChunk.brick_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float brickW = 1.0 / u_tilesWidthNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.05;\n	vec3 color = u_brickColor;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) /  brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float u_brickColorSwitch = mod(floor(yi) + floor(xi), 3.0);\n\n		if (u_brickColorSwitch == 0.0)\n			color = mix(color, vec3(0.33, 0.33, 0.33), 0.3);\n		else if (u_brickColorSwitch == 2.0)\n			color = mix(color, vec3(0.11, 0.11, 0.11), 0.3);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.common_proceduralTexture_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "float rand(vec2 n) {\n	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\nfloat noise(vec2 n) {\n	const vec2 d = vec2(0.0, 1.0);\n	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));\n	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);\n}\n\nfloat turbulence(vec2 P)\n{\n	float val = 0.0;\n	float freq = 1.0;\n	for (int i = 0; i < 4; i++)\n	{\n		val += abs(noise(P*freq) / freq);\n		freq *= 2.07;\n	}\n	return val;\n}\n\nfloat fbm(vec2 n) {\n	float total = 0.0, amplitude = 1.0;\n	for (int i = 0; i < 4; i++) {\n		total += noise(n) * amplitude;\n		n += n;\n		amplitude *= 0.5;\n	}\n	return total;\n}\n\nfloat round(float number){\n	return sign(number)*floor(abs(number) + 0.5);\n}\n", body: "", };
+        ShaderChunk.common_proceduralTexture_vertex = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec2 MADD=vec2(0.5,0.5);\n", funcDeclare: "", funcDefine: "", body: "v_texCoord=a_positionVec2*MADD+MADD;\n\n    gl_Position=vec4(a_positionVec2, 0.0 ,1.0);\n", };
+        ShaderChunk.fire_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nstruct FireColor {\n    vec3 c1;\n    vec3 c2;\n    vec3 c3;\n    vec3 c4;\n    vec3 c5;\n    vec3 c6;\n};\nuniform FireColor u_fireColor;\n", funcDeclare: "", funcDefine: "", body: "vec2 p = v_texCoord * 8.0;\n	float q = fbm(p - u_time * 0.1);\n	vec2 r = vec2(fbm(p + q + u_time * u_speed.x - p.x - p.y), fbm(p + q - u_time * u_speed.y));\n	vec3 c = mix(u_fireColor.c1, u_fireColor.c2, fbm(p + r)) + mix(u_fireColor.c3, u_fireColor.c4, r.x) - mix(u_fireColor.c5, u_fireColor.c6, r.y);\n	vec3 color = c * cos(u_shift * v_texCoord.y);\n	float luminance = dot(color.rgb, vec3(0.3, 0.59, 0.11));\n\n	gl_FragColor = vec4(color, luminance * u_alphaThreshold + (1.0 - u_alphaThreshold));\n", };
+        ShaderChunk.grass_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "vec3 color = mix(u_groundColor, u_herb1Color, rand(gl_FragCoord.xy * 4.0));\n	color = mix(color, u_herb2Color, rand(gl_FragCoord.xy * 8.0));\n	color = mix(color, u_herb3Color, rand(gl_FragCoord.xy));\n	color = mix(color, u_herb1Color, fbm(gl_FragCoord.xy * 16.0));\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.marble_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\nconst vec3 TILE_SIZE = vec3(1.1, 1.0, 1.1);\n//const vec3 TILE_PCT = vec3(0.98, 1.0, 0.98);\n", funcDeclare: "", funcDefine: "vec3 marble_color(float x)\n{\n	vec3 col;\n	x = 0.5*(x + 1.);\n	x = sqrt(x);\n	x = sqrt(x);\n	x = sqrt(x);\n	col = vec3(.2 + .75*x);\n	col.b *= 0.95;\n	return col;\n}\n", body: "vec3 color;\n	float brickW = 1.0 / u_tilesHeightNumber;\n	float brickH = 1.0 / u_tilesWidthNumber;\n	float jointWPercentage = 0.01;\n	float jointHPercentage = 0.01;\n	float yi = v_texCoord.y / brickH;\n	float nyi = round(yi);\n	float xi = v_texCoord.x / brickW;\n\n	if (mod(floor(yi), 2.0) == 0.0){\n		xi = xi - 0.5;\n	}\n\n	float nxi = round(xi);\n	vec2 brickv_texCoord = vec2((xi - floor(xi)) / brickH, (yi - floor(yi)) / brickW);\n\n	if (yi < nyi + jointHPercentage && yi > nyi - jointHPercentage){\n		color = mix(u_jointColor, vec3(0.37, 0.25, 0.25), (yi - nyi) / jointHPercentage + 0.2);\n	}\n	else if (xi < nxi + jointWPercentage && xi > nxi - jointWPercentage){\n		color = mix(u_jointColor, vec3(0.44, 0.44, 0.44), (xi - nxi) / jointWPercentage + 0.2);\n	}\n	else {\n		float t = 6.28 * brickv_texCoord.x / (TILE_SIZE.x + noise(vec2(v_texCoord)*6.0));\n		t += u_amplitude * turbulence(brickv_texCoord.xy);\n		t = sin(t);\n		color = marble_color(t);\n	}\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.road_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(gl_FragCoord.y * 100.0 , fbm(v_texCoord * 2.0));\n	vec3 color = u_roadColor * ratioy;\n\n	gl_FragColor = vec4(color, 1.0);\n", };
+        ShaderChunk.wood_proceduralTexture_fragment = { top: "", define: "", varDeclare: "varying vec2 v_texCoord;\n", funcDeclare: "", funcDefine: "", body: "float ratioy = mod(v_texCoord.x * u_ampScale, 2.0 + fbm(v_texCoord * 0.8));\n	vec3 wood = u_woodColor * ratioy;\n\n	gl_FragColor = vec4(wood, 1.0);\n", };
         return ShaderChunk;
     }());
     wd.ShaderChunk = ShaderChunk;

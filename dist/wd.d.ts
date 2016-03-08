@@ -2401,7 +2401,7 @@ declare module wd {
         pointLights: wdCb.Collection<GameObject>;
         side: ESide;
         shadowMap: any;
-        shader: Shader;
+        shader: CommonShader;
         currentCamera: GameObject;
         isUseProgram: boolean;
         physics: PhysicsConfig;
@@ -2410,10 +2410,11 @@ declare module wd {
         uiObjectScene: UIObjectScene;
         gameObjectScene: GameObjectScene;
         initWhenCreate(): void;
-        useProgram(shader: Shader): void;
+        useProgram(shader: CommonShader): void;
         unUseProgram(): void;
         addChild(child: EntityObject): EntityObject;
         addRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
+        addProceduralRenderTargetRenderer(renderTargetRenderer: ProceduralRenderTargetRenderer): void;
         removeRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
         dispose(): void;
         hasChild(child: EntityObject): boolean;
@@ -2452,23 +2453,26 @@ declare module wd {
         currentCamera: any;
         side: ESide;
         shadowMap: ShadowMapModel;
-        shader: Shader;
+        shader: CommonShader;
         isUseProgram: boolean;
         physics: PhysicsConfig;
         physicsEngineAdapter: IPhysicsEngineAdapter;
         private _lightManager;
-        private _renderTargetRenderers;
+        private _renderTargetRendererList;
+        private _proceduralRendererList;
         private _collisionDetector;
         private _cameraList;
         init(): this;
-        useProgram(shader: Shader): void;
+        useProgram(shader: CommonShader): void;
         unUseProgram(): void;
         addChild(child: GameObject): GameObject;
         addRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
+        addProceduralRenderTargetRenderer(renderTargetRenderer: ProceduralRenderTargetRenderer): void;
         removeRenderTargetRenderer(renderTargetRenderer: RenderTargetRenderer): void;
         update(elapsedTime: number): void;
         render(renderer: Renderer): void;
         protected createTransform(): any;
+        private _renderProceduralRenderer(renderer);
         private _getCameras(gameObject);
         private _getLights(gameObject);
         private _find(gameObject, judgeFunc);
@@ -3671,6 +3675,26 @@ declare module wd {
 }
 
 declare module wd {
+    class TerrainGeometry extends Geometry {
+        static create(): TerrainGeometry;
+        subdivisions: number;
+        range: Range;
+        minHeight: number;
+        maxHeight: number;
+        heightMapAsset: ImageTextureAsset;
+        protected computeData(): GeometryDataType;
+        private _readHeightMapData(image, bufferWidth, bufferHeight);
+        private _createGroundFromHeightMap(buffer, bufferWidth, bufferHeight);
+        private _getHeight(x, z, buffer, bufferWidth, bufferHeight);
+        private _getIndices();
+    }
+    type Range = {
+        width: number;
+        height: number;
+    };
+}
+
+declare module wd {
     abstract class GeometryData {
         constructor(geometry: Geometry);
         private _vertices;
@@ -4230,7 +4254,7 @@ declare module wd {
         static create(): MeshRenderer;
         entityObject: GameObject;
         render(renderer: Renderer, geometry: Geometry, camera: GameObject): void;
-        protected createDrawCommand(renderer: Renderer, geometry: Geometry, camera: GameObject): any;
+        protected createDrawCommand(geometry: Geometry, camera: GameObject): QuadCommand;
     }
 }
 
@@ -5411,6 +5435,8 @@ declare module wd {
         static bigThan(num: number, below: number): number;
         static generateZeroToOne(): number;
         static generateInteger(min: number, max: number): number;
+        static mod(a: number, b: number): number;
+        static maxFloorIntegralMultiple(a: number, b: number): number;
     }
 }
 
@@ -5477,12 +5503,12 @@ declare module wd {
         protected frameBufferOperator: FrameBuffer;
         initWhenCreate(): void;
         init(): void;
-        render(renderer: Renderer, camera: GameObject): void;
+        render(renderer: Renderer): any;
+        render(renderer: Renderer, camera: GameObject): any;
         dispose(): void;
         protected abstract initFrameBuffer(): any;
-        protected abstract renderFrameBufferTexture(renderer: Renderer, camera: GameObject): any;
+        protected abstract renderFrameBufferTexture(renderer: Renderer, camera?: GameObject): any;
         protected abstract disposeFrameBuffer(): any;
-        protected abstract createCamera(...args: any[]): GameObject;
         protected beforeRender(): void;
         protected afterRender(): void;
     }
@@ -5492,6 +5518,7 @@ declare module wd {
     abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer {
         protected frameBuffer: WebGLFramebuffer;
         protected renderBuffer: WebGLRenderbuffer;
+        protected abstract createCamera(...args: any[]): GameObject;
         protected abstract beforeRenderFrameBufferTexture(renderCamera: GameObject): any;
         protected abstract getRenderList(): wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer: Renderer): any;
@@ -5636,10 +5663,28 @@ declare module wd {
 }
 
 declare module wd {
+    abstract class ProceduralRenderTargetRenderer extends RenderTargetRenderer {
+        protected texture: ProceduralTexture;
+        protected frameBuffer: WebGLFramebuffer;
+        private _indexBuffer;
+        private _vertexBuffer;
+        private _shader;
+        private _isRendered;
+        needRender(): boolean;
+        init(): void;
+        dispose(): void;
+        protected abstract createShader(): ProceduralShader;
+        protected initFrameBuffer(): void;
+        protected renderFrameBufferTexture(renderer: Renderer): void;
+        protected disposeFrameBuffer(): void;
+        private _createRenderCommand();
+    }
+}
+
+declare module wd {
     abstract class Renderer {
         skyboxCommand: QuadCommand;
-        abstract createQuadCommand(): any;
-        abstract addCommand(command: QuadCommand): any;
+        abstract addCommand(command: RenderCommand): any;
         abstract hasCommand(): boolean;
         abstract render(): any;
         abstract clear(): any;
@@ -5652,15 +5697,14 @@ declare module wd {
         static create(): WebGLRenderer;
         private _commandQueue;
         private _clearOptions;
-        createQuadCommand(): QuadCommand;
-        addCommand(command: QuadCommand): void;
+        addCommand(command: RenderCommand): void;
         hasCommand(): boolean;
         clear(): void;
         render(): void;
         init(): void;
         setClearColor(color: Color): void;
         private _renderSortedTransparentCommands(transparentCommands);
-        private _getObjectToCameraZDistance(cameraPositionZ, quad);
+        private _getObjectToCameraZDistance(cameraPositionZ, cmd);
         private _clearCommand();
         private _setClearOptions(clearOptions);
     }
@@ -5760,51 +5804,69 @@ declare module wd {
         private _shader;
         private _getAttribLocationCache;
         private _getUniformLocationCache;
-        private _attributesFromCustomShaderCache;
-        private _uniformsFromCustomShaderCache;
         use(): void;
         getUniformLocation(name: string): any;
         sendUniformData(name: string, type: EVariableType, data: any): any;
         sendUniformData(pos: WebGLUniformLocation, type: EVariableType, data: any): any;
-        sendUniformDataFromCustomShader(): void;
         sendAttributeData(name: string, type: EVariableType, data: any): void;
-        sendAttributeDataFromCustomShader(): void;
         sendStructureData(name: string, type: EVariableType, data: any): void;
         initWithShader(shader: Shader): this;
         dispose(): void;
         isUniformDataNotExistByLocation(pos: any): boolean;
-        private _convertAttributeDataType(val);
+        private _convertToArray2(data);
+        private _convertToArray2(data);
         private _convertToArray3(data);
         private _convertToArray3(data);
         private _convertToArray4(data);
         private _convertToArray4(data);
         private _getAttribLocation(gl, name);
-        private _getAttributesFromCustomShader();
-        private _getUniformsFromCustomShader();
+        private _sendSampleArray(gl, pos, data);
     }
 }
 
 declare module wd {
-    class QuadCommand {
+    abstract class RenderCommand {
+        drawMode: EDrawMode;
+        blend: boolean;
+        z: number;
+        abstract execute(): void;
+        init(): void;
+        protected drawElements(indexBuffer: ElementBuffer): void;
+    }
+}
+
+declare module wd {
+    class QuadCommand extends RenderCommand {
         static create(): QuadCommand;
         program: Program;
         normalMatrix: Matrix3;
+        mvpMatrix: Matrix4;
         private _mMatrix;
         mMatrix: Matrix4;
-        buffers: BufferContainer;
+        private _vMatrix;
         vMatrix: Matrix4;
+        private _pMatrix;
         pMatrix: Matrix4;
-        drawMode: EDrawMode;
-        z: number;
-        blend: boolean;
+        buffers: BufferContainer;
         material: Material;
         animation: Animation;
         private _normalMatrixCache;
+        private _mvpMatrixCache;
         execute(): void;
-        init(): void;
         private _draw(material);
         private _setEffects(material);
         private _getSide();
+    }
+}
+
+declare module wd {
+    class ProceduralCommand extends RenderCommand {
+        static create(): ProceduralCommand;
+        shader: ProceduralShader;
+        indexBuffer: ElementBuffer;
+        vertexBuffer: ArrayBuffer;
+        init(): void;
+        execute(): void;
     }
 }
 
@@ -5838,8 +5900,7 @@ declare module wd {
 }
 
 declare module wd {
-    class Shader {
-        static create(): Shader;
+    abstract class Shader {
         private _attributes;
         attributes: wdCb.Hash<ShaderData>;
         private _uniforms;
@@ -5851,16 +5912,14 @@ declare module wd {
         dirty: boolean;
         program: Program;
         libDirty: boolean;
+        protected libs: wdCb.Collection<ShaderLib>;
+        protected sourceBuilder: ShaderSourceBuilder;
         private _definitionDataDirty;
-        private _libs;
-        private _sourceBuilder;
+        abstract update(cmd: RenderCommand, material: Material): any;
         createVsShader(): any;
         createFsShader(): any;
-        isEqual(other: Shader): boolean;
-        init(): void;
+        init(material: Material): void;
         dispose(): void;
-        update(quadCmd: QuadCommand, material: Material): void;
-        judgeRefreshShader(): void;
         hasLib(lib: ShaderLib): any;
         hasLib(_class: Function): any;
         addLib(lib: ShaderLib): void;
@@ -5871,46 +5930,115 @@ declare module wd {
         removeLib(func: Function): any;
         removeAllLibs(): void;
         sortLib(func: (a: ShaderLib, b: ShaderLib) => any): void;
-        read(definitionData: ShaderDefinitionData): void;
-        buildDefinitionData(quadCmd: QuadCommand, material: Material): void;
+        protected abstract createShaderSourceBuilder(): ShaderSourceBuilder;
+        protected abstract buildDefinitionData(cmd: RenderCommand, material: Material): void;
+        protected judgeRefreshShader(material: Material): void;
         private _initShader(shader, source);
         private _isNotEqual(list1, list2);
     }
     type ShaderData = {
         type: EVariableType;
-        value: any;
-    };
-    type ShaderDefinitionData = {
-        vsSourceTop: string;
-        vsSourceDefine: string;
-        vsSourceVarDeclare: string;
-        vsSourceFuncDeclare: string;
-        vsSourceFuncDefine: string;
-        vsSourceBody: string;
-        fsSourceTop: string;
-        fsSourceDefine: string;
-        fsSourceVarDeclare: string;
-        fsSourceFuncDeclare: string;
-        fsSourceFuncDefine: string;
-        fsSourceBody: string;
-        attributes: ShaderData | wdCb.Hash<ShaderData>;
-        uniforms: ShaderData | wdCb.Hash<ShaderData>;
+        value?: any;
+        textureId?: string;
     };
 }
 
 declare module wd {
-    class ShaderSourceBuilder {
-        static create(): ShaderSourceBuilder;
+    class CustomShader extends Shader {
+        static create(): CustomShader;
+        protected sourceBuilder: CustomShaderSourceBuilder;
+        protected libs: wdCb.Collection<CustomShaderLib>;
+        update(quadCmd: QuadCommand, material: ShaderMaterial): void;
+        read(definitionData: ShaderDefinitionData): void;
+        getSampler2DUniformsAfterRead(): wdCb.Hash<{}>;
+        protected buildDefinitionData(cmd: RenderCommand, material: Material): void;
+        protected createShaderSourceBuilder(): ShaderSourceBuilder;
+    }
+    type ShaderDefinitionData = {
+        attributes: wdCb.Hash<ShaderData>;
+        uniforms: wdCb.Hash<ShaderData>;
+        vsSourceId: string;
+        fsSourceId: string;
+    };
+}
+
+declare module wd {
+    abstract class EngineShader extends Shader {
+        protected sourceBuilder: EngineShaderSourceBuilder;
+        protected libs: wdCb.Collection<EngineShaderLib>;
+        protected buildDefinitionData(cmd: RenderCommand, material: Material): void;
+        protected createShaderSourceBuilder(): ShaderSourceBuilder;
+    }
+}
+
+declare module wd {
+    class CommonShader extends EngineShader {
+        static create(): CommonShader;
+        update(quadCmd: QuadCommand, material: Material): void;
+    }
+}
+
+declare module wd {
+    abstract class ProceduralShader extends EngineShader {
+        protected libs: wdCb.Collection<ProceduralShaderLib>;
+        init(): void;
+        update(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class CommonProceduralShader extends ProceduralShader {
+        static create(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class CustomProceduralShader extends ProceduralShader {
+        static create(texture: CustomProceduralTexture): CustomProceduralShader;
+        constructor(texture: CustomProceduralTexture);
+        protected libs: wdCb.Collection<CustomProceduralShaderLib>;
+        private _texture;
+        update(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    abstract class ShaderSourceBuilder {
         attributes: wdCb.Hash<ShaderData>;
         uniforms: wdCb.Hash<ShaderData>;
         vsSource: string;
+        fsSource: string;
+        abstract build(...args: any[]): void;
+        abstract clearShaderDefinition(): void;
+        dispose(): void;
+        protected convertAttributesData(): void;
+        private _convertArrayToArrayBuffer(type, value);
+        private _getBufferSize(type);
+    }
+    type SourceDefine = {
+        name: string;
+        value: any;
+    };
+}
+
+declare module wd {
+    class CustomShaderSourceBuilder extends ShaderSourceBuilder {
+        static create(): CustomShaderSourceBuilder;
+        read(definitionData: ShaderDefinitionData): void;
+        build(): void;
+        clearShaderDefinition(): void;
+    }
+}
+
+declare module wd {
+    class EngineShaderSourceBuilder extends ShaderSourceBuilder {
+        static create(): EngineShaderSourceBuilder;
         vsSourceTop: string;
         vsSourceDefine: string;
         vsSourceVarDeclare: string;
         vsSourceFuncDeclare: string;
         vsSourceFuncDefine: string;
         vsSourceBody: string;
-        fsSource: string;
         fsSourceTop: string;
         fsSourceDefine: string;
         fsSourceVarDeclare: string;
@@ -5919,25 +6047,12 @@ declare module wd {
         fsSourceBody: string;
         vsSourceDefineList: wdCb.Collection<SourceDefine>;
         fsSourceDefineList: wdCb.Collection<SourceDefine>;
-        attributesFromShaderLib: wdCb.Hash<ShaderData>;
-        uniformsFromShaderLib: wdCb.Hash<ShaderData>;
-        vsSourceTopFromShaderLib: string;
-        vsSourceDefineFromShaderLib: string;
-        vsSourceVarDeclareFromShaderLib: string;
-        vsSourceFuncDeclareFromShaderLib: string;
-        vsSourceFuncDefineFromShaderLib: string;
-        vsSourceBodyFromShaderLib: string;
-        fsSourceTopFromShaderLib: string;
-        fsSourceDefineFromShaderLib: string;
-        fsSourceVarDeclareFromShaderLib: string;
-        fsSourceFuncDeclareFromShaderLib: string;
-        fsSourceFuncDefineFromShaderLib: string;
-        fsSourceBodyFromShaderLib: string;
-        read(definitionData: ShaderDefinitionData): void;
-        build(libs: wdCb.Collection<ShaderLib>): void;
+        build(libs: wdCb.Collection<EngineShaderLib>): void;
         clearShaderDefinition(): void;
-        dispose(): void;
         private _readLibSource(libs);
+        private _judgeAndSetVsSource(setSourceLibs);
+        private _judgeAndSetFsSource(setSourceLibs);
+        private _judgeAndSetPartSource(libs);
         private _buildVsSource();
         private _buildFsSource();
         private _buildVsSourceTop();
@@ -5957,29 +6072,47 @@ declare module wd {
         private _generateAttributeSource();
         private _generateUniformSource(sourceVarDeclare, sourceFuncDefine, sourceBody);
         private _isExistInSource(key, source);
-        private _convertArrayToArrayBuffer(type, value);
-        private _getBufferSize(type);
     }
-    type SourceDefine = {
-        name: string;
-        value: any;
-    };
 }
 
 declare module wd {
     enum EVariableType {
-        FLOAT_1 = 0,
-        FLOAT_2 = 1,
-        FLOAT_3 = 2,
-        FLOAT_4 = 3,
-        FLOAT_MAT3 = 4,
-        FLOAT_MAT4 = 5,
-        BUFFER = 6,
-        SAMPLER_CUBE = 7,
-        SAMPLER_2D = 8,
-        NUMBER_1 = 9,
-        STRUCTURE = 10,
-        STRUCTURES = 11,
+        FLOAT_1,
+        FLOAT_2,
+        FLOAT_3,
+        FLOAT_4,
+        FLOAT_MAT3,
+        FLOAT_MAT4,
+        BUFFER,
+        SAMPLER_CUBE,
+        SAMPLER_2D,
+        NUMBER_1,
+        STRUCTURE,
+        STRUCTURES,
+        SAMPLER_ARRAY,
+    }
+}
+
+declare module wd {
+    enum EVariableSemantic {
+        POSITION,
+        NORMAL,
+        TEXCOORD,
+        TANGENT,
+        COLOR,
+        MODEL,
+        VIEW,
+        PROJECTION,
+        MODEL_VIEW,
+        MODEL_VIEW_PROJECTION,
+        MODEL_INVERSE,
+        VIEW_INVERSE,
+        PROJECTION_INVERSE,
+        MODEL_VIEW_INVERSE,
+        MODEL_VIEW_PROJECTION_INVERSE,
+        MODEL_INVERSE_TRANSPOSE,
+        MODEL_VIEW_INVERSE_TRANSPOSE,
+        VIEWPORT,
     }
 }
 
@@ -5993,6 +6126,7 @@ declare module wd {
 declare module wd {
     class VariableLib {
         static a_position: ShaderVariable;
+        static a_positionVec2: ShaderVariable;
         static a_currentFramePosition: ShaderVariable;
         static a_nextFramePosition: ShaderVariable;
         static a_normal: ShaderVariable;
@@ -6008,6 +6142,7 @@ declare module wd {
         static u_samplerCube0: ShaderVariable;
         static u_sampler2D0: ShaderVariable;
         static u_sampler2D1: ShaderVariable;
+        static u_lightMapSampler: ShaderVariable;
         static u_diffuseMapSampler: ShaderVariable;
         static u_specularMapSampler: ShaderVariable;
         static u_emissionMapSampler: ShaderVariable;
@@ -6016,10 +6151,15 @@ declare module wd {
         static u_cameraPos: ShaderVariable;
         static u_refractionRatio: ShaderVariable;
         static u_reflectivity: ShaderVariable;
-        static u_sourceRegion: ShaderVariable;
-        static u_repeatRegion: ShaderVariable;
+        static u_map0SourceRegion: ShaderVariable;
+        static u_map1SourceRegion: ShaderVariable;
+        static u_diffuseSourceRegion: ShaderVariable;
+        static u_map0RepeatRegion: ShaderVariable;
+        static u_map1RepeatRegion: ShaderVariable;
+        static u_diffuseRepeatRegion: ShaderVariable;
         static u_combineMode: ShaderVariable;
         static u_mixRatio: ShaderVariable;
+        static u_lightMapIntensity: ShaderVariable;
         static u_diffuse: ShaderVariable;
         static u_specular: ShaderVariable;
         static u_emission: ShaderVariable;
@@ -6034,6 +6174,27 @@ declare module wd {
         static u_lightPos: ShaderVariable;
         static u_farPlane: ShaderVariable;
         static u_interpolation: ShaderVariable;
+        static u_tilesHeightNumber: ShaderVariable;
+        static u_tilesWidthNumber: ShaderVariable;
+        static u_amplitude: ShaderVariable;
+        static u_jointColor: ShaderVariable;
+        static u_time: ShaderVariable;
+        static u_speed: ShaderVariable;
+        static u_shift: ShaderVariable;
+        static u_alphaThreshold: ShaderVariable;
+        static u_fireColor: ShaderVariable;
+        static u_layerHeightDatas: ShaderVariable;
+        static u_layerSampler2Ds: ShaderVariable;
+        static u_herb1Color: ShaderVariable;
+        static u_herb2Color: ShaderVariable;
+        static u_herb3Color: ShaderVariable;
+        static u_groundColor: ShaderVariable;
+        static u_ampScale: ShaderVariable;
+        static u_woodColor: ShaderVariable;
+        static u_roadColor: ShaderVariable;
+        static u_skyColor: ShaderVariable;
+        static u_cloudColor: ShaderVariable;
+        static u_brickColor: ShaderVariable;
     }
     type ShaderVariable = {
         type: EVariableType;
@@ -6055,8 +6216,25 @@ declare module wd {
 
 declare module wd {
     abstract class ShaderLib {
-        type: string;
         shader: Shader;
+        sendShaderVariables(program: Program, cmd: RenderCommand, material: Material): void;
+        init(): void;
+        dispose(): void;
+    }
+}
+
+declare module wd {
+    class CustomShaderLib extends ShaderLib {
+        static create(): CustomShaderLib;
+        shader: CustomShader;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: ShaderMaterial): void;
+    }
+}
+
+declare module wd {
+    abstract class EngineShaderLib extends ShaderLib {
+        shader: EngineShader;
+        type: string;
         attributes: wdCb.Hash<ShaderVariable>;
         uniforms: wdCb.Hash<ShaderVariable>;
         vsSourceTop: string;
@@ -6065,121 +6243,120 @@ declare module wd {
         vsSourceFuncDeclare: string;
         vsSourceFuncDefine: string;
         vsSourceBody: string;
+        vsSource: string;
         fsSourceTop: string;
         fsSourceDefine: string;
         fsSourceVarDeclare: string;
         fsSourceFuncDeclare: string;
         fsSourceFuncDefine: string;
         fsSourceBody: string;
+        fsSource: string;
         vsSourceDefineList: wdCb.Collection<any>;
         fsSourceDefineList: wdCb.Collection<any>;
-        abstract sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): any;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
-        init(): void;
-        dispose(): void;
+        setShaderDefinition(cmd: RenderCommand, material: Material): void;
+        protected sendAttributeData(program: Program, name: string, data: any): void;
+        protected sendUniformData(program: Program, name: string, data: any): void;
         protected getVsChunk(): any;
         protected getVsChunk(type: string): any;
         protected getFsChunk(): any;
         protected getFsChunk(type: string): any;
-        protected setVsSource(vs: GLSLChunk, operator?: string): void;
-        protected setFsSource(fs: GLSLChunk, operator?: string): void;
+        protected setVsSource(vs: GLSLChunk | string, operator?: string): void;
+        protected setFsSource(fs: GLSLChunk | string, operator?: string): void;
         protected addAttributeVariable(variableArr: Array<string>): void;
         protected addUniformVariable(variableArr: Array<string>): void;
-        protected sendAttributeData(program: Program, name: string, data: any): void;
-        protected sendUniformData(program: Program, name: string, data: any): void;
+        private _addVariable(target, variableArr);
         private _clearShaderDefinition();
         private _getChunk(type, sourceType);
         private _setSource(chunk, sourceType, operator);
-        private _addVariable(target, variableArr);
     }
 }
 
 declare module wd {
-    class CommonShaderLib extends ShaderLib {
+    class CommonShaderLib extends EngineShaderLib {
         static create(): CommonShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class CommonVerticeShaderLib extends ShaderLib {
+    class CommonVerticeShaderLib extends EngineShaderLib {
         static create(): CommonVerticeShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         private _sendAttributeVariables(program, quadCmd);
     }
 }
 
 declare module wd {
-    class CommonNormalShaderLib extends ShaderLib {
+    class CommonNormalShaderLib extends EngineShaderLib {
         static create(): CommonNormalShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         private _sendAttributeVariables(program, quadCmd);
     }
 }
 
 declare module wd {
-    class BasicShaderLib extends ShaderLib {
+    class BasicShaderLib extends EngineShaderLib {
         static create(): BasicShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: BasicMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: BasicMaterial): void;
     }
 }
 
 declare module wd {
-    class BasicEndShaderLib extends ShaderLib {
+    class BasicEndShaderLib extends EngineShaderLib {
         static create(): BasicEndShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class MorphCommonShaderLib extends ShaderLib {
+    class MorphCommonShaderLib extends EngineShaderLib {
         static create(): MorphCommonShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class MorphVerticeShaderLib extends ShaderLib {
+    class MorphVerticeShaderLib extends EngineShaderLib {
         static create(): MorphVerticeShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class MorphNormalShaderLib extends ShaderLib {
+    class MorphNormalShaderLib extends EngineShaderLib {
         static create(): MorphNormalShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class SkyboxShaderLib extends ShaderLib {
+    class SkyboxShaderLib extends EngineShaderLib {
         static create(): SkyboxShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    abstract class EnvMapForBasicShaderLib extends ShaderLib {
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+    abstract class EnvMapForBasicShaderLib extends EngineShaderLib {
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         protected setEnvMapSource(): void;
     }
 }
@@ -6195,7 +6372,7 @@ declare module wd {
     class ReflectionForBasicShaderLib extends EnvMapForBasicShaderLib {
         static create(): ReflectionForBasicShaderLib;
         type: string;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6203,8 +6380,8 @@ declare module wd {
     class RefractionForBasicShaderLib extends EnvMapForBasicShaderLib {
         static create(): RefractionForBasicShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6212,15 +6389,15 @@ declare module wd {
     class FresnelForBasicShaderLib extends EnvMapForBasicShaderLib {
         static create(): FresnelForBasicShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    abstract class EnvMapForLightShaderLib extends ShaderLib {
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+    abstract class EnvMapForLightShaderLib extends EngineShaderLib {
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         protected setEnvMapSource(): void;
     }
 }
@@ -6236,7 +6413,7 @@ declare module wd {
     class ReflectionForLightShaderLib extends EnvMapForLightShaderLib {
         static create(): ReflectionForLightShaderLib;
         type: string;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6244,8 +6421,8 @@ declare module wd {
     class RefractionForLightShaderLib extends EnvMapForLightShaderLib {
         static create(): RefractionForLightShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6253,15 +6430,16 @@ declare module wd {
     class FresnelForLightShaderLib extends EnvMapForLightShaderLib {
         static create(): FresnelForLightShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    abstract class MapShaderLib extends ShaderLib {
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+    abstract class MapShaderLib extends EngineShaderLib {
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: BasicMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: BasicMaterial): void;
+        protected sendMapShaderVariables(program: Program, quadCmd: QuadCommand, material: BasicMaterial): void;
         private _setMapSource();
     }
 }
@@ -6277,35 +6455,43 @@ declare module wd {
     class MultiMapShaderLib extends MapShaderLib {
         static create(): MultiMapShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        protected sendMapShaderVariables(program: Program, quadCmd: QuadCommand, material: BasicMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: BasicMaterial): void;
     }
 }
 
 declare module wd {
-    class MirrorForBasicShaderLib extends ShaderLib {
+    class MirrorForBasicShaderLib extends EngineShaderLib {
         static create(): MirrorForBasicShaderLib;
         type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: Material): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class LightCommonShaderLib extends ShaderLib {
+    abstract class ProceduralShaderLib extends EngineShaderLib {
+        shader: ProceduralShader;
+        abstract sendShaderVariables(program: Program, cmd: ProceduralCommand): any;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class LightCommonShaderLib extends EngineShaderLib {
         static create(): LightCommonShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class LightShaderLib extends ShaderLib {
+    class LightShaderLib extends EngineShaderLib {
         static create(): LightShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         private _sendLightVariables(program);
         private _sendPointLightVariables(program, pointLights);
         private _sendDirectionLightVariables(program, directionLights);
@@ -6317,7 +6503,7 @@ declare module wd {
 }
 
 declare module wd {
-    class LightEndShaderLib extends ShaderLib {
+    class LightEndShaderLib extends EngineShaderLib {
         static create(): LightEndShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
@@ -6325,74 +6511,99 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class LightMapShaderLib extends ShaderLib {
+    abstract class BaseLightMapShaderLib extends EngineShaderLib {
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
     }
 }
 
 declare module wd {
-    class DiffuseMapShaderLib extends LightMapShaderLib {
+    class CommonLightMapShaderLib extends EngineShaderLib {
+        static create(): CommonLightMapShaderLib;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
+    }
+}
+
+declare module wd {
+    class LightMapShaderLib extends BaseLightMapShaderLib {
+        static create(): LightMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
+    }
+}
+
+declare module wd {
+    class DiffuseMapShaderLib extends BaseLightMapShaderLib {
         static create(): DiffuseMapShaderLib;
         type: string;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): this;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class SpecularMapShaderLib extends LightMapShaderLib {
+    class SpecularMapShaderLib extends BaseLightMapShaderLib {
         static create(): SpecularMapShaderLib;
         type: string;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class EmissionMapShaderLib extends LightMapShaderLib {
+    class EmissionMapShaderLib extends BaseLightMapShaderLib {
         static create(): EmissionMapShaderLib;
         type: string;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class NormalMapShaderLib extends LightMapShaderLib {
+    class NormalMapShaderLib extends BaseLightMapShaderLib {
         static create(): NormalMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class NoDiffuseMapShaderLib extends ShaderLib {
+    class NoLightMapShaderLib extends EngineShaderLib {
+        static create(): NoLightMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
+    }
+}
+
+declare module wd {
+    class NoDiffuseMapShaderLib extends EngineShaderLib {
         static create(): NoDiffuseMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class NoSpecularMapShaderLib extends ShaderLib {
+    class NoSpecularMapShaderLib extends EngineShaderLib {
         static create(): NoSpecularMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class NoEmissionMapShaderLib extends ShaderLib {
+    class NoEmissionMapShaderLib extends EngineShaderLib {
         static create(): NoEmissionMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class NoNormalMapShaderLib extends ShaderLib {
+    class NoNormalMapShaderLib extends EngineShaderLib {
         static create(): NoNormalMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
@@ -6400,8 +6611,8 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class BuildShadowMapShaderLib extends ShaderLib {
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+    abstract class BuildShadowMapShaderLib extends EngineShaderLib {
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6410,7 +6621,7 @@ declare module wd {
         static create(): BuildTwoDShadowMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6419,12 +6630,12 @@ declare module wd {
         static create(): BuildCubemapShadowMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class TotalShadowMapShaderLib extends ShaderLib {
+    class TotalShadowMapShaderLib extends EngineShaderLib {
         static create(): TotalShadowMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
@@ -6432,11 +6643,11 @@ declare module wd {
 }
 
 declare module wd {
-    abstract class ShadowMapShaderLib extends ShaderLib {
+    abstract class ShadowMapShaderLib extends EngineShaderLib {
         private _softTypeChangeSubscription;
         init(): void;
         dispose(): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: Material): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
         private _setShadowMapSource();
     }
 }
@@ -6458,10 +6669,23 @@ declare module wd {
 }
 
 declare module wd {
-    class NoShadowMapShaderLib extends ShaderLib {
+    class NoShadowMapShaderLib extends EngineShaderLib {
         static create(): NoShadowMapShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: LightMaterial): void;
+    }
+}
+
+declare module wd {
+    class CustomShaderLibUtils {
+        static sendUniformData(name: string, type: EVariableType, value: any, program: Program): void;
+        static sendUniformDataWithSemantic(name: string, type: EVariableType, value: any, program: Program, cmd: QuadCommand): void;
+        static sendAttributeDataWithSemantic(name: string, type: EVariableType, value: any, program: Program, cmd: QuadCommand): void;
+        private static _sendStructureData(name, data, program);
+        private static _sendStructureDataWithSemantic(name, data, program, cmd);
+        private static _getAttributeData(data, type, cmd);
+        private static _getAttributeType(type);
+        private static _getUniformData(data, cmd);
     }
 }
 
@@ -6498,38 +6722,39 @@ declare module wd {
         blendFuncSeparate: Array<EBlendFunc>;
         blendEquationSeparate: Array<EBlendEquation>;
         shading: EShading;
+        mapManager: MapManager;
+        geometry: Geometry;
+        init(): void;
+        dispose(): void;
+        bindAndUpdateTexture(): void;
+        sendTexture(program: any): void;
+        updateShader(quadCmd: QuadCommand): void;
+        protected abstract createShader(): Shader;
+        private _isColorEqual(color1, color2);
+    }
+}
+
+declare module wd {
+    abstract class EngineMaterial extends Material {
         refractionRatio: number;
         reflectivity: number;
         mapCombineMode: ETextureCombineMode;
         mapMixRatio: number;
-        mapManager: MapManager;
-        geometry: Geometry;
-        private _afterInitSubscription;
         init(): void;
-        dispose(): void;
-        updateTexture(): void;
-        updateShader(quadCmd: QuadCommand): void;
         protected addShaderLib(): void;
-        protected addMap(asset: TextureAsset): any;
-        protected addMap(asset: TextureAsset, option: MapVariableData): any;
-        protected addMap(map: Texture): any;
-        protected addMap(map: Texture, option: MapVariableData): any;
         protected addNormalShaderLib(): void;
         protected setBlendByOpacity(opacity: number): void;
+        protected createShader(): Shader;
         private _addTopShaderLib();
         private _addShaderLibToTop(lib);
         private _hasAnimation();
-        private _isColorEqual(color1, color2);
     }
-    type MapVariableData = {
-        samplerVariableName?: string;
-        samplerData?: any;
-    };
 }
 
 declare module wd {
-    class BasicMaterial extends Material {
+    class BasicMaterial extends EngineMaterial {
         static create(): BasicMaterial;
+        mapList: wdCb.Collection<BasicTexture | ProceduralTexture>;
         map: any;
         mirrorMap: MirrorTexture;
         private _opacity;
@@ -6542,7 +6767,7 @@ declare module wd {
 }
 
 declare module wd {
-    class SkyboxMaterial extends Material {
+    class SkyboxMaterial extends EngineMaterial {
         static create(): SkyboxMaterial;
         initWhenCreate(): void;
         protected addShaderLib(): void;
@@ -6550,8 +6775,10 @@ declare module wd {
 }
 
 declare module wd {
-    class LightMaterial extends Material {
+    class LightMaterial extends EngineMaterial {
         static create(): LightMaterial;
+        private _lightMap;
+        lightMap: Texture;
         private _diffuseMap;
         diffuseMap: Texture;
         private _specularMap;
@@ -6559,7 +6786,7 @@ declare module wd {
         private _emissionMap;
         emissionMap: Texture;
         private _normalMap;
-        normalMap: Texture;
+        normalMap: ImageTexture;
         private _shininess;
         shininess: number;
         private _opacity;
@@ -6571,6 +6798,7 @@ declare module wd {
         buildCubemapShadowMapData: BuildCubemapShadowMapData;
         specularColor: Color;
         emissionColor: Color;
+        lightMapIntensity: number;
         private _twoDShadowMapSamplerIndex;
         private _cubemapShadowMapSamplerIndex;
         addTwoDShadowMap(shadowMap: TwoDShadowMapTexture): void;
@@ -6580,6 +6808,7 @@ declare module wd {
         addCubemapShadowMapData(shadowMapData: CubemapShadowMapData): void;
         clearTwoDShadowMapData(): void;
         clearCubemapShadowMapData(): void;
+        protected addExtendShaderLib(): void;
         protected addShaderLib(): void;
         private _setLightMapShaderLib();
         private _setEnvMapShaderLib(envMap);
@@ -6611,6 +6840,10 @@ declare module wd {
 declare module wd {
     class ShaderMaterial extends Material {
         static create(): ShaderMaterial;
+        shader: CustomShader;
+        init(): void;
+        read(definitionDataId: string): void;
+        protected createShader(): CustomShader;
     }
 }
 
@@ -6627,19 +6860,21 @@ declare module wd {
         constructor(material: Material);
         private _material;
         private _mapTable;
+        private _arrayMapList;
         private _mirrorMap;
         private _textureDirty;
-        private _mapArrCache;
+        private _allMapsCache;
+        private _allSingleMapsCache;
         init(): void;
         addMap(asset: TextureAsset): any;
         addMap(asset: TextureAsset, option: MapVariableData): any;
         addMap(map: Texture): any;
         addMap(map: Texture, option: MapVariableData): any;
-        getMap(index: number): any;
+        addArrayMap(samplerName: string, mapArray: Array<Texture>): void;
+        getMapList(): wdCb.Collection<BasicTexture | ProceduralTexture>;
         hasMap(func: (...args) => boolean): any;
         hasMap(map: Texture): any;
-        getMapCount(): any;
-        getMapCount(filterFunc: (map: Texture) => boolean): any;
+        getMapCount(): number;
         getEnvMap(): CubemapTexture;
         setEnvMap(envMap: CubemapTexture): void;
         getMirrorMap(): MirrorTexture;
@@ -6647,15 +6882,29 @@ declare module wd {
         isMirrorMap(map: Texture): boolean;
         removeAllChildren(): void;
         dispose(): void;
-        update(): void;
+        bindAndUpdate(): void;
         sendData(program: Program): void;
-        private _getMapArr();
-        private _getMap<T>(key);
+        private _sendSingleMapData(program);
+        private _sendArrayMapData(program);
+        private _generateArrayMapUnitArray(startUnit, endUnit);
+        private _getAllMaps();
+        private _getMaxUnitOfBindedSingleMap();
+        private _getAllSingleMaps();
+        private _getAllArrayMaps();
+        private _getMapByType<T>(key);
         private _setMap(key, map);
         private _setMap(key, map, option);
         private _removeMap(key, map);
         private _setMapOption(map, option);
     }
+    type MapVariableData = {
+        samplerVariableName?: string;
+        samplerData?: any;
+    };
+    type ArrayMapData = {
+        samplerName: string;
+        mapArray: Array<Texture>;
+    };
 }
 
 declare module wd {
@@ -6699,6 +6948,15 @@ declare module wd {
         protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
         private _createScript();
         private _appendScript(script);
+    }
+}
+
+declare module wd {
+    class JSONLoader extends Loader {
+        private static _instance;
+        static getInstance(): any;
+        protected loadAsset(url: string, id: string): wdFrp.Stream;
+        protected loadAsset(url: Array<string>, id: string): wdFrp.Stream;
     }
 }
 
@@ -6856,7 +7114,7 @@ declare module wd {
         static create(source: HTMLImageElement | HTMLCanvasElement): ImageTextureAsset;
         constructor(source: HTMLImageElement | HTMLCanvasElement);
         mipmaps: wdCb.Collection<HTMLCanvasElement | HTMLImageElement | HTMLVideoElement>;
-        toTexture(): Texture;
+        toTexture(): ImageTexture;
         toCubemapFaceTexture(): CubemapFaceImageTexture;
         copyToCubemapFaceTexture(cubemapFaceTexture: ICubemapFaceTwoDTextureAsset): void;
     }
@@ -7629,6 +7887,7 @@ declare module wd {
         static getInstance(): any;
         view: IView;
         gl: WebGLRenderingContext;
+        viewport: RectRegion;
         private _scissorTest;
         scissorTest: boolean;
         setScissor(x: number, y: number, width: number, height: number): void;
@@ -7856,14 +8115,15 @@ declare module wd {
         magFilter: ETextureFilterMode;
         minFilter: ETextureFilterMode;
         glTexture: WebGLTexture;
+        needUpdate: boolean;
         protected target: ETextureTarget;
-        abstract init(): any;
+        abstract init(): void;
         abstract getSamplerName(unit: number): string;
+        abstract update(): void;
         bindToUnit(unit: number): this;
-        sendData(program: Program, pos: WebGLUniformLocation, unit: number): void;
+        sendData(program: Program, name: string, unit: number): void;
         dispose(): void;
         filterFallback(filter: ETextureFilterMode): ETextureFilterMode;
-        protected sendOtherData(program: Program, unit: number): void;
         protected getSamplerNameByVariableData(unit: number, type?: EVariableType): string;
         protected getSamplerType(): EVariableType;
         protected isSourcePowerOfTwo(): boolean;
@@ -7890,7 +8150,9 @@ declare module wd {
 declare module wd {
     abstract class RenderTargetTexture extends Texture {
         abstract createEmptyTexture(): any;
+        initWhenCreate(): void;
         init(): this;
+        update(): void;
         getPosition(): Vector3;
         protected setEmptyTexture(texture: any): void;
     }
@@ -7965,9 +8227,18 @@ declare module wd {
 }
 
 declare module wd {
+    abstract class ProceduralTexture extends TwoDRenderTargetTexture {
+        sourceRegionForGLSL: any;
+        repeatRegion: RectRegion;
+        getSamplerName(unit: number): string;
+    }
+}
+
+declare module wd {
     abstract class BasicTexture extends Texture implements ITextureAsset {
         protected p_sourceRegionMethod: ETextureSourceRegionMethod;
         sourceRegionMethod: ETextureSourceRegionMethod;
+        sourceRegionForGLSL: any;
         generateMipmaps: boolean;
         format: ETextureFormat;
         source: any;
@@ -7980,12 +8251,10 @@ declare module wd {
         type: ETextureType;
         mipmaps: wdCb.Collection<any>;
         anisotropy: number;
-        needUpdate: boolean;
         initWhenCreate(...args: any[]): void;
         init(): void;
-        update(index: number): this;
+        update(): this;
         getSamplerName(unit: number): string;
-        protected sendOtherData(program: Program, unit: number): this;
         protected abstract allocateSourceToTexture(isSourcePowerOfTwo: boolean): any;
         protected needClampMaxSize(): boolean;
         protected clampToMaxSize(): void;
@@ -7993,13 +8262,13 @@ declare module wd {
         protected isSourcePowerOfTwo(): boolean;
         private _setAnisotropy(textureType);
         private _convertSourceRegionCanvasMapToUV(sourceRegion);
-        private _convertSourceRegionToUV();
+        private _convertSourceRegionToUV(sourceRegion);
     }
 }
 
 declare module wd {
     abstract class TwoDTexture extends BasicTexture {
-        initWhenCreate(asset: ImageTextureAsset | CompressedTextureAsset): void;
+        initWhenCreate(asset: TextureAsset): void;
     }
 }
 
@@ -8041,7 +8310,6 @@ declare module wd {
         private _areAllCompressedAsset;
         initWhenCreate(assets: Array<CubemapData>): void;
         getSamplerName(unit: number): string;
-        protected sendOtherData(program: Program, unit: number): this;
         protected allocateSourceToTexture(isSourcePowerOfTwo: boolean): void;
         protected needClampMaxSize(): boolean;
         protected isSourcePowerOfTwo(): boolean;
@@ -8194,6 +8462,295 @@ declare module wd {
     var root: any;
 }
 
+declare module wd {
+    class CommonProceduralShaderLib extends ProceduralShaderLib {
+        static create(): CommonProceduralShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class FireProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: FireProceduralTexture): FireProceduralShaderLib;
+        constructor(proceduralTexture: FireProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class FireProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: FireProceduralTexture): FireProceduralRenderTargetRenderer;
+        protected texture: FireProceduralTexture;
+        needRender(): boolean;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class FireProceduralTexture extends ProceduralTexture {
+        static create(): FireProceduralTexture;
+        private _fireColorMap;
+        fireColorMap: wdCb.Hash<Color>;
+        fireColorType: EFireProceduralTextureColorType;
+        speed: Vector2;
+        alphaThreshold: number;
+        shift: number;
+        time: number;
+        init(): this;
+        computeTime(): void;
+    }
+    enum EFireProceduralTextureColorType {
+        CUSTOM = 0,
+        RED = 1,
+        PURPLE = 2,
+        GREEN = 3,
+        BLUE = 4,
+    }
+}
+
+declare module wd {
+    class MarbleProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: MarbleProceduralTexture): MarbleProceduralRenderTargetRenderer;
+        protected texture: MarbleProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class MarbleProceduralTexture extends ProceduralTexture {
+        static create(): MarbleProceduralTexture;
+        tilesHeightNumber: number;
+        tilesWidthNumber: number;
+        amplitude: number;
+        jointColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class MarbleProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: MarbleProceduralTexture): MarbleProceduralShaderLib;
+        constructor(proceduralTexture: MarbleProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class GrassProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: GrassProceduralTexture): GrassProceduralRenderTargetRenderer;
+        protected texture: GrassProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class GrassProceduralTexture extends ProceduralTexture {
+        static create(): GrassProceduralTexture;
+        herb1Color: Color;
+        herb2Color: Color;
+        herb3Color: Color;
+        groundColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class GrassProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: GrassProceduralTexture): GrassProceduralShaderLib;
+        constructor(proceduralTexture: GrassProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class WoodProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: WoodProceduralTexture): WoodProceduralRenderTargetRenderer;
+        protected texture: WoodProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class WoodProceduralTexture extends ProceduralTexture {
+        static create(): WoodProceduralTexture;
+        ampScale: number;
+        woodColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class WoodProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: WoodProceduralTexture): WoodProceduralShaderLib;
+        constructor(proceduralTexture: WoodProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class RoadProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: RoadProceduralTexture): RoadProceduralRenderTargetRenderer;
+        protected texture: RoadProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class RoadProceduralTexture extends ProceduralTexture {
+        static create(): RoadProceduralTexture;
+        roadColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class RoadProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: RoadProceduralTexture): RoadProceduralShaderLib;
+        constructor(proceduralTexture: RoadProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class CloudProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: CloudProceduralTexture): CloudProceduralRenderTargetRenderer;
+        protected texture: CloudProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class CloudProceduralTexture extends ProceduralTexture {
+        static create(): CloudProceduralTexture;
+        skyColor: Color;
+        cloudColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class CloudProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: CloudProceduralTexture): CloudProceduralShaderLib;
+        constructor(proceduralTexture: CloudProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class BrickProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: BrickProceduralTexture): BrickProceduralRenderTargetRenderer;
+        protected texture: BrickProceduralTexture;
+        protected createShader(): CommonProceduralShader;
+    }
+}
+
+declare module wd {
+    class BrickProceduralTexture extends ProceduralTexture {
+        static create(): BrickProceduralTexture;
+        tilesHeightNumber: number;
+        tilesWidthNumber: number;
+        brickColor: Color;
+        jointColor: Color;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class BrickProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: BrickProceduralTexture): BrickProceduralShaderLib;
+        constructor(proceduralTexture: BrickProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class CustomProceduralRenderTargetRenderer extends ProceduralRenderTargetRenderer {
+        static create(texture: CustomProceduralTexture): CustomProceduralRenderTargetRenderer;
+        protected texture: CustomProceduralTexture;
+        needRender(): boolean;
+        protected createShader(): CustomProceduralShader;
+    }
+}
+
+declare module wd {
+    class CustomProceduralTexture extends ProceduralTexture {
+        static create(): CustomProceduralTexture;
+        mapManager: MapManager;
+        uniformMap: wdCb.Hash<ShaderData>;
+        fsSource: string;
+        isAnimate: boolean;
+        init(): this;
+        read(shaderConfigId: string): void;
+    }
+    type CustomProceduralTextureShaderDefinitionData = {
+        uniforms: wdCb.Hash<ShaderData>;
+        fsSourceId: string;
+    };
+}
+
+declare module wd {
+    class CustomProceduralShaderLib extends ProceduralShaderLib {
+        static create(proceduralTexture: CustomProceduralTexture): CustomProceduralShaderLib;
+        constructor(proceduralTexture: CustomProceduralTexture);
+        type: string;
+        private _proceduralTexture;
+        sendShaderVariables(program: Program, cmd: ProceduralCommand): void;
+        setShaderDefinition(cmd: ProceduralCommand): void;
+    }
+}
+
+declare module wd {
+    class TerrainMaterial extends LightMaterial {
+        static create(): TerrainMaterial;
+        layer: Layer;
+        init(): void;
+        protected addExtendShaderLib(): void;
+    }
+    class Layer {
+        static create(): Layer;
+        private _mapDataList;
+        mapDataList: wdCb.Collection<TerrainLayerMapData>;
+        mapArray: Texture[];
+    }
+    type TerrainLayerMapData = {
+        minHeight: number;
+        maxHeight: number;
+        diffuseMap: Texture;
+    };
+}
+
+declare module wd {
+    class TerrainLayerShaderLib extends EngineShaderLib {
+        static create(): TerrainLayerShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: TerrainMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: TerrainMaterial): void;
+    }
+}
+
 
 declare module wd {
     class ShaderChunk {
@@ -8220,30 +8777,20 @@ declare module wd {
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
+        static multi_map_forBasic_vertex: GLSLChunk;
         static mirror_forBasic_fragment: GLSLChunk;
         static mirror_forBasic_vertex: GLSLChunk;
         static skybox_fragment: GLSLChunk;
         static skybox_vertex: GLSLChunk;
-        static basic_envMap_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forBasic_vertex: GLSLChunk;
-        static envMap_forBasic_fragment: GLSLChunk;
-        static envMap_forBasic_vertex: GLSLChunk;
-        static fresnel_forBasic_fragment: GLSLChunk;
-        static reflection_forBasic_fragment: GLSLChunk;
-        static refraction_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
         static emissionMap_vertex: GLSLChunk;
+        static lightMap_fragment: GLSLChunk;
+        static lightMap_vertex: GLSLChunk;
         static noDiffuseMap_fragment: GLSLChunk;
         static noEmissionMap_fragment: GLSLChunk;
+        static noLightMap_fragment: GLSLChunk;
         static noNormalMap_fragment: GLSLChunk;
         static noNormalMap_vertex: GLSLChunk;
         static noSpecularMap_fragment: GLSLChunk;
@@ -8251,6 +8798,13 @@ declare module wd {
         static normalMap_vertex: GLSLChunk;
         static specularMap_fragment: GLSLChunk;
         static specularMap_vertex: GLSLChunk;
+        static basic_envMap_forBasic_fragment: GLSLChunk;
+        static basic_envMap_forBasic_vertex: GLSLChunk;
+        static envMap_forBasic_fragment: GLSLChunk;
+        static envMap_forBasic_vertex: GLSLChunk;
+        static fresnel_forBasic_fragment: GLSLChunk;
+        static reflection_forBasic_fragment: GLSLChunk;
+        static refraction_forBasic_fragment: GLSLChunk;
         static buildCubemapShadowMap_fragment: GLSLChunk;
         static buildCubemapShadowMap_vertex: GLSLChunk;
         static buildTwoDShadowMap_fragment: GLSLChunk;
@@ -8261,6 +8815,24 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
+        static basic_envMap_forLight_fragment: GLSLChunk;
+        static basic_envMap_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static fresnel_forLight_fragment: GLSLChunk;
+        static reflection_forLight_fragment: GLSLChunk;
+        static refraction_forLight_fragment: GLSLChunk;
+        static terrainLayer_fragment: GLSLChunk;
+        static terrainLayer_vertex: GLSLChunk;
+        static cloud_proceduralTexture_fragment: GLSLChunk;
+        static brick_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_fragment: GLSLChunk;
+        static common_proceduralTexture_vertex: GLSLChunk;
+        static fire_proceduralTexture_fragment: GLSLChunk;
+        static grass_proceduralTexture_fragment: GLSLChunk;
+        static marble_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
+        static wood_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;

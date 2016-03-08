@@ -29,6 +29,11 @@ Please learn samples in examples/samples/ to get more info.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
+- Procedural
+  - Procedural Texture
+- Terrain
+  - HeightMap
+  - Layer Texture
 - LOD
   - Geometry LOD
 - Space Partition
@@ -55,7 +60,7 @@ Join us, We can create the amazing 3D world together!
   - Fly Control
 - Light
   - Direction,Point Light
-  - Diffuse Map,Specular Map,Emission Map
+  - Diffuse Map,Specular Map,Emission Map,Light Map
   - Normal Map
   - Mirror
   - Reflection,Refraction,Fresnel
@@ -187,6 +192,3 @@ Here shows a spinning cube sample:
 #+END_SRC
 * License
 MIT Licence
-
-
-
