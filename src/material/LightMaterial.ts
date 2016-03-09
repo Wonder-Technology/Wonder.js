@@ -161,12 +161,15 @@ module wd{
             this.addNormalShaderLib();
             this.shader.addLib(LightCommonShaderLib.create());
             this._setLightMapShaderLib();
+
             this.shader.addLib(LightShaderLib.create());
 
             envMap = this.envMap;
             if(envMap){
                 this._setEnvMapShaderLib(envMap);
             }
+
+            this.setMirrorMapShaderLib();
 
             this.addExtendShaderLib();
 

@@ -1,5 +1,5 @@
 module wd{
-    export class MirrorForBasicShaderLib extends EngineShaderLib{
+    export class MirrorShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -7,7 +7,7 @@ module wd{
         }
 
 
-        public type:string = "mirror_forBasic";
+        public type:string = "mirror";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
         }

@@ -35,13 +35,6 @@ module wd{
             }
         }
 
-        get mirrorMap(){
-            return this.mapManager.getMirrorMap();
-        }
-        set mirrorMap(mirrorMap:MirrorTexture){
-            this.mapManager.setMirrorMap(mirrorMap);
-        }
-
         private _opacity:number = 1.0;
         get opacity(){
             return this._opacity;
@@ -64,7 +57,7 @@ module wd{
                 this._setEnvMapShaderLib(envMap);
             }
 
-            this._setMirrorMapShaderLib();
+            this.setMirrorMapShaderLib();
 
             this.shader.addLib(BasicEndShaderLib.create());
         }
@@ -102,12 +95,6 @@ module wd{
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("EEnvMapMode"));
                     break;
-            }
-        }
-
-        private _setMirrorMapShaderLib(){
-            if(this.mirrorMap){
-                this.shader.addLib(wd.MirrorForBasicShaderLib.create());
             }
         }
     }

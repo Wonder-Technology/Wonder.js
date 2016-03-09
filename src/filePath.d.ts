@@ -371,7 +371,7 @@
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
-/// <reference path="renderer/shader/lib/mirror/MirrorForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/mirror/MirrorShaderLib"/>
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
 

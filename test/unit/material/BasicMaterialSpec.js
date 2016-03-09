@@ -168,7 +168,7 @@ describe("BasicMaterial", function () {
             prepareTool.prepareForMap(sandbox);
         });
 
-        it("if only has mirrorMap, add MirrorForBasicShaderLib", function () {
+        it("if only has mirrorMap, add MirrorShaderLib", function () {
             var texture = wd.MirrorTexture.create();
             texture.width = 256;
             texture.height = 256;
@@ -181,7 +181,7 @@ describe("BasicMaterial", function () {
 
             director._init();
 
-            expect(material.shader.hasLib(wd.MirrorForBasicShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.MirrorShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 

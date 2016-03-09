@@ -17,5 +17,5 @@
 @end
 
 @body
-totalColor = getMirrorColor(totalColor);
+totalColor *= getMirrorColor(totalColor);
 @end

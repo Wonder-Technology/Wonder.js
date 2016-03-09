@@ -97,6 +97,13 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
+        get mirrorMap(){
+            return this.mapManager.getMirrorMap();
+        }
+        set mirrorMap(mirrorMap:MirrorTexture){
+            this.mapManager.setMirrorMap(mirrorMap);
+        }
+
         private _blendSrc:EBlendFunc= EBlendFunc.ONE;
         get blendSrc(){
             return this._blendSrc;
@@ -184,6 +191,12 @@ module wd {
         }
 
         protected abstract createShader():Shader;
+
+        protected setMirrorMapShaderLib(){
+            if(this.mirrorMap){
+                this.shader.addLib(wd.MirrorShaderLib.create());
+            }
+        }
 
         private _isColorEqual(color1:Color, color2:Color){
             return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;

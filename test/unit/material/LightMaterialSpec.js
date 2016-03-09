@@ -266,4 +266,54 @@ describe("LightMaterial", function() {
             });
         })
     });
+
+    describe("set mirror map shader lib", function () {
+        var model, geo, material, director, program;
+        var vertice, normals;
+
+        beforeEach(function () {
+            vertice = [1, -1, 0, 0, 1, 0, 0, 0, 1];
+            normals = [];
+
+            model = wd.GameObject.create();
+            geo = wd.PlaneGeometry.create();
+
+
+            geo.vertices = vertice;
+            geo.faces = testTool.createFaces([0,1,2]);
+
+            material = wd.LightMaterial.create();
+
+            materialTool.prepareMap(sandbox, model, geo, material);
+
+
+            director = wd.Director.getInstance();
+
+
+            program = material.shader.program;
+
+
+            prepareTool.prepareForMap(sandbox);
+        });
+
+        it("if only has mirrorMap, add MirrorShaderLib", function () {
+            var texture = wd.MirrorTexture.create();
+            texture.width = 256;
+            texture.height = 256;
+            texture.renderList = [];
+            sandbox.stub(texture, "bindToUnit");
+            sandbox.stub(texture, "sendData");
+
+            material.mirrorMap = texture;
+
+
+            director._init();
+
+            expect(material.shader.hasLib(wd.MirrorShaderLib)).toBeTruthy();
+
+            director._loopBody(1);
+
+            expect(texture.bindToUnit).toCalledWith(0);
+        });
+    });
 });
