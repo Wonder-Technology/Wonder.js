@@ -50,7 +50,7 @@ describe("MirrorRenderTargetRenderer", function () {
 
                         self.renderTargetRenderer.render(renderer, camera);
 
-                        expect(self.renderTargetRenderer._setSceneSide.firstCall).toCalledWith(wd.ESide.BACK);
+                        expect(self.renderTargetRenderer._setSceneSide.firstCall).toCalledWith(wd.ESide.FRONT);
                         expect(self.renderTargetRenderer._setSceneSide.secondCall).toCalledWith(null);
                         expect(renderer.render).toCalledOnce();
                         expect(renderer.render).toCalledAfter(renderObj2.render);

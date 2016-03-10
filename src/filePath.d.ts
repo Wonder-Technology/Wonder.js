@@ -567,3 +567,5 @@
 /// <reference path="lib/material_lib/terrain/TerrainMaterial"/>
 /// <reference path="lib/material_lib/terrain/TerrainLayerShaderLib"/>
 
+/// <reference path="lib/material_lib/water/WaterMaterial"/>
+
