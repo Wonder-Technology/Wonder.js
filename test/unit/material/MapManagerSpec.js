@@ -19,7 +19,7 @@ describe("MapManager", function() {
         manager.addMap(proceduralTexture);
 
         mirrorTexture = wd.MirrorTexture.create();
-        manager.setMirrorMap(mirrorTexture);
+        manager.setReflectionMap(mirrorTexture);
 
         asset3 = {
             asset: wd.CompressedTextureAsset.create({})
@@ -162,7 +162,7 @@ describe("MapManager", function() {
 
         });
 
-        it("get count of maps except mirrorMap and envMap", function(){
+        it("get count of maps except reflectionMap and envMap", function(){
             addAllTypeMaps();
 
             expect(manager.getMapCount()).toEqual(3);

@@ -112,7 +112,7 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_mirrorSampler:ShaderVariable = {
+        public static u_reflectionMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };

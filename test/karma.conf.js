@@ -39,7 +39,7 @@
         //
         //'test/unit/texture/**',
 
-        //'test/unit/**/material/**',
+        'test/unit/**/material/**',
         //
         //'test/unit/**/MapManager*',
 

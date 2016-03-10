@@ -122,7 +122,7 @@
             var material = wd.LightMaterial.create();
             material.color = wd.Color.create("#aaaaaa");
             material.side = wd.ESide.BOTH;
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
             var plane = wd.PlaneGeometry.create();
             plane.width = 20;
@@ -148,7 +148,7 @@
             var material = wd.BasicMaterial.create();
             material.color = wd.Color.create("#aaaaaa");
             material.side = wd.ESide.BOTH;
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
             var plane = wd.PlaneGeometry.create();
             plane.width = 20;

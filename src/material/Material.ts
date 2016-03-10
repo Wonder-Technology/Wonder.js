@@ -97,11 +97,11 @@ module wd {
             this.mapManager.setEnvMap(envMap);
         }
 
-        get mirrorMap(){
-            return this.mapManager.getMirrorMap();
+        get reflectionMap(){
+            return this.mapManager.getReflectionMap();
         }
-        set mirrorMap(mirrorMap:MirrorTexture){
-            this.mapManager.setMirrorMap(mirrorMap);
+        set reflectionMap(reflectionMap:Texture){
+            this.mapManager.setReflectionMap(reflectionMap);
         }
 
         private _blendSrc:EBlendFunc= EBlendFunc.ONE;
@@ -192,9 +192,9 @@ module wd {
 
         protected abstract createShader():Shader;
 
-        protected setMirrorMapShaderLib(){
-            if(this.mirrorMap){
-                this.shader.addLib(wd.MirrorShaderLib.create());
+        protected setReflectionMapShaderLib(){
+            if(this.reflectionMap){
+                this.shader.addLib(wd.ReflectionMapShaderLib.create());
             }
         }
 

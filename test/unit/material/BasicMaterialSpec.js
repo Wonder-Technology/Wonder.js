@@ -83,8 +83,8 @@ describe("BasicMaterial", function () {
             prepareTool.prepareForMap(sandbox);
         });
 
-        it("if only has mirrorMap, not add map shader lib", function () {
-            material.mirrorMap = wd.MirrorTexture.create();
+        it("if only has reflectionMap, not add map shader lib", function () {
+            material.reflectionMap = wd.MirrorTexture.create();
 
             director._init();
 
@@ -139,7 +139,7 @@ describe("BasicMaterial", function () {
         });
     });
 
-    describe("set mirror map shader lib", function () {
+    describe("set reflection map shader lib", function () {
         var model, geo, material, director, program;
         var vertice, normals;
 
@@ -168,7 +168,7 @@ describe("BasicMaterial", function () {
             prepareTool.prepareForMap(sandbox);
         });
 
-        it("if only has mirrorMap, add MirrorShaderLib", function () {
+        it("if only has reflectionMap, add MirrorShaderLib", function () {
             var texture = wd.MirrorTexture.create();
             texture.width = 256;
             texture.height = 256;
@@ -176,12 +176,12 @@ describe("BasicMaterial", function () {
             sandbox.stub(texture, "bindToUnit");
             sandbox.stub(texture, "sendData");
 
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
 
             director._init();
 
-            expect(material.shader.hasLib(wd.MirrorShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 

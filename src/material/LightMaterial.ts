@@ -169,7 +169,7 @@ module wd{
                 this._setEnvMapShaderLib(envMap);
             }
 
-            this.setMirrorMapShaderLib();
+            this.setReflectionMapShaderLib();
 
             this.addExtendShaderLib();
 

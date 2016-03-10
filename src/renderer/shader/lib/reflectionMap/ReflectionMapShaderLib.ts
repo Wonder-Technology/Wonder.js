@@ -1,5 +1,5 @@
 module wd{
-    export class MirrorShaderLib extends EngineShaderLib{
+    export class ReflectionMapShaderLib extends EngineShaderLib{
         public static create() {
             var obj = new this();
 
@@ -7,7 +7,7 @@ module wd{
         }
 
 
-        public type:string = "mirror";
+        public type:string = "reflectionMap";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial){
         }
@@ -16,7 +16,7 @@ module wd{
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("mirrorReflectionMap")
+                VariableNameTable.getVariableName("reflectionMap")
             ]);
         }
     }

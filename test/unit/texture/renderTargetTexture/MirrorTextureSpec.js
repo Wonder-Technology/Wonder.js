@@ -161,7 +161,7 @@ describe("MirrorTexture", function () {
             var map = new wd.ImageTexture();
             material.map = map;
 
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
 
 
@@ -172,7 +172,7 @@ describe("MirrorTexture", function () {
 
 
 
-            expect(program.sendUniformData).toCalledWith("u_mirrorSampler", wd.EVariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 1);
         });
     });
 });

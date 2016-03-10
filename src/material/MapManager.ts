@@ -13,7 +13,7 @@ module wd{
         private _material:Material = null;
         private _mapTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
-        private _mirrorMap:MirrorTexture = null;
+        private _reflectionMap:Texture = null;
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
@@ -60,6 +60,13 @@ module wd{
             this._textureDirty = true;
         }
 
+        @require(function(samplerName:string, mapArray:Array<Texture>){
+            assert(JudgeUtils.isArrayExactly(mapArray), Log.info.FUNC_SHOULD("second param", "be array"));
+
+            for(let map of mapArray){
+                assert(map instanceof Texture, Log.info.FUNC_SHOULD(Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
+            }
+        })
         public addArrayMap(samplerName:string, mapArray:Array<Texture>){
             this._arrayMapList.addChild({
                 samplerName:samplerName,
@@ -115,20 +122,20 @@ module wd{
             this._setMap("envMap", envMap);
         }
 
-        public getMirrorMap(){
-            return this._mirrorMap;
+        public getReflectionMap(){
+            return this._reflectionMap;
         }
 
-        public setMirrorMap(mirrorMap:MirrorTexture){
-            this.addMap(mirrorMap, {
-                samplerVariableName: VariableNameTable.getVariableName("mirrorReflectionMap")
+        public setReflectionMap(reflectionMap:Texture){
+            this.addMap(reflectionMap, {
+                samplerVariableName: VariableNameTable.getVariableName("reflectionMap")
             });
 
-            this._mirrorMap = mirrorMap;
+            this._reflectionMap = reflectionMap;
         }
 
-        public isMirrorMap(map:Texture){
-            return map === this._mirrorMap;
+        public isReflectionMap(map:Texture){
+            return map === this._reflectionMap;
         }
 
         public removeAllChildren(){

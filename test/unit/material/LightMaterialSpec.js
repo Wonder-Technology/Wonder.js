@@ -267,7 +267,7 @@ describe("LightMaterial", function() {
         })
     });
 
-    describe("set mirror map shader lib", function () {
+    describe("set reflection map shader lib", function () {
         var model, geo, material, director, program;
         var vertice, normals;
 
@@ -296,7 +296,7 @@ describe("LightMaterial", function() {
             prepareTool.prepareForMap(sandbox);
         });
 
-        it("if only has mirrorMap, add MirrorShaderLib", function () {
+        it("if only has reflectionMap, add ReflectionMapShaderLib", function () {
             var texture = wd.MirrorTexture.create();
             texture.width = 256;
             texture.height = 256;
@@ -304,12 +304,12 @@ describe("LightMaterial", function() {
             sandbox.stub(texture, "bindToUnit");
             sandbox.stub(texture, "sendData");
 
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
 
             director._init();
 
-            expect(material.shader.hasLib(wd.MirrorShaderLib)).toBeTruthy();
+            expect(material.shader.hasLib(wd.ReflectionMapShaderLib)).toBeTruthy();
 
             director._loopBody(1);
 
