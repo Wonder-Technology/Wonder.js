@@ -1,16 +1,23 @@
 module wd {
     export abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer{
-        //protected frameBuffer:FrameBuffer = null;
-        //protected frameBufferTexture:WebGLTexture = null;
         protected frameBuffer:WebGLFramebuffer = null;
         protected renderBuffer:WebGLRenderbuffer= null;
 
-        protected abstract createCamera(...args):GameObject;
+        private _lastCamera:GameObject = null;
+
         protected abstract beforeRenderFrameBufferTexture(renderCamera:GameObject);
         protected abstract getRenderList():wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer:Renderer);
 
-        private _lastCamera:GameObject = null;
+        @virtual
+        protected isNeedCreateCamera(){
+            return true;
+        }
+
+        @virtual
+        protected createCamera(...args):GameObject{
+            return null;
+        }
 
         protected initFrameBuffer(){
             var frameBuffer = this.frameBufferOperator,
@@ -27,13 +34,22 @@ module wd {
         }
 
         protected renderFrameBufferTexture(renderer:Renderer, camera:GameObject){
-            var renderCamera = this.createCamera(camera);
+            var isNeedCreateCamera:boolean = this.isNeedCreateCamera(),
+                renderCamera:GameObject = null;
 
-            if(this._lastCamera){
-                this._lastCamera.dispose();
+            //todo test
+            if(isNeedCreateCamera){
+                renderCamera = this.createCamera(camera);
+
+                if(this._lastCamera){
+                    this._lastCamera.dispose();
+                }
+
+                this._lastCamera = renderCamera;
             }
-
-            this._lastCamera = renderCamera;
+            else{
+                renderCamera = camera;
+            }
 
             this.beforeRenderFrameBufferTexture(renderCamera);
 
