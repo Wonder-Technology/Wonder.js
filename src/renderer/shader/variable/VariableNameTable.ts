@@ -8,6 +8,8 @@ module wd{
     _table.addChild("normalMap", "u_normalMapSampler");
     _table.addChild("reflectionMap", "u_reflectionMapSampler");
 
+    _table.addChild("bumpMap", "u_bumpMapSampler");
+
     export class VariableNameTable{
         public static getVariableName(name: string){
             var result = _table.getChild(name);

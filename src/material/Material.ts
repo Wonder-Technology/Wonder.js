@@ -192,6 +192,7 @@ module wd {
 
         protected abstract createShader():Shader;
 
+        @virtual
         protected setReflectionMapShaderLib(){
             if(this.reflectionMap){
                 this.shader.addLib(wd.ReflectionMapShaderLib.create());
