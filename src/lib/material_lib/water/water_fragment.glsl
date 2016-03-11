@@ -33,16 +33,6 @@ varying vec3 v_position;
 //	vec2 projectedReflectionTexCoords = clamp(v_reflectionMapCoord.xy / v_reflectionMapCoord.w + perturbation, 0.0, 1.0);
 	vec2 projectedTexCoords = v_reflectionAndRefractionMapCoord.xy / v_reflectionAndRefractionMapCoord.w + perturbation;
 
-	vec3 reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;
-
-	vec3 refractionColor = texture2D(u_refractionMapSampler, projectedTexCoords).rgb;
-
-	//todo refactor with fresnel glsl(extract common function?)
-
-    vec3 inDir = normalize(v_position - u_cameraPos);
-
-	float fresnelTerm = max(dot(inDir, v_normal), 0.0);
-	fresnelTerm = clamp((1.0 - fresnelTerm) * u_levelData.fresnelLevel, 0., 1.);
 
 
 
@@ -51,7 +41,9 @@ varying vec3 v_position;
 //totalColor *= vec4(mix(reflectionColor, refractionColor, fresnelTerm), 1.0);
 //totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);
 
-totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);
+//totalColor += vec4(reflectionColor * fresnelTerm * u_levelData.reflectionLevel + (1.0 - fresnelTerm) * refractionColor * u_levelData.refractionLevel, 1.0);
+
+totalColor += getLightEffectColor(projectedTexCoords);
 
 
 //totalColor *= vec4(mix(reflectionColor, refractionColor, 0.5), 1.0);

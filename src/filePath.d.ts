@@ -571,4 +571,8 @@
 
 /// <reference path="lib/material_lib/water/WaterMaterial"/>
 /// <reference path="lib/material_lib/water/WaterShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterReflectionMapShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterRefractionMapShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterFresnelShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterNoLightEffectShaderLib"/>
 

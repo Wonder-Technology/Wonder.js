@@ -54,6 +54,19 @@ module wd{
 
         protected addExtendShaderLib(){
             this.shader.addLib(WaterShaderLib.create());
+
+            if(this.reflectionMap && this.reflectionMap){
+                this.shader.addLib(WaterFresnelShaderLib.create());
+            }
+            else if(this.reflectionMap){
+                this.shader.addLib(WaterReflectionMapShaderLib.create());
+            }
+            else if(this.refractionMap){
+                this.shader.addLib(WaterRefractionMapShaderLib.create());
+            }
+            else{
+                this.shader.addLib(WaterNoLightEffectShaderLib.create());
+            }
         }
 
         //todo refactor? add WaterReflectionMapShaderLib?
