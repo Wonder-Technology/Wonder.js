@@ -296,6 +296,7 @@
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/MirrorRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/RefractionRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDShadowMapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapShadowMapRenderTargetRenderer"/>
@@ -489,6 +490,7 @@
 /// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>
 /// <reference path="texture/renderTargetTexture/utils/IShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
+/// <reference path="texture/renderTargetTexture/RefractionTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapShadowMapTexture"/>

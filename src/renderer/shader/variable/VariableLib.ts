@@ -117,6 +117,11 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
+        public static u_refractionMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
         public static u_cameraPos:ShaderVariable = {
             type:EVariableType.FLOAT_3,
             value:EVariableCategory.ENGINE
@@ -364,6 +369,11 @@ module wd{
 
         public static u_bumpMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_levelData:ShaderVariable = {
+            type:EVariableType.STRUCTURE,
             value:EVariableCategory.ENGINE
         };
     }

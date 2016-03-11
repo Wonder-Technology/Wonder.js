@@ -36,11 +36,12 @@
 
             var skybox = createSkybox();
             var sphere = createSphere();
+            var ground = createGround();
 
             director.scene.addChild(skybox);
             director.scene.addChild(sphere);
-            director.scene.addChild(createWater(skybox, sphere));
-            director.scene.addChild(createGround());
+            director.scene.addChild(ground);
+            director.scene.addChild(createWater(skybox, sphere, ground));
 
             director.scene.addChild(createAmbientLight());
             director.scene.addChild(createDirectionLight());
@@ -111,19 +112,30 @@
             return gameObject;
         }
 
-        function createWater(skybox, sphere) {
+        function createWater(skybox, sphere, ground) {
             var material = wd.WaterMaterial.create();
-            material.color = wd.Color.create("#ffffff");
-
-
-            var texture = wd.MirrorTexture.create();
-            texture.width = 512;
-            texture.height = 512;
-            texture.renderList = [skybox, sphere];
-
-            material.reflectionMap = texture;
+            material.color = wd.Color.create("rgb(0.1, 0.2, 0.1)");
+            material.fresnelLevel = 0.5;
+            material.refractionLevel = 0.8;
+            material.reflectionLevel = 0.8;
 
             material.bumpMap = wd.LoaderManager.getInstance().get("bump").toTexture();
+
+            var reflectionTexture = wd.MirrorTexture.create();
+            reflectionTexture.width = 512;
+            reflectionTexture.height = 512;
+            reflectionTexture.renderList = [skybox, sphere];
+
+            var refractionTexture = wd.RefractionTexture.create();
+            refractionTexture.width = 512;
+            refractionTexture.height = 512;
+//            refractionTexture.renderList = [skybox, sphere];
+            //todo test with sphere
+            refractionTexture.renderList = [skybox, ground];
+
+            material.reflectionMap = reflectionTexture;
+            material.refractionMap = refractionTexture;
+
 
 
             var geometry = wd.PlaneGeometry.create();

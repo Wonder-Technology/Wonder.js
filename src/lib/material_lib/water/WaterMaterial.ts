@@ -26,9 +26,24 @@ module wd{
             this._bumpMap = bumpMap;
         }
 
+        private _refractionMap:Texture = null;
+        get refractionMap(){
+            return this._refractionMap;
+        }
+        set refractionMap(refractionMap:Texture){
+            this.mapManager.addMap(refractionMap, {
+                samplerVariableName: VariableNameTable.getVariableName("refractionMap")
+            });
+
+            this._refractionMap = refractionMap;
+        }
+
 
         public wind:WaterWindModel = WaterWindModel.create();
         public wave:WaterWaveModel = WaterWaveModel.create();
+        public fresnelLevel:number = 1.0;
+        public reflectionLevel:number = 0.6;
+        public refractionLevel:number = 0.8;
 
 
         public bindAndUpdateTexture(){
