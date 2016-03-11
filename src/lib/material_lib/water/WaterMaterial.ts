@@ -53,6 +53,13 @@ module wd{
         }
 
         protected addExtendShaderLib(){
+            if(this.bumpMap){
+                this.shader.addLib(WaterBumpMapShaderLib.create());
+            }
+            else{
+                this.shader.addLib(WaterNoBumpMapShaderLib.create());
+            }
+
             this.shader.addLib(WaterShaderLib.create());
 
             if(this.reflectionMap && this.reflectionMap){

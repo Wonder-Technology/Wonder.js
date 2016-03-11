@@ -19,7 +19,6 @@ module wd{
             super.setShaderDefinition(quadCmd, material);
 
             this.addUniformVariable([
-                VariableNameTable.getVariableName("bumpMap"),
                 "u_waveData",
                 "u_windMatrix"
             ]);
