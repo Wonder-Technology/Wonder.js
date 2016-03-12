@@ -1,4 +1,10 @@
 @varDeclare
+struct WaveData {
+    float length;
+    float height;
+};
+uniform WaveData u_waveData;
+
 varying vec2 v_bumpTexCoord;
 @end
 

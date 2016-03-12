@@ -18,7 +18,6 @@ module wd{
             bumpMap.wrapS = wd.ETextureWrapMode.REPEAT;
             bumpMap.wrapT = wd.ETextureWrapMode.REPEAT;
 
-            //todo bumpMap?
             this.mapManager.addMap(bumpMap, {
                 samplerVariableName: VariableNameTable.getVariableName("bumpMap")
             });
@@ -102,11 +101,6 @@ module wd{
 
 
         public time:number = 0;
-
-        /**
-         * @param {number}: Represents the wind force
-         */
-        //public force:number = 6;
         public direction:Vector2 = Vector2.create(0, 1);
     }
 
@@ -117,13 +111,8 @@ module wd{
         	return obj;
         }
 
-
         public height:number = 0.15;
-        /**
-         * @param {number}: Represents the maximum length of a wave
-         */
         public length:number = 0.1;
-        //public speed:number = 1.0;
     }
 }
 

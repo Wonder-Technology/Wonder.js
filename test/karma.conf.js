@@ -29,6 +29,8 @@
 
         //'test/unit/**',
 
+        'test/unit/**/water*',
+
         //'test/unit/lib/**',
 
         //'test/unit/**/terrain*',
@@ -37,7 +39,7 @@
         //'test/unit/**/*ShaderLib*',
         //'test/unit/**/ShaderLib*',
         //
-        'test/unit/texture/**',
+        //'test/unit/texture/**',
 
         //'test/unit/**/material/**',
         //
@@ -97,7 +99,7 @@
 
         //'test/unit/**/RigidBodySpec*',
 
-        'test/unit/**/MirrorRender*',
+        //'test/unit/**/MirrorRender*',
 
 
         //'test/unit/**/ColorSpec*',
