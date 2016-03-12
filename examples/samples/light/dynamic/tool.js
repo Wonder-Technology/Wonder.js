@@ -233,7 +233,7 @@ var tool = {
         sphere.addComponent(geometry);
 
 
-        sphere.transform.translate(-100, 0, 0);
+        sphere.transform.translate(-40, 0, 0);
 
 
         var director = wd.Director.getInstance();

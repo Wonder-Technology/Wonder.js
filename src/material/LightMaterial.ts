@@ -232,16 +232,16 @@ module wd{
         private _setEnvMapShaderLib(envMap:CubemapTexture){
             switch (envMap.mode){
                 case EEnvMapMode.BASIC:
-                    this.shader.addLib(BasicEnvMapForLightShaderLib.create());
+                    this.shader.addLib(EnvMapBasicForLightShaderLib.create());
                     break;
                 case EEnvMapMode.REFLECTION:
-                    this.shader.addLib(ReflectionForLightShaderLib.create());
+                    this.shader.addLib(EnvMapReflectionForLightShaderLib.create());
                     break;
                 case EEnvMapMode.REFRACTION:
-                    this.shader.addLib(RefractionForLightShaderLib.create());
+                    this.shader.addLib(EnvMapRefractionForLightShaderLib.create());
                     break;
                 case EEnvMapMode.FRESNEL:
-                    this.shader.addLib(FresnelForLightShaderLib.create());
+                    this.shader.addLib(EnvMapFresnelForLightShaderLib.create());
                     break;
                 default:
                     Log.error(true, Log.info.FUNC_INVALID("EEnvMapMode"));

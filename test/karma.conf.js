@@ -27,7 +27,7 @@
         'test/unit/**/*Tool.js',
         'test/unit/*Tool.js',
 
-        //'test/unit/**',
+        'test/unit/**',
 
         //'test/unit/**/water*',
 
@@ -43,7 +43,7 @@
 
         //'test/unit/**/material/**',
         //
-        'test/unit/**/MapManager*',
+        //'test/unit/**/MapManager*',
 
         //'test/unit/renderer/**',
         //'test/unit/renderer/renderTargetRenderer/**',

@@ -1,12 +1,12 @@
 module wd{
-    export class RefractionForLightShaderLib extends EnvMapForLightShaderLib{
+    export class EnvMapRefractionForBasicShaderLib extends EnvMapForBasicShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "refraction_forLight";
+        public type:string = "envMap_refraction_forBasic";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
             super.sendShaderVariables(program, quadCmd, material);

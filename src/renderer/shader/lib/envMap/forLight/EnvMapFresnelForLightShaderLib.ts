@@ -1,12 +1,12 @@
 module wd{
-    export class FresnelForLightShaderLib extends EnvMapForLightShaderLib{
+    export class EnvMapFresnelForLightShaderLib extends EnvMapForLightShaderLib{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public type:string = "fresnel_forLight";
+        public type:string = "envMap_fresnel_forLight";
 
         public sendShaderVariables(program:Program, quadCmd:QuadCommand, material:EngineMaterial) {
             super.sendShaderVariables(program, quadCmd, material);
