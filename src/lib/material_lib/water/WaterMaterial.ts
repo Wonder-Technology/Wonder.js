@@ -1,5 +1,5 @@
 module wd{
-    export class WaterMaterial extends LightMaterial{
+    export class WaterMaterial extends StandardLightMaterial{
         public static create() {
             var obj = new this();
 

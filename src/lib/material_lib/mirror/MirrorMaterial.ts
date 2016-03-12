@@ -1,5 +1,5 @@
 module wd{
-    export class MirrorMaterial extends LightMaterial{
+    export class MirrorMaterial extends StandardLightMaterial{
         public static create() {
             var obj = new this();
 

@@ -408,6 +408,8 @@
 
 /// <reference path="material/Material"/>
 /// <reference path="material/EngineMaterial"/>
+/// <reference path="material/StandardLightMaterial"/>
+/// <reference path="material/StandardBasicMaterial"/>
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>

@@ -1,5 +1,5 @@
 module wd{
-    export class TerrainMaterial extends LightMaterial{
+    export class TerrainMaterial extends StandardLightMaterial{
         public static create() {
             var obj = new this();
 
