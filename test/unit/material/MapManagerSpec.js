@@ -19,7 +19,9 @@ describe("MapManager", function() {
         manager.addMap(proceduralTexture);
 
         mirrorTexture = wd.MirrorTexture.create();
-        manager.setMirrorMap(mirrorTexture);
+        manager.addMap(mirrorTexture, {
+            samplerVariableName: wd.VariableNameTable.getVariableName("reflectionMap")
+        });
 
         asset3 = {
             asset: wd.CompressedTextureAsset.create({})
@@ -162,7 +164,7 @@ describe("MapManager", function() {
 
         });
 
-        it("get count of maps except mirrorMap and envMap", function(){
+        it("get count of maps except reflectionMap and envMap", function(){
             addAllTypeMaps();
 
             expect(manager.getMapCount()).toEqual(3);
@@ -340,6 +342,19 @@ describe("MapManager", function() {
 
                 sandbox.stub(texture, "getSamplerName").returns(samplerName);
             });
+        });
+
+        it("if has duplicate maps(the ones has the same samplerName), contract error", function () {
+            testTool.openContractCheck(sandbox);
+
+            var mirrorTexture2 = wd.MirrorTexture.create();
+            manager.addMap(mirrorTexture2, {
+                samplerVariableName: wd.VariableNameTable.getVariableName("reflectionMap")
+            });
+
+            expect(function(){
+                manager.sendData(program);
+            }).toThrow();
         });
 
         it("send texture data", function(){

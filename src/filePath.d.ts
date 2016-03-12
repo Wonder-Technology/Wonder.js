@@ -296,6 +296,7 @@
 /// <reference path="renderer/renderTargetRenderer/RenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/MirrorRenderTargetRenderer"/>
+/// <reference path="renderer/renderTargetRenderer/RefractionRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/TwoDShadowMapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapRenderTargetRenderer"/>
 /// <reference path="renderer/renderTargetRenderer/CubemapShadowMapRenderTargetRenderer"/>
@@ -356,22 +357,21 @@
 /// <reference path="renderer/shader/lib/animation/morph/MorphNormalShaderLib"/>
 /// <reference path="renderer/shader/lib/skybox/SkyboxShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/BasicEnvMapForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/ReflectionForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/RefractionForBasicShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forBasic/FresnelForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapBasicForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapReflectionForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapRefractionForBasicShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forBasic/EnvMapFresnelForBasicShaderLib"/>
 
 /// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
 /// <reference path="renderer/shader/lib/envMap/forLight/EnvMapForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/BasicEnvMapForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/ReflectionForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/RefractionForLightShaderLib"/>
-/// <reference path="renderer/shader/lib/envMap/forLight/FresnelForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapBasicForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapReflectionForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapRefractionForLightShaderLib"/>
+/// <reference path="renderer/shader/lib/envMap/forLight/EnvMapFresnelForLightShaderLib"/>
 
 /// <reference path="renderer/shader/lib/map/MapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/BasicMapShaderLib"/>
 /// <reference path="renderer/shader/lib/map/MultiMapShaderLib"/>
-/// <reference path="renderer/shader/lib/mirror/MirrorForBasicShaderLib"/>
 
 /// <reference path="renderer/shader/lib/procedural/ProceduralShaderLib"/>
 
@@ -408,6 +408,8 @@
 
 /// <reference path="material/Material"/>
 /// <reference path="material/EngineMaterial"/>
+/// <reference path="material/StandardLightMaterial"/>
+/// <reference path="material/StandardBasicMaterial"/>
 /// <reference path="material/BasicMaterial"/>
 /// <reference path="material/SkyboxMaterial"/>
 /// <reference path="material/LightMaterial"/>
@@ -488,7 +490,9 @@
 /// <reference path="texture/renderTargetTexture/TwoDRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/utils/ShadowMapTextureUtils"/>
 /// <reference path="texture/renderTargetTexture/utils/IShadowMapTexture"/>
+/// <reference path="texture/renderTargetTexture/LightEffectTexture"/>
 /// <reference path="texture/renderTargetTexture/MirrorTexture"/>
+/// <reference path="texture/renderTargetTexture/RefractionTexture"/>
 /// <reference path="texture/renderTargetTexture/TwoDShadowMapTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapRenderTargetTexture"/>
 /// <reference path="texture/renderTargetTexture/CubemapShadowMapTexture"/>
@@ -566,4 +570,16 @@
 
 /// <reference path="lib/material_lib/terrain/TerrainMaterial"/>
 /// <reference path="lib/material_lib/terrain/TerrainLayerShaderLib"/>
+
+/// <reference path="lib/material_lib/water/WaterMaterial"/>
+/// <reference path="lib/material_lib/water/WaterShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterReflectionMapShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterRefractionMapShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterFresnelShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterNoLightEffectShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterBumpMapShaderLib"/>
+/// <reference path="lib/material_lib/water/WaterNoBumpMapShaderLib"/>
+
+/// <reference path="lib/material_lib/mirror/MirrorMaterial"/>
+/// <reference path="lib/material_lib/mirror/MirrorShaderLib"/>
 

@@ -13,7 +13,6 @@ module wd{
         private _material:Material = null;
         private _mapTable:wdCb.Hash<any> = wdCb.Hash.create<any>();
         private _arrayMapList:wdCb.Collection<ArrayMapData> = wdCb.Collection.create<ArrayMapData>();
-        private _mirrorMap:MirrorTexture = null;
         private _textureDirty:boolean = false;
         private _allMapsCache:Array<Texture> = null;
         private _allSingleMapsCache:Array<Texture> = null;
@@ -60,6 +59,13 @@ module wd{
             this._textureDirty = true;
         }
 
+        @require(function(samplerName:string, mapArray:Array<Texture>){
+            assert(JudgeUtils.isArrayExactly(mapArray), Log.info.FUNC_SHOULD("second param", "be array"));
+
+            for(let map of mapArray){
+                assert(map instanceof Texture, Log.info.FUNC_SHOULD(Log.info.FUNC_SHOULD("second param", "be Array<Texture>")));
+            }
+        })
         public addArrayMap(samplerName:string, mapArray:Array<Texture>){
             this._arrayMapList.addChild({
                 samplerName:samplerName,
@@ -115,22 +121,6 @@ module wd{
             this._setMap("envMap", envMap);
         }
 
-        public getMirrorMap(){
-            return this._mirrorMap;
-        }
-
-        public setMirrorMap(mirrorMap:MirrorTexture){
-            this.addMap(mirrorMap, {
-                samplerVariableName: VariableNameTable.getVariableName("mirrorReflectionMap")
-            });
-
-            this._mirrorMap = mirrorMap;
-        }
-
-        public isMirrorMap(map:Texture){
-            return map === this._mirrorMap;
-        }
-
         public removeAllChildren(){
             this._mapTable.removeAllChildren();
             this._arrayMapList.removeAllChildren();
@@ -164,6 +154,19 @@ module wd{
             }
         }
 
+        @require(function(program:Program){
+            var mapMap = {},
+                maps = this._getAllMaps();
+
+            for(let i = 0, len = maps.length; i < len; i++){
+                let map = maps[i],
+                    samplerName:string = map.getSamplerName(i);
+
+                assert(mapMap[samplerName] !== 1, Log.info.FUNC_SHOULD_NOT(`has duplicate maps, but actual has the ones with the same samplerName:${samplerName}`));
+
+                mapMap[samplerName] = 1;
+            }
+        })
         public sendData(program:Program){
             this._sendSingleMapData(program);
             this._sendArrayMapData(program);
@@ -195,8 +198,11 @@ module wd{
 
         @ensure(function(arr:Array<number>, startUnit:number, endUnit:number){
             assert(arr.length === endUnit - startUnit, Log.info.FUNC_SHOULD("length", `be ${endUnit - startUnit}, but actual is ${arr.length}`));
-            assert(arr[0] === startUnit, Log.info.FUNC_SHOULD("first element", `be ${startUnit}, but actual is ${arr[0]}`));
-            assert(arr[arr.length - 1] === endUnit - 1, Log.info.FUNC_SHOULD("last element", `be ${endUnit - 1}, but actual is ${arr[arr.length - 1]}`));
+
+            if(arr.length > 0){
+                assert(arr[0] === startUnit, Log.info.FUNC_SHOULD("first element", `be ${startUnit}, but actual is ${arr[0]}`));
+                assert(arr[arr.length - 1] === endUnit - 1, Log.info.FUNC_SHOULD("last element", `be ${endUnit - 1}, but actual is ${arr[arr.length - 1]}`));
+            }
         })
         private _generateArrayMapUnitArray(startUnit:number, endUnit:number){
             var arr = [];

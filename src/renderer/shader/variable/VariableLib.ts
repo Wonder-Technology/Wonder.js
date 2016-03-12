@@ -112,7 +112,12 @@ module wd{
             value:EVariableCategory.ENGINE
         };
 
-        public static u_mirrorSampler:ShaderVariable = {
+        public static u_reflectionMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_refractionMapSampler:ShaderVariable = {
             type:EVariableType.SAMPLER_2D,
             value:EVariableCategory.ENGINE
         };
@@ -349,6 +354,26 @@ module wd{
 
         public static u_brickColor:ShaderVariable = {
             type:EVariableType.FLOAT_3,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_waveData:ShaderVariable = {
+            type:EVariableType.STRUCTURE,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_windMatrix:ShaderVariable = {
+            type:EVariableType.FLOAT_MAT4,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_bumpMapSampler:ShaderVariable = {
+            type:EVariableType.SAMPLER_2D,
+            value:EVariableCategory.ENGINE
+        };
+
+        public static u_levelData:ShaderVariable = {
+            type:EVariableType.STRUCTURE,
             value:EVariableCategory.ENGINE
         };
     }

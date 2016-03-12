@@ -15,6 +15,9 @@ describe("terrain material", function() {
         sandbox.restore();
     });
 
+    it("test default values", function () {
+    });
+
     it("if not define mapDataList, should not error when init", function () {
         expect(function(){
             material.init();
@@ -85,81 +88,79 @@ describe("terrain material", function() {
 
             });
 
-            describe("test bind and send map data", function(){
-                it("", function () {
-                    map1 = wd.ImageTexture.create();
-                    map2 = wd.ImageTexture.create();
-                    map3 = wd.ImageTexture.create();
+            it("test bind and send map data", function(){
+                map1 = wd.ImageTexture.create();
+                map2 = wd.ImageTexture.create();
+                map3 = wd.ImageTexture.create();
 
 
-                    sandbox.stub(map1, "bindToUnit");
-                    sandbox.stub(map2, "bindToUnit");
-                    sandbox.stub(map3, "bindToUnit");
+                sandbox.stub(map1, "bindToUnit");
+                sandbox.stub(map2, "bindToUnit");
+                sandbox.stub(map3, "bindToUnit");
 
-                    sandbox.stub(map1, "update");
-                    sandbox.stub(map2, "update");
-                    sandbox.stub(map3, "update");
-
-
-
-                    material.layer.mapDataList = wdCb.Collection.create([
-                        {
-                            minHeight:10,
-                            maxHeight:20,
-                            diffuseMap:map1
-                        },
-                        {
-                            minHeight:20,
-                            maxHeight:50,
-                            diffuseMap:map2
-                        }
-                    ]);
+                sandbox.stub(map1, "update");
+                sandbox.stub(map2, "update");
+                sandbox.stub(map3, "update");
 
 
 
-                    material.diffuseMap = map3;
+                material.layer.mapDataList = wdCb.Collection.create([
+                    {
+                        minHeight:10,
+                        maxHeight:20,
+                        diffuseMap:map1
+                    },
+                    {
+                        minHeight:20,
+                        maxHeight:50,
+                        diffuseMap:map2
+                    }
+                ]);
 
 
 
-
-
-                    material.init();
-
-
-
-
-                    material.bindAndUpdateTexture();
-
-
-                    expect(map3.bindToUnit).toCalledWith(0);
-                    expect(map1.bindToUnit).toCalledWith(1);
-                    expect(map2.bindToUnit).toCalledWith(2);
-
-                    expect(map3.update).toCalledOnce();
-                    expect(map1.update).toCalledOnce();
-                    expect(map2.update).toCalledOnce();
-
-                    expect(map3.update).toCalledBefore(map1.update);
-                    expect(map1.update).toCalledBefore(map2.update);
+                material.diffuseMap = map3;
 
 
 
 
 
-
-                    sandbox.stub(map1, "getSamplerName").returns("u_sampler1");
-                    sandbox.stub(map2, "getSamplerName").returns("u_sampler2");
-                    sandbox.stub(map3, "getSamplerName").returns("u_sampler3");
-
-                    material.updateShader(quadCmd);
+                material.init();
 
 
-                    expect(material.program.sendUniformData).toCalledWith("u_sampler3", wd.EVariableType.SAMPLER_2D, 0);
-                    expect(material.program.sendUniformData).not.toCalledWith("u_sampler1", wd.EVariableType.SAMPLER_2D, 1);
-                    expect(material.program.sendUniformData).not.toCalledWith("u_sampler2", wd.EVariableType.SAMPLER_2D, 2);
 
-                    expect(material.program.sendUniformData).toCalledWith("u_layerSampler2Ds[0]", wd.EVariableType.SAMPLER_ARRAY, [1,2]);
-                });
+
+                material.bindAndUpdateTexture();
+
+
+                expect(map3.bindToUnit).toCalledWith(0);
+                expect(map1.bindToUnit).toCalledWith(1);
+                expect(map2.bindToUnit).toCalledWith(2);
+
+                expect(map3.update).toCalledOnce();
+                expect(map1.update).toCalledOnce();
+                expect(map2.update).toCalledOnce();
+
+                expect(map3.update).toCalledBefore(map1.update);
+                expect(map1.update).toCalledBefore(map2.update);
+
+
+
+
+
+
+                sandbox.stub(map1, "getSamplerName").returns("u_sampler1");
+                sandbox.stub(map2, "getSamplerName").returns("u_sampler2");
+                sandbox.stub(map3, "getSamplerName").returns("u_sampler3");
+
+                material.updateShader(quadCmd);
+
+
+                expect(material.program.sendUniformData).toCalledWith("u_sampler3", wd.EVariableType.SAMPLER_2D, 0);
+                expect(material.program.sendUniformData).not.toCalledWith("u_sampler1", wd.EVariableType.SAMPLER_2D, 1);
+                expect(material.program.sendUniformData).not.toCalledWith("u_sampler2", wd.EVariableType.SAMPLER_2D, 2);
+
+                expect(material.program.sendUniformData).toCalledWith("u_layerSampler2Ds[0]", wd.EVariableType.SAMPLER_ARRAY, [1,2]);
             });
 
             describe("test set procedural map to be layer map", function(){
@@ -273,10 +274,7 @@ describe("terrain material", function() {
             });
 
             describe("test glsl source", function(){
-                var gl;
-
                 beforeEach(function(){
-                    gl = wd.DeviceManager.getInstance().gl;
                 });
 
                 it("define LAYER_COUNT", function(){
@@ -300,7 +298,7 @@ describe("terrain material", function() {
                     material.updateShader(quadCmd);
 
 
-                    expect(material.shader.fsSource.indexOf("#define LAYER_COUNT 2") > -1).toBeTruthy();
+                    expect(shaderTool.judgeGLSLDefine(material.shader.fsSource, "LAYER_COUNT", 2));
                 });
             });
         });

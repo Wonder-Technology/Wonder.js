@@ -29,6 +29,8 @@
 
         'test/unit/**',
 
+        //'test/unit/**/water*',
+
         //'test/unit/lib/**',
 
         //'test/unit/**/terrain*',

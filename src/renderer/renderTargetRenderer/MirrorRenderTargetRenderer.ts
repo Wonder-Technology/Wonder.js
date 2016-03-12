@@ -20,7 +20,7 @@ module wd {
             return this.texture.renderList;
         }
         protected renderRenderer(renderer){
-            this._setSceneSide(ESide.BACK);
+            this._setSceneSide(ESide.FRONT);
             renderer.render();
             this._setSceneSide(null);
         }

@@ -5518,11 +5518,12 @@ declare module wd {
     abstract class TwoDRenderTargetRenderer extends RenderTargetRenderer {
         protected frameBuffer: WebGLFramebuffer;
         protected renderBuffer: WebGLRenderbuffer;
-        protected abstract createCamera(...args: any[]): GameObject;
+        private _lastCamera;
         protected abstract beforeRenderFrameBufferTexture(renderCamera: GameObject): any;
         protected abstract getRenderList(): wdCb.Collection<GameObject>;
         protected abstract renderRenderer(renderer: Renderer): any;
-        private _lastCamera;
+        protected isNeedCreateCamera(): boolean;
+        protected createCamera(...args: any[]): GameObject;
         protected initFrameBuffer(): void;
         protected renderFrameBufferTexture(renderer: Renderer, camera: GameObject): void;
         protected disposeFrameBuffer(): void;
@@ -5540,6 +5541,17 @@ declare module wd {
         private _setSceneSide(side);
         private _setClipPlane(vMatrix, pMatrix, plane);
         private _getClipPlaneInCameraSpace(vMatrix, plane);
+    }
+}
+
+declare module wd {
+    class RefractionRenderTargetRenderer extends TwoDRenderTargetRenderer {
+        static create(refractionTexture: RefractionTexture): RefractionRenderTargetRenderer;
+        protected texture: RefractionTexture;
+        protected beforeRenderFrameBufferTexture(renderCamera: GameObject): void;
+        protected getRenderList(): wdCb.Collection<GameObject>;
+        protected renderRenderer(renderer: any): void;
+        protected isNeedCreateCamera(): boolean;
     }
 }
 
@@ -6147,7 +6159,8 @@ declare module wd {
         static u_specularMapSampler: ShaderVariable;
         static u_emissionMapSampler: ShaderVariable;
         static u_normalMapSampler: ShaderVariable;
-        static u_mirrorSampler: ShaderVariable;
+        static u_reflectionMapSampler: ShaderVariable;
+        static u_refractionMapSampler: ShaderVariable;
         static u_cameraPos: ShaderVariable;
         static u_refractionRatio: ShaderVariable;
         static u_reflectivity: ShaderVariable;
@@ -6195,6 +6208,10 @@ declare module wd {
         static u_skyColor: ShaderVariable;
         static u_cloudColor: ShaderVariable;
         static u_brickColor: ShaderVariable;
+        static u_waveData: ShaderVariable;
+        static u_windMatrix: ShaderVariable;
+        static u_bumpMapSampler: ShaderVariable;
+        static u_levelData: ShaderVariable;
     }
     type ShaderVariable = {
         type: EVariableType;
@@ -6362,23 +6379,23 @@ declare module wd {
 }
 
 declare module wd {
-    class BasicEnvMapForBasicShaderLib extends EnvMapForBasicShaderLib {
-        static create(): BasicEnvMapForBasicShaderLib;
+    class EnvMapBasicForBasicShaderLib extends EnvMapForBasicShaderLib {
+        static create(): EnvMapBasicForBasicShaderLib;
         type: string;
     }
 }
 
 declare module wd {
-    class ReflectionForBasicShaderLib extends EnvMapForBasicShaderLib {
-        static create(): ReflectionForBasicShaderLib;
+    class EnvMapReflectionForBasicShaderLib extends EnvMapForBasicShaderLib {
+        static create(): EnvMapReflectionForBasicShaderLib;
         type: string;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class RefractionForBasicShaderLib extends EnvMapForBasicShaderLib {
-        static create(): RefractionForBasicShaderLib;
+    class EnvMapRefractionForBasicShaderLib extends EnvMapForBasicShaderLib {
+        static create(): EnvMapRefractionForBasicShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
@@ -6386,8 +6403,8 @@ declare module wd {
 }
 
 declare module wd {
-    class FresnelForBasicShaderLib extends EnvMapForBasicShaderLib {
-        static create(): FresnelForBasicShaderLib;
+    class EnvMapFresnelForBasicShaderLib extends EnvMapForBasicShaderLib {
+        static create(): EnvMapFresnelForBasicShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
@@ -6403,23 +6420,23 @@ declare module wd {
 }
 
 declare module wd {
-    class BasicEnvMapForLightShaderLib extends EnvMapForLightShaderLib {
-        static create(): BasicEnvMapForLightShaderLib;
+    class EnvMapBasicForLightShaderLib extends EnvMapForLightShaderLib {
+        static create(): EnvMapBasicForLightShaderLib;
         type: string;
     }
 }
 
 declare module wd {
-    class ReflectionForLightShaderLib extends EnvMapForLightShaderLib {
-        static create(): ReflectionForLightShaderLib;
+    class EnvMapReflectionForLightShaderLib extends EnvMapForLightShaderLib {
+        static create(): EnvMapReflectionForLightShaderLib;
         type: string;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
 declare module wd {
-    class RefractionForLightShaderLib extends EnvMapForLightShaderLib {
-        static create(): RefractionForLightShaderLib;
+    class EnvMapRefractionForLightShaderLib extends EnvMapForLightShaderLib {
+        static create(): EnvMapRefractionForLightShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
@@ -6427,8 +6444,8 @@ declare module wd {
 }
 
 declare module wd {
-    class FresnelForLightShaderLib extends EnvMapForLightShaderLib {
-        static create(): FresnelForLightShaderLib;
+    class EnvMapFresnelForLightShaderLib extends EnvMapForLightShaderLib {
+        static create(): EnvMapFresnelForLightShaderLib;
         type: string;
         sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
@@ -6457,15 +6474,6 @@ declare module wd {
         type: string;
         protected sendMapShaderVariables(program: Program, quadCmd: QuadCommand, material: BasicMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: BasicMaterial): void;
-    }
-}
-
-declare module wd {
-    class MirrorForBasicShaderLib extends EngineShaderLib {
-        static create(): MirrorForBasicShaderLib;
-        type: string;
-        sendShaderVariables(program: Program, quadCmd: QuadCommand, material: EngineMaterial): void;
-        setShaderDefinition(quadCmd: QuadCommand, material: EngineMaterial): void;
     }
 }
 
@@ -6752,31 +6760,7 @@ declare module wd {
 }
 
 declare module wd {
-    class BasicMaterial extends EngineMaterial {
-        static create(): BasicMaterial;
-        mapList: wdCb.Collection<BasicTexture | ProceduralTexture>;
-        map: any;
-        mirrorMap: MirrorTexture;
-        private _opacity;
-        opacity: number;
-        protected addShaderLib(): void;
-        private _setMapShaderLib();
-        private _setEnvMapShaderLib(envMap);
-        private _setMirrorMapShaderLib();
-    }
-}
-
-declare module wd {
-    class SkyboxMaterial extends EngineMaterial {
-        static create(): SkyboxMaterial;
-        initWhenCreate(): void;
-        protected addShaderLib(): void;
-    }
-}
-
-declare module wd {
-    class LightMaterial extends EngineMaterial {
-        static create(): LightMaterial;
+    abstract class StandardLightMaterial extends EngineMaterial {
         private _lightMap;
         lightMap: Texture;
         private _diffuseMap;
@@ -6838,6 +6822,38 @@ declare module wd {
 }
 
 declare module wd {
+    abstract class StandardBasicMaterial extends EngineMaterial {
+        mapList: wdCb.Collection<BasicTexture | ProceduralTexture>;
+        map: any;
+        private _opacity;
+        opacity: number;
+        protected addShaderLib(): void;
+        private _setMapShaderLib();
+        private _setEnvMapShaderLib(envMap);
+    }
+}
+
+declare module wd {
+    class BasicMaterial extends StandardBasicMaterial {
+        static create(): BasicMaterial;
+    }
+}
+
+declare module wd {
+    class SkyboxMaterial extends EngineMaterial {
+        static create(): SkyboxMaterial;
+        initWhenCreate(): void;
+        protected addShaderLib(): void;
+    }
+}
+
+declare module wd {
+    class LightMaterial extends StandardLightMaterial {
+        static create(): LightMaterial;
+    }
+}
+
+declare module wd {
     class ShaderMaterial extends Material {
         static create(): ShaderMaterial;
         shader: CustomShader;
@@ -6861,7 +6877,6 @@ declare module wd {
         private _material;
         private _mapTable;
         private _arrayMapList;
-        private _mirrorMap;
         private _textureDirty;
         private _allMapsCache;
         private _allSingleMapsCache;
@@ -6877,9 +6892,6 @@ declare module wd {
         getMapCount(): number;
         getEnvMap(): CubemapTexture;
         setEnvMap(envMap: CubemapTexture): void;
-        getMirrorMap(): MirrorTexture;
-        setMirrorMap(mirrorMap: MirrorTexture): void;
-        isMirrorMap(map: Texture): boolean;
         removeAllChildren(): void;
         dispose(): void;
         bindAndUpdate(): void;
@@ -8181,12 +8193,24 @@ declare module wd {
 }
 
 declare module wd {
-    class MirrorTexture extends TwoDRenderTargetTexture {
-        static create(): MirrorTexture;
+    abstract class LightEffectTexture extends TwoDRenderTargetTexture {
         private _plane;
-        init(): this;
         getSamplerName(unit: number): string;
         getPlane(): Plane;
+    }
+}
+
+declare module wd {
+    class MirrorTexture extends LightEffectTexture {
+        static create(): MirrorTexture;
+        init(): this;
+    }
+}
+
+declare module wd {
+    class RefractionTexture extends LightEffectTexture {
+        static create(): RefractionTexture;
+        init(): this;
     }
 }
 
@@ -8723,14 +8747,14 @@ declare module wd {
 }
 
 declare module wd {
-    class TerrainMaterial extends LightMaterial {
+    class TerrainMaterial extends StandardLightMaterial {
         static create(): TerrainMaterial;
-        layer: Layer;
+        layer: TerrainLayerMapModel;
         init(): void;
         protected addExtendShaderLib(): void;
     }
-    class Layer {
-        static create(): Layer;
+    class TerrainLayerMapModel {
+        static create(): TerrainLayerMapModel;
         private _mapDataList;
         mapDataList: wdCb.Collection<TerrainLayerMapData>;
         mapArray: Texture[];
@@ -8748,6 +8772,116 @@ declare module wd {
         type: string;
         sendShaderVariables(program: Program, cmd: QuadCommand, material: TerrainMaterial): void;
         setShaderDefinition(quadCmd: QuadCommand, material: TerrainMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterMaterial extends StandardLightMaterial {
+        static create(): WaterMaterial;
+        private _bumpMap;
+        bumpMap: Texture;
+        private _reflectionMap;
+        reflectionMap: Texture;
+        private _refractionMap;
+        refractionMap: Texture;
+        wind: WaterWindModel;
+        wave: WaterWaveModel;
+        fresnelLevel: number;
+        reflectionLevel: number;
+        refractionLevel: number;
+        bindAndUpdateTexture(): void;
+        protected addExtendShaderLib(): void;
+        private _computeTime();
+    }
+    class WaterWindModel {
+        static create(): WaterWindModel;
+        matrix: Matrix4;
+        time: number;
+        direction: Vector2;
+    }
+    class WaterWaveModel {
+        static create(): WaterWaveModel;
+        height: number;
+        length: number;
+    }
+}
+
+declare module wd {
+    class WaterShaderLib extends EngineShaderLib {
+        static create(): WaterShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterReflectionMapShaderLib extends EngineShaderLib {
+        static create(): WaterReflectionMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterRefractionMapShaderLib extends EngineShaderLib {
+        static create(): WaterRefractionMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterFresnelShaderLib extends EngineShaderLib {
+        static create(): WaterFresnelShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterNoLightEffectShaderLib extends EngineShaderLib {
+        static create(): WaterNoLightEffectShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterBumpMapShaderLib extends EngineShaderLib {
+        static create(): WaterBumpMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class WaterNoBumpMapShaderLib extends EngineShaderLib {
+        static create(): WaterNoBumpMapShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: WaterMaterial): void;
+    }
+}
+
+declare module wd {
+    class MirrorMaterial extends StandardLightMaterial {
+        static create(): MirrorMaterial;
+        private _reflectionMap;
+        reflectionMap: Texture;
+        protected addExtendShaderLib(): void;
+    }
+}
+
+declare module wd {
+    class MirrorShaderLib extends EngineShaderLib {
+        static create(): MirrorShaderLib;
+        type: string;
+        sendShaderVariables(program: Program, cmd: QuadCommand, material: MirrorMaterial): void;
+        setShaderDefinition(quadCmd: QuadCommand, material: MirrorMaterial): void;
     }
 }
 
@@ -8774,14 +8908,26 @@ declare module wd {
         static light_common: GLSLChunk;
         static light_fragment: GLSLChunk;
         static light_vertex: GLSLChunk;
-        static mirror_forBasic_fragment: GLSLChunk;
-        static mirror_forBasic_vertex: GLSLChunk;
-        static skybox_fragment: GLSLChunk;
-        static skybox_vertex: GLSLChunk;
         static map_forBasic_fragment: GLSLChunk;
         static map_forBasic_vertex: GLSLChunk;
         static multi_map_forBasic_fragment: GLSLChunk;
         static multi_map_forBasic_vertex: GLSLChunk;
+        static skybox_fragment: GLSLChunk;
+        static skybox_vertex: GLSLChunk;
+        static envMap_basic_forBasic_fragment: GLSLChunk;
+        static envMap_basic_forBasic_vertex: GLSLChunk;
+        static envMap_forBasic_fragment: GLSLChunk;
+        static envMap_forBasic_vertex: GLSLChunk;
+        static envMap_fresnel_forBasic_fragment: GLSLChunk;
+        static envMap_reflection_forBasic_fragment: GLSLChunk;
+        static envMap_refraction_forBasic_fragment: GLSLChunk;
+        static envMap_basic_forLight_fragment: GLSLChunk;
+        static envMap_basic_forLight_vertex: GLSLChunk;
+        static envMap_forLight_fragment: GLSLChunk;
+        static envMap_forLight_vertex: GLSLChunk;
+        static envMap_fresnel_forLight_fragment: GLSLChunk;
+        static envMap_reflection_forLight_fragment: GLSLChunk;
+        static envMap_refraction_forLight_fragment: GLSLChunk;
         static diffuseMap_fragment: GLSLChunk;
         static diffuseMap_vertex: GLSLChunk;
         static emissionMap_fragment: GLSLChunk;
@@ -8808,31 +8954,29 @@ declare module wd {
         static totalShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_fragment: GLSLChunk;
         static twoDShadowMap_vertex: GLSLChunk;
-        static basic_envMap_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forBasic_vertex: GLSLChunk;
-        static envMap_forBasic_fragment: GLSLChunk;
-        static envMap_forBasic_vertex: GLSLChunk;
-        static fresnel_forBasic_fragment: GLSLChunk;
-        static reflection_forBasic_fragment: GLSLChunk;
-        static refraction_forBasic_fragment: GLSLChunk;
-        static basic_envMap_forLight_fragment: GLSLChunk;
-        static basic_envMap_forLight_vertex: GLSLChunk;
-        static envMap_forLight_fragment: GLSLChunk;
-        static envMap_forLight_vertex: GLSLChunk;
-        static fresnel_forLight_fragment: GLSLChunk;
-        static reflection_forLight_fragment: GLSLChunk;
-        static refraction_forLight_fragment: GLSLChunk;
+        static mirror_fragment: GLSLChunk;
+        static mirror_vertex: GLSLChunk;
         static terrainLayer_fragment: GLSLChunk;
         static terrainLayer_vertex: GLSLChunk;
         static brick_proceduralTexture_fragment: GLSLChunk;
+        static water_bump_fragment: GLSLChunk;
+        static water_bump_vertex: GLSLChunk;
+        static water_fragment: GLSLChunk;
+        static water_fresnel_fragment: GLSLChunk;
+        static water_fresnel_vertex: GLSLChunk;
+        static water_noBump_fragment: GLSLChunk;
+        static water_noLightEffect_fragment: GLSLChunk;
+        static water_reflection_fragment: GLSLChunk;
+        static water_refraction_fragment: GLSLChunk;
+        static water_vertex: GLSLChunk;
         static cloud_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_fragment: GLSLChunk;
         static common_proceduralTexture_vertex: GLSLChunk;
         static fire_proceduralTexture_fragment: GLSLChunk;
         static grass_proceduralTexture_fragment: GLSLChunk;
         static marble_proceduralTexture_fragment: GLSLChunk;
-        static road_proceduralTexture_fragment: GLSLChunk;
         static wood_proceduralTexture_fragment: GLSLChunk;
+        static road_proceduralTexture_fragment: GLSLChunk;
     }
     type GLSLChunk = {
         top?: string;

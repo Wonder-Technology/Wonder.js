@@ -1,12 +1,12 @@
 module wd{
-    export class TerrainMaterial extends LightMaterial{
+    export class TerrainMaterial extends StandardLightMaterial{
         public static create() {
             var obj = new this();
 
             return obj;
         }
 
-        public layer:Layer = Layer.create();
+        public layer:TerrainLayerMapModel = TerrainLayerMapModel.create();
 
         public init(){
             this.mapManager.addArrayMap("u_layerSampler2Ds", this.layer.mapArray);
@@ -21,7 +21,7 @@ module wd{
         }
     }
 
-    export class Layer{
+    export class TerrainLayerMapModel{
         public static create() {
             var obj = new this();
 

@@ -6,7 +6,10 @@ module wd{
     _table.addChild("specularMap", "u_specularMapSampler");
     _table.addChild("emissionMap", "u_emissionMapSampler");
     _table.addChild("normalMap", "u_normalMapSampler");
-    _table.addChild("mirrorReflectionMap", "u_mirrorSampler");
+    _table.addChild("reflectionMap", "u_reflectionMapSampler");
+    _table.addChild("refractionMap", "u_refractionMapSampler");
+
+    _table.addChild("bumpMap", "u_bumpMapSampler");
 
     export class VariableNameTable{
         public static getVariableName(name: string){
@@ -18,4 +21,3 @@ module wd{
         }
     }
 }
-

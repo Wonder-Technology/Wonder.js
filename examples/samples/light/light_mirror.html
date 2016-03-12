@@ -26,14 +26,15 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            var sphere = createSphere();
+            var sphere1 = createSphere1();
+            var sphere2 = createSphere2();
             var box = createBox();
 
             var pointLight = createPointLight();
 
-            director.scene.addChild(sphere);
+            director.scene.addChildren([sphere1, sphere2]);
             director.scene.addChild(box);
-            director.scene.addChild(createMirror(sphere, box, pointLight));
+            director.scene.addChild(createMirror1(sphere1, sphere2, box));
             director.scene.addChild(createAmbientLight());
 
             director.scene.addChild(pointLight);
@@ -43,7 +44,7 @@
             director.start();
         }
 
-        function createSphere() {
+        function createSphere1() {
             var material = wd.LightMaterial.create();
             material.color = wd.Color.create("rgb(100, 255, 100)");
             material.specularColor = wd.Color.create("rgb(0, 255, 0)");
@@ -61,6 +62,31 @@
             var gameObject = wd.GameObject.create();
             gameObject.addComponent(wd.MeshRenderer.create());
             gameObject.addComponent(geometry);
+
+            return gameObject;
+        }
+
+        function createSphere2() {
+            var material = wd.LightMaterial.create();
+            material.color = wd.Color.create("rgb(100, 255, 100)");
+            material.specularColor = wd.Color.create("rgb(0, 255, 0)");
+            material.shininess = 32;
+            material.diffuseMap = wd.LoaderManager.getInstance().get("texture").toTexture();
+            material.shading = wd.EShading.SMOOTH;
+
+
+            var geometry = wd.SphereGeometry.create();
+            geometry.material = material;
+            geometry.radius = 3;
+            geometry.segment = 20;
+
+
+            var gameObject = wd.GameObject.create();
+            gameObject.addComponent(wd.MeshRenderer.create());
+            gameObject.addComponent(geometry);
+
+
+            gameObject.transform.translate(wd.Vector3.create(25, 10, 0));
 
             return gameObject;
         }
@@ -85,16 +111,17 @@
             return gameObject;
         }
 
-        function createMirror(sphere, box, pointLight){
+        function createMirror1(sphere1, sphere2, box){
             var texture = wd.MirrorTexture.create();
             texture.width = 1024;
             texture.height = 1024;
-            texture.renderList = [sphere, box, pointLight];
+            texture.renderList = [sphere1, sphere2, box];
 
-            var material = wd.BasicMaterial.create();
+//            var material = wd.BasicMaterial.create();
+            var material = wd.MirrorMaterial.create();
             material.color = wd.Color.create("#aaaaaa");
             material.side = wd.ESide.BOTH;
-            material.mirrorMap = texture;
+            material.reflectionMap = texture;
 
             var plane = wd.PlaneGeometry.create();
             plane.width = 20;
@@ -161,7 +188,7 @@
             var directionLight = wd.GameObject.create();
             directionLight.addComponent(directionLightComponent);
 
-            directionLight.transform.translate(wd.Vector3.create(10, 0, 0));
+            directionLight.transform.translate(wd.Vector3.create(0, 10, 0));
 //            directionLight.transform.rotateLocal(wd.Vector3.create(0, 90, 0));
 
             return directionLight;
@@ -175,7 +202,7 @@
             cameraComponent.fovy = 60;
             cameraComponent.aspect = view.width / view.height;
             cameraComponent.near = 0.1;
-            cameraComponent.far = 80;
+            cameraComponent.far = 200;
 
             var controller = wd.FlyCameraController.create(cameraComponent);
             camera.addComponent(controller);

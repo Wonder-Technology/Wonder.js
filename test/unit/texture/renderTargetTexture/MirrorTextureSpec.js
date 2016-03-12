@@ -21,6 +21,16 @@ describe("MirrorTexture", function () {
         sandbox.restore();
     });
 
+    describe("init", function(){
+        it("add MirrorRenderTargetRenderer", function(){
+            sandbox.stub(wd.Director.getInstance().scene, "addRenderTargetRenderer");
+
+            texture.init();
+
+            expect(wd.Director.getInstance().scene.addRenderTargetRenderer.args[0][0]).toEqual(jasmine.any(wd.MirrorRenderTargetRenderer));
+        });
+    });
+
     describe("getPlane", function () {
         var Plane;
 
@@ -147,32 +157,17 @@ describe("MirrorTexture", function () {
 
         beforeEach(function () {
             program = {
-                sendUniformData: sandbox.stub(),
-                getUniformLocation: sandbox.stub(),
-                isUniformDataNotExistByLocation: sandbox.stub().returns(false)
+                sendUniformData: sandbox.stub()
             };
         });
 
         it("send mirror sampler", function () {
-            var pos2 = 100;
-            program.getUniformLocation.onCall(1).returns(pos2);
-            var material = wd.BasicMaterial.create();
-
-            var map = new wd.ImageTexture();
-            material.map = map;
-
-            material.mirrorMap = texture;
-
-
-
-
+            var material = wd.MirrorMaterial.create();
+            material.reflectionMap = texture;
 
             material.mapManager.sendData(program);
 
-
-
-
-            expect(program.sendUniformData).toCalledWith("u_mirrorSampler", wd.EVariableType.SAMPLER_2D, 1);
+            expect(program.sendUniformData).toCalledWith("u_reflectionMapSampler", wd.EVariableType.SAMPLER_2D, 0);
         });
     });
 });
