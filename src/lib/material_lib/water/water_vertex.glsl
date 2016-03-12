@@ -6,12 +6,9 @@ struct WaveData {
 uniform WaveData u_waveData;
 
 varying vec4 v_reflectionAndRefractionMapCoord;
-varying vec3 v_position;
 @end
 
 @body
-    v_position = a_position;
-
 mat4 textureMatrix = mat4(
                         0.5, 0.0, 0.0, 0.0,
                         0.0, 0.5, 0.0, 0.0,

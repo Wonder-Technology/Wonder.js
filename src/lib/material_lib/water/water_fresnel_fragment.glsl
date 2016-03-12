@@ -1,3 +1,7 @@
+@varDeclare
+varying vec3 v_position;
+@end
+
 @funcDefine
 vec4 getLightEffectColor(vec2 projectedTexCoords){
 	vec3 reflectionColor = texture2D(u_reflectionMapSampler, projectedTexCoords).rgb;

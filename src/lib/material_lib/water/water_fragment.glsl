@@ -13,7 +13,6 @@ struct LevelData {
 uniform LevelData u_levelData;
 
 varying vec4 v_reflectionAndRefractionMapCoord;
-varying vec3 v_position;
 @end
 
 
